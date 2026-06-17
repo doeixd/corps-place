@@ -1,0 +1,137 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import type { ReactNode } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Icon } from '@/components/icon';
+import { PageShell } from '@/components/page-shell';
+import { PageHeader } from '@/components/page-header';
+import { WeekendShowsCarousel } from '@/components/weekend-shows';
+import { CorpsRegistryProvider } from '@/components/corps-registry';
+import { LatestResultsPanel } from '@/components/latest-results';
+import { StandingsSnapshot } from '@/components/standings-snapshot';
+import { FeaturedPredictionPanel } from '@/components/featured-prediction';
+import { getHomePageData } from '@/lib/server-fns/home';
+import {
+  ArrowRight02Icon,
+  Calendar01Icon,
+  UserMultipleIcon,
+  JusticeScale01Icon,
+} from '@/components/icons/generated';
+
+export const Route = createFileRoute('/')({
+  loader: async () => getHomePageData(),
+  staleTime: 5 * 60_000,
+  component: Home,
+});
+
+// A compact navigation card for the "Explore" row. `preload` mirrors the old
+// home page: the heavy events route is prefetched on render, the rest on intent.
+function ExploreCard({
+  to,
+  params,
+  preload,
+  icon,
+  title,
+  description,
+}: {
+  to: string;
+  params?: Record<string, string>;
+  preload: 'render' | 'intent';
+  icon: typeof Calendar01Icon;
+  title: string;
+  description: ReactNode;
+}) {
+  return (
+    <Link
+      to={to}
+      params={params}
+      preload={preload}
+      className="block h-full focus-visible:outline-none"
+    >
+      <Card className="group card-hover h-full">
+        <CardContent className="flex h-full flex-col gap-2 py-5">
+          <div className="flex items-center gap-2">
+            <Icon icon={icon} size="sm" className="text-primary" />
+            <div className="font-semibold">{title}</div>
+          </div>
+          <p className="text-sm text-text-secondary">{description}</p>
+          <span className="mt-auto inline-flex items-center gap-1 pt-1 text-sm font-medium text-primary">
+            Open
+            <Icon icon={ArrowRight02Icon} size="sm" className="icon-shift" />
+          </span>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}
+
+function Home() {
+  const { weekend, latestResults, standings, featuredPrediction, lineupCorps } =
+    Route.useLoaderData();
+  return (
+    <PageShell>
+      <PageHeader
+        title={
+          <span className="flex items-center gap-2.5">
+            <img src="/logo-transparent.png" alt="" className="size-10 shrink-0" />
+            DrumCorps.app
+          </span>
+        }
+        subtitle="Schedules, lineups, scores, and score predictions for the drum corps season."
+      />
+
+      <div className="space-y-8">
+        <CorpsRegistryProvider corps={lineupCorps}>
+          <WeekendShowsCarousel weekend={weekend} />
+        </CorpsRegistryProvider>
+
+        {/* Featured prediction · latest results · standings — three ranked
+            snapshots, side by side on wide screens, stacked on mobile. */}
+        <div className="grid gap-4 lg:grid-cols-3">
+          <FeaturedPredictionPanel prediction={featuredPrediction} />
+          <LatestResultsPanel results={latestResults} />
+          <StandingsSnapshot standings={standings} />
+        </div>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold">Explore</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <ExploreCard
+              to="/events/$yearSlug"
+              params={{ yearSlug: '2026' }}
+              preload="render"
+              icon={Calendar01Icon}
+              title="2026 Events"
+              description="Browse the season — lineups, schedules, scores, and predictions."
+            />
+            <ExploreCard
+              to="/corps"
+              preload="intent"
+              icon={UserMultipleIcon}
+              title="Corps Directory"
+              description="Drum corps and ensembles with logos, history, and score timelines."
+            />
+            <ExploreCard
+              to="/judges"
+              preload="intent"
+              icon={JusticeScale01Icon}
+              title="Judge Directory"
+              description="DCI judges and their assignments across seasons and captions."
+            />
+          </div>
+        </section>
+      </div>
+
+        <footer className="mt-12 border-t border-border pt-6 text-center">
+          <p className="text-xs text-text-muted">
+            <Link to="/privacy-policy" className="hover:text-text-secondary transition-colors">
+              Privacy Policy
+            </Link>
+            <span className="mx-2 text-border">·</span>
+            <Link to="/terms-of-service" className="hover:text-text-secondary transition-colors">
+              Terms of Service
+            </Link>
+          </p>
+        </footer>
+    </PageShell>
+  );
+}
