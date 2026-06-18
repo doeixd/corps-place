@@ -38,10 +38,6 @@ RUN npm install --include=dev --no-audit --no-fund
 # App source (sdk/src is included for @sdk/* imports; heavy sdk dirs are .dockerignored).
 COPY . .
 
-# Yearbooks over GitHub's 100 MB limit are committed as .partNNN slices; rebuild
-# the full PDFs into public/yearbook before the static assets are baked in.
-RUN node scripts/reassembleYearbooks.mjs
-
 # Build the TanStack Start app -> .output/server, then drop dev-only deps (keeps
 # runtime deps like sharp/effect/@libsql).
 RUN npm run build \

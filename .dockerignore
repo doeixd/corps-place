@@ -17,6 +17,9 @@ node_modules
 read-model*
 public/read-model
 
+# Yearbook PDFs (2.7 GB) — only used by SDK ingest scripts, not the app
+public/yearbook
+
 # Heavy SDK artifacts not needed to build the app
 sdk/models
 sdk/results
