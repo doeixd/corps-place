@@ -232,6 +232,7 @@ export function applyFavoriteBranding(fav: PersistedFavorite): void {
   } else {
     root.style.removeProperty('--logo-dark');
   }
+  root.setAttribute('data-fav-active', '');
   setFavicon(fav.faviconSvg);
 }
 
@@ -241,6 +242,7 @@ export function clearFavoriteBranding(): void {
   root.style.removeProperty('--primary');
   root.style.removeProperty('--primary-foreground');
   root.style.removeProperty('--logo-dark');
+  root.removeAttribute('data-fav-active');
   setFavicon('/logo.svg');
 }
 

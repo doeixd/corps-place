@@ -430,16 +430,27 @@
   --color-success: var(--success);
   --color-destructive-foreground: var(--destructive-foreground);
 
-  /* Logo palette: derived from --primary (corps brand hue) using relative OKLCH.
-     When a corps is favorited, --primary changes → these re-derive automatically,
-     shifting only C (chroma) and L (lightness) while the corps's hue stays
-     consistent across all logo elements. --logo-dark additionally accepts a
-     direct override from the favorite corps store (corps secondary color). */
-  --logo-accent: oklch(from var(--primary) 0.72 c h);
-  --logo-accent-vivid: oklch(from var(--primary) 0.58 calc(c * 1.1) h);
-  --logo-accent-muted: oklch(from var(--primary) 0.64 calc(c * 0.85) h);
+  /* Logo palette — original hardcoded SVG colors used when no corps is
+     favorited. When a favorite IS active (html[data-fav-active]), these
+     are overridden below with OKLCH-derived values from --primary. */
+  --logo-accent: #feb403;
+  --logo-accent-vivid: #fd5007;
+  --logo-accent-muted: #fe7f02;
+  --logo-dark: #0c2e1d;
+  --logo-detail: #e22517;
+  --logo-light: #fbfbf2;
+}
+
+/* When a corps is favorited, derive all logo colors from --primary using
+   relative OKLCH. Adjusting only C (chroma) and L (lightness) keeps the
+   corps's hue consistent across all elements. The --logo-dark may still
+   be further overridden by the store's inline style (corps secondary). */
+:root[data-fav-active] {
+  --logo-accent: oklch(from var(--primary) 0.72 c calc(h + 48));
+  --logo-accent-vivid: oklch(from var(--primary) calc(l + 0.05) calc(c + 0.06) h);
+  --logo-accent-muted: oklch(from var(--primary) calc(l + 0.1) c h);
   --logo-dark: oklch(from var(--primary) 0.17 calc(c * 0.3) h);
-  --logo-detail: oklch(from var(--primary) 0.45 calc(c * 1.15) h);
+  --logo-detail: oklch(from var(--primary) calc(l - 0.1) calc(c * 1.15) h);
   --logo-light: oklch(from var(--primary) 0.96 calc(c * 0.05) h);
 }
 
