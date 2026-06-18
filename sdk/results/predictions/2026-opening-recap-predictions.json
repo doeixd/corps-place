@@ -1,0 +1,147 @@
+{
+  "generated_at": "2026-05-23T12:47:17.027Z",
+  "event": {
+    "name": "Drums Along the Rockies",
+    "slug": "2026-drums-along-the-rockies",
+    "date": "2026-06-27T00:00:00.000Z",
+    "division": "World Class",
+    "percentThrough": 5,
+    "lineup": [
+      {
+        "corps": "Genesis",
+        "city": "Austin, TX",
+        "key": "001j000000iwx9oaad",
+        "seedRank": 5
+      },
+      {
+        "corps": "Troopers",
+        "city": "Casper, WY",
+        "key": "001j000000iwxajaa1",
+        "seedRank": 3
+      },
+      {
+        "corps": "Phantom Regiment",
+        "city": "Rockford, IL",
+        "key": "001j000000h3xrnaav",
+        "seedRank": 2
+      },
+      {
+        "corps": "Blue Devils",
+        "city": "Concord, CA",
+        "key": "001j000000i6i9saav",
+        "seedRank": 1
+      },
+      {
+        "corps": "Blue Knights",
+        "city": "Denver, CO",
+        "key": "001j000000iwwsoaal",
+        "seedRank": 4
+      }
+    ]
+  },
+  "model_dir": "models/v9_subcaption_fixed/v9fix_shared_datefwd_idfloor0_1779507573588",
+  "mode": "panel_unknown_cross_season_opener_baseline_guarded",
+  "caveats": [
+    "DCI Tour Preview and Bluecoats Opening Night are non-adjudicated and are intentionally not predicted.",
+    "Judge assignments were not found on public DCI event pages, so judge inputs are unknown/zeroed.",
+    "The v9 model was trained on same-season sequences; raw neural output is out-of-distribution for a first show after the offseason.",
+    "Point estimates therefore use division/rank/5%-through-season baseline curves, with raw model totals retained for audit."
+  ],
+  "predictions": [
+    {
+      "rank": 1,
+      "corps": "Blue Devils",
+      "city": "Concord, CA",
+      "total": 73.271,
+      "GE": 29.422,
+      "Visual": 21.866,
+      "Music": 21.983,
+      "GE1": 14.653,
+      "GE2": 14.769,
+      "VP": 14.6,
+      "VA": 14.616,
+      "CG": 14.516,
+      "MB": 14.603,
+      "MA": 14.813,
+      "MP": 14.55,
+      "raw_model_total": 94.97,
+      "source_template": "2025-dci-world-championship-finals (95.788)"
+    },
+    {
+      "rank": 2,
+      "corps": "Phantom Regiment",
+      "city": "Rockford, IL",
+      "total": 70.913,
+      "GE": 28.344,
+      "Visual": 21.146,
+      "Music": 21.424,
+      "GE1": 14.122,
+      "GE2": 14.222,
+      "VP": 14.047,
+      "VA": 14.141,
+      "CG": 14.103,
+      "MB": 14.147,
+      "MA": 14.303,
+      "MP": 14.397,
+      "raw_model_total": 95.132,
+      "source_template": "2025-dci-world-championship-finals (94.3)"
+    },
+    {
+      "rank": 3,
+      "corps": "Troopers",
+      "city": "Casper, WY",
+      "total": 68.117,
+      "GE": 27.372,
+      "Visual": 20.221,
+      "Music": 20.524,
+      "GE1": 13.539,
+      "GE2": 13.833,
+      "VP": 13.542,
+      "VA": 13.439,
+      "CG": 13.461,
+      "MB": 13.571,
+      "MA": 13.761,
+      "MP": 13.716,
+      "raw_model_total": 93.564,
+      "source_template": "2025-dci-world-championship-finals (90.05)"
+    },
+    {
+      "rank": 4,
+      "corps": "Blue Knights",
+      "city": "Denver, CO",
+      "total": 65.65,
+      "GE": 26.27,
+      "Visual": 19.494,
+      "Music": 19.886,
+      "GE1": 13.017,
+      "GE2": 13.253,
+      "VP": 12.969,
+      "VA": 13.01,
+      "CG": 13.01,
+      "MB": 13.1,
+      "MA": 13.348,
+      "MP": 13.324,
+      "raw_model_total": 93.547,
+      "source_template": "2025-dci-world-championship-finals (87.45)"
+    },
+    {
+      "rank": 5,
+      "corps": "Genesis",
+      "city": "Austin, TX",
+      "total": 62.921,
+      "GE": 25.22,
+      "Visual": 18.62,
+      "Music": 19.081,
+      "GE1": 12.412,
+      "GE2": 12.808,
+      "VP": 12.508,
+      "VA": 12.521,
+      "CG": 12.212,
+      "MB": 12.492,
+      "MA": 12.877,
+      "MP": 12.792,
+      "raw_model_total": 89.855,
+      "source_template": "2025-dci-world-championship-semifinals (77.7)"
+    }
+  ]
+}

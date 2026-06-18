@@ -1,0 +1,19 @@
+{
+  "scrapedAt": "2026-06-16T12-08-41-057Z",
+  "corps": [
+    {
+      "corpsKey": "001j000000h3xrnaav",
+      "name": "Phantom Regiment",
+      "postsDiscovered": 16,
+      "staffPosts": 4,
+      "people": 12,
+      "seasons": [
+        2015,
+        2016,
+        2020,
+        2023
+      ],
+      "skipped": false
+    }
+  ]
+}

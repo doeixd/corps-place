@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Curtis Costanza: full bio + headshot supplied by user (MCBA adjudicators page).",
+  "profiles": [
+    {
+      "judgeId": "c-costanza-1",
+      "displayName": "Curtis Costanza",
+      "givenName": "Curtis",
+      "familyName": "Costanza",
+      "biography": "Curtis Costanza is a general-effect/visual adjudicator and judge administrator based in Vancouver, Washington, with extensive judging experience for Drum Corps International, Winter Guard International, Bands of America, the Winter Guard Association of Southern California, and the Florida Federation Color Guard Circuit. He is the current chief judge administrator for WGI and the Northwest Association for Performing Arts. His pageantry career spans 40 years as a consultant, designer, and instructor for high school marching bands and color guards across the country, and he has clinicked widely, including for the Northwest Pageantry Association, Western Carolina University, the North Texas, Gulf Coast, Southeast, and Florida Federation color guard circuits, the Colorado Bandmasters Association, WGASC, and internationally for Drum Corps Japan, WGI Malaysia, the Philippines, and Thailand. He has judged the General Effect Visual captions at DCI World Championships.",
+      "photoUrl": "https://www.themcba.org/images/Adjudicators/Costanza_Curtis.jpeg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.themcba.org/index.php?option=com_content&view=article&id=36&Itemid=329", "label": "MCBA adjudicators", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Analysis / Color Guard / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "Vancouver WA; 40 yrs pageantry; chief judge administrator for WGI & Northwest Assoc. for Performing Arts; DCI/WGI/BOA judge; international clinician", "source": "https://www.themcba.org/index.php?option=com_content&view=article&id=36&Itemid=329", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

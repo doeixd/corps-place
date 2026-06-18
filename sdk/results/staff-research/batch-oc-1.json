@@ -1,0 +1,446 @@
+[
+ {
+  "person_id": "john-escalante",
+  "display_name": "John Escalante",
+  "bio": "John Escalante is a world-class choreographer based out of Las Vegas, NV with a long history in the color guard and marching arts activity. He has choreographed for DCI World Class programs including Carolina Crown. He marched with Santa Clara Vanguard, Madison Scouts, and the Cadets of Bergen County, and holds a BFA in dance from Cornish College of the Arts.",
+  "photo_url": "https://images.squarespace-cdn.com/content/v1/63cea6e4b15c3e62b3ad27f2/f6d44521-7ffc-4fdf-82d0-add2156f2646/Image+11-6-23+at+11.02+AM.JPG",
+  "sources": [
+   "https://westcoastwg.org/john-escalante",
+   "https://www.thebreakdowncamp.com/john-escalante"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "james-lazaro",
+  "display_name": "James Lazaro",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.scvanguard.org/vanguard-staff/",
+   "https://www.facebook.com/groups/497492087845022/posts/1813714896222728/",
+   "https://pubhtml5.com/xada/kmsv/Drum_Corps_International_2014_Yearbook/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "ronnie-bynum",
+  "display_name": "Ronnie Bynum",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://bluecoats.com/staff",
+   "https://www.innovativepercussion.com/artists/tom_rarick",
+   "https://www.dci.org/news/corps-news-and-announcements-327/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "jacqueline-meyler",
+  "display_name": "Jacqueline Meyler",
+  "bio": "Jacqueline Meyler is a Visual Instructor with the Bluecoats drum corps. She was listed on the Bluecoats visual staff in both the 2022 and 2024 DCI Tour Event Programs.",
+  "photo_url": null,
+  "sources": [
+   "https://bluecoats.com/staff/",
+   "https://regiment.org/wp-content/uploads/2022/07/2022_TEP_Bluecoats.pdf",
+   "https://bluestars-refresh.squarespace.com/s/Bluecoats-2024_TEP_Pages.pdf"
+  ],
+  "confidence": "MEDIUM"
+ },
+ {
+  "person_id": "kyle-thompson",
+  "display_name": "Kyle Thompson",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.seattlecascades.org/staff",
+   "https://app.stagetime.com/artists/kyle-thompson"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "omar-carmenates",
+  "display_name": "Omar Carmenates",
+  "bio": "Omar Carmenates is Professor of Percussion at Furman University. He has served as Front Ensemble Arranger for The Cadets and in teaching and arranging capacities with Phantom Regiment, Boston Crusaders, and Spirit of Atlanta. He is also a WGI percussion adjudicator and holds a Doctor of Music from Florida State University.",
+  "photo_url": null,
+  "sources": [
+   "https://www.furman.edu/people/omar-carmenates/",
+   "https://omarcarmenates.com/pages/about",
+   "https://tapspace.com/artist/omar-carmenates/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "rosie-queen",
+  "display_name": "Rosie Queen",
+  "bio": "Rosie Queen has been active in the pageantry world since 1983 and has taught drum corps including The Bluecoats, The Cadets of Bergen County, and Carolina Crown. She served as the visual instructor and company manager for the Emmy and Tony award-winning production \"blast!\" from 1999-2002, and directed Carmel H.S. for 16 years, winning 5 WGI World Championships. She was inducted into the WGI Hall of Fame in 2023.",
+  "photo_url": "https://cdn.firespring.com/images/411652de-f577-4812-94f2-d42773459a88.jpg",
+  "sources": [
+   "https://www.fieldandfloorfx.com/about-us/our-team.html/title/rosie-queen?srsltid=AfmBOor6ZN71eP3CG__nuwvlxDpDloOQx7ue9Bv1JItCniijpeOLsD_v",
+   "https://wgasc.org/spotlight-rosie-queen/",
+   "https://www.marchingartsexperience.com/rosie-miller-queen"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "shelby-shelton",
+  "display_name": "Shelby Shelton",
+  "bio": "Shelby Shelton is a percussion educator and front ensemble coach who completed her fifth season with the Cavaliers Drum and Bugle Corps. She has also instructed the Sacramento Mandarins, Madison Scouts Drum and Bugle Corps, and Music City Drum Corps, among other groups. She is pursuing a DMA in percussion performance at James Madison University and endorses Innovative Percussion, Pearl/Adams, and Zildjian.",
+  "photo_url": "https://www.cumberland.edu/wp-content/uploads/2021/05/IMG_2308-1-scaled.jpg",
+  "sources": [
+   "https://www.innovativepercussion.com/artists/shelby_shelton",
+   "https://www.cumberland.edu/staff-spotlight-shelby-shelton/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "thomas-aungst",
+  "display_name": "Tom Aungst",
+  "bio": "Tom Aungst is a DCI Hall of Fame percussion arranger with over 40 years in drum corps. He served as Percussion Arranger and Caption Head for The Cadets for 30 years and has won 9 DCI Championships, including two as a member, along with 8 DCI High Percussion Awards. He also worked as an ensemble consultant for Music City and The Cavaliers, assistant percussion arranger for Carolina Crown, and arranger and caption head for the Blue Stars.",
+  "photo_url": "https://images.dci.org/wp-content/uploads/2025/01/Tom-Aungst.webp",
+  "sources": [
+   "https://www.dci.org/hall-of-fame/tom_aungst/",
+   "https://cavaliers.org/staff-bod/tom-aungst",
+   "https://www.yamaha.com/artists/tomaungst.html"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "ward-miller",
+  "display_name": "Ward Miller",
+  "bio": "Dr. Ward Miller served as Brass Caption Head for the Blue Stars Drum and Bugle Corps from 2014 through 2019, with the hornline placing in the top 12 and making finals every year. He has also served as brass arranger and instructional consultant for Minnesota Brass, the Louisiana Stars, River City Rhythm, and the Govenaires.",
+  "photo_url": null,
+  "sources": [
+   "https://www.drwardmiller.com/biography",
+   "https://www.govenaires.org/ward-miller",
+   "https://giamusic.com/artists/ward-miller"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "andrew-dickey",
+  "display_name": "Drew Dickey",
+  "bio": "Drew Dickey served as Music Coordinator and Brass Curriculum Coordinator for Pacific Crest Drum and Bugle Corps and previously held positions at The Cavaliers Drum and Bugle Corps. He joined the Bushwackers Brass Education Team as a technique and rehearsal consultant in 2015. He is Associate Director of the Longhorn Band at the University of Texas at Austin.",
+  "photo_url": "https://pacific-crest.org/wp-content/uploads/2022/10/Drew-Dickey.jpeg",
+  "sources": [
+   "https://pacific-crest.org/2022/10/drew-dickey/",
+   "https://bushwackersdc.org/old-pages/old-pages-2015/2015-staff/drew-dickey/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "bo-sodders",
+  "display_name": "Bo Sodders",
+  "bio": "Bo Sodders is the Director of Bands at Alan C. Pope High School in Marietta, Georgia. He has worked with the Phantom Regiment, Blue Knights, Troopers, Southwind, Spirit of Atlanta, and Teal Sound drum corps, and currently serves as Brass Caption Head of the Madison Scouts. Sodders is a five-year veteran of the Glassmen Drum and Bugle Corps, where he served as drum major for two seasons.",
+  "photo_url": "https://pbpa.membershiptoolkit.com/assets/07744/2715ddcc9fcd163a2f9b8b9e9d90a8d1",
+  "sources": [
+   "https://www.forwardperformingarts.org/madison-scouts-team-members/bo-sodders",
+   "https://www.dci.org/news/the-dciorg-interview-bo-sodders-glassmen-horn-sergeant",
+   "https://pbpa.membershiptoolkit.com/directors"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "chelsea-levine",
+  "display_name": "Chelsea Levine",
+  "bio": "Chelsea Levine is a cymbal technician who has taught with Colts Drum and Bugle Corps, Spirit Drum and Bugle Corps, and Rhythm X, and previously performed with Crossmen Drum and Bugle Corps and Jersey Surf Drum and Bugle Corps. She is the founder of Seavine and The Cymbal Scholarship, which provides scholarships to DCI and WGI cymbal players.",
+  "photo_url": "https://seavine.co/cdn/shop/files/chelsea_levine_headshot_01.jpg?v=1732063716&width=2400",
+  "sources": [
+   "https://seavine.co/pages/about",
+   "https://rudimentalmindset.com/instructors/p/chelsea-levine"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "chris-cyr",
+  "display_name": "Chris Cyr",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.linkedin.com/in/chris-cyr-77706034",
+   "https://pubhtml5.com/xada/nujr/basic/51-100",
+   "https://www.facebook.com/drumcorpsworld/posts/sacramento-mandarins-the-mandarins-are-pleased-to-announce-the-hiring-of-mr-vinc/10160487300924090/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "chris-kaflik",
+  "display_name": "Chris Kaflik",
+  "bio": "Chris Kaflik currently serves as Director of Bands and Performing Arts Department Chair at Brownsburg High School in Indiana. He performed with the Blue Devils Drum and Bugle Corps from 2008 to 2010 and has served as a staff member at the Blue Stars, the Colts, Madison Scouts, and Phantom Regiment. He has also been a member of the Bands of America Summer Camp Marching Band Faculty for 15 years, currently serving as Marching Division Head.",
+  "photo_url": null,
+  "sources": [
+   "https://education.musicforall.org/clinician/chris-kaflik/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "chris-murphree",
+  "display_name": "Chris Murphree",
+  "bio": "Chris Murphree served as Front Ensemble Composer/Arranger and Front Ensemble Coordinator for the Blue Knights, and previously as a front ensemble technician and percussion instructor for Phantom Regiment. He marched with Spirit of Atlanta (2008), The Cavaliers (2009–2010), and Music City Mystique (2010), and also worked with the Troopers front ensemble in 2011. He holds a Master's degree from Indiana University and a Bachelor's degree from Middle Tennessee State University, where he also served as an adjunct professor of percussion.",
+  "photo_url": "https://ascendperformingarts.org/wp-content/uploads/2017/10/ChrisMurphree-300x300.jpg",
+  "sources": [
+   "https://ascendperformingarts.org/staff/chris-murphree/",
+   "https://www.innovativepercussion.com/artists/chris_murphree",
+   "https://regiment.org/chris-murphree/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "eric-roundy",
+  "display_name": "Eric Roundy",
+  "bio": "Eric Roundy is a percussion educator and performer based in Fort Worth, Texas. He has worked with Music City Drum & Bugle Corps, the Colts Drum & Bugle Corps, Carolina Crown Drum & Bugle Corps, and the Blue Knights Drum & Bugle Corps. He served as Front Ensemble Coordinator for Vigilantes Indoor Percussion since 2019 and previously marched with Pioneer Drum and Bugle Corps (2008–2010), Carolina Crown (2011, 2012, 2014), and Music City Mystique (2014–2016). He holds a music degree from Tennessee Tech University.",
+  "photo_url": null,
+  "sources": [
+   "https://ascendperformingarts.org/staff/eric-roundy/",
+   "https://www.instagram.com/eroundy42/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "lauren-drislane",
+  "display_name": "Lauren Drislane",
+  "bio": "Lauren Drislane is a marching arts educator who has served as a Movement Specialist for the Santa Clara Drum and Bugle Corps (Vanguard) since 2019. Originally from New York and now residing in Houston, Texas, she has taught numerous scholastic and independent ensembles including the Miamisburg HS Winterguard, the Pride of Cincinnati Winterguard, and the Pride of Cincinnati Dance Ensemble. She has been involved in the marching arts since 2001, performing with Shenendehowa HS and the Pride of Cincinnati Winterguard.",
+  "photo_url": null,
+  "sources": [
+   "https://www.scvanguard.org/staff/lauren-drislane/"
+  ],
+  "confidence": "MEDIUM"
+ },
+ {
+  "person_id": "patrick-geren",
+  "display_name": "Patrick Geren",
+  "bio": "Patrick Geren performed as a member and soloist with the Bluecoats from 2006 to 2010. He served on the brass staff of the Bluecoats (2016-2022), Blue Devils (2023-2025), Santa Clara Vanguard (2012-2014), and Blue Stars (2011).",
+  "photo_url": "https://i0.wp.com/potenzamusic.com////wp-content/uploads/2019/02/Patrick_Geren.jpg?resize=166%2C250&ssl=1",
+  "sources": [
+   "https://www.patrickgeren.com/about.html",
+   "https://potenzamusic.com/potenza-artists/geren-patrick/",
+   "https://www.instagram.com/pat.geren/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "scott-carr",
+  "display_name": "Scott Carr",
+  "bio": null,
+  "photo_url": null,
+  "sources": [],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "tim-darbonne",
+  "display_name": "Tim Darbonne",
+  "bio": "Tim Darbonne marched lead euphonium with the Blue Devils Drum and Bugle Corps and aged out in 2007 as part of the corps' 12th DCI championship. He returned to the Blue Devils as a visual staff member in 2011 and was drill designer for Pacific Crest in 2013-2014, during which the corps achieved its highest placement and composite score up to that point. He instructed the Academy, the Madison Scouts, and the Troopers in DCI, and served as Visual Caption Head of the Madison Scouts from 2020-2022 before returning to the Blue Devils visual staff in 2023.",
+  "photo_url": null,
+  "sources": [
+   "https://timdarbonne.com/about"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "andrew-denburg",
+  "display_name": "Andrew Denburg",
+  "bio": "Andrew Denburg is a visual technician for the Hawthorne Caballeros. He started his drum corps career playing mellophone with the Raiders before joining the Cadets from 2011 to 2013. He taught 7th Regiment from 2015 to 2018 and joined the brass staff at Jersey Surf from 2019 to 2022. He returned to the Cadets as a visual staff member in 2023 and spent the 2025 season with the Hawthorne Caballeros.",
+  "photo_url": null,
+  "sources": [
+   "https://hawthornecaballeros.org/design-team-educational-staff/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "andrew-mroczek",
+  "display_name": "Andy Mroczek",
+  "bio": "Andy Mroczek is a choreographer and design consultant with over 20 years of experience in color guard and drum corps. He served as color guard caption head and designer for Bluecoats (2010–2013), guard designer for Mandarins (2016), and choreographer and caption manager for The Cadets (2018–2021). He has also worked with Santa Clara Vanguard, Madison Scouts, Seattle Cascades, and Blue Knights, and was a founder of Invictus World guard.",
+  "photo_url": "https://static.wixstatic.com/media/0299f5_ca7d1b97b5404c3f94a035741bb6f088~mv2.png",
+  "sources": [
+   "https://www.seattlecascades.org/single-post/andy-mroczek-joins-seattle-cascades-as-choreographer-design-consultant"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "chad-heiny",
+  "display_name": "Chad Heiny",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.iup.edu/musictheatredance/faculty/heiny-chad.html",
+   "http://majesticpercussion.com/us/artists/chad-heiny/",
+   "https://chadheiny.com/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "craig-sellers",
+  "display_name": "Craig Sellers",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.reddit.com/r/drumcorps/comments/wq49sc/who_was_the_most_memorable_instructor_in_your/",
+   "https://www.facebook.com/groups/3638237213100438/posts/3639736606283832/",
+   "https://pubhtml5.com/xada/hwkp/basic/51-100"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "evan-mcaleer",
+  "display_name": "Evan McAleer",
+  "bio": null,
+  "photo_url": "https://regiment.org/images/staff/McAleerEvan.jpg",
+  "sources": [
+   "https://regiment.org/evan-mcaleer/",
+   "https://pubhtml5.com/xada/qizk/basic/101-148"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "jeremy-seneca",
+  "display_name": "Jeremy Seneca",
+  "bio": "Jeremy Seneca is a drill designer and marching educator from Plano, TX. He was a performing member (2006–2008) and visual staff member (2009–2014) of The Cavaliers, and has served on the visual staff of Pacific Crest (2018–2019), Music City (2020–2022), and the Blue Knights. As of 2025 he is the visual caption manager for The Cavaliers.",
+  "photo_url": "https://ascendperformingarts.org/wp-content/uploads/2022/10/Design_Jeremy.jpg",
+  "sources": [
+   "https://cavaliers.org/staff-bod/jeremy-seneca",
+   "https://www.jeremyseneca.com/about",
+   "https://ascendperformingarts.org/blue-knights-announce-2023-visual-staff/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "jonathan-meader",
+  "display_name": "Jonathan Meader",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://pubhtml5.com/xada/nujr/basic/101-148",
+   "https://www.jmeader.com/about.html"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "ken-karlin",
+  "display_name": "Ken Karlin",
+  "bio": "Ken Karlin served on the visual staff of the Blue Devils from 1995–2019 and was the visual designer for Blue Devils B from 1999–2018. He was the visual designer for the 2008 DCI finalist Madison Scouts and has been an advisor for the Blue Knights, Madison Scouts, and The Academy. He began his drum corps career as a marching member of Star of Indiana and taught the corps from 1989–1992.",
+  "photo_url": "https://whsband.org/wp-content/uploads/2025/06/Mr.-Karlin_med-ADBF-25.jpg",
+  "sources": [
+   "https://whsband.org/contact/staff/",
+   "https://www.forwardperformingarts.org/news/meet-2018-visual-team"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "lisa-tatum",
+  "display_name": "Lisa Tatum",
+  "bio": "Lisa Tatum served as Brass Caption Head for the Academy Drum & Bugle Corps from 2019 to 2023 and previously taught with the Oregon Crusaders, Troopers, and Bluecoats. She was a marching member of the Carolina Crown baritone section from 2006 to 2008 and performed with the all-female brass theater show \"Odyssey\" in Japan. She also played trombone for Deep Steel Thunder, the brass band of the NFL's Houston Texans. Dr. Tatum is Director of Bands at Lubbock Christian University and holds a Doctorate of Musical Arts in Wind Conducting from Texas Tech University.",
+  "photo_url": "https://lcu.edu/fileadmin/_processed_/f/9/csm_Tatum__Lisa_04.29.23_df96dd8952.jpg",
+  "sources": [
+   "https://raider.pressbooks.pub/surveyofwindlit/back-matter/biography/",
+   "https://www.arizonaacademy.org/2018/09/04/the-academy-introduces-2019-brass-and-color-guard-caption-heads/",
+   "https://lcu.edu/directory/lisa-tatum"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "marc-sylvester",
+  "display_name": "Marc Sylvester",
+  "bio": "Marc Sylvester was inducted into the DCI Hall of Fame in 2001 for his visual design contributions. He began his career under George Zingali at the 27th Lancers and moved with him to the Garfield Cadets in 1982, where they led the corps to three consecutive DCI World Championships. He has served as head of the design and program team for the Colts Drum & Bugle Corps and held programming roles with the Cadets and Blue Knights. He also worked with Star of Indiana, Sky Ryders, Suncoast Sound, and the Bushwackers as a visual designer and consultant.",
+  "photo_url": "https://bushwackersdc.org/wp-content/uploads/2014/09/555384_4020468518179_461094254_n-282x300.jpg",
+  "sources": [
+   "https://www.dci.org/hall-of-fame/marc_sylvester/",
+   "https://bushwackersdc.org/old-pages/old-pages-2015/2015-staff/marc-sylvester/",
+   "https://bushwackersdc.org/2014/09/27/marc-sylvester-leads-2015-design-team/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "matt-filosa",
+  "display_name": "Matt Filosa",
+  "bio": "Matt Filosa is a freelance percussionist, composer, and arranger who has served as a percussion educator and sound designer for drum corps including Spirit of Atlanta and The Cadets (Sound Design). He co-owns the marching arts design company Synced Up Designs and has worked as a front ensemble arranger for DCI finalist groups. He earned a Bachelor's in Percussion Performance from the University of Florida and a Master's in Percussion Performance from the University of North Texas.",
+  "photo_url": "http://www.pastichesteel.com/uploads/9/8/5/1/9851902/4582598.jpg?257",
+  "sources": [
+   "https://www.innovativepercussion.com/artists/Matthew_Filosa",
+   "http://www.pastichesteel.com/matt-filosa.html",
+   "https://www.dci.org/news/corps-news-and-announcements-20180921/"
+  ],
+  "confidence": "MEDIUM"
+ },
+ {
+  "person_id": "michael-fanning",
+  "display_name": "Mike Fanning",
+  "bio": "Mike Fanning marched with the Bluecoats from 1993 to 1998. He has served as Visual Caption Head for the Bluecoats since 2014, and was listed as Visual Co-Caption Head on the Bluecoats' instructional leadership team in 2018.",
+  "photo_url": null,
+  "sources": [
+   "https://bluecoats.com/news/2018/10/key-additions-to-bluecoats-educational-design-teams-announced",
+   "https://www.ipetitions.com/petition/kevin-stahl-bluecoats-hall-of-fame-class-of-2019"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "michael-o-neil",
+  "display_name": "Michael O’Neil",
+  "bio": "Michael O'Neil was born in Chicago, IL and currently resides in Houston, TX as the Assistant Color Guard Director of Tompkins High School. He performed with Southwind Drum & Bugle Corps and winter guards including Eklipse and Zydeco Color Guard. He has served as an instructor and choreographer for the Glassmen, Troopers, Boston Crusaders, Music City, and Madison Scouts drum corps.",
+  "photo_url": "https://static.wixstatic.com/media/b1e0e0_45bdb0ea165a4218ac3213e78f7a98bc~mv2.jpeg",
+  "sources": [
+   "https://www.troopersdrumcorps.org/single-post/2018/10/25/colorguard-staff-announced"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "robert-w-smith",
+  "display_name": "Robert W. Smith",
+  "bio": "Robert W. Smith arranged brass for drum corps including the Colts, Velvet Knights, Spirit of Atlanta, Glassmen, and the Cadets. He composed original music for Suncoast Sound's 1985 production 'Florida Suite,' the first drum corps show to exclusively feature original compositions. Smith founded Magic of Orlando and brought the corps to World Class status.",
+  "photo_url": null,
+  "sources": [
+   "https://www.dci.org/hall-of-fame/robert_smith/",
+   "https://colts.org/news/2018_250",
+   "https://en.wikipedia.org/wiki/Robert_W._Smith_(musician)"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "william-martin",
+  "display_name": "William Martin",
+  "bio": "William Martin is a color guard performer and educator who marched with The Cavaliers Drum and Bugle Corps (2004–2008), serving as Guard Sergeant in 2008. He has instructed with the Bluecoats (2019–2022), Madison Scouts (2016–2018), and Phantom Regiment (2013–2015), among other programs. He also marched WGI with Pride of Cincinnati (2007) and Cypress Independent (2012).",
+  "photo_url": null,
+  "sources": [
+   "https://cavaliers.org/staff-bod/william-martin",
+   "https://www.wgi.org/william-martin-diversifying-the-student-experience/"
+  ],
+  "confidence": "MEDIUM"
+ },
+ {
+  "person_id": "aaron-tucker",
+  "display_name": "Aaron Tucker",
+  "bio": "Aaron Tucker is a percussion educator, designer, and audio specialist who studied Percussion with an emphasis in Jazz Performance at East Carolina University. He has worked with Spirit of Atlanta, Blue Knights, Madison Scouts, and the Academy drum and bugle corps, and serves on the design team at Pacific Crest. He founded and formerly directed Alchemy Independent Percussion Ensemble and helped guide Carolina Gold to a DCA Class A world championship in 2018.",
+  "photo_url": null,
+  "sources": [
+   "https://pacific-crest.org/dvteam/aaron-tucker/",
+   "https://www.forwardperformingarts.org/madison-scouts-indoor-team-members/aaron-tucker"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "alex-blue",
+  "display_name": "Alex Blue",
+  "bio": "Alex Blue V is a Ph.D. candidate in Ethnomusicology at UC Santa Barbara and a Predoctoral Fellow at Ithaca College. He aged out as a member of the Santa Clara Vanguard in 2007 and has taught drum corps including Spirit of Atlanta, Colts, Orange County Independent Winds, and The Cavaliers. Since 2017 he has been a brass instructor for the Blue Devils, and he was promoted to program coordinator for the Guardians ahead of the 2019 season.",
+  "photo_url": null,
+  "sources": [
+   "https://www.reddit.com/r/drumcorps/comments/9doa1v/guardians_bring_doug_thrower_bluecoats_and_alex/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "anthony-gilleland",
+  "display_name": "Anthony Gilleland",
+  "bio": "Anthony Gilleland is an instructor, performer, and arranger based in Southern California. He taught the front ensemble at Carolina Crown in 2019 and also teaches at Pulse Percussion and several high school ensembles. He earned his Bachelor's Degree in Music Performance from California State University, Fullerton and is a Vic Firth and Zildjian educational artist.",
+  "photo_url": "https://pacific-crest.org/wp-content/uploads/2018/11/Anthony-Gilleland.jpg",
+  "sources": [
+   "https://pacific-crest.org/2018/11/anthony-gilleland/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "caleb-brown",
+  "display_name": "Caleb Brown",
+  "bio": null,
+  "photo_url": null,
+  "sources": [],
+  "confidence": "LOW"
+ }
+]

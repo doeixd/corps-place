@@ -1,0 +1,584 @@
+{
+  "generated_at": "2026-05-29T12:48:37.141Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-drums-along-the-rockies",
+    "slug": "2026-drums-along-the-rockies",
+    "name": "Drums Along the Rockies",
+    "event_name": "Drums Along the Rockies",
+    "start_date": "2026-06-27T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:30 PM MT",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Fort Collins",
+    "location_state": "CO",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260627-FORT-COLLINS-CO.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260627-FORT-COLLINS-CO.jpg",
+    "buy_tickets": "https://ascendperformingarts.org/events/drums-along-the-rockies/",
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/4sogTVL",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Prices shown may not include platform or venue fees or order charges and taxes.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 5,
+    "matched_corps_keys": 5,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 5,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 2.3255813953488373
+  },
+  "input_signature": "cc09fa6b59a82c50dfce016c967b0a7e7406df0191553d199e20e14d073cb799",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "25bf7fabb01aaaddbabe8a54fb17bf3cbd1d8cbc917a5462feb5e91d6346b791",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 5,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx9oaad",
+        "corps": "Genesis",
+        "division": "World Class",
+        "performance_order": 6,
+        "time": "8:03 PM"
+      },
+      {
+        "corps_key": "001j000000iwxajaa1",
+        "corps": "Troopers",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "8:21 PM"
+      },
+      {
+        "corps_key": "001j000000h3xrnaav",
+        "corps": "Phantom Regiment",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "9:00 PM"
+      },
+      {
+        "corps_key": "001j000000i6i9saav",
+        "corps": "Blue Devils",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "9:18 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsoaal",
+        "corps": "Blue Knights",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "9:36 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Rocky Mountain Brassworks",
+        "performance_order": 1,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "BKXperience",
+        "performance_order": 2,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 3,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Blue Knights Awards Presentation",
+        "performance_order": 4,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Troopers Legacy Corps",
+        "performance_order": 5,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 8,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Blue Knights",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 13,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-drums-along-the-rockies",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-27T00:00:00.000Z",
+      "scored_lineup_rows": 5,
+      "matched_corps_keys": 5,
+      "excluded_lineup_rows": 9,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000i6i9saav",
+      "corps": "Blue Devils",
+      "city": "Concord, CA",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "9:18 PM",
+      "total": 72.303,
+      "GE": 29.193,
+      "Visual": 21.583,
+      "Music": 21.527,
+      "GE1": 14.59,
+      "GE2": 14.603,
+      "VP": 14.247,
+      "VA": 14.536,
+      "CG": 14.383,
+      "MB": 14.531,
+      "MA": 14.484,
+      "MP": 14.039,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.801,
+          "p50": 14.59,
+          "p90": 15.321
+        },
+        "GE2": {
+          "p10": 13.953,
+          "p50": 14.603,
+          "p90": 15.486
+        },
+        "VP": {
+          "p10": 13.54,
+          "p50": 14.247,
+          "p90": 15.07
+        },
+        "VA": {
+          "p10": 13.748,
+          "p50": 14.536,
+          "p90": 15.258
+        },
+        "CG": {
+          "p10": 13.689,
+          "p50": 14.383,
+          "p90": 15.224
+        },
+        "MB": {
+          "p10": 13.801,
+          "p50": 14.531,
+          "p90": 15.268
+        },
+        "MA": {
+          "p10": 13.867,
+          "p50": 14.484,
+          "p90": 15.361
+        },
+        "MP": {
+          "p10": 13.273,
+          "p50": 14.039,
+          "p90": 14.756
+        }
+      },
+      "raw_model_total": 94.956,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.4,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-drums-along-the-rockies",
+      "prior_season_comparable_weight": 0.25,
+      "preseason_target_total": 72.301,
+      "caption_shape_total": 71.268,
+      "total_reconciliation_delta": 1.035,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 4,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.268,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000h3xrnaav",
+      "corps": "Phantom Regiment",
+      "city": "Rockford, IL",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "9:00 PM",
+      "total": 70.879,
+      "GE": 28.592,
+      "Visual": 21.114,
+      "Music": 21.173,
+      "GE1": 14.19,
+      "GE2": 14.402,
+      "VP": 13.997,
+      "VA": 14.115,
+      "CG": 14.116,
+      "MB": 14.183,
+      "MA": 14.196,
+      "MP": 13.968,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.414,
+          "p50": 14.19,
+          "p90": 14.921
+        },
+        "GE2": {
+          "p10": 13.751,
+          "p50": 14.402,
+          "p90": 15.29
+        },
+        "VP": {
+          "p10": 13.282,
+          "p50": 13.997,
+          "p90": 14.8
+        },
+        "VA": {
+          "p10": 13.349,
+          "p50": 14.115,
+          "p90": 14.841
+        },
+        "CG": {
+          "p10": 13.364,
+          "p50": 14.116,
+          "p90": 14.906
+        },
+        "MB": {
+          "p10": 13.471,
+          "p50": 14.183,
+          "p90": 14.924
+        },
+        "MA": {
+          "p10": 13.588,
+          "p50": 14.196,
+          "p90": 15.092
+        },
+        "MP": {
+          "p10": 13.191,
+          "p50": 13.968,
+          "p90": 14.682
+        }
+      },
+      "raw_model_total": 93.98,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 74.9,
+      "prior_season_comparable_percent_through": 9.523809523809524,
+      "prior_season_comparable_competition": "2025-rotary-music-festival",
+      "prior_season_comparable_weight": 0.2,
+      "preseason_target_total": 70.88,
+      "caption_shape_total": 69.874,
+      "total_reconciliation_delta": 1.005,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 69.874,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "city": "Casper, WY",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "8:21 PM",
+      "total": 67.262,
+      "GE": 27.242,
+      "Visual": 19.485,
+      "Music": 20.535,
+      "GE1": 13.321,
+      "GE2": 13.921,
+      "VP": 12.864,
+      "VA": 12.948,
+      "CG": 13.157,
+      "MB": 13.372,
+      "MA": 13.784,
+      "MP": 13.915,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.514,
+          "p50": 13.321,
+          "p90": 14.037
+        },
+        "GE2": {
+          "p10": 13.294,
+          "p50": 13.921,
+          "p90": 14.87
+        },
+        "VP": {
+          "p10": 12.154,
+          "p50": 12.864,
+          "p90": 13.69
+        },
+        "VA": {
+          "p10": 12.148,
+          "p50": 12.948,
+          "p90": 13.656
+        },
+        "CG": {
+          "p10": 12.41,
+          "p50": 13.157,
+          "p90": 13.947
+        },
+        "MB": {
+          "p10": 12.619,
+          "p50": 13.372,
+          "p90": 14.104
+        },
+        "MA": {
+          "p10": 13.203,
+          "p50": 13.784,
+          "p90": 14.699
+        },
+        "MP": {
+          "p10": 13.054,
+          "p50": 13.915,
+          "p90": 14.611
+        }
+      },
+      "raw_model_total": 89.575,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 67.75,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-drums-along-the-rockies",
+      "prior_season_comparable_weight": 0.25,
+      "preseason_target_total": 67.26,
+      "caption_shape_total": 67.097,
+      "total_reconciliation_delta": 0.165,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 10,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 67.097,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "city": "Denver, CO",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "9:36 PM",
+      "total": 65.103,
+      "GE": 26.506,
+      "Visual": 18.902,
+      "Music": 19.695,
+      "GE1": 12.984,
+      "GE2": 13.522,
+      "VP": 12.481,
+      "VA": 12.7,
+      "CG": 12.623,
+      "MB": 12.79,
+      "MA": 13.37,
+      "MP": 13.23,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.182,
+          "p50": 12.984,
+          "p90": 13.715
+        },
+        "GE2": {
+          "p10": 12.9,
+          "p50": 13.522,
+          "p90": 14.503
+        },
+        "VP": {
+          "p10": 11.778,
+          "p50": 12.481,
+          "p90": 13.319
+        },
+        "VA": {
+          "p10": 11.882,
+          "p50": 12.7,
+          "p90": 13.392
+        },
+        "CG": {
+          "p10": 11.869,
+          "p50": 12.623,
+          "p90": 13.435
+        },
+        "MB": {
+          "p10": 11.998,
+          "p50": 12.79,
+          "p90": 13.506
+        },
+        "MA": {
+          "p10": 12.75,
+          "p50": 13.37,
+          "p90": 14.262
+        },
+        "MP": {
+          "p10": 12.377,
+          "p50": 13.23,
+          "p90": 13.953
+        }
+      },
+      "raw_model_total": 88.831,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 65.95,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-drums-along-the-rockies",
+      "prior_season_comparable_weight": 0.25,
+      "preseason_target_total": 65.101,
+      "caption_shape_total": 64.818,
+      "total_reconciliation_delta": 0.285,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 12,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 64.819,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwx9oaad",
+      "corps": "Genesis",
+      "city": "Austin, TX",
+      "division": "World Class",
+      "performance_order": 6,
+      "time": "8:03 PM",
+      "total": 62.659,
+      "GE": 25.296,
+      "Visual": 18.329,
+      "Music": 19.034,
+      "GE1": 12.293,
+      "GE2": 13.003,
+      "VP": 12.402,
+      "VA": 11.95,
+      "CG": 12.307,
+      "MB": 12.367,
+      "MA": 12.932,
+      "MP": 12.769,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 11.542,
+          "p50": 12.293,
+          "p90": 12.985
+        },
+        "GE2": {
+          "p10": 12.408,
+          "p50": 13.003,
+          "p90": 13.866
+        },
+        "VP": {
+          "p10": 11.731,
+          "p50": 12.402,
+          "p90": 13.218
+        },
+        "VA": {
+          "p10": 11.218,
+          "p50": 11.95,
+          "p90": 12.64
+        },
+        "CG": {
+          "p10": 11.6,
+          "p50": 12.307,
+          "p90": 13.052
+        },
+        "MB": {
+          "p10": 11.639,
+          "p50": 12.367,
+          "p90": 13.093
+        },
+        "MA": {
+          "p10": 12.368,
+          "p50": 12.932,
+          "p90": 13.775
+        },
+        "MP": {
+          "p10": 11.981,
+          "p50": 12.769,
+          "p90": 13.46
+        }
+      },
+      "raw_model_total": 84.088,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_weight": 0,
+      "caption_shape_total": 62.66,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 22,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 62.66,
+      "point_estimate_source": "caption_shape_preserving_baseline"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

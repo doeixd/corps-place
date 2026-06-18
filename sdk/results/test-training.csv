@@ -1,0 +1,4 @@
+trial_id,epoch,train_loss,val_loss,learning_rate,elapsed_sec,lstm1_units,lstm2_units,dropout,batch_size
+test_single,0,1.378146,0.745008,0.0005,305.75,64,32,0.3,32
+test_single,1,1.116973,0.655488,0.0005,605.69,64,32,0.3,32
+test_single,2,1.034283,0.615037,0.0005,918.62,64,32,0.3,32

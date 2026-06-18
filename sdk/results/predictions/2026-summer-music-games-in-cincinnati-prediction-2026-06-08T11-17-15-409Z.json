@@ -1,0 +1,1696 @@
+{
+  "generated_at": "2026-06-08T11:17:15.409Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-summer-music-games-in-cincinnati",
+    "slug": "2026-summer-music-games-in-cincinnati",
+    "name": "Summer Music Games in Cincinnati",
+    "event_name": "Summer Music Games in Cincinnati",
+    "start_date": "2026-07-27T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Mason",
+    "location_state": "OH",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260728-MASON-OH.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260728-MASON-OH.jpg",
+    "buy_tickets": "https://get.crowntickets.com/event/summer-music-games-in-cincinnati-2026-bwc10c",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Ticket prices increase day-of-show",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 9,
+    "matched_corps_keys": 9,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 9,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 72.09302325581395
+  },
+  "input_signature": "760c9e8b6fcb9b0c4c7eb6f0e664e24f21c8d17858709036e17a33d00c34b9a8",
+  "builder_version": "v10-event-prediction-all-age-baselines",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6,
+    "breakdown_split_curves": {
+      "path": "results/v9-breakdown-split-curves.json",
+      "version": "v9-breakdown-split-curves-2026-06-05",
+      "generated_at": "2026-06-05T12:10:16.312Z",
+      "global_content_share": 0.508228,
+      "evaluation": {
+        "validationPairCount": 5496,
+        "fixed50ShareMae": 0.008154787598169252,
+        "curveShareMae": 0.0047111059985265515,
+        "fixed50SubcaptionMaePtsUsingActualCaptionTotal": 0.11817230713245966,
+        "curveSubcaptionMaePtsUsingActualCaptionTotal": 0.07095049126637575,
+        "improvementVs50Pts": 0.04722181586608391,
+        "improvementVs50Tenths": 0.47221815866083916
+      },
+      "same_season_prior_enabled": false
+    }
+  },
+  "input_audit": {
+    "scored_lineup_rows": 9,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000hiripaaz",
+        "corps": "Columbus Saints",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "7:15 PM"
+      },
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": "7:32 PM"
+      },
+      {
+        "corps_key": "001j000000iwx97aad",
+        "corps": "Colt Cadets",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "7:49 PM"
+      },
+      {
+        "corps_key": "001j000000qzs1qaaf",
+        "corps": "River City Rhythm",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "8:06 PM"
+      },
+      {
+        "corps_key": "001j000000i6lenaa3",
+        "corps": "Madison Scouts",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000h3xrnaav",
+        "corps": "Phantom Regiment",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000h3xwcaav",
+        "corps": "Santa Clara Vanguard",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx93aad",
+        "corps": "Seattle Cascades",
+        "division": "World Class",
+        "performance_order": 12,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 13,
+        "time": "TBD"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "schedule_item"
+      },
+      {
+        "unit_name": "Welcome",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 6,
+        "exclusion_reason": "schedule_item"
+      },
+      {
+        "unit_name": "Encore - TBD",
+        "performance_order": 7,
+        "exclusion_reason": "not_a_corps"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 8,
+        "exclusion_reason": "schedule_item"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-summer-music-games-in-cincinnati",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-27T00:00:00.000Z",
+      "scored_lineup_rows": 9,
+      "matched_corps_keys": 9,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000h3xwcaav",
+      "corps": "Santa Clara Vanguard",
+      "city": "Santa Clara, CA",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "TBD",
+      "total": 91.297,
+      "GE": 36.934,
+      "Visual": 26.669,
+      "Music": 27.694,
+      "GE1": 18.483,
+      "GE2": 18.451,
+      "VP": 18.326,
+      "VA": 16.756,
+      "CG": 18.255,
+      "MB": 18.322,
+      "MA": 18.293,
+      "MP": 18.773,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 9.348,
+          "achievement": 9.135,
+          "content_share": 0.505739,
+          "curve_share": 0.505739,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 9.334,
+          "achievement": 9.117,
+          "content_share": 0.505871,
+          "curve_share": 0.505871,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 9.288,
+          "achievement": 9.038,
+          "content_share": 0.506827,
+          "curve_share": 0.506827,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 8.473,
+          "achievement": 8.283,
+          "content_share": 0.50567,
+          "curve_share": 0.50567,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 9.248,
+          "achievement": 9.007,
+          "content_share": 0.506619,
+          "curve_share": 0.506619,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 9.273,
+          "achievement": 9.049,
+          "content_share": 0.50611,
+          "curve_share": 0.50611,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 9.266,
+          "achievement": 9.027,
+          "content_share": 0.50651,
+          "curve_share": 0.50651,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 9.51,
+          "achievement": 9.263,
+          "content_share": 0.506597,
+          "curve_share": 0.506597,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.714,
+          "p50": 18.483,
+          "p90": 19.209
+        },
+        "GE2": {
+          "p10": 17.745,
+          "p50": 18.451,
+          "p90": 19.218
+        },
+        "VP": {
+          "p10": 17.581,
+          "p50": 18.326,
+          "p90": 19.002
+        },
+        "VA": {
+          "p10": 15.952,
+          "p50": 16.756,
+          "p90": 17.389
+        },
+        "CG": {
+          "p10": 17.436,
+          "p50": 18.255,
+          "p90": 18.935
+        },
+        "MB": {
+          "p10": 17.583,
+          "p50": 18.322,
+          "p90": 19.038
+        },
+        "MA": {
+          "p10": 17.674,
+          "p50": 18.293,
+          "p90": 19.125
+        },
+        "MP": {
+          "p10": 18.161,
+          "p50": 18.773,
+          "p90": 19.602
+        }
+      },
+      "raw_model_total": 94.637,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 93.3,
+      "prior_season_comparable_percent_through": 71.42857142857143,
+      "prior_season_comparable_competition": "2025-summer-music-games-in-cincinnati",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 91.298,
+      "caption_shape_total": 88.852,
+      "total_reconciliation_delta": 2.445,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 88.851,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000h3xrnaav",
+      "corps": "Phantom Regiment",
+      "city": "Rockford, IL",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "TBD",
+      "total": 89.812,
+      "GE": 36.429,
+      "Visual": 25.985,
+      "Music": 27.398,
+      "GE1": 18.194,
+      "GE2": 18.235,
+      "VP": 17.987,
+      "VA": 15.732,
+      "CG": 18.252,
+      "MB": 18.351,
+      "MA": 18.084,
+      "MP": 18.36,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 9.201,
+          "achievement": 8.993,
+          "content_share": 0.505739,
+          "curve_share": 0.505739,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 9.225,
+          "achievement": 9.01,
+          "content_share": 0.505871,
+          "curve_share": 0.505871,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 9.116,
+          "achievement": 8.871,
+          "content_share": 0.506827,
+          "curve_share": 0.506827,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.955,
+          "achievement": 7.777,
+          "content_share": 0.50567,
+          "curve_share": 0.50567,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 9.247,
+          "achievement": 9.005,
+          "content_share": 0.506619,
+          "curve_share": 0.506619,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 9.288,
+          "achievement": 9.063,
+          "content_share": 0.50611,
+          "curve_share": 0.50611,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 9.16,
+          "achievement": 8.924,
+          "content_share": 0.50651,
+          "curve_share": 0.50651,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 9.301,
+          "achievement": 9.059,
+          "content_share": 0.506597,
+          "curve_share": 0.506597,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.459,
+          "p50": 18.194,
+          "p90": 18.926
+        },
+        "GE2": {
+          "p10": 17.572,
+          "p50": 18.235,
+          "p90": 19.033
+        },
+        "VP": {
+          "p10": 17.265,
+          "p50": 17.987,
+          "p90": 18.675
+        },
+        "VA": {
+          "p10": 14.952,
+          "p50": 15.732,
+          "p90": 16.366
+        },
+        "CG": {
+          "p10": 17.473,
+          "p50": 18.252,
+          "p90": 18.948
+        },
+        "MB": {
+          "p10": 17.625,
+          "p50": 18.351,
+          "p90": 19.056
+        },
+        "MA": {
+          "p10": 17.489,
+          "p50": 18.084,
+          "p90": 18.929
+        },
+        "MP": {
+          "p10": 17.73,
+          "p50": 18.36,
+          "p90": 19.123
+        }
+      },
+      "raw_model_total": 93.323,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 93.15,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-soaring-sounds",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 89.812,
+      "caption_shape_total": 85.732,
+      "total_reconciliation_delta": 4.08,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.733,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwx94aad",
+      "corps": "Cincinnati Tradition",
+      "city": "Cincinnati, OH",
+      "division": "All Age Class",
+      "performance_order": 3,
+      "time": "7:32 PM",
+      "total": 85.55,
+      "GE": 34.9,
+      "Visual": 25.2,
+      "Music": 25.45,
+      "GE1": 17.8,
+      "GE2": 17.1,
+      "VP": 17.1,
+      "VA": 16.6,
+      "CG": 16.7,
+      "MB": 17.2,
+      "MA": 16.6,
+      "MP": 17.1,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 9.021,
+          "achievement": 8.779,
+          "content_share": 0.506798,
+          "curve_share": 0.506798,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 8.665,
+          "achievement": 8.435,
+          "content_share": 0.506749,
+          "curve_share": 0.506749,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 8.678,
+          "achievement": 8.422,
+          "content_share": 0.507466,
+          "curve_share": 0.507466,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 8.412,
+          "achievement": 8.188,
+          "content_share": 0.506752,
+          "curve_share": 0.506752,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 8.474,
+          "achievement": 8.226,
+          "content_share": 0.507423,
+          "curve_share": 0.507423,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 8.719,
+          "achievement": 8.481,
+          "content_share": 0.506944,
+          "curve_share": 0.506944,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 8.419,
+          "achievement": 8.181,
+          "content_share": 0.507189,
+          "curve_share": 0.507189,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 8.675,
+          "achievement": 8.425,
+          "content_share": 0.507298,
+          "curve_share": 0.507298,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.456,
+          "p50": 17.8,
+          "p90": 18.127
+        },
+        "GE2": {
+          "p10": 16.721,
+          "p50": 17.1,
+          "p90": 17.419
+        },
+        "VP": {
+          "p10": 16.767,
+          "p50": 17.1,
+          "p90": 17.424
+        },
+        "VA": {
+          "p10": 16.249,
+          "p50": 16.6,
+          "p90": 16.893
+        },
+        "CG": {
+          "p10": 16.307,
+          "p50": 16.7,
+          "p90": 16.972
+        },
+        "MB": {
+          "p10": 16.889,
+          "p50": 17.2,
+          "p90": 17.6
+        },
+        "MA": {
+          "p10": 16.208,
+          "p50": 16.6,
+          "p90": 16.856
+        },
+        "MP": {
+          "p10": 16.831,
+          "p50": 17.1,
+          "p90": 17.457
+        }
+      },
+      "raw_model_total": 66.021,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 85.55,
+      "prior_season_comparable_percent_through": 71.42857142857143,
+      "prior_season_comparable_competition": "2025-summer-music-games-in-cincinnati",
+      "prior_season_comparable_weight": 0.85,
+      "preseason_target_total": 85.55,
+      "caption_shape_total": 85.55,
+      "total_reconciliation_delta": 0,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 3,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 85.55,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 13,
+      "time": "TBD",
+      "total": 85.376,
+      "GE": 34.83,
+      "Visual": 24.3,
+      "Music": 26.246,
+      "GE1": 17.421,
+      "GE2": 17.409,
+      "VP": 17.222,
+      "VA": 13.585,
+      "CG": 17.794,
+      "MB": 17.167,
+      "MA": 17.409,
+      "MP": 17.916,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 8.81,
+          "achievement": 8.611,
+          "content_share": 0.505739,
+          "curve_share": 0.505739,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 8.807,
+          "achievement": 8.602,
+          "content_share": 0.505871,
+          "curve_share": 0.505871,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 8.729,
+          "achievement": 8.493,
+          "content_share": 0.506827,
+          "curve_share": 0.506827,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 6.87,
+          "achievement": 6.715,
+          "content_share": 0.50567,
+          "curve_share": 0.50567,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 9.015,
+          "achievement": 8.779,
+          "content_share": 0.506619,
+          "curve_share": 0.506619,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 8.688,
+          "achievement": 8.479,
+          "content_share": 0.50611,
+          "curve_share": 0.50611,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 8.818,
+          "achievement": 8.591,
+          "content_share": 0.50651,
+          "curve_share": 0.50651,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 9.076,
+          "achievement": 8.84,
+          "content_share": 0.506597,
+          "curve_share": 0.506597,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.697,
+          "p50": 17.421,
+          "p90": 18.17
+        },
+        "GE2": {
+          "p10": 16.786,
+          "p50": 17.409,
+          "p90": 18.231
+        },
+        "VP": {
+          "p10": 16.483,
+          "p50": 17.222,
+          "p90": 17.886
+        },
+        "VA": {
+          "p10": 12.801,
+          "p50": 13.585,
+          "p90": 14.198
+        },
+        "CG": {
+          "p10": 17.044,
+          "p50": 17.794,
+          "p90": 18.489
+        },
+        "MB": {
+          "p10": 16.454,
+          "p50": 17.167,
+          "p90": 17.877
+        },
+        "MA": {
+          "p10": 16.826,
+          "p50": 17.409,
+          "p90": 18.254
+        },
+        "MP": {
+          "p10": 17.235,
+          "p50": 17.916,
+          "p90": 18.655
+        }
+      },
+      "raw_model_total": 92,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 88.1,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-soaring-sounds",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 85.378,
+      "caption_shape_total": 82.052,
+      "total_reconciliation_delta": 3.325,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 82.052,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000i6lenaa3",
+      "corps": "Madison Scouts",
+      "city": "Madison, WI",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "TBD",
+      "total": 82.288,
+      "GE": 34.114,
+      "Visual": 22.651,
+      "Music": 25.523,
+      "GE1": 16.949,
+      "GE2": 17.165,
+      "VP": 16.406,
+      "VA": 11.952,
+      "CG": 16.944,
+      "MB": 16.777,
+      "MA": 17.072,
+      "MP": 17.196,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 8.572,
+          "achievement": 8.377,
+          "content_share": 0.505739,
+          "curve_share": 0.505739,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 8.683,
+          "achievement": 8.482,
+          "content_share": 0.505871,
+          "curve_share": 0.505871,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 8.315,
+          "achievement": 8.091,
+          "content_share": 0.506827,
+          "curve_share": 0.506827,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 6.044,
+          "achievement": 5.908,
+          "content_share": 0.50567,
+          "curve_share": 0.50567,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 8.584,
+          "achievement": 8.36,
+          "content_share": 0.506619,
+          "curve_share": 0.506619,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 8.491,
+          "achievement": 8.286,
+          "content_share": 0.50611,
+          "curve_share": 0.50611,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 8.647,
+          "achievement": 8.425,
+          "content_share": 0.50651,
+          "curve_share": 0.50651,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 8.711,
+          "achievement": 8.485,
+          "content_share": 0.506597,
+          "curve_share": 0.506597,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.166,
+          "p50": 16.949,
+          "p90": 17.619
+        },
+        "GE2": {
+          "p10": 16.582,
+          "p50": 17.165,
+          "p90": 18.011
+        },
+        "VP": {
+          "p10": 15.671,
+          "p50": 16.406,
+          "p90": 17.042
+        },
+        "VA": {
+          "p10": 11.168,
+          "p50": 11.952,
+          "p90": 12.529
+        },
+        "CG": {
+          "p10": 16.226,
+          "p50": 16.944,
+          "p90": 17.699
+        },
+        "MB": {
+          "p10": 16.061,
+          "p50": 16.777,
+          "p90": 17.499
+        },
+        "MA": {
+          "p10": 16.519,
+          "p50": 17.072,
+          "p90": 17.924
+        },
+        "MP": {
+          "p10": 16.528,
+          "p50": 17.196,
+          "p90": 17.918
+        }
+      },
+      "raw_model_total": 89.687,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 83.45,
+      "prior_season_comparable_percent_through": 71.42857142857143,
+      "prior_season_comparable_competition": "2025-summer-music-games-in-cincinnati",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 82.288,
+      "caption_shape_total": 80.868,
+      "total_reconciliation_delta": 1.42,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 7,
+      "prior_season_rank": 14,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 80.867,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000iwx93aad",
+      "corps": "Seattle Cascades",
+      "city": "Seattle, WA",
+      "division": "World Class",
+      "performance_order": 12,
+      "time": "TBD",
+      "total": 76.715,
+      "GE": 32.431,
+      "Visual": 20.088,
+      "Music": 24.196,
+      "GE1": 16.067,
+      "GE2": 16.364,
+      "VP": 15.801,
+      "VA": 8.44,
+      "CG": 15.936,
+      "MB": 15.819,
+      "MA": 16.323,
+      "MP": 16.249,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 8.126,
+          "achievement": 7.941,
+          "content_share": 0.505739,
+          "curve_share": 0.505739,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 8.278,
+          "achievement": 8.086,
+          "content_share": 0.505871,
+          "curve_share": 0.505871,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 8.008,
+          "achievement": 7.793,
+          "content_share": 0.506827,
+          "curve_share": 0.506827,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 4.268,
+          "achievement": 4.172,
+          "content_share": 0.50567,
+          "curve_share": 0.50567,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 8.073,
+          "achievement": 7.862,
+          "content_share": 0.506619,
+          "curve_share": 0.506619,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 8.006,
+          "achievement": 7.813,
+          "content_share": 0.50611,
+          "curve_share": 0.50611,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 8.268,
+          "achievement": 8.055,
+          "content_share": 0.50651,
+          "curve_share": 0.50651,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 8.232,
+          "achievement": 8.017,
+          "content_share": 0.506597,
+          "curve_share": 0.506597,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.352,
+          "p50": 16.067,
+          "p90": 16.848
+        },
+        "GE2": {
+          "p10": 15.753,
+          "p50": 16.364,
+          "p90": 17.206
+        },
+        "VP": {
+          "p10": 15.065,
+          "p50": 15.801,
+          "p90": 16.498
+        },
+        "VA": {
+          "p10": 7.676,
+          "p50": 8.44,
+          "p90": 9.082
+        },
+        "CG": {
+          "p10": 15.237,
+          "p50": 15.936,
+          "p90": 16.661
+        },
+        "MB": {
+          "p10": 15.057,
+          "p50": 15.819,
+          "p90": 16.532
+        },
+        "MA": {
+          "p10": 15.777,
+          "p50": 16.323,
+          "p90": 17.188
+        },
+        "MP": {
+          "p10": 15.565,
+          "p50": 16.249,
+          "p90": 17.014
+        }
+      },
+      "raw_model_total": 83.691,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.1,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 76.715,
+      "caption_shape_total": 78.69,
+      "total_reconciliation_delta": -1.975,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 8,
+      "prior_season_rank": 23,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 78.69,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 7,
+      "corps_key": "001j000000iwx97aad",
+      "corps": "Colt Cadets",
+      "city": "Dubuque, IA",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "7:49 PM",
+      "total": 74.166,
+      "GE": 30.54,
+      "Visual": 20.805,
+      "Music": 22.821,
+      "GE1": 15.083,
+      "GE2": 15.457,
+      "VP": 15.324,
+      "VA": 10.726,
+      "CG": 15.56,
+      "MB": 15.313,
+      "MA": 15.189,
+      "MP": 15.139,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.674,
+          "achievement": 7.409,
+          "content_share": 0.508772,
+          "curve_share": 0.508772,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.857,
+          "achievement": 7.599,
+          "content_share": 0.508344,
+          "curve_share": 0.508344,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.804,
+          "achievement": 7.52,
+          "content_share": 0.509271,
+          "curve_share": 0.509271,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 5.457,
+          "achievement": 5.269,
+          "content_share": 0.508744,
+          "curve_share": 0.508744,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.927,
+          "achievement": 7.633,
+          "content_share": 0.509471,
+          "curve_share": 0.509471,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.788,
+          "achievement": 7.525,
+          "content_share": 0.508614,
+          "curve_share": 0.508614,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.729,
+          "achievement": 7.46,
+          "content_share": 0.508826,
+          "curve_share": 0.508826,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.707,
+          "achievement": 7.432,
+          "content_share": 0.509069,
+          "curve_share": 0.509069,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.281,
+          "p50": 15.083,
+          "p90": 15.83
+        },
+        "GE2": {
+          "p10": 14.746,
+          "p50": 15.457,
+          "p90": 16.208
+        },
+        "VP": {
+          "p10": 14.581,
+          "p50": 15.324,
+          "p90": 16.128
+        },
+        "VA": {
+          "p10": 9.867,
+          "p50": 10.726,
+          "p90": 11.341
+        },
+        "CG": {
+          "p10": 14.728,
+          "p50": 15.56,
+          "p90": 16.244
+        },
+        "MB": {
+          "p10": 14.394,
+          "p50": 15.313,
+          "p90": 15.955
+        },
+        "MA": {
+          "p10": 14.509,
+          "p50": 15.189,
+          "p90": 15.996
+        },
+        "MP": {
+          "p10": 14.337,
+          "p50": 15.139,
+          "p90": 15.84
+        }
+      },
+      "raw_model_total": 76.98,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 67.05,
+      "prior_season_comparable_percent_through": 71.42857142857143,
+      "prior_season_comparable_competition": "2025-summer-music-games-in-cincinnati",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 74.168,
+      "caption_shape_total": 82.865,
+      "total_reconciliation_delta": -8.7,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 82.867,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 8,
+      "corps_key": "001j000000qzs1qaaf",
+      "corps": "River City Rhythm",
+      "city": "Anoka, MN",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "8:06 PM",
+      "total": 73.999,
+      "GE": 29.539,
+      "Visual": 21.794,
+      "Music": 22.666,
+      "GE1": 14.627,
+      "GE2": 14.912,
+      "VP": 14.994,
+      "VA": 13.992,
+      "CG": 14.601,
+      "MB": 14.982,
+      "MA": 14.824,
+      "MP": 15.527,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.442,
+          "achievement": 7.185,
+          "content_share": 0.508772,
+          "curve_share": 0.508772,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.58,
+          "achievement": 7.332,
+          "content_share": 0.508344,
+          "curve_share": 0.508344,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.636,
+          "achievement": 7.358,
+          "content_share": 0.509271,
+          "curve_share": 0.509271,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.118,
+          "achievement": 6.874,
+          "content_share": 0.508744,
+          "curve_share": 0.508744,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.439,
+          "achievement": 7.162,
+          "content_share": 0.509471,
+          "curve_share": 0.509471,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.62,
+          "achievement": 7.362,
+          "content_share": 0.508614,
+          "curve_share": 0.508614,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.543,
+          "achievement": 7.281,
+          "content_share": 0.508826,
+          "curve_share": 0.508826,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.904,
+          "achievement": 7.623,
+          "content_share": 0.509069,
+          "curve_share": 0.509069,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.815,
+          "p50": 14.627,
+          "p90": 15.37
+        },
+        "GE2": {
+          "p10": 14.159,
+          "p50": 14.912,
+          "p90": 15.623
+        },
+        "VP": {
+          "p10": 14.248,
+          "p50": 14.994,
+          "p90": 15.762
+        },
+        "VA": {
+          "p10": 13.19,
+          "p50": 13.992,
+          "p90": 14.674
+        },
+        "CG": {
+          "p10": 13.765,
+          "p50": 14.601,
+          "p90": 15.294
+        },
+        "MB": {
+          "p10": 14.11,
+          "p50": 14.982,
+          "p90": 15.648
+        },
+        "MA": {
+          "p10": 14.125,
+          "p50": 14.824,
+          "p90": 15.611
+        },
+        "MP": {
+          "p10": 14.753,
+          "p50": 15.527,
+          "p90": 16.247
+        }
+      },
+      "raw_model_total": 76.536,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 69.9,
+      "prior_season_comparable_percent_through": 71.42857142857143,
+      "prior_season_comparable_competition": "2025-summer-music-games-in-cincinnati",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 73.997,
+      "caption_shape_total": 79.004,
+      "total_reconciliation_delta": -5.005,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 9,
+      "prior_season_rank": 26,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 79.004,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 9,
+      "corps_key": "001j000000hiripaaz",
+      "corps": "Columbus Saints",
+      "city": "Columbus, OH",
+      "division": "All Age Class",
+      "performance_order": 2,
+      "time": "7:15 PM",
+      "total": 66.2,
+      "GE": 26.1,
+      "Visual": 20.2,
+      "Music": 19.9,
+      "GE1": 13,
+      "GE2": 13.1,
+      "VP": 13.7,
+      "VA": 13.3,
+      "CG": 13.4,
+      "MB": 14,
+      "MA": 12.5,
+      "MP": 13.3,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 6.588,
+          "achievement": 6.412,
+          "content_share": 0.506798,
+          "curve_share": 0.506798,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 6.638,
+          "achievement": 6.462,
+          "content_share": 0.506749,
+          "curve_share": 0.506749,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 6.952,
+          "achievement": 6.748,
+          "content_share": 0.507466,
+          "curve_share": 0.507466,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 6.74,
+          "achievement": 6.56,
+          "content_share": 0.506752,
+          "curve_share": 0.506752,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 6.8,
+          "achievement": 6.601,
+          "content_share": 0.507423,
+          "curve_share": 0.507423,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.097,
+          "achievement": 6.903,
+          "content_share": 0.506944,
+          "curve_share": 0.506944,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 6.34,
+          "achievement": 6.16,
+          "content_share": 0.507189,
+          "curve_share": 0.507189,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 6.747,
+          "achievement": 6.553,
+          "content_share": 0.507298,
+          "curve_share": 0.507298,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.66,
+          "p50": 13,
+          "p90": 13.323
+        },
+        "GE2": {
+          "p10": 12.718,
+          "p50": 13.1,
+          "p90": 13.402
+        },
+        "VP": {
+          "p10": 13.363,
+          "p50": 13.7,
+          "p90": 14.011
+        },
+        "VA": {
+          "p10": 12.95,
+          "p50": 13.3,
+          "p90": 13.587
+        },
+        "CG": {
+          "p10": 13.002,
+          "p50": 13.4,
+          "p90": 13.655
+        },
+        "MB": {
+          "p10": 13.705,
+          "p50": 14,
+          "p90": 14.404
+        },
+        "MA": {
+          "p10": 12.118,
+          "p50": 12.5,
+          "p90": 12.748
+        },
+        "MP": {
+          "p10": 13.039,
+          "p50": 13.3,
+          "p90": 13.652
+        }
+      },
+      "raw_model_total": 68.092,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 66.2,
+      "prior_season_comparable_percent_through": 71.42857142857143,
+      "prior_season_comparable_competition": "2025-summer-music-games-in-cincinnati",
+      "prior_season_comparable_weight": 0.85,
+      "preseason_target_total": 66.2,
+      "caption_shape_total": 66.2,
+      "total_reconciliation_delta": 0,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 1,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 66.2,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "All Age forecasts use prior-season All Age caption scores as a baseline because the V9 model was not trained on All Age sequence rows.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

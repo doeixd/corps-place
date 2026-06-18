@@ -1,0 +1,299 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 117-129 by assignment count. Sources: MFA clinician pages, SCPA, DCI/WGI HOF, DCI panels; JS/MFA pages rendered via puppeteer. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "d-thomas-1",
+      "displayName": "Durand Thomas",
+      "givenName": "Durand",
+      "familyName": "Thomas",
+      "biography": "Durand Thomas is a brass/music adjudicator for Drum Corps International, serving in the Music Brass and Music Analysis captions at DCI events (including the 2024 All-Age World Championship).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2024-dci-world-championship-adjudication-panels/", "label": "DCI 2024 adjudication panels", "kind": "article" }],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI music/brass judge (2024 confirmed)", "source": "https://www.dci.org/news/2024-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "k-young-1",
+      "displayName": "Kyle Young",
+      "givenName": "Kyle",
+      "familyName": "Young",
+      "biography": "Kyle Young is a music adjudicator for Drum Corps International who has served as a Music Analysis judge at DCI World Championships (2022-2025).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / GE2 / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI Music Analysis judge (2022-2025 confirmed)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Common name; no distinguishing public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-lentz-1",
+      "displayName": "Michael Lentz",
+      "givenName": "Michael",
+      "familyName": "Lentz",
+      "biography": "Michael Lentz is a color guard and visual adjudicator and designer and a 2025 Winter Guard International Hall of Fame inductee. He co-founded Onyx in 1988, a three-time WGI World Champion independent guard based in Dayton, Ohio, and has designed for world and open class drum corps, DCA, indoor winds, high school marching bands, and WGI, serving as Artistic Director for the Boston Crusaders' 2014 production and later leading the Troopers' color guard. He has adjudicated for Bands of America and Drum Corps International, including the Color Guard caption at DCI World Championships.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/mlentzhof/", "label": "WGI Hall of Fame highlight", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Boston Crusaders", "season": "2014", "role": "Artistic Director", "sourceUrl": "https://www.wgi.org/mlentzhof/" }
+      ],
+      "seasonHighlights": [
+        { "title": "WGI Hall of Fame inductee", "season": "2025", "sourceUrl": "https://www.wgi.org/mlentzhof/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Color Guard / Visual Proficiency / GE1; 2013-2025",
+        "facts": [
+          { "fact": "2025 WGI HOF; Onyx co-founder (3x WGI World Champ); Boston Crusaders 2014 artistic director; Troopers color guard; DCI/BOA judge", "source": "https://www.wgi.org/mlentzhof/", "confidence": "HIGH" },
+          { "fact": "No clean public headshot rendered - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-mullinix-1",
+      "displayName": "Max Mullinix",
+      "givenName": "Max",
+      "familyName": "Mullinix",
+      "biography": "Max Mullinix is a percussion adjudicator, arranger, and instructor who served as Percussion Caption Head and arranger for the Colts drum and bugle corps and as a percussion director, and is an Evans/marching percussion artist. He adjudicates the Music Percussion and Music Analysis captions for Drum Corps International.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [
+        { "corpsName": "Colts", "role": "Percussion Caption Head / Arranger", "sourceUrl": "http://marchingcorps.blogspot.com/2009/06/evans-artist-spotlight-max-mulinex.html" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "Colts percussion caption head/arranger; Evans artist; DCI percussion judge", "source": "http://marchingcorps.blogspot.com/2009/06/evans-artist-spotlight-max-mulinex.html", "confidence": "MEDIUM" },
+          { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-pursifull-1",
+      "displayName": "Jack Pursifull",
+      "givenName": "Jack",
+      "familyName": "Pursifull",
+      "biography": "Jack Pursifull is a visual adjudicator for Drum Corps International, serving in the Visual Analysis, Visual Proficiency, and General Effect captions at DCI World Championships (including Visual Analysis in 2025).",
+      "photoUrl": null,
+      "alternateNames": ["Jack Pursiful"],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Visual Proficiency / GE1 / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "DCI visual judge (Visual Analysis 2025 confirmed)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-landess-1",
+      "displayName": "Tim Landess",
+      "givenName": "Tim",
+      "familyName": "Landess",
+      "biography": "Tim Landess is a color guard and visual adjudicator who began judging in 2003 and became a WGI judge in 2007. A member of the Florida Federation of Judges, he has judged winter guard and marching band contests nationwide (including for Bands of America since 2003) and was a visual designer and color guard director for winter guards and marching bands across Indiana for nearly two decades. He served as the Color Guard judge at the 2022 DCI World Championship Semifinals.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2022-world-championship-adjudication-panels/", "label": "DCI 2022 adjudication panels", "kind": "article" }],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "Judging since 2003, WGI 2007; FFJ; Indiana visual designer/CG director ~20 yrs; DCI Color Guard judge 2022", "source": "https://www.dci.org/news/2022-world-championship-adjudication-panels/", "confidence": "HIGH" },
+          { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "b-thomas-1",
+      "displayName": "Bob Thomas",
+      "givenName": "Bob",
+      "familyName": "Thomas",
+      "biography": "Bob Thomas, of Apollo, Pennsylvania, is a visual adjudicator and educator who has taught many championship high school marching bands, drum and bugle corps, winter guards, and winter winds. He judges or has judged for Bands of America, Drum Corps International, Winter Guard International, Drum Corps Midwest, Drum Corps Atlantic, ISSMA, Drum Corps Europe, the Atlantic Indoor Association, and others, and designed the current scoring system used by Drum Corps Europe and Drum Corps Asia across 12 countries. He is Chairman of Drum Corps Asia, Director of Education for the Atlantic Indoor Association, Co-Chair of the PIMBA Education Committee, and Director of Education for the Virginia Marching Band Cooperative.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/bob-thomas/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / GE1 / Visual Analysis / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "Apollo PA educator/judge; designed DCE & Drum Corps Asia scoring system (12 countries); Chairman Drum Corps Asia; AIA Director of Education; DCI visual judge", "source": "https://education.musicforall.org/clinician/bob-thomas/", "confidence": "HIGH" },
+          { "fact": "MFA page uses a generic placeholder image - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-hestin-1",
+      "displayName": "Chris Hestin",
+      "givenName": "Chris",
+      "familyName": "Hestin",
+      "biography": "Chris Hestin is a general-effect and percussion adjudicator whose passion for the activity began as a member of the Phantom Regiment. He was appointed Percussion Coordinator and arranger for the Spirit drum and bugle corps and previously served as Percussion Caption Head and arranger for the Glassmen. He has served in the General Effect captions at DCI World Championships and is an active WGI percussion adjudicator and the Percussion Judge Training Director for both the Mid-East Judges Association (Dayton, OH) and the Florida Federation of Colorguards Circuit, also judging for Bands of America and the Pennsylvania Federation of Contest Judges.",
+      "photoUrl": "https://scpauploads.s3.amazonaws.com/judges/judge_hestin.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://scpa.live/judge/profile/80", "label": "SCPA judge profile", "kind": "bio" },
+        { "url": "https://www.innovativepercussion.com/artists/chris_hestin", "label": "Innovative Percussion artist", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Glassmen", "role": "Percussion Caption Head / Arranger", "sourceUrl": "https://www.dci.org/news/hestin-named-glassmen-percussion-caption-head/" },
+        { "corpsName": "Spirit", "role": "Percussion Coordinator / Arranger", "sourceUrl": "https://scpa.live/judge/profile/80" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Percussion / GE1; 2013-2025",
+        "facts": [
+          { "fact": "Phantom Regiment alum; Spirit percussion coordinator; ex-Glassmen percussion caption head; DCI GE & WGI percussion judge; percussion judge training director", "source": "https://scpa.live/judge/profile/80", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "g-llacer-1",
+      "displayName": "Greg Llacer",
+      "givenName": "Greg",
+      "familyName": "Llacer",
+      "biography": "Gregory 'Greg' Llacer is a general-effect, visual, and color guard adjudicator and clinician who has judged field show, winter guard, and percussion competitions nationwide since 1989. He adjudicates for Bands of America Regional, Super Regional, and Grand National Championships, Drum Corps International regular season and World Championships, and WGI Winds Regional and World Championships. He has been Chief Judge of the Texas Color Guard Circuit for twelve years, serves as WGASC's Color Guard Chief Judge, and is the Judge Training Coordinator for CWEA, designing and delivering training materials for the judging community.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Adobe-Express-file-21.jpg",
+      "alternateNames": ["Gregory Llacer"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/greg-llacer/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://wgasc.org/new-color-guard-chief-judge-meet-greg-llacer/", "label": "WGASC Color Guard Chief Judge", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Proficiency / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "Adjudicator since 1989; TCGC Chief Judge 12 yrs; WGASC Color Guard Chief Judge; CWEA Judge Training Coordinator; DCI/BOA/WGI judge", "source": "https://education.musicforall.org/clinician/greg-llacer/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-poole-1",
+      "displayName": "Charles Poole",
+      "givenName": "Charles",
+      "familyName": "Poole",
+      "biography": "Charles 'Charley' Poole Jr. is a Hall of Fame percussion adjudicator, arranger, and educator who has taught, arranged for, and adjudicated marching bands, drum corps, and percussion ensembles across the United States, Canada, and Japan. He serves as the DCI Atlantic Division percussion caption chairperson and was unanimously elected to the DCI Task Force on Judging as the percussion instructor representative (1980-1986). He arranged for and instructed the 27th Lancers of Revere, Massachusetts (1977-1986) and East Coast Jazz (2005 DCI Division II Champions), and is a member of the World Drum Corps, Drum Corps International, and Massachusetts Drum Corps Halls of Fame.",
+      "photoUrl": null,
+      "alternateNames": ["Charley Poole", "Charles A. Poole Jr."],
+      "externalLinks": [
+        { "url": "https://www.dci.org/static/charley-poole-jr-dci-hall-of-fame", "label": "DCI Hall of Fame profile", "kind": "bio" },
+        { "url": "https://www.wdchof.org/members/poole-charles-a/", "label": "World Drum Corps Hall of Fame", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "27th Lancers", "season": "1977-1986", "role": "Percussion Arranger / Instructor", "sourceUrl": "https://www.dci.org/static/charley-poole-jr-dci-hall-of-fame" }
+      ],
+      "seasonHighlights": [
+        { "title": "World Drum Corps, DCI, and Massachusetts Drum Corps Halls of Fame", "sourceUrl": "https://www.dci.org/static/charley-poole-jr-dci-hall-of-fame" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / GE2 / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "Triple HOF (WDCHOF/DCI/MA); DCI Atlantic Division percussion caption chair; DCI Task Force on Judging 1980-86; 27th Lancers arranger", "source": "https://www.dci.org/static/charley-poole-jr-dci-hall-of-fame", "confidence": "HIGH" },
+          { "fact": "DCI HOF page shows placeholder icon - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "b-brahan-1",
+      "displayName": "Beverly Brahan",
+      "givenName": "Beverly",
+      "familyName": "Brahan",
+      "biography": "Beverly Brahan, of Jackson, Mississippi, is a color guard and general-effect adjudicator with over 25 years as a national visual and color guard judge for both field and indoor marching arts. She has been a General Effect and Color Guard judge for Drum Corps International since 2022 and serves on the DCI Judge Administration Team as the Visual Facilitator for DCI's Judge Diversity Initiative.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2024/09/Adobe-Express-file-26.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/beverly-brahan/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / GE1 / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "25+ yrs national visual/CG judge; DCI since 2022; Visual Facilitator for DCI Judge Diversity Initiative; Jackson MS", "source": "https://education.musicforall.org/clinician/beverly-brahan/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-quamme-1",
+      "displayName": "Chad Quamme",
+      "givenName": "Chad",
+      "familyName": "Quamme",
+      "biography": "Chad Quamme is a color guard and visual adjudicator and designer who has been an active instructor in drum corps, marching band, and winter guard for over twenty years and was a member of both the Blue Stars and Phantom Regiment drum and bugle corps. He designs for marching bands across Wisconsin, Michigan, Illinois, and Iowa, is the chief judge for the Wisconsin School Music Association, and adjudicates for Drum Corps International, Winter Guard International, and Bands of America.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/Quamme-Chad-Headshot-9-3-22-1.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/chad-quamme/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Blue Stars", "role": "Performer (member)", "sourceUrl": "https://education.musicforall.org/clinician/chad-quamme/" },
+        { "corpsName": "Phantom Regiment", "role": "Performer (member)", "sourceUrl": "https://education.musicforall.org/clinician/chad-quamme/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / GE1 / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "20+ yrs instructor; Blue Stars & Phantom Regiment alum; Wisconsin School Music Assoc chief judge; DCI/WGI/BOA judge", "source": "https://education.musicforall.org/clinician/chad-quamme/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-mccourt-1",
+      "displayName": "Meghan McCourt",
+      "givenName": "Meghan",
+      "familyName": "McCourt",
+      "biography": "Meghan McCourt is a general-effect and color guard adjudicator, choreographer, and instructor who began as a dancer and color guard performer and pursued undergraduate studies in Dance Education at George Mason University. An alumna of the Dominion Winter Guard and the Carolina Crown drum and bugle corps, she has choreographed and instructed for marching band, winter guard, cheerleading, and show choir programs, and works in Human Resources with Madison Square Garden Entertainment in New York. She is an adjudicator for Winter Guard International, Bands of America, and Drum Corps International, serving in the General Effect caption at DCI World Championships.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Adobe-Express-file-22.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/meghan-mccourt/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Carolina Crown", "role": "Performer (color guard)", "sourceUrl": "https://education.musicforall.org/clinician/meghan-mccourt/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "Dominion Winter Guard & Carolina Crown alum; GMU Dance Education; HR at MSG Entertainment; DCI/WGI/BOA GE & color guard judge", "source": "https://education.musicforall.org/clinician/meghan-mccourt/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

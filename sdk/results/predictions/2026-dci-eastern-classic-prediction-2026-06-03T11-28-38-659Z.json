@@ -1,0 +1,1123 @@
+{
+  "generated_at": "2026-06-03T11:28:38.660Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-eastern-classic",
+    "slug": "2026-dci-eastern-classic",
+    "name": "DCI Eastern Classic",
+    "event_name": "DCI Eastern Classic",
+    "start_date": "2026-08-01",
+    "start_time": null,
+    "web_start_time": "7:00 PM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Allentown",
+    "location_state": "PA",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260801-ALLENTOWN-PA-SAT.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260801-ALLENTOWN-PA-SAT.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-dci-eastern-classic-saturday-att5wg",
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/4rX37tl",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Ticket prices will increase on June 1, 2026",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 11,
+    "matched_corps_keys": 11,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 11,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 83.72093023255815
+  },
+  "input_signature": "81ba1ae34ed5db5a6bae4281f9413a427a504bf534a539626d06fafd89be05dc",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 11,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwssaal",
+        "corps": "Boston Crusaders",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx91aad",
+        "corps": "Carolina Crown",
+        "division": "World Class",
+        "performance_order": 5,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx9aaat",
+        "corps": "Crossmen",
+        "division": "World Class",
+        "performance_order": 6,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000i6lenaa3",
+        "corps": "Madison Scouts",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxa7aal",
+        "corps": "Pacific Crest",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000h3xrnaav",
+        "corps": "Phantom Regiment",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000h3xwcaav",
+        "corps": "Santa Clara Vanguard",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx93aad",
+        "corps": "Seattle Cascades",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxacaa1",
+        "corps": "Spartans",
+        "division": "World Class",
+        "performance_order": 12,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxaeaa1",
+        "corps": "The Academy",
+        "division": "World Class",
+        "performance_order": 13,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 14,
+        "time": "TBD"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 2,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 3,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-eastern-classic",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-08-01",
+      "scored_lineup_rows": 11,
+      "matched_corps_keys": 11,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwssaal",
+      "corps": "Boston Crusaders",
+      "city": "Boston, MA",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "TBD",
+      "total": 95.017,
+      "GE": 37.978,
+      "Visual": 28.385,
+      "Music": 28.654,
+      "GE1": 18.946,
+      "GE2": 19.032,
+      "VP": 18.947,
+      "VA": 18.823,
+      "CG": 19,
+      "MB": 19.151,
+      "MA": 18.92,
+      "MP": 19.236,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 18.158,
+          "p50": 18.946,
+          "p90": 19.8
+        },
+        "GE2": {
+          "p10": 18.187,
+          "p50": 19.032,
+          "p90": 19.816
+        },
+        "VP": {
+          "p10": 18.162,
+          "p50": 18.947,
+          "p90": 19.709
+        },
+        "VA": {
+          "p10": 18.038,
+          "p50": 18.823,
+          "p90": 19.594
+        },
+        "CG": {
+          "p10": 18.123,
+          "p50": 19,
+          "p90": 19.715
+        },
+        "MB": {
+          "p10": 18.354,
+          "p50": 19.151,
+          "p90": 19.951
+        },
+        "MA": {
+          "p10": 18.243,
+          "p50": 18.92,
+          "p90": 19.847
+        },
+        "MP": {
+          "p10": 18.608,
+          "p50": 19.236,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 95.42,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 96.375,
+      "prior_season_comparable_percent_through": 83.33333333333334,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 95.016,
+      "caption_shape_total": 93.356,
+      "total_reconciliation_delta": 1.66,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 93.356,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000h3xwcaav",
+      "corps": "Santa Clara Vanguard",
+      "city": "Santa Clara, CA",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "TBD",
+      "total": 93.753,
+      "GE": 37.518,
+      "Visual": 27.956,
+      "Music": 28.279,
+      "GE1": 18.795,
+      "GE2": 18.723,
+      "VP": 18.633,
+      "VA": 18.808,
+      "CG": 18.471,
+      "MB": 18.714,
+      "MA": 18.598,
+      "MP": 19.247,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.99,
+          "p50": 18.795,
+          "p90": 19.651
+        },
+        "GE2": {
+          "p10": 17.875,
+          "p50": 18.723,
+          "p90": 19.533
+        },
+        "VP": {
+          "p10": 17.808,
+          "p50": 18.633,
+          "p90": 19.382
+        },
+        "VA": {
+          "p10": 17.975,
+          "p50": 18.808,
+          "p90": 19.539
+        },
+        "CG": {
+          "p10": 17.541,
+          "p50": 18.471,
+          "p90": 19.161
+        },
+        "MB": {
+          "p10": 17.914,
+          "p50": 18.714,
+          "p90": 19.525
+        },
+        "MA": {
+          "p10": 17.906,
+          "p50": 18.598,
+          "p90": 19.515
+        },
+        "MP": {
+          "p10": 18.596,
+          "p50": 19.247,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 94.474,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 95.4,
+      "prior_season_comparable_percent_through": 83.33333333333334,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 93.753,
+      "caption_shape_total": 91.739,
+      "total_reconciliation_delta": 2.015,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 91.74,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwx91aad",
+      "corps": "Carolina Crown",
+      "city": "Fort Mill, SC",
+      "division": "World Class",
+      "performance_order": 5,
+      "time": "TBD",
+      "total": 91.647,
+      "GE": 36.596,
+      "Visual": 27.27,
+      "Music": 27.781,
+      "GE1": 18.159,
+      "GE2": 18.437,
+      "VP": 18.207,
+      "VA": 18.253,
+      "CG": 18.081,
+      "MB": 18.577,
+      "MA": 18.644,
+      "MP": 18.34,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.369,
+          "p50": 18.159,
+          "p90": 18.974
+        },
+        "GE2": {
+          "p10": 17.632,
+          "p50": 18.437,
+          "p90": 19.274
+        },
+        "VP": {
+          "p10": 17.408,
+          "p50": 18.207,
+          "p90": 18.964
+        },
+        "VA": {
+          "p10": 17.396,
+          "p50": 18.253,
+          "p90": 18.964
+        },
+        "CG": {
+          "p10": 17.168,
+          "p50": 18.081,
+          "p90": 18.787
+        },
+        "MB": {
+          "p10": 17.782,
+          "p50": 18.577,
+          "p90": 19.383
+        },
+        "MA": {
+          "p10": 17.963,
+          "p50": 18.644,
+          "p90": 19.571
+        },
+        "MP": {
+          "p10": 17.68,
+          "p50": 18.34,
+          "p90": 19.288
+        }
+      },
+      "raw_model_total": 94.061,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 93.45,
+      "prior_season_comparable_percent_through": 83.33333333333334,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 91.649,
+      "caption_shape_total": 89.447,
+      "total_reconciliation_delta": 2.2,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 89.448,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000h3xrnaav",
+      "corps": "Phantom Regiment",
+      "city": "Rockford, IL",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "TBD",
+      "total": 90.615,
+      "GE": 36.296,
+      "Visual": 27.107,
+      "Music": 27.212,
+      "GE1": 18.174,
+      "GE2": 18.122,
+      "VP": 17.905,
+      "VA": 18.114,
+      "CG": 18.194,
+      "MB": 18.188,
+      "MA": 18.031,
+      "MP": 18.206,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.393,
+          "p50": 18.174,
+          "p90": 18.989
+        },
+        "GE2": {
+          "p10": 17.323,
+          "p50": 18.122,
+          "p90": 18.973
+        },
+        "VP": {
+          "p10": 17.112,
+          "p50": 17.905,
+          "p90": 18.67
+        },
+        "VA": {
+          "p10": 17.249,
+          "p50": 18.114,
+          "p90": 18.814
+        },
+        "CG": {
+          "p10": 17.304,
+          "p50": 18.194,
+          "p90": 18.931
+        },
+        "MB": {
+          "p10": 17.369,
+          "p50": 18.188,
+          "p90": 18.966
+        },
+        "MA": {
+          "p10": 17.347,
+          "p50": 18.031,
+          "p90": 18.965
+        },
+        "MP": {
+          "p10": 17.518,
+          "p50": 18.206,
+          "p90": 19.112
+        }
+      },
+      "raw_model_total": 92.346,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 93.8,
+      "prior_season_comparable_percent_through": 83.33333333333334,
+      "prior_season_comparable_competition": "2025-dci-williamsport",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 90.616,
+      "caption_shape_total": 86.725,
+      "total_reconciliation_delta": 3.89,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 86.726,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 14,
+      "time": "TBD",
+      "total": 87.757,
+      "GE": 35.013,
+      "Visual": 26.247,
+      "Music": 26.497,
+      "GE1": 17.463,
+      "GE2": 17.55,
+      "VP": 17.376,
+      "VA": 17.347,
+      "CG": 17.771,
+      "MB": 17.225,
+      "MA": 17.588,
+      "MP": 18.181,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.679,
+          "p50": 17.463,
+          "p90": 18.287
+        },
+        "GE2": {
+          "p10": 16.783,
+          "p50": 17.55,
+          "p90": 18.423
+        },
+        "VP": {
+          "p10": 16.582,
+          "p50": 17.376,
+          "p90": 18.133
+        },
+        "VA": {
+          "p10": 16.477,
+          "p50": 17.347,
+          "p90": 18.038
+        },
+        "CG": {
+          "p10": 16.886,
+          "p50": 17.771,
+          "p90": 18.478
+        },
+        "MB": {
+          "p10": 16.409,
+          "p50": 17.225,
+          "p90": 17.993
+        },
+        "MA": {
+          "p10": 16.921,
+          "p50": 17.588,
+          "p90": 18.514
+        },
+        "MP": {
+          "p10": 17.442,
+          "p50": 18.181,
+          "p90": 19.076
+        }
+      },
+      "raw_model_total": 91.285,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 89.75,
+      "prior_season_comparable_percent_through": 83.33333333333334,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 87.758,
+      "caption_shape_total": 85.322,
+      "total_reconciliation_delta": 2.435,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.322,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000i6lenaa3",
+      "corps": "Madison Scouts",
+      "city": "Madison, WI",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "TBD",
+      "total": 84.223,
+      "GE": 33.96,
+      "Visual": 24.803,
+      "Music": 25.46,
+      "GE1": 16.867,
+      "GE2": 17.093,
+      "VP": 16.398,
+      "VA": 16.361,
+      "CG": 16.847,
+      "MB": 16.65,
+      "MA": 17.134,
+      "MP": 17.136,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.017,
+          "p50": 16.867,
+          "p90": 17.579
+        },
+        "GE2": {
+          "p10": 16.379,
+          "p50": 17.093,
+          "p90": 17.974
+        },
+        "VP": {
+          "p10": 15.604,
+          "p50": 16.398,
+          "p90": 17.109
+        },
+        "VA": {
+          "p10": 15.505,
+          "p50": 16.361,
+          "p90": 17.009
+        },
+        "CG": {
+          "p10": 16.015,
+          "p50": 16.847,
+          "p90": 17.627
+        },
+        "MB": {
+          "p10": 15.842,
+          "p50": 16.65,
+          "p90": 17.439
+        },
+        "MA": {
+          "p10": 16.504,
+          "p50": 17.134,
+          "p90": 18.061
+        },
+        "MP": {
+          "p10": 16.432,
+          "p50": 17.136,
+          "p90": 17.99
+        }
+      },
+      "raw_model_total": 89.484,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 84.638,
+      "prior_season_comparable_percent_through": 83.33333333333334,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 84.222,
+      "caption_shape_total": 83.713,
+      "total_reconciliation_delta": 0.51,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 14,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 83.713,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 7,
+      "corps_key": "001j000000iwxa7aal",
+      "corps": "Pacific Crest",
+      "city": "City of Industry, CA",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "TBD",
+      "total": 83.269,
+      "GE": 33.099,
+      "Visual": 24.786,
+      "Music": 25.384,
+      "GE1": 16.354,
+      "GE2": 16.745,
+      "VP": 16.357,
+      "VA": 16.365,
+      "CG": 16.851,
+      "MB": 16.594,
+      "MA": 17.017,
+      "MP": 17.157,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.511,
+          "p50": 16.354,
+          "p90": 17.072
+        },
+        "GE2": {
+          "p10": 16.024,
+          "p50": 16.745,
+          "p90": 17.622
+        },
+        "VP": {
+          "p10": 15.555,
+          "p50": 16.357,
+          "p90": 17.072
+        },
+        "VA": {
+          "p10": 15.503,
+          "p50": 16.365,
+          "p90": 17.025
+        },
+        "CG": {
+          "p10": 16.028,
+          "p50": 16.851,
+          "p90": 17.607
+        },
+        "MB": {
+          "p10": 15.777,
+          "p50": 16.594,
+          "p90": 17.377
+        },
+        "MA": {
+          "p10": 16.382,
+          "p50": 17.017,
+          "p90": 17.942
+        },
+        "MP": {
+          "p10": 16.443,
+          "p50": 17.157,
+          "p90": 18.013
+        }
+      },
+      "raw_model_total": 88.34,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 83.85,
+      "prior_season_comparable_percent_through": 80.95238095238095,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 83.27,
+      "caption_shape_total": 82.794,
+      "total_reconciliation_delta": 0.475,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 7,
+      "prior_season_rank": 15,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 82.795,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 8,
+      "corps_key": "001j000000iwxaeaa1",
+      "corps": "The Academy",
+      "city": "Tempe, AZ",
+      "division": "World Class",
+      "performance_order": 13,
+      "time": "TBD",
+      "total": 81.157,
+      "GE": 32.437,
+      "Visual": 24.117,
+      "Music": 24.603,
+      "GE1": 16.092,
+      "GE2": 16.345,
+      "VP": 16.011,
+      "VA": 16.135,
+      "CG": 16.088,
+      "MB": 16.006,
+      "MA": 16.76,
+      "MP": 16.44,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.253,
+          "p50": 16.092,
+          "p90": 16.829
+        },
+        "GE2": {
+          "p10": 15.642,
+          "p50": 16.345,
+          "p90": 17.227
+        },
+        "VP": {
+          "p10": 15.206,
+          "p50": 16.011,
+          "p90": 16.74
+        },
+        "VA": {
+          "p10": 15.253,
+          "p50": 16.135,
+          "p90": 16.796
+        },
+        "CG": {
+          "p10": 15.285,
+          "p50": 16.088,
+          "p90": 16.864
+        },
+        "MB": {
+          "p10": 15.195,
+          "p50": 16.006,
+          "p90": 16.797
+        },
+        "MA": {
+          "p10": 16.125,
+          "p50": 16.76,
+          "p90": 17.676
+        },
+        "MP": {
+          "p10": 15.704,
+          "p50": 16.44,
+          "p90": 17.283
+        }
+      },
+      "raw_model_total": 87.606,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81.475,
+      "prior_season_comparable_percent_through": 83.33333333333334,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 81.158,
+      "caption_shape_total": 80.772,
+      "total_reconciliation_delta": 0.385,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 8,
+      "prior_season_rank": 17,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 80.772,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 9,
+      "corps_key": "001j000000iwx9aaat",
+      "corps": "Crossmen",
+      "city": "San Antonio, TX",
+      "division": "World Class",
+      "performance_order": 6,
+      "time": "TBD",
+      "total": 80.621,
+      "GE": 32.37,
+      "Visual": 23.85,
+      "Music": 24.401,
+      "GE1": 16.148,
+      "GE2": 16.222,
+      "VP": 15.883,
+      "VA": 15.79,
+      "CG": 16.028,
+      "MB": 15.908,
+      "MA": 16.458,
+      "MP": 16.437,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.291,
+          "p50": 16.148,
+          "p90": 16.854
+        },
+        "GE2": {
+          "p10": 15.525,
+          "p50": 16.222,
+          "p90": 17.091
+        },
+        "VP": {
+          "p10": 15.08,
+          "p50": 15.883,
+          "p90": 16.594
+        },
+        "VA": {
+          "p10": 14.897,
+          "p50": 15.79,
+          "p90": 16.417
+        },
+        "CG": {
+          "p10": 15.212,
+          "p50": 16.028,
+          "p90": 16.808
+        },
+        "MB": {
+          "p10": 15.076,
+          "p50": 15.908,
+          "p90": 16.674
+        },
+        "MA": {
+          "p10": 15.821,
+          "p50": 16.458,
+          "p90": 17.361
+        },
+        "MP": {
+          "p10": 15.724,
+          "p50": 16.437,
+          "p90": 17.284
+        }
+      },
+      "raw_model_total": 87.192,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81.325,
+      "prior_season_comparable_percent_through": 83.33333333333334,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 80.621,
+      "caption_shape_total": 79.762,
+      "total_reconciliation_delta": 0.86,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 10,
+      "prior_season_rank": 19,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 79.761,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 10,
+      "corps_key": "001j000000iwxacaa1",
+      "corps": "Spartans",
+      "city": "Nashua, NH",
+      "division": "World Class",
+      "performance_order": 12,
+      "time": "TBD",
+      "total": 79.582,
+      "GE": 31.943,
+      "Visual": 23.754,
+      "Music": 23.885,
+      "GE1": 15.957,
+      "GE2": 15.986,
+      "VP": 15.887,
+      "VA": 15.89,
+      "CG": 15.73,
+      "MB": 15.937,
+      "MA": 15.915,
+      "MP": 15.918,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.57,
+          "p50": 15.957,
+          "p90": 16.323
+        },
+        "GE2": {
+          "p10": 15.531,
+          "p50": 15.986,
+          "p90": 16.357
+        },
+        "VP": {
+          "p10": 15.51,
+          "p50": 15.887,
+          "p90": 16.276
+        },
+        "VA": {
+          "p10": 15.476,
+          "p50": 15.89,
+          "p90": 16.218
+        },
+        "CG": {
+          "p10": 15.299,
+          "p50": 15.73,
+          "p90": 16.065
+        },
+        "MB": {
+          "p10": 15.568,
+          "p50": 15.937,
+          "p90": 16.397
+        },
+        "MA": {
+          "p10": 15.468,
+          "p50": 15.915,
+          "p90": 16.225
+        },
+        "MP": {
+          "p10": 15.604,
+          "p50": 15.918,
+          "p90": 16.341
+        }
+      },
+      "raw_model_total": 58.1,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 79.4,
+      "prior_season_comparable_percent_through": 80.95238095238095,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 79.582,
+      "caption_shape_total": 79.732,
+      "total_reconciliation_delta": -0.15,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 9,
+      "prior_season_rank": 18,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 79.732,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 11,
+      "corps_key": "001j000000iwx93aad",
+      "corps": "Seattle Cascades",
+      "city": "Seattle, WA",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "TBD",
+      "total": 78.2,
+      "GE": 31.691,
+      "Visual": 23.139,
+      "Music": 23.37,
+      "GE1": 15.756,
+      "GE2": 15.935,
+      "VP": 15.366,
+      "VA": 15.518,
+      "CG": 15.393,
+      "MB": 15.362,
+      "MA": 15.952,
+      "MP": 15.425,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.967,
+          "p50": 15.756,
+          "p90": 16.548
+        },
+        "GE2": {
+          "p10": 15.232,
+          "p50": 15.935,
+          "p90": 16.835
+        },
+        "VP": {
+          "p10": 14.575,
+          "p50": 15.366,
+          "p90": 16.138
+        },
+        "VA": {
+          "p10": 14.644,
+          "p50": 15.518,
+          "p90": 16.207
+        },
+        "CG": {
+          "p10": 14.621,
+          "p50": 15.393,
+          "p90": 16.172
+        },
+        "MB": {
+          "p10": 14.493,
+          "p50": 15.362,
+          "p90": 16.121
+        },
+        "MA": {
+          "p10": 15.306,
+          "p50": 15.952,
+          "p90": 16.868
+        },
+        "MP": {
+          "p10": 14.69,
+          "p50": 15.425,
+          "p90": 16.276
+        }
+      },
+      "raw_model_total": 82.326,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 76.4,
+      "prior_season_comparable_percent_through": 80.95238095238095,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 78.2,
+      "caption_shape_total": 79.674,
+      "total_reconciliation_delta": -1.475,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 11,
+      "prior_season_rank": 23,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 79.673,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

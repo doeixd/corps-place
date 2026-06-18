@@ -1,0 +1,1007 @@
+{
+  "generated_at": "2026-06-06T14:38:55.224Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-so-cal-classic-open-class-pacific-championship-finals",
+    "slug": "2026-so-cal-classic-open-class-pacific-championship-finals",
+    "name": "So Cal Classic: Open Class Pacific Championship Finals",
+    "event_name": "So Cal Classic: Open Class Pacific Championship Finals",
+    "start_date": "2026-07-12T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:00 PM PT",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Buena Park",
+    "location_state": "CA",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260712-BUENA-PARK-CA.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260712-BUENA-PARK-CA.jpg",
+    "buy_tickets": "https://www.impulseyoutharts.org/socalclassic.html",
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/3MUDTwA",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "All times PT and subject to change",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 6,
+    "matched_corps_keys": 6,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 5,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 37.2093023255814
+  },
+  "input_signature": "4d26f8af26087a671ba9987178f942568b57b162339734973570bd83a17f0c88",
+  "builder_version": "v10-event-prediction-all-age-baselines",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6,
+    "breakdown_split_curves": {
+      "path": "results/v9-breakdown-split-curves.json",
+      "version": "v9-breakdown-split-curves-2026-06-05",
+      "generated_at": "2026-06-05T12:10:16.312Z",
+      "global_content_share": 0.508228,
+      "evaluation": {
+        "validationPairCount": 5496,
+        "fixed50ShareMae": 0.008154787598169252,
+        "curveShareMae": 0.0047111059985265515,
+        "fixed50SubcaptionMaePtsUsingActualCaptionTotal": 0.11817230713245966,
+        "curveSubcaptionMaePtsUsingActualCaptionTotal": 0.07095049126637575,
+        "improvementVs50Pts": 0.04722181586608391,
+        "improvementVs50Tenths": 0.47221815866083916
+      },
+      "same_season_prior_enabled": false
+    }
+  },
+  "input_audit": {
+    "scored_lineup_rows": 6,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "sacramento-freelancers-drum-bugle-corps",
+        "corps": "Sacramento Freelancers",
+        "division": "SoundSport",
+        "performance_order": 2,
+        "time": "7:10 PM"
+      },
+      {
+        "corps_key": "001j000000i6jmbaaf",
+        "corps": "Blue Devils \"B\"",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000i6kalaa3",
+        "corps": "Blue Devils \"C\"",
+        "division": "Open Class",
+        "performance_order": 6,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx9paad",
+        "corps": "Gold",
+        "division": "Open Class",
+        "performance_order": 7,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx9qaad",
+        "corps": "Golden Empire",
+        "division": "Open Class",
+        "performance_order": 8,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx9uaad",
+        "corps": "Impulse",
+        "division": "Open Class",
+        "performance_order": 9,
+        "time": "TBD"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "sacramento-freelancers-drum-bugle-corps",
+        "corps": "Sacramento Freelancers",
+        "division": "SoundSport",
+        "performance_order": 2,
+        "time": "7:10 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "schedule_item"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 3,
+        "exclusion_reason": "schedule_item"
+      },
+      {
+        "unit_name": "Retreat",
+        "performance_order": 4,
+        "exclusion_reason": "schedule_item"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-so-cal-classic-open-class-pacific-championship-finals",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-12T00:00:00.000Z",
+      "scored_lineup_rows": 6,
+      "matched_corps_keys": 6,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000i6jmbaaf",
+      "corps": "Blue Devils \"B\"",
+      "city": "Concord, CA",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "TBD",
+      "total": 77.306,
+      "GE": 30.947,
+      "Visual": 23.135,
+      "Music": 23.224,
+      "GE1": 15.53,
+      "GE2": 15.417,
+      "VP": 15.48,
+      "VA": 15.69,
+      "CG": 15.1,
+      "MB": 15.874,
+      "MA": 15.507,
+      "MP": 15.068,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.946,
+          "achievement": 7.584,
+          "content_share": 0.51164,
+          "curve_share": 0.51164,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.89,
+          "achievement": 7.527,
+          "content_share": 0.511772,
+          "curve_share": 0.511772,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.944,
+          "achievement": 7.536,
+          "content_share": 0.513204,
+          "curve_share": 0.513204,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 8.042,
+          "achievement": 7.648,
+          "content_share": 0.512529,
+          "curve_share": 0.512529,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.749,
+          "achievement": 7.351,
+          "content_share": 0.513159,
+          "curve_share": 0.513159,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 8.122,
+          "achievement": 7.752,
+          "content_share": 0.51165,
+          "curve_share": 0.51165,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.944,
+          "achievement": 7.564,
+          "content_share": 0.512251,
+          "curve_share": 0.512251,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.713,
+          "achievement": 7.355,
+          "content_share": 0.511894,
+          "curve_share": 0.511894,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.82,
+          "p50": 15.53,
+          "p90": 16.277
+        },
+        "GE2": {
+          "p10": 14.824,
+          "p50": 15.417,
+          "p90": 16.229
+        },
+        "VP": {
+          "p10": 14.755,
+          "p50": 15.48,
+          "p90": 16.211
+        },
+        "VA": {
+          "p10": 14.791,
+          "p50": 15.69,
+          "p90": 16.278
+        },
+        "CG": {
+          "p10": 14.326,
+          "p50": 15.1,
+          "p90": 15.786
+        },
+        "MB": {
+          "p10": 15.048,
+          "p50": 15.874,
+          "p90": 16.544
+        },
+        "MA": {
+          "p10": 14.839,
+          "p50": 15.507,
+          "p90": 16.233
+        },
+        "MP": {
+          "p10": 14.326,
+          "p50": 15.068,
+          "p90": 15.77
+        }
+      },
+      "raw_model_total": 75.123,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.35,
+      "prior_season_comparable_percent_through": 35.714285714285715,
+      "prior_season_comparable_competition": "2025-so-cal-classic-open-class-pacific-championship-finals",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 77.306,
+      "caption_shape_total": 82.141,
+      "total_reconciliation_delta": -4.835,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 82.142,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwx9uaad",
+      "corps": "Impulse",
+      "city": "Buena Park, CA",
+      "division": "Open Class",
+      "performance_order": 9,
+      "time": "TBD",
+      "total": 72.139,
+      "GE": 28.971,
+      "Visual": 21.735,
+      "Music": 21.433,
+      "GE1": 14.301,
+      "GE2": 14.67,
+      "VP": 14.261,
+      "VA": 14.305,
+      "CG": 14.905,
+      "MB": 14.469,
+      "MA": 14.124,
+      "MP": 14.272,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.317,
+          "achievement": 6.984,
+          "content_share": 0.51164,
+          "curve_share": 0.51164,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.508,
+          "achievement": 7.162,
+          "content_share": 0.511772,
+          "curve_share": 0.511772,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.319,
+          "achievement": 6.942,
+          "content_share": 0.513204,
+          "curve_share": 0.513204,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.332,
+          "achievement": 6.973,
+          "content_share": 0.512529,
+          "curve_share": 0.512529,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.649,
+          "achievement": 7.256,
+          "content_share": 0.513159,
+          "curve_share": 0.513159,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.403,
+          "achievement": 7.066,
+          "content_share": 0.51165,
+          "curve_share": 0.51165,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.235,
+          "achievement": 6.889,
+          "content_share": 0.512251,
+          "curve_share": 0.512251,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.306,
+          "achievement": 6.966,
+          "content_share": 0.511894,
+          "curve_share": 0.511894,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.656,
+          "p50": 14.301,
+          "p90": 15.075
+        },
+        "GE2": {
+          "p10": 14.166,
+          "p50": 14.67,
+          "p90": 15.583
+        },
+        "VP": {
+          "p10": 13.594,
+          "p50": 14.261,
+          "p90": 15.022
+        },
+        "VA": {
+          "p10": 13.438,
+          "p50": 14.305,
+          "p90": 14.85
+        },
+        "CG": {
+          "p10": 14.112,
+          "p50": 14.905,
+          "p90": 15.559
+        },
+        "MB": {
+          "p10": 13.65,
+          "p50": 14.469,
+          "p90": 15.108
+        },
+        "MA": {
+          "p10": 13.469,
+          "p50": 14.124,
+          "p90": 14.817
+        },
+        "MP": {
+          "p10": 13.534,
+          "p50": 14.272,
+          "p90": 14.958
+        }
+      },
+      "raw_model_total": 66.481,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 66.4,
+      "prior_season_comparable_percent_through": 35.714285714285715,
+      "prior_season_comparable_competition": "2025-so-cal-classic-open-class-pacific-championship-finals",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 72.137,
+      "caption_shape_total": 79.149,
+      "total_reconciliation_delta": -7.01,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 79.149,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwx9qaad",
+      "corps": "Golden Empire",
+      "city": "Bakersfield, CA",
+      "division": "Open Class",
+      "performance_order": 8,
+      "time": "TBD",
+      "total": 69.193,
+      "GE": 27.575,
+      "Visual": 20.796,
+      "Music": 20.822,
+      "GE1": 13.354,
+      "GE2": 14.221,
+      "VP": 14.001,
+      "VA": 13.896,
+      "CG": 13.695,
+      "MB": 13.699,
+      "MA": 14,
+      "MP": 13.946,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 6.832,
+          "achievement": 6.522,
+          "content_share": 0.51164,
+          "curve_share": 0.51164,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.278,
+          "achievement": 6.943,
+          "content_share": 0.511772,
+          "curve_share": 0.511772,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.185,
+          "achievement": 6.816,
+          "content_share": 0.513204,
+          "curve_share": 0.513204,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.122,
+          "achievement": 6.774,
+          "content_share": 0.512529,
+          "curve_share": 0.512529,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.028,
+          "achievement": 6.667,
+          "content_share": 0.513159,
+          "curve_share": 0.513159,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.009,
+          "achievement": 6.69,
+          "content_share": 0.51165,
+          "curve_share": 0.51165,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.171,
+          "achievement": 6.829,
+          "content_share": 0.512251,
+          "curve_share": 0.512251,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.139,
+          "achievement": 6.807,
+          "content_share": 0.511894,
+          "curve_share": 0.511894,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.762,
+          "p50": 13.354,
+          "p90": 14.155
+        },
+        "GE2": {
+          "p10": 13.736,
+          "p50": 14.221,
+          "p90": 15.113
+        },
+        "VP": {
+          "p10": 13.326,
+          "p50": 14.001,
+          "p90": 14.761
+        },
+        "VA": {
+          "p10": 13.027,
+          "p50": 13.896,
+          "p90": 14.42
+        },
+        "CG": {
+          "p10": 12.958,
+          "p50": 13.695,
+          "p90": 14.372
+        },
+        "MB": {
+          "p10": 12.807,
+          "p50": 13.699,
+          "p90": 14.239
+        },
+        "MA": {
+          "p10": 13.351,
+          "p50": 14,
+          "p90": 14.67
+        },
+        "MP": {
+          "p10": 13.125,
+          "p50": 13.946,
+          "p90": 14.539
+        }
+      },
+      "raw_model_total": 67.022,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 65,
+      "prior_season_comparable_percent_through": 35.714285714285715,
+      "prior_season_comparable_competition": "2025-so-cal-classic-open-class-pacific-championship-finals",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 69.191,
+      "caption_shape_total": 74.314,
+      "total_reconciliation_delta": -5.12,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 4,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 74.314,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwx9paad",
+      "corps": "Gold",
+      "city": "San Diego, CA",
+      "division": "Open Class",
+      "performance_order": 7,
+      "time": "TBD",
+      "total": 68.519,
+      "GE": 27.221,
+      "Visual": 20.236,
+      "Music": 21.062,
+      "GE1": 13.611,
+      "GE2": 13.61,
+      "VP": 13.508,
+      "VA": 13.286,
+      "CG": 13.678,
+      "MB": 14.161,
+      "MA": 14.098,
+      "MP": 13.864,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 6.964,
+          "achievement": 6.647,
+          "content_share": 0.51164,
+          "curve_share": 0.51164,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 6.965,
+          "achievement": 6.645,
+          "content_share": 0.511772,
+          "curve_share": 0.511772,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 6.932,
+          "achievement": 6.576,
+          "content_share": 0.513204,
+          "curve_share": 0.513204,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 6.809,
+          "achievement": 6.476,
+          "content_share": 0.512529,
+          "curve_share": 0.512529,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.019,
+          "achievement": 6.659,
+          "content_share": 0.513159,
+          "curve_share": 0.513159,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.245,
+          "achievement": 6.915,
+          "content_share": 0.51165,
+          "curve_share": 0.51165,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.222,
+          "achievement": 6.876,
+          "content_share": 0.512251,
+          "curve_share": 0.512251,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.097,
+          "achievement": 6.767,
+          "content_share": 0.511894,
+          "curve_share": 0.511894,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.873,
+          "p50": 13.611,
+          "p90": 14.328
+        },
+        "GE2": {
+          "p10": 12.963,
+          "p50": 13.61,
+          "p90": 14.373
+        },
+        "VP": {
+          "p10": 12.875,
+          "p50": 13.508,
+          "p90": 14.325
+        },
+        "VA": {
+          "p10": 12.549,
+          "p50": 13.286,
+          "p90": 13.991
+        },
+        "CG": {
+          "p10": 12.98,
+          "p50": 13.678,
+          "p90": 14.434
+        },
+        "MB": {
+          "p10": 13.399,
+          "p50": 14.161,
+          "p90": 14.839
+        },
+        "MA": {
+          "p10": 13.484,
+          "p50": 14.098,
+          "p90": 14.891
+        },
+        "MP": {
+          "p10": 13.161,
+          "p50": 13.864,
+          "p90": 14.571
+        }
+      },
+      "raw_model_total": 79.245,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 69.35,
+      "prior_season_comparable_percent_through": 35.714285714285715,
+      "prior_season_comparable_competition": "2025-so-cal-classic-open-class-pacific-championship-finals",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 68.517,
+      "caption_shape_total": 67.5,
+      "total_reconciliation_delta": 1.018,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 20,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 67.5,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000i6kalaa3",
+      "corps": "Blue Devils \"C\"",
+      "city": "Concord, CA",
+      "division": "Open Class",
+      "performance_order": 6,
+      "time": "TBD",
+      "total": 63.864,
+      "GE": 25.931,
+      "Visual": 19.221,
+      "Music": 18.712,
+      "GE1": 12.506,
+      "GE2": 13.425,
+      "VP": 12.852,
+      "VA": 12.879,
+      "CG": 12.712,
+      "MB": 12.555,
+      "MA": 12.302,
+      "MP": 12.567,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 6.399,
+          "achievement": 6.107,
+          "content_share": 0.51164,
+          "curve_share": 0.51164,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 6.87,
+          "achievement": 6.554,
+          "content_share": 0.511772,
+          "curve_share": 0.511772,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 6.596,
+          "achievement": 6.256,
+          "content_share": 0.513204,
+          "curve_share": 0.513204,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 6.601,
+          "achievement": 6.278,
+          "content_share": 0.512529,
+          "curve_share": 0.512529,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 6.523,
+          "achievement": 6.189,
+          "content_share": 0.513159,
+          "curve_share": 0.513159,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 6.424,
+          "achievement": 6.131,
+          "content_share": 0.51165,
+          "curve_share": 0.51165,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 6.302,
+          "achievement": 6,
+          "content_share": 0.512251,
+          "curve_share": 0.512251,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 6.433,
+          "achievement": 6.134,
+          "content_share": 0.511894,
+          "curve_share": 0.511894,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 11.915,
+          "p50": 12.506,
+          "p90": 13.276
+        },
+        "GE2": {
+          "p10": 12.956,
+          "p50": 13.425,
+          "p90": 14.289
+        },
+        "VP": {
+          "p10": 12.258,
+          "p50": 12.852,
+          "p90": 13.641
+        },
+        "VA": {
+          "p10": 12.088,
+          "p50": 12.879,
+          "p90": 13.446
+        },
+        "CG": {
+          "p10": 12.036,
+          "p50": 12.712,
+          "p90": 13.418
+        },
+        "MB": {
+          "p10": 11.661,
+          "p50": 12.555,
+          "p90": 13.085
+        },
+        "MA": {
+          "p10": 11.61,
+          "p50": 12.302,
+          "p90": 12.921
+        },
+        "MP": {
+          "p10": 11.751,
+          "p50": 12.567,
+          "p90": 13.154
+        }
+      },
+      "raw_model_total": 62.685,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 58.2,
+      "prior_season_comparable_percent_through": 35.714285714285715,
+      "prior_season_comparable_competition": "2025-so-cal-classic-open-class-pacific-championship-finals",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 63.866,
+      "caption_shape_total": 70.79,
+      "total_reconciliation_delta": -6.925,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 70.791,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

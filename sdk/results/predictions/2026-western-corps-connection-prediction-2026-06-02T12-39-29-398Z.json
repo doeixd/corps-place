@@ -1,0 +1,1122 @@
+{
+  "generated_at": "2026-06-02T12:39:29.398Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-western-corps-connection",
+    "slug": "2026-western-corps-connection",
+    "name": "Western Corps Connection",
+    "event_name": "Western Corps Connection",
+    "start_date": "2026-07-10",
+    "start_time": null,
+    "web_start_time": "5:45 PM PT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Walnut",
+    "location_state": "CA",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260710-WALNUT-CA.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260710-WALNUT-CA.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/western-corps-connection-rknjtk",
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/4l71BCp",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Ticket prices will increase on the day of the event.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 11,
+    "matched_corps_keys": 11,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 11,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 32.55813953488372
+  },
+  "input_signature": "09593a9e9f3f355e56703a1821a265aac9bf96c9cf2f9854018cdb2892a1ef39",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 11,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000i6jmbaaf",
+        "corps": "Blue Devils \"B\"",
+        "division": "Open Class",
+        "performance_order": 2,
+        "time": "6:00 PM"
+      },
+      {
+        "corps_key": "001j000000i6kalaa3",
+        "corps": "Blue Devils \"C\"",
+        "division": "Open Class",
+        "performance_order": 3,
+        "time": "6:15 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9qaad",
+        "corps": "Golden Empire",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "6:30 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9paad",
+        "corps": "Gold",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "6:45 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9uaad",
+        "corps": "Impulse",
+        "division": "Open Class",
+        "performance_order": 6,
+        "time": "7:00 PM"
+      },
+      {
+        "corps_key": "001j000000iwx93aad",
+        "corps": "Seattle Cascades",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "8:00 PM"
+      },
+      {
+        "corps_key": "001j000000iwxaeaa1",
+        "corps": "The Academy",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "8:17 PM"
+      },
+      {
+        "corps_key": "001j000000iwxa7aal",
+        "corps": "Pacific Crest",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "8:34 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsraal",
+        "corps": "Bluecoats",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "8:51 PM"
+      },
+      {
+        "corps_key": "001j000000h3xwcaav",
+        "corps": "Santa Clara Vanguard",
+        "division": "World Class",
+        "performance_order": 12,
+        "time": "9:08 PM"
+      },
+      {
+        "corps_key": "001j000000i6i9saav",
+        "corps": "Blue Devils",
+        "division": "World Class",
+        "performance_order": 13,
+        "time": "9:25 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 7,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 14,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-western-corps-connection",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-10",
+      "scored_lineup_rows": 11,
+      "matched_corps_keys": 11,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwsraal",
+      "corps": "Bluecoats",
+      "city": "Canton, OH",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "8:51 PM",
+      "total": 82.854,
+      "GE": 33.185,
+      "Visual": 24.767,
+      "Music": 24.902,
+      "GE1": 16.532,
+      "GE2": 16.653,
+      "VP": 16.377,
+      "VA": 16.605,
+      "CG": 16.553,
+      "MB": 16.462,
+      "MA": 16.738,
+      "MP": 16.603,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.658,
+          "p50": 16.532,
+          "p90": 17.24
+        },
+        "GE2": {
+          "p10": 15.957,
+          "p50": 16.653,
+          "p90": 17.521
+        },
+        "VP": {
+          "p10": 15.627,
+          "p50": 16.377,
+          "p90": 17.171
+        },
+        "VA": {
+          "p10": 15.721,
+          "p50": 16.605,
+          "p90": 17.261
+        },
+        "CG": {
+          "p10": 15.771,
+          "p50": 16.553,
+          "p90": 17.389
+        },
+        "MB": {
+          "p10": 15.704,
+          "p50": 16.462,
+          "p90": 17.242
+        },
+        "MA": {
+          "p10": 16.085,
+          "p50": 16.738,
+          "p90": 17.661
+        },
+        "MP": {
+          "p10": 15.904,
+          "p50": 16.603,
+          "p90": 17.455
+        }
+      },
+      "raw_model_total": 95.418,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 86.5,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-cavalcade-of-brass",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 82.852,
+      "caption_shape_total": 78.394,
+      "total_reconciliation_delta": 4.46,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 2,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 78.393,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000h3xwcaav",
+      "corps": "Santa Clara Vanguard",
+      "city": "Santa Clara, CA",
+      "division": "World Class",
+      "performance_order": 12,
+      "time": "9:08 PM",
+      "total": 78.899,
+      "GE": 31.394,
+      "Visual": 23.482,
+      "Music": 24.023,
+      "GE1": 15.678,
+      "GE2": 15.716,
+      "VP": 15.592,
+      "VA": 15.782,
+      "CG": 15.589,
+      "MB": 15.805,
+      "MA": 15.845,
+      "MP": 16.397,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.84,
+          "p50": 15.678,
+          "p90": 16.4
+        },
+        "GE2": {
+          "p10": 15.045,
+          "p50": 15.716,
+          "p90": 16.612
+        },
+        "VP": {
+          "p10": 14.857,
+          "p50": 15.592,
+          "p90": 16.412
+        },
+        "VA": {
+          "p10": 14.971,
+          "p50": 15.782,
+          "p90": 16.496
+        },
+        "CG": {
+          "p10": 14.844,
+          "p50": 15.589,
+          "p90": 16.409
+        },
+        "MB": {
+          "p10": 15.064,
+          "p50": 15.805,
+          "p90": 16.556
+        },
+        "MA": {
+          "p10": 15.213,
+          "p50": 15.845,
+          "p90": 16.742
+        },
+        "MP": {
+          "p10": 15.628,
+          "p50": 16.397,
+          "p90": 17.143
+        }
+      },
+      "raw_model_total": 94.214,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 85,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 78.9,
+      "caption_shape_total": 71.444,
+      "total_reconciliation_delta": 7.455,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.445,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000i6i9saav",
+      "corps": "Blue Devils",
+      "city": "Concord, CA",
+      "division": "World Class",
+      "performance_order": 13,
+      "time": "9:25 PM",
+      "total": 76.721,
+      "GE": 30.614,
+      "Visual": 23.029,
+      "Music": 23.078,
+      "GE1": 15.476,
+      "GE2": 15.138,
+      "VP": 15.278,
+      "VA": 15.45,
+      "CG": 15.329,
+      "MB": 15.515,
+      "MA": 15.332,
+      "MP": 15.309,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.673,
+          "p50": 15.476,
+          "p90": 16.217
+        },
+        "GE2": {
+          "p10": 14.478,
+          "p50": 15.138,
+          "p90": 16.029
+        },
+        "VP": {
+          "p10": 14.578,
+          "p50": 15.278,
+          "p90": 16.13
+        },
+        "VA": {
+          "p10": 14.656,
+          "p50": 15.45,
+          "p90": 16.192
+        },
+        "CG": {
+          "p10": 14.629,
+          "p50": 15.329,
+          "p90": 16.194
+        },
+        "MB": {
+          "p10": 14.783,
+          "p50": 15.515,
+          "p90": 16.259
+        },
+        "MA": {
+          "p10": 14.698,
+          "p50": 15.332,
+          "p90": 16.215
+        },
+        "MP": {
+          "p10": 14.537,
+          "p50": 15.309,
+          "p90": 16.023
+        }
+      },
+      "raw_model_total": 92.971,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 85.25,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 76.722,
+      "caption_shape_total": 66.3,
+      "total_reconciliation_delta": 10.42,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 4,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 66.299,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxa7aal",
+      "corps": "Pacific Crest",
+      "city": "City of Industry, CA",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "8:34 PM",
+      "total": 70.147,
+      "GE": 28.014,
+      "Visual": 20.685,
+      "Music": 21.448,
+      "GE1": 13.816,
+      "GE2": 14.198,
+      "VP": 13.679,
+      "VA": 13.413,
+      "CG": 14.278,
+      "MB": 14.13,
+      "MA": 14.474,
+      "MP": 14.293,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.017,
+          "p50": 13.816,
+          "p90": 14.484
+        },
+        "GE2": {
+          "p10": 13.613,
+          "p50": 14.198,
+          "p90": 15.115
+        },
+        "VP": {
+          "p10": 12.974,
+          "p50": 13.679,
+          "p90": 14.462
+        },
+        "VA": {
+          "p10": 12.63,
+          "p50": 13.413,
+          "p90": 14.062
+        },
+        "CG": {
+          "p10": 13.607,
+          "p50": 14.278,
+          "p90": 15.106
+        },
+        "MB": {
+          "p10": 13.412,
+          "p50": 14.13,
+          "p90": 14.86
+        },
+        "MA": {
+          "p10": 13.914,
+          "p50": 14.474,
+          "p90": 15.354
+        },
+        "MP": {
+          "p10": 13.532,
+          "p50": 14.293,
+          "p90": 14.97
+        }
+      },
+      "raw_model_total": 87.3,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 74.55,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 70.148,
+      "caption_shape_total": 64.767,
+      "total_reconciliation_delta": 5.38,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 8,
+      "prior_season_rank": 15,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 64.767,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwxaeaa1",
+      "corps": "The Academy",
+      "city": "Tempe, AZ",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "8:17 PM",
+      "total": 68.634,
+      "GE": 27.254,
+      "Visual": 20.421,
+      "Music": 20.959,
+      "GE1": 13.37,
+      "GE2": 13.884,
+      "VP": 13.529,
+      "VA": 13.602,
+      "CG": 13.711,
+      "MB": 13.82,
+      "MA": 14.15,
+      "MP": 13.947,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.568,
+          "p50": 13.37,
+          "p90": 14.045
+        },
+        "GE2": {
+          "p10": 13.303,
+          "p50": 13.884,
+          "p90": 14.781
+        },
+        "VP": {
+          "p10": 12.839,
+          "p50": 13.529,
+          "p90": 14.33
+        },
+        "VA": {
+          "p10": 12.819,
+          "p50": 13.602,
+          "p90": 14.263
+        },
+        "CG": {
+          "p10": 13.033,
+          "p50": 13.711,
+          "p90": 14.534
+        },
+        "MB": {
+          "p10": 13.107,
+          "p50": 13.82,
+          "p90": 14.556
+        },
+        "MA": {
+          "p10": 13.584,
+          "p50": 14.15,
+          "p90": 15.012
+        },
+        "MP": {
+          "p10": 13.175,
+          "p50": 13.947,
+          "p90": 14.62
+        }
+      },
+      "raw_model_total": 85.918,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.25,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 68.632,
+      "caption_shape_total": 62.989,
+      "total_reconciliation_delta": 5.645,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 9,
+      "prior_season_rank": 17,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 62.988,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000i6jmbaaf",
+      "corps": "Blue Devils \"B\"",
+      "city": "Concord, CA",
+      "division": "Open Class",
+      "performance_order": 2,
+      "time": "6:00 PM",
+      "total": 68.01,
+      "GE": 27.206,
+      "Visual": 20.279,
+      "Music": 20.525,
+      "GE1": 13.704,
+      "GE2": 13.502,
+      "VP": 13.473,
+      "VA": 13.966,
+      "CG": 13.119,
+      "MB": 13.938,
+      "MA": 13.704,
+      "MP": 13.408,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.037,
+          "p50": 13.704,
+          "p90": 14.548
+        },
+        "GE2": {
+          "p10": 12.889,
+          "p50": 13.502,
+          "p90": 14.475
+        },
+        "VP": {
+          "p10": 12.767,
+          "p50": 13.473,
+          "p90": 14.272
+        },
+        "VA": {
+          "p10": 13.065,
+          "p50": 13.966,
+          "p90": 14.61
+        },
+        "CG": {
+          "p10": 12.416,
+          "p50": 13.119,
+          "p90": 13.929
+        },
+        "MB": {
+          "p10": 13.036,
+          "p50": 13.938,
+          "p90": 14.605
+        },
+        "MA": {
+          "p10": 13.053,
+          "p50": 13.704,
+          "p90": 14.525
+        },
+        "MP": {
+          "p10": 12.553,
+          "p50": 13.408,
+          "p90": 14.145
+        }
+      },
+      "raw_model_total": 71.277,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.45,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 68.01,
+      "caption_shape_total": 61.36,
+      "total_reconciliation_delta": 6.65,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 61.361,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 7,
+      "corps_key": "001j000000iwx93aad",
+      "corps": "Seattle Cascades",
+      "city": "Seattle, WA",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "8:00 PM",
+      "total": 64.292,
+      "GE": 25.238,
+      "Visual": 19.491,
+      "Music": 19.563,
+      "GE1": 12.699,
+      "GE2": 12.539,
+      "VP": 13.207,
+      "VA": 12.939,
+      "CG": 12.835,
+      "MB": 13.299,
+      "MA": 12.93,
+      "MP": 12.897,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 11.965,
+          "p50": 12.699,
+          "p90": 13.446
+        },
+        "GE2": {
+          "p10": 11.933,
+          "p50": 12.539,
+          "p90": 13.443
+        },
+        "VP": {
+          "p10": 12.545,
+          "p50": 13.207,
+          "p90": 14.06
+        },
+        "VA": {
+          "p10": 12.191,
+          "p50": 12.939,
+          "p90": 13.68
+        },
+        "CG": {
+          "p10": 12.135,
+          "p50": 12.835,
+          "p90": 13.625
+        },
+        "MB": {
+          "p10": 12.538,
+          "p50": 13.299,
+          "p90": 14.043
+        },
+        "MA": {
+          "p10": 12.325,
+          "p50": 12.93,
+          "p90": 13.776
+        },
+        "MP": {
+          "p10": 12.112,
+          "p50": 12.897,
+          "p90": 13.611
+        }
+      },
+      "raw_model_total": 80.681,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 69.25,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 64.294,
+      "caption_shape_total": 58.236,
+      "total_reconciliation_delta": 6.055,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 11,
+      "prior_season_rank": 23,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 58.236,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 8,
+      "corps_key": "001j000000iwx9uaad",
+      "corps": "Impulse",
+      "city": "Buena Park, CA",
+      "division": "Open Class",
+      "performance_order": 6,
+      "time": "7:00 PM",
+      "total": 61.553,
+      "GE": 24.941,
+      "Visual": 18.587,
+      "Music": 18.025,
+      "GE1": 12.477,
+      "GE2": 12.464,
+      "VP": 11.99,
+      "VA": 12.575,
+      "CG": 12.609,
+      "MB": 12.167,
+      "MA": 11.862,
+      "MP": 12.021,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 11.826,
+          "p50": 12.477,
+          "p90": 13.378
+        },
+        "GE2": {
+          "p10": 11.916,
+          "p50": 12.464,
+          "p90": 13.523
+        },
+        "VP": {
+          "p10": 11.255,
+          "p50": 11.99,
+          "p90": 12.802
+        },
+        "VA": {
+          "p10": 11.677,
+          "p50": 12.575,
+          "p90": 13.206
+        },
+        "CG": {
+          "p10": 11.82,
+          "p50": 12.609,
+          "p90": 13.376
+        },
+        "MB": {
+          "p10": 11.259,
+          "p50": 12.167,
+          "p90": 12.845
+        },
+        "MA": {
+          "p10": 11.214,
+          "p50": 11.862,
+          "p90": 12.694
+        },
+        "MP": {
+          "p10": 11.154,
+          "p50": 12.021,
+          "p90": 12.779
+        }
+      },
+      "raw_model_total": 59.872,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 65.05,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 61.553,
+      "caption_shape_total": 57.278,
+      "total_reconciliation_delta": 4.275,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 57.279,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 9,
+      "corps_key": "001j000000iwx9qaad",
+      "corps": "Golden Empire",
+      "city": "Bakersfield, CA",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "6:30 PM",
+      "total": 59.537,
+      "GE": 23.949,
+      "Visual": 17.931,
+      "Music": 17.657,
+      "GE1": 11.371,
+      "GE2": 12.578,
+      "VP": 11.834,
+      "VA": 12.48,
+      "CG": 11.548,
+      "MB": 11.875,
+      "MA": 11.594,
+      "MP": 11.845,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.781,
+          "p50": 11.371,
+          "p90": 12.295
+        },
+        "GE2": {
+          "p10": 12.063,
+          "p50": 12.578,
+          "p90": 13.627
+        },
+        "VP": {
+          "p10": 11.11,
+          "p50": 11.834,
+          "p90": 12.647
+        },
+        "VA": {
+          "p10": 11.61,
+          "p50": 12.48,
+          "p90": 13.098
+        },
+        "CG": {
+          "p10": 10.851,
+          "p50": 11.548,
+          "p90": 12.366
+        },
+        "MB": {
+          "p10": 10.945,
+          "p50": 11.875,
+          "p90": 12.506
+        },
+        "MA": {
+          "p10": 10.899,
+          "p50": 11.594,
+          "p90": 12.346
+        },
+        "MP": {
+          "p10": 10.92,
+          "p50": 11.845,
+          "p90": 12.575
+        }
+      },
+      "raw_model_total": 61.122,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 63.4,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 59.537,
+      "caption_shape_total": 54.817,
+      "total_reconciliation_delta": 4.72,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 4,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 54.817,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 10,
+      "corps_key": "001j000000iwx9paad",
+      "corps": "Gold",
+      "city": "San Diego, CA",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "6:45 PM",
+      "total": 55.285,
+      "GE": 21.955,
+      "Visual": 16.259,
+      "Music": 17.071,
+      "GE1": 11.742,
+      "GE2": 10.213,
+      "VP": 10.667,
+      "VA": 10.785,
+      "CG": 11.066,
+      "MB": 11.567,
+      "MA": 11.448,
+      "MP": 11.127,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.892,
+          "p50": 11.742,
+          "p90": 12.454
+        },
+        "GE2": {
+          "p10": 9.57,
+          "p50": 10.213,
+          "p90": 11.176
+        },
+        "VP": {
+          "p10": 10.063,
+          "p50": 10.667,
+          "p90": 11.707
+        },
+        "VA": {
+          "p10": 9.99,
+          "p50": 10.785,
+          "p90": 11.566
+        },
+        "CG": {
+          "p10": 10.314,
+          "p50": 11.066,
+          "p90": 11.871
+        },
+        "MB": {
+          "p10": 10.766,
+          "p50": 11.567,
+          "p90": 12.283
+        },
+        "MA": {
+          "p10": 10.713,
+          "p50": 11.448,
+          "p90": 12.239
+        },
+        "MP": {
+          "p10": 10.322,
+          "p50": 11.127,
+          "p90": 11.866
+        }
+      },
+      "raw_model_total": 73.091,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 68.2,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 55.285,
+      "caption_shape_total": 39.5,
+      "total_reconciliation_delta": 15.785,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 10,
+      "prior_season_rank": 20,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 39.499,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 11,
+      "corps_key": "001j000000i6kalaa3",
+      "corps": "Blue Devils \"C\"",
+      "city": "Concord, CA",
+      "division": "Open Class",
+      "performance_order": 3,
+      "time": "6:15 PM",
+      "total": 49.323,
+      "GE": 20.438,
+      "Visual": 14.676,
+      "Music": 14.209,
+      "GE1": 10.875,
+      "GE2": 9.563,
+      "VP": 9.522,
+      "VA": 10.126,
+      "CG": 9.704,
+      "MB": 9.74,
+      "MA": 9.222,
+      "MP": 9.456,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.233,
+          "p50": 10.875,
+          "p90": 11.71
+        },
+        "GE2": {
+          "p10": 9.073,
+          "p50": 9.563,
+          "p90": 10.63
+        },
+        "VP": {
+          "p10": 8.863,
+          "p50": 9.522,
+          "p90": 10.417
+        },
+        "VA": {
+          "p10": 9.376,
+          "p50": 10.126,
+          "p90": 10.831
+        },
+        "CG": {
+          "p10": 9.009,
+          "p50": 9.704,
+          "p90": 10.47
+        },
+        "MB": {
+          "p10": 8.856,
+          "p50": 9.74,
+          "p90": 10.422
+        },
+        "MA": {
+          "p10": 8.465,
+          "p50": 9.222,
+          "p90": 9.921
+        },
+        "MP": {
+          "p10": 8.579,
+          "p50": 9.456,
+          "p90": 10.24
+        }
+      },
+      "raw_model_total": 56.172,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 56.9,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-at-the-rose-bowl",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 49.323,
+      "caption_shape_total": 40.063,
+      "total_reconciliation_delta": 9.26,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 7,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 40.063,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

@@ -1,0 +1,291 @@
+{
+  "mode": "applied",
+  "matched": 54,
+  "rosterCount": 54,
+  "unresolved": [],
+  "classChanges": [],
+  "changes": [
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "about",
+      "from": "Founded in 1964, Blue Stars was the silver medalist at the 1972 Drum Corps International World Championship, finishing just over a half a point away from winning the inaugural event. Competing as an Open Class unit for much of the late 1980s, ’90s and early ’00s, the corps won the World Championship title in its class in 1989, 1993, 2001 and 2003. Blue Stars began competing among DCI’s World Class ranks again in 2006.",
+      "to": "Founded in 1964, Blue Stars was the silver medalist at the 1972 Drum Corps International World Championship, finishing just over a half a point away from winning the inaugural event. Competing as an Open Class unit for much of the late 1980s, �90s and early �00s, the corps won the World Championship title in its class in 1989, 1993, 2001 and 2003. Blue Stars began competing among DCI�s World Class ranks again in 2006.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "about",
+      "from": "Founded in 1940 as the Most Precious Blood Crusaders and later separating from the church parish that sponsored the group, the corps became the Hyde Park Crusaders and later the Boston Crusaders as it established itself as a national powerhouse. A charter member of DCI in the 1970s, it would not be until 1999 that Boston skyrocketed into the World Championship Finals. The corps has retained its spot among DCI’s elite Top 12 ever since. 2025 marks the organization's milestone 85th anniversary of continuous operations and programming.",
+      "to": "Founded in 1940 as the Most Precious Blood Crusaders and later separating from the church parish that sponsored the group, the corps became the Hyde Park Crusaders and later the Boston Crusaders as it established itself as a national powerhouse. A charter member of DCI in the 1970s, it would not be until 1999 that Boston skyrocketed into the World Championship Finals. The corps has retained its spot among DCI�s elite Top 12 ever since. 2025 marks the organization's milestone 85th anniversary of continuous operations and programming.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "about",
+      "from": "Founded in 1963 as the Junior Dukes, Colts was previously known as the Legionnaires and Colt .45 before adopting its current name in 1976. Since 1993, the corps has placed in the DCI World Championship Finals numerous times. In addition to both a World Class and an Open Class drum corps, the Colts Youth Organization also sponsors a summer band for students in fourth through eighth grades. The governor of Iowa has proclaimed the Colts “Iowa’s Ambassadors of Music.”",
+      "to": "Founded in 1963 as the Junior Dukes, Colts was previously known as the Legionnaires and Colt .45 before adopting its current name in 1976. Since 1993, the corps has placed in the DCI World Championship Finals numerous times. In addition to both a World Class and an Open Class drum corps, the Colts Youth Organization also sponsors a summer band for students in fourth through eighth grades. The governor of Iowa has proclaimed the Colts �Iowa�s Ambassadors of Music.�",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "about",
+      "from": "Founded in 2009, Genesis got its start through combined efforts of its founding members and the schools in the Rio Grande Valley of Texas. Now based in Austin, the corps focuses on giving members the chance to interact with Texas communities, enrich their musical and physical educations, and to perform at the peak of their potential. A three-time Open Class World Championship bronze medalist, 2017 marked the corps’ first year competing in DCI’s World Class division.",
+      "to": "Founded in 2009, Genesis got its start through combined efforts of its founding members and the schools in the Rio Grande Valley of Texas. Now based in Austin, the corps focuses on giving members the chance to interact with Texas communities, enrich their musical and physical educations, and to perform at the peak of their potential. A three-time Open Class World Championship bronze medalist, 2017 marked the corps� first year competing in DCI�s World Class division.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "about",
+      "from": "Founded in 1966, Seattle Cascades is the oldest continuously active drum corps from the Pacific Northwest. Community service, inclusiveness, diversity and personal responsibility serve as core tenets of the organization’s educational program. The Cascades won the DCI Division III World Championship in 2000, and then doubled its size for competition the next season. In 2002, they became the first Pacific Northwest corps to become a World Class Finalist.",
+      "to": "Founded in 1966, Seattle Cascades is the oldest continuously active drum corps from the Pacific Northwest. Community service, inclusiveness, diversity and personal responsibility serve as core tenets of the organization�s educational program. The Cascades won the DCI Division III World Championship in 2000, and then doubled its size for competition the next season. In 2002, they became the first Pacific Northwest corps to become a World Class Finalist.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "about",
+      "from": "Celebrating 70 years in 2025, Spartans has laid claim to eight DCI World Championship titles since its founding, most recently taking home Open Class gold in 2024. The corps has earned numerous silver and bronze medals and was the 1999 Spirit of Disney award winner. Spartans has had the privilege of playing for eight different United States Presidents. As part of a transition year in 2025, the corps will follow a “hybrid” classification structure remaining as an Open Class corps, but competing in eight DCI Tour events as a World Class corps.",
+      "to": "Celebrating 70 years in 2025, Spartans has laid claim to eight DCI World Championship titles since its founding, most recently taking home Open Class gold in 2024. The corps has earned numerous silver and bronze medals and was the 1999 Spirit of Disney award winner. Spartans has had the privilege of playing for eight different United States Presidents. As part of a transition year in 2025, the corps will follow a �hybrid� classification structure remaining as an Open Class corps, but competing in eight DCI Tour events as a World Class corps.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "about",
+      "from": "Founded in the mid-1970s and celebrating their 50th anniversary in 2025, Spirit of Atlanta quickly rose to drum corps prominence with a sixth-place finish in only the corps’ second season. Well known during its formative years for a huge brass sound and performances that evoked the soulful and sultry persona of its southern hometown region, the group has claimed a spot in the DCI World Championship Finals 20 times since 1978.",
+      "to": "Founded in the mid-1970s and celebrating their 50th anniversary in 2025, Spirit of Atlanta quickly rose to drum corps prominence with a sixth-place finish in only the corps� second season. Well known during its formative years for a huge brass sound and performances that evoked the soulful and sultry persona of its southern hometown region, the group has claimed a spot in the DCI World Championship Finals 20 times since 1978.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "about",
+      "from": "Celebrating 25 years in 2025, the Academy Brass and Percussion Ensemble was formed to introduce the youth of Arizona to the drum corps experience. In 2004, the group was approved as a DCI sanctioned unit, changed its name to the Academy Drum and Bugle Corps, and began competing for the first time. In the corps’ first trip to the DCI World Championships in 2006, it won the gold medal in Division II competition. 2016 marked the corps’ first year as a World Class DCI World Championship finalist.",
+      "to": "Celebrating 25 years in 2025, the Academy Brass and Percussion Ensemble was formed to introduce the youth of Arizona to the drum corps experience. In 2004, the group was approved as a DCI sanctioned unit, changed its name to the Academy Drum and Bugle Corps, and began competing for the first time. In the corps� first trip to the DCI World Championships in 2006, it won the gold medal in Division II competition. 2016 marked the corps� first year as a World Class DCI World Championship finalist.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "troopers",
+      "corpsKey": "001j000000iwxajaa1",
+      "field": "about",
+      "from": "Founded in 1957 by Jim Jones in Casper, Wyoming, the Troopers are one of the most historically significant groups in the marching arts. Known as \"America’s Corps,\" the Troopers pioneered the modern drum corps touring model and were a founding member of Drum Corps International in 1972. With their iconic Western theme and commitment to patriotic storytelling, the corps quickly became a fan favorite. A 12-time DCI finalist, the Troopers’ motto — Honor, Loyalty, Dedication — reflects the values that continue to guide them as they inspire future generations of performers.",
+      "to": "Founded in 1957 by Jim Jones in Casper, Wyoming, the Troopers are one of the most historically significant groups in the marching arts. Known as \"America�s Corps,\" the Troopers pioneered the modern drum corps touring model and were a founding member of Drum Corps International in 1972. With their iconic Western theme and commitment to patriotic storytelling, the corps quickly became a fan favorite. A 12-time DCI finalist, the Troopers� motto � Honor, Loyalty, Dedication � reflects the values that continue to guide them as they inspire future generations of performers.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "about",
+      "from": "Founded in 2002 by alumni of the New London Surfers Drum & Bugle Corps, 7th Regiment takes its name from the last Union Army unit to leave Fort Trumbull in the corps’ hometown during the Civil War. Since first competing in 2003, ‘7R’ has been an Open Class finalist each year since 2009 and is a multi-year DCI DrumLine Battle Champion. 7th Regiment proudly represents the local community in New London and the state of Connecticut.",
+      "to": "Founded in 2002 by alumni of the New London Surfers Drum & Bugle Corps, 7th Regiment takes its name from the last Union Army unit to leave Fort Trumbull in the corps� hometown during the Civil War. Since first competing in 2003, �7R� has been an Open Class finalist each year since 2009 and is a multi-year DCI DrumLine Battle Champion. 7th Regiment proudly represents the local community in New London and the state of Connecticut.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "about",
+      "from": "The Blue Devils organization was founded in 1957 by Tony and Ann Odello as a drum and bell corps. Blue Devils B was born in 1973 to give additional youth the opportunity to march in a drum corps and to serve as a training ground for future ‘A’ corps Blue Devils. Blue Devils B won its first Open Class title in 2009 to cap off an undefeated season, and followed its winning ways in 2010, 2011, 2014, and 2016. Today, the corps stands as a proud bridge between education and elite performance —preparing the next generation for excellence on and off the field.",
+      "to": "The Blue Devils organization was founded in 1957 by Tony and Ann Odello as a drum and bell corps. Blue Devils B was born in 1973 to give additional youth the opportunity to march in a drum corps and to serve as a training ground for future �A� corps Blue Devils. Blue Devils B won its first Open Class title in 2009 to cap off an undefeated season, and followed its winning ways in 2010, 2011, 2014, and 2016. Today, the corps stands as a proud bridge between education and elite performance �preparing the next generation for excellence on and off the field.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "about",
+      "from": "Established alongside the Blue Devils A and B, Blue Devils C is the youngest program in the Blue Devils organization. In addition to local performances and field competitions, Blue Devils C is proud to have performed at many high-profile events over the years including 2016’s Super Bowl 50.",
+      "to": "Established alongside the Blue Devils A and B, Blue Devils C is the youngest program in the Blue Devils organization. In addition to local performances and field competitions, Blue Devils C is proud to have performed at many high-profile events over the years including 2016�s Super Bowl 50.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "about",
+      "from": "A drum and bugle corps originally formed in the 1930s in Pasco, Washington, later expanding to serve youth in the Tri-Cities during the 1960s and ’70s, the Columbians name reemerged in 2013 as an Open Class corps on the Drum Corps International Tour. With regionally-focused tours in the corps' early years, the Columbians made their very first trip to the DCI World Championships in 2023.",
+      "to": "A drum and bugle corps originally formed in the 1930s in Pasco, Washington, later expanding to serve youth in the Tri-Cities during the 1960s and �70s, the Columbians name reemerged in 2013 as an Open Class corps on the Drum Corps International Tour. With regionally-focused tours in the corps' early years, the Columbians made their very first trip to the DCI World Championships in 2023.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "about",
+      "from": "Founded in 2014, Golden Empire was started to give youth the opportunity to further their skills in brass, percussion and visual performance. The drum corps is an extension of the Bakersfield College Drumline program. Golden Empire earned a finalist spot in the corps’ very first trip to the DCI World Championships in 2018 and in recent years has followed a California-centric tour schedule.",
+      "to": "Founded in 2014, Golden Empire was started to give youth the opportunity to further their skills in brass, percussion and visual performance. The drum corps is an extension of the Bakersfield College Drumline program. Golden Empire earned a finalist spot in the corps� very first trip to the DCI World Championships in 2018 and in recent years has followed a California-centric tour schedule.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "les-stentors",
+      "corpsKey": "001j000000iwxa1aal",
+      "field": "about",
+      "from": "The French Canadian corps Les Stentors was founded in 1988 under the name La Releve Musicale (meaning Musical Relief), after splitting ties with another Sherbrooke, Quebec drum corps organization. The corps adopted its current name in 1993 and first competed at the DCI World Championships in 1999. In 2010, Les Stentors was recognized as the Most Improved Corps in DCI’s Open Class.",
+      "to": "The French Canadian corps Les Stentors was founded in 1988 under the name La Releve Musicale (meaning Musical Relief), after splitting ties with another Sherbrooke, Quebec drum corps organization. The corps adopted its current name in 1993 and first competed at the DCI World Championships in 1999. In 2010, Les Stentors was recognized as the Most Improved Corps in DCI�s Open Class.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "about",
+      "from": "A drum and bugle corps with a familiar name, Memphis Blues is a reboot of the Memphis Blues Brass Band of the 1980s. Bringing the drum corps experience back to students in the Memphis area, the corps made its return to the field in 2023 appearing as part of DCI’s SoundSport program. In the second year of a three-year evaluation process, Memphis Blues is currently recognized as an Open Class Affiliate.",
+      "to": "A drum and bugle corps with a familiar name, Memphis Blues is a reboot of the Memphis Blues Brass Band of the 1980s. Bringing the drum corps experience back to students in the Memphis area, the corps made its return to the field in 2023 appearing as part of DCI�s SoundSport program. In the second year of a three-year evaluation process, Memphis Blues is currently recognized as an Open Class Affiliate.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "about",
+      "from": "The Battalion is Utah’s own drum and bugle corps, proudly representing the state on the national stage. Founded in 2014, the corps launched its first competitive tour in 2016. In 2022, The Battalion made its debut at the DCI World Championships in Indiana, and in 2024, the corps reached a major milestone, earning recognition as DCI’s Most Improved Open Class Corps and advancing to the World Championship Semifinals for the first time.",
+      "to": "The Battalion is Utah�s own drum and bugle corps, proudly representing the state on the national stage. Founded in 2014, the corps launched its first competitive tour in 2016. In 2022, The Battalion made its debut at the DCI World Championships in Indiana, and in 2024, the corps reached a major milestone, earning recognition as DCI�s Most Improved Open Class Corps and advancing to the World Championship Semifinals for the first time.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "about",
+      "from": "Founded in 1997, Atlanta CV fielded its first corps in 1998. The group won the A Class title at the Drum Corps Associates Championships in 2001 and subsequently moved up to the Open Class division. Atlanta CV’s diverse membership spans ages 16 to 54 and includes students, educators, engineers, military personnel, and professionals from a broad range of industries. While based in Atlanta, the corps attracts members from across the Southeast and beyond — reflecting a reputation for excellence, community, and inclusivity.",
+      "to": "Founded in 1997, Atlanta CV fielded its first corps in 1998. The group won the A Class title at the Drum Corps Associates Championships in 2001 and subsequently moved up to the Open Class division. Atlanta CV�s diverse membership spans ages 16 to 54 and includes students, educators, engineers, military personnel, and professionals from a broad range of industries. While based in Atlanta, the corps attracts members from across the Southeast and beyond � reflecting a reputation for excellence, community, and inclusivity.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "about",
+      "from": "Founded in 1984, Cincinnati Tradition originally performed primarily as a parade unit and in exhibition at Drum Corps International Tour events within the Ohio Tri-State area. The group competed for the very first time at the Drum Corps Associates World Championships in 2010 and won the organization’s Class A title in 2016 and 2017. Cincinnati Tradition was the inaugural DCI All-Age Open Class Champion in 2024.",
+      "to": "Founded in 1984, Cincinnati Tradition originally performed primarily as a parade unit and in exhibition at Drum Corps International Tour events within the Ohio Tri-State area. The group competed for the very first time at the Drum Corps Associates World Championships in 2010 and won the organization�s Class A title in 2016 and 2017. Cincinnati Tradition was the inaugural DCI All-Age Open Class Champion in 2024.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "about",
+      "from": "Founded in 2006 by a group of good friends and family who believed in creating a balance between a friendly atmosphere and competitiveness, “fusion” in the corps’ name refers to the process and result of joining two or more things together to form one single entity. Catering to everyone, from those who have never picked up an instrument to seasoned performers, Fusion Core relocated operations in 2025 from its New Jersey roots and is excited to bring DCI All-Age \"Core\" to the Sunshine State.",
+      "to": "Founded in 2006 by a group of good friends and family who believed in creating a balance between a friendly atmosphere and competitiveness, �fusion� in the corps� name refers to the process and result of joining two or more things together to form one single entity. Catering to everyone, from those who have never picked up an instrument to seasoned performers, Fusion Core relocated operations in 2025 from its New Jersey roots and is excited to bring DCI All-Age \"Core\" to the Sunshine State.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "govenaires",
+      "corpsKey": "001j000000iwx9raad",
+      "field": "about",
+      "from": "Saint Peter, Minnesota’s Govenaires can trace their roots all the way back to 1927 when the group was organized as the St. Peter Legion Corps. The corps took its current name in the late 1960s in honor of five Minnesota governors who had come from the corps’ hometown. First competing at the Drum Corps Associates Championships in 2004, Govenaires took top honors in DCA’s Class A four times and was the inaugural DCI All-Age Class A Champion in 2024. Govenaires will travel to Ireland to perform in the Rose of Tralee celebration in August of 2025.",
+      "to": "Saint Peter, Minnesota�s Govenaires can trace their roots all the way back to 1927 when the group was organized as the St. Peter Legion Corps. The corps took its current name in the late 1960s in honor of five Minnesota governors who had come from the corps� hometown. First competing at the Drum Corps Associates Championships in 2004, Govenaires took top honors in DCA�s Class A four times and was the inaugural DCI All-Age Class A Champion in 2024. Govenaires will travel to Ireland to perform in the Rose of Tralee celebration in August of 2025.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "about",
+      "from": "Founded in 1946, the Hawthorne Caballeros are one of the most decorated groups on the all-age drum and bugle corps scene, with 46 state titles, 16 national titles and 10 world championship titles to their credit. The Caballeros have performed world-wide for the State Department, the President of the United States and the Queen of England, among many other high-profile appearances. Representing the state of New Jersey, the corps was honored to be included in the “Local Legacies” project, a part of the Library of Congress’ bicentennial initiatives in 2000.",
+      "to": "Founded in 1946, the Hawthorne Caballeros are one of the most decorated groups on the all-age drum and bugle corps scene, with 46 state titles, 16 national titles and 10 world championship titles to their credit. The Caballeros have performed world-wide for the State Department, the President of the United States and the Queen of England, among many other high-profile appearances. Representing the state of New Jersey, the corps was honored to be included in the �Local Legacies� project, a part of the Library of Congress� bicentennial initiatives in 2000.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "about",
+      "from": "Organized in 1957 as a parade corps by “age-outs” of various local junior corps and WWII and Korean War veterans, the Reading Buccaneers soon embarked upon field competitions, winning three consecutive VFW championships in 1960, 1961 and 1962. Earning the inaugural Drum Corps Associates championship title in 1965, the Pennsylvania corps won the DCA championship title 19 times in total, 15 of them between 2005 and 2023. The corps was the inaugural DCI All-Age World Class Champion in 2024.",
+      "to": "Organized in 1957 as a parade corps by �age-outs� of various local junior corps and WWII and Korean War veterans, the Reading Buccaneers soon embarked upon field competitions, winning three consecutive VFW championships in 1960, 1961 and 1962. Earning the inaugural Drum Corps Associates championship title in 1965, the Pennsylvania corps won the DCA championship title 19 times in total, 15 of them between 2005 and 2023. The corps was the inaugural DCI All-Age World Class Champion in 2024.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "about",
+      "from": "Formed in 2015 by alumni staff and students from the Chippewa High School Marching Band in Doylestown, Ohio, Rogues Hollow Regiment's mission is to \"engage, entertain, and bring joys to those around us with high-energy music and exciting visual performance,\" whether on the competition field or along the parade route. The group’s accolades include the 2019 SoundSport International Music & Food Festival “Best of Show” and the 2021 and 2023 Drum Corps Associates Class A championship titles. Rogues Hollow Regiment is proud to celebrate its 10th anniversary in 2025.",
+      "to": "Formed in 2015 by alumni staff and students from the Chippewa High School Marching Band in Doylestown, Ohio, Rogues Hollow Regiment's mission is to \"engage, entertain, and bring joys to those around us with high-energy music and exciting visual performance,\" whether on the competition field or along the parade route. The group�s accolades include the 2019 SoundSport International Music & Food Festival �Best of Show� and the 2021 and 2023 Drum Corps Associates Class A championship titles. Rogues Hollow Regiment is proud to celebrate its 10th anniversary in 2025.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "high-school-57",
+      "corpsKey": "beijing-57-high-school",
+      "field": "corps_logo",
+      "from": "/corps-logos/beijing-57-high-school.png",
+      "to": "https://images.dci.org/wp-content/uploads/2024/12/dci-splash.jpg",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "mercedes-marching-band",
+      "corpsKey": "mercedes-marching-band",
+      "field": "corps_logo",
+      "from": "https://scontent-sea1-1.xx.fbcdn.net/v/t39.30808-1/286374602_481976583937855_4772604151432345781_n.jpg?stp=dst-jpg_tt6&cstp=mx960x959&ctp=s720x720&_nc_cat=100&ccb=1-7&_nc_sid=3ab345&_nc_ohc=yzKjJq3glGoQ7kNvwEMESrK&_nc_oc=AdoOtXuKURfLg0dmgaf7yq0hdeLXHGwujUfefG_Sii8fl7QShSyfprV6104yju8tb9E&_nc_zt=24&_nc_ht=scontent-sea1-1.xx&_nc_gid=QM1cfovP2jMBZ_xCVhZ64A&_nc_ss=7b289&oh=00_Af8pP2YqI4-hhexM8iY6CsNtVF58LceZDDSEZu1CU2mNrA&oe=6A26B045",
+      "to": "https://images.dci.org/wp-content/uploads/2024/12/dci-splash.jpg",
+      "kind": "overwrite"
+    }
+  ],
+  "held": [
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "address",
+      "from": "3538 Peoria St\r\nSuite #500",
+      "to": "3538 Peoria St Suite #500 Aurora CO, 80010",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "address",
+      "from": "718 Thompson Lane, \r\nSte 108-425",
+      "to": "718 Thompson Lane, Ste 108-425 Nashville TN, 37204",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "address",
+      "from": "13717 Linden Ave. N. #201",
+      "to": "--- Renton WA, 00000",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "address",
+      "from": "PO Box 1429",
+      "to": "166 DW Highway A-2 Nashua NH, 03060",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "address",
+      "from": "1801 Panorama Dr.\r\nBC Foundation - GE Performing Arts",
+      "to": "1801 Panorama Dr. BC Foundation - GE Performing Arts Bakersfield CA, 93305",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "address",
+      "from": "PO Box 782406",
+      "to": "865 CR 2620 Mineola TX, 75773",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "address",
+      "from": "174 Nassau Street, #198",
+      "to": "174 Nassau Street, #198 Princeton NJ, 08542",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "address",
+      "from": "6527 San Francesco Way\r\n#1304",
+      "to": "6527 San Francesco Way #1304 Windermere FL, 34786",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "sunrisers",
+      "corpsKey": "0010a00001iqmzuaah",
+      "field": "address",
+      "from": "8 Avenue B Kings Park NY, 11754",
+      "to": "P.O. Box 154 Kings Park NY, 11754",
+      "kind": "overwrite"
+    }
+  ]
+}

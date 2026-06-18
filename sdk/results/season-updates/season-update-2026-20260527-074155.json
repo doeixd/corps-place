@@ -1,0 +1,104 @@
+{
+  "generated_at": "2026-05-27T11:41:56.024Z",
+  "season": "2026",
+  "db": "file:./dci-relational.db",
+  "as_of_date": "2026-05-27",
+  "dry_run": true,
+  "future_released_after_as_of": [],
+  "before": {
+    "events": 80,
+    "competitions": 0,
+    "releasedCompetitions": 0,
+    "scoredCompetitions": 0,
+    "corpsScores": 0,
+    "captionScores": 0,
+    "judgeScores": 0,
+    "websiteRecaps": 0,
+    "lineupEntries": 988,
+    "mlRows": 0
+  },
+  "after": {
+    "events": 80,
+    "competitions": 0,
+    "releasedCompetitions": 0,
+    "scoredCompetitions": 0,
+    "corpsScores": 0,
+    "captionScores": 0,
+    "judgeScores": 0,
+    "websiteRecaps": 0,
+    "lineupEntries": 988,
+    "mlRows": 0
+  },
+  "schedule": {
+    "total_events": 80,
+    "relevant_events": [],
+    "events_missing_lineup": [
+      {
+        "slug": "2026-dci-world-championship-semifinals",
+        "name": "DCI World Championship Semifinals",
+        "event_name": "DCI World Championship Semifinals",
+        "start_date": "2026-08-07",
+        "start_time": null,
+        "web_start_time": "1:30 PM ET",
+        "edt_start_time": null,
+        "timezone": null,
+        "location_city": "Indianapolis",
+        "location_state": "IN",
+        "lineup_entries": 0
+      },
+      {
+        "slug": "2026-shining-a-light-on-music-education",
+        "name": "Shining a Light on Music Education",
+        "event_name": "Shining a Light on Music Education",
+        "start_date": "2026-08-07",
+        "start_time": null,
+        "web_start_time": "5:00 PM ET",
+        "edt_start_time": null,
+        "timezone": null,
+        "location_city": "Indianapolis",
+        "location_state": "IN",
+        "lineup_entries": 0
+      },
+      {
+        "slug": "2026-dci-all-age-world-championship-finals",
+        "name": "DCI All-Age World Championship Finals",
+        "event_name": "DCI All-Age World Championship Finals",
+        "start_date": "2026-08-08",
+        "start_time": null,
+        "web_start_time": "10:00 AM ET",
+        "edt_start_time": null,
+        "timezone": null,
+        "location_city": "Indianapolis",
+        "location_state": "IN",
+        "lineup_entries": 0
+      },
+      {
+        "slug": "2026-dci-world-championship-finals",
+        "name": "DCI World Championship Finals",
+        "event_name": "DCI World Championship Finals",
+        "start_date": "2026-08-08",
+        "start_time": null,
+        "web_start_time": "5:30 PM ET",
+        "edt_start_time": null,
+        "timezone": null,
+        "location_city": "Indianapolis",
+        "location_state": "IN",
+        "lineup_entries": 0
+      }
+    ]
+  },
+  "competitions": {
+    "total": 0,
+    "released": [],
+    "needing_recap_detail": []
+  },
+  "fine_tune": null,
+  "notes": [
+    "Website/cache ingest was used. DCI's legacy public API is deprecated/removed, so future seasons should be refreshed from website pages and cached responses.",
+    "Website recap scrape fills judge/caption/subcaption details when released.",
+    "Event page scrape fills lineup/performance order for upcoming prediction context.",
+    "Fine-tuning uses the current V9 subcaption trainer with --load-model and date-forward validation.",
+    "Generated V9 ML rows use --as-of-date so future competition rows and future Elo updates are excluded.",
+    "Fine-tuned models are candidates. Promote manually after reviewing model-card.json and named eval slices."
+  ]
+}

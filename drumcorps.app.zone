@@ -1,0 +1,46 @@
+$ORIGIN drumcorps.app.
+$TTL 3600
+
+; ─────────────────────────────────────────────────────────────────────────────
+; drumcorps.app — direct origin on the Vultr VM (no Cloudflare Tunnel).
+;
+; Import:  Cloudflare dashboard → DNS → Records → Import and Export → Import.
+;
+; After import:
+;   • Turn the proxy ON (orange cloud) for @ and www — recommended: hides the
+;     origin IP and gives edge TLS. Then set SSL/TLS mode to "Full (strict)" and
+;     install a Cloudflare Origin Certificate on the VM (15-yr, no renewal).
+;     (If you'd rather go DNS-only/grey cloud, the records are identical, but the
+;      IP is then public and you own Let's Encrypt renewals on the VM.)
+;   • Open 80/443 in the Vultr firewall (the tunnel previously made this moot).
+;
+; Cloudflare ignores SOA/NS on import and forces TTL=Auto for proxied records;
+; the SOA below exists only so this is a valid BIND file.
+; ─────────────────────────────────────────────────────────────────────────────
+
+@   IN  SOA  ns.cloudflare.com. dns.cloudflare.com. (
+            2026061201  ; serial (YYYYMMDDnn — bump on each edit)
+            3600        ; refresh
+            600         ; retry
+            604800      ; expire
+            3600 )      ; minimum
+
+; ── Origin (Vultr VM) ──
+@     IN  A     149.28.121.248
+www   IN  A     149.28.121.248
+@     IN  AAAA  2001:19f0:5c00:43f8:5400:06ff:fe3e:4000
+www   IN  AAAA  2001:19f0:5c00:43f8:5400:06ff:fe3e:4000
+
+; ─────────────────────────────────────────────────────────────────────────────
+; OPTIONAL — uncomment and set REAL values, or delete. Do not import as-is.
+; ─────────────────────────────────────────────────────────────────────────────
+
+; --- Email (only if the domain sends/receives mail) ---
+;@        IN  MX   10 route1.mx.cloudflare.net.
+;@        IN  MX   20 route2.mx.cloudflare.net.
+;@        IN  MX   30 route3.mx.cloudflare.net.
+;@        IN  TXT  "v=spf1 include:_spf.mx.cloudflare.net ~all"
+;_dmarc   IN  TXT  "v=DMARC1; p=none; rua=mailto:you@example.com"
+
+; --- Domain / service verification (TXT) ---
+;@        IN  TXT  "your-verification-token-here"

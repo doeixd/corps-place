@@ -1,0 +1,471 @@
+{
+  "generated_at": "2026-06-02T12:44:57.987Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-drums-across-the-desert",
+    "slug": "2026-drums-across-the-desert",
+    "name": "Drums Across the Desert",
+    "event_name": "Drums Across the Desert",
+    "start_date": "2026-07-13",
+    "start_time": null,
+    "web_start_time": "8:00 PM MT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Mesa",
+    "location_state": "AZ",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260713-MESA-AZ.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260713-MESA-AZ.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-drums-across-the-desert-chmt7u",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 4,
+    "matched_corps_keys": 4,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 4,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 39.53488372093023
+  },
+  "input_signature": "2d75e2e24cf9d97811fb0c9b82775be3f80417fd6c6d01a6387d6c78c5f2a031",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 4,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx93aad",
+        "corps": "Seattle Cascades",
+        "division": "World Class",
+        "performance_order": 2,
+        "time": "8:10 PM"
+      },
+      {
+        "corps_key": "001j000000iwxa7aal",
+        "corps": "Pacific Crest",
+        "division": "World Class",
+        "performance_order": 3,
+        "time": "8:27 PM"
+      },
+      {
+        "corps_key": "001j000000iwxaeaa1",
+        "corps": "The Academy",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "8:44 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsraal",
+        "corps": "Bluecoats",
+        "division": "World Class",
+        "performance_order": 5,
+        "time": "8:56 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - The Bluecoats and The Academy",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Event Concludes",
+        "performance_order": 7,
+        "exclusion_reason": "unresolved_corps"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-drums-across-the-desert",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-13",
+      "scored_lineup_rows": 4,
+      "matched_corps_keys": 4,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwsraal",
+      "corps": "Bluecoats",
+      "city": "Canton, OH",
+      "division": "World Class",
+      "performance_order": 5,
+      "time": "8:56 PM",
+      "total": 86.349,
+      "GE": 34.727,
+      "Visual": 25.831,
+      "Music": 25.791,
+      "GE1": 17.423,
+      "GE2": 17.304,
+      "VP": 17.127,
+      "VA": 17.342,
+      "CG": 17.194,
+      "MB": 17.13,
+      "MA": 17.349,
+      "MP": 17.103,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.558,
+          "p50": 17.423,
+          "p90": 18.126
+        },
+        "GE2": {
+          "p10": 16.588,
+          "p50": 17.304,
+          "p90": 18.171
+        },
+        "VP": {
+          "p10": 16.362,
+          "p50": 17.127,
+          "p90": 17.874
+        },
+        "VA": {
+          "p10": 16.453,
+          "p50": 17.342,
+          "p90": 17.976
+        },
+        "CG": {
+          "p10": 16.371,
+          "p50": 17.194,
+          "p90": 17.982
+        },
+        "MB": {
+          "p10": 16.355,
+          "p50": 17.13,
+          "p90": 17.906
+        },
+        "MA": {
+          "p10": 16.686,
+          "p50": 17.349,
+          "p90": 18.261
+        },
+        "MP": {
+          "p10": 16.444,
+          "p50": 17.103,
+          "p90": 17.997
+        }
+      },
+      "raw_model_total": 95.516,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 88.55,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-dci-broken-arrow",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 86.351,
+      "caption_shape_total": 83.665,
+      "total_reconciliation_delta": 2.685,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 2,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 83.664,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxa7aal",
+      "corps": "Pacific Crest",
+      "city": "City of Industry, CA",
+      "division": "World Class",
+      "performance_order": 3,
+      "time": "8:27 PM",
+      "total": 78.035,
+      "GE": 31.053,
+      "Visual": 23.229,
+      "Music": 23.753,
+      "GE1": 15.403,
+      "GE2": 15.65,
+      "VP": 15.223,
+      "VA": 15.339,
+      "CG": 15.896,
+      "MB": 15.591,
+      "MA": 15.907,
+      "MP": 16.008,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.57,
+          "p50": 15.403,
+          "p90": 16.105
+        },
+        "GE2": {
+          "p10": 14.973,
+          "p50": 15.65,
+          "p90": 16.539
+        },
+        "VP": {
+          "p10": 14.439,
+          "p50": 15.223,
+          "p90": 15.93
+        },
+        "VA": {
+          "p10": 14.498,
+          "p50": 15.339,
+          "p90": 15.987
+        },
+        "CG": {
+          "p10": 15.115,
+          "p50": 15.896,
+          "p90": 16.652
+        },
+        "MB": {
+          "p10": 14.798,
+          "p50": 15.591,
+          "p90": 16.353
+        },
+        "MA": {
+          "p10": 15.297,
+          "p50": 15.907,
+          "p90": 16.81
+        },
+        "MP": {
+          "p10": 15.287,
+          "p50": 16.008,
+          "p90": 16.833
+        }
+      },
+      "raw_model_total": 89.484,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.5,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-dci-new-mexico",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 78.034,
+      "caption_shape_total": 81.13,
+      "total_reconciliation_delta": -3.095,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 15,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 81.131,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxaeaa1",
+      "corps": "The Academy",
+      "city": "Tempe, AZ",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "8:44 PM",
+      "total": 75.728,
+      "GE": 30.284,
+      "Visual": 22.532,
+      "Music": 22.912,
+      "GE1": 15.023,
+      "GE2": 15.261,
+      "VP": 14.834,
+      "VA": 14.919,
+      "CG": 15.312,
+      "MB": 14.847,
+      "MA": 15.701,
+      "MP": 15.276,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.226,
+          "p50": 15.023,
+          "p90": 15.744
+        },
+        "GE2": {
+          "p10": 14.606,
+          "p50": 15.261,
+          "p90": 16.124
+        },
+        "VP": {
+          "p10": 14.071,
+          "p50": 14.834,
+          "p90": 15.563
+        },
+        "VA": {
+          "p10": 14.073,
+          "p50": 14.919,
+          "p90": 15.556
+        },
+        "CG": {
+          "p10": 14.576,
+          "p50": 15.312,
+          "p90": 16.099
+        },
+        "MB": {
+          "p10": 14.075,
+          "p50": 14.847,
+          "p90": 15.617
+        },
+        "MA": {
+          "p10": 15.09,
+          "p50": 15.701,
+          "p90": 16.588
+        },
+        "MP": {
+          "p10": 14.525,
+          "p50": 15.276,
+          "p90": 16.067
+        }
+      },
+      "raw_model_total": 88.794,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 74.3,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-dci-new-mexico",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 75.728,
+      "caption_shape_total": 77.474,
+      "total_reconciliation_delta": -1.745,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 17,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 77.474,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwx93aad",
+      "corps": "Seattle Cascades",
+      "city": "Seattle, WA",
+      "division": "World Class",
+      "performance_order": 2,
+      "time": "8:10 PM",
+      "total": 72.423,
+      "GE": 29.146,
+      "Visual": 21.392,
+      "Music": 21.885,
+      "GE1": 14.483,
+      "GE2": 14.663,
+      "VP": 14.07,
+      "VA": 14.303,
+      "CG": 14.41,
+      "MB": 14.216,
+      "MA": 14.948,
+      "MP": 14.605,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.752,
+          "p50": 14.483,
+          "p90": 15.271
+        },
+        "GE2": {
+          "p10": 14.017,
+          "p50": 14.663,
+          "p90": 15.549
+        },
+        "VP": {
+          "p10": 13.333,
+          "p50": 14.07,
+          "p90": 14.86
+        },
+        "VA": {
+          "p10": 13.507,
+          "p50": 14.303,
+          "p90": 15.008
+        },
+        "CG": {
+          "p10": 13.698,
+          "p50": 14.41,
+          "p90": 15.195
+        },
+        "MB": {
+          "p10": 13.411,
+          "p50": 14.216,
+          "p90": 14.978
+        },
+        "MA": {
+          "p10": 14.347,
+          "p50": 14.948,
+          "p90": 15.857
+        },
+        "MP": {
+          "p10": 13.822,
+          "p50": 14.605,
+          "p90": 15.38
+        }
+      },
+      "raw_model_total": 83.712,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 71.65,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-dci-new-mexico",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 72.421,
+      "caption_shape_total": 73.362,
+      "total_reconciliation_delta": -0.94,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 23,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.363,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

@@ -1,0 +1,2256 @@
+2026-05-23 05:57:42.239819: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Console log file: models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\training.log
+coverage-sharpness=4 is aggressive; if training gets unstable, retry with --coverage-sharpness 3.0
+Loading V9 sequence data...
+Validation split (date-forward) grouped by show/date: 6906 train rows, 363 validation rows.
+Saved normalization stats to ./results/v9-subcaption-target-norm.json
+
+AUDIT SUCCESS: Leakage prevention verified for caption blocks
+V10 Splits -> Train: 6906, Val: 363, Test: 52 
+Baselines(monitoring forecast MAE): zero = 16.4356, mean = 2.0004, ema = 1.1564, quad = 0.6462
+Orthogonal initializer is being called on a matrix with more than 2000 (65536) elements: Slowness may result.
+Orthogonal initializer is being called on a matrix with more than 2000 (65536) elements: Slowness may result.
+Orthogonal initializer is being called on a matrix with more than 2000 (16384) elements: Slowness may result.
+Orthogonal initializer is being called on a matrix with more than 2000 (16384) elements: Slowness may result.
+___________________________________________________________________________________________________________________
+Layer (type)               Input Shape                 Output shape             Param #     Receives inputs        
+===================================================================================================================
+sequence (InputLayer)      [[null,15,101]]             [null,15,101]            0                                  
+___________________________________________________________________________________________________________________
+bidirectional_Bidirectiona [[null,15,101]]             [null,15,256]            235520      sequence[0][0]         
+___________________________________________________________________________________________________________________
+layer_normalization_LayerN [[null,15,256]]             [null,15,256]            512         bidirectional_Bidirecti
+___________________________________________________________________________________________________________________
+bidirectional_Bidirectiona [[null,15,256]]             [null,15,128]            164352      layer_normalization_Lay
+___________________________________________________________________________________________________________________
+layer_normalization_LayerN [[null,15,128]]             [null,15,128]            256         bidirectional_Bidirecti
+___________________________________________________________________________________________________________________
+dense_Dense1 (Dense)       [[null,15,128]]             [null,15,1]              129         layer_normalization_Lay
+___________________________________________________________________________________________________________________
+reshape_Reshape1 (Reshape) [[null,15,1]]               [null,15]                0           dense_Dense1[0][0]     
+___________________________________________________________________________________________________________________
+mask (InputLayer)          [[null,15]]                 [null,15]                0                                  
+___________________________________________________________________________________________________________________
+masked_softmax_MaskedSoftm [[null,15],[null,15]]       [null,15]                0           reshape_Reshape1[0][0] 
+                                                                                            mask[0][0]             
+___________________________________________________________________________________________________________________
+judge_ids (InputLayer)     [[null,8]]                  [null,8]                 0                                  
+___________________________________________________________________________________________________________________
+agnostic_show_id (InputLay [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+reshape_Reshape2 (Reshape) [[null,15]]                 [null,15,1]              0           masked_softmax_MaskedSo
+___________________________________________________________________________________________________________________
+judge_embedding (Embedding [[null,8]]                  [null,8,24]              5880        judge_ids[0][0]        
+___________________________________________________________________________________________________________________
+agnostic_show_embedding (E [[null,1]]                  [null,1,12]              4188        agnostic_show_id[0][0] 
+___________________________________________________________________________________________________________________
+attention_pool (AttentionP [[null,15,1],[null,15,128]] [null,128]               0           reshape_Reshape2[0][0] 
+                                                                                            layer_normalization_Lay
+___________________________________________________________________________________________________________________
+static (InputLayer)        [[null,177]]                [null,177]               0                                  
+___________________________________________________________________________________________________________________
+flatten_Flatten1 (Flatten) [[null,8,24]]               [null,192]               0           judge_embedding[0][0]  
+___________________________________________________________________________________________________________________
+baseline_recap (InputLayer [[null,8]]                  [null,8]                 0                                  
+___________________________________________________________________________________________________________________
+last_step (LastStepLayer)  [[null,15,101]]             [null,101]               0           sequence[0][0]         
+___________________________________________________________________________________________________________________
+flatten_Flatten3 (Flatten) [[null,1,12]]               [null,12]                0           agnostic_show_embedding
+___________________________________________________________________________________________________________________
+concatenate_Concatenate1 ( [[null,128],[null,177],[nul [null,618]               0           attention_pool[0][0]   
+                                                                                            static[0][0]           
+                                                                                            flatten_Flatten1[0][0] 
+                                                                                            baseline_recap[0][0]   
+                                                                                            last_step[0][0]        
+                                                                                            flatten_Flatten3[0][0] 
+___________________________________________________________________________________________________________________
+dense_Dense2 (Dense)       [[null,618]]                [null,512]               316928      concatenate_Concatenate
+___________________________________________________________________________________________________________________
+dropout_Dropout1 (Dropout) [[null,512]]                [null,512]               0           dense_Dense2[0][0]     
+___________________________________________________________________________________________________________________
+dense_Dense3 (Dense)       [[null,512]]                [null,256]               131328      dropout_Dropout1[0][0] 
+___________________________________________________________________________________________________________________
+dropout_Dropout2 (Dropout) [[null,256]]                [null,256]               0           dense_Dense3[0][0]     
+___________________________________________________________________________________________________________________
+strength (Dense)           [[null,128]]                [null,24]                3096        attention_pool[0][0]   
+___________________________________________________________________________________________________________________
+corps_id (InputLayer)      [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+concatenate_Concatenate2 ( [[null,256],[null,177],[nul [null,457]               0           dropout_Dropout2[0][0] 
+                                                                                            static[0][0]           
+                                                                                            strength[0][0]         
+___________________________________________________________________________________________________________________
+corps_embedding (Embedding [[null,1]]                  [null,1,20]              14180       corps_id[0][0]         
+___________________________________________________________________________________________________________________
+accuracy_trunk (Dense)     [[null,457]]                [null,128]               58624       concatenate_Concatenate
+___________________________________________________________________________________________________________________
+flatten_Flatten2 (Flatten) [[null,1,20]]               [null,20]                0           corps_embedding[0][0]  
+___________________________________________________________________________________________________________________
+dropout_Dropout3 (Dropout) [[null,128]]                [null,128]               0           accuracy_trunk[0][0]   
+___________________________________________________________________________________________________________________
+judge_bias_raw (Dense)     [[null,192]]                [null,8]                 1544        flatten_Flatten1[0][0] 
+___________________________________________________________________________________________________________________
+judge_bias_scale (InputLay [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+corps_corr_raw (Dense)     [[null,20]]                 [null,8]                 168         flatten_Flatten2[0][0] 
+___________________________________________________________________________________________________________________
+corps_scale (InputLayer)   [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+history_len (InputLayer)   [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+delta_q50_base (Dense)     [[null,128]]                [null,8]                 1032        dropout_Dropout3[0][0] 
+___________________________________________________________________________________________________________________
+judge_bias_gated (LambdaSc [[null,8],[null,1]]         [null,8]                 0           judge_bias_raw[0][0]   
+                                                                                            judge_bias_scale[0][0] 
+___________________________________________________________________________________________________________________
+corps_corr_gated (LambdaSc [[null,8],[null,1]]         [null,8]                 0           corps_corr_raw[0][0]   
+                                                                                            corps_scale[0][0]      
+___________________________________________________________________________________________________________________
+width_concat (Concatenate) [[null,457],[null,192],[nul [null,650]               0           concatenate_Concatenate
+                                                                                            flatten_Flatten1[0][0] 
+                                                                                            history_len[0][0]      
+___________________________________________________________________________________________________________________
+delta_q50 (Add)            [[null,8],[null,8],[null,8] [null,8]                 0           delta_q50_base[0][0]   
+                                                                                            judge_bias_gated[0][0] 
+                                                                                            corps_corr_gated[0][0] 
+___________________________________________________________________________________________________________________
+q10_width_raw (Dense)      [[null,650]]                [null,8]                 5208        width_concat[0][0]     
+___________________________________________________________________________________________________________________
+q10_width (Activation)     [[null,8]]                  [null,8]                 0           q10_width_raw[0][0]    
+___________________________________________________________________________________________________________________
+q90_width_raw (Dense)      [[null,650]]                [null,8]                 5208        width_concat[0][0]     
+___________________________________________________________________________________________________________________
+recap_head (RecapLayer)    [[null,8],[null,8]]         [null,8]                 0           delta_q50[0][0]        
+                                                                                            baseline_recap[0][0]   
+___________________________________________________________________________________________________________________
+q10_width_neg (NegationLay [[null,8]]                  [null,8]                 0           q10_width[0][0]        
+___________________________________________________________________________________________________________________
+q90_width (Activation)     [[null,8]]                  [null,8]                 0           q90_width_raw[0][0]    
+___________________________________________________________________________________________________________________
+category_head (CategoryLay [[null,8]]                  [null,3]                 0           recap_head[0][0]       
+___________________________________________________________________________________________________________________
+q10_delta (Add)            [[null,8],[null,8]]         [null,8]                 0           delta_q50[0][0]        
+                                                                                            q10_width_neg[0][0]    
+___________________________________________________________________________________________________________________
+q90_delta (Add)            [[null,8],[null,8]]         [null,8]                 0           delta_q50[0][0]        
+                                                                                            q90_width[0][0]        
+___________________________________________________________________________________________________________________
+total_head (TotalLayer)    [[null,3]]                  [null,1]                 0           category_head[0][0]    
+___________________________________________________________________________________________________________________
+output (Concatenate)       [[null,8],[null,8],[null,8] [null,36]                0           q10_delta[0][0]        
+                                                                                            delta_q50[0][0]        
+                                                                                            q90_delta[0][0]        
+                                                                                            recap_head[0][0]       
+                                                                                            category_head[0][0]    
+                                                                                            total_head[0][0]       
+===================================================================================================================
+Total params: 948153
+Trainable params: 948153
+Non-trainable params: 0
+___________________________________________________________________________________________________________________
+
+--- DERIVATION EXACTNESS CHECK ---
+MaskedSoftmax shapes: [ 1, 15 ] [ 1, 15 ] [ 1, 15 ] [ 1, 15 ]
+Recap Points: [
+  '14.95', '15.09',
+  '14.96', '14.98',
+  '14.95', '14.92',
+  '15.13', '15.03'
+]
+GE: Derived = 30.04, Expected = 30.04 
+Visual: Derived = 22.44, Expected = 22.44 
+Music: Derived = 22.53, Expected = 22.53 
+Total: Derived = 75.02, Expected = 75.02 
+DERIVATION CHECK SUCCESS
+
+--- SCALE SANITY TEST ---
+Sample Row Total: 71.15 (expecting DCI scale, not sum - of - 8)
+Sum - of - 8: 113.60 
+SCALE SANITY SUCCESS: target total is on DCI scale.
+
+
+=== V9-IMPROVED: Enhanced Model for 0.2 MAE Target ===
+Hyperparameters: lstm1=128, lstm2=64, dropout=0.2, lr=0.00075, batch=128, width_floor_pts=0.5, width_target_pts=2.5, width_penalty=0.5, coverage_target=0.8-0.85, over_coverage_weight=2, width_floor_schedule=0.1->1.5, baseline_dropout=0.1, baseline_noise_std=0.25
+Curriculum: phaseAEnd=10, phaseBEnd=40, phaseCRamp=80, judgeScaleRamp=40, corpsScaleStart=25, corpsScaleRamp=35, auto=true, autoPatience=6, autoMinCoverage=0.9, autoMinDeltaGain=0.002
+Model Capacity: 256→128 BiLSTM, Dense 512→256, AccuracyTrunk 128, Judge Emb 24, Corps Emb 20, Show Emb 12
+Cached 363 validation samples(seqLen = 15, identityDropout = 0.0)
+
+Epoch 0: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0,"corps":0}, SeqLen 5, ID_Drop 0.948, WFW 0.100 
+Epoch 0 memory(start): tensors=102, buffers=102, bytes=3.6MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 3.8430   | 3.7696   | 0.6545 
+1    | 9     | 1.1995   | 0.9160   | 0.7063 
+2    | 11    | 0.8547   | 0.5551   | 0.6451 
+3-5  | 59    | 0.6132   | 0.3926   | 0.5186 
+6+   | 276   | 0.5402   | 0.2990   | 0.5006 
+
+Epoch 0: loss = 0.856338 phase = A val_loss = 0.393166 delta_mae_pts = 0.6507 recap_mae_pts = 0.6507 cat_mae_pts = 0.8295 total_mae_pts = 1.6857 vs_inertia_pts = -0.2370 vs_quad_pts = -0.0045 lr_base = 0.000075 lr_mult = 1.0000 lr_eff = 0.000075 mon_cov = 0.253 mon_score = 2.3364 progress = 1/400 epoch_sec = 98.8 avg_epoch_sec = 98.8 elapsed = 00:01:39 eta = 10:57:01
+Epoch 0 memory(end): tensors=180, buffers=180, bytes=11.1MB
+
+-- - CAPTION STATS(Epoch 0)-- - 
+GE1: delta_pts = 0.6164, recap_pts = 0.6164, cov = 0.229, width = 0.5038 
+GE2: delta_pts = 0.7204, recap_pts = 0.7204, cov = 0.275, width = 0.5527 
+VP: delta_pts = 0.7854, recap_pts = 0.7854, cov = 0.171, width = 0.4174 
+VA: delta_pts = 0.6623, recap_pts = 0.6623, cov = 0.190, width = 0.3471 
+CG: delta_pts = 0.5877, recap_pts = 0.5877, cov = 0.452, width = 1.1975 
+MB: delta_pts = 0.5683, recap_pts = 0.5683, cov = 0.129, width = 0.1868 
+MA: delta_pts = 0.5357, recap_pts = 0.5357, cov = 0.110, width = 0.1803 
+MP: delta_pts = 0.7295, recap_pts = 0.7295, cov = 0.466, width = 1.0026 
+----------------------------------
+
+Saved BEST-DELTA checkpoint @epoch 0 delta_mae_pts = 0.6507 monitor_score = 2.3364 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-LOSS checkpoint @epoch 0 val_loss = 0.393166 delta_mae_pts = 0.6507 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_loss 
+Saved BEST-PHASE-A checkpoint @epoch 0 delta_mae_pts = 0.6507 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_a 
+[curriculum] phase=A age=1/10 delta=0.6507 phase_best=0.6507 stall=0/6 cov=0.253/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 1: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.025,"corps":0}, SeqLen 5, ID_Drop 0.951, WFW 0.100 
+Epoch 1 memory(start): tensors=258, buffers=180, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 3.4486   | 3.7696   | 0.8078 
+1    | 9     | 0.8560   | 0.9160   | 0.5406 
+2    | 11    | 0.6401   | 0.5551   | 0.5235 
+3-5  | 59    | 0.4889   | 0.3926   | 0.4372 
+6+   | 276   | 0.4482   | 0.2990   | 0.3957 
+
+Epoch 1: loss = 0.575855 phase = A val_loss = 0.305593 delta_mae_pts = 0.5369 recap_mae_pts = 0.5369 cat_mae_pts = 0.6382 total_mae_pts = 1.3961 vs_inertia_pts = -0.1232 vs_quad_pts = 0.1093 lr_base = 0.000150 lr_mult = 1.0000 lr_eff = 0.000150 mon_cov = 0.682 mon_score = 1.9329 progress = 2/400 epoch_sec = 99.2 avg_epoch_sec = 99.0 elapsed = 00:03:18 eta = 10:56:37
+Epoch 1 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 1 delta_mae_pts = 0.5369 monitor_score = 1.9329 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-LOSS checkpoint @epoch 1 val_loss = 0.305593 delta_mae_pts = 0.5369 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_loss 
+Saved BEST-PHASE-A checkpoint @epoch 1 delta_mae_pts = 0.5369 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_a 
+[curriculum] phase=A age=2/10 delta=0.5369 phase_best=0.5369 stall=0/6 cov=0.682/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 2: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.05,"corps":0}, SeqLen 5, ID_Drop 0.951, WFW 0.100 
+Epoch 2 memory(start): tensors=258, buffers=180, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 2.2854   | 3.7696   | 1.8330 
+1    | 9     | 0.7797   | 0.9160   | 0.7064 
+2    | 11    | 0.7087   | 0.5551   | 0.6286 
+3-5  | 59    | 0.4994   | 0.3926   | 0.5153 
+6+   | 276   | 0.4519   | 0.2990   | 0.4315 
+
+Epoch 2: loss = 0.385452 phase = A val_loss = 0.210532 delta_mae_pts = 0.5159 recap_mae_pts = 0.5159 cat_mae_pts = 0.6553 total_mae_pts = 1.6231 vs_inertia_pts = -0.1022 vs_quad_pts = 0.1302 lr_base = 0.000225 lr_mult = 1.0000 lr_eff = 0.000225 mon_cov = 0.769 mon_score = 2.1391 progress = 3/400 epoch_sec = 101.1 avg_epoch_sec = 99.7 elapsed = 00:04:59 eta = 10:59:38
+Epoch 2 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 2 delta_mae_pts = 0.5159 monitor_score = 1.9329 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-LOSS checkpoint @epoch 2 val_loss = 0.210532 delta_mae_pts = 0.5159 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_loss 
+Saved BEST-PHASE-A checkpoint @epoch 2 delta_mae_pts = 0.5159 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_a 
+[curriculum] phase=A age=3/10 delta=0.5159 phase_best=0.5159 stall=0/6 cov=0.769/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 3: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.075,"corps":0}, SeqLen 5, ID_Drop 0.952, WFW 0.100 
+Epoch 3 memory(start): tensors=258, buffers=180, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.9859   | 3.7696   | 3.0807 
+1    | 9     | 0.8045   | 0.9160   | 0.3985 
+2    | 11    | 0.7417   | 0.5551   | 0.4433 
+3-5  | 59    | 0.5849   | 0.3926   | 0.3681 
+6+   | 276   | 0.4613   | 0.2990   | 0.3281 
+
+Epoch 3: loss = 0.270071 phase = A val_loss = 0.160697 delta_mae_pts = 0.5099 recap_mae_pts = 0.5099 cat_mae_pts = 0.6416 total_mae_pts = 1.6211 vs_inertia_pts = -0.0962 vs_quad_pts = 0.1362 lr_base = 0.000300 lr_mult = 1.0000 lr_eff = 0.000300 mon_cov = 0.794 mon_score = 2.1310 progress = 4/400 epoch_sec = 98.1 avg_epoch_sec = 99.3 elapsed = 00:06:37 eta = 10:55:19
+Epoch 3 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 3 delta_mae_pts = 0.5099 monitor_score = 1.9329 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-LOSS checkpoint @epoch 3 val_loss = 0.160697 delta_mae_pts = 0.5099 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_loss 
+Saved BEST-PHASE-A checkpoint @epoch 3 delta_mae_pts = 0.5099 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_a 
+[curriculum] phase=A age=4/10 delta=0.5099 phase_best=0.5099 stall=0/6 cov=0.794/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 4: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.1,"corps":0}, SeqLen 5, ID_Drop 0.949, WFW 0.100 
+Epoch 4 memory(start): tensors=258, buffers=180, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.8380   | 3.7696   | 3.7549 
+1    | 9     | 0.8728   | 0.9160   | 0.4752 
+2    | 11    | 0.7191   | 0.5551   | 0.3887 
+3-5  | 59    | 0.5638   | 0.3926   | 0.3628 
+6+   | 276   | 0.4387   | 0.2990   | 0.3266 
+
+Epoch 4: loss = 0.224124 phase = A val_loss = 0.151742 delta_mae_pts = 0.4871 recap_mae_pts = 0.4871 cat_mae_pts = 0.6247 total_mae_pts = 1.6555 vs_inertia_pts = -0.0733 vs_quad_pts = 0.1591 lr_base = 0.000375 lr_mult = 1.0000 lr_eff = 0.000375 mon_cov = 0.813 mon_score = 2.1426 progress = 5/400 epoch_sec = 98.3 avg_epoch_sec = 99.1 elapsed = 00:08:15 eta = 10:52:24
+Epoch 4 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 4 delta_mae_pts = 0.4871 monitor_score = 1.9329 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-LOSS checkpoint @epoch 4 val_loss = 0.151742 delta_mae_pts = 0.4871 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_loss 
+Saved BEST-PHASE-A checkpoint @epoch 4 delta_mae_pts = 0.4871 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_a 
+[curriculum] phase=A age=5/10 delta=0.4871 phase_best=0.4871 stall=0/6 cov=0.813/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 5: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.125,"corps":0}, SeqLen 5, ID_Drop 0.952, WFW 0.100 
+Epoch 5 memory(start): tensors=258, buffers=180, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7978   | 3.7696   | 3.6429 
+1    | 9     | 0.7555   | 0.9160   | 0.4700 
+2    | 11    | 0.6904   | 0.5551   | 0.3578 
+3-5  | 59    | 0.5354   | 0.3926   | 0.3616 
+6+   | 276   | 0.4766   | 0.2990   | 0.3720 
+
+Epoch 5: loss = 0.196717 phase = A val_loss = 0.153858 delta_mae_pts = 0.5066 recap_mae_pts = 0.5066 cat_mae_pts = 0.6394 total_mae_pts = 1.6677 vs_inertia_pts = -0.0929 vs_quad_pts = 0.1395 lr_base = 0.000450 lr_mult = 1.0000 lr_eff = 0.000450 mon_cov = 0.864 mon_score = 2.1743 progress = 6/400 epoch_sec = 95.8 avg_epoch_sec = 98.5 elapsed = 00:09:51 eta = 10:47:08
+Epoch 5 memory(end): tensors=258, buffers=219, bytes=18.3MB
+[curriculum] phase=A age=6/10 delta=0.5066 phase_best=0.4871 stall=1/6 cov=0.864/0.900 min=ok cov_gate=wait next=hold
+
+Epoch 6: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.15,"corps":0}, SeqLen 5, ID_Drop 0.949, WFW 0.100 
+Epoch 6 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 1.1178   | 3.7696   | 4.1260 
+1    | 9     | 0.8230   | 0.9160   | 0.5625 
+2    | 11    | 0.7237   | 0.5551   | 0.4098 
+3-5  | 59    | 0.6019   | 0.3926   | 0.4699 
+6+   | 276   | 0.4575   | 0.2990   | 0.3836 
+
+Epoch 6: loss = 0.184698 phase = A val_loss = 0.162363 delta_mae_pts = 0.5127 recap_mae_pts = 0.5127 cat_mae_pts = 0.6931 total_mae_pts = 1.8643 vs_inertia_pts = -0.0989 vs_quad_pts = 0.1335 lr_base = 0.000525 lr_mult = 1.0000 lr_eff = 0.000525 mon_cov = 0.808 mon_score = 2.3770 progress = 7/400 epoch_sec = 94.8 avg_epoch_sec = 98.0 elapsed = 00:11:26 eta = 10:41:57
+Epoch 6 memory(end): tensors=258, buffers=219, bytes=18.3MB
+[curriculum] phase=A age=7/10 delta=0.5127 phase_best=0.4871 stall=2/6 cov=0.808/0.900 min=ok cov_gate=wait next=hold
+
+Epoch 7: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.175,"corps":0}, SeqLen 5, ID_Drop 0.946, WFW 0.100 
+Epoch 7 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7827   | 3.7696   | 3.4106 
+1    | 9     | 0.6824   | 0.9160   | 0.5913 
+2    | 11    | 0.6006   | 0.5551   | 0.4108 
+3-5  | 59    | 0.5016   | 0.3926   | 0.3533 
+6+   | 276   | 0.4497   | 0.2990   | 0.3457 
+
+Epoch 7: loss = 0.178692 phase = A val_loss = 0.140581 delta_mae_pts = 0.4758 recap_mae_pts = 0.4758 cat_mae_pts = 0.5733 total_mae_pts = 1.3058 vs_inertia_pts = -0.0621 vs_quad_pts = 0.1704 lr_base = 0.000600 lr_mult = 1.0000 lr_eff = 0.000600 mon_cov = 0.865 mon_score = 1.7816 progress = 8/400 epoch_sec = 94.7 avg_epoch_sec = 97.6 elapsed = 00:13:01 eta = 10:37:38
+Epoch 7 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 7 delta_mae_pts = 0.4758 monitor_score = 1.7816 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-LOSS checkpoint @epoch 7 val_loss = 0.140581 delta_mae_pts = 0.4758 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_loss 
+Saved BEST-PHASE-A checkpoint @epoch 7 delta_mae_pts = 0.4758 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_a 
+[curriculum] phase=A age=8/10 delta=0.4758 phase_best=0.4758 stall=0/6 cov=0.865/0.900 min=ok cov_gate=wait next=hold
+
+Epoch 8: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.2,"corps":0}, SeqLen 5, ID_Drop 0.951, WFW 0.100 
+Epoch 8 memory(start): tensors=258, buffers=180, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.9330   | 3.7696   | 4.0241 
+1    | 9     | 0.8025   | 0.9160   | 0.5720 
+2    | 11    | 0.6166   | 0.5551   | 0.3402 
+3-5  | 59    | 0.4924   | 0.3926   | 0.3949 
+6+   | 276   | 0.4790   | 0.2990   | 0.4685 
+
+Epoch 8: loss = 0.176955 phase = A val_loss = 0.149211 delta_mae_pts = 0.5034 recap_mae_pts = 0.5034 cat_mae_pts = 0.7164 total_mae_pts = 1.9696 vs_inertia_pts = -0.0897 vs_quad_pts = 0.1428 lr_base = 0.000675 lr_mult = 1.0000 lr_eff = 0.000675 mon_cov = 0.830 mon_score = 2.4730 progress = 9/400 epoch_sec = 95.1 avg_epoch_sec = 97.3 elapsed = 00:14:36 eta = 10:34:11
+Epoch 8 memory(end): tensors=258, buffers=219, bytes=18.3MB
+[curriculum] phase=A age=9/10 delta=0.5034 phase_best=0.4758 stall=1/6 cov=0.830/0.900 min=ok cov_gate=wait next=hold
+
+Epoch 9: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.225,"corps":0}, SeqLen 5, ID_Drop 0.950, WFW 0.100 
+Epoch 9 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.8095   | 3.7696   | 4.0332 
+1    | 9     | 0.6553   | 0.9160   | 0.5967 
+2    | 11    | 0.5677   | 0.5551   | 0.3464 
+3-5  | 59    | 0.4811   | 0.3926   | 0.2897 
+6+   | 276   | 0.3956   | 0.2990   | 0.2736 
+
+Epoch 9: loss = 0.174442 phase = A val_loss = 0.129082 delta_mae_pts = 0.4303 recap_mae_pts = 0.4303 cat_mae_pts = 0.5550 total_mae_pts = 1.3918 vs_inertia_pts = -0.0166 vs_quad_pts = 0.2159 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.889 mon_score = 1.8221 progress = 10/400 epoch_sec = 96.6 avg_epoch_sec = 97.3 elapsed = 00:16:13 eta = 10:32:08
+Epoch 9 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 9 delta_mae_pts = 0.4303 monitor_score = 1.7816 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-LOSS checkpoint @epoch 9 val_loss = 0.129082 delta_mae_pts = 0.4303 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_loss 
+Saved BEST-PHASE-A checkpoint @epoch 9 delta_mae_pts = 0.4303 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_a 
+[curriculum] phase=A age=10/10 delta=0.4303 phase_best=0.4303 stall=0/6 cov=0.889/0.900 min=ok cov_gate=wait next=advance:max
+
+--- AUTO CURRICULUM: A -> B at next epoch 10 (reason=max_epoch, delta=0.4303, coverage=0.889) ---
+
+Epoch 10: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.25,"corps":0}, SeqLen 15, ID_Drop 0.948, WFW 0.100 
+Epoch 10 memory(start): tensors=258, buffers=180, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.9440   | 3.7696   | 4.0166 
+1    | 9     | 0.7291   | 0.9160   | 0.5775 
+2    | 11    | 0.8457   | 0.5551   | 0.4525 
+3-5  | 59    | 0.8069   | 0.3926   | 0.5465 
+6+   | 276   | 0.5742   | 0.2990   | 0.4285 
+
+Epoch 10: loss = 0.176726 phase = B val_loss = 0.188550 delta_mae_pts = 0.6322 recap_mae_pts = 0.6322 cat_mae_pts = 0.9541 total_mae_pts = 2.7706 vs_inertia_pts = -0.2185 vs_quad_pts = 0.0139 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.788 mon_score = 3.4028 progress = 11/400 epoch_sec = 100.2 avg_epoch_sec = 97.5 elapsed = 00:17:53 eta = 10:32:13
+Epoch 10 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-PHASE-B checkpoint @epoch 10 delta_mae_pts = 0.6322 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_b 
+[curriculum] phase=B age=1/30 delta=0.6322 phase_best=0.6322 stall=0/6 cov=0.788/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 11: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.9766666666666667,"deltaWeight":0.22666666666666668,"categoryWeight":0.05,"quantileWeight":0.02266666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.275,"corps":0}, SeqLen 15, ID_Drop 0.956, WFW 0.105 
+Epoch 11 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6437   | 3.7696   | 3.6698 
+1    | 9     | 0.7342   | 0.9160   | 0.4750 
+2    | 11    | 0.6578   | 0.5551   | 0.3673 
+3-5  | 59    | 0.5919   | 0.3926   | 0.3694 
+6+   | 276   | 0.4280   | 0.2990   | 0.3052 
+
+Epoch 11: loss = 0.168390 phase = B val_loss = 0.143544 delta_mae_pts = 0.4740 recap_mae_pts = 0.4740 cat_mae_pts = 0.6548 total_mae_pts = 1.7747 vs_inertia_pts = -0.0603 vs_quad_pts = 0.1722 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.885 mon_score = 2.2487 progress = 12/400 epoch_sec = 103.7 avg_epoch_sec = 98.0 elapsed = 00:19:36 eta = 10:33:57
+Epoch 11 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-PHASE-B checkpoint @epoch 11 delta_mae_pts = 0.4740 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_b 
+[curriculum] phase=B age=2/30 delta=0.4740 phase_best=0.4740 stall=0/6 cov=0.885/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 12: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.9533333333333334,"deltaWeight":0.25333333333333335,"categoryWeight":0.05,"quantileWeight":0.025333333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.3,"corps":0}, SeqLen 15, ID_Drop 0.949, WFW 0.118 
+Epoch 12 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7842   | 3.7696   | 3.8323 
+1    | 9     | 0.6956   | 0.9160   | 0.6231 
+2    | 11    | 0.6263   | 0.5551   | 0.3873 
+3-5  | 59    | 0.5133   | 0.3926   | 0.3239 
+6+   | 276   | 0.3771   | 0.2990   | 0.2692 
+
+Epoch 12: loss = 0.163641 phase = B val_loss = 0.131793 delta_mae_pts = 0.4237 recap_mae_pts = 0.4237 cat_mae_pts = 0.5258 total_mae_pts = 1.2543 vs_inertia_pts = -0.0099 vs_quad_pts = 0.2225 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.896 mon_score = 1.6780 progress = 13/400 epoch_sec = 99.6 avg_epoch_sec = 98.2 elapsed = 00:21:16 eta = 10:33:06
+Epoch 12 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 12 delta_mae_pts = 0.4237 monitor_score = 1.6780 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-PHASE-B checkpoint @epoch 12 delta_mae_pts = 0.4237 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_b 
+[curriculum] phase=B age=3/30 delta=0.4237 phase_best=0.4237 stall=0/6 cov=0.896/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 13: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.93,"deltaWeight":0.28,"categoryWeight":0.05,"quantileWeight":0.028,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.325,"corps":0}, SeqLen 15, ID_Drop 0.950, WFW 0.139 
+Epoch 13 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.9380   | 3.7696   | 3.2475 
+1    | 9     | 0.7264   | 0.9160   | 0.5557 
+2    | 11    | 0.6253   | 0.5551   | 0.3404 
+3-5  | 59    | 0.5151   | 0.3926   | 0.3432 
+6+   | 276   | 0.4019   | 0.2990   | 0.2979 
+
+Epoch 13: loss = 0.158637 phase = B val_loss = 0.138788 delta_mae_pts = 0.4469 recap_mae_pts = 0.4469 cat_mae_pts = 0.5784 total_mae_pts = 1.4780 vs_inertia_pts = -0.0332 vs_quad_pts = 0.1992 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.890 mon_score = 1.9250 progress = 14/400 epoch_sec = 100.2 avg_epoch_sec = 98.3 elapsed = 00:22:56 eta = 10:32:26
+Epoch 13 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=4/30 delta=0.4469 phase_best=0.4237 stall=1/6 cov=0.890/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 14: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.9066666666666667,"deltaWeight":0.3066666666666667,"categoryWeight":0.05,"quantileWeight":0.03066666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.35,"corps":0}, SeqLen 15, ID_Drop 0.949, WFW 0.168 
+Epoch 14 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5557   | 3.7696   | 3.6964 
+1    | 9     | 0.6319   | 0.9160   | 0.7410 
+2    | 11    | 0.5097   | 0.5551   | 0.3697 
+3-5  | 59    | 0.5006   | 0.3926   | 0.3220 
+6+   | 276   | 0.4126   | 0.2990   | 0.3159 
+
+Epoch 14: loss = 0.158986 phase = B val_loss = 0.136364 delta_mae_pts = 0.4385 recap_mae_pts = 0.4385 cat_mae_pts = 0.5565 total_mae_pts = 1.4540 vs_inertia_pts = -0.0247 vs_quad_pts = 0.2077 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.905 mon_score = 1.8924 progress = 15/400 epoch_sec = 102.8 avg_epoch_sec = 98.6 elapsed = 00:24:39 eta = 10:32:43
+Epoch 14 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=5/30 delta=0.4385 phase_best=0.4237 stall=2/6 cov=0.905/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 15: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.8833333333333333,"deltaWeight":0.33333333333333337,"categoryWeight":0.05,"quantileWeight":0.03333333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.375,"corps":0}, SeqLen 15, ID_Drop 0.951, WFW 0.204 
+Epoch 15 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6138   | 3.7696   | 4.1625 
+1    | 9     | 0.8622   | 0.9160   | 1.2373 
+2    | 11    | 0.5746   | 0.5551   | 0.7566 
+3-5  | 59    | 0.4181   | 0.3926   | 0.4372 
+6+   | 276   | 0.3909   | 0.2990   | 0.3271 
+
+Epoch 15: loss = 0.154989 phase = B val_loss = 0.134614 delta_mae_pts = 0.4175 recap_mae_pts = 0.4175 cat_mae_pts = 0.5294 total_mae_pts = 1.3273 vs_inertia_pts = -0.0038 vs_quad_pts = 0.2287 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.905 mon_score = 1.7448 progress = 16/400 epoch_sec = 99.0 avg_epoch_sec = 98.6 elapsed = 00:26:18 eta = 10:31:15
+Epoch 15 memory(end): tensors=258, buffers=258, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 15 delta_mae_pts = 0.4175 monitor_score = 1.6780 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-PHASE-B checkpoint @epoch 15 delta_mae_pts = 0.4175 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_b 
+[curriculum] phase=B age=6/30 delta=0.4175 phase_best=0.4175 stall=0/6 cov=0.905/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 16: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.86,"deltaWeight":0.36000000000000004,"categoryWeight":0.05,"quantileWeight":0.036000000000000004,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.4,"corps":0}, SeqLen 15, ID_Drop 0.949, WFW 0.246 
+Epoch 16 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6358   | 3.7696   | 3.8168 
+1    | 9     | 0.6145   | 0.9160   | 0.5959 
+2    | 11    | 0.4976   | 0.5551   | 0.2659 
+3-5  | 59    | 0.5744   | 0.3926   | 0.3318 
+6+   | 276   | 0.4415   | 0.2990   | 0.3006 
+
+Epoch 16: loss = 0.151101 phase = B val_loss = 0.151480 delta_mae_pts = 0.4734 recap_mae_pts = 0.4734 cat_mae_pts = 0.6629 total_mae_pts = 1.7877 vs_inertia_pts = -0.0597 vs_quad_pts = 0.1728 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.875 mon_score = 2.2611 progress = 17/400 epoch_sec = 99.3 avg_epoch_sec = 98.7 elapsed = 00:27:57 eta = 10:29:52
+Epoch 16 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=7/30 delta=0.4734 phase_best=0.4175 stall=1/6 cov=0.875/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 17: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.8366666666666667,"deltaWeight":0.3866666666666667,"categoryWeight":0.05,"quantileWeight":0.03866666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.425,"corps":0}, SeqLen 15, ID_Drop 0.954, WFW 0.293 
+Epoch 17 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7134   | 3.7696   | 3.6724 
+1    | 9     | 0.7598   | 0.9160   | 0.4678 
+2    | 11    | 0.5052   | 0.5551   | 0.3035 
+3-5  | 59    | 0.4898   | 0.3926   | 0.3746 
+6+   | 276   | 0.3682   | 0.2990   | 0.3120 
+
+Epoch 17: loss = 0.152012 phase = B val_loss = 0.137497 delta_mae_pts = 0.4095 recap_mae_pts = 0.4095 cat_mae_pts = 0.5544 total_mae_pts = 1.4542 vs_inertia_pts = 0.0043 vs_quad_pts = 0.2367 lr_base = 0.000749 lr_mult = 1.0000 lr_eff = 0.000749 mon_cov = 0.920 mon_score = 1.8637 progress = 18/400 epoch_sec = 97.5 avg_epoch_sec = 98.6 elapsed = 00:29:35 eta = 10:27:49
+Epoch 17 memory(end): tensors=258, buffers=258, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 17 delta_mae_pts = 0.4095 monitor_score = 1.6780 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-PHASE-B checkpoint @epoch 17 delta_mae_pts = 0.4095 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_b 
+[curriculum] phase=B age=8/30 delta=0.4095 phase_best=0.4095 stall=0/6 cov=0.920/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 18: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.8133333333333334,"deltaWeight":0.41333333333333333,"categoryWeight":0.05,"quantileWeight":0.04133333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.45,"corps":0}, SeqLen 15, ID_Drop 0.951, WFW 0.346 
+Epoch 18 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7112   | 3.7696   | 3.8931 
+1    | 9     | 0.7056   | 0.9160   | 0.5598 
+2    | 11    | 0.5719   | 0.5551   | 0.2948 
+3-5  | 59    | 0.5155   | 0.3926   | 0.3590 
+6+   | 276   | 0.3565   | 0.2990   | 0.2666 
+
+Epoch 18: loss = 0.148918 phase = B val_loss = 0.140690 delta_mae_pts = 0.4053 recap_mae_pts = 0.4053 cat_mae_pts = 0.5161 total_mae_pts = 1.3190 vs_inertia_pts = 0.0084 vs_quad_pts = 0.2408 lr_base = 0.000749 lr_mult = 1.0000 lr_eff = 0.000749 mon_cov = 0.921 mon_score = 1.7243 progress = 19/400 epoch_sec = 99.6 avg_epoch_sec = 98.7 elapsed = 00:31:15 eta = 10:26:30
+Epoch 18 memory(end): tensors=258, buffers=258, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 18 delta_mae_pts = 0.4053 monitor_score = 1.6780 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-PHASE-B checkpoint @epoch 18 delta_mae_pts = 0.4053 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_b 
+[curriculum] phase=B age=9/30 delta=0.4053 phase_best=0.4053 stall=0/6 cov=0.921/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 19: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.79,"deltaWeight":0.44,"categoryWeight":0.05,"quantileWeight":0.044,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.475,"corps":0}, SeqLen 15, ID_Drop 0.952, WFW 0.402 
+Epoch 19 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7892   | 3.7696   | 3.9972 
+1    | 9     | 0.6777   | 0.9160   | 0.5110 
+2    | 11    | 0.5518   | 0.5551   | 0.3014 
+3-5  | 59    | 0.5961   | 0.3926   | 0.3615 
+6+   | 276   | 0.3821   | 0.2990   | 0.2604 
+
+Epoch 19: loss = 0.153360 phase = B val_loss = 0.151640 delta_mae_pts = 0.4383 recap_mae_pts = 0.4383 cat_mae_pts = 0.6105 total_mae_pts = 1.6598 vs_inertia_pts = -0.0246 vs_quad_pts = 0.2079 lr_base = 0.000749 lr_mult = 1.0000 lr_eff = 0.000749 mon_cov = 0.914 mon_score = 2.0981 progress = 20/400 epoch_sec = 97.7 avg_epoch_sec = 98.6 elapsed = 00:32:52 eta = 10:24:33
+Epoch 19 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=10/30 delta=0.4383 phase_best=0.4053 stall=1/6 cov=0.914/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 20: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.7666666666666667,"deltaWeight":0.4666666666666667,"categoryWeight":0.05,"quantileWeight":0.04666666666666666,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.5,"corps":0}, SeqLen 15, ID_Drop 0.947, WFW 0.463 
+Epoch 20 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6429   | 3.7696   | 3.6295 
+1    | 9     | 0.7327   | 0.9160   | 0.4693 
+2    | 11    | 0.6189   | 0.5551   | 0.3541 
+3-5  | 59    | 0.5974   | 0.3926   | 0.3923 
+6+   | 276   | 0.4324   | 0.2990   | 0.3190 
+
+Epoch 20: loss = 0.153111 phase = B val_loss = 0.165011 delta_mae_pts = 0.4769 recap_mae_pts = 0.4769 cat_mae_pts = 0.6253 total_mae_pts = 1.5716 vs_inertia_pts = -0.0632 vs_quad_pts = 0.1692 lr_base = 0.000749 lr_mult = 1.0000 lr_eff = 0.000749 mon_cov = 0.897 mon_score = 2.0486 progress = 21/400 epoch_sec = 96.7 avg_epoch_sec = 98.5 elapsed = 00:34:29 eta = 10:22:19
+Epoch 20 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=11/30 delta=0.4769 phase_best=0.4053 stall=2/6 cov=0.897/0.900 min=wait cov_gate=wait next=hold
+
+Epoch 21: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.7433333333333334,"deltaWeight":0.49333333333333335,"categoryWeight":0.05,"quantileWeight":0.04933333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.525,"corps":0}, SeqLen 15, ID_Drop 0.948, WFW 0.527 
+Epoch 21 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6294   | 3.7696   | 3.7333 
+1    | 9     | 0.6351   | 0.9160   | 0.5761 
+2    | 11    | 0.4681   | 0.5551   | 0.3412 
+3-5  | 59    | 0.3893   | 0.3926   | 0.2633 
+6+   | 276   | 0.3222   | 0.2990   | 0.2402 
+
+Epoch 21: loss = 0.157488 phase = B val_loss = 0.127964 delta_mae_pts = 0.3521 recap_mae_pts = 0.3521 cat_mae_pts = 0.4237 total_mae_pts = 0.9668 vs_inertia_pts = 0.0616 vs_quad_pts = 0.2941 lr_base = 0.000749 lr_mult = 1.0000 lr_eff = 0.000749 mon_cov = 0.951 mon_score = 1.3188 progress = 22/400 epoch_sec = 96.5 avg_epoch_sec = 98.4 elapsed = 00:36:05 eta = 10:20:06
+Epoch 21 memory(end): tensors=258, buffers=258, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 21 delta_mae_pts = 0.3521 monitor_score = 1.3188 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-LOSS checkpoint @epoch 21 val_loss = 0.127964 delta_mae_pts = 0.3521 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_loss 
+Saved BEST-PHASE-B checkpoint @epoch 21 delta_mae_pts = 0.3521 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_b 
+[curriculum] phase=B age=12/30 delta=0.3521 phase_best=0.3521 stall=0/6 cov=0.951/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 22: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.72,"deltaWeight":0.52,"categoryWeight":0.05,"quantileWeight":0.052000000000000005,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.55,"corps":0}, SeqLen 15, ID_Drop 0.952, WFW 0.593 
+Epoch 22 memory(start): tensors=258, buffers=180, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5369   | 3.7696   | 3.8124 
+1    | 9     | 0.7025   | 0.9160   | 0.8240 
+2    | 11    | 0.4908   | 0.5551   | 0.5231 
+3-5  | 59    | 0.4064   | 0.3926   | 0.4071 
+6+   | 276   | 0.3376   | 0.2990   | 0.3117 
+
+Epoch 22: loss = 0.153746 phase = B val_loss = 0.135555 delta_mae_pts = 0.3669 recap_mae_pts = 0.3669 cat_mae_pts = 0.4649 total_mae_pts = 1.1257 vs_inertia_pts = 0.0469 vs_quad_pts = 0.2793 lr_base = 0.000748 lr_mult = 1.0000 lr_eff = 0.000748 mon_cov = 0.951 mon_score = 1.4926 progress = 23/400 epoch_sec = 92.8 avg_epoch_sec = 98.2 elapsed = 00:37:38 eta = 10:16:56
+Epoch 22 memory(end): tensors=258, buffers=219, bytes=18.3MB
+[curriculum] phase=B age=13/30 delta=0.3669 phase_best=0.3521 stall=1/6 cov=0.951/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 23: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.6966666666666667,"deltaWeight":0.5466666666666666,"categoryWeight":0.05,"quantileWeight":0.05466666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.575,"corps":0}, SeqLen 15, ID_Drop 0.953, WFW 0.661 
+Epoch 23 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7197   | 3.7696   | 3.9337 
+1    | 9     | 0.6280   | 0.9160   | 0.6317 
+2    | 11    | 0.4791   | 0.5551   | 0.3426 
+3-5  | 59    | 0.3890   | 0.3926   | 0.2815 
+6+   | 276   | 0.3153   | 0.2990   | 0.2529 
+
+Epoch 23: loss = 0.155473 phase = B val_loss = 0.132163 delta_mae_pts = 0.3489 recap_mae_pts = 0.3489 cat_mae_pts = 0.4159 total_mae_pts = 0.9844 vs_inertia_pts = 0.0648 vs_quad_pts = 0.2973 lr_base = 0.000748 lr_mult = 1.0000 lr_eff = 0.000748 mon_cov = 0.950 mon_score = 1.3333 progress = 24/400 epoch_sec = 96.0 avg_epoch_sec = 98.1 elapsed = 00:39:14 eta = 10:14:43
+Epoch 23 memory(end): tensors=258, buffers=219, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 23 delta_mae_pts = 0.3489 monitor_score = 1.3188 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-PHASE-B checkpoint @epoch 23 delta_mae_pts = 0.3489 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_b 
+[curriculum] phase=B age=14/30 delta=0.3489 phase_best=0.3489 stall=0/6 cov=0.950/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 24: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.6733333333333333,"deltaWeight":0.5733333333333334,"categoryWeight":0.05,"quantileWeight":0.05733333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.6,"corps":0}, SeqLen 15, ID_Drop 0.947, WFW 0.730 
+Epoch 24 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5841   | 3.7696   | 3.7122 
+1    | 9     | 0.6499   | 0.9160   | 0.7837 
+2    | 11    | 0.4449   | 0.5551   | 0.3685 
+3-5  | 59    | 0.4142   | 0.3926   | 0.2710 
+6+   | 276   | 0.3357   | 0.2990   | 0.2397 
+
+Epoch 24: loss = 0.155085 phase = B val_loss = 0.139503 delta_mae_pts = 0.3650 recap_mae_pts = 0.3650 cat_mae_pts = 0.4352 total_mae_pts = 1.0631 vs_inertia_pts = 0.0487 vs_quad_pts = 0.2812 lr_base = 0.000748 lr_mult = 1.0000 lr_eff = 0.000748 mon_cov = 0.961 mon_score = 1.4281 progress = 25/400 epoch_sec = 95.0 avg_epoch_sec = 98.0 elapsed = 00:40:49 eta = 10:12:18
+Epoch 24 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=15/30 delta=0.3650 phase_best=0.3489 stall=1/6 cov=0.961/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 25: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.65,"deltaWeight":0.6000000000000001,"categoryWeight":0.05,"quantileWeight":0.06,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.625,"corps":0}, SeqLen 15, ID_Drop 0.947, WFW 0.800 
+Epoch 25 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6310   | 3.7696   | 3.8885 
+1    | 9     | 0.6031   | 0.9160   | 0.6124 
+2    | 11    | 0.4517   | 0.5551   | 0.3141 
+3-5  | 59    | 0.4060   | 0.3926   | 0.2799 
+6+   | 276   | 0.3135   | 0.2990   | 0.2464 
+
+Epoch 25: loss = 0.159435 phase = B val_loss = 0.138055 delta_mae_pts = 0.3469 recap_mae_pts = 0.3469 cat_mae_pts = 0.4312 total_mae_pts = 1.0085 vs_inertia_pts = 0.0668 vs_quad_pts = 0.2993 lr_base = 0.000747 lr_mult = 1.0000 lr_eff = 0.000747 mon_cov = 0.951 mon_score = 1.3554 progress = 26/400 epoch_sec = 94.4 avg_epoch_sec = 97.8 elapsed = 00:42:24 eta = 10:09:49
+Epoch 25 memory(end): tensors=258, buffers=258, bytes=18.3MB
+Saved BEST-DELTA checkpoint @epoch 25 delta_mae_pts = 0.3469 monitor_score = 1.3188 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best 
+Saved BEST-PHASE-B checkpoint @epoch 25 delta_mae_pts = 0.3469 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_b 
+[curriculum] phase=B age=16/30 delta=0.3469 phase_best=0.3469 stall=0/6 cov=0.951/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 26: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.6266666666666667,"deltaWeight":0.6266666666666667,"categoryWeight":0.05,"quantileWeight":0.06266666666666666,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.65,"corps":0.02857142857142857}, SeqLen 15, ID_Drop 0.946, WFW 0.870 
+Epoch 26 memory(start): tensors=258, buffers=219, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5657   | 3.7696   | 3.6133 
+1    | 9     | 0.6426   | 0.9160   | 0.5825 
+2    | 11    | 0.4354   | 0.5551   | 0.3361 
+3-5  | 59    | 0.3934   | 0.3926   | 0.2575 
+6+   | 276   | 0.3255   | 0.2990   | 0.2497 
+
+Epoch 26: loss = 0.156739 phase = B val_loss = 0.139323 delta_mae_pts = 0.3530 recap_mae_pts = 0.3530 cat_mae_pts = 0.4136 total_mae_pts = 0.9521 vs_inertia_pts = 0.0607 vs_quad_pts = 0.2931 lr_base = 0.000747 lr_mult = 1.0000 lr_eff = 0.000747 mon_cov = 0.959 mon_score = 1.3052 progress = 27/400 epoch_sec = 95.2 avg_epoch_sec = 97.7 elapsed = 00:43:59 eta = 10:07:36
+Epoch 26 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=17/30 delta=0.3530 phase_best=0.3469 stall=1/6 cov=0.959/0.900 min=wait cov_gate=ok next=hold
+
+Epoch 27: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.6033333333333334,"deltaWeight":0.6533333333333333,"categoryWeight":0.05,"quantileWeight":0.06533333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.675,"corps":0.05714285714285714}, SeqLen 15, ID_Drop 0.948, WFW 0.939 
+Epoch 27 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6322   | 3.7696   | 3.9609 
+1    | 9     | 0.6908   | 0.9160   | 0.9618 
+2    | 11    | 0.5004   | 0.5551   | 0.6201 
+3-5  | 59    | 0.3796   | 0.3926   | 0.3380 
+6+   | 276   | 0.3227   | 0.2990   | 0.2539 
+
+Epoch 27: loss = 0.162049 phase = B val_loss = 0.144717 delta_mae_pts = 0.3533 recap_mae_pts = 0.3533 cat_mae_pts = 0.4028 total_mae_pts = 0.9032 vs_inertia_pts = 0.0604 vs_quad_pts = 0.2929 lr_base = 0.000747 lr_mult = 1.0000 lr_eff = 0.000747 mon_cov = 0.951 mon_score = 1.2565 progress = 28/400 epoch_sec = 97.1 avg_epoch_sec = 97.7 elapsed = 00:45:36 eta = 10:05:50
+Epoch 27 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=18/30 delta=0.3533 phase_best=0.3469 stall=2/6 cov=0.951/0.900 min=ok cov_gate=ok next=hold
+
+Epoch 28: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.5800000000000001,"deltaWeight":0.6799999999999999,"categoryWeight":0.05,"quantileWeight":0.068,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.7,"corps":0.08571428571428572}, SeqLen 15, ID_Drop 0.949, WFW 1.007 
+Epoch 28 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6917   | 3.7696   | 4.1005 
+1    | 9     | 0.5941   | 0.9160   | 0.7770 
+2    | 11    | 0.4649   | 0.5551   | 0.3825 
+3-5  | 59    | 0.5155   | 0.3926   | 0.3114 
+6+   | 276   | 0.4070   | 0.2990   | 0.2851 
+
+Epoch 28: loss = 0.162095 phase = B val_loss = 0.172921 delta_mae_pts = 0.4373 recap_mae_pts = 0.4373 cat_mae_pts = 0.5962 total_mae_pts = 1.5625 vs_inertia_pts = -0.0236 vs_quad_pts = 0.2089 lr_base = 0.000746 lr_mult = 1.0000 lr_eff = 0.000746 mon_cov = 0.920 mon_score = 1.9998 progress = 29/400 epoch_sec = 94.6 avg_epoch_sec = 97.6 elapsed = 00:47:11 eta = 10:03:33
+Epoch 28 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=19/30 delta=0.4373 phase_best=0.3469 stall=3/6 cov=0.920/0.900 min=ok cov_gate=ok next=hold
+
+Epoch 29: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.5566666666666666,"deltaWeight":0.7066666666666668,"categoryWeight":0.05,"quantileWeight":0.07066666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.725,"corps":0.11428571428571428}, SeqLen 15, ID_Drop 0.945, WFW 1.073 
+Epoch 29 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6452   | 3.7696   | 3.3145 
+1    | 9     | 0.6859   | 0.9160   | 0.5201 
+2    | 11    | 0.5037   | 0.5551   | 0.3686 
+3-5  | 59    | 0.4452   | 0.3926   | 0.3691 
+6+   | 276   | 0.3390   | 0.2990   | 0.2843 
+
+Epoch 29: loss = 0.168552 phase = B val_loss = 0.157351 delta_mae_pts = 0.3766 recap_mae_pts = 0.3766 cat_mae_pts = 0.4855 total_mae_pts = 1.1596 vs_inertia_pts = 0.0371 vs_quad_pts = 0.2696 lr_base = 0.000746 lr_mult = 1.0000 lr_eff = 0.000746 mon_cov = 0.948 mon_score = 1.5362 progress = 30/400 epoch_sec = 96.9 avg_epoch_sec = 97.6 elapsed = 00:48:47 eta = 10:01:46
+Epoch 29 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=20/30 delta=0.3766 phase_best=0.3469 stall=4/6 cov=0.948/0.900 min=ok cov_gate=ok next=hold
+
+Epoch 30: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.5333333333333334,"deltaWeight":0.7333333333333334,"categoryWeight":0.05,"quantileWeight":0.07333333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.75,"corps":0.14285714285714285}, SeqLen 15, ID_Drop 0.949, WFW 1.137 
+Epoch 30 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6890   | 3.7696   | 3.8387 
+1    | 9     | 0.6545   | 0.9160   | 0.5621 
+2    | 11    | 0.5206   | 0.5551   | 0.3264 
+3-5  | 59    | 0.4479   | 0.3926   | 0.3119 
+6+   | 276   | 0.3567   | 0.2990   | 0.2698 
+
+Epoch 30: loss = 0.165163 phase = B val_loss = 0.163610 delta_mae_pts = 0.3912 recap_mae_pts = 0.3912 cat_mae_pts = 0.4943 total_mae_pts = 1.1919 vs_inertia_pts = 0.0225 vs_quad_pts = 0.2550 lr_base = 0.000745 lr_mult = 1.0000 lr_eff = 0.000745 mon_cov = 0.934 mon_score = 1.5831 progress = 31/400 epoch_sec = 96.1 avg_epoch_sec = 97.5 elapsed = 00:50:24 eta = 09:59:51
+Epoch 30 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=21/30 delta=0.3912 phase_best=0.3469 stall=5/6 cov=0.934/0.900 min=ok cov_gate=ok next=hold
+
+Epoch 31: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.51,"deltaWeight":0.76,"categoryWeight":0.05,"quantileWeight":0.076,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.775,"corps":0.17142857142857143}, SeqLen 15, ID_Drop 0.955, WFW 1.198 
+Epoch 31 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5463   | 3.7696   | 3.6237 
+1    | 9     | 0.6210   | 0.9160   | 0.5736 
+2    | 11    | 0.4670   | 0.5551   | 0.3872 
+3-5  | 59    | 0.4487   | 0.3926   | 0.3029 
+6+   | 276   | 0.3372   | 0.2990   | 0.2383 
+
+Epoch 31: loss = 0.165552 phase = B val_loss = 0.158676 delta_mae_pts = 0.3709 recap_mae_pts = 0.3709 cat_mae_pts = 0.4430 total_mae_pts = 1.0693 vs_inertia_pts = 0.0428 vs_quad_pts = 0.2752 lr_base = 0.000745 lr_mult = 1.0000 lr_eff = 0.000745 mon_cov = 0.941 mon_score = 1.4402 progress = 32/400 epoch_sec = 94.6 avg_epoch_sec = 97.4 elapsed = 00:51:58 eta = 09:57:40
+Epoch 31 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=B age=22/30 delta=0.3709 phase_best=0.3469 stall=6/6 cov=0.941/0.900 min=ok cov_gate=ok next=advance:plateau
+
+--- AUTO CURRICULUM: B -> C at next epoch 32 (reason=delta_plateau, delta=0.3709, coverage=0.941) ---
+
+Epoch 32: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.02,"recapWeight":0.3,"deltaWeight":1,"categoryWeight":0.05,"quantileWeight":0.1,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.8,"corps":0.2}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 32 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7394   | 3.7696   | 3.9877 
+1    | 9     | 0.6334   | 0.9160   | 0.7280 
+2    | 11    | 0.4448   | 0.5551   | 0.4505 
+3-5  | 59    | 0.4112   | 0.3926   | 0.3257 
+6+   | 276   | 0.3249   | 0.2990   | 0.2663 
+
+Epoch 32: loss = 0.186042 phase = C val_loss = 0.176670 delta_mae_pts = 0.3593 recap_mae_pts = 0.3593 cat_mae_pts = 0.4493 total_mae_pts = 1.0128 vs_inertia_pts = 0.0544 vs_quad_pts = 0.2869 lr_base = 0.000744 lr_mult = 1.0000 lr_eff = 0.000744 mon_cov = 0.958 mon_score = 0.5098 progress = 33/400 epoch_sec = 96.6 avg_epoch_sec = 97.4 elapsed = 00:53:35 eta = 09:55:53
+Epoch 32 memory(end): tensors=258, buffers=258, bytes=18.3MB
+Saved BEST-PHASE-C checkpoint @epoch 32 delta_mae_pts = 0.3593 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_c 
+[curriculum] phase=C age=1 ramp=80 delta=0.3593 cov=0.958 best_global_delta=0.3469
+
+Epoch 33: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.021,"recapWeight":0.296875,"deltaWeight":1.109375,"categoryWeight":0.05,"quantileWeight":0.1125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.825,"corps":0.22857142857142856}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 33 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6934   | 3.7696   | 3.7348 
+1    | 9     | 0.6424   | 0.9160   | 0.6264 
+2    | 11    | 0.4968   | 0.5551   | 0.3672 
+3-5  | 59    | 0.4178   | 0.3926   | 0.3490 
+6+   | 276   | 0.3525   | 0.2990   | 0.3230 
+
+Epoch 33: loss = 0.205758 phase = C val_loss = 0.197137 delta_mae_pts = 0.3822 recap_mae_pts = 0.3822 cat_mae_pts = 0.4857 total_mae_pts = 1.1378 vs_inertia_pts = 0.0316 vs_quad_pts = 0.2640 lr_base = 0.000744 lr_mult = 1.0000 lr_eff = 0.000744 mon_cov = 0.944 mon_score = 0.5856 progress = 34/400 epoch_sec = 96.4 avg_epoch_sec = 97.4 elapsed = 00:55:11 eta = 09:54:05
+Epoch 33 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=2 ramp=80 delta=0.3822 cov=0.944 best_global_delta=0.3469
+
+Epoch 34: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.022,"recapWeight":0.29375,"deltaWeight":1.21875,"categoryWeight":0.05,"quantileWeight":0.125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.85,"corps":0.2571428571428571}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 34 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6260   | 3.7696   | 3.5917 
+1    | 9     | 0.7480   | 0.9160   | 0.4710 
+2    | 11    | 0.5729   | 0.5551   | 0.3648 
+3-5  | 59    | 0.5596   | 0.3926   | 0.4267 
+6+   | 276   | 0.3640   | 0.2990   | 0.3111 
+
+Epoch 34: loss = 0.213783 phase = C val_loss = 0.232218 delta_mae_pts = 0.4174 recap_mae_pts = 0.4174 cat_mae_pts = 0.5433 total_mae_pts = 1.3294 vs_inertia_pts = -0.0037 vs_quad_pts = 0.2288 lr_base = 0.000743 lr_mult = 1.0000 lr_eff = 0.000743 mon_cov = 0.917 mon_score = 0.6877 progress = 35/400 epoch_sec = 98.7 avg_epoch_sec = 97.4 elapsed = 00:56:50 eta = 09:52:41
+Epoch 34 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=3 ramp=80 delta=0.4174 cov=0.917 best_global_delta=0.3469
+
+Epoch 35: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.023,"recapWeight":0.29062499999999997,"deltaWeight":1.328125,"categoryWeight":0.05,"quantileWeight":0.1375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.875,"corps":0.2857142857142857}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 35 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7216   | 3.7696   | 3.9214 
+1    | 9     | 0.7231   | 0.9160   | 0.7168 
+2    | 11    | 0.4813   | 0.5551   | 0.3982 
+3-5  | 59    | 0.4402   | 0.3926   | 0.3040 
+6+   | 276   | 0.3418   | 0.2990   | 0.2658 
+
+Epoch 35: loss = 0.231733 phase = C val_loss = 0.226529 delta_mae_pts = 0.3798 recap_mae_pts = 0.3798 cat_mae_pts = 0.4530 total_mae_pts = 1.0825 vs_inertia_pts = 0.0339 vs_quad_pts = 0.2663 lr_base = 0.000743 lr_mult = 1.0000 lr_eff = 0.000743 mon_cov = 0.940 mon_score = 0.6624 progress = 36/400 epoch_sec = 97.7 avg_epoch_sec = 97.4 elapsed = 00:58:28 eta = 09:51:06
+Epoch 35 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=4 ramp=80 delta=0.3798 cov=0.940 best_global_delta=0.3469
+
+Epoch 36: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.024,"recapWeight":0.2875,"deltaWeight":1.4375,"categoryWeight":0.05,"quantileWeight":0.15000000000000002,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.9,"corps":0.3142857142857143}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 36 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5691   | 3.7696   | 3.9420 
+1    | 9     | 0.6037   | 0.9160   | 0.7209 
+2    | 11    | 0.4321   | 0.5551   | 0.4548 
+3-5  | 59    | 0.4051   | 0.3926   | 0.3245 
+6+   | 276   | 0.3448   | 0.2990   | 0.2869 
+
+Epoch 36: loss = 0.248173 phase = C val_loss = 0.235045 delta_mae_pts = 0.3686 recap_mae_pts = 0.3686 cat_mae_pts = 0.4522 total_mae_pts = 1.0417 vs_inertia_pts = 0.0451 vs_quad_pts = 0.2776 lr_base = 0.000742 lr_mult = 1.0000 lr_eff = 0.000742 mon_cov = 0.947 mon_score = 0.6834 progress = 37/400 epoch_sec = 100.8 avg_epoch_sec = 97.5 elapsed = 01:00:08 eta = 09:50:02
+Epoch 36 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=5 ramp=80 delta=0.3686 cov=0.947 best_global_delta=0.3469
+
+Epoch 37: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.025,"recapWeight":0.284375,"deltaWeight":1.546875,"categoryWeight":0.05,"quantileWeight":0.1625,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.925,"corps":0.34285714285714286}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 37 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6308   | 3.7696   | 3.9749 
+1    | 9     | 0.6863   | 0.9160   | 0.9805 
+2    | 11    | 0.5224   | 0.5551   | 0.6056 
+3-5  | 59    | 0.3948   | 0.3926   | 0.3409 
+6+   | 276   | 0.3443   | 0.2990   | 0.2717 
+
+Epoch 37: loss = 0.263258 phase = C val_loss = 0.250961 delta_mae_pts = 0.3727 recap_mae_pts = 0.3727 cat_mae_pts = 0.4489 total_mae_pts = 0.9965 vs_inertia_pts = 0.0410 vs_quad_pts = 0.2735 lr_base = 0.000742 lr_mult = 1.0000 lr_eff = 0.000742 mon_cov = 0.950 mon_score = 0.7299 progress = 38/400 epoch_sec = 91.2 avg_epoch_sec = 97.4 elapsed = 01:01:40 eta = 09:47:24
+Epoch 37 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=6 ramp=80 delta=0.3727 cov=0.950 best_global_delta=0.3469
+
+Epoch 38: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.026000000000000002,"recapWeight":0.28125,"deltaWeight":1.65625,"categoryWeight":0.05,"quantileWeight":0.175,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.95,"corps":0.37142857142857144}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 38 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5719   | 3.7696   | 3.5841 
+1    | 9     | 0.7284   | 0.9160   | 0.5890 
+2    | 11    | 0.4276   | 0.5551   | 0.3697 
+3-5  | 59    | 0.4278   | 0.3926   | 0.3126 
+6+   | 276   | 0.3426   | 0.2990   | 0.2850 
+
+Epoch 38: loss = 0.277806 phase = C val_loss = 0.263198 delta_mae_pts = 0.3736 recap_mae_pts = 0.3736 cat_mae_pts = 0.4616 total_mae_pts = 1.0412 vs_inertia_pts = 0.0401 vs_quad_pts = 0.2725 lr_base = 0.000741 lr_mult = 1.0000 lr_eff = 0.000741 mon_cov = 0.953 mon_score = 0.7741 progress = 39/400 epoch_sec = 91.9 avg_epoch_sec = 97.2 elapsed = 01:03:12 eta = 09:44:56
+Epoch 38 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=7 ramp=80 delta=0.3736 cov=0.953 best_global_delta=0.3469
+
+Epoch 39: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.027,"recapWeight":0.278125,"deltaWeight":1.765625,"categoryWeight":0.05,"quantileWeight":0.1875,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.975,"corps":0.4}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 39 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5502   | 3.7696   | 3.7957 
+1    | 9     | 0.6307   | 0.9160   | 0.8161 
+2    | 11    | 0.4921   | 0.5551   | 0.5425 
+3-5  | 59    | 0.3920   | 0.3926   | 0.3001 
+6+   | 276   | 0.3342   | 0.2990   | 0.2761 
+
+Epoch 39: loss = 0.291534 phase = C val_loss = 0.273522 delta_mae_pts = 0.3605 recap_mae_pts = 0.3605 cat_mae_pts = 0.4329 total_mae_pts = 0.9896 vs_inertia_pts = 0.0532 vs_quad_pts = 0.2857 lr_base = 0.000740 lr_mult = 1.0000 lr_eff = 0.000740 mon_cov = 0.961 mon_score = 0.7851 progress = 40/400 epoch_sec = 91.0 avg_epoch_sec = 97.1 elapsed = 01:04:42 eta = 09:42:22
+Epoch 39 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=8 ramp=80 delta=0.3605 cov=0.961 best_global_delta=0.3469
+
+Epoch 40: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.028,"recapWeight":0.27499999999999997,"deltaWeight":1.875,"categoryWeight":0.05,"quantileWeight":0.2,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.42857142857142855}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 40 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.9492   | 3.7696   | 3.2631 
+1    | 9     | 0.6808   | 0.9160   | 0.7165 
+2    | 11    | 0.4576   | 0.5551   | 0.4310 
+3-5  | 59    | 0.4394   | 0.3926   | 0.3636 
+6+   | 276   | 0.3595   | 0.2990   | 0.3139 
+
+Epoch 40: loss = 0.301000 phase = C val_loss = 0.310317 delta_mae_pts = 0.3965 recap_mae_pts = 0.3965 cat_mae_pts = 0.4759 total_mae_pts = 1.1456 vs_inertia_pts = 0.0173 vs_quad_pts = 0.2497 lr_base = 0.000740 lr_mult = 1.0000 lr_eff = 0.000740 mon_cov = 0.942 mon_score = 0.9083 progress = 41/400 epoch_sec = 91.9 avg_epoch_sec = 96.9 elapsed = 01:06:14 eta = 09:40:00
+Epoch 40 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=9 ramp=80 delta=0.3965 cov=0.942 best_global_delta=0.3469
+
+Epoch 41: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.029,"recapWeight":0.271875,"deltaWeight":1.984375,"categoryWeight":0.05,"quantileWeight":0.21250000000000002,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.45714285714285713}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 41 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6119   | 3.7696   | 3.9797 
+1    | 9     | 0.7346   | 0.9160   | 0.7824 
+2    | 11    | 0.4438   | 0.5551   | 0.4736 
+3-5  | 59    | 0.4495   | 0.3926   | 0.3330 
+6+   | 276   | 0.3358   | 0.2990   | 0.2761 
+
+Epoch 41: loss = 0.313230 phase = C val_loss = 0.307155 delta_mae_pts = 0.3736 recap_mae_pts = 0.3736 cat_mae_pts = 0.4498 total_mae_pts = 1.0599 vs_inertia_pts = 0.0402 vs_quad_pts = 0.2726 lr_base = 0.000739 lr_mult = 1.0000 lr_eff = 0.000739 mon_cov = 0.953 mon_score = 0.8961 progress = 42/400 epoch_sec = 92.1 avg_epoch_sec = 96.8 elapsed = 01:07:46 eta = 09:37:41
+Epoch 41 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=10 ramp=80 delta=0.3736 cov=0.953 best_global_delta=0.3469
+
+Epoch 42: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.03,"recapWeight":0.26875,"deltaWeight":2.09375,"categoryWeight":0.05,"quantileWeight":0.225,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.4857142857142857}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 42 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6006   | 3.7696   | 3.7324 
+1    | 9     | 0.6758   | 0.9160   | 0.9569 
+2    | 11    | 0.5257   | 0.5551   | 0.6128 
+3-5  | 59    | 0.3892   | 0.3926   | 0.3553 
+6+   | 276   | 0.3720   | 0.2990   | 0.3210 
+
+Epoch 42: loss = 0.324293 phase = C val_loss = 0.332887 delta_mae_pts = 0.3920 recap_mae_pts = 0.3920 cat_mae_pts = 0.4733 total_mae_pts = 1.0705 vs_inertia_pts = 0.0217 vs_quad_pts = 0.2542 lr_base = 0.000738 lr_mult = 1.0000 lr_eff = 0.000738 mon_cov = 0.933 mon_score = 0.9819 progress = 43/400 epoch_sec = 92.2 avg_epoch_sec = 96.7 elapsed = 01:09:19 eta = 09:35:26
+Epoch 42 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=11 ramp=80 delta=0.3920 cov=0.933 best_global_delta=0.3469
+
+Epoch 43: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.031,"recapWeight":0.265625,"deltaWeight":2.203125,"categoryWeight":0.05,"quantileWeight":0.23750000000000002,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.5142857142857142}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 43 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.8001   | 3.7696   | 3.7962 
+1    | 9     | 0.7620   | 0.9160   | 0.8952 
+2    | 11    | 0.5547   | 0.5551   | 0.6442 
+3-5  | 59    | 0.4250   | 0.3926   | 0.3976 
+6+   | 276   | 0.3592   | 0.2990   | 0.3269 
+
+Epoch 43: loss = 0.338322 phase = C val_loss = 0.346916 delta_mae_pts = 0.3955 recap_mae_pts = 0.3955 cat_mae_pts = 0.4639 total_mae_pts = 1.0875 vs_inertia_pts = 0.0182 vs_quad_pts = 0.2506 lr_base = 0.000737 lr_mult = 1.0000 lr_eff = 0.000737 mon_cov = 0.931 mon_score = 1.0334 progress = 44/400 epoch_sec = 90.5 avg_epoch_sec = 96.6 elapsed = 01:10:49 eta = 09:32:59
+Epoch 43 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=12 ramp=80 delta=0.3955 cov=0.931 best_global_delta=0.3469
+
+Epoch 44: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.032,"recapWeight":0.2625,"deltaWeight":2.3125,"categoryWeight":0.05,"quantileWeight":0.25,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.5428571428571428}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 44 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.7703   | 3.7696   | 4.0720 
+1    | 9     | 0.6421   | 0.9160   | 0.7264 
+2    | 11    | 0.4288   | 0.5551   | 0.4161 
+3-5  | 59    | 0.4164   | 0.3926   | 0.3304 
+6+   | 276   | 0.3453   | 0.2990   | 0.2914 
+
+Epoch 44: loss = 0.359547 phase = C val_loss = 0.349868 delta_mae_pts = 0.3761 recap_mae_pts = 0.3761 cat_mae_pts = 0.4340 total_mae_pts = 1.0166 vs_inertia_pts = 0.0376 vs_quad_pts = 0.2700 lr_base = 0.000737 lr_mult = 1.0000 lr_eff = 0.000737 mon_cov = 0.944 mon_score = 1.0228 progress = 45/400 epoch_sec = 100.1 avg_epoch_sec = 96.6 elapsed = 01:12:29 eta = 09:31:51
+Epoch 44 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=13 ramp=80 delta=0.3761 cov=0.944 best_global_delta=0.3469
+
+Epoch 45: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.033,"recapWeight":0.25937499999999997,"deltaWeight":2.421875,"categoryWeight":0.05,"quantileWeight":0.2625,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.5714285714285714}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 45 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5345   | 3.7696   | 3.6032 
+1    | 9     | 0.6152   | 0.9160   | 0.7382 
+2    | 11    | 0.4504   | 0.5551   | 0.3979 
+3-5  | 59    | 0.4153   | 0.3926   | 0.3063 
+6+   | 276   | 0.3557   | 0.2990   | 0.2773 
+
+Epoch 45: loss = 0.369040 phase = C val_loss = 0.366409 delta_mae_pts = 0.3786 recap_mae_pts = 0.3786 cat_mae_pts = 0.4381 total_mae_pts = 1.0237 vs_inertia_pts = 0.0351 vs_quad_pts = 0.2676 lr_base = 0.000736 lr_mult = 1.0000 lr_eff = 0.000736 mon_cov = 0.942 mon_score = 1.0708 progress = 46/400 epoch_sec = 97.6 avg_epoch_sec = 96.7 elapsed = 01:14:07 eta = 09:30:21
+Epoch 45 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=14 ramp=80 delta=0.3786 cov=0.942 best_global_delta=0.3469
+
+Epoch 46: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.034,"recapWeight":0.25625,"deltaWeight":2.53125,"categoryWeight":0.05,"quantileWeight":0.275,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.6}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 46 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5685   | 3.7696   | 3.6422 
+1    | 9     | 0.6856   | 0.9160   | 0.5612 
+2    | 11    | 0.4761   | 0.5551   | 0.3856 
+3-5  | 59    | 0.4759   | 0.3926   | 0.3985 
+6+   | 276   | 0.3588   | 0.2990   | 0.3038 
+
+Epoch 46: loss = 0.372976 phase = C val_loss = 0.389861 delta_mae_pts = 0.3941 recap_mae_pts = 0.3941 cat_mae_pts = 0.4943 total_mae_pts = 1.2041 vs_inertia_pts = 0.0196 vs_quad_pts = 0.2521 lr_base = 0.000735 lr_mult = 1.0000 lr_eff = 0.000735 mon_cov = 0.934 mon_score = 1.1642 progress = 47/400 epoch_sec = 96.8 avg_epoch_sec = 96.7 elapsed = 01:15:44 eta = 09:28:46
+Epoch 46 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=15 ramp=80 delta=0.3941 cov=0.934 best_global_delta=0.3469
+
+Epoch 47: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.035,"recapWeight":0.253125,"deltaWeight":2.640625,"categoryWeight":0.05,"quantileWeight":0.2875,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.6285714285714286}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 47 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6771   | 3.7696   | 3.9994 
+1    | 9     | 0.6121   | 0.9160   | 0.8468 
+2    | 11    | 0.4627   | 0.5551   | 0.4409 
+3-5  | 59    | 0.3988   | 0.3926   | 0.3206 
+6+   | 276   | 0.3392   | 0.2990   | 0.2706 
+
+Epoch 47: loss = 0.380515 phase = C val_loss = 0.381829 delta_mae_pts = 0.3669 recap_mae_pts = 0.3669 cat_mae_pts = 0.4247 total_mae_pts = 0.9718 vs_inertia_pts = 0.0469 vs_quad_pts = 0.2793 lr_base = 0.000734 lr_mult = 1.0000 lr_eff = 0.000734 mon_cov = 0.952 mon_score = 1.1168 progress = 48/400 epoch_sec = 96.7 avg_epoch_sec = 96.7 elapsed = 01:17:20 eta = 09:27:10
+Epoch 47 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=16 ramp=80 delta=0.3669 cov=0.952 best_global_delta=0.3469
+
+Epoch 48: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.036000000000000004,"recapWeight":0.25,"deltaWeight":2.75,"categoryWeight":0.05,"quantileWeight":0.30000000000000004,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.6571428571428571}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 48 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6406   | 3.7696   | 3.7418 
+1    | 9     | 0.7034   | 0.9160   | 0.6758 
+2    | 11    | 0.4848   | 0.5551   | 0.4282 
+3-5  | 59    | 0.4520   | 0.3926   | 0.3993 
+6+   | 276   | 0.3631   | 0.2990   | 0.3229 
+
+Epoch 48: loss = 0.407195 phase = C val_loss = 0.419018 delta_mae_pts = 0.3958 recap_mae_pts = 0.3958 cat_mae_pts = 0.4853 total_mae_pts = 1.1689 vs_inertia_pts = 0.0179 vs_quad_pts = 0.2504 lr_base = 0.000733 lr_mult = 1.0000 lr_eff = 0.000733 mon_cov = 0.934 mon_score = 1.2537 progress = 49/400 epoch_sec = 95.6 avg_epoch_sec = 96.7 elapsed = 01:18:56 eta = 09:25:25
+Epoch 48 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=17 ramp=80 delta=0.3958 cov=0.934 best_global_delta=0.3469
+
+Epoch 49: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.037000000000000005,"recapWeight":0.24687499999999998,"deltaWeight":2.859375,"categoryWeight":0.05,"quantileWeight":0.3125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.6857142857142857}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 49 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.8338   | 3.7696   | 3.3356 
+1    | 9     | 0.6805   | 0.9160   | 0.7084 
+2    | 11    | 0.4369   | 0.5551   | 0.4131 
+3-5  | 59    | 0.4279   | 0.3926   | 0.3253 
+6+   | 276   | 0.3582   | 0.2990   | 0.2781 
+
+Epoch 49: loss = 0.412213 phase = C val_loss = 0.430648 delta_mae_pts = 0.3904 recap_mae_pts = 0.3904 cat_mae_pts = 0.4745 total_mae_pts = 1.1270 vs_inertia_pts = 0.0233 vs_quad_pts = 0.2558 lr_base = 0.000732 lr_mult = 1.0000 lr_eff = 0.000732 mon_cov = 0.940 mon_score = 1.2781 progress = 50/400 epoch_sec = 95.7 avg_epoch_sec = 96.6 elapsed = 01:20:32 eta = 09:23:42
+Epoch 49 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=18 ramp=80 delta=0.3904 cov=0.940 best_global_delta=0.3469
+
+Epoch 50: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.038000000000000006,"recapWeight":0.24375,"deltaWeight":2.96875,"categoryWeight":0.05,"quantileWeight":0.325,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.7142857142857143}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 50 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5891   | 3.7696   | 3.6024 
+1    | 9     | 0.6493   | 0.9160   | 0.7263 
+2    | 11    | 0.4622   | 0.5551   | 0.4895 
+3-5  | 59    | 0.3866   | 0.3926   | 0.3641 
+6+   | 276   | 0.3313   | 0.2990   | 0.3035 
+
+Epoch 50: loss = 0.415847 phase = C val_loss = 0.413233 delta_mae_pts = 0.3578 recap_mae_pts = 0.3578 cat_mae_pts = 0.3995 total_mae_pts = 0.9012 vs_inertia_pts = 0.0559 vs_quad_pts = 0.2883 lr_base = 0.000731 lr_mult = 1.0000 lr_eff = 0.000731 mon_cov = 0.963 mon_score = 1.2038 progress = 51/400 epoch_sec = 95.5 avg_epoch_sec = 96.6 elapsed = 01:22:07 eta = 09:21:57
+Epoch 50 memory(end): tensors=258, buffers=258, bytes=18.3MB
+
+-- - CAPTION STATS(Epoch 50)-- - 
+GE1: delta_pts = 0.3028, recap_pts = 0.3028, cov = 0.983, width = 1.9539 
+GE2: delta_pts = 0.3246, recap_pts = 0.3246, cov = 0.970, width = 1.9797 
+VP: delta_pts = 0.3587, recap_pts = 0.3587, cov = 0.961, width = 1.9206 
+VA: delta_pts = 0.3155, recap_pts = 0.3155, cov = 0.989, width = 2.0309 
+CG: delta_pts = 0.4107, recap_pts = 0.4107, cov = 0.945, width = 2.0396 
+MB: delta_pts = 0.3547, recap_pts = 0.3547, cov = 0.981, width = 1.9797 
+MA: delta_pts = 0.3563, recap_pts = 0.3563, cov = 0.959, width = 1.9526 
+MP: delta_pts = 0.4395, recap_pts = 0.4395, cov = 0.915, width = 2.0055 
+----------------------------------
+
+Saved BEST-PHASE-C checkpoint @epoch 50 delta_mae_pts = 0.3578 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_c 
+[curriculum] phase=C age=19 ramp=80 delta=0.3578 cov=0.963 best_global_delta=0.3469
+
+--- NO MONITOR IMPROVEMENT FOR 18 EPOCHS: plateau multiplier 1.0000 -> 0.5000, effective LR 0.000366 ---
+
+Epoch 51: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.039,"recapWeight":0.24062499999999998,"deltaWeight":3.078125,"categoryWeight":0.05,"quantileWeight":0.3375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.7428571428571429}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 51 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5846   | 3.7696   | 3.7838 
+1    | 9     | 0.6956   | 0.9160   | 0.7395 
+2    | 11    | 0.4828   | 0.5551   | 0.4597 
+3-5  | 59    | 0.4299   | 0.3926   | 0.3555 
+6+   | 276   | 0.3449   | 0.2990   | 0.2919 
+
+Epoch 51: loss = 0.409430 phase = C val_loss = 0.443020 delta_mae_pts = 0.3769 recap_mae_pts = 0.3769 cat_mae_pts = 0.4391 total_mae_pts = 1.0309 vs_inertia_pts = 0.0368 vs_quad_pts = 0.2693 lr_base = 0.000731 lr_mult = 0.5000 lr_eff = 0.000365 mon_cov = 0.949 mon_score = 1.3129 progress = 52/400 epoch_sec = 95.3 avg_epoch_sec = 96.6 elapsed = 01:23:42 eta = 09:20:11
+Epoch 51 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=20 ramp=80 delta=0.3769 cov=0.949 best_global_delta=0.3469
+
+Epoch 52: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.04,"recapWeight":0.2375,"deltaWeight":3.1875,"categoryWeight":0.05,"quantileWeight":0.35,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.7714285714285715}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 52 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5202   | 3.7696   | 3.7819 
+1    | 9     | 0.6683   | 0.9160   | 0.6925 
+2    | 11    | 0.4518   | 0.5551   | 0.3918 
+3-5  | 59    | 0.4691   | 0.3926   | 0.3487 
+6+   | 276   | 0.3398   | 0.2990   | 0.2705 
+
+Epoch 52: loss = 0.418569 phase = C val_loss = 0.456157 delta_mae_pts = 0.3763 recap_mae_pts = 0.3763 cat_mae_pts = 0.4573 total_mae_pts = 1.1143 vs_inertia_pts = 0.0374 vs_quad_pts = 0.2698 lr_base = 0.000730 lr_mult = 0.5000 lr_eff = 0.000365 mon_cov = 0.945 mon_score = 1.3564 progress = 53/400 epoch_sec = 95.8 avg_epoch_sec = 96.6 elapsed = 01:25:18 eta = 09:18:29
+Epoch 52 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=21 ramp=80 delta=0.3763 cov=0.945 best_global_delta=0.3469
+
+Epoch 53: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.041,"recapWeight":0.234375,"deltaWeight":3.296875,"categoryWeight":0.05,"quantileWeight":0.36250000000000004,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.8}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 53 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6098   | 3.7696   | 3.5882 
+1    | 9     | 0.6165   | 0.9160   | 0.6760 
+2    | 11    | 0.4320   | 0.5551   | 0.4023 
+3-5  | 59    | 0.4225   | 0.3926   | 0.3299 
+6+   | 276   | 0.3591   | 0.2990   | 0.2965 
+
+Epoch 53: loss = 0.423815 phase = C val_loss = 0.481513 delta_mae_pts = 0.3835 recap_mae_pts = 0.3835 cat_mae_pts = 0.4543 total_mae_pts = 1.0974 vs_inertia_pts = 0.0302 vs_quad_pts = 0.2627 lr_base = 0.000729 lr_mult = 0.5000 lr_eff = 0.000364 mon_cov = 0.946 mon_score = 1.4220 progress = 54/400 epoch_sec = 92.6 avg_epoch_sec = 96.5 elapsed = 01:26:51 eta = 09:16:27
+Epoch 53 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=22 ramp=80 delta=0.3835 cov=0.946 best_global_delta=0.3469
+
+Epoch 54: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.042,"recapWeight":0.23124999999999998,"deltaWeight":3.40625,"categoryWeight":0.05,"quantileWeight":0.375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.8285714285714286}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 54 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5655   | 3.7696   | 3.7000 
+1    | 9     | 0.6556   | 0.9160   | 0.6756 
+2    | 11    | 0.4157   | 0.5551   | 0.4477 
+3-5  | 59    | 0.4387   | 0.3926   | 0.3537 
+6+   | 276   | 0.3388   | 0.2990   | 0.2714 
+
+Epoch 54: loss = 0.434488 phase = C val_loss = 0.477178 delta_mae_pts = 0.3703 recap_mae_pts = 0.3703 cat_mae_pts = 0.4641 total_mae_pts = 1.1460 vs_inertia_pts = 0.0435 vs_quad_pts = 0.2759 lr_base = 0.000728 lr_mult = 0.5000 lr_eff = 0.000364 mon_cov = 0.950 mon_score = 1.4181 progress = 55/400 epoch_sec = 91.2 avg_epoch_sec = 96.4 elapsed = 01:28:22 eta = 09:14:17
+Epoch 54 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=23 ramp=80 delta=0.3703 cov=0.950 best_global_delta=0.3469
+
+Epoch 55: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.043,"recapWeight":0.228125,"deltaWeight":3.515625,"categoryWeight":0.05,"quantileWeight":0.38749999999999996,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.8571428571428571}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 55 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5395   | 3.7696   | 3.7925 
+1    | 9     | 0.6487   | 0.9160   | 0.7452 
+2    | 11    | 0.4043   | 0.5551   | 0.4531 
+3-5  | 59    | 0.4086   | 0.3926   | 0.3354 
+6+   | 276   | 0.3293   | 0.2990   | 0.2916 
+
+Epoch 55: loss = 0.445262 phase = C val_loss = 0.477573 delta_mae_pts = 0.3570 recap_mae_pts = 0.3570 cat_mae_pts = 0.4346 total_mae_pts = 1.0441 vs_inertia_pts = 0.0567 vs_quad_pts = 0.2892 lr_base = 0.000727 lr_mult = 0.5000 lr_eff = 0.000363 mon_cov = 0.961 mon_score = 1.4032 progress = 56/400 epoch_sec = 93.2 avg_epoch_sec = 96.3 elapsed = 01:29:55 eta = 09:12:21
+Epoch 55 memory(end): tensors=258, buffers=258, bytes=18.3MB
+Saved BEST-PHASE-C checkpoint @epoch 55 delta_mae_pts = 0.3570 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_c 
+[curriculum] phase=C age=24 ramp=80 delta=0.3570 cov=0.961 best_global_delta=0.3469
+
+Epoch 56: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.044,"recapWeight":0.22499999999999998,"deltaWeight":3.625,"categoryWeight":0.05,"quantileWeight":0.4,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.8857142857142857}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 56 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6006   | 3.7696   | 3.7994 
+1    | 9     | 0.7003   | 0.9160   | 0.6537 
+2    | 11    | 0.4155   | 0.5551   | 0.3849 
+3-5  | 59    | 0.4402   | 0.3926   | 0.3406 
+6+   | 276   | 0.3445   | 0.2990   | 0.2875 
+
+Epoch 56: loss = 0.452189 phase = C val_loss = 0.513041 delta_mae_pts = 0.3767 recap_mae_pts = 0.3767 cat_mae_pts = 0.4784 total_mae_pts = 1.1651 vs_inertia_pts = 0.0370 vs_quad_pts = 0.2695 lr_base = 0.000726 lr_mult = 0.5000 lr_eff = 0.000363 mon_cov = 0.951 mon_score = 1.5255 progress = 57/400 epoch_sec = 91.1 avg_epoch_sec = 96.2 elapsed = 01:31:26 eta = 09:10:13
+Epoch 56 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=25 ramp=80 delta=0.3767 cov=0.951 best_global_delta=0.3469
+
+Epoch 57: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.045,"recapWeight":0.221875,"deltaWeight":3.734375,"categoryWeight":0.05,"quantileWeight":0.4125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.9142857142857143}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 57 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5604   | 3.7696   | 3.7426 
+1    | 9     | 0.6827   | 0.9160   | 0.6608 
+2    | 11    | 0.4469   | 0.5551   | 0.4338 
+3-5  | 59    | 0.4288   | 0.3926   | 0.3613 
+6+   | 276   | 0.3349   | 0.2990   | 0.2940 
+
+Epoch 57: loss = 0.462408 phase = C val_loss = 0.515746 delta_mae_pts = 0.3672 recap_mae_pts = 0.3672 cat_mae_pts = 0.4461 total_mae_pts = 1.0797 vs_inertia_pts = 0.0465 vs_quad_pts = 0.2790 lr_base = 0.000725 lr_mult = 0.5000 lr_eff = 0.000362 mon_cov = 0.954 mon_score = 1.5236 progress = 58/400 epoch_sec = 91.1 avg_epoch_sec = 96.2 elapsed = 01:32:57 eta = 09:08:07
+Epoch 57 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=26 ramp=80 delta=0.3672 cov=0.954 best_global_delta=0.3469
+
+Epoch 58: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.046,"recapWeight":0.21875,"deltaWeight":3.84375,"categoryWeight":0.05,"quantileWeight":0.42500000000000004,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.9428571428571428}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 58 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6678   | 3.7696   | 3.7936 
+1    | 9     | 0.7020   | 0.9160   | 0.6748 
+2    | 11    | 0.4487   | 0.5551   | 0.4644 
+3-5  | 59    | 0.4268   | 0.3926   | 0.3566 
+6+   | 276   | 0.3420   | 0.2990   | 0.2988 
+
+Epoch 58: loss = 0.470672 phase = C val_loss = 0.541090 delta_mae_pts = 0.3751 recap_mae_pts = 0.3751 cat_mae_pts = 0.4403 total_mae_pts = 1.0450 vs_inertia_pts = 0.0386 vs_quad_pts = 0.2710 lr_base = 0.000723 lr_mult = 0.5000 lr_eff = 0.000362 mon_cov = 0.957 mon_score = 1.5941 progress = 59/400 epoch_sec = 91.6 avg_epoch_sec = 96.1 elapsed = 01:34:29 eta = 09:06:04
+Epoch 58 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=27 ramp=80 delta=0.3751 cov=0.957 best_global_delta=0.3469
+
+Epoch 59: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.047,"recapWeight":0.21562499999999998,"deltaWeight":3.953125,"categoryWeight":0.05,"quantileWeight":0.4375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.9714285714285714}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 59 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5968   | 3.7696   | 3.7390 
+1    | 9     | 0.6737   | 0.9160   | 0.6508 
+2    | 11    | 0.4387   | 0.5551   | 0.3954 
+3-5  | 59    | 0.4499   | 0.3926   | 0.3618 
+6+   | 276   | 0.3358   | 0.2990   | 0.2834 
+
+Epoch 59: loss = 0.478445 phase = C val_loss = 0.549904 delta_mae_pts = 0.3716 recap_mae_pts = 0.3716 cat_mae_pts = 0.4520 total_mae_pts = 1.0920 vs_inertia_pts = 0.0421 vs_quad_pts = 0.2746 lr_base = 0.000722 lr_mult = 0.5000 lr_eff = 0.000361 mon_cov = 0.950 mon_score = 1.6231 progress = 60/400 epoch_sec = 90.9 avg_epoch_sec = 96.0 elapsed = 01:36:00 eta = 09:03:58
+Epoch 59 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=28 ramp=80 delta=0.3716 cov=0.950 best_global_delta=0.3469
+
+Epoch 60: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.048,"recapWeight":0.2125,"deltaWeight":4.0625,"categoryWeight":0.05,"quantileWeight":0.44999999999999996,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 60 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6052   | 3.7696   | 3.8632 
+1    | 9     | 0.7040   | 0.9160   | 0.8299 
+2    | 11    | 0.4373   | 0.5551   | 0.5399 
+3-5  | 59    | 0.3792   | 0.3926   | 0.3659 
+6+   | 276   | 0.3270   | 0.2990   | 0.3088 
+
+Epoch 60: loss = 0.487676 phase = C val_loss = 0.539310 delta_mae_pts = 0.3543 recap_mae_pts = 0.3543 cat_mae_pts = 0.4212 total_mae_pts = 0.9823 vs_inertia_pts = 0.0594 vs_quad_pts = 0.2918 lr_base = 0.000721 lr_mult = 0.5000 lr_eff = 0.000361 mon_cov = 0.959 mon_score = 1.5830 progress = 61/400 epoch_sec = 91.6 avg_epoch_sec = 95.9 elapsed = 01:37:31 eta = 09:01:58
+Epoch 60 memory(end): tensors=258, buffers=258, bytes=18.3MB
+Saved BEST-PHASE-C checkpoint @epoch 60 delta_mae_pts = 0.3543 -> models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361\best_phase_c 
+[curriculum] phase=C age=29 ramp=80 delta=0.3543 cov=0.959 best_global_delta=0.3469
+
+Epoch 61: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.049,"recapWeight":0.20937499999999998,"deltaWeight":4.171875,"categoryWeight":0.05,"quantileWeight":0.4625,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 61 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6426   | 3.7696   | 3.8099 
+1    | 9     | 0.7091   | 0.9160   | 0.7095 
+2    | 11    | 0.4777   | 0.5551   | 0.4741 
+3-5  | 59    | 0.4714   | 0.3926   | 0.3882 
+6+   | 276   | 0.3481   | 0.2990   | 0.3101 
+
+Epoch 61: loss = 0.495226 phase = C val_loss = 0.596167 delta_mae_pts = 0.3875 recap_mae_pts = 0.3875 cat_mae_pts = 0.4632 total_mae_pts = 1.0683 vs_inertia_pts = 0.0262 vs_quad_pts = 0.2587 lr_base = 0.000720 lr_mult = 0.5000 lr_eff = 0.000360 mon_cov = 0.948 mon_score = 1.7732 progress = 62/400 epoch_sec = 91.8 avg_epoch_sec = 95.9 elapsed = 01:39:03 eta = 08:59:59
+Epoch 61 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=30 ramp=80 delta=0.3875 cov=0.948 best_global_delta=0.3469
+
+Epoch 62: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":0.20625,"deltaWeight":4.28125,"categoryWeight":0.05,"quantileWeight":0.475,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 62 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5981   | 3.7696   | 3.7477 
+1    | 9     | 0.7006   | 0.9160   | 0.7655 
+2    | 11    | 0.4682   | 0.5551   | 0.5227 
+3-5  | 59    | 0.4195   | 0.3926   | 0.3975 
+6+   | 276   | 0.3373   | 0.2990   | 0.3260 
+
+Epoch 62: loss = 0.502338 phase = C val_loss = 0.585086 delta_mae_pts = 0.3694 recap_mae_pts = 0.3694 cat_mae_pts = 0.4412 total_mae_pts = 1.0452 vs_inertia_pts = 0.0444 vs_quad_pts = 0.2768 lr_base = 0.000719 lr_mult = 0.5000 lr_eff = 0.000359 mon_cov = 0.957 mon_score = 1.7319 progress = 63/400 epoch_sec = 90.5 avg_epoch_sec = 95.8 elapsed = 01:40:34 eta = 08:57:55
+Epoch 62 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=31 ramp=80 delta=0.3694 cov=0.957 best_global_delta=0.3469
+
+Epoch 63: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.051000000000000004,"recapWeight":0.203125,"deltaWeight":4.390625,"categoryWeight":0.05,"quantileWeight":0.48750000000000004,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 63 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6008   | 3.7696   | 3.6487 
+1    | 9     | 0.6393   | 0.9160   | 0.7274 
+2    | 11    | 0.4452   | 0.5551   | 0.4564 
+3-5  | 59    | 0.4353   | 0.3926   | 0.3651 
+6+   | 276   | 0.3461   | 0.2990   | 0.3164 
+
+Epoch 63: loss = 0.510525 phase = C val_loss = 0.613847 delta_mae_pts = 0.3765 recap_mae_pts = 0.3765 cat_mae_pts = 0.4324 total_mae_pts = 1.0182 vs_inertia_pts = 0.0372 vs_quad_pts = 0.2697 lr_base = 0.000718 lr_mult = 0.5000 lr_eff = 0.000359 mon_cov = 0.956 mon_score = 1.8030 progress = 64/400 epoch_sec = 91.5 avg_epoch_sec = 95.7 elapsed = 01:42:05 eta = 08:55:57
+Epoch 63 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=32 ramp=80 delta=0.3765 cov=0.956 best_global_delta=0.3469
+
+Epoch 64: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.052000000000000005,"recapWeight":0.19999999999999998,"deltaWeight":4.5,"categoryWeight":0.05,"quantileWeight":0.5,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 64 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5641   | 3.7696   | 3.6649 
+1    | 9     | 0.6753   | 0.9160   | 0.6456 
+2    | 11    | 0.4635   | 0.5551   | 0.4353 
+3-5  | 59    | 0.4607   | 0.3926   | 0.3774 
+6+   | 276   | 0.3476   | 0.2990   | 0.3152 
+
+Epoch 64: loss = 0.521953 phase = C val_loss = 0.628628 delta_mae_pts = 0.3824 recap_mae_pts = 0.3824 cat_mae_pts = 0.4709 total_mae_pts = 1.1266 vs_inertia_pts = 0.0313 vs_quad_pts = 0.2637 lr_base = 0.000716 lr_mult = 0.5000 lr_eff = 0.000358 mon_cov = 0.948 mon_score = 1.8795 progress = 65/400 epoch_sec = 89.9 avg_epoch_sec = 95.6 elapsed = 01:43:35 eta = 08:53:51
+Epoch 64 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=33 ramp=80 delta=0.3824 cov=0.948 best_global_delta=0.3469
+
+Epoch 65: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.053000000000000005,"recapWeight":0.196875,"deltaWeight":4.609375,"categoryWeight":0.05,"quantileWeight":0.5125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 65 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6157   | 3.7696   | 3.7286 
+1    | 9     | 0.6899   | 0.9160   | 0.6782 
+2    | 11    | 0.4569   | 0.5551   | 0.4573 
+3-5  | 59    | 0.4563   | 0.3926   | 0.3871 
+6+   | 276   | 0.3406   | 0.2990   | 0.3008 
+
+Epoch 65: loss = 0.528829 phase = C val_loss = 0.638401 delta_mae_pts = 0.3777 recap_mae_pts = 0.3777 cat_mae_pts = 0.4531 total_mae_pts = 1.0915 vs_inertia_pts = 0.0360 vs_quad_pts = 0.2685 lr_base = 0.000715 lr_mult = 0.5000 lr_eff = 0.000358 mon_cov = 0.950 mon_score = 1.8958 progress = 66/400 epoch_sec = 91.7 avg_epoch_sec = 95.6 elapsed = 01:45:07 eta = 08:51:55
+Epoch 65 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=34 ramp=80 delta=0.3777 cov=0.950 best_global_delta=0.3469
+
+Epoch 66: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.054000000000000006,"recapWeight":0.19374999999999998,"deltaWeight":4.71875,"categoryWeight":0.05,"quantileWeight":0.525,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 66 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5862   | 3.7696   | 3.5162 
+1    | 9     | 0.7553   | 0.9160   | 0.5493 
+2    | 11    | 0.4744   | 0.5551   | 0.4088 
+3-5  | 59    | 0.4836   | 0.3926   | 0.3821 
+6+   | 276   | 0.3454   | 0.2990   | 0.2993 
+
+Epoch 66: loss = 0.541965 phase = C val_loss = 0.669540 delta_mae_pts = 0.3873 recap_mae_pts = 0.3873 cat_mae_pts = 0.4823 total_mae_pts = 1.1991 vs_inertia_pts = 0.0265 vs_quad_pts = 0.2589 lr_base = 0.000714 lr_mult = 0.5000 lr_eff = 0.000357 mon_cov = 0.936 mon_score = 1.9912 progress = 67/400 epoch_sec = 91.4 avg_epoch_sec = 95.5 elapsed = 01:46:38 eta = 08:49:59
+Epoch 66 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=35 ramp=80 delta=0.3873 cov=0.936 best_global_delta=0.3469
+
+Epoch 67: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.05500000000000001,"recapWeight":0.190625,"deltaWeight":4.828125,"categoryWeight":0.05,"quantileWeight":0.5375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 67 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5952   | 3.7696   | 3.8287 
+1    | 9     | 0.7074   | 0.9160   | 0.6614 
+2    | 11    | 0.4489   | 0.5551   | 0.4357 
+3-5  | 59    | 0.4775   | 0.3926   | 0.3781 
+6+   | 276   | 0.3556   | 0.2990   | 0.3141 
+
+Epoch 67: loss = 0.550520 phase = C val_loss = 0.694481 delta_mae_pts = 0.3922 recap_mae_pts = 0.3922 cat_mae_pts = 0.4799 total_mae_pts = 1.1412 vs_inertia_pts = 0.0215 vs_quad_pts = 0.2540 lr_base = 0.000713 lr_mult = 0.5000 lr_eff = 0.000356 mon_cov = 0.933 mon_score = 2.0551 progress = 68/400 epoch_sec = 91.8 avg_epoch_sec = 95.4 elapsed = 01:48:10 eta = 08:48:05
+Epoch 67 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=36 ramp=80 delta=0.3922 cov=0.933 best_global_delta=0.3469
+
+Epoch 68: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.05600000000000001,"recapWeight":0.1875,"deltaWeight":4.9375,"categoryWeight":0.05,"quantileWeight":0.55,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 68 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6003   | 3.7696   | 3.6555 
+1    | 9     | 0.6609   | 0.9160   | 0.6856 
+2    | 11    | 0.4519   | 0.5551   | 0.4815 
+3-5  | 59    | 0.4575   | 0.3926   | 0.3697 
+6+   | 276   | 0.3450   | 0.2990   | 0.2992 
+
+Epoch 68: loss = 0.560498 phase = C val_loss = 0.687162 delta_mae_pts = 0.3800 recap_mae_pts = 0.3800 cat_mae_pts = 0.4599 total_mae_pts = 1.1034 vs_inertia_pts = 0.0338 vs_quad_pts = 0.2662 lr_base = 0.000711 lr_mult = 0.5000 lr_eff = 0.000356 mon_cov = 0.942 mon_score = 2.0321 progress = 69/400 epoch_sec = 91.4 avg_epoch_sec = 95.4 elapsed = 01:49:41 eta = 08:46:11
+Epoch 68 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=37 ramp=80 delta=0.3800 cov=0.942 best_global_delta=0.3469
+
+--- NO MONITOR IMPROVEMENT FOR 18 EPOCHS: plateau multiplier 0.5000 -> 0.2500, effective LR 0.000178 ---
+
+Epoch 69: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.05700000000000001,"recapWeight":0.18437499999999998,"deltaWeight":5.046875,"categoryWeight":0.05,"quantileWeight":0.5625,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 69 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5677   | 3.7696   | 3.8014 
+1    | 9     | 0.6699   | 0.9160   | 0.7298 
+2    | 11    | 0.4320   | 0.5551   | 0.4952 
+3-5  | 59    | 0.4381   | 0.3926   | 0.3657 
+6+   | 276   | 0.3357   | 0.2990   | 0.3032 
+
+Epoch 69: loss = 0.544773 phase = C val_loss = 0.679836 delta_mae_pts = 0.3687 recap_mae_pts = 0.3687 cat_mae_pts = 0.4504 total_mae_pts = 1.1048 vs_inertia_pts = 0.0451 vs_quad_pts = 0.2775 lr_base = 0.000710 lr_mult = 0.2500 lr_eff = 0.000178 mon_cov = 0.950 mon_score = 2.0141 progress = 70/400 epoch_sec = 90.9 avg_epoch_sec = 95.3 elapsed = 01:51:12 eta = 08:44:14
+Epoch 69 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=38 ramp=80 delta=0.3687 cov=0.950 best_global_delta=0.3469
+
+Epoch 70: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.057999999999999996,"recapWeight":0.18125,"deltaWeight":5.15625,"categoryWeight":0.05,"quantileWeight":0.575,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 70 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6257   | 3.7696   | 3.8233 
+1    | 9     | 0.6593   | 0.9160   | 0.7168 
+2    | 11    | 0.4614   | 0.5551   | 0.4995 
+3-5  | 59    | 0.4397   | 0.3926   | 0.3828 
+6+   | 276   | 0.3362   | 0.2990   | 0.3121 
+
+Epoch 70: loss = 0.544077 phase = C val_loss = 0.696935 delta_mae_pts = 0.3712 recap_mae_pts = 0.3712 cat_mae_pts = 0.4514 total_mae_pts = 1.0847 vs_inertia_pts = 0.0425 vs_quad_pts = 0.2750 lr_base = 0.000709 lr_mult = 0.2500 lr_eff = 0.000177 mon_cov = 0.953 mon_score = 2.0668 progress = 71/400 epoch_sec = 92.1 avg_epoch_sec = 95.3 elapsed = 01:52:44 eta = 08:42:24
+Epoch 70 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=39 ramp=80 delta=0.3712 cov=0.953 best_global_delta=0.3469
+
+Epoch 71: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.059,"recapWeight":0.17812499999999998,"deltaWeight":5.265625,"categoryWeight":0.05,"quantileWeight":0.5875,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 71 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5779   | 3.7696   | 3.7197 
+1    | 9     | 0.6912   | 0.9160   | 0.7262 
+2    | 11    | 0.4605   | 0.5551   | 0.5306 
+3-5  | 59    | 0.4451   | 0.3926   | 0.3946 
+6+   | 276   | 0.3443   | 0.2990   | 0.3231 
+
+Epoch 71: loss = 0.555207 phase = C val_loss = 0.724836 delta_mae_pts = 0.3779 recap_mae_pts = 0.3779 cat_mae_pts = 0.4509 total_mae_pts = 1.0719 vs_inertia_pts = 0.0358 vs_quad_pts = 0.2683 lr_base = 0.000707 lr_mult = 0.2500 lr_eff = 0.000177 mon_cov = 0.948 mon_score = 2.1430 progress = 72/400 epoch_sec = 90.8 avg_epoch_sec = 95.2 elapsed = 01:54:15 eta = 08:40:29
+Epoch 71 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=40 ramp=80 delta=0.3779 cov=0.948 best_global_delta=0.3469
+
+Epoch 72: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.06,"recapWeight":0.175,"deltaWeight":5.375,"categoryWeight":0.05,"quantileWeight":0.6,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, WFW 1.500 
+Epoch 72 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5859   | 3.7696   | 3.7692 
+1    | 9     | 0.7158   | 0.9160   | 0.6829 
+2    | 11    | 0.4636   | 0.5551   | 0.4717 
+3-5  | 59    | 0.4639   | 0.3926   | 0.3934 
+6+   | 276   | 0.3416   | 0.2990   | 0.3132 
+
+Epoch 72: loss = 0.564892 phase = C val_loss = 0.739861 delta_mae_pts = 0.3799 recap_mae_pts = 0.3799 cat_mae_pts = 0.4697 total_mae_pts = 1.1429 vs_inertia_pts = 0.0339 vs_quad_pts = 0.2663 lr_base = 0.000706 lr_mult = 0.2500 lr_eff = 0.000177 mon_cov = 0.946 mon_score = 2.2003 progress = 73/400 epoch_sec = 90.6 avg_epoch_sec = 95.1 elapsed = 01:55:46 eta = 08:38:33
+Epoch 72 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=41 ramp=80 delta=0.3799 cov=0.946 best_global_delta=0.3469
+
+Epoch 73: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.061,"recapWeight":0.171875,"deltaWeight":5.484375,"categoryWeight":0.05,"quantileWeight":0.6124999999999999,"consistencyWeight":0,"identityDropoutRate":0.988125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.988, WFW 1.500 
+Epoch 73 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5944   | 3.7696   | 3.7056 
+1    | 9     | 0.6908   | 0.9160   | 0.6343 
+2    | 11    | 0.4540   | 0.5551   | 0.4582 
+3-5  | 59    | 0.4711   | 0.3926   | 0.3910 
+6+   | 276   | 0.3468   | 0.2990   | 0.3121 
+
+Epoch 73: loss = 0.569870 phase = C val_loss = 0.765643 delta_mae_pts = 0.3842 recap_mae_pts = 0.3842 cat_mae_pts = 0.4642 total_mae_pts = 1.1378 vs_inertia_pts = 0.0295 vs_quad_pts = 0.2619 lr_base = 0.000705 lr_mult = 0.2500 lr_eff = 0.000176 mon_cov = 0.935 mon_score = 2.2659 progress = 74/400 epoch_sec = 91.5 avg_epoch_sec = 95.1 elapsed = 01:57:17 eta = 08:36:42
+Epoch 73 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=42 ramp=80 delta=0.3842 cov=0.935 best_global_delta=0.3469
+
+Epoch 74: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.062,"recapWeight":0.16874999999999998,"deltaWeight":5.59375,"categoryWeight":0.05,"quantileWeight":0.625,"consistencyWeight":0,"identityDropoutRate":0.97625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.977, WFW 1.500 
+Epoch 74 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5956   | 3.7696   | 3.7066 
+1    | 9     | 0.7288   | 0.9160   | 0.6831 
+2    | 11    | 0.4805   | 0.5551   | 0.4760 
+3-5  | 59    | 0.4634   | 0.3926   | 0.3957 
+6+   | 276   | 0.3443   | 0.2990   | 0.3194 
+
+Epoch 74: loss = 0.576212 phase = C val_loss = 0.774113 delta_mae_pts = 0.3829 recap_mae_pts = 0.3829 cat_mae_pts = 0.4567 total_mae_pts = 1.1088 vs_inertia_pts = 0.0309 vs_quad_pts = 0.2633 lr_base = 0.000703 lr_mult = 0.2500 lr_eff = 0.000176 mon_cov = 0.942 mon_score = 2.2978 progress = 75/400 epoch_sec = 90.8 avg_epoch_sec = 95.0 elapsed = 01:58:48 eta = 08:34:48
+Epoch 74 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=43 ramp=80 delta=0.3829 cov=0.942 best_global_delta=0.3469
+
+Epoch 75: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.063,"recapWeight":0.165625,"deltaWeight":5.703125,"categoryWeight":0.05,"quantileWeight":0.6375,"consistencyWeight":0,"identityDropoutRate":0.964375}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.969, WFW 1.500 
+Epoch 75 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6696   | 3.7696   | 3.5882 
+1    | 9     | 0.7270   | 0.9160   | 0.7041 
+2    | 11    | 0.4683   | 0.5551   | 0.4892 
+3-5  | 59    | 0.4364   | 0.3926   | 0.3782 
+6+   | 276   | 0.3329   | 0.2990   | 0.3076 
+
+Epoch 75: loss = 0.587772 phase = C val_loss = 0.765803 delta_mae_pts = 0.3710 recap_mae_pts = 0.3710 cat_mae_pts = 0.4566 total_mae_pts = 1.1014 vs_inertia_pts = 0.0427 vs_quad_pts = 0.2752 lr_base = 0.000702 lr_mult = 0.2500 lr_eff = 0.000175 mon_cov = 0.947 mon_score = 2.2694 progress = 76/400 epoch_sec = 81.2 avg_epoch_sec = 94.9 elapsed = 02:00:09 eta = 08:32:14
+Epoch 75 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=44 ramp=80 delta=0.3710 cov=0.947 best_global_delta=0.3469
+
+Epoch 76: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.064,"recapWeight":0.16249999999999998,"deltaWeight":5.8125,"categoryWeight":0.05,"quantileWeight":0.65,"consistencyWeight":0,"identityDropoutRate":0.9525}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.955, WFW 1.500 
+Epoch 76 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5616   | 3.7696   | 3.8074 
+1    | 9     | 0.7138   | 0.9160   | 0.7345 
+2    | 11    | 0.4763   | 0.5551   | 0.5251 
+3-5  | 59    | 0.4492   | 0.3926   | 0.3941 
+6+   | 276   | 0.3359   | 0.2990   | 0.3145 
+
+Epoch 76: loss = 0.595591 phase = C val_loss = 0.784328 delta_mae_pts = 0.3729 recap_mae_pts = 0.3729 cat_mae_pts = 0.4553 total_mae_pts = 1.1026 vs_inertia_pts = 0.0408 vs_quad_pts = 0.2733 lr_base = 0.000700 lr_mult = 0.2500 lr_eff = 0.000175 mon_cov = 0.945 mon_score = 2.3215 progress = 77/400 epoch_sec = 68.9 avg_epoch_sec = 94.5 elapsed = 02:01:18 eta = 08:28:50
+Epoch 76 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=45 ramp=80 delta=0.3729 cov=0.945 best_global_delta=0.3469
+
+Epoch 77: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.065,"recapWeight":0.159375,"deltaWeight":5.921875,"categoryWeight":0.05,"quantileWeight":0.6625,"consistencyWeight":0,"identityDropoutRate":0.940625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.941, WFW 1.500 
+Epoch 77 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5770   | 3.7696   | 3.7388 
+1    | 9     | 0.6902   | 0.9160   | 0.6902 
+2    | 11    | 0.4860   | 0.5551   | 0.4749 
+3-5  | 59    | 0.4704   | 0.3926   | 0.3934 
+6+   | 276   | 0.3350   | 0.2990   | 0.3177 
+
+Epoch 77: loss = 0.601165 phase = C val_loss = 0.800667 delta_mae_pts = 0.3758 recap_mae_pts = 0.3758 cat_mae_pts = 0.4632 total_mae_pts = 1.1427 vs_inertia_pts = 0.0380 vs_quad_pts = 0.2704 lr_base = 0.000699 lr_mult = 0.2500 lr_eff = 0.000175 mon_cov = 0.947 mon_score = 2.3825 progress = 78/400 epoch_sec = 67.8 avg_epoch_sec = 94.2 elapsed = 02:02:26 eta = 08:25:25
+Epoch 77 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=46 ramp=80 delta=0.3758 cov=0.947 best_global_delta=0.3469
+
+Epoch 78: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.066,"recapWeight":0.15625,"deltaWeight":6.03125,"categoryWeight":0.05,"quantileWeight":0.6749999999999999,"consistencyWeight":0,"identityDropoutRate":0.92875}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.935, WFW 1.500 
+Epoch 78 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5609   | 3.7696   | 3.7596 
+1    | 9     | 0.6770   | 0.9160   | 0.6938 
+2    | 11    | 0.4612   | 0.5551   | 0.4666 
+3-5  | 59    | 0.4602   | 0.3926   | 0.3903 
+6+   | 276   | 0.3411   | 0.2990   | 0.3214 
+
+Epoch 78: loss = 0.600469 phase = C val_loss = 0.822640 delta_mae_pts = 0.3773 recap_mae_pts = 0.3773 cat_mae_pts = 0.4649 total_mae_pts = 1.1104 vs_inertia_pts = 0.0365 vs_quad_pts = 0.2689 lr_base = 0.000697 lr_mult = 0.2500 lr_eff = 0.000174 mon_cov = 0.939 mon_score = 2.4309 progress = 79/400 epoch_sec = 68.2 avg_epoch_sec = 93.9 elapsed = 02:03:34 eta = 08:22:06
+Epoch 78 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=47 ramp=80 delta=0.3773 cov=0.939 best_global_delta=0.3469
+
+Epoch 79: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.067,"recapWeight":0.15312499999999998,"deltaWeight":6.140625,"categoryWeight":0.05,"quantileWeight":0.6875,"consistencyWeight":0,"identityDropoutRate":0.916875}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.916, WFW 1.500 
+Epoch 79 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5730   | 3.7696   | 3.7062 
+1    | 9     | 0.7004   | 0.9160   | 0.6532 
+2    | 11    | 0.4628   | 0.5551   | 0.4397 
+3-5  | 59    | 0.4775   | 0.3926   | 0.3911 
+6+   | 276   | 0.3448   | 0.2990   | 0.3131 
+
+Epoch 79: loss = 0.607311 phase = C val_loss = 0.844338 delta_mae_pts = 0.3838 recap_mae_pts = 0.3838 cat_mae_pts = 0.4999 total_mae_pts = 1.2593 vs_inertia_pts = 0.0299 vs_quad_pts = 0.2624 lr_base = 0.000696 lr_mult = 0.2500 lr_eff = 0.000174 mon_cov = 0.935 mon_score = 2.5249 progress = 80/400 epoch_sec = 71.8 avg_epoch_sec = 93.6 elapsed = 02:04:46 eta = 08:19:04
+Epoch 79 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=48 ramp=80 delta=0.3838 cov=0.935 best_global_delta=0.3469
+
+Epoch 80: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.068,"recapWeight":0.15,"deltaWeight":6.25,"categoryWeight":0.05,"quantileWeight":0.7,"consistencyWeight":0,"identityDropoutRate":0.905}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.902, WFW 1.500 
+Epoch 80 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5798   | 3.7696   | 3.7789 
+1    | 9     | 0.6694   | 0.9160   | 0.7044 
+2    | 11    | 0.4580   | 0.5551   | 0.5274 
+3-5  | 59    | 0.4389   | 0.3926   | 0.3829 
+6+   | 276   | 0.3316   | 0.2990   | 0.3191 
+
+Epoch 80: loss = 0.611777 phase = C val_loss = 0.825588 delta_mae_pts = 0.3667 recap_mae_pts = 0.3667 cat_mae_pts = 0.4481 total_mae_pts = 1.0547 vs_inertia_pts = 0.0470 vs_quad_pts = 0.2794 lr_base = 0.000694 lr_mult = 0.2500 lr_eff = 0.000174 mon_cov = 0.951 mon_score = 2.4412 progress = 81/400 epoch_sec = 74.8 avg_epoch_sec = 93.3 elapsed = 02:06:01 eta = 08:16:16
+Epoch 80 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=49 ramp=80 delta=0.3667 cov=0.951 best_global_delta=0.3469
+
+Epoch 81: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.069,"recapWeight":0.14687499999999998,"deltaWeight":6.359375,"categoryWeight":0.05,"quantileWeight":0.7125,"consistencyWeight":0,"identityDropoutRate":0.893125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.885, WFW 1.500 
+Epoch 81 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5793   | 3.7696   | 3.7131 
+1    | 9     | 0.6788   | 0.9160   | 0.6522 
+2    | 11    | 0.4725   | 0.5551   | 0.4752 
+3-5  | 59    | 0.4627   | 0.3926   | 0.3915 
+6+   | 276   | 0.3453   | 0.2990   | 0.3231 
+
+Epoch 81: loss = 0.620216 phase = C val_loss = 0.873135 delta_mae_pts = 0.3817 recap_mae_pts = 0.3817 cat_mae_pts = 0.4667 total_mae_pts = 1.1547 vs_inertia_pts = 0.0320 vs_quad_pts = 0.2645 lr_base = 0.000693 lr_mult = 0.2500 lr_eff = 0.000173 mon_cov = 0.933 mon_score = 2.5864 progress = 82/400 epoch_sec = 77.8 avg_epoch_sec = 93.2 elapsed = 02:07:19 eta = 08:13:43
+Epoch 81 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=50 ramp=80 delta=0.3817 cov=0.933 best_global_delta=0.3469
+
+Epoch 82: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.07,"recapWeight":0.14375,"deltaWeight":6.46875,"categoryWeight":0.05,"quantileWeight":0.725,"consistencyWeight":0,"identityDropoutRate":0.88125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.882, WFW 1.500 
+Epoch 82 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5821   | 3.7696   | 3.8320 
+1    | 9     | 0.6520   | 0.9160   | 0.7084 
+2    | 11    | 0.4456   | 0.5551   | 0.4958 
+3-5  | 59    | 0.4353   | 0.3926   | 0.3806 
+6+   | 276   | 0.3362   | 0.2990   | 0.3247 
+
+Epoch 82: loss = 0.631344 phase = C val_loss = 0.858267 delta_mae_pts = 0.3689 recap_mae_pts = 0.3689 cat_mae_pts = 0.4498 total_mae_pts = 1.0659 vs_inertia_pts = 0.0449 vs_quad_pts = 0.2773 lr_base = 0.000691 lr_mult = 0.2500 lr_eff = 0.000173 mon_cov = 0.945 mon_score = 2.5363 progress = 83/400 epoch_sec = 80.8 avg_epoch_sec = 93.0 elapsed = 02:08:39 eta = 08:11:22
+Epoch 82 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=51 ramp=80 delta=0.3689 cov=0.945 best_global_delta=0.3469
+
+Epoch 83: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.071,"recapWeight":0.140625,"deltaWeight":6.578125,"categoryWeight":0.05,"quantileWeight":0.7374999999999999,"consistencyWeight":0,"identityDropoutRate":0.869375}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.873, WFW 1.500 
+Epoch 83 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5560   | 3.7696   | 3.7136 
+1    | 9     | 0.6658   | 0.9160   | 0.6648 
+2    | 11    | 0.4788   | 0.5551   | 0.4864 
+3-5  | 59    | 0.4671   | 0.3926   | 0.4048 
+6+   | 276   | 0.3445   | 0.2990   | 0.3240 
+
+Epoch 83: loss = 0.636527 phase = C val_loss = 0.902527 delta_mae_pts = 0.3811 recap_mae_pts = 0.3811 cat_mae_pts = 0.4709 total_mae_pts = 1.1253 vs_inertia_pts = 0.0326 vs_quad_pts = 0.2651 lr_base = 0.000690 lr_mult = 0.2500 lr_eff = 0.000172 mon_cov = 0.929 mon_score = 2.6642 progress = 84/400 epoch_sec = 78.1 avg_epoch_sec = 92.8 elapsed = 02:09:57 eta = 08:08:53
+Epoch 83 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=52 ramp=80 delta=0.3811 cov=0.929 best_global_delta=0.3469
+
+Epoch 84: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.07200000000000001,"recapWeight":0.13749999999999998,"deltaWeight":6.6875,"categoryWeight":0.05,"quantileWeight":0.75,"consistencyWeight":0,"identityDropoutRate":0.8575}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.848, WFW 1.500 
+Epoch 84 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5717   | 3.7696   | 3.7746 
+1    | 9     | 0.6857   | 0.9160   | 0.6796 
+2    | 11    | 0.4798   | 0.5551   | 0.4717 
+3-5  | 59    | 0.4638   | 0.3926   | 0.3835 
+6+   | 276   | 0.3453   | 0.2990   | 0.3190 
+
+Epoch 84: loss = 0.638922 phase = C val_loss = 0.914371 delta_mae_pts = 0.3820 recap_mae_pts = 0.3820 cat_mae_pts = 0.4921 total_mae_pts = 1.1974 vs_inertia_pts = 0.0317 vs_quad_pts = 0.2641 lr_base = 0.000688 lr_mult = 0.2500 lr_eff = 0.000172 mon_cov = 0.931 mon_score = 2.7185 progress = 85/400 epoch_sec = 81.7 avg_epoch_sec = 92.7 elapsed = 02:11:19 eta = 08:06:39
+Epoch 84 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=53 ramp=80 delta=0.3820 cov=0.931 best_global_delta=0.3469
+
+Epoch 85: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.073,"recapWeight":0.134375,"deltaWeight":6.796875,"categoryWeight":0.05,"quantileWeight":0.7625,"consistencyWeight":0,"identityDropoutRate":0.8456250000000001}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.851, WFW 1.500 
+Epoch 85 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5882   | 3.7696   | 3.7359 
+1    | 9     | 0.6950   | 0.9160   | 0.6625 
+2    | 11    | 0.4837   | 0.5551   | 0.4830 
+3-5  | 59    | 0.4753   | 0.3926   | 0.4263 
+6+   | 276   | 0.3451   | 0.2990   | 0.3333 
+
+Epoch 85: loss = 0.650081 phase = C val_loss = 0.936567 delta_mae_pts = 0.3845 recap_mae_pts = 0.3845 cat_mae_pts = 0.4818 total_mae_pts = 1.1539 vs_inertia_pts = 0.0292 vs_quad_pts = 0.2617 lr_base = 0.000686 lr_mult = 0.2500 lr_eff = 0.000172 mon_cov = 0.930 mon_score = 2.7737 progress = 86/400 epoch_sec = 82.1 avg_epoch_sec = 92.6 elapsed = 02:12:41 eta = 08:04:28
+Epoch 85 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=54 ramp=80 delta=0.3845 cov=0.930 best_global_delta=0.3469
+
+Epoch 86: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.07400000000000001,"recapWeight":0.13124999999999998,"deltaWeight":6.90625,"categoryWeight":0.05,"quantileWeight":0.775,"consistencyWeight":0,"identityDropoutRate":0.83375}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.833, WFW 1.500 
+Epoch 86 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5519   | 3.7696   | 3.7389 
+1    | 9     | 0.6838   | 0.9160   | 0.6873 
+2    | 11    | 0.4707   | 0.5551   | 0.5018 
+3-5  | 59    | 0.4416   | 0.3926   | 0.4067 
+6+   | 276   | 0.3387   | 0.2990   | 0.3334 
+
+Epoch 86: loss = 0.656887 phase = C val_loss = 0.919275 delta_mae_pts = 0.3727 recap_mae_pts = 0.3727 cat_mae_pts = 0.4531 total_mae_pts = 1.0621 vs_inertia_pts = 0.0410 vs_quad_pts = 0.2734 lr_base = 0.000685 lr_mult = 0.2500 lr_eff = 0.000171 mon_cov = 0.944 mon_score = 2.7250 progress = 87/400 epoch_sec = 74.5 avg_epoch_sec = 92.4 elapsed = 02:13:56 eta = 08:01:50
+Epoch 86 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=55 ramp=80 delta=0.3727 cov=0.944 best_global_delta=0.3469
+
+--- NO MONITOR IMPROVEMENT FOR 18 EPOCHS: plateau multiplier 0.2500 -> 0.1250, effective LR 0.000086 ---
+
+Epoch 87: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.075,"recapWeight":0.128125,"deltaWeight":7.015625,"categoryWeight":0.05,"quantileWeight":0.7875,"consistencyWeight":0,"identityDropoutRate":0.821875}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.827, WFW 1.500 
+Epoch 87 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5606   | 3.7696   | 3.7638 
+1    | 9     | 0.6873   | 0.9160   | 0.6741 
+2    | 11    | 0.4682   | 0.5551   | 0.5225 
+3-5  | 59    | 0.4609   | 0.3926   | 0.4195 
+6+   | 276   | 0.3430   | 0.2990   | 0.3370 
+
+Epoch 87: loss = 0.646321 phase = C val_loss = 0.957509 delta_mae_pts = 0.3793 recap_mae_pts = 0.3793 cat_mae_pts = 0.4588 total_mae_pts = 1.0864 vs_inertia_pts = 0.0345 vs_quad_pts = 0.2669 lr_base = 0.000683 lr_mult = 0.1250 lr_eff = 0.000085 mon_cov = 0.932 mon_score = 2.8145 progress = 88/400 epoch_sec = 77.9 avg_epoch_sec = 92.2 elapsed = 02:15:14 eta = 07:59:26
+Epoch 87 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=56 ramp=80 delta=0.3793 cov=0.932 best_global_delta=0.3469
+
+Epoch 88: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.076,"recapWeight":0.125,"deltaWeight":7.125,"categoryWeight":0.05,"quantileWeight":0.7999999999999999,"consistencyWeight":0,"identityDropoutRate":0.81}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.807, WFW 1.500 
+Epoch 88 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5829   | 3.7696   | 3.7304 
+1    | 9     | 0.6922   | 0.9160   | 0.6424 
+2    | 11    | 0.4595   | 0.5551   | 0.4736 
+3-5  | 59    | 0.4653   | 0.3926   | 0.4053 
+6+   | 276   | 0.3374   | 0.2990   | 0.3213 
+
+Epoch 88: loss = 0.650108 phase = C val_loss = 0.958583 delta_mae_pts = 0.3761 recap_mae_pts = 0.3761 cat_mae_pts = 0.4774 total_mae_pts = 1.1761 vs_inertia_pts = 0.0376 vs_quad_pts = 0.2701 lr_base = 0.000681 lr_mult = 0.1250 lr_eff = 0.000085 mon_cov = 0.929 mon_score = 2.8407 progress = 89/400 epoch_sec = 76.3 avg_epoch_sec = 92.0 elapsed = 02:16:30 eta = 07:56:58
+Epoch 88 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=57 ramp=80 delta=0.3761 cov=0.929 best_global_delta=0.3469
+
+Epoch 89: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.077,"recapWeight":0.12187499999999998,"deltaWeight":7.234375,"categoryWeight":0.05,"quantileWeight":0.8125,"consistencyWeight":0,"identityDropoutRate":0.798125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.787, WFW 1.500 
+Epoch 89 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5794   | 3.7696   | 3.7144 
+1    | 9     | 0.7028   | 0.9160   | 0.6328 
+2    | 11    | 0.4720   | 0.5551   | 0.4817 
+3-5  | 59    | 0.4781   | 0.3926   | 0.4146 
+6+   | 276   | 0.3409   | 0.2990   | 0.3261 
+
+Epoch 89: loss = 0.655812 phase = C val_loss = 0.988343 delta_mae_pts = 0.3814 recap_mae_pts = 0.3814 cat_mae_pts = 0.4822 total_mae_pts = 1.1739 vs_inertia_pts = 0.0323 vs_quad_pts = 0.2648 lr_base = 0.000680 lr_mult = 0.1250 lr_eff = 0.000085 mon_cov = 0.918 mon_score = 2.9208 progress = 90/400 epoch_sec = 70.4 avg_epoch_sec = 91.8 elapsed = 02:17:40 eta = 07:54:12
+Epoch 89 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=58 ramp=80 delta=0.3814 cov=0.918 best_global_delta=0.3469
+
+Epoch 90: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.078,"recapWeight":0.11875,"deltaWeight":7.34375,"categoryWeight":0.05,"quantileWeight":0.825,"consistencyWeight":0,"identityDropoutRate":0.78625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.789, WFW 1.500 
+Epoch 90 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5862   | 3.7696   | 3.7639 
+1    | 9     | 0.6844   | 0.9160   | 0.6400 
+2    | 11    | 0.4478   | 0.5551   | 0.4954 
+3-5  | 59    | 0.4643   | 0.3926   | 0.4125 
+6+   | 276   | 0.3419   | 0.2990   | 0.3297 
+
+Epoch 90: loss = 0.665680 phase = C val_loss = 0.996123 delta_mae_pts = 0.3789 recap_mae_pts = 0.3789 cat_mae_pts = 0.4768 total_mae_pts = 1.1494 vs_inertia_pts = 0.0348 vs_quad_pts = 0.2673 lr_base = 0.000678 lr_mult = 0.1250 lr_eff = 0.000085 mon_cov = 0.921 mon_score = 2.9420 progress = 91/400 epoch_sec = 71.4 avg_epoch_sec = 91.6 elapsed = 02:18:52 eta = 07:51:31
+Epoch 90 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=59 ramp=80 delta=0.3789 cov=0.921 best_global_delta=0.3469
+
+Epoch 91: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.079,"recapWeight":0.11562499999999998,"deltaWeight":7.453125,"categoryWeight":0.05,"quantileWeight":0.8375,"consistencyWeight":0,"identityDropoutRate":0.774375}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.768, WFW 1.500 
+Epoch 91 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5741   | 3.7696   | 3.8031 
+1    | 9     | 0.6617   | 0.9160   | 0.6534 
+2    | 11    | 0.4639   | 0.5551   | 0.5026 
+3-5  | 59    | 0.4531   | 0.3926   | 0.4059 
+6+   | 276   | 0.3344   | 0.2990   | 0.3267 
+
+Epoch 91: loss = 0.660920 phase = C val_loss = 0.990492 delta_mae_pts = 0.3710 recap_mae_pts = 0.3710 cat_mae_pts = 0.4546 total_mae_pts = 1.0899 vs_inertia_pts = 0.0427 vs_quad_pts = 0.2752 lr_base = 0.000676 lr_mult = 0.1250 lr_eff = 0.000085 mon_cov = 0.928 mon_score = 2.9182 progress = 92/400 epoch_sec = 72.7 avg_epoch_sec = 91.4 elapsed = 02:20:04 eta = 07:48:56
+Epoch 91 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=60 ramp=80 delta=0.3710 cov=0.928 best_global_delta=0.3469
+
+Epoch 92: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.08,"recapWeight":0.11249999999999999,"deltaWeight":7.5625,"categoryWeight":0.05,"quantileWeight":0.85,"consistencyWeight":0,"identityDropoutRate":0.7625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.765, WFW 1.500 
+Epoch 92 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5710   | 3.7696   | 3.7236 
+1    | 9     | 0.6784   | 0.9160   | 0.6694 
+2    | 11    | 0.4612   | 0.5551   | 0.5077 
+3-5  | 59    | 0.4494   | 0.3926   | 0.3997 
+6+   | 276   | 0.3394   | 0.2990   | 0.3308 
+
+Epoch 92: loss = 0.678275 phase = C val_loss = 1.011126 delta_mae_pts = 0.3745 recap_mae_pts = 0.3745 cat_mae_pts = 0.4635 total_mae_pts = 1.1133 vs_inertia_pts = 0.0393 vs_quad_pts = 0.2717 lr_base = 0.000674 lr_mult = 0.1250 lr_eff = 0.000084 mon_cov = 0.928 mon_score = 2.9878 progress = 93/400 epoch_sec = 84.6 avg_epoch_sec = 91.3 elapsed = 02:21:29 eta = 07:47:02
+Epoch 92 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=61 ramp=80 delta=0.3745 cov=0.928 best_global_delta=0.3469
+
+Epoch 93: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.081,"recapWeight":0.109375,"deltaWeight":7.671875,"categoryWeight":0.05,"quantileWeight":0.8624999999999999,"consistencyWeight":0,"identityDropoutRate":0.750625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.751, WFW 1.500 
+Epoch 93 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.6139   | 3.7696   | 3.8067 
+1    | 9     | 0.6796   | 0.9160   | 0.6446 
+2    | 11    | 0.4593   | 0.5551   | 0.4853 
+3-5  | 59    | 0.4640   | 0.3926   | 0.4071 
+6+   | 276   | 0.3413   | 0.2990   | 0.3284 
+
+Epoch 93: loss = 0.678113 phase = C val_loss = 1.039241 delta_mae_pts = 0.3792 recap_mae_pts = 0.3792 cat_mae_pts = 0.4740 total_mae_pts = 1.1448 vs_inertia_pts = 0.0345 vs_quad_pts = 0.2669 lr_base = 0.000672 lr_mult = 0.1250 lr_eff = 0.000084 mon_cov = 0.916 mon_score = 3.0685 progress = 94/400 epoch_sec = 80.8 avg_epoch_sec = 91.2 elapsed = 02:22:50 eta = 07:44:57
+Epoch 93 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=62 ramp=80 delta=0.3792 cov=0.916 best_global_delta=0.3469
+
+Epoch 94: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.082,"recapWeight":0.10624999999999998,"deltaWeight":7.78125,"categoryWeight":0.05,"quantileWeight":0.875,"consistencyWeight":0,"identityDropoutRate":0.73875}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.730, WFW 1.500 
+Epoch 94 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5817   | 3.7696   | 3.7292 
+1    | 9     | 0.6616   | 0.9160   | 0.6623 
+2    | 11    | 0.4546   | 0.5551   | 0.5211 
+3-5  | 59    | 0.4454   | 0.3926   | 0.4071 
+6+   | 276   | 0.3355   | 0.2990   | 0.3268 
+
+Epoch 94: loss = 0.686563 phase = C val_loss = 1.031871 delta_mae_pts = 0.3705 recap_mae_pts = 0.3705 cat_mae_pts = 0.4569 total_mae_pts = 1.0893 vs_inertia_pts = 0.0433 vs_quad_pts = 0.2757 lr_base = 0.000671 lr_mult = 0.1250 lr_eff = 0.000084 mon_cov = 0.925 mon_score = 3.0359 progress = 95/400 epoch_sec = 69.3 avg_epoch_sec = 90.9 elapsed = 02:23:59 eta = 07:42:16
+Epoch 94 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=63 ramp=80 delta=0.3705 cov=0.925 best_global_delta=0.3469
+
+Epoch 95: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.083,"recapWeight":0.103125,"deltaWeight":7.890625,"categoryWeight":0.05,"quantileWeight":0.8875,"consistencyWeight":0,"identityDropoutRate":0.726875}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.732, WFW 1.500 
+Epoch 95 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5910   | 3.7696   | 3.7996 
+1    | 9     | 0.6725   | 0.9160   | 0.6519 
+2    | 11    | 0.4722   | 0.5551   | 0.5166 
+3-5  | 59    | 0.4524   | 0.3926   | 0.4147 
+6+   | 276   | 0.3424   | 0.2990   | 0.3392 
+
+Epoch 95: loss = 0.694266 phase = C val_loss = 1.063075 delta_mae_pts = 0.3779 recap_mae_pts = 0.3779 cat_mae_pts = 0.4712 total_mae_pts = 1.1021 vs_inertia_pts = 0.0358 vs_quad_pts = 0.2683 lr_base = 0.000669 lr_mult = 0.1250 lr_eff = 0.000084 mon_cov = 0.919 mon_score = 3.1376 progress = 96/400 epoch_sec = 68.0 avg_epoch_sec = 90.7 elapsed = 02:25:07 eta = 07:39:32
+Epoch 95 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=64 ramp=80 delta=0.3779 cov=0.919 best_global_delta=0.3469
+
+Epoch 96: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.084,"recapWeight":0.09999999999999998,"deltaWeight":8,"categoryWeight":0.05,"quantileWeight":0.9,"consistencyWeight":0,"identityDropoutRate":0.7150000000000001}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.715, WFW 1.500 
+Epoch 96 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5758   | 3.7696   | 3.7945 
+1    | 9     | 0.6974   | 0.9160   | 0.6525 
+2    | 11    | 0.4643   | 0.5551   | 0.5029 
+3-5  | 59    | 0.4588   | 0.3926   | 0.4119 
+6+   | 276   | 0.3392   | 0.2990   | 0.3301 
+
+Epoch 96: loss = 0.698251 phase = C val_loss = 1.074584 delta_mae_pts = 0.3765 recap_mae_pts = 0.3765 cat_mae_pts = 0.4688 total_mae_pts = 1.1273 vs_inertia_pts = 0.0372 vs_quad_pts = 0.2697 lr_base = 0.000667 lr_mult = 0.1250 lr_eff = 0.000083 mon_cov = 0.918 mon_score = 3.1696 progress = 97/400 epoch_sec = 68.2 avg_epoch_sec = 90.5 elapsed = 02:26:15 eta = 07:36:51
+Epoch 96 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=65 ramp=80 delta=0.3765 cov=0.918 best_global_delta=0.3469
+
+Epoch 97: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.085,"recapWeight":0.09687499999999999,"deltaWeight":8.109375,"categoryWeight":0.05,"quantileWeight":0.9125,"consistencyWeight":0,"identityDropoutRate":0.703125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.687, WFW 1.500 
+Epoch 97 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5677   | 3.7696   | 3.8043 
+1    | 9     | 0.6563   | 0.9160   | 0.6801 
+2    | 11    | 0.4587   | 0.5551   | 0.5148 
+3-5  | 59    | 0.4508   | 0.3926   | 0.4077 
+6+   | 276   | 0.3366   | 0.2990   | 0.3289 
+
+Epoch 97: loss = 0.703722 phase = C val_loss = 1.075780 delta_mae_pts = 0.3719 recap_mae_pts = 0.3719 cat_mae_pts = 0.4630 total_mae_pts = 1.1092 vs_inertia_pts = 0.0418 vs_quad_pts = 0.2742 lr_base = 0.000665 lr_mult = 0.1250 lr_eff = 0.000083 mon_cov = 0.919 mon_score = 3.1713 progress = 98/400 epoch_sec = 70.5 avg_epoch_sec = 90.3 elapsed = 02:27:26 eta = 07:34:19
+Epoch 97 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=66 ramp=80 delta=0.3719 cov=0.919 best_global_delta=0.3469
+
+Epoch 98: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.08600000000000001,"recapWeight":0.09375,"deltaWeight":8.21875,"categoryWeight":0.05,"quantileWeight":0.9249999999999999,"consistencyWeight":0,"identityDropoutRate":0.69125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.695, WFW 1.500 
+Epoch 98 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5999   | 3.7696   | 3.8234 
+1    | 9     | 0.6952   | 0.9160   | 0.6674 
+2    | 11    | 0.4852   | 0.5551   | 0.5257 
+3-5  | 59    | 0.4643   | 0.3926   | 0.4177 
+6+   | 276   | 0.3405   | 0.2990   | 0.3312 
+
+Epoch 98: loss = 0.715913 phase = C val_loss = 1.110763 delta_mae_pts = 0.3795 recap_mae_pts = 0.3795 cat_mae_pts = 0.4690 total_mae_pts = 1.1290 vs_inertia_pts = 0.0342 vs_quad_pts = 0.2667 lr_base = 0.000663 lr_mult = 0.1250 lr_eff = 0.000083 mon_cov = 0.914 mon_score = 3.2766 progress = 99/400 epoch_sec = 75.6 avg_epoch_sec = 90.1 elapsed = 02:28:41 eta = 07:32:04
+Epoch 98 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=67 ramp=80 delta=0.3795 cov=0.914 best_global_delta=0.3469
+
+Epoch 99: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.08700000000000001,"recapWeight":0.09062499999999998,"deltaWeight":8.328125,"categoryWeight":0.05,"quantileWeight":0.9375,"consistencyWeight":0,"identityDropoutRate":0.6793750000000001}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.684, WFW 1.500 
+Epoch 99 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5845   | 3.7696   | 3.7779 
+1    | 9     | 0.6670   | 0.9160   | 0.6737 
+2    | 11    | 0.4658   | 0.5551   | 0.5025 
+3-5  | 59    | 0.4599   | 0.3926   | 0.4049 
+6+   | 276   | 0.3388   | 0.2990   | 0.3288 
+
+Epoch 99: loss = 0.719702 phase = C val_loss = 1.115993 delta_mae_pts = 0.3759 recap_mae_pts = 0.3759 cat_mae_pts = 0.4695 total_mae_pts = 1.1259 vs_inertia_pts = 0.0378 vs_quad_pts = 0.2703 lr_base = 0.000661 lr_mult = 0.1250 lr_eff = 0.000083 mon_cov = 0.912 mon_score = 3.2875 progress = 100/400 epoch_sec = 79.8 avg_epoch_sec = 90.0 elapsed = 02:30:01 eta = 07:30:03
+Epoch 99 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=68 ramp=80 delta=0.3759 cov=0.912 best_global_delta=0.3469
+
+Epoch 100: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.08800000000000001,"recapWeight":0.0875,"deltaWeight":8.4375,"categoryWeight":0.05,"quantileWeight":0.95,"consistencyWeight":0,"identityDropoutRate":0.6675}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.679, WFW 1.500 
+Epoch 100 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5851   | 3.7696   | 3.8094 
+1    | 9     | 0.6973   | 0.9160   | 0.6660 
+2    | 11    | 0.4847   | 0.5551   | 0.5247 
+3-5  | 59    | 0.4607   | 0.3926   | 0.4167 
+6+   | 276   | 0.3413   | 0.2990   | 0.3372 
+
+Epoch 100: loss = 0.732167 phase = C val_loss = 1.135568 delta_mae_pts = 0.3793 recap_mae_pts = 0.3793 cat_mae_pts = 0.4745 total_mae_pts = 1.1229 vs_inertia_pts = 0.0345 vs_quad_pts = 0.2669 lr_base = 0.000659 lr_mult = 0.1250 lr_eff = 0.000082 mon_cov = 0.915 mon_score = 3.3575 progress = 101/400 epoch_sec = 79.3 avg_epoch_sec = 89.9 elapsed = 02:31:20 eta = 07:28:02
+Epoch 100 memory(end): tensors=258, buffers=258, bytes=18.3MB
+
+-- - CAPTION STATS(Epoch 100)-- - 
+GE1: delta_pts = 0.3641, recap_pts = 0.3641, cov = 0.948, width = 1.9421 
+GE2: delta_pts = 0.3177, recap_pts = 0.3177, cov = 0.959, width = 1.9499 
+VP: delta_pts = 0.3912, recap_pts = 0.3912, cov = 0.912, width = 1.9691 
+VA: delta_pts = 0.3544, recap_pts = 0.3544, cov = 0.967, width = 1.9945 
+CG: delta_pts = 0.3823, recap_pts = 0.3823, cov = 0.956, width = 2.0040 
+MB: delta_pts = 0.3729, recap_pts = 0.3729, cov = 0.826, width = 1.9508 
+MA: delta_pts = 0.3932, recap_pts = 0.3932, cov = 0.923, width = 1.9477 
+MP: delta_pts = 0.4583, recap_pts = 0.4583, cov = 0.829, width = 1.9909 
+----------------------------------
+
+[curriculum] phase=C age=69 ramp=80 delta=0.3793 cov=0.915 best_global_delta=0.3469
+
+Epoch 101: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.08900000000000001,"recapWeight":0.08437499999999998,"deltaWeight":8.546875,"categoryWeight":0.05,"quantileWeight":0.9625,"consistencyWeight":0,"identityDropoutRate":0.655625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.655, WFW 1.500 
+Epoch 101 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5648   | 3.7696   | 3.7442 
+1    | 9     | 0.6719   | 0.9160   | 0.6501 
+2    | 11    | 0.4592   | 0.5551   | 0.4995 
+3-5  | 59    | 0.4579   | 0.3926   | 0.4082 
+6+   | 276   | 0.3380   | 0.2990   | 0.3317 
+
+Epoch 101: loss = 0.735684 phase = C val_loss = 1.139988 delta_mae_pts = 0.3744 recap_mae_pts = 0.3744 cat_mae_pts = 0.4615 total_mae_pts = 1.1067 vs_inertia_pts = 0.0393 vs_quad_pts = 0.2717 lr_base = 0.000658 lr_mult = 0.1250 lr_eff = 0.000082 mon_cov = 0.911 mon_score = 3.3549 progress = 102/400 epoch_sec = 72.7 avg_epoch_sec = 89.7 elapsed = 02:32:33 eta = 07:25:42
+Epoch 101 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=70 ramp=80 delta=0.3744 cov=0.911 best_global_delta=0.3469
+
+Epoch 102: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.09000000000000001,"recapWeight":0.08124999999999999,"deltaWeight":8.65625,"categoryWeight":0.05,"quantileWeight":0.975,"consistencyWeight":0,"identityDropoutRate":0.64375}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.635, WFW 1.500 
+Epoch 102 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5959   | 3.7696   | 3.8147 
+1    | 9     | 0.6850   | 0.9160   | 0.6515 
+2    | 11    | 0.4638   | 0.5551   | 0.5175 
+3-5  | 59    | 0.4658   | 0.3926   | 0.4254 
+6+   | 276   | 0.3407   | 0.2990   | 0.3380 
+
+Epoch 102: loss = 0.739638 phase = C val_loss = 1.166946 delta_mae_pts = 0.3789 recap_mae_pts = 0.3789 cat_mae_pts = 0.4707 total_mae_pts = 1.1212 vs_inertia_pts = 0.0348 vs_quad_pts = 0.2673 lr_base = 0.000656 lr_mult = 0.1250 lr_eff = 0.000082 mon_cov = 0.906 mon_score = 3.4363 progress = 103/400 epoch_sec = 70.4 avg_epoch_sec = 89.5 elapsed = 02:33:44 eta = 07:23:16
+Epoch 102 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=71 ramp=80 delta=0.3789 cov=0.906 best_global_delta=0.3469
+
+Epoch 103: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.091,"recapWeight":0.078125,"deltaWeight":8.765625,"categoryWeight":0.05,"quantileWeight":0.9874999999999999,"consistencyWeight":0,"identityDropoutRate":0.631875}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.630, WFW 1.500 
+Epoch 103 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5743   | 3.7696   | 3.7775 
+1    | 9     | 0.6701   | 0.9160   | 0.6654 
+2    | 11    | 0.4638   | 0.5551   | 0.5230 
+3-5  | 59    | 0.4563   | 0.3926   | 0.4123 
+6+   | 276   | 0.3420   | 0.2990   | 0.3362 
+
+Epoch 103: loss = 0.751075 phase = C val_loss = 1.177191 delta_mae_pts = 0.3775 recap_mae_pts = 0.3775 cat_mae_pts = 0.4653 total_mae_pts = 1.1027 vs_inertia_pts = 0.0362 vs_quad_pts = 0.2686 lr_base = 0.000654 lr_mult = 0.1250 lr_eff = 0.000082 mon_cov = 0.905 mon_score = 3.4635 progress = 104/400 epoch_sec = 69.7 avg_epoch_sec = 89.4 elapsed = 02:34:53 eta = 07:20:50
+Epoch 103 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=72 ramp=80 delta=0.3775 cov=0.905 best_global_delta=0.3469
+
+Epoch 104: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.09200000000000001,"recapWeight":0.07499999999999998,"deltaWeight":8.875,"categoryWeight":0.05,"quantileWeight":1,"consistencyWeight":0,"identityDropoutRate":0.62}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.625, WFW 1.500 
+Epoch 104 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5809   | 3.7696   | 3.7717 
+1    | 9     | 0.6663   | 0.9160   | 0.6597 
+2    | 11    | 0.4702   | 0.5551   | 0.5128 
+3-5  | 59    | 0.4531   | 0.3926   | 0.4108 
+6+   | 276   | 0.3375   | 0.2990   | 0.3383 
+
+Epoch 104: loss = 0.759295 phase = C val_loss = 1.177437 delta_mae_pts = 0.3738 recap_mae_pts = 0.3738 cat_mae_pts = 0.4584 total_mae_pts = 1.0966 vs_inertia_pts = 0.0399 vs_quad_pts = 0.2724 lr_base = 0.000652 lr_mult = 0.1250 lr_eff = 0.000081 mon_cov = 0.912 mon_score = 3.4710 progress = 105/400 epoch_sec = 68.5 avg_epoch_sec = 89.2 elapsed = 02:36:02 eta = 07:18:22
+Epoch 104 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=73 ramp=80 delta=0.3738 cov=0.912 best_global_delta=0.3469
+
+--- NO MONITOR IMPROVEMENT FOR 18 EPOCHS: plateau multiplier 0.1250 -> 0.0625, effective LR 0.000041 ---
+
+Epoch 105: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.093,"recapWeight":0.071875,"deltaWeight":8.984375,"categoryWeight":0.05,"quantileWeight":1.0125,"consistencyWeight":0,"identityDropoutRate":0.608125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.604, WFW 1.500 
+Epoch 105 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5827   | 3.7696   | 3.8071 
+1    | 9     | 0.6599   | 0.9160   | 0.6830 
+2    | 11    | 0.4576   | 0.5551   | 0.5153 
+3-5  | 59    | 0.4515   | 0.3926   | 0.4102 
+6+   | 276   | 0.3369   | 0.2990   | 0.3358 
+
+Epoch 105: loss = 0.755755 phase = C val_loss = 1.188921 delta_mae_pts = 0.3726 recap_mae_pts = 0.3726 cat_mae_pts = 0.4578 total_mae_pts = 1.1047 vs_inertia_pts = 0.0411 vs_quad_pts = 0.2735 lr_base = 0.000650 lr_mult = 0.0625 lr_eff = 0.000041 mon_cov = 0.914 mon_score = 3.5019 progress = 106/400 epoch_sec = 67.9 avg_epoch_sec = 89.0 elapsed = 02:37:10 eta = 07:15:54
+Epoch 105 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=74 ramp=80 delta=0.3726 cov=0.914 best_global_delta=0.3469
+
+Epoch 106: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.09400000000000001,"recapWeight":0.06874999999999998,"deltaWeight":9.09375,"categoryWeight":0.05,"quantileWeight":1.0250000000000001,"consistencyWeight":0,"identityDropoutRate":0.59625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.597, WFW 1.500 
+Epoch 106 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5881   | 3.7696   | 3.7877 
+1    | 9     | 0.6697   | 0.9160   | 0.6418 
+2    | 11    | 0.4555   | 0.5551   | 0.5067 
+3-5  | 59    | 0.4614   | 0.3926   | 0.4136 
+6+   | 276   | 0.3400   | 0.2990   | 0.3354 
+
+Epoch 106: loss = 0.757472 phase = C val_loss = 1.219792 delta_mae_pts = 0.3769 recap_mae_pts = 0.3769 cat_mae_pts = 0.4702 total_mae_pts = 1.1312 vs_inertia_pts = 0.0368 vs_quad_pts = 0.2693 lr_base = 0.000648 lr_mult = 0.0625 lr_eff = 0.000040 mon_cov = 0.902 mon_score = 3.5841 progress = 107/400 epoch_sec = 67.5 avg_epoch_sec = 88.8 elapsed = 02:38:17 eta = 07:13:26
+Epoch 106 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=75 ramp=80 delta=0.3769 cov=0.902 best_global_delta=0.3469
+
+Epoch 107: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.095,"recapWeight":0.06562499999999999,"deltaWeight":9.203125,"categoryWeight":0.05,"quantileWeight":1.0375,"consistencyWeight":0,"identityDropoutRate":0.5843750000000001}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.584, WFW 1.500 
+Epoch 107 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5823   | 3.7696   | 3.7843 
+1    | 9     | 0.6677   | 0.9160   | 0.6629 
+2    | 11    | 0.4642   | 0.5551   | 0.5136 
+3-5  | 59    | 0.4542   | 0.3926   | 0.4123 
+6+   | 276   | 0.3356   | 0.2990   | 0.3309 
+
+Epoch 107: loss = 0.769220 phase = C val_loss = 1.217849 delta_mae_pts = 0.3724 recap_mae_pts = 0.3724 cat_mae_pts = 0.4609 total_mae_pts = 1.1126 vs_inertia_pts = 0.0413 vs_quad_pts = 0.2737 lr_base = 0.000646 lr_mult = 0.0625 lr_eff = 0.000040 mon_cov = 0.909 mon_score = 3.5822 progress = 108/400 epoch_sec = 76.6 avg_epoch_sec = 88.6 elapsed = 02:39:34 eta = 07:11:25
+Epoch 107 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=76 ramp=80 delta=0.3724 cov=0.909 best_global_delta=0.3469
+
+Epoch 108: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.096,"recapWeight":0.0625,"deltaWeight":9.3125,"categoryWeight":0.05,"quantileWeight":1.05,"consistencyWeight":0,"identityDropoutRate":0.5725}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.584, WFW 1.500 
+Epoch 108 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5757   | 3.7696   | 3.7600 
+1    | 9     | 0.6771   | 0.9160   | 0.6541 
+2    | 11    | 0.4689   | 0.5551   | 0.5143 
+3-5  | 59    | 0.4558   | 0.3926   | 0.4256 
+6+   | 276   | 0.3382   | 0.2990   | 0.3428 
+
+Epoch 108: loss = 0.768978 phase = C val_loss = 1.238085 delta_mae_pts = 0.3749 recap_mae_pts = 0.3749 cat_mae_pts = 0.4665 total_mae_pts = 1.0905 vs_inertia_pts = 0.0388 vs_quad_pts = 0.2713 lr_base = 0.000644 lr_mult = 0.0625 lr_eff = 0.000040 mon_cov = 0.908 mon_score = 3.6438 progress = 109/400 epoch_sec = 79.9 avg_epoch_sec = 88.6 elapsed = 02:40:54 eta = 07:09:33
+Epoch 108 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=77 ramp=80 delta=0.3749 cov=0.908 best_global_delta=0.3469
+
+Epoch 109: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.097,"recapWeight":0.05937499999999998,"deltaWeight":9.421875,"categoryWeight":0.05,"quantileWeight":1.0625,"consistencyWeight":0,"identityDropoutRate":0.5606249999999999}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.553, WFW 1.500 
+Epoch 109 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5718   | 3.7696   | 3.7455 
+1    | 9     | 0.6643   | 0.9160   | 0.6641 
+2    | 11    | 0.4614   | 0.5551   | 0.5135 
+3-5  | 59    | 0.4531   | 0.3926   | 0.4159 
+6+   | 276   | 0.3361   | 0.2990   | 0.3375 
+
+Epoch 109: loss = 0.777488 phase = C val_loss = 1.244613 delta_mae_pts = 0.3723 recap_mae_pts = 0.3723 cat_mae_pts = 0.4616 total_mae_pts = 1.1001 vs_inertia_pts = 0.0414 vs_quad_pts = 0.2739 lr_base = 0.000641 lr_mult = 0.0625 lr_eff = 0.000040 mon_cov = 0.907 mon_score = 3.6608 progress = 110/400 epoch_sec = 70.3 avg_epoch_sec = 88.4 elapsed = 02:42:04 eta = 07:07:16
+Epoch 109 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=78 ramp=80 delta=0.3723 cov=0.907 best_global_delta=0.3469
+
+Epoch 110: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.098,"recapWeight":0.056249999999999994,"deltaWeight":9.53125,"categoryWeight":0.05,"quantileWeight":1.075,"consistencyWeight":0,"identityDropoutRate":0.5487500000000001}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.544, WFW 1.500 
+Epoch 110 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5770   | 3.7696   | 3.8066 
+1    | 9     | 0.6819   | 0.9160   | 0.6707 
+2    | 11    | 0.4687   | 0.5551   | 0.5255 
+3-5  | 59    | 0.4585   | 0.3926   | 0.4225 
+6+   | 276   | 0.3384   | 0.2990   | 0.3375 
+
+Epoch 110: loss = 0.786076 phase = C val_loss = 1.269881 delta_mae_pts = 0.3756 recap_mae_pts = 0.3756 cat_mae_pts = 0.4662 total_mae_pts = 1.1092 vs_inertia_pts = 0.0381 vs_quad_pts = 0.2705 lr_base = 0.000639 lr_mult = 0.0625 lr_eff = 0.000040 mon_cov = 0.903 mon_score = 3.7346 progress = 111/400 epoch_sec = 68.5 avg_epoch_sec = 88.2 elapsed = 02:43:12 eta = 07:04:56
+Epoch 110 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=79 ramp=80 delta=0.3756 cov=0.903 best_global_delta=0.3469
+
+Epoch 111: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.099,"recapWeight":0.05312499999999998,"deltaWeight":9.640625,"categoryWeight":0.05,"quantileWeight":1.0875000000000001,"consistencyWeight":0,"identityDropoutRate":0.536875}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.527, WFW 1.500 
+Epoch 111 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5836   | 3.7696   | 3.7969 
+1    | 9     | 0.6667   | 0.9160   | 0.6401 
+2    | 11    | 0.4635   | 0.5551   | 0.4978 
+3-5  | 59    | 0.4547   | 0.3926   | 0.4172 
+6+   | 276   | 0.3411   | 0.2990   | 0.3422 
+
+Epoch 111: loss = 0.790953 phase = C val_loss = 1.285509 delta_mae_pts = 0.3767 recap_mae_pts = 0.3767 cat_mae_pts = 0.4671 total_mae_pts = 1.1018 vs_inertia_pts = 0.0371 vs_quad_pts = 0.2695 lr_base = 0.000637 lr_mult = 0.0625 lr_eff = 0.000040 mon_cov = 0.904 mon_score = 3.7848 progress = 112/400 epoch_sec = 68.2 avg_epoch_sec = 88.0 elapsed = 02:44:21 eta = 07:02:36
+Epoch 111 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=80 ramp=80 delta=0.3767 cov=0.904 best_global_delta=0.3469
+
+Epoch 112: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.525}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.520, WFW 1.500 
+Epoch 112 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5827   | 3.7696   | 3.7602 
+1    | 9     | 0.6681   | 0.9160   | 0.6379 
+2    | 11    | 0.4575   | 0.5551   | 0.4931 
+3-5  | 59    | 0.4600   | 0.3926   | 0.4180 
+6+   | 276   | 0.3396   | 0.2990   | 0.3384 
+
+Epoch 112: loss = 0.801274 phase = C val_loss = 1.298545 delta_mae_pts = 0.3763 recap_mae_pts = 0.3763 cat_mae_pts = 0.4676 total_mae_pts = 1.1226 vs_inertia_pts = 0.0374 vs_quad_pts = 0.2699 lr_base = 0.000635 lr_mult = 0.0625 lr_eff = 0.000040 mon_cov = 0.901 mon_score = 3.8242 progress = 113/400 epoch_sec = 67.5 avg_epoch_sec = 87.9 elapsed = 02:45:28 eta = 07:00:16
+Epoch 112 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=81 ramp=80 delta=0.3763 cov=0.901 best_global_delta=0.3469
+
+Epoch 113: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.513125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.517, WFW 1.500 
+Epoch 113 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5769   | 3.7696   | 3.7882 
+1    | 9     | 0.6782   | 0.9160   | 0.6625 
+2    | 11    | 0.4642   | 0.5551   | 0.5183 
+3-5  | 59    | 0.4534   | 0.3926   | 0.4150 
+6+   | 276   | 0.3386   | 0.2990   | 0.3366 
+
+Epoch 113: loss = 0.805314 phase = C val_loss = 1.295085 delta_mae_pts = 0.3748 recap_mae_pts = 0.3748 cat_mae_pts = 0.4662 total_mae_pts = 1.0970 vs_inertia_pts = 0.0390 vs_quad_pts = 0.2714 lr_base = 0.000633 lr_mult = 0.0625 lr_eff = 0.000040 mon_cov = 0.903 mon_score = 3.8068 progress = 114/400 epoch_sec = 69.1 avg_epoch_sec = 87.7 elapsed = 02:46:37 eta = 06:58:01
+Epoch 113 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=82 ramp=80 delta=0.3748 cov=0.903 best_global_delta=0.3469
+
+Epoch 114: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.50125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.495, WFW 1.500 
+Epoch 114 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5884   | 3.7696   | 3.7713 
+1    | 9     | 0.6757   | 0.9160   | 0.6337 
+2    | 11    | 0.4574   | 0.5551   | 0.4991 
+3-5  | 59    | 0.4573   | 0.3926   | 0.4194 
+6+   | 276   | 0.3417   | 0.2990   | 0.3428 
+
+Epoch 114: loss = 0.801368 phase = C val_loss = 1.307099 delta_mae_pts = 0.3777 recap_mae_pts = 0.3777 cat_mae_pts = 0.4697 total_mae_pts = 1.1138 vs_inertia_pts = 0.0360 vs_quad_pts = 0.2685 lr_base = 0.000631 lr_mult = 0.0625 lr_eff = 0.000039 mon_cov = 0.898 mon_score = 3.8373 progress = 115/400 epoch_sec = 68.9 avg_epoch_sec = 87.5 elapsed = 02:47:46 eta = 06:55:46
+Epoch 114 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=83 ramp=80 delta=0.3777 cov=0.898 best_global_delta=0.3469
+
+Epoch 115: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.489375}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.496, WFW 1.500 
+Epoch 115 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5860   | 3.7696   | 3.8022 
+1    | 9     | 0.6724   | 0.9160   | 0.6544 
+2    | 11    | 0.4687   | 0.5551   | 0.5056 
+3-5  | 59    | 0.4591   | 0.3926   | 0.4192 
+6+   | 276   | 0.3387   | 0.2990   | 0.3377 
+
+Epoch 115: loss = 0.801000 phase = C val_loss = 1.301013 delta_mae_pts = 0.3759 recap_mae_pts = 0.3759 cat_mae_pts = 0.4650 total_mae_pts = 1.1110 vs_inertia_pts = 0.0378 vs_quad_pts = 0.2703 lr_base = 0.000629 lr_mult = 0.0625 lr_eff = 0.000039 mon_cov = 0.899 mon_score = 3.8192 progress = 116/400 epoch_sec = 74.5 avg_epoch_sec = 87.4 elapsed = 02:49:01 eta = 06:53:47
+Epoch 115 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=84 ramp=80 delta=0.3759 cov=0.899 best_global_delta=0.3469
+
+Epoch 116: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.47750000000000004}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.483, WFW 1.500 
+Epoch 116 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5834   | 3.7696   | 3.8057 
+1    | 9     | 0.6737   | 0.9160   | 0.6505 
+2    | 11    | 0.4597   | 0.5551   | 0.5017 
+3-5  | 59    | 0.4575   | 0.3926   | 0.4184 
+6+   | 276   | 0.3397   | 0.2990   | 0.3391 
+
+Epoch 116: loss = 0.785681 phase = C val_loss = 1.299709 delta_mae_pts = 0.3762 recap_mae_pts = 0.3762 cat_mae_pts = 0.4659 total_mae_pts = 1.1061 vs_inertia_pts = 0.0376 vs_quad_pts = 0.2700 lr_base = 0.000627 lr_mult = 0.0625 lr_eff = 0.000039 mon_cov = 0.902 mon_score = 3.8213 progress = 117/400 epoch_sec = 75.3 avg_epoch_sec = 87.3 elapsed = 02:50:16 eta = 06:51:50
+Epoch 116 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=85 ramp=80 delta=0.3762 cov=0.902 best_global_delta=0.3469
+
+Epoch 117: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.46562500000000007}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.465, WFW 1.500 
+Epoch 117 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5726   | 3.7696   | 3.7833 
+1    | 9     | 0.6779   | 0.9160   | 0.6581 
+2    | 11    | 0.4668   | 0.5551   | 0.5200 
+3-5  | 59    | 0.4534   | 0.3926   | 0.4171 
+6+   | 276   | 0.3388   | 0.2990   | 0.3398 
+
+Epoch 117: loss = 0.794585 phase = C val_loss = 1.296101 delta_mae_pts = 0.3749 recap_mae_pts = 0.3749 cat_mae_pts = 0.4608 total_mae_pts = 1.0921 vs_inertia_pts = 0.0389 vs_quad_pts = 0.2713 lr_base = 0.000624 lr_mult = 0.0625 lr_eff = 0.000039 mon_cov = 0.904 mon_score = 3.8072 progress = 118/400 epoch_sec = 70.5 avg_epoch_sec = 87.2 elapsed = 02:51:26 eta = 06:49:43
+Epoch 117 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=86 ramp=80 delta=0.3749 cov=0.904 best_global_delta=0.3469
+
+Epoch 118: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.4537500000000001}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.455, WFW 1.500 
+Epoch 118 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5716   | 3.7696   | 3.7772 
+1    | 9     | 0.6764   | 0.9160   | 0.6598 
+2    | 11    | 0.4660   | 0.5551   | 0.5061 
+3-5  | 59    | 0.4592   | 0.3926   | 0.4166 
+6+   | 276   | 0.3405   | 0.2990   | 0.3385 
+
+Epoch 118: loss = 0.798576 phase = C val_loss = 1.305547 delta_mae_pts = 0.3770 recap_mae_pts = 0.3770 cat_mae_pts = 0.4648 total_mae_pts = 1.1004 vs_inertia_pts = 0.0367 vs_quad_pts = 0.2691 lr_base = 0.000622 lr_mult = 0.0625 lr_eff = 0.000039 mon_cov = 0.894 mon_score = 3.8289 progress = 119/400 epoch_sec = 74.5 avg_epoch_sec = 87.1 elapsed = 02:52:41 eta = 06:47:46
+Epoch 118 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=87 ramp=80 delta=0.3770 cov=0.894 best_global_delta=0.3469
+
+Epoch 119: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.441875}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.438, WFW 1.500 
+Epoch 119 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5824   | 3.7696   | 3.8094 
+1    | 9     | 0.6846   | 0.9160   | 0.6530 
+2    | 11    | 0.4814   | 0.5551   | 0.5142 
+3-5  | 59    | 0.4637   | 0.3926   | 0.4184 
+6+   | 276   | 0.3409   | 0.2990   | 0.3382 
+
+Epoch 119: loss = 0.789430 phase = C val_loss = 1.309099 delta_mae_pts = 0.3789 recap_mae_pts = 0.3789 cat_mae_pts = 0.4702 total_mae_pts = 1.1213 vs_inertia_pts = 0.0348 vs_quad_pts = 0.2672 lr_base = 0.000620 lr_mult = 0.0625 lr_eff = 0.000039 mon_cov = 0.892 mon_score = 3.8499 progress = 120/400 epoch_sec = 82.2 avg_epoch_sec = 87.0 elapsed = 02:54:03 eta = 06:46:07
+Epoch 119 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=88 ramp=80 delta=0.3789 cov=0.892 best_global_delta=0.3469
+
+Epoch 120: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.43000000000000005}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.430, WFW 1.500 
+Epoch 120 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5809   | 3.7696   | 3.8073 
+1    | 9     | 0.6870   | 0.9160   | 0.6494 
+2    | 11    | 0.4776   | 0.5551   | 0.5143 
+3-5  | 59    | 0.4618   | 0.3926   | 0.4275 
+6+   | 276   | 0.3399   | 0.2990   | 0.3433 
+
+Epoch 120: loss = 0.787312 phase = C val_loss = 1.303750 delta_mae_pts = 0.3778 recap_mae_pts = 0.3778 cat_mae_pts = 0.4666 total_mae_pts = 1.1139 vs_inertia_pts = 0.0359 vs_quad_pts = 0.2683 lr_base = 0.000618 lr_mult = 0.0625 lr_eff = 0.000039 mon_cov = 0.900 mon_score = 3.8384 progress = 121/400 epoch_sec = 81.9 avg_epoch_sec = 87.0 elapsed = 02:55:25 eta = 06:44:29
+Epoch 120 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=89 ramp=80 delta=0.3778 cov=0.900 best_global_delta=0.3469
+
+Epoch 121: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.41812499999999997}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.422, WFW 1.500 
+Epoch 121 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5789   | 3.7696   | 3.8045 
+1    | 9     | 0.6810   | 0.9160   | 0.6644 
+2    | 11    | 0.4715   | 0.5551   | 0.5207 
+3-5  | 59    | 0.4508   | 0.3926   | 0.4206 
+6+   | 276   | 0.3372   | 0.2990   | 0.3398 
+
+Epoch 121: loss = 0.792032 phase = C val_loss = 1.291392 delta_mae_pts = 0.3736 recap_mae_pts = 0.3736 cat_mae_pts = 0.4607 total_mae_pts = 1.0989 vs_inertia_pts = 0.0401 vs_quad_pts = 0.2726 lr_base = 0.000615 lr_mult = 0.0625 lr_eff = 0.000038 mon_cov = 0.904 mon_score = 3.7954 progress = 122/400 epoch_sec = 78.0 avg_epoch_sec = 86.9 elapsed = 02:56:43 eta = 06:42:41
+Epoch 121 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=90 ramp=80 delta=0.3736 cov=0.904 best_global_delta=0.3469
+
+Epoch 122: Phase C (A_end=10, B_end=32, C_ramp=80) Weights {"totalWeight":0.1,"recapWeight":0.04999999999999999,"deltaWeight":9.75,"categoryWeight":0.05,"quantileWeight":1.1,"consistencyWeight":0,"identityDropoutRate":0.40625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.403, WFW 1.500 
+Epoch 122 memory(start): tensors=258, buffers=258, bytes=18.3MB
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 8     | 0.5997   | 3.7696   | 3.7864 
+1    | 9     | 0.6755   | 0.9160   | 0.6439 
+2    | 11    | 0.4754   | 0.5551   | 0.5128 
+3-5  | 59    | 0.4576   | 0.3926   | 0.4179 
+6+   | 276   | 0.3368   | 0.2990   | 0.3361 
+
+Epoch 122: loss = 0.784450 phase = C val_loss = 1.295090 delta_mae_pts = 0.3748 recap_mae_pts = 0.3748 cat_mae_pts = 0.4612 total_mae_pts = 1.1027 vs_inertia_pts = 0.0389 vs_quad_pts = 0.2714 lr_base = 0.000613 lr_mult = 0.0625 lr_eff = 0.000038 mon_cov = 0.901 mon_score = 3.8074 progress = 123/400 epoch_sec = 70.0 avg_epoch_sec = 86.8 elapsed = 02:57:53 eta = 06:40:36
+Epoch 122 memory(end): tensors=258, buffers=258, bytes=18.3MB
+[curriculum] phase=C age=91 ramp=80 delta=0.3748 cov=0.901 best_global_delta=0.3469
+
+--- NO MONITOR IMPROVEMENT FOR 18 EPOCHS: plateau multiplier 0.0625 -> 0.0313, effective LR 0.000030 ---
+Early stopping at epoch 122 
+Selecting final weights: best-delta-checkpoint (delta_mae_pts = 0.3469)
+Saving final production model to models\v9_subcaption_fixed\v9fix_shared_datefwd_mbmp14_1779530262361...
+
+--- EVALUATION: validation (363 rows) ---
+validation: delta_mae_pts=0.3667, recap_mae_pts=0.3667, total_mae_pts=1.0427, coverage=0.939, width=1.9022
+
+--- EVALUATION: test_all (52 rows) ---
+test_all: delta_mae_pts=0.3110, recap_mae_pts=0.3110, total_mae_pts=0.8014, coverage=0.950, width=1.7143
+
+--- EVALUATION: test_world_class (33 rows) ---
+test_world_class: delta_mae_pts=0.3201, recap_mae_pts=0.3201, total_mae_pts=0.9711, coverage=0.928, width=1.6291
+
+--- EVALUATION: test_open_class (19 rows) ---
+test_open_class: delta_mae_pts=0.2976, recap_mae_pts=0.2976, total_mae_pts=0.5055, coverage=0.987, width=1.8622
+
+--- EVALUATION: test_championship_week (47 rows) ---
+test_championship_week: delta_mae_pts=0.3189, recap_mae_pts=0.3189, total_mae_pts=0.8385, coverage=0.944, width=1.6971
+Production training complete.

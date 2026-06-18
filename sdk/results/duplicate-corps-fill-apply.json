@@ -1,0 +1,504 @@
+{
+  "mode": "apply",
+  "dbUrl": "file:C:\\Users\\Patrick\\corps-place\\sdk\\dci-relational.db",
+  "changeCount": 71,
+  "changes": [
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "about",
+      "value": "IMPACT is a Central Florida drum and bugle corps that debuted in 2012 at the Drum Corps Associates World Championships and joined DCI SoundSport in 2016. The group operates year-round, performing at conventions, parades, high school band shows, and other engagements with members ranging from teens to older adults."
+    },
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "website",
+      "value": "https://web.archive.org/web/20260120145801/http://impactdrumcorps.org"
+    },
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "corps_logo",
+      "value": "https://production.assets.dci.org/5a181168d670bd001b2e6372_Y5C5dwr1giTMTeBP_VQPJtYiXtN_YHKN.jpg"
+    },
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "corps_photo",
+      "value": "https://impactdrumcorps.org/wp-content/uploads/2025/07/whatdevinsees_impact_dci-se-47-of-55_54686856967_o.jpg"
+    },
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "display_city",
+      "value": "Tavares, FL"
+    },
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "city",
+      "value": "Tavares"
+    },
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "state",
+      "value": "FL"
+    },
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "country",
+      "value": "USA"
+    },
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "address",
+      "value": "2345 Foxtree Rd"
+    },
+    {
+      "sourceKey": "impact-drum-bugle-corps",
+      "targetKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "field": "phone",
+      "value": "(352) 551-5564"
+    },
+    {
+      "sourceKey": "crusaders-senior-drum-bugle-corps",
+      "targetKey": "001j000000iwx9baat",
+      "name": "Crusaders Senior",
+      "field": "about",
+      "value": "Twin brothers Neil and Terry Connolly, alums of the Boston Crusaders, started the Crusaders Senior in 1991 as an opportunity to renew old friendships and maintain the traditions of their beloved junior corps.  Today, membership in the Crusaders Senior is not limited to alumni, and the corps attracts performers from a variety of other corps and bands.  Since its startup, the group has established its own identity as a parade and exhibition group and is one of the only corps to appear in every Drum Corps Associates Alumni Spectacular event since 1998."
+    },
+    {
+      "sourceKey": "crusaders-senior-drum-bugle-corps",
+      "targetKey": "001j000000iwx9baat",
+      "name": "Crusaders Senior",
+      "field": "website",
+      "value": "crusaderssenior.weebly.com/index.html"
+    },
+    {
+      "sourceKey": "crusaders-senior-drum-bugle-corps",
+      "targetKey": "001j000000iwx9baat",
+      "name": "Crusaders Senior",
+      "field": "display_city",
+      "value": "Rockland, MA"
+    },
+    {
+      "sourceKey": "crusaders-senior-drum-bugle-corps",
+      "targetKey": "001j000000iwx9baat",
+      "name": "Crusaders Senior",
+      "field": "city",
+      "value": "Rockland"
+    },
+    {
+      "sourceKey": "crusaders-senior-drum-bugle-corps",
+      "targetKey": "001j000000iwx9baat",
+      "name": "Crusaders Senior",
+      "field": "state",
+      "value": "MA"
+    },
+    {
+      "sourceKey": "crusaders-senior-drum-bugle-corps",
+      "targetKey": "001j000000iwx9baat",
+      "name": "Crusaders Senior",
+      "field": "country",
+      "value": "USA"
+    },
+    {
+      "sourceKey": "crusaders-senior-drum-bugle-corps",
+      "targetKey": "001j000000iwx9baat",
+      "name": "Crusaders Senior",
+      "field": "address",
+      "value": "8 Apple Court"
+    },
+    {
+      "sourceKey": "crusaders-senior-drum-bugle-corps",
+      "targetKey": "001j000000iwx9baat",
+      "name": "Crusaders Senior",
+      "field": "phone",
+      "value": "(781) 738-4127"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "about",
+      "value": "Formed in 2018, Zephyrus Arts Institute is an Oklahoma-based nonprofit organization devoted to providing life-changing experiences to performers and audiences alike. The organization includes the Zephyrus Drum & Bugle Corps, the Zephyrus Independent Winter Guard, the Zephyrus Marching Academy, and the Tulsa Winds Community Band. A DCI SoundSport ensemble between 2022 and 2024, Zephyrus is currently recognized as an Open Class Affiliate, in the second year of a three-year evaluation process."
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "website",
+      "value": "https://www.zephyrusarts.org/corps.html"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "corps_logo",
+      "value": "https://production.assets.dci.org/5e8aa71b694c8b5695293482_BvFsrquBM3COVyHNDR6XSMskPuv_0F6F.png"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "corps_photo",
+      "value": "https://production.assets.dci.org/5e8aa71b694c8b5695293482_BvFsrquBM3COVyHNDR6XSMskPuv_0F6F.png"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "cover_image",
+      "value": "https://production.assets.dci.org/5e8aa71b694c8b5695293482_BvFsrquBM3COVyHNDR6XSMskPuv_0F6F.png"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "display_city",
+      "value": "Tulsa, OK"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "city",
+      "value": "Tulsa"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "state",
+      "value": "OK"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "country",
+      "value": "United States"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "address",
+      "value": "4039 E 26th St Tulsa Oklahoma, 74114"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "facebook",
+      "value": "https://www.facebook.com/zephyrusarts/"
+    },
+    {
+      "sourceKey": "zephyrus-drum-bugle-corps",
+      "targetKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "field": "instagram",
+      "value": "https://www.instagram.com/zephyrusarts"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "about",
+      "value": "Founded in 1981 in Keyport, New Jersey, the Bushwackers stormed onto the Drum Corps Associates scene in 1982. Just four years later, the New Jersey corps won its first DCA championship and quickly followed up its winning ways, capturing five additional titles. With membership hailing from across the East Coast, the Bushwackers' approach has always focused on quality performances, consistently placing the corps in the upper-echelon of the all-age drum corps activity. The corps won the World Class bronze medal in the inaugural DCI All-Age Championship in 2024."
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "website",
+      "value": "http://bushwackers.org"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "corps_logo",
+      "value": "https://production.assets.dci.org/6515b6a9e471c33c5807f562_ymGvhSvIhpgoM50b5D8DQ9TeaKj2kOp6.png"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "corps_photo",
+      "value": "https://production.assets.dci.org/64f74bbf8a8bc6d39804dbf7_Nio4lmXUcjJ1zl5dNEYfT4P5na43OTFA.jpg"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "cover_image",
+      "value": "https://production.assets.dci.org/64f74bbf8a8bc6d39804dbf7_Nio4lmXUcjJ1zl5dNEYfT4P5na43OTFA.jpg"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "display_city",
+      "value": "Princeton, NJ"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "city",
+      "value": "Princeton"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "state",
+      "value": "NJ"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "country",
+      "value": "USA"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "address",
+      "value": "174 Nassau Street, #198"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "facebook",
+      "value": "https://www.facebook.com/bushwackersDBC"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "instagram",
+      "value": "https://www.instagram.com/bushwackers_corps"
+    },
+    {
+      "sourceKey": "bushwackers-drum-corps",
+      "targetKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "field": "twitter",
+      "value": "https://twitter.com/BushwackersDBC"
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "about",
+      "value": "Marking its inaugural season in 2023, Northern Lights achieved a Gold rating at the SoundSport International Music & Food Festival as part of DCI World Championships Week in Indianapolis. The corps' mission is to provide an affordable and accessible marching arts experience to all those who seek it in the Midwest. In the corps' second year of a three-year evaluation process, Northern Lights is currently recognized as an All-Age Class Affiliate."
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "website",
+      "value": "https://www.northernlightsmi.org/"
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "corps_logo",
+      "value": "https://images.dci.org/wp-content/uploads/2025/10/northern-lights-2024-800x800-1.png"
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "corps_photo",
+      "value": "https://images.dci.org/wp-content/uploads/2025/07/16-northernlights-lisle.jpg"
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "display_city",
+      "value": "Grand Rapids, MI"
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "city",
+      "value": "Grand Rapids"
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "state",
+      "value": "MI"
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "country",
+      "value": "United States"
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "address",
+      "value": "5783 West River Drive Northeast Plainfield charter Township MI, 49306"
+    },
+    {
+      "sourceKey": "northern-lights-drum-bugle-corps",
+      "targetKey": "northern-lights",
+      "name": "Northern Lights",
+      "field": "phone",
+      "value": "6162134477"
+    },
+    {
+      "sourceKey": "southern-knights",
+      "targetKey": "001j000000dlalkaag",
+      "name": "Southern Knights",
+      "field": "about",
+      "value": "Formed in 2015, Southern Knights is an all-age drum corps from Alabama. The corps' 2017 summer season marked its first season performing as part of Drum Corps International's All-Age division, and the organization emphasizes member development through teamwork, self-discipline, preparedness, accountability, critical thinking, and leadership."
+    },
+    {
+      "sourceKey": "southern-knights",
+      "targetKey": "001j000000dlalkaag",
+      "name": "Southern Knights",
+      "field": "website",
+      "value": "http://www.southernknightscorps.org/"
+    },
+    {
+      "sourceKey": "southern-knights",
+      "targetKey": "001j000000dlalkaag",
+      "name": "Southern Knights",
+      "field": "display_city",
+      "value": "Pelham, AL"
+    },
+    {
+      "sourceKey": "southern-knights",
+      "targetKey": "001j000000dlalkaag",
+      "name": "Southern Knights",
+      "field": "city",
+      "value": "Pelham"
+    },
+    {
+      "sourceKey": "southern-knights",
+      "targetKey": "001j000000dlalkaag",
+      "name": "Southern Knights",
+      "field": "state",
+      "value": "AL"
+    },
+    {
+      "sourceKey": "southern-knights",
+      "targetKey": "001j000000dlalkaag",
+      "name": "Southern Knights",
+      "field": "country",
+      "value": "United States"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "about",
+      "value": "Founded just over a year ago, Encorps got its start as a DCI SoundSport team at several New Jersey-area events hosted as part of the 2018 Drum Corps International Tour. Fielding a successful corps in its inaugural season, 2019 will be the corps’ first competing among the ranks of Open Class ensembles."
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "website",
+      "value": "http://jamwithencorps.org/"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "corps_logo",
+      "value": "https://production.assets.dci.org/5c9e5312da7e9a72a9100ac2_D-MckFKTkaCrn6BDK0NsGzaxL9onFL9s.png"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "corps_photo",
+      "value": "https://production.assets.dci.org/5c9e550ada7e9a73fb77dea2_-hzMntaEtFvt085Orev5ZOCYUA2TbTNK.jpg"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "cover_image",
+      "value": "https://production.assets.dci.org/5c9e550ada7e9a73fb77dea2_-hzMntaEtFvt085Orev5ZOCYUA2TbTNK.jpg"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "display_city",
+      "value": "South Brunswick, NJ"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "city",
+      "value": "South Brunswick"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "state",
+      "value": "NJ"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "address",
+      "value": "PO Box 81 Dayton NJ, 08810"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "phone",
+      "value": "9739192206"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "facebook",
+      "value": "https://www.facebook.com/encorpsmarchingmusic/"
+    },
+    {
+      "sourceKey": "encorps",
+      "targetKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "field": "instagram",
+      "value": "https://www.instagram.com/encorpsmarchingmusic/"
+    }
+  ]
+}

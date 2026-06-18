@@ -1,0 +1,64 @@
+[
+  {
+    "person_id": "neil-adkison",
+    "display_name": "Neil Adkison",
+    "bio": "Neil Adkison is a drum corps visual instructor involved with Drum Corps International for over 16 years as both a performer and instructor. He performed for five years with the Blue Devils and has taught visual at Blue Devils B, Santa Clara Vanguard, Madison Scouts, and Carolina Crown. He served as Visual Caption Head of the Blue Knights Drum & Bugle Corps beginning in 2015.",
+    "photo_url": null,
+    "sources": [
+      "https://www.drumcorpsplanet.com/2017/01/blue-knights-announce-visual-staff-for-2017-season/",
+      "https://www.dci.org/news/corps-news-and-announcements-20171208/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "ronnie-bynum",
+    "display_name": "Ronnie Bynum",
+    "bio": null,
+    "photo_url": null,
+    "sources": [
+      "https://www.dci.org/news/twenty-four-corps-members-selected-for-all-dci-color-guard/"
+    ],
+    "confidence": "LOW"
+  },
+  {
+    "person_id": "wayne-harris",
+    "display_name": "Wayne Harris",
+    "bio": "Wayne Harris is a Performance Coach at the Santa Clara Vanguard. An award-winning solo performer, writer, and educator, he has taught and directed numerous world-class drum and bugle corps, winterguards, and band programs across the country, and adjudicates pageantry events. Outside the marching arts he is a playwright with seven full-length plays and works as a director with the San Francisco Marsh Youth Theater.",
+    "photo_url": "https://www.scvanguard.org/wp-content/uploads/2022/08/WayneHarris.jpeg",
+    "sources": ["https://www.scvanguard.org/staff/wayne-harris/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "bob-higgins",
+    "display_name": "Bob Higgins",
+    "bio": "Bob Higgins serves as a Brass Consultant for the Music City Drum and Bugle Corps in Nashville, Tennessee, working alongside the corps' brass leadership team. He has been involved in drum corps brass instruction at the World Class level.",
+    "photo_url": null,
+    "sources": [
+      "https://musiccityyouth.org/drum-corps/staff",
+      "https://musiccityyouth.org/news/music-city-drum-corps-announces-brass-leadership-team"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "christopher-williams",
+    "display_name": "Chris Williams",
+    "bio": "Chris Williams is a brass educator in the marching arts who taught brass with the Blue Knights (2014-2017) and Phantom Regiment (2018-2020) drum and bugle corps. He is a summa cum laude graduate of Northwestern State University of Louisiana with a Bachelor's in Music Education, where he studied trumpet, and completed a Master of Music Education at the University of Southern Mississippi in 2021. He serves as Director of Bands at Destrehan High School in Destrehan, Louisiana, where he also arranges music for the band.",
+    "photo_url": null,
+    "sources": [
+      "https://www.stcharles.k12.la.us/domain/1849",
+      "https://regiment.org/programs/drum-corps/staff/"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "erik-kosman",
+    "display_name": "Erik Kosman",
+    "bio": "Erik Kosman is a designer, audio engineer, and educator in the marching arts. He marched in the Bluecoats front ensemble (2006-2009) and later served as the corps' Electronics Caption Head, then worked two years as a consultant and audio engineer for FloMarching before joining the Boston Crusaders as Head of Audio in 2018. Beyond drum corps, he has served as Technical Coordinator for the Bailey Performance Center at Kennesaw State University and has consulted with programs across DCI, WGI, and BOA. He resides near Austin, Texas.",
+    "photo_url": "https://bostoncrusaders.org/wp-content/uploads/2018/10/IMG_7197.jpg",
+    "sources": [
+      "https://bostoncrusaders.org/2018/10/erik-kosman-joins-design-team-as-head-of-audio/",
+      "https://www.linkedin.com/in/erik-kosman-aa140aa2/"
+    ],
+    "confidence": "HIGH"
+  }
+]

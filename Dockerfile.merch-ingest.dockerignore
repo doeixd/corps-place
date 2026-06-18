@@ -1,0 +1,32 @@
+# Build-context ignore for Dockerfile.merch-ingest (BuildKit picks
+# `<dockerfile>.dockerignore` over the base `.dockerignore`). UNLIKE the base
+# ignore, this KEEPS sdk/scripts + sdk/src (the ingest pipeline runs those), while
+# still excluding the heavy/mutable artifacts (node_modules, DBs, models, .output).
+.git
+node_modules
+**/node_modules
+.output
+.tanstack
+.nitro
+.fate
+.vscode
+.claude
+
+# Local databases — mounted read-write at runtime, never baked in.
+*.db
+*.db-*
+*.db.backup*
+read-model*
+public/read-model
+
+# Heavy SDK artifacts the merch pipeline doesn't need (KEEP sdk/scripts + sdk/src).
+sdk/models
+sdk/results
+sdk/wayback
+sdk/test
+sdk/node_modules
+
+# Logs / scratch
+*.log
+.deploy-status.json
+.proxy-target

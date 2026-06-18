@@ -1,0 +1,277 @@
+{
+  "generated_at": "2026-05-27T18:58:52.346Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_actually_final_1779812116275",
+  "event": {
+    "event_id": "web-2026-2026-northwest-youth-music-games-portland",
+    "slug": "2026-northwest-youth-music-games-portland",
+    "name": "Northwest Youth Music Games Portland",
+    "event_name": "Northwest Youth Music Games Portland",
+    "start_date": "2026-07-01T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:30 PM PT",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Portland",
+    "location_state": "OR"
+  },
+  "readiness": {
+    "lineup_rows": 6,
+    "matched_corps_keys": 6,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 5,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 11.627906976744185
+  },
+  "input_signature": "8c1df4333a5852efcede37a42b1e3c7ec05d266021ed6f49f9139c6383e00485",
+  "builder_version": "v9-event-prediction-lineup-fallback-v3",
+  "input_audit": {
+    "scored_lineup_rows": 6,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "0015b00002bxwbjaap",
+        "corps": "Gems",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 2,
+        "time": "7:40 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9uaad",
+        "corps": "Impulse",
+        "division": "Open Class",
+        "performance_order": 3,
+        "time": "7:52 PM"
+      },
+      {
+        "corps_key": "001j000000iwx99aad",
+        "corps": "Columbians",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "8:07 PM"
+      },
+      {
+        "corps_key": "001j0000012y6bqaac",
+        "corps": "The Battalion",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "8:22 PM"
+      },
+      {
+        "corps_key": "001j000000h3xwcaav",
+        "corps": "Santa Clara Vanguard",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "8:52 PM"
+      },
+      {
+        "corps_key": "001j000000iwx93aad",
+        "corps": "Seattle Cascades",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "9:10 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "0015b00002bxwbjaap",
+        "corps": "Gems",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 2,
+        "time": "7:40 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Seattle Cascades",
+        "performance_order": 9,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 10,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-northwest-youth-music-games-portland",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-01T00:00:00.000Z",
+      "scored_lineup_rows": 6,
+      "matched_corps_keys": 6,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000h3xwcaav",
+      "corps": "Santa Clara Vanguard",
+      "city": "Santa Clara, CA",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "8:52 PM",
+      "total": 77.95,
+      "GE": 31.289,
+      "Visual": 23.382,
+      "Music": 23.279,
+      "GE1": 15.7,
+      "GE2": 15.589,
+      "VP": 15.6,
+      "VA": 15.582,
+      "CG": 15.582,
+      "MB": 15.7,
+      "MA": 15.476,
+      "MP": 15.382,
+      "raw_model_total": 94.67,
+      "prior_season_comparable_total": 77.95,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwx93aad",
+      "corps": "Seattle Cascades",
+      "city": "Seattle, WA",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "9:10 PM",
+      "total": 63.2,
+      "GE": 25.446,
+      "Visual": 18.656,
+      "Music": 19.098,
+      "GE1": 12.726,
+      "GE2": 12.72,
+      "VP": 12.52,
+      "VA": 12.49,
+      "CG": 12.302,
+      "MB": 12.773,
+      "MA": 12.673,
+      "MP": 12.75,
+      "raw_model_total": 80.508,
+      "prior_season_comparable_total": 63.2,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 23,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j0000012y6bqaac",
+      "corps": "The Battalion",
+      "city": "Salt Lake City, UT",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "8:22 PM",
+      "total": 59.998,
+      "GE": 24.206,
+      "Visual": 17.669,
+      "Music": 18.123,
+      "GE1": 12.103,
+      "GE2": 12.103,
+      "VP": 12.229,
+      "VA": 11.508,
+      "CG": 11.602,
+      "MB": 12.072,
+      "MA": 12.166,
+      "MP": 12.009,
+      "raw_model_total": 71.233,
+      "prior_season_comparable_total": 60,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 21,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwx99aad",
+      "corps": "Columbians",
+      "city": "Pasco, WA",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "8:07 PM",
+      "total": 57,
+      "GE": 23.164,
+      "Visual": 16.63,
+      "Music": 17.206,
+      "GE1": 11.572,
+      "GE2": 11.592,
+      "VP": 11.653,
+      "VA": 10.722,
+      "CG": 10.885,
+      "MB": 11.683,
+      "MA": 11.107,
+      "MP": 11.623,
+      "raw_model_total": 69.308,
+      "prior_season_comparable_total": 57,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 25,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwx9uaad",
+      "corps": "Impulse",
+      "city": "Buena Park, CA",
+      "division": "Open Class",
+      "performance_order": 3,
+      "time": "7:52 PM",
+      "total": 56.751,
+      "GE": 23.095,
+      "Visual": 16.747,
+      "Music": 16.909,
+      "GE1": 11.156,
+      "GE2": 11.939,
+      "VP": 11.273,
+      "VA": 11.218,
+      "CG": 11.002,
+      "MB": 11.075,
+      "MA": 11.345,
+      "MP": 11.398,
+      "raw_model_total": 63.548,
+      "prior_season_comparable_total": 56.75,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking."
+  ]
+}

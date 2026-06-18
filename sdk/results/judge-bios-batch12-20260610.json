@@ -1,0 +1,221 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 143-155 by assignment count. Sources: MFA, SCPA, Tapspace, Innovative Percussion, DCI panels; JS/MFA rendered via puppeteer. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "m-howard-1",
+      "displayName": "Mike Howard",
+      "givenName": "Mike",
+      "familyName": "Howard",
+      "biography": "Mike Howard is a general-effect/music adjudicator for Drum Corps International, serving as a General Effect 2 judge at DCI World Championships (2023-2025).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "General Effect 2 / Music Analysis; 2013-2025", "facts": [
+        { "fact": "DCI GE2 judge (2023-2025 confirmed)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+        { "fact": "Common name; no distinguishing public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "j-loyde-1",
+      "displayName": "Jager Loyde",
+      "givenName": "Jager",
+      "familyName": "Loyde",
+      "biography": "Nolan Jager Loyde is a music adjudicator, clinician, and conductor who serves as a Director of Fine Arts in Round Rock ISD (Texas). He earned a Bachelor's in Music Education from the University of North Texas and a Master's in Educational Leadership from Stephen F. Austin State University, and is pursuing a PhD at Texas State University. A nationally recognized adjudicator for Drum Corps International and Bands of America, he serves on the DCI Music for All Educational Advisory Team and the DCI Judge Administration Team, and helped create and deliver the curriculum for DCI's Judge Diversity Initiative.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/02/Nolan-Jager-Loyde-Headshot-2022-Web.jpg",
+      "alternateNames": ["Nolan Jager Loyde"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/nolan-jager-loyde/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.jagerloyde.com/background", "label": "Personal site", "kind": "organization" }
+      ],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Analysis / Music Brass / GE2; 2013-2025", "facts": [
+        { "fact": "Round Rock ISD Director of Fine Arts; UNT + SFA degrees; DCI Judge Administration Team & Judge Diversity Initiative; DCI/BOA music judge", "source": "https://education.musicforall.org/clinician/nolan-jager-loyde/", "confidence": "HIGH" } ] }
+    },
+    {
+      "judgeId": "t-hudnall-1",
+      "displayName": "Tim Hudnall",
+      "givenName": "Tim",
+      "familyName": "Hudnall",
+      "biography": "Tim Hudnall is a color guard and visual adjudicator with over 40 years of experience in design and instruction in marching band and winter guard programming, currently rostered with Bands of America, Winter Guard International, and Drum Corps International. A graduate of Western Kentucky University (B.S. in Biology/Chemistry, M.S. in Public Health) where he performed in the Big Red Marching Band as a trumpet and color guard member, he has been director, program coordinator, and consultant for programs in Kentucky, Florida, and Tennessee, with groups reaching WGI World Championship semifinals and BOA Regional finals.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/HudnallTimResize2.png",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/tim-hudnall/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Color Guard / Visual Proficiency / Visual Analysis / GE1; 2013-2025", "facts": [
+        { "fact": "40+ yrs design/instruction; DCI/WGI/BOA color guard judge; WKU; KY/FL/TN programs", "source": "https://education.musicforall.org/clinician/tim-hudnall/", "confidence": "HIGH" } ] }
+    },
+    {
+      "judgeId": "t-moddison-1",
+      "displayName": "Travis Moddison",
+      "givenName": "Travis",
+      "familyName": "Moddison",
+      "biography": "Travis Moddison is a music adjudicator for Drum Corps International, serving in the Music Analysis and Music Brass captions at DCI World Championships (including 2018).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2018-world-championship-adjudication-panels/", "label": "DCI 2018 adjudication panels", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Analysis / Music Brass / GE2; 2013-2025", "facts": [
+        { "fact": "DCI music judge (2018 confirmed)", "source": "https://www.dci.org/news/2018-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+        { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "j-queen-1",
+      "displayName": "Jeff Queen",
+      "givenName": "Jeff",
+      "familyName": "Queen",
+      "biography": "Jeff Queen is a renowned percussionist, soloist, author, and adjudicator who was the DCI Individual & Ensemble Snare Drum Champion (1994, 1995) and PAS Individual Snare Drum Champion (1994, 1995). He marched the Canton Bluecoats, Velvet Knights, Santa Clara Vanguard, Blue Knights, and the University of North Texas, and was an original cast member, solo performer, and battery instructor of the Tony and Emmy Award-winning Broadway show BLAST! (1999-2003). He was percussion caption head for the Carolina Crown (2003-2004) and percussion arranger for the Colts (2007-2008), and a DCI judge from 2012 to 2018. He is the Percussion Coordinator at Carmel High School (Indiana) and on the percussion faculty at Butler University, and is the author of 'The Next Level.'",
+      "photoUrl": "https://tapspace.com/wp-content/uploads/2024/06/Queen-1080px.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.tapspace.com/jeff-queen/", "label": "Tapspace artist bio", "kind": "bio" },
+        { "url": "https://hudsonmusic.com/jeff-queen/", "label": "Hudson Music", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Santa Clara Vanguard", "season": "1992", "role": "Performer (snare)", "sourceUrl": "https://www.tapspace.com/jeff-queen/" },
+        { "corpsName": "Carolina Crown", "season": "2003-2004", "role": "Percussion Caption Head", "sourceUrl": "https://www.tapspace.com/jeff-queen/" }
+      ],
+      "seasonHighlights": [
+        { "title": "DCI & PAS Individual Snare Drum Champion", "season": "1994-1995", "sourceUrl": "https://www.tapspace.com/jeff-queen/" }
+      ],
+      "media": [],
+      "_research": { "captionFingerprint": "Music Percussion / Music Analysis; 2013-2025", "facts": [
+        { "fact": "DCI/PAS snare champion 1994-95; BLAST! original cast; Carolina Crown caption head; DCI judge 2012-18; Carmel HS / Butler faculty", "source": "https://www.tapspace.com/jeff-queen/", "confidence": "HIGH" } ] }
+    },
+    {
+      "judgeId": "l-appel-1",
+      "displayName": "Luther Appel",
+      "givenName": "Luther",
+      "familyName": "Appel",
+      "biography": "Luther Appel is a brass/music adjudicator for Drum Corps International, serving in the Music Brass, Music Analysis, and General Effect captions at DCI events.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025", "facts": [
+        { "fact": "DCI music/brass judge", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+        { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "s-alia-1",
+      "displayName": "Stephen Alia",
+      "givenName": "Stephen",
+      "familyName": "Alia",
+      "biography": "Stephen Alia is a visual adjudicator for Drum Corps International, serving in the Visual Analysis, Visual Proficiency, and General Effect captions at DCI World Championships (2022-2025).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Visual Analysis / GE1 / Visual Proficiency; 2013-2025", "facts": [
+        { "fact": "DCI visual judge (2022-2025 confirmed)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+        { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "e-warren-1",
+      "displayName": "Ed Warren",
+      "givenName": "Ed",
+      "familyName": "Warren",
+      "biography": "Ed Warren was a longtime visual adjudicator who judged for Bands of America, Drum Corps International, and Winter Guard International from 1990, first judging visual captions at the 1992 DCI World Championships and remaining among the most active judges of major DCI events. He was a sales representative for Quinlan & Fabish Music, judging coordinator for the Michigan Competing Band Association from 1996, and program coordinator and drill designer for the Kilties all-age corps. With his wife Peggy he ran Warren Creative Designs and wrote visual programs for many circuit, state, regional, and world finalists and winners. He passed away in 2015 at age 58.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://musicforall.org/remembering-ed-warren-bands-of-america-adjudicator-supporter-and-friend/", "label": "Music for All remembrance", "kind": "article" }],
+      "corpsRelations": [
+        { "corpsName": "Kilties", "role": "Program Coordinator / Drill Designer", "sourceUrl": "https://musicforall.org/remembering-ed-warren-bands-of-america-adjudicator-supporter-and-friend/" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Visual Analysis / Visual Proficiency / GE1; 2013-2025", "facts": [
+        { "fact": "DCI/BOA/WGI visual judge since 1990; MCBA judging coordinator; Kilties drill designer; d. 2015", "source": "https://musicforall.org/remembering-ed-warren-bands-of-america-adjudicator-supporter-and-friend/", "confidence": "HIGH" },
+        { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "m-calima-1",
+      "displayName": "Mark Calima",
+      "givenName": "Mark",
+      "familyName": "Calima",
+      "biography": "Mark Calima is a general-effect/music adjudicator for Drum Corps International, serving in the General Effect, Music Analysis, and Music Brass captions at DCI events.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025", "facts": [
+        { "fact": "DCI music/GE judge", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+        { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "t-dempsey-1",
+      "displayName": "Tyler Dempsey",
+      "givenName": "Tyler",
+      "familyName": "Dempsey",
+      "biography": "Tyler Dempsey is a percussion performer, writer, arranger, educator, and adjudicator with 25 years of teaching experience and an active DCI percussion judge. He holds a B.M. in Percussion Performance from San Jose State University (studying under Anthony J. Cirone) and a B.M. in Music Education, and was the 1996 PAS/PASIC Individual Snare Drum Champion. He marched the Colts, Bluecoats, and Santa Clara Vanguard, and has worked with the Phantom Regiment, Colts, Santa Clara Vanguard Cadets, the Division III champion Teal Sound, West Coast Sound, and Pioneer. He is an Innovative Percussion and Evans artist published by Tapspace.",
+      "photoUrl": "https://www.innovativepercussion.com/images/artists/tyler%20dempsey.jpg",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.innovativepercussion.com/artists/tyler_dempsey", "label": "Innovative Percussion artist", "kind": "bio" }],
+      "corpsRelations": [
+        { "corpsName": "Santa Clara Vanguard", "role": "Performer (percussion)", "sourceUrl": "https://www.innovativepercussion.com/artists/tyler_dempsey" }
+      ],
+      "seasonHighlights": [
+        { "title": "PAS/PASIC Individual Snare Drum Champion", "season": "1996", "sourceUrl": "https://www.innovativepercussion.com/artists/tyler_dempsey" }
+      ],
+      "media": [],
+      "_research": { "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025", "facts": [
+        { "fact": "1996 PAS snare champion; SJSU; Colts/Bluecoats/SCV alum; DCI percussion judge; Innovative Percussion artist", "source": "https://www.innovativepercussion.com/artists/tyler_dempsey", "confidence": "HIGH" } ] }
+    },
+    {
+      "judgeId": "a-brown-1",
+      "displayName": "Andrea Brown",
+      "givenName": "Andrea",
+      "familyName": "Brown",
+      "biography": "Dr. Andrea E. Brown is a conductor, music educator, and DCI music adjudicator who is Associate Director of Bands at the University of Maryland, where she conducts the Wind Ensemble, directs the Athletic Bands, and coordinates the conducting division. She previously served on the conducting faculty at the University of Michigan and at Georgia Tech, and on the brass and conducting instructional staff of the DCI World Champion Phantom Regiment (2004-2017), also instructing the U.S. Army All-American Marching Band and Carolina Crown. She has been a DCI music judge since 2022 and on the Sousa Foundation Sudler Shield Jury since 2021, and is the founder of 'Women Rising to the Podium.'",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/02/Adobe-Express-file-16.jpg",
+      "alternateNames": ["Dr. Andrea Brown", "Andrea E. Brown"],
+      "externalLinks": [
+        { "url": "https://music.umd.edu/directory/andrea-brown", "label": "University of Maryland School of Music", "kind": "bio" },
+        { "url": "https://education.musicforall.org/clinician/dr-andrea-brown/", "label": "Music for All clinician bio", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Phantom Regiment", "season": "2004-2017", "role": "Brass & Conducting instructional staff", "sourceUrl": "https://regiment.org/dr-andrea-brown/" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025", "facts": [
+        { "fact": "UMD Associate Director of Bands; ex-Michigan & Georgia Tech; Phantom Regiment brass/conducting staff 2004-17; DCI music judge since 2022; founder of Women Rising to the Podium", "source": "https://music.umd.edu/directory/andrea-brown", "confidence": "HIGH" } ] }
+    },
+    {
+      "judgeId": "d-solomonson-1",
+      "displayName": "Drew Solomonson",
+      "givenName": "Drew",
+      "familyName": "Solomonson",
+      "biography": "Drew Solomonson is a visual adjudicator, drill designer, and educator and a University of Kentucky graduate in arts administration. Born in central Illinois, he marched the Phantom Regiment (2001-2005), then in 2007 became visual designer and visual caption head for the Memphis Sound, which won the 2007 DCI Division III World Championship and its Best Visual Performance award. He spent twelve years on the Phantom Regiment visual staff, including visual caption head for his final two years, and continues as a DCI adjudicator, clinician, and active drill designer for high schools, drum corps, and universities.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2023/09/drew-solomonson-web.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/drew-solomonson/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://regiment.org/drew-solomonson/", "label": "Phantom Regiment staff", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Phantom Regiment", "season": "2001-2005", "role": "Performer; later Visual Caption Head", "sourceUrl": "https://regiment.org/drew-solomonson/" },
+        { "corpsName": "Memphis Sound", "season": "2007", "role": "Visual Designer / Caption Head", "sourceUrl": "https://education.musicforall.org/clinician/drew-solomonson/" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Visual Proficiency / Visual Analysis; 2013-2025", "facts": [
+        { "fact": "Phantom Regiment alum & visual caption head; Memphis Sound 2007 Div III champ visual designer; DCI visual judge/drill designer", "source": "https://education.musicforall.org/clinician/drew-solomonson/", "confidence": "HIGH" } ] }
+    },
+    {
+      "judgeId": "s-sybilski-1",
+      "displayName": "Sly Sybilski",
+      "givenName": "Sly",
+      "familyName": "Sybilski",
+      "biography": "Sylvester 'Sly' Sybilski is a visual designer and adjudicator who has worked with top drum and bugle corps since 1988, serving as Visual Caption Head for the Spirit of Atlanta, the Bluecoats, the Santa Clara Vanguard, and the Cavaliers. His nine years as visual caption head of the Cavaliers included four DCI High Visual Caption awards and five DCI World Championships, and he later returned as the corps' Visual Caption Consultant. He continues to adjudicate the visual captions for Drum Corps International.",
+      "photoUrl": "https://scpauploads.s3.amazonaws.com/judges/206_unnamed.jpg",
+      "alternateNames": ["Sylvester Sybilski"],
+      "externalLinks": [{ "url": "https://scpa.live/judge/profile/89", "label": "SCPA judge profile", "kind": "bio" }],
+      "corpsRelations": [
+        { "corpsName": "The Cavaliers", "role": "Visual Caption Head (9 years, 5 World Championships)", "sourceUrl": "https://scpa.live/judge/profile/89" },
+        { "corpsName": "Santa Clara Vanguard", "role": "Visual Caption Head", "sourceUrl": "https://scpa.live/judge/profile/89" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Visual Analysis / GE1 / Visual Proficiency; 2013-2025", "facts": [
+        { "fact": "Visual designer since 1988; Cavaliers visual caption head 9 yrs / 5 World Championships; Bluecoats/SCV/Spirit caption head; DCI visual judge", "source": "https://scpa.live/judge/profile/89", "confidence": "HIGH" } ] }
+    }
+  ]
+}

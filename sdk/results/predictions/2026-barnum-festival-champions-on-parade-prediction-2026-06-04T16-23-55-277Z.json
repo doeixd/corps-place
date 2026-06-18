@@ -1,0 +1,674 @@
+{
+  "generated_at": "2026-06-04T16:23:55.277Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-barnum-festival-champions-on-parade",
+    "slug": "2026-barnum-festival-champions-on-parade",
+    "name": "Barnum Festival: Champions on Parade",
+    "event_name": "Barnum Festival: Champions on Parade",
+    "start_date": "2026-06-27T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "6:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Shelton",
+    "location_state": "CT",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260627-SHELTON-CT.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260627-SHELTON-CT.jpg",
+    "buy_tickets": "http://ticketor.com/hurricanes/barnum",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 6,
+    "matched_corps_keys": 6,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 6,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 2.3255813953488373
+  },
+  "input_signature": "32223173b18a44a1b0a683b497feb518b33d0590e221d15b8dfeeeba1785f057",
+  "builder_version": "v10-event-prediction-all-age-baselines",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 6,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwslaal",
+        "corps": "7th Regiment",
+        "division": "Open Class",
+        "performance_order": 6,
+        "time": "7:22 PM"
+      },
+      {
+        "corps_key": "0010a00001iqmzuaah",
+        "corps": "Sunrisers",
+        "division": "All Age Class",
+        "performance_order": 7,
+        "time": "7:40 PM"
+      },
+      {
+        "corps_key": "0010a00001e2pfhaam",
+        "corps": "Reading Buccaneers",
+        "division": "All Age Class",
+        "performance_order": 8,
+        "time": "7:58 PM"
+      },
+      {
+        "corps_key": "0015b00001mpuwcaak",
+        "corps": "Hawthorne Caballeros",
+        "division": "All Age Class",
+        "performance_order": 9,
+        "time": "8:16 PM"
+      },
+      {
+        "corps_key": "bushwackers-drum-corps",
+        "corps": "Bushwackers",
+        "division": "All Age Class",
+        "performance_order": 10,
+        "time": "8:34 PM"
+      },
+      {
+        "corps_key": "hurricanes",
+        "corps": "Hurricanes",
+        "division": "All Age Class",
+        "performance_order": 11,
+        "time": "8:52 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "North Star",
+        "performance_order": 2,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Crusaders Senior",
+        "performance_order": 3,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Hawthorne Caballeros Alumni",
+        "performance_order": 4,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "CT Alumni",
+        "performance_order": 5,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-barnum-festival-champions-on-parade",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-27T00:00:00.000Z",
+      "scored_lineup_rows": 6,
+      "matched_corps_keys": 6,
+      "excluded_lineup_rows": 7,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "0010a00001e2pfhaam",
+      "corps": "Reading Buccaneers",
+      "city": "Reading, PA",
+      "division": "All Age Class",
+      "performance_order": 8,
+      "time": "7:58 PM",
+      "total": 81.6,
+      "GE": 33.2,
+      "Visual": 24.2,
+      "Music": 24.2,
+      "GE1": 16.8,
+      "GE2": 16.4,
+      "VP": 16.2,
+      "VA": 17.1,
+      "CG": 15.1,
+      "MB": 16.4,
+      "MA": 15.8,
+      "MP": 16.2,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.13,
+          "p50": 16.8,
+          "p90": 17.471
+        },
+        "GE2": {
+          "p10": 15.595,
+          "p50": 16.4,
+          "p90": 17.05
+        },
+        "VP": {
+          "p10": 15.337,
+          "p50": 16.2,
+          "p90": 17.038
+        },
+        "VA": {
+          "p10": 16.334,
+          "p50": 17.1,
+          "p90": 17.664
+        },
+        "CG": {
+          "p10": 14.156,
+          "p50": 15.1,
+          "p90": 15.83
+        },
+        "MB": {
+          "p10": 15.597,
+          "p50": 16.4,
+          "p90": 17.416
+        },
+        "MA": {
+          "p10": 14.967,
+          "p50": 15.8,
+          "p90": 16.333
+        },
+        "MP": {
+          "p10": 15.461,
+          "p50": 16.2,
+          "p90": 17.071
+        }
+      },
+      "raw_model_total": 36.596,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81.6,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-barnum-festival-champions-on-parade",
+      "prior_season_comparable_weight": 0.85,
+      "preseason_target_total": 81.6,
+      "caption_shape_total": 81.6,
+      "total_reconciliation_delta": 0,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 81.6,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "0015b00001mpuwcaak",
+      "corps": "Hawthorne Caballeros",
+      "city": "Hawthorne, NJ",
+      "division": "All Age Class",
+      "performance_order": 9,
+      "time": "8:16 PM",
+      "total": 77.9,
+      "GE": 31.9,
+      "Visual": 23.05,
+      "Music": 22.95,
+      "GE1": 16.1,
+      "GE2": 15.8,
+      "VP": 15.3,
+      "VA": 15.9,
+      "CG": 14.9,
+      "MB": 15.9,
+      "MA": 15,
+      "MP": 15,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.43,
+          "p50": 16.1,
+          "p90": 16.768
+        },
+        "GE2": {
+          "p10": 14.994,
+          "p50": 15.8,
+          "p90": 16.449
+        },
+        "VP": {
+          "p10": 14.437,
+          "p50": 15.3,
+          "p90": 16.135
+        },
+        "VA": {
+          "p10": 15.131,
+          "p50": 15.9,
+          "p90": 16.463
+        },
+        "CG": {
+          "p10": 13.954,
+          "p50": 14.9,
+          "p90": 15.63
+        },
+        "MB": {
+          "p10": 15.095,
+          "p50": 15.9,
+          "p90": 16.917
+        },
+        "MA": {
+          "p10": 14.161,
+          "p50": 15,
+          "p90": 15.528
+        },
+        "MP": {
+          "p10": 14.261,
+          "p50": 15,
+          "p90": 15.867
+        }
+      },
+      "raw_model_total": 35.21,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 77.9,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-barnum-festival-champions-on-parade",
+      "prior_season_comparable_weight": 0.85,
+      "preseason_target_total": 77.9,
+      "caption_shape_total": 77.9,
+      "total_reconciliation_delta": 0,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 2,
+      "prior_season_rank": 2,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 77.9,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "bushwackers-drum-corps",
+      "corps": "Bushwackers",
+      "city": "Princeton, NJ",
+      "division": "All Age Class",
+      "performance_order": 10,
+      "time": "8:34 PM",
+      "total": 76.85,
+      "GE": 31,
+      "Visual": 23,
+      "Music": 22.85,
+      "GE1": 15.6,
+      "GE2": 15.4,
+      "VP": 15.6,
+      "VA": 15.4,
+      "CG": 15,
+      "MB": 15.7,
+      "MA": 14.6,
+      "MP": 15.4,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.93,
+          "p50": 15.6,
+          "p90": 16.265
+        },
+        "GE2": {
+          "p10": 14.595,
+          "p50": 15.4,
+          "p90": 16.048
+        },
+        "VP": {
+          "p10": 14.744,
+          "p50": 15.6,
+          "p90": 16.44
+        },
+        "VA": {
+          "p10": 14.629,
+          "p50": 15.4,
+          "p90": 15.958
+        },
+        "CG": {
+          "p10": 14.048,
+          "p50": 15,
+          "p90": 15.728
+        },
+        "MB": {
+          "p10": 14.886,
+          "p50": 15.7,
+          "p90": 16.708
+        },
+        "MA": {
+          "p10": 13.751,
+          "p50": 14.6,
+          "p90": 15.12
+        },
+        "MP": {
+          "p10": 14.66,
+          "p50": 15.4,
+          "p90": 16.256
+        }
+      },
+      "raw_model_total": 33.382,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 76.85,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-barnum-festival-champions-on-parade",
+      "prior_season_comparable_weight": 0.85,
+      "preseason_target_total": 76.85,
+      "caption_shape_total": 76.85,
+      "total_reconciliation_delta": 0,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 3,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 76.85,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "hurricanes",
+      "historical_corps_key": "0015b00002eebx5aaf",
+      "corps": "Hurricanes",
+      "city": "Seymour, CT",
+      "division": "All Age Class",
+      "performance_order": 11,
+      "time": "8:52 PM",
+      "total": 71.6,
+      "GE": 28.2,
+      "Visual": 21.85,
+      "Music": 21.55,
+      "GE1": 14,
+      "GE2": 14.2,
+      "VP": 14.6,
+      "VA": 14.7,
+      "CG": 14.4,
+      "MB": 14.3,
+      "MA": 14.5,
+      "MP": 14.3,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.321,
+          "p50": 14,
+          "p90": 14.661
+        },
+        "GE2": {
+          "p10": 13.391,
+          "p50": 14.2,
+          "p90": 14.846
+        },
+        "VP": {
+          "p10": 13.749,
+          "p50": 14.6,
+          "p90": 15.455
+        },
+        "VA": {
+          "p10": 13.934,
+          "p50": 14.7,
+          "p90": 15.258
+        },
+        "CG": {
+          "p10": 13.434,
+          "p50": 14.4,
+          "p90": 15.132
+        },
+        "MB": {
+          "p10": 13.463,
+          "p50": 14.3,
+          "p90": 15.294
+        },
+        "MA": {
+          "p10": 13.642,
+          "p50": 14.5,
+          "p90": 15.018
+        },
+        "MP": {
+          "p10": 13.557,
+          "p50": 14.3,
+          "p90": 15.143
+        }
+      },
+      "raw_model_total": 29.773,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 71.6,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-barnum-festival-champions-on-parade",
+      "prior_season_comparable_weight": 0.85,
+      "preseason_target_total": 71.6,
+      "caption_shape_total": 71.6,
+      "total_reconciliation_delta": 0,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 5,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 71.6,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "0010a00001iqmzuaah",
+      "corps": "Sunrisers",
+      "city": "Kings Park, NY",
+      "division": "All Age Class",
+      "performance_order": 7,
+      "time": "7:40 PM",
+      "total": 66.7,
+      "GE": 26.4,
+      "Visual": 19.95,
+      "Music": 20.35,
+      "GE1": 13.1,
+      "GE2": 13.3,
+      "VP": 13.5,
+      "VA": 12.4,
+      "CG": 14,
+      "MB": 13.9,
+      "MA": 13.6,
+      "MP": 13.2,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.411,
+          "p50": 13.1,
+          "p90": 13.765
+        },
+        "GE2": {
+          "p10": 12.478,
+          "p50": 13.3,
+          "p90": 13.946
+        },
+        "VP": {
+          "p10": 12.644,
+          "p50": 13.5,
+          "p90": 14.373
+        },
+        "VA": {
+          "p10": 11.641,
+          "p50": 12.4,
+          "p90": 12.965
+        },
+        "CG": {
+          "p10": 13.017,
+          "p50": 14,
+          "p90": 14.744
+        },
+        "MB": {
+          "p10": 13.046,
+          "p50": 13.9,
+          "p90": 14.898
+        },
+        "MA": {
+          "p10": 12.735,
+          "p50": 13.6,
+          "p90": 14.125
+        },
+        "MP": {
+          "p10": 12.447,
+          "p50": 13.2,
+          "p90": 14.048
+        }
+      },
+      "raw_model_total": 27.929,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 66.7,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-barnum-festival-champions-on-parade",
+      "prior_season_comparable_weight": 0.85,
+      "preseason_target_total": 66.7,
+      "caption_shape_total": 66.7,
+      "total_reconciliation_delta": 0,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 6,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 66.7,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000iwwslaal",
+      "corps": "7th Regiment",
+      "city": "New London, CT",
+      "division": "Open Class",
+      "performance_order": 6,
+      "time": "7:22 PM",
+      "total": 61.218,
+      "GE": 24.311,
+      "Visual": 18.329,
+      "Music": 18.578,
+      "GE1": 11.823,
+      "GE2": 12.488,
+      "VP": 12.033,
+      "VA": 12.098,
+      "CG": 12.528,
+      "MB": 12.185,
+      "MA": 12.446,
+      "MP": 12.526,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.415,
+          "p50": 11.823,
+          "p90": 13.301
+        },
+        "GE2": {
+          "p10": 11.123,
+          "p50": 12.488,
+          "p90": 14.085
+        },
+        "VP": {
+          "p10": 10.245,
+          "p50": 12.033,
+          "p90": 13.935
+        },
+        "VA": {
+          "p10": 10.449,
+          "p50": 12.098,
+          "p90": 13.328
+        },
+        "CG": {
+          "p10": 10.759,
+          "p50": 12.528,
+          "p90": 14.413
+        },
+        "MB": {
+          "p10": 9.957,
+          "p50": 12.185,
+          "p90": 13.779
+        },
+        "MA": {
+          "p10": 11.107,
+          "p50": 12.446,
+          "p90": 13.987
+        },
+        "MP": {
+          "p10": 10.534,
+          "p50": 12.526,
+          "p90": 14.337
+        }
+      },
+      "raw_model_total": 68.663,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 51.7,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-barnum-festival-champions-on-parade",
+      "prior_season_comparable_weight": 0.25,
+      "preseason_target_total": 61.217,
+      "caption_shape_total": 64.389,
+      "total_reconciliation_delta": -3.17,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 64.389,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "All Age forecasts use prior-season All Age caption scores as a baseline because the V9 model was not trained on All Age sequence rows.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

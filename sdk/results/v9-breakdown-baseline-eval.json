@@ -1,0 +1,468 @@
+{
+  "generated_at": "2026-06-05T00:47:07.970Z",
+  "db_path": "dci-relational.db",
+  "source_v9_model_id": "anchor-synthetic-v9-breakdown-mvp",
+  "row_count": 29284,
+  "ratio_priors": {
+    "World Class|GE1": {
+      "content_share": 0.5057649821969029,
+      "count": 18444
+    },
+    "World Class|GE2": {
+      "content_share": 0.5060422677135026,
+      "count": 18444
+    },
+    "World Class|VP": {
+      "content_share": 0.5076517010681162,
+      "count": 18444
+    },
+    "World Class|VA": {
+      "content_share": 0.5061155029434157,
+      "count": 18444
+    },
+    "World Class|CG": {
+      "content_share": 0.5077332474040123,
+      "count": 18444
+    },
+    "World Class|MB": {
+      "content_share": 0.5066231568105464,
+      "count": 18444
+    },
+    "World Class|MA": {
+      "content_share": 0.5071031363854909,
+      "count": 18444
+    },
+    "World Class|MP": {
+      "content_share": 0.5068159666639804,
+      "count": 18444
+    },
+    "Open Class|GE1": {
+      "content_share": 0.5107126000735128,
+      "count": 8092
+    },
+    "Open Class|GE2": {
+      "content_share": 0.5106725667027449,
+      "count": 8092
+    },
+    "Open Class|VP": {
+      "content_share": 0.5132862823447729,
+      "count": 8092
+    },
+    "Open Class|VA": {
+      "content_share": 0.5112016390052941,
+      "count": 8092
+    },
+    "Open Class|CG": {
+      "content_share": 0.5137979280890723,
+      "count": 8092
+    },
+    "Open Class|MB": {
+      "content_share": 0.5106480575087431,
+      "count": 8092
+    },
+    "Open Class|MA": {
+      "content_share": 0.5115766817761637,
+      "count": 8092
+    },
+    "Open Class|MP": {
+      "content_share": 0.5112168088110183,
+      "count": 8072
+    }
+  },
+  "overall": {
+    "fixed_50_50": {
+      "pairs": 234250,
+      "content_mae_pts": 0.36202782198509664,
+      "achievement_mae_pts": 0.31356709413022615,
+      "subcaption_mae_pts": 0.3377974580576614,
+      "content_share_mae": 0.008780065383879064,
+      "anchor_sum_error_pts": 0
+    },
+    "historical_ratio": {
+      "pairs": 234250,
+      "content_mae_pts": 0.3191051554364933,
+      "achievement_mae_pts": 0.31358492776404934,
+      "subcaption_mae_pts": 0.3163450416002713,
+      "content_share_mae": 0.005308398822549044,
+      "anchor_sum_error_pts": 2.619225837049505e-17
+    },
+    "blended_prior_ratio": {
+      "pairs": 234250,
+      "content_mae_pts": 0.31432377088002567,
+      "achievement_mae_pts": 0.3097583505781855,
+      "subcaption_mae_pts": 0.3120410607291056,
+      "content_share_mae": 0.004750583660939898,
+      "anchor_sum_error_pts": 2.0700149764579867e-17
+    }
+  },
+  "by_anchor_mode": {
+    "teacher_forcing": {
+      "fixed_50_50": {
+        "pairs": 58563,
+        "content_mae_pts": 0.12074411317727506,
+        "achievement_mae_pts": 0.12074411317727506,
+        "subcaption_mae_pts": 0.12074411317727506,
+        "content_share_mae": 0.008779990421316136,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 58563,
+        "content_mae_pts": 0.0758128285677583,
+        "achievement_mae_pts": 0.07581282856775848,
+        "subcaption_mae_pts": 0.07581282856775838,
+        "content_share_mae": 0.005308471304571035,
+        "anchor_sum_error_pts": 1.1495982824184125e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 58563,
+        "content_mae_pts": 0.06735220661753413,
+        "achievement_mae_pts": 0.06735220661753416,
+        "subcaption_mae_pts": 0.06735220661753415,
+        "content_share_mae": 0.004750566364832477,
+        "anchor_sum_error_pts": 1.199646756455098e-17
+      }
+    },
+    "synthetic_noisy": {
+      "fixed_50_50": {
+        "pairs": 58562,
+        "content_mae_pts": 0.18037009579590918,
+        "achievement_mae_pts": 0.18012635924319664,
+        "subcaption_mae_pts": 0.18024822751955294,
+        "content_share_mae": 0.008780140347726118,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 58562,
+        "content_mae_pts": 0.15975993508850977,
+        "achievement_mae_pts": 0.1567628788336299,
+        "subcaption_mae_pts": 0.15826140696106983,
+        "content_share_mae": 0.00530832633929006,
+        "anchor_sum_error_pts": 1.656177784762366e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 58562,
+        "content_mae_pts": 0.15622504278295116,
+        "achievement_mae_pts": 0.1526856003779373,
+        "subcaption_mae_pts": 0.15445532158044425,
+        "content_share_mae": 0.004750599223497572,
+        "anchor_sum_error_pts": 1.5401543410496176e-17
+      }
+    },
+    "baseline": {
+      "fixed_50_50": {
+        "pairs": 58563,
+        "content_mae_pts": 0.7640650666803285,
+        "achievement_mae_pts": 0.6198685945050593,
+        "subcaption_mae_pts": 0.6919668305926938,
+        "content_share_mae": 0.008779990421316136,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 58563,
+        "content_mae_pts": 0.6947744103643839,
+        "achievement_mae_pts": 0.6819804698909816,
+        "subcaption_mae_pts": 0.6883774401276828,
+        "content_share_mae": 0.005308471304571035,
+        "anchor_sum_error_pts": 4.942665966229032e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 58563,
+        "content_mae_pts": 0.6913241172585591,
+        "achievement_mae_pts": 0.6818420288511525,
+        "subcaption_mae_pts": 0.6865830730548558,
+        "content_share_mae": 0.004750566364832477,
+        "anchor_sum_error_pts": 3.301682665995889e-17
+      }
+    },
+    "partial_synthetic_dropout": {
+      "fixed_50_50": {
+        "pairs": 58562,
+        "content_mae_pts": 0.3829292672722927,
+        "achievement_mae_pts": 0.33352737184522646,
+        "subcaption_mae_pts": 0.3582283195587596,
+        "content_share_mae": 0.008780140347726118,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 58562,
+        "content_mae_pts": 0.3460711872675471,
+        "achievement_mae_pts": 0.33978130324843814,
+        "subcaption_mae_pts": 0.3429262452579926,
+        "content_share_mae": 0.00530832633929006,
+        "anchor_sum_error_pts": 2.728446735153385e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 58562,
+        "content_mae_pts": 0.34239149650002415,
+        "achievement_mae_pts": 0.33715135210299185,
+        "subcaption_mae_pts": 0.339771424301508,
+        "content_share_mae": 0.004750602691187974,
+        "anchor_sum_error_pts": 2.2385699728106704e-17
+      }
+    }
+  },
+  "by_caption": {
+    "GE1": {
+      "fixed_50_50": {
+        "pairs": 29284,
+        "content_mae_pts": 0.349372554978826,
+        "achievement_mae_pts": 0.3079007171151492,
+        "subcaption_mae_pts": 0.3286366360469876,
+        "content_share_mae": 0.00817857950921819,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.3148569150076957,
+        "achievement_mae_pts": 0.31133116901987273,
+        "subcaption_mae_pts": 0.3130940420137842,
+        "content_share_mae": 0.005678987752531662,
+        "anchor_sum_error_pts": 3.7881943935441077e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.30972727475414535,
+        "achievement_mae_pts": 0.3070888484637083,
+        "subcaption_mae_pts": 0.3084080616089268,
+        "content_share_mae": 0.00505531902435488,
+        "anchor_sum_error_pts": 3.1967629229747713e-17
+      }
+    },
+    "GE2": {
+      "fixed_50_50": {
+        "pairs": 29284,
+        "content_mae_pts": 0.3759063635432339,
+        "achievement_mae_pts": 0.3276541302417729,
+        "subcaption_mae_pts": 0.3517802468925035,
+        "content_share_mae": 0.007910220092381499,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.3372884774369602,
+        "achievement_mae_pts": 0.32873410203903236,
+        "subcaption_mae_pts": 0.3330112897379963,
+        "content_share_mae": 0.004637925674512732,
+        "anchor_sum_error_pts": 5.702005972668472e-18
+      },
+      "blended_prior_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.3333762531598504,
+        "achievement_mae_pts": 0.3261567652065554,
+        "subcaption_mae_pts": 0.3297665091832029,
+        "content_share_mae": 0.004243282673394071,
+        "anchor_sum_error_pts": 1.1100713755301388e-17
+      }
+    },
+    "VP": {
+      "fixed_50_50": {
+        "pairs": 29284,
+        "content_mae_pts": 0.3564997148613573,
+        "achievement_mae_pts": 0.3015405733506373,
+        "subcaption_mae_pts": 0.3290201441059973,
+        "content_share_mae": 0.009820939983534043,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.3066198539900592,
+        "achievement_mae_pts": 0.30143358321987174,
+        "subcaption_mae_pts": 0.3040267186049655,
+        "content_share_mae": 0.005897679186692475,
+        "anchor_sum_error_pts": 3.700237918433796e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.30033356246320003,
+        "achievement_mae_pts": 0.2964933160710832,
+        "subcaption_mae_pts": 0.29841343926714164,
+        "content_share_mae": 0.00516037020100796,
+        "anchor_sum_error_pts": 2.4597483211883675e-17
+      }
+    },
+    "VA": {
+      "fixed_50_50": {
+        "pairs": 29284,
+        "content_mae_pts": 0.3553343395710971,
+        "achievement_mae_pts": 0.31033802076219524,
+        "subcaption_mae_pts": 0.3328361801666462,
+        "content_share_mae": 0.008602120224194211,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.3180574054662803,
+        "achievement_mae_pts": 0.31303199884875343,
+        "subcaption_mae_pts": 0.31554470215751684,
+        "content_share_mae": 0.005763864376444915,
+        "anchor_sum_error_pts": 1.1676980316368946e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.31302834742721414,
+        "achievement_mae_pts": 0.3088903117458169,
+        "subcaption_mae_pts": 0.31095932958651545,
+        "content_share_mae": 0.005197279025938374,
+        "anchor_sum_error_pts": 1.9653722714304096e-17
+      }
+    },
+    "CG": {
+      "fixed_50_50": {
+        "pairs": 29282,
+        "content_mae_pts": 0.38179327744006475,
+        "achievement_mae_pts": 0.33328766648453,
+        "subcaption_mae_pts": 0.3575404719622974,
+        "content_share_mae": 0.010164833781555025,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 29282,
+        "content_mae_pts": 0.3343277577307015,
+        "achievement_mae_pts": 0.33235626965822634,
+        "subcaption_mae_pts": 0.3333420136944639,
+        "content_share_mae": 0.006356506039959084,
+        "anchor_sum_error_pts": 4.64684563547774e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 29282,
+        "content_mae_pts": 0.3278710573548083,
+        "achievement_mae_pts": 0.3249719230873549,
+        "subcaption_mae_pts": 0.32642149022108163,
+        "content_share_mae": 0.005422719123757671,
+        "anchor_sum_error_pts": 2.124748934498797e-17
+      }
+    },
+    "MB": {
+      "fixed_50_50": {
+        "pairs": 29284,
+        "content_mae_pts": 0.33977034728862254,
+        "achievement_mae_pts": 0.29139732447753475,
+        "subcaption_mae_pts": 0.31558383588307864,
+        "content_share_mae": 0.008282629301984472,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.29609479264337457,
+        "achievement_mae_pts": 0.2896511998777901,
+        "subcaption_mae_pts": 0.29287299626058233,
+        "content_share_mae": 0.004593967048247097,
+        "anchor_sum_error_pts": 3.6456442442273955e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.29211408496357794,
+        "achievement_mae_pts": 0.2874861945612609,
+        "subcaption_mae_pts": 0.28980013976241936,
+        "content_share_mae": 0.0041944593042236985,
+        "anchor_sum_error_pts": 2.265637479565611e-17
+      }
+    },
+    "MA": {
+      "fixed_50_50": {
+        "pairs": 29284,
+        "content_mae_pts": 0.37046258537085663,
+        "achievement_mae_pts": 0.3152386883622465,
+        "subcaption_mae_pts": 0.3428506368665516,
+        "content_share_mae": 0.008711146633418529,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.3225555136228188,
+        "achievement_mae_pts": 0.3144473969320556,
+        "subcaption_mae_pts": 0.3185014552774372,
+        "content_share_mae": 0.004724789773802516,
+        "anchor_sum_error_pts": 1.100972429829072e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 29284,
+        "content_mae_pts": 0.31805459099025807,
+        "achievement_mae_pts": 0.31199293215259044,
+        "subcaption_mae_pts": 0.3150237615714243,
+        "content_share_mae": 0.004281461481250313,
+        "anchor_sum_error_pts": 1.3891057103628512e-17
+      }
+    },
+    "MP": {
+      "fixed_50_50": {
+        "pairs": 29264,
+        "content_mae_pts": 0.36708819881082594,
+        "achievement_mae_pts": 0.32118618268179583,
+        "subcaption_mae_pts": 0.3441371907463109,
+        "content_share_mae": 0.00857000465534721,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 29264,
+        "content_mae_pts": 0.32304425752324845,
+        "achievement_mae_pts": 0.31769779348793586,
+        "subcaption_mae_pts": 0.32037102550559216,
+        "content_share_mae": 0.004813204108895226,
+        "anchor_sum_error_pts": 2.3339570966012722e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 29264,
+        "content_mae_pts": 0.32008985920876193,
+        "achievement_mae_pts": 0.31499112618570396,
+        "subcaption_mae_pts": 0.31754049269723295,
+        "content_share_mae": 0.0044496188092099775,
+        "anchor_sum_error_pts": 2.0486619508528722e-17
+      }
+    }
+  },
+  "by_division": {
+    "World Class": {
+      "fixed_50_50": {
+        "pairs": 162752,
+        "content_mae_pts": 0.3408633150437498,
+        "achievement_mae_pts": 0.2956627491520902,
+        "subcaption_mae_pts": 0.31826303209792,
+        "content_share_mae": 0.007290439074046509,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 162752,
+        "content_mae_pts": 0.30123687462542914,
+        "achievement_mae_pts": 0.29938436504519056,
+        "subcaption_mae_pts": 0.3003106198353098,
+        "content_share_mae": 0.004586702773045713,
+        "anchor_sum_error_pts": 3.061517483359776e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 162752,
+        "content_mae_pts": 0.29709524583206953,
+        "achievement_mae_pts": 0.2951220949220617,
+        "subcaption_mae_pts": 0.2961086703770656,
+        "content_share_mae": 0.004067176726470144,
+        "anchor_sum_error_pts": 2.455762687186986e-17
+      }
+    },
+    "Open Class": {
+      "fixed_50_50": {
+        "pairs": 71498,
+        "content_mae_pts": 0.41020491552210414,
+        "achievement_mae_pts": 0.3543230307141501,
+        "subcaption_mae_pts": 0.3822639731181271,
+        "content_share_mae": 0.012170924725095417,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 71498,
+        "content_mae_pts": 0.3597789986008126,
+        "achievement_mae_pts": 0.3459098876736831,
+        "subcaption_mae_pts": 0.35284444313724783,
+        "content_share_mae": 0.006951206669603918,
+        "anchor_sum_error_pts": 1.6124305417924452e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 71498,
+        "content_mae_pts": 0.35354132813484684,
+        "achievement_mae_pts": 0.3430750850399468,
+        "subcaption_mae_pts": 0.3483082065873968,
+        "content_share_mae": 0.006306233404972569,
+        "anchor_sum_error_pts": 1.1919315137518114e-17
+      }
+    }
+  }
+}

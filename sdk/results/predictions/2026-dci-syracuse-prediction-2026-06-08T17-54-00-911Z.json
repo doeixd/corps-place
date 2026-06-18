@@ -1,0 +1,1023 @@
+{
+  "generated_at": "2026-06-08T17:54:00.911Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-syracuse",
+    "slug": "2026-dci-syracuse",
+    "name": "DCI Syracuse",
+    "event_name": "DCI Syracuse",
+    "start_date": "2026-07-24T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Central Square",
+    "location_state": "NY",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260724-CENTRAL-NY.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260724-CENTRAL-NY.jpg",
+    "buy_tickets": "https://www.zeffy.com/en-US/ticketing/dci-new-york",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "All tickets are General Admission.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 7,
+    "matched_corps_keys": 7,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 5,
+    "skipped_lineup_rows": 2,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 65.11627906976744
+  },
+  "input_signature": "35404d09014de5647ca485f68e8f3de1b0310c64703eec5e10ce3242da191f74",
+  "builder_version": "v10-event-prediction-all-age-baselines",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6,
+    "breakdown_split_curves": {
+      "path": "results/v9-breakdown-split-curves.json",
+      "version": "v9-breakdown-split-curves-2026-06-05",
+      "generated_at": "2026-06-05T12:10:16.312Z",
+      "global_content_share": 0.508228,
+      "evaluation": {
+        "validationPairCount": 5496,
+        "fixed50ShareMae": 0.008154787598169252,
+        "curveShareMae": 0.0047111059985265515,
+        "fixed50SubcaptionMaePtsUsingActualCaptionTotal": 0.11817230713245966,
+        "curveSubcaptionMaePtsUsingActualCaptionTotal": 0.07095049126637575,
+        "improvementVs50Pts": 0.04722181586608391,
+        "improvementVs50Tenths": 0.47221815866083916
+      },
+      "same_season_prior_enabled": false
+    }
+  },
+  "input_audit": {
+    "scored_lineup_rows": 7,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "baldwinsville-high-school-band",
+        "corps": "Baldwinsville High School Band",
+        "division": "SoundSport",
+        "performance_order": 2,
+        "time": "7:10 PM"
+      },
+      {
+        "corps_key": "brig-juice-brass",
+        "corps": "Brig Juice Brass",
+        "division": "SoundSport",
+        "performance_order": 3,
+        "time": "7:20 PM"
+      },
+      {
+        "corps_key": "001j000000iwxa1aal",
+        "corps": "Les Stentors",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "7:32 PM"
+      },
+      {
+        "corps_key": "001j000000iwxaaaa1",
+        "corps": "Raiders",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "7:49 PM"
+      },
+      {
+        "corps_key": "001j000000iwwslaal",
+        "corps": "7th Regiment",
+        "division": "Open Class",
+        "performance_order": 6,
+        "time": "8:06 PM"
+      },
+      {
+        "corps_key": "001j0000012y6bqaac",
+        "corps": "The Battalion",
+        "division": "Open Class",
+        "performance_order": 7,
+        "time": "8:23 PM"
+      },
+      {
+        "corps_key": "001jw00000d0zlniaj",
+        "corps": "White Sabers",
+        "division": "All Age Class",
+        "performance_order": 8,
+        "time": "8:40 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "baldwinsville-high-school-band",
+        "corps": "Baldwinsville High School Band",
+        "division": "SoundSport",
+        "performance_order": 2,
+        "time": "7:10 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "brig-juice-brass",
+        "corps": "Brig Juice Brass",
+        "division": "SoundSport",
+        "performance_order": 3,
+        "time": "7:20 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "schedule_item"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - White Sabers",
+        "performance_order": 9,
+        "exclusion_reason": "not_a_corps"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 10,
+        "exclusion_reason": "schedule_item"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-syracuse",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-24T00:00:00.000Z",
+      "scored_lineup_rows": 7,
+      "matched_corps_keys": 7,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001jw00000d0zlniaj",
+      "corps": "White Sabers",
+      "city": "Rochester, NY",
+      "division": "All Age Class",
+      "performance_order": 8,
+      "time": "8:40 PM",
+      "total": 81.95,
+      "GE": 33.4,
+      "Visual": 24.1,
+      "Music": 24.45,
+      "GE1": 16.7,
+      "GE2": 16.7,
+      "VP": 16.1,
+      "VA": 16.3,
+      "CG": 15.8,
+      "MB": 16.7,
+      "MA": 16.5,
+      "MP": 15.7,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 8.465,
+          "achievement": 8.235,
+          "content_share": 0.506896,
+          "curve_share": 0.506896,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 8.465,
+          "achievement": 8.235,
+          "content_share": 0.506887,
+          "curve_share": 0.506887,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 8.171,
+          "achievement": 7.929,
+          "content_share": 0.507527,
+          "curve_share": 0.507527,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 8.262,
+          "achievement": 8.038,
+          "content_share": 0.506847,
+          "curve_share": 0.506847,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 8.021,
+          "achievement": 7.779,
+          "content_share": 0.507637,
+          "curve_share": 0.507637,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 8.469,
+          "achievement": 8.232,
+          "content_share": 0.507095,
+          "curve_share": 0.507095,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 8.37,
+          "achievement": 8.13,
+          "content_share": 0.507289,
+          "curve_share": 0.507289,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.965,
+          "achievement": 7.735,
+          "content_share": 0.507307,
+          "curve_share": 0.507307,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.363,
+          "p50": 16.7,
+          "p90": 17.026
+        },
+        "GE2": {
+          "p10": 16.323,
+          "p50": 16.7,
+          "p90": 17.019
+        },
+        "VP": {
+          "p10": 15.771,
+          "p50": 16.1,
+          "p90": 16.428
+        },
+        "VA": {
+          "p10": 15.941,
+          "p50": 16.3,
+          "p90": 16.592
+        },
+        "CG": {
+          "p10": 15.416,
+          "p50": 15.8,
+          "p90": 16.082
+        },
+        "MB": {
+          "p10": 16.385,
+          "p50": 16.7,
+          "p90": 17.094
+        },
+        "MA": {
+          "p10": 16.115,
+          "p50": 16.5,
+          "p90": 16.764
+        },
+        "MP": {
+          "p10": 15.423,
+          "p50": 15.7,
+          "p90": 16.054
+        }
+      },
+      "raw_model_total": 64.542,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81.95,
+      "prior_season_comparable_percent_through": 66.66666666666666,
+      "prior_season_comparable_competition": "2025-bushwackers-invitational",
+      "prior_season_comparable_weight": 0.85,
+      "preseason_target_total": 81.95,
+      "caption_shape_total": 81.95,
+      "total_reconciliation_delta": 0,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 3,
+      "prior_season_rank": 7,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 81.95,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwwslaal",
+      "corps": "7th Regiment",
+      "city": "New London, CT",
+      "division": "Open Class",
+      "performance_order": 6,
+      "time": "8:06 PM",
+      "total": 77.177,
+      "GE": 31.214,
+      "Visual": 22.777,
+      "Music": 23.186,
+      "GE1": 15.423,
+      "GE2": 15.791,
+      "VP": 15.569,
+      "VA": 14.243,
+      "CG": 15.743,
+      "MB": 15.237,
+      "MA": 15.337,
+      "MP": 15.799,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.842,
+          "achievement": 7.581,
+          "content_share": 0.50845,
+          "curve_share": 0.50845,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 8.026,
+          "achievement": 7.765,
+          "content_share": 0.508287,
+          "curve_share": 0.508287,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.925,
+          "achievement": 7.644,
+          "content_share": 0.509023,
+          "curve_share": 0.509023,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.24,
+          "achievement": 7.003,
+          "content_share": 0.508334,
+          "curve_share": 0.508334,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 8.015,
+          "achievement": 7.728,
+          "content_share": 0.509102,
+          "curve_share": 0.509102,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.748,
+          "achievement": 7.489,
+          "content_share": 0.5085,
+          "curve_share": 0.5085,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.803,
+          "achievement": 7.534,
+          "content_share": 0.508744,
+          "curve_share": 0.508744,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 8.037,
+          "achievement": 7.762,
+          "content_share": 0.508677,
+          "curve_share": 0.508677,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.669,
+          "p50": 15.423,
+          "p90": 16.2
+        },
+        "GE2": {
+          "p10": 15.111,
+          "p50": 15.791,
+          "p90": 16.572
+        },
+        "VP": {
+          "p10": 14.807,
+          "p50": 15.569,
+          "p90": 16.365
+        },
+        "VA": {
+          "p10": 13.443,
+          "p50": 14.243,
+          "p90": 14.941
+        },
+        "CG": {
+          "p10": 14.906,
+          "p50": 15.743,
+          "p90": 16.429
+        },
+        "MB": {
+          "p10": 14.395,
+          "p50": 15.237,
+          "p90": 15.972
+        },
+        "MA": {
+          "p10": 14.639,
+          "p50": 15.337,
+          "p90": 16.106
+        },
+        "MP": {
+          "p10": 15.057,
+          "p50": 15.799,
+          "p90": 16.592
+        }
+      },
+      "raw_model_total": 80.26,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 67.45,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-white-rose-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 77.176,
+      "caption_shape_total": 89.063,
+      "total_reconciliation_delta": -11.885,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 89.063,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxaaaa1",
+      "corps": "Raiders",
+      "city": "Princeton, NJ",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "7:49 PM",
+      "total": 76.694,
+      "GE": 30.834,
+      "Visual": 22.491,
+      "Music": 23.369,
+      "GE1": 15.237,
+      "GE2": 15.597,
+      "VP": 15.602,
+      "VA": 14.225,
+      "CG": 15.155,
+      "MB": 15.623,
+      "MA": 15.456,
+      "MP": 15.658,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.747,
+          "achievement": 7.49,
+          "content_share": 0.50845,
+          "curve_share": 0.50845,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.928,
+          "achievement": 7.669,
+          "content_share": 0.508287,
+          "curve_share": 0.508287,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.942,
+          "achievement": 7.66,
+          "content_share": 0.509023,
+          "curve_share": 0.509023,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.231,
+          "achievement": 6.994,
+          "content_share": 0.508334,
+          "curve_share": 0.508334,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.715,
+          "achievement": 7.44,
+          "content_share": 0.509102,
+          "curve_share": 0.509102,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.944,
+          "achievement": 7.679,
+          "content_share": 0.5085,
+          "curve_share": 0.5085,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.863,
+          "achievement": 7.593,
+          "content_share": 0.508744,
+          "curve_share": 0.508744,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.965,
+          "achievement": 7.693,
+          "content_share": 0.508677,
+          "curve_share": 0.508677,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.451,
+          "p50": 15.237,
+          "p90": 15.975
+        },
+        "GE2": {
+          "p10": 14.893,
+          "p50": 15.597,
+          "p90": 16.365
+        },
+        "VP": {
+          "p10": 14.797,
+          "p50": 15.602,
+          "p90": 16.378
+        },
+        "VA": {
+          "p10": 13.334,
+          "p50": 14.225,
+          "p90": 14.878
+        },
+        "CG": {
+          "p10": 14.365,
+          "p50": 15.155,
+          "p90": 15.891
+        },
+        "MB": {
+          "p10": 14.719,
+          "p50": 15.623,
+          "p90": 16.301
+        },
+        "MA": {
+          "p10": 14.763,
+          "p50": 15.456,
+          "p90": 16.243
+        },
+        "MP": {
+          "p10": 14.922,
+          "p50": 15.658,
+          "p90": 16.457
+        }
+      },
+      "raw_model_total": 80.093,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 68.85,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-white-rose-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 76.695,
+      "caption_shape_total": 86.284,
+      "total_reconciliation_delta": -9.59,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 7,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 86.284,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j0000012y6bqaac",
+      "corps": "The Battalion",
+      "city": "Salt Lake City, UT",
+      "division": "Open Class",
+      "performance_order": 7,
+      "time": "8:23 PM",
+      "total": 76.544,
+      "GE": 31.228,
+      "Visual": 21.763,
+      "Music": 23.553,
+      "GE1": 15.609,
+      "GE2": 15.619,
+      "VP": 15.723,
+      "VA": 12.056,
+      "CG": 15.747,
+      "MB": 15.759,
+      "MA": 15.871,
+      "MP": 15.476,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.936,
+          "achievement": 7.673,
+          "content_share": 0.50845,
+          "curve_share": 0.50845,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.939,
+          "achievement": 7.68,
+          "content_share": 0.508287,
+          "curve_share": 0.508287,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 8.003,
+          "achievement": 7.72,
+          "content_share": 0.509023,
+          "curve_share": 0.509023,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 6.128,
+          "achievement": 5.928,
+          "content_share": 0.508334,
+          "curve_share": 0.508334,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 8.017,
+          "achievement": 7.73,
+          "content_share": 0.509102,
+          "curve_share": 0.509102,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 8.013,
+          "achievement": 7.746,
+          "content_share": 0.5085,
+          "curve_share": 0.5085,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 8.074,
+          "achievement": 7.797,
+          "content_share": 0.508744,
+          "curve_share": 0.508744,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.872,
+          "achievement": 7.604,
+          "content_share": 0.508677,
+          "curve_share": 0.508677,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.796,
+          "p50": 15.609,
+          "p90": 16.311
+        },
+        "GE2": {
+          "p10": 14.93,
+          "p50": 15.619,
+          "p90": 16.391
+        },
+        "VP": {
+          "p10": 15.012,
+          "p50": 15.723,
+          "p90": 16.505
+        },
+        "VA": {
+          "p10": 11.217,
+          "p50": 12.056,
+          "p90": 12.695
+        },
+        "CG": {
+          "p10": 14.953,
+          "p50": 15.747,
+          "p90": 16.469
+        },
+        "MB": {
+          "p10": 14.887,
+          "p50": 15.759,
+          "p90": 16.414
+        },
+        "MA": {
+          "p10": 15.231,
+          "p50": 15.871,
+          "p90": 16.7
+        },
+        "MP": {
+          "p10": 14.795,
+          "p50": 15.476,
+          "p90": 16.277
+        }
+      },
+      "raw_model_total": 78.93,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.45,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-white-rose-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 76.543,
+      "caption_shape_total": 77.879,
+      "total_reconciliation_delta": -1.335,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 21,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 77.879,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwxa1aal",
+      "corps": "Les Stentors",
+      "city": "Sherbrooke, QC",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "7:32 PM",
+      "total": 71.212,
+      "GE": 29.112,
+      "Visual": 20.887,
+      "Music": 21.213,
+      "GE1": 14.758,
+      "GE2": 14.354,
+      "VP": 14.314,
+      "VA": 12.805,
+      "CG": 14.656,
+      "MB": 13.949,
+      "MA": 14.281,
+      "MP": 14.196,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.504,
+          "achievement": 7.254,
+          "content_share": 0.50845,
+          "curve_share": 0.50845,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.296,
+          "achievement": 7.058,
+          "content_share": 0.508287,
+          "curve_share": 0.508287,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.286,
+          "achievement": 7.028,
+          "content_share": 0.509023,
+          "curve_share": 0.509023,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 6.509,
+          "achievement": 6.296,
+          "content_share": 0.508334,
+          "curve_share": 0.508334,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.461,
+          "achievement": 7.195,
+          "content_share": 0.509102,
+          "curve_share": 0.509102,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.093,
+          "achievement": 6.856,
+          "content_share": 0.5085,
+          "curve_share": 0.5085,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.265,
+          "achievement": 7.016,
+          "content_share": 0.508744,
+          "curve_share": 0.508744,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.221,
+          "achievement": 6.975,
+          "content_share": 0.508677,
+          "curve_share": 0.508677,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.057,
+          "p50": 14.758,
+          "p90": 15.541
+        },
+        "GE2": {
+          "p10": 13.661,
+          "p50": 14.354,
+          "p90": 15.101
+        },
+        "VP": {
+          "p10": 13.604,
+          "p50": 14.314,
+          "p90": 15.096
+        },
+        "VA": {
+          "p10": 12.054,
+          "p50": 12.805,
+          "p90": 13.501
+        },
+        "CG": {
+          "p10": 13.889,
+          "p50": 14.656,
+          "p90": 15.353
+        },
+        "MB": {
+          "p10": 13.183,
+          "p50": 13.949,
+          "p90": 14.684
+        },
+        "MA": {
+          "p10": 13.603,
+          "p50": 14.281,
+          "p90": 15.046
+        },
+        "MP": {
+          "p10": 13.441,
+          "p50": 14.196,
+          "p90": 14.892
+        }
+      },
+      "raw_model_total": 75.395,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 62.75,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-white-rose-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 71.211,
+      "caption_shape_total": 81.553,
+      "total_reconciliation_delta": -10.34,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 81.551,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "2 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "All Age forecasts use prior-season All Age caption scores as a baseline because the V9 model was not trained on All Age sequence rows.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

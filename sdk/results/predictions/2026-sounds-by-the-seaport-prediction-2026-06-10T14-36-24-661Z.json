@@ -1,0 +1,664 @@
+{
+  "generated_at": "2026-06-10T14:36:24.662Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-sounds-by-the-seaport",
+    "slug": "2026-sounds-by-the-seaport",
+    "name": "Sounds by the Seaport",
+    "event_name": "Sounds by the Seaport",
+    "start_date": "2026-07-17T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "New London",
+    "location_state": "CT",
+    "event_image": "https://images.dci.org/wp-content/uploads/2026/04/20260717-new-london-ct-scaled.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2026/04/20260717-new-london-ct-scaled.jpg",
+    "buy_tickets": "https://www.zeffy.com/en-US/ticketing/2026-sounds-by-the-seaport-tickets",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 4,
+    "matched_corps_keys": 4,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 3,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 48.837209302325576
+  },
+  "input_signature": "8257826209f25b02c086021a071b577e0e474a1b09702d3dbe29fb94ddc71da6",
+  "builder_version": "v10-event-prediction-all-age-baselines",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6,
+    "breakdown_split_curves": {
+      "path": "results/v9-breakdown-split-curves.json",
+      "version": "v9-breakdown-split-curves-2026-06-05",
+      "generated_at": "2026-06-05T12:10:16.312Z",
+      "global_content_share": 0.508228,
+      "evaluation": {
+        "validationPairCount": 5496,
+        "fixed50ShareMae": 0.008154787598169252,
+        "curveShareMae": 0.0047111059985265515,
+        "fixed50SubcaptionMaePtsUsingActualCaptionTotal": 0.11817230713245966,
+        "curveSubcaptionMaePtsUsingActualCaptionTotal": 0.07095049126637575,
+        "improvementVs50Pts": 0.04722181586608391,
+        "improvementVs50Tenths": 0.47221815866083916
+      },
+      "same_season_prior_enabled": false
+    }
+  },
+  "input_audit": {
+    "scored_lineup_rows": 4,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "eastern-connecticut-symphony-orchestra",
+        "corps": "Eastern Connecticut Symphony Orchestra",
+        "division": "Exhibition",
+        "performance_order": 2,
+        "time": "7:05 PM"
+      },
+      {
+        "corps_key": "001j000000iwxa1aal",
+        "corps": "Les Stentors",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "7:45 PM"
+      },
+      {
+        "corps_key": "hurricanes",
+        "corps": "Hurricanes",
+        "division": "All Age Class",
+        "performance_order": 6,
+        "time": "8:40 PM"
+      },
+      {
+        "corps_key": "001j000000iwwslaal",
+        "corps": "7th Regiment",
+        "division": "Open Class",
+        "performance_order": 7,
+        "time": "9:00 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "eastern-connecticut-symphony-orchestra",
+        "corps": "Eastern Connecticut Symphony Orchestra",
+        "division": "Exhibition",
+        "performance_order": 2,
+        "time": "7:05 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "schedule_item"
+      },
+      {
+        "unit_name": "Welcome",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "CT Alumni",
+        "performance_order": 3,
+        "exclusion_reason": "legacy_or_alumni"
+      },
+      {
+        "unit_name": "Hall of Fame Recipients & Age-Out Recognition",
+        "performance_order": 5,
+        "exclusion_reason": "schedule_item"
+      },
+      {
+        "unit_name": "Event Concludes",
+        "performance_order": 8,
+        "exclusion_reason": "schedule_item"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-sounds-by-the-seaport",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-17T00:00:00.000Z",
+      "scored_lineup_rows": 4,
+      "matched_corps_keys": 4,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwslaal",
+      "corps": "7th Regiment",
+      "city": "New London, CT",
+      "division": "Open Class",
+      "performance_order": 7,
+      "time": "9:00 PM",
+      "total": 77.193,
+      "GE": 31.106,
+      "Visual": 22.708,
+      "Music": 23.379,
+      "GE1": 15.391,
+      "GE2": 15.715,
+      "VP": 15.632,
+      "VA": 13.886,
+      "CG": 15.898,
+      "MB": 15.344,
+      "MA": 15.467,
+      "MP": 15.947,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.848,
+          "achievement": 7.543,
+          "content_share": 0.509876,
+          "curve_share": 0.509876,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 8.02,
+          "achievement": 7.695,
+          "content_share": 0.510321,
+          "curve_share": 0.510321,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.991,
+          "achievement": 7.641,
+          "content_share": 0.511178,
+          "curve_share": 0.511178,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.074,
+          "achievement": 6.812,
+          "content_share": 0.509448,
+          "curve_share": 0.509448,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 8.127,
+          "achievement": 7.771,
+          "content_share": 0.511186,
+          "curve_share": 0.511186,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.826,
+          "achievement": 7.518,
+          "content_share": 0.510014,
+          "curve_share": 0.510014,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.896,
+          "achievement": 7.571,
+          "content_share": 0.510536,
+          "curve_share": 0.510536,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 8.128,
+          "achievement": 7.819,
+          "content_share": 0.509678,
+          "curve_share": 0.509678,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.651,
+          "p50": 15.391,
+          "p90": 16.142
+        },
+        "GE2": {
+          "p10": 15.033,
+          "p50": 15.715,
+          "p90": 16.465
+        },
+        "VP": {
+          "p10": 14.892,
+          "p50": 15.632,
+          "p90": 16.396
+        },
+        "VA": {
+          "p10": 13.058,
+          "p50": 13.886,
+          "p90": 14.521
+        },
+        "CG": {
+          "p10": 15.126,
+          "p50": 15.898,
+          "p90": 16.612
+        },
+        "MB": {
+          "p10": 14.489,
+          "p50": 15.344,
+          "p90": 16.03
+        },
+        "MA": {
+          "p10": 14.785,
+          "p50": 15.467,
+          "p90": 16.222
+        },
+        "MP": {
+          "p10": 15.179,
+          "p50": 15.947,
+          "p90": 16.679
+        }
+      },
+      "raw_model_total": 78.409,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 67.45,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-white-rose-classic",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 77.195,
+      "caption_shape_total": 82.443,
+      "total_reconciliation_delta": -5.25,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 82.443,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "hurricanes",
+      "historical_corps_key": "0015b00002eebx5aaf",
+      "corps": "Hurricanes",
+      "city": "Seymour, CT",
+      "division": "All Age Class",
+      "performance_order": 6,
+      "time": "8:40 PM",
+      "total": 75.4,
+      "GE": 30.2,
+      "Visual": 23.05,
+      "Music": 22.15,
+      "GE1": 15,
+      "GE2": 15.2,
+      "VP": 15.3,
+      "VA": 15,
+      "CG": 15.8,
+      "MB": 13.8,
+      "MA": 15.3,
+      "MP": 15.2,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.627,
+          "achievement": 7.373,
+          "content_share": 0.508472,
+          "curve_share": 0.508472,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.733,
+          "achievement": 7.467,
+          "content_share": 0.50873,
+          "curve_share": 0.50873,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.792,
+          "achievement": 7.508,
+          "content_share": 0.509248,
+          "curve_share": 0.509248,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.623,
+          "achievement": 7.377,
+          "content_share": 0.508195,
+          "curve_share": 0.508195,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 8.049,
+          "achievement": 7.751,
+          "content_share": 0.509416,
+          "curve_share": 0.509416,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.02,
+          "achievement": 6.78,
+          "content_share": 0.508683,
+          "curve_share": 0.508683,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.788,
+          "achievement": 7.512,
+          "content_share": 0.50902,
+          "curve_share": 0.50902,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.73,
+          "achievement": 7.47,
+          "content_share": 0.508577,
+          "curve_share": 0.508577,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.664,
+          "p50": 15,
+          "p90": 15.32
+        },
+        "GE2": {
+          "p10": 14.826,
+          "p50": 15.2,
+          "p90": 15.515
+        },
+        "VP": {
+          "p10": 14.971,
+          "p50": 15.3,
+          "p90": 15.622
+        },
+        "VA": {
+          "p10": 14.646,
+          "p50": 15,
+          "p90": 15.291
+        },
+        "CG": {
+          "p10": 15.416,
+          "p50": 15.8,
+          "p90": 16.074
+        },
+        "MB": {
+          "p10": 13.49,
+          "p50": 13.8,
+          "p90": 14.191
+        },
+        "MA": {
+          "p10": 14.921,
+          "p50": 15.3,
+          "p90": 15.561
+        },
+        "MP": {
+          "p10": 14.924,
+          "p50": 15.2,
+          "p90": 15.55
+        }
+      },
+      "raw_model_total": 65.478,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.4,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-drum-corps-grand-prix",
+      "prior_season_comparable_weight": 0.85,
+      "preseason_target_total": 75.4,
+      "caption_shape_total": 75.4,
+      "total_reconciliation_delta": 0,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 1,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 75.4,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxa1aal",
+      "corps": "Les Stentors",
+      "city": "Sherbrooke, QC",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "7:45 PM",
+      "total": 68.598,
+      "GE": 28.034,
+      "Visual": 20.107,
+      "Music": 20.457,
+      "GE1": 14.178,
+      "GE2": 13.856,
+      "VP": 13.811,
+      "VA": 12.15,
+      "CG": 14.252,
+      "MB": 13.459,
+      "MA": 13.741,
+      "MP": 13.715,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.229,
+          "achievement": 6.949,
+          "content_share": 0.509876,
+          "curve_share": 0.509876,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.071,
+          "achievement": 6.785,
+          "content_share": 0.510321,
+          "curve_share": 0.510321,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.06,
+          "achievement": 6.751,
+          "content_share": 0.511178,
+          "curve_share": 0.511178,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 6.19,
+          "achievement": 5.96,
+          "content_share": 0.509448,
+          "curve_share": 0.509448,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.285,
+          "achievement": 6.967,
+          "content_share": 0.511186,
+          "curve_share": 0.511186,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 6.864,
+          "achievement": 6.595,
+          "content_share": 0.510014,
+          "curve_share": 0.510014,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.015,
+          "achievement": 6.726,
+          "content_share": 0.510536,
+          "curve_share": 0.510536,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 6.99,
+          "achievement": 6.725,
+          "content_share": 0.509678,
+          "curve_share": 0.509678,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.484,
+          "p50": 14.178,
+          "p90": 14.957
+        },
+        "GE2": {
+          "p10": 13.168,
+          "p50": 13.856,
+          "p90": 14.601
+        },
+        "VP": {
+          "p10": 13.105,
+          "p50": 13.811,
+          "p90": 14.588
+        },
+        "VA": {
+          "p10": 11.404,
+          "p50": 12.15,
+          "p90": 12.842
+        },
+        "CG": {
+          "p10": 13.492,
+          "p50": 14.252,
+          "p90": 14.945
+        },
+        "MB": {
+          "p10": 12.692,
+          "p50": 13.459,
+          "p90": 14.186
+        },
+        "MA": {
+          "p10": 13.072,
+          "p50": 13.741,
+          "p90": 14.504
+        },
+        "MP": {
+          "p10": 12.957,
+          "p50": 13.715,
+          "p90": 14.402
+        }
+      },
+      "raw_model_total": 75.397,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 58.5,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-the-buccaneer-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 68.599,
+      "caption_shape_total": 80.943,
+      "total_reconciliation_delta": -12.345,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 80.943,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "All Age forecasts use prior-season All Age caption scores as a baseline because the V9 model was not trained on All Age sequence rows.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

@@ -1,0 +1,758 @@
+{
+  "mode": "applied",
+  "season": 2026,
+  "candidates": 43,
+  "found": [
+    {
+      "unitName": "Alisal Union School District Marching Band",
+      "corpsKey": "alisal-union-school-district-marching-band",
+      "slug": "alisal-union-school-district-marching-band",
+      "textDivision": null,
+      "logo": null,
+      "favicon": null
+    },
+    {
+      "unitName": "Carolina Gold",
+      "corpsKey": "001j000000iwx92aad",
+      "slug": "carolina-gold",
+      "textDivision": "Open Class",
+      "logo": "https://production.assets.dci.org/5f1ef9a4694c8b595c15e002_OqiP0kWI6cuenevGnCj0wybvAzfpfw7l.png",
+      "favicon": null
+    },
+    {
+      "unitName": "Gems",
+      "corpsKey": "0015b00002bxwbjaap",
+      "slug": "gems",
+      "textDivision": "SoundSport",
+      "logo": null,
+      "favicon": "https://www.boisegems.org/img/ui/favicon.ico"
+    },
+    {
+      "unitName": "Latrobe Music Center",
+      "corpsKey": "latrobe-music-center",
+      "slug": "latrobe-music-center",
+      "textDivision": "SoundSport",
+      "logo": null,
+      "favicon": null
+    },
+    {
+      "unitName": "Sacramento Freelancers",
+      "corpsKey": "sacramento-freelancers-drum-bugle-corps",
+      "slug": "sacramento-freelancers-drum-bugle-corps",
+      "textDivision": null,
+      "logo": null,
+      "favicon": null
+    },
+    {
+      "unitName": "Sky Ryders",
+      "corpsKey": "sky-ryders",
+      "slug": "sky-ryders",
+      "textDivision": "SoundSport",
+      "logo": null,
+      "favicon": null
+    },
+    {
+      "unitName": "Steel City Ambassadors",
+      "corpsKey": "steel-city-ambassadors",
+      "slug": "steel-city-ambassadors",
+      "textDivision": "All Age Class",
+      "logo": null,
+      "favicon": "https://img1.wsimg.com/isteam/ip/d9a2a936-7f36-4b72-9838-f3a56d0bee8e/blob.png/:/rs=w:180,h:180,m"
+    },
+    {
+      "unitName": "The Marching Elite",
+      "corpsKey": "marching-elite",
+      "slug": "the-marching-elite",
+      "textDivision": null,
+      "logo": null,
+      "favicon": null
+    }
+  ],
+  "unmatched": [
+    {
+      "unitName": "Alisal Union School District All-Star Academy",
+      "triedSlugs": [
+        "alisal-union-school-district-all-star-academy",
+        "alisal-union-school-district-all-star-academy-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Allegheny Eclipse",
+      "triedSlugs": [
+        "allegheny-eclipse",
+        "allegheny-eclipse-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Apogee",
+      "triedSlugs": [
+        "apogee",
+        "apogee-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Apollo Marching Theatre",
+      "triedSlugs": [
+        "apollo-marching-theatre",
+        "apollo-marching-theatre-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Baldwinsville High School Band",
+      "triedSlugs": [
+        "baldwinsville-high-school-band",
+        "baldwinsville-high-school-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Blue Saints",
+      "triedSlugs": [
+        "blue-saints",
+        "blue-saints-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Brig Juice Brass",
+      "triedSlugs": [
+        "brig-juice-brass",
+        "brig-juice-brass-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Buccaneer Banner Brass",
+      "triedSlugs": [
+        "buccaneer-banner-brass",
+        "buccaneer-banner-brass-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Club Access Opens to Premium Ticket Holders",
+      "triedSlugs": [
+        "club-access-opens-to-premium-ticket-holders",
+        "club-access-opens-to-premium-ticket-holders-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Columbus Saints Jr. Flag Line",
+      "triedSlugs": [
+        "columbus-saints-jr-flag-line",
+        "columbus-saints-jr-flag-line-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Conquest",
+      "triedSlugs": [
+        "conquest-drum-bugle-corps",
+        "conquest"
+      ]
+    },
+    {
+      "unitName": "Conquest Drum & Bugle Corps",
+      "triedSlugs": [
+        "conquest-drum-bugle-corps",
+        "conquest-drum-and-bugle-corps",
+        "conquest-drum-and-bugle-corps-drum-bugle-corps",
+        "conquest"
+      ]
+    },
+    {
+      "unitName": "Crosstown Big Band",
+      "triedSlugs": [
+        "crosstown-big-band",
+        "crosstown-big-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Crusaders Senior",
+      "triedSlugs": [
+        "crusaders-senior-drum-bugle-corps",
+        "crusaders-senior"
+      ]
+    },
+    {
+      "unitName": "EN-CORPS by EN-RICH-MENT",
+      "triedSlugs": [
+        "en-corps-by-en-rich-ment",
+        "en-corps-by-en-rich-ment-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Eclipse",
+      "triedSlugs": [
+        "eclipse",
+        "eclipse-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Green Beret Marching Band",
+      "triedSlugs": [
+        "green-beret-marching-band",
+        "green-beret-marching-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Joint Performance",
+      "triedSlugs": [
+        "joint-performance",
+        "joint-performance-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "MBI",
+      "triedSlugs": [
+        "mbi",
+        "mbi-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Minnesota State University Clinic Band",
+      "triedSlugs": [
+        "minnesota-state-university-clinic-band",
+        "minnesota-state-university-clinic-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "North Star",
+      "triedSlugs": [
+        "north-star",
+        "north-star-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Phoenix",
+      "triedSlugs": [
+        "phoenix",
+        "phoenix-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "RCR Street Club",
+      "triedSlugs": [
+        "rcr-street-club",
+        "rcr-street-club-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Rhythm IN BLUE",
+      "triedSlugs": [
+        "rhythm-in-blue",
+        "rhythm-in-blue-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Rhythm IN BLUE - Bluecoats",
+      "triedSlugs": [
+        "rhythm-in-blue-bluecoats",
+        "rhythm-in-blue-bluecoats-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Rosemont King Cobras",
+      "triedSlugs": [
+        "rosemont-king-cobras",
+        "rosemont-king-cobras-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Sound of Sun Prairie",
+      "triedSlugs": [
+        "sound-of-sun-prairie",
+        "sound-of-sun-prairie-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Spark",
+      "triedSlugs": [
+        "spark",
+        "spark-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Sparta Ignite",
+      "triedSlugs": [
+        "sparta-ignite",
+        "sparta-ignite-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "The Blue Way Middle School Honor Band",
+      "triedSlugs": [
+        "the-blue-way-middle-school-honor-band",
+        "the-blue-way-middle-school-honor-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "The Blue Way Summer Arts Camp",
+      "triedSlugs": [
+        "the-blue-way-summer-arts-camp",
+        "the-blue-way-summer-arts-camp-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "The ConneXion",
+      "triedSlugs": [
+        "the-connexion",
+        "the-connexion-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "The Connexion",
+      "triedSlugs": [
+        "the-connexion",
+        "the-connexion-drum-bugle-corps"
+      ]
+    }
+  ],
+  "changes": [
+    {
+      "slug": "alisal-union-school-district-marching-band",
+      "corpsKey": "alisal-union-school-district-marching-band",
+      "field": "address",
+      "from": "155 Bardin Rd",
+      "to": "155 Bardin Rd Salinas CA, 93905",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "alisal-union-school-district-marching-band",
+      "corpsKey": "alisal-union-school-district-marching-band",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Alisal Union School District Marching Band Corp as a part of Drum Corps International. View full schedule of Alisal Union School District Marching Band `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "website",
+      "from": "www.carolinagold.org",
+      "to": "http://www.carolinagold.org",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/CarolinaGoldDBC",
+      "to": "https://www.facebook.com/CarolinaGoldDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/carolinagolddbc",
+      "to": "https://twitter.com/carolinagolddbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/carolinagoldensembles/",
+      "to": "https://www.instagram.com/carolinagoldensembles/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/carolinagolddbc",
+      "to": "https://www.youtube.com/user/carolinagolddbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "address",
+      "from": "698 Tobacco Rd",
+      "to": "698 Tobacco Rd Lexington NC, 27295",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "city",
+      "from": "Lexington",
+      "to": "Winston Salem",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "display_city",
+      "from": "Lexington, NC",
+      "to": "Winston Salem, NC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5f1efc97694c8b5ab2019402_Qu7S_E5lBAGnFcQJaTIf_u8yzn8m2Hkk.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Carolina Gold Corp as a part of Drum Corps International. View full schedule of Carolina Gold `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "gems",
+      "corpsKey": "0015b00002bxwbjaap",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://www.boisegems.org/img/ui/favicon.ico",
+      "kind": "fill"
+    },
+    {
+      "slug": "gems",
+      "corpsKey": "0015b00002bxwbjaap",
+      "field": "about",
+      "from": null,
+      "to": "Founded in 2022 and having performed in their inaugural season as a Drum Corps International SoundSport team in 2023, Gems Drum and Bugle Corps proudly represents the Treasure Valley. The Idaho organization's goal is to provide youth with performing arts programs that will help make them well rounded people in life and their musical pursuits. Gems' 2025 membership is made up of more than 80 performers representing seven different states.",
+      "kind": "fill"
+    },
+    {
+      "slug": "gems",
+      "corpsKey": "0015b00002bxwbjaap",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.boisegems.org/",
+      "to": "https://www.boisegems.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gems",
+      "corpsKey": "0015b00002bxwbjaap",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Gems Corp as a part of Drum Corps International. View full schedule of Gems `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "latrobe-music-center",
+      "corpsKey": "latrobe-music-center",
+      "field": "division_name",
+      "from": null,
+      "to": "SoundSport",
+      "kind": "fill"
+    },
+    {
+      "slug": "latrobe-music-center",
+      "corpsKey": "latrobe-music-center",
+      "field": "about",
+      "from": null,
+      "to": "Proudly representing the greater Pittsburgh area, Latrobe Music Center made its debut at the DCI World Championships and the SoundSport International Music & Food Festival in 2024, where the group earned a Silver rating for its performance.",
+      "kind": "fill"
+    },
+    {
+      "slug": "latrobe-music-center",
+      "corpsKey": "latrobe-music-center",
+      "field": "address",
+      "from": "602 Alexandria St",
+      "to": "602 Alexandria St LATROBE PA, 15650",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "latrobe-music-center",
+      "corpsKey": "latrobe-music-center",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Latrobe Music Center Corp as a part of Drum Corps International. View full schedule of Latrobe Music Center `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "sacramento-freelancers-drum-bugle-corps",
+      "corpsKey": "sacramento-freelancers-drum-bugle-corps",
+      "field": "website",
+      "from": "www.freelancers-alumni.org",
+      "to": "http://www.freelancers-alumni.org",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "sacramento-freelancers-drum-bugle-corps",
+      "corpsKey": "sacramento-freelancers-drum-bugle-corps",
+      "field": "address",
+      "from": "44825 Machon Rd.",
+      "to": "44825 Machon Rd. Temecula CA, 92592",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "sacramento-freelancers-drum-bugle-corps",
+      "corpsKey": "sacramento-freelancers-drum-bugle-corps",
+      "field": "city",
+      "from": "Temecula",
+      "to": "Sacramento",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "sacramento-freelancers-drum-bugle-corps",
+      "corpsKey": "sacramento-freelancers-drum-bugle-corps",
+      "field": "display_city",
+      "from": "Temecula, CA",
+      "to": "Sacramento, CA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "sacramento-freelancers-drum-bugle-corps",
+      "corpsKey": "sacramento-freelancers-drum-bugle-corps",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Sacramento Freelancers Drum & Bugle Corps Corp as a part of Drum Corps International. View full schedule of Sacramento Freelancers Drum & Bugle Corps `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "sky-ryders",
+      "corpsKey": "sky-ryders",
+      "field": "division_name",
+      "from": null,
+      "to": "SoundSport",
+      "kind": "fill"
+    },
+    {
+      "slug": "sky-ryders",
+      "corpsKey": "sky-ryders",
+      "field": "about",
+      "from": null,
+      "to": "The Sky Ryders Performing Arts Foundation came into existence in 2023 to bring its namesake back to Kansas. The Sky Ryders were regular DCI finalists in the 1980s and were well known for their popular repertoire, powerful brass lines and athletic color guards. With a string of successful educational clinics, a large group of volunteer alumni, and the support of the Hutchinson community, the Sky Ryders returned to the field in 2024 as part of DCI's SoundSport program.",
+      "kind": "fill"
+    },
+    {
+      "slug": "sky-ryders",
+      "corpsKey": "sky-ryders",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.skyryders.com/about/foundation/",
+      "to": "http://www.skyryders.com/about/foundation/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "sky-ryders",
+      "corpsKey": "sky-ryders",
+      "field": "city",
+      "from": null,
+      "to": "Hutchinson",
+      "kind": "fill"
+    },
+    {
+      "slug": "sky-ryders",
+      "corpsKey": "sky-ryders",
+      "field": "state",
+      "from": null,
+      "to": "KS",
+      "kind": "fill"
+    },
+    {
+      "slug": "sky-ryders",
+      "corpsKey": "sky-ryders",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Sky Ryders Corp as a part of Drum Corps International. View full schedule of Sky Ryders `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "steel-city-ambassadors",
+      "corpsKey": "steel-city-ambassadors",
+      "field": "division_name",
+      "from": null,
+      "to": "All Age Class",
+      "kind": "fill"
+    },
+    {
+      "slug": "steel-city-ambassadors",
+      "corpsKey": "steel-city-ambassadors",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://img1.wsimg.com/isteam/ip/d9a2a936-7f36-4b72-9838-f3a56d0bee8e/blob.png/:/rs=w:180,h:180,m",
+      "kind": "fill"
+    },
+    {
+      "slug": "steel-city-ambassadors",
+      "corpsKey": "steel-city-ambassadors",
+      "field": "about",
+      "from": null,
+      "to": "Originally founded in 1980, the Steel City Ambassadors are a self-supporting all-age, drum and bugle corps representing the Pittsburgh area. In 2025, the corps returns to the field in competition for the first time in the last 10 years. The Steel City Ambassadors are currently recognized as an All-Age Class Candidate, evaluating to join DCI's All-Age Class in the future.",
+      "kind": "fill"
+    },
+    {
+      "slug": "steel-city-ambassadors",
+      "corpsKey": "steel-city-ambassadors",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://scadbc.org/",
+      "to": "https://scadbc.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "steel-city-ambassadors",
+      "corpsKey": "steel-city-ambassadors",
+      "field": "city",
+      "from": null,
+      "to": "Pittsburgh",
+      "kind": "fill"
+    },
+    {
+      "slug": "steel-city-ambassadors",
+      "corpsKey": "steel-city-ambassadors",
+      "field": "state",
+      "from": null,
+      "to": "PA",
+      "kind": "fill"
+    },
+    {
+      "slug": "steel-city-ambassadors",
+      "corpsKey": "steel-city-ambassadors",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Steel City Ambassadors Corp as a part of Drum Corps International. View full schedule of Steel City Ambassadors `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-marching-elite",
+      "corpsKey": "marching-elite",
+      "field": "website",
+      "from": null,
+      "to": "http://www.themarchingelite2.wix.com/musicandarts",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-marching-elite",
+      "corpsKey": "marching-elite",
+      "field": "address",
+      "from": null,
+      "to": "4431 Frederick Ave Baltimore Maryland, 21229",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-marching-elite",
+      "corpsKey": "marching-elite",
+      "field": "city",
+      "from": null,
+      "to": "Baltimore",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-marching-elite",
+      "corpsKey": "marching-elite",
+      "field": "state",
+      "from": null,
+      "to": "MD",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-marching-elite",
+      "corpsKey": "marching-elite",
+      "field": "display_city",
+      "from": null,
+      "to": "Baltimore, MD",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-marching-elite",
+      "corpsKey": "marching-elite",
+      "field": "meta_description",
+      "from": null,
+      "to": "About The Marching Elite Corp as a part of Drum Corps International. View full schedule of The Marching Elite `s Upcoming Events and Related News.",
+      "kind": "fill"
+    }
+  ],
+  "held": [
+    {
+      "slug": "carolina-gold",
+      "corpsKey": "001j000000iwx92aad",
+      "field": "division_name",
+      "from": "All Age Class",
+      "to": "Open Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gems",
+      "corpsKey": "0015b00002bxwbjaap",
+      "field": "division_name",
+      "from": "SoundSport Medalist Division",
+      "to": "SoundSport",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gems",
+      "corpsKey": "0015b00002bxwbjaap",
+      "field": "address",
+      "from": "4440 W Franklin Rd.\r\nApt 201",
+      "to": "4440 W Franklin Rd. Apt 201 Boise ID, 83705",
+      "kind": "overwrite"
+    }
+  ],
+  "classObservations": [
+    {
+      "corpsKey": "alisal-union-school-district-marching-band",
+      "division": null,
+      "source": null
+    },
+    {
+      "corpsKey": "001j000000iwx92aad",
+      "division": "Open Class",
+      "source": "profile-text"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "division": "SoundSport",
+      "source": "profile-text"
+    },
+    {
+      "corpsKey": "latrobe-music-center",
+      "division": "SoundSport",
+      "source": "profile-text"
+    },
+    {
+      "corpsKey": "sacramento-freelancers-drum-bugle-corps",
+      "division": null,
+      "source": null
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "division": "SoundSport",
+      "source": "profile-text"
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "division": "All Age Class",
+      "source": "profile-text"
+    },
+    {
+      "corpsKey": "marching-elite",
+      "division": null,
+      "source": null
+    }
+  ],
+  "cachedMedia": [
+    {
+      "corpsKey": "001j000000iwx92aad",
+      "role": "logo",
+      "url": "https://production.assets.dci.org/5f1ef9a4694c8b595c15e002_OqiP0kWI6cuenevGnCj0wybvAzfpfw7l.png",
+      "bytes": 7553,
+      "format": "png"
+    },
+    {
+      "corpsKey": "001j000000iwx92aad",
+      "role": "cover",
+      "url": "https://production.assets.dci.org/5f1efc97694c8b5ab2019402_Qu7S_E5lBAGnFcQJaTIf_u8yzn8m2Hkk.jpg",
+      "bytes": 572275,
+      "format": "jpeg"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "role": "logo",
+      "url": "https://www.boisegems.org/img/ui/favicon.ico",
+      "bytes": 15406,
+      "format": "ico"
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "role": "logo",
+      "url": "https://img1.wsimg.com/isteam/ip/d9a2a936-7f36-4b72-9838-f3a56d0bee8e/blob.png/:/rs=w:180,h:180,m",
+      "bytes": 92718,
+      "format": "png"
+    }
+  ]
+}

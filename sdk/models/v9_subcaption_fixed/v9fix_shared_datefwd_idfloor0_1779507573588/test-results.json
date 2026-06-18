@@ -1,0 +1,11 @@
+{
+  "rows": 52,
+  "caption_values": 416,
+  "delta_mae_pts": 0.2869332221182921,
+  "recap_mae_pts": 0.28693322095503115,
+  "category_mae_pts": 0.335613813010451,
+  "total_mae_pts": 0.6497756415781939,
+  "coverage": 0.9591346153846154,
+  "width": 1.728818146485519,
+  "width_floor_pct": 0
+}

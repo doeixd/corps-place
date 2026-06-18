@@ -1,0 +1,855 @@
+{
+  "generated_at": "2026-06-02T14:14:51.514Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-huntington",
+    "slug": "2026-dci-huntington",
+    "name": "DCI Huntington",
+    "event_name": "DCI Huntington",
+    "start_date": "2026-07-29",
+    "start_time": null,
+    "web_start_time": "7:30 PM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Huntington",
+    "location_state": "WV",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260729-HUNTINGTON-WV.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260729-HUNTINGTON-WV.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-dci-huntington-xqezv9",
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/4clRMOF",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 9,
+    "matched_corps_keys": 9,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 8,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 76.74418604651163
+  },
+  "input_signature": "f8e305ae9784e5e65e8e76d54a1f27c443249187390611ddcd40c2b53b175347",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 9,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "0015b00002byuh0aap",
+        "corps": "Memphis Blues",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 2,
+        "time": "7:40 PM"
+      },
+      {
+        "corps_key": "001j000000iwwslaal",
+        "corps": "7th Regiment",
+        "division": "Open Class",
+        "performance_order": 3,
+        "time": "7:57 PM"
+      },
+      {
+        "corps_key": "001j000000iwx99aad",
+        "corps": "Columbians",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "8:14 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9paad",
+        "corps": "Gold",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "8:31 PM"
+      },
+      {
+        "corps_key": "001j0000012y6bqaac",
+        "corps": "The Battalion",
+        "division": "Open Class",
+        "performance_order": 6,
+        "time": "8:48 PM"
+      },
+      {
+        "corps_key": "001j000000i6lenaa3",
+        "corps": "Madison Scouts",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000h3xwcaav",
+        "corps": "Santa Clara Vanguard",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx93aad",
+        "corps": "Seattle Cascades",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "TBD"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "0015b00002byuh0aap",
+        "corps": "Memphis Blues",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 2,
+        "time": "7:40 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 7,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-huntington",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-29",
+      "scored_lineup_rows": 9,
+      "matched_corps_keys": 9,
+      "excluded_lineup_rows": 3,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000h3xwcaav",
+      "corps": "Santa Clara Vanguard",
+      "city": "Santa Clara, CA",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "TBD",
+      "total": 93.353,
+      "GE": 37.443,
+      "Visual": 27.881,
+      "Music": 28.029,
+      "GE1": 18.756,
+      "GE2": 18.687,
+      "VP": 18.574,
+      "VA": 18.809,
+      "CG": 18.379,
+      "MB": 18.576,
+      "MA": 18.522,
+      "MP": 18.961,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.957,
+          "p50": 18.756,
+          "p90": 19.606
+        },
+        "GE2": {
+          "p10": 17.844,
+          "p50": 18.687,
+          "p90": 19.498
+        },
+        "VP": {
+          "p10": 17.75,
+          "p50": 18.574,
+          "p90": 19.318
+        },
+        "VA": {
+          "p10": 17.982,
+          "p50": 18.809,
+          "p90": 19.538
+        },
+        "CG": {
+          "p10": 17.452,
+          "p50": 18.379,
+          "p90": 19.061
+        },
+        "MB": {
+          "p10": 17.779,
+          "p50": 18.576,
+          "p90": 19.384
+        },
+        "MA": {
+          "p10": 17.836,
+          "p50": 18.522,
+          "p90": 19.436
+        },
+        "MP": {
+          "p10": 18.312,
+          "p50": 18.961,
+          "p90": 19.931
+        }
+      },
+      "raw_model_total": 94.683,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 94.45,
+      "prior_season_comparable_percent_through": 76.19047619047619,
+      "prior_season_comparable_competition": "2025-dci-huntington",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 93.351,
+      "caption_shape_total": 92.008,
+      "total_reconciliation_delta": 1.345,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 92.008,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "TBD",
+      "total": 88.192,
+      "GE": 35.356,
+      "Visual": 26.319,
+      "Music": 26.517,
+      "GE1": 17.64,
+      "GE2": 17.716,
+      "VP": 17.434,
+      "VA": 17.401,
+      "CG": 17.804,
+      "MB": 17.315,
+      "MA": 17.574,
+      "MP": 18.145,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.872,
+          "p50": 17.64,
+          "p90": 18.479
+        },
+        "GE2": {
+          "p10": 16.944,
+          "p50": 17.716,
+          "p90": 18.573
+        },
+        "VP": {
+          "p10": 16.638,
+          "p50": 17.434,
+          "p90": 18.184
+        },
+        "VA": {
+          "p10": 16.556,
+          "p50": 17.401,
+          "p90": 18.1
+        },
+        "CG": {
+          "p10": 16.903,
+          "p50": 17.804,
+          "p90": 18.482
+        },
+        "MB": {
+          "p10": 16.503,
+          "p50": 17.315,
+          "p90": 18.083
+        },
+        "MA": {
+          "p10": 16.913,
+          "p50": 17.574,
+          "p90": 18.485
+        },
+        "MP": {
+          "p10": 17.427,
+          "p50": 18.145,
+          "p90": 19.052
+        }
+      },
+      "raw_model_total": 91.764,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 88.95,
+      "prior_season_comparable_percent_through": 76.19047619047619,
+      "prior_season_comparable_competition": "2025-dci-huntington",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 88.195,
+      "caption_shape_total": 87.273,
+      "total_reconciliation_delta": 0.92,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 87.272,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000i6lenaa3",
+      "corps": "Madison Scouts",
+      "city": "Madison, WI",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "TBD",
+      "total": 84.912,
+      "GE": 34.244,
+      "Visual": 24.974,
+      "Music": 25.694,
+      "GE1": 17.052,
+      "GE2": 17.192,
+      "VP": 16.398,
+      "VA": 16.596,
+      "CG": 16.954,
+      "MB": 16.783,
+      "MA": 17.166,
+      "MP": 17.44,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.211,
+          "p50": 17.052,
+          "p90": 17.767
+        },
+        "GE2": {
+          "p10": 16.463,
+          "p50": 17.192,
+          "p90": 18.046
+        },
+        "VP": {
+          "p10": 15.613,
+          "p50": 16.398,
+          "p90": 17.109
+        },
+        "VA": {
+          "p10": 15.761,
+          "p50": 16.596,
+          "p90": 17.254
+        },
+        "CG": {
+          "p10": 16.108,
+          "p50": 16.954,
+          "p90": 17.713
+        },
+        "MB": {
+          "p10": 15.971,
+          "p50": 16.783,
+          "p90": 17.572
+        },
+        "MA": {
+          "p10": 16.533,
+          "p50": 17.166,
+          "p90": 18.084
+        },
+        "MP": {
+          "p10": 16.745,
+          "p50": 17.44,
+          "p90": 18.305
+        }
+      },
+      "raw_model_total": 89.697,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 84.6,
+      "prior_season_comparable_percent_through": 76.19047619047619,
+      "prior_season_comparable_competition": "2025-dci-glassboro",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 84.914,
+      "caption_shape_total": 85.297,
+      "total_reconciliation_delta": -0.385,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 14,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.298,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwx93aad",
+      "corps": "Seattle Cascades",
+      "city": "Seattle, WA",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "TBD",
+      "total": 78.323,
+      "GE": 31.654,
+      "Visual": 23.124,
+      "Music": 23.545,
+      "GE1": 15.714,
+      "GE2": 15.94,
+      "VP": 15.315,
+      "VA": 15.524,
+      "CG": 15.409,
+      "MB": 15.367,
+      "MA": 15.969,
+      "MP": 15.754,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.923,
+          "p50": 15.714,
+          "p90": 16.505
+        },
+        "GE2": {
+          "p10": 15.23,
+          "p50": 15.94,
+          "p90": 16.82
+        },
+        "VP": {
+          "p10": 14.532,
+          "p50": 15.315,
+          "p90": 16.093
+        },
+        "VA": {
+          "p10": 14.674,
+          "p50": 15.524,
+          "p90": 16.224
+        },
+        "CG": {
+          "p10": 14.628,
+          "p50": 15.409,
+          "p90": 16.171
+        },
+        "MB": {
+          "p10": 14.497,
+          "p50": 15.367,
+          "p90": 16.117
+        },
+        "MA": {
+          "p10": 15.333,
+          "p50": 15.969,
+          "p90": 16.885
+        },
+        "MP": {
+          "p10": 15.012,
+          "p50": 15.754,
+          "p90": 16.599
+        }
+      },
+      "raw_model_total": 83.094,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.1,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 78.325,
+      "caption_shape_total": 80.963,
+      "total_reconciliation_delta": -2.64,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 7,
+      "prior_season_rank": 23,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 80.964,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwwslaal",
+      "corps": "7th Regiment",
+      "city": "New London, CT",
+      "division": "Open Class",
+      "performance_order": 3,
+      "time": "7:57 PM",
+      "total": 71.465,
+      "GE": 28.528,
+      "Visual": 21.623,
+      "Music": 21.314,
+      "GE1": 14.051,
+      "GE2": 14.477,
+      "VP": 14.301,
+      "VA": 14.393,
+      "CG": 14.552,
+      "MB": 14.164,
+      "MA": 14.099,
+      "MP": 14.365,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.329,
+          "p50": 14.051,
+          "p90": 14.848
+        },
+        "GE2": {
+          "p10": 13.759,
+          "p50": 14.477,
+          "p90": 15.323
+        },
+        "VP": {
+          "p10": 13.556,
+          "p50": 14.301,
+          "p90": 15.102
+        },
+        "VA": {
+          "p10": 13.508,
+          "p50": 14.393,
+          "p90": 15.051
+        },
+        "CG": {
+          "p10": 13.807,
+          "p50": 14.552,
+          "p90": 15.35
+        },
+        "MB": {
+          "p10": 13.258,
+          "p50": 14.164,
+          "p90": 14.851
+        },
+        "MA": {
+          "p10": 13.418,
+          "p50": 14.099,
+          "p90": 14.912
+        },
+        "MP": {
+          "p10": 13.509,
+          "p50": 14.365,
+          "p90": 15.158
+        }
+      },
+      "raw_model_total": 75.527,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 71.65,
+      "prior_season_comparable_percent_through": 78.57142857142857,
+      "prior_season_comparable_competition": "2025-dci-central-ohio",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 71.463,
+      "caption_shape_total": 71.235,
+      "total_reconciliation_delta": 0.23,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.234,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000iwx9paad",
+      "corps": "Gold",
+      "city": "San Diego, CA",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "8:31 PM",
+      "total": 70.306,
+      "GE": 27.917,
+      "Visual": 21.174,
+      "Music": 21.215,
+      "GE1": 13.802,
+      "GE2": 14.115,
+      "VP": 14.222,
+      "VA": 13.968,
+      "CG": 14.159,
+      "MB": 14.174,
+      "MA": 14.158,
+      "MP": 14.097,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.011,
+          "p50": 13.802,
+          "p90": 14.575
+        },
+        "GE2": {
+          "p10": 13.416,
+          "p50": 14.115,
+          "p90": 14.985
+        },
+        "VP": {
+          "p10": 13.57,
+          "p50": 14.222,
+          "p90": 15.179
+        },
+        "VA": {
+          "p10": 13.188,
+          "p50": 13.968,
+          "p90": 14.738
+        },
+        "CG": {
+          "p10": 13.414,
+          "p50": 14.159,
+          "p90": 14.974
+        },
+        "MB": {
+          "p10": 13.355,
+          "p50": 14.174,
+          "p90": 14.916
+        },
+        "MA": {
+          "p10": 13.493,
+          "p50": 14.158,
+          "p90": 15.024
+        },
+        "MP": {
+          "p10": 13.297,
+          "p50": 14.097,
+          "p90": 14.866
+        }
+      },
+      "raw_model_total": 79.646,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 76.75,
+      "prior_season_comparable_percent_through": 76.19047619047619,
+      "prior_season_comparable_competition": "2025-dci-huntington",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 70.306,
+      "caption_shape_total": 62.431,
+      "total_reconciliation_delta": 7.875,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 20,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 62.43,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 7,
+      "corps_key": "001j0000012y6bqaac",
+      "corps": "The Battalion",
+      "city": "Salt Lake City, UT",
+      "division": "Open Class",
+      "performance_order": 6,
+      "time": "8:48 PM",
+      "total": 69.378,
+      "GE": 27.643,
+      "Visual": 20.77,
+      "Music": 20.965,
+      "GE1": 13.803,
+      "GE2": 13.84,
+      "VP": 13.835,
+      "VA": 13.598,
+      "CG": 14.106,
+      "MB": 13.924,
+      "MA": 14.166,
+      "MP": 13.84,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.966,
+          "p50": 13.803,
+          "p90": 14.545
+        },
+        "GE2": {
+          "p10": 13.172,
+          "p50": 13.84,
+          "p90": 14.743
+        },
+        "VP": {
+          "p10": 13.152,
+          "p50": 13.835,
+          "p90": 14.78
+        },
+        "VA": {
+          "p10": 12.736,
+          "p50": 13.598,
+          "p90": 14.295
+        },
+        "CG": {
+          "p10": 13.34,
+          "p50": 14.106,
+          "p90": 14.954
+        },
+        "MB": {
+          "p10": 13.061,
+          "p50": 13.924,
+          "p90": 14.664
+        },
+        "MA": {
+          "p10": 13.514,
+          "p50": 14.166,
+          "p90": 15.065
+        },
+        "MP": {
+          "p10": 13.052,
+          "p50": 13.84,
+          "p90": 14.638
+        }
+      },
+      "raw_model_total": 76.218,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.95,
+      "prior_season_comparable_percent_through": 76.19047619047619,
+      "prior_season_comparable_competition": "2025-dci-huntington",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 69.379,
+      "caption_shape_total": 61.347,
+      "total_reconciliation_delta": 8.03,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 21,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 61.348,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 8,
+      "corps_key": "001j000000iwx99aad",
+      "corps": "Columbians",
+      "city": "Pasco, WA",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "8:14 PM",
+      "total": 65.421,
+      "GE": 26.46,
+      "Visual": 19.63,
+      "Music": 19.331,
+      "GE1": 13.18,
+      "GE2": 13.28,
+      "VP": 12.671,
+      "VA": 13.137,
+      "CG": 13.453,
+      "MB": 12.696,
+      "MA": 13.118,
+      "MP": 12.849,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.407,
+          "p50": 13.18,
+          "p90": 13.95
+        },
+        "GE2": {
+          "p10": 12.604,
+          "p50": 13.28,
+          "p90": 14.153
+        },
+        "VP": {
+          "p10": 11.993,
+          "p50": 12.671,
+          "p90": 13.568
+        },
+        "VA": {
+          "p10": 12.353,
+          "p50": 13.137,
+          "p90": 13.885
+        },
+        "CG": {
+          "p10": 12.698,
+          "p50": 13.453,
+          "p90": 14.271
+        },
+        "MB": {
+          "p10": 11.906,
+          "p50": 12.696,
+          "p90": 13.475
+        },
+        "MA": {
+          "p10": 12.439,
+          "p50": 13.118,
+          "p90": 13.935
+        },
+        "MP": {
+          "p10": 12.029,
+          "p50": 12.849,
+          "p90": 13.598
+        }
+      },
+      "raw_model_total": 73.424,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 71.85,
+      "prior_season_comparable_percent_through": 76.19047619047619,
+      "prior_season_comparable_competition": "2025-dci-huntington",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 65.423,
+      "caption_shape_total": 57.567,
+      "total_reconciliation_delta": 7.855,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 8,
+      "prior_season_rank": 25,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 57.567,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

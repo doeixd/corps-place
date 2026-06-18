@@ -1,0 +1,518 @@
+{
+  "generatedAt": "2026-01-20T19:56:48.553Z",
+  "missingCount": 65,
+  "missing": [
+    {
+      "name": "204th Army Band Jazz Ensemble",
+      "location": null,
+      "events": [
+        "2024-the-kiwanis-thunder-of-drums"
+      ]
+    },
+    {
+      "name": "Academy Summer Youth Guard",
+      "location": null,
+      "events": [
+        "2023-drums-across-the-desert"
+      ]
+    },
+    {
+      "name": "Alisal CAN Marching Band",
+      "location": "Salinas, CA",
+      "events": [
+        "2022-dci-west",
+        "2022-diablo-valley-classic-pacific-open-class-championship",
+        "2022-diablo-valley-classic-pacific-open-class-championship-finals",
+        "2022-drum-corps-at-the-rose-bowl",
+        "2022-western-corps-connection"
+      ]
+    },
+    {
+      "name": "Alisal Community Arts Network Marching Band",
+      "location": "Salinas, CA",
+      "events": [
+        "2023-dci-west"
+      ]
+    },
+    {
+      "name": "Alisal Union School District All-Star Academy",
+      "location": "Salinas, CA",
+      "events": [
+        "2022-dci-west",
+        "2023-dci-west"
+      ]
+    },
+    {
+      "name": "BANDtastic Canton Honor Band",
+      "location": null,
+      "events": [
+        "2024-innovations-in-brass"
+      ]
+    },
+    {
+      "name": "BANDtastic Honor Band Performance",
+      "location": null,
+      "events": [
+        "2023-show-of-shows",
+        "2024-show-of-shows"
+      ]
+    },
+    {
+      "name": "Banner Brass",
+      "location": "Reading, PA",
+      "events": [
+        "2024-big-sounds-in-motion",
+        "2024-the-buccaneer-classic"
+      ]
+    },
+    {
+      "name": "BKXperience",
+      "location": null,
+      "events": [
+        "2022-drums-along-the-rockies",
+        "2023-drums-along-the-rockies",
+        "2024-drums-along-the-rockies"
+      ]
+    },
+    {
+      "name": "Blue Stars 60th Anniv. Corps",
+      "location": "LaCrosse, WI",
+      "events": [
+        "2024-river-city-rhapsody"
+      ]
+    },
+    {
+      "name": "Bluecoats Alumni Corps",
+      "location": null,
+      "events": [
+        "2022-dci-world-championship-semifinals",
+        "2022-tour-of-champions-akron"
+      ]
+    },
+    {
+      "name": "Brig Juice Brass",
+      "location": null,
+      "events": [
+        "2024-spartan-syracuse-showdown"
+      ]
+    },
+    {
+      "name": "Buccaneers Alumni",
+      "location": "Reading, PA",
+      "events": [
+        "2024-big-sounds-in-motion",
+        "2024-the-buccaneer-classic"
+      ]
+    },
+    {
+      "name": "Change",
+      "location": null,
+      "events": [
+        "2022-dci-world-championship-semifinals"
+      ]
+    },
+    {
+      "name": "Colts Alumni Corps",
+      "location": null,
+      "events": [
+        "2023-music-on-the-march"
+      ]
+    },
+    {
+      "name": "Crossmen Alumni Corps",
+      "location": null,
+      "events": [
+        "2024-dci-world-championship-semifinals"
+      ]
+    },
+    {
+      "name": "CT Alumni",
+      "location": "Seymour, CT",
+      "events": [
+        "2024-barnum-festival-champions-on-parade"
+      ]
+    },
+    {
+      "name": "DrumLine Battle",
+      "location": null,
+      "events": [
+        "2022-dci-world-championship-semifinals"
+      ]
+    },
+    {
+      "name": "Encore",
+      "location": null,
+      "events": [
+        "2019-the-northwoods-encore",
+        "2019-tour-of-champions-akron",
+        "2019-tour-of-champions-chester",
+        "2019-tour-of-champions-northern-illinois",
+        "2019-tournament-of-drums",
+        "2019-western-corps-connection",
+        "2019-whitewater-classic"
+      ]
+    },
+    {
+      "name": "Encore- Blue Knights",
+      "location": "Denver, CO",
+      "events": [
+        "2022-drums-along-the-rockies",
+        "2023-drums-along-the-rockies"
+      ]
+    },
+    {
+      "name": "Encore- Blue Stars",
+      "location": "La Crosse, WI",
+      "events": [
+        "2022-river-city-rhapsody-la-crosse"
+      ]
+    },
+    {
+      "name": "Encore- Boston Crusaders",
+      "location": "Boston, MA",
+      "events": [
+        "2022-east-coast-classic",
+        "2023-dci-east-coast-showcase-quincy",
+        "2023-the-beanpot"
+      ]
+    },
+    {
+      "name": "Encore- Colt Cadets",
+      "location": "Dubuque, IA",
+      "events": [
+        "2022-tournament-of-drums"
+      ]
+    },
+    {
+      "name": "Encore- Colts",
+      "location": "Dubuque, IA",
+      "events": [
+        "2022-music-on-the-march"
+      ]
+    },
+    {
+      "name": "Encore- Gold",
+      "location": "San Diego, CA",
+      "events": [
+        "2022-gold-showcase"
+      ]
+    },
+    {
+      "name": "Encore- Golden Empire",
+      "location": null,
+      "events": [
+        "2023-resound"
+      ]
+    },
+    {
+      "name": "Encore- Legends",
+      "location": "Kalamazoo, MI",
+      "events": [
+        "2022-legends-drum-corps-invitational",
+        "2022-legends-drum-corps-open"
+      ]
+    },
+    {
+      "name": "Encore- Madison Scouts",
+      "location": "Madison, WI",
+      "events": [
+        "2022-drums-on-the-chippewa"
+      ]
+    },
+    {
+      "name": "Encore- River City Rhythm",
+      "location": "Anoka, MN",
+      "events": [
+        "2022-march-on"
+      ]
+    },
+    {
+      "name": "Encore- The Cavaliers and The Cavaliers Alumni",
+      "location": null,
+      "events": [
+        "2023-cavalcade-of-brass"
+      ]
+    },
+    {
+      "name": "Encore: U.S. Marine Drum & Bugle Corps",
+      "location": "Washington, DC",
+      "events": [
+        "2023-nightbeat"
+      ]
+    },
+    {
+      "name": "Exhibition Unit",
+      "location": null,
+      "events": [
+        "2022-drums-across-america-atlanta"
+      ]
+    },
+    {
+      "name": "Exhibition: United States Marine Drum & Bugle Corp",
+      "location": null,
+      "events": [
+        "2022-nightbeat"
+      ]
+    },
+    {
+      "name": "Freelancers Alumni Corps",
+      "location": "Sacramento, CA",
+      "events": [
+        "2022-dci-west",
+        "2022-drum-corps-at-the-rose-bowl",
+        "2022-so-cal-classic",
+        "2022-western-corps-connection",
+        "2023-dci-west",
+        "2023-drum-corps-at-the-rose-bowl",
+        "2023-so-cal-classic",
+        "2023-western-corps-connection"
+      ]
+    },
+    {
+      "name": "Genius of George Zingali",
+      "location": null,
+      "events": [
+        "2022-dci-world-championship-semifinals"
+      ]
+    },
+    {
+      "name": "Halftime",
+      "location": null,
+      "events": [
+        "2023-nightbeat",
+        "2024-nightbeat"
+      ]
+    },
+    {
+      "name": "Hurricanes & Alumni",
+      "location": "Seymour, CT",
+      "events": [
+        "2024-barnum-festival-champions-on-parade"
+      ]
+    },
+    {
+      "name": "Identity",
+      "location": null,
+      "events": [
+        "2022-dci-world-championship-semifinals"
+      ]
+    },
+    {
+      "name": "INpact Band",
+      "location": null,
+      "events": [
+        "2023-dci-world-championship-finals",
+        "2024-dci-world-championship-finals"
+      ]
+    },
+    {
+      "name": "Joyfull Exhibition",
+      "location": null,
+      "events": [
+        "2023-nightbeat"
+      ]
+    },
+    {
+      "name": "Last Score Announced",
+      "location": null,
+      "events": [
+        "2022-dci-world-championship-prelims",
+        "2023-dci-world-championship-prelims",
+        "2024-dci-world-championship-prelims"
+      ]
+    },
+    {
+      "name": "Marching Ghosts",
+      "location": null,
+      "events": [
+        "2019-western-corps-connection"
+      ]
+    },
+    {
+      "name": "Mon Valley Express Drum and Bugle Corps",
+      "location": "Pittsburgh, PA",
+      "events": [
+        "2024-dci-pittsburgh"
+      ]
+    },
+    {
+      "name": "Northern Lights Drum & Bugle Corps",
+      "location": "Muskegon, MI",
+      "events": [
+        "2024-midwest-premiere"
+      ]
+    },
+    {
+      "name": "Phantom Regiment Alumni Association",
+      "location": "Rockford, IL",
+      "events": [
+        "2024-show-of-shows"
+      ]
+    },
+    {
+      "name": "Phantom Regiment Alumni Corps",
+      "location": "Rockford, IL",
+      "events": [
+        "2023-show-of-shows"
+      ]
+    },
+    {
+      "name": "Pre-show Entertainment: Cheyenne Brass Band",
+      "location": null,
+      "events": [
+        "2022-drums-along-the-rockies-cheyenne-edition"
+      ]
+    },
+    {
+      "name": "Retreat",
+      "location": null,
+      "events": [
+        "2023-dci-world-championship-finals",
+        "2023-so-cal-classic",
+        "2024-dci-all-age-world-championship",
+        "2024-dci-world-championship-finals",
+        "2024-so-cal-classic-open-class-pacific-championship-finals"
+      ]
+    },
+    {
+      "name": "Rhythm IN BLUE",
+      "location": "Canton, OH",
+      "events": [
+        "2019-tour-of-champions-akron",
+        "2023-drums-in-the-heartland",
+        "2023-shoremen-brass-classic",
+        "2024-dci-northern-ohio",
+        "2024-innovations-in-brass"
+      ]
+    },
+    {
+      "name": "Rosemont King Cobras",
+      "location": null,
+      "events": [
+        "2023-cavalcade-of-brass",
+        "2024-cavalcade-of-brass"
+      ]
+    },
+    {
+      "name": "Sacramento Freelancers Alumni Corps",
+      "location": "Sacramento, CA",
+      "events": [
+        "2024-corps-at-the-crest",
+        "2024-dci-capital-classic",
+        "2024-dci-west"
+      ]
+    },
+    {
+      "name": "Scores Announced",
+      "location": null,
+      "events": [
+        "2023-dci-southwestern-championship"
+      ]
+    },
+    {
+      "name": "Skyliners",
+      "location": "Southern Tier, NY",
+      "events": [
+        "2024-dci-rochester",
+        "2024-drum-corps-grand-prix",
+        "2024-the-buccaneer-classic"
+      ]
+    },
+    {
+      "name": "Sonus Brass Theater",
+      "location": "Woodbridge, VA",
+      "events": [
+        "2023-dci-eastern-classic-2",
+        "2023-summer-thunder",
+        "2023-white-rose-classic",
+        "2024-drum-corps-grand-prix",
+        "2024-music-on-the-mountain"
+      ]
+    },
+    {
+      "name": "SoundSport",
+      "location": null,
+      "events": [
+        "2019-whitewater-classic"
+      ]
+    },
+    {
+      "name": "Stadium Closed to Spectators",
+      "location": null,
+      "events": [
+        "2024-dci-all-age-world-championship"
+      ]
+    },
+    {
+      "name": "The Academy Summer Youth Guard",
+      "location": null,
+      "events": [
+        "2022-drums-across-the-desert"
+      ]
+    },
+    {
+      "name": "U.S. Marine Drum & Bugle Corps",
+      "location": "Washington, DC",
+      "events": [
+        "2023-dci-east-coast-showcase-quincy",
+        "2023-the-beanpot"
+      ]
+    },
+    {
+      "name": "U.S. Marine Drum & Bugle Corps",
+      "location": null,
+      "events": [
+        "2023-dci-world-championship-finals",
+        "2024-dci-world-championship-finals",
+        "2024-nightbeat"
+      ]
+    },
+    {
+      "name": "U.S. Marine Silent Drill Platoon",
+      "location": null,
+      "events": [
+        "2023-nightbeat",
+        "2024-nightbeat"
+      ]
+    },
+    {
+      "name": "UDB Tour Fee Givaway",
+      "location": null,
+      "events": [
+        "2024-dci-world-championship-semifinals"
+      ]
+    },
+    {
+      "name": "Ultimate Drill Book Presentation",
+      "location": null,
+      "events": [
+        "2022-dci-world-championship-semifinals"
+      ]
+    },
+    {
+      "name": "USCG Auxiliary Arizona Band",
+      "location": null,
+      "events": [
+        "2022-drums-across-the-desert"
+      ]
+    },
+    {
+      "name": "Welcome",
+      "location": null,
+      "events": [
+        "2023-dci-world-championship-finals",
+        "2023-nightbeat",
+        "2024-dci-world-championship-finals",
+        "2024-nightbeat"
+      ]
+    },
+    {
+      "name": "Welcome & Announcements",
+      "location": null,
+      "events": [
+        "2024-cavalcade-of-brass",
+        "2024-summer-music-games-in-cincinnati"
+      ]
+    }
+  ]
+}

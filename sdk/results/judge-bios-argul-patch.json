@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Dennis Argul: correct the dead photo URL (bushwackers.org -> bushwackersdc.org).",
+  "profiles": [
+    {
+      "judgeId": "d-argul-1",
+      "displayName": "Dennis Argul",
+      "givenName": "Dennis",
+      "familyName": "Argul",
+      "biography": "Dennis Argul is a brass/music adjudicator, composer, and arranger and a retired music educator with a 35-year career in New Jersey public schools, currently Senior Director of Music and Education for JAZZ HOUSE KiDS in Montclair, NJ. Active in the marching arts since 1974, he marched the St. Andrew's Kidets and the Bayonne Bridgemen (1976-1981) and has worked with the Cadets, Connecticut Hurricanes, Govenaires, Carolina Gold, Sunrisers, and Caballeros, and is the brass arranger for the Bushwackers (a Bushwackers Hall of Fame member). For three decades he has adjudicated for many organizations, most recently the Music-Brass caption at DCI World Championships.",
+      "photoUrl": "https://bushwackersdc.org/wp-content/uploads/2018/10/Dennis-photo.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://bushwackersdc.org/2018-staff/dennis-argul/", "label": "Bushwackers staff bio", "kind": "bio" },
+        { "url": "https://bushwackersdc.org/hall-of-fame/dennis-argul/", "label": "Bushwackers Hall of Fame", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Bayonne Bridgemen", "season": "1976-1981", "role": "Performer (member)", "sourceUrl": "https://bushwackersdc.org/2018-staff/dennis-argul/" },
+        { "corpsName": "Bushwackers", "role": "Brass Arranger", "sourceUrl": "https://bushwackersdc.org/2018-staff/dennis-argul/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "35-yr NJ educator; JAZZ HOUSE KiDS; Bayonne Bridgemen alum; Bushwackers brass arranger & HOF; DCI Music-Brass judge", "source": "https://bushwackersdc.org/2018-staff/dennis-argul/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

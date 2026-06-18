@@ -1,0 +1,51 @@
+{
+  "generated_at": "2026-05-26T16:54:53.359Z",
+  "season": "2026",
+  "db": "file:./dci-relational.db",
+  "as_of_date": "2026-05-26",
+  "dry_run": false,
+  "future_released_after_as_of": [],
+  "before": {
+    "events": 0,
+    "competitions": 0,
+    "releasedCompetitions": 0,
+    "scoredCompetitions": 0,
+    "corpsScores": 0,
+    "captionScores": 0,
+    "judgeScores": 0,
+    "websiteRecaps": 0,
+    "lineupEntries": 0,
+    "mlRows": 0
+  },
+  "after": {
+    "events": 0,
+    "competitions": 0,
+    "releasedCompetitions": 0,
+    "scoredCompetitions": 0,
+    "corpsScores": 0,
+    "captionScores": 0,
+    "judgeScores": 0,
+    "websiteRecaps": 0,
+    "lineupEntries": 0,
+    "mlRows": 0
+  },
+  "schedule": {
+    "total_events": 0,
+    "relevant_events": [],
+    "events_missing_lineup": []
+  },
+  "competitions": {
+    "total": 0,
+    "released": [],
+    "needing_recap_detail": []
+  },
+  "fine_tune": null,
+  "notes": [
+    "API ingest is source of truth for competitions, corps, totals, rankings, and events.",
+    "Website recap scrape fills judge/caption/subcaption details when released.",
+    "Event page scrape fills lineup/performance order for upcoming prediction context.",
+    "Fine-tuning uses the current V9 subcaption trainer with --load-model and date-forward validation.",
+    "Generated V9 ML rows use --as-of-date so future competition rows and future Elo updates are excluded.",
+    "Fine-tuned models are candidates. Promote manually after reviewing model-card.json and named eval slices."
+  ]
+}

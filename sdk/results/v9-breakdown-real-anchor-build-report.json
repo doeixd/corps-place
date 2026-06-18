@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-06-05T00:42:43.916Z",
+  "db_path": "dci-relational.db",
+  "applied": true,
+  "source_v9_model_id": "v9-real-v9_prod_fingerprint_preseason_final2_1779976626982-41dbeb985a04",
+  "source_v9_model_path": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "source_v9_model_card_sha256": "41dbeb985a0428163ee7260da2c30847f7afda7004427b8bdbe2ed91ecaf0742",
+  "checkpoint": "auto",
+  "anchor_modes": [
+    "v9_predicted",
+    "baseline",
+    "partial_synthetic_dropout"
+  ],
+  "source_rows": 7321,
+  "selected_source_rows": 7321,
+  "build_rows": 21963,
+  "skipped_no_valid_subcaption_pairs": 0,
+  "skipped_invalid_v9_rows": 0,
+  "scale_repairs": 0,
+  "scale_exclusions": 5
+}

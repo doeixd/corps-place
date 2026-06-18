@@ -1,0 +1,26 @@
+{
+  "scrapedAt": "2026-06-17T03-28-04-376Z",
+  "seasons": [
+    {
+      "season": 2012,
+      "profiles": 38,
+      "corpsMatched": 30,
+      "unmatched": 7,
+      "people": 1237
+    },
+    {
+      "season": 2013,
+      "profiles": 34,
+      "corpsMatched": 31,
+      "unmatched": 2,
+      "people": 1399
+    },
+    {
+      "season": 2014,
+      "profiles": 36,
+      "corpsMatched": 32,
+      "unmatched": 3,
+      "people": 1588
+    }
+  ]
+}

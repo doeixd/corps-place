@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Debbie Torchia: add MFA headshot + enriched bio (user-supplied sources).",
+  "profiles": [
+    {
+      "judgeId": "d-torchia-1",
+      "displayName": "Debbie Torchia",
+      "givenName": "Debbie",
+      "familyName": "Torchia",
+      "biography": "Deborah 'Debbie' Torchia is a visual and color guard adjudicator who serves as a Drum Corps International Judge Liaison for Visual Analysis and Judge Training. A native of Peabody, Massachusetts, she began in the activity with the Danvers Blue Angels Drum and Bugle Corps and went on to instruct and design for drum corps, winter guards, and marching bands, including the Guardsmen Drum and Bugle Corps, St. Joseph's Grenadiers Winter Guard, Triton Regional High School, Melrose High School, and the Boston College Eagles Marching Band. She has judged locally and nationally for WGI, Bands of America, the Western Band Association, WGASC, DCI, and Massachusetts circuits, and has held numerous leadership roles—Visual and Winter Guard Caption Chairperson and Education Director for the Massachusetts Judges Association, WGI equipment and ensemble facilitator, and Judge Administrator/Winter Activities Director for the New England Scholastic Band Association. She holds a B.S. in Occupational Therapy.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2023/09/Torchia-Debbie-Headshot-9-12-22-1.jpg",
+      "alternateNames": ["Deborah Torchia"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/deborah-torchia/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://theinstrumentalist.com/uncategorized/never-stop-learning/", "label": "The Instrumentalist feature", "kind": "article" },
+        { "url": "https://www.dci.org/news/2013-world-championship-judging-panels", "label": "DCI 2013 judging panels", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Danvers Blue Angels", "role": "Performer (member)", "sourceUrl": "https://education.musicforall.org/clinician/deborah-torchia/" },
+        { "corpsName": "The Guardsmen", "role": "Instructor / Designer", "sourceUrl": "https://education.musicforall.org/clinician/deborah-torchia/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Color Guard / GE1; 2013-2025",
+        "facts": [
+          { "fact": "DCI Judge Liaison for Visual Analysis & Judge Training; Peabody MA; Danvers Blue Angels; MJA leadership; OT degree", "source": "https://education.musicforall.org/clinician/deborah-torchia/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "generated_at": "2026-06-02T18:59:46.846Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-all-age-world-championship-prelims",
+    "slug": "2026-dci-all-age-world-championship-prelims",
+    "name": "DCI All-Age World Championship Prelims",
+    "event_name": "DCI All-Age World Championship Prelims",
+    "start_date": "2026-08-07",
+    "start_time": null,
+    "web_start_time": "8:30 AM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Indianapolis",
+    "location_state": "IN",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260807-INDY-AA-PRELIMS.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260807-INDY-AA-PRELIMS.jpg",
+    "buy_tickets": "https://www.ticketmaster.com/event/0500636CFFDBDCFA",
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/4aZMqpR",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 11,
+    "matched_corps_keys": 11,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 0,
+    "skipped_lineup_rows": 11,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 97.67441860465115
+  },
+  "input_signature": "9c3562201093cb55a74ebe87506a6e3818c949b0dbdcfd89141ea410b289e14b",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 11,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwsnaal",
+        "corps": "Atlanta CV",
+        "division": "All Age Class",
+        "performance_order": 0,
+        "time": null
+      },
+      {
+        "corps_key": "bushwackers-drum-corps",
+        "corps": "Bushwackers",
+        "division": "All Age Class",
+        "performance_order": 1,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000hiripaaz",
+        "corps": "Columbus Saints",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000gbtqyaac",
+        "corps": "Fusion Core",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 5,
+        "time": null
+      },
+      {
+        "corps_key": "0015b00001mpuwcaak",
+        "corps": "Hawthorne Caballeros",
+        "division": "All Age Class",
+        "performance_order": 6,
+        "time": null
+      },
+      {
+        "corps_key": "0010a00001e2pfhaam",
+        "corps": "Reading Buccaneers",
+        "division": "All Age Class",
+        "performance_order": 10,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000cap31aaa",
+        "corps": "Rogues Hollow Regiment",
+        "division": "All Age Class",
+        "performance_order": 11,
+        "time": null
+      },
+      {
+        "corps_key": "0010a00001iqmzuaah",
+        "corps": "Sunrisers",
+        "division": "All Age Class",
+        "performance_order": 12,
+        "time": null
+      },
+      {
+        "corps_key": "001jw00000d0zlniaj",
+        "corps": "White Sabers",
+        "division": "All-Age - Open Class",
+        "performance_order": 13,
+        "time": null
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000iwwsnaal",
+        "corps": "Atlanta CV",
+        "division": "All Age Class",
+        "performance_order": 0,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "bushwackers-drum-corps",
+        "corps": "Bushwackers",
+        "division": "All Age Class",
+        "performance_order": 1,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000hiripaaz",
+        "corps": "Columbus Saints",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000gbtqyaac",
+        "corps": "Fusion Core",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 5,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0015b00001mpuwcaak",
+        "corps": "Hawthorne Caballeros",
+        "division": "All Age Class",
+        "performance_order": 6,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0010a00001e2pfhaam",
+        "corps": "Reading Buccaneers",
+        "division": "All Age Class",
+        "performance_order": 10,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000cap31aaa",
+        "corps": "Rogues Hollow Regiment",
+        "division": "All Age Class",
+        "performance_order": 11,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0010a00001iqmzuaah",
+        "corps": "Sunrisers",
+        "division": "All Age Class",
+        "performance_order": 12,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001jw00000d0zlniaj",
+        "corps": "White Sabers",
+        "division": "All-Age - Open Class",
+        "performance_order": 13,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Hurricanes",
+        "performance_order": 7,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "MBI",
+        "performance_order": 8,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Northern Lights",
+        "performance_order": 9,
+        "exclusion_reason": "unresolved_corps"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-all-age-world-championship-prelims",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-08-07",
+      "scored_lineup_rows": 11,
+      "matched_corps_keys": 11,
+      "excluded_lineup_rows": 3,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [],
+  "caveats": [
+    "11 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

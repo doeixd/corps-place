@@ -1,0 +1,415 @@
+{
+  "generated_at": "2026-06-03T15:56:26.227Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-march-on",
+    "slug": "2026-march-on",
+    "name": "March On!",
+    "event_name": "March On!",
+    "start_date": "2026-07-22",
+    "start_time": null,
+    "web_start_time": "7:00 PM CT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Champlin",
+    "location_state": "MN",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260718-CHAMPLIN-MN.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260718-CHAMPLIN-MN.jpg",
+    "buy_tickets": "https://www.zeffy.com/en-US/ticketing/march-on-2026-dci-champlin-mn",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "All times CT and subject to change",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 5,
+    "matched_corps_keys": 5,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 3,
+    "skipped_lineup_rows": 2,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 60.46511627906976
+  },
+  "input_signature": "fb4999a6f42dca3de5d045c2959d154bf2627c342783f80e6bc4e8befd7a1356",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 5,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwxa4aal",
+        "corps": "MBI",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": "7:22 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "7:39 PM"
+      },
+      {
+        "corps_key": "001j000000iwx97aad",
+        "corps": "Colt Cadets",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "7:56 PM"
+      },
+      {
+        "corps_key": "001j000000iwx99aad",
+        "corps": "Columbians",
+        "division": "Open Class",
+        "performance_order": 6,
+        "time": "8:13 PM"
+      },
+      {
+        "corps_key": "001j000000qzs1qaaf",
+        "corps": "River City Rhythm",
+        "division": "Open Class",
+        "performance_order": 7,
+        "time": "8:30 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000iwxa4aal",
+        "corps": "MBI",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": "7:22 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "7:39 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "RCR Street Club",
+        "performance_order": 2,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Encore - River City Rhythm",
+        "performance_order": 8,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 9,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-march-on",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-22",
+      "scored_lineup_rows": 5,
+      "matched_corps_keys": 5,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwx99aad",
+      "corps": "Columbians",
+      "city": "Pasco, WA",
+      "division": "Open Class",
+      "performance_order": 6,
+      "time": "8:13 PM",
+      "total": 81.17,
+      "GE": 33.342,
+      "Visual": 23.365,
+      "Music": 24.463,
+      "GE1": 16.548,
+      "GE2": 16.794,
+      "VP": 15.854,
+      "VA": 14.724,
+      "CG": 16.152,
+      "MB": 16.127,
+      "MA": 16.701,
+      "MP": 16.098,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.899,
+          "p50": 16.548,
+          "p90": 18.154
+        },
+        "GE2": {
+          "p10": 15.214,
+          "p50": 16.794,
+          "p90": 18.371
+        },
+        "VP": {
+          "p10": 13.909,
+          "p50": 15.854,
+          "p90": 17.934
+        },
+        "VA": {
+          "p10": 13.17,
+          "p50": 14.724,
+          "p90": 16.188
+        },
+        "CG": {
+          "p10": 13.962,
+          "p50": 16.152,
+          "p90": 17.907
+        },
+        "MB": {
+          "p10": 14.043,
+          "p50": 16.127,
+          "p90": 18.116
+        },
+        "MA": {
+          "p10": 15.229,
+          "p50": 16.701,
+          "p90": 18.384
+        },
+        "MP": {
+          "p10": 14.181,
+          "p50": 16.098,
+          "p90": 18.076
+        }
+      },
+      "raw_model_total": 75.71,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 70.525,
+      "prior_season_comparable_percent_through": 66.66666666666666,
+      "prior_season_comparable_competition": "2025-midwest-classic",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 81.172,
+      "caption_shape_total": 86.905,
+      "total_reconciliation_delta": -5.735,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 25,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 86.905,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwx97aad",
+      "corps": "Colt Cadets",
+      "city": "Dubuque, IA",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "7:56 PM",
+      "total": 80.272,
+      "GE": 32.651,
+      "Visual": 23.678,
+      "Music": 23.943,
+      "GE1": 16.055,
+      "GE2": 16.596,
+      "VP": 16.215,
+      "VA": 14.91,
+      "CG": 16.232,
+      "MB": 15.977,
+      "MA": 16.135,
+      "MP": 15.773,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.45,
+          "p50": 16.055,
+          "p90": 17.648
+        },
+        "GE2": {
+          "p10": 15.08,
+          "p50": 16.596,
+          "p90": 18.203
+        },
+        "VP": {
+          "p10": 14.244,
+          "p50": 16.215,
+          "p90": 18.336
+        },
+        "VA": {
+          "p10": 13.232,
+          "p50": 14.91,
+          "p90": 16.248
+        },
+        "CG": {
+          "p10": 14.016,
+          "p50": 16.232,
+          "p90": 17.919
+        },
+        "MB": {
+          "p10": 13.61,
+          "p50": 15.977,
+          "p90": 17.743
+        },
+        "MA": {
+          "p10": 14.673,
+          "p50": 16.135,
+          "p90": 17.855
+        },
+        "MP": {
+          "p10": 13.728,
+          "p50": 15.773,
+          "p90": 17.712
+        }
+      },
+      "raw_model_total": 71.457,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 66.2,
+      "prior_season_comparable_percent_through": 66.66666666666666,
+      "prior_season_comparable_competition": "2025-midwest-classic",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 80.273,
+      "caption_shape_total": 87.852,
+      "total_reconciliation_delta": -7.58,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 87.851,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000qzs1qaaf",
+      "corps": "River City Rhythm",
+      "city": "Anoka, MN",
+      "division": "Open Class",
+      "performance_order": 7,
+      "time": "8:30 PM",
+      "total": 76.915,
+      "GE": 31.287,
+      "Visual": 22.084,
+      "Music": 23.544,
+      "GE1": 15.396,
+      "GE2": 15.891,
+      "VP": 15.523,
+      "VA": 13.52,
+      "CG": 15.124,
+      "MB": 15.497,
+      "MA": 15.572,
+      "MP": 16.02,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.68,
+          "p50": 15.396,
+          "p90": 16.984
+        },
+        "GE2": {
+          "p10": 14.232,
+          "p50": 15.891,
+          "p90": 17.429
+        },
+        "VP": {
+          "p10": 13.503,
+          "p50": 15.523,
+          "p90": 17.576
+        },
+        "VA": {
+          "p10": 11.928,
+          "p50": 13.52,
+          "p90": 14.946
+        },
+        "CG": {
+          "p10": 12.912,
+          "p50": 15.124,
+          "p90": 16.849
+        },
+        "MB": {
+          "p10": 13.229,
+          "p50": 15.497,
+          "p90": 17.31
+        },
+        "MA": {
+          "p10": 14.085,
+          "p50": 15.572,
+          "p90": 17.305
+        },
+        "MP": {
+          "p10": 14.013,
+          "p50": 16.02,
+          "p90": 18.008
+        }
+      },
+      "raw_model_total": 74.425,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 68.9,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-drums-on-parade",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 76.916,
+      "caption_shape_total": 83.475,
+      "total_reconciliation_delta": -6.56,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 26,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 83.475,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "2 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

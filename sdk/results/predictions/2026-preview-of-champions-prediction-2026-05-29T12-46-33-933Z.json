@@ -1,0 +1,476 @@
+{
+  "generated_at": "2026-05-29T12:46:33.934Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-preview-of-champions",
+    "slug": "2026-preview-of-champions",
+    "name": "Preview of Champions",
+    "event_name": "Preview of Champions",
+    "start_date": "2026-07-02T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Nashua",
+    "location_state": "NH",
+    "event_image": "https://images.dci.org/wp-content/uploads/2026/05/20260702-NASHUA-NH-scaled.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2026/05/20260702-NASHUA-NH-scaled.jpg",
+    "buy_tickets": "https://www.tickettailor.com/events/spartansjrdrumandbuglecorps/2198225",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 4,
+    "matched_corps_keys": 4,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 4,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 13.953488372093023
+  },
+  "input_signature": "39a682c3bb24c29ca78d8bf725b7e95c9af6d2deff786d0ac3e1e9001dcce8f0",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "25bf7fabb01aaaddbabe8a54fb17bf3cbd1d8cbc917a5462feb5e91d6346b791",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 4,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwxa1aal",
+        "corps": "Les Stentors",
+        "division": "Open Class",
+        "performance_order": 2,
+        "time": "7:10 PM"
+      },
+      {
+        "corps_key": "001j000000iwwslaal",
+        "corps": "7th Regiment",
+        "division": "Open Class",
+        "performance_order": 3,
+        "time": "7:35 PM"
+      },
+      {
+        "corps_key": "001j000000iwwssaal",
+        "corps": "Boston Crusaders",
+        "division": "World Class",
+        "performance_order": 5,
+        "time": "8:30 PM"
+      },
+      {
+        "corps_key": "001j000000iwxacaa1",
+        "corps": "Spartans",
+        "division": "Open Class",
+        "performance_order": 6,
+        "time": "8:55 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 4,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Spartans",
+        "performance_order": 7,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Event Concludes",
+        "performance_order": 8,
+        "exclusion_reason": "unresolved_corps"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-preview-of-champions",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-02T00:00:00.000Z",
+      "scored_lineup_rows": 4,
+      "matched_corps_keys": 4,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwssaal",
+      "corps": "Boston Crusaders",
+      "city": "Boston, MA",
+      "division": "World Class",
+      "performance_order": 5,
+      "time": "8:30 PM",
+      "total": 77.993,
+      "GE": 31.298,
+      "Visual": 23.264,
+      "Music": 23.431,
+      "GE1": 15.593,
+      "GE2": 15.705,
+      "VP": 15.411,
+      "VA": 15.42,
+      "CG": 15.696,
+      "MB": 15.827,
+      "MA": 15.5,
+      "MP": 15.535,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.772,
+          "p50": 15.593,
+          "p90": 16.323
+        },
+        "GE2": {
+          "p10": 15.01,
+          "p50": 15.705,
+          "p90": 16.594
+        },
+        "VP": {
+          "p10": 14.676,
+          "p50": 15.411,
+          "p90": 16.217
+        },
+        "VA": {
+          "p10": 14.633,
+          "p50": 15.42,
+          "p90": 16.163
+        },
+        "CG": {
+          "p10": 14.964,
+          "p50": 15.696,
+          "p90": 16.519
+        },
+        "MB": {
+          "p10": 15.052,
+          "p50": 15.827,
+          "p90": 16.579
+        },
+        "MA": {
+          "p10": 14.859,
+          "p50": 15.5,
+          "p90": 16.411
+        },
+        "MP": {
+          "p10": 14.796,
+          "p50": 15.535,
+          "p90": 16.321
+        }
+      },
+      "raw_model_total": 96.127,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 80.8,
+      "prior_season_comparable_percent_through": 16.666666666666664,
+      "prior_season_comparable_competition": "2025-dci-capital-classic",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 77.99,
+      "caption_shape_total": 76.478,
+      "total_reconciliation_delta": 1.515,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 76.477,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwwslaal",
+      "corps": "7th Regiment",
+      "city": "New London, CT",
+      "division": "Open Class",
+      "performance_order": 3,
+      "time": "7:35 PM",
+      "total": 55.453,
+      "GE": 22.259,
+      "Visual": 16.535,
+      "Music": 16.659,
+      "GE1": 10.803,
+      "GE2": 11.456,
+      "VP": 10.864,
+      "VA": 11.036,
+      "CG": 11.169,
+      "MB": 10.745,
+      "MA": 11.116,
+      "MP": 11.458,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.086,
+          "p50": 10.803,
+          "p90": 11.606
+        },
+        "GE2": {
+          "p10": 10.771,
+          "p50": 11.456,
+          "p90": 12.372
+        },
+        "VP": {
+          "p10": 10.107,
+          "p50": 10.864,
+          "p90": 11.688
+        },
+        "VA": {
+          "p10": 10.203,
+          "p50": 11.036,
+          "p90": 11.764
+        },
+        "CG": {
+          "p10": 10.396,
+          "p50": 11.169,
+          "p90": 11.964
+        },
+        "MB": {
+          "p10": 9.939,
+          "p50": 10.745,
+          "p90": 11.53
+        },
+        "MA": {
+          "p10": 10.458,
+          "p50": 11.116,
+          "p90": 11.995
+        },
+        "MP": {
+          "p10": 10.578,
+          "p50": 11.458,
+          "p90": 12.234
+        }
+      },
+      "raw_model_total": 74.487,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 51.7,
+      "prior_season_comparable_percent_through": 0,
+      "prior_season_comparable_competition": "2025-barnum-festival-champions-on-parade",
+      "prior_season_comparable_weight": 0.25,
+      "preseason_target_total": 55.452,
+      "caption_shape_total": 56.703,
+      "total_reconciliation_delta": -1.25,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 56.703,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxacaa1",
+      "corps": "Spartans",
+      "city": "Nashua, NH",
+      "division": "Open Class",
+      "performance_order": 6,
+      "time": "8:55 PM",
+      "total": 52.353,
+      "GE": 21.191,
+      "Visual": 15.367,
+      "Music": 15.795,
+      "GE1": 10.426,
+      "GE2": 10.765,
+      "VP": 10.543,
+      "VA": 9.863,
+      "CG": 10.329,
+      "MB": 10.516,
+      "MA": 10.527,
+      "MP": 10.547,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 9.593,
+          "p50": 10.426,
+          "p90": 11.109
+        },
+        "GE2": {
+          "p10": 10.124,
+          "p50": 10.765,
+          "p90": 11.664
+        },
+        "VP": {
+          "p10": 9.927,
+          "p50": 10.543,
+          "p90": 11.521
+        },
+        "VA": {
+          "p10": 9.071,
+          "p50": 9.863,
+          "p90": 10.58
+        },
+        "CG": {
+          "p10": 9.582,
+          "p50": 10.329,
+          "p90": 11.107
+        },
+        "MB": {
+          "p10": 9.734,
+          "p50": 10.516,
+          "p90": 11.206
+        },
+        "MA": {
+          "p10": 9.869,
+          "p50": 10.527,
+          "p90": 11.328
+        },
+        "MP": {
+          "p10": 9.743,
+          "p50": 10.547,
+          "p90": 11.255
+        }
+      },
+      "raw_model_total": 77.165,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 67.5,
+      "prior_season_comparable_percent_through": 21.428571428571427,
+      "prior_season_comparable_competition": "2025-drums-across-the-smokies",
+      "prior_season_comparable_weight": 0.25,
+      "preseason_target_total": 52.352,
+      "caption_shape_total": 47.303,
+      "total_reconciliation_delta": 5.05,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 18,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 47.303,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxa1aal",
+      "corps": "Les Stentors",
+      "city": "Sherbrooke, QC",
+      "division": "Open Class",
+      "performance_order": 2,
+      "time": "7:10 PM",
+      "total": 50.61,
+      "GE": 20.608,
+      "Visual": 15.157,
+      "Music": 14.845,
+      "GE1": 10.408,
+      "GE2": 10.2,
+      "VP": 10.204,
+      "VA": 9.965,
+      "CG": 10.145,
+      "MB": 9.73,
+      "MA": 10.14,
+      "MP": 9.819,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 9.758,
+          "p50": 10.408,
+          "p90": 11.275
+        },
+        "GE2": {
+          "p10": 9.526,
+          "p50": 10.2,
+          "p90": 11.096
+        },
+        "VP": {
+          "p10": 9.507,
+          "p50": 10.204,
+          "p90": 11.074
+        },
+        "VA": {
+          "p10": 9.247,
+          "p50": 9.965,
+          "p90": 10.798
+        },
+        "CG": {
+          "p10": 9.344,
+          "p50": 10.145,
+          "p90": 10.858
+        },
+        "MB": {
+          "p10": 8.969,
+          "p50": 9.73,
+          "p90": 10.515
+        },
+        "MA": {
+          "p10": 9.464,
+          "p50": 10.14,
+          "p90": 10.998
+        },
+        "MP": {
+          "p10": 8.932,
+          "p50": 9.819,
+          "p90": 10.575
+        }
+      },
+      "raw_model_total": 71.336,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 58.5,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-the-buccaneer-classic",
+      "prior_season_comparable_weight": 0.25,
+      "preseason_target_total": 50.609,
+      "caption_shape_total": 47.98,
+      "total_reconciliation_delta": 2.63,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 47.978,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

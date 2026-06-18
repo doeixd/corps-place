@@ -1,0 +1,395 @@
+{
+  "mode": "applied",
+  "matched": 54,
+  "rosterCount": 54,
+  "unresolved": [],
+  "classChanges": [],
+  "changes": [
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "city",
+      "from": "Aurora",
+      "to": "Denver",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "display_city",
+      "from": "Aurora, CO",
+      "to": "Denver, CO",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "city",
+      "from": "N. Canton",
+      "to": "Canton",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "display_city",
+      "from": "N. Canton, OH",
+      "to": "Canton, OH",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "city",
+      "from": "Diamond Bar",
+      "to": "City of Industry",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "display_city",
+      "from": "Diamond Bar, CA",
+      "to": "City of Industry, CA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "city",
+      "from": "Indian Trail",
+      "to": "Atlanta",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "state",
+      "from": "NC",
+      "to": "GA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "display_city",
+      "from": "Indian Trail, NC",
+      "to": "Atlanta, GA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "city",
+      "from": "West Richland",
+      "to": "Pasco",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "display_city",
+      "from": "West Richland, WA",
+      "to": "Pasco, WA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "city",
+      "from": "Lemon Grove",
+      "to": "San Diego",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "display_city",
+      "from": "Lemon Grove, CA",
+      "to": "San Diego, CA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "city",
+      "from": "San Antonio",
+      "to": "McKinney",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "display_city",
+      "from": "San Antonio, TX",
+      "to": "McKinney, TX",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "city",
+      "from": "Safety Harbor",
+      "to": "Tampa Bay",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "display_city",
+      "from": "Safety Harbor, FL",
+      "to": "Tampa Bay, FL",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "city",
+      "from": "Nashville",
+      "to": "Memphis",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "display_city",
+      "from": "Nashville, TN",
+      "to": "Memphis, TN",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "city",
+      "from": "Trenton",
+      "to": "Princeton",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "display_city",
+      "from": "Trenton, NJ",
+      "to": "Princeton, NJ",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "city",
+      "from": "Monticello",
+      "to": "Anoka",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "display_city",
+      "from": "Monticello, MN",
+      "to": "Anoka, MN",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "state",
+      "from": "Oklahoma",
+      "to": "OK",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "display_city",
+      "from": "Tulsa, Oklahoma",
+      "to": "Tulsa, OK",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "city",
+      "from": "Powder Springs",
+      "to": "Atlanta",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "display_city",
+      "from": "Powder Springs, GA",
+      "to": "Atlanta, GA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "city",
+      "from": "Fairfield",
+      "to": "Cincinnati",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "display_city",
+      "from": "Fairfield, OH",
+      "to": "Cincinnati, OH",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "display_city",
+      "from": "Windermere, FL",
+      "to": "Central FL",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "city",
+      "from": "Wayne",
+      "to": "Hawthorne",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "display_city",
+      "from": "Wayne, NJ",
+      "to": "Hawthorne, NJ",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "city",
+      "from": "Vadnais Hts",
+      "to": "St. Paul",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "display_city",
+      "from": "Vadnais Hts, MN",
+      "to": "St. Paul, MN",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "city",
+      "from": "Plainfield charter Township",
+      "to": "Grand Rapids",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "display_city",
+      "from": "Plainfield charter Township, MI",
+      "to": "Grand Rapids, MI",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "city",
+      "from": "Norton",
+      "to": "Doylestown",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "state",
+      "from": "Ohio",
+      "to": "OH",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "display_city",
+      "from": "Norton, Ohio",
+      "to": "Doylestown, OH",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "display_city",
+      "from": "Calgary, Calgary",
+      "to": "Calgary, Canada",
+      "kind": "overwrite"
+    }
+  ],
+  "held": [
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "address",
+      "from": "3538 Peoria St\r\nSuite #500",
+      "to": "3538 Peoria St Suite #500 Aurora CO, 80010",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "address",
+      "from": "718 Thompson Lane, \r\nSte 108-425",
+      "to": "718 Thompson Lane, Ste 108-425 Nashville TN, 37204",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "address",
+      "from": "13717 Linden Ave. N. #201",
+      "to": "--- Renton WA, 00000",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "address",
+      "from": "PO Box 1429",
+      "to": "166 DW Highway A-2 Nashua NH, 03060",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "address",
+      "from": "1801 Panorama Dr.\r\nBC Foundation - GE Performing Arts",
+      "to": "1801 Panorama Dr. BC Foundation - GE Performing Arts Bakersfield CA, 93305",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "address",
+      "from": "PO Box 782406",
+      "to": "865 CR 2620 Mineola TX, 75773",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "address",
+      "from": "174 Nassau Street, #198",
+      "to": "174 Nassau Street, #198 Princeton NJ, 08542",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "address",
+      "from": "6527 San Francesco Way\r\n#1304",
+      "to": "6527 San Francesco Way #1304 Windermere FL, 34786",
+      "kind": "overwrite"
+    }
+  ]
+}

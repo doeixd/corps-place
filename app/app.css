@@ -1,0 +1,672 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/instrument-sans';
+
+@custom-variant dark (&:is(.dark *));
+
+/* Register --primary / --primary-foreground as <color> so CSS transitions can
+   interpolate them — the site accent fades smoothly when a favorite corps is
+   set, changed, or cleared. Browsers that don't support @property fall back to
+   discrete (instant) swaps, which is harmless. */
+@property --primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.553 0.195 38.402);
+}
+@property --primary-foreground {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.98 0.016 73.684);
+}
+
+:root {
+  /* Mobile bottom tab bar (site-nav.tsx). `--bottom-nav-bar` is the single knob
+     for the visible bar height; the bar pins itself to it (min-height) so the
+     space we reserve can't drift from the bar's real height. `--bottom-nav-inset`
+     adds the iOS safe area and is what content reserves; it collapses to 0 at md+
+     where the bar is hidden, so consumers never need their own `md:` reset.
+     Exposed as the `bottom-nav` spacing utility via `@theme inline` below. */
+  --bottom-nav-bar: 3.5rem;
+  --bottom-nav-inset: calc(var(--bottom-nav-bar) + env(safe-area-inset-bottom));
+
+  /* Desktop left sidebar (site-nav.tsx): an icon rail at md, expanded at xl. The
+     rail/full widths are the single knobs; the sidebar sets its own width from
+     them and `<main>` reserves the matching left offset via `--side-nav-width`,
+     which steps 0 → rail → full across the breakpoints (so content + sidebar can't
+     drift). Exposed as the `side-nav` spacing utility via `@theme inline` below. */
+  --side-nav-rail: 72px;
+  --side-nav-full: 14rem;
+  --side-nav-width: 0px;
+
+  --color-base-0: oklch(0.98 0.005 260);
+  --color-base-50: oklch(0.97 0.005 260);
+  --color-base-100: oklch(0.95 0.008 260);
+  --color-base-200: oklch(0.9 0.01 260);
+  --color-base-300: oklch(0.82 0.012 260);
+  --color-base-400: oklch(0.65 0.015 260);
+  --color-base-500: oklch(0.5 0.018 260);
+  --color-base-600: oklch(0.4 0.02 260);
+  --color-base-700: oklch(0.3 0.022 260);
+  --color-base-800: oklch(0.2 0.025 260);
+  --color-base-900: oklch(0.13 0.028 260);
+
+  --color-primary: oklch(0.55 0.15 250);
+  --color-primary-fg: oklch(0.98 0.005 250);
+  --color-primary-muted: oklch(0.92 0.04 250);
+
+  --color-success: oklch(0.55 0.14 155);
+  --color-success-fg: oklch(0.98 0.005 155);
+  --color-success-muted: oklch(0.92 0.05 155);
+
+  --color-warning: oklch(0.75 0.15 80);
+  --color-warning-fg: oklch(0.2 0.05 80);
+  --color-warning-muted: oklch(0.95 0.05 80);
+
+  --color-destructive: oklch(0.55 0.22 25);
+  --color-destructive-fg: oklch(0.98 0.005 25);
+  --color-destructive-muted: oklch(0.95 0.04 25);
+
+  --color-info: oklch(0.6 0.12 240);
+  --color-info-fg: oklch(0.98 0.005 240);
+  --color-info-muted: oklch(0.93 0.03 240);
+
+  --surface-page: var(--color-base-0);
+  --surface-card: var(--color-base-100);
+  --surface-elevated: oklch(1 0 0);
+  --surface-overlay: oklch(0.13 0.028 260 / 0.5);
+
+  --text-primary: var(--color-base-800);
+  --text-secondary: var(--color-base-500);
+  --text-muted: var(--color-base-400);
+  --text-inverse: var(--color-base-0);
+
+  --border-default: var(--color-base-200);
+  --border-muted: var(--color-base-300);
+  --border-strong: var(--color-base-400);
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  --shadow-xs: 0 1px 2px oklch(0.13 0.028 260 / 0.05);
+  --shadow-sm: 0 1px 3px oklch(0.13 0.028 260 / 0.08), 0 1px 2px oklch(0.13 0.028 260 / 0.04);
+  --shadow-md: 0 4px 6px oklch(0.13 0.028 260 / 0.07), 0 2px 4px oklch(0.13 0.028 260 / 0.04);
+  --shadow-lg: 0 10px 15px oklch(0.13 0.028 260 / 0.08), 0 4px 6px oklch(0.13 0.028 260 / 0.04);
+  --shadow-xl: 0 20px 25px oklch(0.13 0.028 260 / 0.1), 0 8px 10px oklch(0.13 0.028 260 / 0.04);
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.553 0.195 38.402);
+  --primary-foreground: oklch(0.98 0.016 73.684);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.905 0.182 98.111);
+  --chart-2: oklch(0.795 0.184 86.047);
+  --chart-3: oklch(0.681 0.162 75.834);
+  --chart-4: oklch(0.554 0.135 66.442);
+  --chart-5: oklch(0.476 0.114 61.907);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.646 0.222 41.116);
+  --sidebar-primary-foreground: oklch(0.98 0.016 73.684);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  /* Semantic status colors — reference the oklch palette above, NOT the Tailwind
+     default palette (which is wiped by `--color-*: initial` in @theme).
+     `--*` is the solid hue; `--*-foreground` is the dark text used by the
+     `-light`/`-outline` badge + alert variants on a tinted background. */
+  --destructive-foreground: oklch(0.45 0.19 25);
+  --success: oklch(0.55 0.14 155);
+  --success-foreground: oklch(0.38 0.1 155);
+  --info: oklch(0.6 0.12 240);
+  --info-foreground: oklch(0.42 0.11 240);
+  --warning: oklch(0.75 0.15 80);
+  --warning-foreground: oklch(0.38 0.07 80);
+  --invert: oklch(0.13 0.028 260);
+  --invert-foreground: oklch(0.98 0.005 260);
+
+  /* Caption-family chip colors — Visual = green, Music = blue/purple,
+     General Effect = amber/orange. `-fg` is the chip text/icon, `-bg` the
+     tinted pill background. oklch literals (the default palette is wiped).
+     The family vars are the fallback for unknown captions; each known
+     subcaption gets its own hue (below) so they read distinct-but-related. */
+  --caption-visual-fg: oklch(0.48 0.13 155);
+  --caption-visual-bg: oklch(0.94 0.05 155);
+  --caption-music-fg: oklch(0.48 0.16 285);
+  --caption-music-bg: oklch(0.94 0.045 285);
+  --caption-ge-fg: oklch(0.52 0.13 70);
+  --caption-ge-bg: oklch(0.94 0.06 80);
+
+  /* Per-subcaption hues — same family, stepped hue/chroma so e.g. Visual
+     Analysis vs Visual Proficiency vs Color Guard are each their own green. */
+  --cap-ge1-fg: oklch(0.54 0.13 58);
+  --cap-ge1-bg: oklch(0.94 0.06 58);
+  --cap-ge2-fg: oklch(0.53 0.13 88);
+  --cap-ge2-bg: oklch(0.94 0.06 88);
+  --cap-visual-analysis-fg: oklch(0.48 0.13 148);
+  --cap-visual-analysis-bg: oklch(0.94 0.05 148);
+  --cap-visual-proficiency-fg: oklch(0.48 0.12 168);
+  --cap-visual-proficiency-bg: oklch(0.94 0.05 168);
+  --cap-color-guard-fg: oklch(0.48 0.1 190);
+  --cap-color-guard-bg: oklch(0.93 0.05 190);
+  --cap-music-analysis-fg: oklch(0.49 0.16 264);
+  --cap-music-analysis-bg: oklch(0.94 0.045 264);
+  --cap-music-brass-fg: oklch(0.48 0.16 292);
+  --cap-music-brass-bg: oklch(0.94 0.045 292);
+  --cap-music-percussion-fg: oklch(0.47 0.16 318);
+  --cap-music-percussion-bg: oklch(0.94 0.045 318);
+
+  /* Solid, vivid swatches for filled shapes (donut segments). Unlike the `-fg`
+     text colors these stay saturated and theme-agnostic — one value reads well
+     on both light and dark backgrounds since it's a fill, not text. */
+  --cap-ge1-solid: oklch(0.68 0.17 58);
+  --cap-ge2-solid: oklch(0.7 0.16 88);
+  --cap-visual-analysis-solid: oklch(0.64 0.16 148);
+  --cap-visual-proficiency-solid: oklch(0.64 0.14 168);
+  --cap-color-guard-solid: oklch(0.64 0.12 190);
+  --cap-music-analysis-solid: oklch(0.6 0.18 264);
+  --cap-music-brass-solid: oklch(0.6 0.19 292);
+  --cap-music-percussion-solid: oklch(0.6 0.19 318);
+  --caption-ge-solid: oklch(0.7 0.16 80);
+  --caption-visual-solid: oklch(0.64 0.16 152);
+  --caption-music-solid: oklch(0.6 0.18 285);
+}
+
+.dark {
+  --surface-page: oklch(0.15 0.02 260);
+  --surface-card: oklch(0.2 0.02 260);
+  --surface-elevated: oklch(0.25 0.02 260);
+  --text-primary: oklch(0.95 0.005 260);
+  --text-secondary: oklch(0.7 0.015 260);
+  --text-muted: oklch(0.55 0.015 260);
+  --border-default: oklch(0.3 0.02 260);
+  --border-muted: oklch(0.25 0.02 260);
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.64 0.17 38.402);
+  --primary-foreground: oklch(0.98 0.016 73.684);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.905 0.182 98.111);
+  --chart-2: oklch(0.795 0.184 86.047);
+  --chart-3: oklch(0.681 0.162 75.834);
+  --chart-4: oklch(0.554 0.135 66.442);
+  --chart-5: oklch(0.476 0.114 61.907);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.705 0.213 47.604);
+  --sidebar-primary-foreground: oklch(0.98 0.016 73.684);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+  /* Semantic status colors (dark) — brighter foregrounds for contrast. */
+  --destructive-foreground: oklch(0.7 0.16 25);
+  --success: oklch(0.62 0.15 155);
+  --success-foreground: oklch(0.8 0.14 155);
+  --info: oklch(0.65 0.13 240);
+  --info-foreground: oklch(0.8 0.12 240);
+  --warning: oklch(0.78 0.15 80);
+  --warning-foreground: oklch(0.85 0.14 80);
+  --invert: oklch(0.85 0.01 260);
+  --invert-foreground: oklch(0.2 0.025 260);
+
+  /* Caption-family chips (dark) — brighter text on a dim translucent tint. */
+  --caption-visual-fg: oklch(0.82 0.14 155);
+  --caption-visual-bg: oklch(0.55 0.13 155 / 0.18);
+  --caption-music-fg: oklch(0.8 0.15 285);
+  --caption-music-bg: oklch(0.55 0.16 285 / 0.2);
+  --caption-ge-fg: oklch(0.83 0.13 80);
+  --caption-ge-bg: oklch(0.6 0.13 80 / 0.18);
+
+  /* Per-subcaption hues (dark). */
+  --cap-ge1-fg: oklch(0.84 0.13 58);
+  --cap-ge1-bg: oklch(0.6 0.13 58 / 0.18);
+  --cap-ge2-fg: oklch(0.83 0.13 88);
+  --cap-ge2-bg: oklch(0.6 0.13 88 / 0.18);
+  --cap-visual-analysis-fg: oklch(0.82 0.14 148);
+  --cap-visual-analysis-bg: oklch(0.55 0.13 148 / 0.18);
+  --cap-visual-proficiency-fg: oklch(0.82 0.13 168);
+  --cap-visual-proficiency-bg: oklch(0.55 0.12 168 / 0.18);
+  --cap-color-guard-fg: oklch(0.82 0.11 190);
+  --cap-color-guard-bg: oklch(0.55 0.1 190 / 0.18);
+  --cap-music-analysis-fg: oklch(0.8 0.15 264);
+  --cap-music-analysis-bg: oklch(0.55 0.16 264 / 0.2);
+  --cap-music-brass-fg: oklch(0.8 0.15 292);
+  --cap-music-brass-bg: oklch(0.55 0.16 292 / 0.2);
+  --cap-music-percussion-fg: oklch(0.8 0.15 318);
+  --cap-music-percussion-bg: oklch(0.55 0.16 318 / 0.2);
+}
+
+/* The bottom tab bar only exists below md (site-nav.tsx `md:hidden`); above it
+   the inset is zero so `bottom-nav` utilities self-collapse on desktop. The
+   sidebar is the mirror image: absent below md, an icon rail at md, expanded at
+   xl — so `side-nav` utilities self-step across the same breakpoints. */
+@media (width >= 48rem) {
+  :root {
+    --bottom-nav-inset: 0px;
+    --side-nav-width: var(--side-nav-rail);
+  }
+}
+@media (width >= 80rem) {
+  :root {
+    --side-nav-width: var(--side-nav-full);
+  }
+}
+
+@theme {
+  --color-*: initial;
+  --color-surface-page: var(--surface-page);
+  --color-surface-card: var(--surface-card);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+  --color-border-default: var(--border-default);
+  --color-border-muted: var(--border-muted);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--color-primary);
+  --color-primary-fg: var(--color-primary-fg);
+  --color-primary-muted: var(--color-primary-muted);
+  --color-success: var(--color-success);
+  --color-success-fg: var(--color-success-fg);
+  --color-success-muted: var(--color-success-muted);
+  --color-warning: var(--color-warning);
+  --color-warning-fg: var(--color-warning-fg);
+  --color-warning-muted: var(--color-warning-muted);
+  --color-destructive: var(--color-destructive);
+  --color-destructive-fg: var(--color-destructive-fg);
+  --color-destructive-muted: var(--color-destructive-muted);
+  --color-info: var(--color-info);
+  --color-info-fg: var(--color-info-fg);
+  --color-info-muted: var(--color-info-muted);
+
+  --radius-*: initial;
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-full: var(--radius-full);
+
+  --shadow-*: initial;
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --text-2.5xl: 1.625rem;
+  --text-2.5xl--line-height: 1.875rem;
+}
+
+@theme inline {
+  /* `inline` keeps this a live var reference (not frozen at build), so the
+     bottom-nav spacing utilities — pb-bottom-nav, mb-bottom-nav, h-bottom-nav,
+     bottom-bottom-nav, … — track the responsive `--bottom-nav-inset` above. */
+  --spacing-bottom-nav: var(--bottom-nav-inset);
+  --spacing-side-nav: var(--side-nav-width);
+  --font-heading: var(--font-sans);
+  --font-sans: 'Instrument Sans Variable', sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-invert-foreground: var(--invert-foreground);
+  --color-invert: var(--invert);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning: var(--warning);
+  --color-info-foreground: var(--info-foreground);
+  --color-info: var(--info);
+  --color-success-foreground: var(--success-foreground);
+  --color-success: var(--success);
+  --color-destructive-foreground: var(--destructive-foreground);
+}
+
+@layer components {
+  /* Thin, translucent, rounded scrollbar — attractive default for scroll areas
+     (tables especially). Firefox uses scrollbar-width/color; WebKit/Chromium use
+     the ::-webkit-scrollbar pseudo-elements. Track stays transparent so it's
+     unobtrusive even when the gutter is reserved (overflow-x: scroll). */
+  .themed-scrollbar {
+    scrollbar-width: thin;
+    /* Thumb hidden until the area is hovered/focused, then it fades in. (Native
+       scrollbar pseudo-elements only animate the color where the browser allows
+       it — modern Chromium/Firefox do; elsewhere it's an instant reveal.) */
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 200ms ease;
+  }
+  .themed-scrollbar:hover,
+  .themed-scrollbar:focus-within {
+    scrollbar-color: color-mix(in oklab, var(--color-base-400) 55%, transparent) transparent;
+  }
+  .themed-scrollbar::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+  /* No up/down/left/right arrow buttons on the ends of the bar. */
+  .themed-scrollbar::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  .themed-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .themed-scrollbar::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: background-color 200ms ease;
+  }
+  .themed-scrollbar:hover::-webkit-scrollbar-thumb,
+  .themed-scrollbar:focus-within::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklab, var(--color-base-400) 45%, transparent);
+  }
+  .themed-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklab, var(--color-base-400) 70%, transparent);
+  }
+  /* Hide scrollbar completely — used for horizontal chip rows that should scroll
+     without a visible bar. Firefox: scrollbar-width: none; WebKit/Chromium: hide
+     the ::-webkit-scrollbar pseudo-element. */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Carousel scrollbar: on desktop (fine pointer + hover) the bar is invisible
+     until the area is hovered/focused, then a themed thumb fades in. On touch
+     devices the rules don't apply, so the browser's native overlay scrollbar is
+     used — which only appears while the user is actively scrolling. */
+  @media (hover: hover) and (pointer: fine) {
+    .carousel-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+      transition: scrollbar-color 200ms ease;
+    }
+    .carousel-scrollbar:hover,
+    .carousel-scrollbar:focus-within {
+      scrollbar-color: color-mix(in oklab, var(--color-base-400) 55%, transparent) transparent;
+    }
+    .carousel-scrollbar::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    .carousel-scrollbar::-webkit-scrollbar-button {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+    .carousel-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .carousel-scrollbar::-webkit-scrollbar-thumb {
+      background-color: transparent;
+      border-radius: 9999px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      transition: background-color 200ms ease;
+    }
+    .carousel-scrollbar:hover::-webkit-scrollbar-thumb,
+    .carousel-scrollbar:focus-within::-webkit-scrollbar-thumb {
+      background-color: color-mix(in oklab, var(--color-base-400) 45%, transparent);
+    }
+    .carousel-scrollbar::-webkit-scrollbar-thumb:hover {
+      background-color: color-mix(in oklab, var(--color-base-400) 70%, transparent);
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    scrollbar-gutter: stable;
+    accent-color: var(--primary);
+    transition:
+      --primary 0.2s ease-out,
+      --primary-foreground 0.2s ease-out;
+  }
+  ::selection {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+  /* Tailwind v4 Preflight sets interactive elements to `cursor: default`.
+     Restore the pointer cursor for enabled buttons / button-role controls
+     (covers shadcn/reui Button, Toggle, Select/Dropdown triggers, etc.). */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']):not(:disabled),
+  [role='menuitem']:not([aria-disabled='true']),
+  [role='option']:not([aria-disabled='true']),
+  label:has(> input:is([type='checkbox'], [type='radio']):not(:disabled)) {
+    cursor: pointer;
+  }
+}
+
+/* Sticky table columns (Rank/Corps): solid background so scrolled content
+   doesn't bleed through. The grey "stuck" tint below is layered on top. */
+/* Keep the sticky columns in normal flow at rest. `position: sticky` + z-index
+   promotes them to a compositing layer, and because the table sits on a
+   half-pixel offset (centered max-w container) that layer renders text slightly
+   blurry. They only need to stick once scrolled, so JS toggles `data-scrolled`
+   on the container and we defer `position: sticky` until then — crisp at rest,
+   pinned while scrolling. (The `sticky` utility on the cells is overridden here.) */
+.sticky-col {
+  position: static;
+}
+[data-slot='table-container'][data-scrolled] .sticky-col {
+  position: sticky;
+}
+
+.sticky-col {
+  background-color: var(--card);
+  /* The table uses `border-collapse: collapse`, and these cells sit on a raised
+     z-layer (for stickiness) that paints over the table's collapsed row borders.
+     Re-draw the separators on the cells themselves so the row lines continue
+     across the frozen columns instead of being hidden behind them. */
+  border-bottom: 1px solid var(--border);
+  /* Match the table rows' `transition-colors` (150ms, Tailwind's default ease)
+     so the hover highlight animates in step with the rest of the table. */
+  transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* The last body row has no separator (TableBody strips it), so match that. */
+tbody tr:last-child .sticky-col {
+  border-bottom: 0;
+}
+/* Round the outer-left corners of the sticky column block. Rank is the leftmost
+   sticky cell in each row, so its top-left (header) and bottom-left (last row)
+   corners are the block's outer corners. */
+thead .sticky-col:first-child {
+  border-top-left-radius: 14px;
+}
+tbody tr:last-child .sticky-col:first-child {
+  border-bottom-left-radius: 14px;
+}
+/* Right edge of the sticky block (the Corps column): a subtle grey divider.
+   Drawn as a pseudo-element on the (sticky, positioned) cell's own paint layer so
+   it stays pinned during horizontal scroll. A real `border-right` would be a
+   collapsed border painted on the table layer, which scrolls away with the
+   content. The scroll-driven rule below fades its color in as the columns stick. */
+.sticky-col-edge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  background-color: var(--border);
+  pointer-events: none;
+}
+/* Mirror the rows' `hover:bg-muted/50` as an inset overlay: it layers a 50%
+   muted tint on top of the (opaque) sticky background — painted above the
+   background but below the text — so the frozen columns highlight exactly like
+   every other cell, without the scrolled-under content showing through. */
+tr:hover .sticky-col,
+tr:active .sticky-col {
+  box-shadow: inset 0 0 0 9999px color-mix(in oklab, var(--muted) 60%, transparent);
+}
+
+/* Scroll-driven animation: as the table scrolls horizontally, fade the sticky
+   columns' background from card -> light grey over the first ~180px of scroll.
+   Progressive enhancement — browsers without scroll timelines keep the solid
+   card background above. */
+@supports (animation-timeline: scroll()) {
+  @property --stuck {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+  }
+  [data-slot='table-container']:has(.sticky-col) {
+    animation: table-cols-stuck linear both;
+    animation-timeline: scroll(self inline);
+    animation-range: 0 180px;
+  }
+  @keyframes table-cols-stuck {
+    to {
+      --stuck: 1;
+    }
+  }
+  .sticky-col {
+    /* Transparent at rest so the frozen columns blend into the table (no white
+       block, row borders show through). It snaps opaque within the first few px
+       of scroll (so scrolled-under content never bleeds), then tints toward
+       light grey over the full range. */
+    background-color: color-mix(
+      in oklab,
+      color-mix(in oklab, var(--muted) calc(var(--stuck) * 45%), var(--card))
+        calc(min(var(--stuck) * 3000%, 100%)),
+      transparent
+    );
+  }
+  /* Fade the right divider in alongside the background as the columns stick. */
+  .sticky-col-edge::after {
+    background-color: color-mix(in oklab, var(--border) calc(var(--stuck) * 100%), transparent);
+  }
+  /* At rest the cells are transparent, so the row's own `hover:bg-muted/50`
+     already shows through and matches the rest of the table. Only once the cell
+     turns opaque (hiding that) do we re-create the tint via box-shadow — snapped
+     to the same scroll point as the background so it never double-tints. */
+  tr:hover .sticky-col,
+  tr:active .sticky-col {
+    box-shadow: inset 0 0 0 9999px
+      color-mix(
+        in oklab,
+        color-mix(in oklab, var(--muted) 60%, transparent) calc(min(var(--stuck) * 3000%, 100%)),
+        transparent
+      );
+  }
+}
+
+/* Interaction recipes shared by the card grids. The lift/border/shadow hover and
+   the arrow nudge on "View" CTAs were copy-pasted across ~7 components with small
+   drift. Defined once here; both respond to the element's own `:hover` AND an
+   ancestor `.group` hover, so they cover the two call patterns (the Card is the
+   hover target, or a wrapping Link carries `group`). `card-hover-flat` is the
+   no-lift variant for panels (latest results / featured prediction). */
+@layer components {
+  .card-hover,
+  .card-hover-flat {
+    @apply transition-all duration-200;
+  }
+  /* Only on hover-capable pointers: on touch devices `:hover` sticks after a tap,
+     leaving cards stuck in the lifted/shadow state. */
+  @media (hover: hover) {
+    .card-hover:hover,
+    .group:hover .card-hover {
+      @apply -translate-y-1 border-primary/60 shadow-md;
+    }
+    .card-hover-flat:hover,
+    .group:hover .card-hover-flat {
+      @apply border-primary/60 shadow-md;
+    }
+    .group:hover .icon-shift {
+      @apply translate-x-0.5;
+    }
+  }
+  .icon-shift {
+    @apply transition-transform duration-200;
+  }
+}

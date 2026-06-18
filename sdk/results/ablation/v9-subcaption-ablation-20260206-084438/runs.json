@@ -1,0 +1,38 @@
+[
+  {
+    "id": "v9fix_w1p0",
+    "stage": "interval-w1p0",
+    "args": ["--base-width-multiplier", "1.0"],
+    "logPath": "results\\ablation\\v9-subcaption-ablation-20260206-084438\\v9fix_w1p0.log",
+    "startedAt": "2026-02-06T13:44:38.764Z",
+    "endedAt": "2026-02-06T13:44:38.764Z",
+    "durationMinutes": 0,
+    "completed": false,
+    "unstable": false,
+    "aborted": false,
+    "lastEpoch": null,
+    "lastDeltaMaePts": null,
+    "lastCoverage": null,
+    "lastMonScore": null,
+    "testMetrics": null,
+    "notes": ["Dry run only; command not executed."]
+  },
+  {
+    "id": "v9fix_cov4",
+    "stage": "interval-cov4",
+    "args": ["--coverage-sharpness", "4.0"],
+    "logPath": "results\\ablation\\v9-subcaption-ablation-20260206-084438\\v9fix_cov4.log",
+    "startedAt": "2026-02-06T13:44:38.766Z",
+    "endedAt": "2026-02-06T13:44:38.766Z",
+    "durationMinutes": 0,
+    "completed": false,
+    "unstable": false,
+    "aborted": false,
+    "lastEpoch": null,
+    "lastDeltaMaePts": null,
+    "lastCoverage": null,
+    "lastMonScore": null,
+    "testMetrics": null,
+    "notes": ["Dry run only; command not executed."]
+  }
+]

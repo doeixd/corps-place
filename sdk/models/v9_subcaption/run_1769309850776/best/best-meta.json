@@ -1,0 +1,19 @@
+{
+  "epoch": 387,
+  "bestScore": 2.867614112466131,
+  "monitoring": {
+    "valScore": 2.867614112466131,
+    "valDeltaMae": 0.3590231527491371,
+    "valRecapMae": 0.3590231765024733,
+    "valCategoryMae": 0.42443268569094117,
+    "valTotalMae": 0.9259786141095775,
+    "valInertiaMae": 1.5007757082729056,
+    "valQuadMae": 3.1617316658608776,
+    "vsInertia": 1.1417525317704325,
+    "vsQuadratic": 2.8027084893584044,
+    "coverage": 0.9882425742574258,
+    "widthNorm": 7.253640610392731,
+    "widthFloorPct": 0
+  },
+  "savedAt": "2026-01-25T11:36:31.163Z"
+}

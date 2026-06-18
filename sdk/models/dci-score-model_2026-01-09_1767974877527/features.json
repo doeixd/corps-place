@@ -1,0 +1,115 @@
+{
+  "version": "v1.2",
+  "numericOrder": [
+    {
+      "name": "percentageThroughSeason",
+      "defaultValue": 0
+    },
+    {
+      "name": "dayOfSeason",
+      "defaultValue": -1
+    },
+    {
+      "name": "showOfSeason",
+      "defaultValue": 0
+    },
+    {
+      "name": "performanceOrderInClass",
+      "defaultValue": 0
+    },
+    {
+      "name": "corpsCountInClass",
+      "defaultValue": 0
+    },
+    {
+      "name": "daysSinceLastShow",
+      "defaultValue": -1,
+      "missingFlag": "hasLastShow"
+    },
+    {
+      "name": "lastScoreTotal",
+      "defaultValue": 0,
+      "missingFlag": "hasAnyPriorShow"
+    },
+    {
+      "name": "avgLast3Total",
+      "defaultValue": 0,
+      "missingFlag": "hasLast3"
+    },
+    {
+      "name": "slopeLast3Total",
+      "defaultValue": 0,
+      "missingFlag": "hasLast3"
+    },
+    {
+      "name": "overallRankAsOf",
+      "defaultValue": 0,
+      "missingFlag": "hasOverallRank"
+    },
+    {
+      "name": "gapToLeaderOverall",
+      "defaultValue": 0,
+      "missingFlag": "hasOverallRank"
+    },
+    {
+      "name": "prevSeasonRankAsOf",
+      "defaultValue": 0,
+      "missingFlag": "hasPrevSeasonData"
+    },
+    {
+      "name": "prevSeasonBestScore",
+      "defaultValue": 0,
+      "missingFlag": "hasPrevSeasonData"
+    },
+    {
+      "name": "distanceKmFromLastShow",
+      "defaultValue": 0,
+      "missingFlag": "hasLastShow"
+    },
+    {
+      "name": "temperatureF",
+      "defaultValue": 0,
+      "missingFlag": "hasWeather"
+    },
+    {
+      "name": "humidityPct",
+      "defaultValue": 0,
+      "missingFlag": "hasWeather"
+    },
+    {
+      "name": "windSpeedMps",
+      "defaultValue": 0,
+      "missingFlag": "hasWeather"
+    },
+    {
+      "name": "precipitationMm",
+      "defaultValue": 0,
+      "missingFlag": "hasWeather"
+    },
+    {
+      "name": "hasLastShow",
+      "defaultValue": 0
+    },
+    {
+      "name": "hasLast3",
+      "defaultValue": 0
+    },
+    {
+      "name": "hasOverallRank",
+      "defaultValue": 0
+    },
+    {
+      "name": "hasPrevSeasonData",
+      "defaultValue": 0
+    },
+    {
+      "name": "hasWeather",
+      "defaultValue": 0
+    },
+    {
+      "name": "hasJudgeInfo",
+      "defaultValue": 0
+    }
+  ],
+  "notes": "Synchronized with NumericFeatureVector in trainingTypes.ts. Order and names must remain stable for model compatibility."
+}

@@ -1,0 +1,391 @@
+{
+  "metadata": {
+    "description": "Additional DCI API endpoints discovered via Wayback Machine",
+    "captureDate": "2026-01-20T15:03:13.630Z",
+    "archiveDatesChecked": 7,
+    "endpointsAttempted": 39,
+    "successfulEndpoints": 42
+  },
+  "successful": [
+    {
+      "date": "20210801",
+      "endpoint": "/corps",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20210801",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20210801",
+      "endpoint": "/corps?sort=name&limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20210801",
+      "endpoint": "/competitions?sort=name",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20210801",
+      "endpoint": "/competitions?sort=location",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20210801",
+      "endpoint": "/competitions?limit=200",
+      "status": 200,
+      "recordCount": 200
+    },
+    {
+      "date": "20210715",
+      "endpoint": "/corps",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20210715",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20210715",
+      "endpoint": "/corps?sort=name&limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20210715",
+      "endpoint": "/competitions?sort=name",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20210715",
+      "endpoint": "/competitions?sort=location",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20210715",
+      "endpoint": "/competitions?limit=200",
+      "status": 200,
+      "recordCount": 200
+    },
+    {
+      "date": "20210701",
+      "endpoint": "/corps",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20210701",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20210701",
+      "endpoint": "/corps?sort=name&limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20210701",
+      "endpoint": "/competitions?sort=name",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20210701",
+      "endpoint": "/competitions?sort=location",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20210701",
+      "endpoint": "/competitions?limit=200",
+      "status": 200,
+      "recordCount": 200
+    },
+    {
+      "date": "20200801",
+      "endpoint": "/corps",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20200801",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20200801",
+      "endpoint": "/corps?sort=name&limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20200801",
+      "endpoint": "/competitions?sort=name",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20200801",
+      "endpoint": "/competitions?sort=location",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20200801",
+      "endpoint": "/competitions?limit=200",
+      "status": 200,
+      "recordCount": 200
+    },
+    {
+      "date": "20200715",
+      "endpoint": "/corps",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20200715",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20200715",
+      "endpoint": "/corps?sort=name&limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20200715",
+      "endpoint": "/competitions?sort=name",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20200715",
+      "endpoint": "/competitions?sort=location",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20200715",
+      "endpoint": "/competitions?limit=200",
+      "status": 200,
+      "recordCount": 200
+    },
+    {
+      "date": "20200701",
+      "endpoint": "/corps",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20200701",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20200701",
+      "endpoint": "/corps?sort=name&limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20200701",
+      "endpoint": "/competitions?sort=name",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20200701",
+      "endpoint": "/competitions?sort=location",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20200701",
+      "endpoint": "/competitions?limit=200",
+      "status": 200,
+      "recordCount": 200
+    },
+    {
+      "date": "20190801",
+      "endpoint": "/corps",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20190801",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20190801",
+      "endpoint": "/corps?sort=name&limit=500",
+      "status": 200,
+      "recordCount": 100
+    },
+    {
+      "date": "20190801",
+      "endpoint": "/competitions?sort=name",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20190801",
+      "endpoint": "/competitions?sort=location",
+      "status": 200,
+      "recordCount": 10
+    },
+    {
+      "date": "20190801",
+      "endpoint": "/competitions?limit=200",
+      "status": 200,
+      "recordCount": 200
+    }
+  ],
+  "detailedResponses": {
+    "20210801__corps": {
+      "endpoint": "/corps",
+      "date": "20210801",
+      "recordCount": 100,
+      "filename": "20210801_corps.json",
+      "firstRecordKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website"
+      ]
+    },
+    "20210715__corps": {
+      "endpoint": "/corps",
+      "date": "20210715",
+      "recordCount": 100,
+      "filename": "20210715_corps.json",
+      "firstRecordKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website"
+      ]
+    },
+    "20210701__corps": {
+      "endpoint": "/corps",
+      "date": "20210701",
+      "recordCount": 100,
+      "filename": "20210701_corps.json",
+      "firstRecordKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website"
+      ]
+    },
+    "20200801__corps": {
+      "endpoint": "/corps",
+      "date": "20200801",
+      "recordCount": 100,
+      "filename": "20200801_corps.json",
+      "firstRecordKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website"
+      ]
+    },
+    "20200715__corps": {
+      "endpoint": "/corps",
+      "date": "20200715",
+      "recordCount": 100,
+      "filename": "20200715_corps.json",
+      "firstRecordKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website"
+      ]
+    },
+    "20200701__corps": {
+      "endpoint": "/corps",
+      "date": "20200701",
+      "recordCount": 100,
+      "filename": "20200701_corps.json",
+      "firstRecordKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website"
+      ]
+    },
+    "20190801__corps": {
+      "endpoint": "/corps",
+      "date": "20190801",
+      "recordCount": 100,
+      "filename": "20190801_corps.json",
+      "firstRecordKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website"
+      ]
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "scrapedAt": "2026-06-16T12-09-34-992Z",
+  "corps": [
+    {
+      "corpsKey": "001j000000iwx9waad",
+      "name": "Jersey Surf",
+      "postsDiscovered": 21,
+      "staffPosts": 8,
+      "people": 49,
+      "seasons": [
+        2013,
+        2014,
+        2018,
+        2019
+      ],
+      "skipped": false
+    }
+  ]
+}

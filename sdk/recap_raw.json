@@ -1,0 +1,4202 @@
+[
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.7",
+                "Rank": 12
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.9",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "17.60",
+            "Rank": 12
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.6",
+                "Rank": 12
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.8",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "17.40",
+            "Rank": 11
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.8",
+                "Rank": 11
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.8",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "17.60",
+            "Rank": 11
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.9",
+                "Rank": 11
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.6",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "17.50",
+            "Rank": 11
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "35.05",
+        "Rank": 11
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.5",
+                "Rank": 12
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.6",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "17.10",
+            "Rank": 12
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "8.7",
+                "Rank": 11
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.7",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "17.40",
+            "Rank": 11
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "8.8",
+                "Rank": 11
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.9",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "17.70",
+            "Rank": 10
+          }
+        ],
+        "Name": "Visual",
+        "Score": "26.10",
+        "Rank": 10
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.8",
+                "Rank": 12
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.6",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "17.40",
+            "Rank": 12
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.7",
+                "Rank": 12
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.8",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "17.50",
+            "Rank": 11
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.8",
+                "Rank": 11
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.5",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "17.30",
+            "Rank": 11
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.6",
+                "Rank": 12
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.4",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "17.00",
+            "Rank": 12
+          }
+        ],
+        "Name": "Music",
+        "Score": "25.90",
+        "Rank": 12
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Madison Scouts",
+    "orgGroupIdentifier": "001j000000I6LENAA3",
+    "totalScore": 87.05,
+    "rank": 12,
+    "subtotalScore": 87.05,
+    "subtotalRank": 12,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.9",
+                "Rank": 10
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.8",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "17.70",
+            "Rank": 11
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.8",
+                "Rank": 10
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.4",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "17.20",
+            "Rank": 12
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.6",
+                "Rank": 12
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.7",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "17.30",
+            "Rank": 12
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.8",
+                "Rank": 12
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.5",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "17.30",
+            "Rank": 12
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "34.75",
+        "Rank": 12
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.8",
+                "Rank": 10
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.4",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "17.20",
+            "Rank": 11
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "8.8",
+                "Rank": 10
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.5",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "17.30",
+            "Rank": 12
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "8.9",
+                "Rank": 10
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.7",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "17.60",
+            "Rank": 11
+          }
+        ],
+        "Name": "Visual",
+        "Score": "26.05",
+        "Rank": 12
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.9",
+                "Rank": 11
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.9",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "17.80",
+            "Rank": 10
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.8",
+                "Rank": 11
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.6",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "17.40",
+            "Rank": 12
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.6",
+                "Rank": 12
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.6",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "17.20",
+            "Rank": 12
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.3",
+                "Rank": 6
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "18.30",
+            "Rank": 7
+          }
+        ],
+        "Name": "Music",
+        "Score": "26.70",
+        "Rank": 11
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "The Cavaliers",
+    "orgGroupIdentifier": "001j000000IWxAFAA1",
+    "totalScore": 87.5,
+    "rank": 11,
+    "subtotalScore": 87.5,
+    "subtotalRank": 11,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.8",
+                "Rank": 11
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.1",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "17.90",
+            "Rank": 10
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "8.7",
+                "Rank": 11
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "17.70",
+            "Rank": 10
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9",
+                "Rank": 10
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.1",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.10",
+            "Rank": 10
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.1",
+                "Rank": 10
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.8",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "17.90",
+            "Rank": 10
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "35.80",
+        "Rank": 10
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.7",
+                "Rank": 11
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.7",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "17.40",
+            "Rank": 10
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "8.6",
+                "Rank": 12
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.9",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "17.50",
+            "Rank": 10
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "8.7",
+                "Rank": 12
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.6",
+                "Rank": 12
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "17.30",
+            "Rank": 12
+          }
+        ],
+        "Name": "Visual",
+        "Score": "26.10",
+        "Rank": 10
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.1",
+                "Rank": 9
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "18.10",
+            "Rank": 9
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9",
+                "Rank": 10
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.9",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "17.90",
+            "Rank": 10
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.9",
+                "Rank": 10
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.8",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "17.70",
+            "Rank": 10
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.1",
+                "Rank": 9
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.1",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "18.20",
+            "Rank": 8
+          }
+        ],
+        "Name": "Music",
+        "Score": "27.05",
+        "Rank": 9
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Troopers",
+    "orgGroupIdentifier": "001j000000IWxAJAA1",
+    "totalScore": 88.95,
+    "rank": 10,
+    "subtotalScore": 88.95,
+    "subtotalRank": 10,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9",
+                "Rank": 9
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "18.00",
+            "Rank": 9
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9",
+                "Rank": 9
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "8.9",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "17.90",
+            "Rank": 9
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.15",
+                "Rank": 9
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.15",
+            "Rank": 9
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.2",
+                "Rank": 9
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.20",
+            "Rank": 9
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "36.125",
+        "Rank": 9
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.9",
+                "Rank": 9
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.8",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "17.70",
+            "Rank": 9
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "8.9",
+                "Rank": 9
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "17.90",
+            "Rank": 9
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "9",
+                "Rank": 9
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.2",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "18.20",
+            "Rank": 9
+          }
+        ],
+        "Name": "Visual",
+        "Score": "26.90",
+        "Rank": 9
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9",
+                "Rank": 10
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.7",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "17.70",
+            "Rank": 11
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.1",
+                "Rank": 9
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "18.10",
+            "Rank": 9
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9",
+                "Rank": 9
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.9",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "17.90",
+            "Rank": 9
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "8.9",
+                "Rank": 11
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.9",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "17.80",
+            "Rank": 10
+          }
+        ],
+        "Name": "Music",
+        "Score": "26.75",
+        "Rank": 10
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Colts",
+    "orgGroupIdentifier": "001j000000IWx98AAD",
+    "totalScore": 89.775,
+    "rank": 9,
+    "subtotalScore": 89.775,
+    "subtotalRank": 9,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.2",
+                "Rank": 8
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.2",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "18.40",
+            "Rank": 8
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.1",
+                "Rank": 8
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.1",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "18.20",
+            "Rank": 8
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.2",
+                "Rank": 8
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.25",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.45",
+            "Rank": 8
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.4",
+                "Rank": 7
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.2",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.60",
+            "Rank": 8
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "36.825",
+        "Rank": 8
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9",
+                "Rank": 8
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.9",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "17.90",
+            "Rank": 8
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "9.2",
+                "Rank": 7
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.1",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "18.30",
+            "Rank": 7
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "9.5",
+                "Rank": 5
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.3",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "18.80",
+            "Rank": 6
+          }
+        ],
+        "Name": "Visual",
+        "Score": "27.50",
+        "Rank": 7
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.3",
+                "Rank": 7
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.2",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "18.50",
+            "Rank": 7
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.3",
+                "Rank": 7
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.2",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "18.50",
+            "Rank": 7
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.2",
+                "Rank": 7
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "18.20",
+            "Rank": 8
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9",
+                "Rank": 10
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.7",
+                "Rank": 11
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "17.70",
+            "Rank": 11
+          }
+        ],
+        "Name": "Music",
+        "Score": "27.275",
+        "Rank": 8
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Blue Stars",
+    "orgGroupIdentifier": "001j000000IWwSqAAL",
+    "totalScore": 91.6,
+    "rank": 8,
+    "subtotalScore": 91.6,
+    "subtotalRank": 8,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.5",
+                "Rank": 5
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.3",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "18.80",
+            "Rank": 6
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.2",
+                "Rank": 7
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.4",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "18.60",
+            "Rank": 7
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.3",
+                "Rank": 7
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.3",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.60",
+            "Rank": 7
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.3",
+                "Rank": 8
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.4",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.70",
+            "Rank": 7
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "37.35",
+        "Rank": 7
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.3",
+                "Rank": 6
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.2",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "18.50",
+            "Rank": 6
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "9",
+                "Rank": 8
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.2",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "18.20",
+            "Rank": 8
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "9.2",
+                "Rank": 8
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.1",
+                "Rank": 9
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "18.30",
+            "Rank": 8
+          }
+        ],
+        "Name": "Visual",
+        "Score": "27.50",
+        "Rank": 7
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.2",
+                "Rank": 8
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.1",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "18.30",
+            "Rank": 8
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.2",
+                "Rank": 8
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.1",
+                "Rank": 8
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "18.30",
+            "Rank": 8
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.1",
+                "Rank": 8
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.2",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "18.30",
+            "Rank": 7
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.2",
+                "Rank": 8
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "8.8",
+                "Rank": 10
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "18.00",
+            "Rank": 9
+          }
+        ],
+        "Name": "Music",
+        "Score": "27.30",
+        "Rank": 7
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Mandarins",
+    "orgGroupIdentifier": "001j000000IWxA3AAL",
+    "totalScore": 92.15,
+    "rank": 7,
+    "subtotalScore": 92.15,
+    "subtotalRank": 7,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.3",
+                "Rank": 7
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.4",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "18.70",
+            "Rank": 7
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.5",
+                "Rank": 5
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.3",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "18.80",
+            "Rank": 6
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.35",
+                "Rank": 6
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.4",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.75",
+            "Rank": 6
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.5",
+                "Rank": 6
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.45",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.95",
+            "Rank": 6
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "37.60",
+        "Rank": 6
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.4",
+                "Rank": 5
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9",
+                "Rank": 7
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "18.40",
+            "Rank": 7
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "9.4",
+                "Rank": 5
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.3",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "18.70",
+            "Rank": 6
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "9.3",
+                "Rank": 7
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.4",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "18.70",
+            "Rank": 7
+          }
+        ],
+        "Name": "Visual",
+        "Score": "27.90",
+        "Rank": 6
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.4",
+                "Rank": 6
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.3",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "18.70",
+            "Rank": 6
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.4",
+                "Rank": 6
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.3",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "18.70",
+            "Rank": 6
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.3",
+                "Rank": 6
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.3",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "18.60",
+            "Rank": 6
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.8",
+                "Rank": 2
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.7",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "19.50",
+            "Rank": 1
+          }
+        ],
+        "Name": "Music",
+        "Score": "28.425",
+        "Rank": 5
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Santa Clara Vanguard",
+    "orgGroupIdentifier": "001j000000H3XwCAAV",
+    "totalScore": 93.925,
+    "rank": 6,
+    "subtotalScore": 93.925,
+    "subtotalRank": 6,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.4",
+                "Rank": 6
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.5",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "18.90",
+            "Rank": 5
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.4",
+                "Rank": 6
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.5",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "18.90",
+            "Rank": 5
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.5",
+                "Rank": 4
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.45",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.95",
+            "Rank": 4
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.55",
+                "Rank": 5
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.6",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "19.15",
+            "Rank": 5
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "37.95",
+        "Rank": 5
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.5",
+                "Rank": 4
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.5",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "19.00",
+            "Rank": 4
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "9.3",
+                "Rank": 6
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.5",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "18.80",
+            "Rank": 5
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "9.6",
+                "Rank": 4
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.6",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "19.20",
+            "Rank": 4
+          }
+        ],
+        "Name": "Visual",
+        "Score": "28.50",
+        "Rank": 4
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.65",
+                "Rank": 3
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.8",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "19.45",
+            "Rank": 2
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.5",
+                "Rank": 5
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.6",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "19.10",
+            "Rank": 4
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.6",
+                "Rank": 4
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.8",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "19.40",
+            "Rank": 2
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.25",
+                "Rank": 7
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.2",
+                "Rank": 6
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "18.45",
+            "Rank": 6
+          }
+        ],
+        "Name": "Music",
+        "Score": "28.575",
+        "Rank": 4
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Carolina Crown",
+    "orgGroupIdentifier": "001j000000IWx91AAD",
+    "totalScore": 95.025,
+    "rank": 5,
+    "subtotalScore": 95.025,
+    "subtotalRank": 5,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.7",
+                "Rank": 3
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.6",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "19.30",
+            "Rank": 4
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.6",
+                "Rank": 4
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.7",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "19.30",
+            "Rank": 4
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.4",
+                "Rank": 5
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.5",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "18.90",
+            "Rank": 5
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.75",
+                "Rank": 3
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.65",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "19.40",
+            "Rank": 3
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "38.45",
+        "Rank": 4
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.2",
+                "Rank": 7
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.6",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "18.80",
+            "Rank": 5
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "9.6",
+                "Rank": 4
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.4",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "19.00",
+            "Rank": 4
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "9.4",
+                "Rank": 6
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.5",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "18.90",
+            "Rank": 5
+          }
+        ],
+        "Name": "Visual",
+        "Score": "28.35",
+        "Rank": 5
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.5",
+                "Rank": 5
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.4",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "18.90",
+            "Rank": 5
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.6",
+                "Rank": 4
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.4",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "19.00",
+            "Rank": 5
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.5",
+                "Rank": 5
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.4",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "18.90",
+            "Rank": 5
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.5",
+                "Rank": 5
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.5",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "19.00",
+            "Rank": 5
+          }
+        ],
+        "Name": "Music",
+        "Score": "28.425",
+        "Rank": 5
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Phantom Regiment",
+    "orgGroupIdentifier": "001j000000H3XrNAAV",
+    "totalScore": 95.225,
+    "rank": 4,
+    "subtotalScore": 95.225,
+    "subtotalRank": 4,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.8",
+                "Rank": 2
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.7",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "19.50",
+            "Rank": 2
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.7",
+                "Rank": 3
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.9",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "19.60",
+            "Rank": 3
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.7",
+                "Rank": 2
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.7",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "19.40",
+            "Rank": 3
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.7",
+                "Rank": 4
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.5",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "19.20",
+            "Rank": 4
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "38.85",
+        "Rank": 3
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.8",
+                "Rank": 2
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.8",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "19.60",
+            "Rank": 2
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "9.8",
+                "Rank": 2
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.7",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "19.50",
+            "Rank": 3
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "9.8",
+                "Rank": 2
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.65",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "19.45",
+            "Rank": 3
+          }
+        ],
+        "Name": "Visual",
+        "Score": "29.275",
+        "Rank": 3
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.8",
+                "Rank": 2
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.6",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "19.40",
+            "Rank": 3
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.7",
+                "Rank": 3
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.7",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "19.40",
+            "Rank": 3
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.7",
+                "Rank": 3
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.6",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "19.30",
+            "Rank": 4
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.75",
+                "Rank": 3
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.4",
+                "Rank": 5
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "19.15",
+            "Rank": 4
+          }
+        ],
+        "Name": "Music",
+        "Score": "28.95",
+        "Rank": 3
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Blue Devils",
+    "orgGroupIdentifier": "001j000000I6I9SAAV",
+    "totalScore": 97.075,
+    "rank": 3,
+    "subtotalScore": 97.075,
+    "subtotalRank": 3,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.6",
+                "Rank": 4
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.8",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "19.40",
+            "Rank": 3
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.9",
+                "Rank": 2
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.8",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "19.70",
+            "Rank": 2
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.65",
+                "Rank": 3
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.8",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "19.45",
+            "Rank": 2
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.8",
+                "Rank": 2
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.7",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "19.50",
+            "Rank": 2
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "39.025",
+        "Rank": 2
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.7",
+                "Rank": 3
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.7",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "19.40",
+            "Rank": 3
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "9.7",
+                "Rank": 3
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.9",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "19.60",
+            "Rank": 2
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "9.9",
+                "Rank": 1
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.9",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "19.80",
+            "Rank": 1
+          }
+        ],
+        "Name": "Visual",
+        "Score": "29.40",
+        "Rank": 2
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.6",
+                "Rank": 4
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.55",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "19.15",
+            "Rank": 4
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.8",
+                "Rank": 2
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.8",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "19.60",
+            "Rank": 2
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.8",
+                "Rank": 2
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.55",
+                "Rank": 4
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "19.35",
+            "Rank": 3
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.7",
+                "Rank": 4
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.65",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "19.35",
+            "Rank": 3
+          }
+        ],
+        "Name": "Music",
+        "Score": "28.988",
+        "Rank": 2
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Boston Crusaders",
+    "orgGroupIdentifier": "001j000000IWwSsAAL",
+    "totalScore": 97.413,
+    "rank": 2,
+    "subtotalScore": 97.413,
+    "subtotalRank": 2,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  },
+  {
+    "categories": [
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.9",
+                "Rank": 1
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.9",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Damon",
+            "JudgeLastName": "Padilla",
+            "Judge": 1,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "19.80",
+            "Rank": 1
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "10",
+                "Rank": 1
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "10",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "William",
+            "JudgeLastName": "Chumley",
+            "Judge": 2,
+            "Name": "General Effect 1",
+            "Initials": "GE 1",
+            "Score": "20.00",
+            "Rank": 1
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.9",
+                "Rank": 1
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.9",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Jodie",
+            "JudgeLastName": "Rhodes",
+            "Judge": 1,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "19.80",
+            "Rank": 1
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Repertoire",
+                "Initials": "Rep",
+                "Score": "9.9",
+                "Rank": 1
+              },
+              {
+                "Name": "Performance",
+                "Initials": "Perf",
+                "Score": "9.8",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Wayne",
+            "JudgeLastName": "Dillon",
+            "Judge": 2,
+            "Name": "General Effect 2",
+            "Initials": "GE 2",
+            "Score": "19.70",
+            "Rank": 1
+          }
+        ],
+        "Name": "General Effect",
+        "Score": "39.65",
+        "Rank": 1
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.9",
+                "Rank": 1
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.9",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Chris",
+            "JudgeLastName": "Moss",
+            "Judge": 1,
+            "Name": "Visual Proficiency",
+            "Initials": "VP",
+            "Score": "19.80",
+            "Rank": 1
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Composition",
+                "Initials": "Comp",
+                "Score": "10",
+                "Rank": 1
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "10",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Travis",
+            "JudgeLastName": "Wingate",
+            "Judge": 1,
+            "Name": "Visual - Analysis",
+            "Initials": "VA",
+            "Score": "20.00",
+            "Rank": 1
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "CONT",
+                "Score": "9.7",
+                "Rank": 3
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.8",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Robert",
+            "JudgeLastName": "Solomon",
+            "Judge": 1,
+            "Name": "Color Guard",
+            "Initials": "CG",
+            "Score": "19.50",
+            "Rank": 2
+          }
+        ],
+        "Name": "Visual",
+        "Score": "29.65",
+        "Rank": 1
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.85",
+                "Rank": 1
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.75",
+                "Rank": 2
+              }
+            ],
+            "JudgeFirstName": "Bryan",
+            "JudgeLastName": "Crisp",
+            "Judge": 1,
+            "Name": "Music - Brass",
+            "Initials": "BRS",
+            "Score": "19.60",
+            "Rank": 1
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "10",
+                "Rank": 1
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.9",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Dave",
+            "JudgeLastName": "Carbone",
+            "Judge": 1,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "19.90",
+            "Rank": 1
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.9",
+                "Rank": 1
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.9",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Darrin",
+            "JudgeLastName": "Davis",
+            "Judge": 2,
+            "Name": "Music - Analysis",
+            "Initials": "MA",
+            "Score": "19.80",
+            "Rank": 1
+          },
+          {
+            "Subcaptions": [
+              {
+                "Name": "Content",
+                "Initials": "Cont",
+                "Score": "9.9",
+                "Rank": 1
+              },
+              {
+                "Name": "Achievement",
+                "Initials": "Achv",
+                "Score": "9.55",
+                "Rank": 3
+              }
+            ],
+            "JudgeFirstName": "Mike",
+            "JudgeLastName": "Leitzke",
+            "Judge": 1,
+            "Name": "Music - Percussion",
+            "Initials": "Perc",
+            "Score": "19.45",
+            "Rank": 2
+          }
+        ],
+        "Name": "Music",
+        "Score": "29.45",
+        "Rank": 1
+      },
+      {
+        "Captions": [
+          {
+            "Subcaptions": [
+              {
+                "Name": "Penalties",
+                "Initials": "Pen",
+                "Score": "0",
+                "Rank": 1
+              }
+            ],
+            "JudgeFirstName": "Tony",
+            "JudgeLastName": "DiCarlo",
+            "Judge": 1,
+            "Name": "Penalties",
+            "Initials": "PEN",
+            "Score": "0.00",
+            "Rank": 1
+          }
+        ],
+        "Name": "Timing & Penalties",
+        "Score": "0.00",
+        "Rank": 1
+      }
+    ],
+    "divisionName": "World Class",
+    "round": "1",
+    "groupName": "Bluecoats",
+    "orgGroupIdentifier": "001j000000IWwSrAAL",
+    "totalScore": 98.75,
+    "rank": 1,
+    "subtotalScore": 98.75,
+    "subtotalRank": 1,
+    "active": true,
+    "isOtherType": false,
+    "competition": {
+      "groupTypes": [
+        {
+          "id": 4,
+          "name": "Marching",
+          "competitionType": {
+            "id": 75,
+            "name": "8 Judge"
+          }
+        },
+        {
+          "id": 19,
+          "name": "Other",
+          "competitionType": {
+            "id": 8501,
+            "name": "Individual & Ensemble"
+          }
+        },
+        {
+          "id": 43,
+          "name": "SoundSport",
+          "competitionType": {
+            "id": 15855,
+            "name": "General"
+          }
+        }
+      ],
+      "eventName": "DCI World Championship Finals",
+      "location": "Indianapolis, IN",
+      "date": "2024-08-10T00:00:00",
+      "competitionLevel": 0,
+      "chiefJudge": "John Phillips",
+      "scoresReleased": true,
+      "recapReleased": true,
+      "categoryRecapReleased": true,
+      "seasonName": "2024",
+      "slug": "2024-dci-world-championship-finals"
+    }
+  }
+]

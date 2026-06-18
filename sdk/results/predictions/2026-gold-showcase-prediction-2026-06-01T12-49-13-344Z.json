@@ -1,0 +1,937 @@
+{
+  "generated_at": "2026-06-01T12:49:13.344Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9fix_lrmult_smoke_1770985071634",
+  "event": {
+    "event_id": "web-2026-2026-gold-showcase",
+    "slug": "2026-gold-showcase",
+    "name": "Gold Showcase",
+    "event_name": "Gold Showcase",
+    "start_date": "2026-07-09",
+    "start_time": null,
+    "web_start_time": "5:30 PM PT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Santa Clarita",
+    "location_state": "CA",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260709-SANTA-CLARITA-CA.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260709-SANTA-CLARITA-CA.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-gold-showcase-zkljxb",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Ticket prices will increase on the day of the event.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 9,
+    "matched_corps_keys": 9,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 9,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 50
+  },
+  "input_signature": "5c62d1581e127256ff2d7a3b7cc468dcfabff7d54930f7b988b337bf1e651bb7",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 177,
+    "feature_static_dim": 212,
+    "model_fingerprint": "adea02abbc1822fcd2395ab1046db7dfd29a3729f9c5b658a453ddb3f9bd731e",
+    "supports_caption_fingerprints": false,
+    "interval_scale": 0.65
+  },
+  "input_audit": {
+    "scored_lineup_rows": 9,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000i6kalaa3",
+        "corps": "Blue Devils \"C\"",
+        "division": "Open Class",
+        "performance_order": 2,
+        "time": "5:40 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9qaad",
+        "corps": "Golden Empire",
+        "division": "Open Class",
+        "performance_order": 3,
+        "time": "5:57 PM"
+      },
+      {
+        "corps_key": "001j000000i6jmbaaf",
+        "corps": "Blue Devils \"B\"",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "6:14 PM"
+      },
+      {
+        "corps_key": "001j000000iwxaeaa1",
+        "corps": "The Academy",
+        "division": "World Class",
+        "performance_order": 5,
+        "time": "6:31 PM"
+      },
+      {
+        "corps_key": "001j000000iwxa7aal",
+        "corps": "Pacific Crest",
+        "division": "World Class",
+        "performance_order": 6,
+        "time": "6:48 PM"
+      },
+      {
+        "corps_key": "001j000000i6i9saav",
+        "corps": "Blue Devils",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "7:35 PM"
+      },
+      {
+        "corps_key": "001j000000h3xwcaav",
+        "corps": "Santa Clara Vanguard",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "7:52 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9paad",
+        "corps": "Gold",
+        "division": "Open Class",
+        "performance_order": 10,
+        "time": "8:09 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsraal",
+        "corps": "Bluecoats",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "8:26 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 7,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-gold-showcase",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-09",
+      "scored_lineup_rows": 9,
+      "matched_corps_keys": 9,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwsraal",
+      "corps": "Bluecoats",
+      "city": "Canton, OH",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "8:26 PM",
+      "total": 88.45,
+      "GE": 35.605,
+      "Visual": 26.453,
+      "Music": 26.392,
+      "GE1": 17.819,
+      "GE2": 17.786,
+      "VP": 17.536,
+      "VA": 17.747,
+      "CG": 17.623,
+      "MB": 17.446,
+      "MA": 17.69,
+      "MP": 17.647,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.816,
+          "p50": 17.819,
+          "p90": 17.962
+        },
+        "GE2": {
+          "p10": 17.772,
+          "p50": 17.786,
+          "p90": 18.187
+        },
+        "VP": {
+          "p10": 17.531,
+          "p50": 17.536,
+          "p90": 17.678
+        },
+        "VA": {
+          "p10": 17.716,
+          "p50": 17.747,
+          "p90": 17.79
+        },
+        "CG": {
+          "p10": 17.567,
+          "p50": 17.623,
+          "p90": 17.679
+        },
+        "MB": {
+          "p10": 17.045,
+          "p50": 17.446,
+          "p90": 17.779
+        },
+        "MA": {
+          "p10": 17.551,
+          "p50": 17.69,
+          "p90": 17.892
+        },
+        "MP": {
+          "p10": 17.376,
+          "p50": 17.647,
+          "p90": 17.689
+        }
+      },
+      "raw_model_total": 82.293,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 92.825,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 88.451,
+      "caption_shape_total": 83.105,
+      "total_reconciliation_delta": 5.345,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 2,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 83.105,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000h3xwcaav",
+      "corps": "Santa Clara Vanguard",
+      "city": "Santa Clara, CA",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "7:52 PM",
+      "total": 86.474,
+      "GE": 34.572,
+      "Visual": 25.824,
+      "Music": 26.078,
+      "GE1": 17.3,
+      "GE2": 17.272,
+      "VP": 17.241,
+      "VA": 17.394,
+      "CG": 17.013,
+      "MB": 17.237,
+      "MA": 17.177,
+      "MP": 17.743,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.296,
+          "p50": 17.3,
+          "p90": 17.441
+        },
+        "GE2": {
+          "p10": 17.253,
+          "p50": 17.272,
+          "p90": 17.616
+        },
+        "VP": {
+          "p10": 17.235,
+          "p50": 17.241,
+          "p90": 17.38
+        },
+        "VA": {
+          "p10": 17.362,
+          "p50": 17.394,
+          "p90": 17.437
+        },
+        "CG": {
+          "p10": 16.964,
+          "p50": 17.013,
+          "p90": 17.071
+        },
+        "MB": {
+          "p10": 16.907,
+          "p50": 17.237,
+          "p90": 17.533
+        },
+        "MA": {
+          "p10": 17.066,
+          "p50": 17.177,
+          "p90": 17.353
+        },
+        "MP": {
+          "p10": 17.518,
+          "p50": 17.743,
+          "p90": 17.789
+        }
+      },
+      "raw_model_total": 80.119,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 90.913,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 86.472,
+      "caption_shape_total": 81.044,
+      "total_reconciliation_delta": 5.43,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 81.044,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000i6i9saav",
+      "corps": "Blue Devils",
+      "city": "Concord, CA",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "7:35 PM",
+      "total": 84.074,
+      "GE": 33.602,
+      "Visual": 25.213,
+      "Music": 25.259,
+      "GE1": 16.864,
+      "GE2": 16.738,
+      "VP": 16.75,
+      "VA": 16.842,
+      "CG": 16.834,
+      "MB": 16.877,
+      "MA": 16.831,
+      "MP": 16.811,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.859,
+          "p50": 16.864,
+          "p90": 17
+        },
+        "GE2": {
+          "p10": 16.716,
+          "p50": 16.738,
+          "p90": 17.048
+        },
+        "VP": {
+          "p10": 16.743,
+          "p50": 16.75,
+          "p90": 16.883
+        },
+        "VA": {
+          "p10": 16.811,
+          "p50": 16.842,
+          "p90": 16.886
+        },
+        "CG": {
+          "p10": 16.783,
+          "p50": 16.834,
+          "p90": 16.892
+        },
+        "MB": {
+          "p10": 16.555,
+          "p50": 16.877,
+          "p90": 17.161
+        },
+        "MA": {
+          "p10": 16.725,
+          "p50": 16.831,
+          "p90": 17.005
+        },
+        "MP": {
+          "p10": 16.603,
+          "p50": 16.811,
+          "p90": 16.863
+        }
+      },
+      "raw_model_total": 74.797,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 90.838,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 84.075,
+      "caption_shape_total": 75.809,
+      "total_reconciliation_delta": 8.265,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 4,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 75.809,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxa7aal",
+      "corps": "Pacific Crest",
+      "city": "City of Industry, CA",
+      "division": "World Class",
+      "performance_order": 6,
+      "time": "6:48 PM",
+      "total": 76.647,
+      "GE": 30.512,
+      "Visual": 22.813,
+      "Music": 23.322,
+      "GE1": 15.113,
+      "GE2": 15.399,
+      "VP": 15.057,
+      "VA": 14.936,
+      "CG": 15.632,
+      "MB": 15.296,
+      "MA": 15.469,
+      "MP": 15.879,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.109,
+          "p50": 15.113,
+          "p90": 15.246
+        },
+        "GE2": {
+          "p10": 15.385,
+          "p50": 15.399,
+          "p90": 15.716
+        },
+        "VP": {
+          "p10": 15.051,
+          "p50": 15.057,
+          "p90": 15.191
+        },
+        "VA": {
+          "p10": 14.903,
+          "p50": 14.936,
+          "p90": 14.983
+        },
+        "CG": {
+          "p10": 15.575,
+          "p50": 15.632,
+          "p90": 15.686
+        },
+        "MB": {
+          "p10": 14.884,
+          "p50": 15.296,
+          "p90": 15.581
+        },
+        "MA": {
+          "p10": 15.334,
+          "p50": 15.469,
+          "p90": 15.647
+        },
+        "MP": {
+          "p10": 15.667,
+          "p50": 15.879,
+          "p90": 15.92
+        }
+      },
+      "raw_model_total": 73.195,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 78.963,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 76.647,
+      "caption_shape_total": 73.817,
+      "total_reconciliation_delta": 2.83,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 7,
+      "prior_season_rank": 15,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.817,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwxaeaa1",
+      "corps": "The Academy",
+      "city": "Tempe, AZ",
+      "division": "World Class",
+      "performance_order": 5,
+      "time": "6:31 PM",
+      "total": 74.707,
+      "GE": 30.203,
+      "Visual": 22.244,
+      "Music": 22.26,
+      "GE1": 14.936,
+      "GE2": 15.267,
+      "VP": 14.775,
+      "VA": 14.77,
+      "CG": 14.942,
+      "MB": 14.483,
+      "MA": 14.952,
+      "MP": 15.084,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.931,
+          "p50": 14.936,
+          "p90": 15.06
+        },
+        "GE2": {
+          "p10": 15.248,
+          "p50": 15.267,
+          "p90": 15.531
+        },
+        "VP": {
+          "p10": 14.767,
+          "p50": 14.775,
+          "p90": 14.899
+        },
+        "VA": {
+          "p10": 14.736,
+          "p50": 14.77,
+          "p90": 14.814
+        },
+        "CG": {
+          "p10": 14.886,
+          "p50": 14.942,
+          "p90": 14.994
+        },
+        "MB": {
+          "p10": 14.144,
+          "p50": 14.483,
+          "p90": 14.751
+        },
+        "MA": {
+          "p10": 14.839,
+          "p50": 14.952,
+          "p90": 15.114
+        },
+        "MP": {
+          "p10": 14.909,
+          "p50": 15.084,
+          "p90": 15.129
+        }
+      },
+      "raw_model_total": 71.492,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 76.575,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 74.708,
+      "caption_shape_total": 72.426,
+      "total_reconciliation_delta": 2.28,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 8,
+      "prior_season_rank": 17,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 72.426,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000i6jmbaaf",
+      "corps": "Blue Devils \"B\"",
+      "city": "Concord, CA",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "6:14 PM",
+      "total": 68.516,
+      "GE": 27.464,
+      "Visual": 20.478,
+      "Music": 20.574,
+      "GE1": 13.798,
+      "GE2": 13.666,
+      "VP": 13.873,
+      "VA": 13.896,
+      "CG": 13.187,
+      "MB": 14.036,
+      "MA": 13.619,
+      "MP": 13.492,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.777,
+          "p50": 13.798,
+          "p90": 13.861
+        },
+        "GE2": {
+          "p10": 13.565,
+          "p50": 13.666,
+          "p90": 13.811
+        },
+        "VP": {
+          "p10": 13.821,
+          "p50": 13.873,
+          "p90": 13.968
+        },
+        "VA": {
+          "p10": 13.85,
+          "p50": 13.896,
+          "p90": 13.943
+        },
+        "CG": {
+          "p10": 13.168,
+          "p50": 13.187,
+          "p90": 13.238
+        },
+        "MB": {
+          "p10": 13.954,
+          "p50": 14.036,
+          "p90": 14.093
+        },
+        "MA": {
+          "p10": 13.592,
+          "p50": 13.619,
+          "p90": 13.659
+        },
+        "MP": {
+          "p10": 13.472,
+          "p50": 13.492,
+          "p90": 13.579
+        }
+      },
+      "raw_model_total": 65.776,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.35,
+      "prior_season_comparable_percent_through": 35.714285714285715,
+      "prior_season_comparable_competition": "2025-so-cal-classic-open-class-pacific-championship-finals",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 68.514,
+      "caption_shape_total": 65.91,
+      "total_reconciliation_delta": 2.605,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 65.91,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 7,
+      "corps_key": "001j000000iwx9qaad",
+      "corps": "Golden Empire",
+      "city": "Bakersfield, CA",
+      "division": "Open Class",
+      "performance_order": 3,
+      "time": "5:57 PM",
+      "total": 61.642,
+      "GE": 24.559,
+      "Visual": 18.819,
+      "Music": 18.264,
+      "GE1": 11.65,
+      "GE2": 12.909,
+      "VP": 12.971,
+      "VA": 12.973,
+      "CG": 11.693,
+      "MB": 12.158,
+      "MA": 12.086,
+      "MP": 12.285,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 11.632,
+          "p50": 11.65,
+          "p90": 11.713
+        },
+        "GE2": {
+          "p10": 12.814,
+          "p50": 12.909,
+          "p90": 13.059
+        },
+        "VP": {
+          "p10": 12.92,
+          "p50": 12.971,
+          "p90": 13.062
+        },
+        "VA": {
+          "p10": 12.923,
+          "p50": 12.973,
+          "p90": 13.024
+        },
+        "CG": {
+          "p10": 11.674,
+          "p50": 11.693,
+          "p90": 11.744
+        },
+        "MB": {
+          "p10": 12.074,
+          "p50": 12.158,
+          "p90": 12.212
+        },
+        "MA": {
+          "p10": 12.06,
+          "p50": 12.086,
+          "p90": 12.126
+        },
+        "MP": {
+          "p10": 12.267,
+          "p50": 12.285,
+          "p90": 12.37
+        }
+      },
+      "raw_model_total": 59.621,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 65,
+      "prior_season_comparable_percent_through": 35.714285714285715,
+      "prior_season_comparable_competition": "2025-so-cal-classic-open-class-pacific-championship-finals",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 61.644,
+      "caption_shape_total": 59.837,
+      "total_reconciliation_delta": 1.805,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 4,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 59.837,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 8,
+      "corps_key": "001j000000iwx9paad",
+      "corps": "Gold",
+      "city": "San Diego, CA",
+      "division": "Open Class",
+      "performance_order": 10,
+      "time": "8:09 PM",
+      "total": 60.057,
+      "GE": 23.73,
+      "Visual": 17.719,
+      "Music": 18.608,
+      "GE1": 11.591,
+      "GE2": 12.139,
+      "VP": 11.811,
+      "VA": 12.121,
+      "CG": 11.506,
+      "MB": 11.977,
+      "MA": 12.746,
+      "MP": 12.492,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 11.583,
+          "p50": 11.591,
+          "p90": 11.701
+        },
+        "GE2": {
+          "p10": 12.114,
+          "p50": 12.139,
+          "p90": 12.307
+        },
+        "VP": {
+          "p10": 11.8,
+          "p50": 11.811,
+          "p90": 11.934
+        },
+        "VA": {
+          "p10": 12.084,
+          "p50": 12.121,
+          "p90": 12.155
+        },
+        "CG": {
+          "p10": 11.442,
+          "p50": 11.506,
+          "p90": 11.554
+        },
+        "MB": {
+          "p10": 11.741,
+          "p50": 11.977,
+          "p90": 12.215
+        },
+        "MA": {
+          "p10": 12.671,
+          "p50": 12.746,
+          "p90": 12.862
+        },
+        "MP": {
+          "p10": 12.318,
+          "p50": 12.492,
+          "p90": 12.543
+        }
+      },
+      "raw_model_total": 44.224,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 72.55,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 60.056,
+      "caption_shape_total": 44.787,
+      "total_reconciliation_delta": 15.27,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 9,
+      "prior_season_rank": 20,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 44.787,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 9,
+      "corps_key": "001j000000i6kalaa3",
+      "corps": "Blue Devils \"C\"",
+      "city": "Concord, CA",
+      "division": "Open Class",
+      "performance_order": 2,
+      "time": "5:40 PM",
+      "total": 56.839,
+      "GE": 23.793,
+      "Visual": 16.755,
+      "Music": 16.291,
+      "GE1": 11.546,
+      "GE2": 12.247,
+      "VP": 11.011,
+      "VA": 11.761,
+      "CG": 10.739,
+      "MB": 10.954,
+      "MA": 10.407,
+      "MP": 11.221,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 11.522,
+          "p50": 11.546,
+          "p90": 11.615
+        },
+        "GE2": {
+          "p10": 12.169,
+          "p50": 12.247,
+          "p90": 12.388
+        },
+        "VP": {
+          "p10": 10.965,
+          "p50": 11.011,
+          "p90": 11.113
+        },
+        "VA": {
+          "p10": 11.71,
+          "p50": 11.761,
+          "p90": 11.813
+        },
+        "CG": {
+          "p10": 10.718,
+          "p50": 10.739,
+          "p90": 10.788
+        },
+        "MB": {
+          "p10": 10.877,
+          "p50": 10.954,
+          "p90": 11.004
+        },
+        "MA": {
+          "p10": 10.379,
+          "p50": 10.407,
+          "p90": 10.462
+        },
+        "MP": {
+          "p10": 11.202,
+          "p50": 11.221,
+          "p90": 11.3
+        }
+      },
+      "raw_model_total": 55.669,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 58.2,
+      "prior_season_comparable_percent_through": 35.714285714285715,
+      "prior_season_comparable_competition": "2025-so-cal-classic-open-class-pacific-championship-finals",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 56.838,
+      "caption_shape_total": 56.105,
+      "total_reconciliation_delta": 0.735,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 56.105,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets.",
+    "Loaded model uses an older static feature shape; caption-fingerprint static features were not consumed by the neural model."
+  ]
+}

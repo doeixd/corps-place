@@ -1,0 +1,103 @@
+{
+  "generated_at": "2026-06-05T00:25:22.202Z",
+  "db_path": "dci-relational.db",
+  "ml_table": "ml_sequence_rows_v9_subcaption",
+  "source_table": "subcaption_scores",
+  "totals": {
+    "ml_rows": 7321,
+    "rows_with_any_valid_pair": 7321,
+    "rows_with_all_8_pairs": 7316,
+    "rows_with_no_valid_pairs": 0,
+    "total_scale_repairs": 0,
+    "total_scale_exclusions": 5
+  },
+  "dimensions": {
+    "expected_sequence_steps": 15,
+    "expected_sequence_dim": 101,
+    "expected_static_dim": 212,
+    "expected_judge_dim": 8,
+    "bad_sequence_dimensions": 0,
+    "bad_static_dimensions": 0,
+    "bad_prior_feature_shape": 0,
+    "bad_judge_dimensions": 0
+  },
+  "target_quality": {
+    "json_errors": 0,
+    "bad_caption_targets": 0,
+    "bad_total_consistency": 0
+  },
+  "by_caption": {
+    "GE1": {
+      "validPairs": 7321,
+      "missingPairs": 0,
+      "scaleRepairs": 0,
+      "scaleExclusions": 0
+    },
+    "GE2": {
+      "validPairs": 7321,
+      "missingPairs": 0,
+      "scaleRepairs": 0,
+      "scaleExclusions": 0
+    },
+    "VP": {
+      "validPairs": 7321,
+      "missingPairs": 0,
+      "scaleRepairs": 0,
+      "scaleExclusions": 0
+    },
+    "VA": {
+      "validPairs": 7321,
+      "missingPairs": 0,
+      "scaleRepairs": 0,
+      "scaleExclusions": 0
+    },
+    "CG": {
+      "validPairs": 7321,
+      "missingPairs": 0,
+      "scaleRepairs": 0,
+      "scaleExclusions": 0
+    },
+    "MB": {
+      "validPairs": 7321,
+      "missingPairs": 0,
+      "scaleRepairs": 0,
+      "scaleExclusions": 0
+    },
+    "MA": {
+      "validPairs": 7321,
+      "missingPairs": 0,
+      "scaleRepairs": 0,
+      "scaleExclusions": 0
+    },
+    "MP": {
+      "validPairs": 7316,
+      "missingPairs": 5,
+      "scaleRepairs": 0,
+      "scaleExclusions": 0
+    }
+  },
+  "rows_with_valid_pairs_by_division": {
+    "World Class": 5086,
+    "Open Class": 2235
+  },
+  "rows_with_valid_pairs_by_season": {
+    "2013": 638,
+    "2014": 645,
+    "2015": 669,
+    "2016": 730,
+    "2017": 736,
+    "2018": 780,
+    "2019": 820,
+    "2022": 594,
+    "2023": 635,
+    "2024": 551,
+    "2025": 523
+  },
+  "rows_with_valid_pairs_by_split": {
+    "train": 6634,
+    "val": 635,
+    "test": 52
+  },
+  "unknown_labels": {},
+  "hard_failures": false
+}

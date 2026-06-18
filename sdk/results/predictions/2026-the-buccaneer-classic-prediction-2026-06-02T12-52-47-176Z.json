@@ -1,0 +1,362 @@
+{
+  "generated_at": "2026-06-02T12:52:47.176Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-the-buccaneer-classic",
+    "slug": "2026-the-buccaneer-classic",
+    "name": "The Buccaneer Classic",
+    "event_name": "The Buccaneer Classic",
+    "start_date": "2026-07-18",
+    "start_time": null,
+    "web_start_time": "6:30 PM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Landisville",
+    "location_state": "PA",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260718-LANDISVILLE-PA.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260718-LANDISVILLE-PA.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/the-buccaneer-classic-ihhwew",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Ticket prices will increase on the day of the event.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 6,
+    "matched_corps_keys": 6,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 2,
+    "skipped_lineup_rows": 4,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 51.162790697674424
+  },
+  "input_signature": "62296fc3d3230e0eaf0c00ce66d3f104f998c82fed9574d36c92a03c9e677009",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 6,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwxa1aal",
+        "corps": "Les Stentors",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "7:09 PM"
+      },
+      {
+        "corps_key": "001j000000iwxaaaa1",
+        "corps": "Raiders",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "7:26 PM"
+      },
+      {
+        "corps_key": "0010a00001iqmzuaah",
+        "corps": "Sunrisers",
+        "division": "All Age Class",
+        "performance_order": 7,
+        "time": "8:00 PM"
+      },
+      {
+        "corps_key": "001jw00000d0zlniaj",
+        "corps": "White Sabers",
+        "division": "All-Age - Open Class",
+        "performance_order": 8,
+        "time": "8:17 PM"
+      },
+      {
+        "corps_key": "bushwackers-drum-corps",
+        "corps": "Bushwackers",
+        "division": "All Age Class",
+        "performance_order": 9,
+        "time": "8:34 PM"
+      },
+      {
+        "corps_key": "0010a00001e2pfhaam",
+        "corps": "Reading Buccaneers",
+        "division": "All Age Class",
+        "performance_order": 10,
+        "time": "8:51 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "0010a00001iqmzuaah",
+        "corps": "Sunrisers",
+        "division": "All Age Class",
+        "performance_order": 7,
+        "time": "8:00 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001jw00000d0zlniaj",
+        "corps": "White Sabers",
+        "division": "All-Age - Open Class",
+        "performance_order": 8,
+        "time": "8:17 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "bushwackers-drum-corps",
+        "corps": "Bushwackers",
+        "division": "All Age Class",
+        "performance_order": 9,
+        "time": "8:34 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0010a00001e2pfhaam",
+        "corps": "Reading Buccaneers",
+        "division": "All Age Class",
+        "performance_order": 10,
+        "time": "8:51 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Buccaneer Banner Brass",
+        "performance_order": 2,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Buccaneers Alumni",
+        "performance_order": 3,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Hawthorne Caballeros Alumni",
+        "performance_order": 11,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-the-buccaneer-classic",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-18",
+      "scored_lineup_rows": 6,
+      "matched_corps_keys": 6,
+      "excluded_lineup_rows": 7,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwxaaaa1",
+      "corps": "Raiders",
+      "city": "Princeton, NJ",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "7:26 PM",
+      "total": 65.462,
+      "GE": 25.926,
+      "Visual": 19.745,
+      "Music": 19.791,
+      "GE1": 12.839,
+      "GE2": 13.087,
+      "VP": 13.274,
+      "VA": 13.335,
+      "CG": 12.88,
+      "MB": 13.309,
+      "MA": 13.06,
+      "MP": 13.212,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.117,
+          "p50": 12.839,
+          "p90": 13.61
+        },
+        "GE2": {
+          "p10": 12.371,
+          "p50": 13.087,
+          "p90": 13.967
+        },
+        "VP": {
+          "p10": 12.51,
+          "p50": 13.274,
+          "p90": 14.075
+        },
+        "VA": {
+          "p10": 12.392,
+          "p50": 13.335,
+          "p90": 13.985
+        },
+        "CG": {
+          "p10": 12.161,
+          "p50": 12.88,
+          "p90": 13.722
+        },
+        "MB": {
+          "p10": 12.373,
+          "p50": 13.309,
+          "p90": 13.963
+        },
+        "MA": {
+          "p10": 12.403,
+          "p50": 13.06,
+          "p90": 13.91
+        },
+        "MP": {
+          "p10": 12.377,
+          "p50": 13.212,
+          "p90": 14.002
+        }
+      },
+      "raw_model_total": 76.541,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 65.25,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-the-buccaneer-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 65.462,
+      "caption_shape_total": 65.721,
+      "total_reconciliation_delta": -0.26,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 7,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 65.721,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxa1aal",
+      "corps": "Les Stentors",
+      "city": "Sherbrooke, QC",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "7:09 PM",
+      "total": 61.559,
+      "GE": 24.837,
+      "Visual": 18.678,
+      "Music": 18.044,
+      "GE1": 12.569,
+      "GE2": 12.268,
+      "VP": 12.28,
+      "VA": 12.511,
+      "CG": 12.566,
+      "MB": 11.926,
+      "MA": 12.23,
+      "MP": 11.932,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 11.933,
+          "p50": 12.569,
+          "p90": 13.476
+        },
+        "GE2": {
+          "p10": 11.536,
+          "p50": 12.268,
+          "p90": 13.118
+        },
+        "VP": {
+          "p10": 11.534,
+          "p50": 12.28,
+          "p90": 13.101
+        },
+        "VA": {
+          "p10": 11.712,
+          "p50": 12.511,
+          "p90": 13.249
+        },
+        "CG": {
+          "p10": 11.822,
+          "p50": 12.566,
+          "p90": 13.332
+        },
+        "MB": {
+          "p10": 11.127,
+          "p50": 11.926,
+          "p90": 12.701
+        },
+        "MA": {
+          "p10": 11.561,
+          "p50": 12.23,
+          "p90": 13.092
+        },
+        "MP": {
+          "p10": 11.059,
+          "p50": 11.932,
+          "p90": 12.669
+        }
+      },
+      "raw_model_total": 73.668,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 58.5,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-the-buccaneer-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 61.558,
+      "caption_shape_total": 65.294,
+      "total_reconciliation_delta": -3.735,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 65.294,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "4 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

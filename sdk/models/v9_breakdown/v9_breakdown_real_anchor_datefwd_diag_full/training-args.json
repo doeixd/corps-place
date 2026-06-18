@@ -1,0 +1,18 @@
+{
+  "dbPath": "dci-relational.db",
+  "sourceModelId": "v9-real-v9_prod_fingerprint_preseason_final2_1779976626982-41dbeb985a04",
+  "trialId": "v9_breakdown_real_anchor_datefwd_diag_full",
+  "epochs": 80,
+  "batchSize": 128,
+  "learningRate": 0.001,
+  "seed": 42,
+  "valMode": "date-forward",
+  "valSplit": 0.1,
+  "dropout": 0.25,
+  "outputReport": "eval_report.json",
+  "evalAnchorModes": [
+    "v9_predicted",
+    "baseline",
+    "partial_synthetic_dropout"
+  ]
+}

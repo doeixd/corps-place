@@ -1,0 +1,35 @@
+{
+  "slug": "fusion-core",
+  "source_urls": [
+    "https://www.fusioncore.org/about",
+    "https://www.fusioncore.org/post/our-plans-for-2025",
+    "https://www.dcxmuseum.org/index.cfm?CorpsID=2527&view=corpslist"
+  ],
+  "before": {
+    "corps_key": "001j000000gbtqyaac",
+    "name": "Fusion Core",
+    "slug": "fusion-core",
+    "display_city": "Central FL",
+    "city": "Windermere",
+    "state": "FL",
+    "country": "USA",
+    "meta_description": "About Fusion Core Corp Central FL as a part of Drum Corps International. View full schedule of Fusion Core`s Upcoming Events and Related News.",
+    "about": "Founded in 2006 by a group of good friends and family who believed in creating a balance between a friendly atmosphere and competitiveness, “fusion” in the corps’ name refers to the process and result of joining two or more things together to form one single entity. Catering to everyone, from those who have never picked up an instrument to seasoned performers, Fusion Core relocated operations in 2025 from its New Jersey roots and is excited to bring DCI All-Age \"Core\" to the Sunshine State."
+  },
+  "updates": {
+    "display_city": "Orlando, FL",
+    "meta_description": "About Fusion Core Corp Orlando, FL as a part of Drum Corps International. View full schedule of Fusion Core`s Upcoming Events and Related News.",
+    "about": "Fusion Core is a competitive, weekend-only drum corps in DCI's All-Age class. Founded in 2006 by a group of friends and family who wanted to balance a family-friendly atmosphere with serious competition, the corps takes its name from the idea of joining different people and experiences into one ensemble. Fusion serves performers ranging from first-time instrumentalists to seasoned marching members, providing an educational performance experience built around excellence, confidence, and community. After many years rooted in Morris County, New Jersey, Fusion announced a strategic move to Florida for the 2025 season; its main competitive operations are now in Orlando, Florida, while the organization continues to maintain ties to its New Jersey roots."
+  },
+  "after": {
+    "corps_key": "001j000000gbtqyaac",
+    "name": "Fusion Core",
+    "slug": "fusion-core",
+    "display_city": "Orlando, FL",
+    "city": "Windermere",
+    "state": "FL",
+    "country": "USA",
+    "meta_description": "About Fusion Core Corp Orlando, FL as a part of Drum Corps International. View full schedule of Fusion Core`s Upcoming Events and Related News.",
+    "about": "Fusion Core is a competitive, weekend-only drum corps in DCI's All-Age class. Founded in 2006 by a group of friends and family who wanted to balance a family-friendly atmosphere with serious competition, the corps takes its name from the idea of joining different people and experiences into one ensemble. Fusion serves performers ranging from first-time instrumentalists to seasoned marching members, providing an educational performance experience built around excellence, confidence, and community. After many years rooted in Morris County, New Jersey, Fusion announced a strategic move to Florida for the 2025 season; its main competitive operations are now in Orlando, Florida, while the organization continues to maintain ties to its New Jersey roots."
+  }
+}

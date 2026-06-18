@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Michael Thompson: full bio + headshot supplied by user from WGI color guard judges page.",
+  "profiles": [
+    {
+      "judgeId": "m-thompson-1",
+      "displayName": "Michael Thompson",
+      "givenName": "Michael",
+      "familyName": "Thompson",
+      "biography": "Michael Thompson is a visual/general-effect adjudicator with over 30 years of marching arts experience as an instructor, designer, clinician, and adjudicator. A performer with the acclaimed Miller's Blackhawks Winter Color Guard of Dayton, Ohio, he instructed and designed for numerous Ohio marching bands and winter guards, including Lexington HS, Scholastic World finalist Northmont HS, and BOA Grand National finalist Westerville South HS. After relocating to the New York City area he performed and choreographed for stage and video productions—Off-Broadway's Shango, the FAMA Awards at Lincoln Center, Soul Solution, MTV, and Sony Entertainment—and presented hip-hop and jazz dance master classes in Tokyo and Italy. He is currently Artistic Director and designer for the Roxbury HS marching band, indoor percussion, and winter color guard, color guard director/designer for JP Stevens HS, guard designer for Verona HS, and a color guard instructor for the Rutgers University Marching Band. He has adjudicated since 2004, serving as a Visual adjudicator for Drum Corps International and a Movement/General Effect adjudicator for Winter Guard International (since 2008).",
+      "photoUrl": "https://www.wgi.org/wp-content/uploads/2023/07/MichaelThompson.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/color-guard/cg-judges/", "label": "WGI Color Guard judges", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Miller's Blackhawks", "role": "Performer (winter color guard)", "sourceUrl": "https://www.wgi.org/color-guard/cg-judges/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / Visual Proficiency / Visual Analysis / GE1; 2013-2025",
+        "facts": [
+          { "fact": "30+ yrs marching arts; DCI Visual / WGI Movement & GE adjudicator since 2004/2008; Roxbury HS artistic director; ex-Miller's Blackhawks; NYC choreographer", "source": "https://www.wgi.org/color-guard/cg-judges/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

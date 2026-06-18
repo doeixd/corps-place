@@ -1,0 +1,341 @@
+{
+  "generated_at": "2026-05-29T12:34:04.338Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-bluecoats-opening-night-community-celebration",
+    "slug": "2026-bluecoats-opening-night-community-celebration",
+    "name": "Bluecoats Opening Night Community Celebration",
+    "event_name": "Bluecoats Opening Night Community Celebration",
+    "start_date": "2026-06-27T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "6:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Alliance",
+    "location_state": "OH"
+  },
+  "readiness": {
+    "lineup_rows": 6,
+    "matched_corps_keys": 6,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 2,
+    "skipped_lineup_rows": 4,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 2.3255813953488373
+  },
+  "input_signature": "e031f674ec067bc2ee1f53f6e97f8c926ec5f038ef28f9aa88115191d32bb60f",
+  "builder_version": "v9-event-prediction-fingerprints-v8",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "25bf7fabb01aaaddbabe8a54fb17bf3cbd1d8cbc917a5462feb5e91d6346b791",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 6,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000hiripaaz",
+        "corps": "Columbus Saints",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "6:15 PM"
+      },
+      {
+        "corps_key": "001j000000cap31aaa",
+        "corps": "Rogues Hollow Regiment",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "6:32 PM"
+      },
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 5,
+        "time": "6:47 PM"
+      },
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 6,
+        "time": "7:02 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsraal",
+        "corps": "Bluecoats",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "7:47 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsraal",
+        "corps": "The Bluecoats",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "8:09 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000hiripaaz",
+        "corps": "Columbus Saints",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "6:15 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000cap31aaa",
+        "corps": "Rogues Hollow Regiment",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "6:32 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 5,
+        "time": "6:47 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 6,
+        "time": "7:02 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Columbus Saints Jr. Flag Line",
+        "performance_order": 3,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "EN-CORPS by EN-RICH-MENT",
+        "performance_order": 7,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Bluecoats Alumni Ensemble Legacy Arc",
+        "performance_order": 8,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "The Blue Way Summer Arts Camp",
+        "performance_order": 11,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Encore - Bluecoats",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Event Concludes",
+        "performance_order": 13,
+        "exclusion_reason": "unresolved_corps"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-bluecoats-opening-night-community-celebration",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-27T00:00:00.000Z",
+      "scored_lineup_rows": 6,
+      "matched_corps_keys": 5,
+      "excluded_lineup_rows": 8,
+      "known_judges": 0,
+      "readiness_status": "lineup_has_unmatched_corps"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwsraal",
+      "corps": "Bluecoats",
+      "city": "Canton, OH",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "7:47 PM",
+      "total": 71.417,
+      "GE": 29.045,
+      "Visual": 21.142,
+      "Music": 21.23,
+      "GE1": 14.49,
+      "GE2": 14.555,
+      "VP": 13.955,
+      "VA": 14.352,
+      "CG": 13.977,
+      "MB": 14.149,
+      "MA": 14.434,
+      "MP": 13.878,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.631,
+          "p50": 14.49,
+          "p90": 15.159
+        },
+        "GE2": {
+          "p10": 13.922,
+          "p50": 14.555,
+          "p90": 15.46
+        },
+        "VP": {
+          "p10": 13.252,
+          "p50": 13.955,
+          "p90": 14.785
+        },
+        "VA": {
+          "p10": 13.499,
+          "p50": 14.352,
+          "p90": 15.012
+        },
+        "CG": {
+          "p10": 13.237,
+          "p50": 13.977,
+          "p90": 14.807
+        },
+        "MB": {
+          "p10": 13.416,
+          "p50": 14.149,
+          "p90": 14.892
+        },
+        "MA": {
+          "p10": 13.819,
+          "p50": 14.434,
+          "p90": 15.342
+        },
+        "MP": {
+          "p10": 13.149,
+          "p50": 13.878,
+          "p90": 14.64
+        }
+      },
+      "raw_model_total": 95.329,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_weight": 0,
+      "caption_shape_total": 71.418,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 2,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.417,
+      "point_estimate_source": "caption_shape_preserving_baseline"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwwsraal",
+      "corps": "The Bluecoats",
+      "city": "Canton, OH",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "8:09 PM",
+      "total": 71.417,
+      "GE": 29.045,
+      "Visual": 21.142,
+      "Music": 21.23,
+      "GE1": 14.49,
+      "GE2": 14.555,
+      "VP": 13.955,
+      "VA": 14.352,
+      "CG": 13.977,
+      "MB": 14.149,
+      "MA": 14.434,
+      "MP": 13.878,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.631,
+          "p50": 14.49,
+          "p90": 15.159
+        },
+        "GE2": {
+          "p10": 13.922,
+          "p50": 14.555,
+          "p90": 15.46
+        },
+        "VP": {
+          "p10": 13.252,
+          "p50": 13.955,
+          "p90": 14.785
+        },
+        "VA": {
+          "p10": 13.499,
+          "p50": 14.352,
+          "p90": 15.012
+        },
+        "CG": {
+          "p10": 13.237,
+          "p50": 13.977,
+          "p90": 14.807
+        },
+        "MB": {
+          "p10": 13.416,
+          "p50": 14.149,
+          "p90": 14.892
+        },
+        "MA": {
+          "p10": 13.819,
+          "p50": 14.434,
+          "p90": 15.342
+        },
+        "MP": {
+          "p10": 13.149,
+          "p50": 13.878,
+          "p90": 14.64
+        }
+      },
+      "raw_model_total": 95.329,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_weight": 0,
+      "caption_shape_total": 71.418,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 2,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.417,
+      "point_estimate_source": "caption_shape_preserving_baseline"
+    }
+  ],
+  "caveats": [
+    "4 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

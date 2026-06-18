@@ -1,0 +1,82 @@
+[
+  {
+    "person_id": "freddy-martin",
+    "display_name": "Freddy Martin",
+    "bio": "Freddy Martin is a DCI Hall of Fame member (inducted 2006) and a former suburban Atlanta band director who founded and directed the Spirit of Atlanta Drum and Bugle Corps from its inception in 1976 through the 1993 season, helping spread drum corps across the South. He also taught brass with Phantom Regiment, later served as brass pedagogy coordinator for The Cavaliers, and has worked as a consultant for Carolina Crown. He has additionally judged band shows and worked as a national clinician.",
+    "photo_url": null,
+    "sources": ["https://www.dci.org/static/freddy_martin", "https://regiment.org/freddy-martin-inducted-to-hall-of-fame/", "https://www.carolinacrown.org/drum-corps/staff"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "michael-james",
+    "display_name": "Michael James",
+    "bio": "Michael James is a color guard choreographer in the marching arts who joined the Crossmen Drum and Bugle Corps color guard instructional team for the 2017 season, where he was described as a renowned choreographer. He works in the color guard / visual area of the activity.",
+    "photo_url": null,
+    "sources": ["https://www.drumcorpsplanet.com/2016/10/crossmen-welcome-michael-james/", "https://dci.org/news/corps-news-and-announcements-20171110"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "stephen-estudillo",
+    "display_name": "Steven Estudillo",
+    "bio": "Steven Estudillo is a visual designer, educator, creative director, and adjudicator in the marching arts who has been active since 2006. A graduate of La Mirada High School and California State University, Fullerton, he performed with both Pacific Crest and The Cavaliers, then served as a visual instructor for both corps in 2009, as Visual Designer for Pacific Crest (2010-2012, 2015) and later Creative Director, and as visual caption head for The Cavaliers (2011-2015). Since 2022 he has served as Visual Designer and Visual Director at Phantom Regiment, and he also teaches at Southern California high schools and for Pulse Percussion.",
+    "photo_url": "https://pacific-crest.org/wp-content/uploads/2015/09/Steven-Estudillo-300x300.jpeg",
+    "sources": ["https://pacific-crest.org/2014/09/steven-estudillo/", "https://regiment.org/phantom-regiment-bolsters-visual-team/", "https://www.ayalabac.org/estudillo"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "andrew-ebert",
+    "display_name": "Andy Ebert",
+    "bio": "Andy Ebert is a designer and visual instructor in the marching arts, based in Greenville, SC, with a secondary education degree from Western Michigan University. He performed with the Glassmen and the Blue Devils (aging out in 2004), then served as visual caption head for Carolina Crown (2007-2011), where the corps placed top-4 in visual each year. He has worked as a designer for the Madison Scouts, Troopers (2013), and the Crossmen (Visual Designer, 2019), and also designs for WGI World Class winter guard and percussion ensembles.",
+    "photo_url": "https://images.squarespace-cdn.com/content/v1/5e7f64029795e7339c8b85e6/1585578107719-GBSLDBSQ48K6C9XT66OV/31317689_748837717518_2718081847253794816_o.jpg",
+    "sources": ["https://www.andrewebert.me/about", "https://www.crossmen.org/news/2024-color-guard-staff-announced"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "james-gow",
+    "display_name": "James Gow",
+    "bio": "James Gow is a Southern California-based visual designer and instructor who began marching at Vista Murrieta High School, then performed with Pacific Crest (2005-2006) and the Blue Devils (2007-2010). On staff, he has been a visual instructor for the Sacramento Mandarins (2011), The Cadets (2012), and the Blue Devils (2013-2018), and a drill designer for Southwind (2017-2018). He has served as Visual Designer for the Blue Knights since 2018 and designs for numerous high school and winter percussion programs.",
+    "photo_url": "https://ascendperformingarts.org/wp-content/uploads/2018/12/James-Gow.jpg",
+    "sources": ["https://ascendperformingarts.org/staff/james-gow/", "https://www.pyware.com/james-gow/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "jaycee-wilson",
+    "display_name": "Jaycee Wilson",
+    "bio": "Jaycee Wilson is a color guard educator and designer who serves as Color Guard Caption Head for the Bluecoats Drum & Bugle Corps (2024), having previously been the corps' Assistant Caption Head (2014-2017) and Lead Technician (2022-2023). He has also served as Color Guard Caption Head for the Blue Knights and worked as designer/choreographer for WGI World finalist guard Imbue (2010-2020). He is based in the Salt Lake City, Utah area and teaches American Fork High School color guard.",
+    "photo_url": null,
+    "sources": ["https://bluecoats.com/news/2023/9/13/jaycee-wilson-to-lead-colorguard-caption-kathy-pearson-amp-samia-vanderkolff-promoted-to-new-roles", "https://ascendperformingarts.org/bk-announce-color-guard-leadership-2020/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "bob-chreste",
+    "display_name": "Bob Chreste",
+    "bio": "Bob Chreste is a brass and visual instructor who serves on the brass educational team (Assistant Brass Caption Head) of the Bluecoats Drum & Bugle Corps. He spent nine years on the brass faculty of Carolina Crown, where the brass section won multiple Jim Ott Memorial High Brass Awards, was brass caption head for Santa Clara Vanguard in 2008, and visual caption head for The Cadets in 2016. He holds a Bachelor of Music from the University of Houston (2000) and a Master of Music from Sam Houston State University (2003), and adjudicates for Bands of America, WGI, and TMAA.",
+    "photo_url": null,
+    "sources": ["https://bluecoats.com/news/2022/1/18/brass-educational-team-continues-to-grow", "https://www.ultimatedrillbook.com/divi_overlay/bob-chreste/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "dylan-toombs",
+    "display_name": "Dylan Toombs",
+    "bio": "Dylan Toombs is a brass educator who serves as Brass Coordinator for the Bluecoats Drum & Bugle Corps and brass consultant for Spirit of Atlanta. He previously marched with and taught Carolina Crown (named brass member of the year, 2014) and was Assistant Brass Caption Head/Manager for The Cavaliers; over his career he has been part of five Jim Ott High Brass awards and a 2013 DCI World Championship. He holds a Music Performance degree (euphonium) from the University of North Texas, studied under Dr. Brian Bowman, co-founded Collective Marching Design, and performs as co-principal euphonium with the Dallas Brass Band.",
+    "photo_url": "https://static.wixstatic.com/media/a7f745_acd4d3231b5b4a3292e1de887a41bfb7~mv2.jpg",
+    "sources": ["https://www.thedallasbrassband.org/dylan-toombs-bio", "https://bluecoats.com/news/2022/10/12/new-educators-join-brass-team-alongside-many-returning-team-members"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "john-meehan",
+    "display_name": "John Meehan",
+    "bio": "John Meehan is a brass arranger, instructor, and DCI Hall of Fame member (inducted 2019) best known for his work with the Blue Devils, where he joined the brass staff in 1994 and served as brass caption head from 2006 to 2019, leading the corps to numerous DCI World Championships and Jim Ott Best Brass awards. A 1986 Blue Devils soprano soloist and World/B/C Class member, he holds many world championship titles as performer and instructor and has also worked with the Troopers, Pacific Crest, and Japan's Yamato. He is currently Director of Community Arts Programs for BD Performing Arts and brass arranger/caption advisor for the Blue Devils, and was inducted into the World Drum Corps Hall of Fame (2019) and Buglers Hall of Fame (2016).",
+    "photo_url": "https://images.dci.org/wp-content/uploads/2025/01/John-Meehan.webp",
+    "sources": ["https://www.dci.org/hall-of-fame/john-meehan-dci-hall-of-fame/", "https://www.bluedevils.org/programs/a-corps/seasons/?programID=1&season=2017&module=staff"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "james-lazaro",
+    "display_name": "James Lazaro",
+    "bio": null,
+    "photo_url": null,
+    "sources": ["https://pubhtml5.com/xada/nujr/basic/51-100"],
+    "confidence": "LOW"
+  }
+]

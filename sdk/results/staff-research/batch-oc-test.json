@@ -1,0 +1,36 @@
+[
+ {
+  "person_id": "alan-chrzanowski",
+  "display_name": "Alan Chrzanowski",
+  "bio": "Alan Chrzanowski performed with The Cavaliers in 2007 and 2008, then joined their visual staff in 2009, later serving as Visual Caption Head in 2018. He was a Movement Instructor for Pacific Crest. Chrzanowski is a high school band director at South Grand Prairie High School and an active drill designer. He holds a Bachelor's degree in Music Education from the University of Texas at Arlington.",
+  "photo_url": null,
+  "sources": [
+   "https://pacific-crest.org/2018/11/alan-chrzanowski/",
+   "https://www.sgpwarriorband.org/directors"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "alexander-chez",
+  "display_name": "Al Chez",
+  "bio": "Alan \"Al\" Chez began his drum corps career at age 9 with the Saints in 1969 and later marched as a member and soloist of the Garfield Cadets. He has served as a brass and visual instructor for numerous corps including the Crossmen (on brass staff since 2000), the Cadets, and Jersey Surf. Outside of drum corps, he was the longtime trumpet player on the Late Show with David Letterman for over 15 years.",
+  "photo_url": "https://hub.yamaha.com/wp-content/uploads/2026/03/alan_chez_300x300.jpg",
+  "sources": [
+   "https://www.crossmen.org/program-staff/al-chez",
+   "https://hub.yamaha.com/artists/alan-chez/",
+   "https://cavaliers.org/staff-bod/alan-chez"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "alexander-szabo",
+  "display_name": "Alex Szabo",
+  "bio": "Alex Szabo marched mellophone with the Carolina Crown Drum and Bugle Corps from 2010 to 2014, winning the 2013 DCI World Championship. He has been a trumpet instructor for the Bluecoats since the 2022 season and previously worked with the Crossmen Drum and Bugle Corps. He served as a visual instructor for Violet Crown Independent Percussion and as a marching technician at James Bowie High School.",
+  "photo_url": "https://i0.wp.com/ssmsband.com/wp-content/uploads/2023/08/IMG_2282.jpg?resize=348%2C491&ssl=1",
+  "sources": [
+   "https://alexszabo.mymusicstaff.com/About-Alex",
+   "https://ssmsband.com/alex-szabo-trumpet/"
+  ],
+  "confidence": "HIGH"
+ }
+]

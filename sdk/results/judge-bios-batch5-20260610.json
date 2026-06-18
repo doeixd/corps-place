@@ -1,0 +1,291 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 52-64 by assignment count (skipping the 'j-missing-1' data artifact). Sources: MFA clinician pages, WDCHOF, Tapspace, DCI panels, school/org bios; Cloudflare/JS pages rendered via puppeteer. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "j-webb-1",
+      "displayName": "Jay Webb",
+      "givenName": "Jay",
+      "familyName": "Webb",
+      "biography": "Jay Webb is a music/general-effect adjudicator and the Director of Bands at Avon High School in Avon, Indiana, since 1993. A graduate of Butler University (B.M.E., 1991), he performed with the award-winning drumline of the Bridgemen drum and bugle corps and with the Indianapolis Symphony Orchestra, and is a founding member of the Indiana Percussion Association. He adjudicates for Bands of America, Drum Corps International, and indoor percussion competitions, serving in General Effect and Music Analysis captions at DCI World Championships.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/WebbJayResize.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/jay-webb/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Bridgemen", "role": "Performer (drumline)", "sourceUrl": "https://education.musicforall.org/clinician/jay-webb/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / GE2 / Music Percussion; 2013-2025",
+        "facts": [
+          { "fact": "Avon HS Director of Bands since 1993; Butler BME 1991; Bridgemen drumline; Indiana Percussion Assoc founder; DCI/BOA judge", "source": "https://education.musicforall.org/clinician/jay-webb/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "b-jones-1",
+      "displayName": "Bruce Jones",
+      "givenName": "Bruce",
+      "familyName": "Jones",
+      "biography": "Bruce Jones is a visual adjudicator with over 35 years in the pageantry arts as a performer, designer, instructor, and consultant for many national drum and bugle corps, marching bands, and winter color guards, many of them DCI, DCA, BOA, and WGI finalists. A University of Pittsburgh education graduate based in Dayton, Ohio, he has more than 20 years of adjudication experience with Drum Corps International, Music for All, Drum Corps Japan, and Drum Corps Europe, judging DCI finals, semifinals, and quarterfinals over 15 times and serving as a Visual Proficiency judge at DCI World Championships.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/judge/bruce-jones/", "label": "WGI judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / GE1 / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "35+ yrs; Univ. of Pittsburgh; 20+ yrs DCI adjudication, finals 15+ times; Dayton OH; Visual Proficiency 2025", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" },
+          { "fact": "WGI judge page is a caption-only stub; no public headshot found - photoUrl null", "source": "https://www.wgi.org/judge/bruce-jones/", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-wilson-1",
+      "displayName": "Jeff Wilson",
+      "givenName": "Jeff",
+      "familyName": "Wilson",
+      "biography": "Jeff Wilson is a percussion/music adjudicator for Drum Corps International, judging the Music Percussion and Music Analysis captions at DCI World Championships.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI percussion/music judge (panels confirmed)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Very common name; no distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-kelly-1",
+      "displayName": "Mickey Kelly",
+      "givenName": "Mickey",
+      "familyName": "Kelly",
+      "biography": "Michael 'Mickey' Kelly is a general-effect/color guard adjudicator and World Drum Corps Hall of Fame member who has dedicated more than 50 years to the drum corps activity. He produced championship color guard and drill for several corps, including drill design for the Shoreliners and five-time state champion Bengal Lancers and championship guards for the Hawthorne Caballeros and Connecticut Hurricanes, and served as visual guard caption head for the 27th Lancers, Hawthorne Muchachos, Hawthorne Caballeros, and Bushwackers. He has served as a general-effect visual guard judge for DCA, DCI, and the East Coast Judges Association, and was formerly chief judge coordinator for WGI, a key participant in developing the subjective judging system still used today.",
+      "photoUrl": "https://www.wdchof.org/wp-content/uploads/2017/07/kelly-300x300.jpg",
+      "alternateNames": ["Michael Kelly"],
+      "externalLinks": [
+        { "url": "https://www.wdchof.org/members/kelly-michael/", "label": "World Drum Corps Hall of Fame", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Hawthorne Caballeros", "role": "Visual Guard Caption Head / designer", "sourceUrl": "https://www.wdchof.org/members/kelly-michael/" },
+        { "corpsName": "Connecticut Hurricanes", "season": "1990-1994", "role": "Drill designer / show coordinator", "sourceUrl": "https://www.wdchof.org/members/kelly-michael/" }
+      ],
+      "seasonHighlights": [
+        { "title": "World Drum Corps Hall of Fame member", "sourceUrl": "https://www.wdchof.org/members/kelly-michael/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "WDCHOF; 50+ yrs; guard/drill designer Shoreliners/Bengal Lancers/Hawthorne Caballeros/CT Hurricanes; GE visual guard judge DCA/DCI/ECJA; former WGI chief judge coordinator", "source": "https://www.wdchof.org/members/kelly-michael/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "p-haines-1",
+      "displayName": "Phillip Haines",
+      "givenName": "Phillip",
+      "familyName": "Haines",
+      "biography": "Phillip Haines is a brass/music adjudicator for Drum Corps International and Bands of America, judging the Music Brass and Music Analysis captions at DCI World Championships. A longtime music educator, he has been a band director in the Las Vegas area (Pinecrest, Sierra Vista, and Las Vegas High Schools) and an associate professor in the music education program at UNLV, and is a recipient of a Nevada Music Educators Association Lifetime Achievement award.",
+      "photoUrl": null,
+      "alternateNames": ["Phil Haines"],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI Music Brass judge (panels confirmed); Nevada music educator (Las Vegas HS / UNLV) per search", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Nevada-educator identity not fully cross-confirmed against the DCI brass judge; no public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-davila-1",
+      "displayName": "Julie Davila",
+      "givenName": "Julie",
+      "familyName": "Davila",
+      "biography": "Julie Davila is a renowned percussionist, educator, and adjudicator who was appointed Drum Corps International's Judge Administrator at the 2025 DCI Annual Meeting. Inducted into the WGI Percussion Hall of Fame in 2014, she has spent more than 30 years in the marching arts as a performer, educator, designer, and judge, and served as President of the Percussive Arts Society (2023-2024). She is the arranger and instructor for the Middle Tennessee State University Band of Blue Drumline and an adjunct professor of percussion at MTSU, a member of the CAIXA TRIO chamber ensemble, a University of North Texas alumna, and the author of numerous published percussion works. She is an endorser for Pearl, Innovative Percussion, Zildjian, Grover Pro, and Evans.",
+      "photoUrl": "https://tapspace.com/wp-content/uploads/2024/06/DavilaJulie-1080px.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/dci-appoints-julie-davila-as-new-judge-administrator/", "label": "DCI: appointed Judge Administrator", "kind": "article" },
+        { "url": "https://tapspace.com/artist/julie-davila/", "label": "Tapspace artist bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [
+        { "title": "Appointed DCI Judge Administrator", "season": "2025", "sourceUrl": "https://www.dci.org/news/dci-appoints-julie-davila-as-new-judge-administrator/" },
+        { "title": "WGI Percussion Hall of Fame inductee", "season": "2014", "sourceUrl": "https://tapspace.com/artist/julie-davila/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI Judge Administrator (2025); WGI Percussion HOF 2014; PAS President 2023-24; MTSU; CAIXA TRIO; UNT", "source": "https://tapspace.com/artist/julie-davila/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-denton-1",
+      "displayName": "Joel Denton",
+      "givenName": "Joel",
+      "familyName": "Denton",
+      "biography": "Joel L. Denton is a music/general-effect adjudicator, arranger, and educator who served as Director of Bands at Ooltewah High School (TN) for 37 years before retiring in 2018, leading the band to performances in the Tournament of Roses and Macy's Thanksgiving Day parades. A University of Tennessee graduate, he has been music arranger, program coordinator, and consultant for many corps including the Empire Statesmen, Syracuse Brigadiers, Bayonne Bridgemen, and Phantom Regiment, and adjudicates for Music for All/Bands of America and Drum Corps International. He received the John Philip Sousa Foundation Legion of Honor in 2015, served as Adjunct Professor at Lee University (2021-2024), and is Tennessee State Chair for the National Band Association.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2017/06/Joel-Denton-Headshot-Web-2022.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/joel-denton/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://connselmer.com/education/clinicians/joel-denton", "label": "Conn-Selmer clinician", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Phantom Regiment", "role": "Arranger / Consultant", "sourceUrl": "https://education.musicforall.org/clinician/joel-denton/" }
+      ],
+      "seasonHighlights": [
+        { "title": "John Philip Sousa Foundation Legion of Honor", "season": "2015", "sourceUrl": "https://education.musicforall.org/clinician/joel-denton/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Brass / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "Ooltewah HS Director of Bands 37 yrs; Phantom Regiment/Empire Statesmen consultant; Sousa Legion of Honor 2015; DCI/BOA judge", "source": "https://education.musicforall.org/clinician/joel-denton/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-mcgahey-1",
+      "displayName": "Mark McGahey",
+      "givenName": "Mark",
+      "familyName": "McGahey",
+      "biography": "Mark McGahey is a music/general-effect adjudicator in his 36th year as a music educator, currently Assistant Director of Fine Arts in Birdville ISD (North Richland Hills, TX) after 26 years as Director of Bands at Keller High School, where the band was a 2015 BOA Grand National finalist and Sudler Shield recipient. He has adjudicated nationwide, most notably for Drum Corps International and Bands of America, judging at DCI World Championships from 2013 to 2023 in the Brass, Music Analysis, and General Effect captions.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2022/10/Mark-McGahey-Headshot-Web-2022.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/mark-mcgahey/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Brass / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "36-yr educator; Birdville ISD Asst Dir Fine Arts, former Keller HS Dir of Bands 26 yrs; DCI judge 2013-2023", "source": "https://education.musicforall.org/clinician/mark-mcgahey/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "p-madden-1",
+      "displayName": "Phil Madden",
+      "givenName": "Phil",
+      "familyName": "Madden",
+      "biography": "Phil Madden is a visual adjudicator and judge administrator based in Portland, Oregon, and a design architect specializing in aviation, military, and educational design. He has instructed and adjudicated pageantry events for over 30 years, serving as the Visual Judging Coordinator for Drum Corps International, Chief Judge / World Class Administrator / General Effect and Ensemble Coordinator for Winter Guard International, and adjunct Chief Judge for Bands of America. He has been visual coordinator for the Capital Regiment, San Jose Raiders, Valley Fever, and Seattle Cascades drum corps and initiated winter guard programs including James Logan High School. He holds a BA in Architecture from the University of Pittsburgh and a Master of Architecture from Virginia Tech.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/MaddenPhilResize.png",
+      "alternateNames": ["Phillip Madden"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/phil-madden/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.wgi.org/judge/phil-madden/", "label": "WGI judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Seattle Cascades", "role": "Visual Coordinator", "sourceUrl": "https://education.musicforall.org/clinician/phil-madden/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / GE1 / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI Visual Judging Coordinator; WGI Chief Judge; BOA adjunct chief judge; Portland OR architect; Pittsburgh + Virginia Tech degrees", "source": "https://contestdynamics.com/printjudgebio.php?JudgeID=13", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-raichle-1",
+      "displayName": "Chris Raichle",
+      "givenName": "Chris",
+      "familyName": "Raichle",
+      "biography": "Chris Raichle is a color guard and general-effect adjudicator for Drum Corps International, serving at DCI World Championships in the Color Guard and General Effect captions (including Color Guard in 2018 and General Effect at the 2024 All-Age World Championship).",
+      "photoUrl": null,
+      "alternateNames": ["Christopher Raichle"],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2024-dci-world-championship-adjudication-panels/", "label": "DCI 2024 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / Visual Analysis / Visual Proficiency / GE1; 2013-2025",
+        "facts": [
+          { "fact": "DCI color guard/GE judge (2018 CG, 2024 GE1 All-Age)", "source": "https://www.dci.org/news/2024-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "No distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "p-furnari-1",
+      "displayName": "Peter Furnari",
+      "givenName": "Peter",
+      "familyName": "Furnari",
+      "biography": "Peter L. Furnari is a percussionist, instructor, and adjudicator with over 40 years of experience, specializing in arranging for marching band, drum corps, and indoor percussion across North America, the UK, and Europe. He has been the percussion arranger for the UMass Lowell Marching Band since 1983 and was its director of marching percussion from 1983 to 2007, and was program coordinator and percussion arranger for the Spartans drum and bugle corps. He joined the Massachusetts Judges Association in 1976 and has judged for Drum Corps International since 1983 and Winter Guard International since 2000, serving as a Music Percussion judge at DCI World Championships. He was inducted into the Massachusetts Drum Corps and Music Educators Hall of Fame in 2009.",
+      "photoUrl": null,
+      "alternateNames": ["Peter L. Furnari"],
+      "externalLinks": [
+        { "url": "https://www.massjudge.org/peter-furnari", "label": "Massachusetts Judges Association", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Spartans", "role": "Program Coordinator / Percussion Arranger", "sourceUrl": "https://www.massjudge.org/peter-furnari" }
+      ],
+      "seasonHighlights": [
+        { "title": "Massachusetts Drum Corps and Music Educators Hall of Fame", "season": "2009", "sourceUrl": "https://www.massjudge.org/peter-furnari" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "40+ yrs; UMass Lowell percussion arranger since 1983; Spartans; DCI judge since 1983; MA Drum Corps & Music Educators HOF 2009", "source": "https://www.massjudge.org/peter-furnari", "confidence": "HIGH" },
+          { "fact": "Source page now moved/deleted; no public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-waymire-1",
+      "displayName": "Mark Waymire",
+      "givenName": "Mark",
+      "familyName": "Waymire",
+      "biography": "Dr. Mark Waymire is a music/general-effect adjudicator, educator, and pageantry designer with over thirty years of experience—fifteen in public schools and fifteen as a university professor, most recently in music education at the University of Southern Mississippi. His drum corps career began as a member of the Phantom Regiment, where he later spent 1987-1992 on the brass and visual staff; he joined the Madison Scouts in 2001 and was brass caption head from 2003 to 2006, was brass caption head for the Glassmen in 2007, and served as Director of Programming and Education for Spirit of Atlanta (2009-2013). He has adjudicated for DCI for over a decade and is an active judge for WGI, BOA, and several state associations; in 2024 he joined the Madison Scouts' design team as program coordinator.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/Mark-Waymire-Headshot_web.png",
+      "alternateNames": ["Dr. Mark Waymire"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/dr-mark-waymire/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.forwardperformingarts.org/madison-scouts-team-members/mark-waymire", "label": "Madison Scouts design team", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Madison Scouts", "season": "2003-2006", "role": "Brass Caption Head (program coordinator 2024)", "sourceUrl": "https://www.forwardperformingarts.org/madison-scouts-team-members/mark-waymire" },
+        { "corpsName": "Spirit of Atlanta", "season": "2009-2013", "role": "Director of Programming and Education", "sourceUrl": "https://education.musicforall.org/clinician/dr-mark-waymire/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "USM music ed professor; Phantom Regiment alum/staff; Madison Scouts brass caption head 2003-06 & 2024 program coordinator; Spirit of Atlanta; DCI judge 10+ yrs", "source": "https://education.musicforall.org/clinician/dr-mark-waymire/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "person_id": "tony-nunez",
+    "display_name": "Tony Nuñez",
+    "bio": "Tony Nuñez is a marching percussion and sound design specialist based in Southern California. He is the Music Coordinator and battery arranger for the Mandarins Drum and Bugle Corps and a sound designer with Phantom Regiment, and has held arranging, design, and instructional roles with corps including the Blue Knights, Santa Clara Vanguard, and Music City Mystique. A former tenor-line member of the Santa Clara Vanguard, he is a Yamaha Performing Artist, a member of the WGI Percussion Advisory Board, and an Apple Certified Master Pro in Logic Studio.",
+    "photo_url": "https://hub.yamaha.com/wp-content/uploads/2026/03/tony_nunez_300x300.jpg",
+    "sources": ["https://regiment.org/tony-nunez/", "https://hub.yamaha.com/artists/tony-nunez/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "ian-lewis",
+    "display_name": "Ian Lewis",
+    "bio": "Ian Lewis is a color guard instructor and designer who has worked across several DCI corps: the Madison Scouts (2012-2017), the Crossmen (2018-2019), and currently the Bluecoats. In WGI he has worked with ensembles including Paramount, Reverie, Georgia State University, and Origins World Guard. He holds a master's degree in music education from the University of West Georgia and is the color guard director at Flower Mound High School in Texas.",
+    "photo_url": null,
+    "sources": ["https://www.crossmen.org/program-staff/ian-lewis"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "james-moore",
+    "display_name": "Jim Moore",
+    "bio": "Jim Moore is a color guard designer and choreographer inducted into the DCI Hall of Fame in 2025. He began in the marching arts with the Spirit of Atlanta color guard in 1985, became a principal dancer with the Georgia Ballet, and designed for The Cadets (1991-1995), Carolina Crown (from 2005), the Madison Scouts, and the Bluecoats (2013-present), serving as the Bluecoats' guard designer, choreographer, and guard caption supervisor. He won an Emmy Award for choreography and was associated with the touring production Blast!, which received a Tony Award.",
+    "photo_url": "https://images.dci.org/wp-content/uploads/2025/04/Jim-Moore.jpg",
+    "sources": ["https://dci.org/static/jim-moore-dci-hall-of-fame", "https://bluecoats.com/news/2016/10/2017-staff-additions-enhancements"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "josh-brenneis",
+    "display_name": "Josh Brenneis",
+    "bio": "Josh Brenneis is a visual clinician, adjudicator, and drill designer from Coral Springs, Florida. He performed with Magic of Orlando (2004) and The Cadets (2006-2007), and went on to serve as Visual Caption Head of The Cadets (2020-2023) and as an instructor with the Crossmen since 2011. He joined Santa Clara Vanguard as Lead Visual Instructor in 2024, returning in 2025 as Visual Instructor/Consultant, and also serves as Visual Caption Head of The Troopers. With WGI's STRYKE Wynds since 2016, he became visual designer in 2022 and won World Championships in 2023, 2024, and 2025.",
+    "photo_url": "https://www.scvanguard.org/wp-content/uploads/2023/11/Josh-Brenneis.jpg",
+    "sources": ["https://www.scvanguard.org/staff/josh-brenneis/", "https://cadets.org/josh-brenneis"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "laura-gasper",
+    "display_name": "Laura Gasper",
+    "bio": "Laura Gasper began her color guard career at Carroll High School in 1998 and marched winter guard with Crown Guard (2001) and Pride of Cincinnati (2003-2005), and was a member of Carolina Crown drum corps from 2000-2005, serving as captain her final two years before aging out. As an instructor she has worked with the color guard staffs of Crossmen, Troopers, Madison Scouts, and Bluecoats before joining Santa Clara Vanguard in 2014, where she serves as Assistant Color Guard Caption Manager. She holds a degree in Studio Art-Ceramics from the Herron School of Art and Design and is co-owner of the Gasper Arts Center in Florida.",
+    "photo_url": "https://www.scvanguard.org/wp-content/uploads/2022/08/Laura-Gasper_Square-1024x1024-1.jpeg",
+    "sources": ["https://www.scvanguard.org/staff/laura-gasper/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "melannie-stakely",
+    "display_name": "Melannie Stakely",
+    "bio": "Melannie Stakely is a percussion educator who served as Staff Coordinator and Bass Drum Instructor for Pacific Crest. She performed with Mystical, Blue Devils, Black Knights Indoor Percussion, and Pulse Percussion, and has taught at Gold, Impulse, Mandarins, Pulse (POW Percussion), and Pacific Crest. She holds a Bachelor of Arts in Child Development with an emphasis in Elementary Subject Matter from California State University, Los Angeles.",
+    "photo_url": "https://pacific-crest.org/wp-content/uploads/2013/11/Melannie-Stakely.jpg",
+    "sources": ["https://pacific-crest.org/2013/11/melannie-stakely/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "michael-martin",
+    "display_name": "Mike Martin",
+    "bio": "Michael (Mike) Martin is a trumpet player and drum corps brass educator who earned bachelor's and master's degrees in trumpet performance from Northwestern University, studying with Barbara Butler and Charles Geyer. He won the 2006 National Trumpet Competition and was the first brass player in 25 years to win the Northwestern University Concerto Competition. In July 2010 he joined the Boston Symphony Orchestra and Boston Pops as third/utility trumpet. In the marching arts he has served as a brass instructor for Phantom Regiment and as brass arranger/staff for The Cavaliers and Spirit of Atlanta, and in 2023 joined the Carolina Crown brass team.",
+    "photo_url": "https://images.squarespace-cdn.com/content/v1/569d08a525981de028b5b00f/fe7e4332-0aff-495e-bed3-67ebdf5ab53d/M+Martin+Headshot+1.JPG",
+    "sources": ["https://regiment.org/michael-martin/", "https://regiment.org/pr-alum-mike-martin-earns-spot-in-boston-symphony/", "https://www.bso.org/profiles/michael-martin"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "sheldon-apo",
+    "display_name": "Sheldon Apo",
+    "bio": "Sheldon Apo is a color guard instructor in the marching arts. He leads the Sacramento Mandarins color guard for the 2025 season alongside Anna Smith.",
+    "photo_url": null,
+    "sources": ["https://www.mandarins.org/post/mandarins-2025-color-guard-staff"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "clark-hunt",
+    "display_name": "Clark Hunt",
+    "bio": "Clark Hunt is a brass educator and trumpet performer who has taught extensively in Drum Corps International. He served as High Brass Coordinator and Co-Caption Supervisor with Spirit of Atlanta (2011-2013, 2016-2017), as a brass technician and High Brass Coordinator with The Cavaliers (2014-2022), and is currently High Brass Coordinator with the Sacramento Mandarins. He holds a bachelor's in music education from Jacksonville State University and a master's in jazz studies from Georgia State University, was a doctoral candidate in trumpet performance at Indiana University's Jacobs School of Music, and serves as Assistant Director of Bands/Trumpet at Campbellsville University.",
+    "photo_url": "https://www.campbellsville.edu/_resources/images/cu/2022/08/image006.jpeg",
+    "sources": ["https://www.campbellsville.edu/campus-life/campus-resources/faculty/clark-n-hunt.html", "https://www.clarkhuntmusic.com/bio"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "evan-vandoren",
+    "display_name": "Evan VanDoren",
+    "bio": "Evan VanDoren is a brass arranger, composer, and educator who has been involved in drum corps since 2001. He marched with Carolina Crown, serving as drum major in 2008, and has been on the brass staff of Carolina Crown, the Madison Scouts, and Blue Stars; in 2020 he joined Santa Clara Vanguard as brass arranger. He holds a bachelor's in music education with honors from Butler University, formerly directed bands at Cedar Park High School (Texas), and was a 2025 national finalist for The American Prize in Composition.",
+    "photo_url": null,
+    "sources": ["https://www.scvanguard.org/2020-brass-staff/", "https://www.evanvandoren.com/about/", "https://www.flomarching.com/articles/6561271-scv-adds-vandorens-and-more-to-2020-brass-staff"],
+    "confidence": "HIGH"
+  }
+]

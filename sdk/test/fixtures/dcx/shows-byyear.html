@@ -1,0 +1,3912 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="-1">
+	
+	
+	    <title>DCX - Drum Corps Xperience</title>
+	
+	<link rel="icon" href="data:,">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+	
+	<link href="header/css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="header/css/plugins/blueimp/css/blueimp-gallery.min.css" rel="stylesheet"> 
+	<link href="header/css/animate.css" rel="stylesheet">
+	
+	<link href="header/css/style.css" rel="stylesheet">
+	
+
+	
+	<script src="header/js/jquery-2.1.1.js"></script>
+	<script src="header/js/jquery-ui-1.10.4.min.js"></script>
+	<script src="header/js/bootstrap.min.js"></script>
+	<script src="header/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	<script src="header/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="header/js/plugins/validate/jquery.validate.min.js"></script>
+	
+	
+	<link href="header/css/plugins/footable/footable.core.bootstrap.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.core.standalone.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.editing.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.filtering.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.paging.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.sorting.css" rel="stylesheet">
+	<script src="header/js/plugins/footable/footable.core.js"></script>
+	<script src="header/js/plugins/footable/footable.editing.js"></script>
+	<script src="header/js/plugins/footable/footable.filtering.js"></script>
+	<script src="header/js/plugins/footable/footable.paging.js"></script>
+	<script src="header/js/plugins/footable/footable.sorting.js"></script>
+	<script src="header/js/plugins/footable/footable.state.js"></script>
+
+	
+	<link href="header/css/plugins/dropzone/dropzone.css" rel="stylesheet">
+	<script src="header/js/plugins/dropzone/dropzone.js"></script>
+
+	
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+	
+	
+	
+		<script src="header/js/inspinia.js"></script>
+		<script src="header/js/plugins/pace/pace.min.js"></script>
+	
+
+		
+	<script src="swipebox-master/src/js/jquery.swipebox.js"></script>
+	<link rel="stylesheet" href="swipebox-master/src/css/swipebox.css">
+
+
+
+	
+	<link href="fullcalendar/fullcalendar.css" rel="stylesheet">
+	<script src="header/js/plugins/fullcalendar/moment.min.js"></script>
+	<script src="fullcalendar/fullcalendar.min.js"></script>
+
+		
+	<link href="https://cdn.jquery.app/jqueryscripttop.css" rel="stylesheet" type="text/css">
+	
+	
+	<script src="header/editor/editor.js"></script>
+	
+	<link href="header/editor/editor.css" type="text/css" rel="stylesheet"/>
+	
+	
+	<link href="header/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	<script src="header/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+	
+	
+	<link href="header/themes/blue/sitestyle.css" rel="stylesheet">
+<style>
+#yourimage {
+	width:100%;
+}
+</style>
+
+<style>
+#posts {
+    margin: 0 auto;
+    padding: 0;
+    width: auto;
+    list-style-type: none;
+}
+
+article h1 {
+    text-align: left;
+    border-bottom: 1px dotted #E3E3E3;
+}
+
+article {
+    background:white;
+	padding:10px 10px;
+	margin-bottom: 10px;
+	margin-top:10px;
+}
+
+#loading {
+    display: none;
+    text-align: center;
+}
+</style>
+
+
+	
+	<script type="text/javascript">
+		var AccordionPanelIDList = '';
+		var AccordionPanelIDList2 = '';
+		
+		// Clear the reusable modal window on close, so the next call can
+		$('body').on('hidden.bs.modal', '.modal', function () {
+			$('#reusableModal').removeData('bs.modal');
+		});
+	
+		// Properly adjusts chevron icon
+		function adjustChevron(whichElement) {
+			if (whichElement.className.indexOf('chevron-down')!=-1) { 
+				whichElement.className = whichElement.className.replace("chevron-down", "chevron-up");
+			} else { 
+				whichElement.className = whichElement.className.replace("chevron-up", "chevron-down");
+			}
+		}
+	
+		// Properly adjusts chevron icon
+		function adjustChevron2(whichElement,whichPanelName) {
+			if (AccordionPanelIDList!='') {
+				var tempArray = AccordionPanelIDList.split(',');
+				for (var i=0;i<tempArray.length;i++) {
+					if (whichPanelName.toUpperCase()!=tempArray[i].toUpperCase()) {
+						document.getElementById(tempArray[i]+'_i').className = document.getElementById(tempArray[i]+'_i').className.replace("chevron-up", "chevron-down");
+					} else {
+						if (whichElement.className.indexOf('chevron-down')!=-1) { 
+							whichElement.className = whichElement.className.replace("chevron-down", "chevron-up");
+						} else { 
+							whichElement.className = whichElement.className.replace("chevron-up", "chevron-down");
+						}
+					}
+				}
+			}
+		}
+	
+		// Properly adjusts chevron icon
+		function adjustChevron3(whichElement,whichPanelName,executeExtra) {
+			if (AccordionPanelIDList2!='') {
+				var tempArray = AccordionPanelIDList2.split(',');
+				for (var i=0;i<tempArray.length;i++) {
+					if (whichPanelName.toUpperCase()!=tempArray[i].toUpperCase()) {
+						document.getElementById(tempArray[i]+'_i').className = document.getElementById(tempArray[i]+'_i').className.replace("chevron-up", "chevron-down");
+					} else if (typeof executeExtra !== 'undefined') {
+						if (whichElement.className.indexOf('chevron-down')!=-1) { 
+							whichElement.className = whichElement.className.replace("chevron-down", "chevron-up");
+						} else { 
+							whichElement.className = whichElement.className.replace("chevron-up", "chevron-down");
+						}
+					}
+				}
+			}
+		}
+	</script>
+	<noscript>
+        <meta http-equiv="refresh" content="0;no_javascript.cfm">
+	</noscript>
+	
+<script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f53ae228f43400012937689&product=inline-share-buttons' async='async'></script>
+
+<script src="x-js/ian-fixes.js"></script>	
+
+
+</head>
+<body> 
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0" nonce="xP8yEydF"></script>
+<div id="wrapper">
+
+
+<!-- cpm 2026/02/13 - suppress header --->
+
+<script>
+try {
+	if (window.self !== window.top) {
+		document.documentElement.classList.add('dcx-embedded');
+	}
+} catch(e) {}
+</script>
+<style>
+.dcx-embedded #topstuff { display:none !important; }
+.dcx-embedded #SocialMediaLinks { display:none !important; }
+.dcx-embedded #topnav { display:none !important; }
+</style>
+
+<style type="text/css">
+.topbgimg {
+    background-color: #181717;
+	background-image: url('images/dcxbanner.jpg');
+}
+</style>
+<div class="topbgimg" id="topstuff" style="padding-right:20px; padding-left:20px;"> 
+	<div class="row">
+		<div class="col-md-4">
+			<div class="row">
+				<div class="col-xs-12"><a href="index.cfm"><img src="images\dcxlogo.png" class="img-responsive img-rounded"></a></div>
+			</div>
+		</div>
+		<div class="col-md-4" align="center">
+			<div class="dropdown">
+				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">About DCX <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+				<li><a href="javascript:{}" onclick="setMainDIV('about.cfm?view=about')" title="Who We Are">Who We Are</a></li>
+				<li><a href="javascript:{}" onclick="setMainDIV('dcx_began.cfm?view=dcx_began')" title="How We Began">How We Began</a></li>
+				
+				<li><a href="javascript:{}" onclick="setMainDIV('sponsors.cfm?view=sponsors')" title="Sponsors">Sponsors</a></li>
+				<li><a href="javascript:{}" onclick="setMainDIV('faq.cfm?view=faq')">FAQ</a></li>
+				<li><a href="javascript:{}" onclick="setMainDIV('contact.cfm?view=contact')" title="Contact Us">Contact Us</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-md-4" align="right"> 
+		<div class="row">
+		<div class="col-lg-12">
+		
+					<div class="dropdown profile-element" style="padding-top:13px;padding-bottom:18px;"> 
+						<a data-toggle="dropdown" class="btn btn-primary dropdown-toggle" href="#">
+						<span class="clear"><span class="block m-t-xs" style="font-size:1.15em;">
+						<strong class="font-bold">Welcome<BR></strong>
+						<span style="padding-left:3px;"><b class="caret" style="padding-bottom:5px;"></b></span>
+						</span></span>
+						</a>
+						<ul class="dropdown-menu animated fadeInRight m-t-xs" align="right">
+							
+							<li><a href="index.cfm?view=profile">Profile</a></li>
+							<li><a href="index.cfm?view=logout">Logout</a></li>
+						</ul>
+					</div>
+			
+				<div><a data-toggle="modal" class="btn btn-info" href="#modal-form"><i class="fa fa-sign-in"></i><span class="nav-label">Login or Register</span></a></div>
+				
+<div id="modal-form" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Sign in</h3>
+                        <form role="form" action="index.cfm" method="post">
+							<input type="hidden" name="view" value="login">
+							<input type="hidden" name="returnview" value="shows">
+                            <div class="form-group"><label>Email</label> <input type="email" placeholder="Enter email" class="form-control" name="MemberEmail"></div>
+                            <div class="form-group"><label>Password</label> <input type="password" placeholder="Password" class="form-control" name="MemberPassword"></div>
+                            <div>
+                                <button class="btn btn-sm btn-primary pull-right m-t-n-xs" type="submit"><strong>Log in</strong></button>
+                            </div>
+							<strong>If you forgot your password, leave it blank to have it emailed to you.</strong>
+							If you had an account on Corpsreps, you already have an MPAM DCX account. Login with the same email and password.
+                        </form>
+                    </div>
+                    <div class="col-sm-6"><h4>Not a member?</h4>
+                        <p>You can create an account:</p>
+                        <p class="text-center"><a href="index.cfm?view=register&returnview=shows" title="Register"><i class="fa fa-sign-in big-icon"></i></a></p>
+                	</div>
+            	</div>
+        	</div>
+        </div>
+    </div>
+</div>
+		
+		</div>
+		<div class="col-lg-12"> 
+		<p class="visible-lg visible-md hidden-sm hidden-xs">&nbsp;</p>
+		<p class="visible-lg visible-md hidden-sm hidden-xs">&nbsp;</p>
+		<p class="visible-lg visible-md hidden-sm hidden-xs">&nbsp;</p>
+		<p class="visible-lg visible-md hidden-sm hidden-xs">&nbsp;</p>
+		<form role="search" action="index.cfm" method="post">
+			<input type="hidden" name="view" value="search_results">
+			<input type="text" placeholder="Search for something..." class="form-control" name="topsearch" id="top-search" style="border:1px" width="100%"> 
+		</form>
+		</div>
+		</div>		
+		</div>
+	</div>
+</div>
+
+<div id="topnav" class="row white-bg" style="border-bottom: 2px solid black; border-top: 2px solid black">
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=0" title="Rooms" class="btn btn-primary btn-xs">GALLERIES:</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=1300" title="History by Decade">Decades</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=100" title="Drum Corps Listing">Corps</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=300" title="Current Season">2026</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=200" title="Shows, Scores and Contests">Shows</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=700" title="Photos">Photos</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=900" title="Collections">Collections</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=800" title="People">People</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=1100" title="Publications">Publications</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=blog" title="Blog">Blog</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=links" title="Links">Links</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=assets&option=recent" title="Recent Additions">Newest</a></div>
+</div>
+
+
+
+<style>
+.gray-bg, .wrapper {
+	padding-top: 0 !important;
+}
+.sharethis-inline-share-buttons {
+	display: inline !important;
+}
+.ClipBtn {
+	display: inline;
+}
+.st-btn {
+	background-color: transparent !important;
+	min-width: 16px !important;
+	padding: 0 !important;
+	width: 24px !important;
+	height: 24px !important;
+	display: inline-block !important;
+}
+.st-label {
+	display: none !important;
+}
+.ClipboardBtn {
+	background-color: transparent !important;
+}
+body {
+	background-color: rgb(243, 243, 244) !important;
+}
+.st-btn > img {
+	width: 24px !important;
+	height: 24px !important;
+	top: 0 !important;
+	margin: 0 !important;
+	filter: invert(52%) sepia(81%) saturate(440%) hue-rotate(118deg) brightness(94%) contrast(85%);
+}
+</style>
+<script>
+	setCorrectLinks();
+	document.getElementById('ClipboardBtn').addEventListener('click', () => {copyTextToClipboard(window.location.href);});
+</script>
+
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg" style="margin-top:80px;">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="modal-title">Loading Content</h4>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <p>Please Wait...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal inmodal" id="reusableModal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg" style="margin-top:80px;">
+		<form id="dummyReusableModalForm" name="dummyReusableModalForm">
+			<div class="modal-content animated fadeInDown"></div>
+		</form>
+	</div>
+</div>
+
+<div class="modal inmodal" id="reusableModal2" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<form id="dummyReusableModalForm2" name="dummyReusableModalForm2">
+			<div class="modal-content animated fadeInDown"></div>
+		</form>
+	</div>
+</div>
+
+<div class="modal inmodal" id="reusableModal3" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<form id="dummyReusableModalForm3" name="dummyReusableModalForm3">
+			<div class="modal-content animated fadeInDown"></div>
+		</form>
+	</div>
+</div>
+
+<div class="modal inmodal" id="lookupModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="lookup-title">Loading Content</h4>
+      </div>
+      <div class="modal-body" id="lookup-body">
+        <p>Please Wait...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$('body').on('hidden.bs.modal', '.modal', function () {
+  $(this).removeData('bs.modal');
+});
+function fadeOutModalWindow(whichDiv) {
+	$('#'+whichDiv).fadeOut(250);
+}
+function fadeOutHideModalWindow(whichDiv) {
+	$('#'+whichDiv).fadeOut(250);
+	setTimeout(function(){ 
+							try {
+								$('#'+whichDiv).hide(); 
+								$('#'+whichDiv).data('bs.modal', null);
+						   		$('#'+whichDiv).find('.modal-content').html('');
+							} catch(err) { }
+						 },260);
+}
+function fadeInModalWindow(whichDiv) {
+	$('#'+whichDiv).fadeIn(250);
+}
+
+function LookupSetID(FieldName,id) {
+	document.getElementById(FieldName).value = id;
+	$('#lookupModal').modal('hide');
+}
+</script>
+
+<div id="page-wrapper" class="gray-bg" style="padding:10px 0px 20px 0px;margin-left: 0"> 
+	<div class="wrapper wrapper-content"> 
+		<div id="MainDIV"><script>try {document.getElementById("SocialMediaLinks").setAttribute("style", "display: none;");} catch(err){}</script><button type="button" onclick="setMainDIV('rooms.cfm?view=rooms&roomid=200&bReturnSet=Yes')" class="btn btn-info">Return</button> <div id="ScoreDiv"> 
+<div class="alert-info"> 
+<h1>2026 Scores</h1>
+<div class="row">
+<div class="col-sm-2"><a href="javascript:{}" onclick="showChangeYear(2025, -1,0)" class="btn btn-primary" role="button">2025 Scores</a></div> 
+	<div class="col-sm-3">
+	<form role="search" class="form-horizontal" action="javascript:{}" method="post" onsubmit="showChangeYear(this.pickyear.value, -1, 0)">
+		<div class="form-group">
+		<input type="text" placeholder="Enter Year (YYYY)" size="4" class="form-control" name="ShowYear" id="pickyear" style="border:1px"> 
+		</div>
+	</form>
+	</div>
+	
+<div class="col-sm-2 pull-right">Click a corps name to see all contests for that corps</div>
+</div> 
+</div> 
+
+<div class="white-bg" id="scoredisp"> 
+<div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">June 26, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Tour Preview</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026001')">
+		Muncie IN </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2104)">Cincinnati Tradition</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">June 27, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Barnum Festival: Champions on Parade</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026002')">
+		Shelton CT </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1856)">Bushwackers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1956)">Crusaders Senior</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2000)">CT Alumni</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1853)">Hawthorne Caballeros</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1988)">Hawthorne Caballeros Alumni</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2000)">Hurricanes</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2644)">North Star</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1851)">Reading Buccaneers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1858)">Sunrisers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">June 27, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Bluecoats Opening Night Community Celebration</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026003')">
+		Alliance OH </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Bluecoats Alumni Ensemble Legacy Arc</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2104)">Cincinnati Tradition</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1775)">Columbus Saints</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Columbus Saints Jr. Flag Line</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1479)">Eclipse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">EN-CORPS by EN-RICH-MENT</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1825)">Rhythm IN BLUE - Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1794)">Rogues Hollow Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">The Blue Way Summer Arts Camp</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">The Bluecoats</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">June 27, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drums Along the Rockies</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026004')">
+		Fort Collins CO </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">BKXperience</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Blue Knights Awards Presentation</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14764)">Rocky Mountain Brassworks</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14687)">Troopers Legacy Corps</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">June 28, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Corps Encore</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026005')">
+		Ogden UT </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Crosstown Big Band</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">June 29, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drums Along the Columbia</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026006')">
+		Kennewick WA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1748)">Columbians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3014)">Gems</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 497)">Impulse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">June 30, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Northwest Youth Music Games Seattle</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026007')">
+		Bothell WA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1748)">Columbians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3014)">Gems</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 497)">Impulse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 1, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drums Across Nebraska</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026008')">
+		Omaha NE </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 1, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Northwest Youth Music Games Portland</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026009')">
+		Vancouver WA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1748)">Columbians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3014)">Gems</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 497)">Impulse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 2, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Rotary Music Festival</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026010')">
+		Cedarburg WI </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1479)">Eclipse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 2, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">MidCal Showcase</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026011')">
+		Camarillo CA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1764)">Golden Empire</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 3, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Show of Shows</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026012')">
+		Rockford IL </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2995)">Conquest Drum & Bugle Corps</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 3, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Capital Classic</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026013')">
+		El Dorado Hills CA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1764)">Golden Empire</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 497)">Impulse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Mandarins Alumni</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14755)">Sparta Ignite</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 5, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">River City Rhapsody</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026014')">
+		LaCrosse WI </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 73)">Blue Saints</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1868)">Govenaires</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14619)">Sound of Sun Prairie</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 5, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI West</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026015')">
+		Stanford CA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Alisal Union School District All-Star Academy</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Alisal Union School District Marching Band</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 71)">Blue Devils B</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 70)">Blue Devils C</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1764)">Golden Empire</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 497)">Impulse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2578)">Sacramento Freelancers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14755)">Sparta Ignite</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 7, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">The Kiwanis Thunder of Drums</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026016')">
+		Mankato MN </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1868)">Govenaires</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1863)">MBI</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Minnesota State University Clinic Band</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 7, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drums Across the Smokies</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026017')">
+		Sevierville TN </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 8, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drums Across America</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026018')">
+		Newnan GA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1971)">Atlanta CV</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 8, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Celebration in Brass</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026019')">
+		West Des Moines IA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 9, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Gold Showcase</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026020')">
+		Santa Clarita CA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 71)">Blue Devils B</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 70)">Blue Devils C</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1764)">Golden Empire</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 9, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Northern Alabama</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026021')">
+		Muscle Shoals AL </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Apollo Marching Theatre</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1971)">Atlanta CV</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3013)">Memphis Blues</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 10, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Music on the March</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026022')">
+		Dubuque IA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Conquest</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 10, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Western Corps Connection</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026023')">
+		Walnut CA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 71)">Blue Devils B</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 70)">Blue Devils C</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1764)">Golden Empire</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 497)">Impulse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 10, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Cavalcade of Brass</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026024')">
+		Lisle IL </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1479)">Eclipse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1541)">Northern Lights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Rosemont King Cobras</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14619)">Sound of Sun Prairie</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 11, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drum Corps Grand Prix</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026025')">
+		Clifton NJ </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1856)">Bushwackers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1853)">Hawthorne Caballeros</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1988)">Hawthorne Caballeros Alumni</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2000)">Hurricanes</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1851)">Reading Buccaneers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1790)">Sonus Brass Theater</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1858)">Sunrisers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2299)">White Sabers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 11, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">The Whitewater Classic</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026026')">
+		Whitewater WI </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1479)">Eclipse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2653)">Green Beret Marching Band</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1794)">Rogues Hollow Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14619)">Sound of Sun Prairie</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">The Connexion</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 11, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drum Corps at the Rose Bowl</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026027')">
+		Pasadena CA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 71)">Blue Devils B</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 70)">Blue Devils C</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1764)">Golden Empire</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 497)">Impulse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2578)">Sacramento Freelancers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 11, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Little Rock</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026028')">
+		Little Rock AR </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3013)">Memphis Blues</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 11892)">Zephyrus</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 12, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">So Cal Classic: Open Class Pacific Championship Finals</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026029')">
+		Buena Park CA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 71)">Blue Devils B</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 70)">Blue Devils C</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1764)">Golden Empire</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 497)">Impulse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Retreat</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2578)">Sacramento Freelancers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 13, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Brass Impact</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026030')">
+		Olathe KS </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Sky Ryders</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 13, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drums Across the Desert</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026031')">
+		Mesa AZ </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 14, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Hutchinson</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026032')">
+		Hutchinson KS </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Sky Ryders</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 14, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Broken Arrow</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026033')">
+		Broken Arrow OK </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 11892)">Zephyrus</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 14, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI New Mexico</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026034')">
+		Rio Rancho NM </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Arsenal</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 16, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Central Texas</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026035')">
+		Killeen TX </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Arsenal</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Sky Ryders</a>
+		</li>
+		</span> </ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 16, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Denton</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026036')">
+		Denton TX </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1749)">Guardians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 11892)">Zephyrus</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 17, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Sounds by the Seaport</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026037')">
+		New London CT </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2000)">CT Alumni</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2000)">Hurricanes</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 17, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Houston</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026038')">
+		Houston TX </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Club Access Opens to Premium Ticket Holders</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 18, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Southwestern Championship</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026039')">
+		San Antonio TX </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Arsenal</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1749)">Guardians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Sky Ryders</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 11892)">Zephyrus</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 18, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">The Buccaneer Classic</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026040')">
+		Landisville PA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3011)">Buccaneer Banner Brass</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2056)">Buccaneers Alumni</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1856)">Bushwackers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1988)">Hawthorne Caballeros Alumni</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1851)">Reading Buccaneers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1858)">Sunrisers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2299)">White Sabers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 19, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Raiders Tour Send-Off</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026041')">
+		Aston Township PA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Joint Performance</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 19, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Dallas</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026042')">
+		Bedford TX </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Arsenal</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 11892)">Zephyrus</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 20, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI McKinney</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026043')">
+		McKinney TX </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1749)">Guardians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 11892)">Zephyrus</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 21, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI St. Louis</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026044')">
+		Belleville IL </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 22, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">March On!</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026045')">
+		Champlin MN </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1748)">Columbians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1868)">Govenaires</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1863)">MBI</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">RCR Street Club</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 22, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drums on the Ohio</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026046')">
+		Evansville IN </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 22, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Southern Mississippi</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026047')">
+		Hattiesburg MS </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 24, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Syracuse</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026048')">
+		Central Square NY </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Baldwinsville High School Band</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2642)">Brig Juice Brass</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2299)">White Sabers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 24, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Drums on Parade</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026049')">
+		Madison WI </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1868)">Govenaires</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2653)">Green Beret Marching Band</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 24, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Birmingham</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026050')">
+		Birmingham AL </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Apollo Marching Theatre</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1971)">Atlanta CV</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2527)">Fusion Core</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1777)">Heat Wave</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3013)">Memphis Blues</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 24, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Middle Tennessee</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026051')">
+		Murfreesboro TN </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 25, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Southeastern Championship</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026052')">
+		Atlanta GA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1971)">Atlanta CV</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2527)">Fusion Core</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3013)">Memphis Blues</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 25, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Bushwackers Invitational</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026053')">
+		Flanders NJ </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1856)">Bushwackers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1853)">Hawthorne Caballeros</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1988)">Hawthorne Caballeros Alumni</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2000)">Hurricanes</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14749)">Legacy Drum & Bugle Corps</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1851)">Reading Buccaneers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14743)">Spark</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1858)">Sunrisers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 25, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Music on the Mountain</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026054')">
+		Warren PA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Allegheny Eclipse</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14733)">Apogee</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2104)">Cincinnati Tradition</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1794)">Rogues Hollow Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1872)">Steel City Ambassadors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 25, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Midwestern Championship</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026055')">
+		DeKalb IL </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1748)">Columbians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1868)">Govenaires</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1541)">Northern Lights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">The ConneXion</a>
+		</li>
+		</span> </ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 26, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">NightBEAT</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026056')">
+		Winston-Salem NC </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1971)">Atlanta CV</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1777)">Heat Wave</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">NC A&T Cold Steel Drumline</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 26, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI in Motion</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026057')">
+		Norton OH </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2104)">Cincinnati Tradition</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1794)">Rogues Hollow Regiment</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 27, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Summer Music Games in Cincinnati</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026058')">
+		Mason OH </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2104)">Cincinnati Tradition</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1775)">Columbus Saints</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 28, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Annapolis</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026059')">
+		Annapolis MD </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 28, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Brass at the Beach</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026060')">
+		Myrtle Beach SC </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 29, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">Summer Music Games of Southwest Virginia</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026061')">
+		Salem VA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2998)">Carolina Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1777)">Heat Wave</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 29, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Huntington</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026062')">
+		Huntington WV </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1748)">Columbians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3013)">Memphis Blues</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 30, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">The Marion Open</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026063')">
+		Marion OH </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2104)">Cincinnati Tradition</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1777)">Heat Wave</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3013)">Memphis Blues</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 30, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI East Coast Showcase</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026064')">
+		Lawrence MA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1956)">Crusaders Senior</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2644)">North Star</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 31, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Eastern Classic</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026065')">
+		Allentown PA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1856)">Bushwackers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1853)">Hawthorne Caballeros</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1851)">Reading Buccaneers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">July 31, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Michigan</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026066')">
+		Allendale MI </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1777)">Heat Wave</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3013)">Memphis Blues</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1541)">Northern Lights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">August 1, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Eastern Classic</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026067')">
+		Allentown PA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">August 1, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Pittsburgh</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026068')">
+		Pittsburgh PA </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1856)">Bushwackers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2000)">Hurricanes</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1794)">Rogues Hollow Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2299)">White Sabers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">August 3, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Open Class World Championship Prelims</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026070')">
+		Dayton OH </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 71)">Blue Devils B</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1748)">Columbians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1479)">Eclipse</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1777)">Heat Wave</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3013)">Memphis Blues</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Mercedes Marching Band</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">August 3, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Kentucky</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026072')">
+		Winchester KY </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1971)">Atlanta CV</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1856)">Bushwackers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2000)">Hurricanes</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">August 4, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI Open Class World Championship Finals</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026073')">
+		Dayton OH </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Mercedes Marching Band</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Retreat</a>
+		</li>
+		</span> </ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">August 6, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI World Championship Prelims</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026074')">
+		Indianapolis IN </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1403)">7th Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 17)">Blue Devils</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 71)">Blue Devils B</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 34)">Blue Knights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2)">Blue Stars</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 32)">Bluecoats</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 37)">Boston Crusaders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 43)">Carolina Crown</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 80)">Colt Cadets</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 36)">Colts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1748)">Columbians</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 25)">Crossmen</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1645)">Genesis</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1572)">Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1777)">Heat Wave</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 177)">Les Stentors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 13)">Madison Scouts</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3013)">Memphis Blues</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Mercedes Marching Band</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1624)">Music City</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 108)">Pacific Crest</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 19)">Phantom Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 116)">Raiders</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1781)">River City Rhythm</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3)">Santa Clara Vanguard</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 125)">Seattle Cascades</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 66)">Spartans</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 26)">Spirit of Atlanta</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1455)">The Academy</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1816)">The Battalion</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 9)">The Cavaliers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 6)">Troopers</a>
+		</li>
+		</ul></div> </div><div class="row" style="padding-right:20px; padding-left:20px;"> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">August 7, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">DCI All-Age World Championship Prelims</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026075')">
+		Indianapolis IN </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1971)">Atlanta CV</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1856)">Bushwackers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2104)">Cincinnati Tradition</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1775)">Columbus Saints</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2527)">Fusion Core</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1868)">Govenaires</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1853)">Hawthorne Caballeros</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2000)">Hurricanes</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1863)">MBI</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1541)">Northern Lights</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1851)">Reading Buccaneers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1794)">Rogues Hollow Regiment</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1858)">Sunrisers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2299)">White Sabers</a>
+		</li>
+		</ul></div> <div class="col-sm-3 well" style="border:1px solid #808080; padding-right:10px; padding-left:10px;">
+		<ul class="list-group">
+		<li class="list-group-item active">August 8, 2026 </li>
+		<li class="list-group-item"><div class="alert-info">SoundSport International Music & Food Festival</div></li>
+		<li class="list-group-item"><div class="alert-warning"><a href="javascript:{}" onclick="setMainDIV('show.cfm?view=show&ShowID=2026080')">
+		Indianapolis IN </a></div></li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Apollo Marching Theatre</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 73)">Blue Saints</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2998)">Carolina Gold</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2995)">Conquest Drum & Bugle Corps</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2653)">Green Beret Marching Band</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Latrobe Music Center</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14749)">Legacy Drum & Bugle Corps</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">Mercedes Marching Band</a>
+		</li>
+		</span> 
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 3008)">Phoenix</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1825)">Rhythm IN BLUE</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 2578)">Sacramento Freelancers</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1790)">Sonus Brass Theater</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 14743)">Spark</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 1872)">Steel City Ambassadors</a>
+		</li>
+		
+	<li class="list-group-item"> 
+	<a href="javascript:{}" onclick="showChangeYear(2026, -1, 0)">The Marching Elite</a>
+		</li>
+		</span> </ul></div></div> 
+</div> 
+</div> 
+<script type="text/javascript">
+	$('#spinner_bg_layer').fadeOut(200);
+	$('#spinner_image_layer').fadeOut(200);
+</script>
+</div>
+		<div id="spinner_bg_layer" style="display:none; position:absolute; z-index:9995; top:0; left:0; width:100%; opacity:0.30; background-color:#000000;"></div>
+		<div id="spinner_image_layer" style="display:none; position:absolute; z-index:9996; top:0; left:0; width:100%; text-align:center;">
+			<img id="spinner_image" src="https://isi.modotech.com/root/images/ModotechGrid_Spinner.gif" alt="Loadingï¿½Please Wait">
+		</div>
+	</div>
+	
+<div class="footer" style="margin:0">
+    <div class="pull-right">
+        <a href="index.cfm?view=privacy">Privacy Notice</a>
+    </div>
+    <div>
+        <strong>Copyright</strong>  &copy; 2017-2026 <a href="http://www.modotech.com">Modotech, Inc</a>
+		in partnership with the 21st Century Foundation d/b/a DCX: The Drum Corps Xperience
+    </div>
+</div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-105458864-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</div> 
+
+</div> 
+
+    <!-- blueimp gallery -->
+    <script src="header/js/plugins/blueimp/jquery.blueimp-gallery.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	//set color when in input box
+	$("input").on({
+		focus: function() {
+			$(this).css("background-color","#d0d0d0");
+			$(this).css("border","1px solid");
+		},
+		blur: function() {
+			$(this).css("background-color",""); //reset color
+			$(this).css("border","");
+		}
+	});
+});			
+</script>
+
+	<script language="JavaScript" type="text/javascript">
+	function setMainDIV(url) {
+	//	Try {
+			// Adjust the overlay sizes and position spinner image
+			document.getElementById('spinner_bg_layer').style.height = document.getElementById('MainDIV').scrollHeight + 'px';
+			document.getElementById('spinner_image_layer').style.height = document.getElementById('MainDIV').scrollHeight + 'px';
+			document.getElementById('spinner_image').style.marginTop = (((document.getElementById('MainDIV').scrollHeight-55)/2)-3) + 'px';
+
+			// Show our 'spinner' layers
+			$('#spinner_bg_layer').fadeIn(200);
+			$('#spinner_image_layer').fadeIn(200);
+
+			// Load the 'MainDIV' content
+			setTimeout(function(){
+				// Make a call to obtain the 'MainDIV' content
+				//var xmlhttp = new XMLHttpRequest();
+				//xmlhttp.open('GET', url + '&timestamp=' + new Date().getTime(), false);  // The timestamp at the end helps ensure results are not cached.
+				//xmlhttp.send();
+
+				$("#MainDIV").load(url, function(responseTxt, statusTxt, xhr){
+				if(statusTxt == "error")
+					alert("Error: " + xhr.status + ": " + xhr.statusText);
+				});
+	//			window.__sharethis__.initialize();
+				setTimeout(function(){
+					// Hide the spinner layers
+					//$('#spinner_bg_layer').fadeOut(200);
+					//$('#spinner_image_layer').fadeOut(200);
+					setTimeout(function(){
+						document.getElementById('MainDIV').innerHTML = xmlhttp.responseText;
+					},50);
+				},500);
+			},500);
+
+	//	} catch(err) {
+	//		setTimeout(function(){
+	//		// Hide the spinner layers
+	//			$('#spinner_bg_layer').fadeOut(200);
+	//			$('#spinner_image_layer').fadeOut(200);
+	//			// Show the user any JavaScript errors that may have been trapped
+	//			document.getElementById('MainDIV').innerHTML = '<div style="text-align:center;color:#ff0000;">&nbsp;<BR>&nbsp;<BR>'+err.toString()+'<BR>&nbsp;<BR>&nbsp;</div>';
+	//			alert(err.toString().replace('<BR>','\n\n'));
+	//		},10);
+	//	}
+	}
+	</script>
+	
+<script type="text/jscript">
+	function setMainDIV2(url) {
+		$("#MainDIV").load(url, function(responseTxt, statusTxt, xhr){
+		if(statusTxt == "error")
+			alert("Error: " + xhr.status + ": " + xhr.statusText);
+		});
+//		window.__sharethis__.initialize();
+	}
+
+	function setGalleryPage(assetlist) {
+		var url="assets_display.cfm?assetlist=" + assetlist;
+		$("#AssetDIV").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+//		window.__sharethis__.initialize();
+	}
+
+	function photoDisplay(CorpsID, PictureYear,ShowID,decade,Photographer) {
+		var url = "photos.cfm?ReturnAll=Y&CorpsID=" + CorpsID + "&PictureYear=" + PictureYear + "&ShowID=" + ShowID + "&Decade=" + decade + "&Photographer=" + Photographer;
+		$("#PhotoDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+//		window.__sharethis__.initialize();
+	}
+	
+	function setPicturePage(bDisplayCorps,picturelist) {
+		var url="photo_display.cfm?ReturnAll=Y&bDisplayCorps=" + bDisplayCorps + "&picturelist=" + picturelist;
+		$("#PictureDIV").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+//		window.__sharethis__.initialize();
+	}
+	
+	function repDisplayYear(CorpsID, CorpsYear) {
+		var url = "Corpslist_RepYear.cfm?ReturnAll=Y&CorpsID=" + CorpsID + "&CorpsYear=" + CorpsYear;
+		$("#RepDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+    	});
+//		window.__sharethis__.initialize();
+	}
+
+	function repDisplayAll(CorpsID) {
+		$("#RepDiv").load("Corpslist_Repertoire.cfm?CorpsID=" + CorpsID);
+	};
+	
+	function repChangeYear(RepYear, Decade) {
+		var url = "repertoire_display.cfm?ReturnAll=Y&RepYear=" + RepYear + "&Decade=" + Decade;
+		$("#RepDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+    	});
+//		window.__sharethis__.initialize();
+	}
+
+	function scoreDisplayYearOld(CorpsID, CorpsYear,ShowID) {
+		// IA 12/20/24
+		// Added a whole new block of code to properly set the address bar and share links when a user clicks on a specific show.
+		let url2 = new URL(window.location.href);
+        let params = url2.searchParams;
+		params.set('showid', ShowID);
+        history.pushState(null, "", `${url2.pathname}?${params.toString()}`);
+		document.getElementById("TestLink").href = window.location.href;
+		document.getElementById("TestLink").innerHTML = window.location.href;
+		console.log(CorpsID);
+		// IA 12/20/24
+		// Modified this function to use lowercase parameters since camel case was causing issues
+		var url = "Corpslist_ScoreYear.cfm?ReturnAll=Y&corpsid=" + CorpsID + "&corpsyear=" + CorpsYear + "&showid=" + ShowID;
+		$("#ScoreDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+		// IA 1/21/24
+		// Added a try catch block here in case the buttons are not loaded
+		try {
+			document.getElementsByClassName("sharethis-inline-share-buttons")[0].setAttribute("data-url", window.location.href);
+			document.getElementById('ClipboardBtn').addEventListener('click', () => {copyTextToClipboard(window.location.href);});
+		} catch (err) {
+			console.log("Share buttons not loaded");
+			console.log(err);
+		}
+//		window.__sharethis__.initialize();
+	}
+	// Old version of the function
+	function scoreDisplayYear(CorpsID, CorpsYear,ShowID) {
+		var url = "Corpslist_ScoreYear.cfm?ReturnAll=Y&CorpsID=" + CorpsID + "&CorpsYear=" + CorpsYear + "&ShowID=" + ShowID;
+		$("#ScoreDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+//		window.__sharethis__.initialize();
+	}
+
+	function scoreDisplayAll(CorpsID) {
+		$("#ScoreDiv").load("Corpslist_Scores.cfm?CorpsID=" + CorpsID);
+	}
+	function showChangeYear(ShowYear, Decade, CorpsID) {
+		// IA 12/20/24
+		// Added a whole new block of code to properly set the address bar and share links when a user clicks on a specific year.
+		let url2 = new URL(window.location.href);
+        let params = url2.searchParams;
+		params.set('season', ShowYear);
+        history.pushState(null, "", `${url2.pathname}?${params.toString()}`);
+		document.getElementById("TestLink").href = window.location.href;
+		document.getElementById("TestLink").innerHTML = window.location.href;
+		console.log(CorpsID);
+		// IA 12/20/24
+		// Modified this function to use lowercase for corpsid since camel case was causing issues
+		var url = "decade_shows.cfm?ShowYear=" + ShowYear + "&Decade=" + Decade + '&corpsid=' + CorpsID;
+		$("#ScoreDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+    	});
+		// IA 1/21/24
+		// Added a try catch block here in case the buttons are not loaded
+		try {
+			document.getElementsByClassName("sharethis-inline-share-buttons")[0].setAttribute("data-url", window.location.href);
+			document.getElementById('ClipboardBtn').addEventListener('click', () => {copyTextToClipboard(window.location.href);});
+		} catch (err) {
+			console.log("Share buttons not loaded");
+			console.log(err);
+		}
+//		window.__sharethis__.initialize();
+	}
+	// Old version of the function
+	function showChangeYear(ShowYear, Decade, CorpsID) {
+		var url = "decade_shows.cfm?ShowYear=" + ShowYear + "&Decade=" + Decade + '&corpsid=' + CorpsID;
+		$("#ScoreDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+    	});
+//		window.__sharethis__.initialize();
+	}
+
+function RegExTrimString(StringToTrim) {
+	var re = /^\s+|\s+$/g;
+	return StringToTrim.toString().replace(re,'');
+}
+
+function LookupModal (Process, FieldName, Parent) {
+	var v = document.getElementById(FieldName).value;
+	if (v.length > 0) {
+		$.ajax({
+			url: 'com/corps.cfc?method=IDLookup&Process='+Process+'&Parent='+Parent+'&FieldName='+FieldName+'&FieldValue='+v,
+			dataType: 'html',
+			success: function(html) {
+				document.getElementById("lookup-title").innerHTML = "Search for " + v;
+				document.getElementById("lookup-body").innerHTML = html;
+			}
+		});
+		
+		$('#lookupModal').modal('show');
+//		window.__sharethis__.initialize();
+	} else {
+		alert('Enter a search phrase');
+	}
+}
+	
+
+
+
+function copyToClipboard(text) {
+    var dummy = document.createElement("textarea");
+    // to avoid breaking orgain page when copying more words
+    // cant copy when adding below this code
+    // dummy.style.display = 'none'
+    document.body.appendChild(dummy);
+    //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". ï¿½ Eduard
+    dummy.value = text;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+}
+
+</script>
+
+<script type="text/javascript">
+;( function( $ ) {
+
+	$( '.swipebox' ).swipebox(
+	{
+		useCSS : true, // false will force the use of jQuery for animations
+		useSVG : true, // false to force the use of png for buttons
+		initialIndexOnArray : 0, // which image index to init when a array is passed
+		hideCloseButtonOnMobile : false, // true will hide the close button on mobile devices
+		removeBarsOnMobile : false, // false will show top bar on mobile devices
+		hideBarsDelay : 0, // delay before hiding bars on desktop, use number seconds in 1000s, 0 means show always
+		videoMaxWidth : 1140, // videos max width
+		beforeOpen: function() {}, // called before opening
+		afterOpen: null, // called after opening
+		afterClose: function() {}, // called after closing
+		loopAtEnd: false // true will return to the first image after the last image is reached
+		}
+	);
+		
+} )( jQuery );
+
+</script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    //cpmwork - Disable full page right click - this does work if we really want to disable everything
+    //$("body").on("contextmenu",function(e){
+    //    return false;
+    //});
+    
+    //Disable part of page - this doesn't work when page are loaded into a DIV
+	//perhaps if this code was in the section that loads the page - didn't work
+    //$("#AssetDIV").on("contextmenu",function(e){
+    //    return false;
+    //});
+});
+</script>
+<script type="text/javascript">
+//cpmwork Disable right click
+//$('img').bind('contextmenu', function(e) {
+//    return false;
+//});
+//this approach doesn't work in FF
+//$('img').live('contextmenu', function(e) {
+//    return false;
+//});
+
+</script>
+
+</body>
+
+</html>

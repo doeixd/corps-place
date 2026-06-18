@@ -1,0 +1,1180 @@
+[
+ {
+  "person_id": "adam-sage",
+  "display_name": "Adam Sage",
+  "corps": 9,
+  "seasons": 8,
+  "corps_names": [
+   "Boston Crusaders",
+   "Vanguard Cadets",
+   "Troopers",
+   "Oregon Crusaders",
+   "Spirit of Atlanta Alumni Corps",
+   "The Cadets",
+   "Phantom Regiment",
+   "Madison Scouts",
+   "Jersey Surf"
+  ],
+  "roles": [
+   "visual",
+   "guard",
+   "other",
+   "brass",
+   "director"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "lloyd-puckitt",
+  "display_name": "Lloyd Puckitt",
+  "corps": 8,
+  "seasons": 7,
+  "corps_names": [
+   "Boston Crusaders",
+   "Phantom Regiment",
+   "Vanguard Cadets",
+   "The Cadets",
+   "Troopers",
+   "Crusaders Senior Drum & Bugle Corps",
+   "Bluecoats Rhythm IN BLUE",
+   "Spirit of Atlanta Alumni Corps"
+  ],
+  "roles": [
+   "other",
+   "percussion",
+   "design",
+   "director"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "donnie-vandoren",
+  "display_name": "Donnie VanDoren",
+  "corps": 7,
+  "seasons": 12,
+  "corps_names": [
+   "Bluecoats",
+   "Carolina Crown",
+   "Madison Scouts",
+   "Bluecoats Rhythm IN BLUE",
+   "Troopers",
+   "Jersey Surf",
+   "Spirit of Atlanta Alumni Corps"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "joe-hobbs",
+  "display_name": "Joe Hobbs",
+  "corps": 7,
+  "seasons": 11,
+  "corps_names": [
+   "Bluecoats",
+   "Carolina Crown",
+   "The Cavaliers",
+   "Bluecoats Rhythm IN BLUE",
+   "Music City",
+   "Phantom Regiment",
+   "Seattle Cascades"
+  ],
+  "roles": [
+   "percussion",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "katie-hopkins",
+  "display_name": "Katie Hopkins",
+  "corps": 7,
+  "seasons": 11,
+  "corps_names": [
+   "Santa Clara Vanguard",
+   "The Cadets",
+   "Crossmen",
+   "Vanguard Cadets",
+   "Carolina Crown",
+   "Phantom Regiment",
+   "Boston Crusaders"
+  ],
+  "roles": [
+   "visual",
+   "other",
+   "guard"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "key-poulan",
+  "display_name": "Key Poulan",
+  "corps": 7,
+  "seasons": 11,
+  "corps_names": [
+   "Spartans",
+   "Fusion Core",
+   "Genesis",
+   "Raiders",
+   "Vanguard Cadets",
+   "Mandarins",
+   "Madison Scouts"
+  ],
+  "roles": [
+   "other",
+   "music",
+   "brass",
+   "design"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "kevin-shah",
+  "display_name": "Kevin Shah",
+  "corps": 7,
+  "seasons": 10,
+  "corps_names": [
+   "Bluecoats",
+   "Carolina Crown",
+   "Blue Knights",
+   "Bluecoats Rhythm IN BLUE",
+   "Mandarins",
+   "Blue Devils B",
+   "Madison Scouts"
+  ],
+  "roles": [
+   "music",
+   "percussion",
+   "other",
+   "director",
+   "design"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "richard-subel",
+  "display_name": "Rick Subel",
+  "corps": 7,
+  "seasons": 10,
+  "corps_names": [
+   "Crossmen",
+   "Atlanta CV",
+   "Vanguard Cadets",
+   "Carolina Crown",
+   "The Cadets",
+   "Colts",
+   "Pioneer"
+  ],
+  "roles": [
+   "guard",
+   "other",
+   "visual",
+   "director"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "austin-greene",
+  "display_name": "Austin Greene",
+  "corps": 7,
+  "seasons": 9,
+  "corps_names": [
+   "Bluecoats",
+   "Music City",
+   "Steel City Ambassadors",
+   "The Cadets",
+   "Blue Knights",
+   "The Cavaliers",
+   "Boston Crusaders"
+  ],
+  "roles": [
+   "visual",
+   "other",
+   "design"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "matt-hartwell",
+  "display_name": "Matt Hartwell",
+  "corps": 7,
+  "seasons": 9,
+  "corps_names": [
+   "Bluecoats",
+   "Phantom Regiment",
+   "Vanguard Cadets",
+   "Shadow",
+   "Bluecoats Rhythm IN BLUE",
+   "Blue Devils B",
+   "Pioneer"
+  ],
+  "roles": [
+   "visual",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "chris-cook",
+  "display_name": "Chris Cook",
+  "corps": 7,
+  "seasons": 8,
+  "corps_names": [
+   "Carolina Crown",
+   "Crossmen",
+   "Music City",
+   "Troopers",
+   "Steel City Ambassadors",
+   "Genesis",
+   "Spirit of Atlanta Alumni Corps"
+  ],
+  "roles": [
+   "other",
+   "guard"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "ezekiel-lanser",
+  "display_name": "Ezekiel Lanser",
+  "corps": 7,
+  "seasons": 8,
+  "corps_names": [
+   "Pacific Crest",
+   "Vanguard Cadets",
+   "Golden Empire",
+   "Justin Page (Pacific Crest)",
+   "Blue Stars",
+   "Boston Crusaders",
+   "Madison Scouts"
+  ],
+  "roles": [
+   "percussion",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "john-escalante",
+  "display_name": "John Escalante",
+  "corps": 7,
+  "seasons": 7,
+  "corps_names": [
+   "Boston Crusaders",
+   "Crossmen",
+   "Phantom Regiment",
+   "Troopers",
+   "Carolina Crown",
+   "Vanguard Cadets",
+   "Colts"
+  ],
+  "roles": [
+   "visual",
+   "guard",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "michael-rosales",
+  "display_name": "Michael Rosales",
+  "corps": 7,
+  "seasons": 7,
+  "corps_names": [
+   "Carolina Crown",
+   "Blue Knights",
+   "Vanguard Cadets",
+   "Bluecoats Rhythm IN BLUE",
+   "Oregon Crusaders",
+   "The Cadets",
+   "Pioneer"
+  ],
+  "roles": [
+   "other",
+   "guard",
+   "visual"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "freddy-martin",
+  "display_name": "Freddy Martin",
+  "corps": 6,
+  "seasons": 12,
+  "corps_names": [
+   "Carolina Crown",
+   "The Cavaliers",
+   "Spirit of Atlanta Alumni Corps",
+   "Spirit of Atlanta",
+   "Phantom Regiment",
+   "Seattle Cascades"
+  ],
+  "roles": [
+   "other",
+   "brass"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "michael-james",
+  "display_name": "Michael James",
+  "corps": 6,
+  "seasons": 12,
+  "corps_names": [
+   "Crossmen",
+   "Santa Clara Vanguard",
+   "Madison Scouts",
+   "Vanguard Cadets",
+   "Phantom Regiment",
+   "Pacific Crest"
+  ],
+  "roles": [
+   "guard",
+   "other",
+   "brass",
+   "visual"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "stephen-estudillo",
+  "display_name": "Steven Estudillo",
+  "corps": 6,
+  "seasons": 12,
+  "corps_names": [
+   "Pacific Crest",
+   "Phantom Regiment",
+   "The Cavaliers",
+   "Justin Page (Pacific Crest)",
+   "Golden Empire",
+   "Seattle Cascades"
+  ],
+  "roles": [
+   "visual",
+   "other",
+   "director"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "andrew-ebert",
+  "display_name": "Andy Ebert",
+  "corps": 6,
+  "seasons": 11,
+  "corps_names": [
+   "Carolina Crown",
+   "Crossmen",
+   "Troopers",
+   "Madison Scouts",
+   "Jersey Surf",
+   "Spirit of Atlanta Alumni Corps"
+  ],
+  "roles": [
+   "other",
+   "director",
+   "guard",
+   "visual"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "james-gow",
+  "display_name": "James Gow",
+  "corps": 6,
+  "seasons": 11,
+  "corps_names": [
+   "Bluecoats",
+   "Mandarins",
+   "Blue Devils B",
+   "Blue Knights",
+   "The Cadets",
+   "The Academy"
+  ],
+  "roles": [
+   "visual",
+   "other",
+   "guard"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "jaycee-wilson",
+  "display_name": "Jaycee Wilson",
+  "corps": 6,
+  "seasons": 10,
+  "corps_names": [
+   "Blue Knights",
+   "Bluecoats",
+   "Bluecoats Rhythm IN BLUE",
+   "Mandarins",
+   "The Academy",
+   "Blue Stars"
+  ],
+  "roles": [
+   "guard",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "bob-chreste",
+  "display_name": "Bob Chreste",
+  "corps": 6,
+  "seasons": 9,
+  "corps_names": [
+   "Bluecoats",
+   "Pacific Crest",
+   "Bluecoats Rhythm IN BLUE",
+   "Guardians",
+   "The Cadets",
+   "Carolina Crown"
+  ],
+  "roles": [
+   "brass",
+   "other",
+   "visual"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "dylan-toombs",
+  "display_name": "Dylan Toombs",
+  "corps": 6,
+  "seasons": 9,
+  "corps_names": [
+   "Bluecoats",
+   "Pacific Crest",
+   "Carolina Crown",
+   "The Cavaliers",
+   "Bluecoats Rhythm IN BLUE",
+   "Spirit of Atlanta"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "john-meehan",
+  "display_name": "John Meehan",
+  "corps": 6,
+  "seasons": 9,
+  "corps_names": [
+   "Blue Devils",
+   "Blue Devils B",
+   "The Academy",
+   "Pacific Crest",
+   "Troopers",
+   "Oregon Crusaders"
+  ],
+  "roles": [
+   "brass",
+   "design",
+   "other",
+   "visual",
+   "music"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "james-lazaro",
+  "display_name": "James Lazaro",
+  "corps": 6,
+  "seasons": 8,
+  "corps_names": [
+   "The Cadets",
+   "Colts",
+   "Troopers",
+   "Crossmen",
+   "The Academy",
+   "Bluecoats Rhythm IN BLUE"
+  ],
+  "roles": [
+   "other",
+   "guard",
+   "visual"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "ricardo-brown",
+  "display_name": "Ricardo Brown",
+  "corps": 6,
+  "seasons": 8,
+  "corps_names": [
+   "Bluecoats",
+   "Mandarins",
+   "Hawthorne Caballeros",
+   "Connecticut Hurricanes",
+   "Bluecoats Rhythm IN BLUE",
+   "Blue Stars"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "ryan-anderson",
+  "display_name": "Ryan Anderson",
+  "corps": 6,
+  "seasons": 8,
+  "corps_names": [
+   "Govenaires",
+   "Bluecoats",
+   "Legends",
+   "Madison Scouts",
+   "Bluecoats Rhythm IN BLUE",
+   "Jersey Surf"
+  ],
+  "roles": [
+   "brass",
+   "percussion",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "scott-koter",
+  "display_name": "Scott Koter",
+  "corps": 6,
+  "seasons": 8,
+  "corps_names": [
+   "Pacific Crest",
+   "The Cavaliers",
+   "Vanguard Cadets",
+   "7th Regiment",
+   "Spirit of Atlanta Alumni Corps",
+   "Seattle Cascades"
+  ],
+  "roles": [
+   "other",
+   "design"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "andrew-poor",
+  "display_name": "Andy Poor",
+  "corps": 6,
+  "seasons": 7,
+  "corps_names": [
+   "Music City",
+   "The Cavaliers",
+   "Spirit of Atlanta Alumni Corps",
+   "Spirit of Atlanta",
+   "Steel City Ambassadors",
+   "Phantom Regiment"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "sara-myers",
+  "display_name": "Sara Myers",
+  "corps": 6,
+  "seasons": 7,
+  "corps_names": [
+   "Heat Wave",
+   "Boston Crusaders",
+   "The Academy",
+   "Oregon Crusaders",
+   "Troopers",
+   "Spirit of Atlanta Alumni Corps"
+  ],
+  "roles": [
+   "brass",
+   "other",
+   "visual"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "daniel-allen",
+  "display_name": "Daniel Allen",
+  "corps": 6,
+  "seasons": 6,
+  "corps_names": [
+   "Spirit of Atlanta Alumni Corps",
+   "Spirit of Atlanta",
+   "Vanguard Cadets",
+   "Troopers",
+   "Colts",
+   "Mandarins"
+  ],
+  "roles": [
+   "other",
+   "percussion"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "sarah-rillo",
+  "display_name": "Sarah Rillo",
+  "corps": 6,
+  "seasons": 6,
+  "corps_names": [
+   "Crossmen",
+   "Legends",
+   "Phantom Regiment",
+   "Madison Scouts",
+   "Zephyrus Drum & Bugle Corps",
+   "The Academy"
+  ],
+  "roles": [
+   "guard",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "dennis-laorenza",
+  "display_name": "Dennis Laorenza",
+  "corps": 6,
+  "seasons": 5,
+  "corps_names": [
+   "Boston Crusaders",
+   "Crossmen",
+   "Troopers",
+   "Crusaders Senior Drum & Bugle Corps",
+   "Bluecoats Rhythm IN BLUE",
+   "Colts"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "joey-powell",
+  "display_name": "Joey Powell",
+  "corps": 6,
+  "seasons": 5,
+  "corps_names": [
+   "The Cadets",
+   "Vanguard Cadets",
+   "Carolina Crown",
+   "Crossmen",
+   "Colts",
+   "Pioneer"
+  ],
+  "roles": [
+   "other",
+   "guard"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "tim-leonelli",
+  "display_name": "Tim Leonelli",
+  "corps": 6,
+  "seasons": 5,
+  "corps_names": [
+   "Crossmen",
+   "Troopers",
+   "Crusaders Senior Drum & Bugle Corps",
+   "Boston Crusaders",
+   "Bluecoats Rhythm IN BLUE",
+   "Colts"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "tony-nunez",
+  "display_name": "Tony Nuñez",
+  "corps": 6,
+  "seasons": 5,
+  "corps_names": [
+   "Blue Stars",
+   "Carolina Crown",
+   "Mandarins",
+   "Phantom Regiment",
+   "Madison Scouts",
+   "Pacific Crest"
+  ],
+  "roles": [
+   "percussion",
+   "other",
+   "music",
+   "visual"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "ian-lewis",
+  "display_name": "Ian Lewis",
+  "corps": 5,
+  "seasons": 12,
+  "corps_names": [
+   "Bluecoats",
+   "Crossmen",
+   "Madison Scouts",
+   "Bluecoats Rhythm IN BLUE",
+   "Jersey Surf"
+  ],
+  "roles": [
+   "guard",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "james-moore",
+  "display_name": "Jim Moore",
+  "corps": 5,
+  "seasons": 12,
+  "corps_names": [
+   "Bluecoats",
+   "Bluecoats Rhythm IN BLUE",
+   "Carolina Crown",
+   "Madison Scouts",
+   "Blue Stars"
+  ],
+  "roles": [
+   "guard",
+   "design",
+   "other"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "josh-brenneis",
+  "display_name": "Josh Brenneis",
+  "corps": 5,
+  "seasons": 11,
+  "corps_names": [
+   "Santa Clara Vanguard",
+   "The Cadets",
+   "Guardians",
+   "Crossmen",
+   "Colts"
+  ],
+  "roles": [
+   "visual",
+   "director",
+   "other"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "laura-gasper",
+  "display_name": "Laura Gasper",
+  "corps": 5,
+  "seasons": 11,
+  "corps_names": [
+   "Santa Clara Vanguard",
+   "Vanguard Cadets",
+   "The Cadets",
+   "Bluecoats Rhythm IN BLUE",
+   "Pioneer"
+  ],
+  "roles": [
+   "guard",
+   "other",
+   "brass"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "melannie-stakely",
+  "display_name": "Melannie Stakely",
+  "corps": 5,
+  "seasons": 11,
+  "corps_names": [
+   "Pacific Crest",
+   "Impulse",
+   "Gold",
+   "Mandarins",
+   "Oregon Crusaders"
+  ],
+  "roles": [
+   "other",
+   "percussion",
+   "director"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "michael-martin",
+  "display_name": "Mike Martin",
+  "corps": 5,
+  "seasons": 11,
+  "corps_names": [
+   "Carolina Crown",
+   "The Cavaliers",
+   "Spirit of Atlanta",
+   "Phantom Regiment",
+   "Seattle Cascades"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "sheldon-apo",
+  "display_name": "Sheldon Apo",
+  "corps": 5,
+  "seasons": 11,
+  "corps_names": [
+   "Crossmen",
+   "Mandarins",
+   "Phantom Regiment",
+   "The Cavaliers",
+   "Seattle Cascades"
+  ],
+  "roles": [
+   "guard",
+   "other"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "clark-hunt",
+  "display_name": "Clark Hunt",
+  "corps": 5,
+  "seasons": 10,
+  "corps_names": [
+   "Mandarins",
+   "The Cavaliers",
+   "Spirit of Atlanta Alumni Corps",
+   "Spirit of Atlanta",
+   "Seattle Cascades"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "evan-vandoren",
+  "display_name": "Evan VanDoren",
+  "corps": 5,
+  "seasons": 10,
+  "corps_names": [
+   "Santa Clara Vanguard",
+   "Carolina Crown",
+   "Vanguard Cadets",
+   "Madison Scouts",
+   "Jersey Surf"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "greg-lagola",
+  "display_name": "Greg Lagola",
+  "corps": 5,
+  "seasons": 10,
+  "corps_names": [
+   "The Cadets",
+   "Bluecoats Rhythm IN BLUE",
+   "Vanguard Cadets",
+   "Blue Stars",
+   "Boston Crusaders"
+  ],
+  "roles": [
+   "other",
+   "guard",
+   "design",
+   "visual",
+   "brass"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "jonny-green",
+  "display_name": "Jonny Green",
+  "corps": 5,
+  "seasons": 10,
+  "corps_names": [
+   "Blue Stars",
+   "Santa Clara Vanguard",
+   "Troopers",
+   "Gold",
+   "Spirit of Atlanta Alumni Corps"
+  ],
+  "roles": [
+   "other",
+   "percussion"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "michael-raiford",
+  "display_name": "Michael Raiford",
+  "corps": 5,
+  "seasons": 10,
+  "corps_names": [
+   "Bluecoats",
+   "Troopers",
+   "Bluecoats Rhythm IN BLUE",
+   "The Academy",
+   "The Cavaliers"
+  ],
+  "roles": [
+   "design",
+   "music",
+   "guard",
+   "visual",
+   "other",
+   "director"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "rudy-ruiz",
+  "display_name": "Rudy Ruiz",
+  "corps": 5,
+  "seasons": 10,
+  "corps_names": [
+   "Pacific Crest",
+   "The Cavaliers",
+   "Phantom Regiment",
+   "Seattle Cascades",
+   "Oregon Crusaders"
+  ],
+  "roles": [
+   "visual",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "tyler-richards",
+  "display_name": "Tyler Richards",
+  "corps": 5,
+  "seasons": 10,
+  "corps_names": [
+   "Santa Clara Vanguard",
+   "The Cavaliers",
+   "Vanguard Cadets",
+   "Phantom Regiment",
+   "Blue Stars"
+  ],
+  "roles": [
+   "guard",
+   "other",
+   "visual"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "daniel-recoder",
+  "display_name": "Daniel Recoder",
+  "corps": 5,
+  "seasons": 9,
+  "corps_names": [
+   "Blue Stars",
+   "Bluecoats",
+   "Vanguard Cadets",
+   "Bluecoats Rhythm IN BLUE",
+   "Mandarins"
+  ],
+  "roles": [
+   "other",
+   "percussion"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "jesus-sanchez",
+  "display_name": "Jesus Sanchez",
+  "corps": 5,
+  "seasons": 9,
+  "corps_names": [
+   "Phantom Regiment",
+   "Troopers",
+   "Vanguard Cadets",
+   "Steel City Ambassadors",
+   "Spirit of Atlanta Alumni Corps"
+  ],
+  "roles": [
+   "percussion",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "joey-martinez",
+  "display_name": "Joey Martinez",
+  "corps": 5,
+  "seasons": 9,
+  "corps_names": [
+   "Mandarins",
+   "Blue Devils B",
+   "Phantom Regiment",
+   "The Cavaliers",
+   "Pacific Crest"
+  ],
+  "roles": [
+   "percussion",
+   "other",
+   "visual"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "kevin-welborn",
+  "display_name": "Kevin Welborn",
+  "corps": 5,
+  "seasons": 9,
+  "corps_names": [
+   "Bluecoats",
+   "Crossmen",
+   "The Cavaliers",
+   "Troopers",
+   "Carolina Crown"
+  ],
+  "roles": [
+   "music",
+   "other",
+   "percussion"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "lee-beddis",
+  "display_name": "Lee Beddis",
+  "corps": 5,
+  "seasons": 9,
+  "corps_names": [
+   "The Cadets",
+   "The Academy",
+   "Crossmen",
+   "Madison Scouts",
+   "Jersey Surf"
+  ],
+  "roles": [
+   "percussion",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "neil-adkison",
+  "display_name": "Neil Adkison",
+  "corps": 5,
+  "seasons": 9,
+  "corps_names": [
+   "Crossmen",
+   "Blue Knights",
+   "Madison Scouts",
+   "Carolina Crown",
+   "Spirit of Atlanta Alumni Corps"
+  ],
+  "roles": [
+   "visual",
+   "other"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "ronnie-bynum",
+  "display_name": "Ronnie Bynum",
+  "corps": 5,
+  "seasons": 9,
+  "corps_names": [
+   "Bluecoats",
+   "The Cadets",
+   "Vanguard Cadets",
+   "Bluecoats Rhythm IN BLUE",
+   "Boston Crusaders"
+  ],
+  "roles": [
+   "guard"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "wayne-harris",
+  "display_name": "Wayne Harris",
+  "corps": 5,
+  "seasons": 9,
+  "corps_names": [
+   "Santa Clara Vanguard",
+   "Colts",
+   "Vanguard Cadets",
+   "Boston Crusaders",
+   "The Cavaliers"
+  ],
+  "roles": [
+   "other",
+   "visual"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "bob-higgins",
+  "display_name": "Bob Higgins",
+  "corps": 5,
+  "seasons": 8,
+  "corps_names": [
+   "Music City",
+   "Bluecoats",
+   "Bluecoats Rhythm IN BLUE",
+   "Vanguard Cadets",
+   "Pioneer"
+  ],
+  "roles": [
+   "brass",
+   "other"
+  ],
+  "hasphoto": true
+ },
+ {
+  "person_id": "christopher-williams",
+  "display_name": "Chris Williams",
+  "corps": 5,
+  "seasons": 8,
+  "corps_names": [
+   "Blue Knights",
+   "Phantom Regiment",
+   "Crossmen",
+   "Spirit of Atlanta Alumni Corps",
+   "Blue Devils B"
+  ],
+  "roles": [
+   "brass",
+   "other",
+   "visual"
+  ],
+  "hasphoto": false
+ },
+ {
+  "person_id": "erik-kosman",
+  "display_name": "Erik Kosman",
+  "corps": 5,
+  "seasons": 8,
+  "corps_names": [
+   "Bluecoats",
+   "Bluecoats Rhythm IN BLUE",
+   "Boston Crusaders",
+   "Spirit of Atlanta Alumni Corps",
+   "Blue Stars"
+  ],
+  "roles": [
+   "director",
+   "other",
+   "percussion"
+  ],
+  "hasphoto": false
+ }
+]

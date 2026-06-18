@@ -1,0 +1,18 @@
+{
+  "scrapedAt": "2026-06-17T10-48-03-650Z",
+  "apply": true,
+  "totBio": 0,
+  "totPhoto": 0,
+  "corps": [
+    {
+      "corpsKey": "001j000000iwxa3aal",
+      "name": "Mandarins",
+      "staffPageUrl": "http://www.mandarins.org/staff",
+      "targets": 451,
+      "detailLinks": 1,
+      "biosFilled": 0,
+      "photosFilled": 0,
+      "fills": []
+    }
+  ]
+}

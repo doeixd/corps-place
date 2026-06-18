@@ -1,0 +1,1043 @@
+{
+  "metrics": {
+    "rows": 52,
+    "caption_values": 416,
+    "delta_mae_pts": 0.2869332221182921,
+    "recap_mae_pts": 0.28693322095503115,
+    "category_mae_pts": 0.335613813010451,
+    "total_mae_pts": 0.6497756415781939,
+    "coverage": 0.9591346153846154,
+    "width": 1.728818146485519,
+    "width_floor_pct": 0
+  },
+  "evaluations": {
+    "validation": {
+      "label": "validation",
+      "metrics": {
+        "rows": 363,
+        "caption_values": 2904,
+        "delta_mae_pts": 0.37069179473511543,
+        "recap_mae_pts": 0.37069179420366294,
+        "category_mae_pts": 0.445438555412478,
+        "total_mae_pts": 1.0369619195126016,
+        "coverage": 0.9462809917355371,
+        "width": 1.922413216983843,
+        "width_floor_pct": 0
+      },
+      "by_caption": {
+        "GE1": {
+          "rows": 0,
+          "caption_values": 363,
+          "delta_mae_pts": 0.3268152992517137,
+          "recap_mae_pts": 0.3268152880955047,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9641873278236914,
+          "width": 1.9057849820732924,
+          "width_floor_pct": 0
+        },
+        "GE2": {
+          "rows": 0,
+          "caption_values": 363,
+          "delta_mae_pts": 0.32924035020738335,
+          "recap_mae_pts": 0.32924033909328737,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9696969696969697,
+          "width": 1.9279085805141656,
+          "width_floor_pct": 0
+        },
+        "VP": {
+          "rows": 0,
+          "caption_values": 363,
+          "delta_mae_pts": 0.3766003399956649,
+          "recap_mae_pts": 0.3766003417564889,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9118457300275482,
+          "width": 1.8877323982459675,
+          "width_floor_pct": 0
+        },
+        "VA": {
+          "rows": 0,
+          "caption_values": 363,
+          "delta_mae_pts": 0.34830192237245794,
+          "recap_mae_pts": 0.348301924064281,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9669421487603306,
+          "width": 1.9591497590979434,
+          "width_floor_pct": 0
+        },
+        "CG": {
+          "rows": 0,
+          "caption_values": 363,
+          "delta_mae_pts": 0.38598862920683935,
+          "recap_mae_pts": 0.38598863216295465,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9366391184573003,
+          "width": 2.003521838956108,
+          "width_floor_pct": 0
+        },
+        "MB": {
+          "rows": 0,
+          "caption_values": 363,
+          "delta_mae_pts": 0.35676308170339854,
+          "recap_mae_pts": 0.35676307892789383,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.977961432506887,
+          "width": 1.8994637495134157,
+          "width_floor_pct": 0
+        },
+        "MA": {
+          "rows": 0,
+          "caption_values": 363,
+          "delta_mae_pts": 0.4176814931639378,
+          "recap_mae_pts": 0.41768150096337237,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9118457300275482,
+          "width": 1.8560940361233278,
+          "width_floor_pct": 0
+        },
+        "MP": {
+          "rows": 0,
+          "caption_values": 363,
+          "delta_mae_pts": 0.4241432419795253,
+          "recap_mae_pts": 0.4241432485655204,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.931129476584022,
+          "width": 1.939650391346533,
+          "width_floor_pct": 0
+        }
+      },
+      "by_division": {
+        "World Class": {
+          "rows": 265,
+          "caption_values": 2120,
+          "delta_mae_pts": 0.3233037289916185,
+          "recap_mae_pts": 0.3233037282594853,
+          "category_mae_pts": 0.37447324372663404,
+          "total_mae_pts": 0.8865645083128582,
+          "coverage": 0.9650943396226415,
+          "width": 1.8841069247098086,
+          "width_floor_pct": 0
+        },
+        "Open Class": {
+          "rows": 98,
+          "caption_values": 784,
+          "delta_mae_pts": 0.4988329929190611,
+          "recap_mae_pts": 0.4988329929302667,
+          "category_mae_pts": 0.6373345512976685,
+          "total_mae_pts": 1.4436487967363985,
+          "coverage": 0.8954081632653061,
+          "width": 2.025996558337099,
+          "width_floor_pct": 0
+        }
+      },
+      "by_season_phase": {
+        "mid": {
+          "rows": 217,
+          "caption_values": 1736,
+          "delta_mae_pts": 0.37663577407254784,
+          "recap_mae_pts": 0.3766357716378368,
+          "category_mae_pts": 0.4553678202991541,
+          "total_mae_pts": 1.034228595421142,
+          "coverage": 0.945852534562212,
+          "width": 1.950020683774642,
+          "width_floor_pct": 0
+        },
+        "late": {
+          "rows": 146,
+          "caption_values": 1168,
+          "delta_mae_pts": 0.36185725010345265,
+          "recap_mae_pts": 0.3618572524008164,
+          "category_mae_pts": 0.43068067540967847,
+          "total_mae_pts": 1.0410244628540175,
+          "coverage": 0.946917808219178,
+          "width": 1.8813802012742344,
+          "width_floor_pct": 0
+        }
+      },
+      "by_judge_mode": {
+        "panel_known": {
+          "rows": 363,
+          "caption_values": 2904,
+          "delta_mae_pts": 0.37069179473511543,
+          "recap_mae_pts": 0.37069179420366294,
+          "category_mae_pts": 0.445438555412478,
+          "total_mae_pts": 1.0369619195126016,
+          "coverage": 0.9462809917355371,
+          "width": 1.922413216983843,
+          "width_floor_pct": 0
+        }
+      },
+      "by_history": {
+        "established_history": {
+          "rows": 299,
+          "caption_values": 2392,
+          "delta_mae_pts": 0.34685400581034925,
+          "recap_mae_pts": 0.3468540054405376,
+          "category_mae_pts": 0.40987698910759823,
+          "total_mae_pts": 0.955531579568758,
+          "coverage": 0.9561036789297659,
+          "width": 1.880412624694136,
+          "width_floor_pct": 0
+        },
+        "short_history": {
+          "rows": 47,
+          "caption_values": 376,
+          "delta_mae_pts": 0.42578473891573937,
+          "recap_mae_pts": 0.4257847360299338,
+          "category_mae_pts": 0.5134134246178332,
+          "total_mae_pts": 1.1995184701297334,
+          "coverage": 0.9175531914893617,
+          "width": 2.0390762444769783,
+          "width_floor_pct": 0
+        },
+        "sparse_history": {
+          "rows": 17,
+          "caption_values": 136,
+          "delta_mae_pts": 0.6376406483831116,
+          "recap_mae_pts": 0.6376406515177654,
+          "category_mae_pts": 0.8829732302658523,
+          "total_mae_pts": 2.0197568468187255,
+          "coverage": 0.8529411764705882,
+          "width": 2.338590558304133,
+          "width_floor_pct": 0
+        }
+      }
+    },
+    "test_all": {
+      "label": "test_all",
+      "metrics": {
+        "rows": 52,
+        "caption_values": 416,
+        "delta_mae_pts": 0.2869332221182921,
+        "recap_mae_pts": 0.28693322095503115,
+        "category_mae_pts": 0.335613813010451,
+        "total_mae_pts": 0.6497756415781939,
+        "coverage": 0.9591346153846154,
+        "width": 1.728818146485519,
+        "width_floor_pct": 0
+      },
+      "by_caption": {
+        "GE1": {
+          "rows": 0,
+          "caption_values": 52,
+          "delta_mae_pts": 0.22591319494627354,
+          "recap_mae_pts": 0.22591318473895886,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9807692307692307,
+          "width": 1.713927379055313,
+          "width_floor_pct": 0
+        },
+        "GE2": {
+          "rows": 0,
+          "caption_values": 52,
+          "delta_mae_pts": 0.20773888132628554,
+          "recap_mae_pts": 0.20773887701502178,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.6826364803012952,
+          "width_floor_pct": 0
+        },
+        "VP": {
+          "rows": 0,
+          "caption_values": 52,
+          "delta_mae_pts": 0.4599629982202105,
+          "recap_mae_pts": 0.45996299899227605,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.8461538461538461,
+          "width": 1.737758420263194,
+          "width_floor_pct": 0
+        },
+        "VA": {
+          "rows": 0,
+          "caption_values": 52,
+          "delta_mae_pts": 0.22834404228243654,
+          "recap_mae_pts": 0.22834401403409108,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9807692307692307,
+          "width": 1.7784984288251502,
+          "width_floor_pct": 0
+        },
+        "CG": {
+          "rows": 0,
+          "caption_values": 52,
+          "delta_mae_pts": 0.34463680700987176,
+          "recap_mae_pts": 0.34463680482939796,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9230769230769231,
+          "width": 1.7956863898374138,
+          "width_floor_pct": 0
+        },
+        "MB": {
+          "rows": 0,
+          "caption_values": 52,
+          "delta_mae_pts": 0.2780022546682731,
+          "recap_mae_pts": 0.2780022672776547,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9807692307692307,
+          "width": 1.703947532900993,
+          "width_floor_pct": 0
+        },
+        "MA": {
+          "rows": 0,
+          "caption_values": 52,
+          "delta_mae_pts": 0.22386069200234093,
+          "recap_mae_pts": 0.22386070786578893,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.7357901745193396,
+          "width_floor_pct": 0
+        },
+        "MP": {
+          "rows": 0,
+          "caption_values": 52,
+          "delta_mae_pts": 0.32700690649064446,
+          "recap_mae_pts": 0.32700691288706135,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9615384615384616,
+          "width": 1.6823003661814677,
+          "width_floor_pct": 0
+        }
+      },
+      "by_division": {
+        "World Class": {
+          "rows": 33,
+          "caption_values": 264,
+          "delta_mae_pts": 0.2800370480090925,
+          "recap_mae_pts": 0.2800370427806015,
+          "category_mae_pts": 0.33328483846661094,
+          "total_mae_pts": 0.6380514760677353,
+          "coverage": 0.9507575757575758,
+          "width": 1.6582706417479935,
+          "width_floor_pct": 0
+        },
+        "Open Class": {
+          "rows": 19,
+          "caption_values": 152,
+          "delta_mae_pts": 0.2989107876763756,
+          "recap_mae_pts": 0.29891079357377776,
+          "category_mae_pts": 0.33965887406027856,
+          "total_mae_pts": 0.6701386658858327,
+          "coverage": 0.9736842105263158,
+          "width": 1.8513480231349089,
+          "width_floor_pct": 0
+        }
+      },
+      "by_season_phase": {
+        "late": {
+          "rows": 47,
+          "caption_values": 376,
+          "delta_mae_pts": 0.2869494003051229,
+          "recap_mae_pts": 0.2869493984266492,
+          "category_mae_pts": 0.33016672087179266,
+          "total_mae_pts": 0.6472213935761387,
+          "coverage": 0.9574468085106383,
+          "width": 1.7116912412597898,
+          "width_floor_pct": 0
+        },
+        "mid": {
+          "rows": 5,
+          "caption_values": 40,
+          "delta_mae_pts": 0.28678114716208347,
+          "recap_mae_pts": 0.28678115272182086,
+          "category_mae_pts": 0.3868164791138395,
+          "total_mae_pts": 0.673785572797513,
+          "coverage": 0.975,
+          "width": 1.889811055607371,
+          "width_floor_pct": 0
+        }
+      },
+      "by_judge_mode": {
+        "panel_known": {
+          "rows": 52,
+          "caption_values": 416,
+          "delta_mae_pts": 0.2869332221182921,
+          "recap_mae_pts": 0.28693322095503115,
+          "category_mae_pts": 0.335613813010451,
+          "total_mae_pts": 0.6497756415781939,
+          "coverage": 0.9591346153846154,
+          "width": 1.728818146485519,
+          "width_floor_pct": 0
+        }
+      },
+      "by_history": {
+        "established_history": {
+          "rows": 51,
+          "caption_values": 408,
+          "delta_mae_pts": 0.2886473714028573,
+          "recap_mae_pts": 0.2886473703595506,
+          "category_mae_pts": 0.3383196405981077,
+          "total_mae_pts": 0.6508918477998117,
+          "coverage": 0.9583333333333334,
+          "width": 1.7243132906800005,
+          "width_floor_pct": 0
+        },
+        "short_history": {
+          "rows": 1,
+          "caption_values": 8,
+          "delta_mae_pts": 0.19951160860546777,
+          "recap_mae_pts": 0.1995116013245375,
+          "category_mae_pts": 0.19761660603995898,
+          "total_mae_pts": 0.5928491242756877,
+          "coverage": 1,
+          "width": 1.9585657925669602,
+          "width_floor_pct": 0
+        }
+      }
+    },
+    "test_world_class": {
+      "label": "test_world_class",
+      "metrics": {
+        "rows": 33,
+        "caption_values": 264,
+        "delta_mae_pts": 0.2801262577260627,
+        "recap_mae_pts": 0.2801262567008334,
+        "category_mae_pts": 0.333747483133365,
+        "total_mae_pts": 0.640743267261994,
+        "coverage": 0.9507575757575758,
+        "width": 1.6584309297567124,
+        "width_floor_pct": 0
+      },
+      "by_caption": {
+        "GE1": {
+          "rows": 0,
+          "caption_values": 33,
+          "delta_mae_pts": 0.19621776759694273,
+          "recap_mae_pts": 0.19621775560271118,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9696969696969697,
+          "width": 1.6439163763878097,
+          "width_floor_pct": 0
+        },
+        "GE2": {
+          "rows": 0,
+          "caption_values": 33,
+          "delta_mae_pts": 0.18344471645817073,
+          "recap_mae_pts": 0.18344471819360164,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.6089852903879527,
+          "width_floor_pct": 0
+        },
+        "VP": {
+          "rows": 0,
+          "caption_values": 33,
+          "delta_mae_pts": 0.5478851794198075,
+          "recap_mae_pts": 0.5478851493615878,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.7878787878787878,
+          "width": 1.6598231188010981,
+          "width_floor_pct": 0
+        },
+        "VA": {
+          "rows": 0,
+          "caption_values": 33,
+          "delta_mae_pts": 0.25289839488976984,
+          "recap_mae_pts": 0.25289839212342213,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.698811634096234,
+          "width_floor_pct": 0
+        },
+        "CG": {
+          "rows": 0,
+          "caption_values": 33,
+          "delta_mae_pts": 0.36589367061507033,
+          "recap_mae_pts": 0.3658936707918065,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9090909090909091,
+          "width": 1.7382647922251113,
+          "width_floor_pct": 0
+        },
+        "MB": {
+          "rows": 0,
+          "caption_values": 33,
+          "delta_mae_pts": 0.21692705637280854,
+          "recap_mae_pts": 0.21692708971349184,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9696969696969697,
+          "width": 1.6439147816948885,
+          "width_floor_pct": 0
+        },
+        "MA": {
+          "rows": 0,
+          "caption_values": 33,
+          "delta_mae_pts": 0.180390261809454,
+          "recap_mae_pts": 0.18039025355773552,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.6732016616393863,
+          "width_floor_pct": 0
+        },
+        "MP": {
+          "rows": 0,
+          "caption_values": 33,
+          "delta_mae_pts": 0.2973530146464774,
+          "recap_mae_pts": 0.29735302426231064,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9696969696969697,
+          "width": 1.6005297828212202,
+          "width_floor_pct": 0
+        }
+      },
+      "by_division": {
+        "World Class": {
+          "rows": 33,
+          "caption_values": 264,
+          "delta_mae_pts": 0.2801262577260627,
+          "recap_mae_pts": 0.2801262567008334,
+          "category_mae_pts": 0.333747483133365,
+          "total_mae_pts": 0.640743267261994,
+          "coverage": 0.9507575757575758,
+          "width": 1.6584309297567124,
+          "width_floor_pct": 0
+        }
+      },
+      "by_season_phase": {
+        "late": {
+          "rows": 33,
+          "caption_values": 264,
+          "delta_mae_pts": 0.2801262577260627,
+          "recap_mae_pts": 0.2801262567008334,
+          "category_mae_pts": 0.333747483133365,
+          "total_mae_pts": 0.640743267261994,
+          "coverage": 0.9507575757575758,
+          "width": 1.6584309297567124,
+          "width_floor_pct": 0
+        }
+      },
+      "by_judge_mode": {
+        "panel_known": {
+          "rows": 33,
+          "caption_values": 264,
+          "delta_mae_pts": 0.2801262577260627,
+          "recap_mae_pts": 0.2801262567008334,
+          "category_mae_pts": 0.333747483133365,
+          "total_mae_pts": 0.640743267261994,
+          "coverage": 0.9507575757575758,
+          "width": 1.6584309297567124,
+          "width_floor_pct": 0
+        }
+      },
+      "by_history": {
+        "established_history": {
+          "rows": 33,
+          "caption_values": 264,
+          "delta_mae_pts": 0.2801262577260627,
+          "recap_mae_pts": 0.2801262567008334,
+          "category_mae_pts": 0.333747483133365,
+          "total_mae_pts": 0.640743267261994,
+          "coverage": 0.9507575757575758,
+          "width": 1.6584309297567124,
+          "width_floor_pct": 0
+        }
+      }
+    },
+    "test_open_class": {
+      "label": "test_open_class",
+      "metrics": {
+        "rows": 19,
+        "caption_values": 152,
+        "delta_mae_pts": 0.29962637787638924,
+        "recap_mae_pts": 0.29962637915185086,
+        "category_mae_pts": 0.3355157307856768,
+        "total_mae_pts": 0.6771137819761494,
+        "coverage": 0.9671052631578947,
+        "width": 1.8519310184462003,
+        "width_floor_pct": 0
+      },
+      "by_caption": {
+        "GE1": {
+          "rows": 0,
+          "caption_values": 19,
+          "delta_mae_pts": 0.2821473855705263,
+          "recap_mae_pts": 0.2821474086709121,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.8363810195566965,
+          "width_floor_pct": 0
+        },
+        "GE2": {
+          "rows": 0,
+          "caption_values": 19,
+          "delta_mae_pts": 0.25535327843118427,
+          "recap_mae_pts": 0.25535326770226274,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.8119052127973463,
+          "width_floor_pct": 0
+        },
+        "VP": {
+          "rows": 0,
+          "caption_values": 19,
+          "delta_mae_pts": 0.30180021779316535,
+          "recap_mae_pts": 0.3018002202928168,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9473684210526315,
+          "width": 1.8734333174714783,
+          "width_floor_pct": 0
+        },
+        "VA": {
+          "rows": 0,
+          "caption_values": 19,
+          "delta_mae_pts": 0.1863579709445017,
+          "recap_mae_pts": 0.18635795628193175,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9473684210526315,
+          "width": 1.917299703770641,
+          "width_floor_pct": 0
+        },
+        "CG": {
+          "rows": 0,
+          "caption_values": 19,
+          "delta_mae_pts": 0.3129869755906595,
+          "recap_mae_pts": 0.3129869607073728,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9473684210526315,
+          "width": 1.8969916909796176,
+          "width_floor_pct": 0
+        },
+        "MB": {
+          "rows": 0,
+          "caption_values": 19,
+          "delta_mae_pts": 0.37871484298363894,
+          "recap_mae_pts": 0.37871483509438053,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.8088347833280576,
+          "width_floor_pct": 0
+        },
+        "MA": {
+          "rows": 0,
+          "caption_values": 19,
+          "delta_mae_pts": 0.29858926979717104,
+          "recap_mae_pts": 0.2985893069895614,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.8451157895755486,
+          "width_floor_pct": 0
+        },
+        "MP": {
+          "rows": 0,
+          "caption_values": 19,
+          "delta_mae_pts": 0.3810610819002664,
+          "recap_mae_pts": 0.38106107747556967,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.8947368421052632,
+          "width": 1.8254866300902137,
+          "width_floor_pct": 0
+        }
+      },
+      "by_division": {
+        "Open Class": {
+          "rows": 19,
+          "caption_values": 152,
+          "delta_mae_pts": 0.29962637787638924,
+          "recap_mae_pts": 0.29962637915185086,
+          "category_mae_pts": 0.3355157307856768,
+          "total_mae_pts": 0.6771137819761494,
+          "coverage": 0.9671052631578947,
+          "width": 1.8519310184462003,
+          "width_floor_pct": 0
+        }
+      },
+      "by_season_phase": {
+        "late": {
+          "rows": 14,
+          "caption_values": 112,
+          "delta_mae_pts": 0.30418261978473066,
+          "recap_mae_pts": 0.30418261996325624,
+          "category_mae_pts": 0.3184581594561676,
+          "total_mae_pts": 0.6863064455855985,
+          "coverage": 0.9642857142857143,
+          "width": 1.8381828016902255,
+          "width_floor_pct": 0
+        },
+        "mid": {
+          "rows": 5,
+          "caption_values": 40,
+          "delta_mae_pts": 0.28686890053303304,
+          "recap_mae_pts": 0.28686890487991606,
+          "category_mae_pts": 0.3832769305083024,
+          "total_mae_pts": 0.6513743238696919,
+          "coverage": 0.975,
+          "width": 1.8904260253629288,
+          "width_floor_pct": 0
+        }
+      },
+      "by_judge_mode": {
+        "panel_known": {
+          "rows": 19,
+          "caption_values": 152,
+          "delta_mae_pts": 0.29962637787638924,
+          "recap_mae_pts": 0.29962637915185086,
+          "category_mae_pts": 0.3355157307856768,
+          "total_mae_pts": 0.6771137819761494,
+          "coverage": 0.9671052631578947,
+          "width": 1.8519310184462003,
+          "width_floor_pct": 0
+        }
+      },
+      "by_history": {
+        "established_history": {
+          "rows": 18,
+          "caption_values": 144,
+          "delta_mae_pts": 0.3051883065967622,
+          "recap_mae_pts": 0.305188308194866,
+          "category_mae_pts": 0.34317678785843925,
+          "total_mae_pts": 0.6817951518483972,
+          "coverage": 0.9652777777777778,
+          "width": 1.846006870569774,
+          "width_floor_pct": 0
+        },
+        "short_history": {
+          "rows": 1,
+          "caption_values": 8,
+          "delta_mae_pts": 0.1995116609096763,
+          "recap_mae_pts": 0.19951165637757917,
+          "category_mae_pts": 0.19761670347595248,
+          "total_mae_pts": 0.5928491242756877,
+          "coverage": 1,
+          "width": 1.958565680221876,
+          "width_floor_pct": 0
+        }
+      }
+    },
+    "test_championship_week": {
+      "label": "test_championship_week",
+      "metrics": {
+        "rows": 47,
+        "caption_values": 376,
+        "delta_mae_pts": 0.28989484569692664,
+        "recap_mae_pts": 0.28989484565692875,
+        "category_mae_pts": 0.3365537699656944,
+        "total_mae_pts": 0.6848417172611965,
+        "coverage": 0.9547872340425532,
+        "width": 1.712569976406693,
+        "width_floor_pct": 0
+      },
+      "by_caption": {
+        "GE1": {
+          "rows": 0,
+          "caption_values": 47,
+          "delta_mae_pts": 0.206133853455776,
+          "recap_mae_pts": 0.2061338555642664,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9787234042553191,
+          "width": 1.6878233680051307,
+          "width_floor_pct": 0
+        },
+        "GE2": {
+          "rows": 0,
+          "caption_values": 47,
+          "delta_mae_pts": 0.20947315460983978,
+          "recap_mae_pts": 0.20947315526109583,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.6652128998041238,
+          "width_floor_pct": 0
+        },
+        "VP": {
+          "rows": 0,
+          "caption_values": 47,
+          "delta_mae_pts": 0.49152907075330715,
+          "recap_mae_pts": 0.4915290522703559,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.8297872340425532,
+          "width": 1.7326990011264014,
+          "width_floor_pct": 0
+        },
+        "VA": {
+          "rows": 0,
+          "caption_values": 47,
+          "delta_mae_pts": 0.2478692191904543,
+          "recap_mae_pts": 0.24786920672311105,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9787234042553191,
+          "width": 1.758565806057458,
+          "width_floor_pct": 0
+        },
+        "CG": {
+          "rows": 0,
+          "caption_values": 47,
+          "delta_mae_pts": 0.33109041818266666,
+          "recap_mae_pts": 0.33109042535288474,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9361702127659575,
+          "width": 1.782935936075894,
+          "width_floor_pct": 0
+        },
+        "MB": {
+          "rows": 0,
+          "caption_values": 47,
+          "delta_mae_pts": 0.2845957817369591,
+          "recap_mae_pts": 0.2845957988657524,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9787234042553191,
+          "width": 1.7016962491147634,
+          "width_floor_pct": 0
+        },
+        "MA": {
+          "rows": 0,
+          "caption_values": 47,
+          "delta_mae_pts": 0.22574148049803638,
+          "recap_mae_pts": 0.225741482150511,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 1,
+          "width": 1.7144200851320148,
+          "width_floor_pct": 0
+        },
+        "MP": {
+          "rows": 0,
+          "caption_values": 47,
+          "delta_mae_pts": 0.3227257871483749,
+          "recap_mae_pts": 0.3227257890674545,
+          "category_mae_pts": 0,
+          "total_mae_pts": 0,
+          "coverage": 0.9361702127659575,
+          "width": 1.6572064659377639,
+          "width_floor_pct": 0
+        }
+      },
+      "by_division": {
+        "World Class": {
+          "rows": 33,
+          "caption_values": 264,
+          "delta_mae_pts": 0.2800141551861248,
+          "recap_mae_pts": 0.28001415647967665,
+          "category_mae_pts": 0.3333475816795089,
+          "total_mae_pts": 0.6391189412977009,
+          "coverage": 0.9507575757575758,
+          "width": 1.658367568235105,
+          "width_floor_pct": 0
+        },
+        "Open Class": {
+          "rows": 14,
+          "caption_values": 112,
+          "delta_mae_pts": 0.3131850447581025,
+          "recap_mae_pts": 0.3131850415747384,
+          "category_mae_pts": 0.34411121378313164,
+          "total_mae_pts": 0.7926168320322934,
+          "coverage": 0.9642857142857143,
+          "width": 1.8403327956682944,
+          "width_floor_pct": 0
+        }
+      },
+      "by_season_phase": {
+        "late": {
+          "rows": 47,
+          "caption_values": 376,
+          "delta_mae_pts": 0.28989484569692664,
+          "recap_mae_pts": 0.28989484565692875,
+          "category_mae_pts": 0.3365537699656944,
+          "total_mae_pts": 0.6848417172611965,
+          "coverage": 0.9547872340425532,
+          "width": 1.712569976406693,
+          "width_floor_pct": 0
+        }
+      },
+      "by_judge_mode": {
+        "panel_known": {
+          "rows": 47,
+          "caption_values": 376,
+          "delta_mae_pts": 0.28989484569692664,
+          "recap_mae_pts": 0.28989484565692875,
+          "category_mae_pts": 0.3365537699656944,
+          "total_mae_pts": 0.6848417172611965,
+          "coverage": 0.9547872340425532,
+          "width": 1.712569976406693,
+          "width_floor_pct": 0
+        }
+      },
+      "by_history": {
+        "established_history": {
+          "rows": 47,
+          "caption_values": 376,
+          "delta_mae_pts": 0.28989484569692664,
+          "recap_mae_pts": 0.28989484565692875,
+          "category_mae_pts": 0.3365537699656944,
+          "total_mae_pts": 0.6848417172611965,
+          "coverage": 0.9547872340425532,
+          "width": 1.712569976406693,
+          "width_floor_pct": 0
+        }
+      }
+    }
+  },
+  "split": {
+    "val_mode": "date-forward",
+    "val_split": 0.05,
+    "val_date_cutoff": null,
+    "division_filter": "all",
+    "loaded_rows": 7321,
+    "retained_rows": 7321,
+    "train_rows": 6906,
+    "validation_rows": 363,
+    "test_rows": 52,
+    "train_shows": 816,
+    "validation_shows": 44,
+    "test_shows": 4,
+    "validation_date_min": "2025-07-15T00:00:00.000Z",
+    "validation_date_max": "2025-08-09T00:00:00.000Z"
+  },
+  "curriculum_transitions": [
+    {
+      "epoch": 10,
+      "from": "A",
+      "to": "B",
+      "reason": "max_epoch",
+      "deltaMae": 0.4809414107280658,
+      "coverage": 0.8708677685950413
+    },
+    {
+      "epoch": 31,
+      "from": "B",
+      "to": "C",
+      "reason": "delta_plateau",
+      "deltaMae": 0.3986278901251223,
+      "coverage": 0.9445592286501377
+    }
+  ],
+  "checkpoints": {
+    "best_delta": {
+      "metric": "valDeltaMae",
+      "value": 0.34818472538769407,
+      "dir": "models\\v9_subcaption_fixed\\v9fix_shared_datefwd_idfloor0_1779507573588\\best"
+    },
+    "best_loss": {
+      "metric": "valLoss",
+      "value": 0.12425364299418185,
+      "dir": "models\\v9_subcaption_fixed\\v9fix_shared_datefwd_idfloor0_1779507573588\\best_loss"
+    },
+    "best_phase_delta": {
+      "A": {
+        "value": 0.45787524060441115,
+        "dir": "models\\v9_subcaption_fixed\\v9fix_shared_datefwd_idfloor0_1779507573588\\best_phase_a"
+      },
+      "B": {
+        "value": 0.34818472538769407,
+        "dir": "models\\v9_subcaption_fixed\\v9fix_shared_datefwd_idfloor0_1779507573588\\best_phase_b"
+      },
+      "C": {
+        "value": 0.350374731889441,
+        "dir": "models\\v9_subcaption_fixed\\v9fix_shared_datefwd_idfloor0_1779507573588\\best_phase_c"
+      }
+    }
+  },
+  "baselines": {
+    "validation_monitoring_forecast_mae": {
+      "zero": 16.435571625344277,
+      "mean": 2.000389318905826,
+      "ema": 1.1564291517900491,
+      "quadratic": 0.6461679657996303
+    },
+    "final_validation_recap_mae": 0.37069179420366294,
+    "final_validation_vs_inertia_pts": 0.7857373575863862,
+    "final_validation_vs_quadratic_pts": 0.2754761715959674
+  },
+  "config": {
+    "epochs": 400,
+    "batchSize": 128,
+    "patience": 90,
+    "reduceLrPatience": 18,
+    "lstm1Units": 128,
+    "lstm2Units": 64,
+    "dropoutLstm": 0.2,
+    "recurrentDropout": 0.1,
+    "dropoutDense1": 0.3,
+    "dropoutDense2": 0.2,
+    "l2Reg": 0.000025,
+    "learningRate": 0.00075,
+    "minLr": 0.00003,
+    "plateauLrFactor": 0.5,
+    "warmupEpochs": 10,
+    "startEpoch": 0,
+    "clipNorm": 1,
+    "seed": 42,
+    "swa": false,
+    "swaStart": 0.75,
+    "swaInterval": 1,
+    "snapshotEpochs": "",
+    "useMha": false,
+    "widthFloorPts": 0.5,
+    "widthFloorWeight": 1.5,
+    "widthFloorStart": 0.1,
+    "widthFloorEnd": 1.5,
+    "widthTargetPts": 2.5,
+    "widthPenaltyWeight": 0.5,
+    "coverageTarget": 0.8,
+    "coverageUpperTarget": 0.85,
+    "overCoverageWeight": 2,
+    "rankingWeight": 0.1,
+    "valSplit": 0.05,
+    "valMode": "date-forward",
+    "divisionFilter": "all",
+    "samplesPerEpoch": 4096,
+    "baselineDropout": 0.1,
+    "baselineNoiseStd": 0.25,
+    "logCsv": "./results/lstm-v9-production-training-log.csv",
+    "trialId": "v9fix_shared_datefwd_idfloor0",
+    "noJudgeBias": false,
+    "noCorpsResidual": false,
+    "outputReport": "eval_report.json",
+    "noLogFile": false,
+    "baselineScope": "train",
+    "baseWidthMultiplier": 1,
+    "coverageSharpness": 4,
+    "identityDropoutFloor": 0,
+    "accuracyTrunkUnits": 128,
+    "mbMpLossBoost": 1,
+    "finalWeights": "best",
+    "curriculumPhaseAEnd": 10,
+    "curriculumPhaseBEnd": 40,
+    "curriculumPhaseCRamp": 80,
+    "corpsScaleStart": 25,
+    "corpsScaleRamp": 35,
+    "judgeScaleRamp": 40,
+    "autoCurriculum": true,
+    "autoCurriculumPatience": 6,
+    "autoCurriculumMinCoverage": 0.9,
+    "autoCurriculumMinDeltaGain": 0.002,
+    "autoCurriculumPhaseAMin": 6,
+    "autoCurriculumPhaseBMin": 18
+  },
+  "timestamp": "2026-05-23T06:46:51.870Z"
+}

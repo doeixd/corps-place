@@ -1,0 +1,61 @@
+{
+  "scrapedAt": "2026-06-17T02-29-08-570Z",
+  "seasons": [
+    {
+      "season": 2013,
+      "profiles": 10,
+      "corpsMatched": 10,
+      "unmatched": 0,
+      "people": 369
+    },
+    {
+      "season": 2014,
+      "profiles": 13,
+      "corpsMatched": 11,
+      "unmatched": 2,
+      "people": 389
+    },
+    {
+      "season": 2015,
+      "profiles": 35,
+      "corpsMatched": 34,
+      "unmatched": 1,
+      "people": 1792
+    },
+    {
+      "season": 2016,
+      "profiles": 36,
+      "corpsMatched": 34,
+      "unmatched": 2,
+      "people": 1929
+    },
+    {
+      "season": 2017,
+      "profiles": 35,
+      "corpsMatched": 34,
+      "unmatched": 1,
+      "people": 2002
+    },
+    {
+      "season": 2019,
+      "profiles": 34,
+      "corpsMatched": 34,
+      "unmatched": 0,
+      "people": 1311
+    },
+    {
+      "season": 2022,
+      "profiles": 39,
+      "corpsMatched": 38,
+      "unmatched": 1,
+      "people": 2245
+    },
+    {
+      "season": 2023,
+      "profiles": 52,
+      "corpsMatched": 50,
+      "unmatched": 2,
+      "people": 2872
+    }
+  ]
+}

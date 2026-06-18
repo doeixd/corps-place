@@ -1,0 +1,302 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 91-103 by assignment count. Sources: DCI/FFCC Hall of Fame, MFA clinician pages, SCPA, DCI panels; JS/MFA pages rendered via puppeteer. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "b-spidel-1",
+      "displayName": "Brandon Spidel",
+      "givenName": "Brandon",
+      "familyName": "Spidel",
+      "biography": "Brandon Spidel is a color guard and general-effect adjudicator from Indianapolis who has been involved in the pageantry arts since 1989 as a performer, instructor, clinician, and designer. He aged out of DCI as a euphonium player in 1996, earned a Bachelor of Science in Music Education from Indiana State University, and has been an Indiana band director since 1998. He judges the General Effect caption for Winter Guard International (since 2024) and is an adjudicator for Drum Corps International, Bands of America, and various color guard and marching band circuits.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Adobe-Express-file-29.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/brandon-spidel/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://mccga.org/27-2/judges/brandon-spidel/", "label": "Mid Continent Color Guard Association", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / GE1 / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "Pageantry since 1989; DCI euphonium age-out 1996; Indiana band director since 1998; DCI/WGI/BOA color guard & GE judge", "source": "https://education.musicforall.org/clinician/brandon-spidel/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "d-niebauer-1",
+      "displayName": "Dan Niebauer",
+      "givenName": "Dan",
+      "familyName": "Niebauer",
+      "biography": "Dan Niebauer is a visual and general-effect adjudicator for Drum Corps International, serving in the Visual Analysis, Color Guard, and General Effect (Visual) captions at DCI World Championships (including 2008 and 2013).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2013-world-championship-judging-panels", "label": "DCI 2013 judging panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Color Guard / GE1; 2013-2025",
+        "facts": [
+          { "fact": "DCI visual/GE judge (2008/2013 confirmed)", "source": "https://www.dci.org/news/2013-world-championship-judging-panels", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "f-morris-1",
+      "displayName": "Frank Morris",
+      "givenName": "Frank",
+      "familyName": "Morris",
+      "biography": "Frank Morris is a general-effect/visual adjudicator for Drum Corps International, serving primarily in the General Effect and Visual captions at DCI events.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Proficiency / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI General Effect/visual judge", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+          { "fact": "Common name; no distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "k-kuhn-1",
+      "displayName": "Kim Kuhn",
+      "givenName": "Kim",
+      "familyName": "Kuhn",
+      "biography": "Kim (Corney) Kuhn is a visual adjudicator with over 24 years in the pageantry arts as a performer, designer, director, instructor, and clinician, having worked with groups appearing in BOA, DCI, and WGI semifinals and finals. She is an active visual judge for Drum Corps International, Bands of America, and Winter Guard International as well as fall marching band and winter circuits, and continues to design, consult, and provide technician work for fall and winter programs. She has served on the board of the Michigan Color Guard Circuit and is its Vice President of Color Guards, focused on training and education for performers and directors.",
+      "photoUrl": "https://scpauploads.s3.amazonaws.com/judges/122_headshot.jpg",
+      "alternateNames": ["Kim Corney Kuhn"],
+      "externalLinks": [
+        { "url": "https://scpa.live/judge/profile/6059", "label": "SCPA judge profile", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Color Guard / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "24+ yrs pageantry; DCI/BOA/WGI visual judge; Michigan Color Guard Circuit VP of Color Guards", "source": "https://scpa.live/judge/profile/6059", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "s-calhoun-1",
+      "displayName": "Steve Calhoun",
+      "givenName": "Steve",
+      "familyName": "Calhoun",
+      "biography": "Steve Calhoun is a music/brass adjudicator for Drum Corps International, serving in the Music Analysis, General Effect Music, and Brass Performance captions at DCI events (including 2008 and 2010).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2010-dci-world-championship-adjudication-panels", "label": "DCI 2010 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / GE2 / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI music/brass judge (2008/2010 confirmed)", "source": "https://www.dci.org/news/2010-dci-world-championship-adjudication-panels", "confidence": "MEDIUM" },
+          { "fact": "Common name; no distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-slaughter-1",
+      "displayName": "Tom Slaughter",
+      "givenName": "Tom",
+      "familyName": "Slaughter",
+      "biography": "Tom Slaughter is a visual adjudicator with 43 years in the pageantry arts as a performer, designer, instructor, and judge for Drum Corps International, Winter Guard International, and various marching band circuits. A member of the Suncoast Sound drum and bugle corps, he designed and administered the visual program at Largo High School (Largo, FL) for 17 years, winning Florida class championships in 1998 and 2000, was Visual Caption Head and Staff Coordinator for the Teal Sound drum corps (2009-2011), and was on the Blue Stars visual staff in 2012. He has served as a Visual Analysis judge at DCI World Championships (including 2022 and 2025) and is a Florida Federation Color Guard Circuit Hall of Fame member.",
+      "photoUrl": "https://ffcc.org/wp-content/uploads/2021/10/Tom-Slaughter-1.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://ffcc.org/hof/tom-slaughter/", "label": "FFCC Hall of Fame", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Blue Stars", "season": "2012", "role": "Visual staff", "sourceUrl": "https://ffcc.org/hof/tom-slaughter/" }
+      ],
+      "seasonHighlights": [
+        { "title": "FFCC Hall of Fame", "sourceUrl": "https://ffcc.org/hof/tom-slaughter/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Visual Proficiency / GE1; 2013-2025",
+        "facts": [
+          { "fact": "43 yrs pageantry; Suncoast Sound; Largo HS visual director 17 yrs; Teal Sound visual caption head; Blue Stars 2012; FFCC HOF; DCI visual judge", "source": "https://ffcc.org/hof/tom-slaughter/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "w-rickart-1",
+      "displayName": "Warren Rickart",
+      "givenName": "Warren",
+      "familyName": "Rickart",
+      "biography": "Warren Rickart is an internationally recognized marching band and winter guard adjudicator and clinician who has judged for Winter Guard International, Drum Corps International, and Bands of America world championships and regional and international competitions for over 25 years. A member of the Madison Scouts drum and bugle corps and Miller's Blackhawks winter guard, he has been visual caption head, color guard caption head, clinician, and consultant for numerous award-winning programs. He has served on the WGI Judge Administration team and as WGI Equipment/Movement caption manager, was former chief judge of the Southern States Judges Association and Education Director for the Atlantic Indoor Association (Hall of Honor, 2008), and judged Color Guard at the 2024 DCI World Championship Semifinals.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/RickertWarrenResize.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/warren-rickart/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.wgi.org/judge/warren-rickart/", "label": "WGI judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Madison Scouts", "role": "Performer (member)", "sourceUrl": "https://education.musicforall.org/clinician/warren-rickart/" }
+      ],
+      "seasonHighlights": [
+        { "title": "Atlantic Indoor Association Hall of Honor", "season": "2008", "sourceUrl": "https://atlanticindoor.org/hall-of-honor-2/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "25+ yrs DCI/WGI/BOA judge; Madison Scouts & Miller's Blackhawks; WGI Judge Admin; AIA Hall of Honor 2008", "source": "https://education.musicforall.org/clinician/warren-rickart/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "b-crisp-1",
+      "displayName": "Bryan Crisp",
+      "givenName": "Bryan",
+      "familyName": "Crisp",
+      "biography": "Bryan Crisp is a brass/music adjudicator, trumpet player, and marching arts consultant who holds undergraduate degrees in Music Education and Music Performance from Tennessee Technological University and a Master of Music in Trumpet Performance from the University of Cincinnati College-Conservatory of Music. He has held Instructor of Trumpet positions at Wittenberg University, Mount St. Joseph University, CCM, and the Tennessee Governor's School for the Arts, and is Founder and Artistic Director of Tri-State Ensembles, a chamber-music program for high school students. He is an active adjudicator for Drum Corps International, Bands of America, KMEA, ISSMA, ITG, and the National Trumpet Competition, serving in the Music Brass caption at DCI World Championships, and is a Yamaha artist.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Bryan-Crisp-600x600-1.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/bryan-crisp/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.bryancrisp.com/bio/", "label": "Personal site", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "TTU + CCM trumpet degrees; trumpet instructor (Wittenberg/Mount St. Joseph/CCM); Tri-State Ensembles founder; DCI Music Brass judge; Yamaha artist", "source": "https://education.musicforall.org/clinician/bryan-crisp/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-rhodes-1",
+      "displayName": "Jodie Rhodes",
+      "givenName": "Jodie",
+      "familyName": "Rhodes",
+      "biography": "Jodie Ann Rhodes is a music/general-effect adjudicator who has been involved in music education for over 30 years as a clinician, consultant, and program designer/coordinator for marching bands, drum corps, and concert bands, with groups that are frequent finalists and champions at state championships and BOA Regionals, Super Regionals, and Grand Nationals. She has served as a General Effect judge at DCI World Championships (General Effect 2 in 2024, General Effect in 2025).",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/jodie-rhodes-2023-bw-web.jpg",
+      "alternateNames": ["Jodie Ann Rhodes"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/jodie-rhodes/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "30+ yrs music educator; clinician/designer/coordinator; DCI General Effect judge 2024/2025", "source": "https://education.musicforall.org/clinician/jodie-rhodes/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "g-markham-1",
+      "displayName": "Garland Markham",
+      "givenName": "Garland",
+      "familyName": "Markham",
+      "biography": "Garland 'Gary' Euel Markham III was a Hall of Fame music educator and adjudicator whose engagement with Drum Corps International spanned more than four decades. He joined the staff of the Blue Devils in the mid-1970s and later the Spirit of Atlanta as a music arranger and program coordinator, became a DCI judge in 1980, and was named Education Advisor for DCI's Rules and Systems Task Force, becoming a steadfast voice in the refinement of the adjudication system and a champion of judge training. He was inducted into the DCI Hall of Fame (2022) and also received the Sousa Foundation Sudler Order of Merit (1992), the Music for All Hall of Fame (2006), and the Conn-Selmer Institute Hall of Fame (2015). He died in 2022 at age 75.",
+      "photoUrl": "https://images.dci.org/wp-content/uploads/2025/01/Gary-Markham.webp",
+      "alternateNames": ["Gary Markham", "Garland Euel Markham III"],
+      "externalLinks": [
+        { "url": "https://dci.org/static/gary-markham-dci-hall-of-fame", "label": "DCI Hall of Fame profile", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Blue Devils", "role": "Staff (mid-1970s)", "sourceUrl": "https://dci.org/static/gary-markham-dci-hall-of-fame" },
+        { "corpsName": "Spirit of Atlanta", "role": "Music Arranger / Program Coordinator", "sourceUrl": "https://dci.org/static/gary-markham-dci-hall-of-fame" }
+      ],
+      "seasonHighlights": [
+        { "title": "DCI Hall of Fame inductee", "season": "2022", "sourceUrl": "https://www.dci.org/news/three-to-be-inducted-into-dci-hall-of-fame-class-of-2022" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / GE2 / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI HOF 2022; DCI judge since 1980; Education Advisor for Rules & Systems Task Force; Blue Devils & Spirit of Atlanta; d. 2022", "source": "https://dci.org/static/gary-markham-dci-hall-of-fame", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "s-halquist-1",
+      "displayName": "Shawn Halquist",
+      "givenName": "Shawn",
+      "familyName": "Halquist",
+      "biography": "Shawn Halquist is a brass/music adjudicator and lifelong music educator with nearly 50 years in band direction and performance design, who retired in 2022 after a 38-year career as a high school band director. After degrees from Edinboro University and SUNY Binghamton, he taught 13 years in the Millcreek Township School District (Erie, PA) and 25 years at Brockport (NY) Central Schools. He judges for Drum Corps International, the New York State Field Band Conference, the Pennsylvania Federation of Contest Judges, Cavalcade of Bands, and other circuits, serving as a Music Brass judge at DCI World Championships (including the 2024 All-Age and 2025 events), and designs shows and writes arrangements for all levels.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.cavalcadeofbands.com/new-judges-added-fall-2025/shawn-halquist", "label": "Cavalcade of Bands bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "~50 yrs music education; retired 2022 after 38-yr HS band director career (Millcreek PA, Brockport NY); DCI Music Brass judge", "source": "https://www.cavalcadeofbands.com/new-judges-added-fall-2025/shawn-halquist", "confidence": "HIGH" },
+          { "fact": "No public headshot rendered - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-rapacki-1",
+      "displayName": "Chris Rapacki",
+      "givenName": "Chris",
+      "familyName": "Rapacki",
+      "biography": "Chris Rapacki is a percussion/music adjudicator for Drum Corps International, serving in the Music Percussion and Music Analysis captions at DCI World Championships (including 2017, 2022, 2024, and 2025).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI Music Percussion judge (2017-2025 confirmed)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "No distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-carlisle-1",
+      "displayName": "JR Carlisle",
+      "givenName": "JR",
+      "familyName": "Carlisle",
+      "biography": "Dr. JR Carlisle is a visual adjudicator who has judged for Winter Guard International, Drum Corps International, and Bands of America in 38 states, as well as Drum Corps Europe's Championships and the drum corps competition in Kyoto, Japan. He has served as chief judge for the Nebraska Bandmasters Association and as Education Director/Chief Judge for the CIPA Circuit, and is a founding member of the Tri-State Circuit for the Pageantry Arts. He has directed WGI Regional finalist and national semifinalist color guards and drum lines, and resides in Point Pleasant, West Virginia.",
+      "photoUrl": null,
+      "alternateNames": ["Dr. JR Carlisle"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/jr-carlisle/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / GE1 / Visual Proficiency / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "DCI/WGI/BOA visual judge in 38 states; Nebraska Bandmasters chief judge; CIPA Education Director; Tri-State Circuit founder; Point Pleasant WV", "source": "https://education.musicforall.org/clinician/jr-carlisle/", "confidence": "HIGH" },
+          { "fact": "No public headshot rendered - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    }
+  ]
+}

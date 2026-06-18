@@ -1,0 +1,590 @@
+{
+  "generated_at": "2026-06-01T13:24:46.399Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9fix_lrmult_smoke_1770985071634",
+  "event": {
+    "event_id": "web-2026-2026-drums-along-the-rockies",
+    "slug": "2026-drums-along-the-rockies",
+    "name": "Drums Along the Rockies",
+    "event_name": "Drums Along the Rockies",
+    "start_date": "2026-06-27T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:30 PM MT",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Fort Collins",
+    "location_state": "CO",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260627-FORT-COLLINS-CO.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260627-FORT-COLLINS-CO.jpg",
+    "buy_tickets": "https://ascendperformingarts.org/events/drums-along-the-rockies/",
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/4sogTVL",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Prices shown may not include platform or venue fees or order charges and taxes.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 5,
+    "matched_corps_keys": 5,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 5,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 50
+  },
+  "input_signature": "ae8ac6210c43874e606fdf7d98cee99897806ed288748cf62a124e70a989f86d",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 177,
+    "feature_static_dim": 212,
+    "model_fingerprint": "adea02abbc1822fcd2395ab1046db7dfd29a3729f9c5b658a453ddb3f9bd731e",
+    "supports_caption_fingerprints": false,
+    "interval_scale": 0.65
+  },
+  "input_audit": {
+    "scored_lineup_rows": 5,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx9oaad",
+        "corps": "Genesis",
+        "division": "World Class",
+        "performance_order": 6,
+        "time": "8:03 PM"
+      },
+      {
+        "corps_key": "001j000000iwxajaa1",
+        "corps": "Troopers",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "8:21 PM"
+      },
+      {
+        "corps_key": "001j000000h3xrnaav",
+        "corps": "Phantom Regiment",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "9:00 PM"
+      },
+      {
+        "corps_key": "001j000000i6i9saav",
+        "corps": "Blue Devils",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "9:18 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsoaal",
+        "corps": "Blue Knights",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "9:36 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Rocky Mountain Brassworks",
+        "performance_order": 1,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "BKXperience",
+        "performance_order": 2,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 3,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Blue Knights Awards Presentation",
+        "performance_order": 4,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Troopers Legacy Corps",
+        "performance_order": 5,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 8,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Blue Knights",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 13,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-drums-along-the-rockies",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-27T00:00:00.000Z",
+      "scored_lineup_rows": 5,
+      "matched_corps_keys": 5,
+      "excluded_lineup_rows": 9,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000i6i9saav",
+      "corps": "Blue Devils",
+      "city": "Concord, CA",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "9:18 PM",
+      "total": 88.495,
+      "GE": 35.461,
+      "Visual": 26.672,
+      "Music": 26.362,
+      "GE1": 17.793,
+      "GE2": 17.668,
+      "VP": 17.721,
+      "VA": 17.816,
+      "CG": 17.807,
+      "MB": 17.687,
+      "MA": 17.579,
+      "MP": 17.458,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.788,
+          "p50": 17.793,
+          "p90": 17.928
+        },
+        "GE2": {
+          "p10": 17.646,
+          "p50": 17.668,
+          "p90": 17.989
+        },
+        "VP": {
+          "p10": 17.714,
+          "p50": 17.721,
+          "p90": 17.858
+        },
+        "VA": {
+          "p10": 17.785,
+          "p50": 17.816,
+          "p90": 17.861
+        },
+        "CG": {
+          "p10": 17.758,
+          "p50": 17.807,
+          "p90": 17.865
+        },
+        "MB": {
+          "p10": 17.369,
+          "p50": 17.687,
+          "p90": 17.968
+        },
+        "MA": {
+          "p10": 17.475,
+          "p50": 17.579,
+          "p90": 17.743
+        },
+        "MP": {
+          "p10": 17.245,
+          "p50": 17.458,
+          "p90": 17.514
+        }
+      },
+      "raw_model_total": 84.471,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 90.838,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 88.497,
+      "caption_shape_total": 85.635,
+      "total_reconciliation_delta": 2.86,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 4,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.635,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000h3xrnaav",
+      "corps": "Phantom Regiment",
+      "city": "Rockford, IL",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "9:00 PM",
+      "total": 86.464,
+      "GE": 34.717,
+      "Visual": 25.939,
+      "Music": 25.808,
+      "GE1": 17.337,
+      "GE2": 17.38,
+      "VP": 17.185,
+      "VA": 17.311,
+      "CG": 17.383,
+      "MB": 17.171,
+      "MA": 17.126,
+      "MP": 17.319,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.331,
+          "p50": 17.337,
+          "p90": 17.47
+        },
+        "GE2": {
+          "p10": 17.352,
+          "p50": 17.38,
+          "p90": 17.645
+        },
+        "VP": {
+          "p10": 17.176,
+          "p50": 17.185,
+          "p90": 17.314
+        },
+        "VA": {
+          "p10": 17.277,
+          "p50": 17.311,
+          "p90": 17.355
+        },
+        "CG": {
+          "p10": 17.339,
+          "p50": 17.383,
+          "p90": 17.444
+        },
+        "MB": {
+          "p10": 16.931,
+          "p50": 17.171,
+          "p90": 17.429
+        },
+        "MA": {
+          "p10": 17.042,
+          "p50": 17.126,
+          "p90": 17.259
+        },
+        "MP": {
+          "p10": 17.14,
+          "p50": 17.319,
+          "p90": 17.374
+        }
+      },
+      "raw_model_total": 82.28,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 89.263,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 86.465,
+      "caption_shape_total": 83.044,
+      "total_reconciliation_delta": 3.42,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 83.044,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "city": "Casper, WY",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "8:21 PM",
+      "total": 83.024,
+      "GE": 33.301,
+      "Visual": 24.424,
+      "Music": 25.299,
+      "GE1": 16.572,
+      "GE2": 16.729,
+      "VP": 16.148,
+      "VA": 16.306,
+      "CG": 16.393,
+      "MB": 16.507,
+      "MA": 16.787,
+      "MP": 17.305,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.561,
+          "p50": 16.572,
+          "p90": 16.706
+        },
+        "GE2": {
+          "p10": 16.677,
+          "p50": 16.729,
+          "p90": 16.891
+        },
+        "VP": {
+          "p10": 16.132,
+          "p50": 16.148,
+          "p90": 16.265
+        },
+        "VA": {
+          "p10": 16.271,
+          "p50": 16.306,
+          "p90": 16.352
+        },
+        "CG": {
+          "p10": 16.357,
+          "p50": 16.393,
+          "p90": 16.462
+        },
+        "MB": {
+          "p10": 16.343,
+          "p50": 16.507,
+          "p90": 16.705
+        },
+        "MA": {
+          "p10": 16.734,
+          "p50": 16.787,
+          "p90": 16.875
+        },
+        "MP": {
+          "p10": 17.192,
+          "p50": 17.305,
+          "p90": 17.385
+        }
+      },
+      "raw_model_total": 79.912,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 84.6,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 83.022,
+      "caption_shape_total": 81.094,
+      "total_reconciliation_delta": 1.93,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 10,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 81.094,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "city": "Denver, CO",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "9:36 PM",
+      "total": 80.905,
+      "GE": 32.711,
+      "Visual": 23.864,
+      "Music": 24.33,
+      "GE1": 16.301,
+      "GE2": 16.41,
+      "VP": 15.771,
+      "VA": 16.05,
+      "CG": 15.907,
+      "MB": 15.936,
+      "MA": 16.283,
+      "MP": 16.44,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.287,
+          "p50": 16.301,
+          "p90": 16.43
+        },
+        "GE2": {
+          "p10": 16.339,
+          "p50": 16.41,
+          "p90": 16.545
+        },
+        "VP": {
+          "p10": 15.751,
+          "p50": 15.771,
+          "p90": 15.886
+        },
+        "VA": {
+          "p10": 16.013,
+          "p50": 16.05,
+          "p90": 16.092
+        },
+        "CG": {
+          "p10": 15.873,
+          "p50": 15.907,
+          "p90": 15.977
+        },
+        "MB": {
+          "p10": 15.811,
+          "p50": 15.936,
+          "p90": 16.116
+        },
+        "MA": {
+          "p10": 16.24,
+          "p50": 16.283,
+          "p90": 16.366
+        },
+        "MP": {
+          "p10": 16.347,
+          "p50": 16.44,
+          "p90": 16.527
+        }
+      },
+      "raw_model_total": 77.248,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 82.963,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 80.905,
+      "caption_shape_total": 78.389,
+      "total_reconciliation_delta": 2.515,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 12,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 78.389,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwx9oaad",
+      "corps": "Genesis",
+      "city": "Austin, TX",
+      "division": "World Class",
+      "performance_order": 6,
+      "time": "8:03 PM",
+      "total": 74.19,
+      "GE": 29.783,
+      "Visual": 21.992,
+      "Music": 22.415,
+      "GE1": 14.725,
+      "GE2": 15.058,
+      "VP": 14.715,
+      "VA": 14.364,
+      "CG": 14.905,
+      "MB": 14.779,
+      "MA": 14.905,
+      "MP": 15.147,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.716,
+          "p50": 14.725,
+          "p90": 14.837
+        },
+        "GE2": {
+          "p10": 15.019,
+          "p50": 15.058,
+          "p90": 15.217
+        },
+        "VP": {
+          "p10": 14.7,
+          "p50": 14.715,
+          "p90": 14.822
+        },
+        "VA": {
+          "p10": 14.325,
+          "p50": 14.364,
+          "p90": 14.411
+        },
+        "CG": {
+          "p10": 14.859,
+          "p50": 14.905,
+          "p90": 14.964
+        },
+        "MB": {
+          "p10": 14.593,
+          "p50": 14.779,
+          "p90": 14.977
+        },
+        "MA": {
+          "p10": 14.84,
+          "p50": 14.905,
+          "p90": 14.998
+        },
+        "MP": {
+          "p10": 15.043,
+          "p50": 15.147,
+          "p90": 15.215
+        }
+      },
+      "raw_model_total": 74.963,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 72.8,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 74.193,
+      "caption_shape_total": 75.895,
+      "total_reconciliation_delta": -1.705,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 22,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 75.895,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets.",
+    "Loaded model uses an older static feature shape; caption-fingerprint static features were not consumed by the neural model."
+  ]
+}

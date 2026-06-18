@@ -1,0 +1,304 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Top 12 DCI judges by assignment count. Bios researched from official Music for All clinician pages, DCI adjudication-panel announcements, and org staff pages. Each profile is a JudgeBioProfile (extraDomain.JudgeProfileSchema) plus a _research block of sources/confidence. NO DB WRITES YET.",
+  "profiles": [
+    {
+      "judgeId": "c-nelson-1",
+      "displayName": "Carl Nelson",
+      "givenName": "Carl",
+      "familyName": "Nelson",
+      "biography": "Carl Nelson is a visual adjudicator with over 35 years of experience in the marching and pageantry arts as a performer, designer, instructor, administrator, adjudicator, and clinician. Based in Corona, California, he judges visual captions for Drum Corps International, Winter Guard International (WGI), and Bands of America (BOA), with assignments spanning DCI World and Open Class Championships, WGI Winds Championships, BOA Regional and Grand National Championships, and the 2019 Indonesia Drum Corps Championships. He also serves in an operations/administration role for the Western Color Guard Association (WGASC) and the Marching Band Open Series (MBOS).",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Adobe-Express-file-19-1.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/carl-nelson/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.linkedin.com/in/carlnelson/", "label": "LinkedIn", "kind": "linkedin" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Visual Analysis / GE1 / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "35+ yrs; visual judge for DCI/WGI/BOA; 2019 Indonesia DC Championships", "source": "https://education.musicforall.org/clinician/carl-nelson/", "confidence": "HIGH" },
+          { "fact": "DCI Visual Proficiency at World Championships 2017/2019/2022/2025", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" },
+          { "fact": "Corona CA; Director of Operations WGASC/MBOS", "source": "https://www.linkedin.com/in/carlnelson/", "confidence": "MEDIUM" }
+        ]
+      }
+    },
+    {
+      "judgeId": "w-dillon-1",
+      "displayName": "Wayne Dillon",
+      "givenName": "Wayne",
+      "familyName": "Dillon",
+      "biography": "Wayne Dillon is a music and general-effect adjudicator who has judged the national championships of Drum Corps International, Bands of America, and Winter Guard International over more than thirty years, and currently serves as a DCI Judge Liaison responsible for judge assignments and training. He holds a Bachelor's in Fine Arts and Education from York University (Toronto) and a Master's in Jazz Performance/Pedagogy from the University of Miami, and is a band director in Elizabeth, New Jersey. In the marching arts he served as brass caption head of the Boston Crusaders and on the music staff of the Cadets (music supervisor, 2002). He was inducted into the Buglers Hall of Fame in 2020, was appointed WGI Winds Chief Judge, and is an educational clinician for Conn-Selmer.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/DillonWayneResize.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/wayne-dillon/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://music.gsu.edu/profile/wayne-dillon/", "label": "Georgia State University School of Music", "kind": "organization" },
+        { "url": "https://www.dynastydrums.com/wayne-dillon", "label": "Dynasty artist page", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Boston Crusaders", "role": "Brass Caption Head", "sourceUrl": "https://www.dynastydrums.com/wayne-dillon" },
+        { "corpsName": "The Cadets", "season": "2002", "role": "Music Supervisor", "sourceUrl": "https://www.dynastydrums.com/wayne-dillon" }
+      ],
+      "seasonHighlights": [
+        { "title": "Buglers Hall of Fame inductee", "season": "2020", "sourceUrl": "https://www.dynastydrums.com/wayne-dillon" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/WGI national-championship judge 30+ yrs; DCI Judge Liaison; Boston Crusaders brass caption head; Cadets music supervisor 2002; Buglers HOF 2020; WGI Winds Chief Judge; Conn-Selmer clinician", "source": "https://www.dynastydrums.com/wayne-dillon", "confidence": "HIGH" },
+          { "fact": "York University & Univ. of Miami degrees; NJ band director", "source": "https://music.gsu.edu/profile/wayne-dillon/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-howell-1",
+      "displayName": "John Howell",
+      "givenName": "John",
+      "familyName": "Howell",
+      "biography": "John Howell is a visual designer and general-effect/visual adjudicator with over 28 years of judging experience for Bands of America, Drum Corps International, Winter Guard International, and other circuits. He has taught and written shows for nationally acclaimed marching bands, drum and bugle corps, and indoor color guards. Howell holds a business-management degree from the University of Pittsburgh and a B.S. in Education from Indiana University of Pennsylvania, and teaches business education (department chair) in the Hempfield Area School District. He lives in North Huntingdon, Pennsylvania.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2017/06/Howell-John.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/john-howell/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Proficiency / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "28+ yrs visual adjudicator BOA/DCI/WGI; visual designer; education/employer; North Huntingdon PA", "source": "https://education.musicforall.org/clinician/john-howell/", "confidence": "HIGH" },
+          { "fact": "GE judge at 2025/2017/2015 DCI World Championships", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-turner-1",
+      "displayName": "Michael Turner",
+      "givenName": "Michael",
+      "familyName": "Turner",
+      "biography": "Michael Turner is a color guard and visual adjudicator who has been involved in the pageantry arts for over 30 years, judging for WGI, Bands of America, and Drum Corps International. Trained in ballet, jazz, and modern dance, he was one of the early color guard innovators to bring dance and movement to the marching arena—including the iconic 1982 Madison Scouts rifle-line dance. He spent 18 years with the two-time World Champion Madison Scouts as Color Guard Choreographer and Visual Coordinator, and served as Dance Master and Choreographer for the six-time World Champion Santa Clara Vanguard. He was inducted into the WGI Hall of Fame in 2017.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/02/Turner-Michael-1024x1024.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/michael-turner/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://madisonscoutsalumni.org/index.php/hall-of-fame/michael-turner-hof-2024", "label": "Madison Scouts Alumni Hall of Fame", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Madison Scouts", "role": "Color Guard Choreographer / Visual Coordinator (18 years)", "sourceUrl": "https://education.musicforall.org/clinician/michael-turner/" },
+        { "corpsName": "Santa Clara Vanguard", "role": "Dance Master / Choreographer", "sourceUrl": "https://education.musicforall.org/clinician/michael-turner/" }
+      ],
+      "seasonHighlights": [
+        { "title": "WGI Hall of Fame inductee", "season": "2017", "sourceUrl": "https://education.musicforall.org/clinician/michael-turner/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Color Guard / GE1 / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "30+ yrs; DCI/WGI/BOA; Madison Scouts 18 yrs CG choreographer; SCV dance master; WGI HOF 2017; 1982 Scouts rifle dance", "source": "https://education.musicforall.org/clinician/michael-turner/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "r-solomon-1",
+      "displayName": "Robert Solomon",
+      "givenName": "Robert",
+      "familyName": "Solomon",
+      "biography": "Robert Solomon is a visual instructor, designer, and adjudicator who has been active in the marching arts since 1979. He played trumpet and was drum major at El Camino Real High School in Woodland Hills, California, then performed in the color guard for the Velvet Knights Drum & Bugle Corps and at California State University, Northridge. He has designed for several top Southern California programs and has judged since 1996 for Winter Guard International, Drum Corps International, Bands of America, and various state and local associations, frequently adjudicating BOA Grand National, WGI, and DCI World Championships. He is based in Los Angeles, where he works as a banker.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/SolomonRobertResize.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/robert-solomon/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Velvet Knights", "role": "Color Guard performer", "sourceUrl": "https://education.musicforall.org/clinician/robert-solomon/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Color Guard / GE1 / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "Active since 1979; judging since 1996 WGI/DCI/BOA; Velvet Knights & CSUN guard; LA banker", "source": "https://education.musicforall.org/clinician/robert-solomon/", "confidence": "HIGH" },
+          { "fact": "DCI Visual Proficiency at 2018/2025 World Championships", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "k-miller-1",
+      "displayName": "Kyle Miller",
+      "givenName": "Kyle",
+      "familyName": "Miller",
+      "biography": "Kyle Miller is a general-effect and visual adjudicator who judges Bands of America/Music for All events, Drum Corps International, and Winter Guard International, and has served as Judge Liaison and Chief Judge in Illinois and Texas as well as judging internationally in Europe, Thailand, and Japan. His pageantry background began in high school marching band and grew during his music studies at the University of Iowa, where he started teaching and designing; he was a bass-drum instructor on The Cavaliers' 2018 percussion staff. He lives in Las Vegas, Nevada, where he teaches Language Arts and Creative Writing.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/MillerKyleResize.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/kyle-miller/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "The Cavaliers", "season": "2018", "role": "Percussion staff (bass drum instructor)", "sourceUrl": "https://cavaliers.org/news-blog/cavaliers-announce-2018-percussion-team" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Proficiency / Color Guard / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/WGI judge; Chief Judge IL & TX; international; Univ. of Iowa; Las Vegas teacher", "source": "https://education.musicforall.org/clinician/kyle-miller/", "confidence": "HIGH" },
+          { "fact": "Cavaliers 2018 bass-drum instructor", "source": "https://cavaliers.org/news-blog/cavaliers-announce-2018-percussion-team", "confidence": "MEDIUM" }
+        ]
+      }
+    },
+    {
+      "judgeId": "n-jones-1",
+      "displayName": "Nola Jones",
+      "givenName": "Nola",
+      "familyName": "Jones",
+      "biography": "Dr. Nola Jones is a music educator and general-effect/music adjudicator who serves on the DCI Judge Liaison Team for the music caption and has judged for WGI, Bands of America, and Drum Corps International. She is the Coordinator of Visual and Performing Arts for Metropolitan Nashville Public Schools, overseeing instructional supervision of some 400 arts educators and the Music Makes Us initiative. She earned a Bachelor of Music Education from Mississippi State University, a Master of Music Education from Mississippi College, and a Doctor of Musical Arts in Conducting from the University of South Carolina. At NAfME's request she directed the 2010 and 2011 U.S. Army All-American Band and helped write national standards for marching band, and she maintains an active national and international schedule as a guest conductor, clinician, and adjudicator.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Nola-Jones-Headhot-2026-FINAL-1-1.jpg",
+      "alternateNames": ["Dr. Nola Jones"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/nola-jones/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://texasmarchingclassic.org/judges/", "label": "Texas Marching Classic (Chief Judge)", "kind": "organization" },
+        { "url": "https://connselmer.com/education/clinicians/dr-nola-jones", "label": "Conn-Selmer clinician", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [
+        { "title": "Director, U.S. Army All-American Band", "season": "2010-2011", "sourceUrl": "https://texasmarchingclassic.org/judges/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI Judge Liaison (music caption); MNPS Coordinator of Visual & Performing Arts; degrees; US Army All-American Band director 2010-11", "source": "https://texasmarchingclassic.org/judge-bios/dr-nola-jones/", "confidence": "HIGH" },
+          { "fact": "MFA/Conn-Selmer clinician", "source": "https://education.musicforall.org/clinician/nola-jones/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "k-baker-1",
+      "displayName": "Keith Baker",
+      "givenName": "Keith",
+      "familyName": "Baker",
+      "biography": "Keith Baker is a visual adjudicator with 27 years of experience in adjudication, instruction, and design in the pageantry arts, judging for Drum Corps International, Winter Guard International, the Midwest Color Guard Circuit, and the Indiana State School Music Association. He performed with the Belleville Black Knights, Geneseo Knights, and Capital Brass Ensemble, and has instructed ensembles including Images Winter Guard, the Francis Howell Central indoor drumline, and the O'Fallon Township High School marching band. He holds an education degree from Southern Illinois University Edwardsville and, after Navy service, has taught Honors U.S. History and Medieval History at Edwardsville High School in southwestern Illinois.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2025/09/Adobe-Express-file-40.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/keith-baker/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / GE1 / Visual Proficiency / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "27 yrs; DCI/WGI/MCGC/ISSMA; performing & teaching history; SIUE degree; Edwardsville HS teacher", "source": "https://education.musicforall.org/clinician/keith-baker/", "confidence": "HIGH" },
+          { "fact": "Visual Analysis judge at 2024/2025 DCI World Championships", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-orefice-1",
+      "displayName": "Juno Orefice",
+      "givenName": "Juno",
+      "familyName": "Orefice",
+      "biography": "Juno Orefice is a visual designer and adjudicator with over 35 years in the pageantry arts. He began as a marching member of the Brooklyn Royal Eagles (1971) and later the Secaucus Meadowlarks, which merged into the Royal Brigade. He has judged for Drum Corps International since 2006—working World Class Finals week on many occasions—for Bands of America since 2015, and for indoor guard and percussion for over two decades. He helped build the Michigan Color Guard Judging Association, served as Judge Coordinator for the Michigan Color Guard Circuit from 1998 to 2019 (MCGC Hall of Fame, 2009), and was Visual Caption Head for the Michigan Competing Band Association from 2010 to 2015.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/file-19.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/juno-orefice/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Brooklyn Royal Eagles", "season": "1971", "role": "Marching member", "sourceUrl": "https://education.musicforall.org/clinician/juno-orefice/" }
+      ],
+      "seasonHighlights": [
+        { "title": "Michigan Color Guard Circuit Hall of Fame", "season": "2009", "sourceUrl": "https://education.musicforall.org/clinician/juno-orefice/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Visual Analysis / GE1 / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "35+ yrs; DCI judge since 2006; MCGC Judge Coordinator 1998-2019; MCGC HOF 2009; MCBA visual caption head 2010-15", "source": "https://education.musicforall.org/clinician/juno-orefice/", "confidence": "HIGH" },
+          { "fact": "DCI Visual Proficiency judge 2025 World Championships", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "w-chumley-1",
+      "displayName": "William Chumley",
+      "givenName": "William",
+      "familyName": "Chumley",
+      "biography": "William Chumley, based in Denver, Colorado, has devoted over 35 years to the pageantry arts as a marching member, instructor, consultant, judge, and color guard director, including judging worldwide for Drum Corps International for 25 years. He has served at DCI World Championships as a Visual Performance, Color Guard, Visual Analysis, and General Effect judge across many seasons. He was a guard caption supervisor for Carolina Crown, served on the Board of Directors of the Rocky Mountain Color Guard Association for 20 years, and trained, mentored, and scheduled judges as president of the Rocky Mountain Judges' Association.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/ChumleyWilliamResize.png",
+      "alternateNames": ["Bill Chumley"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/william-chumley/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.dci.org/news/chumley-named-carolina-crown-guard-caption-supervisor/", "label": "DCI: named Carolina Crown guard caption supervisor", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Carolina Crown", "role": "Guard Caption Supervisor", "sourceUrl": "https://www.dci.org/news/chumley-named-carolina-crown-guard-caption-supervisor/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Visual Proficiency / Color Guard / GE1; 2013-2025",
+        "facts": [
+          { "fact": "35+ yrs; 25 yrs DCI judge; Denver CO; RMCGA board 20 yrs; Rocky Mountain Judges Assn president", "source": "https://education.musicforall.org/clinician/william-chumley/", "confidence": "HIGH" },
+          { "fact": "Carolina Crown guard caption supervisor", "source": "https://www.dci.org/news/chumley-named-carolina-crown-guard-caption-supervisor/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "g-fugett-1",
+      "displayName": "Glenn Fugett",
+      "givenName": "Glenn",
+      "familyName": "Fugett",
+      "biography": "Glenn Fugett is a retired music educator and music/percussion adjudicator from San Antonio, Texas, whose 37-year teaching career spanned Texas and Tennessee, including Director of Bands and Orchestras at the Nashville School of the Arts (2015-2019). He has been a Bands of America adjudicator since 1995 and a Drum Corps International adjudicator since 1992, judging Finals at the DCI World Championships eleven times. He was the DCI Percussion Judge Caption Head from 2003 to 2008 and a DCI Judge Liaison from 2012 to 2015, and currently serves as Chief Judge for the WGI Winds division. He is a longtime BOA Summer Symposium clinician and a sought-after clinician for Music for All, Yamaha, and Vic Firth.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/02/Fugett-Glenn-1024x1024.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/glenn-fugett/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://scpa.live/judge/profile/7722", "label": "SCPA judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [
+        { "title": "DCI Percussion Judge Caption Head", "season": "2003-2008", "sourceUrl": "https://education.musicforall.org/clinician/glenn-fugett/" },
+        { "title": "DCI Judge Liaison", "season": "2012-2015", "sourceUrl": "https://education.musicforall.org/clinician/glenn-fugett/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Percussion; 2013-2025",
+        "facts": [
+          { "fact": "Retired educator 37 yrs; DCI judge since 1992; Finals 11x; Percussion Caption Head 2003-08; Judge Liaison 2012-15; WGI Winds Chief Judge; San Antonio TX", "source": "https://education.musicforall.org/clinician/glenn-fugett/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-moss-1",
+      "displayName": "Chris Moss",
+      "givenName": "Chris",
+      "familyName": "Moss",
+      "biography": "Chris Moss is a visual and general-effect adjudicator for Drum Corps International and Bands of America, and a drill designer whose firm Innovative Visual Concepts provides design and conceptual consulting for bands and winter ensembles across the Southeast. He is Director of Bands for District Five Schools of Spartanburg County and James F. Byrnes High School in South Carolina, leading ensembles that have earned state-champion and BOA Regional Class Champion honors. He holds a bachelor's in music education from Florida State University and a master's in music education from Anderson University, and is pursuing doctoral studies in music education at Boston University. He is a member of the South Carolina Band Directors Association and NAfME.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Adobe-Express-file-18.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/chris-moss/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://byrnesband.org/chris-moss/", "label": "James F. Byrnes Bands", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / GE1 / Visual Analysis / GE2 / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA adjudicator; Innovative Visual Concepts drill designer; Director of Bands District Five/Byrnes HS; FSU & Anderson degrees, BU doctoral", "source": "https://education.musicforall.org/clinician/chris-moss/", "confidence": "HIGH" },
+          { "fact": "DCI Visual Proficiency 2022/2023/2024, GE1 2025", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,436 @@
+{
+  "mode": "applied",
+  "season": 2026,
+  "candidates": 40,
+  "found": [
+    {
+      "unitName": "Arsenal",
+      "corpsKey": "arsenal",
+      "slug": "arsenal-drum-bugle-corps",
+      "textDivision": "SoundSport",
+      "logo": "https://production.assets.dci.org/6384580d28874933731c7f9e_iOE_XutMcReO-jPA1cikKMsFDccFF8iH.png",
+      "favicon": null
+    },
+    {
+      "unitName": "The Academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "slug": "the-academy",
+      "textDivision": "World Class",
+      "logo": "https://production.assets.dci.org/5a18117cd670bd001b2e638e_N41XtnNYfxJN3-1R6hEfHF5B49w7kAtX.png",
+      "favicon": null
+    },
+    {
+      "unitName": "The Battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "slug": "the-battalion",
+      "textDivision": "Open Class",
+      "logo": "https://production.assets.dci.org/5a181124d670bd001f490b05_BbTrlTSgNnEDESUEFxCRXf7FBTu2CY1b.png",
+      "favicon": null
+    },
+    {
+      "unitName": "The Cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "slug": "the-cavaliers",
+      "textDivision": null,
+      "logo": "https://production.assets.dci.org/5ef6c5f9694c8b6b7c436322_BG_EFfjuppP9PJoOcFk1zOl1tQoaFmCE.png",
+      "favicon": null
+    }
+  ],
+  "unmatched": [
+    {
+      "unitName": "Alisal Union School District All-Star Academy",
+      "triedSlugs": [
+        "alisal-union-school-district-all-star-academy",
+        "alisal-union-school-district-all-star-academy-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Allegheny Eclipse",
+      "triedSlugs": [
+        "allegheny-eclipse",
+        "allegheny-eclipse-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Apogee",
+      "triedSlugs": [
+        "apogee",
+        "apogee-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Apollo Marching Theatre",
+      "triedSlugs": [
+        "apollo-marching-theatre",
+        "apollo-marching-theatre-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Baldwinsville High School Band",
+      "triedSlugs": [
+        "baldwinsville-high-school-band",
+        "baldwinsville-high-school-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Blue Saints",
+      "triedSlugs": [
+        "blue-saints",
+        "blue-saints-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Brig Juice Brass",
+      "triedSlugs": [
+        "brig-juice-brass",
+        "brig-juice-brass-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Buccaneer Banner Brass",
+      "triedSlugs": [
+        "buccaneer-banner-brass",
+        "buccaneer-banner-brass-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Club Access Opens to Premium Ticket Holders",
+      "triedSlugs": [
+        "club-access-opens-to-premium-ticket-holders",
+        "club-access-opens-to-premium-ticket-holders-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Columbus Saints Jr. Flag Line",
+      "triedSlugs": [
+        "columbus-saints-jr-flag-line",
+        "columbus-saints-jr-flag-line-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Conquest",
+      "triedSlugs": [
+        "conquest-drum-bugle-corps",
+        "conquest"
+      ]
+    },
+    {
+      "unitName": "Conquest Drum & Bugle Corps",
+      "triedSlugs": [
+        "conquest-drum-bugle-corps",
+        "conquest-drum-and-bugle-corps",
+        "conquest-drum-and-bugle-corps-drum-bugle-corps",
+        "conquest"
+      ]
+    },
+    {
+      "unitName": "Crosstown Big Band",
+      "triedSlugs": [
+        "crosstown-big-band",
+        "crosstown-big-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Crusaders Senior",
+      "triedSlugs": [
+        "crusaders-senior-drum-bugle-corps",
+        "crusaders-senior"
+      ]
+    },
+    {
+      "unitName": "EN-CORPS by EN-RICH-MENT",
+      "triedSlugs": [
+        "en-corps-by-en-rich-ment",
+        "en-corps-by-en-rich-ment-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Eclipse",
+      "triedSlugs": [
+        "eclipse",
+        "eclipse-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Green Beret Marching Band",
+      "triedSlugs": [
+        "green-beret-marching-band",
+        "green-beret-marching-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Joint Performance",
+      "triedSlugs": [
+        "joint-performance",
+        "joint-performance-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "MBI",
+      "triedSlugs": [
+        "mbi",
+        "mbi-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Minnesota State University Clinic Band",
+      "triedSlugs": [
+        "minnesota-state-university-clinic-band",
+        "minnesota-state-university-clinic-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "North Star",
+      "triedSlugs": [
+        "north-star",
+        "north-star-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Phoenix",
+      "triedSlugs": [
+        "phoenix",
+        "phoenix-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "RCR Street Club",
+      "triedSlugs": [
+        "rcr-street-club",
+        "rcr-street-club-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Rhythm IN BLUE",
+      "triedSlugs": [
+        "rhythm-in-blue",
+        "rhythm-in-blue-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Rhythm IN BLUE - Bluecoats",
+      "triedSlugs": [
+        "rhythm-in-blue-bluecoats",
+        "rhythm-in-blue-bluecoats-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Rosemont King Cobras",
+      "triedSlugs": [
+        "rosemont-king-cobras",
+        "rosemont-king-cobras-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Sound of Sun Prairie",
+      "triedSlugs": [
+        "sound-of-sun-prairie",
+        "sound-of-sun-prairie-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Spark",
+      "triedSlugs": [
+        "spark",
+        "spark-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "Sparta Ignite",
+      "triedSlugs": [
+        "sparta-ignite",
+        "sparta-ignite-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "The Blue Way Middle School Honor Band",
+      "triedSlugs": [
+        "the-blue-way-middle-school-honor-band",
+        "the-blue-way-middle-school-honor-band-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "The Blue Way Summer Arts Camp",
+      "triedSlugs": [
+        "the-blue-way-summer-arts-camp",
+        "the-blue-way-summer-arts-camp-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "The ConneXion",
+      "triedSlugs": [
+        "the-connexion",
+        "the-connexion-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "The Connexion",
+      "triedSlugs": [
+        "the-connexion",
+        "the-connexion-drum-bugle-corps"
+      ]
+    },
+    {
+      "unitName": "White Sabers",
+      "triedSlugs": [
+        "white-sabers",
+        "white-sabers-drum-bugle-corps"
+      ]
+    }
+  ],
+  "changes": [
+    {
+      "slug": "arsenal-drum-bugle-corps",
+      "corpsKey": "arsenal",
+      "field": "about",
+      "from": null,
+      "to": "Established in 2016, Arsenal has been a staple of Drum Corps International�s SoundSport program, providing performance opportunities to young performers in the El Paso, Texas area and beyond. 2025 marks the group's first year under the umbrella of Sun City Musical Arts. The organization's mission is to provide access to high-quality music education and opportunities for young and aspiring musicians who may not otherwise have access to these resources.",
+      "kind": "fill"
+    },
+    {
+      "slug": "arsenal-drum-bugle-corps",
+      "corpsKey": "arsenal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.arsenaldbc.org/",
+      "to": "https://www.arsenaldbc.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "arsenal-drum-bugle-corps",
+      "corpsKey": "arsenal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/ArsenalCorps/",
+      "to": "https://www.facebook.com/ArsenalCorps/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "arsenal-drum-bugle-corps",
+      "corpsKey": "arsenal",
+      "field": "address",
+      "from": "P.O Box 36180",
+      "to": "P.O Box 36180 Albuquerque New Mexico, 17176",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "arsenal-drum-bugle-corps",
+      "corpsKey": "arsenal",
+      "field": "city",
+      "from": "Albuquerque",
+      "to": "El Paso",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "arsenal-drum-bugle-corps",
+      "corpsKey": "arsenal",
+      "field": "state",
+      "from": "New Mexico",
+      "to": "TX",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "arsenal-drum-bugle-corps",
+      "corpsKey": "arsenal",
+      "field": "display_city",
+      "from": "Albuquerque, New Mexico",
+      "to": "El Paso, TX",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "arsenal-drum-bugle-corps",
+      "corpsKey": "arsenal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/6384580d28874933731c7f9e_iOE_XutMcReO-jPA1cikKMsFDccFF8iH.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "arsenal-drum-bugle-corps",
+      "corpsKey": "arsenal",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Arsenal Corp as a part of Drum Corps International. View full schedule of Arsenal `s Upcoming Events and Related News.",
+      "kind": "fill"
+    }
+  ],
+  "held": [],
+  "classObservations": [
+    {
+      "corpsKey": "arsenal",
+      "division": "SoundSport",
+      "source": "profile-text"
+    },
+    {
+      "corpsKey": "001j000000iwxaeaa1",
+      "division": "World Class",
+      "source": "profile-text"
+    },
+    {
+      "corpsKey": "001j0000012y6bqaac",
+      "division": "Open Class",
+      "source": "profile-text"
+    },
+    {
+      "corpsKey": "001j000000iwxafaa1",
+      "division": "World Class",
+      "source": "db"
+    }
+  ],
+  "cachedMedia": [
+    {
+      "corpsKey": "arsenal",
+      "role": "logo",
+      "url": "https://production.assets.dci.org/6384580d28874933731c7f9e_iOE_XutMcReO-jPA1cikKMsFDccFF8iH.png",
+      "bytes": 12934,
+      "format": "png"
+    },
+    {
+      "corpsKey": "arsenal",
+      "role": "cover",
+      "url": "https://production.assets.dci.org/6384580d28874933731c7f9e_iOE_XutMcReO-jPA1cikKMsFDccFF8iH.png",
+      "bytes": 12934,
+      "format": "png"
+    },
+    {
+      "corpsKey": "001j000000iwxaeaa1",
+      "role": "logo",
+      "url": "https://production.assets.dci.org/5a18117cd670bd001b2e638e_N41XtnNYfxJN3-1R6hEfHF5B49w7kAtX.png",
+      "bytes": 4485,
+      "format": "png"
+    },
+    {
+      "corpsKey": "001j000000iwxaeaa1",
+      "role": "cover",
+      "url": "https://production.assets.dci.org/5a1812d6d670bd001b2e63a0_5L1npef8eemMIyIhymof9l1CvZuwgnDC.jpg",
+      "bytes": 557932,
+      "format": "jpeg"
+    },
+    {
+      "corpsKey": "001j0000012y6bqaac",
+      "role": "logo",
+      "url": "https://production.assets.dci.org/5a181124d670bd001f490b05_BbTrlTSgNnEDESUEFxCRXf7FBTu2CY1b.png",
+      "bytes": 4630,
+      "format": "png"
+    },
+    {
+      "corpsKey": "001j0000012y6bqaac",
+      "role": "cover",
+      "url": "https://production.assets.dci.org/5a1812d4d670bd001b2e639f_6YtarpdHomdCoRkkWbgm32iXTICy9G4_.png",
+      "bytes": 949058,
+      "format": "png"
+    },
+    {
+      "corpsKey": "001j000000iwxafaa1",
+      "role": "logo",
+      "url": "https://production.assets.dci.org/5ef6c5f9694c8b6b7c436322_BG_EFfjuppP9PJoOcFk1zOl1tQoaFmCE.png",
+      "bytes": 7317,
+      "format": "png"
+    },
+    {
+      "corpsKey": "001j000000iwxafaa1",
+      "role": "cover",
+      "url": "https://production.assets.dci.org/5a1812c3d670bd001b2e6395_OGGHCvHv8UdBKcscELnAVDckLOj4apwX.png",
+      "bytes": 866061,
+      "format": "png"
+    }
+  ]
+}

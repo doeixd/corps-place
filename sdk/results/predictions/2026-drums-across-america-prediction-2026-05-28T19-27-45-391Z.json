@@ -1,0 +1,227 @@
+{
+  "generated_at": "2026-05-28T19:27:45.391Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-drums-across-america",
+    "slug": "2026-drums-across-america",
+    "name": "Drums Across America",
+    "event_name": "Drums Across America",
+    "start_date": "2026-07-08",
+    "start_time": null,
+    "web_start_time": "7:30 PM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Newnan",
+    "location_state": "GA"
+  },
+  "readiness": {
+    "lineup_rows": 4,
+    "matched_corps_keys": 4,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 3,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 27.906976744186046
+  },
+  "input_signature": "4d89277b028d107a39d2dd5fb421d0247bc5dd109243a9063587dbd9b6d5a532",
+  "builder_version": "v9-event-prediction-fingerprints-v4",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "25bf7fabb01aaaddbabe8a54fb17bf3cbd1d8cbc917a5462feb5e91d6346b791",
+    "supports_caption_fingerprints": true
+  },
+  "input_audit": {
+    "scored_lineup_rows": 4,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwsnaal",
+        "corps": "Atlanta CV",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "7:40 PM"
+      },
+      {
+        "corps_key": "001j000000iwxa5aal",
+        "corps": "Music City",
+        "division": "World Class",
+        "performance_order": 3,
+        "time": "8:02 PM"
+      },
+      {
+        "corps_key": "001j000000iwxadaa1",
+        "corps": "Spirit of Atlanta",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "8:24 PM"
+      },
+      {
+        "corps_key": "001j000000iwwssaal",
+        "corps": "Boston Crusaders",
+        "division": "World Class",
+        "performance_order": 5,
+        "time": "8:42 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000iwwsnaal",
+        "corps": "Atlanta CV",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "7:40 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Spirit of Atlanta",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 7,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-drums-across-america",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-08",
+      "scored_lineup_rows": 4,
+      "matched_corps_keys": 4,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwssaal",
+      "corps": "Boston Crusaders",
+      "city": "Boston, MA",
+      "division": "World Class",
+      "performance_order": 5,
+      "time": "8:42 PM",
+      "total": 84.15,
+      "GE": 33.776,
+      "Visual": 25.157,
+      "Music": 25.217,
+      "GE1": 16.809,
+      "GE2": 16.967,
+      "VP": 16.715,
+      "VA": 16.71,
+      "CG": 16.89,
+      "MB": 16.804,
+      "MA": 16.809,
+      "MP": 16.821,
+      "raw_model_total": 95.852,
+      "model_blend_weight": 0,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 84.15,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 79.905,
+      "point_estimate_source": "caption_fingerprint_baseline_scaled_to_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxadaa1",
+      "corps": "Spirit of Atlanta",
+      "city": "Atlanta, GA",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "8:24 PM",
+      "total": 73.799,
+      "GE": 29.66,
+      "Visual": 21.683,
+      "Music": 22.456,
+      "GE1": 14.747,
+      "GE2": 14.913,
+      "VP": 14.463,
+      "VA": 14.429,
+      "CG": 14.475,
+      "MB": 14.666,
+      "MA": 14.92,
+      "MP": 15.327,
+      "raw_model_total": 90.017,
+      "model_blend_weight": 0,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.8,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 13,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 77.135,
+      "point_estimate_source": "caption_fingerprint_baseline_scaled_to_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxa5aal",
+      "corps": "Music City",
+      "city": "Nashville, TN",
+      "division": "World Class",
+      "performance_order": 3,
+      "time": "8:02 PM",
+      "total": 73.35,
+      "GE": 29.513,
+      "Visual": 21.899,
+      "Music": 21.938,
+      "GE1": 14.634,
+      "GE2": 14.879,
+      "VP": 14.353,
+      "VA": 14.552,
+      "CG": 14.893,
+      "MB": 14.143,
+      "MA": 14.758,
+      "MP": 14.975,
+      "raw_model_total": 87.869,
+      "model_blend_weight": 0,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.35,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 16,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.892,
+      "point_estimate_source": "caption_fingerprint_baseline_scaled_to_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking."
+  ]
+}

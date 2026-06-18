@@ -1,0 +1,5834 @@
+[
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Finals",
+    "location": "Indianapolis, IN",
+    "date": "2024-08-10T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-world-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI All-Age World Championship",
+    "location": "Indianapolis, IN",
+    "date": "2024-08-10T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Martin Griffin",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-all-age-world-championship"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Semifinals",
+    "location": "Indianapolis, IN",
+    "date": "2024-08-09T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-world-championship-semifinals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Prelims",
+    "location": "Indianapolis, IN",
+    "date": "2024-08-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-world-championship-prelims"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Open Class World Championship Finals",
+    "location": "Marion, IN",
+    "date": "2024-08-06T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-open-class-world-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Innovations In Brass",
+    "location": "Canton, OH",
+    "date": "2024-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Kyle Miller",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-innovations-in-brass"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Pittsburgh",
+    "location": "Pittsburgh, PA",
+    "date": "2024-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jackie Gilley",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-pittsburgh"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Open Class World Championship Prelims",
+    "location": "Marion, IN",
+    "date": "2024-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-open-class-world-championship-prelims"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Big Sounds in Motion",
+    "location": "Downingtown, PA",
+    "date": "2024-08-04T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Sal Adamo",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-big-sounds-in-motion"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums on the Ohio",
+    "location": "Evansville, IN",
+    "date": "2024-08-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drums-on-the-ohio"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Rochester",
+    "location": "Rochester, NY",
+    "date": "2024-08-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Ken Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-rochester"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Eastern Illinois",
+    "location": "Mattoon, IL",
+    "date": "2024-08-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Andy Cook",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-eastern-illinois"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Tournament of Drums",
+    "location": "Marion, IA",
+    "date": "2024-08-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-tournament-of-drums"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Eastern Classic",
+    "location": "Allentown, PA",
+    "date": "2024-08-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-eastern-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI East Coast Showcase",
+    "location": "Lawrence, MA",
+    "date": "2024-08-01T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "George Oliviero",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-east-coast-showcase"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "March On!",
+    "location": "Champlin, MN",
+    "date": "2024-07-31T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Andy Cook",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-march-on"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Huntington",
+    "location": "Huntington, WV",
+    "date": "2024-07-31T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Kyle Miller",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-huntington"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Summer Music Games of Southwest Virginia",
+    "location": "Salem, VA",
+    "date": "2024-07-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Kyle Miller",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-summer-music-games-of-southwest-virginia"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Soaring Sounds",
+    "location": "Centerville, OH",
+    "date": "2024-07-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Ken Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-soaring-sounds"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Delaware",
+    "location": "Newark, DE",
+    "date": "2024-07-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jim Sturgeon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-delaware"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "NightBEAT",
+    "location": "Winston-Salem, NC",
+    "date": "2024-07-28T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-nightbeat"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums in the Heartland",
+    "location": "Orrville, OH",
+    "date": "2024-07-28T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jay Kennedy",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drums-in-the-heartland"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Music on the Mountain",
+    "location": "Sheffield, PA",
+    "date": "2024-07-27T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Todd Fox",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-music-on-the-mountain"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Southeastern Championship",
+    "location": "Atlanta, GA",
+    "date": "2024-07-27T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-southeastern-championship"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Bushwackers Invitational",
+    "location": "Mt. Olive, NJ",
+    "date": "2024-07-27T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Martin Griffin",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-bushwackers-invitational"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "White Rose Classic",
+    "location": "Dover, PA",
+    "date": "2024-07-26T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Keith Baker",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-white-rose-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "The Masters of the Summer Music Games",
+    "location": "Murfreesboro, TN",
+    "date": "2024-07-26T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Nola Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-the-masters-of-the-summer-music-games"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Birmingham",
+    "location": "Birmingham, AL",
+    "date": "2024-07-26T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Chester Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-birmingham"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Monroe",
+    "location": "Monroe, LA",
+    "date": "2024-07-24T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Timothy Ochran",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-monroe"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Spartan Syracuse Showdown",
+    "location": "Syracuse, NY",
+    "date": "2024-07-23T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Leitzke",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-spartan-syracuse-showdown"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI McKinney",
+    "location": "McKinney, TX",
+    "date": "2024-07-23T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Timothy Ochran",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-mckinney"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Mesquite",
+    "location": "Mesquite, TX",
+    "date": "2024-07-22T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Timothy Ochran",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-mesquite"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "The Buccaneer Classic",
+    "location": "Landisville, PA",
+    "date": "2024-07-20T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Todd Fox",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-the-buccaneer-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Southwestern Championship",
+    "location": "San Antonio, TX",
+    "date": "2024-07-20T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-southwestern-championship"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Northern Ohio",
+    "location": "Brunswick, OH",
+    "date": "2024-07-20T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Allan Kristensen",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-northern-ohio"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Houston",
+    "location": "Houston, TX",
+    "date": "2024-07-19T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Howell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-houston"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Beats in the Brook",
+    "location": "Bellbrook, OH",
+    "date": "2024-07-19T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Allan Kristensen",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-beats-in-the-brook"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Waco",
+    "location": "Waco, TX",
+    "date": "2024-07-18T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Howell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-waco"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Denton",
+    "location": "Denton, TX",
+    "date": "2024-07-18T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Nola Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-denton"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Broken Arrow",
+    "location": "Broken Arrow, OK",
+    "date": "2024-07-16T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Philips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-broken-arrow"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Abilene",
+    "location": "Abilene, TX",
+    "date": "2024-07-16T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jackie Gilley",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-abilene"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "West Texas Drums",
+    "location": "Canyon, TX",
+    "date": "2024-07-15T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Sal Adamo",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-west-texas-drums"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Brass Impact",
+    "location": "Olathe, KS",
+    "date": "2024-07-15T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Christine Fisher",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-brass-impact"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "So Cal Classic: Open Class Pacific Championship Finals",
+    "location": "Cerritos, CA",
+    "date": "2024-07-14T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-so-cal-classic-open-class-pacific-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Celebration in Brass",
+    "location": "Ankeny, IA",
+    "date": "2024-07-14T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Christine Fisher",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-celebration-in-brass"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Midwest Classic",
+    "location": "DeKalb, IL",
+    "date": "2024-07-13T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Andy Cook",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-midwest-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Gold Showcase",
+    "location": "Vista, CA",
+    "date": "2024-07-13T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-gold-showcase"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums Along the Rockies",
+    "location": "Fort Collins, CO",
+    "date": "2024-07-13T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drums-along-the-rockies"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drum Corps Grand Prix",
+    "location": "Clifton, NJ",
+    "date": "2024-07-13T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Martin Griffin",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drum-corps-grand-prix"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Little Rock",
+    "location": "Little Rock, AR",
+    "date": "2024-07-13T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Christine Fisher",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-little-rock"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Riverside Open",
+    "location": "Riverside, CA",
+    "date": "2024-07-12T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-riverside-open"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums Along the Rockies - Cheyenne Edition",
+    "location": "Cheyenne, WY",
+    "date": "2024-07-12T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "George Oliviero",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drums-along-the-rockies-cheyenne-edition"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Music on the March",
+    "location": "Dubuque, IA",
+    "date": "2024-07-11T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Howell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-music-on-the-march"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Northern Alabama",
+    "location": "Muscle Shoals, AL",
+    "date": "2024-07-11T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Beverly Brahan",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-northern-alabama"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Corps Encore",
+    "location": "Ogden, UT",
+    "date": "2024-07-10T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "William Chumley",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-corps-encore"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "The Kiwanis Thunder of Drums",
+    "location": "Mankato, MN",
+    "date": "2024-07-09T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Andy Cook",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-the-kiwanis-thunder-of-drums"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Northwest Youth Music Games Boise",
+    "location": "Boise, ID",
+    "date": "2024-07-09T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Kyle Miller",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-northwest-youth-music-games-boise"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums Across America",
+    "location": "Newnan, GA",
+    "date": "2024-07-09T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Chester Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drums-across-america"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums Along the Columbia",
+    "location": "Kennewick, WA",
+    "date": "2024-07-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Nola Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drums-along-the-columbia"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums Across the Smokies",
+    "location": "Sevierville, TN",
+    "date": "2024-07-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Ken Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drums-across-the-smokies"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "River City Rhapsody",
+    "location": "La Crosse, WI",
+    "date": "2024-07-07T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Tom Slaughter",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-river-city-rhapsody"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Capital Classic",
+    "location": "Sacramento, CA",
+    "date": "2024-07-07T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-capital-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "The Whitewater Classic",
+    "location": "Whitewater, WI",
+    "date": "2024-07-06T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Tom Slaughter",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-the-whitewater-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Northwest Youth Music Games Seattle",
+    "location": "Seattle, WA",
+    "date": "2024-07-06T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Nola Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-northwest-youth-music-games-seattle"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI West",
+    "location": "Stanford, CA",
+    "date": "2024-07-06T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-west"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Show of Shows",
+    "location": "Rockford, IL",
+    "date": "2024-07-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Joel Denton",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-show-of-shows"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Northwest Youth Music Games Portland",
+    "location": "Portland, OR",
+    "date": "2024-07-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Nola Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-northwest-youth-music-games-portland"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "MidCal Champions Showcase",
+    "location": "Clovis, CA",
+    "date": "2024-07-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-midcal-champions-showcase"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Rotary Music Festival",
+    "location": "Cedarburg, WI",
+    "date": "2024-07-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jeff Harper",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-rotary-music-festival"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Summer Music Games in Cincinnati",
+    "location": "Mason, OH",
+    "date": "2024-07-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jeff Harper",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-summer-music-games-in-cincinnati"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Western Corps Connection",
+    "location": "San Bernardino, CA",
+    "date": "2024-06-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-western-corps-connection"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Cavalcade of Brass",
+    "location": "Lisle, IL",
+    "date": "2024-06-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jay Kennedy",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-cavalcade-of-brass"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums on Parade",
+    "location": "Madison, WI",
+    "date": "2024-06-29T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Deborah Torchia",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drums-on-parade"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Corps at the Crest",
+    "location": "Walnut, CA",
+    "date": "2024-06-29T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-corps-at-the-crest"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Barnum Festival: Champions on Parade",
+    "location": "Shelton, CT",
+    "date": "2024-06-29T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Hieu Nguyen",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-barnum-festival-champions-on-parade"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Central Indiana",
+    "location": "Muncie, IN",
+    "date": "2024-06-28T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-central-indiana"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Corps at the Crest - Student Edition",
+    "location": "Walnut, CA",
+    "date": "2024-06-28T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-corps-at-the-crest-student-edition"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Midwest Premiere",
+    "location": "Rockford, MI",
+    "date": "2024-06-26T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Michael Leitzke",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-midwest-premiere"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Finals",
+    "location": "Indianapolis, IN",
+    "date": "2023-08-12T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-world-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Semifinals",
+    "location": "Indianapolis, IN",
+    "date": "2023-08-11T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-world-championship-semifinals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Prelims",
+    "location": "Indianapolis, IN",
+    "date": "2023-08-10T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-world-championship-prelims"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      }
+    ],
+    "eventName": "DCI Open Class World Championship Finals",
+    "location": "Marion, IN",
+    "date": "2023-08-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-open-class-world-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Open Class World Championship Prelims",
+    "location": "Marion, IN",
+    "date": "2023-08-07T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-open-class-world-championship-prelims"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Cincinnati",
+    "location": "Cincinnati, OH",
+    "date": "2023-08-07T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "George Oliviero",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-cincinnati"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Pittsburgh",
+    "location": "Pittsburgh, PA",
+    "date": "2023-08-06T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Todd Fox",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-pittsburgh"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      }
+    ],
+    "eventName": "DCI Eastern Classic",
+    "location": "Allentown, PA",
+    "date": "2023-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-eastern-classic-2"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Shoremen Brass Classic",
+    "location": "Avon Lake, OH",
+    "date": "2023-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-shoremen-brass-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Eastern Illinois",
+    "location": "Charleston, IL",
+    "date": "2023-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Wayne Dillon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-eastern-illinois"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Tournament of Drums",
+    "location": "Cedar Rapids, IA",
+    "date": "2023-08-04T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-tournament-of-drums"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Drums In the Heartland",
+    "location": "Orrville, OH",
+    "date": "2023-08-04T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Todd Fox",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drums-in-the-heartland"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      }
+    ],
+    "eventName": "DCI Eastern Classic",
+    "location": "Allentown, PA",
+    "date": "2023-08-04T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-eastern-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI East Coast Showcase - Lawrence",
+    "location": "Lawrence, MA",
+    "date": "2023-08-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "George Oliviero",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-east-coast-showcase-lawrence"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Soaring Sounds",
+    "location": "Centerville, OH",
+    "date": "2023-08-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Bruce Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-soaring-sounds"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "March On!",
+    "location": "Apple Valley, MN",
+    "date": "2023-08-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Ken Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-march-on"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Glassboro",
+    "location": "Glassboro, NJ",
+    "date": "2023-08-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Martin Griffin",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-glassboro"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Summer Music Games of Southwest Virginia",
+    "location": "Salem, VA",
+    "date": "2023-08-01T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Paul McGarr",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-summer-music-games-of-southwest-virginia"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Drums Across the Smokies",
+    "location": "Sevierville, TN",
+    "date": "2023-08-01T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mark Waymire",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drums-across-the-smokies"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Drum Corps: An American Tradition",
+    "location": "Annapolis, MD",
+    "date": "2023-08-01T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Howell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drum-corps-an-american-tradition"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Huntington",
+    "location": "Huntington, WV",
+    "date": "2023-07-31T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Bret Mascaro",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-huntington"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      }
+    ],
+    "eventName": "NightBEAT",
+    "location": "Winston-Salem, NC",
+    "date": "2023-07-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-nightbeat"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      }
+    ],
+    "eventName": "DCI Southeastern Championship",
+    "location": "Atlanta, GA",
+    "date": "2023-07-29T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-southeastern-championship"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Beats in the Brook",
+    "location": "Bellbrook, OH",
+    "date": "2023-07-29T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Michael Leitzke",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-beats-in-the-brook"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "The Masters of the Summer Music Games",
+    "location": "Murfreesboro, TN",
+    "date": "2023-07-28T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jim Sturgeon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-the-masters-of-the-summer-music-games"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Birmingham",
+    "location": "Trussville, AL",
+    "date": "2023-07-28T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Curtis Costanza",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-birmingham"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Southern Mississippi",
+    "location": "Hattiesburg, MS",
+    "date": "2023-07-26T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Kyle Miller",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-southern-mississippi"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Monroe",
+    "location": "Monroe, LA",
+    "date": "2023-07-26T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Joel Denton",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-monroe"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Brigadier's Pageant of Drums",
+    "location": "Syracuse, NY",
+    "date": "2023-07-26T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Timothy Ochran",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-brigadiers-pageant-of-drums"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI New Hampshire",
+    "location": "Manchester, NH",
+    "date": "2023-07-25T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Timothy Ochran",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-new-hampshire"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI McKinney",
+    "location": "McKinney, TX",
+    "date": "2023-07-25T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Debbie Torchia",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-mckinney"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Mesquite",
+    "location": "Mesquite, TX",
+    "date": "2023-07-24T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Nola Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-mesquite"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Connecticut",
+    "location": "Fairfield, CT",
+    "date": "2023-07-23T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Bret Mascaro",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-connecticut"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Summer Thunder",
+    "location": "Sewell, NJ",
+    "date": "2023-07-22T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Bret Mascaro",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-summer-thunder"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 10278,
+          "name": "8 Judge (Championship Finals)"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Southwestern Championship",
+    "location": "San Antonio, TX",
+    "date": "2023-07-22T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Nola Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-southwestern-championship"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "White Rose Classic",
+    "location": "Dover, PA",
+    "date": "2023-07-21T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Charley Poole",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-white-rose-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Houston",
+    "location": "Houston, TX",
+    "date": "2023-07-21T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Hieu Nguyen",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-houston"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Denton",
+    "location": "Denton, TX",
+    "date": "2023-07-20T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Nola Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-denton"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Austin",
+    "location": "Austin, TX",
+    "date": "2023-07-20T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Paul McGarr",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-austin"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Broken Arrow",
+    "location": "Broken Arrow, OK",
+    "date": "2023-07-18T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Martin Griffin",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-broken-arrow"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Abilene",
+    "location": "Abilene, TX",
+    "date": "2023-07-18T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "George Oliviero",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-abilene"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "West Texas Drums",
+    "location": "Canyon, TX",
+    "date": "2023-07-17T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "George Oliviero",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-west-texas-drums"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Brass Impact",
+    "location": "Olathe, KS",
+    "date": "2023-07-17T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Allan Kristensen",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-brass-impact"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "So Cal Classic",
+    "location": "Bellflower, CA",
+    "date": "2023-07-16T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Ken Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-so-cal-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Show of Shows",
+    "location": "Rockford, IL",
+    "date": "2023-07-15T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Darrin Davis",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-show-of-shows"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Gold Showcase",
+    "location": "Vista, CA",
+    "date": "2023-07-15T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Ken Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-gold-showcase"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Drums Along the Rockies",
+    "location": "Fort Collins, CO",
+    "date": "2023-07-15T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Curtis Costanza",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drums-along-the-rockies"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums Across the River Region",
+    "location": "Wetumpka, AL",
+    "date": "2023-07-15T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Wayne Dillon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drums-across-the-river-region"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Little Rock",
+    "location": "Little Rock, AR",
+    "date": "2023-07-15T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "George Oliviero",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-little-rock"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Riverside Open",
+    "location": "Riverside, CA",
+    "date": "2023-07-14T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Ken Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-riverside-open"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Music on the March",
+    "location": "Dubuque, IA",
+    "date": "2023-07-14T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Wayne Dillon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-music-on-the-march"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Drums Along the Rockies - Cheyenne Edition",
+    "location": "Cheyenne, WY",
+    "date": "2023-07-14T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Curtis Costanza",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drums-along-the-rockies-cheyenne-edition"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Tupelo",
+    "location": "Tupelo, MS",
+    "date": "2023-07-13T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Nola Jones",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-tupelo"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums on the Chippewa",
+    "location": "Eau Claire, WI",
+    "date": "2023-07-12T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Andrew Cook",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drums-on-the-chippewa"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Corps Encore",
+    "location": "Salt Lake City, UT",
+    "date": "2023-07-12T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jay Kennedy",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-corps-encore"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Celebration in Brass",
+    "location": "Ankeny, IA",
+    "date": "2023-07-12T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jackie Gilley",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-celebration-in-brass"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "The Kiwanis Thunder of Drums",
+    "location": "Mankato, MN",
+    "date": "2023-07-11T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Keith Baker",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-the-kiwanis-thunder-of-drums"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Resound",
+    "location": "Bakersfield, CA",
+    "date": "2023-07-11T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-resound"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Drums Across America",
+    "location": "Douglasville, GA",
+    "date": "2023-07-11T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Timothy Ochran",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drums-across-america"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Capital Classic",
+    "location": "Roseville, CA",
+    "date": "2023-07-10T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-capital-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "River City Rhapsody - La Crosse",
+    "location": "La Crosse, WI",
+    "date": "2023-07-09T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Christopher Moss",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-river-city-rhapsody-la-crosse"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI West",
+    "location": "Stanford, CA",
+    "date": "2023-07-09T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-west"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Macon",
+    "location": "Macon, GA",
+    "date": "2023-07-09T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Chester Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-macon"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Whitewater Classic",
+    "location": "Whitewater, WI",
+    "date": "2023-07-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Sal Adamo",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-whitewater-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Drum Corps at the Rose Bowl",
+    "location": "Pasadena, CA",
+    "date": "2023-07-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drum-corps-at-the-rose-bowl"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "CrownBEAT",
+    "location": "Lexington, SC",
+    "date": "2023-07-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jeff Harper",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-crownbeat"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Midwest Classic",
+    "location": "DeKalb, IL",
+    "date": "2023-07-07T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jay Kennedy",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-midwest-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "MidCal Champions Showcase",
+    "location": "Fresno, CA",
+    "date": "2023-07-07T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-midcal-champions-showcase"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Summer Music Games in Cincinnati",
+    "location": "Mason, OH",
+    "date": "2023-07-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Howell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-summer-music-games-in-cincinnati"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Rotary Music Festival",
+    "location": "Cedarburg, WI",
+    "date": "2023-07-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Debbie Torchia",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-rotary-music-festival"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums Across the Desert",
+    "location": "Mesa, AZ",
+    "date": "2023-07-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Wayne Dillon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drums-across-the-desert"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Western Corps Connection",
+    "location": "San Bernardino, CA",
+    "date": "2023-07-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-western-corps-connection"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI East Coast Showcase - Quincy",
+    "location": "Quincy, MA",
+    "date": "2023-07-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jay Kennedy",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-east-coast-showcase-quincy"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Cavalcade of Brass",
+    "location": "Lisle, IL",
+    "date": "2023-07-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Debbie Torchia",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-cavalcade-of-brass"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "The Beanpot",
+    "location": "Lynn, MA",
+    "date": "2023-07-01T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "George Oliviero",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-the-beanpot"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums on Parade",
+    "location": "Madison, WI",
+    "date": "2023-07-01T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Debbie Torchia",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-drums-on-parade"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Corps at the Crest - San Diego",
+    "location": "Vista, CA",
+    "date": "2023-07-01T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-corps-at-the-crest-san-diego"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Central Indiana",
+    "location": "Muncie, IN",
+    "date": "2023-06-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-dci-central-indiana"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Midwest Premiere",
+    "location": "Rockford, MI",
+    "date": "2023-06-28T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jay Kennedy",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2023",
+    "slug": "2023-midwest-premiere"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Finals",
+    "location": "Indianapolis, IN",
+    "date": "2022-08-13T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-world-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Semifinals",
+    "location": "Indianapolis, IN",
+    "date": "2022-08-12T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-world-championship-semifinals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Prelims",
+    "location": "Indianapolis, IN",
+    "date": "2022-08-11T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-world-championship-prelims"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Open Class World Championship Finals",
+    "location": "Marion, IN",
+    "date": "2022-08-09T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-open-class-world-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Open Class World Championship Prelims",
+    "location": "Marion, IN",
+    "date": "2022-08-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-open-class-world-championship-prelims"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Cincinnati",
+    "location": "Cincinnati, OH",
+    "date": "2022-08-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-cincinnati"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Pittsburgh",
+    "location": "Pittsburgh, PA",
+    "date": "2022-08-07T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Howell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-pittsburgh"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Shoremen Brass Classic",
+    "location": "Avon Lake, OH",
+    "date": "2022-08-06T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Marie Czapinski",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-shoremen-brass-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Eastern Illinois",
+    "location": "Charleston, IL",
+    "date": "2022-08-06T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Stone",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-eastern-illinois"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Eastern Classic",
+    "location": "Allentown, PA",
+    "date": "2022-08-06T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Lee Carlson",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-eastern-classic"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Tournament of Drums",
+    "location": "Cedar Rapids, IA",
+    "date": "2022-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Marie Czapinski",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-tournament-of-drums"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Legends Drum Corps Open",
+    "location": "Portage, MI",
+    "date": "2022-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-legends-drum-corps-open"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Eastern Classic",
+    "location": "Allentown, PA",
+    "date": "2022-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Lee Carlson",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-eastern-classic-2"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Soaring Sounds",
+    "location": "Centerville, OH",
+    "date": "2022-08-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Wayne Dillon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-soaring-sounds"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "March On!",
+    "location": "Apple Valley, MN",
+    "date": "2022-08-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Keith Baker",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-march-on"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Glassboro",
+    "location": "Glassboro, NJ",
+    "date": "2022-08-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Ken Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-glassboro"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Summer Music Games of Southwest Virginia",
+    "location": "Salem, VA",
+    "date": "2022-08-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Wayne Dillon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-summer-music-games-of-southwest-virginia"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Spartan Thunder",
+    "location": "Lima, OH",
+    "date": "2022-08-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Todd Fox",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-spartan-thunder"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Drums Across the Smokies",
+    "location": "Sevierville, TN",
+    "date": "2022-08-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Randy Greenwell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-drums-across-the-smokies"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Annapolis",
+    "location": "Annapolis, MD",
+    "date": "2022-08-02T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Howell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-annapolis"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Sun Prairie",
+    "location": "Sun Prairie, WI",
+    "date": "2022-08-01T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Marie Czapinski",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-sun-prairie"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Huntington",
+    "location": "Huntington, WV",
+    "date": "2022-08-01T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Howell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-huntington"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "NightBEAT",
+    "location": "Winston-Salem, NC",
+    "date": "2022-07-31T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Lee Carlson",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-nightbeat"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Legends Drum Corps Invitational",
+    "location": "White Lake, MI",
+    "date": "2022-07-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Juno Orefice",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-legends-drum-corps-invitational"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Southeastern Championship",
+    "location": "Atlanta, GA",
+    "date": "2022-07-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Lee Carlson",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-southeastern-championship"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Central Illinois",
+    "location": "Normal, IL",
+    "date": "2022-07-30T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Keith Baker",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-central-illinois"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "The Masters of the Summer Music Games",
+    "location": "Murfreesboro, TN",
+    "date": "2022-07-29T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Wayne Dillon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-the-masters-of-the-summer-music-games"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Music on the Mountain",
+    "location": "Sheffield, PA",
+    "date": "2022-07-29T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Howell",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-music-on-the-mountain"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Southern Mississippi",
+    "location": "Hattiesburg, MS",
+    "date": "2022-07-27T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Michael Leitzke",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-southern-mississippi"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Little Rock",
+    "location": "Little Rock, AR",
+    "date": "2022-07-27T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Deborah Torchia",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-little-rock"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI McKinney",
+    "location": "McKinney, TX",
+    "date": "2022-07-26T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Deborah Torchia",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-mckinney"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Mesquite",
+    "location": "Mesquite, TX",
+    "date": "2022-07-25T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Deborah Torchia",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-mesquite"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Corpus Christi",
+    "location": "Corpus Christi, TX",
+    "date": "2022-07-25T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Timothy Ochran",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-corpus-christi"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Diablo Valley Classic Pacific Open Class Championship Finals",
+    "location": "Union City, CA",
+    "date": "2022-07-24T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-diablo-valley-classic-pacific-open-class-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI New Hampshire",
+    "location": "Nashua, NH",
+    "date": "2022-07-24T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Deborah Torchia",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-new-hampshire"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Summer Thunder",
+    "location": "Sewell, NJ",
+    "date": "2022-07-23T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Bret Mascaro",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-summer-thunder"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Golden State Showdown",
+    "location": "Fresno, CA",
+    "date": "2022-07-23T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-golden-state-showdown"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Southwestern Championship",
+    "location": "San Antonio, TX",
+    "date": "2022-07-23T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-southwestern-championship"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "Resound",
+    "location": "Bakersfield, CA",
+    "date": "2022-07-22T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Mike Rubino",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-resound"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Houston",
+    "location": "Houston, TX",
+    "date": "2022-07-22T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Beth Fabrizio",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-houston"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Denton",
+    "location": "Denton, TX",
+    "date": "2022-07-21T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jay Kennedy",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-denton"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      }
+    ],
+    "eventName": "DCI Austin",
+    "location": "Round Rock, TX",
+    "date": "2022-07-21T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Kyle Miller",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-austin"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Broken Arrow",
+    "location": "Broken Arrow, OK",
+    "date": "2022-07-19T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Robert Solomon",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2022",
+    "slug": "2022-dci-broken-arrow"
+  }
+]

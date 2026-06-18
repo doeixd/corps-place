@@ -1,0 +1,117 @@
+import {
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRoute,
+  useRouterState,
+} from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { registerServiceWorker } from '@/lib/register-sw';
+import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { SiteNav } from '@/components/site-nav';
+import { THEME_STORAGE_KEY } from '@/stores/theme-store';
+import { FAVORITE_STORAGE_KEY } from '@/stores/favorite-corps-store';
+import '@/app.css';
+
+// Runs before paint to set `.dark` from storage / system preference, avoiding a
+// flash of the wrong theme on first load. Kept inline + tiny so it ships in the
+// initial HTML. The theme store re-syncs from this DOM state on the client.
+//
+// Also reads the favorite corps from localStorage and applies its accent as
+// --primary / --primary-foreground before paint, so the site accent color matches
+// the user's favorite corps from the very first frame (no flash of default orange).
+const noFlashThemeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.style.colorScheme=t;var f=localStorage.getItem('${FAVORITE_STORAGE_KEY}');if(f){var fav=JSON.parse(f);if(t==='dark'){r.style.setProperty('--primary',fav.darkPrimary);r.style.setProperty('--primary-foreground',fav.darkPrimaryForeground);}else{r.style.setProperty('--primary',fav.lightPrimary);r.style.setProperty('--primary-foreground',fav.lightPrimaryForeground);}}}catch(e){}})();`;
+
+function RootDocument({ children }: { children: ReactNode }) {
+  // suppressHydrationWarning on <html>: the no-flash theme script (below)
+  // mutates its class + style.colorScheme before hydration, and browser
+  // extensions inject data-* attrs here too — both intentionally differ from
+  // the server HTML on this element only.
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/logo-transparent.png" type="image/png" />
+        <title>Corps Place</title>
+        <script dangerouslySetInnerHTML={{ __html: noFlashThemeScript }} />
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+// Scroll to top on real navigations (pathname changes) only — NOT on search-param
+// updates within the same page. This replaces the router's global
+// `scrollRestoration`, which also fired on in-place `replace` search updates (roll
+// / likelihood window / filters on the prediction page) and scrolled the table out
+// of view. Keying on pathname leaves those in-page updates' scroll position alone.
+// Top-of-page navigation progress bar. Shows only after a short delay so fast
+// (cached/preloaded) navigations don't flash it, then "trickles" toward 90% while
+// the next route's loader runs and snaps to 100% + fades when it lands. Gives
+// immediate feedback that a click registered and the page is loading.
+function NavigationProgressBar({ delayMs = 150 }: { delayMs?: number }) {
+  const isPending = useRouterState({ select: (s) => s.status === 'pending' });
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (!isPending) {
+      setShow(false);
+      return;
+    }
+    const timer = setTimeout(() => setShow(true), delayMs);
+    return () => clearTimeout(timer);
+  }, [isPending, delayMs]);
+
+  return (
+    <AnimatePresence>
+      {show ? (
+        <motion.div
+          key="nav-progress"
+          className="fixed inset-x-0 top-0 z-[100] h-0.5 origin-left bg-primary"
+          initial={{ scaleX: 0, opacity: 1 }}
+          animate={{ scaleX: 0.9, transition: { duration: 10, ease: 'easeOut' } }}
+          exit={{ scaleX: 1, opacity: 0, transition: { duration: 0.2, ease: 'easeOut' } }}
+        />
+      ) : null}
+    </AnimatePresence>
+  );
+}
+
+// Registers (or, when disabled, unregisters) the offline service worker on the
+// client. No-op during SSR. Renders nothing.
+function ServiceWorkerManager() {
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+  return null;
+}
+
+export const Route = createRootRoute({
+  component: () => (
+    <RootDocument>
+      <ServiceWorkerManager />
+      <MotionConfig reducedMotion={REDUCED_MOTION}>
+        <TooltipProvider delay={150}>
+          <NavigationProgressBar />
+          <ThemeToggle className="fixed top-4 right-4 z-50" />
+          <SiteNav />
+          {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
+              (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
+              (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}
+          <main className="pb-bottom-nav pl-side-nav">
+            <Outlet />
+          </main>
+        </TooltipProvider>
+      </MotionConfig>
+    </RootDocument>
+  ),
+});

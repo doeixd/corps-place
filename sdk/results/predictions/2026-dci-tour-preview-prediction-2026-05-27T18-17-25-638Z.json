@@ -1,0 +1,160 @@
+{
+  "generated_at": "2026-05-27T18:17:25.638Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_actually_final_1779812116275",
+  "event": {
+    "event_id": "web-2026-2026-dci-tour-preview",
+    "slug": "2026-dci-tour-preview",
+    "name": "DCI Tour Preview",
+    "event_name": "DCI Tour Preview",
+    "start_date": "2026-06-26T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "8:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Muncie",
+    "location_state": "IN"
+  },
+  "readiness": {
+    "lineup_rows": 3,
+    "matched_corps_keys": 3,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 2,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 0
+  },
+  "input_signature": "f9107af77a550cac26c915e85ad75712d5fc75fe199426b1674b7803b7c3ab81",
+  "builder_version": "v9-event-prediction-lineup-fallback-v3",
+  "input_audit": {
+    "scored_lineup_rows": 3,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "8:15 PM"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 3,
+        "time": "8:45 PM"
+      },
+      {
+        "corps_key": "001j000000iwx91aad",
+        "corps": "Carolina Crown",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "9:15 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "8:15 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Bands of America & Carolina Crown",
+        "performance_order": 5,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Event Concludes",
+        "performance_order": 6,
+        "exclusion_reason": "unresolved_corps"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-tour-preview",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-26T00:00:00.000Z",
+      "scored_lineup_rows": 3,
+      "matched_corps_keys": 3,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwx91aad",
+      "corps": "Carolina Crown",
+      "city": "Fort Mill, SC",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "9:15 PM",
+      "total": 79.85,
+      "GE": 32.148,
+      "Visual": 23.535,
+      "Music": 24.167,
+      "GE1": 15.814,
+      "GE2": 16.334,
+      "VP": 15.893,
+      "VA": 15.697,
+      "CG": 15.48,
+      "MB": 15.814,
+      "MA": 16.422,
+      "MP": 16.098,
+      "raw_model_total": 90.071,
+      "prior_season_comparable_total": 79.85,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 3,
+      "time": "8:45 PM",
+      "total": 69.45,
+      "GE": 28.113,
+      "Visual": 20.627,
+      "Music": 20.71,
+      "GE1": 13.89,
+      "GE2": 14.223,
+      "VP": 14.264,
+      "VA": 14.389,
+      "CG": 12.601,
+      "MB": 13.225,
+      "MA": 13.973,
+      "MP": 14.223,
+      "raw_model_total": 84.773,
+      "prior_season_comparable_total": 69.45,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking."
+  ]
+}

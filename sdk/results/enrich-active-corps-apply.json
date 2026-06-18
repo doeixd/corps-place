@@ -1,0 +1,77 @@
+{
+  "applied": true,
+  "actions": [
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "skipped": [
+        "about already present",
+        "logo already present"
+      ]
+    },
+    {
+      "corpsKey": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "skipped": [
+        "about already present",
+        "logo already present"
+      ]
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "skipped": [
+        "about already present",
+        "logo already present"
+      ]
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "skipped": [
+        "about already present",
+        "logo already present"
+      ]
+    },
+    {
+      "corpsKey": "mercedes-marching-band",
+      "name": "Mercedes Marching Band",
+      "skipped": [
+        "about already present",
+        "logo already present"
+      ]
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "skipped": [
+        "about already present",
+        "city already present",
+        "logo already present"
+      ]
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "skipped": [
+        "about already present",
+        "city already present",
+        "logo already present"
+      ]
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "skipped": [
+        "about already present"
+      ]
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "skipped": [
+        "logo already present"
+      ]
+    }
+  ]
+}

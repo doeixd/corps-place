@@ -1,0 +1,19 @@
+{
+  "scrapedAt": "2026-06-16T12-43-52-777Z",
+  "corps": [
+    {
+      "corpsKey": "001j000000iwx98aad",
+      "name": "Colts",
+      "postsDiscovered": 1,
+      "seedsUsed": 6,
+      "staffPosts": 3,
+      "people": 11,
+      "seasons": [
+        2022,
+        2023,
+        2026
+      ],
+      "skipped": false
+    }
+  ]
+}

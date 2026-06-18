@@ -1,0 +1,228 @@
+{
+  "generated_at": "2026-05-27T18:49:58.422Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_actually_final_1779812116275",
+  "event": {
+    "event_id": "web-2026-2026-corps-encore",
+    "slug": "2026-corps-encore",
+    "name": "Corps Encore",
+    "event_name": "Corps Encore",
+    "start_date": "2026-06-28T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:30 PM MT",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Ogden",
+    "location_state": "UT"
+  },
+  "readiness": {
+    "lineup_rows": 4,
+    "matched_corps_keys": 4,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 4,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 4.651162790697675
+  },
+  "input_signature": "5e86d5d3306214b2b8b84122e22127fc71b6d58ac30d87466396d7150fc3ec67",
+  "builder_version": "v9-event-prediction-lineup-fallback-v3",
+  "input_audit": {
+    "scored_lineup_rows": 4,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx9oaad",
+        "corps": "Genesis",
+        "division": "World Class",
+        "performance_order": 3,
+        "time": "8:00 PM"
+      },
+      {
+        "corps_key": "001j000000iwxajaa1",
+        "corps": "Troopers",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "8:23 PM"
+      },
+      {
+        "corps_key": "001j000000i6i9saav",
+        "corps": "Blue Devils",
+        "division": "World Class",
+        "performance_order": 6,
+        "time": "9:00 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsoaal",
+        "corps": "Blue Knights",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "9:23 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Crosstown Big Band",
+        "performance_order": 2,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 5,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Blue Knights",
+        "performance_order": 8,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 9,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-corps-encore",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-28T00:00:00.000Z",
+      "scored_lineup_rows": 4,
+      "matched_corps_keys": 4,
+      "excluded_lineup_rows": 6,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000i6i9saav",
+      "corps": "Blue Devils",
+      "city": "Concord, CA",
+      "division": "World Class",
+      "performance_order": 6,
+      "time": "9:00 PM",
+      "total": 75.401,
+      "GE": 30.277,
+      "Visual": 22.502,
+      "Music": 22.622,
+      "GE1": 15.079,
+      "GE2": 15.198,
+      "VP": 15.024,
+      "VA": 15.041,
+      "CG": 14.938,
+      "MB": 15.027,
+      "MA": 15.243,
+      "MP": 14.973,
+      "raw_model_total": 94.721,
+      "prior_season_comparable_total": 75.4,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 4,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "city": "Denver, CO",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "9:23 PM",
+      "total": 67.851,
+      "GE": 27.265,
+      "Visual": 20.142,
+      "Music": 20.444,
+      "GE1": 13.486,
+      "GE2": 13.779,
+      "VP": 13.489,
+      "VA": 13.386,
+      "CG": 13.408,
+      "MB": 13.518,
+      "MA": 13.707,
+      "MP": 13.662,
+      "raw_model_total": 88.523,
+      "prior_season_comparable_total": 67.85,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 12,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "city": "Casper, WY",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "8:23 PM",
+      "total": 67.75,
+      "GE": 27.08,
+      "Visual": 20.202,
+      "Music": 20.468,
+      "GE1": 13.492,
+      "GE2": 13.588,
+      "VP": 13.42,
+      "VA": 13.51,
+      "CG": 13.474,
+      "MB": 13.516,
+      "MA": 13.665,
+      "MP": 13.755,
+      "raw_model_total": 90.48,
+      "prior_season_comparable_total": 67.75,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 10,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwx9oaad",
+      "corps": "Genesis",
+      "city": "Austin, TX",
+      "division": "World Class",
+      "performance_order": 3,
+      "time": "8:00 PM",
+      "total": 65.65,
+      "GE": 26.27,
+      "Visual": 19.494,
+      "Music": 19.886,
+      "GE1": 13.017,
+      "GE2": 13.253,
+      "VP": 12.969,
+      "VA": 13.01,
+      "CG": 13.01,
+      "MB": 13.1,
+      "MA": 13.348,
+      "MP": 13.324,
+      "raw_model_total": 81.171,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 22,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking."
+  ]
+}

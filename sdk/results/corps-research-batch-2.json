@@ -1,0 +1,392 @@
+{
+  "generated_at": "2026-06-04T01:30:00.000Z",
+  "batch": 2,
+  "notes": [
+    "Research-only report. No corps table or application DB rows were updated.",
+    "Fields are candidates for missing data only. Existing fields from the prompt are repeated only when they clarify location or source context.",
+    "Direct image URLs were preferred where the source page exposed a downloadable asset. Generic DCI chrome, event posters, sponsor logos, and unrelated article thumbnails were excluded."
+  ],
+  "results": [
+    {
+      "corps_key": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "division_name": "Open Class",
+      "slug": "blue-saints",
+      "candidates": {
+        "about": "The Blue Saints Drum and Bugle Corps is a Sudbury, Ontario youth music organization founded in 1952. The corps describes its mission as providing music and movement education, building confidence, teamwork, leadership, and community pride, and DCX identifies it as Canada's oldest active drum and bugle corps.",
+        "logo_url": "https://img1.wsimg.com/isteam/ip/cae390fc-c1d8-41c9-b6af-7e2c916cd8e3/Saints%20Logo.webp",
+        "photo_url": "https://www.dcxmuseum.org/pictures/2025/20250809_2025082_SoundSport/thumb/Blue%20Saints_250809_SoundSport-09487.jpg",
+        "website": "https://thebluesaints.org/",
+        "city": "Sudbury",
+        "state": "ON",
+        "country": "CAN",
+        "display_city": "Sudbury, ON"
+      },
+      "sources": [
+        {
+          "url": "https://thebluesaints.org/",
+          "title": "Experience the Blue Saints Drum Corps",
+          "notes": "Official site; page metadata says the corps was established in 1952 and exposes the logo image."
+        },
+        {
+          "url": "https://thebluesaints.org/about-us",
+          "title": "About Us | The Blue Saints Drum & Bugle Corps",
+          "notes": "Official about page; source for mission and education/community summary."
+        },
+        {
+          "url": "https://www.dcxmuseum.org/index.cfm?corpsid=73&corpsyear=2025&view=corpslist",
+          "title": "DCX - Blue Saints Drum & Bugle Corps",
+          "notes": "Historical profile with Sudbury location, founded 1952, active SoundSport status, and corps photo thumbnails."
+        },
+        {
+          "url": "https://www.sudbury.com/local-news/blue-saints-drum-and-bugle-need-new-practice-space-10351800",
+          "title": "Blue Saints Drum and Bugle need new practice space",
+          "notes": "Local news corroborates more than 70 years of activity and current Sudbury presence."
+        }
+      ],
+      "confidence": "high",
+      "field_notes": {
+        "photo_url": "DCX thumbnail is source-backed and directly downloadable, but a higher-resolution image may exist behind the DCX photo gallery."
+      }
+    },
+    {
+      "corps_key": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "division_name": "Open Class",
+      "slug": "coastal-surge",
+      "candidates": {
+        "about": "Coastal Surge was an Open Class drum and bugle corps based in Myrtle Beach, South Carolina. DCI approved the corps for the 2014 tour after 2013 exhibition performances, and described the organization as focused on instruction, performance objectives, and educational experience for its members.",
+        "logo_url": "https://assets.dci.org/5bd2edcd629f4b0a832f63f8_j0BSEoShYwE2aR7MN8syJU5hQoTjIhKG.jpg",
+        "photo_url": "https://assets.dci.org/5bd2edce629f4b0a832f63f9_VCqWSWgPlWk74Y_cKHYBcLnqn-IkR5cN.jpg",
+        "website": "http://CoastalSurge.org/",
+        "city": "Myrtle Beach",
+        "state": "SC",
+        "country": "USA",
+        "display_city": "Myrtle Beach, SC"
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/news/influx-of-open-class-corps-approved-to-participate-in-2014-dci-tour/",
+          "title": "Influx of Open Class corps approved to participate in 2014 DCI Tour",
+          "notes": "DCI article lists Coastal Surge as Myrtle Beach, SC, links CoastalSurge.org, provides the about blurb, and exposes 620x370 photo plus 50x50 logo assets near the Coastal Surge section."
+        },
+        {
+          "url": "https://en.everybodywiki.com/Coastal_Surge_Drum_and_Bugle_Corps",
+          "title": "Coastal Surge Drum and Bugle Corps",
+          "notes": "Secondary historical summary; corroborates Myrtle Beach location, Open Class, 2011 founding, 2015 folded status, and DCI participation."
+        },
+        {
+          "url": "https://www.dci.org/corps/coastal-surge-2/",
+          "title": "Coastal Surge : Upcoming Events & Related News",
+          "notes": "Current DCI profile stub confirms Myrtle Beach, SC and canonical DCI slug coastal-surge-2."
+        }
+      ],
+      "confidence": "high",
+      "field_notes": {
+        "website": "Historical official URL from DCI; likely defunct, so use as an archived/historical website candidate.",
+        "logo_url": "DCI asset is only 50x50 but clearly paired with the Coastal Surge section."
+      }
+    },
+    {
+      "corps_key": "001j000000iwx9daat",
+      "name": "Eruption",
+      "division_name": "Open Class",
+      "slug": "eruption",
+      "candidates": {
+        "about": null,
+        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Eruption-Logo-jpg-website.jpeg/1280px-Eruption-Logo-jpg-website.jpeg",
+        "photo_url": "https://images.dci.org/wp-content/uploads/2015/05/eruption.webp",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/news/eruption/",
+          "title": "Eruption",
+          "notes": "DCI profile/news stub for Eruption; description is Gig Harbor, Washington and exposes eruption.webp as the corps image."
+        },
+        {
+          "url": "https://commons.wikimedia.org/wiki/File:Eruption-Logo-jpg-website.jpeg",
+          "title": "File:Eruption-Logo-jpg-website.jpeg - Wikimedia Commons",
+          "notes": "Wikimedia Commons file identifies the image as the Eruption logo and gives a downloadable upload.wikimedia.org URL."
+        },
+        {
+          "url": "https://www.dci.org/news/influx-of-open-class-corps-approved-to-participate-in-2014-dci-tour/",
+          "title": "Influx of Open Class corps approved to participate in 2014 DCI Tour",
+          "notes": "DCI article lists Eruption as Bonney Lake, WA in 2014 and provides a separate 50x50 Eruption logo asset."
+        }
+      ],
+      "confidence": "high",
+      "field_notes": {
+        "about": "Existing local report already has an about candidate; this batch only found stronger logo/photo candidates.",
+        "website": "Existing local report already has the historical domain eruptiondrumandbuglecorps.org; no better current official site was found."
+      }
+    },
+    {
+      "corps_key": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "division_name": "International Class",
+      "slug": "jubal",
+      "candidates": {
+        "about": "Jubal Dordrecht is a Dutch music organization founded in 1911. For roughly fifty years it operated as a drum and bugle corps, built a national and international reputation, toured the United States five times, and is now transitioning into new Jubal projects while preserving its history through the Jubal Legacy Project.",
+        "logo_url": null,
+        "photo_url": null,
+        "website": null,
+        "city": "Dordrecht",
+        "state": null,
+        "country": "Netherlands",
+        "display_city": "Dordrecht, Netherlands"
+      },
+      "sources": [
+        {
+          "url": "https://www.jubal.org/",
+          "title": "Jubal Dordrecht",
+          "notes": "Official site; source for 1911 founding, drum & bugle corps history, five U.S. tours, and current Legacy Project transition."
+        },
+        {
+          "url": "https://www.dci.org/news/from-windmills-to-baritones-jubal-keeps-marching-in-holland/",
+          "title": "From windmills to baritones -- Jubal keeps marching in Holland",
+          "notes": "DCI article corroborates Jubal as a Dordrecht-based Dutch drum and bugle corps with U.S. tour/Dci appearances."
+        },
+        {
+          "url": "https://dcxmuseum.org/index.cfm?corpsid=809&view=corpslist",
+          "title": "DCX - Jubal",
+          "notes": "Historical profile for Jubal in Dordrecht."
+        }
+      ],
+      "confidence": "high",
+      "field_notes": {
+        "logo_url": "Already present in the existing data; no replacement candidate proposed.",
+        "photo_url": "Already present in the existing data; no replacement candidate proposed."
+      }
+    },
+    {
+      "corps_key": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "division_name": "All Age Class",
+      "slug": "minnesota-brass",
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": "https://i0.wp.com/mbiarts.org/wp-content/uploads/2026/01/2025-Ryan-Brass-1-1024x682.jpg?ssl=1",
+        "website": "https://mnbrass.org/corps/",
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "sources": [
+        {
+          "url": "https://mnbrass.org/corps/",
+          "title": "MBI Drum and Bugle Corps - MBI Arts",
+          "notes": "Official corps page; source for website and downloadable 2025 corps/member photos."
+        },
+        {
+          "url": "https://www.dci.org/corps/minnesota-brass/",
+          "title": "Minnesota Brass : Upcoming Events & Related News",
+          "notes": "DCI profile corroborates MBI name, St. Paul display city, All-Age participation, and history."
+        },
+        {
+          "url": "https://www.dci.org/news/northern-lights-minnesota-brass-join-dci-all-age-ranks-for-2025-season/",
+          "title": "Northern Lights, Minnesota Brass join DCI All-Age ranks for 2025 season",
+          "notes": "DCI article corroborates 2025 All-Age context and exposes Minnesota Brass-related media."
+        }
+      ],
+      "confidence": "high",
+      "field_notes": {
+        "photo_url": "Official MBI page exposes multiple 2025 member/corps images. This candidate is a horizontal brass photo suitable as a corps detail image."
+      }
+    },
+    {
+      "corps_key": "001j000000iwxaiaa1",
+      "name": "Thunder",
+      "division_name": "Open Class",
+      "slug": "thunder",
+      "candidates": {
+        "about": null,
+        "logo_url": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Thunder_Drum_and_Bugle_Corps_logo.jpeg",
+        "photo_url": null,
+        "website": "http://SpokaneThunder.org/",
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "sources": [
+        {
+          "url": "https://commons.wikimedia.org/wiki/File:Thunder_Drum_and_Bugle_Corps_logo.jpeg",
+          "title": "File:Thunder Drum and Bugle Corps logo.jpeg - Wikimedia Commons",
+          "notes": "Wikimedia Commons file identifies the Thunder Drum and Bugle Corps logo and gives a downloadable upload.wikimedia.org URL."
+        },
+        {
+          "url": "https://www.dci.org/news/new-and-re-emerging-corps-approved-for-the-2010-dci-tour/",
+          "title": "New and re-emerging corps approved for the 2010 DCI Tour",
+          "notes": "DCI article lists Thunder from Spokane, WA, director Rich Harvey, historical context, and SpokaneThunder.org."
+        },
+        {
+          "url": "https://pacificnorthwestdrumcorps.com/spokane-thunder/",
+          "title": "Spokane Thunder drum corps",
+          "notes": "Historical profile; source for prior about/photo already present in local data."
+        }
+      ],
+      "confidence": "medium",
+      "field_notes": {
+        "website": "Historical official website from DCI; likely defunct. Existing local photo remains better than the 50x50 Wikimedia Spokane Thunder image."
+      }
+    },
+    {
+      "corps_key": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "division_name": "SoundSport Medalist Division",
+      "slug": "spirit-of-sunnyvale",
+      "candidates": {
+        "about": "Spirit of Sunnyvale was an all-age community band based in the San Francisco Bay Area. Its original youth band existed from 1980 to 1998, the revived marching band operated from 2010 to 2025, and it was active in DCI SoundSport from 2016 through 2024 before its competitive SoundSport portion spun off as Sparta Ignite in 2025.",
+        "logo_url": null,
+        "photo_url": "https://spiritofsunnyvale.org/images/2024-sos-stanford.jpg",
+        "website": "https://spiritofsunnyvale.org/",
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "sources": [
+        {
+          "url": "https://spiritofsunnyvale.org/about/",
+          "title": "About | Spirit of Sunnyvale",
+          "notes": "Official about page; source for history, SoundSport years, 2025 spin-off, nonprofit status, and photo assets."
+        },
+        {
+          "url": "https://spiritofsunnyvale.org/media/index.html",
+          "title": "Seasons | Spirit of Sunnyvale",
+          "notes": "Official media/seasons page; corroborates organization media context."
+        },
+        {
+          "url": "https://www.dci.org/corps/spirit-of-sunnyvale/",
+          "title": "Spirit of Sunnyvale : Upcoming Events & Related News",
+          "notes": "Current DCI profile confirms DCI corps slug and profile."
+        }
+      ],
+      "confidence": "high",
+      "field_notes": {
+        "website": "Use current official domain rather than archived spiritofsunnyvale.com.",
+        "logo_url": "Already present in existing data; no replacement candidate proposed."
+      }
+    },
+    {
+      "corps_key": "arsenal",
+      "name": "Arsenal",
+      "division_name": "SoundSport",
+      "slug": "arsenal",
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": "https://images.squarespace-cdn.com/content/v1/63c9bfae6f2c8225dd5b4cc3/320254ba-c6a0-43aa-9095-ee043cbfec68/arsenal%2Bguard%2B2.jpg?format=2500w",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "sources": [
+        {
+          "url": "https://www.suncitymusicalarts.org/arsenal-dbc/",
+          "title": "Arsenal Drum and Bugle Corps — Sun City Musical Arts",
+          "notes": "Official parent organization page for Arsenal; exposes direct Squarespace photo assets and identifies Arsenal as Sun City Musical Arts' drum and bugle corps."
+        },
+        {
+          "url": "https://arsenaldbc.org/",
+          "title": "Arsenal Drum and Bugle Corps",
+          "notes": "Official Arsenal site; corroborates current organization and exposes logo/staff/media assets."
+        },
+        {
+          "url": "https://www.dci.org/corps/arsenal-drum-bugle-corps/",
+          "title": "Arsenal : Upcoming Events & Related News",
+          "notes": "Current DCI profile confirms canonical DCI page and DCI asset logo already in local data."
+        }
+      ],
+      "confidence": "high",
+      "field_notes": {
+        "photo_url": "Official SCMA page has several direct photos. This candidate is a field/guard image; choose another official SCMA image if a brass/percussion photo is preferred."
+      }
+    },
+    {
+      "corps_key": "beijing-57-high-school",
+      "name": "Beijing 57 High School",
+      "division_name": "International Class",
+      "slug": "beijing-57-high-school",
+      "candidates": {
+        "about": "Beijing No. 57 High School competed in DCI's 2025 International Class as one of two marching bands from Beijing, China. CGTN reported that Beijing No. 57 High School brought traditional Chinese melodies to the 2025 DCI Open in Indiana, blending them with modern marching arrangements.",
+        "logo_url": null,
+        "photo_url": "https://news.cgtn.com/news/2025-12-06/How-do-American-DCI-players-rate-Chinese-marching-bands--1ISNGfh9cFW/img/0f27cfe47b0144c58d6b84ae4b6a0210/0f27cfe47b0144c58d6b84ae4b6a0210-1920.jpeg",
+        "website": null,
+        "city": "Beijing",
+        "state": null,
+        "country": "China",
+        "display_city": "Beijing, China"
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/news/spartans-stampede-top-charts-at-2025-world-championship-kickoff/",
+          "title": "Spartans, Stampede top charts at 2025 World Championship kickoff",
+          "notes": "DCI article lists High School 57 in 2025 International Class and says two marching bands from Beijing, China competed."
+        },
+        {
+          "url": "https://news.cgtn.com/news/2025-12-06/How-do-American-DCI-players-rate-Chinese-marching-bands--1ISNGfh9cFW/p.html",
+          "title": "How do American DCI players rate Chinese marching bands?",
+          "notes": "CGTN article/video page specifically mentions Beijing No. 57 High School at the 2025 DCI Open and exposes a direct article image."
+        },
+        {
+          "url": "https://www.dci.org/corps/high-school-57/",
+          "title": "Beijing 57 High School : Upcoming Events & Related News",
+          "notes": "Current DCI profile stub confirms canonical DCI slug high-school-57."
+        }
+      ],
+      "confidence": "medium",
+      "field_notes": {
+        "photo_url": "CGTN image is source-backed to the article, but the page is a video/news piece about Chinese marching bands and should be reviewed visually before DB ingest.",
+        "website": "No official school/band website specific to the DCI ensemble was found."
+      }
+    },
+    {
+      "corps_key": "chien-kuo",
+      "name": "Chien Kuo",
+      "division_name": "International Class",
+      "slug": "chien-kuo-hs-marching-band",
+      "candidates": {
+        "about": "Taipei Chien-Kuo High School Marching Band dates its drum corps origins to 1960, transitioned to standard marching instrumentation in 1982, added color guard in 1992, and is described by the Taiwan Marching Band Association as a leading marching ensemble in Taiwan with international performance and competition experience.",
+        "logo_url": null,
+        "photo_url": "https://static.wixstatic.com/media/8e906d_f58837a260324ce59472da173e563bad~mv2.jpg/v1/fill/w_605,h_297,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/8e906d_f58837a260324ce59472da173e563bad~mv2.jpg",
+        "website": "https://www.taiwan-mba.org/marching-band",
+        "city": "Taipei",
+        "state": null,
+        "country": "Taiwan",
+        "display_city": "Taipei, Taiwan"
+      },
+      "sources": [
+        {
+          "url": "https://www.taiwan-mba.org/marching-band",
+          "title": "Marching Band | Taiwan Marching Band Association",
+          "notes": "TMBA page has a Taipei Chien-Kuo High School section with history, achievements, and a section image showing Chien Kuo performers."
+        },
+        {
+          "url": "https://english.moe.gov.tw/cp-117-22163-6216F-1.html",
+          "title": "Chien Kuo Senior High School Marching Band Play for Major League Beginning at Chicago White Sox Stadium",
+          "notes": "Taiwan Ministry of Education article says the band represented Taiwan at the 2015 DCI World Championship Finals in Michigan City and performed at a Chicago White Sox game."
+        },
+        {
+          "url": "https://www.dci.org/corps/chien-kuo-hs-marching-band-2/",
+          "title": "Chien Kuo HS Marching Band : Upcoming Events & Related News",
+          "notes": "Current DCI profile stub confirms canonical DCI slug."
+        }
+      ],
+      "confidence": "medium",
+      "field_notes": {
+        "photo_url": "The image appears in the TMBA Chien-Kuo section and includes a Chien Kuo banner, but the asset itself has no standalone caption. Review before ingest.",
+        "website": "This is an association profile page, not a standalone official band website."
+      }
+    }
+  ]
+}

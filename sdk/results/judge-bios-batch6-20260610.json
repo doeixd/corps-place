@@ -1,0 +1,309 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 65-77 by assignment count. Sources: MFA clinician pages, artist/org/university pages, DCI panels; JS/MFA pages rendered via puppeteer. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "j-prosperie-1",
+      "displayName": "Jeff Prosperie",
+      "givenName": "Jeff",
+      "familyName": "Prosperie",
+      "biography": "Master Sergeant Jeff Prosperie is a percussion adjudicator, a World Snare Drum Champion, and the only individual to capture the 'Triple Crown' of solo competition (DCI, PAS, DCA). A member of the legendary West Point Band 'Hellcats' since 2006, where he has served as Section Leader and Principal Drummer, he was inducted into the World Drum Corps Hall of Fame in 2018 and serves on the Percussive Arts Society Board of Advisors. A frequent DCI and WGI World Championship finalist judge, he has been a DCI percussion judge for about 20 years. Before his Army service he was percussion designer/caption head for the World Champion Phantom Regiment, percussion instructor for the national-champion University of North Texas drumline, Director of Percussion Studies at the University of Louisiana-Lafayette, and principal percussion with the Baton Rouge Symphony.",
+      "photoUrl": "https://www.innovativepercussion.com/images/artists/prosperie-hr-5.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.innovativepercussion.com/artists/jeff_prosperie", "label": "Innovative Percussion artist", "kind": "bio" },
+        { "url": "https://band.westpoint.edu/personnel/jeff-prosperie/", "label": "West Point Band", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Phantom Regiment", "role": "Percussion designer / Caption Head", "sourceUrl": "https://www.innovativepercussion.com/artists/jeff_prosperie" }
+      ],
+      "seasonHighlights": [
+        { "title": "World Drum Corps Hall of Fame inductee; DCI/PAS/DCA solo Triple Crown", "season": "2018", "sourceUrl": "https://www.innovativepercussion.com/artists/jeff_prosperie" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "World Snare Drum Champion; DCI/PAS/DCA Triple Crown; West Point Hellcats; WDCHOF 2018; DCI percussion judge ~20 yrs; ex-Phantom Regiment caption head", "source": "https://www.innovativepercussion.com/artists/jeff_prosperie", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-armbruster-1",
+      "displayName": "Chad Armbruster",
+      "givenName": "Chad",
+      "familyName": "Armbruster",
+      "biography": "Chad Armbruster is a brass/music adjudicator with about 25 years in the pageantry arts as a performer, instructor, director, and judge for marching bands, indoor drumlines, color guards, and drum and bugle corps. He holds a Bachelor's in Music Education from the University of Minnesota and a Master of Arts in Education from Hamline University. He was a 2005 brass co-caption head of the Blue Stars and has held teaching and leadership positions with Minnesota Brass, Southwind, Madison Scouts, Spirit of Atlanta, and several Minnesota high schools. He adjudicates for Drum Corps International (including the Music-Brass caption), the Tri-State Judges Association, the Northstar Colorguard Circuit, and the Minnesota Percussion Association.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2024/09/file-9.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/chad-armbruster/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Blue Stars", "season": "2005", "role": "Brass Co-Caption Head", "sourceUrl": "https://www.dci.org/news/armbruster-ritacco-to-lead-blue-stars-brass-in-2005/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "25 yrs pageantry; Univ. of Minnesota + Hamline degrees; Blue Stars 2005 brass co-caption head; DCI Music-Brass judge", "source": "https://education.musicforall.org/clinician/chad-armbruster/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-ausdemore-1",
+      "displayName": "Jeff Ausdemore",
+      "givenName": "Jeff",
+      "familyName": "Ausdemore",
+      "biography": "Jeff Ausdemore is a percussion adjudicator, arranger, and educator who judges for Drum Corps International, Winter Guard International, and Bands of America, and is a percussion committee member for the Percussive Arts Society, TMEA, and TBA. He was percussion arranger and caption head for the Blue Knights drum and bugle corps from 2006 to 2010, during which the percussion program earned individual and ensemble championships and consistent DCI top-12 finishes. He holds a Master of Music (with distinction) from New Mexico State University and a Bachelor of Music (high honors) from Belmont University, is an adjunct instructor of percussion at East Texas A&M University, and is President and co-founder of the online music-education platform Stryvemind.",
+      "photoUrl": "https://tapspace.com/wp-content/uploads/2024/06/AusdemoreJeff-1080px.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.tapspace.com/jeff-ausdemore/", "label": "Tapspace artist bio", "kind": "bio" },
+        { "url": "https://www.ausdemore.com/judging.html", "label": "Personal site (judging)", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Blue Knights", "season": "2006-2010", "role": "Percussion Arranger / Caption Head", "sourceUrl": "https://www.tapspace.com/jeff-ausdemore/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI/WGI/BOA percussion judge; Blue Knights percussion caption head 2006-10; NMSU + Belmont degrees; ETAMU adjunct; Stryvemind co-founder", "source": "https://www.tapspace.com/jeff-ausdemore/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "r-rios-1",
+      "displayName": "Ronnie Rios",
+      "givenName": "Ronnie",
+      "familyName": "Rios",
+      "biography": "Ronnie Rios is a multi-Grammy-nominated music educator and brass/music adjudicator from Alice, Texas, who serves as Director of Athletic Bands at the University of Texas Rio Grande Valley. He holds Bachelor's and Master's degrees in Music Education (Summa Cum Laude) and was Director of Bands at Harlingen High School for 21 years, where all six concert bands earned consistent UIL Sweepstakes awards and the marching band made 11 consecutive Texas State Marching Band Championships appearances. He is an active adjudicator for UIL, Drum Corps International, and Bands of America, including the Brass Performance caption at DCI World Championships.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2023/04/Ronnie-Rios-Headshot-web-2023.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/ronnie-rios/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://texasbandmasters.org/ronnie-rios-2/", "label": "Texas Bandmasters Association", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "Grammy-nominated educator; UTRGV Director of Athletic Bands; former Harlingen HS Dir of Bands 21 yrs; DCI/BOA/UIL brass judge", "source": "https://education.musicforall.org/clinician/ronnie-rios/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "a-lo-1",
+      "displayName": "Albert Lo",
+      "givenName": "Albert",
+      "familyName": "Lo",
+      "biography": "Dr. Albert Lo is a brass/music adjudicator and conductor, a native of Chicago, who is Director of Instrumental Music Ensembles at the Austin Community College District and resident Conductor/Artistic Director for the Valley Wind Symphony. He completed a Doctor of Musical Arts at the University of North Texas, a Master of Arts at Western Illinois University, and a Bachelor of Music at Northern Illinois University. He adjudicates for Drum Corps International, Music for All, Texas UIL, and other associations in the United States and Asia, serving in the Brass and General Effect Music captions at DCI World Championships.",
+      "photoUrl": "https://admc.austincc.edu/music/wp-content/uploads/sites/10/2020/12/Albert-Lo.jpg",
+      "alternateNames": ["Dr. Albert Lo"],
+      "externalLinks": [
+        { "url": "https://admc.austincc.edu/music/albert-lo/", "label": "Austin Community College Music", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / GE2 / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DMA (UNT); ACC Director of Instrumental Music Ensembles; Valley Wind Symphony; DCI/BOA brass & GE judge", "source": "https://admc.austincc.edu/music/albert-lo/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-gray-1",
+      "displayName": "Michael Gray",
+      "givenName": "Michael",
+      "familyName": "Gray",
+      "biography": "Michael Gray is a visual and general-effect adjudicator whose career in the visual and pageantry arts spans more than three decades as a designer, instructor, clinician, and judge at the highest levels of DCI, WGI, and Bands of America. He has served as program coordinator for the Bluecoats drum corps and Ensemble Caption Facilitator for Winter Guard International, judging General Effect and Visual captions at DCI World Championships. He is also an accomplished visual artist whose classes on impressionism and plein air painting are popular nationwide.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/02/file-5.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/michael-gray/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Bluecoats", "role": "Program Coordinator", "sourceUrl": "https://education.musicforall.org/clinician/michael-gray/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Analysis / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "30+ yrs visual/pageantry; Bluecoats program coordinator; WGI Ensemble Caption Facilitator; DCI/WGI/BOA judge; visual artist", "source": "https://education.musicforall.org/clinician/michael-gray/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-wingate-1",
+      "displayName": "Travis Wingate",
+      "givenName": "Travis",
+      "familyName": "Wingate",
+      "biography": "Travis Wingate is a visual adjudicator for Drum Corps International, Bands of America, and Winter Guard International, serving in the Visual Analysis, Color Guard, and General Effect captions at DCI World Championships (including Visual Analysis at the 2024 Finals).",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/travis-wingate-2023-web.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/travis-wingate/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Color Guard / GE1 / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/WGI visual judge; Visual Analysis at 2024 DCI World Championship Finals; MFA clinician", "source": "https://education.musicforall.org/clinician/travis-wingate/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "d-argul-1",
+      "displayName": "Dennis Argul",
+      "givenName": "Dennis",
+      "familyName": "Argul",
+      "biography": "Dennis Argul is a brass/music adjudicator, composer, and arranger and a retired music educator with a 35-year career in New Jersey public schools, currently Senior Director of Music and Education for JAZZ HOUSE KiDS in Montclair, NJ. Active in the marching arts since 1974, he marched the St. Andrew's Kidets and the Bayonne Bridgemen (1976-1981) and has worked with the Cadets, Connecticut Hurricanes, Govenaires, Carolina Gold, Sunrisers, and Caballeros, and is the brass arranger for the Bushwackers (a Bushwackers Hall of Fame member). For three decades he has adjudicated for many organizations, most recently the Music-Brass caption at DCI World Championships.",
+      "photoUrl": "http://bushwackers.org/wp-content/uploads/2018/10/Dennis-photo-237x300.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://bushwackersdc.org/2018-staff/dennis-argul/", "label": "Bushwackers staff bio", "kind": "bio" },
+        { "url": "https://bushwackersdc.org/hall-of-fame/dennis-argul/", "label": "Bushwackers Hall of Fame", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Bayonne Bridgemen", "season": "1976-1981", "role": "Performer (member)", "sourceUrl": "https://bushwackersdc.org/2018-staff/dennis-argul/" },
+        { "corpsName": "Bushwackers", "role": "Brass Arranger", "sourceUrl": "https://bushwackersdc.org/2018-staff/dennis-argul/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "35-yr NJ educator; JAZZ HOUSE KiDS; Bayonne Bridgemen alum; Bushwackers brass arranger & HOF; DCI Music-Brass judge", "source": "https://bushwackersdc.org/2018-staff/dennis-argul/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "k-weirich-1",
+      "displayName": "Kyle Weirich",
+      "givenName": "Kyle",
+      "familyName": "Weirich",
+      "biography": "Kyle Weirich is a music adjudicator and a music educator in his 29th year of teaching, currently Music Coordinator for Elkhart Community Schools and Director of Orchestras at Elkhart Central High School in Indiana, where the symphony orchestra has been a regular ISSMA state finalist and performed at the Midwest Clinic. He earned music education degrees from Western Michigan University and VanderCook College of Music and performed three seasons with the Star of Indiana drum and bugle corps. He adjudicates for Bands of America, Drum Corps International, and other circuits, serving in the Music Analysis caption.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/file-14.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/kyle-weirich/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Star of Indiana", "role": "Performer (member, 3 seasons)", "sourceUrl": "https://education.musicforall.org/clinician/kyle-weirich/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / Music Brass / GE2; 2013-2025",
+        "facts": [
+          { "fact": "29-yr educator; Elkhart Community Schools Music Coordinator; Star of Indiana alum; WMU + VanderCook; DCI/BOA music judge", "source": "https://education.musicforall.org/clinician/kyle-weirich/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "l-carlson-1",
+      "displayName": "Lee Carlson",
+      "givenName": "Lee",
+      "familyName": "Carlson",
+      "biography": "Lee Carlson is a visual and general-effect adjudicator and longtime drum corps leader who has served as Artistic Director and Director of Competition for Drum Corps International. A judge for DCI, Bands of America, Winter Guard International, and many circuits for 21 years, he also served four years as a DCI Visual Caption Head and five years as DCI Judges Training Coordinator. For some 40 years he has been the drill designer and color guard instructor for the University of Southern California Trojan Marching Band, and he has instructed the Blue Knights, Argonne Rebels, and Sky Ryders and taught 18 years at Indio High School. He has adjudicated the Drum Corps Japan Championships nine times and wrote for mass bands at the 1984 Los Angeles Olympics, the 1986 Statue of Liberty Centennial, and the 1989 French Revolution Bicentennial in Paris.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/02/Adobe-Express-file-34.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/lee-carlson/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://halftimemag.com/may-june-2018/noteworthy_leecarlson.html", "label": "Halftime: DCI Artistic Director", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Blue Knights", "role": "Color Guard Instructor", "sourceUrl": "https://education.musicforall.org/clinician/lee-carlson/" }
+      ],
+      "seasonHighlights": [
+        { "title": "DCI Artistic Director and Director of Competition", "sourceUrl": "https://halftimemag.com/may-june-2018/noteworthy_leecarlson.html" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI Artistic Director & Director of Competition; 21 yrs judge, Visual Caption Head, Judges Training Coordinator; 40 yrs USC Trojan Band drill designer", "source": "https://halftimemag.com/may-june-2018/noteworthy_leecarlson.html", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "r-isoda-1",
+      "displayName": "Randolph Isoda",
+      "givenName": "Randolph",
+      "familyName": "Isoda",
+      "biography": "Randolph 'Randy' Isoda is a music/general-effect adjudicator for Drum Corps International, judging the General Effect, Music Analysis, and Music Brass captions at DCI events, and has been involved with DCI corps in brass arranging and instruction roles.",
+      "photoUrl": null,
+      "alternateNames": ["Randy Isoda"],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI music/GE judge; brass arranging/instruction background", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "a-dunn-1",
+      "displayName": "Al Dunn",
+      "givenName": "Al",
+      "familyName": "Dunn",
+      "biography": "Al Dunn is a percussion/music adjudicator for Drum Corps International, judging the Music Percussion and Music Analysis captions at DCI World Championships.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI percussion/music judge (panels confirmed)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Common name; no distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-bowers-1",
+      "displayName": "Michele Bowers",
+      "givenName": "Michele",
+      "familyName": "Bowers",
+      "biography": "Michele Bowers is a color guard and visual adjudicator who has judged for Winter Guard International (movement and percussion visual) since 2005 and for Drum Corps International. She is the color guard director at Walnut Hills High School in Cincinnati, Ohio, and visual coordinator for its Marching Blue and Gold, and is a visual designer for the Talawanda High School indoor drumline. An alumna of the Pride of Cincinnati drum and bugle corps (1981-1982) and Phantom Regiment winter guard and drum corps (1983), she holds a Bachelor's in Communication Arts from the University of Cincinnati.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.midwestcolorguard.com/index.php/about/judges/15-about-history/judges/33-midwest-color-guard-judges", "label": "Midwest Color Guard judges", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Phantom Regiment", "season": "1983", "role": "Performer (winter guard & drum corps)", "sourceUrl": "https://www.midwestcolorguard.com/index.php/about/judges/15-about-history/judges/33-midwest-color-guard-judges" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / Visual Proficiency / Visual Analysis / GE1; 2013-2025",
+        "facts": [
+          { "fact": "WGI visual judge since 2005 & DCI visual judge; Walnut Hills HS color guard director; Pride of Cincinnati & Phantom Regiment alumna; Univ. of Cincinnati", "source": "https://www.midwestcolorguard.com/index.php/about/judges/15-about-history/judges/33-midwest-color-guard-judges", "confidence": "HIGH" },
+          { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    }
+  ]
+}

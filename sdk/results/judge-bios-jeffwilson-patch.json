@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Jeff Wilson: photo + bio from Valley Christian Schools faculty page (user-supplied).",
+  "profiles": [
+    {
+      "judgeId": "j-wilson-1",
+      "displayName": "Jeff Wilson",
+      "givenName": "Jeff",
+      "familyName": "Wilson",
+      "biography": "Jeff Wilson is a percussion/music adjudicator for Drum Corps International, judging the Music Percussion and Music Analysis captions at DCI World Championships. He graduated from San Jose State University and the San Francisco Conservatory of Music with a bachelor's and a master's degree in Percussion Performance, and has been a percussion faculty member at Valley Christian Schools in San Jose, California, since 2003.",
+      "photoUrl": "https://www.vcs.net/uploaded/faculty/Faculty_and_Staff_Photos/Wilson_Jeff_sm.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.vcs.net/cf_directory/dirprofile.cfm?p=1023&id=8593", "label": "Valley Christian Schools faculty profile", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI percussion/music judge; San Jose State & SF Conservatory percussion performance degrees; VCS percussion faculty since 2003", "source": "https://www.vcs.net/cf_directory/dirprofile.cfm?p=1023&id=8593", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

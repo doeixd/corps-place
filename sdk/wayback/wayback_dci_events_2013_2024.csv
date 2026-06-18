@@ -1,0 +1,211 @@
+eventName,eventDate,eventTime,venue,city,state,timelineStartTime,address,performanceLineupCount,dataSource
+"DCI East Coast Showcase - Quincy",2021-08-03,2021-08-04T00:00:00.000+0000,"Veterans Memorial Stadium",Quincy,MA,2021-08-04T00:00:00.000+0000,"850 Hancock St.",7,events
+"West Texas Drums",2021-08-03,2021-08-04T00:00:00.000+0000,"Buffalo Stadium at West Texas A&M",Canyon,TX,2021-08-04T01:00:00.000+0000,"2501 4th Ave",6,events
+"DCI Celebration - Austin",2021-08-04,2021-08-05T00:00:00.000+0000,"Kelly Reeves Athletic Complex-Austin,TX",Austin,TX,2021-08-05T01:00:00.000+0000,"10211 W. Parmer Lane",8,events
+"DCI East Coast Showcase - Lawrence",2021-08-04,2021-08-05T00:00:00.000+0000,"Veterans Memorial Stadium",Lawrence,MA,2021-08-05T00:00:00.000+0000,"240 Osgood St.",6,events
+"DCI East Coast Showcase - Lawrence",2021-08-05,2021-08-06T00:00:00.000+0000,"Veterans Memorial Stadium",Lawrence,MA,2021-08-06T00:00:00.000+0000,"240 Osgood St.",7,events
+"March On!",2021-08-05,2021-08-05T23:30:00.000+0000,"Spartan Field at Mayo H.S.",Rochester,MN,2021-08-06T00:30:00.000+0000,"1420 11th Ave SE",7,events
+"DCI Celebration - Mesquite",2021-08-06,2021-08-07T00:00:00.000+0000,"Mesquite Memorial Stadium",Mesquite,TX,2021-08-07T01:00:00.000+0000,"2411 W. Scyene Rd.",8,events
+"Show of Shows",2021-08-06,2021-08-06T23:30:00.000+0000,"Huskie Stadium at Northern Illinois University",DeKalb,IL,2021-08-07T00:30:00.000+0000,"1245 Stadium Drive South",10,events
+"Cavalcade of Brass",2021-08-07,2021-08-07T23:30:00.000+0000,"The Sports Complex at Benedictine University",Lisle,IL,2021-08-08T00:30:00.000+0000,"5700 College Road",9,events
+"DCI East Celebration",2021-08-07,2021-08-08T00:00:00.000+0000,"J. Birney Crum Stadium",Allentown,PA,2021-08-08T00:00:00.000+0000,"Linden St. & 20th St.",7,events
+"DCI Broken Arrow",2022-07-19T00:00:00,,"",,,,"",,competitions
+"DCI Denton",2022-07-21T00:00:00,,"",,,,"",,competitions
+"DCI Austin",2022-07-21T00:00:00,,"",,,,"",,competitions
+"Resound",2022-07-22T00:00:00,,"",,,,"",,competitions
+"DCI Houston",2022-07-22T00:00:00,,"",,,,"",,competitions
+"Summer Thunder",2022-07-23T00:00:00,,"",,,,"",,competitions
+"Golden State Showdown",2022-07-23T00:00:00,,"",,,,"",,competitions
+"DCI Southwestern Championship",2022-07-23T00:00:00,,"",,,,"",,competitions
+"Diablo Valley Classic Pacific Open Class Championship Finals",2022-07-24T00:00:00,,"",,,,"",,competitions
+"DCI New Hampshire",2022-07-24T00:00:00,,"",,,,"",,competitions
+"DCI Mesquite",2022-07-25T00:00:00,,"",,,,"",,competitions
+"DCI Corpus Christi",2022-07-25T00:00:00,,"",,,,"",,competitions
+"DCI McKinney",2022-07-26T00:00:00,,"",,,,"",,competitions
+"DCI Southern Mississippi",2022-07-27T00:00:00,,"",,,,"",,competitions
+"DCI Little Rock",2022-07-27T00:00:00,,"",,,,"",,competitions
+"The Masters of the Summer Music Games",2022-07-29T00:00:00,,"",,,,"",,competitions
+"Music on the Mountain",2022-07-29T00:00:00,,"",,,,"",,competitions
+"Legends Drum Corps Invitational",2022-07-30T00:00:00,,"",,,,"",,competitions
+"DCI Southeastern Championship",2022-07-30T00:00:00,,"",,,,"",,competitions
+"DCI Central Illinois",2022-07-30T00:00:00,,"",,,,"",,competitions
+"NightBEAT",2022-07-31T00:00:00,,"",,,,"",,competitions
+"DCI Sun Prairie",2022-08-01T00:00:00,,"",,,,"",,competitions
+"DCI Huntington",2022-08-01T00:00:00,,"",,,,"",,competitions
+"Summer Music Games of Southwest Virginia",2022-08-02T00:00:00,,"",,,,"",,competitions
+"Spartan Thunder",2022-08-02T00:00:00,,"",,,,"",,competitions
+"Drums Across the Smokies",2022-08-02T00:00:00,,"",,,,"",,competitions
+"DCI Annapolis",2022-08-02T00:00:00,,"",,,,"",,competitions
+"Soaring Sounds",2022-08-03T00:00:00,,"",,,,"",,competitions
+"March On!",2022-08-03T00:00:00,,"",,,,"",,competitions
+"DCI Glassboro",2022-08-03T00:00:00,,"",,,,"",,competitions
+"Tournament of Drums",2022-08-05T00:00:00,,"",,,,"",,competitions
+"Legends Drum Corps Open",2022-08-05T00:00:00,,"",,,,"",,competitions
+"DCI Eastern Classic",2022-08-05T00:00:00,,"",,,,"",,competitions
+"Shoremen Brass Classic",2022-08-06T00:00:00,,"",,,,"",,competitions
+"DCI Eastern Illinois",2022-08-06T00:00:00,,"",,,,"",,competitions
+"DCI Eastern Classic",2022-08-06T00:00:00,,"",,,,"",,competitions
+"DCI Pittsburgh",2022-08-07T00:00:00,,"",,,,"",,competitions
+"DCI Open Class World Championship Prelims",2022-08-08T00:00:00,,"",,,,"",,competitions
+"DCI Cincinnati",2022-08-08T00:00:00,,"",,,,"",,competitions
+"Open Class World Championship Finals",2022-08-09T00:00:00,,"",,,,"",,competitions
+"DCI World Championship Prelims",2022-08-11T00:00:00,,"",,,,"",,competitions
+"DCI World Championship Semifinals",2022-08-12T00:00:00,,"",,,,"",,competitions
+"DCI World Championship Finals",2022-08-13T00:00:00,,"",,,,"",,competitions
+"Midwest Premiere",2023-06-28T00:00:00,,"",,,,"",,competitions
+"DCI Central Indiana",2023-06-30T00:00:00,,"",,,,"",,competitions
+"The Beanpot",2023-07-01T00:00:00,,"",,,,"",,competitions
+"Drums on Parade",2023-07-01T00:00:00,,"",,,,"",,competitions
+"Corps at the Crest - San Diego",2023-07-01T00:00:00,,"",,,,"",,competitions
+"Western Corps Connection",2023-07-02T00:00:00,,"",,,,"",,competitions
+"DCI East Coast Showcase - Quincy",2023-07-02T00:00:00,,"",,,,"",,competitions
+"Cavalcade of Brass",2023-07-02T00:00:00,,"",,,,"",,competitions
+"Rotary Music Festival",2023-07-03T00:00:00,,"",,,,"",,competitions
+"Drums Across the Desert",2023-07-03T00:00:00,,"",,,,"",,competitions
+"Summer Music Games in Cincinnati",2023-07-05T00:00:00,,"",,,,"",,competitions
+"Midwest Classic",2023-07-07T00:00:00,,"",,,,"",,competitions
+"MidCal Champions Showcase",2023-07-07T00:00:00,,"",,,,"",,competitions
+"Whitewater Classic",2023-07-08T00:00:00,,"",,,,"",,competitions
+"Drum Corps at the Rose Bowl",2023-07-08T00:00:00,,"",,,,"",,competitions
+"CrownBEAT",2023-07-08T00:00:00,,"",,,,"",,competitions
+"River City Rhapsody - La Crosse",2023-07-09T00:00:00,,"",,,,"",,competitions
+"DCI West",2023-07-09T00:00:00,,"",,,,"",,competitions
+"DCI Macon",2023-07-09T00:00:00,,"",,,,"",,competitions
+"DCI Capital Classic",2023-07-10T00:00:00,,"",,,,"",,competitions
+"The Kiwanis Thunder of Drums",2023-07-11T00:00:00,,"",,,,"",,competitions
+"Resound",2023-07-11T00:00:00,,"",,,,"",,competitions
+"Drums Across America",2023-07-11T00:00:00,,"",,,,"",,competitions
+"Drums on the Chippewa",2023-07-12T00:00:00,,"",,,,"",,competitions
+"Corps Encore",2023-07-12T00:00:00,,"",,,,"",,competitions
+"Celebration in Brass",2023-07-12T00:00:00,,"",,,,"",,competitions
+"DCI Tupelo",2023-07-13T00:00:00,,"",,,,"",,competitions
+"Riverside Open",2023-07-14T00:00:00,,"",,,,"",,competitions
+"Music on the March",2023-07-14T00:00:00,,"",,,,"",,competitions
+"Drums Along the Rockies - Cheyenne Edition",2023-07-14T00:00:00,,"",,,,"",,competitions
+"Show of Shows",2023-07-15T00:00:00,,"",,,,"",,competitions
+"Gold Showcase",2023-07-15T00:00:00,,"",,,,"",,competitions
+"Drums Along the Rockies",2023-07-15T00:00:00,,"",,,,"",,competitions
+"Drums Across the River Region",2023-07-15T00:00:00,,"",,,,"",,competitions
+"DCI Little Rock",2023-07-15T00:00:00,,"",,,,"",,competitions
+"So Cal Classic",2023-07-16T00:00:00,,"",,,,"",,competitions
+"West Texas Drums",2023-07-17T00:00:00,,"",,,,"",,competitions
+"Brass Impact",2023-07-17T00:00:00,,"",,,,"",,competitions
+"DCI Broken Arrow",2023-07-18T00:00:00,,"",,,,"",,competitions
+"DCI Abilene",2023-07-18T00:00:00,,"",,,,"",,competitions
+"DCI Denton",2023-07-20T00:00:00,,"",,,,"",,competitions
+"DCI Austin",2023-07-20T00:00:00,,"",,,,"",,competitions
+"White Rose Classic",2023-07-21T00:00:00,,"",,,,"",,competitions
+"DCI Houston",2023-07-21T00:00:00,,"",,,,"",,competitions
+"Summer Thunder",2023-07-22T00:00:00,,"",,,,"",,competitions
+"DCI Southwestern Championship",2023-07-22T00:00:00,,"",,,,"",,competitions
+"DCI Connecticut",2023-07-23T00:00:00,,"",,,,"",,competitions
+"DCI Mesquite",2023-07-24T00:00:00,,"",,,,"",,competitions
+"DCI New Hampshire",2023-07-25T00:00:00,,"",,,,"",,competitions
+"DCI McKinney",2023-07-25T00:00:00,,"",,,,"",,competitions
+"DCI Southern Mississippi",2023-07-26T00:00:00,,"",,,,"",,competitions
+"DCI Monroe",2023-07-26T00:00:00,,"",,,,"",,competitions
+"Brigadier's Pageant of Drums",2023-07-26T00:00:00,,"",,,,"",,competitions
+"The Masters of the Summer Music Games",2023-07-28T00:00:00,,"",,,,"",,competitions
+"DCI Birmingham",2023-07-28T00:00:00,,"",,,,"",,competitions
+"DCI Southeastern Championship",2023-07-29T00:00:00,,"",,,,"",,competitions
+"Beats in the Brook",2023-07-29T00:00:00,,"",,,,"",,competitions
+"NightBEAT",2023-07-30T00:00:00,,"",,,,"",,competitions
+"DCI Huntington",2023-07-31T00:00:00,,"",,,,"",,competitions
+"Summer Music Games of Southwest Virginia",2023-08-01T00:00:00,,"",,,,"",,competitions
+"Drums Across the Smokies",2023-08-01T00:00:00,,"",,,,"",,competitions
+"Drum Corps: An American Tradition",2023-08-01T00:00:00,,"",,,,"",,competitions
+"Soaring Sounds",2023-08-02T00:00:00,,"",,,,"",,competitions
+"March On!",2023-08-02T00:00:00,,"",,,,"",,competitions
+"DCI Glassboro",2023-08-02T00:00:00,,"",,,,"",,competitions
+"DCI East Coast Showcase - Lawrence",2023-08-03T00:00:00,,"",,,,"",,competitions
+"Tournament of Drums",2023-08-04T00:00:00,,"",,,,"",,competitions
+"Drums In the Heartland",2023-08-04T00:00:00,,"",,,,"",,competitions
+"DCI Eastern Classic",2023-08-04T00:00:00,,"",,,,"",,competitions
+"DCI Eastern Classic",2023-08-05T00:00:00,,"",,,,"",,competitions
+"Shoremen Brass Classic",2023-08-05T00:00:00,,"",,,,"",,competitions
+"DCI Eastern Illinois",2023-08-05T00:00:00,,"",,,,"",,competitions
+"DCI Pittsburgh",2023-08-06T00:00:00,,"",,,,"",,competitions
+"DCI Open Class World Championship Prelims",2023-08-07T00:00:00,,"",,,,"",,competitions
+"DCI Cincinnati",2023-08-07T00:00:00,,"",,,,"",,competitions
+"DCI Open Class World Championship Finals",2023-08-08T00:00:00,,"",,,,"",,competitions
+"DCI World Championship Prelims",2023-08-10T00:00:00,,"",,,,"",,competitions
+"DCI World Championship Semifinals",2023-08-11T00:00:00,,"",,,,"",,competitions
+"DCI World Championship Finals",2023-08-12T00:00:00,,"",,,,"",,competitions
+"Midwest Premiere",2024-06-26T00:00:00,,"",,,,"",,competitions
+"DCI Central Indiana",2024-06-28T00:00:00,,"",,,,"",,competitions
+"Corps at the Crest - Student Edition",2024-06-28T00:00:00,,"",,,,"",,competitions
+"Drums on Parade",2024-06-29T00:00:00,,"",,,,"",,competitions
+"Corps at the Crest",2024-06-29T00:00:00,,"",,,,"",,competitions
+"Barnum Festival: Champions on Parade",2024-06-29T00:00:00,,"",,,,"",,competitions
+"Western Corps Connection",2024-06-30T00:00:00,,"",,,,"",,competitions
+"Cavalcade of Brass",2024-06-30T00:00:00,,"",,,,"",,competitions
+"Summer Music Games in Cincinnati",2024-07-02T00:00:00,,"",,,,"",,competitions
+"Rotary Music Festival",2024-07-03T00:00:00,,"",,,,"",,competitions
+"Show of Shows",2024-07-05T00:00:00,,"",,,,"",,competitions
+"Northwest Youth Music Games Portland",2024-07-05T00:00:00,,"",,,,"",,competitions
+"MidCal Champions Showcase",2024-07-05T00:00:00,,"",,,,"",,competitions
+"The Whitewater Classic",2024-07-06T00:00:00,,"",,,,"",,competitions
+"Northwest Youth Music Games Seattle",2024-07-06T00:00:00,,"",,,,"",,competitions
+"DCI West",2024-07-06T00:00:00,,"",,,,"",,competitions
+"River City Rhapsody",2024-07-07T00:00:00,,"",,,,"",,competitions
+"DCI Capital Classic",2024-07-07T00:00:00,,"",,,,"",,competitions
+"Drums Along the Columbia",2024-07-08T00:00:00,,"",,,,"",,competitions
+"Drums Across the Smokies",2024-07-08T00:00:00,,"",,,,"",,competitions
+"The Kiwanis Thunder of Drums",2024-07-09T00:00:00,,"",,,,"",,competitions
+"Northwest Youth Music Games Boise",2024-07-09T00:00:00,,"",,,,"",,competitions
+"Drums Across America",2024-07-09T00:00:00,,"",,,,"",,competitions
+"Corps Encore",2024-07-10T00:00:00,,"",,,,"",,competitions
+"Music on the March",2024-07-11T00:00:00,,"",,,,"",,competitions
+"DCI Northern Alabama",2024-07-11T00:00:00,,"",,,,"",,competitions
+"Riverside Open",2024-07-12T00:00:00,,"",,,,"",,competitions
+"Drums Along the Rockies - Cheyenne Edition",2024-07-12T00:00:00,,"",,,,"",,competitions
+"Midwest Classic",2024-07-13T00:00:00,,"",,,,"",,competitions
+"Gold Showcase",2024-07-13T00:00:00,,"",,,,"",,competitions
+"Drums Along the Rockies",2024-07-13T00:00:00,,"",,,,"",,competitions
+"Drum Corps Grand Prix",2024-07-13T00:00:00,,"",,,,"",,competitions
+"DCI Little Rock",2024-07-13T00:00:00,,"",,,,"",,competitions
+"So Cal Classic: Open Class Pacific Championship Finals",2024-07-14T00:00:00,,"",,,,"",,competitions
+"Celebration in Brass",2024-07-14T00:00:00,,"",,,,"",,competitions
+"West Texas Drums",2024-07-15T00:00:00,,"",,,,"",,competitions
+"Brass Impact",2024-07-15T00:00:00,,"",,,,"",,competitions
+"DCI Broken Arrow",2024-07-16T00:00:00,,"",,,,"",,competitions
+"DCI Abilene",2024-07-16T00:00:00,,"",,,,"",,competitions
+"DCI Waco",2024-07-18T00:00:00,,"",,,,"",,competitions
+"DCI Denton",2024-07-18T00:00:00,,"",,,,"",,competitions
+"DCI Houston",2024-07-19T00:00:00,,"",,,,"",,competitions
+"Beats in the Brook",2024-07-19T00:00:00,,"",,,,"",,competitions
+"The Buccaneer Classic",2024-07-20T00:00:00,,"",,,,"",,competitions
+"DCI Southwestern Championship",2024-07-20T00:00:00,,"",,,,"",,competitions
+"DCI Northern Ohio",2024-07-20T00:00:00,,"",,,,"",,competitions
+"DCI Mesquite",2024-07-22T00:00:00,,"",,,,"",,competitions
+"Spartan Syracuse Showdown",2024-07-23T00:00:00,,"",,,,"",,competitions
+"DCI McKinney",2024-07-23T00:00:00,,"",,,,"",,competitions
+"DCI Monroe",2024-07-24T00:00:00,,"",,,,"",,competitions
+"White Rose Classic",2024-07-26T00:00:00,,"",,,,"",,competitions
+"The Masters of the Summer Music Games",2024-07-26T00:00:00,,"",,,,"",,competitions
+"DCI Birmingham",2024-07-26T00:00:00,,"",,,,"",,competitions
+"Music on the Mountain",2024-07-27T00:00:00,,"",,,,"",,competitions
+"DCI Southeastern Championship",2024-07-27T00:00:00,,"",,,,"",,competitions
+"Bushwackers Invitational",2024-07-27T00:00:00,,"",,,,"",,competitions
+"NightBEAT",2024-07-28T00:00:00,,"",,,,"",,competitions
+"Drums in the Heartland",2024-07-28T00:00:00,,"",,,,"",,competitions
+"Summer Music Games of Southwest Virginia",2024-07-30T00:00:00,,"",,,,"",,competitions
+"Soaring Sounds",2024-07-30T00:00:00,,"",,,,"",,competitions
+"DCI Delaware",2024-07-30T00:00:00,,"",,,,"",,competitions
+"March On!",2024-07-31T00:00:00,,"",,,,"",,competitions
+"DCI Huntington",2024-07-31T00:00:00,,"",,,,"",,competitions
+"DCI East Coast Showcase",2024-08-01T00:00:00,,"",,,,"",,competitions
+"Tournament of Drums",2024-08-02T00:00:00,,"",,,,"",,competitions
+"DCI Eastern Classic",2024-08-02T00:00:00,,"",,,,"",,competitions
+"Drums on the Ohio",2024-08-03T00:00:00,,"",,,,"",,competitions
+"DCI Rochester",2024-08-03T00:00:00,,"",,,,"",,competitions
+"DCI Eastern Illinois",2024-08-03T00:00:00,,"",,,,"",,competitions
+"Big Sounds in Motion",2024-08-04T00:00:00,,"",,,,"",,competitions
+"Innovations In Brass",2024-08-05T00:00:00,,"",,,,"",,competitions
+"DCI Pittsburgh",2024-08-05T00:00:00,,"",,,,"",,competitions
+"DCI Open Class World Championship Prelims",2024-08-05T00:00:00,,"",,,,"",,competitions
+"DCI Open Class World Championship Finals",2024-08-06T00:00:00,,"",,,,"",,competitions
+"DCI World Championship Prelims",2024-08-08T00:00:00,,"",,,,"",,competitions
+"DCI World Championship Semifinals",2024-08-09T00:00:00,,"",,,,"",,competitions
+"DCI World Championship Finals",2024-08-10T00:00:00,,"",,,,"",,competitions
+"DCI All-Age World Championship",2024-08-10T00:00:00,,"",,,,"",,competitions

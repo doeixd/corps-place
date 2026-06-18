@@ -1,0 +1,280 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 39-51 by assignment count (skipping the 'unknown-unknown-1' data artifact). Sources: MFA clinician pages, WGI/SCPA judge pages, university/org bios, DCI panels. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "m-hoskins-1",
+      "displayName": "Mark Hoskins",
+      "givenName": "Mark",
+      "familyName": "Hoskins",
+      "biography": "Mark Hoskins is a brass/music adjudicator for Drum Corps International and Bands of America who recently retired as Director of Bands at Wheeler High School in Marietta, Georgia, after 19 years and a 25-year career in the Cobb County School District. A four-year member and featured mellophone soloist with the Spirit of Atlanta Drum and Bugle Corps, he later became the corps' visual caption head in 2001 under mentor Freddy Martin and was brass caption head for the Magic of Orlando (1999, 2005). He has judged brass at multiple DCI World Championships.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2023/09/mark-hoskins-2023-web.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/mark-hoskins/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.wheelerbands.org/directors", "label": "Wheeler HS Bands", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Spirit of Atlanta", "role": "Performer (mellophone soloist); later Visual Caption Head (2001)", "sourceUrl": "https://education.musicforall.org/clinician/mark-hoskins/" },
+        { "corpsName": "Magic of Orlando", "season": "1999,2005", "role": "Brass Caption Head", "sourceUrl": "https://education.musicforall.org/clinician/mark-hoskins/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / GE2 / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA brass judge; Wheeler HS Director of Bands 19 yrs; Spirit of Atlanta mellophone soloist & visual caption head; Magic of Orlando brass caption head", "source": "https://education.musicforall.org/clinician/mark-hoskins/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-romanowski-1",
+      "displayName": "Chris Romanowski",
+      "givenName": "Chris",
+      "familyName": "Romanowski",
+      "biography": "Chris Romanowski is a percussion arranger, designer, and music adjudicator and a graduate of the Berklee College of Music. He has been a DCI percussion judge since 2006 and a Drum Corps Associates percussion judge since 2007, judging DCI Finals week 11 times along with numerous fall band and indoor state championships. In 2011 he became Percussion Caption Head and arranger for the Atlanta CV, which finished second at the 2017 DCA Championships with a record 96.63. He is the percussion director at Hillgrove High School (GA), co-creator of Vic Firth's HeavyHitterPads, and owner of the OnlinePercussionDirector YouTube channel.",
+      "photoUrl": "https://www.hillgroveband.com/assets/06466/Romo.jpeg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.hillgroveband.com/chris_romanowski", "label": "Hillgrove Bands bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Atlanta CV", "season": "2011", "role": "Percussion Caption Head / Arranger", "sourceUrl": "https://www.hillgroveband.com/chris_romanowski" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / Music Percussion / GE2; 2013-2025",
+        "facts": [
+          { "fact": "Berklee grad; DCI percussion judge since 2006, Finals 11x; Atlanta CV percussion caption head; Hillgrove HS percussion director; Vic Firth HeavyHitterPads", "source": "https://www.hillgroveband.com/chris_romanowski", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-fox-1",
+      "displayName": "Todd Fox",
+      "givenName": "Todd",
+      "familyName": "Fox",
+      "biography": "Todd Fox is a percussion/music adjudicator who has judged drum corps and the percussion music caption since 1994 and serves as the Drum Corps International Central Division Judges Coordinator. He has held various percussion-related judging roles at DCI World Championships (including Ensemble Percussion and Music Analysis) and also judges the Music Analysis caption for Winter Guard International's Winds division.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/judges_winds/todd-fox/", "label": "WGI Winds judge profile", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI percussion judge since 1994; DCI Central Division Judges Coordinator; WGI Winds Music Analysis", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" },
+          { "fact": "No clean public headshot extracted (WGI page JS-rendered) - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-bell-1",
+      "displayName": "John Bell",
+      "givenName": "John",
+      "familyName": "Bell",
+      "biography": "John Bell is a music/general-effect adjudicator for Drum Corps International who has judged the General Effect (Music) captions at multiple DCI World Championships, including General Effect 2 assignments in the 2010s and General Effect Music roles at World Class and Open Class events.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2018-world-championship-adjudication-panels/", "label": "DCI 2018 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI GE/Music judge across 2008-2018 World Championships", "source": "https://www.dci.org/news/2018-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Very common name; no distinguishing public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "k-giese-1",
+      "displayName": "Ken Giese",
+      "givenName": "Ken",
+      "familyName": "Giese",
+      "biography": "Ken Giese was a nationally recognized visual-caption designer and adjudicator who judged for Bands of America/Music for All, Drum Corps International, Winter Guard International (Percussion Division), the Winter Guard Association of Southern California, and other organizations. An instructor and designer for marching bands, winter guards, marching percussion, indoor winds, and drum corps, he was a former chief judge of the Southeastern Color Guard Circuit and a longtime WGI ensemble analysis judge. He resided in Las Vegas, Nevada, where he taught high school mathematics for the Clark County School District, and served as a DCI Visual Analysis judge across many seasons. He passed away in 2024.",
+      "photoUrl": "https://scpauploads.s3.amazonaws.com/judges/763_beise.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/wgi-mourns-the-loss-of-ken-giese/", "label": "WGI remembrance", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Visual Proficiency / GE1 / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "DCI Visual Analysis judge; Southeastern Color Guard Circuit chief judge; Las Vegas math teacher; d. 2024", "source": "https://www.wgi.org/wgi-mourns-the-loss-of-ken-giese/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "b-mascaro-1",
+      "displayName": "Bret Mascaro",
+      "givenName": "Bret",
+      "familyName": "Mascaro",
+      "biography": "Bret Mascaro is a visual adjudicator who has judged across the United States, Canada, and Japan for Bands of America, Winter Guard International, Drum Corps International, and several state associations, serving as a Visual Analysis judge at DCI World Championships. He has been a designer or instructor for the Crossmen, Troopers, and Bluecoats drum corps and many high school bands in Pennsylvania and New Jersey. After a full career as a music teacher, band director, and Music Department Coordinator for the Methacton School District, he was appointed an adjunct professor and supervisor of student teachers at West Chester University in Pennsylvania.",
+      "photoUrl": "https://scpauploads.s3.amazonaws.com/judges/8149238957-B.Mascaro.3.jpeg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/judge/bret-mascaro/", "label": "WGI judge profile", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Crossmen", "role": "Designer / Instructor", "sourceUrl": "https://scpa.live/judge/profile/49" },
+        { "corpsName": "Bluecoats", "role": "Designer / Instructor", "sourceUrl": "https://scpa.live/judge/profile/49" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Visual Proficiency / GE1; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/WGI visual judge; Crossmen/Troopers/Bluecoats designer; Methacton SD career; West Chester Univ adjunct", "source": "https://scpa.live/judge/profile/49", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-phillips-1",
+      "displayName": "Chester Phillips",
+      "givenName": "Chester",
+      "familyName": "Phillips",
+      "biography": "Dr. Chester B. Phillips is a music/brass and general-effect adjudicator for Drum Corps International, Bands of America, and winter guards, and a visual designer of more than 250 marching band and winter guard productions. A Professor of Music at Georgia State University who previously served as Dean of the College of the Arts and Director of the School of Music, he has over 20 years of experience as a band director, with ensembles earning honors including the Sudler Flag of Honor. In 2026 he was appointed Chief Executive Officer of the Carolina Crown Drum and Bugle Corps. He has judged Music Brass and General Effect at DCI World Championships.",
+      "photoUrl": "https://music.gsu.edu/files/2025/12/20220819_COTA_Headshots_SR_064-e1767891075241-300x300.jpg",
+      "alternateNames": ["Chester B. Phillips"],
+      "externalLinks": [
+        { "url": "https://music.gsu.edu/profile/chester-b-phillips/", "label": "Georgia State University School of Music", "kind": "bio" },
+        { "url": "https://www.drumcorpsplanet.com/2026/04/chester-phillips-appointed-carolina-crown-chief-executive-officer/", "label": "DCP: Carolina Crown CEO appointment", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Carolina Crown", "season": "2026", "role": "Chief Executive Officer", "sourceUrl": "https://www.drumcorpsplanet.com/2026/04/chester-phillips-appointed-carolina-crown-chief-executive-officer/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / GE2 / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "GSU Professor of Music, former Dean; DCI music/GE judge; 250+ designs; Carolina Crown CEO 2026", "source": "https://music.gsu.edu/profile/chester-b-phillips/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "r-greenwell-1",
+      "displayName": "Randy Greenwell",
+      "givenName": "Randy",
+      "familyName": "Greenwell",
+      "biography": "Randy Greenwell is a music and general-effect adjudicator for Drum Corps International, Bands of America, and Winter Guard International (Winds division), serving in Music Analysis and General Effect captions at DCI World Championships. He began the process of becoming a judge in his first year of teaching in 1985 and is the former Fine Arts Chairman at Lawrence Central High School (Indiana), a four-time ISSMA State Champion and two-time BOA Grand National Champion program. A graduate of Illinois State University, where he was drum major, he approaches judging with the mindset of a lifelong learner.",
+      "photoUrl": "https://wgi.org/wp-content/uploads/2023/06/Randy-3.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/randyjudge/", "label": "WGI: The Judging Experience", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / GE2 / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/WGI music & GE judge since 1985; former Fine Arts Chair Lawrence Central HS; ISU drum major", "source": "https://www.wgi.org/randyjudge/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-wemhoff-1",
+      "displayName": "Ted Wemhoff",
+      "givenName": "Ted",
+      "familyName": "Wemhoff",
+      "biography": "Ted Wemhoff is a general-effect adjudicator for Drum Corps International, serving as a General Effect judge at multiple DCI World Championships (including 2019, 2022, and 2025).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI General Effect judge 2019/2022/2025 World Championships", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-costanza-1",
+      "displayName": "Curtis Costanza",
+      "givenName": "Curtis",
+      "familyName": "Costanza",
+      "biography": "Curtis Costanza is a general-effect and visual adjudicator for Drum Corps International, judging the General Effect Visual captions at DCI World Championships (including the 2008-2010 seasons and beyond).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2010-dci-world-championship-adjudication-panels", "label": "DCI 2010 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Analysis / Color Guard / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI General Effect Visual judge (2008-2010 World Championships confirmed)", "source": "https://www.dci.org/news/2010-dci-world-championship-adjudication-panels", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "g-howarth-1",
+      "displayName": "Gifford Howarth",
+      "givenName": "Gifford",
+      "familyName": "Howarth",
+      "biography": "Dr. Gifford Howarth is a percussion adjudicator and Associate Professor of Percussion at Bloomsburg University (PA), and an instructor of percussion at Penn State University. He was on the percussion staff of The Cadets from 1999 to 2006 and began judging nationally for Drum Corps International in 2007, also adjudicating for WGI and Bands of America and serving in the Music Analysis caption at DCI World Championships. He holds a DMA from Michigan State University, a master's from Kent State, and a bachelor's from Ithaca College, and is a Yamaha Performing Artist, Vic Firth Signature Artist, and clinician for Zildjian and Evans.",
+      "photoUrl": "https://www.yamaha.com/yamahavgn/Images/Artists/Main/howarth_gifford.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.tapspace.com/gifford-howarth/", "label": "Tapspace artist bio", "kind": "bio" },
+        { "url": "https://www.yamaha.com/artists/giffordhowarth.html", "label": "Yamaha Artists", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "The Cadets", "season": "1999-2006", "role": "Percussion staff", "sourceUrl": "https://www.tapspace.com/gifford-howarth/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "Bloomsburg Univ. percussion prof; Cadets percussion staff 1999-2006; DCI judge since 2007; DMA MSU; Yamaha/Vic Firth artist", "source": "https://www.tapspace.com/gifford-howarth/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "b-kuhn-1",
+      "displayName": "Blair Kuhn",
+      "givenName": "Blair",
+      "familyName": "Kuhn",
+      "biography": "Blair E. Kuhn is a visual adjudicator from Westland, Michigan, with over 30 years in the pageantry arts and an accomplished color guard and drill designer with more than 25 years of design experience. He performed as a percussionist with the Saginaires (1982-1984), Northern Aurora (1985), and The Cavaliers (1986) drum and bugle corps, and holds a BA in Communication and Film Studies from Eastern Michigan University. He is an active adjudicator for the Michigan Competing Band Association, Bands of America, Drum Corps International, and Winter Guard International, serving as a Visual Analysis judge at DCI World Championships (including 2018 and 2022).",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2024/09/file.png",
+      "alternateNames": ["Blair E. Kuhn"],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/judge/blair-kuhn/", "label": "WGI judge profile", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "The Cavaliers", "season": "1986", "role": "Performer (percussion)", "sourceUrl": "https://www.wgi.org/judge/blair-kuhn/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / GE1 / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "30+ yrs; ex-Cavaliers percussionist; CG/drill designer; MCBA/BOA/DCI/WGI visual judge; EMU degree; Westland MI", "source": "https://www.wgi.org/judge/blair-kuhn/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

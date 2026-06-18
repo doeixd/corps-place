@@ -1,0 +1,13 @@
+{
+  "scrapedAt": "2026-06-16T15-33-14-008Z",
+  "roundups": [
+    {
+      "url": "https://www.dci.org/news/corps-news-and-announcements-20181026/",
+      "season": 2019,
+      "engine": "claude",
+      "tuples": 14,
+      "mappedPeople": 14,
+      "unmappedCorps": 0
+    }
+  ]
+}

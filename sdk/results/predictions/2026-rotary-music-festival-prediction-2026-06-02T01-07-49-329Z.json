@@ -1,0 +1,395 @@
+{
+  "generated_at": "2026-06-02T01:07:49.330Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-rotary-music-festival",
+    "slug": "2026-rotary-music-festival",
+    "name": "Rotary Music Festival",
+    "event_name": "Rotary Music Festival",
+    "start_date": "2026-07-02",
+    "start_time": null,
+    "web_start_time": "7:30 PM CT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Cedarburg",
+    "location_state": "WI",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260702-CEDARBURG-WI.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260702-CEDARBURG-WI.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-rotary-music-festival-8awnwr",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 4,
+    "matched_corps_keys": 4,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 3,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 13.953488372093023
+  },
+  "input_signature": "40d25ef62bc5891f140b0f30ef551382f280b3c0bdde352aeb8425c053f0090d",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 4,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 2,
+        "time": "7:40 PM"
+      },
+      {
+        "corps_key": "001j000000i6lenaa3",
+        "corps": "Madison Scouts",
+        "division": "World Class",
+        "performance_order": 3,
+        "time": "7:58 PM"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "8:16 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsqaal",
+        "corps": "Blue Stars",
+        "division": "World Class",
+        "performance_order": 5,
+        "time": "8:39 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 2,
+        "time": "7:40 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Madison Scouts",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 7,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-rotary-music-festival",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-02",
+      "scored_lineup_rows": 4,
+      "matched_corps_keys": 4,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwsqaal",
+      "corps": "Blue Stars",
+      "city": "La Crosse, WI",
+      "division": "World Class",
+      "performance_order": 5,
+      "time": "8:39 PM",
+      "total": 75.328,
+      "GE": 30.371,
+      "Visual": 22.608,
+      "Music": 22.349,
+      "GE1": 15.194,
+      "GE2": 15.177,
+      "VP": 14.831,
+      "VA": 14.92,
+      "CG": 15.466,
+      "MB": 15.098,
+      "MA": 15.088,
+      "MP": 14.512,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.443,
+          "p50": 15.194,
+          "p90": 15.967
+        },
+        "GE2": {
+          "p10": 14.51,
+          "p50": 15.177,
+          "p90": 16.059
+        },
+        "VP": {
+          "p10": 14.069,
+          "p50": 14.831,
+          "p90": 15.584
+        },
+        "VA": {
+          "p10": 14.091,
+          "p50": 14.92,
+          "p90": 15.576
+        },
+        "CG": {
+          "p10": 14.685,
+          "p50": 15.466,
+          "p90": 16.227
+        },
+        "MB": {
+          "p10": 14.321,
+          "p50": 15.098,
+          "p90": 15.834
+        },
+        "MA": {
+          "p10": 14.468,
+          "p50": 15.088,
+          "p90": 16.001
+        },
+        "MP": {
+          "p10": 13.743,
+          "p50": 14.512,
+          "p90": 15.298
+        }
+      },
+      "raw_model_total": 92.201,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73,
+      "prior_season_comparable_percent_through": 11.904761904761903,
+      "prior_season_comparable_competition": "2025-show-of-shows",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 75.33,
+      "caption_shape_total": 76.584,
+      "total_reconciliation_delta": -1.255,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 76.584,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "8:16 PM",
+      "total": 72.811,
+      "GE": 29.184,
+      "Visual": 21.824,
+      "Music": 21.803,
+      "GE1": 14.646,
+      "GE2": 14.538,
+      "VP": 14.361,
+      "VA": 14.32,
+      "CG": 14.967,
+      "MB": 14.328,
+      "MA": 14.443,
+      "MP": 14.835,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.874,
+          "p50": 14.646,
+          "p90": 15.407
+        },
+        "GE2": {
+          "p10": 13.876,
+          "p50": 14.538,
+          "p90": 15.422
+        },
+        "VP": {
+          "p10": 13.615,
+          "p50": 14.361,
+          "p90": 15.129
+        },
+        "VA": {
+          "p10": 13.523,
+          "p50": 14.32,
+          "p90": 15.016
+        },
+        "CG": {
+          "p10": 14.198,
+          "p50": 14.967,
+          "p90": 15.721
+        },
+        "MB": {
+          "p10": 13.589,
+          "p50": 14.328,
+          "p90": 15.076
+        },
+        "MA": {
+          "p10": 13.832,
+          "p50": 14.443,
+          "p90": 15.346
+        },
+        "MP": {
+          "p10": 14.003,
+          "p50": 14.835,
+          "p90": 15.573
+        }
+      },
+      "raw_model_total": 93.081,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 71.6,
+      "prior_season_comparable_percent_through": 11.904761904761903,
+      "prior_season_comparable_competition": "2025-show-of-shows",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 72.813,
+      "caption_shape_total": 73.466,
+      "total_reconciliation_delta": -0.655,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.466,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000i6lenaa3",
+      "corps": "Madison Scouts",
+      "city": "Madison, WI",
+      "division": "World Class",
+      "performance_order": 3,
+      "time": "7:58 PM",
+      "total": 69.551,
+      "GE": 28.226,
+      "Visual": 20.303,
+      "Music": 21.022,
+      "GE1": 13.975,
+      "GE2": 14.251,
+      "VP": 13.287,
+      "VA": 13.503,
+      "CG": 13.816,
+      "MB": 13.799,
+      "MA": 14.082,
+      "MP": 14.163,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.151,
+          "p50": 13.975,
+          "p90": 14.624
+        },
+        "GE2": {
+          "p10": 13.66,
+          "p50": 14.251,
+          "p90": 15.156
+        },
+        "VP": {
+          "p10": 12.567,
+          "p50": 13.287,
+          "p90": 14.034
+        },
+        "VA": {
+          "p10": 12.723,
+          "p50": 13.503,
+          "p90": 14.142
+        },
+        "CG": {
+          "p10": 13.122,
+          "p50": 13.816,
+          "p90": 14.649
+        },
+        "MB": {
+          "p10": 13.071,
+          "p50": 13.799,
+          "p90": 14.535
+        },
+        "MA": {
+          "p10": 13.526,
+          "p50": 14.082,
+          "p90": 14.974
+        },
+        "MP": {
+          "p10": 13.4,
+          "p50": 14.163,
+          "p90": 14.85
+        }
+      },
+      "raw_model_total": 89.833,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 68.75,
+      "prior_season_comparable_percent_through": 11.904761904761903,
+      "prior_season_comparable_competition": "2025-show-of-shows",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 69.553,
+      "caption_shape_total": 69.986,
+      "total_reconciliation_delta": -0.435,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 14,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 69.986,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

@@ -1,0 +1,863 @@
+{
+  "generated_at": "2026-06-02T16:45:15.014Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-summer-music-games-of-southwest-virginia",
+    "slug": "2026-summer-music-games-of-southwest-virginia",
+    "name": "Summer Music Games of Southwest Virginia",
+    "event_name": "Summer Music Games of Southwest Virginia",
+    "start_date": "2026-07-29",
+    "start_time": null,
+    "web_start_time": "7:00 PM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Salem",
+    "location_state": "VA",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260729-SALEM-VA.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260729-SALEM-VA.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-summer-music-games-of-southwest-virginia-qzifdv",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Prices shown on this page do not include fees or taxes.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 9,
+    "matched_corps_keys": 9,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 8,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 76.74418604651163
+  },
+  "input_signature": "1b177645850c0498aaf87316360582ed4b55aa97245a128521baf9aa01b234e4",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 9,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx92aad",
+        "corps": "Carolina Gold",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "7:10 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9taad",
+        "corps": "Heat Wave",
+        "division": "Open Class",
+        "performance_order": 3,
+        "time": "7:22 PM"
+      },
+      {
+        "corps_key": "001j000000iwxaaaa1",
+        "corps": "Raiders",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "7:39 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsqaal",
+        "corps": "Blue Stars",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx91aad",
+        "corps": "Carolina Crown",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx9aaat",
+        "corps": "Crossmen",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxa5aal",
+        "corps": "Music City",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxadaa1",
+        "corps": "Spirit of Atlanta",
+        "division": "World Class",
+        "performance_order": 12,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxaeaa1",
+        "corps": "The Academy",
+        "division": "World Class",
+        "performance_order": 13,
+        "time": "TBD"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000iwx92aad",
+        "corps": "Carolina Gold",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "7:10 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 5,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Carolina Crown",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 7,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-summer-music-games-of-southwest-virginia",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-29",
+      "scored_lineup_rows": 9,
+      "matched_corps_keys": 9,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwx91aad",
+      "corps": "Carolina Crown",
+      "city": "Fort Mill, SC",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "TBD",
+      "total": 92.099,
+      "GE": 36.898,
+      "Visual": 27.485,
+      "Music": 27.716,
+      "GE1": 18.344,
+      "GE2": 18.554,
+      "VP": 18.299,
+      "VA": 18.453,
+      "CG": 18.219,
+      "MB": 18.527,
+      "MA": 18.65,
+      "MP": 18.256,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.581,
+          "p50": 18.344,
+          "p90": 19.181
+        },
+        "GE2": {
+          "p10": 17.744,
+          "p50": 18.554,
+          "p90": 19.357
+        },
+        "VP": {
+          "p10": 17.502,
+          "p50": 18.299,
+          "p90": 19.041
+        },
+        "VA": {
+          "p10": 17.639,
+          "p50": 18.453,
+          "p90": 19.183
+        },
+        "CG": {
+          "p10": 17.286,
+          "p50": 18.219,
+          "p90": 18.879
+        },
+        "MB": {
+          "p10": 17.763,
+          "p50": 18.527,
+          "p90": 19.346
+        },
+        "MA": {
+          "p10": 17.985,
+          "p50": 18.65,
+          "p90": 19.567
+        },
+        "MP": {
+          "p10": 17.614,
+          "p50": 18.256,
+          "p90": 19.21
+        }
+      },
+      "raw_model_total": 94.884,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 92.2,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 92.099,
+      "caption_shape_total": 92.015,
+      "total_reconciliation_delta": 0.085,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 92.016,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwwsqaal",
+      "corps": "Blue Stars",
+      "city": "La Crosse, WI",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "TBD",
+      "total": 88.042,
+      "GE": 35.399,
+      "Visual": 26.367,
+      "Music": 26.276,
+      "GE1": 17.667,
+      "GE2": 17.732,
+      "VP": 17.431,
+      "VA": 17.476,
+      "CG": 17.827,
+      "MB": 17.587,
+      "MA": 17.653,
+      "MP": 17.313,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.911,
+          "p50": 17.667,
+          "p90": 18.503
+        },
+        "GE2": {
+          "p10": 16.967,
+          "p50": 17.732,
+          "p90": 18.593
+        },
+        "VP": {
+          "p10": 16.633,
+          "p50": 17.431,
+          "p90": 18.179
+        },
+        "VA": {
+          "p10": 16.622,
+          "p50": 17.476,
+          "p90": 18.155
+        },
+        "CG": {
+          "p10": 16.916,
+          "p50": 17.827,
+          "p90": 18.505
+        },
+        "MB": {
+          "p10": 16.748,
+          "p50": 17.587,
+          "p90": 18.338
+        },
+        "MA": {
+          "p10": 17.002,
+          "p50": 17.653,
+          "p90": 18.575
+        },
+        "MP": {
+          "p10": 16.631,
+          "p50": 17.313,
+          "p90": 18.235
+        }
+      },
+      "raw_model_total": 90.716,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 88.9,
+      "prior_season_comparable_percent_through": 80.95238095238095,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 88.044,
+      "caption_shape_total": 87.343,
+      "total_reconciliation_delta": 0.7,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 87.343,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxadaa1",
+      "corps": "Spirit of Atlanta",
+      "city": "Atlanta, GA",
+      "division": "World Class",
+      "performance_order": 12,
+      "time": "TBD",
+      "total": 84.796,
+      "GE": 33.941,
+      "Visual": 24.857,
+      "Music": 25.998,
+      "GE1": 16.907,
+      "GE2": 17.034,
+      "VP": 16.585,
+      "VA": 16.533,
+      "CG": 16.596,
+      "MB": 16.994,
+      "MA": 17.177,
+      "MP": 17.825,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.066,
+          "p50": 16.907,
+          "p90": 17.633
+        },
+        "GE2": {
+          "p10": 16.308,
+          "p50": 17.034,
+          "p90": 17.875
+        },
+        "VP": {
+          "p10": 15.783,
+          "p50": 16.585,
+          "p90": 17.305
+        },
+        "VA": {
+          "p10": 15.701,
+          "p50": 16.533,
+          "p90": 17.2
+        },
+        "CG": {
+          "p10": 15.747,
+          "p50": 16.596,
+          "p90": 17.328
+        },
+        "MB": {
+          "p10": 16.211,
+          "p50": 16.994,
+          "p90": 17.805
+        },
+        "MA": {
+          "p10": 16.536,
+          "p50": 17.177,
+          "p90": 18.086
+        },
+        "MP": {
+          "p10": 17.119,
+          "p50": 17.825,
+          "p90": 18.688
+        }
+      },
+      "raw_model_total": 89.52,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 84.4,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 84.797,
+      "caption_shape_total": 85.121,
+      "total_reconciliation_delta": -0.325,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 13,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.122,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxa5aal",
+      "corps": "Music City",
+      "city": "Nashville, TN",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "TBD",
+      "total": 82.455,
+      "GE": 33.248,
+      "Visual": 24.577,
+      "Music": 24.63,
+      "GE1": 16.637,
+      "GE2": 16.611,
+      "VP": 16.18,
+      "VA": 16.407,
+      "CG": 16.567,
+      "MB": 16.023,
+      "MA": 16.57,
+      "MP": 16.666,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.804,
+          "p50": 16.637,
+          "p90": 17.375
+        },
+        "GE2": {
+          "p10": 15.879,
+          "p50": 16.611,
+          "p90": 17.444
+        },
+        "VP": {
+          "p10": 15.385,
+          "p50": 16.18,
+          "p90": 16.913
+        },
+        "VA": {
+          "p10": 15.573,
+          "p50": 16.407,
+          "p90": 17.082
+        },
+        "CG": {
+          "p10": 15.731,
+          "p50": 16.567,
+          "p90": 17.305
+        },
+        "MB": {
+          "p10": 15.212,
+          "p50": 16.023,
+          "p90": 16.821
+        },
+        "MA": {
+          "p10": 15.944,
+          "p50": 16.57,
+          "p90": 17.486
+        },
+        "MP": {
+          "p10": 15.95,
+          "p50": 16.666,
+          "p90": 17.521
+        }
+      },
+      "raw_model_total": 87.366,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 82.454,
+      "caption_shape_total": 83.644,
+      "total_reconciliation_delta": -1.19,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 16,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 83.644,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwxaeaa1",
+      "corps": "The Academy",
+      "city": "Tempe, AZ",
+      "division": "World Class",
+      "performance_order": 13,
+      "time": "TBD",
+      "total": 81.241,
+      "GE": 32.616,
+      "Visual": 24.131,
+      "Music": 24.494,
+      "GE1": 16.192,
+      "GE2": 16.424,
+      "VP": 16.028,
+      "VA": 16.062,
+      "CG": 16.171,
+      "MB": 15.99,
+      "MA": 16.623,
+      "MP": 16.375,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.357,
+          "p50": 16.192,
+          "p90": 16.924
+        },
+        "GE2": {
+          "p10": 15.709,
+          "p50": 16.424,
+          "p90": 17.293
+        },
+        "VP": {
+          "p10": 15.225,
+          "p50": 16.028,
+          "p90": 16.754
+        },
+        "VA": {
+          "p10": 15.184,
+          "p50": 16.062,
+          "p90": 16.722
+        },
+        "CG": {
+          "p10": 15.359,
+          "p50": 16.171,
+          "p90": 16.93
+        },
+        "MB": {
+          "p10": 15.172,
+          "p50": 15.99,
+          "p90": 16.776
+        },
+        "MA": {
+          "p10": 15.991,
+          "p50": 16.623,
+          "p90": 17.538
+        },
+        "MP": {
+          "p10": 15.642,
+          "p50": 16.375,
+          "p90": 17.226
+        }
+      },
+      "raw_model_total": 88.026,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 80.15,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 81.239,
+      "caption_shape_total": 82.13,
+      "total_reconciliation_delta": -0.89,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 17,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 82.13,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000iwx9aaat",
+      "corps": "Crossmen",
+      "city": "San Antonio, TX",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "TBD",
+      "total": 80.704,
+      "GE": 32.317,
+      "Visual": 23.899,
+      "Music": 24.488,
+      "GE1": 16.147,
+      "GE2": 16.17,
+      "VP": 15.871,
+      "VA": 15.849,
+      "CG": 16.078,
+      "MB": 15.956,
+      "MA": 16.524,
+      "MP": 16.495,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.291,
+          "p50": 16.147,
+          "p90": 16.847
+        },
+        "GE2": {
+          "p10": 15.468,
+          "p50": 16.17,
+          "p90": 17.031
+        },
+        "VP": {
+          "p10": 15.07,
+          "p50": 15.871,
+          "p90": 16.578
+        },
+        "VA": {
+          "p10": 14.967,
+          "p50": 15.849,
+          "p90": 16.48
+        },
+        "CG": {
+          "p10": 15.255,
+          "p50": 16.078,
+          "p90": 16.84
+        },
+        "MB": {
+          "p10": 15.123,
+          "p50": 15.956,
+          "p90": 16.715
+        },
+        "MA": {
+          "p10": 15.893,
+          "p50": 16.524,
+          "p90": 17.422
+        },
+        "MP": {
+          "p10": 15.784,
+          "p50": 16.495,
+          "p90": 17.351
+        }
+      },
+      "raw_model_total": 87.722,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 80.6,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 80.704,
+      "caption_shape_total": 80.788,
+      "total_reconciliation_delta": -0.085,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 7,
+      "prior_season_rank": 19,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 80.788,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 7,
+      "corps_key": "001j000000iwxaaaa1",
+      "corps": "Raiders",
+      "city": "Princeton, NJ",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "7:39 PM",
+      "total": 71.258,
+      "GE": 28.327,
+      "Visual": 21.549,
+      "Music": 21.382,
+      "GE1": 13.964,
+      "GE2": 14.363,
+      "VP": 14.376,
+      "VA": 14.686,
+      "CG": 14.037,
+      "MB": 14.47,
+      "MA": 14.177,
+      "MP": 14.117,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.218,
+          "p50": 13.964,
+          "p90": 14.722
+        },
+        "GE2": {
+          "p10": 13.624,
+          "p50": 14.363,
+          "p90": 15.215
+        },
+        "VP": {
+          "p10": 13.599,
+          "p50": 14.376,
+          "p90": 15.175
+        },
+        "VA": {
+          "p10": 13.688,
+          "p50": 14.686,
+          "p90": 15.307
+        },
+        "CG": {
+          "p10": 13.319,
+          "p50": 14.037,
+          "p90": 14.888
+        },
+        "MB": {
+          "p10": 13.496,
+          "p50": 14.47,
+          "p90": 15.108
+        },
+        "MA": {
+          "p10": 13.486,
+          "p50": 14.177,
+          "p90": 14.985
+        },
+        "MP": {
+          "p10": 13.289,
+          "p50": 14.117,
+          "p90": 14.941
+        }
+      },
+      "raw_model_total": 76.369,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 71.4,
+      "prior_season_comparable_percent_through": 76.19047619047619,
+      "prior_season_comparable_competition": "2025-dci-glassboro",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 71.26,
+      "caption_shape_total": 71.088,
+      "total_reconciliation_delta": 0.17,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 7,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.089,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 8,
+      "corps_key": "001j000000iwx9taad",
+      "corps": "Heat Wave",
+      "city": "Tampa Bay, FL",
+      "division": "Open Class",
+      "performance_order": 3,
+      "time": "7:22 PM",
+      "total": 57.151,
+      "GE": 23.024,
+      "Visual": 17.4,
+      "Music": 16.727,
+      "GE1": 10.85,
+      "GE2": 12.174,
+      "VP": 10.934,
+      "VA": 11.863,
+      "CG": 12.004,
+      "MB": 10.554,
+      "MA": 11.653,
+      "MP": 11.247,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 9.984,
+          "p50": 10.85,
+          "p90": 11.667
+        },
+        "GE2": {
+          "p10": 11.471,
+          "p50": 12.174,
+          "p90": 13.131
+        },
+        "VP": {
+          "p10": 10.093,
+          "p50": 10.934,
+          "p90": 11.849
+        },
+        "VA": {
+          "p10": 10.905,
+          "p50": 11.863,
+          "p90": 12.567
+        },
+        "CG": {
+          "p10": 11.157,
+          "p50": 12.004,
+          "p90": 12.822
+        },
+        "MB": {
+          "p10": 9.626,
+          "p50": 10.554,
+          "p90": 11.326
+        },
+        "MA": {
+          "p10": 10.885,
+          "p50": 11.653,
+          "p90": 12.475
+        },
+        "MP": {
+          "p10": 10.315,
+          "p50": 11.247,
+          "p90": 12.024
+        }
+      },
+      "raw_model_total": 55.587,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 62.325,
+      "prior_season_comparable_percent_through": 66.66666666666666,
+      "prior_season_comparable_competition": "2025-dci-southeastern-championship",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 57.153,
+      "caption_shape_total": 54.366,
+      "total_reconciliation_delta": 2.785,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 54.368,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

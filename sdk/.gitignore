@@ -1,0 +1,20 @@
+event-slug-reconciliation.json
+event-slug-verification-cache.json
+dci-relational.backup-*.db
+event-migration-plan.json
+dci-relational.db-wal
+dci-relational.db-shm
+dci-relational.db
+media-cache.db
+media-cache.db-wal
+media-cache.db-shm
+
+# Local SQLite databases (data, not source) — never track
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+*.db.backup*
+*.backup-pre-dedupe
+sdk-colab.zip
+*.zip

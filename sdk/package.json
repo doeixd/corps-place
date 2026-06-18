@@ -1,0 +1,48 @@
+{
+  "name": "@corps-place/sdk",
+  "version": "0.1.0",
+  "description": "Effect-TS powered SDK for the DCI API with rich caching and resilience primitives.",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "push:data": "tsx scripts/pushData.ts",
+    "pull:data": "tsx scripts/pullData.ts",
+    "pull:read-model": "tsx scripts/pullData.ts read-model"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1068.0",
+    "@aws-sdk/lib-storage": "^3.1068.0",
+    "@browserbasehq/sdk": "2.14.0",
+    "@doeixd/make-with": "^0.0.5",
+    "@effect/platform-node": "4.0.0-beta.79",
+    "@effect/sql-libsql": "4.0.0-beta.79",
+    "@libsql/client": "^0.15.0",
+    "@opencode-ai/sdk": "^1.17.7",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "better-sqlite3": "^12.5.0",
+    "cheerio": "1.0.0-rc.12",
+    "effect": "4.0.0-beta.79",
+    "onnxruntime-node": "^1.23.2",
+    "pdf-to-img": "^6.2.0",
+    "puppeteer-core": "^24.15.0",
+    "unpdf": "^1.6.2",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "volta": {
+    "node": "20.20.0"
+  }
+}

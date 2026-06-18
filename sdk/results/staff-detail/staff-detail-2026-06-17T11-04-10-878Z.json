@@ -1,0 +1,487 @@
+{
+  "scrapedAt": "2026-06-17T11-04-10-878Z",
+  "apply": true,
+  "totBio": 53,
+  "totPhoto": 78,
+  "corps": [
+    {
+      "corpsKey": "001j000000iwwsqaal",
+      "name": "Blue Stars",
+      "staffPageUrl": "http://www.bluestars.org/staff",
+      "targets": 571,
+      "detailLinks": 80,
+      "biosFilled": 53,
+      "photosFilled": 78,
+      "fills": [
+        {
+          "name": "Jim Wunderlich",
+          "url": "http://www.bluestars.org/staff-1/2020-jim-wunderlich",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Lizzie Miller",
+          "url": "http://www.bluestars.org/staff-1/2022-lizzie-miller",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Steve Stueck",
+          "url": "http://www.bluestars.org/staff-1/2022-steve-stueck",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Heather Tollers",
+          "url": "http://www.bluestars.org/staff-1/2022-heather-tollers",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Jack Pantaleo",
+          "url": "http://www.bluestars.org/staff-1/2024-jack-pantaleo",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Mike Andrews",
+          "url": "http://www.bluestars.org/staff-1/2023-mike-andrews",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Fred Feeney",
+          "url": "http://www.bluestars.org/staff-1/2022-fred-feeney",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Kyle Gillikin",
+          "url": "http://www.bluestars.org/staff-1/2024-kyle-gillikin",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Aaron Meyer",
+          "url": "http://www.bluestars.org/staff-1/2025-aaron-meyer",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Samantha Jensen",
+          "url": "http://www.bluestars.org/staff-1/2026-samantha-jensen",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Ashley Elliott",
+          "url": "http://www.bluestars.org/staff-1/2026-ashley-elliott",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Emilia Sepulveda",
+          "url": "http://www.bluestars.org/staff-1/2026-wesley-littleton-dxz9r-w6xzb",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Travis Larson",
+          "url": "http://www.bluestars.org/staff-1/2025-travis-larson",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Christian Carichner",
+          "url": "http://www.bluestars.org/staff-1/2026-christian-carichner",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jacob Carpenter",
+          "url": "http://www.bluestars.org/staff-1/2026-jacob-carpenter",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Austin Cilone",
+          "url": "http://www.bluestars.org/staff-1/2026-austin-cilone",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Brandon Clark",
+          "url": "http://www.bluestars.org/staff-1/2026-brandon-clark",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Olivia Dumouchelle",
+          "url": "http://www.bluestars.org/staff-1/2026-olivia-dumouchelle",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jordan English",
+          "url": "http://www.bluestars.org/staff-1/2024-jordan-english",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Cora Gilreath",
+          "url": "http://www.bluestars.org/staff-1/2025-cora-gilreath",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Elise Hawkes",
+          "url": "http://www.bluestars.org/staff-1/2026-elise-hawkes",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Ian Hoffman",
+          "url": "http://www.bluestars.org/staff-1/2024-ian-hoffman",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Calvin Householder",
+          "url": "http://www.bluestars.org/staff-1/2026-calvin-householder",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jared Kaufman",
+          "url": "http://www.bluestars.org/staff-1/2026-jared-kaufman",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Dr. Jason Rinehart",
+          "url": "http://www.bluestars.org/staff-1/2024-jason-rinehart",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Stefan Roose",
+          "url": "http://www.bluestars.org/staff-1/2026-stefan-roose",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Tom Santiago",
+          "url": "http://www.bluestars.org/staff-1/2026-tom-santiago",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "John Kregler",
+          "url": "http://www.bluestars.org/staff-1/2026-john-kregler",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Malan Messemore",
+          "url": "http://www.bluestars.org/staff-1/2025-malan-messemore",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Anthony Garcia",
+          "url": "http://www.bluestars.org/staff-1/2023-anthony-garcia",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Justin Turner",
+          "url": "http://www.bluestars.org/staff-1/2023-justin-turner",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Kristen Zotti",
+          "url": "http://www.bluestars.org/staff-1/2023-kristen-zotti",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Seth Thomas",
+          "url": "http://www.bluestars.org/staff-1/2023-seth-thomas",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Joshua De Guzman",
+          "url": "http://www.bluestars.org/staff-1/2023-joshua-deguzman",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Krystal Cookie Shepherd-Greene",
+          "url": "http://www.bluestars.org/staff-1/2023-natasha-rupert-l5wds-ranbd-z27sa-fa43n",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Brittany Shepherd",
+          "url": "http://www.bluestars.org/staff-1/2023-natasha-rupert-l5wds-ranbd-z27sa",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Alex Serrano",
+          "url": "http://www.bluestars.org/staff-1/2024-alex-serrano",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Charlee Facundo",
+          "url": "http://www.bluestars.org/staff-1/2023-natasha-rupert-l5wds-ranbd",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "David Arvin",
+          "url": "http://www.bluestars.org/staff-1/2026-david-arvin",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Marina Attalla",
+          "url": "http://www.bluestars.org/staff-1/2026-marina-attalla",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Jorden Bailey",
+          "url": "http://www.bluestars.org/staff-1/2026-jorden-bailey",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jacob Gall",
+          "url": "http://www.bluestars.org/staff-1/jake-gall",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Dave Dumont",
+          "url": "http://www.bluestars.org/staff-1/2026-dave-dumont",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Alex Gilbert",
+          "url": "http://www.bluestars.org/staff-1/2026-alex-gilbert",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "John Wolff",
+          "url": "http://www.bluestars.org/staff-1/2026-john-wolff",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Omi Batan",
+          "url": "http://www.bluestars.org/staff-1/2026-john-wolff-emwph",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Avery Melucci",
+          "url": "http://www.bluestars.org/staff-1/2026-avery-melucci",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Mauricio González",
+          "url": "http://www.bluestars.org/staff-1/2026-mauricio-gonzlez",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Joe Ciancimino",
+          "url": "http://www.bluestars.org/staff-1/2026-joe-ciancimino",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Patrick Horan",
+          "url": "http://www.bluestars.org/staff-1/2026-joe-ciancimino-btmxa",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Wil Wright",
+          "url": "http://www.bluestars.org/staff-1/2026-wil-wright",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Matthew Romero",
+          "url": "http://www.bluestars.org/staff-1/2026-matt-romero",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Kobe Sanders",
+          "url": "http://www.bluestars.org/staff-1/2026-kobe-sanders",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Haruto Kitade",
+          "url": "http://www.bluestars.org/staff-1/2026-haruto-kitade",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "René Gonzalez",
+          "url": "http://www.bluestars.org/staff-1/2026-rene-gonzalez",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jordan Garza",
+          "url": "http://www.bluestars.org/staff-1/2025-jordan-garza",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "JP Ruiz",
+          "url": "http://www.bluestars.org/staff-1/2026-jp-ruiz",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Clark Floer",
+          "url": "http://www.bluestars.org/staff-1/2026-clark-floer",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Adam Whoolery",
+          "url": "http://www.bluestars.org/staff-1/2026-adam-whoolery",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Trysten Cook",
+          "url": "http://www.bluestars.org/staff-1/2026-trysten-cook",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Sophia Thomason",
+          "url": "http://www.bluestars.org/staff-1/2026-sophia-thomason",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Roger Marquis",
+          "url": "http://www.bluestars.org/staff-1/2024-roger-marquis",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Luke Zamprelli",
+          "url": "http://www.bluestars.org/staff-1/2022-luke-zamprelli",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Tyler Propfe",
+          "url": "http://www.bluestars.org/staff-1/2026-tyler-propfe",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Jeff Whipple",
+          "url": "http://www.bluestars.org/staff-1/2026-hannah-kirby-wnery-ps4md",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Brian Soules",
+          "url": "http://www.bluestars.org/staff-1/2026-brian-soules",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jonny Zollo",
+          "url": "http://www.bluestars.org/staff-1/2026-jonny-zollo",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Brad Donoris",
+          "url": "http://www.bluestars.org/staff-1/2026-brad-donoris",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jacoby Taylor",
+          "url": "http://www.bluestars.org/staff-1/2026-jacoby-taylor",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Cheyanne Dougherty",
+          "url": "http://www.bluestars.org/staff-1/2026-cheyanne-dougherty",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Adara Joiner",
+          "url": "http://www.bluestars.org/staff-1/2026-adara-joiner",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Chris Hardesty",
+          "url": "http://www.bluestars.org/staff-1/2026-chris-hardesty",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Matt Katafiasz",
+          "url": "http://www.bluestars.org/staff-1/2026-matt-katafiasz",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Aaron Spiegel",
+          "url": "http://www.bluestars.org/staff-1/2026-aaron-spiegel",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Will Carroll",
+          "url": "http://www.bluestars.org/staff-1/2026-will-carroll",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Ryan Stratford",
+          "url": "http://www.bluestars.org/staff-1/2026-ryan-stratford",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Jason Schmidt",
+          "url": "http://www.bluestars.org/staff-1/2026-jason-schmidt",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Yukari Nakazawa",
+          "url": "http://www.bluestars.org/staff-1/2026-yukari-nakazawa",
+          "bio": false,
+          "photo": true
+        }
+      ]
+    }
+  ]
+}

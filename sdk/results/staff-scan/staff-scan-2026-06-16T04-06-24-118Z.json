@@ -1,0 +1,1089 @@
+{
+  "scrapedAt": "2026-06-16T04-06-24-118Z",
+  "seasons": [
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "count": 139,
+  "corps": [
+    {
+      "corpsKey": "001j000000i6i9saav",
+      "name": "Blue Devils",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwwsoaal",
+      "name": "Blue Knights",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwwsqaal",
+      "name": "Blue Stars",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwwsraal",
+      "name": "Bluecoats",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwwssaal",
+      "name": "Boston Crusaders",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx91aad",
+      "name": "Carolina Crown",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx98aad",
+      "name": "Colts",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx9aaat",
+      "name": "Crossmen",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx9oaad",
+      "name": "Genesis",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx9waad",
+      "name": "Jersey Surf",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000i6lenaa3",
+      "name": "Madison Scouts",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxa3aal",
+      "name": "Mandarins",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxa5aal",
+      "name": "Music City",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxa6aal",
+      "name": "Oregon Crusaders",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxa7aal",
+      "name": "Pacific Crest",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000h3xrnaav",
+      "name": "Phantom Regiment",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxa8aal",
+      "name": "Pioneer",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000h3xwcaav",
+      "name": "Santa Clara Vanguard",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx93aad",
+      "name": "Seattle Cascades",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxacaa1",
+      "name": "Spartans",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxadaa1",
+      "name": "Spirit of Atlanta",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxaeaa1",
+      "name": "The Academy",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000i6kfgaan",
+      "name": "The Cadets",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxafaa1",
+      "name": "The Cavaliers",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxajaa1",
+      "name": "Troopers",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwwslaal",
+      "name": "7th Regiment",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "alisal-union-school-district-marching-band",
+      "name": "Alisal Union School District",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "alisal-union-school-district-all-star-academy",
+      "name": "Alisal Union School District All-Star Academy",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "allegheny-eclipse",
+      "name": "Allegheny Eclipse",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "apollo-marching-theatre",
+      "name": "Apollo Marching Theatre",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "arsenal",
+      "name": "Arsenal",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwwsnaal",
+      "name": "Atlanta CV",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "bkxperience",
+      "name": "BKXperience",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "baldwinsville-high-school-band",
+      "name": "Baldwinsville High School Band",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000i6jmbaaf",
+      "name": "Blue Devils B",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000i6kalaa3",
+      "name": "Blue Devils C",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "brig-juice-brass",
+      "name": "Brig Juice Brass",
+      "staffPageUrl": null,
+      "note": "all seasons already done (skipped)",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "buccaneer-banner-brass",
+      "name": "Buccaneer Banner Brass",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "buccaneers-alumni",
+      "name": "Buccaneers Alumni",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "0010a00001gzos2aah",
+      "name": "Bushwackers",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "bushwackers-drum-corps",
+      "name": "Bushwackers Drum Corps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "ct-alumni",
+      "name": "CT Alumni",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "calgary-round-up-band",
+      "name": "Calgary Round-Up Band",
+      "staffPageUrl": "https://www.roundupband.org/staff",
+      "members": 0,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000jtq2zaad",
+      "name": "Calgary Stampede Showband",
+      "staffPageUrl": "https://corporate.calgarystampede.com/about-us/who-we-are/board-of-directors",
+      "members": 19,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "calgary-stetson-show-band",
+      "name": "Calgary Stetson Show Band",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx92aad",
+      "name": "Carolina Gold",
+      "staffPageUrl": "http://www.carolinagold.org/staff",
+      "members": 7,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "chien-kuo",
+      "name": "Chien Kuo",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "staffPageUrl": "http://www.chopsinc.com/staff",
+      "members": 11,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwx94aad",
+      "name": "Cincinnati Tradition",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "city-sound",
+      "name": "City Sound",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx97aad",
+      "name": "Colt Cadets",
+      "staffPageUrl": "http://www.colts.org/people-staff-admin",
+      "members": 24,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwx99aad",
+      "name": "Columbians",
+      "staffPageUrl": "http://www.columbiansdrumcorps.org/administration",
+      "members": 11,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000hiripaaz",
+      "name": "Columbus Saints",
+      "staffPageUrl": "http://www.columbussaints.org",
+      "members": 42,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "0015b00002eebx5aaf",
+      "name": "Connecticut Hurricanes",
+      "staffPageUrl": "https://cthurricanes.org/board-of-directors/",
+      "members": 43,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx9baat",
+      "name": "Crusaders Senior",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "crusaders-senior-drum-bugle-corps",
+      "name": "Crusaders Senior Drum & Bugle Corps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "en-corps-by-en-rich-ment",
+      "name": "EN-CORPS by EN-RICH-MENT",
+      "staffPageUrl": "https://www.en-rich-ment.org/our-team",
+      "members": 36,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "0010a00001itge1aah",
+      "name": "Encorps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "encorps",
+      "name": "Encorps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx9daat",
+      "name": "Eruption",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000gbtqyaac",
+      "name": "Fusion Core",
+      "staffPageUrl": "https://www.fusioncore.org/our-team",
+      "members": 82,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx9paad",
+      "name": "Gold",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx9qaad",
+      "name": "Golden Empire",
+      "staffPageUrl": "http://www.geperformingarts.org/staff",
+      "members": 30,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwx9raad",
+      "name": "Govenaires",
+      "staffPageUrl": "https://www.govenaires.org/staff",
+      "members": 63,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "green-beret-marching-band",
+      "name": "Green Beret Marching Band",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx9saad",
+      "name": "Guardians",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "0015b00001mpuwcaak",
+      "name": "Hawthorne Caballeros",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "hawthorne-caballeros-alumni",
+      "name": "Hawthorne Caballeros Alumni",
+      "staffPageUrl": "https://hawthornecaballeros.org/design-team-educational-staff/",
+      "members": 59,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwx9taad",
+      "name": "Heat Wave",
+      "staffPageUrl": "https://www.heat-wave.org/staff",
+      "members": 76,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "high-school-affiliated-to-bit",
+      "name": "High School Affiliated to BIT",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "hurricanes",
+      "name": "Hurricanes",
+      "staffPageUrl": "https://cthurricanes.org/board-of-directors/",
+      "members": 40,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000hirhqaaz",
+      "name": "Impact",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwx9uaad",
+      "name": "Impulse",
+      "staffPageUrl": "http://www.impulseyoutharts.org/2026-corps-staff.html",
+      "members": 9,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwx9vaad",
+      "name": "Incognito",
+      "staffPageUrl": "http://incognitodbc.org/staff",
+      "members": 0,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "staffPageUrl": "https://www.kilties.com",
+      "members": 28,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "legacy-drum-bugle-corps",
+      "name": "Legacy Drum & Bugle Corps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxa0aal",
+      "name": "Legends",
+      "staffPageUrl": "http://www.legendspaa.org/staff",
+      "members": 0,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwxa1aal",
+      "name": "Les Stentors",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxa2aal",
+      "name": "Louisiana Stars",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "mbi",
+      "name": "MBI",
+      "staffPageUrl": "https://mbiarts.org/board/",
+      "members": 6,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "staffPageUrl": "https://www.memphisbluesdc.org/staff",
+      "members": 29,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "staffPageUrl": "https://mnbrass.org/staff",
+      "members": 1,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "0015b00002e2gtpaa3",
+      "name": "New York Skyliners",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "north-star",
+      "name": "North Star",
+      "staffPageUrl": "https://sites.google.com/about/staff",
+      "members": 0,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "staffPageUrl": "https://www.northernlightsmi.org/staff",
+      "members": 9,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "patria",
+      "name": "Patria",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "phoenix",
+      "name": "Phoenix",
+      "staffPageUrl": "https://www.phoenixcorps.org/staff",
+      "members": 4,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "rcr-street-club",
+      "name": "RCR Street Club",
+      "staffPageUrl": "https://www.rivercityrhythm.org/executive-staff",
+      "members": 5,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "racine-scouts",
+      "name": "Racine Scouts",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxaaaa1",
+      "name": "Raiders",
+      "staffPageUrl": "http://www.raidersdbc.org/staff",
+      "members": 3,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "0010a00001e2pfhaam",
+      "name": "Reading Buccaneers",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "rhythm-in-blue",
+      "name": "Rhythm IN BLUE",
+      "staffPageUrl": "https://bluecoats.com/staff",
+      "members": 411,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000qzs1qaaf",
+      "name": "River City Rhythm",
+      "staffPageUrl": "http://rivercityrhythm.org",
+      "members": 16,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "rocky-mountain-brassworks",
+      "name": "Rocky Mountain Brassworks",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000cap31aaa",
+      "name": "Rogues Hollow Regiment",
+      "staffPageUrl": "http://rogueshollowregiment.com/staff",
+      "members": 46,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "rosemont-king-cobras",
+      "name": "Rosemont King Cobras",
+      "staffPageUrl": "https://cavaliers.org/our-team",
+      "members": 34,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "sacramento-freelancers-drum-bugle-corps",
+      "name": "Sacramento Freelancers Drum & Bugle Corps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j0000012tpxmaa2",
+      "name": "Shadow",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "socal-dream",
+      "name": "SoCal Dream",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "staffPageUrl": "https://web.archive.org/web/20260120145801/https://www.spbb.org/sosp.html",
+      "members": 7,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000dlalkaag",
+      "name": "Southern Knights",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "southern-knights",
+      "name": "Southern Knights",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxabaa1",
+      "name": "Southwind",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "spark",
+      "name": "Spark",
+      "staffPageUrl": "https://www.fusioncore.org/our-team",
+      "members": 92,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "sparta-ignite",
+      "name": "Sparta Ignite",
+      "staffPageUrl": "https://bapam.org/bod-admin",
+      "members": 12,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "name": "Steel City Ambassadors",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "taipei-yuehfu",
+      "name": "Taipei Yuehfu",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j0000012y6bqaac",
+      "name": "The Battalion",
+      "staffPageUrl": "https://www.battalioncorps.org/staff-new",
+      "members": 44,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "blue-way-summer-arts-camp",
+      "name": "The Blue Way",
+      "staffPageUrl": "https://bluecoats.com/theblueway",
+      "members": 62,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "blue-way-middle-school-honor-band",
+      "name": "The Blue Way Middle School Honor Band",
+      "staffPageUrl": "https://bluecoats.com/theblueway",
+      "members": 62,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j0000012sixfaaa",
+      "name": "The Company",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "marching-elite",
+      "name": "The Marching Elite",
+      "staffPageUrl": "https://www.themarchingelite.org/staff",
+      "members": 1,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwxaiaa1",
+      "name": "Thunder",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "troopers-legacy-corps",
+      "name": "Troopers Legacy Corps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "u-s-marine-drum-bugle-corps",
+      "name": "U.S. Marine Drum & Bugle Corps",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000iwxakaa1",
+      "name": "Vanguard Cadets",
+      "staffPageUrl": "https://web.archive.org/web/20221204225814/http://www.scvanguard.org",
+      "members": 21,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "001j000000iwx95aad",
+      "name": "Vessel",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001j000000f17bwaaa",
+      "name": "Watchmen",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "001jw00000d0zlniaj",
+      "name": "White Sabers",
+      "staffPageUrl": "https://www.whitesabers.org/team",
+      "members": 50,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "0010a00001irt8maat",
+      "name": "Zephyrus",
+      "staffPageUrl": "https://www.zephyrusarts.org/corps.html",
+      "members": 4,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "staffPageUrl": "https://www.zephyrusarts.org/corps.html",
+      "members": 4,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "amoskeag-sound",
+      "name": "Amoskeag Sound",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "bluecoats-rhythm-in-blue",
+      "name": "Bluecoats Rhythm IN BLUE",
+      "staffPageUrl": null,
+      "note": "no staff page discovered",
+      "members": 0,
+      "seasons": 0
+    },
+    {
+      "corpsKey": "mandarins-alumni",
+      "name": "Mandarins Alumni",
+      "staffPageUrl": "https://www.mandarins.org/staff",
+      "members": 114,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "northern-lights",
+      "name": "Northern Lights",
+      "staffPageUrl": "https://www.northernlightsmi.org/staff",
+      "members": 9,
+      "seasons": 14
+    },
+    {
+      "corpsKey": "phantom-regiment-alumni-corps",
+      "name": "Phantom Regiment Alumni Corps",
+      "staffPageUrl": "https://regiment.org/about/staff",
+      "members": 38,
+      "seasons": 14
+    }
+  ]
+}

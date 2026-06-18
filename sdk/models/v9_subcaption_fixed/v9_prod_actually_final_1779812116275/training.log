@@ -1,0 +1,1625 @@
+[2026-05-26T16:15:16.277Z] [log] Console log file: models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\training.log
+[2026-05-26T16:15:16.278Z] [warn] coverage-sharpness=4 is aggressive; if training gets unstable, retry with --coverage-sharpness 3.0
+[2026-05-26T16:15:16.278Z] [warn] accuracy-trunk-units=256 increases head capacity; watch for early val plateau vs falling train loss
+[2026-05-26T16:15:16.282Z] [log] Loading V9 sequence data...
+[2026-05-26T16:15:17.467Z] [log] Validation split (date-forward) grouped by show/date: 6906 train rows, 363 validation rows.
+[2026-05-26T16:15:17.510Z] [log] Saved normalization stats to ./results/v9-subcaption-target-norm.json
+[2026-05-26T16:15:17.586Z] [log] 
+AUDIT SUCCESS: Leakage prevention verified for caption blocks
+[2026-05-26T16:15:17.597Z] [log] V10 Splits -> Train: 6906, Val: 363, Test: 52 
+[2026-05-26T16:15:17.597Z] [log] Baselines(monitoring forecast MAE): zero = 16.4356, mean = 2.0004, ema = 1.1564, quad = 0.6462
+[2026-05-26T16:15:17.641Z] [warn] Orthogonal initializer is being called on a matrix with more than 2000 (65536) elements: Slowness may result.
+[2026-05-26T16:15:18.010Z] [warn] Orthogonal initializer is being called on a matrix with more than 2000 (65536) elements: Slowness may result.
+[2026-05-26T16:15:18.332Z] [warn] Orthogonal initializer is being called on a matrix with more than 2000 (16384) elements: Slowness may result.
+[2026-05-26T16:15:18.425Z] [warn] Orthogonal initializer is being called on a matrix with more than 2000 (16384) elements: Slowness may result.
+[2026-05-26T16:15:18.543Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.544Z] [log] Layer (type)               Input Shape                 Output shape             Param #     Receives inputs        
+[2026-05-26T16:15:18.544Z] [log] ===================================================================================================================
+[2026-05-26T16:15:18.545Z] [log] sequence (InputLayer)      [[null,15,101]]             [null,15,101]            0                                  
+[2026-05-26T16:15:18.545Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.545Z] [log] bidirectional_Bidirectiona [[null,15,101]]             [null,15,256]            235520      sequence[0][0]         
+[2026-05-26T16:15:18.546Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.546Z] [log] layer_normalization_LayerN [[null,15,256]]             [null,15,256]            512         bidirectional_Bidirecti
+[2026-05-26T16:15:18.546Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.546Z] [log] bidirectional_Bidirectiona [[null,15,256]]             [null,15,128]            164352      layer_normalization_Lay
+[2026-05-26T16:15:18.546Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.546Z] [log] layer_normalization_LayerN [[null,15,128]]             [null,15,128]            256         bidirectional_Bidirecti
+[2026-05-26T16:15:18.546Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.546Z] [log] dense_Dense1 (Dense)       [[null,15,128]]             [null,15,1]              129         layer_normalization_Lay
+[2026-05-26T16:15:18.546Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.547Z] [log] reshape_Reshape1 (Reshape) [[null,15,1]]               [null,15]                0           dense_Dense1[0][0]     
+[2026-05-26T16:15:18.547Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.547Z] [log] mask (InputLayer)          [[null,15]]                 [null,15]                0                                  
+[2026-05-26T16:15:18.547Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.547Z] [log] masked_softmax_MaskedSoftm [[null,15],[null,15]]       [null,15]                0           reshape_Reshape1[0][0] 
+[2026-05-26T16:15:18.547Z] [log]                                                                                             mask[0][0]             
+[2026-05-26T16:15:18.547Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.548Z] [log] judge_ids (InputLayer)     [[null,8]]                  [null,8]                 0                                  
+[2026-05-26T16:15:18.548Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.548Z] [log] agnostic_show_id (InputLay [[null,1]]                  [null,1]                 0                                  
+[2026-05-26T16:15:18.548Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.548Z] [log] reshape_Reshape2 (Reshape) [[null,15]]                 [null,15,1]              0           masked_softmax_MaskedSo
+[2026-05-26T16:15:18.549Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.549Z] [log] judge_embedding (Embedding [[null,8]]                  [null,8,24]              5880        judge_ids[0][0]        
+[2026-05-26T16:15:18.549Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.549Z] [log] agnostic_show_embedding (E [[null,1]]                  [null,1,12]              4188        agnostic_show_id[0][0] 
+[2026-05-26T16:15:18.549Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.550Z] [log] attention_pool (AttentionP [[null,15,1],[null,15,128]] [null,128]               0           reshape_Reshape2[0][0] 
+[2026-05-26T16:15:18.550Z] [log]                                                                                             layer_normalization_Lay
+[2026-05-26T16:15:18.550Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.550Z] [log] static (InputLayer)        [[null,187]]                [null,187]               0                                  
+[2026-05-26T16:15:18.551Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.551Z] [log] flatten_Flatten1 (Flatten) [[null,8,24]]               [null,192]               0           judge_embedding[0][0]  
+[2026-05-26T16:15:18.552Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.552Z] [log] baseline_recap (InputLayer [[null,8]]                  [null,8]                 0                                  
+[2026-05-26T16:15:18.552Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.552Z] [log] last_step (LastStepLayer)  [[null,15,101]]             [null,101]               0           sequence[0][0]         
+[2026-05-26T16:15:18.552Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.553Z] [log] flatten_Flatten3 (Flatten) [[null,1,12]]               [null,12]                0           agnostic_show_embedding
+[2026-05-26T16:15:18.553Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.553Z] [log] concatenate_Concatenate1 ( [[null,128],[null,187],[nul [null,628]               0           attention_pool[0][0]   
+[2026-05-26T16:15:18.553Z] [log]                                                                                             static[0][0]           
+[2026-05-26T16:15:18.553Z] [log]                                                                                             flatten_Flatten1[0][0] 
+[2026-05-26T16:15:18.553Z] [log]                                                                                             baseline_recap[0][0]   
+[2026-05-26T16:15:18.553Z] [log]                                                                                             last_step[0][0]        
+[2026-05-26T16:15:18.554Z] [log]                                                                                             flatten_Flatten3[0][0] 
+[2026-05-26T16:15:18.554Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.554Z] [log] dense_Dense2 (Dense)       [[null,628]]                [null,512]               322048      concatenate_Concatenate
+[2026-05-26T16:15:18.554Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.554Z] [log] dropout_Dropout1 (Dropout) [[null,512]]                [null,512]               0           dense_Dense2[0][0]     
+[2026-05-26T16:15:18.554Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.554Z] [log] dense_Dense3 (Dense)       [[null,512]]                [null,256]               131328      dropout_Dropout1[0][0] 
+[2026-05-26T16:15:18.554Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.554Z] [log] dropout_Dropout2 (Dropout) [[null,256]]                [null,256]               0           dense_Dense3[0][0]     
+[2026-05-26T16:15:18.554Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.554Z] [log] strength (Dense)           [[null,128]]                [null,24]                3096        attention_pool[0][0]   
+[2026-05-26T16:15:18.554Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.555Z] [log] corps_id (InputLayer)      [[null,1]]                  [null,1]                 0                                  
+[2026-05-26T16:15:18.555Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.555Z] [log] concatenate_Concatenate2 ( [[null,256],[null,187],[nul [null,467]               0           dropout_Dropout2[0][0] 
+[2026-05-26T16:15:18.555Z] [log]                                                                                             static[0][0]           
+[2026-05-26T16:15:18.555Z] [log]                                                                                             strength[0][0]         
+[2026-05-26T16:15:18.555Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.555Z] [log] corps_embedding (Embedding [[null,1]]                  [null,1,20]              14180       corps_id[0][0]         
+[2026-05-26T16:15:18.555Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.555Z] [log] accuracy_trunk (Dense)     [[null,467]]                [null,256]               119808      concatenate_Concatenate
+[2026-05-26T16:15:18.555Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.556Z] [log] flatten_Flatten2 (Flatten) [[null,1,20]]               [null,20]                0           corps_embedding[0][0]  
+[2026-05-26T16:15:18.556Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.556Z] [log] dropout_Dropout3 (Dropout) [[null,256]]                [null,256]               0           accuracy_trunk[0][0]   
+[2026-05-26T16:15:18.556Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.556Z] [log] judge_bias_raw (Dense)     [[null,192]]                [null,8]                 1544        flatten_Flatten1[0][0] 
+[2026-05-26T16:15:18.556Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.556Z] [log] judge_bias_scale (InputLay [[null,1]]                  [null,1]                 0                                  
+[2026-05-26T16:15:18.556Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.556Z] [log] corps_corr_raw (Dense)     [[null,20]]                 [null,8]                 168         flatten_Flatten2[0][0] 
+[2026-05-26T16:15:18.556Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.557Z] [log] corps_scale (InputLayer)   [[null,1]]                  [null,1]                 0                                  
+[2026-05-26T16:15:18.557Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.557Z] [log] history_len (InputLayer)   [[null,1]]                  [null,1]                 0                                  
+[2026-05-26T16:15:18.557Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.557Z] [log] delta_q50_base (Dense)     [[null,256]]                [null,8]                 2056        dropout_Dropout3[0][0] 
+[2026-05-26T16:15:18.557Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.557Z] [log] judge_bias_gated (LambdaSc [[null,8],[null,1]]         [null,8]                 0           judge_bias_raw[0][0]   
+[2026-05-26T16:15:18.557Z] [log]                                                                                             judge_bias_scale[0][0] 
+[2026-05-26T16:15:18.557Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.557Z] [log] corps_corr_gated (LambdaSc [[null,8],[null,1]]         [null,8]                 0           corps_corr_raw[0][0]   
+[2026-05-26T16:15:18.557Z] [log]                                                                                             corps_scale[0][0]      
+[2026-05-26T16:15:18.557Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.557Z] [log] width_concat (Concatenate) [[null,467],[null,192],[nul [null,660]               0           concatenate_Concatenate
+[2026-05-26T16:15:18.558Z] [log]                                                                                             flatten_Flatten1[0][0] 
+[2026-05-26T16:15:18.558Z] [log]                                                                                             history_len[0][0]      
+[2026-05-26T16:15:18.558Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.558Z] [log] delta_q50 (Add)            [[null,8],[null,8],[null,8] [null,8]                 0           delta_q50_base[0][0]   
+[2026-05-26T16:15:18.558Z] [log]                                                                                             judge_bias_gated[0][0] 
+[2026-05-26T16:15:18.558Z] [log]                                                                                             corps_corr_gated[0][0] 
+[2026-05-26T16:15:18.558Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.558Z] [log] q10_width_raw (Dense)      [[null,660]]                [null,8]                 5288        width_concat[0][0]     
+[2026-05-26T16:15:18.558Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.558Z] [log] q10_width (Activation)     [[null,8]]                  [null,8]                 0           q10_width_raw[0][0]    
+[2026-05-26T16:15:18.558Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.558Z] [log] q90_width_raw (Dense)      [[null,660]]                [null,8]                 5288        width_concat[0][0]     
+[2026-05-26T16:15:18.559Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.559Z] [log] recap_head (RecapLayer)    [[null,8],[null,8]]         [null,8]                 0           delta_q50[0][0]        
+[2026-05-26T16:15:18.559Z] [log]                                                                                             baseline_recap[0][0]   
+[2026-05-26T16:15:18.559Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.559Z] [log] q10_width_neg (NegationLay [[null,8]]                  [null,8]                 0           q10_width[0][0]        
+[2026-05-26T16:15:18.559Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.559Z] [log] q90_width (Activation)     [[null,8]]                  [null,8]                 0           q90_width_raw[0][0]    
+[2026-05-26T16:15:18.559Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.559Z] [log] category_head (CategoryLay [[null,8]]                  [null,3]                 0           recap_head[0][0]       
+[2026-05-26T16:15:18.559Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.560Z] [log] q10_delta (Add)            [[null,8],[null,8]]         [null,8]                 0           delta_q50[0][0]        
+[2026-05-26T16:15:18.560Z] [log]                                                                                             q10_width_neg[0][0]    
+[2026-05-26T16:15:18.560Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.560Z] [log] q90_delta (Add)            [[null,8],[null,8]]         [null,8]                 0           delta_q50[0][0]        
+[2026-05-26T16:15:18.560Z] [log]                                                                                             q90_width[0][0]        
+[2026-05-26T16:15:18.560Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.560Z] [log] total_head (TotalLayer)    [[null,3]]                  [null,1]                 0           category_head[0][0]    
+[2026-05-26T16:15:18.560Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.561Z] [log] output (Concatenate)       [[null,8],[null,8],[null,8] [null,36]                0           q10_delta[0][0]        
+[2026-05-26T16:15:18.561Z] [log]                                                                                             delta_q50[0][0]        
+[2026-05-26T16:15:18.561Z] [log]                                                                                             q90_delta[0][0]        
+[2026-05-26T16:15:18.561Z] [log]                                                                                             recap_head[0][0]       
+[2026-05-26T16:15:18.561Z] [log]                                                                                             category_head[0][0]    
+[2026-05-26T16:15:18.561Z] [log]                                                                                             total_head[0][0]       
+[2026-05-26T16:15:18.561Z] [log] ===================================================================================================================
+[2026-05-26T16:15:18.562Z] [log] Total params: 1015641
+[2026-05-26T16:15:18.562Z] [log] Trainable params: 1015641
+[2026-05-26T16:15:18.562Z] [log] Non-trainable params: 0
+[2026-05-26T16:15:18.562Z] [log] ___________________________________________________________________________________________________________________
+[2026-05-26T16:15:18.562Z] [log] 
+--- DERIVATION EXACTNESS CHECK ---
+[2026-05-26T16:15:18.706Z] [log] MaskedSoftmax shapes: [ 1, 15 ] [ 1, 15 ] [ 1, 15 ] [ 1, 15 ]
+[2026-05-26T16:15:18.720Z] [log] Recap Points: [
+  '15.15', '15.01',
+  '15.05', '14.99',
+  '14.75', '15.07',
+  '15.10', '15.04'
+]
+[2026-05-26T16:15:18.721Z] [log] GE: Derived = 30.17, Expected = 30.17 
+[2026-05-26T16:15:18.721Z] [log] Visual: Derived = 22.39, Expected = 22.39 
+[2026-05-26T16:15:18.721Z] [log] Music: Derived = 22.60, Expected = 22.60 
+[2026-05-26T16:15:18.721Z] [log] Total: Derived = 75.17, Expected = 75.17 
+[2026-05-26T16:15:18.721Z] [log] DERIVATION CHECK SUCCESS
+
+[2026-05-26T16:15:18.721Z] [log] --- SCALE SANITY TEST ---
+[2026-05-26T16:15:18.722Z] [log] Sample Row Total: 71.15 (expecting DCI scale, not sum - of - 8)
+[2026-05-26T16:15:18.722Z] [log] Sum - of - 8: 113.60 
+[2026-05-26T16:15:18.722Z] [log] SCALE SANITY SUCCESS: target total is on DCI scale.
+
+[2026-05-26T16:15:18.722Z] [log] 
+=== V9-IMPROVED: Enhanced Model for 0.2 MAE Target ===
+[2026-05-26T16:15:18.722Z] [log] Hyperparameters: lstm1=128, lstm2=64, dropout=0.2, lr=0.00075, batch=128, width_floor_pts=0.5, width_target_pts=2.5, width_penalty=0.5, coverage_target=0.8-0.85, over_coverage_weight=2, width_floor_schedule=0.1->1.5, baseline_dropout=0.1, baseline_noise_std=0.25, history_hide=0.15, judge_hide=0.2, forecast_context_hide=0.1, open_sample_frac=0.35, final_weights=composite, patience=45, reduce_lr_patience=12
+[2026-05-26T16:15:18.722Z] [log] Curriculum: phaseAEnd=10, phaseBEnd=40, phaseCRamp=80, judgeScaleRamp=40, corpsScaleStart=25, corpsScaleRamp=35, auto=true, autoPatience=6, autoMinCoverage=0.9, autoMinDeltaGain=0.002
+[2026-05-26T16:15:18.722Z] [log] Model Capacity: 256→128 BiLSTM, Dense 512→256, AccuracyTrunk 256, Judge Emb 24, Corps Emb 20, Show Emb 12
+[2026-05-26T16:15:18.732Z] [log] Cached 363 validation samples(seqLen = 15, identityDropout = 0.0)
+[2026-05-26T16:15:18.835Z] [log] 
+Epoch 0: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0,"corps":0}, SeqLen 5, ID_Drop 0.953, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:15:18.835Z] [log] Epoch 0 memory(start): tensors=102, buffers=102, bytes=3.9MB
+[2026-05-26T16:16:26.403Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:16:26.403Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:16:26.403Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:16:26.403Z] [log] 0    | 8     | 3.6577   | 3.7696   | 0.4329 
+[2026-05-26T16:16:26.403Z] [log] 1    | 9     | 0.9257   | 0.9160   | 0.5383 
+[2026-05-26T16:16:26.403Z] [log] 2    | 11    | 0.6598   | 0.5551   | 0.5106 
+[2026-05-26T16:16:26.403Z] [log] 3-5  | 59    | 0.4961   | 0.3926   | 0.4084 
+[2026-05-26T16:16:26.403Z] [log] 6+   | 276   | 0.5367   | 0.2990   | 0.5127 
+[2026-05-26T16:16:26.404Z] [log] 
+[2026-05-26T16:16:26.404Z] [log] Epoch 0: loss = 0.927565 phase = A val_loss = 0.360898 delta_mae_pts = 0.6123 recap_mae_pts = 0.6123 cat_mae_pts = 0.7862 total_mae_pts = 1.9985 vs_inertia_pts = -0.1986 vs_quad_pts = 0.0339 lr_base = 0.000075 lr_mult = 1.0000 lr_eff = 0.000075 mon_cov = 0.278 mon_score = 2.6108 progress = 1/160 epoch_sec = 67.7 avg_epoch_sec = 67.7 elapsed = 00:01:08 eta = 02:59:21
+[2026-05-26T16:16:26.404Z] [log] Epoch 0 memory(end): tensors=180, buffers=180, bytes=11.9MB
+[2026-05-26T16:16:26.404Z] [log] 
+-- - CAPTION STATS(Epoch 0)-- - 
+[2026-05-26T16:16:26.404Z] [log] GE1: delta_pts = 0.5607, recap_pts = 0.5607, cov = 0.160, width = 0.3747 
+[2026-05-26T16:16:26.404Z] [log] GE2: delta_pts = 0.5627, recap_pts = 0.5627, cov = 0.226, width = 0.4479 
+[2026-05-26T16:16:26.405Z] [log] VP: delta_pts = 0.6436, recap_pts = 0.6436, cov = 0.391, width = 0.9093 
+[2026-05-26T16:16:26.405Z] [log] VA: delta_pts = 0.6011, recap_pts = 0.6011, cov = 0.240, width = 0.8230 
+[2026-05-26T16:16:26.405Z] [log] CG: delta_pts = 0.6359, recap_pts = 0.6359, cov = 0.264, width = 0.5847 
+[2026-05-26T16:16:26.405Z] [log] MB: delta_pts = 0.5005, recap_pts = 0.5005, cov = 0.320, width = 0.5190 
+[2026-05-26T16:16:26.405Z] [log] MA: delta_pts = 0.6294, recap_pts = 0.6294, cov = 0.317, width = 0.5923 
+[2026-05-26T16:16:26.405Z] [log] MP: delta_pts = 0.7645, recap_pts = 0.7645, cov = 0.306, width = 0.6973 
+[2026-05-26T16:16:26.405Z] [log] ----------------------------------
+
+[2026-05-26T16:16:26.419Z] [log] Saved BEST-DELTA checkpoint @epoch 0 delta_mae_pts = 0.6123 monitor_score = 2.6108 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:16:26.429Z] [log] Saved BEST-LOSS checkpoint @epoch 0 val_loss = 0.360898 delta_mae_pts = 0.6123 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:16:26.444Z] [log] Saved BEST-TOTAL checkpoint @epoch 0 total_mae_pts = 1.9985 delta_mae_pts = 0.6123 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:16:26.460Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 0 score = 1.0165 delta_mae_pts = 0.6123 total_mae_pts = 1.9985 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:16:26.474Z] [log] Saved BEST-PHASE-A checkpoint @epoch 0 delta_mae_pts = 0.6123 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_a 
+[2026-05-26T16:16:26.475Z] [log] [curriculum] phase=A age=1/10 delta=0.6123 phase_best=0.6123 stall=0/6 cov=0.278/0.900 min=wait cov_gate=wait next=hold
+[2026-05-26T16:16:26.594Z] [log] 
+Epoch 1: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.025,"corps":0}, SeqLen 5, ID_Drop 0.945, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:16:26.594Z] [log] Epoch 1 memory(start): tensors=336, buffers=180, bytes=27.4MB
+[2026-05-26T16:17:35.607Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:17:35.608Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:17:35.608Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:17:35.608Z] [log] 0    | 8     | 3.3982   | 3.7696   | 0.8864 
+[2026-05-26T16:17:35.608Z] [log] 1    | 9     | 0.9636   | 0.9160   | 0.4230 
+[2026-05-26T16:17:35.608Z] [log] 2    | 11    | 0.6407   | 0.5551   | 0.3645 
+[2026-05-26T16:17:35.608Z] [log] 3-5  | 59    | 0.4782   | 0.3926   | 0.3725 
+[2026-05-26T16:17:35.608Z] [log] 6+   | 276   | 0.5441   | 0.2990   | 0.5336 
+[2026-05-26T16:17:35.609Z] [log] 
+[2026-05-26T16:17:35.609Z] [log] Epoch 1: loss = 0.728489 phase = A val_loss = 0.320039 delta_mae_pts = 0.6096 recap_mae_pts = 0.6096 cat_mae_pts = 0.8267 total_mae_pts = 2.2051 vs_inertia_pts = -0.1959 vs_quad_pts = 0.0366 lr_base = 0.000150 lr_mult = 1.0000 lr_eff = 0.000150 mon_cov = 0.692 mon_score = 2.8147 progress = 2/160 epoch_sec = 69.2 avg_epoch_sec = 68.4 elapsed = 00:02:17 eta = 03:00:14
+[2026-05-26T16:17:35.609Z] [log] Epoch 1 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:17:35.623Z] [log] Saved BEST-DELTA checkpoint @epoch 1 delta_mae_pts = 0.6096 monitor_score = 2.6108 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:17:35.635Z] [log] Saved BEST-LOSS checkpoint @epoch 1 val_loss = 0.320039 delta_mae_pts = 0.6096 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:17:35.651Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 1 score = 0.9619 delta_mae_pts = 0.6096 total_mae_pts = 2.2051 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:17:35.667Z] [log] Saved BEST-PHASE-A checkpoint @epoch 1 delta_mae_pts = 0.6096 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_a 
+[2026-05-26T16:17:35.667Z] [log] [curriculum] phase=A age=2/10 delta=0.6096 phase_best=0.6096 stall=0/6 cov=0.692/0.900 min=wait cov_gate=wait next=hold
+[2026-05-26T16:17:35.780Z] [log] 
+Epoch 2: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.05,"corps":0}, SeqLen 5, ID_Drop 0.948, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:17:35.781Z] [log] Epoch 2 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:18:40.692Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:18:40.693Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:18:40.693Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:18:40.693Z] [log] 0    | 8     | 1.6190   | 3.7696   | 2.7308 
+[2026-05-26T16:18:40.693Z] [log] 1    | 9     | 0.8535   | 0.9160   | 0.3729 
+[2026-05-26T16:18:40.693Z] [log] 2    | 11    | 0.7176   | 0.5551   | 0.4524 
+[2026-05-26T16:18:40.693Z] [log] 3-5  | 59    | 0.5426   | 0.3926   | 0.4828 
+[2026-05-26T16:18:40.693Z] [log] 6+   | 276   | 0.4874   | 0.2990   | 0.4572 
+[2026-05-26T16:18:40.693Z] [log] 
+[2026-05-26T16:18:40.694Z] [log] Epoch 2: loss = 0.432483 phase = A val_loss = 0.183712 delta_mae_pts = 0.5374 recap_mae_pts = 0.5374 cat_mae_pts = 0.7026 total_mae_pts = 1.8931 vs_inertia_pts = -0.1236 vs_quad_pts = 0.1088 lr_base = 0.000225 lr_mult = 1.0000 lr_eff = 0.000225 mon_cov = 0.765 mon_score = 2.4305 progress = 3/160 epoch_sec = 65.1 avg_epoch_sec = 67.3 elapsed = 00:03:22 eta = 02:56:10
+[2026-05-26T16:18:40.694Z] [log] Epoch 2 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:18:40.708Z] [log] Saved BEST-DELTA checkpoint @epoch 2 delta_mae_pts = 0.5374 monitor_score = 2.4305 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:18:40.720Z] [log] Saved BEST-LOSS checkpoint @epoch 2 val_loss = 0.183712 delta_mae_pts = 0.5374 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:18:40.737Z] [log] Saved BEST-TOTAL checkpoint @epoch 2 total_mae_pts = 1.8931 delta_mae_pts = 0.5374 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:18:40.751Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 2 score = 0.8284 delta_mae_pts = 0.5374 total_mae_pts = 1.8931 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:18:40.770Z] [log] Saved BEST-PHASE-A checkpoint @epoch 2 delta_mae_pts = 0.5374 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_a 
+[2026-05-26T16:18:40.770Z] [log] [curriculum] phase=A age=3/10 delta=0.5374 phase_best=0.5374 stall=0/6 cov=0.765/0.900 min=wait cov_gate=wait next=hold
+[2026-05-26T16:18:41.028Z] [log] 
+Epoch 3: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.075,"corps":0}, SeqLen 5, ID_Drop 0.949, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:18:41.028Z] [log] Epoch 3 memory(start): tensors=336, buffers=180, bytes=27.4MB
+[2026-05-26T16:19:47.591Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:19:47.591Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:19:47.591Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:19:47.591Z] [log] 0    | 8     | 0.9710   | 3.7696   | 3.5975 
+[2026-05-26T16:19:47.591Z] [log] 1    | 9     | 0.9280   | 0.9160   | 0.4603 
+[2026-05-26T16:19:47.591Z] [log] 2    | 11    | 0.7842   | 0.5551   | 0.4291 
+[2026-05-26T16:19:47.592Z] [log] 3-5  | 59    | 0.7240   | 0.3926   | 0.4410 
+[2026-05-26T16:19:47.592Z] [log] 6+   | 276   | 0.5743   | 0.2990   | 0.4164 
+[2026-05-26T16:19:47.592Z] [log] 
+[2026-05-26T16:19:47.592Z] [log] Epoch 3: loss = 0.289817 phase = A val_loss = 0.197742 delta_mae_pts = 0.6225 recap_mae_pts = 0.6225 cat_mae_pts = 0.9481 total_mae_pts = 2.7150 vs_inertia_pts = -0.2088 vs_quad_pts = 0.0237 lr_base = 0.000300 lr_mult = 1.0000 lr_eff = 0.000300 mon_cov = 0.795 mon_score = 3.3375 progress = 4/160 epoch_sec = 66.9 avg_epoch_sec = 67.2 elapsed = 00:04:29 eta = 02:54:46
+[2026-05-26T16:19:47.592Z] [log] Epoch 3 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:19:47.592Z] [log] [curriculum] phase=A age=4/10 delta=0.6225 phase_best=0.5374 stall=1/6 cov=0.795/0.900 min=wait cov_gate=wait next=hold
+[2026-05-26T16:19:47.702Z] [log] 
+Epoch 4: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.1,"corps":0}, SeqLen 5, ID_Drop 0.953, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:19:47.702Z] [log] Epoch 4 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:20:51.799Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:20:51.799Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:20:51.799Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:20:51.799Z] [log] 0    | 8     | 0.9079   | 3.7696   | 3.7273 
+[2026-05-26T16:20:51.799Z] [log] 1    | 9     | 0.9134   | 0.9160   | 0.5166 
+[2026-05-26T16:20:51.799Z] [log] 2    | 11    | 0.8345   | 0.5551   | 0.4696 
+[2026-05-26T16:20:51.799Z] [log] 3-5  | 59    | 0.7460   | 0.3926   | 0.4726 
+[2026-05-26T16:20:51.799Z] [log] 6+   | 276   | 0.6495   | 0.2990   | 0.5054 
+[2026-05-26T16:20:51.800Z] [log] 
+[2026-05-26T16:20:51.800Z] [log] Epoch 4: loss = 0.263981 phase = A val_loss = 0.214510 delta_mae_pts = 0.6830 recap_mae_pts = 0.6830 cat_mae_pts = 1.0584 total_mae_pts = 3.1205 vs_inertia_pts = -0.2693 vs_quad_pts = -0.0368 lr_base = 0.000375 lr_mult = 1.0000 lr_eff = 0.000375 mon_cov = 0.798 mon_score = 3.8035 progress = 5/160 epoch_sec = 64.2 avg_epoch_sec = 66.6 elapsed = 00:05:33 eta = 02:52:05
+[2026-05-26T16:20:51.800Z] [log] Epoch 4 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:20:51.800Z] [log] [curriculum] phase=A age=5/10 delta=0.6830 phase_best=0.5374 stall=2/6 cov=0.798/0.900 min=wait cov_gate=wait next=hold
+[2026-05-26T16:20:51.897Z] [log] 
+Epoch 5: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.125,"corps":0}, SeqLen 5, ID_Drop 0.956, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:20:51.897Z] [log] Epoch 5 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:21:55.529Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:21:55.529Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:21:55.529Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:21:55.529Z] [log] 0    | 8     | 0.8584   | 3.7696   | 4.0588 
+[2026-05-26T16:21:55.529Z] [log] 1    | 9     | 0.8569   | 0.9160   | 0.8477 
+[2026-05-26T16:21:55.529Z] [log] 2    | 11    | 0.6040   | 0.5551   | 0.5914 
+[2026-05-26T16:21:55.529Z] [log] 3-5  | 59    | 0.4897   | 0.3926   | 0.5688 
+[2026-05-26T16:21:55.529Z] [log] 6+   | 276   | 0.5646   | 0.2990   | 0.6108 
+[2026-05-26T16:21:55.530Z] [log] 
+[2026-05-26T16:21:55.530Z] [log] Epoch 5: loss = 0.270266 phase = A val_loss = 0.170241 delta_mae_pts = 0.5673 recap_mae_pts = 0.5673 cat_mae_pts = 0.8232 total_mae_pts = 2.3007 vs_inertia_pts = -0.1536 vs_quad_pts = 0.0788 lr_base = 0.000450 lr_mult = 1.0000 lr_eff = 0.000450 mon_cov = 0.743 mon_score = 2.8680 progress = 6/160 epoch_sec = 63.7 avg_epoch_sec = 66.1 elapsed = 00:06:37 eta = 02:49:45
+[2026-05-26T16:21:55.530Z] [log] Epoch 5 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:21:55.542Z] [log] Saved BEST-LOSS checkpoint @epoch 5 val_loss = 0.170241 delta_mae_pts = 0.5673 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:21:55.542Z] [log] [curriculum] phase=A age=6/10 delta=0.5673 phase_best=0.5374 stall=3/6 cov=0.743/0.900 min=ok cov_gate=wait next=hold
+[2026-05-26T16:21:55.656Z] [log] 
+Epoch 6: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.15,"corps":0}, SeqLen 5, ID_Drop 0.947, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:21:55.656Z] [log] Epoch 6 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:23:03.179Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:23:03.179Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:23:03.179Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:23:03.179Z] [log] 0    | 8     | 0.8082   | 3.7696   | 3.9470 
+[2026-05-26T16:23:03.179Z] [log] 1    | 9     | 0.8351   | 0.9160   | 0.7575 
+[2026-05-26T16:23:03.179Z] [log] 2    | 11    | 0.6339   | 0.5551   | 0.3512 
+[2026-05-26T16:23:03.180Z] [log] 3-5  | 59    | 0.4886   | 0.3926   | 0.3556 
+[2026-05-26T16:23:03.180Z] [log] 6+   | 276   | 0.4922   | 0.2990   | 0.4633 
+[2026-05-26T16:23:03.180Z] [log] 
+[2026-05-26T16:23:03.180Z] [log] Epoch 6: loss = 0.240935 phase = A val_loss = 0.155527 delta_mae_pts = 0.5114 recap_mae_pts = 0.5114 cat_mae_pts = 0.6956 total_mae_pts = 1.8577 vs_inertia_pts = -0.0977 vs_quad_pts = 0.1348 lr_base = 0.000525 lr_mult = 1.0000 lr_eff = 0.000525 mon_cov = 0.823 mon_score = 2.3691 progress = 7/160 epoch_sec = 67.7 avg_epoch_sec = 66.4 elapsed = 00:07:44 eta = 02:49:12
+[2026-05-26T16:23:03.180Z] [log] Epoch 6 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:23:03.193Z] [log] Saved BEST-DELTA checkpoint @epoch 6 delta_mae_pts = 0.5114 monitor_score = 2.3691 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:23:03.207Z] [log] Saved BEST-LOSS checkpoint @epoch 6 val_loss = 0.155527 delta_mae_pts = 0.5114 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:23:03.221Z] [log] Saved BEST-TOTAL checkpoint @epoch 6 total_mae_pts = 1.8577 delta_mae_pts = 0.5114 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:23:03.238Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 6 score = 0.7901 delta_mae_pts = 0.5114 total_mae_pts = 1.8577 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:23:03.256Z] [log] Saved BEST-PHASE-A checkpoint @epoch 6 delta_mae_pts = 0.5114 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_a 
+[2026-05-26T16:23:03.256Z] [log] [curriculum] phase=A age=7/10 delta=0.5114 phase_best=0.5114 stall=0/6 cov=0.823/0.900 min=ok cov_gate=wait next=hold
+[2026-05-26T16:23:03.438Z] [log] 
+Epoch 7: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.175,"corps":0}, SeqLen 5, ID_Drop 0.950, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:23:03.438Z] [log] Epoch 7 memory(start): tensors=336, buffers=180, bytes=27.4MB
+[2026-05-26T16:24:10.020Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:24:10.020Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:24:10.020Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:24:10.020Z] [log] 0    | 8     | 0.7015   | 3.7696   | 3.6574 
+[2026-05-26T16:24:10.021Z] [log] 1    | 9     | 0.8273   | 0.9160   | 0.9397 
+[2026-05-26T16:24:10.021Z] [log] 2    | 11    | 0.5687   | 0.5551   | 0.5728 
+[2026-05-26T16:24:10.021Z] [log] 3-5  | 59    | 0.4541   | 0.3926   | 0.4893 
+[2026-05-26T16:24:10.021Z] [log] 6+   | 276   | 0.4609   | 0.2990   | 0.4529 
+[2026-05-26T16:24:10.021Z] [log] 
+[2026-05-26T16:24:10.021Z] [log] Epoch 7: loss = 0.213636 phase = A val_loss = 0.139964 delta_mae_pts = 0.4774 recap_mae_pts = 0.4774 cat_mae_pts = 0.6046 total_mae_pts = 1.5361 vs_inertia_pts = -0.0637 vs_quad_pts = 0.1687 lr_base = 0.000600 lr_mult = 1.0000 lr_eff = 0.000600 mon_cov = 0.855 mon_score = 2.0135 progress = 8/160 epoch_sec = 66.8 avg_epoch_sec = 66.4 elapsed = 00:08:51 eta = 02:48:15
+[2026-05-26T16:24:10.021Z] [log] Epoch 7 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:24:10.033Z] [log] Saved BEST-DELTA checkpoint @epoch 7 delta_mae_pts = 0.4774 monitor_score = 2.0135 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:24:10.044Z] [log] Saved BEST-LOSS checkpoint @epoch 7 val_loss = 0.139964 delta_mae_pts = 0.4774 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:24:10.059Z] [log] Saved BEST-TOTAL checkpoint @epoch 7 total_mae_pts = 1.5361 delta_mae_pts = 0.4774 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:24:10.073Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 7 score = 0.7083 delta_mae_pts = 0.4774 total_mae_pts = 1.5361 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:24:10.084Z] [log] Saved BEST-PHASE-A checkpoint @epoch 7 delta_mae_pts = 0.4774 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_a 
+[2026-05-26T16:24:10.084Z] [log] [curriculum] phase=A age=8/10 delta=0.4774 phase_best=0.4774 stall=0/6 cov=0.855/0.900 min=ok cov_gate=wait next=hold
+[2026-05-26T16:24:10.150Z] [log] 
+Epoch 8: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.2,"corps":0}, SeqLen 5, ID_Drop 0.946, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:24:10.150Z] [log] Epoch 8 memory(start): tensors=336, buffers=180, bytes=27.4MB
+[2026-05-26T16:25:14.793Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:25:14.793Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:25:14.793Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:25:14.793Z] [log] 0    | 8     | 0.8477   | 3.7696   | 3.6207 
+[2026-05-26T16:25:14.793Z] [log] 1    | 9     | 0.9130   | 0.9160   | 0.6769 
+[2026-05-26T16:25:14.793Z] [log] 2    | 11    | 0.6955   | 0.5551   | 0.5807 
+[2026-05-26T16:25:14.794Z] [log] 3-5  | 59    | 0.6116   | 0.3926   | 0.6308 
+[2026-05-26T16:25:14.794Z] [log] 6+   | 276   | 0.5375   | 0.2990   | 0.5660 
+[2026-05-26T16:25:14.794Z] [log] 
+[2026-05-26T16:25:14.794Z] [log] Epoch 8: loss = 0.208612 phase = A val_loss = 0.175984 delta_mae_pts = 0.5705 recap_mae_pts = 0.5705 cat_mae_pts = 0.8239 total_mae_pts = 2.3550 vs_inertia_pts = -0.1568 vs_quad_pts = 0.0757 lr_base = 0.000675 lr_mult = 1.0000 lr_eff = 0.000675 mon_cov = 0.871 mon_score = 2.9254 progress = 9/160 epoch_sec = 64.8 avg_epoch_sec = 66.2 elapsed = 00:09:56 eta = 02:46:41
+[2026-05-26T16:25:14.794Z] [log] Epoch 8 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:25:14.794Z] [log] [curriculum] phase=A age=9/10 delta=0.5705 phase_best=0.4774 stall=1/6 cov=0.871/0.900 min=ok cov_gate=wait next=hold
+[2026-05-26T16:25:14.863Z] [log] 
+Epoch 9: Phase A (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.225,"corps":0}, SeqLen 5, ID_Drop 0.942, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:25:14.863Z] [log] Epoch 9 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:26:20.461Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:26:20.461Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:26:20.461Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:26:20.461Z] [log] 0    | 8     | 0.8378   | 3.7696   | 3.8004 
+[2026-05-26T16:26:20.461Z] [log] 1    | 9     | 0.8297   | 0.9160   | 1.0733 
+[2026-05-26T16:26:20.461Z] [log] 2    | 11    | 0.5620   | 0.5551   | 0.5699 
+[2026-05-26T16:26:20.461Z] [log] 3-5  | 59    | 0.4504   | 0.3926   | 0.4404 
+[2026-05-26T16:26:20.462Z] [log] 6+   | 276   | 0.4720   | 0.2990   | 0.4733 
+[2026-05-26T16:26:20.462Z] [log] 
+[2026-05-26T16:26:20.462Z] [log] Epoch 9: loss = 0.196416 phase = A val_loss = 0.142706 delta_mae_pts = 0.4881 recap_mae_pts = 0.4881 cat_mae_pts = 0.6373 total_mae_pts = 1.7104 vs_inertia_pts = -0.0744 vs_quad_pts = 0.1580 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.872 mon_score = 2.1986 progress = 10/160 epoch_sec = 65.7 avg_epoch_sec = 66.2 elapsed = 00:11:02 eta = 02:45:26
+[2026-05-26T16:26:20.462Z] [log] Epoch 9 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:26:20.462Z] [log] [curriculum] phase=A age=10/10 delta=0.4881 phase_best=0.4774 stall=2/6 cov=0.872/0.900 min=ok cov_gate=wait next=advance:max
+[2026-05-26T16:26:20.463Z] [log] 
+--- AUTO CURRICULUM: A -> B at next epoch 10 (reason=max_epoch, delta=0.4881, coverage=0.872) ---
+[2026-05-26T16:26:20.502Z] [log] 
+Epoch 10: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.25,"corps":0}, SeqLen 15, ID_Drop 0.952, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.100 
+[2026-05-26T16:26:20.502Z] [log] Epoch 10 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:27:23.640Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:27:23.640Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:27:23.640Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:27:23.640Z] [log] 0    | 8     | 0.9590   | 3.7696   | 3.5624 
+[2026-05-26T16:27:23.641Z] [log] 1    | 9     | 0.7684   | 0.9160   | 0.6464 
+[2026-05-26T16:27:23.641Z] [log] 2    | 11    | 0.5803   | 0.5551   | 0.4131 
+[2026-05-26T16:27:23.641Z] [log] 3-5  | 59    | 0.5489   | 0.3926   | 0.4539 
+[2026-05-26T16:27:23.641Z] [log] 6+   | 276   | 0.4524   | 0.2990   | 0.3910 
+[2026-05-26T16:27:23.641Z] [log] 
+[2026-05-26T16:27:23.641Z] [log] Epoch 10: loss = 0.188925 phase = B val_loss = 0.148112 delta_mae_pts = 0.4910 recap_mae_pts = 0.4910 cat_mae_pts = 0.6307 total_mae_pts = 1.6730 vs_inertia_pts = -0.0773 vs_quad_pts = 0.1552 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.878 mon_score = 2.1640 progress = 11/160 epoch_sec = 63.2 avg_epoch_sec = 65.9 elapsed = 00:12:05 eta = 02:43:39
+[2026-05-26T16:27:23.641Z] [log] Epoch 10 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:27:23.659Z] [log] Saved BEST-PHASE-B checkpoint @epoch 10 delta_mae_pts = 0.4910 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:27:23.659Z] [log] [curriculum] phase=B age=1/30 delta=0.4910 phase_best=0.4910 stall=0/6 cov=0.878/0.900 min=wait cov_gate=wait next=hold
+[2026-05-26T16:27:23.762Z] [log] 
+Epoch 11: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.9766666666666667,"deltaWeight":0.22666666666666668,"categoryWeight":0.05,"quantileWeight":0.02266666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.275,"corps":0}, SeqLen 15, ID_Drop 0.949, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.105 
+[2026-05-26T16:27:23.763Z] [log] Epoch 11 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:28:28.042Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:28:28.042Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:28:28.042Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:28:28.042Z] [log] 0    | 8     | 0.8307   | 3.7696   | 3.6490 
+[2026-05-26T16:28:28.043Z] [log] 1    | 9     | 0.7710   | 0.9160   | 0.5093 
+[2026-05-26T16:28:28.043Z] [log] 2    | 11    | 0.6593   | 0.5551   | 0.3224 
+[2026-05-26T16:28:28.043Z] [log] 3-5  | 59    | 0.5972   | 0.3926   | 0.3753 
+[2026-05-26T16:28:28.043Z] [log] 6+   | 276   | 0.4926   | 0.2990   | 0.3683 
+[2026-05-26T16:28:28.043Z] [log] 
+[2026-05-26T16:28:28.043Z] [log] Epoch 11: loss = 0.171378 phase = B val_loss = 0.160840 delta_mae_pts = 0.5290 recap_mae_pts = 0.5290 cat_mae_pts = 0.7517 total_mae_pts = 2.1115 vs_inertia_pts = -0.1153 vs_quad_pts = 0.1172 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.878 mon_score = 2.6405 progress = 12/160 epoch_sec = 64.4 avg_epoch_sec = 65.8 elapsed = 00:13:09 eta = 02:42:15
+[2026-05-26T16:28:28.043Z] [log] Epoch 11 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:28:28.043Z] [log] [curriculum] phase=B age=2/30 delta=0.5290 phase_best=0.4910 stall=1/6 cov=0.878/0.900 min=wait cov_gate=wait next=hold
+[2026-05-26T16:28:28.114Z] [log] 
+Epoch 12: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.9533333333333334,"deltaWeight":0.25333333333333335,"categoryWeight":0.05,"quantileWeight":0.025333333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.3,"corps":0}, SeqLen 15, ID_Drop 0.950, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.118 
+[2026-05-26T16:28:28.114Z] [log] Epoch 12 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:29:35.971Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:29:35.971Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:29:35.972Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:29:35.972Z] [log] 0    | 8     | 1.0052   | 3.7696   | 4.1594 
+[2026-05-26T16:29:35.972Z] [log] 1    | 9     | 0.7401   | 0.9160   | 0.7513 
+[2026-05-26T16:29:35.972Z] [log] 2    | 11    | 0.4741   | 0.5551   | 0.4037 
+[2026-05-26T16:29:35.972Z] [log] 3-5  | 59    | 0.4678   | 0.3926   | 0.3663 
+[2026-05-26T16:29:35.972Z] [log] 6+   | 276   | 0.4031   | 0.2990   | 0.3224 
+[2026-05-26T16:29:35.972Z] [log] 
+[2026-05-26T16:29:35.972Z] [log] Epoch 12: loss = 0.176348 phase = B val_loss = 0.135629 delta_mae_pts = 0.4374 recap_mae_pts = 0.4374 cat_mae_pts = 0.5741 total_mae_pts = 1.5131 vs_inertia_pts = -0.0237 vs_quad_pts = 0.2088 lr_base = 0.000750 lr_mult = 1.0000 lr_eff = 0.000750 mon_cov = 0.909 mon_score = 1.9505 progress = 13/160 epoch_sec = 67.9 avg_epoch_sec = 65.9 elapsed = 00:14:17 eta = 02:41:34
+[2026-05-26T16:29:35.972Z] [log] Epoch 12 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:29:35.989Z] [log] Saved BEST-DELTA checkpoint @epoch 12 delta_mae_pts = 0.4374 monitor_score = 1.9505 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:29:36.000Z] [log] Saved BEST-LOSS checkpoint @epoch 12 val_loss = 0.135629 delta_mae_pts = 0.4374 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:29:36.015Z] [log] Saved BEST-TOTAL checkpoint @epoch 12 total_mae_pts = 1.5131 delta_mae_pts = 0.4374 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:29:36.029Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 12 score = 0.6703 delta_mae_pts = 0.4374 total_mae_pts = 1.5131 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:29:36.040Z] [log] Saved BEST-PHASE-B checkpoint @epoch 12 delta_mae_pts = 0.4374 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:29:36.041Z] [log] [curriculum] phase=B age=3/30 delta=0.4374 phase_best=0.4374 stall=0/6 cov=0.909/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:29:36.082Z] [log] 
+Epoch 13: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.93,"deltaWeight":0.28,"categoryWeight":0.05,"quantileWeight":0.028,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.325,"corps":0}, SeqLen 15, ID_Drop 0.946, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.139 
+[2026-05-26T16:29:36.083Z] [log] Epoch 13 memory(start): tensors=336, buffers=180, bytes=27.4MB
+[2026-05-26T16:30:50.657Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:30:50.658Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:30:50.658Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:30:50.658Z] [log] 0    | 8     | 0.7730   | 3.7696   | 3.8961 
+[2026-05-26T16:30:50.658Z] [log] 1    | 9     | 0.6597   | 0.9160   | 0.6154 
+[2026-05-26T16:30:50.658Z] [log] 2    | 11    | 0.5055   | 0.5551   | 0.3031 
+[2026-05-26T16:30:50.658Z] [log] 3-5  | 59    | 0.5283   | 0.3926   | 0.3091 
+[2026-05-26T16:30:50.658Z] [log] 6+   | 276   | 0.4071   | 0.2990   | 0.2581 
+[2026-05-26T16:30:50.659Z] [log] 
+[2026-05-26T16:30:50.659Z] [log] Epoch 13: loss = 0.175411 phase = B val_loss = 0.138269 delta_mae_pts = 0.4441 recap_mae_pts = 0.4441 cat_mae_pts = 0.5992 total_mae_pts = 1.6134 vs_inertia_pts = -0.0303 vs_quad_pts = 0.2021 lr_base = 0.000749 lr_mult = 1.0000 lr_eff = 0.000749 mon_cov = 0.919 mon_score = 2.0574 progress = 14/160 epoch_sec = 74.7 avg_epoch_sec = 66.6 elapsed = 00:15:32 eta = 02:41:59
+[2026-05-26T16:30:50.659Z] [log] Epoch 13 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:30:50.659Z] [log] [curriculum] phase=B age=4/30 delta=0.4441 phase_best=0.4374 stall=1/6 cov=0.919/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:30:50.822Z] [log] 
+Epoch 14: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.9066666666666667,"deltaWeight":0.3066666666666667,"categoryWeight":0.05,"quantileWeight":0.03066666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.35,"corps":0}, SeqLen 15, ID_Drop 0.949, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.168 
+[2026-05-26T16:30:50.823Z] [log] Epoch 14 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:32:26.167Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:32:26.167Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:32:26.167Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:32:26.167Z] [log] 0    | 8     | 0.7441   | 3.7696   | 3.8016 
+[2026-05-26T16:32:26.167Z] [log] 1    | 9     | 0.7033   | 0.9160   | 0.5726 
+[2026-05-26T16:32:26.167Z] [log] 2    | 11    | 0.5091   | 0.5551   | 0.4042 
+[2026-05-26T16:32:26.167Z] [log] 3-5  | 59    | 0.4783   | 0.3926   | 0.3575 
+[2026-05-26T16:32:26.168Z] [log] 6+   | 276   | 0.3910   | 0.2990   | 0.3348 
+[2026-05-26T16:32:26.168Z] [log] 
+[2026-05-26T16:32:26.168Z] [log] Epoch 14: loss = 0.170963 phase = B val_loss = 0.134293 delta_mae_pts = 0.4243 recap_mae_pts = 0.4243 cat_mae_pts = 0.5370 total_mae_pts = 1.3796 vs_inertia_pts = -0.0105 vs_quad_pts = 0.2219 lr_base = 0.000749 lr_mult = 1.0000 lr_eff = 0.000749 mon_cov = 0.922 mon_score = 1.8039 progress = 15/160 epoch_sec = 95.5 avg_epoch_sec = 68.5 elapsed = 00:17:07 eta = 02:45:32
+[2026-05-26T16:32:26.168Z] [log] Epoch 14 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:32:26.180Z] [log] Saved BEST-DELTA checkpoint @epoch 14 delta_mae_pts = 0.4243 monitor_score = 1.8039 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:32:26.189Z] [log] Saved BEST-LOSS checkpoint @epoch 14 val_loss = 0.134293 delta_mae_pts = 0.4243 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:32:26.203Z] [log] Saved BEST-TOTAL checkpoint @epoch 14 total_mae_pts = 1.3796 delta_mae_pts = 0.4243 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:32:26.217Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 14 score = 0.6384 delta_mae_pts = 0.4243 total_mae_pts = 1.3796 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:32:26.226Z] [log] Saved BEST-PHASE-B checkpoint @epoch 14 delta_mae_pts = 0.4243 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:32:26.226Z] [log] [curriculum] phase=B age=5/30 delta=0.4243 phase_best=0.4243 stall=0/6 cov=0.922/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:32:26.264Z] [log] 
+Epoch 15: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.8833333333333333,"deltaWeight":0.33333333333333337,"categoryWeight":0.05,"quantileWeight":0.03333333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.375,"corps":0}, SeqLen 15, ID_Drop 0.949, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.204 
+[2026-05-26T16:32:26.264Z] [log] Epoch 15 memory(start): tensors=336, buffers=180, bytes=27.4MB
+[2026-05-26T16:33:54.421Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:33:54.421Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:33:54.421Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:33:54.421Z] [log] 0    | 8     | 0.8479   | 3.7696   | 4.1385 
+[2026-05-26T16:33:54.421Z] [log] 1    | 9     | 0.7210   | 0.9160   | 0.8598 
+[2026-05-26T16:33:54.422Z] [log] 2    | 11    | 0.4779   | 0.5551   | 0.5316 
+[2026-05-26T16:33:54.422Z] [log] 3-5  | 59    | 0.4093   | 0.3926   | 0.3787 
+[2026-05-26T16:33:54.422Z] [log] 6+   | 276   | 0.3576   | 0.2990   | 0.3217 
+[2026-05-26T16:33:54.422Z] [log] 
+[2026-05-26T16:33:54.422Z] [log] Epoch 15: loss = 0.165731 phase = B val_loss = 0.124968 delta_mae_pts = 0.3894 recap_mae_pts = 0.3894 cat_mae_pts = 0.4844 total_mae_pts = 1.1899 vs_inertia_pts = 0.0243 vs_quad_pts = 0.2567 lr_base = 0.000748 lr_mult = 1.0000 lr_eff = 0.000748 mon_cov = 0.937 mon_score = 1.5794 progress = 16/160 epoch_sec = 88.3 avg_epoch_sec = 69.7 elapsed = 00:18:36 eta = 02:47:21
+[2026-05-26T16:33:54.422Z] [log] Epoch 15 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:33:54.436Z] [log] Saved BEST-DELTA checkpoint @epoch 15 delta_mae_pts = 0.3894 monitor_score = 1.5794 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:33:54.446Z] [log] Saved BEST-LOSS checkpoint @epoch 15 val_loss = 0.124968 delta_mae_pts = 0.3894 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:33:54.463Z] [log] Saved BEST-TOTAL checkpoint @epoch 15 total_mae_pts = 1.1899 delta_mae_pts = 0.3894 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:33:54.476Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 15 score = 0.5766 delta_mae_pts = 0.3894 total_mae_pts = 1.1899 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:33:54.486Z] [log] Saved BEST-PHASE-B checkpoint @epoch 15 delta_mae_pts = 0.3894 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:33:54.486Z] [log] [curriculum] phase=B age=6/30 delta=0.3894 phase_best=0.3894 stall=0/6 cov=0.937/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:33:54.522Z] [log] 
+Epoch 16: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.86,"deltaWeight":0.36000000000000004,"categoryWeight":0.05,"quantileWeight":0.036000000000000004,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.4,"corps":0}, SeqLen 15, ID_Drop 0.948, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.246 
+[2026-05-26T16:33:54.523Z] [log] Epoch 16 memory(start): tensors=336, buffers=180, bytes=27.4MB
+[2026-05-26T16:35:29.354Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:35:29.354Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:35:29.354Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:35:29.354Z] [log] 0    | 8     | 0.7469   | 3.7696   | 3.6772 
+[2026-05-26T16:35:29.354Z] [log] 1    | 9     | 0.7380   | 0.9160   | 0.8000 
+[2026-05-26T16:35:29.354Z] [log] 2    | 11    | 0.4491   | 0.5551   | 0.3817 
+[2026-05-26T16:35:29.354Z] [log] 3-5  | 59    | 0.4247   | 0.3926   | 0.2801 
+[2026-05-26T16:35:29.354Z] [log] 6+   | 276   | 0.3466   | 0.2990   | 0.2605 
+[2026-05-26T16:35:29.354Z] [log] 
+[2026-05-26T16:35:29.355Z] [log] Epoch 16: loss = 0.171962 phase = B val_loss = 0.125192 delta_mae_pts = 0.3809 recap_mae_pts = 0.3809 cat_mae_pts = 0.4605 total_mae_pts = 1.0561 vs_inertia_pts = 0.0328 vs_quad_pts = 0.2653 lr_base = 0.000747 lr_mult = 1.0000 lr_eff = 0.000747 mon_cov = 0.940 mon_score = 1.4370 progress = 17/160 epoch_sec = 94.9 avg_epoch_sec = 71.2 elapsed = 00:20:11 eta = 02:49:44
+[2026-05-26T16:35:29.355Z] [log] Epoch 16 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:35:29.368Z] [log] Saved BEST-DELTA checkpoint @epoch 16 delta_mae_pts = 0.3809 monitor_score = 1.4370 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:35:29.378Z] [log] Saved BEST-TOTAL checkpoint @epoch 16 total_mae_pts = 1.0561 delta_mae_pts = 0.3809 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:35:29.390Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 16 score = 0.5483 delta_mae_pts = 0.3809 total_mae_pts = 1.0561 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:35:29.402Z] [log] Saved BEST-PHASE-B checkpoint @epoch 16 delta_mae_pts = 0.3809 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:35:29.402Z] [log] [curriculum] phase=B age=7/30 delta=0.3809 phase_best=0.3809 stall=0/6 cov=0.940/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:35:29.438Z] [log] 
+Epoch 17: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.8366666666666667,"deltaWeight":0.3866666666666667,"categoryWeight":0.05,"quantileWeight":0.03866666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.425,"corps":0}, SeqLen 15, ID_Drop 0.951, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.293 
+[2026-05-26T16:35:29.438Z] [log] Epoch 17 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:36:32.995Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:36:32.995Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:36:32.995Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:36:32.995Z] [log] 0    | 8     | 0.9719   | 3.7696   | 4.2496 
+[2026-05-26T16:36:32.996Z] [log] 1    | 9     | 0.6574   | 0.9160   | 0.7016 
+[2026-05-26T16:36:32.996Z] [log] 2    | 11    | 0.4736   | 0.5551   | 0.4089 
+[2026-05-26T16:36:32.996Z] [log] 3-5  | 59    | 0.4392   | 0.3926   | 0.3064 
+[2026-05-26T16:36:32.996Z] [log] 6+   | 276   | 0.3550   | 0.2990   | 0.2861 
+[2026-05-26T16:36:32.996Z] [log] 
+[2026-05-26T16:36:32.996Z] [log] Epoch 17: loss = 0.166593 phase = B val_loss = 0.133872 delta_mae_pts = 0.3934 recap_mae_pts = 0.3934 cat_mae_pts = 0.4777 total_mae_pts = 1.1683 vs_inertia_pts = 0.0204 vs_quad_pts = 0.2528 lr_base = 0.000746 lr_mult = 1.0000 lr_eff = 0.000746 mon_cov = 0.935 mon_score = 1.5616 progress = 18/160 epoch_sec = 63.6 avg_epoch_sec = 70.8 elapsed = 00:21:14 eta = 02:47:33
+[2026-05-26T16:36:32.996Z] [log] Epoch 17 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:36:32.996Z] [log] [curriculum] phase=B age=8/30 delta=0.3934 phase_best=0.3809 stall=1/6 cov=0.935/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:36:33.039Z] [log] 
+Epoch 18: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.8133333333333334,"deltaWeight":0.41333333333333333,"categoryWeight":0.05,"quantileWeight":0.04133333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.45,"corps":0}, SeqLen 15, ID_Drop 0.947, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.346 
+[2026-05-26T16:36:33.040Z] [log] Epoch 18 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:37:40.763Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:37:40.764Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:37:40.764Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:37:40.764Z] [log] 0    | 8     | 0.6949   | 3.7696   | 4.0697 
+[2026-05-26T16:37:40.764Z] [log] 1    | 9     | 0.6175   | 0.9160   | 0.7343 
+[2026-05-26T16:37:40.764Z] [log] 2    | 11    | 0.4940   | 0.5551   | 0.3921 
+[2026-05-26T16:37:40.764Z] [log] 3-5  | 59    | 0.4267   | 0.3926   | 0.2698 
+[2026-05-26T16:37:40.765Z] [log] 6+   | 276   | 0.3338   | 0.2990   | 0.2404 
+[2026-05-26T16:37:40.765Z] [log] 
+[2026-05-26T16:37:40.765Z] [log] Epoch 18: loss = 0.168866 phase = B val_loss = 0.124635 delta_mae_pts = 0.3687 recap_mae_pts = 0.3687 cat_mae_pts = 0.4184 total_mae_pts = 0.9633 vs_inertia_pts = 0.0450 vs_quad_pts = 0.2774 lr_base = 0.000745 lr_mult = 1.0000 lr_eff = 0.000745 mon_cov = 0.944 mon_score = 1.3320 progress = 19/160 epoch_sec = 67.8 avg_epoch_sec = 70.6 elapsed = 00:22:22 eta = 02:45:59
+[2026-05-26T16:37:40.765Z] [log] Epoch 18 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:37:40.777Z] [log] Saved BEST-DELTA checkpoint @epoch 18 delta_mae_pts = 0.3687 monitor_score = 1.3320 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:37:40.789Z] [log] Saved BEST-LOSS checkpoint @epoch 18 val_loss = 0.124635 delta_mae_pts = 0.3687 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_loss 
+[2026-05-26T16:37:40.802Z] [log] Saved BEST-TOTAL checkpoint @epoch 18 total_mae_pts = 0.9633 delta_mae_pts = 0.3687 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:37:40.813Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 18 score = 0.5226 delta_mae_pts = 0.3687 total_mae_pts = 0.9633 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:37:40.823Z] [log] Saved BEST-PHASE-B checkpoint @epoch 18 delta_mae_pts = 0.3687 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:37:40.823Z] [log] [curriculum] phase=B age=9/30 delta=0.3687 phase_best=0.3687 stall=0/6 cov=0.944/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:37:40.907Z] [log] 
+Epoch 19: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.79,"deltaWeight":0.44,"categoryWeight":0.05,"quantileWeight":0.044,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.475,"corps":0}, SeqLen 15, ID_Drop 0.949, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.402 
+[2026-05-26T16:37:40.907Z] [log] Epoch 19 memory(start): tensors=336, buffers=180, bytes=27.4MB
+[2026-05-26T16:39:34.383Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:39:34.383Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:39:34.383Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:39:34.383Z] [log] 0    | 8     | 0.7534   | 3.7696   | 3.9707 
+[2026-05-26T16:39:34.383Z] [log] 1    | 9     | 0.6736   | 0.9160   | 0.5774 
+[2026-05-26T16:39:34.383Z] [log] 2    | 11    | 0.5210   | 0.5551   | 0.3852 
+[2026-05-26T16:39:34.384Z] [log] 3-5  | 59    | 0.5987   | 0.3926   | 0.4102 
+[2026-05-26T16:39:34.384Z] [log] 6+   | 276   | 0.4051   | 0.2990   | 0.3174 
+[2026-05-26T16:39:34.384Z] [log] 
+[2026-05-26T16:39:34.384Z] [log] Epoch 19: loss = 0.170852 phase = B val_loss = 0.157707 delta_mae_pts = 0.4544 recap_mae_pts = 0.4544 cat_mae_pts = 0.6318 total_mae_pts = 1.7043 vs_inertia_pts = -0.0407 vs_quad_pts = 0.1918 lr_base = 0.000744 lr_mult = 1.0000 lr_eff = 0.000744 mon_cov = 0.897 mon_score = 2.1587 progress = 20/160 epoch_sec = 113.6 avg_epoch_sec = 72.8 elapsed = 00:24:16 eta = 02:49:50
+[2026-05-26T16:39:34.384Z] [log] Epoch 19 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:39:34.385Z] [log] [curriculum] phase=B age=10/30 delta=0.4544 phase_best=0.3687 stall=1/6 cov=0.897/0.900 min=wait cov_gate=wait next=hold
+[2026-05-26T16:39:34.440Z] [log] 
+Epoch 20: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.7666666666666667,"deltaWeight":0.4666666666666667,"categoryWeight":0.05,"quantileWeight":0.04666666666666666,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.5,"corps":0}, SeqLen 15, ID_Drop 0.946, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.463 
+[2026-05-26T16:39:34.441Z] [log] Epoch 20 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:41:19.161Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:41:19.161Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:41:19.161Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:41:19.161Z] [log] 0    | 8     | 0.8944   | 3.7696   | 3.7662 
+[2026-05-26T16:41:19.161Z] [log] 1    | 9     | 0.7357   | 0.9160   | 0.5964 
+[2026-05-26T16:41:19.162Z] [log] 2    | 11    | 0.5059   | 0.5551   | 0.3579 
+[2026-05-26T16:41:19.162Z] [log] 3-5  | 59    | 0.4784   | 0.3926   | 0.3393 
+[2026-05-26T16:41:19.162Z] [log] 6+   | 276   | 0.3750   | 0.2990   | 0.2787 
+[2026-05-26T16:41:19.162Z] [log] 
+[2026-05-26T16:41:19.162Z] [log] Epoch 20: loss = 0.187611 phase = B val_loss = 0.149661 delta_mae_pts = 0.4162 recap_mae_pts = 0.4162 cat_mae_pts = 0.5387 total_mae_pts = 1.3996 vs_inertia_pts = -0.0024 vs_quad_pts = 0.2300 lr_base = 0.000742 lr_mult = 1.0000 lr_eff = 0.000742 mon_cov = 0.917 mon_score = 1.8158 progress = 21/160 epoch_sec = 104.8 avg_epoch_sec = 74.3 elapsed = 00:26:00 eta = 02:52:09
+[2026-05-26T16:41:19.162Z] [log] Epoch 20 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:41:19.162Z] [log] [curriculum] phase=B age=11/30 delta=0.4162 phase_best=0.3687 stall=2/6 cov=0.917/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:41:19.205Z] [log] 
+Epoch 21: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.7433333333333334,"deltaWeight":0.49333333333333335,"categoryWeight":0.05,"quantileWeight":0.04933333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.525,"corps":0}, SeqLen 15, ID_Drop 0.947, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.527 
+[2026-05-26T16:41:19.205Z] [log] Epoch 21 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:42:26.494Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:42:26.494Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:42:26.494Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:42:26.495Z] [log] 0    | 8     | 0.6765   | 3.7696   | 3.7088 
+[2026-05-26T16:42:26.495Z] [log] 1    | 9     | 0.7069   | 0.9160   | 0.5781 
+[2026-05-26T16:42:26.495Z] [log] 2    | 11    | 0.5292   | 0.5551   | 0.3501 
+[2026-05-26T16:42:26.495Z] [log] 3-5  | 59    | 0.6382   | 0.3926   | 0.4173 
+[2026-05-26T16:42:26.495Z] [log] 6+   | 276   | 0.4217   | 0.2990   | 0.3049 
+[2026-05-26T16:42:26.495Z] [log] 
+[2026-05-26T16:42:26.495Z] [log] Epoch 21: loss = 0.176978 phase = B val_loss = 0.168155 delta_mae_pts = 0.4729 recap_mae_pts = 0.4729 cat_mae_pts = 0.6349 total_mae_pts = 1.7035 vs_inertia_pts = -0.0591 vs_quad_pts = 0.1733 lr_base = 0.000740 lr_mult = 1.0000 lr_eff = 0.000740 mon_cov = 0.911 mon_score = 2.1764 progress = 22/160 epoch_sec = 67.3 avg_epoch_sec = 74.0 elapsed = 00:27:08 eta = 02:50:11
+[2026-05-26T16:42:26.495Z] [log] Epoch 21 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:42:26.496Z] [log] [curriculum] phase=B age=12/30 delta=0.4729 phase_best=0.3687 stall=3/6 cov=0.911/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:42:26.541Z] [log] 
+Epoch 22: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.72,"deltaWeight":0.52,"categoryWeight":0.05,"quantileWeight":0.052000000000000005,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.55,"corps":0}, SeqLen 15, ID_Drop 0.947, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.593 
+[2026-05-26T16:42:26.541Z] [log] Epoch 22 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:43:31.451Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:43:31.451Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:43:31.451Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:43:31.451Z] [log] 0    | 8     | 0.8668   | 3.7696   | 3.7366 
+[2026-05-26T16:43:31.451Z] [log] 1    | 9     | 0.9370   | 0.9160   | 0.4133 
+[2026-05-26T16:43:31.452Z] [log] 2    | 11    | 0.9370   | 0.5551   | 0.5853 
+[2026-05-26T16:43:31.452Z] [log] 3-5  | 59    | 0.9228   | 0.3926   | 0.6707 
+[2026-05-26T16:43:31.452Z] [log] 6+   | 276   | 0.5194   | 0.2990   | 0.3722 
+[2026-05-26T16:43:31.452Z] [log] 
+[2026-05-26T16:43:31.452Z] [log] Epoch 22: loss = 0.175488 phase = B val_loss = 0.226130 delta_mae_pts = 0.6156 recap_mae_pts = 0.6156 cat_mae_pts = 0.9698 total_mae_pts = 2.8098 vs_inertia_pts = -0.2019 vs_quad_pts = 0.0306 lr_base = 0.000739 lr_mult = 1.0000 lr_eff = 0.000739 mon_cov = 0.801 mon_score = 3.4255 progress = 23/160 epoch_sec = 65.0 avg_epoch_sec = 73.6 elapsed = 00:28:13 eta = 02:48:03
+[2026-05-26T16:43:31.452Z] [log] Epoch 22 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:43:31.452Z] [log] [curriculum] phase=B age=13/30 delta=0.6156 phase_best=0.3687 stall=4/6 cov=0.801/0.900 min=wait cov_gate=wait next=hold
+[2026-05-26T16:43:31.496Z] [log] 
+Epoch 23: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.6966666666666667,"deltaWeight":0.5466666666666666,"categoryWeight":0.05,"quantileWeight":0.05466666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.575,"corps":0}, SeqLen 15, ID_Drop 0.944, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.661 
+[2026-05-26T16:43:31.497Z] [log] Epoch 23 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:44:36.292Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:44:36.292Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:44:36.292Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:44:36.292Z] [log] 0    | 8     | 0.7731   | 3.7696   | 3.5066 
+[2026-05-26T16:44:36.292Z] [log] 1    | 9     | 0.6575   | 0.9160   | 0.5762 
+[2026-05-26T16:44:36.292Z] [log] 2    | 11    | 0.4578   | 0.5551   | 0.3362 
+[2026-05-26T16:44:36.293Z] [log] 3-5  | 59    | 0.4588   | 0.3926   | 0.3024 
+[2026-05-26T16:44:36.293Z] [log] 6+   | 276   | 0.3328   | 0.2990   | 0.2417 
+[2026-05-26T16:44:36.293Z] [log] 
+[2026-05-26T16:44:36.293Z] [log] Epoch 23: loss = 0.184628 phase = B val_loss = 0.141806 delta_mae_pts = 0.3748 recap_mae_pts = 0.3748 cat_mae_pts = 0.4683 total_mae_pts = 1.1331 vs_inertia_pts = 0.0389 vs_quad_pts = 0.2713 lr_base = 0.000737 lr_mult = 1.0000 lr_eff = 0.000737 mon_cov = 0.957 mon_score = 1.5079 progress = 24/160 epoch_sec = 64.8 avg_epoch_sec = 73.2 elapsed = 00:29:18 eta = 02:46:00
+[2026-05-26T16:44:36.293Z] [log] Epoch 23 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:44:36.293Z] [log] [curriculum] phase=B age=14/30 delta=0.3748 phase_best=0.3687 stall=5/6 cov=0.957/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:44:36.372Z] [log] 
+Epoch 24: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.6733333333333333,"deltaWeight":0.5733333333333334,"categoryWeight":0.05,"quantileWeight":0.05733333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.6,"corps":0}, SeqLen 15, ID_Drop 0.946, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.730 
+[2026-05-26T16:44:36.372Z] [log] Epoch 24 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:45:43.901Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:45:43.901Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:45:43.901Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:45:43.901Z] [log] 0    | 8     | 0.7318   | 3.7696   | 3.4786 
+[2026-05-26T16:45:43.902Z] [log] 1    | 9     | 0.6707   | 0.9160   | 0.8396 
+[2026-05-26T16:45:43.902Z] [log] 2    | 11    | 0.4938   | 0.5551   | 0.4449 
+[2026-05-26T16:45:43.902Z] [log] 3-5  | 59    | 0.4165   | 0.3926   | 0.2801 
+[2026-05-26T16:45:43.902Z] [log] 6+   | 276   | 0.3281   | 0.2990   | 0.2072 
+[2026-05-26T16:45:43.902Z] [log] 
+[2026-05-26T16:45:43.902Z] [log] Epoch 24: loss = 0.170915 phase = B val_loss = 0.138071 delta_mae_pts = 0.3649 recap_mae_pts = 0.3649 cat_mae_pts = 0.4465 total_mae_pts = 1.0662 vs_inertia_pts = 0.0488 vs_quad_pts = 0.2813 lr_base = 0.000735 lr_mult = 1.0000 lr_eff = 0.000735 mon_cov = 0.958 mon_score = 1.4311 progress = 25/160 epoch_sec = 67.6 avg_epoch_sec = 73.0 elapsed = 00:30:25 eta = 02:44:16
+[2026-05-26T16:45:43.902Z] [log] Epoch 24 memory(end): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:45:43.914Z] [log] Saved BEST-DELTA checkpoint @epoch 24 delta_mae_pts = 0.3649 monitor_score = 1.3320 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:45:43.925Z] [log] Saved BEST-PHASE-B checkpoint @epoch 24 delta_mae_pts = 0.3649 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:45:43.925Z] [log] [curriculum] phase=B age=15/30 delta=0.3649 phase_best=0.3649 stall=0/6 cov=0.958/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:45:43.966Z] [log] 
+Epoch 25: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.65,"deltaWeight":0.6000000000000001,"categoryWeight":0.05,"quantileWeight":0.06,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.625,"corps":0}, SeqLen 15, ID_Drop 0.948, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.800 
+[2026-05-26T16:45:43.966Z] [log] Epoch 25 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:46:49.437Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:46:49.437Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:46:49.438Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:46:49.438Z] [log] 0    | 8     | 0.6333   | 3.7696   | 3.9169 
+[2026-05-26T16:46:49.438Z] [log] 1    | 9     | 0.7144   | 0.9160   | 0.8356 
+[2026-05-26T16:46:49.438Z] [log] 2    | 11    | 0.4407   | 0.5551   | 0.4786 
+[2026-05-26T16:46:49.438Z] [log] 3-5  | 59    | 0.4053   | 0.3926   | 0.3333 
+[2026-05-26T16:46:49.438Z] [log] 6+   | 276   | 0.3340   | 0.2990   | 0.2939 
+[2026-05-26T16:46:49.438Z] [log] 
+[2026-05-26T16:46:49.438Z] [log] Epoch 25: loss = 0.176614 phase = B val_loss = 0.140603 delta_mae_pts = 0.3649 recap_mae_pts = 0.3649 cat_mae_pts = 0.4313 total_mae_pts = 1.0172 vs_inertia_pts = 0.0489 vs_quad_pts = 0.2813 lr_base = 0.000732 lr_mult = 1.0000 lr_eff = 0.000732 mon_cov = 0.953 mon_score = 1.3820 progress = 26/160 epoch_sec = 65.5 avg_epoch_sec = 72.7 elapsed = 00:31:31 eta = 02:42:24
+[2026-05-26T16:46:49.438Z] [log] Epoch 25 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:46:49.439Z] [log] [curriculum] phase=B age=16/30 delta=0.3649 phase_best=0.3649 stall=1/6 cov=0.953/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:46:49.478Z] [log] 
+Epoch 26: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.6266666666666667,"deltaWeight":0.6266666666666667,"categoryWeight":0.05,"quantileWeight":0.06266666666666666,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.65,"corps":0.02857142857142857}, SeqLen 15, ID_Drop 0.954, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.870 
+[2026-05-26T16:46:49.478Z] [log] Epoch 26 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:47:50.933Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:47:50.933Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:47:50.933Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:47:50.933Z] [log] 0    | 8     | 1.0408   | 3.7696   | 3.2611 
+[2026-05-26T16:47:50.933Z] [log] 1    | 9     | 0.6329   | 0.9160   | 0.8008 
+[2026-05-26T16:47:50.933Z] [log] 2    | 11    | 0.4626   | 0.5551   | 0.4597 
+[2026-05-26T16:47:50.933Z] [log] 3-5  | 59    | 0.3956   | 0.3926   | 0.2854 
+[2026-05-26T16:47:50.933Z] [log] 6+   | 276   | 0.3234   | 0.2990   | 0.2332 
+[2026-05-26T16:47:50.934Z] [log] 
+[2026-05-26T16:47:50.934Z] [log] Epoch 26: loss = 0.176580 phase = B val_loss = 0.144802 delta_mae_pts = 0.3628 recap_mae_pts = 0.3628 cat_mae_pts = 0.4053 total_mae_pts = 0.9268 vs_inertia_pts = 0.0509 vs_quad_pts = 0.2834 lr_base = 0.000730 lr_mult = 1.0000 lr_eff = 0.000730 mon_cov = 0.959 mon_score = 1.2896 progress = 27/160 epoch_sec = 61.5 avg_epoch_sec = 72.3 elapsed = 00:32:32 eta = 02:40:16
+[2026-05-26T16:47:50.934Z] [log] Epoch 26 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:47:50.967Z] [log] Saved BEST-DELTA checkpoint @epoch 26 delta_mae_pts = 0.3628 monitor_score = 1.2896 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:47:50.977Z] [log] Saved BEST-TOTAL checkpoint @epoch 26 total_mae_pts = 0.9268 delta_mae_pts = 0.3628 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T16:47:50.991Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 26 score = 0.5127 delta_mae_pts = 0.3628 total_mae_pts = 0.9268 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:47:51.003Z] [log] Saved BEST-PHASE-B checkpoint @epoch 26 delta_mae_pts = 0.3628 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:47:51.004Z] [log] [curriculum] phase=B age=17/30 delta=0.3628 phase_best=0.3628 stall=0/6 cov=0.959/0.900 min=wait cov_gate=ok next=hold
+[2026-05-26T16:47:51.040Z] [log] 
+Epoch 27: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.6033333333333334,"deltaWeight":0.6533333333333333,"categoryWeight":0.05,"quantileWeight":0.06533333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.675,"corps":0.05714285714285714}, SeqLen 15, ID_Drop 0.949, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 0.939 
+[2026-05-26T16:47:51.040Z] [log] Epoch 27 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T16:48:53.772Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:48:53.772Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:48:53.772Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:48:53.772Z] [log] 0    | 8     | 0.6812   | 3.7696   | 3.8064 
+[2026-05-26T16:48:53.773Z] [log] 1    | 9     | 0.6638   | 0.9160   | 0.8159 
+[2026-05-26T16:48:53.773Z] [log] 2    | 11    | 0.4274   | 0.5551   | 0.4414 
+[2026-05-26T16:48:53.773Z] [log] 3-5  | 59    | 0.4120   | 0.3926   | 0.2889 
+[2026-05-26T16:48:53.773Z] [log] 6+   | 276   | 0.3270   | 0.2990   | 0.2505 
+[2026-05-26T16:48:53.773Z] [log] 
+[2026-05-26T16:48:53.773Z] [log] Epoch 27: loss = 0.181922 phase = B val_loss = 0.146484 delta_mae_pts = 0.3600 recap_mae_pts = 0.3600 cat_mae_pts = 0.4330 total_mae_pts = 1.0108 vs_inertia_pts = 0.0537 vs_quad_pts = 0.2861 lr_base = 0.000727 lr_mult = 1.0000 lr_eff = 0.000727 mon_cov = 0.969 mon_score = 1.3709 progress = 28/160 epoch_sec = 62.8 avg_epoch_sec = 72.0 elapsed = 00:33:35 eta = 02:38:20
+[2026-05-26T16:48:53.773Z] [log] Epoch 27 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:48:53.786Z] [log] Saved BEST-DELTA checkpoint @epoch 27 delta_mae_pts = 0.3600 monitor_score = 1.2896 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:48:53.796Z] [log] Saved BEST-PHASE-B checkpoint @epoch 27 delta_mae_pts = 0.3600 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:48:53.797Z] [log] [curriculum] phase=B age=18/30 delta=0.3600 phase_best=0.3600 stall=0/6 cov=0.969/0.900 min=ok cov_gate=ok next=hold
+[2026-05-26T16:48:53.840Z] [log] 
+Epoch 28: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.5800000000000001,"deltaWeight":0.6799999999999999,"categoryWeight":0.05,"quantileWeight":0.068,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.7,"corps":0.08571428571428572}, SeqLen 15, ID_Drop 0.944, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.007 
+[2026-05-26T16:48:53.840Z] [log] Epoch 28 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:49:58.546Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:49:58.546Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:49:58.547Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:49:58.547Z] [log] 0    | 8     | 0.6134   | 3.7696   | 3.8201 
+[2026-05-26T16:49:58.547Z] [log] 1    | 9     | 0.6214   | 0.9160   | 0.8284 
+[2026-05-26T16:49:58.547Z] [log] 2    | 11    | 0.4389   | 0.5551   | 0.4372 
+[2026-05-26T16:49:58.547Z] [log] 3-5  | 59    | 0.4061   | 0.3926   | 0.2869 
+[2026-05-26T16:49:58.547Z] [log] 6+   | 276   | 0.3253   | 0.2990   | 0.2474 
+[2026-05-26T16:49:58.547Z] [log] 
+[2026-05-26T16:49:58.547Z] [log] Epoch 28: loss = 0.183396 phase = B val_loss = 0.144907 delta_mae_pts = 0.3556 recap_mae_pts = 0.3556 cat_mae_pts = 0.4131 total_mae_pts = 0.9433 vs_inertia_pts = 0.0582 vs_quad_pts = 0.2906 lr_base = 0.000725 lr_mult = 1.0000 lr_eff = 0.000725 mon_cov = 0.963 mon_score = 1.2989 progress = 29/160 epoch_sec = 64.8 avg_epoch_sec = 71.7 elapsed = 00:34:40 eta = 02:36:35
+[2026-05-26T16:49:58.547Z] [log] Epoch 28 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:49:58.567Z] [log] Saved BEST-DELTA checkpoint @epoch 28 delta_mae_pts = 0.3556 monitor_score = 1.2896 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T16:49:58.576Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 28 score = 0.5084 delta_mae_pts = 0.3556 total_mae_pts = 0.9433 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T16:49:58.598Z] [log] Saved BEST-PHASE-B checkpoint @epoch 28 delta_mae_pts = 0.3556 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_b 
+[2026-05-26T16:49:58.598Z] [log] [curriculum] phase=B age=19/30 delta=0.3556 phase_best=0.3556 stall=0/6 cov=0.963/0.900 min=ok cov_gate=ok next=hold
+[2026-05-26T16:49:58.794Z] [log] 
+Epoch 29: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.5566666666666666,"deltaWeight":0.7066666666666668,"categoryWeight":0.05,"quantileWeight":0.07066666666666667,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.725,"corps":0.11428571428571428}, SeqLen 15, ID_Drop 0.948, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.073 
+[2026-05-26T16:49:58.794Z] [log] Epoch 29 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T16:51:06.419Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:51:06.419Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:51:06.419Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:51:06.419Z] [log] 0    | 8     | 0.6563   | 3.7696   | 3.9532 
+[2026-05-26T16:51:06.419Z] [log] 1    | 9     | 0.7146   | 0.9160   | 0.6392 
+[2026-05-26T16:51:06.419Z] [log] 2    | 11    | 0.4172   | 0.5551   | 0.3731 
+[2026-05-26T16:51:06.420Z] [log] 3-5  | 59    | 0.5033   | 0.3926   | 0.3315 
+[2026-05-26T16:51:06.420Z] [log] 6+   | 276   | 0.3470   | 0.2990   | 0.2764 
+[2026-05-26T16:51:06.420Z] [log] 
+[2026-05-26T16:51:06.420Z] [log] Epoch 29: loss = 0.186808 phase = B val_loss = 0.159447 delta_mae_pts = 0.3905 recap_mae_pts = 0.3905 cat_mae_pts = 0.4888 total_mae_pts = 1.2202 vs_inertia_pts = 0.0232 vs_quad_pts = 0.2557 lr_base = 0.000722 lr_mult = 1.0000 lr_eff = 0.000722 mon_cov = 0.949 mon_score = 1.6107 progress = 30/160 epoch_sec = 67.9 avg_epoch_sec = 71.6 elapsed = 00:35:48 eta = 02:35:07
+[2026-05-26T16:51:06.420Z] [log] Epoch 29 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:51:06.420Z] [log] [curriculum] phase=B age=20/30 delta=0.3905 phase_best=0.3556 stall=1/6 cov=0.949/0.900 min=ok cov_gate=ok next=hold
+[2026-05-26T16:51:06.459Z] [log] 
+Epoch 30: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.5333333333333334,"deltaWeight":0.7333333333333334,"categoryWeight":0.05,"quantileWeight":0.07333333333333333,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.75,"corps":0.14285714285714285}, SeqLen 15, ID_Drop 0.944, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.137 
+[2026-05-26T16:51:06.459Z] [log] Epoch 30 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:52:14.701Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:52:14.702Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:52:14.702Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:52:14.702Z] [log] 0    | 8     | 0.9722   | 3.7696   | 4.4106 
+[2026-05-26T16:52:14.702Z] [log] 1    | 9     | 0.6967   | 0.9160   | 0.9900 
+[2026-05-26T16:52:14.702Z] [log] 2    | 11    | 0.4623   | 0.5551   | 0.5213 
+[2026-05-26T16:52:14.702Z] [log] 3-5  | 59    | 0.4185   | 0.3926   | 0.2910 
+[2026-05-26T16:52:14.702Z] [log] 6+   | 276   | 0.3332   | 0.2990   | 0.2399 
+[2026-05-26T16:52:14.702Z] [log] 
+[2026-05-26T16:52:14.702Z] [log] Epoch 30: loss = 0.186647 phase = B val_loss = 0.159054 delta_mae_pts = 0.3740 recap_mae_pts = 0.3740 cat_mae_pts = 0.4472 total_mae_pts = 1.0560 vs_inertia_pts = 0.0397 vs_quad_pts = 0.2721 lr_base = 0.000719 lr_mult = 1.0000 lr_eff = 0.000719 mon_cov = 0.932 mon_score = 1.4300 progress = 31/160 epoch_sec = 68.3 avg_epoch_sec = 71.5 elapsed = 00:36:56 eta = 02:33:41
+[2026-05-26T16:52:14.703Z] [log] Epoch 30 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:52:14.703Z] [log] [curriculum] phase=B age=21/30 delta=0.3740 phase_best=0.3556 stall=2/6 cov=0.932/0.900 min=ok cov_gate=ok next=hold
+[2026-05-26T16:52:14.736Z] [log] 
+Epoch 31: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.51,"deltaWeight":0.76,"categoryWeight":0.05,"quantileWeight":0.076,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.775,"corps":0.17142857142857143}, SeqLen 15, ID_Drop 0.942, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.198 
+[2026-05-26T16:52:14.737Z] [log] Epoch 31 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:53:41.845Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:53:41.845Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:53:41.846Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:53:41.846Z] [log] 0    | 8     | 0.7230   | 3.7696   | 4.0547 
+[2026-05-26T16:53:41.846Z] [log] 1    | 9     | 0.6339   | 0.9160   | 0.8300 
+[2026-05-26T16:53:41.846Z] [log] 2    | 11    | 0.4725   | 0.5551   | 0.4721 
+[2026-05-26T16:53:41.846Z] [log] 3-5  | 59    | 0.4324   | 0.3926   | 0.2999 
+[2026-05-26T16:53:41.846Z] [log] 6+   | 276   | 0.3262   | 0.2990   | 0.2278 
+[2026-05-26T16:53:41.846Z] [log] 
+[2026-05-26T16:53:41.847Z] [log] Epoch 31: loss = 0.189126 phase = B val_loss = 0.156560 delta_mae_pts = 0.3642 recap_mae_pts = 0.3642 cat_mae_pts = 0.4465 total_mae_pts = 1.0515 vs_inertia_pts = 0.0495 vs_quad_pts = 0.2819 lr_base = 0.000716 lr_mult = 1.0000 lr_eff = 0.000716 mon_cov = 0.964 mon_score = 1.4158 progress = 32/160 epoch_sec = 87.1 avg_epoch_sec = 72.0 elapsed = 00:38:23 eta = 02:33:32
+[2026-05-26T16:53:41.847Z] [log] Epoch 31 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:53:41.847Z] [log] [curriculum] phase=B age=22/30 delta=0.3642 phase_best=0.3556 stall=3/6 cov=0.964/0.900 min=ok cov_gate=ok next=hold
+[2026-05-26T16:53:41.897Z] [log] 
+Epoch 32: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.4866666666666667,"deltaWeight":0.7866666666666666,"categoryWeight":0.05,"quantileWeight":0.07866666666666666,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.8,"corps":0.2}, SeqLen 15, ID_Drop 0.953, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.254 
+[2026-05-26T16:53:41.898Z] [log] Epoch 32 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:55:20.247Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:55:20.247Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:55:20.247Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:55:20.248Z] [log] 0    | 8     | 0.8179   | 3.7696   | 3.9923 
+[2026-05-26T16:55:20.248Z] [log] 1    | 9     | 0.6824   | 0.9160   | 0.5829 
+[2026-05-26T16:55:20.248Z] [log] 2    | 11    | 0.4447   | 0.5551   | 0.3380 
+[2026-05-26T16:55:20.248Z] [log] 3-5  | 59    | 0.4985   | 0.3926   | 0.3036 
+[2026-05-26T16:55:20.248Z] [log] 6+   | 276   | 0.3521   | 0.2990   | 0.2505 
+[2026-05-26T16:55:20.248Z] [log] 
+[2026-05-26T16:55:20.249Z] [log] Epoch 32: loss = 0.189428 phase = B val_loss = 0.170326 delta_mae_pts = 0.3971 recap_mae_pts = 0.3971 cat_mae_pts = 0.5066 total_mae_pts = 1.2869 vs_inertia_pts = 0.0166 vs_quad_pts = 0.2490 lr_base = 0.000712 lr_mult = 1.0000 lr_eff = 0.000712 mon_cov = 0.950 mon_score = 1.6840 progress = 33/160 epoch_sec = 98.4 avg_epoch_sec = 72.8 elapsed = 00:40:02 eta = 02:34:02
+[2026-05-26T16:55:20.249Z] [log] Epoch 32 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:55:20.249Z] [log] [curriculum] phase=B age=23/30 delta=0.3971 phase_best=0.3556 stall=4/6 cov=0.950/0.900 min=ok cov_gate=ok next=hold
+[2026-05-26T16:55:20.306Z] [log] 
+Epoch 33: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.4633333333333334,"deltaWeight":0.8133333333333335,"categoryWeight":0.05,"quantileWeight":0.08133333333333334,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.825,"corps":0.22857142857142856}, SeqLen 15, ID_Drop 0.949, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.307 
+[2026-05-26T16:55:20.306Z] [log] Epoch 33 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:56:52.307Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:56:52.307Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:56:52.307Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:56:52.307Z] [log] 0    | 8     | 0.6737   | 3.7696   | 3.6310 
+[2026-05-26T16:56:52.307Z] [log] 1    | 9     | 0.6920   | 0.9160   | 0.8783 
+[2026-05-26T16:56:52.307Z] [log] 2    | 11    | 0.4792   | 0.5551   | 0.5005 
+[2026-05-26T16:56:52.308Z] [log] 3-5  | 59    | 0.4093   | 0.3926   | 0.3437 
+[2026-05-26T16:56:52.308Z] [log] 6+   | 276   | 0.3315   | 0.2990   | 0.3032 
+[2026-05-26T16:56:52.308Z] [log] 
+[2026-05-26T16:56:52.308Z] [log] Epoch 33: loss = 0.187765 phase = B val_loss = 0.159936 delta_mae_pts = 0.3651 recap_mae_pts = 0.3651 cat_mae_pts = 0.4499 total_mae_pts = 1.0644 vs_inertia_pts = 0.0487 vs_quad_pts = 0.2811 lr_base = 0.000709 lr_mult = 1.0000 lr_eff = 0.000709 mon_cov = 0.961 mon_score = 1.4294 progress = 34/160 epoch_sec = 92.1 avg_epoch_sec = 73.3 elapsed = 00:41:34 eta = 02:34:01
+[2026-05-26T16:56:52.308Z] [log] Epoch 33 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:56:52.309Z] [log] [curriculum] phase=B age=24/30 delta=0.3651 phase_best=0.3556 stall=5/6 cov=0.961/0.900 min=ok cov_gate=ok next=hold
+[2026-05-26T16:56:52.353Z] [log] 
+Epoch 34: Phase B (A_end=10, B_end=40, C_ramp=80) Weights {"totalWeight":0,"recapWeight":0.44000000000000006,"deltaWeight":0.8400000000000001,"categoryWeight":0.05,"quantileWeight":0.084,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0.85,"corps":0.2571428571428571}, SeqLen 15, ID_Drop 0.942, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.354 
+[2026-05-26T16:56:52.353Z] [log] Epoch 34 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:58:04.198Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:58:04.199Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:58:04.199Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:58:04.199Z] [log] 0    | 8     | 0.7394   | 3.7696   | 3.8758 
+[2026-05-26T16:58:04.199Z] [log] 1    | 9     | 0.6891   | 0.9160   | 0.6060 
+[2026-05-26T16:58:04.199Z] [log] 2    | 11    | 0.4742   | 0.5551   | 0.3844 
+[2026-05-26T16:58:04.199Z] [log] 3-5  | 59    | 0.4860   | 0.3926   | 0.3347 
+[2026-05-26T16:58:04.199Z] [log] 6+   | 276   | 0.3446   | 0.2990   | 0.2736 
+[2026-05-26T16:58:04.199Z] [log] 
+[2026-05-26T16:58:04.200Z] [log] Epoch 34: loss = 0.189406 phase = B val_loss = 0.172829 delta_mae_pts = 0.3887 recap_mae_pts = 0.3887 cat_mae_pts = 0.4876 total_mae_pts = 1.2188 vs_inertia_pts = 0.0250 vs_quad_pts = 0.2574 lr_base = 0.000705 lr_mult = 1.0000 lr_eff = 0.000705 mon_cov = 0.947 mon_score = 1.6076 progress = 35/160 epoch_sec = 71.9 avg_epoch_sec = 73.3 elapsed = 00:42:45 eta = 02:32:42
+[2026-05-26T16:58:04.200Z] [log] Epoch 34 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:58:04.200Z] [log] [curriculum] phase=B age=25/30 delta=0.3887 phase_best=0.3556 stall=6/6 cov=0.947/0.900 min=ok cov_gate=ok next=advance:plateau
+[2026-05-26T16:58:04.200Z] [log] 
+--- AUTO CURRICULUM: B -> C at next epoch 35 (reason=delta_plateau, delta=0.3887, coverage=0.947) ---
+[2026-05-26T16:58:04.246Z] [log] 
+Epoch 35: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.02,"recapWeight":0.3,"deltaWeight":1,"categoryWeight":0.05,"quantileWeight":0.1,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.875,"corps":0.2857142857142857}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T16:58:04.246Z] [log] Epoch 35 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:59:27.824Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T16:59:27.824Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T16:59:27.824Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T16:59:27.824Z] [log] 0    | 8     | 0.8011   | 3.7696   | 4.1546 
+[2026-05-26T16:59:27.824Z] [log] 1    | 9     | 0.6393   | 0.9160   | 0.7996 
+[2026-05-26T16:59:27.824Z] [log] 2    | 11    | 0.4262   | 0.5551   | 0.4159 
+[2026-05-26T16:59:27.825Z] [log] 3-5  | 59    | 0.4276   | 0.3926   | 0.2747 
+[2026-05-26T16:59:27.825Z] [log] 6+   | 276   | 0.3329   | 0.2990   | 0.2327 
+[2026-05-26T16:59:27.825Z] [log] 
+[2026-05-26T16:59:27.825Z] [log] Epoch 35: loss = 0.207022 phase = C val_loss = 0.178941 delta_mae_pts = 0.3691 recap_mae_pts = 0.3691 cat_mae_pts = 0.4472 total_mae_pts = 1.0390 vs_inertia_pts = 0.0447 vs_quad_pts = 0.2771 lr_base = 0.000702 lr_mult = 1.0000 lr_eff = 0.000702 mon_cov = 0.962 mon_score = 0.5229 progress = 36/160 epoch_sec = 83.6 avg_epoch_sec = 73.6 elapsed = 00:44:09 eta = 02:32:05
+[2026-05-26T16:59:27.825Z] [log] Epoch 35 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T16:59:27.840Z] [log] Saved BEST-PHASE-C checkpoint @epoch 35 delta_mae_pts = 0.3691 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_c 
+[2026-05-26T16:59:27.840Z] [log] [curriculum] phase=C age=1 ramp=80 delta=0.3691 cov=0.962 best_global_delta=0.3556
+[2026-05-26T16:59:27.884Z] [log] 
+Epoch 36: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.021,"recapWeight":0.296875,"deltaWeight":1.109375,"categoryWeight":0.05,"quantileWeight":0.1125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.9,"corps":0.3142857142857143}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T16:59:27.884Z] [log] Epoch 36 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:00:37.819Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:00:37.819Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:00:37.819Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:00:37.819Z] [log] 0    | 8     | 0.6915   | 3.7696   | 3.5761 
+[2026-05-26T17:00:37.819Z] [log] 1    | 9     | 0.6152   | 0.9160   | 0.7778 
+[2026-05-26T17:00:37.819Z] [log] 2    | 11    | 0.4647   | 0.5551   | 0.4200 
+[2026-05-26T17:00:37.820Z] [log] 3-5  | 59    | 0.4176   | 0.3926   | 0.3032 
+[2026-05-26T17:00:37.820Z] [log] 6+   | 276   | 0.3323   | 0.2990   | 0.2458 
+[2026-05-26T17:00:37.820Z] [log] 
+[2026-05-26T17:00:37.820Z] [log] Epoch 36: loss = 0.223738 phase = C val_loss = 0.190251 delta_mae_pts = 0.3651 recap_mae_pts = 0.3651 cat_mae_pts = 0.4370 total_mae_pts = 1.0165 vs_inertia_pts = 0.0486 vs_quad_pts = 0.2811 lr_base = 0.000698 lr_mult = 1.0000 lr_eff = 0.000698 mon_cov = 0.958 mon_score = 0.5566 progress = 37/160 epoch_sec = 70.0 avg_epoch_sec = 73.5 elapsed = 00:45:19 eta = 02:30:39
+[2026-05-26T17:00:37.820Z] [log] Epoch 36 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:00:37.833Z] [log] Saved BEST-PHASE-C checkpoint @epoch 36 delta_mae_pts = 0.3651 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_c 
+[2026-05-26T17:00:37.833Z] [log] [curriculum] phase=C age=2 ramp=80 delta=0.3651 cov=0.958 best_global_delta=0.3556
+[2026-05-26T17:00:37.869Z] [log] 
+Epoch 37: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.022,"recapWeight":0.29375,"deltaWeight":1.21875,"categoryWeight":0.05,"quantileWeight":0.125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.925,"corps":0.34285714285714286}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:00:37.870Z] [log] Epoch 37 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:01:57.185Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:01:57.185Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:01:57.185Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:01:57.185Z] [log] 0    | 8     | 0.7306   | 3.7696   | 3.7015 
+[2026-05-26T17:01:57.185Z] [log] 1    | 9     | 0.7019   | 0.9160   | 0.6839 
+[2026-05-26T17:01:57.185Z] [log] 2    | 11    | 0.4448   | 0.5551   | 0.4183 
+[2026-05-26T17:01:57.185Z] [log] 3-5  | 59    | 0.4099   | 0.3926   | 0.3284 
+[2026-05-26T17:01:57.186Z] [log] 6+   | 276   | 0.3281   | 0.2990   | 0.2906 
+[2026-05-26T17:01:57.186Z] [log] 
+[2026-05-26T17:01:57.186Z] [log] Epoch 37: loss = 0.237503 phase = C val_loss = 0.202689 delta_mae_pts = 0.3631 recap_mae_pts = 0.3631 cat_mae_pts = 0.4353 total_mae_pts = 1.0254 vs_inertia_pts = 0.0507 vs_quad_pts = 0.2831 lr_base = 0.000694 lr_mult = 1.0000 lr_eff = 0.000694 mon_cov = 0.950 mon_score = 0.5935 progress = 38/160 epoch_sec = 79.4 avg_epoch_sec = 73.6 elapsed = 00:46:38 eta = 02:29:45
+[2026-05-26T17:01:57.186Z] [log] Epoch 37 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:01:57.200Z] [log] Saved BEST-PHASE-C checkpoint @epoch 37 delta_mae_pts = 0.3631 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_c 
+[2026-05-26T17:01:57.200Z] [log] [curriculum] phase=C age=3 ramp=80 delta=0.3631 cov=0.950 best_global_delta=0.3556
+[2026-05-26T17:01:57.242Z] [log] 
+Epoch 38: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.023,"recapWeight":0.29062499999999997,"deltaWeight":1.328125,"categoryWeight":0.05,"quantileWeight":0.1375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.95,"corps":0.37142857142857144}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:01:57.242Z] [log] Epoch 38 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:03:04.210Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:03:04.210Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:03:04.210Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:03:04.210Z] [log] 0    | 8     | 0.8674   | 3.7696   | 3.9501 
+[2026-05-26T17:03:04.211Z] [log] 1    | 9     | 0.6719   | 0.9160   | 0.5825 
+[2026-05-26T17:03:04.211Z] [log] 2    | 11    | 0.5277   | 0.5551   | 0.3956 
+[2026-05-26T17:03:04.211Z] [log] 3-5  | 59    | 0.5171   | 0.3926   | 0.3627 
+[2026-05-26T17:03:04.211Z] [log] 6+   | 276   | 0.3518   | 0.2990   | 0.2584 
+[2026-05-26T17:03:04.211Z] [log] 
+[2026-05-26T17:03:04.211Z] [log] Epoch 38: loss = 0.247348 phase = C val_loss = 0.240301 delta_mae_pts = 0.4033 recap_mae_pts = 0.4033 cat_mae_pts = 0.5132 total_mae_pts = 1.3124 vs_inertia_pts = 0.0104 vs_quad_pts = 0.2428 lr_base = 0.000690 lr_mult = 1.0000 lr_eff = 0.000690 mon_cov = 0.940 mon_score = 0.7087 progress = 39/160 epoch_sec = 67.0 avg_epoch_sec = 73.5 elapsed = 00:47:45 eta = 02:28:10
+[2026-05-26T17:03:04.211Z] [log] Epoch 38 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:03:04.212Z] [log] [curriculum] phase=C age=4 ramp=80 delta=0.4033 cov=0.940 best_global_delta=0.3556
+[2026-05-26T17:03:04.249Z] [log] 
+Epoch 39: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.024,"recapWeight":0.2875,"deltaWeight":1.4375,"categoryWeight":0.05,"quantileWeight":0.15000000000000002,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":0.975,"corps":0.4}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:03:04.249Z] [log] Epoch 39 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:04:17.319Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:04:17.319Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:04:17.319Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:04:17.319Z] [log] 0    | 8     | 0.6195   | 3.7696   | 3.8732 
+[2026-05-26T17:04:17.319Z] [log] 1    | 9     | 0.7182   | 0.9160   | 0.8529 
+[2026-05-26T17:04:17.319Z] [log] 2    | 11    | 0.4329   | 0.5551   | 0.4359 
+[2026-05-26T17:04:17.320Z] [log] 3-5  | 59    | 0.4053   | 0.3926   | 0.3101 
+[2026-05-26T17:04:17.320Z] [log] 6+   | 276   | 0.3302   | 0.2990   | 0.2688 
+[2026-05-26T17:04:17.320Z] [log] 
+[2026-05-26T17:04:17.320Z] [log] Epoch 39: loss = 0.265624 phase = C val_loss = 0.228769 delta_mae_pts = 0.3615 recap_mae_pts = 0.3615 cat_mae_pts = 0.4412 total_mae_pts = 0.9210 vs_inertia_pts = 0.0522 vs_quad_pts = 0.2846 lr_base = 0.000686 lr_mult = 1.0000 lr_eff = 0.000686 mon_cov = 0.949 mon_score = 0.6678 progress = 40/160 epoch_sec = 73.1 avg_epoch_sec = 73.5 elapsed = 00:48:59 eta = 02:26:56
+[2026-05-26T17:04:17.320Z] [log] Epoch 39 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:04:17.337Z] [log] Saved BEST-TOTAL checkpoint @epoch 39 total_mae_pts = 0.9210 delta_mae_pts = 0.3615 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T17:04:17.352Z] [log] Saved BEST-PHASE-C checkpoint @epoch 39 delta_mae_pts = 0.3615 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_c 
+[2026-05-26T17:04:17.352Z] [log] [curriculum] phase=C age=5 ramp=80 delta=0.3615 cov=0.949 best_global_delta=0.3556
+[2026-05-26T17:04:17.395Z] [log] 
+Epoch 40: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.025,"recapWeight":0.284375,"deltaWeight":1.546875,"categoryWeight":0.05,"quantileWeight":0.1625,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.42857142857142855}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:04:17.395Z] [log] Epoch 40 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:05:40.085Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:05:40.085Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:05:40.085Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:05:40.085Z] [log] 0    | 8     | 0.8029   | 3.7696   | 3.8820 
+[2026-05-26T17:05:40.086Z] [log] 1    | 9     | 0.6922   | 0.9160   | 0.6591 
+[2026-05-26T17:05:40.086Z] [log] 2    | 11    | 0.4976   | 0.5551   | 0.3975 
+[2026-05-26T17:05:40.086Z] [log] 3-5  | 59    | 0.4834   | 0.3926   | 0.3536 
+[2026-05-26T17:05:40.086Z] [log] 6+   | 276   | 0.3449   | 0.2990   | 0.2885 
+[2026-05-26T17:05:40.086Z] [log] 
+[2026-05-26T17:05:40.086Z] [log] Epoch 40: loss = 0.281666 phase = C val_loss = 0.259986 delta_mae_pts = 0.3908 recap_mae_pts = 0.3908 cat_mae_pts = 0.4966 total_mae_pts = 1.2192 vs_inertia_pts = 0.0230 vs_quad_pts = 0.2554 lr_base = 0.000681 lr_mult = 1.0000 lr_eff = 0.000681 mon_cov = 0.938 mon_score = 0.7709 progress = 41/160 epoch_sec = 82.8 avg_epoch_sec = 73.7 elapsed = 00:50:21 eta = 02:26:09
+[2026-05-26T17:05:40.086Z] [log] Epoch 40 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:05:40.087Z] [log] [curriculum] phase=C age=6 ramp=80 delta=0.3908 cov=0.938 best_global_delta=0.3556
+[2026-05-26T17:05:40.131Z] [log] 
+Epoch 41: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.026000000000000002,"recapWeight":0.28125,"deltaWeight":1.65625,"categoryWeight":0.05,"quantileWeight":0.175,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.45714285714285713}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:05:40.131Z] [log] Epoch 41 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:07:01.934Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:07:01.934Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:07:01.934Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:07:01.934Z] [log] 0    | 8     | 0.7225   | 3.7696   | 3.8840 
+[2026-05-26T17:07:01.934Z] [log] 1    | 9     | 0.6864   | 0.9160   | 0.7087 
+[2026-05-26T17:07:01.934Z] [log] 2    | 11    | 0.4414   | 0.5551   | 0.3962 
+[2026-05-26T17:07:01.934Z] [log] 3-5  | 59    | 0.4707   | 0.3926   | 0.3118 
+[2026-05-26T17:07:01.934Z] [log] 6+   | 276   | 0.3593   | 0.2990   | 0.2846 
+[2026-05-26T17:07:01.935Z] [log] 
+[2026-05-26T17:07:01.935Z] [log] Epoch 41: loss = 0.296301 phase = C val_loss = 0.276318 delta_mae_pts = 0.3960 recap_mae_pts = 0.3960 cat_mae_pts = 0.4989 total_mae_pts = 1.2140 vs_inertia_pts = 0.0177 vs_quad_pts = 0.2502 lr_base = 0.000677 lr_mult = 1.0000 lr_eff = 0.000677 mon_cov = 0.953 mon_score = 0.8238 progress = 42/160 epoch_sec = 81.8 avg_epoch_sec = 73.9 elapsed = 00:51:43 eta = 02:25:19
+[2026-05-26T17:07:01.935Z] [log] Epoch 41 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:07:01.935Z] [log] [curriculum] phase=C age=7 ramp=80 delta=0.3960 cov=0.953 best_global_delta=0.3556
+[2026-05-26T17:07:01.981Z] [log] 
+Epoch 42: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.027,"recapWeight":0.278125,"deltaWeight":1.765625,"categoryWeight":0.05,"quantileWeight":0.1875,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.4857142857142857}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:07:01.982Z] [log] Epoch 42 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:08:20.777Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:08:20.777Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:08:20.777Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:08:20.777Z] [log] 0    | 8     | 0.8645   | 3.7696   | 4.1685 
+[2026-05-26T17:08:20.777Z] [log] 1    | 9     | 0.6701   | 0.9160   | 0.8355 
+[2026-05-26T17:08:20.777Z] [log] 2    | 11    | 0.5014   | 0.5551   | 0.4882 
+[2026-05-26T17:08:20.777Z] [log] 3-5  | 59    | 0.4069   | 0.3926   | 0.3487 
+[2026-05-26T17:08:20.778Z] [log] 6+   | 276   | 0.3107   | 0.2990   | 0.2586 
+[2026-05-26T17:08:20.778Z] [log] 
+[2026-05-26T17:08:20.778Z] [log] Epoch 42: loss = 0.313669 phase = C val_loss = 0.263677 delta_mae_pts = 0.3532 recap_mae_pts = 0.3532 cat_mae_pts = 0.4186 total_mae_pts = 0.8823 vs_inertia_pts = 0.0605 vs_quad_pts = 0.2929 lr_base = 0.000672 lr_mult = 1.0000 lr_eff = 0.000672 mon_cov = 0.954 mon_score = 0.7667 progress = 43/160 epoch_sec = 78.8 avg_epoch_sec = 74.0 elapsed = 00:53:02 eta = 02:24:18
+[2026-05-26T17:08:20.778Z] [log] Epoch 42 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:08:20.793Z] [log] Saved BEST-DELTA checkpoint @epoch 42 delta_mae_pts = 0.3532 monitor_score = 0.5229 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T17:08:20.812Z] [log] Saved BEST-TOTAL checkpoint @epoch 42 total_mae_pts = 0.8823 delta_mae_pts = 0.3532 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T17:08:20.828Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 42 score = 0.4959 delta_mae_pts = 0.3532 total_mae_pts = 0.8823 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T17:08:20.843Z] [log] Saved BEST-PHASE-C checkpoint @epoch 42 delta_mae_pts = 0.3532 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_c 
+[2026-05-26T17:08:20.843Z] [log] [curriculum] phase=C age=8 ramp=80 delta=0.3532 cov=0.954 best_global_delta=0.3532
+[2026-05-26T17:08:20.888Z] [log] 
+Epoch 43: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.028,"recapWeight":0.27499999999999997,"deltaWeight":1.875,"categoryWeight":0.05,"quantileWeight":0.2,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.5142857142857142}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:08:20.888Z] [log] Epoch 43 memory(start): tensors=336, buffers=219, bytes=27.4MB
+[2026-05-26T17:09:35.227Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:09:35.227Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:09:35.227Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:09:35.227Z] [log] 0    | 8     | 0.7070   | 3.7696   | 3.8200 
+[2026-05-26T17:09:35.227Z] [log] 1    | 9     | 0.6564   | 0.9160   | 0.5653 
+[2026-05-26T17:09:35.227Z] [log] 2    | 11    | 0.4820   | 0.5551   | 0.3146 
+[2026-05-26T17:09:35.227Z] [log] 3-5  | 59    | 0.4974   | 0.3926   | 0.3240 
+[2026-05-26T17:09:35.228Z] [log] 6+   | 276   | 0.3472   | 0.2990   | 0.2770 
+[2026-05-26T17:09:35.228Z] [log] 
+[2026-05-26T17:09:35.228Z] [log] Epoch 43: loss = 0.333619 phase = C val_loss = 0.302228 delta_mae_pts = 0.3913 recap_mae_pts = 0.3913 cat_mae_pts = 0.4949 total_mae_pts = 1.1826 vs_inertia_pts = 0.0224 vs_quad_pts = 0.2549 lr_base = 0.000667 lr_mult = 1.0000 lr_eff = 0.000667 mon_cov = 0.939 mon_score = 0.8991 progress = 44/160 epoch_sec = 74.5 avg_epoch_sec = 74.0 elapsed = 00:54:17 eta = 02:23:05
+[2026-05-26T17:09:35.228Z] [log] Epoch 43 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:09:35.228Z] [log] [curriculum] phase=C age=9 ramp=80 delta=0.3913 cov=0.939 best_global_delta=0.3532
+[2026-05-26T17:09:35.285Z] [log] 
+Epoch 44: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.029,"recapWeight":0.271875,"deltaWeight":1.984375,"categoryWeight":0.05,"quantileWeight":0.21250000000000002,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.5428571428571428}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:09:35.285Z] [log] Epoch 44 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:11:06.498Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:11:06.498Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:11:06.498Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:11:06.498Z] [log] 0    | 8     | 0.7429   | 3.7696   | 4.0558 
+[2026-05-26T17:11:06.498Z] [log] 1    | 9     | 0.7188   | 0.9160   | 0.9279 
+[2026-05-26T17:11:06.498Z] [log] 2    | 11    | 0.4155   | 0.5551   | 0.5001 
+[2026-05-26T17:11:06.499Z] [log] 3-5  | 59    | 0.4162   | 0.3926   | 0.3142 
+[2026-05-26T17:11:06.499Z] [log] 6+   | 276   | 0.3253   | 0.2990   | 0.2830 
+[2026-05-26T17:11:06.499Z] [log] 
+[2026-05-26T17:11:06.499Z] [log] Epoch 44: loss = 0.355731 phase = C val_loss = 0.299739 delta_mae_pts = 0.3617 recap_mae_pts = 0.3617 cat_mae_pts = 0.4249 total_mae_pts = 0.9960 vs_inertia_pts = 0.0520 vs_quad_pts = 0.2844 lr_base = 0.000663 lr_mult = 1.0000 lr_eff = 0.000663 mon_cov = 0.969 mon_score = 0.8663 progress = 45/160 epoch_sec = 91.3 avg_epoch_sec = 74.4 elapsed = 00:55:48 eta = 02:22:35
+[2026-05-26T17:11:06.499Z] [log] Epoch 44 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:11:06.499Z] [log] [curriculum] phase=C age=10 ramp=80 delta=0.3617 cov=0.969 best_global_delta=0.3532
+[2026-05-26T17:11:06.557Z] [log] 
+Epoch 45: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.03,"recapWeight":0.26875,"deltaWeight":2.09375,"categoryWeight":0.05,"quantileWeight":0.225,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.5714285714285714}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:11:06.558Z] [log] Epoch 45 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:12:35.836Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:12:35.837Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:12:35.837Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:12:35.837Z] [log] 0    | 8     | 0.9712   | 3.7696   | 4.2104 
+[2026-05-26T17:12:35.837Z] [log] 1    | 9     | 0.6181   | 0.9160   | 0.7994 
+[2026-05-26T17:12:35.837Z] [log] 2    | 11    | 0.4939   | 0.5551   | 0.4464 
+[2026-05-26T17:12:35.837Z] [log] 3-5  | 59    | 0.4885   | 0.3926   | 0.3453 
+[2026-05-26T17:12:35.837Z] [log] 6+   | 276   | 0.3704   | 0.2990   | 0.2945 
+[2026-05-26T17:12:35.837Z] [log] 
+[2026-05-26T17:12:35.838Z] [log] Epoch 45: loss = 0.361674 phase = C val_loss = 0.348258 delta_mae_pts = 0.4127 recap_mae_pts = 0.4127 cat_mae_pts = 0.5290 total_mae_pts = 1.2947 vs_inertia_pts = 0.0010 vs_quad_pts = 0.2334 lr_base = 0.000658 lr_mult = 1.0000 lr_eff = 0.000658 mon_cov = 0.923 mon_score = 1.0404 progress = 46/160 epoch_sec = 89.3 avg_epoch_sec = 74.7 elapsed = 00:57:17 eta = 02:21:58
+[2026-05-26T17:12:35.838Z] [log] Epoch 45 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:12:35.838Z] [log] [curriculum] phase=C age=11 ramp=80 delta=0.4127 cov=0.923 best_global_delta=0.3532
+[2026-05-26T17:12:35.950Z] [log] 
+Epoch 46: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.031,"recapWeight":0.265625,"deltaWeight":2.203125,"categoryWeight":0.05,"quantileWeight":0.23750000000000002,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.6}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:12:35.950Z] [log] Epoch 46 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:13:58.164Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:13:58.164Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:13:58.165Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:13:58.165Z] [log] 0    | 8     | 0.8274   | 3.7696   | 4.0098 
+[2026-05-26T17:13:58.165Z] [log] 1    | 9     | 0.6725   | 0.9160   | 0.7239 
+[2026-05-26T17:13:58.165Z] [log] 2    | 11    | 0.4581   | 0.5551   | 0.4164 
+[2026-05-26T17:13:58.165Z] [log] 3-5  | 59    | 0.4292   | 0.3926   | 0.3225 
+[2026-05-26T17:13:58.165Z] [log] 6+   | 276   | 0.3356   | 0.2990   | 0.2701 
+[2026-05-26T17:13:58.165Z] [log] 
+[2026-05-26T17:13:58.166Z] [log] Epoch 46: loss = 0.373732 phase = C val_loss = 0.331335 delta_mae_pts = 0.3737 recap_mae_pts = 0.3737 cat_mae_pts = 0.4384 total_mae_pts = 0.9963 vs_inertia_pts = 0.0400 vs_quad_pts = 0.2725 lr_base = 0.000652 lr_mult = 1.0000 lr_eff = 0.000652 mon_cov = 0.956 mon_score = 0.9754 progress = 47/160 epoch_sec = 82.3 avg_epoch_sec = 74.9 elapsed = 00:58:39 eta = 02:21:02
+[2026-05-26T17:13:58.166Z] [log] Epoch 46 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:13:58.166Z] [log] [curriculum] phase=C age=12 ramp=80 delta=0.3737 cov=0.956 best_global_delta=0.3532
+[2026-05-26T17:13:58.208Z] [log] 
+Epoch 47: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.032,"recapWeight":0.2625,"deltaWeight":2.3125,"categoryWeight":0.05,"quantileWeight":0.25,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.6285714285714286}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:13:58.208Z] [log] Epoch 47 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:15:11.424Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:15:11.425Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:15:11.425Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:15:11.425Z] [log] 0    | 8     | 0.6460   | 3.7696   | 3.6992 
+[2026-05-26T17:15:11.425Z] [log] 1    | 9     | 0.6664   | 0.9160   | 0.8040 
+[2026-05-26T17:15:11.425Z] [log] 2    | 11    | 0.4435   | 0.5551   | 0.4617 
+[2026-05-26T17:15:11.425Z] [log] 3-5  | 59    | 0.4107   | 0.3926   | 0.3078 
+[2026-05-26T17:15:11.425Z] [log] 6+   | 276   | 0.3288   | 0.2990   | 0.2424 
+[2026-05-26T17:15:11.425Z] [log] 
+[2026-05-26T17:15:11.426Z] [log] Epoch 47: loss = 0.388721 phase = C val_loss = 0.339222 delta_mae_pts = 0.3610 recap_mae_pts = 0.3610 cat_mae_pts = 0.4158 total_mae_pts = 0.9061 vs_inertia_pts = 0.0527 vs_quad_pts = 0.2852 lr_base = 0.000647 lr_mult = 1.0000 lr_eff = 0.000647 mon_cov = 0.971 mon_score = 0.9793 progress = 48/160 epoch_sec = 73.3 avg_epoch_sec = 74.8 elapsed = 00:59:53 eta = 02:19:43
+[2026-05-26T17:15:11.426Z] [log] Epoch 47 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:15:11.426Z] [log] [curriculum] phase=C age=13 ramp=80 delta=0.3610 cov=0.971 best_global_delta=0.3532
+[2026-05-26T17:15:11.426Z] [log] 
+--- NO MONITOR IMPROVEMENT FOR 12 EPOCHS: plateau multiplier 1.0000 -> 0.5000, effective LR 0.000324 ---
+[2026-05-26T17:15:11.471Z] [log] 
+Epoch 48: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.033,"recapWeight":0.25937499999999997,"deltaWeight":2.421875,"categoryWeight":0.05,"quantileWeight":0.2625,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.6571428571428571}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:15:11.471Z] [log] Epoch 48 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:16:27.686Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:16:27.686Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:16:27.686Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:16:27.686Z] [log] 0    | 8     | 0.7256   | 3.7696   | 4.0248 
+[2026-05-26T17:16:27.686Z] [log] 1    | 9     | 0.6628   | 0.9160   | 0.8612 
+[2026-05-26T17:16:27.686Z] [log] 2    | 11    | 0.4509   | 0.5551   | 0.5070 
+[2026-05-26T17:16:27.686Z] [log] 3-5  | 59    | 0.3858   | 0.3926   | 0.3433 
+[2026-05-26T17:16:27.686Z] [log] 6+   | 276   | 0.3192   | 0.2990   | 0.2871 
+[2026-05-26T17:16:27.686Z] [log] 
+[2026-05-26T17:16:27.686Z] [log] Epoch 48: loss = 0.385184 phase = C val_loss = 0.338577 delta_mae_pts = 0.3515 recap_mae_pts = 0.3515 cat_mae_pts = 0.4130 total_mae_pts = 0.9018 vs_inertia_pts = 0.0623 vs_quad_pts = 0.2947 lr_base = 0.000642 lr_mult = 0.5000 lr_eff = 0.000321 mon_cov = 0.958 mon_score = 0.9928 progress = 49/160 epoch_sec = 76.3 avg_epoch_sec = 74.9 elapsed = 01:01:09 eta = 02:18:31
+[2026-05-26T17:16:27.687Z] [log] Epoch 48 memory(end): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:16:27.702Z] [log] Saved BEST-DELTA checkpoint @epoch 48 delta_mae_pts = 0.3515 monitor_score = 0.5229 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T17:16:27.715Z] [log] Saved BEST-PHASE-C checkpoint @epoch 48 delta_mae_pts = 0.3515 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_c 
+[2026-05-26T17:16:27.715Z] [log] [curriculum] phase=C age=14 ramp=80 delta=0.3515 cov=0.958 best_global_delta=0.3515
+[2026-05-26T17:16:27.757Z] [log] 
+Epoch 49: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.034,"recapWeight":0.25625,"deltaWeight":2.53125,"categoryWeight":0.05,"quantileWeight":0.275,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.6857142857142857}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:16:27.757Z] [log] Epoch 49 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:17:52.310Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:17:52.310Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:17:52.310Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:17:52.310Z] [log] 0    | 8     | 0.7267   | 3.7696   | 3.8970 
+[2026-05-26T17:17:52.311Z] [log] 1    | 9     | 0.6553   | 0.9160   | 0.7923 
+[2026-05-26T17:17:52.311Z] [log] 2    | 11    | 0.4451   | 0.5551   | 0.4564 
+[2026-05-26T17:17:52.311Z] [log] 3-5  | 59    | 0.4081   | 0.3926   | 0.3109 
+[2026-05-26T17:17:52.311Z] [log] 6+   | 276   | 0.3192   | 0.2990   | 0.2625 
+[2026-05-26T17:17:52.311Z] [log] 
+[2026-05-26T17:17:52.311Z] [log] Epoch 49: loss = 0.394480 phase = C val_loss = 0.354812 delta_mae_pts = 0.3548 recap_mae_pts = 0.3548 cat_mae_pts = 0.4162 total_mae_pts = 0.9258 vs_inertia_pts = 0.0589 vs_quad_pts = 0.2914 lr_base = 0.000636 lr_mult = 0.5000 lr_eff = 0.000318 mon_cov = 0.960 mon_score = 1.0413 progress = 50/160 epoch_sec = 84.6 avg_epoch_sec = 75.1 elapsed = 01:02:34 eta = 02:17:38
+[2026-05-26T17:17:52.312Z] [log] Epoch 49 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:17:52.312Z] [log] [curriculum] phase=C age=15 ramp=80 delta=0.3548 cov=0.960 best_global_delta=0.3515
+[2026-05-26T17:17:52.383Z] [log] 
+Epoch 50: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.035,"recapWeight":0.253125,"deltaWeight":2.640625,"categoryWeight":0.05,"quantileWeight":0.2875,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.7142857142857143}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:17:52.383Z] [log] Epoch 50 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:19:20.425Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:19:20.426Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:19:20.426Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:19:20.426Z] [log] 0    | 8     | 0.6093   | 3.7696   | 3.7667 
+[2026-05-26T17:19:20.426Z] [log] 1    | 9     | 0.6828   | 0.9160   | 0.9568 
+[2026-05-26T17:19:20.426Z] [log] 2    | 11    | 0.4740   | 0.5551   | 0.5674 
+[2026-05-26T17:19:20.426Z] [log] 3-5  | 59    | 0.3899   | 0.3926   | 0.3388 
+[2026-05-26T17:19:20.426Z] [log] 6+   | 276   | 0.3203   | 0.2990   | 0.2725 
+[2026-05-26T17:19:20.426Z] [log] 
+[2026-05-26T17:19:20.427Z] [log] Epoch 50: loss = 0.404063 phase = C val_loss = 0.367607 delta_mae_pts = 0.3516 recap_mae_pts = 0.3516 cat_mae_pts = 0.4148 total_mae_pts = 0.8685 vs_inertia_pts = 0.0621 vs_quad_pts = 0.2945 lr_base = 0.000631 lr_mult = 0.5000 lr_eff = 0.000315 mon_cov = 0.965 mon_score = 1.0687 progress = 51/160 epoch_sec = 88.1 avg_epoch_sec = 75.3 elapsed = 01:04:02 eta = 02:16:51
+[2026-05-26T17:19:20.427Z] [log] Epoch 50 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:19:20.427Z] [log] 
+-- - CAPTION STATS(Epoch 50)-- - 
+[2026-05-26T17:19:20.427Z] [log] GE1: delta_pts = 0.2903, recap_pts = 0.2903, cov = 0.978, width = 2.0340 
+[2026-05-26T17:19:20.427Z] [log] GE2: delta_pts = 0.3316, recap_pts = 0.3316, cov = 0.986, width = 2.0738 
+[2026-05-26T17:19:20.427Z] [log] VP: delta_pts = 0.3414, recap_pts = 0.3414, cov = 0.975, width = 2.0828 
+[2026-05-26T17:19:20.427Z] [log] VA: delta_pts = 0.3368, recap_pts = 0.3368, cov = 0.983, width = 2.1008 
+[2026-05-26T17:19:20.427Z] [log] CG: delta_pts = 0.3905, recap_pts = 0.3905, cov = 0.950, width = 2.1417 
+[2026-05-26T17:19:20.428Z] [log] MB: delta_pts = 0.3536, recap_pts = 0.3536, cov = 0.961, width = 2.0466 
+[2026-05-26T17:19:20.428Z] [log] MA: delta_pts = 0.3537, recap_pts = 0.3537, cov = 0.967, width = 2.0400 
+[2026-05-26T17:19:20.428Z] [log] MP: delta_pts = 0.4151, recap_pts = 0.4151, cov = 0.920, width = 2.0548 
+[2026-05-26T17:19:20.428Z] [log] ----------------------------------
+
+[2026-05-26T17:19:20.781Z] [log] Saved BEST-TOTAL checkpoint @epoch 50 total_mae_pts = 0.8685 delta_mae_pts = 0.3516 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_total 
+[2026-05-26T17:19:21.015Z] [log] Saved BEST-COMPOSITE checkpoint @epoch 50 score = 0.4934 delta_mae_pts = 0.3516 total_mae_pts = 0.8685 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_composite 
+[2026-05-26T17:19:21.015Z] [log] [curriculum] phase=C age=16 ramp=80 delta=0.3516 cov=0.965 best_global_delta=0.3515
+[2026-05-26T17:19:21.104Z] [log] 
+Epoch 51: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.036000000000000004,"recapWeight":0.25,"deltaWeight":2.75,"categoryWeight":0.05,"quantileWeight":0.30000000000000004,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.7428571428571429}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:19:21.105Z] [log] Epoch 51 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:20:41.914Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:20:41.915Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:20:41.915Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:20:41.915Z] [log] 0    | 8     | 0.7763   | 3.7696   | 4.0230 
+[2026-05-26T17:20:41.915Z] [log] 1    | 9     | 0.6814   | 0.9160   | 0.8847 
+[2026-05-26T17:20:41.915Z] [log] 2    | 11    | 0.4568   | 0.5551   | 0.5562 
+[2026-05-26T17:20:41.915Z] [log] 3-5  | 59    | 0.4204   | 0.3926   | 0.3636 
+[2026-05-26T17:20:41.915Z] [log] 6+   | 276   | 0.3369   | 0.2990   | 0.3124 
+[2026-05-26T17:20:41.915Z] [log] 
+[2026-05-26T17:20:41.916Z] [log] Epoch 51: loss = 0.415067 phase = C val_loss = 0.396320 delta_mae_pts = 0.3723 recap_mae_pts = 0.3723 cat_mae_pts = 0.4399 total_mae_pts = 0.9927 vs_inertia_pts = 0.0414 vs_quad_pts = 0.2739 lr_base = 0.000625 lr_mult = 0.5000 lr_eff = 0.000313 mon_cov = 0.948 mon_score = 1.1746 progress = 52/160 epoch_sec = 81.5 avg_epoch_sec = 75.4 elapsed = 01:05:23 eta = 02:15:48
+[2026-05-26T17:20:41.916Z] [log] Epoch 51 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:20:41.916Z] [log] [curriculum] phase=C age=17 ramp=80 delta=0.3723 cov=0.948 best_global_delta=0.3515
+[2026-05-26T17:20:41.959Z] [log] 
+Epoch 52: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.037000000000000005,"recapWeight":0.24687499999999998,"deltaWeight":2.859375,"categoryWeight":0.05,"quantileWeight":0.3125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.7714285714285715}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:20:41.959Z] [log] Epoch 52 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:21:55.025Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:21:55.025Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:21:55.025Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:21:55.025Z] [log] 0    | 8     | 0.6375   | 3.7696   | 3.5815 
+[2026-05-26T17:21:55.025Z] [log] 1    | 9     | 0.6649   | 0.9160   | 0.6378 
+[2026-05-26T17:21:55.025Z] [log] 2    | 11    | 0.4525   | 0.5551   | 0.4059 
+[2026-05-26T17:21:55.026Z] [log] 3-5  | 59    | 0.4365   | 0.3926   | 0.3346 
+[2026-05-26T17:21:55.026Z] [log] 6+   | 276   | 0.3316   | 0.2990   | 0.2816 
+[2026-05-26T17:21:55.026Z] [log] 
+[2026-05-26T17:21:55.026Z] [log] Epoch 52: loss = 0.434336 phase = C val_loss = 0.406433 delta_mae_pts = 0.3673 recap_mae_pts = 0.3673 cat_mae_pts = 0.4387 total_mae_pts = 0.9680 vs_inertia_pts = 0.0464 vs_quad_pts = 0.2788 lr_base = 0.000619 lr_mult = 0.5000 lr_eff = 0.000310 mon_cov = 0.956 mon_score = 1.1988 progress = 53/160 epoch_sec = 73.1 avg_epoch_sec = 75.4 elapsed = 01:06:36 eta = 02:14:28
+[2026-05-26T17:21:55.026Z] [log] Epoch 52 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:21:55.026Z] [log] [curriculum] phase=C age=18 ramp=80 delta=0.3673 cov=0.956 best_global_delta=0.3515
+[2026-05-26T17:21:55.074Z] [log] 
+Epoch 53: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.038000000000000006,"recapWeight":0.24375,"deltaWeight":2.96875,"categoryWeight":0.05,"quantileWeight":0.325,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.8}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:21:55.074Z] [log] Epoch 53 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:23:09.073Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:23:09.073Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:23:09.073Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:23:09.073Z] [log] 0    | 8     | 0.5619   | 3.7696   | 3.8301 
+[2026-05-26T17:23:09.073Z] [log] 1    | 9     | 0.5964   | 0.9160   | 0.8258 
+[2026-05-26T17:23:09.074Z] [log] 2    | 11    | 0.4756   | 0.5551   | 0.4897 
+[2026-05-26T17:23:09.074Z] [log] 3-5  | 59    | 0.4171   | 0.3926   | 0.3226 
+[2026-05-26T17:23:09.074Z] [log] 6+   | 276   | 0.3247   | 0.2990   | 0.2777 
+[2026-05-26T17:23:09.074Z] [log] 
+[2026-05-26T17:23:09.074Z] [log] Epoch 53: loss = 0.435337 phase = C val_loss = 0.408222 delta_mae_pts = 0.3562 recap_mae_pts = 0.3562 cat_mae_pts = 0.4171 total_mae_pts = 0.9715 vs_inertia_pts = 0.0575 vs_quad_pts = 0.2899 lr_base = 0.000614 lr_mult = 0.5000 lr_eff = 0.000307 mon_cov = 0.955 mon_score = 1.2022 progress = 54/160 epoch_sec = 74.0 avg_epoch_sec = 75.4 elapsed = 01:07:50 eta = 02:13:10
+[2026-05-26T17:23:09.074Z] [log] Epoch 53 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:23:09.074Z] [log] [curriculum] phase=C age=19 ramp=80 delta=0.3562 cov=0.955 best_global_delta=0.3515
+[2026-05-26T17:23:09.118Z] [log] 
+Epoch 54: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.039,"recapWeight":0.24062499999999998,"deltaWeight":3.078125,"categoryWeight":0.05,"quantileWeight":0.3375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.8285714285714286}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:23:09.118Z] [log] Epoch 54 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:24:21.281Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:24:21.281Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:24:21.281Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:24:21.281Z] [log] 0    | 8     | 0.5899   | 3.7696   | 3.8922 
+[2026-05-26T17:24:21.281Z] [log] 1    | 9     | 0.6239   | 0.9160   | 0.7292 
+[2026-05-26T17:24:21.281Z] [log] 2    | 11    | 0.4167   | 0.5551   | 0.4711 
+[2026-05-26T17:24:21.281Z] [log] 3-5  | 59    | 0.4189   | 0.3926   | 0.3174 
+[2026-05-26T17:24:21.282Z] [log] 6+   | 276   | 0.3238   | 0.2990   | 0.2574 
+[2026-05-26T17:24:21.282Z] [log] 
+[2026-05-26T17:24:21.282Z] [log] Epoch 54: loss = 0.452294 phase = C val_loss = 0.420489 delta_mae_pts = 0.3554 recap_mae_pts = 0.3554 cat_mae_pts = 0.4181 total_mae_pts = 0.9412 vs_inertia_pts = 0.0583 vs_quad_pts = 0.2908 lr_base = 0.000608 lr_mult = 0.5000 lr_eff = 0.000304 mon_cov = 0.963 mon_score = 1.2371 progress = 55/160 epoch_sec = 72.2 avg_epoch_sec = 75.3 elapsed = 01:09:03 eta = 02:11:49
+[2026-05-26T17:24:21.282Z] [log] Epoch 54 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:24:21.282Z] [log] [curriculum] phase=C age=20 ramp=80 delta=0.3554 cov=0.963 best_global_delta=0.3515
+[2026-05-26T17:24:21.322Z] [log] 
+Epoch 55: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.04,"recapWeight":0.2375,"deltaWeight":3.1875,"categoryWeight":0.05,"quantileWeight":0.35,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.8571428571428571}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:24:21.322Z] [log] Epoch 55 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:25:39.247Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:25:39.247Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:25:39.248Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:25:39.248Z] [log] 0    | 8     | 0.6550   | 3.7696   | 3.8579 
+[2026-05-26T17:25:39.248Z] [log] 1    | 9     | 0.6378   | 0.9160   | 0.8168 
+[2026-05-26T17:25:39.248Z] [log] 2    | 11    | 0.4607   | 0.5551   | 0.4984 
+[2026-05-26T17:25:39.248Z] [log] 3-5  | 59    | 0.4134   | 0.3926   | 0.3321 
+[2026-05-26T17:25:39.248Z] [log] 6+   | 276   | 0.3272   | 0.2990   | 0.2827 
+[2026-05-26T17:25:39.248Z] [log] 
+[2026-05-26T17:25:39.248Z] [log] Epoch 55: loss = 0.467194 phase = C val_loss = 0.438548 delta_mae_pts = 0.3602 recap_mae_pts = 0.3602 cat_mae_pts = 0.4197 total_mae_pts = 0.9367 vs_inertia_pts = 0.0536 vs_quad_pts = 0.2860 lr_base = 0.000602 lr_mult = 0.5000 lr_eff = 0.000301 mon_cov = 0.961 mon_score = 1.2920 progress = 56/160 epoch_sec = 78.0 avg_epoch_sec = 75.4 elapsed = 01:10:21 eta = 02:10:38
+[2026-05-26T17:25:39.248Z] [log] Epoch 55 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:25:39.248Z] [log] [curriculum] phase=C age=21 ramp=80 delta=0.3602 cov=0.961 best_global_delta=0.3515
+[2026-05-26T17:25:39.287Z] [log] 
+Epoch 56: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.041,"recapWeight":0.234375,"deltaWeight":3.296875,"categoryWeight":0.05,"quantileWeight":0.36250000000000004,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.8857142857142857}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:25:39.287Z] [log] Epoch 56 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:26:50.566Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:26:50.567Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:26:50.567Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:26:50.567Z] [log] 0    | 8     | 0.8312   | 3.7696   | 4.1243 
+[2026-05-26T17:26:50.567Z] [log] 1    | 9     | 0.6694   | 0.9160   | 0.8034 
+[2026-05-26T17:26:50.567Z] [log] 2    | 11    | 0.4451   | 0.5551   | 0.5359 
+[2026-05-26T17:26:50.567Z] [log] 3-5  | 59    | 0.4389   | 0.3926   | 0.3782 
+[2026-05-26T17:26:50.567Z] [log] 6+   | 276   | 0.3352   | 0.2990   | 0.3090 
+[2026-05-26T17:26:50.567Z] [log] 
+[2026-05-26T17:26:50.568Z] [log] Epoch 56: loss = 0.479696 phase = C val_loss = 0.468133 delta_mae_pts = 0.3746 recap_mae_pts = 0.3746 cat_mae_pts = 0.4599 total_mae_pts = 1.0744 vs_inertia_pts = 0.0391 vs_quad_pts = 0.2715 lr_base = 0.000595 lr_mult = 0.5000 lr_eff = 0.000298 mon_cov = 0.953 mon_score = 1.3900 progress = 57/160 epoch_sec = 71.3 avg_epoch_sec = 75.3 elapsed = 01:11:32 eta = 02:09:15
+[2026-05-26T17:26:50.568Z] [log] Epoch 56 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:26:50.568Z] [log] [curriculum] phase=C age=22 ramp=80 delta=0.3746 cov=0.953 best_global_delta=0.3515
+[2026-05-26T17:26:50.604Z] [log] 
+Epoch 57: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.042,"recapWeight":0.23124999999999998,"deltaWeight":3.40625,"categoryWeight":0.05,"quantileWeight":0.375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.9142857142857143}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:26:50.604Z] [log] Epoch 57 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:28:03.611Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:28:03.612Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:28:03.612Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:28:03.612Z] [log] 0    | 8     | 0.5699   | 3.7696   | 3.8338 
+[2026-05-26T17:28:03.612Z] [log] 1    | 9     | 0.6188   | 0.9160   | 0.8458 
+[2026-05-26T17:28:03.612Z] [log] 2    | 11    | 0.4425   | 0.5551   | 0.4945 
+[2026-05-26T17:28:03.612Z] [log] 3-5  | 59    | 0.4170   | 0.3926   | 0.3193 
+[2026-05-26T17:28:03.612Z] [log] 6+   | 276   | 0.3242   | 0.2990   | 0.2744 
+[2026-05-26T17:28:03.612Z] [log] 
+[2026-05-26T17:28:03.613Z] [log] Epoch 57: loss = 0.491008 phase = C val_loss = 0.459763 delta_mae_pts = 0.3556 recap_mae_pts = 0.3556 cat_mae_pts = 0.4178 total_mae_pts = 0.9335 vs_inertia_pts = 0.0582 vs_quad_pts = 0.2906 lr_base = 0.000589 lr_mult = 0.5000 lr_eff = 0.000295 mon_cov = 0.962 mon_score = 1.3535 progress = 58/160 epoch_sec = 73.0 avg_epoch_sec = 75.3 elapsed = 01:12:45 eta = 02:07:56
+[2026-05-26T17:28:03.613Z] [log] Epoch 57 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:28:03.613Z] [log] [curriculum] phase=C age=23 ramp=80 delta=0.3556 cov=0.962 best_global_delta=0.3515
+[2026-05-26T17:28:03.650Z] [log] 
+Epoch 58: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.043,"recapWeight":0.228125,"deltaWeight":3.515625,"categoryWeight":0.05,"quantileWeight":0.38749999999999996,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.9428571428571428}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:28:03.650Z] [log] Epoch 58 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:29:10.797Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:29:10.797Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:29:10.798Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:29:10.798Z] [log] 0    | 8     | 0.5997   | 3.7696   | 3.7329 
+[2026-05-26T17:29:10.798Z] [log] 1    | 9     | 0.6337   | 0.9160   | 0.7216 
+[2026-05-26T17:29:10.798Z] [log] 2    | 11    | 0.4342   | 0.5551   | 0.4608 
+[2026-05-26T17:29:10.798Z] [log] 3-5  | 59    | 0.4301   | 0.3926   | 0.3453 
+[2026-05-26T17:29:10.798Z] [log] 6+   | 276   | 0.3374   | 0.2990   | 0.2814 
+[2026-05-26T17:29:10.798Z] [log] 
+[2026-05-26T17:29:10.799Z] [log] Epoch 58: loss = 0.496066 phase = C val_loss = 0.488608 delta_mae_pts = 0.3685 recap_mae_pts = 0.3685 cat_mae_pts = 0.4335 total_mae_pts = 1.0094 vs_inertia_pts = 0.0452 vs_quad_pts = 0.2776 lr_base = 0.000583 lr_mult = 0.5000 lr_eff = 0.000291 mon_cov = 0.958 mon_score = 1.4448 progress = 59/160 epoch_sec = 67.2 avg_epoch_sec = 75.1 elapsed = 01:13:52 eta = 02:06:27
+[2026-05-26T17:29:10.799Z] [log] Epoch 58 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:29:10.799Z] [log] [curriculum] phase=C age=24 ramp=80 delta=0.3685 cov=0.958 best_global_delta=0.3515
+[2026-05-26T17:29:10.835Z] [log] 
+Epoch 59: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.044,"recapWeight":0.22499999999999998,"deltaWeight":3.625,"categoryWeight":0.05,"quantileWeight":0.4,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":0.9714285714285714}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:29:10.835Z] [log] Epoch 59 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:30:17.258Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:30:17.258Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:30:17.258Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:30:17.259Z] [log] 0    | 8     | 0.6742   | 3.7696   | 3.7482 
+[2026-05-26T17:30:17.259Z] [log] 1    | 9     | 0.6342   | 0.9160   | 0.8349 
+[2026-05-26T17:30:17.259Z] [log] 2    | 11    | 0.4605   | 0.5551   | 0.5275 
+[2026-05-26T17:30:17.259Z] [log] 3-5  | 59    | 0.4043   | 0.3926   | 0.3310 
+[2026-05-26T17:30:17.259Z] [log] 6+   | 276   | 0.3332   | 0.2990   | 0.2829 
+[2026-05-26T17:30:17.259Z] [log] 
+[2026-05-26T17:30:17.259Z] [log] Epoch 59: loss = 0.507254 phase = C val_loss = 0.493851 delta_mae_pts = 0.3636 recap_mae_pts = 0.3636 cat_mae_pts = 0.4050 total_mae_pts = 0.8786 vs_inertia_pts = 0.0501 vs_quad_pts = 0.2826 lr_base = 0.000576 lr_mult = 0.5000 lr_eff = 0.000288 mon_cov = 0.961 mon_score = 1.4587 progress = 60/160 epoch_sec = 66.5 avg_epoch_sec = 75.0 elapsed = 01:14:59 eta = 02:04:58
+[2026-05-26T17:30:17.259Z] [log] Epoch 59 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:30:17.260Z] [log] [curriculum] phase=C age=25 ramp=80 delta=0.3636 cov=0.961 best_global_delta=0.3515
+[2026-05-26T17:30:17.260Z] [log] 
+--- NO MONITOR IMPROVEMENT FOR 12 EPOCHS: plateau multiplier 0.5000 -> 0.2500, effective LR 0.000144 ---
+[2026-05-26T17:30:17.293Z] [log] 
+Epoch 60: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.045,"recapWeight":0.221875,"deltaWeight":3.734375,"categoryWeight":0.05,"quantileWeight":0.4125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:30:17.293Z] [log] Epoch 60 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:31:23.953Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:31:23.954Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:31:23.954Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:31:23.954Z] [log] 0    | 8     | 0.7033   | 3.7696   | 3.9893 
+[2026-05-26T17:31:23.954Z] [log] 1    | 9     | 0.6144   | 0.9160   | 0.7672 
+[2026-05-26T17:31:23.954Z] [log] 2    | 11    | 0.4485   | 0.5551   | 0.4949 
+[2026-05-26T17:31:23.954Z] [log] 3-5  | 59    | 0.4144   | 0.3926   | 0.3448 
+[2026-05-26T17:31:23.954Z] [log] 6+   | 276   | 0.3216   | 0.2990   | 0.2811 
+[2026-05-26T17:31:23.954Z] [log] 
+[2026-05-26T17:31:23.955Z] [log] Epoch 60: loss = 0.522115 phase = C val_loss = 0.499569 delta_mae_pts = 0.3562 recap_mae_pts = 0.3562 cat_mae_pts = 0.4209 total_mae_pts = 0.9442 vs_inertia_pts = 0.0575 vs_quad_pts = 0.2899 lr_base = 0.000570 lr_mult = 0.2500 lr_eff = 0.000142 mon_cov = 0.962 mon_score = 1.4728 progress = 61/160 epoch_sec = 66.7 avg_epoch_sec = 74.8 elapsed = 01:16:05 eta = 02:03:29
+[2026-05-26T17:31:23.955Z] [log] Epoch 60 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:31:23.955Z] [log] [curriculum] phase=C age=26 ramp=80 delta=0.3562 cov=0.962 best_global_delta=0.3515
+[2026-05-26T17:31:23.991Z] [log] 
+Epoch 61: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.046,"recapWeight":0.21875,"deltaWeight":3.84375,"categoryWeight":0.05,"quantileWeight":0.42500000000000004,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:31:23.991Z] [log] Epoch 61 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:32:29.876Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:32:29.876Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:32:29.876Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:32:29.876Z] [log] 0    | 8     | 0.6598   | 3.7696   | 3.9793 
+[2026-05-26T17:32:29.876Z] [log] 1    | 9     | 0.6308   | 0.9160   | 0.8089 
+[2026-05-26T17:32:29.876Z] [log] 2    | 11    | 0.4503   | 0.5551   | 0.5027 
+[2026-05-26T17:32:29.877Z] [log] 3-5  | 59    | 0.4277   | 0.3926   | 0.3563 
+[2026-05-26T17:32:29.877Z] [log] 6+   | 276   | 0.3220   | 0.2990   | 0.2769 
+[2026-05-26T17:32:29.877Z] [log] 
+[2026-05-26T17:32:29.877Z] [log] Epoch 61: loss = 0.518367 phase = C val_loss = 0.514508 delta_mae_pts = 0.3582 recap_mae_pts = 0.3582 cat_mae_pts = 0.4308 total_mae_pts = 0.9866 vs_inertia_pts = 0.0556 vs_quad_pts = 0.2880 lr_base = 0.000563 lr_mult = 0.2500 lr_eff = 0.000141 mon_cov = 0.959 mon_score = 1.5220 progress = 62/160 epoch_sec = 65.9 avg_epoch_sec = 74.7 elapsed = 01:17:11 eta = 02:02:00
+[2026-05-26T17:32:29.877Z] [log] Epoch 61 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:32:29.877Z] [log] [curriculum] phase=C age=27 ramp=80 delta=0.3582 cov=0.959 best_global_delta=0.3515
+[2026-05-26T17:32:29.913Z] [log] 
+Epoch 62: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.047,"recapWeight":0.21562499999999998,"deltaWeight":3.953125,"categoryWeight":0.05,"quantileWeight":0.4375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:32:29.913Z] [log] Epoch 62 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:33:37.966Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:33:37.966Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:33:37.966Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:33:37.966Z] [log] 0    | 8     | 0.7044   | 3.7696   | 3.9424 
+[2026-05-26T17:33:37.966Z] [log] 1    | 9     | 0.6231   | 0.9160   | 0.7250 
+[2026-05-26T17:33:37.966Z] [log] 2    | 11    | 0.4437   | 0.5551   | 0.4803 
+[2026-05-26T17:33:37.966Z] [log] 3-5  | 59    | 0.4343   | 0.3926   | 0.3588 
+[2026-05-26T17:33:37.967Z] [log] 6+   | 276   | 0.3276   | 0.2990   | 0.2880 
+[2026-05-26T17:33:37.967Z] [log] 
+[2026-05-26T17:33:37.967Z] [log] Epoch 62: loss = 0.532423 phase = C val_loss = 0.536051 delta_mae_pts = 0.3641 recap_mae_pts = 0.3641 cat_mae_pts = 0.4351 total_mae_pts = 1.0136 vs_inertia_pts = 0.0496 vs_quad_pts = 0.2821 lr_base = 0.000557 lr_mult = 0.2500 lr_eff = 0.000139 mon_cov = 0.955 mon_score = 1.5873 progress = 63/160 epoch_sec = 68.1 avg_epoch_sec = 74.6 elapsed = 01:18:19 eta = 02:00:35
+[2026-05-26T17:33:37.967Z] [log] Epoch 62 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:33:37.968Z] [log] [curriculum] phase=C age=28 ramp=80 delta=0.3641 cov=0.955 best_global_delta=0.3515
+[2026-05-26T17:33:38.012Z] [log] 
+Epoch 63: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.048,"recapWeight":0.2125,"deltaWeight":4.0625,"categoryWeight":0.05,"quantileWeight":0.44999999999999996,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:33:38.012Z] [log] Epoch 63 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:34:48.642Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:34:48.642Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:34:48.642Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:34:48.642Z] [log] 0    | 8     | 0.7150   | 3.7696   | 3.9843 
+[2026-05-26T17:34:48.643Z] [log] 1    | 9     | 0.6294   | 0.9160   | 0.7731 
+[2026-05-26T17:34:48.643Z] [log] 2    | 11    | 0.4419   | 0.5551   | 0.4947 
+[2026-05-26T17:34:48.643Z] [log] 3-5  | 59    | 0.4369   | 0.3926   | 0.3585 
+[2026-05-26T17:34:48.643Z] [log] 6+   | 276   | 0.3311   | 0.2990   | 0.2909 
+[2026-05-26T17:34:48.643Z] [log] 
+[2026-05-26T17:34:48.643Z] [log] Epoch 63: loss = 0.539364 phase = C val_loss = 0.552783 delta_mae_pts = 0.3675 recap_mae_pts = 0.3675 cat_mae_pts = 0.4425 total_mae_pts = 1.0241 vs_inertia_pts = 0.0462 vs_quad_pts = 0.2787 lr_base = 0.000550 lr_mult = 0.2500 lr_eff = 0.000138 mon_cov = 0.952 mon_score = 1.6423 progress = 64/160 epoch_sec = 70.7 avg_epoch_sec = 74.5 elapsed = 01:19:30 eta = 01:59:15
+[2026-05-26T17:34:48.643Z] [log] Epoch 63 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:34:48.643Z] [log] [curriculum] phase=C age=29 ramp=80 delta=0.3675 cov=0.952 best_global_delta=0.3515
+[2026-05-26T17:34:48.680Z] [log] 
+Epoch 64: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.049,"recapWeight":0.20937499999999998,"deltaWeight":4.171875,"categoryWeight":0.05,"quantileWeight":0.4625,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:34:48.681Z] [log] Epoch 64 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:35:59.195Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:35:59.196Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:35:59.196Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:35:59.196Z] [log] 0    | 8     | 0.7631   | 3.7696   | 4.0829 
+[2026-05-26T17:35:59.196Z] [log] 1    | 9     | 0.6223   | 0.9160   | 0.8198 
+[2026-05-26T17:35:59.196Z] [log] 2    | 11    | 0.4463   | 0.5551   | 0.5217 
+[2026-05-26T17:35:59.196Z] [log] 3-5  | 59    | 0.4283   | 0.3926   | 0.3586 
+[2026-05-26T17:35:59.196Z] [log] 6+   | 276   | 0.3271   | 0.2990   | 0.2932 
+[2026-05-26T17:35:59.196Z] [log] 
+[2026-05-26T17:35:59.197Z] [log] Epoch 64: loss = 0.554336 phase = C val_loss = 0.562207 delta_mae_pts = 0.3641 recap_mae_pts = 0.3641 cat_mae_pts = 0.4362 total_mae_pts = 1.0067 vs_inertia_pts = 0.0496 vs_quad_pts = 0.2821 lr_base = 0.000543 lr_mult = 0.2500 lr_eff = 0.000136 mon_cov = 0.959 mon_score = 1.6664 progress = 65/160 epoch_sec = 70.6 avg_epoch_sec = 74.5 elapsed = 01:20:40 eta = 01:57:55
+[2026-05-26T17:35:59.197Z] [log] Epoch 64 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:35:59.197Z] [log] [curriculum] phase=C age=30 ramp=80 delta=0.3641 cov=0.959 best_global_delta=0.3515
+[2026-05-26T17:35:59.231Z] [log] 
+Epoch 65: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.05,"recapWeight":0.20625,"deltaWeight":4.28125,"categoryWeight":0.05,"quantileWeight":0.475,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:35:59.232Z] [log] Epoch 65 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:37:20.068Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:37:20.068Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:37:20.068Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:37:20.068Z] [log] 0    | 8     | 0.6751   | 3.7696   | 3.9278 
+[2026-05-26T17:37:20.068Z] [log] 1    | 9     | 0.6040   | 0.9160   | 0.7890 
+[2026-05-26T17:37:20.068Z] [log] 2    | 11    | 0.4555   | 0.5551   | 0.4985 
+[2026-05-26T17:37:20.068Z] [log] 3-5  | 59    | 0.4283   | 0.3926   | 0.3415 
+[2026-05-26T17:37:20.068Z] [log] 6+   | 276   | 0.3274   | 0.2990   | 0.2853 
+[2026-05-26T17:37:20.068Z] [log] 
+[2026-05-26T17:37:20.069Z] [log] Epoch 65: loss = 0.564095 phase = C val_loss = 0.571947 delta_mae_pts = 0.3622 recap_mae_pts = 0.3622 cat_mae_pts = 0.4272 total_mae_pts = 0.9745 vs_inertia_pts = 0.0515 vs_quad_pts = 0.2840 lr_base = 0.000536 lr_mult = 0.2500 lr_eff = 0.000134 mon_cov = 0.960 mon_score = 1.6954 progress = 66/160 epoch_sec = 80.9 avg_epoch_sec = 74.6 elapsed = 01:22:01 eta = 01:56:49
+[2026-05-26T17:37:20.069Z] [log] Epoch 65 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:37:20.069Z] [log] [curriculum] phase=C age=31 ramp=80 delta=0.3622 cov=0.960 best_global_delta=0.3515
+[2026-05-26T17:37:20.107Z] [log] 
+Epoch 66: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.051000000000000004,"recapWeight":0.203125,"deltaWeight":4.390625,"categoryWeight":0.05,"quantileWeight":0.48750000000000004,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:37:20.107Z] [log] Epoch 66 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:38:37.363Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:38:37.363Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:38:37.363Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:38:37.363Z] [log] 0    | 8     | 0.8064   | 3.7696   | 4.0597 
+[2026-05-26T17:38:37.363Z] [log] 1    | 9     | 0.6219   | 0.9160   | 0.7770 
+[2026-05-26T17:38:37.363Z] [log] 2    | 11    | 0.4463   | 0.5551   | 0.4823 
+[2026-05-26T17:38:37.363Z] [log] 3-5  | 59    | 0.4502   | 0.3926   | 0.3688 
+[2026-05-26T17:38:37.364Z] [log] 6+   | 276   | 0.3338   | 0.2990   | 0.2929 
+[2026-05-26T17:38:37.364Z] [log] 
+[2026-05-26T17:38:37.364Z] [log] Epoch 66: loss = 0.573813 phase = C val_loss = 0.601570 delta_mae_pts = 0.3737 recap_mae_pts = 0.3737 cat_mae_pts = 0.4541 total_mae_pts = 1.0703 vs_inertia_pts = 0.0400 vs_quad_pts = 0.2725 lr_base = 0.000530 lr_mult = 0.2500 lr_eff = 0.000132 mon_cov = 0.955 mon_score = 1.7939 progress = 67/160 epoch_sec = 77.3 avg_epoch_sec = 74.6 elapsed = 01:23:19 eta = 01:55:38
+[2026-05-26T17:38:37.364Z] [log] Epoch 66 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:38:37.365Z] [log] [curriculum] phase=C age=32 ramp=80 delta=0.3737 cov=0.955 best_global_delta=0.3515
+[2026-05-26T17:38:37.406Z] [log] 
+Epoch 67: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.052000000000000005,"recapWeight":0.19999999999999998,"deltaWeight":4.5,"categoryWeight":0.05,"quantileWeight":0.5,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:38:37.406Z] [log] Epoch 67 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:40:06.037Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:40:06.037Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:40:06.037Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:40:06.037Z] [log] 0    | 8     | 0.7423   | 3.7696   | 4.0411 
+[2026-05-26T17:40:06.037Z] [log] 1    | 9     | 0.6271   | 0.9160   | 0.8750 
+[2026-05-26T17:40:06.037Z] [log] 2    | 11    | 0.4534   | 0.5551   | 0.5405 
+[2026-05-26T17:40:06.037Z] [log] 3-5  | 59    | 0.4136   | 0.3926   | 0.3656 
+[2026-05-26T17:40:06.037Z] [log] 6+   | 276   | 0.3185   | 0.2990   | 0.2945 
+[2026-05-26T17:40:06.038Z] [log] 
+[2026-05-26T17:40:06.038Z] [log] Epoch 67: loss = 0.588351 phase = C val_loss = 0.588026 delta_mae_pts = 0.3550 recap_mae_pts = 0.3550 cat_mae_pts = 0.4226 total_mae_pts = 0.9632 vs_inertia_pts = 0.0587 vs_quad_pts = 0.2912 lr_base = 0.000523 lr_mult = 0.2500 lr_eff = 0.000131 mon_cov = 0.963 mon_score = 1.7397 progress = 68/160 epoch_sec = 88.7 avg_epoch_sec = 74.8 elapsed = 01:24:47 eta = 01:54:43
+[2026-05-26T17:40:06.038Z] [log] Epoch 67 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:40:06.038Z] [log] [curriculum] phase=C age=33 ramp=80 delta=0.3550 cov=0.963 best_global_delta=0.3515
+[2026-05-26T17:40:06.090Z] [log] 
+Epoch 68: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.053000000000000005,"recapWeight":0.196875,"deltaWeight":4.609375,"categoryWeight":0.05,"quantileWeight":0.5125,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:40:06.091Z] [log] Epoch 68 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:41:59.210Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:41:59.210Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:41:59.210Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:41:59.210Z] [log] 0    | 8     | 0.6808   | 3.7696   | 3.9112 
+[2026-05-26T17:41:59.210Z] [log] 1    | 9     | 0.6166   | 0.9160   | 0.7484 
+[2026-05-26T17:41:59.210Z] [log] 2    | 11    | 0.4287   | 0.5551   | 0.4638 
+[2026-05-26T17:41:59.211Z] [log] 3-5  | 59    | 0.4410   | 0.3926   | 0.3612 
+[2026-05-26T17:41:59.211Z] [log] 6+   | 276   | 0.3300   | 0.2990   | 0.2917 
+[2026-05-26T17:41:59.211Z] [log] 
+[2026-05-26T17:41:59.211Z] [log] Epoch 68: loss = 0.594232 phase = C val_loss = 0.618140 delta_mae_pts = 0.3659 recap_mae_pts = 0.3659 cat_mae_pts = 0.4384 total_mae_pts = 1.0270 vs_inertia_pts = 0.0478 vs_quad_pts = 0.2803 lr_base = 0.000515 lr_mult = 0.2500 lr_eff = 0.000129 mon_cov = 0.954 mon_score = 1.8349 progress = 69/160 epoch_sec = 113.2 avg_epoch_sec = 75.4 elapsed = 01:26:40 eta = 01:54:19
+[2026-05-26T17:41:59.211Z] [log] Epoch 68 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:41:59.211Z] [log] [curriculum] phase=C age=34 ramp=80 delta=0.3659 cov=0.954 best_global_delta=0.3515
+[2026-05-26T17:41:59.302Z] [log] 
+Epoch 69: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.054000000000000006,"recapWeight":0.19374999999999998,"deltaWeight":4.71875,"categoryWeight":0.05,"quantileWeight":0.525,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:41:59.302Z] [log] Epoch 69 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:43:19.621Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:43:19.621Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:43:19.621Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:43:19.621Z] [log] 0    | 8     | 0.7097   | 3.7696   | 3.9645 
+[2026-05-26T17:43:19.621Z] [log] 1    | 9     | 0.6301   | 0.9160   | 0.8480 
+[2026-05-26T17:43:19.621Z] [log] 2    | 11    | 0.4357   | 0.5551   | 0.5400 
+[2026-05-26T17:43:19.622Z] [log] 3-5  | 59    | 0.4013   | 0.3926   | 0.3471 
+[2026-05-26T17:43:19.622Z] [log] 6+   | 276   | 0.3174   | 0.2990   | 0.2937 
+[2026-05-26T17:43:19.622Z] [log] 
+[2026-05-26T17:43:19.622Z] [log] Epoch 69: loss = 0.609679 phase = C val_loss = 0.608330 delta_mae_pts = 0.3511 recap_mae_pts = 0.3511 cat_mae_pts = 0.4086 total_mae_pts = 0.9186 vs_inertia_pts = 0.0627 vs_quad_pts = 0.2951 lr_base = 0.000508 lr_mult = 0.2500 lr_eff = 0.000127 mon_cov = 0.963 mon_score = 1.7946 progress = 70/160 epoch_sec = 80.4 avg_epoch_sec = 75.4 elapsed = 01:28:01 eta = 01:53:10
+[2026-05-26T17:43:19.622Z] [log] Epoch 69 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:43:19.660Z] [log] Saved BEST-DELTA checkpoint @epoch 69 delta_mae_pts = 0.3511 monitor_score = 0.5229 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best 
+[2026-05-26T17:43:19.683Z] [log] Saved BEST-PHASE-C checkpoint @epoch 69 delta_mae_pts = 0.3511 -> models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275\best_phase_c 
+[2026-05-26T17:43:19.683Z] [log] [curriculum] phase=C age=35 ramp=80 delta=0.3511 cov=0.963 best_global_delta=0.3511
+[2026-05-26T17:43:19.722Z] [log] 
+Epoch 70: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.05500000000000001,"recapWeight":0.190625,"deltaWeight":4.828125,"categoryWeight":0.05,"quantileWeight":0.5375,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:43:19.722Z] [log] Epoch 70 memory(start): tensors=336, buffers=258, bytes=27.4MB
+[2026-05-26T17:44:32.060Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:44:32.060Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:44:32.060Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:44:32.060Z] [log] 0    | 8     | 0.7416   | 3.7696   | 4.0277 
+[2026-05-26T17:44:32.061Z] [log] 1    | 9     | 0.6376   | 0.9160   | 0.8054 
+[2026-05-26T17:44:32.061Z] [log] 2    | 11    | 0.4363   | 0.5551   | 0.5263 
+[2026-05-26T17:44:32.061Z] [log] 3-5  | 59    | 0.4290   | 0.3926   | 0.3652 
+[2026-05-26T17:44:32.061Z] [log] 6+   | 276   | 0.3312   | 0.2990   | 0.3060 
+[2026-05-26T17:44:32.061Z] [log] 
+[2026-05-26T17:44:32.061Z] [log] Epoch 70: loss = 0.621454 phase = C val_loss = 0.645804 delta_mae_pts = 0.3669 recap_mae_pts = 0.3669 cat_mae_pts = 0.4332 total_mae_pts = 0.9972 vs_inertia_pts = 0.0468 vs_quad_pts = 0.2792 lr_base = 0.000501 lr_mult = 0.2500 lr_eff = 0.000125 mon_cov = 0.957 mon_score = 1.9180 progress = 71/160 epoch_sec = 72.4 avg_epoch_sec = 75.4 elapsed = 01:29:13 eta = 01:51:51
+[2026-05-26T17:44:32.061Z] [log] Epoch 70 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:44:32.062Z] [log] [curriculum] phase=C age=36 ramp=80 delta=0.3669 cov=0.957 best_global_delta=0.3511
+[2026-05-26T17:44:32.102Z] [log] 
+Epoch 71: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.05600000000000001,"recapWeight":0.1875,"deltaWeight":4.9375,"categoryWeight":0.05,"quantileWeight":0.55,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:44:32.102Z] [log] Epoch 71 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:45:49.618Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:45:49.618Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:45:49.618Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:45:49.619Z] [log] 0    | 8     | 0.6786   | 3.7696   | 3.9495 
+[2026-05-26T17:45:49.619Z] [log] 1    | 9     | 0.5823   | 0.9160   | 0.7895 
+[2026-05-26T17:45:49.619Z] [log] 2    | 11    | 0.4422   | 0.5551   | 0.5127 
+[2026-05-26T17:45:49.619Z] [log] 3-5  | 59    | 0.4255   | 0.3926   | 0.3436 
+[2026-05-26T17:45:49.619Z] [log] 6+   | 276   | 0.3277   | 0.2990   | 0.2790 
+[2026-05-26T17:45:49.619Z] [log] 
+[2026-05-26T17:45:49.619Z] [log] Epoch 71: loss = 0.629867 phase = C val_loss = 0.650010 delta_mae_pts = 0.3611 recap_mae_pts = 0.3611 cat_mae_pts = 0.4322 total_mae_pts = 0.9925 vs_inertia_pts = 0.0526 vs_quad_pts = 0.2851 lr_base = 0.000494 lr_mult = 0.2500 lr_eff = 0.000124 mon_cov = 0.960 mon_score = 1.9279 progress = 72/160 epoch_sec = 77.6 avg_epoch_sec = 75.4 elapsed = 01:30:31 eta = 01:50:38
+[2026-05-26T17:45:49.619Z] [log] Epoch 71 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:45:49.619Z] [log] [curriculum] phase=C age=37 ramp=80 delta=0.3611 cov=0.960 best_global_delta=0.3511
+[2026-05-26T17:45:49.619Z] [log] 
+--- NO MONITOR IMPROVEMENT FOR 12 EPOCHS: plateau multiplier 0.2500 -> 0.1250, effective LR 0.000062 ---
+[2026-05-26T17:45:49.666Z] [log] 
+Epoch 72: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.05700000000000001,"recapWeight":0.18437499999999998,"deltaWeight":5.046875,"categoryWeight":0.05,"quantileWeight":0.5625,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:45:49.666Z] [log] Epoch 72 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:47:05.694Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:47:05.694Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:47:05.694Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:47:05.694Z] [log] 0    | 8     | 0.7035   | 3.7696   | 3.9541 
+[2026-05-26T17:47:05.694Z] [log] 1    | 9     | 0.5860   | 0.9160   | 0.7642 
+[2026-05-26T17:47:05.694Z] [log] 2    | 11    | 0.4374   | 0.5551   | 0.4873 
+[2026-05-26T17:47:05.695Z] [log] 3-5  | 59    | 0.4374   | 0.3926   | 0.3492 
+[2026-05-26T17:47:05.695Z] [log] 6+   | 276   | 0.3300   | 0.2990   | 0.2879 
+[2026-05-26T17:47:05.695Z] [log] 
+[2026-05-26T17:47:05.695Z] [log] Epoch 72: loss = 0.632331 phase = C val_loss = 0.670541 delta_mae_pts = 0.3653 recap_mae_pts = 0.3653 cat_mae_pts = 0.4392 total_mae_pts = 1.0253 vs_inertia_pts = 0.0485 vs_quad_pts = 0.2809 lr_base = 0.000487 lr_mult = 0.1250 lr_eff = 0.000061 mon_cov = 0.954 mon_score = 1.9912 progress = 73/160 epoch_sec = 76.1 avg_epoch_sec = 75.4 elapsed = 01:31:47 eta = 01:49:23
+[2026-05-26T17:47:05.695Z] [log] Epoch 72 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:47:05.695Z] [log] [curriculum] phase=C age=38 ramp=80 delta=0.3653 cov=0.954 best_global_delta=0.3511
+[2026-05-26T17:47:05.740Z] [log] 
+Epoch 73: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.057999999999999996,"recapWeight":0.18125,"deltaWeight":5.15625,"categoryWeight":0.05,"quantileWeight":0.575,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:47:05.740Z] [log] Epoch 73 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:48:20.457Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:48:20.457Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:48:20.457Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:48:20.457Z] [log] 0    | 8     | 0.7627   | 3.7696   | 4.0377 
+[2026-05-26T17:48:20.457Z] [log] 1    | 9     | 0.5983   | 0.9160   | 0.8010 
+[2026-05-26T17:48:20.457Z] [log] 2    | 11    | 0.4381   | 0.5551   | 0.5169 
+[2026-05-26T17:48:20.457Z] [log] 3-5  | 59    | 0.4246   | 0.3926   | 0.3613 
+[2026-05-26T17:48:20.457Z] [log] 6+   | 276   | 0.3299   | 0.2990   | 0.3019 
+[2026-05-26T17:48:20.458Z] [log] 
+[2026-05-26T17:48:20.458Z] [log] Epoch 73: loss = 0.638728 phase = C val_loss = 0.682215 delta_mae_pts = 0.3648 recap_mae_pts = 0.3648 cat_mae_pts = 0.4348 total_mae_pts = 0.9962 vs_inertia_pts = 0.0490 vs_quad_pts = 0.2814 lr_base = 0.000480 lr_mult = 0.1250 lr_eff = 0.000060 mon_cov = 0.956 mon_score = 2.0265 progress = 74/160 epoch_sec = 74.8 avg_epoch_sec = 75.4 elapsed = 01:33:02 eta = 01:48:07
+[2026-05-26T17:48:20.458Z] [log] Epoch 73 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:48:20.458Z] [log] [curriculum] phase=C age=39 ramp=80 delta=0.3648 cov=0.956 best_global_delta=0.3511
+[2026-05-26T17:48:20.498Z] [log] 
+Epoch 74: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.059,"recapWeight":0.17812499999999998,"deltaWeight":5.265625,"categoryWeight":0.05,"quantileWeight":0.5875,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:48:20.499Z] [log] Epoch 74 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:49:33.054Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:49:33.054Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:49:33.055Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:49:33.055Z] [log] 0    | 8     | 0.7479   | 3.7696   | 4.0372 
+[2026-05-26T17:49:33.055Z] [log] 1    | 9     | 0.6074   | 0.9160   | 0.7809 
+[2026-05-26T17:49:33.055Z] [log] 2    | 11    | 0.4387   | 0.5551   | 0.5058 
+[2026-05-26T17:49:33.055Z] [log] 3-5  | 59    | 0.4255   | 0.3926   | 0.3559 
+[2026-05-26T17:49:33.055Z] [log] 6+   | 276   | 0.3261   | 0.2990   | 0.2960 
+[2026-05-26T17:49:33.055Z] [log] 
+[2026-05-26T17:49:33.055Z] [log] Epoch 74: loss = 0.654145 phase = C val_loss = 0.691028 delta_mae_pts = 0.3619 recap_mae_pts = 0.3619 cat_mae_pts = 0.4335 total_mae_pts = 0.9987 vs_inertia_pts = 0.0518 vs_quad_pts = 0.2842 lr_base = 0.000472 lr_mult = 0.1250 lr_eff = 0.000059 mon_cov = 0.956 mon_score = 2.0508 progress = 75/160 epoch_sec = 72.6 avg_epoch_sec = 75.4 elapsed = 01:34:14 eta = 01:46:48
+[2026-05-26T17:49:33.055Z] [log] Epoch 74 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:49:33.056Z] [log] [curriculum] phase=C age=40 ramp=80 delta=0.3619 cov=0.956 best_global_delta=0.3511
+[2026-05-26T17:49:33.089Z] [log] 
+Epoch 75: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.06,"recapWeight":0.175,"deltaWeight":5.375,"categoryWeight":0.05,"quantileWeight":0.6,"consistencyWeight":0,"identityDropoutRate":1}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 1.000, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:49:33.089Z] [log] Epoch 75 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:50:48.226Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:50:48.226Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:50:48.226Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:50:48.226Z] [log] 0    | 8     | 0.7788   | 3.7696   | 4.0630 
+[2026-05-26T17:50:48.227Z] [log] 1    | 9     | 0.6063   | 0.9160   | 0.7869 
+[2026-05-26T17:50:48.227Z] [log] 2    | 11    | 0.4411   | 0.5551   | 0.4916 
+[2026-05-26T17:50:48.227Z] [log] 3-5  | 59    | 0.4296   | 0.3926   | 0.3560 
+[2026-05-26T17:50:48.227Z] [log] 6+   | 276   | 0.3273   | 0.2990   | 0.2942 
+[2026-05-26T17:50:48.227Z] [log] 
+[2026-05-26T17:50:48.227Z] [log] Epoch 75: loss = 0.665565 phase = C val_loss = 0.708123 delta_mae_pts = 0.3642 recap_mae_pts = 0.3642 cat_mae_pts = 0.4347 total_mae_pts = 1.0002 vs_inertia_pts = 0.0495 vs_quad_pts = 0.2820 lr_base = 0.000465 lr_mult = 0.1250 lr_eff = 0.000058 mon_cov = 0.955 mon_score = 2.1031 progress = 76/160 epoch_sec = 75.2 avg_epoch_sec = 75.4 elapsed = 01:35:30 eta = 01:45:33
+[2026-05-26T17:50:48.227Z] [log] Epoch 75 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:50:48.227Z] [log] [curriculum] phase=C age=41 ramp=80 delta=0.3642 cov=0.955 best_global_delta=0.3511
+[2026-05-26T17:50:48.265Z] [log] 
+Epoch 76: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.061,"recapWeight":0.171875,"deltaWeight":5.484375,"categoryWeight":0.05,"quantileWeight":0.6124999999999999,"consistencyWeight":0,"identityDropoutRate":0.988125}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.989, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:50:48.266Z] [log] Epoch 76 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:52:07.605Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:52:07.605Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:52:07.605Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:52:07.605Z] [log] 0    | 8     | 0.7126   | 3.7696   | 4.0129 
+[2026-05-26T17:52:07.605Z] [log] 1    | 9     | 0.6279   | 0.9160   | 0.8242 
+[2026-05-26T17:52:07.605Z] [log] 2    | 11    | 0.4421   | 0.5551   | 0.5277 
+[2026-05-26T17:52:07.605Z] [log] 3-5  | 59    | 0.4157   | 0.3926   | 0.3595 
+[2026-05-26T17:52:07.605Z] [log] 6+   | 276   | 0.3278   | 0.2990   | 0.2999 
+[2026-05-26T17:52:07.605Z] [log] 
+[2026-05-26T17:52:07.606Z] [log] Epoch 76: loss = 0.679282 phase = C val_loss = 0.716569 delta_mae_pts = 0.3615 recap_mae_pts = 0.3615 cat_mae_pts = 0.4244 total_mae_pts = 0.9589 vs_inertia_pts = 0.0523 vs_quad_pts = 0.2847 lr_base = 0.000457 lr_mult = 0.1250 lr_eff = 0.000057 mon_cov = 0.958 mon_score = 2.1242 progress = 77/160 epoch_sec = 79.4 avg_epoch_sec = 75.4 elapsed = 01:36:49 eta = 01:44:22
+[2026-05-26T17:52:07.606Z] [log] Epoch 76 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:52:07.606Z] [log] [curriculum] phase=C age=42 ramp=80 delta=0.3615 cov=0.958 best_global_delta=0.3511
+[2026-05-26T17:52:07.654Z] [log] 
+Epoch 77: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.062,"recapWeight":0.16874999999999998,"deltaWeight":5.59375,"categoryWeight":0.05,"quantileWeight":0.625,"consistencyWeight":0,"identityDropoutRate":0.97625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.977, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:52:07.654Z] [log] Epoch 77 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:53:37.884Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:53:37.885Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:53:37.885Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:53:37.885Z] [log] 0    | 8     | 0.7590   | 3.7696   | 4.0390 
+[2026-05-26T17:53:37.885Z] [log] 1    | 9     | 0.6355   | 0.9160   | 0.8029 
+[2026-05-26T17:53:37.885Z] [log] 2    | 11    | 0.4392   | 0.5551   | 0.5034 
+[2026-05-26T17:53:37.885Z] [log] 3-5  | 59    | 0.4216   | 0.3926   | 0.3529 
+[2026-05-26T17:53:37.886Z] [log] 6+   | 276   | 0.3249   | 0.2990   | 0.2904 
+[2026-05-26T17:53:37.886Z] [log] 
+[2026-05-26T17:53:37.886Z] [log] Epoch 77: loss = 0.688023 phase = C val_loss = 0.730383 delta_mae_pts = 0.3613 recap_mae_pts = 0.3613 cat_mae_pts = 0.4324 total_mae_pts = 0.9906 vs_inertia_pts = 0.0524 vs_quad_pts = 0.2848 lr_base = 0.000450 lr_mult = 0.1250 lr_eff = 0.000056 mon_cov = 0.955 mon_score = 2.1653 progress = 78/160 epoch_sec = 90.3 avg_epoch_sec = 75.6 elapsed = 01:38:19 eta = 01:43:22
+[2026-05-26T17:53:37.886Z] [log] Epoch 77 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:53:37.886Z] [log] [curriculum] phase=C age=43 ramp=80 delta=0.3613 cov=0.955 best_global_delta=0.3511
+[2026-05-26T17:53:37.929Z] [log] 
+Epoch 78: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.063,"recapWeight":0.165625,"deltaWeight":5.703125,"categoryWeight":0.05,"quantileWeight":0.6375,"consistencyWeight":0,"identityDropoutRate":0.964375}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.968, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:53:37.929Z] [log] Epoch 78 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:54:53.567Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:54:53.567Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:54:53.567Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:54:53.567Z] [log] 0    | 8     | 0.7409   | 3.7696   | 4.0302 
+[2026-05-26T17:54:53.567Z] [log] 1    | 9     | 0.6287   | 0.9160   | 0.8219 
+[2026-05-26T17:54:53.567Z] [log] 2    | 11    | 0.4409   | 0.5551   | 0.5143 
+[2026-05-26T17:54:53.567Z] [log] 3-5  | 59    | 0.4215   | 0.3926   | 0.3676 
+[2026-05-26T17:54:53.567Z] [log] 6+   | 276   | 0.3244   | 0.2990   | 0.3004 
+[2026-05-26T17:54:53.568Z] [log] 
+[2026-05-26T17:54:53.568Z] [log] Epoch 78: loss = 0.700238 phase = C val_loss = 0.741430 delta_mae_pts = 0.3604 recap_mae_pts = 0.3604 cat_mae_pts = 0.4295 total_mae_pts = 0.9853 vs_inertia_pts = 0.0533 vs_quad_pts = 0.2857 lr_base = 0.000443 lr_mult = 0.1250 lr_eff = 0.000055 mon_cov = 0.957 mon_score = 2.1988 progress = 79/160 epoch_sec = 75.7 avg_epoch_sec = 75.6 elapsed = 01:39:35 eta = 01:42:06
+[2026-05-26T17:54:53.568Z] [log] Epoch 78 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:54:53.568Z] [log] [curriculum] phase=C age=44 ramp=80 delta=0.3604 cov=0.957 best_global_delta=0.3511
+[2026-05-26T17:54:53.609Z] [log] 
+Epoch 79: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.064,"recapWeight":0.16249999999999998,"deltaWeight":5.8125,"categoryWeight":0.05,"quantileWeight":0.65,"consistencyWeight":0,"identityDropoutRate":0.9525}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.949, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:54:53.610Z] [log] Epoch 79 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:56:08.120Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:56:08.120Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:56:08.120Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:56:08.120Z] [log] 0    | 8     | 0.7213   | 3.7696   | 4.0218 
+[2026-05-26T17:56:08.120Z] [log] 1    | 9     | 0.6174   | 0.9160   | 0.8652 
+[2026-05-26T17:56:08.120Z] [log] 2    | 11    | 0.4482   | 0.5551   | 0.5402 
+[2026-05-26T17:56:08.120Z] [log] 3-5  | 59    | 0.4111   | 0.3926   | 0.3593 
+[2026-05-26T17:56:08.121Z] [log] 6+   | 276   | 0.3226   | 0.2990   | 0.2989 
+[2026-05-26T17:56:08.121Z] [log] 
+[2026-05-26T17:56:08.121Z] [log] Epoch 79: loss = 0.705449 phase = C val_loss = 0.748266 delta_mae_pts = 0.3569 recap_mae_pts = 0.3569 cat_mae_pts = 0.4211 total_mae_pts = 0.9577 vs_inertia_pts = 0.0568 vs_quad_pts = 0.2893 lr_base = 0.000435 lr_mult = 0.1250 lr_eff = 0.000054 mon_cov = 0.959 mon_score = 2.2147 progress = 80/160 epoch_sec = 74.6 avg_epoch_sec = 75.6 elapsed = 01:40:49 eta = 01:40:49
+[2026-05-26T17:56:08.121Z] [log] Epoch 79 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:56:08.121Z] [log] [curriculum] phase=C age=45 ramp=80 delta=0.3569 cov=0.959 best_global_delta=0.3511
+[2026-05-26T17:56:08.162Z] [log] 
+Epoch 80: Phase C (A_end=10, B_end=35, C_ramp=80) Weights {"totalWeight":0.065,"recapWeight":0.159375,"deltaWeight":5.921875,"categoryWeight":0.05,"quantileWeight":0.6625,"consistencyWeight":0,"identityDropoutRate":0.940625}, Scales {"judgeBias":1,"corps":1}, SeqLen 15, ID_Drop 0.935, HistHide 0.150, JudgeHide 0.200, ForecastHide 0.100, WFW 1.500 
+[2026-05-26T17:56:08.162Z] [log] Epoch 80 memory(start): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:57:24.493Z] [log] 
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+[2026-05-26T17:57:24.493Z] [log] Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+[2026-05-26T17:57:24.493Z] [log] -----|-------|----------|----------|----------------
+[2026-05-26T17:57:24.493Z] [log] 0    | 8     | 0.7823   | 3.7696   | 4.0908 
+[2026-05-26T17:57:24.494Z] [log] 1    | 9     | 0.6177   | 0.9160   | 0.8410 
+[2026-05-26T17:57:24.494Z] [log] 2    | 11    | 0.4551   | 0.5551   | 0.5338 
+[2026-05-26T17:57:24.494Z] [log] 3-5  | 59    | 0.4174   | 0.3926   | 0.3727 
+[2026-05-26T17:57:24.494Z] [log] 6+   | 276   | 0.3289   | 0.2990   | 0.3131 
+[2026-05-26T17:57:24.494Z] [log] 
+[2026-05-26T17:57:24.494Z] [log] Epoch 80: loss = 0.718973 phase = C val_loss = 0.774720 delta_mae_pts = 0.3643 recap_mae_pts = 0.3643 cat_mae_pts = 0.4328 total_mae_pts = 1.0077 vs_inertia_pts = 0.0495 vs_quad_pts = 0.2819 lr_base = 0.000428 lr_mult = 0.1250 lr_eff = 0.000053 mon_cov = 0.955 mon_score = 2.3022 progress = 81/160 epoch_sec = 76.4 avg_epoch_sec = 75.6 elapsed = 01:42:06 eta = 01:39:35
+[2026-05-26T17:57:24.494Z] [log] Epoch 80 memory(end): tensors=336, buffers=297, bytes=27.4MB
+[2026-05-26T17:57:24.494Z] [log] [curriculum] phase=C age=46 ramp=80 delta=0.3643 cov=0.955 best_global_delta=0.3511
+[2026-05-26T17:57:24.494Z] [log] Early stopping at epoch 80 
+[2026-05-26T17:57:24.494Z] [log] Selecting final weights: best-composite-checkpoint (score = 0.4934)
+[2026-05-26T17:57:24.508Z] [log] Saving final production model to models\v9_subcaption_fixed\v9_prod_actually_final_1779812116275...
+[2026-05-26T17:57:24.524Z] [log] 
+--- INTERVAL CALIBRATION: validation grid search ---
+[2026-05-26T17:58:06.936Z] [log] Selected interval scale=0.600 coverage=0.821 width=1.2430
+[2026-05-26T17:58:06.936Z] [log] 
+--- EVALUATION: validation (363 rows) ---
+[2026-05-26T17:58:09.318Z] [log] validation: delta_mae_pts=0.3579, recap_mae_pts=0.3579, total_mae_pts=0.8778, coverage=0.965, width=2.0720, cal_coverage=0.819, cal_width=1.2432
+[2026-05-26T17:58:09.319Z] [log] 
+--- EVALUATION: validation_as_of_show_date (363 rows) ---
+[2026-05-26T17:58:11.798Z] [log] validation_as_of_show_date: delta_mae_pts=0.3582, recap_mae_pts=0.3582, total_mae_pts=0.8762, coverage=0.964, width=2.0721, cal_coverage=0.819, cal_width=1.2432
+[2026-05-26T17:58:11.798Z] [log] 
+--- EVALUATION: test_all (52 rows) ---
+[2026-05-26T17:58:12.211Z] [log] test_all: delta_mae_pts=0.2921, recap_mae_pts=0.2921, total_mae_pts=0.6396, coverage=0.983, width=1.9639, cal_coverage=0.885, cal_width=1.1783
+[2026-05-26T17:58:12.212Z] [log] 
+--- EVALUATION: test_world_class (33 rows) ---
+[2026-05-26T17:58:12.524Z] [log] test_world_class: delta_mae_pts=0.2655, recap_mae_pts=0.2655, total_mae_pts=0.5449, coverage=0.989, width=1.9437, cal_coverage=0.913, cal_width=1.1662
+[2026-05-26T17:58:12.524Z] [log] 
+--- EVALUATION: test_open_class (19 rows) ---
+[2026-05-26T17:58:12.684Z] [log] test_open_class: delta_mae_pts=0.3379, recap_mae_pts=0.3379, total_mae_pts=0.7776, coverage=0.974, width=1.9989, cal_coverage=0.842, cal_width=1.1994
+[2026-05-26T17:58:12.684Z] [log] 
+--- EVALUATION: test_championship_week (47 rows) ---
+[2026-05-26T17:58:13.029Z] [log] test_championship_week: delta_mae_pts=0.2884, recap_mae_pts=0.2884, total_mae_pts=0.5905, coverage=0.981, width=1.9595, cal_coverage=0.888, cal_width=1.1757
+[2026-05-26T17:58:13.030Z] [log] 
+--- EVALUATION: validation_panel_unknown (363 rows) ---
+[2026-05-26T17:58:15.188Z] [log] validation_panel_unknown: delta_mae_pts=0.3384, recap_mae_pts=0.3384, total_mae_pts=0.8693, coverage=0.973, width=2.0762, cal_coverage=0.853, cal_width=1.2457
+[2026-05-26T17:58:15.188Z] [log] 
+--- EVALUATION: test_panel_unknown (52 rows) ---
+[2026-05-26T17:58:15.542Z] [log] test_panel_unknown: delta_mae_pts=0.2867, recap_mae_pts=0.2867, total_mae_pts=0.6616, coverage=0.981, width=1.9740, cal_coverage=0.901, cal_width=1.1844
+[2026-05-26T17:58:15.542Z] [log] 
+--- EVALUATION: validation_lineup_unknown (363 rows) ---
+[2026-05-26T17:58:17.659Z] [log] validation_lineup_unknown: delta_mae_pts=0.3572, recap_mae_pts=0.3572, total_mae_pts=0.9344, coverage=0.950, width=1.8620, cal_coverage=0.780, cal_width=1.1172
+[2026-05-26T17:58:17.659Z] [log] 
+--- EVALUATION: test_lineup_unknown (52 rows) ---
+[2026-05-26T17:58:17.989Z] [log] test_lineup_unknown: delta_mae_pts=0.3054, recap_mae_pts=0.3054, total_mae_pts=0.6632, coverage=0.964, width=1.7780, cal_coverage=0.813, cal_width=1.0668
+[2026-05-26T17:58:17.989Z] [log] 
+--- EVALUATION: validation_preseason_forecast (360 rows) ---
+[2026-05-26T17:58:20.054Z] [log] validation_preseason_forecast: delta_mae_pts=0.5046, recap_mae_pts=0.5046, total_mae_pts=2.1182, coverage=0.956, width=2.5659, cal_coverage=0.779, cal_width=1.5395
+[2026-05-26T17:58:20.054Z] [log] 
+--- EVALUATION: test_preseason_forecast (52 rows) ---
+[2026-05-26T17:58:20.380Z] [log] test_preseason_forecast: delta_mae_pts=0.4200, recap_mae_pts=0.4200, total_mae_pts=1.6955, coverage=0.966, width=2.5669, cal_coverage=0.858, cal_width=1.5401
+[2026-05-26T17:58:20.417Z] [log] Production training complete.

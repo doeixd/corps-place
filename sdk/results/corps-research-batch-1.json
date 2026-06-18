@@ -1,0 +1,306 @@
+{
+  "batch": 1,
+  "generated_at": "2026-06-04T00:00:00.000Z",
+  "notes": [
+    "Research report only. No database or media-cache writes were performed.",
+    "Media URLs were checked with direct fetch where possible; null means no source-backed candidate was found with adequate confidence."
+  ],
+  "corps": [
+    {
+      "corps_key": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "confidence": "high",
+      "candidates": {
+        "about": "The Erie Thunderbirds are an all-age/senior drum and bugle corps based in Erie, Pennsylvania. The organization traces its history to Meadville, Pennsylvania in 1956 and has represented northwestern Pennsylvania in the drum corps activity.",
+        "logo_url": "https://www.eriethunderbirds.org/templates/tbirds/images/header.png",
+        "photo_url": "https://www.eriethunderbirds.org/images/2018.jpg",
+        "website": "http://www.eriethunderbirds.org/",
+        "city": "Erie",
+        "state": "PA",
+        "country": "USA",
+        "display_city": "Erie, PA"
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/erie-thunderbirds-2/",
+          "title": "Erie Thunderbirds : Upcoming Events & Related News",
+          "notes": "DCI profile lists Erie, PA, contact details, and official website."
+        },
+        {
+          "url": "https://www.eriethunderbirds.org/",
+          "title": "Erie Thunderbirds - Home",
+          "notes": "Official site states the corps was founded in Meadville, PA in 1956 and contains downloadable header/logo and corps photo assets."
+        },
+        {
+          "url": "https://www.dcxmuseum.org/index.cfm?Corpsid=1974&view=corpslist",
+          "title": "DCX - Erie Thunderbirds",
+          "notes": "Historical profile lists Erie, PA, founded 1956, active senior corps, plus photo/artifact archives."
+        }
+      ]
+    },
+    {
+      "corps_key": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "confidence": "high",
+      "candidates": {
+        "about": "Sound of Sun Prairie is a voluntary extracurricular marching ensemble for Sun Prairie students in grades 8-12, built around percussion, wind instruments, and color guard. The program emphasizes cooperation, positive attitudes, personal responsibility, self-motivation, and performing at a high level.",
+        "logo_url": "https://www.spbb.org/uploads/2/2/2/1/22215324/sosp_orig.jpeg",
+        "photo_url": "https://www.spbb.org/uploads/2/2/2/1/22215324/pxl-20220715-184302415-exported-81969-1.jpg",
+        "website": "https://www.spbb.org/sosp.html",
+        "city": "Sun Prairie",
+        "state": "WI",
+        "country": "USA",
+        "display_city": "Sun Prairie, WI"
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/sound-of-sun-prairie-2/",
+          "title": "Sound of Sun Prairie : Upcoming Events & Related News",
+          "notes": "DCI profile lists Sun Prairie, WI and the SPBB Sound of Sun Prairie page."
+        },
+        {
+          "url": "https://www.spbb.org/sosp.html",
+          "title": "Sound of Sun Prairie - Sun Prairie Band Boosters",
+          "notes": "Official program page provides the program description and downloadable image assets."
+        }
+      ]
+    },
+    {
+      "corps_key": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "confidence": "medium",
+      "candidates": {
+        "about": "Green Beret Marching Band is a competitive summer marching band in Rock County, Wisconsin, serving performers ages 10-21 and participating in MACBDA and DCI SoundSport-related activity.",
+        "logo_url": "https://img1.wsimg.com/isteam/ip/192a86b5-ec23-45be-8be9-d3b668c768f2/gbmb.jpg/:/cr=t:19.88%25,l:19.88%25,w:60.24%25,h:60.24%25",
+        "photo_url": null,
+        "website": "https://greenberetmarchingband.org/",
+        "city": "Janesville",
+        "state": "WI",
+        "country": "USA",
+        "display_city": "Janesville, WI"
+      },
+      "sources": [
+        {
+          "url": "https://greenberetmarchingband.org/",
+          "title": "Green Beret Marching Band - Home",
+          "notes": "Official site meta description describes a Rock County, WI competitive summer marching band in MACBDA and SoundSport, ages 10-21; page includes downloadable logo-like media."
+        },
+        {
+          "url": "https://www.dci.org/news/corps-news-and-announcements-20250627/",
+          "title": "Corps news and announcements",
+          "notes": "DCI roundup identifies Green Beret Marching Band as Janesville, WI."
+        }
+      ],
+      "explanation": "No separate high-confidence performance photo was found from an official/reputable page, so photo_url is null."
+    },
+    {
+      "corps_key": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "confidence": "high",
+      "candidates": {
+        "about": "Chops Inc. is a Minneapolis-based nonprofit music and performing arts organization. In addition to its all-age drum corps, the organization supports parade units, indoor percussion, steel-drum bands, after-school drumlines, summer camps, and other music education programs.",
+        "logo_url": "https://static.wixstatic.com/media/72c9a2_58e0fcd921f84bb5bb5e9e9236fb4953~mv2.png/v1/fill/w_242,h_144,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Chops-black.png",
+        "photo_url": "https://static.wixstatic.com/media/938631_50b86719eebb4b22ba21d27347f2fa81~mv2.jpg/v1/fill/w_1442,h_600,al_c/938631_50b86719eebb4b22ba21d27347f2fa81~mv2.jpg",
+        "website": "http://www.chopsinc.com",
+        "city": "Minneapolis",
+        "state": "MN",
+        "country": "USA",
+        "display_city": "Minneapolis, MN"
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/chops-2/",
+          "title": "Chops : Upcoming Events & Related News",
+          "notes": "DCI profile lists Minneapolis, MN, official website, and a concise program description."
+        },
+        {
+          "url": "https://www.chopsinc.org/",
+          "title": "Chops Inc | Music education",
+          "notes": "Official site describes mission and broader music education programs; includes downloadable logo/photo assets."
+        }
+      ]
+    },
+    {
+      "corps_key": "0010a00001iprmyaah",
+      "name": "Cadets 2",
+      "confidence": "medium",
+      "candidates": {
+        "about": "Cadets2 was an all-age corps from Allentown, Pennsylvania, formed in 2011 as an extension of The Cadets and Youth Education in the Arts. The corps won its first DCA championship in 2016 and competed through the 2018 season in DCX archives.",
+        "logo_url": null,
+        "photo_url": "https://images.dci.org/wp-content/uploads/2025/01/Cadets2-set-to-defend-World-Championship-title-in-Rochester.webp",
+        "website": null,
+        "city": "Allentown",
+        "state": "PA",
+        "country": "USA",
+        "display_city": "Allentown, PA"
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/news/cadets2-set-to-defend-world-championship-title-in-rochester/",
+          "title": "Cadets2 set to defend World Championship title in Rochester",
+          "notes": "DCI article identifies Cadets2 as a YEA ensemble from Allentown, PA and discusses the 2016 DCA title; contains a downloadable DCI photo."
+        },
+        {
+          "url": "https://www.dcxmuseum.org/index.cfm?Corpsid=2622&view=corpslist",
+          "title": "DCX - Cadets2",
+          "notes": "Historical profile lists Allentown, PA, founded 2011, inactive all-age/senior, plus season history and photos."
+        },
+        {
+          "url": "https://www.dci.org/corps/cadets2/",
+          "title": "CADETS2 : Upcoming Events & Related News",
+          "notes": "Cached DCI profile in the local scrape archive lists Allentown, PA, but no website, logo, photo, or about text."
+        }
+      ],
+      "explanation": "Wayback/current-profile checks did not produce a reliable official Cadets2 website or standalone logo, so those fields are null."
+    },
+    {
+      "corps_key": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "confidence": "high",
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": "https://www.sunrisersdrumcorps.org/uploads/1/4/7/9/147912889/sunrisers-champs-pic_orig.jpg",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "sources": [
+        {
+          "url": "https://www.sunrisersdrumcorps.org/",
+          "title": "Sunrisers Drum Corps",
+          "notes": "Official site includes downloadable corps photo assets."
+        },
+        {
+          "url": "https://www.dcxmuseum.org/index.cfm?CorpsID=1858&tab=6&view=corpslist",
+          "title": "DCX - Sunrisers",
+          "notes": "Historical profile lists Long Island Sunrisers, founded 1954, active all-age, and photo archives."
+        }
+      ],
+      "explanation": "Only photo was requested as missing for this row; other candidate fields are intentionally null to avoid overwriting existing populated data."
+    },
+    {
+      "corps_key": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "confidence": "high",
+      "candidates": {
+        "about": "Eclipse Drum and Bugle Corps is an Indianapolis-based DCI SoundSport program sponsored by the National Sport and Performing Arts Federation. DCI describes Eclipse as established in 2023 to provide performing arts opportunities and music education to the greater Indianapolis community.",
+        "logo_url": "https://images.squarespace-cdn.com/content/v1/63397265e2571e10e7c29313/b568bab0-a490-49ee-852a-f153c66db80a/Eclipse+circle+logo.png+%281%29.png",
+        "photo_url": "https://images.squarespace-cdn.com/content/v1/63397265e2571e10e7c29313/6b5c6dd6-2ccb-4c15-872a-3e5b324759f4/DSC_2279.jpg",
+        "website": "https://eclipsedbc.org/",
+        "city": "Indianapolis",
+        "state": "IN",
+        "country": "USA",
+        "display_city": "Indianapolis, IN"
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/eclipse-2/",
+          "title": "Eclipse : Upcoming Events & Related News",
+          "notes": "DCI profile lists Indianapolis, IN, official website, and founding/program description."
+        },
+        {
+          "url": "https://eclipsedbc.org/about",
+          "title": "About - Eclipse DBC",
+          "notes": "Official about page identifies NSPAF sponsorship and includes downloadable logo/photo assets."
+        },
+        {
+          "url": "https://eclipsedbc.org/photos",
+          "title": "Photos - Eclipse DBC",
+          "notes": "Official photo page provides additional downloadable Eclipse photos."
+        }
+      ]
+    },
+    {
+      "corps_key": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "confidence": "high",
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": "https://boisegems.org/img/photos/boise-gems-15.jpg",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "sources": [
+        {
+          "url": "https://boisegems.org/",
+          "title": "Boise Gems | Home",
+          "notes": "Official site includes downloadable corps photo assets."
+        },
+        {
+          "url": "https://www.dci.org/corps/gems/",
+          "title": "Gems : Upcoming Events & Related News",
+          "notes": "DCI profile/source confirms Boise Gems identity and existing about/location/website data."
+        },
+        {
+          "url": "https://www.dci.org/news/boise-gems-shine-in-first-soundsport-summer",
+          "title": "Boise Gems shine in first SoundSport summer",
+          "notes": "DCI feature describes the corps' first SoundSport season and includes performance photos."
+        }
+      ],
+      "explanation": "Only photo was requested as missing for this row; other candidate fields are intentionally null to avoid overwriting existing populated data."
+    },
+    {
+      "corps_key": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "confidence": "medium",
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": "https://static.wixstatic.com/media/341345_d3e5311fd54545068f3cc8360b154f49~mv2.jpg",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "sources": [
+        {
+          "url": "https://www.memphisbluesdc.org/",
+          "title": "Memphis Blues | HOME",
+          "notes": "Official site includes downloadable media; selected photo URL is the untransformed Wix source asset corresponding to a corps image on the home page."
+        },
+        {
+          "url": "https://www.dci.org/corps/memphis-blues/",
+          "title": "Memphis Blues : Upcoming Events & Related News",
+          "notes": "DCI profile/source confirms existing about/location/website/social fields."
+        }
+      ],
+      "explanation": "Only photo was requested as missing for this row; other candidate fields are intentionally null to avoid overwriting existing populated data."
+    },
+    {
+      "corps_key": "001j000000iwwsmaal",
+      "name": "Alliance",
+      "confidence": "medium",
+      "candidates": {
+        "about": "Alliance was an all-age drum and bugle corps based in Atlanta, Georgia. DCX reports that the corps was formed in 2004 by Terry Reilley, Shirley Smith, and Andy Ritchie, with the intent to further music education while providing performers of all ages an affordable drum corps experience.",
+        "logo_url": "https://www.dcxmuseum.org/assets/AllianceAtlantaGAJW1-AOverCircleSiteAA_U_S.jpg",
+        "photo_url": "https://www.dcxmuseum.org/pictures/2016/20160730_2016061_Atlanta/Alliance-065.jpg",
+        "website": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "country": "USA",
+        "display_city": "Atlanta, GA"
+      },
+      "sources": [
+        {
+          "url": "https://www.dcxmuseum.org/index.cfm?Corpsid=2510&view=corpslist",
+          "title": "DCX - Alliance",
+          "notes": "Historical profile lists formation, Atlanta/Georgia context, music education purpose, season history, photos, and artifact/logo-like media."
+        },
+        {
+          "url": "https://en.everybodywiki.com/Alliance_Drum_and_Bugle_Corps",
+          "title": "Alliance Drum and Bugle Corps",
+          "notes": "Secondary historical page identifies Atlanta, Georgia, founding in 2004, DCA history, and inactive periods. Used only as supporting context."
+        }
+      ],
+      "explanation": "No current official website was found. Logo is a DCX artifact/logo-style image rather than an official active-site logo, so confidence is medium."
+    }
+  ]
+}

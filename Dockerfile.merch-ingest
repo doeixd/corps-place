@@ -1,0 +1,49 @@
+# Merch ingest/publish image (Coolify scheduled job or one-off `docker run`).
+#
+# Runs the data-side merch pipeline — seed stores → ingest products → emit the
+# read-model → push to Turso — via `sdk/scripts/syncMerch.ts`. This is NOT the web
+# image (that one serves the read-model and has no relational DB / sdk deps).
+#
+# Deliberately SLIM: the merch + emit path imports ZERO tfjs/ML (verified), so we
+# install only the handful of runtime deps it needs instead of `cd sdk && npm
+# install` (which would pull tfjs-node ~1.4 GB + native build). We also avoid the
+# root install, which pulls @browserbasehq/stagehand → Playwright (hundreds of MB);
+# the pipeline only needs @browserbasehq/sdk (now a direct sdk dep).
+#
+# ⚠️ VERSION SYNC: the pinned versions below MUST track sdk/package.json — in
+# particular `effect` and `@effect/sql-libsql` must be the SAME beta (a mismatch
+# breaks Schema/Union at runtime). Update both together. See docs/MERCH_DEPLOY.md.
+#
+# Runtime: mount the 3.4 GB relational DB read-write and point DCI_RELATIONAL_DB_URL
+# at it; set BROWSERBASE_API_KEY, READ_MODEL_SYNC_URL(/_DEV)+token, and (for the
+# post-publish redeploy) COOLIFY_API_URL/COOLIFY_API_TOKEN. See docs/MERCH_DEPLOY.md.
+FROM node:20-bookworm-slim
+
+WORKDIR /app
+ENV NODE_ENV=production
+
+# ca-certificates for HTTPS scraping/Turso; curl for an optional health probe.
+# build-essential/python3 cover any native gyp fallback for @libsql/client.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates curl python3 build-essential \
+ && rm -rf /var/lib/apt/lists/*
+
+# Slim, pinned runtime deps for the merch/emit path (keep in sync with sdk/package.json).
+RUN npm install --no-audit --no-fund --no-package-lock \
+      tsx@^4.22.4 \
+      effect@4.0.0-beta.79 \
+      @effect/sql-libsql@4.0.0-beta.79 \
+      @libsql/client@^0.17.3 \
+      cheerio@1.0.0-rc.12 \
+      @browserbasehq/sdk@2.14.0 \
+      puppeteer-core@^24.15.0
+
+# App source. .dockerignore excludes node_modules, *.db, models, .output, etc., so
+# the relational DB is NEVER baked in — it is mounted at runtime.
+COPY . .
+
+# Idle by default so a Coolify "Scheduled Task" can `docker exec` the run command
+# into a long-lived container. For a one-off host-cron run, override the command:
+#   docker run --rm -v /data/corps-relational:/db -e DCI_RELATIONAL_DB_URL=file:/db/dci-relational.db \
+#     ... merch-ingest npx tsx sdk/scripts/syncMerch.ts --publish prod
+CMD ["sleep", "infinity"]

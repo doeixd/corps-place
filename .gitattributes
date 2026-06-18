@@ -1,0 +1,19 @@
+# Enforce UTF-8 + LF for source so a mis-encoding / newline-flattening write
+# (the CP1252 + newlines→spaces corruption seen 2026-06) shows up immediately in
+# `git diff` instead of silently landing. See sdk/docs/data-integrity-*.md.
+# Scoped to source extensions (no blanket `* text=auto`) to avoid renormalizing
+# the whole repo.
+*.ts   text working-tree-encoding=UTF-8 eol=lf
+*.tsx  text working-tree-encoding=UTF-8 eol=lf
+*.js   text working-tree-encoding=UTF-8 eol=lf
+*.jsx  text working-tree-encoding=UTF-8 eol=lf
+*.mjs  text working-tree-encoding=UTF-8 eol=lf
+*.cjs  text working-tree-encoding=UTF-8 eol=lf
+*.json text working-tree-encoding=UTF-8 eol=lf
+*.css  text working-tree-encoding=UTF-8 eol=lf
+*.md   text working-tree-encoding=UTF-8 eol=lf
+# Binary / large artifacts — never normalize.
+*.db   binary
+*.png  binary
+*.jpg  binary
+*.ico  binary

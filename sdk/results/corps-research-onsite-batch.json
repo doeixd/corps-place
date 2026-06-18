@@ -1,0 +1,179 @@
+[
+  {
+    "corps_key": "glassmen",
+    "name": "Glassmen",
+    "slug": "glassmen",
+    "confidence": "high",
+    "fields": {
+      "city": "Toledo",
+      "state": "OH",
+      "country": "USA"
+    }
+  },
+  {
+    "corps_key": "001j000000iwxa0aal",
+    "name": "Legends",
+    "slug": "legends",
+    "confidence": "high",
+    "fields": {
+      "city": "Kalamazoo",
+      "state": "MI",
+      "country": "USA"
+    }
+  },
+  {
+    "corps_key": "001j000000iwxa2aal",
+    "name": "Louisiana Stars",
+    "slug": "louisiana-stars",
+    "confidence": "high",
+    "fields": {
+      "city": "Lafayette",
+      "state": "LA",
+      "country": "USA"
+    }
+  },
+  {
+    "corps_key": "001j000000iwxabaa1",
+    "name": "Southwind",
+    "slug": "southwind",
+    "confidence": "high",
+    "fields": {
+      "city": "Mobile",
+      "state": "AL",
+      "country": "USA"
+    }
+  },
+  {
+    "corps_key": "teal-sound",
+    "name": "Teal Sound",
+    "slug": "teal-sound",
+    "confidence": "high",
+    "fields": {
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "USA"
+    }
+  },
+  {
+    "corps_key": "001j000000i6kfgaan",
+    "name": "The Cadets",
+    "slug": "the-cadets",
+    "confidence": "high",
+    "fields": {
+      "city": "Erie",
+      "state": "PA",
+      "country": "USA"
+    }
+  },
+  {
+    "corps_key": "001j0000012sixfaaa",
+    "name": "The Company",
+    "slug": "the-company",
+    "confidence": "high",
+    "fields": {
+      "city": "Fulwood",
+      "state": "Lancashire",
+      "country": "United Kingdom"
+    }
+  },
+  {
+    "corps_key": "001j000000iwxakaa1",
+    "name": "Vanguard Cadets",
+    "slug": "vanguard-cadets",
+    "confidence": "high",
+    "fields": {
+      "city": "Santa Clara",
+      "state": "CA",
+      "country": "USA"
+    }
+  },
+  {
+    "corps_key": "001j000000f17bwaaa",
+    "name": "Watchmen",
+    "slug": "watchmen",
+    "confidence": "high",
+    "fields": {
+      "city": "Riverside",
+      "state": "CA",
+      "country": "USA"
+    }
+  },
+  {
+    "corps_key": "apogee",
+    "name": "Apogee",
+    "slug": "apogee",
+    "confidence": "high",
+    "fields": {
+      "city": "Latrobe",
+      "state": "PA",
+      "country": "USA",
+      "division_name": "SoundSport",
+      "about": "Apogee is a DCI SoundSport ensemble based in Latrobe, Pennsylvania, created to make music accessible to performers of all ages and experience levels in the community."
+    }
+  },
+  {
+    "corps_key": "rocky-mountain-brassworks",
+    "name": "Rocky Mountain Brassworks",
+    "slug": "rocky-mountain-brassworks",
+    "confidence": "high",
+    "fields": {
+      "city": "Wheat Ridge",
+      "state": "CO",
+      "country": "USA",
+      "website": "https://www.rockymountainbrassworks.org/",
+      "about": "Rocky Mountain Brassworks is a Wheat Ridge, Colorado British-style brass band that has performed for over 40 years. The all-volunteer 501(c)(3) ensemble performs throughout the Denver metro area and appears as an exhibition unit at DCI Drums Along the Rockies."
+    }
+  },
+  {
+    "corps_key": "brig-juice-brass",
+    "name": "Brig Juice Brass",
+    "slug": "brig-juice-brass",
+    "confidence": "high",
+    "fields": {
+      "city": "Syracuse",
+      "state": "NY",
+      "country": "USA",
+      "website": "https://brigjuice.com/",
+      "about": "Brig Juice Brass is a Syracuse, New York all-age brass ensemble (open to brass players age 17 and up) that fields DCI Mini Corps and SoundSport groups alongside its concert, holiday, and patriotic brass programs, with no dues and a one-day-a-week commitment."
+    }
+  },
+  {
+    "corps_key": "bkxperience",
+    "name": "BKXperience",
+    "slug": "bkxperience",
+    "confidence": "high",
+    "fields": {
+      "city": "Denver",
+      "state": "CO",
+      "country": "USA",
+      "about": "BKXperience is the Blue Knights Drum and Bugle Corps clinic and audition program, run by Ascend Performing Arts of Denver, Colorado. It introduces students to the marching arts through camps and clinics and performs as an exhibition clinic ensemble at events such as Drums Along the Rockies."
+    }
+  },
+  {
+    "corps_key": "sparta-ignite",
+    "name": "Sparta Ignite",
+    "slug": "sparta-ignite",
+    "confidence": "high",
+    "fields": {
+      "city": "Sunnyvale",
+      "state": "CA",
+      "country": "USA",
+      "division_name": "SoundSport",
+      "about": "Sparta Ignite is a DCI SoundSport ensemble based in Sunnyvale, California, formed in 2025 under the Bay Area Performing Arts Movement from the competitive SoundSport program of the Spirit of Sunnyvale."
+    }
+  },
+  {
+    "corps_key": "rhythm-in-blue",
+    "name": "Rhythm IN BLUE",
+    "slug": "rhythm-in-blue",
+    "confidence": "high",
+    "fields": {
+      "city": "North Canton",
+      "state": "OH",
+      "country": "USA",
+      "division_name": "SoundSport",
+      "website": "https://bluecoats.com/rhythminblue",
+      "about": "Rhythm IN BLUE is the Bluecoats SoundSport ensemble, based in North Canton, Ohio, bringing the Bluecoats performance experience to performers ages 18 and older."
+    }
+  }
+]

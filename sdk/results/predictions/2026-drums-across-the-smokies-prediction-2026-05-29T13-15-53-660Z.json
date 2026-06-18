@@ -1,0 +1,466 @@
+{
+  "generated_at": "2026-05-29T13:15:53.661Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-drums-across-the-smokies",
+    "slug": "2026-drums-across-the-smokies",
+    "name": "Drums Across the Smokies",
+    "event_name": "Drums Across the Smokies",
+    "start_date": "2026-07-07",
+    "start_time": null,
+    "web_start_time": "8:00 PM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Sevierville",
+    "location_state": "TN",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260707-SEVIERVILLE-TN.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260707-SEVIERVILLE-TN.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/drums-across-the-smokies-nwc1mg",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 4,
+    "matched_corps_keys": 4,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 4,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 25.581395348837212
+  },
+  "input_signature": "8966b9da91c23ec7622dc14ad163708f579cc95834fc8535fcd9488e69bcad6a",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "25bf7fabb01aaaddbabe8a54fb17bf3cbd1d8cbc917a5462feb5e91d6346b791",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 4,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwxa5aal",
+        "corps": "Music City",
+        "division": "World Class",
+        "performance_order": 2,
+        "time": "8:10 PM"
+      },
+      {
+        "corps_key": "001j000000iwxadaa1",
+        "corps": "Spirit of Atlanta",
+        "division": "World Class",
+        "performance_order": 3,
+        "time": "8:32 PM"
+      },
+      {
+        "corps_key": "001j000000iwx91aad",
+        "corps": "Carolina Crown",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "8:54 PM"
+      },
+      {
+        "corps_key": "001j000000iwwssaal",
+        "corps": "Boston Crusaders",
+        "division": "World Class",
+        "performance_order": 5,
+        "time": "9:16 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-drums-across-the-smokies",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-07",
+      "scored_lineup_rows": 4,
+      "matched_corps_keys": 4,
+      "excluded_lineup_rows": 3,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwssaal",
+      "corps": "Boston Crusaders",
+      "city": "Boston, MA",
+      "division": "World Class",
+      "performance_order": 5,
+      "time": "9:16 PM",
+      "total": 81.919,
+      "GE": 32.727,
+      "Visual": 24.5,
+      "Music": 24.692,
+      "GE1": 16.305,
+      "GE2": 16.422,
+      "VP": 16.259,
+      "VA": 16.22,
+      "CG": 16.521,
+      "MB": 16.465,
+      "MA": 16.425,
+      "MP": 16.494,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.483,
+          "p50": 16.305,
+          "p90": 17.048
+        },
+        "GE2": {
+          "p10": 15.715,
+          "p50": 16.422,
+          "p90": 17.309
+        },
+        "VP": {
+          "p10": 15.512,
+          "p50": 16.259,
+          "p90": 17.05
+        },
+        "VA": {
+          "p10": 15.421,
+          "p50": 16.22,
+          "p90": 16.95
+        },
+        "CG": {
+          "p10": 15.774,
+          "p50": 16.521,
+          "p90": 17.339
+        },
+        "MB": {
+          "p10": 15.682,
+          "p50": 16.465,
+          "p90": 17.226
+        },
+        "MA": {
+          "p10": 15.778,
+          "p50": 16.425,
+          "p90": 17.341
+        },
+        "MP": {
+          "p10": 15.767,
+          "p50": 16.494,
+          "p90": 17.31
+        }
+      },
+      "raw_model_total": 95.88,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 84.15,
+      "prior_season_comparable_percent_through": 26.190476190476193,
+      "prior_season_comparable_competition": "2025-gold-showcase",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 81.92,
+      "caption_shape_total": 79.194,
+      "total_reconciliation_delta": 2.725,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 79.195,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwx91aad",
+      "corps": "Carolina Crown",
+      "city": "Fort Mill, SC",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "8:54 PM",
+      "total": 79.01,
+      "GE": 31.603,
+      "Visual": 23.603,
+      "Music": 23.804,
+      "GE1": 15.716,
+      "GE2": 15.887,
+      "VP": 15.7,
+      "VA": 15.808,
+      "CG": 15.698,
+      "MB": 15.894,
+      "MA": 16.119,
+      "MP": 15.595,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.914,
+          "p50": 15.716,
+          "p90": 16.439
+        },
+        "GE2": {
+          "p10": 15.216,
+          "p50": 15.887,
+          "p90": 16.777
+        },
+        "VP": {
+          "p10": 14.943,
+          "p50": 15.7,
+          "p90": 16.474
+        },
+        "VA": {
+          "p10": 14.975,
+          "p50": 15.808,
+          "p90": 16.492
+        },
+        "CG": {
+          "p10": 14.941,
+          "p50": 15.698,
+          "p90": 16.5
+        },
+        "MB": {
+          "p10": 15.14,
+          "p50": 15.894,
+          "p90": 16.657
+        },
+        "MA": {
+          "p10": 15.482,
+          "p50": 16.119,
+          "p90": 17.028
+        },
+        "MP": {
+          "p10": 14.845,
+          "p50": 15.595,
+          "p90": 16.378
+        }
+      },
+      "raw_model_total": 95.32,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81.5,
+      "prior_season_comparable_percent_through": 21.428571428571427,
+      "prior_season_comparable_competition": "2025-drums-across-the-smokies",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 79.008,
+      "caption_shape_total": 76.97,
+      "total_reconciliation_delta": 2.04,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 76.969,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxadaa1",
+      "corps": "Spirit of Atlanta",
+      "city": "Atlanta, GA",
+      "division": "World Class",
+      "performance_order": 3,
+      "time": "8:32 PM",
+      "total": 73.428,
+      "GE": 29.456,
+      "Visual": 21.445,
+      "Music": 22.527,
+      "GE1": 14.676,
+      "GE2": 14.78,
+      "VP": 14.339,
+      "VA": 14.293,
+      "CG": 14.258,
+      "MB": 14.588,
+      "MA": 15.007,
+      "MP": 15.46,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.858,
+          "p50": 14.676,
+          "p90": 15.364
+        },
+        "GE2": {
+          "p10": 14.166,
+          "p50": 14.78,
+          "p90": 15.683
+        },
+        "VP": {
+          "p10": 13.6,
+          "p50": 14.339,
+          "p90": 15.106
+        },
+        "VA": {
+          "p10": 13.468,
+          "p50": 14.293,
+          "p90": 14.93
+        },
+        "CG": {
+          "p10": 13.552,
+          "p50": 14.258,
+          "p90": 15.07
+        },
+        "MB": {
+          "p10": 13.854,
+          "p50": 14.588,
+          "p90": 15.355
+        },
+        "MA": {
+          "p10": 14.423,
+          "p50": 15.007,
+          "p90": 15.904
+        },
+        "MP": {
+          "p10": 14.692,
+          "p50": 15.46,
+          "p90": 16.205
+        }
+      },
+      "raw_model_total": 89.672,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.8,
+      "prior_season_comparable_percent_through": 23.809523809523807,
+      "prior_season_comparable_competition": "2025-drums-across-america",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 73.431,
+      "caption_shape_total": 72.978,
+      "total_reconciliation_delta": 0.45,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 13,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 72.98,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxa5aal",
+      "corps": "Music City",
+      "city": "Nashville, TN",
+      "division": "World Class",
+      "performance_order": 2,
+      "time": "8:10 PM",
+      "total": 72.498,
+      "GE": 29.068,
+      "Visual": 21.468,
+      "Music": 21.962,
+      "GE1": 14.46,
+      "GE2": 14.608,
+      "VP": 14.077,
+      "VA": 14.377,
+      "CG": 14.482,
+      "MB": 14.109,
+      "MA": 14.828,
+      "MP": 14.986,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.669,
+          "p50": 14.46,
+          "p90": 15.164
+        },
+        "GE2": {
+          "p10": 13.991,
+          "p50": 14.608,
+          "p90": 15.487
+        },
+        "VP": {
+          "p10": 13.359,
+          "p50": 14.077,
+          "p90": 14.862
+        },
+        "VA": {
+          "p10": 13.582,
+          "p50": 14.377,
+          "p90": 15.034
+        },
+        "CG": {
+          "p10": 13.773,
+          "p50": 14.482,
+          "p90": 15.28
+        },
+        "MB": {
+          "p10": 13.368,
+          "p50": 14.109,
+          "p90": 14.883
+        },
+        "MA": {
+          "p10": 14.26,
+          "p50": 14.828,
+          "p90": 15.731
+        },
+        "MP": {
+          "p10": 14.209,
+          "p50": 14.986,
+          "p90": 15.716
+        }
+      },
+      "raw_model_total": 87.506,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.35,
+      "prior_season_comparable_percent_through": 23.809523809523807,
+      "prior_season_comparable_competition": "2025-drums-across-america",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 72.497,
+      "caption_shape_total": 71.453,
+      "total_reconciliation_delta": 1.045,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 16,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.453,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

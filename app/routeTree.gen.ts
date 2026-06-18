@@ -40,6 +40,8 @@ import { ServerRoute as SitemapDotxmlServerRouteImport } from './routes/sitemap[
 import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]txt'
 import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[.]ico'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
+import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
+import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
 
 const rootServerRouteImport = createServerRootRoute()
 
@@ -188,6 +190,16 @@ const FaviconDoticoServerRoute = FaviconDoticoServerRouteImport.update({
 const ApiMediaServerRoute = ApiMediaServerRouteImport.update({
   id: '/api/media',
   path: '/api/media',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiShowMediaIdServerRoute = ApiShowMediaIdServerRouteImport.update({
+  id: '/api/show-media/$id',
+  path: '/api/show-media/$id',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootServerRouteImport,
 } as any)
 
@@ -389,12 +401,16 @@ export interface FileServerRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/media': typeof ApiMediaServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
 }
 export interface FileServerRoutesByTo {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/media': typeof ApiMediaServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
@@ -402,18 +418,34 @@ export interface FileServerRoutesById {
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/media': typeof ApiMediaServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/favicon.ico' | '/robots.txt' | '/sitemap.xml' | '/api/media'
+  fullPaths:
+    | '/favicon.ico'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/api/media'
+    | '/api/auth/$'
+    | '/api/show-media/$id'
   fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/favicon.ico' | '/robots.txt' | '/sitemap.xml' | '/api/media'
+  to:
+    | '/favicon.ico'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/api/media'
+    | '/api/auth/$'
+    | '/api/show-media/$id'
   id:
     | '__root__'
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/media'
+    | '/api/auth/$'
+    | '/api/show-media/$id'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
@@ -421,6 +453,8 @@ export interface RootServerRouteChildren {
   RobotsDottxtServerRoute: typeof RobotsDottxtServerRoute
   SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
   ApiMediaServerRoute: typeof ApiMediaServerRoute
+  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
+  ApiShowMediaIdServerRoute: typeof ApiShowMediaIdServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -632,6 +666,20 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiMediaServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/show-media/$id': {
+      id: '/api/show-media/$id'
+      path: '/api/show-media/$id'
+      fullPath: '/api/show-media/$id'
+      preLoaderRoute: typeof ApiShowMediaIdServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
   }
 }
 
@@ -670,6 +718,8 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   RobotsDottxtServerRoute: RobotsDottxtServerRoute,
   SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
   ApiMediaServerRoute: ApiMediaServerRoute,
+  ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
+  ApiShowMediaIdServerRoute: ApiShowMediaIdServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)

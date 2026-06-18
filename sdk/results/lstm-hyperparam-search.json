@@ -1,0 +1,952 @@
+[
+  {
+    "trialId": 0,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0003,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 1,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0005,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 2,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.001,
+      "learning_rate": 0.001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 3,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0005,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 4,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0005,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 5,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.001,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 6,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.001,
+      "learning_rate": 0.001,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 7,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.001,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 8,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 9,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.00001,
+      "learning_rate": 0.001,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 10,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0003,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 11,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.00001,
+      "learning_rate": 0.0003,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 12,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0003,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 13,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0003,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 14,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.001,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 15,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.001,
+      "learning_rate": 0.001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 16,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0001,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 17,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.001,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 18,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.001,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 19,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 20,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.00001,
+      "learning_rate": 0.001,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 21,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.00001,
+      "learning_rate": 0.0003,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 22,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0005,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 23,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0003,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 24,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0005,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 25,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0005,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 26,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0001,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 27,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0003,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 28,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0003,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 29,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0005,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 30,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.001,
+      "learning_rate": 0.001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 31,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.001,
+      "learning_rate": 0.001,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 32,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.00001,
+      "learning_rate": 0.0001,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 33,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.00001,
+      "learning_rate": 0.001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 34,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.00001,
+      "learning_rate": 0.0003,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 35,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0001,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 36,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.00001,
+      "learning_rate": 0.001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 37,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.001,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 38,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0001,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 39,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.4,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0003,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 40,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0005,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 41,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0001,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 42,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 48,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 43,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0003,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 44,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 24,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0005,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 45,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.001,
+      "learning_rate": 0.0003,
+      "batch_size": 64
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 46,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.4,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.0001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 47,
+    "config": {
+      "lstm1_units": 64,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.4,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.4,
+      "l2_reg": 0.001,
+      "learning_rate": 0.001,
+      "batch_size": 32
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 48,
+    "config": {
+      "lstm1_units": 48,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.2,
+      "recurrent_dropout": 0.3,
+      "dropout_dense1": 0.3,
+      "dropout_dense2": 0.2,
+      "l2_reg": 0.0001,
+      "learning_rate": 0.001,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  },
+  {
+    "trialId": 49,
+    "config": {
+      "lstm1_units": 96,
+      "lstm2_units": 32,
+      "dropout_lstm": 0.3,
+      "recurrent_dropout": 0.2,
+      "dropout_dense1": 0.5,
+      "dropout_dense2": 0.3,
+      "l2_reg": 0.00001,
+      "learning_rate": 0.0005,
+      "batch_size": 16
+    },
+    "finalValLoss": null,
+    "finalTrainLoss": null,
+    "epochsCompleted": 0,
+    "status": "failed",
+    "errorMessage": "Exit code 9"
+  }
+]

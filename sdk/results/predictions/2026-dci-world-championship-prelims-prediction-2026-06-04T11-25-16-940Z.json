@@ -1,0 +1,3041 @@
+{
+  "generated_at": "2026-06-04T11:25:16.940Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-world-championship-prelims",
+    "slug": "2026-dci-world-championship-prelims",
+    "name": "DCI World Championship Prelims",
+    "event_name": "DCI World Championship Prelims",
+    "start_date": "2026-08-06T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "12:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Indianapolis",
+    "location_state": "IN",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260806-INDY-PRELIMS.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260806-INDY-PRELIMS.jpg",
+    "buy_tickets": "https://www.ticketmaster.com/event/0500636CD5E7BED5",
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/4rNr4mZ",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "SPECIAL OFFERS: Southwest Airlines is pleased to offer DCI World Championships attendees discounted fares. To utilize the discount, book online via SWABIZ®. Discount valid for travel 7/30/2026 to 8/12/2026, in/out of Indianapolis International Airport (IND).Drum Corps International has secured blocks of rooms at specially negotiated rates in many downtown Indianapolis hotel locations for the 2026 DCI World Championships. Book your hotel.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 33,
+    "matched_corps_keys": 33,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 31,
+    "skipped_lineup_rows": 2,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 95.34883720930233
+  },
+  "input_signature": "cf66786735dbb02829a428f61b6231b649ce7d083e930284379d5323902149c4",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 33,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwslaal",
+        "corps": "7th Regiment",
+        "division": "Open Class",
+        "performance_order": 10,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000i6i9saav",
+        "corps": "Blue Devils",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000i6jmbaaf",
+        "corps": "Blue Devils \"B\"",
+        "division": "Open Class",
+        "performance_order": 12,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwwsoaal",
+        "corps": "Blue Knights",
+        "division": "World Class",
+        "performance_order": 13,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwwsqaal",
+        "corps": "Blue Stars",
+        "division": "World Class",
+        "performance_order": 14,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwwsraal",
+        "corps": "Bluecoats",
+        "division": "World Class",
+        "performance_order": 15,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwwssaal",
+        "corps": "Boston Crusaders",
+        "division": "World Class",
+        "performance_order": 16,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx91aad",
+        "corps": "Carolina Crown",
+        "division": "World Class",
+        "performance_order": 17,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx97aad",
+        "corps": "Colt Cadets",
+        "division": "Open Class",
+        "performance_order": 18,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx98aad",
+        "corps": "Colts",
+        "division": "World Class",
+        "performance_order": 19,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx99aad",
+        "corps": "Columbians",
+        "division": "Open Class",
+        "performance_order": 20,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx9aaat",
+        "corps": "Crossmen",
+        "division": "World Class",
+        "performance_order": 21,
+        "time": null
+      },
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 22,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx9oaad",
+        "corps": "Genesis",
+        "division": "World Class",
+        "performance_order": 23,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx9paad",
+        "corps": "Gold",
+        "division": "Open Class",
+        "performance_order": 24,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx9taad",
+        "corps": "Heat Wave",
+        "division": "Open Class",
+        "performance_order": 25,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwxa1aal",
+        "corps": "Les Stentors",
+        "division": "Open Class",
+        "performance_order": 26,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000i6lenaa3",
+        "corps": "Madison Scouts",
+        "division": "World Class",
+        "performance_order": 27,
+        "time": null
+      },
+      {
+        "corps_key": "0015b00002byuh0aap",
+        "corps": "Memphis Blues",
+        "division": "Open Class",
+        "performance_order": 28,
+        "time": null
+      },
+      {
+        "corps_key": "mercedes-marching-band",
+        "corps": "Mercedes Marching Band",
+        "division": "International Class",
+        "performance_order": 29,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwxa5aal",
+        "corps": "Music City",
+        "division": "World Class",
+        "performance_order": 30,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwxa7aal",
+        "corps": "Pacific Crest",
+        "division": "World Class",
+        "performance_order": 31,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000h3xrnaav",
+        "corps": "Phantom Regiment",
+        "division": "World Class",
+        "performance_order": 32,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwxaaaa1",
+        "corps": "Raiders",
+        "division": "Open Class",
+        "performance_order": 33,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000qzs1qaaf",
+        "corps": "River City Rhythm",
+        "division": "Open Class",
+        "performance_order": 34,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000h3xwcaav",
+        "corps": "Santa Clara Vanguard",
+        "division": "World Class",
+        "performance_order": 35,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx93aad",
+        "corps": "Seattle Cascades",
+        "division": "World Class",
+        "performance_order": 36,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwxacaa1",
+        "corps": "Spartans",
+        "division": "World Class",
+        "performance_order": 37,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwxadaa1",
+        "corps": "Spirit of Atlanta",
+        "division": "World Class",
+        "performance_order": 38,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwxaeaa1",
+        "corps": "The Academy",
+        "division": "World Class",
+        "performance_order": 39,
+        "time": null
+      },
+      {
+        "corps_key": "001j0000012y6bqaac",
+        "corps": "The Battalion",
+        "division": "Open Class",
+        "performance_order": 40,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 41,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwxajaa1",
+        "corps": "Troopers",
+        "division": "World Class",
+        "performance_order": 42,
+        "time": null
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 22,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "mercedes-marching-band",
+        "corps": "Mercedes Marching Band",
+        "division": "International Class",
+        "performance_order": 29,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "unmatched_participant"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "unmatched_participant"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 2,
+        "exclusion_reason": "unmatched_participant"
+      },
+      {
+        "unit_name": "Competition Resumes",
+        "performance_order": 3,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 4,
+        "exclusion_reason": "unmatched_participant"
+      },
+      {
+        "unit_name": "Movie Theater Cinecast",
+        "performance_order": 5,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Competition Resumes",
+        "performance_order": 6,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 7,
+        "exclusion_reason": "unmatched_participant"
+      },
+      {
+        "unit_name": "Competition Resumes",
+        "performance_order": 8,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 9,
+        "exclusion_reason": "unmatched_participant"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-world-championship-prelims",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-08-06T00:00:00.000Z",
+      "scored_lineup_rows": 65,
+      "matched_corps_keys": 33,
+      "excluded_lineup_rows": 10,
+      "known_judges": 0,
+      "readiness_status": "lineup_has_unmatched_corps"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwssaal",
+      "corps": "Boston Crusaders",
+      "city": "Boston, MA",
+      "division": "World Class",
+      "performance_order": 16,
+      "time": null,
+      "total": 96.52,
+      "GE": 38.983,
+      "Visual": 28.057,
+      "Music": 29.48,
+      "GE1": 19.401,
+      "GE2": 19.582,
+      "VP": 19.529,
+      "VA": 16.83,
+      "CG": 19.755,
+      "MB": 19.76,
+      "MA": 19.407,
+      "MP": 19.793,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.77,
+          "p50": 19.401,
+          "p90": 20
+        },
+        "GE2": {
+          "p10": 17.99,
+          "p50": 19.582,
+          "p90": 20
+        },
+        "VP": {
+          "p10": 17.638,
+          "p50": 19.529,
+          "p90": 20
+        },
+        "VA": {
+          "p10": 15.169,
+          "p50": 16.83,
+          "p90": 18.222
+        },
+        "CG": {
+          "p10": 17.685,
+          "p50": 19.755,
+          "p90": 20
+        },
+        "MB": {
+          "p10": 17.775,
+          "p50": 19.76,
+          "p90": 20
+        },
+        "MA": {
+          "p10": 18,
+          "p50": 19.407,
+          "p90": 20
+        },
+        "MP": {
+          "p10": 18.214,
+          "p50": 19.793,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 108.867,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 97.325,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 96.519,
+      "caption_shape_total": 95.52,
+      "total_reconciliation_delta": 1,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 95.534,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwwsraal",
+      "corps": "Bluecoats",
+      "city": "Canton, OH",
+      "division": "World Class",
+      "performance_order": 15,
+      "time": null,
+      "total": 95.994,
+      "GE": 39.135,
+      "Visual": 27.434,
+      "Music": 29.425,
+      "GE1": 19.529,
+      "GE2": 19.606,
+      "VP": 19.533,
+      "VA": 16.036,
+      "CG": 19.3,
+      "MB": 19.594,
+      "MA": 19.645,
+      "MP": 19.61,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.799,
+          "p50": 19.529,
+          "p90": 20
+        },
+        "GE2": {
+          "p10": 18.033,
+          "p50": 19.606,
+          "p90": 20
+        },
+        "VP": {
+          "p10": 17.562,
+          "p50": 19.533,
+          "p90": 20
+        },
+        "VA": {
+          "p10": 14.257,
+          "p50": 16.036,
+          "p90": 17.289
+        },
+        "CG": {
+          "p10": 17.051,
+          "p50": 19.3,
+          "p90": 20
+        },
+        "MB": {
+          "p10": 17.665,
+          "p50": 19.594,
+          "p90": 20
+        },
+        "MA": {
+          "p10": 18.258,
+          "p50": 19.645,
+          "p90": 20
+        },
+        "MP": {
+          "p10": 18.092,
+          "p50": 19.61,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 108.509,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 97.15,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 95.996,
+      "caption_shape_total": 94.584,
+      "total_reconciliation_delta": 1.41,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 2,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 94.587,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000h3xwcaav",
+      "corps": "Santa Clara Vanguard",
+      "city": "Santa Clara, CA",
+      "division": "World Class",
+      "performance_order": 35,
+      "time": null,
+      "total": 94.831,
+      "GE": 38.539,
+      "Visual": 27.016,
+      "Music": 29.276,
+      "GE1": 19.273,
+      "GE2": 19.266,
+      "VP": 19.312,
+      "VA": 15.724,
+      "CG": 18.995,
+      "MB": 19.439,
+      "MA": 19.181,
+      "MP": 19.931,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.611,
+          "p50": 19.273,
+          "p90": 20
+        },
+        "GE2": {
+          "p10": 17.668,
+          "p50": 19.266,
+          "p90": 20
+        },
+        "VP": {
+          "p10": 17.325,
+          "p50": 19.312,
+          "p90": 20
+        },
+        "VA": {
+          "p10": 13.992,
+          "p50": 15.724,
+          "p90": 17.031
+        },
+        "CG": {
+          "p10": 16.81,
+          "p50": 18.995,
+          "p90": 20
+        },
+        "MB": {
+          "p10": 17.465,
+          "p50": 19.439,
+          "p90": 20
+        },
+        "MA": {
+          "p10": 17.776,
+          "p50": 19.181,
+          "p90": 20
+        },
+        "MP": {
+          "p10": 18.308,
+          "p50": 19.931,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 107.279,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 95.875,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 94.829,
+      "caption_shape_total": 93.54,
+      "total_reconciliation_delta": 1.29,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 93.55,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000i6i9saav",
+      "corps": "Blue Devils",
+      "city": "Concord, CA",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": null,
+      "total": 93.42,
+      "GE": 38.323,
+      "Visual": 25.907,
+      "Music": 29.19,
+      "GE1": 19.223,
+      "GE2": 19.1,
+      "VP": 19.317,
+      "VA": 12.946,
+      "CG": 19.55,
+      "MB": 19.613,
+      "MA": 19.155,
+      "MP": 19.611,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.597,
+          "p50": 19.223,
+          "p90": 20
+        },
+        "GE2": {
+          "p10": 17.596,
+          "p50": 19.1,
+          "p90": 20
+        },
+        "VP": {
+          "p10": 17.42,
+          "p50": 19.317,
+          "p90": 20
+        },
+        "VA": {
+          "p10": 11.226,
+          "p50": 12.946,
+          "p90": 14.256
+        },
+        "CG": {
+          "p10": 17.571,
+          "p50": 19.55,
+          "p90": 20
+        },
+        "MB": {
+          "p10": 17.667,
+          "p50": 19.613,
+          "p90": 20
+        },
+        "MA": {
+          "p10": 17.764,
+          "p50": 19.155,
+          "p90": 20
+        },
+        "MP": {
+          "p10": 17.911,
+          "p50": 19.611,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 108.583,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 95.588,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 93.421,
+      "caption_shape_total": 90.769,
+      "total_reconciliation_delta": 2.65,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 4,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 90.771,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwx91aad",
+      "corps": "Carolina Crown",
+      "city": "Fort Mill, SC",
+      "division": "World Class",
+      "performance_order": 17,
+      "time": null,
+      "total": 92.679,
+      "GE": 37.804,
+      "Visual": 25.763,
+      "Music": 29.112,
+      "GE1": 18.745,
+      "GE2": 19.059,
+      "VP": 18.963,
+      "VA": 13.507,
+      "CG": 19.056,
+      "MB": 19.391,
+      "MA": 19.382,
+      "MP": 19.451,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.094,
+          "p50": 18.745,
+          "p90": 20
+        },
+        "GE2": {
+          "p10": 17.558,
+          "p50": 19.059,
+          "p90": 20
+        },
+        "VP": {
+          "p10": 17.019,
+          "p50": 18.963,
+          "p90": 20
+        },
+        "VA": {
+          "p10": 11.775,
+          "p50": 13.507,
+          "p90": 14.79
+        },
+        "CG": {
+          "p10": 16.945,
+          "p50": 19.056,
+          "p90": 20
+        },
+        "MB": {
+          "p10": 17.468,
+          "p50": 19.391,
+          "p90": 20
+        },
+        "MA": {
+          "p10": 18.038,
+          "p50": 19.382,
+          "p90": 20
+        },
+        "MP": {
+          "p10": 17.81,
+          "p50": 19.451,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 108.054,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 94.638,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 92.679,
+      "caption_shape_total": 90.284,
+      "total_reconciliation_delta": 2.395,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 90.285,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000h3xrnaav",
+      "corps": "Phantom Regiment",
+      "city": "Rockford, IL",
+      "division": "World Class",
+      "performance_order": 32,
+      "time": null,
+      "total": 90.197,
+      "GE": 37.657,
+      "Visual": 23.828,
+      "Music": 28.712,
+      "GE1": 18.793,
+      "GE2": 18.864,
+      "VP": 18.785,
+      "VA": 9.761,
+      "CG": 19.111,
+      "MB": 19.156,
+      "MA": 18.784,
+      "MP": 19.484,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.201,
+          "p50": 18.793,
+          "p90": 20
+        },
+        "GE2": {
+          "p10": 17.393,
+          "p50": 18.864,
+          "p90": 20
+        },
+        "VP": {
+          "p10": 16.833,
+          "p50": 18.785,
+          "p90": 20
+        },
+        "VA": {
+          "p10": 8.095,
+          "p50": 9.761,
+          "p90": 11.051
+        },
+        "CG": {
+          "p10": 17.065,
+          "p50": 19.111,
+          "p90": 20
+        },
+        "MB": {
+          "p10": 17.25,
+          "p50": 19.156,
+          "p90": 20
+        },
+        "MA": {
+          "p10": 17.431,
+          "p50": 18.784,
+          "p90": 20
+        },
+        "MP": {
+          "p10": 17.775,
+          "p50": 19.484,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 105.957,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 93.65,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 90.199,
+      "caption_shape_total": 85.983,
+      "total_reconciliation_delta": 4.215,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 8,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.982,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 7,
+      "corps_key": "001j000000iwwsqaal",
+      "corps": "Blue Stars",
+      "city": "La Crosse, WI",
+      "division": "World Class",
+      "performance_order": 14,
+      "time": null,
+      "total": 89.016,
+      "GE": 35.934,
+      "Visual": 25.946,
+      "Music": 27.136,
+      "GE1": 17.942,
+      "GE2": 17.992,
+      "VP": 17.963,
+      "VA": 15.285,
+      "CG": 18.644,
+      "MB": 18.104,
+      "MA": 18.151,
+      "MP": 18.017,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.402,
+          "p50": 17.942,
+          "p90": 19.598
+        },
+        "GE2": {
+          "p10": 16.499,
+          "p50": 17.992,
+          "p90": 19.725
+        },
+        "VP": {
+          "p10": 16.015,
+          "p50": 17.963,
+          "p90": 19.878
+        },
+        "VA": {
+          "p10": 13.529,
+          "p50": 15.285,
+          "p90": 16.54
+        },
+        "CG": {
+          "p10": 16.495,
+          "p50": 18.644,
+          "p90": 20
+        },
+        "MB": {
+          "p10": 16.046,
+          "p50": 18.104,
+          "p90": 19.982
+        },
+        "MA": {
+          "p10": 16.81,
+          "p50": 18.151,
+          "p90": 20
+        },
+        "MP": {
+          "p10": 16.355,
+          "p50": 18.017,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 98.924,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 90.488,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 89.018,
+      "caption_shape_total": 87.221,
+      "total_reconciliation_delta": 1.795,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 10,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 87.221,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 8,
+      "corps_key": "001j000000i6jmbaaf",
+      "corps": "Blue Devils \"B\"",
+      "city": "Concord, CA",
+      "division": "Open Class",
+      "performance_order": 12,
+      "time": null,
+      "total": 88.625,
+      "GE": 36.127,
+      "Visual": 25.907,
+      "Music": 26.591,
+      "GE1": 18.097,
+      "GE2": 18.03,
+      "VP": 17.668,
+      "VA": 16.892,
+      "CG": 17.253,
+      "MB": 18.089,
+      "MA": 17.887,
+      "MP": 17.207,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.497,
+          "p50": 18.097,
+          "p90": 19.845
+        },
+        "GE2": {
+          "p10": 16.639,
+          "p50": 18.03,
+          "p90": 19.906
+        },
+        "VP": {
+          "p10": 15.685,
+          "p50": 17.668,
+          "p90": 19.878
+        },
+        "VA": {
+          "p10": 14.997,
+          "p50": 16.892,
+          "p90": 18.24
+        },
+        "CG": {
+          "p10": 14.991,
+          "p50": 17.253,
+          "p90": 19.069
+        },
+        "MB": {
+          "p10": 15.939,
+          "p50": 18.089,
+          "p90": 20
+        },
+        "MA": {
+          "p10": 16.231,
+          "p50": 17.887,
+          "p90": 19.527
+        },
+        "MP": {
+          "p10": 15.251,
+          "p50": 17.207,
+          "p90": 19.38
+        }
+      },
+      "raw_model_total": 67.166,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.35,
+      "prior_season_comparable_percent_through": 35.714285714285715,
+      "prior_season_comparable_competition": "2025-so-cal-classic-open-class-pacific-championship-finals",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 88.626,
+      "caption_shape_total": 96.835,
+      "total_reconciliation_delta": -8.21,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 96.852,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 9,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 41,
+      "time": null,
+      "total": 88.059,
+      "GE": 35.407,
+      "Visual": 25.691,
+      "Music": 26.961,
+      "GE1": 17.681,
+      "GE2": 17.726,
+      "VP": 17.7,
+      "VA": 15.557,
+      "CG": 18.125,
+      "MB": 17.583,
+      "MA": 17.657,
+      "MP": 18.682,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.124,
+          "p50": 17.681,
+          "p90": 19.331
+        },
+        "GE2": {
+          "p10": 16.259,
+          "p50": 17.726,
+          "p90": 19.469
+        },
+        "VP": {
+          "p10": 15.733,
+          "p50": 17.7,
+          "p90": 19.573
+        },
+        "VA": {
+          "p10": 13.809,
+          "p50": 15.557,
+          "p90": 16.817
+        },
+        "CG": {
+          "p10": 16.049,
+          "p50": 18.125,
+          "p90": 19.979
+        },
+        "MB": {
+          "p10": 15.612,
+          "p50": 17.583,
+          "p90": 19.503
+        },
+        "MA": {
+          "p10": 16.302,
+          "p50": 17.657,
+          "p90": 19.527
+        },
+        "MP": {
+          "p10": 16.934,
+          "p50": 18.682,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 100.653,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 91.163,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 88.058,
+      "caption_shape_total": 84.264,
+      "total_reconciliation_delta": 3.795,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 13,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 84.264,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 10,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "city": "Casper, WY",
+      "division": "World Class",
+      "performance_order": 42,
+      "time": null,
+      "total": 87.217,
+      "GE": 35.017,
+      "Visual": 25.126,
+      "Music": 27.074,
+      "GE1": 17.38,
+      "GE2": 17.637,
+      "VP": 17.295,
+      "VA": 15.399,
+      "CG": 17.557,
+      "MB": 17.669,
+      "MA": 18.025,
+      "MP": 18.453,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.823,
+          "p50": 17.38,
+          "p90": 18.938
+        },
+        "GE2": {
+          "p10": 16.2,
+          "p50": 17.637,
+          "p90": 19.377
+        },
+        "VP": {
+          "p10": 15.35,
+          "p50": 17.295,
+          "p90": 19.163
+        },
+        "VA": {
+          "p10": 13.613,
+          "p50": 15.399,
+          "p90": 16.605
+        },
+        "CG": {
+          "p10": 15.51,
+          "p50": 17.557,
+          "p90": 19.406
+        },
+        "MB": {
+          "p10": 15.615,
+          "p50": 17.669,
+          "p90": 19.507
+        },
+        "MA": {
+          "p10": 16.713,
+          "p50": 18.025,
+          "p90": 19.896
+        },
+        "MP": {
+          "p10": 16.699,
+          "p50": 18.453,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 95.375,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 90.325,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 87.216,
+      "caption_shape_total": 83.416,
+      "total_reconciliation_delta": 3.8,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 14,
+      "prior_season_rank": 10,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 83.415,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 11,
+      "corps_key": "001j000000iwx98aad",
+      "corps": "Colts",
+      "city": "Dubuque, IA",
+      "division": "World Class",
+      "performance_order": 19,
+      "time": null,
+      "total": 85.531,
+      "GE": 34.417,
+      "Visual": 24.945,
+      "Music": 26.169,
+      "GE1": 17.081,
+      "GE2": 17.336,
+      "VP": 16.978,
+      "VA": 15.495,
+      "CG": 17.418,
+      "MB": 17.09,
+      "MA": 17.496,
+      "MP": 17.752,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.595,
+          "p50": 17.081,
+          "p90": 18.713
+        },
+        "GE2": {
+          "p10": 15.904,
+          "p50": 17.336,
+          "p90": 19.067
+        },
+        "VP": {
+          "p10": 15.088,
+          "p50": 16.978,
+          "p90": 18.885
+        },
+        "VA": {
+          "p10": 13.72,
+          "p50": 15.495,
+          "p90": 16.699
+        },
+        "CG": {
+          "p10": 15.359,
+          "p50": 17.418,
+          "p90": 19.232
+        },
+        "MB": {
+          "p10": 15.071,
+          "p50": 17.09,
+          "p90": 18.939
+        },
+        "MA": {
+          "p10": 16.171,
+          "p50": 17.496,
+          "p90": 19.363
+        },
+        "MP": {
+          "p10": 16.018,
+          "p50": 17.752,
+          "p90": 19.816
+        }
+      },
+      "raw_model_total": 94.453,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 88.038,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 85.531,
+      "caption_shape_total": 82.466,
+      "total_reconciliation_delta": 3.065,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 15,
+      "prior_season_rank": 11,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 82.466,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 12,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "city": "Denver, CO",
+      "division": "World Class",
+      "performance_order": 13,
+      "time": null,
+      "total": 84.915,
+      "GE": 34.158,
+      "Visual": 24.646,
+      "Music": 26.111,
+      "GE1": 16.893,
+      "GE2": 17.265,
+      "VP": 16.83,
+      "VA": 15.545,
+      "CG": 16.917,
+      "MB": 17.224,
+      "MA": 17.368,
+      "MP": 17.631,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.375,
+          "p50": 16.893,
+          "p90": 18.502
+        },
+        "GE2": {
+          "p10": 15.851,
+          "p50": 17.265,
+          "p90": 19.048
+        },
+        "VP": {
+          "p10": 14.886,
+          "p50": 16.83,
+          "p90": 18.695
+        },
+        "VA": {
+          "p10": 13.709,
+          "p50": 15.545,
+          "p90": 16.703
+        },
+        "CG": {
+          "p10": 14.904,
+          "p50": 16.917,
+          "p90": 18.855
+        },
+        "MB": {
+          "p10": 15.089,
+          "p50": 17.224,
+          "p90": 19.011
+        },
+        "MA": {
+          "p10": 15.989,
+          "p50": 17.368,
+          "p90": 19.207
+        },
+        "MP": {
+          "p10": 15.894,
+          "p50": 17.631,
+          "p90": 19.755
+        }
+      },
+      "raw_model_total": 94.541,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 87.6,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 84.913,
+      "caption_shape_total": 81.63,
+      "total_reconciliation_delta": 3.285,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 16,
+      "prior_season_rank": 12,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 81.63,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 13,
+      "corps_key": "001j000000iwxadaa1",
+      "corps": "Spirit of Atlanta",
+      "city": "Atlanta, GA",
+      "division": "World Class",
+      "performance_order": 38,
+      "time": null,
+      "total": 83.982,
+      "GE": 33.613,
+      "Visual": 24.055,
+      "Music": 26.314,
+      "GE1": 16.6,
+      "GE2": 17.013,
+      "VP": 16.674,
+      "VA": 15.197,
+      "CG": 16.239,
+      "MB": 17.125,
+      "MA": 17.284,
+      "MP": 18.22,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.917,
+          "p50": 16.6,
+          "p90": 18.046
+        },
+        "GE2": {
+          "p10": 15.631,
+          "p50": 17.013,
+          "p90": 18.752
+        },
+        "VP": {
+          "p10": 14.676,
+          "p50": 16.674,
+          "p90": 18.467
+        },
+        "VA": {
+          "p10": 13.464,
+          "p50": 15.197,
+          "p90": 16.403
+        },
+        "CG": {
+          "p10": 14.217,
+          "p50": 16.239,
+          "p90": 18.185
+        },
+        "MB": {
+          "p10": 15.221,
+          "p50": 17.125,
+          "p90": 19.174
+        },
+        "MA": {
+          "p10": 15.949,
+          "p50": 17.284,
+          "p90": 19.11
+        },
+        "MP": {
+          "p10": 16.551,
+          "p50": 18.22,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 93.819,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 86.625,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 83.983,
+      "caption_shape_total": 80.752,
+      "total_reconciliation_delta": 3.23,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 17,
+      "prior_season_rank": 13,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 80.753,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 14,
+      "corps_key": "001j000000i6lenaa3",
+      "corps": "Madison Scouts",
+      "city": "Madison, WI",
+      "division": "World Class",
+      "performance_order": 27,
+      "time": null,
+      "total": 83.11,
+      "GE": 33.531,
+      "Visual": 24.066,
+      "Music": 25.513,
+      "GE1": 16.59,
+      "GE2": 16.941,
+      "VP": 16.343,
+      "VA": 15.198,
+      "CG": 16.59,
+      "MB": 16.657,
+      "MA": 17.014,
+      "MP": 17.355,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.922,
+          "p50": 16.59,
+          "p90": 18.021
+        },
+        "GE2": {
+          "p10": 15.576,
+          "p50": 16.941,
+          "p90": 18.701
+        },
+        "VP": {
+          "p10": 14.372,
+          "p50": 16.343,
+          "p90": 18.081
+        },
+        "VA": {
+          "p10": 13.481,
+          "p50": 15.198,
+          "p90": 16.393
+        },
+        "CG": {
+          "p10": 14.603,
+          "p50": 16.59,
+          "p90": 18.603
+        },
+        "MB": {
+          "p10": 14.701,
+          "p50": 16.657,
+          "p90": 18.626
+        },
+        "MA": {
+          "p10": 15.715,
+          "p50": 17.014,
+          "p90": 18.861
+        },
+        "MP": {
+          "p10": 15.704,
+          "p50": 17.355,
+          "p90": 19.359
+        }
+      },
+      "raw_model_total": 94.387,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 85.55,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 83.111,
+      "caption_shape_total": 80.13,
+      "total_reconciliation_delta": 2.98,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 18,
+      "prior_season_rank": 14,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 80.129,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 15,
+      "corps_key": "001j000000iwxa7aal",
+      "corps": "Pacific Crest",
+      "city": "City of Industry, CA",
+      "division": "World Class",
+      "performance_order": 31,
+      "time": null,
+      "total": 81.739,
+      "GE": 32.498,
+      "Visual": 24.047,
+      "Music": 25.194,
+      "GE1": 16.022,
+      "GE2": 16.476,
+      "VP": 16.289,
+      "VA": 15.115,
+      "CG": 16.691,
+      "MB": 16.467,
+      "MA": 16.696,
+      "MP": 17.224,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.375,
+          "p50": 16.022,
+          "p90": 17.474
+        },
+        "GE2": {
+          "p10": 15.082,
+          "p50": 16.476,
+          "p90": 18.22
+        },
+        "VP": {
+          "p10": 14.305,
+          "p50": 16.289,
+          "p90": 18.038
+        },
+        "VA": {
+          "p10": 13.377,
+          "p50": 15.115,
+          "p90": 16.323
+        },
+        "CG": {
+          "p10": 14.714,
+          "p50": 16.691,
+          "p90": 18.629
+        },
+        "MB": {
+          "p10": 14.493,
+          "p50": 16.467,
+          "p90": 18.431
+        },
+        "MA": {
+          "p10": 15.39,
+          "p50": 16.696,
+          "p90": 18.544
+        },
+        "MP": {
+          "p10": 15.555,
+          "p50": 17.224,
+          "p90": 19.243
+        }
+      },
+      "raw_model_total": 92.05,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 83.863,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 81.74,
+      "caption_shape_total": 79.144,
+      "total_reconciliation_delta": 2.595,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 19,
+      "prior_season_rank": 15,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 79.144,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 16,
+      "corps_key": "001j000000iwxa5aal",
+      "corps": "Music City",
+      "city": "Nashville, TN",
+      "division": "World Class",
+      "performance_order": 30,
+      "time": null,
+      "total": 81.017,
+      "GE": 32.571,
+      "Visual": 23.819,
+      "Music": 24.627,
+      "GE1": 16.099,
+      "GE2": 16.472,
+      "VP": 16.104,
+      "VA": 15.366,
+      "CG": 16.169,
+      "MB": 15.95,
+      "MA": 16.61,
+      "MP": 16.694,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.459,
+          "p50": 16.099,
+          "p90": 17.574
+        },
+        "GE2": {
+          "p10": 15.05,
+          "p50": 16.472,
+          "p90": 18.15
+        },
+        "VP": {
+          "p10": 14.132,
+          "p50": 16.104,
+          "p90": 17.908
+        },
+        "VA": {
+          "p10": 13.631,
+          "p50": 15.366,
+          "p90": 16.595
+        },
+        "CG": {
+          "p10": 14.149,
+          "p50": 16.169,
+          "p90": 18.092
+        },
+        "MB": {
+          "p10": 13.977,
+          "p50": 15.95,
+          "p90": 17.97
+        },
+        "MA": {
+          "p10": 15.297,
+          "p50": 16.61,
+          "p90": 18.449
+        },
+        "MP": {
+          "p10": 15.011,
+          "p50": 16.694,
+          "p90": 18.724
+        }
+      },
+      "raw_model_total": 87.994,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 83.05,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 81.019,
+      "caption_shape_total": 78.537,
+      "total_reconciliation_delta": 2.48,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 20,
+      "prior_season_rank": 16,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 78.537,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 17,
+      "corps_key": "001j000000iwxaeaa1",
+      "corps": "The Academy",
+      "city": "Tempe, AZ",
+      "division": "World Class",
+      "performance_order": 39,
+      "time": null,
+      "total": 80.321,
+      "GE": 32.053,
+      "Visual": 23.654,
+      "Music": 24.614,
+      "GE1": 15.771,
+      "GE2": 16.282,
+      "VP": 15.91,
+      "VA": 15.412,
+      "CG": 15.986,
+      "MB": 15.956,
+      "MA": 16.719,
+      "MP": 16.553,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.126,
+          "p50": 15.771,
+          "p90": 17.252
+        },
+        "GE2": {
+          "p10": 14.879,
+          "p50": 16.282,
+          "p90": 17.997
+        },
+        "VP": {
+          "p10": 13.914,
+          "p50": 15.91,
+          "p90": 17.69
+        },
+        "VA": {
+          "p10": 13.618,
+          "p50": 15.412,
+          "p90": 16.618
+        },
+        "CG": {
+          "p10": 14.014,
+          "p50": 15.986,
+          "p90": 17.945
+        },
+        "MB": {
+          "p10": 13.973,
+          "p50": 15.956,
+          "p90": 17.946
+        },
+        "MA": {
+          "p10": 15.391,
+          "p50": 16.719,
+          "p90": 18.546
+        },
+        "MP": {
+          "p10": 14.863,
+          "p50": 16.553,
+          "p90": 18.587
+        }
+      },
+      "raw_model_total": 89.481,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 82.55,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 80.323,
+      "caption_shape_total": 77.601,
+      "total_reconciliation_delta": 2.72,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 21,
+      "prior_season_rank": 17,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 77.601,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 18,
+      "corps_key": "001j000000iwwslaal",
+      "corps": "7th Regiment",
+      "city": "New London, CT",
+      "division": "Open Class",
+      "performance_order": 10,
+      "time": null,
+      "total": 79.481,
+      "GE": 33.013,
+      "Visual": 21.681,
+      "Music": 24.787,
+      "GE1": 16.233,
+      "GE2": 16.78,
+      "VP": 16.503,
+      "VA": 10.355,
+      "CG": 16.503,
+      "MB": 16.271,
+      "MA": 16.489,
+      "MP": 16.813,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.547,
+          "p50": 16.233,
+          "p90": 17.987
+        },
+        "GE2": {
+          "p10": 15.194,
+          "p50": 16.78,
+          "p90": 18.499
+        },
+        "VP": {
+          "p10": 14.449,
+          "p50": 16.503,
+          "p90": 18.773
+        },
+        "VA": {
+          "p10": 8.535,
+          "p50": 10.355,
+          "p90": 11.723
+        },
+        "CG": {
+          "p10": 14.352,
+          "p50": 16.503,
+          "p90": 18.536
+        },
+        "MB": {
+          "p10": 13.897,
+          "p50": 16.271,
+          "p90": 18.256
+        },
+        "MA": {
+          "p10": 14.834,
+          "p50": 16.489,
+          "p90": 18.232
+        },
+        "MP": {
+          "p10": 14.775,
+          "p50": 16.813,
+          "p90": 18.983
+        }
+      },
+      "raw_model_total": 71.189,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 72.375,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 79.481,
+      "caption_shape_total": 88.165,
+      "total_reconciliation_delta": -8.685,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 7,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 88.166,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 19,
+      "corps_key": "001j000000iwx9aaat",
+      "corps": "Crossmen",
+      "city": "San Antonio, TX",
+      "division": "World Class",
+      "performance_order": 21,
+      "time": null,
+      "total": 79.276,
+      "GE": 31.497,
+      "Visual": 23.541,
+      "Music": 24.238,
+      "GE1": 15.673,
+      "GE2": 15.824,
+      "VP": 15.747,
+      "VA": 15.424,
+      "CG": 15.91,
+      "MB": 15.751,
+      "MA": 16.406,
+      "MP": 16.319,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.005,
+          "p50": 15.673,
+          "p90": 17.091
+        },
+        "GE2": {
+          "p10": 14.432,
+          "p50": 15.824,
+          "p90": 17.513
+        },
+        "VP": {
+          "p10": 13.745,
+          "p50": 15.747,
+          "p90": 17.482
+        },
+        "VA": {
+          "p10": 13.603,
+          "p50": 15.424,
+          "p90": 16.575
+        },
+        "CG": {
+          "p10": 13.907,
+          "p50": 15.91,
+          "p90": 17.881
+        },
+        "MB": {
+          "p10": 13.708,
+          "p50": 15.751,
+          "p90": 17.674
+        },
+        "MA": {
+          "p10": 15.062,
+          "p50": 16.406,
+          "p90": 18.203
+        },
+        "MP": {
+          "p10": 14.667,
+          "p50": 16.319,
+          "p90": 18.373
+        }
+      },
+      "raw_model_total": 88.471,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 82.5,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 79.276,
+      "caption_shape_total": 75.335,
+      "total_reconciliation_delta": 3.94,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 23,
+      "prior_season_rank": 19,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 75.335,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 20,
+      "corps_key": "001j000000iwxacaa1",
+      "corps": "Spartans",
+      "city": "Nashua, NH",
+      "division": "World Class",
+      "performance_order": 37,
+      "time": null,
+      "total": 79.268,
+      "GE": 31.715,
+      "Visual": 23.637,
+      "Music": 23.916,
+      "GE1": 15.764,
+      "GE2": 15.951,
+      "VP": 15.953,
+      "VA": 15.6,
+      "CG": 15.722,
+      "MB": 15.833,
+      "MA": 15.98,
+      "MP": 16.019,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.988,
+          "p50": 15.764,
+          "p90": 16.51
+        },
+        "GE2": {
+          "p10": 15.056,
+          "p50": 15.951,
+          "p90": 16.702
+        },
+        "VP": {
+          "p10": 15.039,
+          "p50": 15.953,
+          "p90": 16.965
+        },
+        "VA": {
+          "p10": 14.728,
+          "p50": 15.6,
+          "p90": 16.2
+        },
+        "CG": {
+          "p10": 14.685,
+          "p50": 15.722,
+          "p90": 16.62
+        },
+        "MB": {
+          "p10": 14.925,
+          "p50": 15.833,
+          "p90": 17.024
+        },
+        "MA": {
+          "p10": 15.024,
+          "p50": 15.98,
+          "p90": 16.602
+        },
+        "MP": {
+          "p10": 15.313,
+          "p50": 16.019,
+          "p90": 17.072
+        }
+      },
+      "raw_model_total": 21.406,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81.725,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 79.27,
+      "caption_shape_total": 76.268,
+      "total_reconciliation_delta": 3,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 22,
+      "prior_season_rank": 18,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 76.268,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 21,
+      "corps_key": "001j000000iwxaaaa1",
+      "corps": "Raiders",
+      "city": "Princeton, NJ",
+      "division": "Open Class",
+      "performance_order": 33,
+      "time": null,
+      "total": 79.232,
+      "GE": 32.105,
+      "Visual": 22.797,
+      "Music": 24.33,
+      "GE1": 15.743,
+      "GE2": 16.362,
+      "VP": 16.144,
+      "VA": 13.71,
+      "CG": 15.739,
+      "MB": 16.21,
+      "MA": 16.063,
+      "MP": 16.387,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.04,
+          "p50": 15.743,
+          "p90": 17.437
+        },
+        "GE2": {
+          "p10": 14.767,
+          "p50": 16.362,
+          "p90": 18.062
+        },
+        "VP": {
+          "p10": 13.988,
+          "p50": 16.144,
+          "p90": 18.374
+        },
+        "VA": {
+          "p10": 11.724,
+          "p50": 13.71,
+          "p90": 15.041
+        },
+        "CG": {
+          "p10": 13.63,
+          "p50": 15.739,
+          "p90": 17.836
+        },
+        "MB": {
+          "p10": 13.757,
+          "p50": 16.21,
+          "p90": 18.145
+        },
+        "MA": {
+          "p10": 14.414,
+          "p50": 16.063,
+          "p90": 17.816
+        },
+        "MP": {
+          "p10": 14.441,
+          "p50": 16.387,
+          "p90": 18.637
+        }
+      },
+      "raw_model_total": 71.902,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 72.2,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 79.234,
+      "caption_shape_total": 87.832,
+      "total_reconciliation_delta": -8.6,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 9,
+      "prior_season_rank": 7,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 87.831,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 22,
+      "corps_key": "001j000000iwx97aad",
+      "corps": "Colt Cadets",
+      "city": "Dubuque, IA",
+      "division": "Open Class",
+      "performance_order": 18,
+      "time": null,
+      "total": 77.589,
+      "GE": 31.449,
+      "Visual": 22.501,
+      "Music": 23.639,
+      "GE1": 15.384,
+      "GE2": 16.065,
+      "VP": 15.753,
+      "VA": 13.564,
+      "CG": 15.685,
+      "MB": 15.732,
+      "MA": 15.794,
+      "MP": 15.753,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.691,
+          "p50": 15.384,
+          "p90": 17.099
+        },
+        "GE2": {
+          "p10": 14.485,
+          "p50": 16.065,
+          "p90": 17.725
+        },
+        "VP": {
+          "p10": 13.752,
+          "p50": 15.753,
+          "p90": 18.047
+        },
+        "VA": {
+          "p10": 11.726,
+          "p50": 13.564,
+          "p90": 14.894
+        },
+        "CG": {
+          "p10": 13.4,
+          "p50": 15.685,
+          "p90": 17.546
+        },
+        "MB": {
+          "p10": 13.298,
+          "p50": 15.732,
+          "p90": 17.617
+        },
+        "MA": {
+          "p10": 14.183,
+          "p50": 15.794,
+          "p90": 17.571
+        },
+        "MP": {
+          "p10": 13.703,
+          "p50": 15.753,
+          "p90": 17.794
+        }
+      },
+      "raw_model_total": 66.945,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 70.55,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 77.59,
+      "caption_shape_total": 86.195,
+      "total_reconciliation_delta": -8.605,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 11,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 86.195,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 23,
+      "corps_key": "001j000000iwx9paad",
+      "corps": "Gold",
+      "city": "San Diego, CA",
+      "division": "Open Class",
+      "performance_order": 24,
+      "time": null,
+      "total": 77.419,
+      "GE": 30.759,
+      "Visual": 23.187,
+      "Music": 23.473,
+      "GE1": 15.283,
+      "GE2": 15.476,
+      "VP": 15.393,
+      "VA": 15.651,
+      "CG": 15.33,
+      "MB": 15.593,
+      "MA": 15.841,
+      "MP": 15.512,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.571,
+          "p50": 15.283,
+          "p90": 16.892
+        },
+        "GE2": {
+          "p10": 13.776,
+          "p50": 15.476,
+          "p90": 17.096
+        },
+        "VP": {
+          "p10": 13.494,
+          "p50": 15.393,
+          "p90": 17.552
+        },
+        "VA": {
+          "p10": 13.833,
+          "p50": 15.651,
+          "p90": 17.054
+        },
+        "CG": {
+          "p10": 13.165,
+          "p50": 15.33,
+          "p90": 17.314
+        },
+        "MB": {
+          "p10": 13.302,
+          "p50": 15.593,
+          "p90": 17.492
+        },
+        "MA": {
+          "p10": 14.268,
+          "p50": 15.841,
+          "p90": 17.677
+        },
+        "MP": {
+          "p10": 13.752,
+          "p50": 15.512,
+          "p90": 17.621
+        }
+      },
+      "raw_model_total": 72.615,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 79.975,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 77.419,
+      "caption_shape_total": 74.294,
+      "total_reconciliation_delta": 3.125,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 24,
+      "prior_season_rank": 20,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 74.294,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 24,
+      "corps_key": "0015b00002byuh0aap",
+      "corps": "Memphis Blues",
+      "city": "Memphis, TN",
+      "division": "Open Class",
+      "performance_order": 28,
+      "time": null,
+      "total": 76.621,
+      "GE": 30.883,
+      "Visual": 22.367,
+      "Music": 23.371,
+      "GE1": 15.362,
+      "GE2": 15.521,
+      "VP": 15.535,
+      "VA": 13.85,
+      "CG": 15.35,
+      "MB": 15.61,
+      "MA": 15.528,
+      "MP": 15.604,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.587,
+          "p50": 15.362,
+          "p90": 16.12
+        },
+        "GE2": {
+          "p10": 14.627,
+          "p50": 15.521,
+          "p90": 16.264
+        },
+        "VP": {
+          "p10": 14.625,
+          "p50": 15.535,
+          "p90": 16.547
+        },
+        "VA": {
+          "p10": 13.005,
+          "p50": 13.85,
+          "p90": 14.461
+        },
+        "CG": {
+          "p10": 14.283,
+          "p50": 15.35,
+          "p90": 16.205
+        },
+        "MB": {
+          "p10": 14.711,
+          "p50": 15.61,
+          "p90": 16.786
+        },
+        "MA": {
+          "p10": 14.594,
+          "p50": 15.528,
+          "p90": 16.153
+        },
+        "MP": {
+          "p10": 14.883,
+          "p50": 15.604,
+          "p90": 16.669
+        }
+      },
+      "raw_model_total": 29.407,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 65.95,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-dci-little-rock",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 76.624,
+      "caption_shape_total": 82.371,
+      "total_reconciliation_delta": -5.75,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "baseline_rank_source": "historical_mean_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 82.371,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 25,
+      "corps_key": "001j0000012y6bqaac",
+      "corps": "The Battalion",
+      "city": "Salt Lake City, UT",
+      "division": "Open Class",
+      "performance_order": 40,
+      "time": null,
+      "total": 76.209,
+      "GE": 30.071,
+      "Visual": 23.095,
+      "Music": 23.043,
+      "GE1": 14.802,
+      "GE2": 15.269,
+      "VP": 15.327,
+      "VA": 15.539,
+      "CG": 15.323,
+      "MB": 15.408,
+      "MA": 15.635,
+      "MP": 15.042,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.064,
+          "p50": 14.802,
+          "p90": 16.406
+        },
+        "GE2": {
+          "p10": 13.652,
+          "p50": 15.269,
+          "p90": 16.905
+        },
+        "VP": {
+          "p10": 13.374,
+          "p50": 15.327,
+          "p90": 17.508
+        },
+        "VA": {
+          "p10": 13.601,
+          "p50": 15.539,
+          "p90": 16.797
+        },
+        "CG": {
+          "p10": 13.118,
+          "p50": 15.323,
+          "p90": 17.356
+        },
+        "MB": {
+          "p10": 13.079,
+          "p50": 15.408,
+          "p90": 17.366
+        },
+        "MA": {
+          "p10": 14.049,
+          "p50": 15.635,
+          "p90": 17.477
+        },
+        "MP": {
+          "p10": 13.294,
+          "p50": 15.042,
+          "p90": 17.207
+        }
+      },
+      "raw_model_total": 66.811,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 78.5,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 76.209,
+      "caption_shape_total": 73.408,
+      "total_reconciliation_delta": 2.8,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 25,
+      "prior_season_rank": 21,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.409,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 26,
+      "corps_key": "001j000000iwx9oaad",
+      "corps": "Genesis",
+      "city": "Austin, TX",
+      "division": "World Class",
+      "performance_order": 23,
+      "time": null,
+      "total": 75.98,
+      "GE": 30.056,
+      "Visual": 22.819,
+      "Music": 23.105,
+      "GE1": 14.697,
+      "GE2": 15.359,
+      "VP": 15.417,
+      "VA": 15.123,
+      "CG": 15.098,
+      "MB": 15.254,
+      "MA": 15.501,
+      "MP": 15.456,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.141,
+          "p50": 14.697,
+          "p90": 16.199
+        },
+        "GE2": {
+          "p10": 13.949,
+          "p50": 15.359,
+          "p90": 16.976
+        },
+        "VP": {
+          "p10": 13.485,
+          "p50": 15.417,
+          "p90": 17.241
+        },
+        "VA": {
+          "p10": 13.347,
+          "p50": 15.123,
+          "p90": 16.298
+        },
+        "CG": {
+          "p10": 13.147,
+          "p50": 15.098,
+          "p90": 16.971
+        },
+        "MB": {
+          "p10": 13.217,
+          "p50": 15.254,
+          "p90": 17.125
+        },
+        "MA": {
+          "p10": 14.135,
+          "p50": 15.501,
+          "p90": 17.231
+        },
+        "MP": {
+          "p10": 13.78,
+          "p50": 15.456,
+          "p90": 17.447
+        }
+      },
+      "raw_model_total": 78.883,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 78.075,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 75.983,
+      "caption_shape_total": 73.425,
+      "total_reconciliation_delta": 2.555,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 26,
+      "prior_season_rank": 22,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.425,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 27,
+      "corps_key": "001j000000iwx93aad",
+      "corps": "Seattle Cascades",
+      "city": "Seattle, WA",
+      "division": "World Class",
+      "performance_order": 36,
+      "time": null,
+      "total": 75.751,
+      "GE": 30.261,
+      "Visual": 22.581,
+      "Music": 22.909,
+      "GE1": 14.867,
+      "GE2": 15.394,
+      "VP": 14.971,
+      "VA": 15.314,
+      "CG": 14.878,
+      "MB": 14.886,
+      "MA": 15.606,
+      "MP": 15.326,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.33,
+          "p50": 14.867,
+          "p90": 16.437
+        },
+        "GE2": {
+          "p10": 14.008,
+          "p50": 15.394,
+          "p90": 17.12
+        },
+        "VP": {
+          "p10": 13.058,
+          "p50": 14.971,
+          "p90": 16.868
+        },
+        "VA": {
+          "p10": 13.535,
+          "p50": 15.314,
+          "p90": 16.56
+        },
+        "CG": {
+          "p10": 13.014,
+          "p50": 14.878,
+          "p90": 16.857
+        },
+        "MB": {
+          "p10": 12.779,
+          "p50": 14.886,
+          "p90": 16.785
+        },
+        "MA": {
+          "p10": 14.249,
+          "p50": 15.606,
+          "p90": 17.404
+        },
+        "MP": {
+          "p10": 13.624,
+          "p50": 15.326,
+          "p90": 17.323
+        }
+      },
+      "raw_model_total": 77.027,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 77.5,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 75.749,
+      "caption_shape_total": 73.612,
+      "total_reconciliation_delta": 2.14,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 27,
+      "prior_season_rank": 23,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.61,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 28,
+      "corps_key": "001j000000iwxa1aal",
+      "corps": "Les Stentors",
+      "city": "Sherbrooke, QC",
+      "division": "Open Class",
+      "performance_order": 26,
+      "time": null,
+      "total": 75.501,
+      "GE": 30.954,
+      "Visual": 22.106,
+      "Music": 22.441,
+      "GE1": 15.521,
+      "GE2": 15.433,
+      "VP": 15.151,
+      "VA": 13.486,
+      "CG": 15.575,
+      "MB": 14.731,
+      "MA": 15.109,
+      "MP": 15.041,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.96,
+          "p50": 15.521,
+          "p90": 17.328
+        },
+        "GE2": {
+          "p10": 13.837,
+          "p50": 15.433,
+          "p90": 17.094
+        },
+        "VP": {
+          "p10": 13.21,
+          "p50": 15.151,
+          "p90": 17.425
+        },
+        "VA": {
+          "p10": 11.804,
+          "p50": 13.486,
+          "p90": 14.954
+        },
+        "CG": {
+          "p10": 13.43,
+          "p50": 15.575,
+          "p90": 17.517
+        },
+        "MB": {
+          "p10": 12.62,
+          "p50": 14.731,
+          "p90": 16.834
+        },
+        "MA": {
+          "p10": 13.453,
+          "p50": 15.109,
+          "p90": 16.819
+        },
+        "MP": {
+          "p10": 13.035,
+          "p50": 15.041,
+          "p90": 17.036
+        }
+      },
+      "raw_model_total": 63.416,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 67.375,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 75.5,
+      "caption_shape_total": 85.43,
+      "total_reconciliation_delta": -9.93,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 12,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.43,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 29,
+      "corps_key": "001j000000iwx9taad",
+      "corps": "Heat Wave",
+      "city": "Tampa Bay, FL",
+      "division": "Open Class",
+      "performance_order": 25,
+      "time": null,
+      "total": 74.82,
+      "GE": 30.548,
+      "Visual": 21.752,
+      "Music": 22.52,
+      "GE1": 14.721,
+      "GE2": 15.827,
+      "VP": 14.586,
+      "VA": 14.485,
+      "CG": 14.433,
+      "MB": 14.815,
+      "MA": 15.315,
+      "MP": 14.909,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.934,
+          "p50": 14.721,
+          "p90": 16.415
+        },
+        "GE2": {
+          "p10": 14.218,
+          "p50": 15.827,
+          "p90": 17.589
+        },
+        "VP": {
+          "p10": 12.704,
+          "p50": 14.586,
+          "p90": 17.205
+        },
+        "VA": {
+          "p10": 12.605,
+          "p50": 14.485,
+          "p90": 15.891
+        },
+        "CG": {
+          "p10": 12.003,
+          "p50": 14.433,
+          "p90": 16.307
+        },
+        "MB": {
+          "p10": 12.257,
+          "p50": 14.815,
+          "p90": 16.661
+        },
+        "MA": {
+          "p10": 13.597,
+          "p50": 15.315,
+          "p90": 17.01
+        },
+        "MP": {
+          "p10": 12.693,
+          "p50": 14.909,
+          "p90": 16.887
+        }
+      },
+      "raw_model_total": 42.848,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 62.325,
+      "prior_season_comparable_percent_through": 66.66666666666666,
+      "prior_season_comparable_competition": "2025-dci-southeastern-championship",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 74.818,
+      "caption_shape_total": 81.544,
+      "total_reconciliation_delta": -6.725,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 81.545,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 30,
+      "corps_key": "001j000000iwx99aad",
+      "corps": "Columbians",
+      "city": "Pasco, WA",
+      "division": "Open Class",
+      "performance_order": 20,
+      "time": null,
+      "total": 74.252,
+      "GE": 29.813,
+      "Visual": 22.181,
+      "Music": 22.258,
+      "GE1": 14.689,
+      "GE2": 15.124,
+      "VP": 14.448,
+      "VA": 15.409,
+      "CG": 14.506,
+      "MB": 14.747,
+      "MA": 15.246,
+      "MP": 14.523,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.002,
+          "p50": 14.689,
+          "p90": 16.366
+        },
+        "GE2": {
+          "p10": 13.492,
+          "p50": 15.124,
+          "p90": 16.752
+        },
+        "VP": {
+          "p10": 12.443,
+          "p50": 14.448,
+          "p90": 16.516
+        },
+        "VA": {
+          "p10": 13.559,
+          "p50": 15.409,
+          "p90": 16.745
+        },
+        "CG": {
+          "p10": 12.346,
+          "p50": 14.506,
+          "p90": 16.514
+        },
+        "MB": {
+          "p10": 12.623,
+          "p50": 14.747,
+          "p90": 16.853
+        },
+        "MA": {
+          "p10": 13.592,
+          "p50": 15.246,
+          "p90": 16.953
+        },
+        "MP": {
+          "p10": 12.668,
+          "p50": 14.523,
+          "p90": 16.524
+        }
+      },
+      "raw_model_total": 63.592,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 74.75,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 74.252,
+      "caption_shape_total": 73.643,
+      "total_reconciliation_delta": 0.61,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 28,
+      "prior_season_rank": 25,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.642,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 31,
+      "corps_key": "001j000000qzs1qaaf",
+      "corps": "River City Rhythm",
+      "city": "Anoka, MN",
+      "division": "Open Class",
+      "performance_order": 34,
+      "time": null,
+      "total": 73.498,
+      "GE": 28.965,
+      "Visual": 22.032,
+      "Music": 22.501,
+      "GE1": 14.149,
+      "GE2": 14.816,
+      "VP": 14.812,
+      "VA": 15.089,
+      "CG": 14.162,
+      "MB": 14.839,
+      "MA": 14.874,
+      "MP": 15.288,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.403,
+          "p50": 14.149,
+          "p90": 15.822
+        },
+        "GE2": {
+          "p10": 13.123,
+          "p50": 14.816,
+          "p90": 16.413
+        },
+        "VP": {
+          "p10": 12.748,
+          "p50": 14.812,
+          "p90": 16.912
+        },
+        "VA": {
+          "p10": 13.239,
+          "p50": 15.089,
+          "p90": 16.441
+        },
+        "CG": {
+          "p10": 11.914,
+          "p50": 14.162,
+          "p90": 16.11
+        },
+        "MB": {
+          "p10": 12.493,
+          "p50": 14.839,
+          "p90": 16.78
+        },
+        "MA": {
+          "p10": 13.204,
+          "p50": 14.874,
+          "p90": 16.627
+        },
+        "MP": {
+          "p10": 13.318,
+          "p50": 15.288,
+          "p90": 17.31
+        }
+      },
+      "raw_model_total": 62.736,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 73.7,
+      "prior_season_comparable_percent_through": 95.23809523809523,
+      "prior_season_comparable_competition": "2025-dci-world-championship-prelims",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 73.499,
+      "caption_shape_total": 73.252,
+      "total_reconciliation_delta": 0.245,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 29,
+      "prior_season_rank": 26,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.252,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "2 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

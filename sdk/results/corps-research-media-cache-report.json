@@ -1,0 +1,22 @@
+{
+  "dbUrl": "file:C:\\Users\\Patrick\\corps-place\\sdk\\dci-relational.db",
+  "mediaDbUrl": "file:C:\\Users\\Patrick\\corps-place\\sdk\\media-cache.db",
+  "considered": 54,
+  "cached": 52,
+  "failed": [
+    {
+      "ok": false,
+      "ownerId": "conquest-drum-bugle-corps",
+      "role": "cover",
+      "url": "https://lh3.googleusercontent.com/sitesv/AA5AbUAhA0x0ENwMzzzwWoBMn93eVRCFAQXSviYoQV5e7IJzqd7UmU2Bbgqt9ZzT3s9vLWCi01O-Q2Y5hDz0YmNJCwPLvHZ57GOLEuDHmEpCMb2D1ddE1UMjNDGO98WBW7F82h9z-c1smPP9BbX9W9nTHr93E03OacDomEMXi64rF-UyZohdyqXsPBM4JGA=w16383",
+      "error": "HTTP 403 for https://lh3.googleusercontent.com/sitesv/AA5AbUAhA0x0ENwMzzzwWoBMn93eVRCFAQXSviYoQV5e7IJzqd7UmU2Bbgqt9ZzT3s9vLWCi01O-Q2Y5hDz0YmNJCwPLvHZ57GOLEuDHmEpCMb2D1ddE1UMjNDGO98WBW7F82h9z-c1smPP9BbX9W9nTHr93E03OacDomEMXi64rF-UyZohdyqXsPBM4JGA=w16383"
+    },
+    {
+      "ok": false,
+      "ownerId": "gita-surosowan-banten",
+      "role": "cover",
+      "url": "https://bantenprov.go.id/storage/banten/image_berita-9756d099-c1d8-497c-a902-456dfaf23d93.jpg",
+      "error": "HTTP 404 for https://bantenprov.go.id/storage/banten/image_berita-9756d099-c1d8-497c-a902-456dfaf23d93.jpg"
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+2026-02-09 07:19:37.433646: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Loading V9 sequence data...
+Saved normalization stats to ./results/v9-subcaption-target-norm.json
+V10 Splits -> Train: 7651, Val: 402, Test: 56 
+Using maxRows = 512 for quick training.
+Baselines(monitoring forecast MAE): zero = 14.3894, mean = 2.5528, ema = 3.2358, quad = 2.1247
+Orthogonal initializer is being called on a matrix with more than 2000 (65536) elements: Slowness may result.
+Orthogonal initializer is being called on a matrix with more than 2000 (65536) elements: Slowness may result.
+Orthogonal initializer is being called on a matrix with more than 2000 (16384) elements: Slowness may result.
+Orthogonal initializer is being called on a matrix with more than 2000 (16384) elements: Slowness may result.
+___________________________________________________________________________________________________________________
+Layer (type)               Input Shape                 Output shape             Param #     Receives inputs        
+===================================================================================================================
+sequence (InputLayer)      [[null,15,101]]             [null,15,101]            0                                  
+___________________________________________________________________________________________________________________
+bidirectional_Bidirectiona [[null,15,101]]             [null,15,256]            235520      sequence[0][0]         
+___________________________________________________________________________________________________________________
+layer_normalization_LayerN [[null,15,256]]             [null,15,256]            512         bidirectional_Bidirecti
+___________________________________________________________________________________________________________________
+bidirectional_Bidirectiona [[null,15,256]]             [null,15,128]            164352      layer_normalization_Lay
+___________________________________________________________________________________________________________________
+layer_normalization_LayerN [[null,15,128]]             [null,15,128]            256         bidirectional_Bidirecti
+___________________________________________________________________________________________________________________
+dense_Dense1 (Dense)       [[null,15,128]]             [null,15,1]              129         layer_normalization_Lay
+___________________________________________________________________________________________________________________
+reshape_Reshape1 (Reshape) [[null,15,1]]               [null,15]                0           dense_Dense1[0][0]     
+___________________________________________________________________________________________________________________
+mask (InputLayer)          [[null,15]]                 [null,15]                0                                  
+___________________________________________________________________________________________________________________
+masked_softmax_MaskedSoftm [[null,15],[null,15]]       [null,15]                0           reshape_Reshape1[0][0] 
+                                                                                            mask[0][0]             
+___________________________________________________________________________________________________________________
+judge_ids (InputLayer)     [[null,8]]                  [null,8]                 0                                  
+___________________________________________________________________________________________________________________
+agnostic_show_id (InputLay [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+reshape_Reshape2 (Reshape) [[null,15]]                 [null,15,1]              0           masked_softmax_MaskedSo
+___________________________________________________________________________________________________________________
+judge_embedding (Embedding [[null,8]]                  [null,8,24]              8544        judge_ids[0][0]        
+___________________________________________________________________________________________________________________
+agnostic_show_embedding (E [[null,1]]                  [null,1,12]              12          agnostic_show_id[0][0] 
+___________________________________________________________________________________________________________________
+attention_pool (AttentionP [[null,15,1],[null,15,128]] [null,128]               0           reshape_Reshape2[0][0] 
+                                                                                            layer_normalization_Lay
+___________________________________________________________________________________________________________________
+static (InputLayer)        [[null,177]]                [null,177]               0                                  
+___________________________________________________________________________________________________________________
+flatten_Flatten1 (Flatten) [[null,8,24]]               [null,192]               0           judge_embedding[0][0]  
+___________________________________________________________________________________________________________________
+baseline_recap (InputLayer [[null,8]]                  [null,8]                 0                                  
+___________________________________________________________________________________________________________________
+last_step (LastStepLayer)  [[null,15,101]]             [null,101]               0           sequence[0][0]         
+___________________________________________________________________________________________________________________
+flatten_Flatten3 (Flatten) [[null,1,12]]               [null,12]                0           agnostic_show_embedding
+___________________________________________________________________________________________________________________
+concatenate_Concatenate1 ( [[null,128],[null,177],[nul [null,618]               0           attention_pool[0][0]   
+                                                                                            static[0][0]           
+                                                                                            flatten_Flatten1[0][0] 
+                                                                                            baseline_recap[0][0]   
+                                                                                            last_step[0][0]        
+                                                                                            flatten_Flatten3[0][0] 
+___________________________________________________________________________________________________________________
+dense_Dense2 (Dense)       [[null,618]]                [null,512]               316928      concatenate_Concatenate
+___________________________________________________________________________________________________________________
+dropout_Dropout1 (Dropout) [[null,512]]                [null,512]               0           dense_Dense2[0][0]     
+___________________________________________________________________________________________________________________
+dense_Dense3 (Dense)       [[null,512]]                [null,256]               131328      dropout_Dropout1[0][0] 
+___________________________________________________________________________________________________________________
+dropout_Dropout2 (Dropout) [[null,256]]                [null,256]               0           dense_Dense3[0][0]     
+___________________________________________________________________________________________________________________
+strength (Dense)           [[null,128]]                [null,24]                3096        attention_pool[0][0]   
+___________________________________________________________________________________________________________________
+corps_id (InputLayer)      [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+concatenate_Concatenate2 ( [[null,256],[null,177],[nul [null,457]               0           dropout_Dropout2[0][0] 
+                                                                                            static[0][0]           
+                                                                                            strength[0][0]         
+___________________________________________________________________________________________________________________
+corps_embedding (Embedding [[null,1]]                  [null,1,20]              9080        corps_id[0][0]         
+___________________________________________________________________________________________________________________
+accuracy_trunk (Dense)     [[null,457]]                [null,128]               58624       concatenate_Concatenate
+___________________________________________________________________________________________________________________
+flatten_Flatten2 (Flatten) [[null,1,20]]               [null,20]                0           corps_embedding[0][0]  
+___________________________________________________________________________________________________________________
+dropout_Dropout3 (Dropout) [[null,128]]                [null,128]               0           accuracy_trunk[0][0]   
+___________________________________________________________________________________________________________________
+judge_bias_raw (Dense)     [[null,192]]                [null,8]                 1544        flatten_Flatten1[0][0] 
+___________________________________________________________________________________________________________________
+judge_bias_scale (InputLay [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+corps_corr_raw (Dense)     [[null,20]]                 [null,8]                 168         flatten_Flatten2[0][0] 
+___________________________________________________________________________________________________________________
+corps_scale (InputLayer)   [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+history_len (InputLayer)   [[null,1]]                  [null,1]                 0                                  
+___________________________________________________________________________________________________________________
+delta_q50_base (Dense)     [[null,128]]                [null,8]                 1032        dropout_Dropout3[0][0] 
+___________________________________________________________________________________________________________________
+judge_bias_gated (LambdaSc [[null,8],[null,1]]         [null,8]                 0           judge_bias_raw[0][0]   
+                                                                                            judge_bias_scale[0][0] 
+___________________________________________________________________________________________________________________
+corps_corr_gated (LambdaSc [[null,8],[null,1]]         [null,8]                 0           corps_corr_raw[0][0]   
+                                                                                            corps_scale[0][0]      
+___________________________________________________________________________________________________________________
+width_concat (Concatenate) [[null,457],[null,192],[nul [null,650]               0           concatenate_Concatenate
+                                                                                            flatten_Flatten1[0][0] 
+                                                                                            history_len[0][0]      
+___________________________________________________________________________________________________________________
+delta_q50 (Add)            [[null,8],[null,8],[null,8] [null,8]                 0           delta_q50_base[0][0]   
+                                                                                            judge_bias_gated[0][0] 
+                                                                                            corps_corr_gated[0][0] 
+___________________________________________________________________________________________________________________
+q10_width_raw (Dense)      [[null,650]]                [null,8]                 5208        width_concat[0][0]     
+___________________________________________________________________________________________________________________
+q10_width (Activation)     [[null,8]]                  [null,8]                 0           q10_width_raw[0][0]    
+___________________________________________________________________________________________________________________
+q90_width_raw (Dense)      [[null,650]]                [null,8]                 5208        width_concat[0][0]     
+___________________________________________________________________________________________________________________
+recap_head (RecapLayer)    [[null,8],[null,8]]         [null,8]                 0           delta_q50[0][0]        
+                                                                                            baseline_recap[0][0]   
+___________________________________________________________________________________________________________________
+q10_width_neg (NegationLay [[null,8]]                  [null,8]                 0           q10_width[0][0]        
+___________________________________________________________________________________________________________________
+q90_width (Activation)     [[null,8]]                  [null,8]                 0           q90_width_raw[0][0]    
+___________________________________________________________________________________________________________________
+category_head (CategoryLay [[null,8]]                  [null,3]                 0           recap_head[0][0]       
+___________________________________________________________________________________________________________________
+q10_delta (Add)            [[null,8],[null,8]]         [null,8]                 0           delta_q50[0][0]        
+                                                                                            q10_width_neg[0][0]    
+___________________________________________________________________________________________________________________
+q90_delta (Add)            [[null,8],[null,8]]         [null,8]                 0           delta_q50[0][0]        
+                                                                                            q90_width[0][0]        
+___________________________________________________________________________________________________________________
+total_head (TotalLayer)    [[null,3]]                  [null,1]                 0           category_head[0][0]    
+___________________________________________________________________________________________________________________
+output (Concatenate)       [[null,8],[null,8],[null,8] [null,36]                0           q10_delta[0][0]        
+                                                                                            delta_q50[0][0]        
+                                                                                            q90_delta[0][0]        
+                                                                                            recap_head[0][0]       
+                                                                                            category_head[0][0]    
+                                                                                            total_head[0][0]       
+===================================================================================================================
+Total params: 941541
+Trainable params: 941541
+Non-trainable params: 0
+___________________________________________________________________________________________________________________
+
+--- DERIVATION EXACTNESS CHECK ---
+MaskedSoftmax shapes: [ 1, 15 ] [ 1, 15 ] [ 1, 15 ] [ 1, 15 ]
+Recap Points: [
+  '15.02', '15.10',
+  '14.51', '14.93',
+  '14.63', '15.08',
+  '14.89', '14.48'
+]
+GE: Derived = 30.12, Expected = 30.12 
+Visual: Derived = 22.04, Expected = 22.04 
+Music: Derived = 22.22, Expected = 22.22 
+Total: Derived = 74.38, Expected = 74.38 
+DERIVATION CHECK SUCCESS
+
+--- SCALE SANITY TEST ---
+Sample Row Total: 74.60 (expecting DCI scale, not sum - of - 8)
+Sum - of - 8: 119.05 
+SCALE SANITY SUCCESS: target total is on DCI scale.
+
+
+=== V9-IMPROVED: Enhanced Model for 0.2 MAE Target ===
+Hyperparameters: lstm1=128, lstm2=64, dropout=0.2, lr=0.00075, batch=32, width_floor_pts=0.5, width_floor_schedule=0.1->1.5, baseline_dropout=0.1, baseline_noise_std=0.25
+Model Capacity: 256→128 BiLSTM, Dense 512→256, AccuracyTrunk 128, Judge Emb 24, Corps Emb 20, Show Emb 12
+Cached 402 validation samples(seqLen = 15, identityDropout = 0.0)
+
+Epoch 0: Weights {"totalWeight":0.05,"recapWeight":1,"deltaWeight":0.2,"categoryWeight":0.05,"quantileWeight":0.02,"consistencyWeight":0,"identityDropoutRate":0.95}, Scales {"judgeBias":0,"corps":0}, SeqLen 5, ID_Drop 0.969, WFW 0.100 
+
+History Bucket Diagnostics (Avg Abs Error per sample, normalized units):
+Hist | Count | MAE_Pred | MAE_Base | PredDevFromBase
+-----|-------|----------|----------|----------------
+0    | 71    | 3.2672   | 2.2794   | 1.7889 
+1    | 31    | 2.4065   | 1.2121   | 1.7750 
+2    | 24    | 2.0490   | 1.0693   | 1.4348 
+3-5  | 68    | 2.1751   | 0.9838   | 1.7483 
+6+   | 208   | 1.1913   | 0.4743   | 1.0473 
+
+Epoch 0: loss = 1.420018 delta_mae_pts = 1.8693 recap_mae_pts = 1.8693 cat_mae_pts = 2.2532 total_mae_pts = 5.6469 vs_inertia_pts = -0.8975 vs_quad_pts = 0.2554 mon_cov = 0.165 mon_score = 7.5161 time = 5.36 s
+
+-- - CAPTION STATS(Epoch 0)-- - 
+GE1: delta_pts = 1.1189, recap_pts = 1.1189, cov = 0.241, width = 0.8272 
+GE2: delta_pts = 1.2140, recap_pts = 1.2140, cov = 0.251, width = 1.1070 
+VP: delta_pts = 2.3819, recap_pts = 2.3819, cov = 0.264, width = 2.5797 
+VA: delta_pts = 1.3629, recap_pts = 1.3629, cov = 0.119, width = 0.5516 
+CG: delta_pts = 2.0705, recap_pts = 2.0705, cov = 0.124, width = 1.1633 
+MB: delta_pts = 2.8126, recap_pts = 2.8126, cov = 0.040, width = 0.4405 
+MA: delta_pts = 1.4265, recap_pts = 1.4265, cov = 0.124, width = 0.7506 
+MP: delta_pts = 2.5667, recap_pts = 2.5667, cov = 0.159, width = 2.0653 
+----------------------------------
+
+Saved BEST checkpoint @epoch 0 score = 7.5161 -> models\v9_subcaption_fixed\v9fix_w1p0_1770639582616\best 
+Selecting final weights: SWA
+Saving final production model to models\v9_subcaption_fixed\v9fix_w1p0_1770639582616...
+
+--- FINAL TEST EVALUATION ---
+TEST RESULTS: delta_mae_pts = 1.0555, recap_mae_pts = 1.0555, cat_mae_pts = 1.0792, total_mae_pts = 2.2560, coverage = 0.172, width = 0.9146, width_floor_pct = 0.560 
+Production training complete.

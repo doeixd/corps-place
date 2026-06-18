@@ -1,0 +1,34 @@
+[
+  {
+    "person_id": "donnie-vandoren",
+    "display_name": "Donnie VanDoren",
+    "bio": "Donnie VanDoren is a DCI Hall of Fame (2004) brass educator. He began instructing the Crossmen brass line in 1979, then became brass caption head for the Garfield Cadets (1980-1984), winning the Jim Ott Award for high brass in 1983 and 1984 alongside the corps' first two World Championships. He led the brass at the 1985 Troopers, Star of Indiana (from 1986, World Champions 1991), and the Cadets of Bergen County (1998-1999 World Champions). He later served as Staff Coordinator and Brass Caption Supervisor for the Madison Scouts (2010-2015), Program and Staff Coordinator for the Troopers (2013-2017), and a brass advisor to the Bluecoats (since 2016) and Carolina Crown (since 2005).",
+    "photo_url": "https://www.scvanguard.org/wp-content/uploads/2022/08/Donnie-V-1024x1024-1.jpeg",
+    "sources": ["https://www.dci.org/hall-of-fame/donnie_vandoren/", "https://www.scvanguard.org/staff/donnie-vandoren/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "key-poulan",
+    "display_name": "Key Poulan",
+    "bio": "Key Poulan (born 1962) is an American composer and arranger for marching and concert band, and owner of Key Poulan Music. He studied trombone at East Texas State University, earning a music education degree in 1985. Involved in drum corps since 1983, he has written brass arrangements for the Santa Clara Vanguard (Composer/Arranger 2003-2011), Mandarins (Composer/Arranger/Design Coordinator 2011-2022), Spirit of Atlanta, Cavaliers, Glassmen, Raiders, Seattle Cascades, and Spartans. His marching band arrangements have won multiple Bands of America Grand National titles.",
+    "photo_url": "https://keypoulanmusic.com/wp-content/uploads/10487345_781213265264249_9190195028276640591_n.jpg",
+    "sources": ["https://en.wikipedia.org/wiki/Key_Poulan", "https://keypoulanmusic.com/about-key/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "kevin-shah",
+    "display_name": "Kevin Shah",
+    "bio": "Kevin Shah is an award-winning composer, arranger, and sound designer in the marching arts. He earned a Master's in Percussion Performance from The Juilliard School and a B.M. in Percussion Performance from UCLA. He marched bass drum with Pacific Crest (1999-2000) and aged out with the Santa Clara Vanguard (2002). He was Sound Designer for the Bluecoats (2010-2013), Front Ensemble Arranger for the Mandarins (2013-2014), Creative Director/Composer for the Blue Knights (2014-2019), Front Ensemble Arranger and Sound Designer for Carolina Crown (2023-2024), and joined The Cavaliers as Music Coordinator and Sound Designer in 2025. He owns projectRISEmusic.com and runs PRMworkshops.com.",
+    "photo_url": "https://images.squarespace-cdn.com/content/v1/5b94904345776eaef2526fce/50338656-75cb-4470-86b3-e688441e9704/Kevin+-+Smile+Portrait.jpeg",
+    "sources": ["https://bluecoats.com/news/2022/1/5/kevin-shah-joins-bluecoats-team-as-music-design-consultant", "https://www.projectrisemusic.com/index.php/about/kevin-bio"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "adam-sage",
+    "display_name": "Adam Sage",
+    "bio": "Adam Sage is a color guard choreographer, designer, and adjudicator in the pageantry arts. He directed and designed the Kennesaw Mountain High School color guard (2003-2016), which won the 2004 and 2005 WGI Scholastic World Championships, and has directed The Company (two-time WGI world champions), Phantom Regiment Winter Guard, and CrownGUARD. He has worked as a visual/color guard designer across several drum corps.",
+    "photo_url": null,
+    "sources": ["https://www.linkedin.com/in/adam-sage-76543b20b/"],
+    "confidence": "MEDIUM"
+  }
+]

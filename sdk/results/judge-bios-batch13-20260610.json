@@ -1,0 +1,153 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 156-168 by assignment count (9-12 assignments). Mostly DCI-roster names with sparse public footprints. Sources: MFA/SCPA/personal/DCI panels. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "t-johnston-1", "displayName": "Tim Johnston", "givenName": "Tim", "familyName": "Johnston",
+      "biography": "Tim Johnston is a brass/music adjudicator for Drum Corps International, serving in the Music Brass and Music Analysis captions at DCI events.",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Brass / Music Analysis / GE1; 2013-2025", "facts": [
+        { "fact": "DCI music/brass judge", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+        { "fact": "Common name; no public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "l-eubanks-1", "displayName": "Lynda Eubanks", "givenName": "Lynda", "familyName": "Eubanks",
+      "biography": "Lynda Eubanks is a music adjudicator, composer, and arranger who has judged Drum Corps International World Class events since 2000 (including DCI Open Class Finals three years running) along with high school marching band circuits and state finals nationwide. She earned a Bachelor of Music Education from the Baldwin-Wallace Conservatory of Music and a Master of Music in conducting from Kent State University, and operates Lynda Eubanks Music, creating and customizing marching band shows.",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [{ "url": "http://lyndaeubanksmusic.com/index.html", "label": "Lynda Eubanks Music", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Analysis / Music Brass / GE2; 2013-2025", "facts": [
+        { "fact": "DCI World Class music judge since 2000; composer/arranger; Baldwin-Wallace + Kent State degrees", "source": "http://lyndaeubanksmusic.com/index.html", "confidence": "HIGH" },
+        { "fact": "Personal site unreachable; no public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "a-snipes-1", "displayName": "Aaron Snipes", "givenName": "Aaron", "familyName": "Snipes",
+      "biography": "Aaron Snipes III, a native of Americus, Georgia, is a music/general-effect adjudicator, clinician, and arranger active with Drum Corps International. A member of the Texas and Florida music educator and bandmaster associations, NAfME, and the American School Band Directors Association, he has judged internationally including the 2013 Thailand World Music Championships and the 2018 and 2019 WGI UK Winds and Percussion Regionals.",
+      "photoUrl": null, "alternateNames": ["Aaron Snipes III"],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "General Effect 2 / Music Analysis; 2013-2025", "facts": [
+        { "fact": "DCI music/GE judge & arranger; Americus GA; international judging (Thailand, WGI UK)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" },
+        { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "j-mitchell-1", "displayName": "Jeff Mitchell", "givenName": "Jeff", "familyName": "Mitchell",
+      "biography": "Jeff Mitchell is a brass/music adjudicator for Drum Corps International, serving in the Music Brass, General Effect, and Music Analysis captions and recognized in the drum corps community for clear, helpful adjudication.",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Brass / GE2 / Music Analysis; 2013-2025", "facts": [
+        { "fact": "DCI music/brass judge", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+        { "fact": "Common name; no distinguishing public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "k-lejeune-1", "displayName": "Kendall LeJeune", "givenName": "Kendall", "familyName": "LeJeune",
+      "biography": "Kendall LeJeune is a general-effect and visual adjudicator for Drum Corps International with a brass background, having served on the brass instructional staff of the Blue Devils. He judges the General Effect and Visual captions at DCI events.",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [
+        { "corpsName": "Blue Devils", "role": "Brass staff", "sourceUrl": "https://pubhtml5.com/xada/cxrz/basic/101-148" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "General Effect 1 / Visual Proficiency / GE2; 2013-2025", "facts": [
+        { "fact": "Blue Devils brass staff; DCI GE/visual judge", "source": "https://pubhtml5.com/xada/cxrz/basic/101-148", "confidence": "MEDIUM" },
+        { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "m-brown-1", "displayName": "Michael Brown", "givenName": "Michael", "familyName": "Brown",
+      "biography": "Michael Brown is a brass/music adjudicator for Drum Corps International, serving in the Music Brass and Music Analysis captions at DCI events.",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025", "facts": [
+        { "fact": "DCI music/brass judge (distinct from Dr. Andrea Brown)", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+        { "fact": "Very common name; no distinguishing public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "m-o-neill-1", "displayName": "Mike O'Neill", "givenName": "Mike", "familyName": "O'Neill",
+      "biography": "Mike O'Neill is a visual adjudicator for Drum Corps International, serving in the Visual Proficiency, Visual Analysis, and General Effect captions at DCI events.",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Visual Proficiency / GE1 / Visual Analysis; 2013-2025", "facts": [
+        { "fact": "DCI visual judge", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+        { "fact": "Common name; no distinguishing public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "r-jett-1", "displayName": "Rob Jett", "givenName": "Rob", "familyName": "Jett",
+      "biography": "Rob Jett is a visual adjudicator for Drum Corps International, serving in the Visual Analysis, Color Guard, and General Effect captions at DCI events.",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Visual Analysis / GE1 / Color Guard / Visual Proficiency; 2013-2025", "facts": [
+        { "fact": "DCI visual judge", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+        { "fact": "No public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "r-rodriguez-1", "displayName": "Rick Rodriguez", "givenName": "Rick", "familyName": "Rodriguez",
+      "biography": "Rick Rodriguez is a percussion adjudicator, clinician, and educator who holds a Bachelor of Music Education from the University of North Texas, where he was center snare of the PASIC-winning UNT drumline. He has been a percussion staff member of the Blue Devils, Phantom Regiment, Blue Knights, and the Cavaliers, and adjudicates for Drum Corps International, Bands of America, and WGI. He is the percussion director and Associate Band Director at Cedar Ridge High School in Round Rock, Texas, and is an Innovative Percussion and Marimba One artist.",
+      "photoUrl": "https://www.innovativepercussion.com/images/artists/rick_rod2.jpg", "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.innovativepercussion.com/artists/rick_rodriguez", "label": "Innovative Percussion artist", "kind": "bio" },
+        { "url": "https://scpa.live/judge/profile/3663", "label": "SCPA judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "The Cavaliers", "role": "Percussion staff", "sourceUrl": "https://www.innovativepercussion.com/artists/rick_rodriguez" },
+        { "corpsName": "Blue Devils", "role": "Percussion staff", "sourceUrl": "https://www.innovativepercussion.com/artists/rick_rodriguez" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Percussion / Music Analysis; 2013-2025", "facts": [
+        { "fact": "UNT; Blue Devils/Phantom Regiment/Blue Knights/Cavaliers percussion staff; Cedar Ridge HS (Round Rock TX); DCI/BOA/WGI percussion judge; Innovative Percussion artist", "source": "https://www.innovativepercussion.com/artists/rick_rodriguez", "confidence": "HIGH" } ] }
+    },
+    {
+      "judgeId": "s-clark-1", "displayName": "Shannon Clark", "givenName": "Shannon", "familyName": "Clark",
+      "biography": "Shannon Clark is a visual and color guard adjudicator for Drum Corps International, serving in the Visual Proficiency and Color Guard captions at DCI events.",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Visual Proficiency / Color Guard; 2013-2025", "facts": [
+        { "fact": "DCI visual/color guard judge", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+        { "fact": "Common name; no distinguishing public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "d-mcgrath-1", "displayName": "David McGrath", "givenName": "David", "familyName": "McGrath",
+      "biography": "David McGrath is a music adjudicator for Drum Corps International, serving in the Music Analysis, Music Brass, and General Effect captions at DCI events.",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Music Analysis / Music Brass / GE2; 2013-2025", "facts": [
+        { "fact": "DCI music judge", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+        { "fact": "No public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "i-jenkins-1", "displayName": "Ira Jenkins", "givenName": "Ira", "familyName": "Jenkins",
+      "biography": "Ira Jenkins is a color guard adjudicator for Drum Corps International and Winter Guard International, serving as a Color Guard judge at DCI World Championships (including 2022 and 2025).",
+      "photoUrl": null, "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/judge/ira-jenkins/", "label": "WGI judge profile", "kind": "bio" },
+        { "url": "https://contestdynamics.com/printjudgebio.php?JudgeID=246", "label": "ContestDynamics bio", "kind": "organization" }
+      ],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Color Guard / Visual Proficiency / GE1; 2013-2025", "facts": [
+        { "fact": "DCI/WGI color guard judge (2022/2025 confirmed)", "source": "https://www.wgi.org/judge/ira-jenkins/", "confidence": "HIGH" },
+        { "fact": "No public headshot rendered - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    },
+    {
+      "judgeId": "j-barton-1", "displayName": "Jen Barton", "givenName": "Jen", "familyName": "Barton",
+      "biography": "Jennifer 'Jen' Barton is a color guard adjudicator, choreographer, and consultant, a native of Greenwood, Indiana, who recently retired as color guard director at Rouse High School (Leander, TX) and is on the movement and visual staff of the Music City drum and bugle corps. Over a 20-year career across the Carolinas, Georgia, and Texas she has worked with scholastic and independent ensembles including Byrnes HS, Origins, The Cast, and Etude winter guards, and the Pacific Crest, Spirit of Atlanta, and Phantom Regiment drum corps. As a performer she appeared with the Santa Clara Vanguard and Northeast Independent winter guard, and she served as a Color Guard judge at the 2025 DCI World Championships.",
+      "photoUrl": null, "alternateNames": ["Jennifer Barton"],
+      "externalLinks": [{ "url": "https://www.hippvisualsolutions.com/choreography", "label": "Hipp Visual Solutions", "kind": "organization" }],
+      "corpsRelations": [
+        { "corpsName": "Santa Clara Vanguard", "role": "Performer (color guard)", "sourceUrl": "https://www.hippvisualsolutions.com/choreography" },
+        { "corpsName": "Music City", "role": "Movement & Visual staff", "sourceUrl": "https://www.hippvisualsolutions.com/choreography" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": { "captionFingerprint": "Color Guard / Visual Proficiency; 2013-2025", "facts": [
+        { "fact": "Color guard choreographer; Rouse HS CG director (ret.); Music City staff; SCV alum; DCI Color Guard judge", "source": "https://www.hippvisualsolutions.com/choreography", "confidence": "HIGH" },
+        { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" } ] }
+    }
+  ]
+}

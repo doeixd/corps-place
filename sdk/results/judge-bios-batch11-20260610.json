@@ -1,0 +1,273 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 130-142 by assignment count. Sources: MFA clinician pages, SCPA, org/personal pages, DCI panels; JS/MFA pages rendered via puppeteer. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "p-hinman-1",
+      "displayName": "Paul Hinman",
+      "givenName": "Paul",
+      "familyName": "Hinman",
+      "biography": "Paul Hinman is a music/general-effect adjudicator for Drum Corps International, serving in the General Effect, Music Brass, and Music Analysis captions at DCI World Championships (including Ensemble Music at the 2008 Finals).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2008-world-championship-adjudication-panels-announced/", "label": "DCI 2008 adjudication panels", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Brass / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI music/GE judge (2008 confirmed)", "source": "https://www.dci.org/news/2008-world-championship-adjudication-panels-announced/", "confidence": "MEDIUM" },
+          { "fact": "Common name; no distinguishing public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "b-williams-1",
+      "displayName": "Blair Williams",
+      "givenName": "Blair",
+      "familyName": "Williams",
+      "biography": "Blair Williams is a percussion adjudicator, arranger, and instructor and a percussion arranger/instructor for the University of Nevada, Reno Wolf Pack Marching Band. He marched in the Sacramento Mandarins snare line (2000-2001, DCI Division II title 2001) and the Concord Blue Devils snare line (2002-2003, helping the corps to its 11th DCI World Championship and placing fourth in the individual snare competition), then served on the Mandarins percussion staff (2004-2012), including percussion caption head in 2009, and as co-caption head of the Pioneer drum corps in 2010. He holds a Master of Music in Music Education from the University of Nevada, Reno and adjudicates for DCI and competitive fall and winter circuits.",
+      "photoUrl": "https://www.gpgmusic.com/media/2020/5/blair-williams-reno-nv-1.JPG",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.gpgmusic.com/blair-williams/", "label": "GPG Music bio", "kind": "bio" },
+        { "url": "https://pearldrum.com/en/artist/blair-williams", "label": "Pearl artist", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Concord Blue Devils", "season": "2002-2003", "role": "Performer (snare)", "sourceUrl": "https://www.gpgmusic.com/blair-williams/" },
+        { "corpsName": "Sacramento Mandarins", "season": "2004-2012", "role": "Percussion staff / Caption Head", "sourceUrl": "https://www.gpgmusic.com/blair-williams/" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "Blue Devils & Mandarins snare; Mandarins percussion caption head; UNR Wolf Pack percussion; DCI percussion judge", "source": "https://www.gpgmusic.com/blair-williams/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "s-bertelle-1",
+      "displayName": "Sandra Bertelle",
+      "givenName": "Sandra",
+      "familyName": "Bertelle",
+      "biography": "Sandra Jean Bertelle was a visual and general-effect adjudicator who pursued her love of marching band and color guard competition as a DCI judge for over two decades, traveling across the United States and earning a reputation as an excellent judge always working to improve the pageantry field.",
+      "photoUrl": null,
+      "alternateNames": ["Sandra Jean Bertelle"],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Analysis / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "DCI visual/GE judge 20+ yrs; respected in the pageantry field (now deceased)", "source": "https://www.prokofuneralhome.com/obituaries/fr-import-15794/", "confidence": "MEDIUM" },
+          { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-tate-1",
+      "displayName": "Jeremy Tate",
+      "givenName": "Jeremy",
+      "familyName": "Tate",
+      "biography": "Jeremy Tate is a visual adjudicator on the active Drum Corps International roster who works as a clinician and adjudicator nationwide for DCI, Winter Guard International, Bands of America, and various regional circuits. A native of Humboldt, Tennessee, he served as visual caption head for the Memphis Sound drum and bugle corps and on the visual staff of the Southwind and Madison Scouts. He is Music Advisor and Consultant for the Gibson County Special School District band programs and previously spent 15 years as Director of Bands at Gibson County High School in Dyer, Tennessee.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2025/09/Tate-headshot-casual-business-2-1024x1024.png",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/jeremy-tate/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [
+        { "corpsName": "Memphis Sound", "role": "Visual Caption Head", "sourceUrl": "https://education.musicforall.org/clinician/jeremy-tate/" },
+        { "corpsName": "Madison Scouts", "role": "Visual staff", "sourceUrl": "https://education.musicforall.org/clinician/jeremy-tate/" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Visual Analysis / GE1; 2013-2025",
+        "facts": [
+          { "fact": "DCI visual judge; Memphis Sound visual caption head; Southwind/Madison Scouts visual staff; Tennessee band director", "source": "https://education.musicforall.org/clinician/jeremy-tate/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "b-huneycutt-1",
+      "displayName": "Brad Huneycutt",
+      "givenName": "Brad",
+      "familyName": "Huneycutt",
+      "biography": "Brad Huneycutt is a drill writer, music arranger, educational clinician, program coordinator, and adjudicator with over twenty years in music education, including service as a high school band director in Texas. He earned a Bachelor of Music from the University of Texas at Arlington and a Master of Music in Instrumental Conducting from Texas Christian University, and has taught at TCU, Prosper High School, William B. Travis High School, and Lake Highlands High School. A member of the DCI World Champion Cavaliers, he adjudicates for the Drum Corps International Summer Music Games as well as Music for All and Bands of America.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/HuneycuttBradResize2.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/brad-huneycutt/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.bradhuneycutt.com", "label": "Brad Huneycutt Designs", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "The Cavaliers", "role": "Performer (member)", "sourceUrl": "https://education.musicforall.org/clinician/brad-huneycutt/" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "Drill writer/arranger; Cavaliers alum; UTA + TCU degrees; Texas band director; DCI/BOA music judge", "source": "https://education.musicforall.org/clinician/brad-huneycutt/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "d-aydelott-1",
+      "displayName": "David Aydelott",
+      "givenName": "David",
+      "familyName": "Aydelott",
+      "biography": "David Aydelott is a music adjudicator for Drum Corps International, serving in the Music Analysis, Music Brass, and General Effect captions at DCI events.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / Music Brass / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI music judge", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "No distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "e-argenziano-1",
+      "displayName": "Ed Argenziano",
+      "givenName": "Ed",
+      "familyName": "Argenziano",
+      "biography": "Edward 'Ed' Argenziano is a percussion adjudicator, arranger, composer, and clinician who holds a B.S. in Music Education from William Paterson University and an M.A. in Music Performance from Montclair State University, and was Director of Bands at Morris Knolls High School (Rockaway, NJ) from 1986 to 2014. He served as DCI Percussion Caption administrator (1997-1999) and DCA Percussion administrator (2001-2003), was percussion arranger/show designer for the 2004 Magic of Orlando and a 2005 consultant for the Colts, and designed for the New York Skyliners. He has judged music events for DCI, Drum Corps Japan, Bands of America, and WGI across the U.S., Canada, the Netherlands, and Japan, and is a published composer with Row-Loff Productions and a Ludwig/Musser artist.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2024/09/file-1.jpg",
+      "alternateNames": ["Edward Argenziano"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/edward-argenziano/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://scpa.live/judge/profile/9456", "label": "SCPA judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Magic of Orlando", "season": "2004", "role": "Percussion Arranger / Show Designer", "sourceUrl": "https://education.musicforall.org/clinician/edward-argenziano/" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / GE2 / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI Percussion Caption administrator 1997-99; Morris Knolls HS Dir of Bands; Magic of Orlando designer; Row-Loff composer; DCI percussion judge", "source": "https://education.musicforall.org/clinician/edward-argenziano/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-campbell-1",
+      "displayName": "Jackie Campbell",
+      "givenName": "Jackie",
+      "familyName": "Campbell",
+      "biography": "Jackie Campbell is a color guard adjudicator who has been an adjudicator for the New York Federation of Contest Judges and Winter Guard International since 1991, specializing in movement and equipment. A performer with the Rochester Crusaders drum and bugle corps and the Santa Clara Vanguard, she coordinated the West Genesee High School color guard (1984-1999 and 2010-2013) and has served as a Color Guard judge at DCI World Championships (2023, 2024, and the 2025 All-Age Finals).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://direct.wgi.org/judges/jackie-campbell/", "label": "WGI judge profile", "kind": "organization" }],
+      "corpsRelations": [
+        { "corpsName": "Santa Clara Vanguard", "role": "Performer (color guard)", "sourceUrl": "https://direct.wgi.org/judges/jackie-campbell/" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / Visual Proficiency / GE1; 2013-2025",
+        "facts": [
+          { "fact": "WGI/NY Federation judge since 1991; Rochester Crusaders & SCV alum; West Genesee HS guard coordinator; DCI Color Guard judge", "source": "https://direct.wgi.org/judges/jackie-campbell/", "confidence": "HIGH" },
+          { "fact": "WGI page is a stub; no public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "r-overvliet-1",
+      "displayName": "Robby Overvliet",
+      "givenName": "Robby",
+      "familyName": "Overvliet",
+      "biography": "Robby Overvliet is a visual and color guard adjudicator with over 25 years of international teaching and design experience and over 20 years of international adjudication for Winter Guard International and Drum Corps International. He has served as a DCI Visual/Color Guard adjudicator at DCI World Championships across many seasons (2004, 2006, 2008-2010, 2014, 2015), is well known for his on-field interviews, and has been an analyst on the Drum Corps Europe presentation team.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://drumcorpseurope.org/new-presentation-team/", "label": "Drum Corps Europe presentation team", "kind": "organization" }
+      ],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Visual Analysis / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "25+ yrs international teaching/design; DCI Visual/CG adjudicator; Drum Corps Europe analyst", "source": "https://drumcorpseurope.org/new-presentation-team/", "confidence": "HIGH" },
+          { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-west-1",
+      "displayName": "Tom West",
+      "givenName": "Tom",
+      "familyName": "West",
+      "biography": "Tom West is a music/general-effect adjudicator for Drum Corps International, serving in the Music Analysis, General Effect, and Music Brass captions at DCI events.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / GE2 / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI music/GE judge", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Very common name; no distinguishing public bio/headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "k-shuttlesworth-1",
+      "displayName": "Kim Shuttlesworth",
+      "givenName": "Kim",
+      "familyName": "Shuttlesworth",
+      "biography": "Kim Shuttlesworth is a brass/music adjudicator for Drum Corps International, serving in the Music Brass and Music Analysis captions at DCI events.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI music/brass judge", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "h-bassett-1",
+      "displayName": "Helen Bassett",
+      "givenName": "Helen",
+      "familyName": "Bassett",
+      "biography": "Helen Bassett is a visual adjudicator for Drum Corps International, serving primarily in the Visual Proficiency and Color Guard captions at DCI events.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.dci.org/judging/", "label": "DCI judging", "kind": "article" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "DCI visual judge (Visual Proficiency / Color Guard)", "source": "https://www.dci.org/judging/", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-pipitone-1",
+      "displayName": "JJ Pipitone",
+      "givenName": "JJ",
+      "familyName": "Pipitone",
+      "biography": "John 'JJ' Pipitone is a percussion adjudicator, composer, and educator who won the DCI multi-tenor solo competition in 1989 and the PAS multi-tenor competition in 1990. He marched nine years of drum corps with the Dutch Boy, Phantom Regiment, and Concord Blue Devils, taught the World Champion Phantom Regiment (1995-1996) and served as its battery caption head and arranger in 1997, and instructed the Glassmen (1998-1999) and Crossmen (2000-2001). Judging worldwide since 2003, he adjudicates for Bands of America, USBands, WGI, DCI, Drum Corps Japan, and indoor circuits. He holds degrees from Morehead State University and the University of North Texas, and is a retired band director and real-estate investor in the Dallas-Fort Worth area who consults for the Texas A&M Commerce Pride Marching Band.",
+      "photoUrl": "https://scpauploads.s3.amazonaws.com/judges/633_judge_pipitone.jpg",
+      "alternateNames": ["John Pipitone", "J.J. Pipitone"],
+      "externalLinks": [
+        { "url": "https://scpa.live/judge/profile/59", "label": "SCPA judge profile", "kind": "bio" },
+        { "url": "https://www.wgi.org/judge/j-j-pipitone/", "label": "WGI judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Phantom Regiment", "season": "1995-1997", "role": "Instructor / Battery Caption Head & Arranger", "sourceUrl": "https://scpa.live/judge/profile/59" }
+      ],
+      "seasonHighlights": [
+        { "title": "DCI Multi-Tenor Solo Champion", "season": "1989", "sourceUrl": "https://scpa.live/judge/profile/59" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "1989 DCI Multi-Tenor Champion; Phantom Regiment battery caption head; Glassmen/Crossmen instructor; DCI/WGI/BOA percussion judge; Morehead State + UNT", "source": "https://scpa.live/judge/profile/59", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

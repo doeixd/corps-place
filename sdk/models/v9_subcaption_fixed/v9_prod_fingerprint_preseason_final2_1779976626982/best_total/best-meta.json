@@ -1,0 +1,21 @@
+{
+  "epoch": 50,
+  "checkpointMetric": "valTotalMae",
+  "bestTotalMae": 0.8991559195452814,
+  "monitoring": {
+    "valLoss": 0.31305718126375814,
+    "valScore": 0.920372243553872,
+    "valDeltaMae": 0.36904928851718743,
+    "valRecapMae": 0.36904932833571735,
+    "valCategoryMae": 0.4303722228885682,
+    "valTotalMae": 0.8991559195452814,
+    "valInertiaMae": 0.4137250584019117,
+    "valQuadMae": 0.6461679657996303,
+    "vsInertia": 0.04467573006619435,
+    "vsQuadratic": 0.27711863746391296,
+    "coverage": 0.9552341597796143,
+    "widthNorm": 1.9397745595490636,
+    "widthFloorPct": 0
+  },
+  "savedAt": "2026-05-28T14:58:25.790Z"
+}

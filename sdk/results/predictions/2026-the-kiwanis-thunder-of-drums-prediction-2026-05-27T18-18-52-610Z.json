@@ -1,0 +1,306 @@
+{
+  "generated_at": "2026-05-27T18:18:52.610Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_actually_final_1779812116275",
+  "event": {
+    "event_id": "web-2026-2026-the-kiwanis-thunder-of-drums",
+    "slug": "2026-the-kiwanis-thunder-of-drums",
+    "name": "The Kiwanis Thunder of Drums",
+    "event_name": "The Kiwanis Thunder of Drums",
+    "start_date": "2026-07-07",
+    "start_time": null,
+    "web_start_time": "7:00 PM CT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Mankato",
+    "location_state": "MN"
+  },
+  "readiness": {
+    "lineup_rows": 7,
+    "matched_corps_keys": 7,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 6,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 25.581395348837212
+  },
+  "input_signature": "04516bfa00e311b8b045946df334f62e408dd82e128d70927ecda06323466ce6",
+  "builder_version": "v9-event-prediction-lineup-fallback-v3",
+  "input_audit": {
+    "scored_lineup_rows": 7,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": "7:10 PM"
+      },
+      {
+        "corps_key": "001j000000qzs1qaaf",
+        "corps": "River City Rhythm",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "7:44 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9oaad",
+        "corps": "Genesis",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "8:18 PM"
+      },
+      {
+        "corps_key": "001j000000i6lenaa3",
+        "corps": "Madison Scouts",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "8:35 PM"
+      },
+      {
+        "corps_key": "001j000000iwx98aad",
+        "corps": "Colts",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "8:52 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsoaal",
+        "corps": "Blue Knights",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "9:09 PM"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "9:26 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": "7:10 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Minnesota State University Clinic Band",
+        "performance_order": 1,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 2,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "MBI",
+        "performance_order": 4,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-the-kiwanis-thunder-of-drums",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-07",
+      "scored_lineup_rows": 7,
+      "matched_corps_keys": 7,
+      "excluded_lineup_rows": 6,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "9:26 PM",
+      "total": 79.501,
+      "GE": 31.534,
+      "Visual": 23.757,
+      "Music": 24.21,
+      "GE1": 15.563,
+      "GE2": 15.971,
+      "VP": 15.976,
+      "VA": 16.007,
+      "CG": 15.531,
+      "MB": 16.404,
+      "MA": 15.817,
+      "MP": 16.198,
+      "raw_model_total": 87.281,
+      "prior_season_comparable_total": 79.5,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwx98aad",
+      "corps": "Colts",
+      "city": "Dubuque, IA",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "8:52 PM",
+      "total": 77.299,
+      "GE": 29.01,
+      "Visual": 24.2,
+      "Music": 24.089,
+      "GE1": 14.949,
+      "GE2": 14.061,
+      "VP": 17.022,
+      "VA": 15.985,
+      "CG": 15.393,
+      "MB": 17.318,
+      "MA": 15.245,
+      "MP": 15.615,
+      "raw_model_total": 81.242,
+      "prior_season_comparable_total": 77.3,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "city": "Denver, CO",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "9:09 PM",
+      "total": 75.049,
+      "GE": 28.166,
+      "Visual": 23.495,
+      "Music": 23.388,
+      "GE1": 14.514,
+      "GE2": 13.652,
+      "VP": 16.526,
+      "VA": 15.52,
+      "CG": 14.945,
+      "MB": 16.813,
+      "MA": 14.802,
+      "MP": 15.161,
+      "raw_model_total": 78.758,
+      "prior_season_comparable_total": 75.05,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000i6lenaa3",
+      "corps": "Madison Scouts",
+      "city": "Madison, WI",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "8:35 PM",
+      "total": 74.899,
+      "GE": 28.11,
+      "Visual": 23.448,
+      "Music": 23.341,
+      "GE1": 14.485,
+      "GE2": 13.625,
+      "VP": 16.493,
+      "VA": 15.489,
+      "CG": 14.915,
+      "MB": 16.78,
+      "MA": 14.772,
+      "MP": 15.131,
+      "raw_model_total": 78.547,
+      "prior_season_comparable_total": 74.9,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwx9oaad",
+      "corps": "Genesis",
+      "city": "Austin, TX",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "8:18 PM",
+      "total": 69.75,
+      "GE": 26.177,
+      "Visual": 21.837,
+      "Music": 21.736,
+      "GE1": 13.489,
+      "GE2": 12.688,
+      "VP": 15.359,
+      "VA": 14.424,
+      "CG": 13.89,
+      "MB": 15.626,
+      "MA": 13.756,
+      "MP": 14.09,
+      "raw_model_total": 73.255,
+      "prior_season_comparable_total": 69.75,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000qzs1qaaf",
+      "corps": "River City Rhythm",
+      "city": "Anoka, MN",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "7:44 PM",
+      "total": 63.449,
+      "GE": 25.083,
+      "Visual": 18.621,
+      "Music": 19.745,
+      "GE1": 13.846,
+      "GE2": 11.237,
+      "VP": 12.2,
+      "VA": 12.2,
+      "CG": 12.843,
+      "MB": 13.485,
+      "MA": 13.003,
+      "MP": 13.003,
+      "raw_model_total": 65.66,
+      "prior_season_comparable_total": 63.45,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking."
+  ]
+}

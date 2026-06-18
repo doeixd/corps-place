@@ -1,0 +1,193 @@
+{
+  "generated_at": "2026-05-27T18:21:09.482Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_actually_final_1779812116275",
+  "event": {
+    "event_id": "web-2026-2026-barnum-festival-champions-on-parade",
+    "slug": "2026-barnum-festival-champions-on-parade",
+    "name": "Barnum Festival: Champions on Parade",
+    "event_name": "Barnum Festival: Champions on Parade",
+    "start_date": "2026-06-27T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "6:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Shelton",
+    "location_state": "CT"
+  },
+  "readiness": {
+    "lineup_rows": 5,
+    "matched_corps_keys": 5,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 1,
+    "skipped_lineup_rows": 4,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 2.3255813953488373
+  },
+  "input_signature": "602f21acb1317d03b1f978fccc7ac890e0573899e212d8681f918d0f64653d68",
+  "builder_version": "v9-event-prediction-lineup-fallback-v3",
+  "input_audit": {
+    "scored_lineup_rows": 5,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwslaal",
+        "corps": "7th Regiment",
+        "division": "Open Class",
+        "performance_order": 6,
+        "time": "7:22 PM"
+      },
+      {
+        "corps_key": "0010a00001iqmzuaah",
+        "corps": "Sunrisers",
+        "division": "All Age Class",
+        "performance_order": 7,
+        "time": "7:40 PM"
+      },
+      {
+        "corps_key": "0010a00001e2pfhaam",
+        "corps": "Reading Buccaneers",
+        "division": "All Age Class",
+        "performance_order": 8,
+        "time": "7:58 PM"
+      },
+      {
+        "corps_key": "0015b00001mpuwcaak",
+        "corps": "Hawthorne Caballeros",
+        "division": "All Age Class",
+        "performance_order": 9,
+        "time": "8:16 PM"
+      },
+      {
+        "corps_key": "bushwackers-drum-corps",
+        "corps": "Bushwackers",
+        "division": "All Age Class",
+        "performance_order": 10,
+        "time": "8:34 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "0010a00001iqmzuaah",
+        "corps": "Sunrisers",
+        "division": "All Age Class",
+        "performance_order": 7,
+        "time": "7:40 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0010a00001e2pfhaam",
+        "corps": "Reading Buccaneers",
+        "division": "All Age Class",
+        "performance_order": 8,
+        "time": "7:58 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0015b00001mpuwcaak",
+        "corps": "Hawthorne Caballeros",
+        "division": "All Age Class",
+        "performance_order": 9,
+        "time": "8:16 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "bushwackers-drum-corps",
+        "corps": "Bushwackers",
+        "division": "All Age Class",
+        "performance_order": 10,
+        "time": "8:34 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "North Star",
+        "performance_order": 2,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Crusaders Senior",
+        "performance_order": 3,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Hawthorne Caballeros Alumni",
+        "performance_order": 4,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "CT Alumni",
+        "performance_order": 5,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Hurricanes",
+        "performance_order": 11,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-barnum-festival-champions-on-parade",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-27T00:00:00.000Z",
+      "scored_lineup_rows": 5,
+      "matched_corps_keys": 5,
+      "excluded_lineup_rows": 8,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwslaal",
+      "corps": "7th Regiment",
+      "city": "New London, CT",
+      "division": "Open Class",
+      "performance_order": 6,
+      "time": "7:22 PM",
+      "total": 51.7,
+      "GE": 20.924,
+      "Visual": 15.313,
+      "Music": 15.463,
+      "GE1": 10.312,
+      "GE2": 10.612,
+      "VP": 10.421,
+      "VA": 10.048,
+      "CG": 10.157,
+      "MB": 10.181,
+      "MA": 10.421,
+      "MP": 10.324,
+      "raw_model_total": 71.658,
+      "prior_season_comparable_total": 51.7,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated"
+    }
+  ],
+  "caveats": [
+    "4 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking."
+  ]
+}

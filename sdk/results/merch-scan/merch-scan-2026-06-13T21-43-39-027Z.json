@@ -1,0 +1,252 @@
+{
+  "checkedAt": "2026-06-13T21:43:39.027Z",
+  "count": 12,
+  "results": [
+    {
+      "name": "Blue Devils",
+      "kind": "corps",
+      "corpsKey": "001j000000i6i9saav",
+      "website": "http://www.bluedevils.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://store.bluedevils.org/",
+      "finalUrl": "https://store.bluedevils.org/",
+      "hasMerch": true,
+      "platform": "bigcommerce",
+      "signals": [
+        "html:bigcommerce"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Blue Knights",
+      "kind": "corps",
+      "corpsKey": "001j000000iwwsoaal",
+      "website": "http://www.ascendperformingarts.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "http://bkmarketplace.org/",
+      "finalUrl": "https://www.bkmarketplace.org/",
+      "hasMerch": true,
+      "platform": "other-ecommerce",
+      "signals": [
+        "html:generic-cart"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Blue Stars",
+      "kind": "corps",
+      "corpsKey": "001j000000iwwsqaal",
+      "website": "http://www.bluestars.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://bluestars.org/store",
+      "finalUrl": "https://bluestars.org/store",
+      "hasMerch": true,
+      "platform": "squarespace",
+      "signals": [
+        "html:squarespace"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Bluecoats",
+      "kind": "corps",
+      "corpsKey": "001j000000iwwsraal",
+      "website": "http://www.bluecoats.com",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://bluecoats.com/shop/gear",
+      "finalUrl": "https://bluecoats.com/shop/gear",
+      "hasMerch": true,
+      "platform": "squarespace",
+      "signals": [
+        "html:squarespace"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Boston Crusaders",
+      "kind": "corps",
+      "corpsKey": "001j000000iwwssaal",
+      "website": "http://www.bostoncrusaders.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://shop.bostoncrusaders.org/",
+      "finalUrl": "https://shop.bostoncrusaders.org/",
+      "hasMerch": true,
+      "platform": "shopify",
+      "signals": [
+        "header:powered-by-shopify",
+        "html:cdn.shopify.com",
+        "html:cdn/shop",
+        "html:myshopify.com",
+        "html:Shopify-js",
+        "endpoint:products.json"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Carolina Crown",
+      "kind": "corps",
+      "corpsKey": "001j000000iwx91aad",
+      "website": "http://www.carolinacrown.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://www.carolinacrown.org/shop",
+      "finalUrl": "https://thecrownstore.com/crowngear/",
+      "hasMerch": true,
+      "platform": "bigcommerce",
+      "signals": [
+        "html:bigcommerce"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Colts",
+      "kind": "corps",
+      "corpsKey": "001j000000iwx98aad",
+      "website": "http://www.colts.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://store.colts.org/",
+      "finalUrl": "https://store.colts.org/",
+      "hasMerch": true,
+      "platform": "shopify",
+      "signals": [
+        "header:powered-by-shopify",
+        "html:cdn.shopify.com",
+        "html:cdn/shop",
+        "html:myshopify.com",
+        "html:Shopify-js",
+        "endpoint:products.json"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Crossmen",
+      "kind": "corps",
+      "corpsKey": "001j000000iwx9aaat",
+      "website": "http://www.crossmen.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://store.crossmen.org/",
+      "finalUrl": "https://store.crossmen.org/",
+      "hasMerch": true,
+      "platform": "shopify",
+      "signals": [
+        "header:powered-by-shopify",
+        "html:cdn.shopify.com",
+        "html:cdn/shop",
+        "html:myshopify.com",
+        "html:Shopify-js",
+        "endpoint:products.json"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Genesis",
+      "kind": "corps",
+      "corpsKey": "001j000000iwx9oaad",
+      "website": "http://www.genesisdbc.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://store.genesisdbc.org/",
+      "finalUrl": "https://store.genesisdbc.org/",
+      "hasMerch": true,
+      "platform": "shopify",
+      "signals": [
+        "header:powered-by-shopify",
+        "html:cdn.shopify.com",
+        "html:cdn/shop",
+        "html:myshopify.com",
+        "html:Shopify-js",
+        "endpoint:products.json"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Jersey Surf",
+      "kind": "corps",
+      "corpsKey": "001j000000iwx9waad",
+      "website": "https://web.archive.org/web/20260120145801/http://jerseysurf.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://web.archive.org/web/20260122092423/https://jerseysurf.org/store/",
+      "finalUrl": "https://web.archive.org/web/20260313202434/https://jerseysurf.org/store/",
+      "hasMerch": true,
+      "platform": "woocommerce",
+      "signals": [
+        "html:woocommerce"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Madison Scouts",
+      "kind": "corps",
+      "corpsKey": "001j000000i6lenaa3",
+      "website": "http://www.madisonscouts.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://scoutsproshop.com/",
+      "finalUrl": "https://scoutsproshop.com/",
+      "hasMerch": true,
+      "platform": "shopify",
+      "signals": [
+        "header:powered-by-shopify",
+        "html:cdn.shopify.com",
+        "html:cdn/shop",
+        "html:myshopify.com",
+        "html:Shopify-js",
+        "endpoint:products.json"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Mandarins",
+      "kind": "corps",
+      "corpsKey": "001j000000iwxa3aal",
+      "website": "http://www.mandarins.org/",
+      "checkedAt": "2026-06-13T21:43:39.027Z",
+      "merchUrl": "https://shop.mandarins.org/",
+      "finalUrl": "https://shop.mandarins.org/",
+      "hasMerch": true,
+      "platform": "shopify",
+      "signals": [
+        "header:powered-by-shopify",
+        "html:cdn.shopify.com",
+        "html:cdn/shop",
+        "html:myshopify.com",
+        "html:Shopify-js",
+        "endpoint:products.json"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    }
+  ]
+}

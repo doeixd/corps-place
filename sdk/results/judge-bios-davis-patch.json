@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Mike Davis: identity confirmed by user (MFA + SCPA + Mapex all the same person). Replaces earlier draft that conflated Franklin HS TN / Colts / Troopers (search contamination) with the correct St. Louis / Freedom Percussion bio.",
+  "profiles": [
+    {
+      "judgeId": "m-davis-1",
+      "displayName": "Mike Davis",
+      "givenName": "Mike",
+      "familyName": "Davis",
+      "biography": "Mike Davis is a music/percussion adjudicator for Drum Corps International who has been involved in the marching arts for some 30 years. Based in St. Louis, Missouri, he has arranged, designed, and taught for marching bands and winter percussion ensembles across the Midwest, and is a sought-after judge for marching band and winter percussion contests nationwide. He has been invited to judge both Open Class and World Class competitions at the DCI World Championship Finals as well as other major DCI events and individual & ensemble competition, and also judges for Bands of America and Winter Guard International. He directs Freedom Percussion, an independent winter percussion ensemble from St. Louis, and is endorsed by REMO and Mapex.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2022/09/mike-davis-adjudicator-headshot-web-2022.jpg",
+      "alternateNames": ["Michael Davis"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/michael-davis/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://scpa.live/judge/profile/9783", "label": "SCPA judge profile", "kind": "organization" },
+        { "url": "https://mapexdrums.com/mapex-international/artists/mike-davis", "label": "Mapex artist page", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI music adjudicator (Open & World Class Finals); St. Louis MO; directs Freedom Percussion; REMO/Mapex endorsed; 30 yrs in marching arts", "source": "https://education.musicforall.org/clinician/michael-davis/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

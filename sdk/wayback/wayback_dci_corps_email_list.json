@@ -1,0 +1,408 @@
+{
+  "metadata": {
+    "description": "DCI Corps email addresses for outreach",
+    "count": 50
+  },
+  "corps": [
+    {
+      "name": "Sonus Brass Theater",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "sean.peck@shenandoahsound.org",
+      "contactPerson": "Sean",
+      "phone": "(703) 850-4125",
+      "website": "www.sonusbrasstheater.org"
+    },
+    {
+      "name": "Jersey Surf",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "bobj@jerseysurf.org",
+      "contactPerson": "BOB",
+      "phone": "(690) 280-0223",
+      "website": "https://web.archive.org/web/20260120145801/http://jerseysurf.org/"
+    },
+    {
+      "name": "Calgary Stampede Showband",
+      "type": "Corps, International",
+      "email": "acooper@calgarystampede.com",
+      "contactPerson": "Allie",
+      "phone": "(403) 261-0448",
+      "website": "https://web.archive.org/web/20260120145801/https://corporate.calgarystampede.com/foundation/programs/stampede-showband"
+    },
+    {
+      "name": "Calgary Stetson Show Band",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "mrmrjewitt@gmail.com",
+      "contactPerson": "Michael",
+      "phone": "4034619340",
+      "website": "www.stetsonband.org"
+    },
+    {
+      "name": "IMPACT Drum & Bugle Corps",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "abendschein@impactdrumcorps.org",
+      "contactPerson": "Michael",
+      "phone": "(352) 551-5564",
+      "website": "https://web.archive.org/web/20260120145801/http://impactdrumcorps.org"
+    },
+    {
+      "name": "Crusaders Senior Drum & Bugle Corps",
+      "type": "Performance Ensemble, Alumni Corps",
+      "email": "crusaderssenior@gmail.co",
+      "contactPerson": "Cynthia",
+      "phone": "(617) 797-5525",
+      "website": "crusaderssenior.weebly.com/index.html"
+    },
+    {
+      "name": "Sacramento Freelancers Drum & Bugle Corps",
+      "type": "Performance Ensemble, Mini Corps",
+      "email": "nextstepconsulting@gmail.com",
+      "contactPerson": "Carl",
+      "phone": "661-998-9181",
+      "website": "www.freelancers-alumni.org"
+    },
+    {
+      "name": "Spirit of Sunnyvale",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "mickey_helms@yahoo.com",
+      "contactPerson": "Mickey",
+      "phone": "(650) 222-5697",
+      "website": "https://web.archive.org/web/20260120145801/http://www.spiritofsunnyvale.com"
+    },
+    {
+      "name": "North Star",
+      "type": "Performance Ensemble, Alumni Corps",
+      "email": "lindaobrein@yahoo.com",
+      "contactPerson": "Linda",
+      "phone": "(978) 535-5740",
+      "website": "sites.google.com/northstarcorps.org/northstarcorps"
+    },
+    {
+      "name": "Troopers Legacy Corps",
+      "type": "Performance Ensemble, Alumni Corps",
+      "email": "legacycorps@troopersdrumcorps.org",
+      "contactPerson": "Tom",
+      "phone": "(508) 322-0150",
+      "website": null
+    },
+    {
+      "name": "Bluecoats Rhythm IN BLUE",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "jwise@bluecoats.com",
+      "contactPerson": "Jay",
+      "phone": "3309574024",
+      "website": "https://web.archive.org/web/20260120145801/https://bluecoats.com/rhythminblue"
+    },
+    {
+      "name": "Arsenal",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "caleb@arsenadbc.org",
+      "contactPerson": "Caleb R.",
+      "phone": null,
+      "website": "https://web.archive.org/web/20260120145801/https://www.arsenaldbc.org/"
+    },
+    {
+      "name": "Conquest Drum & Bugle Corps",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "jhill01995@gmail.com",
+      "contactPerson": "Jeremy",
+      "phone": "(563) 940-4184",
+      "website": "https://web.archive.org/web/20260120145801/https://sites.google.com/view/conquest-drum-and-bugle/home"
+    },
+    {
+      "name": "Minnesota Brass",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "minnesotabrassinformation@dci.org",
+      "contactPerson": "Minnesota Brass",
+      "phone": "(952) 210-7915",
+      "website": null
+    },
+    {
+      "name": "Zephyrus Drum & Bugle Corps",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "zephyrusinformation@dci.org",
+      "contactPerson": "Zephyrus",
+      "phone": null,
+      "website": "https://web.archive.org/web/20260120145801/https://www.zephyrusarts.org/corps.html"
+    },
+    {
+      "name": "Green Beret Marching Band",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "greenberetmarchingband@gmail.com",
+      "contactPerson": "Alicia",
+      "phone": "(608) 201-5049",
+      "website": "https://web.archive.org/web/20260120145801/https://greenberetmarchingband.org/"
+    },
+    {
+      "name": "Eclipse",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "casey.stone@eclipsedbc.org",
+      "contactPerson": "Casey",
+      "phone": "(317) 850-0964",
+      "website": "https://web.archive.org/web/20260120145801/https://eclipsedbc.org/"
+    },
+    {
+      "name": "Gems",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "austinmoldenhauer@gmail.com",
+      "contactPerson": "Austin",
+      "phone": "(208) 789-1544",
+      "website": "https://web.archive.org/web/20260120145801/https://www.boisegems.org/"
+    },
+    {
+      "name": "Northern Lights Drum & Bugle Corps",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "northernlightsinformation@dci.org",
+      "contactPerson": "Northern Lights",
+      "phone": "6162134477",
+      "website": "https://web.archive.org/web/20260120145801/https://www.northernlightsmi.org/"
+    },
+    {
+      "name": "Memphis Blues",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "memphisbluesinformation@dci.org",
+      "contactPerson": "Memphis Blues",
+      "phone": "(615) 319-2329",
+      "website": "https://web.archive.org/web/20260120145801/https://www.memphisbluesdc.org/"
+    },
+    {
+      "name": "New York Skyliners",
+      "type": "Corps, All Age",
+      "email": "skylinersinformation@dci.org",
+      "contactPerson": "Skyliners",
+      "phone": "(570) 406-4114",
+      "website": "https://web.archive.org/web/20260120145801/https://skylinersdbc.org/"
+    },
+    {
+      "name": "Buccaneer Alumni Corps",
+      "type": "Performance Ensemble, Alumni Corps",
+      "email": "president@bucsalumni.org",
+      "contactPerson": "Robert",
+      "phone": "(484) 599-0182",
+      "website": null
+    },
+    {
+      "name": "Hawthorne Caballeros Alumni",
+      "type": "Performance Ensemble, Alumni Corps",
+      "email": "david.l.chadwick@gmail.com",
+      "contactPerson": "David",
+      "phone": "8482403511",
+      "website": null
+    },
+    {
+      "name": "Skyliners Alumni",
+      "type": "Performance Ensemble, Alumni Corps",
+      "email": "skyalumdirector@gmail.com",
+      "contactPerson": "Cathy",
+      "phone": "(973) 342-6094",
+      "website": null
+    },
+    {
+      "name": "Spirit of Atlanta Alumni Corps",
+      "type": "Performance Ensemble, Alumni Corps",
+      "email": "kennerd52@gmail.com",
+      "contactPerson": "Deedee",
+      "phone": "(904) 376-5909",
+      "website": null
+    },
+    {
+      "name": "Steel City Ambassadors",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "steelcityambassadorsinformation@dci.org",
+      "contactPerson": "Steel City Ambassadors",
+      "phone": "(814) 923-8285",
+      "website": "https://web.archive.org/web/20260120145801/https://scadbc.org/"
+    },
+    {
+      "name": "Valley Thunder",
+      "type": "Performance Ensemble, Mini Corps",
+      "email": "valleythunderdbc@gmail.com",
+      "contactPerson": "Matthew",
+      "phone": "(914) 424-3149",
+      "website": null
+    },
+    {
+      "name": "Hamburg Kingsmen Alumni",
+      "type": "Performance Ensemble, Alumni Corps",
+      "email": "paul651@verizon.net",
+      "contactPerson": "Paul",
+      "phone": "(716) 523-7567",
+      "website": null
+    },
+    {
+      "name": "Latrobe Music Center",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "latrobemusiccenter@gmail.com",
+      "contactPerson": "Randall",
+      "phone": "(412) 601-0152",
+      "website": null
+    },
+    {
+      "name": "Sky Ryders",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "skyrydersinformation@dci.org",
+      "contactPerson": "Sky Ryders",
+      "phone": "(920) 737-3986",
+      "website": "https://web.archive.org/web/20260120145801/http://www.skyryders.com/about/foundation/"
+    },
+    {
+      "name": "Alisal Union School District Marching Band",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "daniel@forxa.net",
+      "contactPerson": "Daniel",
+      "phone": "+18317535700",
+      "website": null
+    },
+    {
+      "name": "Jacksonville Drumline Institute",
+      "type": "Performance Ensemble, DrumLineBattle",
+      "email": "jacksonvilledrumlineinstitute@gmail.com",
+      "contactPerson": "Chip",
+      "phone": "(217) 291-4114",
+      "website": null
+    },
+    {
+      "name": "CADRE Drum Line",
+      "type": "Performance Ensemble, DrumLineBattle",
+      "email": "rmeyers@feldmandaxon.com",
+      "contactPerson": "Ronald",
+      "phone": "(905) 601-6026",
+      "website": null
+    },
+    {
+      "name": "Blue Saints",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "vinfrap@gmail.com",
+      "contactPerson": "Vincent",
+      "phone": "(705) 507-3102",
+      "website": null
+    },
+    {
+      "name": "Carolina Gold",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "executivedirector@carolinagold.org",
+      "contactPerson": "Jonathan",
+      "phone": "+13368296271",
+      "website": "www.carolinagold.org"
+    },
+    {
+      "name": "Myrtle Wavez",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "myrtlewavezinformation@dci.org",
+      "contactPerson": "Myrtle Wavez",
+      "phone": "(906) 395-1915",
+      "website": null
+    },
+    {
+      "name": "Legacy Drum & Bugle Corps",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "tom@dreampaa.org",
+      "contactPerson": "Thomas",
+      "phone": "(201) 788-1935",
+      "website": null
+    },
+    {
+      "name": "Kardinal Dreams",
+      "type": "Performance Ensemble, DrumLineBattle",
+      "email": "kardinaldreams@hotmail.com",
+      "contactPerson": "Tyriq",
+      "phone": "(561) 309-1100",
+      "website": null
+    },
+    {
+      "name": "Northern Empire Performing Arts",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "director@northernempirearts.ca",
+      "contactPerson": "Lisa",
+      "phone": "780-940-4583",
+      "website": null
+    },
+    {
+      "name": "Banda Municipal de San José",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "esanchez@msj.go.cr",
+      "contactPerson": "Erick",
+      "phone": "506 60408463",
+      "website": null
+    },
+    {
+      "name": "Mosaic Sound",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "bobbybonslater@gmail.com",
+      "contactPerson": "Bobby",
+      "phone": "(312) 371-9899",
+      "website": null
+    },
+    {
+      "name": "DrumSpirit",
+      "type": "Performance Ensemble, DrumLineBattle",
+      "email": "xander@drumspirit.be",
+      "contactPerson": "Xander",
+      "phone": null,
+      "website": null
+    },
+    {
+      "name": "Lutheran Vanguard of Wisconsin",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "jneujahr@fvlhs.org",
+      "contactPerson": "James",
+      "phone": "+19207403924",
+      "website": null
+    },
+    {
+      "name": "High School Affiliated to Beijing Institute of Technology",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "lin@joy-intel.com",
+      "contactPerson": "Lin",
+      "phone": "+8618801016198",
+      "website": null
+    },
+    {
+      "name": "Beijing 57 High School",
+      "type": "Corps, International",
+      "email": "lin@joy-intel.com",
+      "contactPerson": "Lin",
+      "phone": "+8618801016198",
+      "website": null
+    },
+    {
+      "name": "RCR Alumni Corps",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "beau@rivercityrhythm.org",
+      "contactPerson": "Beau",
+      "phone": "(320) 290-2181",
+      "website": null
+    },
+    {
+      "name": "Rocky Mountain Brassworks",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "harclef@comcast.net",
+      "contactPerson": "Douglas",
+      "phone": "3036903327",
+      "website": null
+    },
+    {
+      "name": "RCR Street Club",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "beau@rivercityrhythm.org",
+      "contactPerson": "Beau",
+      "phone": "(320) 290-2181",
+      "website": null
+    },
+    {
+      "name": "Hanover Lancers",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "lancerspres@gmail.com",
+      "contactPerson": "Chip",
+      "phone": null,
+      "website": null
+    },
+    {
+      "name": "Lake Erie Sound Barbershop Chorus",
+      "type": "Performance Ensemble, Soundsport",
+      "email": "bcpraetzel@gmail.com",
+      "contactPerson": "Brian",
+      "phone": null,
+      "website": null
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+import { useMemo } from 'react';
+import { Show, For } from 'jotai-solid-api';
+import * as Match from 'effect/Match';
+import * as Predicate from 'effect/Predicate';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Badge } from '@/components/reui/badge';
+import { ClassBadge } from '@/components/class-badge';
+import { CorpsNameCell } from '@/components/corps-name-cell';
+import { Icon, type IconComponent } from '@/components/icon';
+import type { EventDirectoryRow, EventScheduleRow } from '@/lib/event-directory';
+import { MapsLocation02Icon } from '@/components/icons/generated';
+import type { ShowInfoSummary } from '@sdk/src/readModel/builders/shows.js';
+
+interface ScheduleRow {
+  order: number | null;
+  time?: string;
+  name: string;
+  division?: string;
+  corpsKey?: string | null;
+  kind: 'performance' | 'exhibition' | 'ceremony';
+  showTitle?: string;
+  showInfo?: ShowInfoSummary;
+}
+
+const isSet: Predicate.Predicate<number> = (n) => n !== 0;
+
+const scheduleKind = (r: EventScheduleRow): ScheduleRow['kind'] =>
+  Match.value(r).pipe(
+    Match.when({ is_exhibition: isSet }, () => 'exhibition' as const),
+    Match.when({ is_non_performance: isSet }, () => 'ceremony' as const),
+    Match.orElse(() => 'performance' as const)
+  );
+
+function ScheduleClassCell({ row }: { row: ScheduleRow }) {
+  const dash = <span className="text-muted-foreground/60">—</span>;
+  return Match.value(row.kind).pipe(
+    Match.when('performance', () => (row.division ? <ClassBadge division={row.division} /> : dash)),
+    Match.when('exhibition', () => (
+      <Badge variant="outline" radius="full">
+        <span className="relative top-px">Exhibition</span>
+      </Badge>
+    )),
+    Match.when('ceremony', () => dash),
+    Match.exhaustive
+  );
+}
+
+function MapLink({
+  href,
+  icon,
+  label,
+  tooltip,
+}: {
+  href: string;
+  icon: IconComponent;
+  label: string;
+  tooltip?: string;
+}) {
+  const className =
+    'inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-text-secondary transition-colors hover:bg-muted hover:text-foreground';
+  const content = (
+    <>
+      <Icon icon={icon} size="sm" className="size-3.5" />
+      <span>{label}</span>
+    </>
+  );
+  if (!tooltip)
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className={className}>
+        {content}
+      </a>
+    );
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={<a href={href} target="_blank" rel="noreferrer" className={className} />}
+      >
+        {content}
+      </TooltipTrigger>
+      <TooltipContent>{tooltip}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+export function LineupSchedule({
+  event,
+  schedule,
+  showTitles,
+  showInfo,
+  corpsLookup,
+}: {
+  event: EventDirectoryRow | null;
+  schedule: EventScheduleRow[];
+  showTitles?: Record<string, string>;
+  showInfo?: Record<string, ShowInfoSummary>;
+  corpsLookup?: (row: { corps_key: string | null; unit_name: string }) =>
+    | {
+        slug: string | null;
+      }
+    | undefined;
+}) {
+  const rows = useMemo<ScheduleRow[]>(
+    () =>
+      (schedule ?? []).map((r) => ({
+        order: r.performance_order,
+        time: r.time ?? undefined,
+        name: r.unit_name,
+        division: r.division_name ?? undefined,
+        corpsKey: r.corps_key,
+        kind: scheduleKind(r),
+        showTitle:
+          r.corps_key && showInfo?.[r.corps_key]
+            ? showInfo[r.corps_key].title
+            : r.corps_key && showTitles?.[r.corps_key]
+              ? showTitles[r.corps_key]
+              : undefined,
+        showInfo: r.corps_key ? showInfo?.[r.corps_key] : undefined,
+      })),
+    [schedule, showInfo, showTitles]
+  );
+
+  if (rows.length === 0) return null;
+
+  const city = event?.location_city;
+  const state = event?.location_state;
+  const cityState = [city, state].filter(Boolean).join(', ');
+  const venueName = event?.venue_name || null;
+  const venueAddress = event?.venue_address || null;
+  const locationLabel = venueName || cityState;
+  const mapsQuery = encodeURIComponent(
+    venueAddress || [venueName, cityState].filter(Boolean).join(' ') || cityState
+  );
+  const mapsHref = locationLabel
+    ? `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`
+    : null;
+
+  return (
+    <div className="space-y-4 pt-6">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-lg font-medium text-text-primary pl-[1px]">Lineup</h2>
+        <Show when={!!mapsHref}>
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <MapLink
+              href={mapsHref!}
+              icon={MapsLocation02Icon}
+              label={locationLabel}
+              tooltip="Open this venue's location in Google Maps"
+            />
+          </div>
+        </Show>
+      </div>
+      <Card>
+        <CardContent className="px-0 py-0 sm:px-2">
+          <Table className="text-sm tabular-nums">
+            <TableHeader>
+              <TableRow>
+                {/* <TableHead className="w-[56px] min-w-[56px] px-2 text-center">#</TableHead> */}
+                <TableHead className="w-[88px] min-w-[88px] whitespace-nowrap">Time</TableHead>
+                <TableHead>Corps</TableHead>
+                <TableHead>Show</TableHead>
+                <TableHead className="text-right">Class</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <For each={rows}>
+                {(row, i) => (
+                  <TableRow
+                    key={i()}
+                    className={
+                      'border-b transition-colors hover:bg-muted/50' +
+                      (row.kind !== 'performance' ? ' text-muted-foreground' : '')
+                    }
+                  >
+                    {/*                     <TableCell className="px-2 text-center text-muted-foreground tabular-nums">
+                      {row.order ?? '—'}
+                    </TableCell> */}
+                    <TableCell className="whitespace-nowrap font-mono text-text-secondary">
+                      {row.time ?? '—'}
+                    </TableCell>
+                    <TableCell className={row.kind === 'performance' ? 'font-medium' : 'italic'}>
+                      {row.kind === 'performance' && corpsLookup
+                        ? (() => {
+                            const info = corpsLookup({
+                              corps_key: row.corpsKey ?? null,
+                              unit_name: row.name,
+                            });
+                            return (
+                              <CorpsNameCell
+                                name={row.name}
+                                slug={info?.slug ?? null}
+                                corpsKey={row.corpsKey ?? null}
+                              />
+                            );
+                          })()
+                        : row.name}
+                    </TableCell>
+                    <TableCell className="min-w-[220px] text-sm">
+                      {row.showTitle ? (
+                        <div className="space-y-1.5">
+                          <div className="font-medium text-text-secondary">{row.showTitle}</div>
+                          <Show when={(row.showInfo?.repertoire.length ?? 0) > 0}>
+                            <div className="space-y-0.5 text-xs leading-snug text-muted-foreground">
+                              <For each={row.showInfo?.repertoire.slice(0, 3) ?? []}>
+                                {(piece) => (
+                                  <div>
+                                    <span>{piece.workTitle}</span>
+                                    <Show when={piece.composer}>
+                                      {(composer) => (
+                                        <span className="text-muted-foreground/70">
+                                          {' '}
+                                          by {composer}
+                                        </span>
+                                      )}
+                                    </Show>
+                                  </div>
+                                )}
+                              </For>
+                              <Show when={(row.showInfo?.repertoire.length ?? 0) > 3}>
+                                <div className="text-muted-foreground/70">
+                                  +{(row.showInfo?.repertoire.length ?? 0) - 3} more
+                                </div>
+                              </Show>
+                            </div>
+                          </Show>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground/60">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <ScheduleClassCell row={row} />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </For>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

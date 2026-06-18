@@ -1,0 +1,20 @@
+{
+  "scrapedAt": "2026-06-16T12-07-43-544Z",
+  "corps": [
+    {
+      "corpsKey": "001j000000iwwssaal",
+      "name": "Boston Crusaders",
+      "postsDiscovered": 29,
+      "staffPosts": 8,
+      "people": 38,
+      "seasons": [
+        2016,
+        2017,
+        2018,
+        2025,
+        2026
+      ],
+      "skipped": false
+    }
+  ]
+}

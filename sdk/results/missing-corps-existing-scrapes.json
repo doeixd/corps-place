@@ -1,0 +1,350 @@
+[
+  {
+    "corps_key": "0010a00001bpafnaar",
+    "name": "Sound of Sun Prairie",
+    "scrapes": [
+      {
+        "corps_slug": "sound-of-sun-prairie",
+        "source_url": "https://www.dci.org/corps/sound-of-sun-prairie/",
+        "http_status": 200,
+        "html_len": 0,
+        "parsed_len": 19,
+        "parsed_preview": "{\"notProfile\":true}",
+        "scraped_at": "2026-06-03T16:51:04.827Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a00001iprmyaah",
+    "name": "Cadets 2",
+    "scrapes": [
+      {
+        "corps_slug": "cadets2",
+        "source_url": "https://www.dci.org/corps/cadets2/",
+        "http_status": 200,
+        "html_len": 157533,
+        "parsed_len": 554,
+        "parsed_preview": "{\"name\":\"CADETS2 : Upcoming Events & Related News\",\"website\":null,\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Allentown, PA\",\"city\":\"Allentown\",\"state\":\"PA\",\"address\":\"601 W. Hamilton Street Allentown PA, 18101\",\"phone\":\"(610) 821-0345 Ext. 115\",\"email\"",
+        "scraped_at": "2026-06-04T00:52:20.807Z"
+      },
+      {
+        "corps_slug": "cadets2",
+        "source_url": "https://www.dci.org/corps/cadets2/",
+        "http_status": 200,
+        "html_len": 0,
+        "parsed_len": 19,
+        "parsed_preview": "{\"notProfile\":true}",
+        "scraped_at": "2026-06-04T00:51:05.334Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a00001iqmzuaah",
+    "name": "Sunrisers",
+    "scrapes": [
+      {
+        "corps_slug": "sunrisers",
+        "source_url": "https://www.dci.org/corps/sunrisers/",
+        "http_status": 200,
+        "html_len": 176386,
+        "parsed_len": 1221,
+        "parsed_preview": "{\"name\":\"Sunrisers\",\"website\":\"https://www.sunrisersdrumcorps.org\",\"facebook\":\"https://www.facebook.com/lisunrisers\",\"twitter\":null,\"instagram\":\"https://www.instagram.com/sunriserscorps/\",\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Kings Park, NY\",\"city\":\"Kings Park\",\"state\":\"NY\",\"address\":\"8 Avenue ",
+        "scraped_at": "2026-06-03T00:28:19.987Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "0015b000028qtqbaae",
+    "name": "Eclipse",
+    "scrapes": [
+      {
+        "corps_slug": "eclipse",
+        "source_url": "https://www.dci.org/corps/eclipse/",
+        "http_status": 200,
+        "html_len": 0,
+        "parsed_len": 19,
+        "parsed_preview": "{\"notProfile\":true}",
+        "scraped_at": "2026-06-03T16:50:42.375Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "0015b00002bxwbjaap",
+    "name": "Gems",
+    "scrapes": [
+      {
+        "corps_slug": "gems",
+        "source_url": "https://www.dci.org/corps/gems/",
+        "http_status": 200,
+        "html_len": 173600,
+        "parsed_len": 986,
+        "parsed_preview": "{\"name\":\"Gems : Upcoming Events & Related News\",\"website\":\"https://www.boisegems.org/\",\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Boise, ID\",\"city\":\"Boise\",\"state\":\"ID\",\"address\":\"4440 W Franklin Rd. Apt 201 Boise ID, 83705\",\"phone\":\"(208) 789-1544\",\"e",
+        "scraped_at": "2026-06-03T16:50:43.650Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "0015b00002byuh0aap",
+    "name": "Memphis Blues",
+    "scrapes": [
+      {
+        "corps_slug": "memphis-blues",
+        "source_url": "https://www.dci.org/corps/memphis-blues/",
+        "http_status": 200,
+        "html_len": 180229,
+        "parsed_len": 1429,
+        "parsed_preview": "{\"name\":\"Memphis Blues : Upcoming Events & Related News\",\"website\":\"https://www.memphisbluesdc.org/\",\"facebook\":\"https://www.facebook.com/profile.php?id=100090514550700\",\"twitter\":\"https://twitter.com/memphisbluesdc\",\"instagram\":\"https://www.instagram.com/memphisbluesdc/\",\"youtube\":null,\"linkedIn\":n",
+        "scraped_at": "2026-06-03T00:28:04.252Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwwspaal",
+    "name": "Blue Saints",
+    "scrapes": [
+      {
+        "corps_slug": "blue-saints",
+        "source_url": "https://www.dci.org/corps/blue-saints/",
+        "http_status": 200,
+        "html_len": 0,
+        "parsed_len": 19,
+        "parsed_preview": "{\"notProfile\":true}",
+        "scraped_at": "2026-06-03T16:50:25.725Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwx9daat",
+    "name": "Eruption",
+    "scrapes": [
+      {
+        "corps_slug": "eruption",
+        "source_url": "https://www.dci.org/corps/eruption/",
+        "http_status": 200,
+        "html_len": 157615,
+        "parsed_len": 561,
+        "parsed_preview": "{\"name\":\"Eruption : Upcoming Events & Related News\",\"website\":null,\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Gig Harbor, WA\",\"city\":\"Gig Harbor\",\"state\":\"WA\",\"address\":\"3206 50th St. Ct. NW Suite A-222 Gig Harbor WA, 98335\",\"phone\":\"(253) 592-1858\",\"e",
+        "scraped_at": "2026-06-04T00:59:00.806Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwx9yaad",
+    "name": "Jubal",
+    "scrapes": [
+      {
+        "corps_slug": "jubal",
+        "source_url": "https://www.dci.org/corps/jubal/",
+        "http_status": 200,
+        "html_len": 162421,
+        "parsed_len": 820,
+        "parsed_preview": "{\"name\":\"Jubal : Upcoming Events & Related News\",\"website\":\"http://jubal.org/\",\"facebook\":\"https://www.facebook.com/JubalDordrecht/\",\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Dordrecht, Netherlands\",\"city\":null,\"state\":null,\"address\":\"Postbus 8189 3301 CD Dordrecht ,",
+        "scraped_at": "2026-06-04T00:55:28.806Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwxa4aal",
+    "name": "Minnesota Brass",
+    "scrapes": [
+      {
+        "corps_slug": "minnesota-brass",
+        "source_url": "https://www.dci.org/corps/minnesota-brass/",
+        "http_status": 200,
+        "html_len": 170364,
+        "parsed_len": 984,
+        "parsed_preview": "{\"name\":\"MBI : Upcoming Events & Related News\",\"website\":null,\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"St. Paul, MN\",\"city\":\"St. Paul\",\"state\":\"MN\",\"address\":\"4177 Kaitlin Dr Vadnais Hts MN, 55127\",\"phone\":\"(952) 210-7915\",\"email\":null,\"about\":\"Found",
+        "scraped_at": "2026-06-03T00:28:16.762Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwxaiaa1",
+    "name": "Thunder",
+    "scrapes": [
+      {
+        "corps_slug": "thunder",
+        "source_url": "https://www.dci.org/corps/thunder/",
+        "http_status": 200,
+        "html_len": 157541,
+        "parsed_len": 532,
+        "parsed_preview": "{\"name\":\"Thunder : Upcoming Events & Related News\",\"website\":null,\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Veradale, WA\",\"city\":\"Veradale\",\"state\":\"WA\",\"address\":\"P.O. Box 563 Veradale WA, 99037\",\"phone\":\"(509) 844-5563\",\"email\":null,\"about\":null,\"lo",
+        "scraped_at": "2026-06-04T01:01:46.640Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000u5nhqaaj",
+    "name": "Spirit of Sunnyvale",
+    "scrapes": [
+      {
+        "corps_slug": "spirit-of-sunnyvale",
+        "source_url": "https://www.dci.org/corps/spirit-of-sunnyvale/",
+        "http_status": 200,
+        "html_len": 176912,
+        "parsed_len": 1440,
+        "parsed_preview": "{\"name\":\"Spirit of Sunnyvale : Upcoming Events & Related News\",\"website\":\"http://www.spiritofsunnyvale.com\",\"facebook\":\"https://www.facebook.com/spiritofsunnyvale\",\"twitter\":\"https://twitter.com/spiritofsvalemb\",\"instagram\":null,\"youtube\":\"https://www.youtube.com/user/spiritofsunnyvale\",\"linkedIn\":n",
+        "scraped_at": "2026-06-04T00:25:27.589Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "arsenal",
+    "name": "Arsenal",
+    "scrapes": [
+      {
+        "corps_slug": "arsenal",
+        "source_url": "https://www.dci.org/corps/arsenal/",
+        "http_status": 200,
+        "html_len": 0,
+        "parsed_len": 19,
+        "parsed_preview": "{\"notProfile\":true}",
+        "scraped_at": "2026-06-03T16:33:26.670Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "conquest-drum-bugle-corps",
+    "name": "Conquest Drum & Bugle Corps",
+    "scrapes": [
+      {
+        "corps_slug": "conquest-drum-bugle-corps",
+        "source_url": "https://www.dci.org/corps/conquest-drum-bugle-corps/",
+        "http_status": 200,
+        "html_len": 0,
+        "parsed_len": 19,
+        "parsed_preview": "{\"notProfile\":true}",
+        "scraped_at": "2026-06-03T16:50:34.487Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "impact-drum-bugle-corps",
+    "name": "IMPACT Drum & Bugle Corps",
+    "scrapes": [
+      {
+        "corps_slug": "impact-drum-bugle-corps",
+        "source_url": "https://www.dci.org/corps/impact-drum-bugle-corps/",
+        "http_status": 200,
+        "html_len": 166358,
+        "parsed_len": 1317,
+        "parsed_preview": "{\"name\":\"IMPACT Drum & Bugle Corps : Upcoming Events & Related News\",\"website\":\"http://impactdrumcorps.org\",\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Orlando, FL\",\"city\":\"Orlando\",\"state\":\"FL\",\"address\":\"2345 Foxtree Rd Tavares FL, 32278\",\"phone\":\"(35",
+        "scraped_at": "2026-06-04T00:25:19.196Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "latrobe-music-center",
+    "name": "Latrobe Music Center",
+    "scrapes": [
+      {
+        "corps_slug": "latrobe-music-center",
+        "source_url": "https://www.dci.org/corps/latrobe-music-center/",
+        "http_status": 200,
+        "html_len": 166480,
+        "parsed_len": 763,
+        "parsed_preview": "{\"name\":\"Latrobe Music Center : Upcoming Events & Related News\",\"website\":null,\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":null,\"city\":null,\"state\":null,\"address\":\"602 Alexandria St LATROBE PA, 15650\",\"phone\":\"(412) 601-0152\",\"email\":null,\"about\":\"Proudl",
+        "scraped_at": "2026-06-03T16:50:48.725Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "mercedes-marching-band",
+    "name": "Mercedes Marching Band",
+    "scrapes": [
+      {
+        "corps_slug": "mercedes-marching-band",
+        "source_url": "https://www.dci.org/corps/mercedes-marching-band/",
+        "http_status": 200,
+        "html_len": 167118,
+        "parsed_len": 510,
+        "parsed_preview": "{\"name\":\"Mercedes Marching Band : Upcoming Events & Related News\",\"website\":null,\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Mercedes Norte, Costa Rica\",\"city\":null,\"state\":null,\"address\":null,\"phone\":null,\"email\":null,\"about\":null,\"logo\":null,\"coverIma",
+        "scraped_at": "2026-06-03T00:28:24.036Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "northern-lights-drum-bugle-corps",
+    "name": "Northern Lights Drum & Bugle Corps",
+    "scrapes": [
+      {
+        "corps_slug": "northern-lights-drum-bugle-corps",
+        "source_url": "https://www.dci.org/corps/northern-lights-drum-bugle-corps/",
+        "http_status": 200,
+        "html_len": 174655,
+        "parsed_len": 1076,
+        "parsed_preview": "{\"name\":\"Northern Lights : Upcoming Events & Related News\",\"website\":\"https://www.northernlightsmi.org/\",\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Grand Rapids, MI\",\"city\":\"Grand Rapids\",\"state\":\"MI\",\"address\":\"5783 West River Drive Northeast Plainfie",
+        "scraped_at": "2026-06-04T00:31:14.807Z"
+      },
+      {
+        "corps_slug": "northern-lights-drum-bugle-corps",
+        "source_url": "https://www.dci.org/corps/northern-lights-drum-bugle-corps/",
+        "http_status": 200,
+        "html_len": 174655,
+        "parsed_len": 1076,
+        "parsed_preview": "{\"name\":\"Northern Lights : Upcoming Events & Related News\",\"website\":\"https://www.northernlightsmi.org/\",\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Grand Rapids, MI\",\"city\":\"Grand Rapids\",\"state\":\"MI\",\"address\":\"5783 West River Drive Northeast Plainfie",
+        "scraped_at": "2026-06-03T00:28:17.359Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "sky-ryders",
+    "name": "Sky Ryders",
+    "scrapes": [
+      {
+        "corps_slug": "sky-ryders",
+        "source_url": "https://www.dci.org/corps/sky-ryders/",
+        "http_status": 200,
+        "html_len": 170654,
+        "parsed_len": 1035,
+        "parsed_preview": "{\"name\":\"Sky Ryders : Upcoming Events & Related News\",\"website\":\"http://www.skyryders.com/about/foundation/\",\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Hutchinson, KS\",\"city\":\"Hutchinson\",\"state\":\"KS\",\"address\":null,\"phone\":\"(920) 737-3986\",\"email\":nul",
+        "scraped_at": "2026-06-03T16:33:24.146Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "sonus-brass-theater",
+    "name": "Sonus Brass Theater",
+    "scrapes": [
+      {
+        "corps_slug": "sonus-brass-theater",
+        "source_url": "https://www.dci.org/corps/sonus-brass-theater/",
+        "http_status": 200,
+        "html_len": 177515,
+        "parsed_len": 1341,
+        "parsed_preview": "{\"name\":\"Sonus Brass Theater : Upcoming Events & Related News\",\"website\":\"http://www.sonusbrasstheater.org\",\"facebook\":\"https://www.facebook.com/DCISonus\",\"twitter\":\"https://twitter.com/SoundDrumCorps\",\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Woodbridge, VA\",\"city\":\"Woodbridge\",\"s",
+        "scraped_at": "2026-06-03T16:51:03.860Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "steel-city-ambassadors",
+    "name": "Steel City Ambassadors",
+    "scrapes": [
+      {
+        "corps_slug": "steel-city-ambassadors",
+        "source_url": "https://www.dci.org/corps/steel-city-ambassadors/",
+        "http_status": 200,
+        "html_len": 170357,
+        "parsed_len": 927,
+        "parsed_preview": "{\"name\":\"Steel City Ambassadors : Upcoming Events & Related News\",\"website\":\"https://scadbc.org/\",\"facebook\":null,\"twitter\":null,\"instagram\":null,\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Pittsburgh, PA\",\"city\":\"Pittsburgh\",\"state\":\"PA\",\"address\":null,\"phone\":\"(814) 923-8285\",\"email\":null,\"about\":\"",
+        "scraped_at": "2026-06-03T16:51:09.514Z"
+      }
+    ]
+  },
+  {
+    "corps_key": "zephyrus-drum-bugle-corps",
+    "name": "Zephyrus Drum & Bugle Corps",
+    "scrapes": [
+      {
+        "corps_slug": "zephyrus-drum-bugle-corps",
+        "source_url": "https://www.dci.org/corps/zephyrus-drum-bugle-corps/",
+        "http_status": 200,
+        "html_len": 181390,
+        "parsed_len": 1399,
+        "parsed_preview": "{\"name\":\"Zephyrus : Upcoming Events & Related News\",\"website\":\"https://www.zephyrusarts.org/corps.html\",\"facebook\":\"https://www.facebook.com/zephyrusarts/\",\"twitter\":null,\"instagram\":\"https://www.instagram.com/zephyrusarts\",\"youtube\":null,\"linkedIn\":null,\"hometown\":\"Tulsa, OK\",\"city\":\"Tulsa\",\"state\"",
+        "scraped_at": "2026-06-03T00:28:07.991Z"
+      }
+    ]
+  }
+]

@@ -1,0 +1,612 @@
+{
+  "generated_at": "2026-06-02T19:00:09.625Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-cavalcade-of-brass",
+    "slug": "2026-cavalcade-of-brass",
+    "name": "Cavalcade of Brass",
+    "event_name": "Cavalcade of Brass",
+    "start_date": "2026-07-10",
+    "start_time": null,
+    "web_start_time": "8:00 PM CT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Lisle",
+    "location_state": "IL",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260710-LISLE-IL.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260710-LISLE-IL.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-cavalcade-of-brass-hyny00",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Ticket prices will increase on June 10, 2026.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 7,
+    "matched_corps_keys": 7,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 5,
+    "skipped_lineup_rows": 2,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 32.55813953488372
+  },
+  "input_signature": "585e367c1fbef19e9077e068e3fd67597cecf3f13bc7aee38e88c8da4ae4dae9",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 7,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 3,
+        "time": "8:20 PM"
+      },
+      {
+        "corps_key": "0010a00001bpafnaar",
+        "corps": "Sound of Sun Prairie",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 4,
+        "time": "8:30 PM"
+      },
+      {
+        "corps_key": "001j000000iwxacaa1",
+        "corps": "Spartans",
+        "division": "World Class",
+        "performance_order": 6,
+        "time": "8:52 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9aaat",
+        "corps": "Crossmen",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "9:09 PM"
+      },
+      {
+        "corps_key": "001j000000iwxajaa1",
+        "corps": "Troopers",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "9:43 PM"
+      },
+      {
+        "corps_key": "001j000000h3xrnaav",
+        "corps": "Phantom Regiment",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "10:00 PM"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "10:17 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 3,
+        "time": "8:20 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0010a00001bpafnaar",
+        "corps": "Sound of Sun Prairie",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 4,
+        "time": "8:30 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Rosemont King Cobras",
+        "performance_order": 2,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Northern Lights",
+        "performance_order": 5,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 8,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - The Cavaliers",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 13,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-cavalcade-of-brass",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-10",
+      "scored_lineup_rows": 7,
+      "matched_corps_keys": 7,
+      "excluded_lineup_rows": 7,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000h3xrnaav",
+      "corps": "Phantom Regiment",
+      "city": "Rockford, IL",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "10:00 PM",
+      "total": 83.052,
+      "GE": 33.316,
+      "Visual": 24.872,
+      "Music": 24.864,
+      "GE1": 16.672,
+      "GE2": 16.644,
+      "VP": 16.422,
+      "VA": 16.598,
+      "CG": 16.725,
+      "MB": 16.591,
+      "MA": 16.573,
+      "MP": 16.563,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.906,
+          "p50": 16.672,
+          "p90": 17.441
+        },
+        "GE2": {
+          "p10": 15.931,
+          "p50": 16.644,
+          "p90": 17.512
+        },
+        "VP": {
+          "p10": 15.658,
+          "p50": 16.422,
+          "p90": 17.179
+        },
+        "VA": {
+          "p10": 15.778,
+          "p50": 16.598,
+          "p90": 17.278
+        },
+        "CG": {
+          "p10": 15.935,
+          "p50": 16.725,
+          "p90": 17.494
+        },
+        "MB": {
+          "p10": 15.817,
+          "p50": 16.591,
+          "p90": 17.344
+        },
+        "MA": {
+          "p10": 15.924,
+          "p50": 16.573,
+          "p90": 17.478
+        },
+        "MP": {
+          "p10": 15.836,
+          "p50": 16.563,
+          "p90": 17.368
+        }
+      },
+      "raw_model_total": 94.091,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 84.45,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-dci-little-rock",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 83.054,
+      "caption_shape_total": 81.347,
+      "total_reconciliation_delta": 1.705,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 81.347,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "10:17 PM",
+      "total": 79.782,
+      "GE": 31.779,
+      "Visual": 23.873,
+      "Music": 24.13,
+      "GE1": 15.808,
+      "GE2": 15.971,
+      "VP": 15.677,
+      "VA": 15.711,
+      "CG": 16.359,
+      "MB": 15.628,
+      "MA": 16.069,
+      "MP": 16.562,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.05,
+          "p50": 15.808,
+          "p90": 16.595
+        },
+        "GE2": {
+          "p10": 15.282,
+          "p50": 15.971,
+          "p90": 16.835
+        },
+        "VP": {
+          "p10": 14.91,
+          "p50": 15.677,
+          "p90": 16.424
+        },
+        "VA": {
+          "p10": 14.887,
+          "p50": 15.711,
+          "p90": 16.387
+        },
+        "CG": {
+          "p10": 15.573,
+          "p50": 16.359,
+          "p90": 17.11
+        },
+        "MB": {
+          "p10": 14.865,
+          "p50": 15.628,
+          "p90": 16.379
+        },
+        "MA": {
+          "p10": 15.437,
+          "p50": 16.069,
+          "p90": 16.977
+        },
+        "MP": {
+          "p10": 15.773,
+          "p50": 16.562,
+          "p90": 17.349
+        }
+      },
+      "raw_model_total": 92.956,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-cavalcade-of-brass",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 79.784,
+      "caption_shape_total": 78.297,
+      "total_reconciliation_delta": 1.485,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 78.297,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "city": "Casper, WY",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "9:43 PM",
+      "total": 77.618,
+      "GE": 30.892,
+      "Visual": 22.804,
+      "Music": 23.922,
+      "GE1": 15.353,
+      "GE2": 15.539,
+      "VP": 14.974,
+      "VA": 15.124,
+      "CG": 15.51,
+      "MB": 15.496,
+      "MA": 16.026,
+      "MP": 16.323,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.575,
+          "p50": 15.353,
+          "p90": 16.091
+        },
+        "GE2": {
+          "p10": 14.885,
+          "p50": 15.539,
+          "p90": 16.438
+        },
+        "VP": {
+          "p10": 14.235,
+          "p50": 14.974,
+          "p90": 15.747
+        },
+        "VA": {
+          "p10": 14.285,
+          "p50": 15.124,
+          "p90": 15.784
+        },
+        "CG": {
+          "p10": 14.747,
+          "p50": 15.51,
+          "p90": 16.281
+        },
+        "MB": {
+          "p10": 14.705,
+          "p50": 15.496,
+          "p90": 16.212
+        },
+        "MA": {
+          "p10": 15.432,
+          "p50": 16.026,
+          "p90": 16.958
+        },
+        "MP": {
+          "p10": 15.508,
+          "p50": 16.323,
+          "p90": 17.071
+        }
+      },
+      "raw_model_total": 90.063,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 79.65,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-cavalcade-of-brass",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 77.62,
+      "caption_shape_total": 75.138,
+      "total_reconciliation_delta": 2.48,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 10,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 75.139,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwx9aaat",
+      "corps": "Crossmen",
+      "city": "San Antonio, TX",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "9:09 PM",
+      "total": 72.76,
+      "GE": 29.135,
+      "Visual": 21.315,
+      "Music": 22.31,
+      "GE1": 14.584,
+      "GE2": 14.551,
+      "VP": 14.205,
+      "VA": 14.024,
+      "CG": 14.401,
+      "MB": 14.338,
+      "MA": 15.251,
+      "MP": 15.032,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.768,
+          "p50": 14.584,
+          "p90": 15.257
+        },
+        "GE2": {
+          "p10": 13.941,
+          "p50": 14.551,
+          "p90": 15.438
+        },
+        "VP": {
+          "p10": 13.482,
+          "p50": 14.205,
+          "p90": 14.971
+        },
+        "VA": {
+          "p10": 13.206,
+          "p50": 14.024,
+          "p90": 14.653
+        },
+        "CG": {
+          "p10": 13.689,
+          "p50": 14.401,
+          "p90": 15.213
+        },
+        "MB": {
+          "p10": 13.57,
+          "p50": 14.338,
+          "p90": 15.071
+        },
+        "MA": {
+          "p10": 14.669,
+          "p50": 15.251,
+          "p90": 16.123
+        },
+        "MP": {
+          "p10": 14.272,
+          "p50": 15.032,
+          "p90": 15.772
+        }
+      },
+      "raw_model_total": 87.791,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.1,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-dci-little-rock",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 72.763,
+      "caption_shape_total": 69.906,
+      "total_reconciliation_delta": 2.855,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 19,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 69.906,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwxacaa1",
+      "corps": "Spartans",
+      "city": "Nashua, NH",
+      "division": "World Class",
+      "performance_order": 6,
+      "time": "8:52 PM",
+      "total": 70.773,
+      "GE": 28.197,
+      "Visual": 21.111,
+      "Music": 21.465,
+      "GE1": 14.054,
+      "GE2": 14.143,
+      "VP": 14.033,
+      "VA": 14.096,
+      "CG": 14.093,
+      "MB": 14.191,
+      "MA": 14.291,
+      "MP": 14.448,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.681,
+          "p50": 14.054,
+          "p90": 14.414
+        },
+        "GE2": {
+          "p10": 13.683,
+          "p50": 14.143,
+          "p90": 14.489
+        },
+        "VP": {
+          "p10": 13.666,
+          "p50": 14.033,
+          "p90": 14.419
+        },
+        "VA": {
+          "p10": 13.693,
+          "p50": 14.096,
+          "p90": 14.416
+        },
+        "CG": {
+          "p10": 13.657,
+          "p50": 14.093,
+          "p90": 14.412
+        },
+        "MB": {
+          "p10": 13.817,
+          "p50": 14.191,
+          "p90": 14.631
+        },
+        "MA": {
+          "p10": 13.832,
+          "p50": 14.291,
+          "p90": 14.571
+        },
+        "MP": {
+          "p10": 14.12,
+          "p50": 14.448,
+          "p90": 14.835
+        }
+      },
+      "raw_model_total": 57.615,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 70.2,
+      "prior_season_comparable_percent_through": 33.33333333333333,
+      "prior_season_comparable_competition": "2025-dci-little-rock",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 70.775,
+      "caption_shape_total": 71.478,
+      "total_reconciliation_delta": -0.705,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 4,
+      "prior_season_rank": 18,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 71.478,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "2 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

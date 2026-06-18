@@ -1,0 +1,662 @@
+{
+  "generated_at": "2026-06-02T18:59:05.313Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-brass-at-the-beach",
+    "slug": "2026-brass-at-the-beach",
+    "name": "Brass at the Beach",
+    "event_name": "Brass at the Beach",
+    "start_date": "2026-07-28",
+    "start_time": null,
+    "web_start_time": "7:00 PM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Myrtle Beach",
+    "location_state": "SC",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260728-MYRTLE-BEACH-SC.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260728-MYRTLE-BEACH-SC.jpg",
+    "buy_tickets": "https://get.crowntickets.com/event/brass-at-the-beach-rzg592",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "All times ET and subject to change",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 6,
+    "matched_corps_keys": 6,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 6,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 74.4186046511628
+  },
+  "input_signature": "4003f45a46add09d538adc3f9c975ee607092d585da91e0c1f46b0b0490c9600",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 6,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwsqaal",
+        "corps": "Blue Stars",
+        "division": "World Class",
+        "performance_order": 5,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx91aad",
+        "corps": "Carolina Crown",
+        "division": "World Class",
+        "performance_order": 6,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx9aaat",
+        "corps": "Crossmen",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxa5aal",
+        "corps": "Music City",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxadaa1",
+        "corps": "Spirit of Atlanta",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxaeaa1",
+        "corps": "The Academy",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "TBD"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 2,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Carolina Crown",
+        "performance_order": 3,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 4,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-brass-at-the-beach",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-28",
+      "scored_lineup_rows": 6,
+      "matched_corps_keys": 6,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwx91aad",
+      "corps": "Carolina Crown",
+      "city": "Fort Mill, SC",
+      "division": "World Class",
+      "performance_order": 6,
+      "time": "TBD",
+      "total": 92.116,
+      "GE": 36.904,
+      "Visual": 27.491,
+      "Music": 27.721,
+      "GE1": 18.347,
+      "GE2": 18.557,
+      "VP": 18.302,
+      "VA": 18.457,
+      "CG": 18.223,
+      "MB": 18.529,
+      "MA": 18.653,
+      "MP": 18.259,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.585,
+          "p50": 18.347,
+          "p90": 19.18
+        },
+        "GE2": {
+          "p10": 17.75,
+          "p50": 18.557,
+          "p90": 19.361
+        },
+        "VP": {
+          "p10": 17.505,
+          "p50": 18.302,
+          "p90": 19.04
+        },
+        "VA": {
+          "p10": 17.646,
+          "p50": 18.457,
+          "p90": 19.187
+        },
+        "CG": {
+          "p10": 17.291,
+          "p50": 18.223,
+          "p90": 18.88
+        },
+        "MB": {
+          "p10": 17.765,
+          "p50": 18.529,
+          "p90": 19.346
+        },
+        "MA": {
+          "p10": 17.989,
+          "p50": 18.653,
+          "p90": 19.569
+        },
+        "MP": {
+          "p10": 17.616,
+          "p50": 18.259,
+          "p90": 19.209
+        }
+      },
+      "raw_model_total": 94.876,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 92.2,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 92.117,
+      "caption_shape_total": 92.016,
+      "total_reconciliation_delta": 0.1,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 92.016,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwwsqaal",
+      "corps": "Blue Stars",
+      "city": "La Crosse, WI",
+      "division": "World Class",
+      "performance_order": 5,
+      "time": "TBD",
+      "total": 88.768,
+      "GE": 35.691,
+      "Visual": 26.623,
+      "Music": 26.454,
+      "GE1": 17.804,
+      "GE2": 17.887,
+      "VP": 17.48,
+      "VA": 17.679,
+      "CG": 18.088,
+      "MB": 17.627,
+      "MA": 17.789,
+      "MP": 17.493,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.052,
+          "p50": 17.804,
+          "p90": 18.648
+        },
+        "GE2": {
+          "p10": 17.118,
+          "p50": 17.887,
+          "p90": 18.724
+        },
+        "VP": {
+          "p10": 16.677,
+          "p50": 17.48,
+          "p90": 18.219
+        },
+        "VA": {
+          "p10": 16.86,
+          "p50": 17.679,
+          "p90": 18.372
+        },
+        "CG": {
+          "p10": 17.152,
+          "p50": 18.088,
+          "p90": 18.732
+        },
+        "MB": {
+          "p10": 16.817,
+          "p50": 17.627,
+          "p90": 18.396
+        },
+        "MA": {
+          "p10": 17.151,
+          "p50": 17.789,
+          "p90": 18.713
+        },
+        "MP": {
+          "p10": 16.821,
+          "p50": 17.493,
+          "p90": 18.42
+        }
+      },
+      "raw_model_total": 91.259,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 87.65,
+      "prior_season_comparable_percent_through": 69.04761904761905,
+      "prior_season_comparable_competition": "2025-nightbeat",
+      "prior_season_comparable_weight": 0.35,
+      "preseason_target_total": 88.77,
+      "caption_shape_total": 89.374,
+      "total_reconciliation_delta": -0.605,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 89.373,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxadaa1",
+      "corps": "Spirit of Atlanta",
+      "city": "Atlanta, GA",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "TBD",
+      "total": 85.707,
+      "GE": 34.431,
+      "Visual": 25.107,
+      "Music": 26.169,
+      "GE1": 17.067,
+      "GE2": 17.364,
+      "VP": 16.847,
+      "VA": 16.666,
+      "CG": 16.7,
+      "MB": 17.183,
+      "MA": 17.33,
+      "MP": 17.826,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.248,
+          "p50": 17.067,
+          "p90": 17.825
+        },
+        "GE2": {
+          "p10": 16.618,
+          "p50": 17.364,
+          "p90": 18.19
+        },
+        "VP": {
+          "p10": 16.031,
+          "p50": 16.847,
+          "p90": 17.559
+        },
+        "VA": {
+          "p10": 15.856,
+          "p50": 16.666,
+          "p90": 17.343
+        },
+        "CG": {
+          "p10": 15.829,
+          "p50": 16.7,
+          "p90": 17.396
+        },
+        "MB": {
+          "p10": 16.401,
+          "p50": 17.183,
+          "p90": 17.999
+        },
+        "MA": {
+          "p10": 16.7,
+          "p50": 17.33,
+          "p90": 18.241
+        },
+        "MP": {
+          "p10": 17.136,
+          "p50": 17.826,
+          "p90": 18.697
+        }
+      },
+      "raw_model_total": 89.791,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 84.4,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 85.706,
+      "caption_shape_total": 87.302,
+      "total_reconciliation_delta": -1.595,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 13,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 87.303,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxa5aal",
+      "corps": "Music City",
+      "city": "Nashville, TN",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "TBD",
+      "total": 82.881,
+      "GE": 33.31,
+      "Visual": 24.647,
+      "Music": 24.924,
+      "GE1": 16.659,
+      "GE2": 16.651,
+      "VP": 16.187,
+      "VA": 16.436,
+      "CG": 16.67,
+      "MB": 16.121,
+      "MA": 16.728,
+      "MP": 16.998,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.825,
+          "p50": 16.659,
+          "p90": 17.409
+        },
+        "GE2": {
+          "p10": 15.902,
+          "p50": 16.651,
+          "p90": 17.462
+        },
+        "VP": {
+          "p10": 15.382,
+          "p50": 16.187,
+          "p90": 16.918
+        },
+        "VA": {
+          "p10": 15.626,
+          "p50": 16.436,
+          "p90": 17.122
+        },
+        "CG": {
+          "p10": 15.814,
+          "p50": 16.67,
+          "p90": 17.381
+        },
+        "MB": {
+          "p10": 15.316,
+          "p50": 16.121,
+          "p90": 16.926
+        },
+        "MA": {
+          "p10": 16.113,
+          "p50": 16.728,
+          "p90": 17.653
+        },
+        "MP": {
+          "p10": 16.287,
+          "p50": 16.998,
+          "p90": 17.85
+        }
+      },
+      "raw_model_total": 87.4,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 82.881,
+      "caption_shape_total": 85.18,
+      "total_reconciliation_delta": -2.3,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 16,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.179,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwxaeaa1",
+      "corps": "The Academy",
+      "city": "Tempe, AZ",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "TBD",
+      "total": 81.732,
+      "GE": 32.916,
+      "Visual": 24.285,
+      "Music": 24.531,
+      "GE1": 16.397,
+      "GE2": 16.519,
+      "VP": 16.053,
+      "VA": 16.214,
+      "CG": 16.304,
+      "MB": 16.015,
+      "MA": 16.662,
+      "MP": 16.385,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.567,
+          "p50": 16.397,
+          "p90": 17.124
+        },
+        "GE2": {
+          "p10": 15.796,
+          "p50": 16.519,
+          "p90": 17.374
+        },
+        "VP": {
+          "p10": 15.26,
+          "p50": 16.053,
+          "p90": 16.782
+        },
+        "VA": {
+          "p10": 15.349,
+          "p50": 16.214,
+          "p90": 16.876
+        },
+        "CG": {
+          "p10": 15.483,
+          "p50": 16.304,
+          "p90": 17.047
+        },
+        "MB": {
+          "p10": 15.189,
+          "p50": 16.015,
+          "p90": 16.79
+        },
+        "MA": {
+          "p10": 16.03,
+          "p50": 16.662,
+          "p90": 17.567
+        },
+        "MP": {
+          "p10": 15.666,
+          "p50": 16.385,
+          "p90": 17.242
+        }
+      },
+      "raw_model_total": 88.215,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 80.15,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 81.733,
+      "caption_shape_total": 83.667,
+      "total_reconciliation_delta": -1.935,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 17,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 83.667,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000iwx9aaat",
+      "corps": "Crossmen",
+      "city": "San Antonio, TX",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "TBD",
+      "total": 81.256,
+      "GE": 32.539,
+      "Visual": 24.088,
+      "Music": 24.629,
+      "GE1": 16.223,
+      "GE2": 16.316,
+      "VP": 16.08,
+      "VA": 15.907,
+      "CG": 16.19,
+      "MB": 16.084,
+      "MA": 16.599,
+      "MP": 16.575,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.372,
+          "p50": 16.223,
+          "p90": 16.923
+        },
+        "GE2": {
+          "p10": 15.6,
+          "p50": 16.316,
+          "p90": 17.167
+        },
+        "VP": {
+          "p10": 15.275,
+          "p50": 16.08,
+          "p90": 16.783
+        },
+        "VA": {
+          "p10": 15.027,
+          "p50": 15.907,
+          "p90": 16.541
+        },
+        "CG": {
+          "p10": 15.35,
+          "p50": 16.19,
+          "p90": 16.935
+        },
+        "MB": {
+          "p10": 15.245,
+          "p50": 16.084,
+          "p90": 16.844
+        },
+        "MA": {
+          "p10": 15.966,
+          "p50": 16.599,
+          "p90": 17.497
+        },
+        "MP": {
+          "p10": 15.868,
+          "p50": 16.575,
+          "p90": 17.443
+        }
+      },
+      "raw_model_total": 87.883,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 80.6,
+      "prior_season_comparable_percent_through": 73.80952380952381,
+      "prior_season_comparable_competition": "2025-brass-at-the-beach",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 81.258,
+      "caption_shape_total": 82.061,
+      "total_reconciliation_delta": -0.805,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 19,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 82.061,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

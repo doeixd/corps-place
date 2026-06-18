@@ -1,0 +1,297 @@
+{
+  "generated_at": "2026-05-29T13:02:55.303Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-tour-preview",
+    "slug": "2026-dci-tour-preview",
+    "name": "DCI Tour Preview",
+    "event_name": "DCI Tour Preview",
+    "start_date": "2026-06-26T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "8:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Muncie",
+    "location_state": "IN",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260626-MUNCIE-IN.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260626-MUNCIE-IN.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-dci-tour-preview-trn99g",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 3,
+    "matched_corps_keys": 3,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 2,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 0
+  },
+  "input_signature": "8582a3509e585b5f0c44e1d09329821bebfc73136d411394abd9374444e25bf3",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "25bf7fabb01aaaddbabe8a54fb17bf3cbd1d8cbc917a5462feb5e91d6346b791",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 3,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "8:15 PM"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 3,
+        "time": "8:45 PM"
+      },
+      {
+        "corps_key": "001j000000iwx91aad",
+        "corps": "Carolina Crown",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "9:15 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "8:15 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Bands of America & Carolina Crown",
+        "performance_order": 5,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Event Concludes",
+        "performance_order": 6,
+        "exclusion_reason": "unresolved_corps"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-tour-preview",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-26T00:00:00.000Z",
+      "scored_lineup_rows": 3,
+      "matched_corps_keys": 3,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwx91aad",
+      "corps": "Carolina Crown",
+      "city": "Fort Mill, SC",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "9:15 PM",
+      "total": 71.28,
+      "GE": 28.759,
+      "Visual": 21.058,
+      "Music": 21.463,
+      "GE1": 14.206,
+      "GE2": 14.553,
+      "VP": 13.97,
+      "VA": 14.233,
+      "CG": 13.912,
+      "MB": 14.407,
+      "MA": 14.633,
+      "MP": 13.887,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.4,
+          "p50": 14.206,
+          "p90": 14.902
+        },
+        "GE2": {
+          "p10": 13.924,
+          "p50": 14.553,
+          "p90": 15.461
+        },
+        "VP": {
+          "p10": 13.252,
+          "p50": 13.97,
+          "p90": 14.76
+        },
+        "VA": {
+          "p10": 13.443,
+          "p50": 14.233,
+          "p90": 14.942
+        },
+        "CG": {
+          "p10": 13.173,
+          "p50": 13.912,
+          "p90": 14.709
+        },
+        "MB": {
+          "p10": 13.692,
+          "p50": 14.407,
+          "p90": 15.15
+        },
+        "MA": {
+          "p10": 14.03,
+          "p50": 14.633,
+          "p90": 15.53
+        },
+        "MP": {
+          "p10": 13.117,
+          "p50": 13.887,
+          "p90": 14.614
+        }
+      },
+      "raw_model_total": 95.366,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_weight": 0,
+      "caption_shape_total": 71.28,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.28,
+      "point_estimate_source": "caption_shape_preserving_baseline"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 3,
+      "time": "8:45 PM",
+      "total": 69.758,
+      "GE": 28.047,
+      "Visual": 20.754,
+      "Music": 20.957,
+      "GE1": 13.909,
+      "GE2": 14.138,
+      "VP": 13.704,
+      "VA": 13.691,
+      "CG": 14.112,
+      "MB": 13.626,
+      "MA": 14.065,
+      "MP": 14.224,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.13,
+          "p50": 13.909,
+          "p90": 14.649
+        },
+        "GE2": {
+          "p10": 13.502,
+          "p50": 14.138,
+          "p90": 15.041
+        },
+        "VP": {
+          "p10": 12.985,
+          "p50": 13.704,
+          "p90": 14.482
+        },
+        "VA": {
+          "p10": 12.92,
+          "p50": 13.691,
+          "p90": 14.403
+        },
+        "CG": {
+          "p10": 13.352,
+          "p50": 14.112,
+          "p90": 14.861
+        },
+        "MB": {
+          "p10": 12.914,
+          "p50": 13.626,
+          "p90": 14.362
+        },
+        "MA": {
+          "p10": 13.473,
+          "p50": 14.065,
+          "p90": 14.957
+        },
+        "MP": {
+          "p10": 13.388,
+          "p50": 14.224,
+          "p90": 14.934
+        }
+      },
+      "raw_model_total": 92.822,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 69.45,
+      "prior_season_comparable_percent_through": 9.523809523809524,
+      "prior_season_comparable_competition": "2025-rotary-music-festival",
+      "prior_season_comparable_weight": 0.2,
+      "preseason_target_total": 69.76,
+      "caption_shape_total": 69.838,
+      "total_reconciliation_delta": -0.08,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 69.838,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

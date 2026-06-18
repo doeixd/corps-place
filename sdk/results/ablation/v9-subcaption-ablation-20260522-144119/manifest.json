@@ -1,0 +1,31 @@
+{
+  "sessionDir": "results\\ablation\\v9-subcaption-ablation-20260522-144119",
+  "cli": {
+    "epochs": 400,
+    "samplesPerEpoch": 4096,
+    "batch": 128,
+    "pollSeconds": 60,
+    "prefix": "full_flags_smoke",
+    "trainingScript": "src/training/trainModelV9Subcaption-fixed.ts",
+    "outDir": "results/ablation",
+    "dryRun": true,
+    "skipControl": false,
+    "limitRuns": 1,
+    "valMode": "date-forward",
+    "divisionFilter": "all",
+    "autoCurriculum": "true",
+    "autoCurriculumPatience": 4,
+    "autoCurriculumMinCoverage": 0.9,
+    "autoCurriculumMinDeltaGain": 0.001,
+    "autoCurriculumPhaseAMin": 4,
+    "autoCurriculumPhaseBMin": 12,
+    "widthTargetPts": 2.25,
+    "widthPenaltyWeight": 0.75,
+    "coverageTarget": 0.8,
+    "overCoverageWeight": 2,
+    "coverageUpperTarget": 0.85,
+    "opencodeAnalyze": false,
+    "opencodePromptFile": "prompts/v9-ablation-analysis.md"
+  },
+  "startedAt": "2026-05-22T18:41:19.016Z"
+}

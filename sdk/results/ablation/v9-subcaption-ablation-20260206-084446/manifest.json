@@ -1,0 +1,19 @@
+{
+  "sessionDir": "results\\ablation\\v9-subcaption-ablation-20260206-084446",
+  "cli": {
+    "epochs": 1,
+    "samplesPerEpoch": 128,
+    "batch": 32,
+    "pollSeconds": 10,
+    "prefix": "v9fix",
+    "trainingScript": "src/training/trainModelV9Subcaption-fixed.ts",
+    "outDir": "results/ablation",
+    "dryRun": false,
+    "skipControl": true,
+    "limitRuns": 1,
+    "maxRows": 512,
+    "opencodeAnalyze": false,
+    "opencodePromptFile": "prompts/v9-ablation-analysis.md"
+  },
+  "startedAt": "2026-02-06T13:44:46.938Z"
+}

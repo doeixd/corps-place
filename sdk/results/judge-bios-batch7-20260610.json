@@ -1,0 +1,299 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 78-90 by assignment count. Sources: DCI/WGI Hall of Fame, MFA clinician pages, university/SCPA pages, DCI panels; JS/MFA pages rendered via puppeteer. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "c-church-1",
+      "displayName": "Chris Church",
+      "givenName": "Chris",
+      "familyName": "Church",
+      "biography": "Chris Church is a visual adjudicator and a 35-year veteran band director who spent 13 seasons on the marching/visual staff of the World Champion Phantom Regiment drum and bugle corps. He currently serves as a visual judge for Drum Corps International and a winter guard judge for the Mid-Continent Color Guard Association and Winter Guard and Percussion of Oklahoma, and is a graduate of the Marching Roundtable Judges Academy. He also adjudicates concert bands, jazz ensembles, and solo & ensemble festivals across the United States.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "http://marchingmentor.com/marching-mentor/mentor_category/dci-judge/", "label": "Marching Mentor (DCI judges)", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Phantom Regiment", "role": "Marching/Visual staff (13 seasons)", "sourceUrl": "http://marchingmentor.com/marching-mentor/mentor_category/dci-judge/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "35-yr band director; Phantom Regiment visual staff 13 seasons; DCI visual judge; MCCGA/WGPO winter guard judge", "source": "http://marchingmentor.com/marching-mentor/mentor_category/dci-judge/", "confidence": "HIGH" },
+          { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "f-miller-1",
+      "displayName": "Frank Miller",
+      "givenName": "Frank",
+      "familyName": "Miller",
+      "biography": "Frank Miller, based in Bradenton, Florida, is a visual artist, clinician, and adjudicator whose involvement in the marching music activity spans over five decades, progressing from student to teacher, designer, and consultant. For over 25 years he has been an accredited adjudicator for Bands of America, Drum Corps International, and Winter Guard International, serving in the Visual Analysis and Ensemble Visual captions at DCI World Championships. His work as a visual design specialist emphasizes individual student training, design quality, and consistency of performance.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2023/09/file-16.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/frank-miller/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / GE1 / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "5 decades in marching music; 25+ yrs accredited BOA/DCI/WGI visual judge; Bradenton FL visual design specialist", "source": "https://education.musicforall.org/clinician/frank-miller/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "d-padilla-1",
+      "displayName": "Damon Padilla",
+      "givenName": "Damon",
+      "familyName": "Padilla",
+      "biography": "Damon Padilla is a general-effect and color guard adjudicator for Drum Corps International, serving as a General Effect 1 judge at DCI World Championships (including 2022, 2024, and 2025). He came to judging from a color guard instruction background in the drum corps activity.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/PadillaDamon.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/damon-padilla/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI GE1 judge (2022/2024/2025); color guard instruction background", "source": "https://education.musicforall.org/clinician/damon-padilla/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-anderson-1",
+      "displayName": "Mike Anderson",
+      "givenName": "Mike",
+      "familyName": "Anderson",
+      "biography": "Mike Anderson is a general-effect/visual adjudicator for Drum Corps International, serving as a General Effect judge at DCI World Championships (including General Effect 1 in 2018 and 2019).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2019-world-championship-adjudication-panels/", "label": "DCI 2019 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Analysis / Color Guard / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI General Effect judge (2018/2019 confirmed), visual background", "source": "https://www.dci.org/news/2019-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Common name; no distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "g-boulden-1",
+      "displayName": "George Boulden",
+      "givenName": "George",
+      "familyName": "Boulden",
+      "biography": "George Boulden is a brass/music adjudicator and music educator affiliated with the University of Kentucky's music program who is active as a clinician and conductor across the United States. He adjudicates for Music for All/Bands of America, Drum Corps International, and Drum Corps Japan, serving in the Brass and Music Analysis captions at DCI World Championships, and received the 2014 Outstanding Bandmaster Award from the Psi Chapter of Phi Beta Mu.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://finearts.uky.edu/music/faculty-staff/george-boulden", "label": "University of Kentucky College of Fine Arts", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/Drum Corps Japan brass judge; University of Kentucky music; Phi Beta Mu Outstanding Bandmaster 2014", "source": "https://finearts.uky.edu/music/faculty-staff/george-boulden", "confidence": "HIGH" },
+          { "fact": "No accessible public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-brooks-1",
+      "displayName": "Jeff Brooks",
+      "givenName": "Jeff",
+      "familyName": "Brooks",
+      "biography": "Jeff Brooks is a percussion adjudicator and a senior non-commissioned officer in the United States Army Old Guard Fife and Drum Corps, the Army's premier field music ensemble and official escort to the President. A native of Dayton, Ohio, he studied music education at Eastern Michigan and Wright State, and performed in DCI with the Glassmen, Crossmen, Madison Scouts, and Bluecoats and in WGI with Rhythm X (Ensemble Captain for their first World Championship in 2008). As an educator he has worked with Carolina Crown, the Madison Scouts, George Mason University, and many high school programs. He is Judge Coordinator for the Atlantic Indoor Association and a DCI percussion judge, including at the 2025 DCI World Championships.",
+      "photoUrl": "https://scpauploads.s3.amazonaws.com/judges/1831722172-image0.jpeg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://scpa.live/judge/profile/9019", "label": "SCPA judge profile", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Rhythm X", "season": "2008", "role": "Performer (Ensemble Captain, WGI World Champions)", "sourceUrl": "https://scpa.live/judge/profile/9019" },
+        { "corpsName": "Carolina Crown", "role": "Percussion educator", "sourceUrl": "https://scpa.live/judge/profile/9019" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion; 2013-2025",
+        "facts": [
+          { "fact": "US Army Old Guard Fife & Drum Corps NCO; DCI performer (Glassmen/Crossmen/Madison/Bluecoats); Rhythm X 2008 champ; Atlantic Indoor Assoc Judge Coordinator; DCI percussion judge", "source": "https://scpa.live/judge/profile/9019", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-hall-1",
+      "displayName": "Troy Hall",
+      "givenName": "Troy",
+      "familyName": "Hall",
+      "biography": "Troy Hall is a percussion, general-effect, and ensemble-music adjudicator for Drum Corps International who performed as a snare drummer with the Phantom Regiment and the undefeated 1994 DCI World Champion Blue Devils (winner of the Fred Sanford High Percussion Award), and has instructed the Colts and Phantom Regiment. He holds a Ph.D. in Philosophy from the University of Missouri, where he teaches drumset and jazz masterclasses as well as ethics and logic courses, and has presented percussion and jazz masterclasses at universities nationwide.",
+      "photoUrl": "https://music.missouri.edu/sites/default/files/profile-img/2021-01/troy_hall_headshot_0.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://music.missouri.edu/people/hall", "label": "University of Missouri School of Music", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Blue Devils", "season": "1994", "role": "Performer (snare, World Champions)", "sourceUrl": "https://music.missouri.edu/people/hall" },
+        { "corpsName": "Phantom Regiment", "role": "Performer / Instructor", "sourceUrl": "https://music.missouri.edu/people/hall" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "PhD Philosophy (Univ. of Missouri); 1994 champion Blue Devils snare; Colts/Phantom Regiment instructor; DCI percussion/GE judge", "source": "https://music.missouri.edu/people/hall", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "g-miller-1",
+      "displayName": "Gerry Miller",
+      "givenName": "Gerry",
+      "familyName": "Miller",
+      "biography": "Gerry Miller is a general-effect/music adjudicator for Drum Corps International, serving as a General Effect 2 judge at DCI World Championships (including the 2015 and 2025 seasons).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Brass / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI General Effect 2 judge (2015/2025 confirmed)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Common name; no distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-czapinksi-1",
+      "displayName": "Marie Czapinski",
+      "givenName": "Marie",
+      "familyName": "Czapinski",
+      "biography": "Marie Grana-Czapinski is a Hall of Fame visual adjudicator and a co-founder of Winter Guard International, widely regarded as one of the most accomplished judges in the marching arts. She began as a member of the Norwood Park Imperials in Chicago and became an instructor at 18, received her first DCI judging assignment in 1971, and has been a regular on DCI World Championship and regional panels ever since, including seven years as DCI visual caption head. She succeeded her mentor Don Angelica as WGI's chief judge in 1980, is one of only a small handful qualified to judge every DCI visual caption, and is the only person inducted into the Halls of Fame of all three of WGI, DCI, and Bands of America.",
+      "photoUrl": "https://images.dci.org/wp-content/uploads/2025/01/Marie-Grana.webp",
+      "alternateNames": ["Marie Grana-Czapinski", "Marie Grana"],
+      "externalLinks": [
+        { "url": "https://www.dci.org/static/marie_grana_czapinski", "label": "DCI Hall of Fame profile", "kind": "bio" },
+        { "url": "https://www.wgi.org/marie-czapinski/", "label": "WGI: Devoted to the Arts", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [
+        { "title": "DCI Hall of Fame; WGI co-founder & chief judge; in WGI, DCI, and BOA Halls of Fame", "sourceUrl": "https://www.dci.org/static/marie_grana_czapinski" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI HOF; WGI co-founder & successor chief judge (1980); first DCI assignment 1971; 7 yrs visual caption head; only person in WGI+DCI+BOA HOFs", "source": "https://www.dci.org/static/marie_grana_czapinski", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-rubino-1",
+      "displayName": "Mike Rubino",
+      "givenName": "Mike",
+      "familyName": "Rubino",
+      "biography": "Mike Rubino is a brass/music adjudicator and retired music educator who directed the Live Oak High School marching band in Morgan Hill, California, to the championship of the first Marching Bands of America National Championship in 1976 and two national titles overall, retiring after 33 years in the Morgan Hill Unified School District. He has been the Drum Corps International Pacific region judges' coordinator since 1995 and serves as an adjudicator for Bands of America and DCI, including as Chief Judge for the Drum Corps at the Rose Bowl (2022) and DCI West (2023), judging across the nation and in Japan.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2025/10/Adobe-Express-file-43.jpg",
+      "alternateNames": ["Michael Rubino"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/mike-rubino/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.dci.org/news/dci-judge-rubino-recognized-with-leadership-award", "label": "DCI: Rubino leadership award", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "Led Live Oak HS to 1976 MBA National Championship; 33-yr educator; DCI Pacific region judges coordinator since 1995; chief judge Rose Bowl/DCI West", "source": "https://education.musicforall.org/clinician/mike-rubino/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-marra-1",
+      "displayName": "Chris Marra",
+      "givenName": "Chris",
+      "familyName": "Marra",
+      "biography": "Christopher Marra is a brass/music adjudicator for Drum Corps International, serving in the Music Analysis and Brass captions at DCI World Championships (including 2017, 2018, and 2025).",
+      "photoUrl": null,
+      "alternateNames": ["Christopher Marra"],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI Music Analysis/Brass judge (2017/2018/2025 confirmed)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "No distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "e-martinez-1",
+      "displayName": "Ed Martinez",
+      "givenName": "Ed",
+      "familyName": "Martinez",
+      "biography": "Ed (Eduardo) Martinez is a visual adjudicator for Drum Corps International, serving in the Visual Proficiency, Visual Analysis, General Effect, and Color Guard captions at DCI events. He has worked with high school marching bands and independent winter guard programs in the Mid-Atlantic and Southern California.",
+      "photoUrl": null,
+      "alternateNames": ["Eduardo Martinez"],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Visual Analysis / GE1 / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "DCI visual judge; HS marching band & independent winter guard background (Mid-Atlantic & Southern California)", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Common name; no distinguishing public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "a-combites-1",
+      "displayName": "Andy Combites",
+      "givenName": "Andy",
+      "familyName": "Combites",
+      "biography": "Andy Combites is a visual adjudicator for Drum Corps International, Winter Guard International, and Bands of America, and serves as Chief Judge for the North Star Circuit. He is based in the Minneapolis-St. Paul area and judges visual captions including Visual Proficiency, General Effect, Color Guard, and Visual Analysis.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://northstarcircuit.org/judging/", "label": "North Star Circuit (Chief Judge)", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / GE1 / Color Guard / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI/WGI/BOA visual judge; North Star Circuit Chief Judge; Minneapolis-St. Paul area", "source": "https://northstarcircuit.org/judging/", "confidence": "HIGH" },
+          { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    }
+  ]
+}

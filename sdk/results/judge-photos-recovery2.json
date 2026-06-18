@@ -1,0 +1,64 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Photo-recovery pass wave 2: MFA clinician headshots found via puppeteer render for previously-photoless judges.",
+  "profiles": [
+    {
+      "judgeId": "d-aydelott-1", "displayName": "David Aydelott", "givenName": "David", "familyName": "Aydelott",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Aydelott-Headshot-1.jpg",
+      "biography": "David Aydelott is a music adjudicator for Drum Corps International, serving in the Music Analysis, Music Brass, and General Effect captions at DCI events, and is a Music for All clinician.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/david-aydelott/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/david-aydelott/", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "g-miller-1", "displayName": "Gerry Miller", "givenName": "Gerry", "familyName": "Miller",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2024/09/file.jpg",
+      "biography": "Gerry Miller is a general-effect/music adjudicator for Drum Corps International, serving as a General Effect 2 judge at DCI World Championships (including the 2015 and 2025 seasons), and is a Music for All clinician.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/gerry-miller/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/gerry-miller/", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "m-brown-1", "displayName": "Michael Brown", "givenName": "Michael", "familyName": "Brown",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2025/09/Brown_Michael-1020x1024.jpg",
+      "biography": "Michael Brown is a brass/music adjudicator for Drum Corps International, serving in the Music Brass and Music Analysis captions at DCI events, and is a Music for All clinician.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/michael-brown/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render); distinct from Dr. Andrea Brown", "source": "https://education.musicforall.org/clinician/michael-brown/", "confidence": "MEDIUM" }] }
+    },
+    {
+      "judgeId": "m-anderson-1", "displayName": "Mike Anderson", "givenName": "Mike", "familyName": "Anderson",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/file-11.jpg",
+      "biography": "Mike Anderson is a general-effect/visual adjudicator for Drum Corps International, serving as a General Effect judge at DCI World Championships (including General Effect 1 in 2018 and 2019), and is a Music for All clinician.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/mike-anderson/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/mike-anderson/", "confidence": "MEDIUM" }] }
+    },
+    {
+      "judgeId": "m-howard-1", "displayName": "Mike Howard", "givenName": "Mike", "familyName": "Howard",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/HowardMikeResize.png",
+      "biography": "Mike Howard is a general-effect/music adjudicator for Drum Corps International, serving as a General Effect 2 judge at DCI World Championships (2023-2025), and is a Music for All clinician.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/mike-howard/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/mike-howard/", "confidence": "MEDIUM" }] }
+    },
+    {
+      "judgeId": "i-jenkins-1", "displayName": "Ira Jenkins", "givenName": "Ira", "familyName": "Jenkins",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/Ira-Jenkins-Headshot-Web-2022.jpg",
+      "biography": "Ira Jenkins is a color guard adjudicator for Drum Corps International and Winter Guard International, serving as a Color Guard judge at DCI World Championships (including 2022 and 2025), and is a Music for All clinician.",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/ira-jenkins/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.wgi.org/judge/ira-jenkins/", "label": "WGI judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/ira-jenkins/", "confidence": "HIGH" }] }
+    }
+  ]
+}

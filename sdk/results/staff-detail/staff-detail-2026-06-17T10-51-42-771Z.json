@@ -1,0 +1,43 @@
+{
+  "scrapedAt": "2026-06-17T10-51-42-771Z",
+  "apply": false,
+  "totBio": 3,
+  "totPhoto": 4,
+  "corps": [
+    {
+      "corpsKey": "001j000000iwwsqaal",
+      "name": "Blue Stars",
+      "staffPageUrl": "http://www.bluestars.org/staff",
+      "targets": 604,
+      "detailLinks": 4,
+      "biosFilled": 3,
+      "photosFilled": 4,
+      "fills": [
+        {
+          "name": "Membership Interest Form",
+          "url": "http://www.bluestars.org/membership-interest-form",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Mission Statement",
+          "url": "http://www.bluestars.org/mission-statement",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Ethics & Compliance",
+          "url": "http://www.bluestars.org/ethics-and-compliance",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jacob Gall",
+          "url": "http://www.bluestars.org/staff-1/jake-gall",
+          "bio": true,
+          "photo": true
+        }
+      ]
+    }
+  ]
+}

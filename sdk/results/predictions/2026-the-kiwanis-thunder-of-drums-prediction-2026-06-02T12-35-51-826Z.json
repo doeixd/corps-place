@@ -1,0 +1,684 @@
+{
+  "generated_at": "2026-06-02T12:35:51.826Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-the-kiwanis-thunder-of-drums",
+    "slug": "2026-the-kiwanis-thunder-of-drums",
+    "name": "The Kiwanis Thunder of Drums",
+    "event_name": "The Kiwanis Thunder of Drums",
+    "start_date": "2026-07-07",
+    "start_time": null,
+    "web_start_time": "7:00 PM CT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Mankato",
+    "location_state": "MN",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260707-MANKATO-MN.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260707-MANKATO-MN.jpg",
+    "buy_tickets": "https://www.eventbrite.com/e/kiwanis-thunder-of-drums-tickets-1981329710500?aff=oddtdtcreator",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 7,
+    "matched_corps_keys": 7,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 6,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 25.581395348837212
+  },
+  "input_signature": "32099884db519a37eb19c5b65917eebc3cf59dd9459c54acff04f00857f161a5",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 7,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": "7:10 PM"
+      },
+      {
+        "corps_key": "001j000000qzs1qaaf",
+        "corps": "River City Rhythm",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "7:44 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9oaad",
+        "corps": "Genesis",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "8:18 PM"
+      },
+      {
+        "corps_key": "001j000000i6lenaa3",
+        "corps": "Madison Scouts",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "8:35 PM"
+      },
+      {
+        "corps_key": "001j000000iwx98aad",
+        "corps": "Colts",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "8:52 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsoaal",
+        "corps": "Blue Knights",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "9:09 PM"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "9:26 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": "7:10 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Minnesota State University Clinic Band",
+        "performance_order": 1,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 2,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "MBI",
+        "performance_order": 4,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-the-kiwanis-thunder-of-drums",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-07",
+      "scored_lineup_rows": 7,
+      "matched_corps_keys": 7,
+      "excluded_lineup_rows": 6,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "9:26 PM",
+      "total": 79.379,
+      "GE": 31.747,
+      "Visual": 23.791,
+      "Music": 23.841,
+      "GE1": 15.885,
+      "GE2": 15.862,
+      "VP": 15.666,
+      "VA": 15.653,
+      "CG": 16.262,
+      "MB": 15.461,
+      "MA": 15.937,
+      "MP": 16.285,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.126,
+          "p50": 15.885,
+          "p90": 16.674
+        },
+        "GE2": {
+          "p10": 15.172,
+          "p50": 15.862,
+          "p90": 16.73
+        },
+        "VP": {
+          "p10": 14.895,
+          "p50": 15.666,
+          "p90": 16.41
+        },
+        "VA": {
+          "p10": 14.824,
+          "p50": 15.653,
+          "p90": 16.325
+        },
+        "CG": {
+          "p10": 15.472,
+          "p50": 16.262,
+          "p90": 17.007
+        },
+        "MB": {
+          "p10": 14.697,
+          "p50": 15.461,
+          "p90": 16.211
+        },
+        "MA": {
+          "p10": 15.306,
+          "p50": 15.937,
+          "p90": 16.846
+        },
+        "MP": {
+          "p10": 15.505,
+          "p50": 16.285,
+          "p90": 17.081
+        }
+      },
+      "raw_model_total": 93.185,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 79.5,
+      "prior_season_comparable_percent_through": 26.190476190476193,
+      "prior_season_comparable_competition": "2025-celebration-in-brass",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 79.379,
+      "caption_shape_total": 79.229,
+      "total_reconciliation_delta": 0.15,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 79.23,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwx98aad",
+      "corps": "Colts",
+      "city": "Dubuque, IA",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "8:52 PM",
+      "total": 77.205,
+      "GE": 31.059,
+      "Visual": 23.055,
+      "Music": 23.091,
+      "GE1": 15.496,
+      "GE2": 15.563,
+      "VP": 15.123,
+      "VA": 15.324,
+      "CG": 15.663,
+      "MB": 15.021,
+      "MA": 15.675,
+      "MP": 15.486,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.772,
+          "p50": 15.496,
+          "p90": 16.294
+        },
+        "GE2": {
+          "p10": 14.9,
+          "p50": 15.563,
+          "p90": 16.449
+        },
+        "VP": {
+          "p10": 14.381,
+          "p50": 15.123,
+          "p90": 15.892
+        },
+        "VA": {
+          "p10": 14.495,
+          "p50": 15.324,
+          "p90": 15.976
+        },
+        "CG": {
+          "p10": 14.877,
+          "p50": 15.663,
+          "p90": 16.401
+        },
+        "MB": {
+          "p10": 14.249,
+          "p50": 15.021,
+          "p90": 15.762
+        },
+        "MA": {
+          "p10": 15.071,
+          "p50": 15.675,
+          "p90": 16.609
+        },
+        "MP": {
+          "p10": 14.704,
+          "p50": 15.486,
+          "p90": 16.26
+        }
+      },
+      "raw_model_total": 90.505,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 77.3,
+      "prior_season_comparable_percent_through": 26.190476190476193,
+      "prior_season_comparable_competition": "2025-celebration-in-brass",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 77.206,
+      "caption_shape_total": 77.09,
+      "total_reconciliation_delta": 0.115,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 11,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 77.09,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "city": "Denver, CO",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "9:09 PM",
+      "total": 74.166,
+      "GE": 29.9,
+      "Visual": 21.82,
+      "Music": 22.446,
+      "GE1": 14.899,
+      "GE2": 15.001,
+      "VP": 14.436,
+      "VA": 14.676,
+      "CG": 14.528,
+      "MB": 14.598,
+      "MA": 15.056,
+      "MP": 15.238,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.129,
+          "p50": 14.899,
+          "p90": 15.653
+        },
+        "GE2": {
+          "p10": 14.361,
+          "p50": 15.001,
+          "p90": 15.936
+        },
+        "VP": {
+          "p10": 13.711,
+          "p50": 14.436,
+          "p90": 15.227
+        },
+        "VA": {
+          "p10": 13.827,
+          "p50": 14.676,
+          "p90": 15.328
+        },
+        "CG": {
+          "p10": 13.769,
+          "p50": 14.528,
+          "p90": 15.325
+        },
+        "MB": {
+          "p10": 13.786,
+          "p50": 14.598,
+          "p90": 15.298
+        },
+        "MA": {
+          "p10": 14.44,
+          "p50": 15.056,
+          "p90": 15.969
+        },
+        "MP": {
+          "p10": 14.428,
+          "p50": 15.238,
+          "p90": 15.998
+        }
+      },
+      "raw_model_total": 89.924,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.05,
+      "prior_season_comparable_percent_through": 26.190476190476193,
+      "prior_season_comparable_competition": "2025-gold-showcase",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 74.166,
+      "caption_shape_total": 73.086,
+      "total_reconciliation_delta": 1.08,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 12,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.087,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000i6lenaa3",
+      "corps": "Madison Scouts",
+      "city": "Madison, WI",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "8:35 PM",
+      "total": 73.402,
+      "GE": 29.56,
+      "Visual": 21.472,
+      "Music": 22.37,
+      "GE1": 14.631,
+      "GE2": 14.929,
+      "VP": 14.076,
+      "VA": 14.308,
+      "CG": 14.56,
+      "MB": 14.552,
+      "MA": 15.025,
+      "MP": 15.163,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.801,
+          "p50": 14.631,
+          "p90": 15.294
+        },
+        "GE2": {
+          "p10": 14.326,
+          "p50": 14.929,
+          "p90": 15.832
+        },
+        "VP": {
+          "p10": 13.347,
+          "p50": 14.076,
+          "p90": 14.822
+        },
+        "VA": {
+          "p10": 13.514,
+          "p50": 14.308,
+          "p90": 14.949
+        },
+        "CG": {
+          "p10": 13.854,
+          "p50": 14.56,
+          "p90": 15.395
+        },
+        "MB": {
+          "p10": 13.812,
+          "p50": 14.552,
+          "p90": 15.298
+        },
+        "MA": {
+          "p10": 14.457,
+          "p50": 15.025,
+          "p90": 15.926
+        },
+        "MP": {
+          "p10": 14.402,
+          "p50": 15.163,
+          "p90": 15.873
+        }
+      },
+      "raw_model_total": 89.719,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 74.9,
+      "prior_season_comparable_percent_through": 26.190476190476193,
+      "prior_season_comparable_competition": "2025-celebration-in-brass",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 73.403,
+      "caption_shape_total": 71.572,
+      "total_reconciliation_delta": 1.83,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 14,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.573,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwx9oaad",
+      "corps": "Genesis",
+      "city": "Austin, TX",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "8:18 PM",
+      "total": 69.8,
+      "GE": 27.978,
+      "Visual": 20.472,
+      "Music": 21.35,
+      "GE1": 13.866,
+      "GE2": 14.112,
+      "VP": 13.833,
+      "VA": 13.372,
+      "CG": 13.739,
+      "MB": 13.938,
+      "MA": 14.39,
+      "MP": 14.371,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.117,
+          "p50": 13.866,
+          "p90": 14.607
+        },
+        "GE2": {
+          "p10": 13.476,
+          "p50": 14.112,
+          "p90": 14.961
+        },
+        "VP": {
+          "p10": 13.109,
+          "p50": 13.833,
+          "p90": 14.615
+        },
+        "VA": {
+          "p10": 12.584,
+          "p50": 13.372,
+          "p90": 14.037
+        },
+        "CG": {
+          "p10": 13.014,
+          "p50": 13.739,
+          "p90": 14.495
+        },
+        "MB": {
+          "p10": 13.171,
+          "p50": 13.938,
+          "p90": 14.684
+        },
+        "MA": {
+          "p10": 13.802,
+          "p50": 14.39,
+          "p90": 15.273
+        },
+        "MP": {
+          "p10": 13.587,
+          "p50": 14.371,
+          "p90": 15.111
+        }
+      },
+      "raw_model_total": 84.535,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 69.75,
+      "prior_season_comparable_percent_through": 23.809523809523807,
+      "prior_season_comparable_competition": "2025-drums-across-america",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 69.799,
+      "caption_shape_total": 69.859,
+      "total_reconciliation_delta": -0.06,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 22,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 69.859,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000qzs1qaaf",
+      "corps": "River City Rhythm",
+      "city": "Anoka, MN",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "7:44 PM",
+      "total": 56.261,
+      "GE": 22.454,
+      "Visual": 16.637,
+      "Music": 17.17,
+      "GE1": 11.095,
+      "GE2": 11.359,
+      "VP": 11.341,
+      "VA": 11.495,
+      "CG": 10.439,
+      "MB": 11.384,
+      "MA": 11.184,
+      "MP": 11.772,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.297,
+          "p50": 11.095,
+          "p90": 11.817
+        },
+        "GE2": {
+          "p10": 10.699,
+          "p50": 11.359,
+          "p90": 12.248
+        },
+        "VP": {
+          "p10": 10.685,
+          "p50": 11.341,
+          "p90": 12.283
+        },
+        "VA": {
+          "p10": 10.731,
+          "p50": 11.495,
+          "p90": 12.256
+        },
+        "CG": {
+          "p10": 9.683,
+          "p50": 10.439,
+          "p90": 11.226
+        },
+        "MB": {
+          "p10": 10.574,
+          "p50": 11.384,
+          "p90": 12.084
+        },
+        "MA": {
+          "p10": 10.488,
+          "p50": 11.184,
+          "p90": 11.966
+        },
+        "MP": {
+          "p10": 10.919,
+          "p50": 11.772,
+          "p90": 12.463
+        }
+      },
+      "raw_model_total": 72.326,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 63.45,
+      "prior_season_comparable_percent_through": 26.190476190476193,
+      "prior_season_comparable_competition": "2025-celebration-in-brass",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 56.259,
+      "caption_shape_total": 47.472,
+      "total_reconciliation_delta": 8.79,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 26,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 47.471,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

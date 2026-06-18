@@ -1,0 +1,844 @@
+{
+  "actual2025": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwssaal",
+      "corps": "Boston Crusaders",
+      "division": "World Class",
+      "total": 76.2,
+      "GE": 30.3,
+      "Visual": 22.950000000000003,
+      "Music": 22.95,
+      "captions": {
+        "CG": 15.2,
+        "GE1": 15.3,
+        "GE2": 15,
+        "MA": 15.3,
+        "MB": 15.6,
+        "MP": 15,
+        "VA": 15.3,
+        "VP": 15.4
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 7.9,
+          "achievement": 7.4
+        },
+        "GE2": {
+          "content": 7.8,
+          "achievement": 7.2
+        },
+        "VP": {
+          "content": 7.8,
+          "achievement": 7.6
+        },
+        "VA": {
+          "content": 7.8,
+          "achievement": 7.5
+        },
+        "CG": {
+          "content": 7.8,
+          "achievement": 7.4
+        },
+        "MB": {
+          "content": 7.9,
+          "achievement": 7.7
+        },
+        "MA": {
+          "content": 7.8,
+          "achievement": 7.5
+        },
+        "MP": {
+          "content": 7.6,
+          "achievement": 7.4
+        }
+      },
+      "mask": {
+        "GE1": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "GE2": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "CG": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MB": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        }
+      }
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000i6i9saav",
+      "corps": "Blue Devils",
+      "division": "World Class",
+      "total": 75.4,
+      "GE": 30.1,
+      "Visual": 22.7,
+      "Music": 22.6,
+      "captions": {
+        "CG": 15.1,
+        "GE1": 15.2,
+        "GE2": 14.9,
+        "MA": 15.5,
+        "MB": 15.4,
+        "MP": 14.3,
+        "VA": 15,
+        "VP": 15.3
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 7.7,
+          "achievement": 7.5
+        },
+        "GE2": {
+          "content": 7.6,
+          "achievement": 7.3
+        },
+        "VP": {
+          "content": 7.9,
+          "achievement": 7.4
+        },
+        "VA": {
+          "content": 7.6,
+          "achievement": 7.4
+        },
+        "CG": {
+          "content": 7.6,
+          "achievement": 7.5
+        },
+        "MB": {
+          "content": 7.8,
+          "achievement": 7.6
+        },
+        "MA": {
+          "content": 7.9,
+          "achievement": 7.6
+        },
+        "MP": {
+          "content": 7.1,
+          "achievement": 7.2
+        }
+      },
+      "mask": {
+        "GE1": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "GE2": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "CG": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MB": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        }
+      }
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwx98aad",
+      "corps": "Colts",
+      "division": "World Class",
+      "total": 68.25,
+      "GE": 27.4,
+      "Visual": 20.6,
+      "Music": 20.25,
+      "captions": {
+        "CG": 13.7,
+        "GE1": 13.6,
+        "GE2": 13.8,
+        "MA": 13.5,
+        "MB": 14.1,
+        "MP": 12.9,
+        "VA": 13.9,
+        "VP": 13.6
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 6.9,
+          "achievement": 6.7
+        },
+        "GE2": {
+          "content": 7,
+          "achievement": 6.8
+        },
+        "VP": {
+          "content": 7.1,
+          "achievement": 6.5
+        },
+        "VA": {
+          "content": 7.2,
+          "achievement": 6.7
+        },
+        "CG": {
+          "content": 7,
+          "achievement": 6.7
+        },
+        "MB": {
+          "content": 7.2,
+          "achievement": 6.9
+        },
+        "MA": {
+          "content": 6.9,
+          "achievement": 6.6
+        },
+        "MP": {
+          "content": 6.6,
+          "achievement": 6.3
+        }
+      },
+      "mask": {
+        "GE1": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "GE2": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "CG": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MB": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        }
+      }
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "division": "World Class",
+      "total": 67.75,
+      "GE": 26.5,
+      "Visual": 20.450000000000003,
+      "Music": 20.799999999999997,
+      "captions": {
+        "CG": 13.2,
+        "GE1": 13.1,
+        "GE2": 13.4,
+        "MA": 14.1,
+        "MB": 13.7,
+        "MP": 13.8,
+        "VA": 13.4,
+        "VP": 14.3
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 6.7,
+          "achievement": 6.4
+        },
+        "GE2": {
+          "content": 6.9,
+          "achievement": 6.5
+        },
+        "VP": {
+          "content": 7.3,
+          "achievement": 7
+        },
+        "VA": {
+          "content": 6.9,
+          "achievement": 6.5
+        },
+        "CG": {
+          "content": 6.8,
+          "achievement": 6.4
+        },
+        "MB": {
+          "content": 7,
+          "achievement": 6.7
+        },
+        "MA": {
+          "content": 7.2,
+          "achievement": 6.9
+        },
+        "MP": {
+          "content": 7,
+          "achievement": 6.8
+        }
+      },
+      "mask": {
+        "GE1": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "GE2": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "CG": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MB": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        }
+      }
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "division": "World Class",
+      "total": 65.95,
+      "GE": 25.9,
+      "Visual": 19.8,
+      "Music": 20.25,
+      "captions": {
+        "CG": 13,
+        "GE1": 12.8,
+        "GE2": 13.1,
+        "MA": 13.9,
+        "MB": 13.3,
+        "MP": 13.3,
+        "VA": 13.3,
+        "VP": 13.3
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 6.6,
+          "achievement": 6.2
+        },
+        "GE2": {
+          "content": 6.7,
+          "achievement": 6.4
+        },
+        "VP": {
+          "content": 7,
+          "achievement": 6.3
+        },
+        "VA": {
+          "content": 6.7,
+          "achievement": 6.6
+        },
+        "CG": {
+          "content": 6.7,
+          "achievement": 6.3
+        },
+        "MB": {
+          "content": 6.8,
+          "achievement": 6.5
+        },
+        "MA": {
+          "content": 7.1,
+          "achievement": 6.8
+        },
+        "MP": {
+          "content": 6.8,
+          "achievement": 6.5
+        }
+      },
+      "mask": {
+        "GE1": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "GE2": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "VA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "CG": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MB": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MA": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        },
+        "MP": {
+          "content": true,
+          "achievement": true,
+          "pair": true
+        }
+      }
+    }
+  ],
+  "predicted2026": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000i6i9saav",
+      "corps": "Blue Devils",
+      "total": 72.485,
+      "GE": 29.179,
+      "Visual": 21.614,
+      "Music": 21.692,
+      "captions": {
+        "GE1": 14.593,
+        "GE2": 14.586,
+        "VP": 14.38,
+        "VA": 14.273,
+        "CG": 14.575,
+        "MB": 14.604,
+        "MA": 14.577,
+        "MP": 14.204
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 7.475,
+          "achievement": 7.118,
+          "content_share": 0.512242
+        },
+        "GE2": {
+          "content": 7.467,
+          "achievement": 7.119,
+          "content_share": 0.51194
+        },
+        "VP": {
+          "content": 7.383,
+          "achievement": 6.997,
+          "content_share": 0.513424
+        },
+        "VA": {
+          "content": 7.313,
+          "achievement": 6.96,
+          "content_share": 0.512371
+        },
+        "CG": {
+          "content": 7.486,
+          "achievement": 7.089,
+          "content_share": 0.513624
+        },
+        "MB": {
+          "content": 7.486,
+          "achievement": 7.118,
+          "content_share": 0.512605
+        },
+        "MA": {
+          "content": 7.474,
+          "achievement": 7.103,
+          "content_share": 0.512715
+        },
+        "MP": {
+          "content": 7.276,
+          "achievement": 6.928,
+          "content_share": 0.512263
+        }
+      }
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000h3xrnaav",
+      "corps": "Phantom Regiment",
+      "total": 70.99,
+      "GE": 28.459,
+      "Visual": 21.26,
+      "Music": 21.271,
+      "captions": {
+        "GE1": 14.162,
+        "GE2": 14.297,
+        "VP": 13.973,
+        "VA": 14.241,
+        "CG": 14.306,
+        "MB": 14.187,
+        "MA": 14.193,
+        "MP": 14.162
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 7.254,
+          "achievement": 6.908,
+          "content_share": 0.512242
+        },
+        "GE2": {
+          "content": 7.319,
+          "achievement": 6.978,
+          "content_share": 0.51194
+        },
+        "VP": {
+          "content": 7.174,
+          "achievement": 6.799,
+          "content_share": 0.513424
+        },
+        "VA": {
+          "content": 7.297,
+          "achievement": 6.944,
+          "content_share": 0.512371
+        },
+        "CG": {
+          "content": 7.348,
+          "achievement": 6.958,
+          "content_share": 0.513624
+        },
+        "MB": {
+          "content": 7.272,
+          "achievement": 6.915,
+          "content_share": 0.512605
+        },
+        "MA": {
+          "content": 7.277,
+          "achievement": 6.916,
+          "content_share": 0.512715
+        },
+        "MP": {
+          "content": 7.255,
+          "achievement": 6.907,
+          "content_share": 0.512263
+        }
+      }
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "total": 67.215,
+      "GE": 26.953,
+      "Visual": 19.593,
+      "Music": 20.669,
+      "captions": {
+        "GE1": 13.247,
+        "GE2": 13.706,
+        "VP": 12.95,
+        "VA": 12.889,
+        "CG": 13.347,
+        "MB": 13.397,
+        "MA": 13.835,
+        "MP": 14.107
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 6.786,
+          "achievement": 6.461,
+          "content_share": 0.512242
+        },
+        "GE2": {
+          "content": 7.017,
+          "achievement": 6.689,
+          "content_share": 0.51194
+        },
+        "VP": {
+          "content": 6.649,
+          "achievement": 6.301,
+          "content_share": 0.513424
+        },
+        "VA": {
+          "content": 6.604,
+          "achievement": 6.285,
+          "content_share": 0.512371
+        },
+        "CG": {
+          "content": 6.855,
+          "achievement": 6.492,
+          "content_share": 0.513624
+        },
+        "MB": {
+          "content": 6.867,
+          "achievement": 6.53,
+          "content_share": 0.512605
+        },
+        "MA": {
+          "content": 7.093,
+          "achievement": 6.742,
+          "content_share": 0.512715
+        },
+        "MP": {
+          "content": 7.226,
+          "achievement": 6.88,
+          "content_share": 0.512263
+        }
+      }
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "total": 64.908,
+      "GE": 26.297,
+      "Visual": 18.948,
+      "Music": 19.663,
+      "captions": {
+        "GE1": 12.896,
+        "GE2": 13.401,
+        "VP": 12.396,
+        "VA": 12.688,
+        "CG": 12.811,
+        "MB": 12.851,
+        "MA": 13.251,
+        "MP": 13.224
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 6.606,
+          "achievement": 6.29,
+          "content_share": 0.512242
+        },
+        "GE2": {
+          "content": 6.861,
+          "achievement": 6.54,
+          "content_share": 0.51194
+        },
+        "VP": {
+          "content": 6.364,
+          "achievement": 6.032,
+          "content_share": 0.513424
+        },
+        "VA": {
+          "content": 6.501,
+          "achievement": 6.187,
+          "content_share": 0.512371
+        },
+        "CG": {
+          "content": 6.58,
+          "achievement": 6.231,
+          "content_share": 0.513624
+        },
+        "MB": {
+          "content": 6.588,
+          "achievement": 6.263,
+          "content_share": 0.512605
+        },
+        "MA": {
+          "content": 6.794,
+          "achievement": 6.457,
+          "content_share": 0.512715
+        },
+        "MP": {
+          "content": 6.774,
+          "achievement": 6.45,
+          "content_share": 0.512263
+        }
+      }
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwx9oaad",
+      "corps": "Genesis",
+      "total": 61.435,
+      "GE": 24.723,
+      "Visual": 18.069,
+      "Music": 18.643,
+      "captions": {
+        "GE1": 12.037,
+        "GE2": 12.686,
+        "VP": 12.273,
+        "VA": 11.622,
+        "CG": 12.243,
+        "MB": 12.242,
+        "MA": 12.595,
+        "MP": 12.449
+      },
+      "breakdown": {
+        "GE1": {
+          "content": 6.166,
+          "achievement": 5.871,
+          "content_share": 0.512242
+        },
+        "GE2": {
+          "content": 6.495,
+          "achievement": 6.191,
+          "content_share": 0.51194
+        },
+        "VP": {
+          "content": 6.301,
+          "achievement": 5.972,
+          "content_share": 0.513424
+        },
+        "VA": {
+          "content": 5.955,
+          "achievement": 5.667,
+          "content_share": 0.512371
+        },
+        "CG": {
+          "content": 6.288,
+          "achievement": 5.955,
+          "content_share": 0.513624
+        },
+        "MB": {
+          "content": 6.275,
+          "achievement": 5.967,
+          "content_share": 0.512605
+        },
+        "MA": {
+          "content": 6.458,
+          "achievement": 6.137,
+          "content_share": 0.512715
+        },
+        "MP": {
+          "content": 6.377,
+          "achievement": 6.072,
+          "content_share": 0.512263
+        }
+      }
+    }
+  ],
+  "common": [
+    {
+      "corps": "Blue Devils",
+      "rank2025": 2,
+      "rank2026": 1,
+      "total2025": 75.4,
+      "total2026": 72.485,
+      "deltaTotal": -2.9150000000000063,
+      "GE2025": 30.1,
+      "GE2026": 29.179,
+      "deltaGE": -0.9210000000000029,
+      "Visual2025": 22.7,
+      "Visual2026": 21.614,
+      "deltaVisual": -1.0859999999999985,
+      "Music2025": 22.6,
+      "Music2026": 21.692,
+      "deltaMusic": -0.9080000000000013
+    },
+    {
+      "corps": "Troopers",
+      "rank2025": 4,
+      "rank2026": 3,
+      "total2025": 67.75,
+      "total2026": 67.215,
+      "deltaTotal": -0.5349999999999966,
+      "GE2025": 26.5,
+      "GE2026": 26.953,
+      "deltaGE": 0.4529999999999994,
+      "Visual2025": 20.450000000000003,
+      "Visual2026": 19.593,
+      "deltaVisual": -0.8570000000000029,
+      "Music2025": 20.799999999999997,
+      "Music2026": 20.669,
+      "deltaMusic": -0.13099999999999667
+    },
+    {
+      "corps": "Blue Knights",
+      "rank2025": 5,
+      "rank2026": 4,
+      "total2025": 65.95,
+      "total2026": 64.908,
+      "deltaTotal": -1.0420000000000016,
+      "GE2025": 25.9,
+      "GE2026": 26.297,
+      "deltaGE": 0.397000000000002,
+      "Visual2025": 19.8,
+      "Visual2026": 18.948,
+      "deltaVisual": -0.8520000000000003,
+      "Music2025": 20.25,
+      "Music2026": 19.663,
+      "deltaMusic": -0.5869999999999997
+    }
+  ]
+}

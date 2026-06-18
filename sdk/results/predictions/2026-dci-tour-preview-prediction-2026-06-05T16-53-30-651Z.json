@@ -1,0 +1,631 @@
+{
+  "generated_at": "2026-06-05T16:53:30.651Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-tour-preview",
+    "slug": "2026-dci-tour-preview",
+    "name": "DCI Tour Preview",
+    "event_name": "DCI Tour Preview",
+    "start_date": "2026-06-26T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "8:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Muncie",
+    "location_state": "IN",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260626-MUNCIE-IN.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260626-MUNCIE-IN.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-dci-tour-preview-trn99g",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 3,
+    "matched_corps_keys": 3,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 3,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 0
+  },
+  "input_signature": "b639134745952f35bb005318010d7990d830c3c40d67a9140148843c8f199644",
+  "builder_version": "v10-event-prediction-all-age-baselines",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6,
+    "breakdown_split_curves": {
+      "path": "results/v9-breakdown-split-curves.json",
+      "version": "v9-breakdown-split-curves-2026-06-05",
+      "generated_at": "2026-06-05T12:10:16.312Z",
+      "global_content_share": 0.508228,
+      "evaluation": {
+        "validationPairCount": 5496,
+        "fixed50ShareMae": 0.008154787598169252,
+        "curveShareMae": 0.0047111059985265515,
+        "fixed50SubcaptionMaePtsUsingActualCaptionTotal": 0.11817230713245966,
+        "curveSubcaptionMaePtsUsingActualCaptionTotal": 0.07095049126637575,
+        "improvementVs50Pts": 0.04722181586608391,
+        "improvementVs50Tenths": 0.47221815866083916
+      },
+      "same_season_prior_enabled": false
+    }
+  },
+  "input_audit": {
+    "scored_lineup_rows": 3,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "8:15 PM"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 3,
+        "time": "8:45 PM"
+      },
+      {
+        "corps_key": "001j000000iwx91aad",
+        "corps": "Carolina Crown",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "9:15 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Bands of America & Carolina Crown",
+        "performance_order": 5,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Event Concludes",
+        "performance_order": 6,
+        "exclusion_reason": "unresolved_corps"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-tour-preview",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-26T00:00:00.000Z",
+      "scored_lineup_rows": 3,
+      "matched_corps_keys": 3,
+      "excluded_lineup_rows": 4,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwx94aad",
+      "corps": "Cincinnati Tradition",
+      "city": "Cincinnati, OH",
+      "division": "All Age Class",
+      "performance_order": 2,
+      "time": "8:15 PM",
+      "total": 71.554,
+      "GE": 28.891,
+      "Visual": 21.182,
+      "Music": 21.481,
+      "GE1": 14.365,
+      "GE2": 14.526,
+      "VP": 14.216,
+      "VA": 14,
+      "CG": 14.148,
+      "MB": 14.297,
+      "MA": 14.465,
+      "MP": 14.2,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.372,
+          "achievement": 6.993,
+          "content_share": 0.513167,
+          "curve_share": 0.513167,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.455,
+          "achievement": 7.071,
+          "content_share": 0.513203,
+          "curve_share": 0.513203,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.314,
+          "achievement": 6.902,
+          "content_share": 0.514504,
+          "curve_share": 0.514504,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.19,
+          "achievement": 6.81,
+          "content_share": 0.513541,
+          "curve_share": 0.513541,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.278,
+          "achievement": 6.87,
+          "content_share": 0.514451,
+          "curve_share": 0.514451,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.345,
+          "achievement": 6.952,
+          "content_share": 0.513742,
+          "curve_share": 0.513742,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.43,
+          "achievement": 7.035,
+          "content_share": 0.513628,
+          "curve_share": 0.513628,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.291,
+          "achievement": 6.909,
+          "content_share": 0.51342,
+          "curve_share": 0.51342,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.04,
+          "p50": 14.365,
+          "p90": 14.687
+        },
+        "GE2": {
+          "p10": 14.142,
+          "p50": 14.526,
+          "p90": 14.824
+        },
+        "VP": {
+          "p10": 13.892,
+          "p50": 14.216,
+          "p90": 14.549
+        },
+        "VA": {
+          "p10": 13.624,
+          "p50": 14,
+          "p90": 14.274
+        },
+        "CG": {
+          "p10": 13.764,
+          "p50": 14.148,
+          "p90": 14.427
+        },
+        "MB": {
+          "p10": 13.985,
+          "p50": 14.297,
+          "p90": 14.684
+        },
+        "MA": {
+          "p10": 14.072,
+          "p50": 14.465,
+          "p90": 14.709
+        },
+        "MP": {
+          "p10": 13.916,
+          "p50": 14.2,
+          "p90": 14.527
+        }
+      },
+      "raw_model_total": 60.989,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_weight": 0,
+      "caption_shape_total": 71.554,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 1,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 71.554,
+      "point_estimate_source": "caption_shape_preserving_baseline"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwx91aad",
+      "corps": "Carolina Crown",
+      "city": "Fort Mill, SC",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "9:15 PM",
+      "total": 69.938,
+      "GE": 27.89,
+      "Visual": 20.834,
+      "Music": 21.214,
+      "GE1": 13.769,
+      "GE2": 14.121,
+      "VP": 13.79,
+      "VA": 14.014,
+      "CG": 13.864,
+      "MB": 14.165,
+      "MA": 14.393,
+      "MP": 13.87,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 7.054,
+          "achievement": 6.715,
+          "content_share": 0.512315,
+          "curve_share": 0.512315,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.232,
+          "achievement": 6.889,
+          "content_share": 0.512145,
+          "curve_share": 0.512145,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 7.083,
+          "achievement": 6.707,
+          "content_share": 0.513665,
+          "curve_share": 0.513665,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 7.184,
+          "achievement": 6.83,
+          "content_share": 0.512605,
+          "curve_share": 0.512605,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.125,
+          "achievement": 6.739,
+          "content_share": 0.513933,
+          "curve_share": 0.513933,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 7.267,
+          "achievement": 6.898,
+          "content_share": 0.513045,
+          "curve_share": 0.513045,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 7.382,
+          "achievement": 7.011,
+          "content_share": 0.512872,
+          "curve_share": 0.512872,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.11,
+          "achievement": 6.76,
+          "content_share": 0.512646,
+          "curve_share": 0.512646,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.037,
+          "p50": 13.769,
+          "p90": 14.4
+        },
+        "GE2": {
+          "p10": 13.569,
+          "p50": 14.121,
+          "p90": 14.913
+        },
+        "VP": {
+          "p10": 13.152,
+          "p50": 13.79,
+          "p90": 14.511
+        },
+        "VA": {
+          "p10": 13.299,
+          "p50": 14.014,
+          "p90": 14.668
+        },
+        "CG": {
+          "p10": 13.187,
+          "p50": 13.864,
+          "p90": 14.595
+        },
+        "MB": {
+          "p10": 13.524,
+          "p50": 14.165,
+          "p90": 14.831
+        },
+        "MA": {
+          "p10": 13.855,
+          "p50": 14.393,
+          "p90": 15.191
+        },
+        "MP": {
+          "p10": 13.189,
+          "p50": 13.87,
+          "p90": 14.503
+        }
+      },
+      "raw_model_total": 92.573,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_weight": 0,
+      "caption_shape_total": 69.938,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 5,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 69.938,
+      "point_estimate_source": "caption_shape_preserving_baseline"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 3,
+      "time": "8:45 PM",
+      "total": 67.515,
+      "GE": 27.047,
+      "Visual": 20.093,
+      "Music": 20.375,
+      "GE1": 13.365,
+      "GE2": 13.682,
+      "VP": 13.251,
+      "VA": 13.081,
+      "CG": 13.854,
+      "MB": 13.15,
+      "MA": 13.6,
+      "MP": 14,
+      "predicted_score_breakdown": {
+        "GE1": {
+          "content": 6.847,
+          "achievement": 6.518,
+          "content_share": 0.512315,
+          "curve_share": 0.512315,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "GE2": {
+          "content": 7.007,
+          "achievement": 6.675,
+          "content_share": 0.512145,
+          "curve_share": 0.512145,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VP": {
+          "content": 6.807,
+          "achievement": 6.444,
+          "content_share": 0.513665,
+          "curve_share": 0.513665,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "VA": {
+          "content": 6.705,
+          "achievement": 6.376,
+          "content_share": 0.512605,
+          "curve_share": 0.512605,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "CG": {
+          "content": 7.12,
+          "achievement": 6.734,
+          "content_share": 0.513933,
+          "curve_share": 0.513933,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MB": {
+          "content": 6.747,
+          "achievement": 6.404,
+          "content_share": 0.513045,
+          "curve_share": 0.513045,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MA": {
+          "content": 6.975,
+          "achievement": 6.625,
+          "content_share": 0.512872,
+          "curve_share": 0.512872,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        },
+        "MP": {
+          "content": 7.177,
+          "achievement": 6.823,
+          "content_share": 0.512646,
+          "curve_share": 0.512646,
+          "prior_share": null,
+          "prior_weight": 0,
+          "prior_count": 0,
+          "split_source": "curve_only"
+        }
+      },
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.65,
+          "p50": 13.365,
+          "p90": 14.034
+        },
+        "GE2": {
+          "p10": 13.129,
+          "p50": 13.682,
+          "p90": 14.487
+        },
+        "VP": {
+          "p10": 12.614,
+          "p50": 13.251,
+          "p90": 13.969
+        },
+        "VA": {
+          "p10": 12.385,
+          "p50": 13.081,
+          "p90": 13.745
+        },
+        "CG": {
+          "p10": 13.152,
+          "p50": 13.854,
+          "p90": 14.544
+        },
+        "MB": {
+          "p10": 12.512,
+          "p50": 13.15,
+          "p90": 13.813
+        },
+        "MA": {
+          "p10": 13.067,
+          "p50": 13.6,
+          "p90": 14.388
+        },
+        "MP": {
+          "p10": 13.257,
+          "p50": 14,
+          "p90": 14.617
+        }
+      },
+      "raw_model_total": 89.726,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 69.45,
+      "prior_season_comparable_percent_through": 9.523809523809524,
+      "prior_season_comparable_competition": "2025-rotary-music-festival",
+      "prior_season_comparable_weight": 0.2,
+      "preseason_target_total": 67.517,
+      "caption_shape_total": 67.035,
+      "total_reconciliation_delta": 0.48,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 67.034,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "All Age forecasts use prior-season All Age caption scores as a baseline because the V9 model was not trained on All Age sequence rows.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

@@ -1,0 +1,321 @@
+[02:33:45.455] INFO (#3): [render] local Chromium → /usr/bin/chromium (Browserbase fallback ready)
+[02:33:45.470] INFO (#1): Staff scrape: 139 corps × seasons [2013..2026], concurrency=1, APPLY, browserbase=true
+[02:33:45.474] INFO (#1): [1/139] Blue Devils → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:33:45.475] INFO (#1): [2/139] Blue Knights → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:33:45.477] INFO (#1): [3/139] Blue Stars → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:33:45.478] INFO (#1): [4/139] Bluecoats → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:33:45.479] INFO (#1): [5/139] Boston Crusaders → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:33:45.481] INFO (#1): [6/139] Carolina Crown → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:33:45.482] INFO (#1): [7/139] Colts → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:33:45.483] INFO (#1): [8/139] Crossmen → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:33:45.484] INFO (#1): [9/139] Genesis → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:33:57.204] INFO (#1): [render] local https://web.archive.org — 171576 chars
+[02:33:57.205] INFO (#1): [10/139] Jersey Surf → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:06.667] INFO (#1): [render] local http://www.madisonscouts.org — 29975 chars
+[02:34:15.018] INFO (#1): [render] local http://www.madisonscouts.org/madison-scouts/about/staff — 354 chars
+[02:34:23.400] INFO (#1): [render] local http://www.madisonscouts.org/about/board — 354 chars
+[02:34:31.751] INFO (#1): [render] local http://www.madisonscouts.org/forward-leadership — 354 chars
+[02:34:40.114] INFO (#1): [render] local http://www.madisonscouts.org/madison-scouts/about/staff — 354 chars
+[02:34:40.115] INFO (#1): [11/139] Madison Scouts → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:40.117] INFO (#1): [12/139] Mandarins → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:40.118] INFO (#1): [13/139] Music City → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:42.871] INFO (#1): [render] local http://www.oregoncrusaders.org — 110928 chars
+[02:34:42.871] INFO (#1): [14/139] Oregon Crusaders → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:42.876] INFO (#1): [15/139] Pacific Crest → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:42.877] INFO (#1): [16/139] Phantom Regiment → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:52.541] INFO (#1): [render] local http://www.pioneer-corps.org — 39 chars
+[02:34:52.541] INFO (#1): [17/139] Pioneer → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:52.543] INFO (#1): [18/139] Santa Clara Vanguard → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:52.544] INFO (#1): [19/139] Seattle Cascades → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:52.546] INFO (#1): [20/139] Spartans → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:52.548] INFO (#1): [21/139] Spirit of Atlanta → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:52.550] INFO (#1): [22/139] The Academy → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:52.551] INFO (#1): [23/139] The Cadets → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:52.552] INFO (#1): [24/139] The Cavaliers → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:52.553] INFO (#1): [25/139] Troopers → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:34:58.429] INFO (#1): [render] local http://www.7thregiment.org — 231128 chars
+[02:35:06.877] INFO (#1): [render] local http://www.7thregiment.org/staff — 354 chars
+[02:35:06.878] INFO (#1): [26/139] 7th Regiment → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:35:15.201] INFO (#1): [render] local https://www.alisal.org — 31872 chars
+[02:35:23.327] INFO (#1): [render] local https://www.alisal.org/staff — 31908 chars
+[02:35:23.336] INFO (#1): [27/139] Alisal Union School District → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:35:31.662] INFO (#1): [render] local https://www.alisal.org — 31872 chars
+[02:35:39.817] INFO (#1): [render] local https://www.alisal.org/staff — 31908 chars
+[02:35:39.823] INFO (#1): [28/139] Alisal Union School District All-Star Academy → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:35:50.066] INFO (#1): [render] local https://alleghenyeclipse.com — 180901 chars
+[02:35:58.925] INFO (#1): [render] local https://alleghenyeclipse.com/staff — 130407 chars
+[02:35:58.935] INFO (#1): [29/139] Allegheny Eclipse → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:38:13.919] INFO (#1): [render] Browserbase https://www.apollomarchingtheatre.org
+[02:40:30.189] INFO (#1): [render] Browserbase https://www.apollomarchingtheatre.org/staff
+[02:40:49.603] INFO (#1): [30/139] Apollo Marching Theatre → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:41:22.856] INFO (#1): [render] local https://www.arsenaldbc.org — 274895 chars
+[02:41:22.857] INFO (#1): [31/139] Arsenal → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:41:22.863] INFO (#1): [32/139] Atlanta CV → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:41:22.863] INFO (#1): [33/139] BKXperience → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:41:39.536] INFO (#1): [render] local https://beesbandsboosters.org — 188515 chars
+[02:41:39.536] INFO (#1): [34/139] Baldwinsville High School Band → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:41:39.540] INFO (#1): [35/139] Blue Devils B → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:41:39.541] INFO (#1): [36/139] Blue Devils C → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:41:49.352] INFO (#1): [render] local https://thebluesaints.org — 168232 chars
+[02:41:49.352] INFO (#1): [37/139] Blue Saints → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:41:49.354] INFO (#1): [38/139] Brig Juice Brass → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:41:58.763] INFO (#1): [render] local https://www.readingbuccaneers.org/brass-staff — 877950 chars
+[02:42:07.608] INFO (#1): [render] local https://www.readingbuccaneers.org/percussion-staff — 971558 chars
+[02:42:16.414] INFO (#1): [render] local https://www.readingbuccaneers.org/guard-staff — 893852 chars
+[02:42:25.019] INFO (#1): [render] local https://www.readingbuccaneers.org/visual-staff — 895436 chars
+[02:42:25.095] INFO (#1): [39/139] Buccaneer Banner Brass → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:42:34.355] INFO (#1): [render] local https://www.readingbuccaneers.org/brass-staff — 877950 chars
+[02:42:43.226] INFO (#1): [render] local https://www.readingbuccaneers.org/percussion-staff — 971558 chars
+[02:42:52.221] INFO (#1): [render] local https://www.readingbuccaneers.org/guard-staff — 893852 chars
+[02:43:01.019] INFO (#1): [render] local https://www.readingbuccaneers.org/visual-staff — 895436 chars
+[02:43:01.131] INFO (#1): [40/139] Buccaneers Alumni → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:43:03.888] INFO (#1): [render] local http://bushwackers.org — 117071 chars
+[02:43:03.889] INFO (#1): [41/139] Bushwackers → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:43:05.245] INFO (#1): [render] local http://bushwackers.org — 116984 chars
+[02:43:05.246] INFO (#1): [42/139] Bushwackers Drum Corps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:43:13.907] INFO (#1): [render] local https://ctalumni.org — 11814 chars
+[02:43:13.907] INFO (#1): [43/139] CT Alumni → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:43:22.417] INFO (#1): [render] local https://www.roundupband.org — 323 chars
+[02:43:30.671] INFO (#1): [render] local https://www.roundupband.org/staff — 323 chars
+[02:43:59.610] INFO (#1): [44/139] Calgary Round-Up Band → https://www.roundupband.org/staff (0 people, 0 role-rows across 14 seasons)
+[02:44:02.210] INFO (#1): [render] local https://corporate.calgarystampede.com/about-us/who-we-are/board-of-directors/stuart-oconnor — 62078 chars
+[02:44:03.163] INFO (#1): [render] local https://corporate.calgarystampede.com/about-us/who-we-are/board-of-directors/cherie-copithorne-barnes — 62670 chars
+[02:44:04.035] INFO (#1): [render] local https://corporate.calgarystampede.com/about-us/who-we-are/board-of-directors/david-farran — 63697 chars
+[02:44:04.904] INFO (#1): [render] local https://corporate.calgarystampede.com/about-us/who-we-are/board-of-directors/will-osler — 62536 chars
+[02:44:05.868] INFO (#1): [render] local https://corporate.calgarystampede.com/about-us/who-we-are/board-of-directors/elizabeth-burke-gaffney — 62509 chars
+[02:44:06.757] INFO (#1): [render] local https://corporate.calgarystampede.com/about-us/who-we-are/board-of-directors/jennifer-doepker — 62487 chars
+[02:44:08.297] INFO (#1): [render] local https://corporate.calgarystampede.com/about-us/who-we-are/board-of-directors/chad-gareau — 62699 chars
+[02:44:41.920] INFO (#1): [45/139] Calgary Stampede Showband → https://corporate.calgarystampede.com/about-us/who-we-are/board-of-directors (19 people, 42 role-rows across 14 seasons)
+[02:44:42.121] INFO (#1): [render] Browserbase https://www.stetsonband.org
+[02:44:51.655] INFO (#1): [render] Browserbase https://www.stetsonband.org/staff
+[02:45:51.969] INFO (#1): [46/139] Calgary Stetson Show Band → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:46:37.544] INFO (#1): [47/139] Carolina Gold → http://www.carolinagold.org/staff (7 people, 7 role-rows across 14 seasons)
+[02:46:39.501] INFO (#1): [render] local https://www.taiwan-mba.org — 695046 chars
+[02:46:39.502] INFO (#1): [48/139] Chien Kuo → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:47:08.335] INFO (#1): [49/139] Chops → http://www.chopsinc.com/staff (11 people, 11 role-rows across 14 seasons)
+[02:47:15.006] INFO (#1): [render] local http://www.cincinnatitradition.org — 174662 chars
+[02:47:23.922] INFO (#1): [render] local http://www.cincinnatitradition.org/staff — 71090 chars
+[02:47:23.929] INFO (#1): [50/139] Cincinnati Tradition → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:47:34.079] INFO (#1): [render] local http://city-sound.org — 251998 chars
+[02:47:42.525] INFO (#1): [render] local http://city-sound.org/about/staff — 252053 chars
+[02:47:42.541] INFO (#1): [51/139] City Sound → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:47:42.653] INFO (#1): [render] Browserbase http://coastalsurge.org
+[02:48:53.278] INFO (#1): [render] Browserbase http://coastalsurge.org/staff
+[02:50:53.719] INFO (#1): [52/139] Coastal Surge → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:51:45.878] INFO (#1): [53/139] Colt Cadets → http://www.colts.org/people-staff-admin (24 people, 45 role-rows across 14 seasons)
+[02:52:11.351] INFO (#1): [54/139] Columbians → http://www.columbiansdrumcorps.org/administration (11 people, 17 role-rows across 14 seasons)
+[02:53:15.078] INFO (#1): [55/139] Columbus Saints → http://www.columbussaints.org (42 people, 50 role-rows across 14 seasons)
+[02:53:25.134] INFO (#1): [render] local https://cthurricanes.org — 60819 chars
+[02:53:33.911] INFO (#1): [render] local https://cthurricanes.org/board-of-directors/ — 48087 chars
+[02:53:42.776] INFO (#1): [render] local https://cthurricanes.org/management-team — 49474 chars
+[02:54:05.314] INFO (#1): [56/139] Connecticut Hurricanes → https://cthurricanes.org/board-of-directors/ (43 people, 159 role-rows across 14 seasons)
+[02:54:17.457] INFO (#1): [render] local https://web.archive.org — 171577 chars
+[02:54:17.457] INFO (#1): [57/139] Conquest Drum & Bugle Corps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:54:26.812] INFO (#1): [render] local https://crusaderssenior.weebly.com — 3901 chars
+[02:54:26.812] INFO (#1): [58/139] Crusaders Senior → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:54:36.205] INFO (#1): [render] local https://crusaderssenior.weebly.com — 3901 chars
+[02:54:36.205] INFO (#1): [59/139] Crusaders Senior Drum & Bugle Corps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:55:01.177] INFO (#1): [60/139] EN-CORPS by EN-RICH-MENT → https://www.en-rich-ment.org/our-team (36 people, 44 role-rows across 14 seasons)
+[02:55:11.748] INFO (#1): [render] local https://web.archive.org — 171577 chars
+[02:55:11.748] INFO (#1): [61/139] Eclipse → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:55:11.866] INFO (#1): [render] Browserbase http://jamwithencorps.org
+[02:55:55.641] INFO (#1): [render] Browserbase http://jamwithencorps.org/staff
+[02:57:56.171] INFO (#1): [62/139] Encorps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[02:57:56.282] INFO (#1): [render] Browserbase http://jamwithencorps.org
+[02:59:57.614] INFO (#1): [render] Browserbase http://jamwithencorps.org/staff
+[03:00:56.996] INFO (#1): [63/139] Encorps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:01:06.085] INFO (#1): [render] local http://www.eriethunderbirds.org — 18893 chars
+[03:01:06.085] INFO (#1): [64/139] Erie Thunderbirds → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:01:06.228] INFO (#1): [render] Browserbase http://eruptiondrumandbuglecorps.org
+[03:01:57.873] INFO (#1): [render] Browserbase http://eruptiondrumandbuglecorps.org/staff
+[03:03:58.435] INFO (#1): [65/139] Eruption → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:04:51.259] INFO (#1): [66/139] Fusion Core → https://www.fusioncore.org/our-team (82 people, 105 role-rows across 14 seasons)
+[03:04:59.994] INFO (#1): [render] local https://www.boisegems.org — 23392 chars
+[03:04:59.994] INFO (#1): [67/139] Gems → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:05:14.304] INFO (#1): [render] local http://golddrumcorps.org — 45062 chars
+[03:05:14.304] INFO (#1): [68/139] Gold → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:05:37.177] INFO (#1): [69/139] Golden Empire → http://www.geperformingarts.org/staff (30 people, 31 role-rows across 14 seasons)
+[03:06:16.844] INFO (#1): [70/139] Govenaires → https://www.govenaires.org/staff (63 people, 120 role-rows across 14 seasons)
+[03:06:25.815] INFO (#1): [render] local https://greenberetmarchingband.org/meet-our-staff — 90797 chars
+[03:06:25.825] INFO (#1): [71/139] Green Beret → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:06:34.676] INFO (#1): [render] local https://greenberetmarchingband.org/meet-our-staff — 90681 chars
+[03:06:34.722] INFO (#1): [72/139] Green Beret Marching Band → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:06:43.211] INFO (#1): [render] local http://www.guardiansdbc.org — 6417 chars
+[03:06:43.211] INFO (#1): [73/139] Guardians → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:06:53.414] INFO (#1): [render] local https://www.hawthornecaballeros.org — 207920 chars
+[03:06:53.414] INFO (#1): [74/139] Hawthorne Caballeros → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:07:02.126] INFO (#1): [render] local https://hawthornecaballeros.org/executive-team-administration — 187727 chars
+[03:07:30.154] INFO (#1): [75/139] Hawthorne Caballeros Alumni → https://hawthornecaballeros.org/design-team-educational-staff/ (59 people, 111 role-rows across 14 seasons)
+[03:08:25.229] INFO (#1): [76/139] Heat Wave → https://www.heat-wave.org/staff (76 people, 116 role-rows across 14 seasons)
+[03:10:40.200] INFO (#1): [render] Browserbase http://www.lgfz.com.cn
+[03:11:40.246] INFO (#1): [render] Browserbase http://www.lgfz.com.cn/staff
+[03:13:00.832] INFO (#1): [77/139] High School Affiliated to BIT → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:13:11.954] INFO (#1): [render] local http://cthurricanes.org — 60819 chars
+[03:13:20.654] INFO (#1): [render] local https://cthurricanes.org/board-of-directors/ — 48087 chars
+[03:13:29.544] INFO (#1): [render] local https://cthurricanes.org/management-team — 49474 chars
+[03:14:08.205] INFO (#1): [78/139] Hurricanes → https://cthurricanes.org/board-of-directors/ (40 people, 127 role-rows across 14 seasons)
+[03:14:19.069] INFO (#1): [render] local https://web.archive.org — 171581 chars
+[03:14:19.070] INFO (#1): [79/139] IMPACT Drum & Bugle Corps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:14:28.401] INFO (#1): [render] local https://web.archive.org — 171581 chars
+[03:14:28.402] INFO (#1): [80/139] Impact → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:15:23.133] INFO (#1): [81/139] Impulse → http://www.impulseyoutharts.org/2026-corps-staff.html (9 people, 10 role-rows across 14 seasons)
+[03:15:31.612] INFO (#1): [render] local http://incognitodbc.org — 24340 chars
+[03:15:39.813] INFO (#1): [render] local http://incognitodbc.org/staff — 24340 chars
+[03:16:27.758] INFO (#1): [82/139] Incognito → http://incognitodbc.org/staff (0 people, 0 role-rows across 14 seasons)
+[03:16:37.494] INFO (#1): [render] local http://jubal.org — 376073 chars
+[03:16:37.495] INFO (#1): [83/139] Jubal → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:17:18.625] INFO (#1): [84/139] Kilties → https://www.kilties.com (28 people, 47 role-rows across 14 seasons)
+[03:17:41.721] INFO (#1): [render] local https://dreamtoperform.org — 377541 chars
+[03:17:41.721] INFO (#1): [85/139] Legacy Drum & Bugle Corps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:17:50.250] INFO (#1): [render] local http://www.legendspaa.org — 24228 chars
+[03:17:58.502] INFO (#1): [render] local http://www.legendspaa.org/staff — 24228 chars
+[03:18:20.084] INFO (#1): [86/139] Legends → http://www.legendspaa.org/staff (0 people, 0 role-rows across 14 seasons)
+[03:18:23.031] INFO (#1): [render] local http://www.stentors.org — 186757 chars
+[03:18:23.031] INFO (#1): [87/139] Les Stentors → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:18:36.086] INFO (#1): [render] local https://web.archive.org — 171581 chars
+[03:18:36.086] INFO (#1): [88/139] Louisiana Stars → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:18:37.713] INFO (#1): [render] local https://mbiarts.org — 192081 chars
+[03:18:38.397] INFO (#1): [render] local https://mbiarts.org/board/ — 183700 chars
+[03:18:52.474] INFO (#1): [89/139] MBI → https://mbiarts.org/board/ (6 people, 16 role-rows across 14 seasons)
+[03:19:25.893] INFO (#1): [90/139] Memphis Blues → https://www.memphisbluesdc.org/staff (29 people, 42 role-rows across 14 seasons)
+[03:19:27.830] INFO (#1): [render] local https://mnbrass.org — 190617 chars
+[03:19:29.422] INFO (#1): [render] local https://mnbrass.org/staff — 154346 chars
+[03:19:59.594] INFO (#1): [91/139] Minnesota Brass → https://mnbrass.org/staff (1 people, 1 role-rows across 14 seasons)
+[03:20:09.888] INFO (#1): [render] local https://web.archive.org — 171577 chars
+[03:20:09.889] INFO (#1): [92/139] New York Skyliners → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:20:19.463] INFO (#1): [render] local https://sites.google.com — 860772 chars
+[03:20:28.259] INFO (#1): [render] local https://sites.google.com/about/staff — 860435 chars
+[03:20:57.357] INFO (#1): [93/139] North Star → https://sites.google.com/about/staff (0 people, 0 role-rows across 14 seasons)
+[03:21:26.232] INFO (#1): [94/139] Northern Lights Drum & Bugle Corps → https://www.northernlightsmi.org/staff (9 people, 9 role-rows across 14 seasons)
+[03:21:38.405] INFO (#1): [render] local https://www.colegio-la-patria-occidente.es — 98464 chars
+[03:21:38.406] INFO (#1): [95/139] Patria → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:21:49.329] INFO (#1): [render] local https://www.phoenixcorps.org — 200015 chars
+[03:21:57.741] INFO (#1): [render] local https://www.phoenixcorps.org/staff — 200015 chars
+[03:22:21.767] INFO (#1): [96/139] Phoenix → https://www.phoenixcorps.org/staff (4 people, 4 role-rows across 14 seasons)
+[03:22:24.770] INFO (#1): [render] local https://www.rivercityrhythm.org/senior-leadership/beau-hansen — 173565 chars
+[03:22:25.883] INFO (#1): [render] local https://www.rivercityrhythm.org/senior-leadership/brian-veith — 173325 chars
+[03:22:26.817] INFO (#1): [render] local https://www.rivercityrhythm.org/board-of-directors/morgan-meissner — 249498 chars
+[03:22:27.678] INFO (#1): [render] local https://www.rivercityrhythm.org/board-of-directors/karl-thomas — 208830 chars
+[03:22:29.239] INFO (#1): [render] local https://www.rivercityrhythm.org/board-of-directors/david-camp — 173418 chars
+[03:22:30.305] INFO (#1): [render] local https://www.rivercityrhythm.org/board-of-directors/jeanne-catherine-ellis — 180339 chars
+[03:22:31.431] INFO (#1): [render] local https://www.rivercityrhythm.org/board-of-directors/jason-harden — 174610 chars
+[03:22:32.230] INFO (#1): [render] local https://www.rivercityrhythm.org/board-of-directors/tiffany-kostuch — 170224 chars
+[03:23:05.144] INFO (#1): [97/139] RCR Street Club → https://www.rivercityrhythm.org/executive-staff (5 people, 5 role-rows across 14 seasons)
+[03:23:13.488] INFO (#1): [render] local https://racinescouts.yolasite.com — 31916 chars
+[03:23:21.628] INFO (#1): [render] local https://racinescouts.yolasite.com/staff — 31952 chars
+[03:23:21.631] INFO (#1): [98/139] Racine Scouts → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:23:22.878] INFO (#1): [render] local http://www.raidersdbc.org — 150906 chars
+[03:23:23.555] INFO (#1): [render] local http://www.raidersdbc.org/staff — 92103 chars
+[03:23:44.318] INFO (#1): [99/139] Raiders → http://www.raidersdbc.org/staff (3 people, 17 role-rows across 14 seasons)
+[03:23:54.517] INFO (#1): [render] local https://www.readingbuccaneers.org/brass-staff — 877950 chars
+[03:24:03.380] INFO (#1): [render] local https://www.readingbuccaneers.org/percussion-staff — 971558 chars
+[03:24:12.226] INFO (#1): [render] local https://www.readingbuccaneers.org/guard-staff — 893852 chars
+[03:24:20.940] INFO (#1): [render] local https://www.readingbuccaneers.org/visual-staff — 895436 chars
+[03:24:21.026] INFO (#1): [100/139] Reading Buccaneers → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:25:03.908] INFO (#1): [101/139] Rhythm IN BLUE → https://bluecoats.com/staff (411 people, 782 role-rows across 14 seasons)
+[03:25:42.768] INFO (#1): [102/139] River City Rhythm → http://rivercityrhythm.org (16 people, 31 role-rows across 14 seasons)
+[03:25:45.251] INFO (#1): [render] local https://www.rockymountainbrassworks.org/new-page-3 — 85365 chars
+[03:25:45.925] INFO (#1): [render] local https://www.rockymountainbrassworks.org/members — 75925 chars
+[03:25:45.932] INFO (#1): [103/139] Rocky Mountain Brassworks → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:25:47.462] INFO (#1): [render] local http://rogueshollowregiment.com/board — 176772 chars
+[03:25:48.713] INFO (#1): [render] local http://rogueshollowregiment.com/staff/myers — 187303 chars
+[03:25:49.684] INFO (#1): [render] local http://rogueshollowregiment.com/staff/pbrubaker — 185843 chars
+[03:25:50.602] INFO (#1): [render] local http://rogueshollowregiment.com/staff/azbell — 239746 chars
+[03:25:51.715] INFO (#1): [render] local http://rogueshollowregiment.com/staff/kinder — 187637 chars
+[03:25:52.805] INFO (#1): [render] local http://rogueshollowregiment.com/staff/marlowe — 186573 chars
+[03:25:54.770] INFO (#1): [render] local http://rogueshollowregiment.com/staff/lunney — 228473 chars
+[03:25:56.170] INFO (#1): [render] local http://rogueshollowregiment.com/staff/russ — 186189 chars
+[03:26:22.937] INFO (#1): [104/139] Rogues Hollow Regiment → http://rogueshollowregiment.com/staff (46 people, 54 role-rows across 14 seasons)
+[03:26:56.337] INFO (#1): [105/139] Rosemont King Cobras → https://cavaliers.org/our-team (34 people, 72 role-rows across 14 seasons)
+[03:27:04.891] INFO (#1): [render] local http://www.freelancers-alumni.org — 11824 chars
+[03:27:04.891] INFO (#1): [106/139] Sacramento Freelancers Drum & Bugle Corps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:29:19.863] INFO (#1): [render] Browserbase http://www.shadowdbc.org
+[03:30:47.823] INFO (#1): [render] Browserbase http://www.shadowdbc.org/staff
+[03:32:08.097] INFO (#1): [107/139] Shadow → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:32:13.506] INFO (#1): [render] local http://www.skyryders.com — 33177 chars
+[03:32:13.506] INFO (#1): [108/139] Sky Ryders → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:32:13.626] INFO (#1): [render] Browserbase http://www.socaldream.org
+[03:34:09.380] INFO (#1): [render] Browserbase http://www.socaldream.org/staff
+[03:36:09.991] INFO (#1): [109/139] SoCal Dream → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:36:21.355] INFO (#1): [render] local https://www.sonusbrasstheater.org — 125142 chars
+[03:36:29.694] INFO (#1): [render] local https://www.sonusbrasstheater.org/staff — 354 chars
+[03:36:29.704] INFO (#1): [110/139] Sonus Brass Theater → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:37:11.167] INFO (#1): [111/139] Sound of Sun Prairie → https://web.archive.org/web/20260120145801/https://www.spbb.org/sosp.html (7 people, 7 role-rows across 14 seasons)
+[03:37:13.067] INFO (#1): [render] Browserbase http://www.southernknightscorps.org
+[03:38:10.976] INFO (#1): [render] Browserbase http://www.southernknightscorps.org/staff
+[03:40:11.541] INFO (#1): [112/139] Southern Knights → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:40:13.079] INFO (#1): [render] Browserbase http://www.southernknightscorps.org
+[03:41:12.787] INFO (#1): [render] Browserbase http://www.southernknightscorps.org/staff
+[03:43:13.380] INFO (#1): [113/139] Southern Knights → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:43:23.407] INFO (#1): [render] local http://www.southwind.org — 5777 chars
+[03:43:23.408] INFO (#1): [114/139] Southwind → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:44:09.055] INFO (#1): [115/139] Spark → https://www.fusioncore.org/our-team (92 people, 137 role-rows across 14 seasons)
+[03:44:49.964] INFO (#1): [116/139] Sparta Ignite → https://bapam.org/bod-admin (12 people, 12 role-rows across 14 seasons)
+[03:45:02.263] INFO (#1): [render] local https://web.archive.org — 171581 chars
+[03:45:02.264] INFO (#1): [117/139] Spirit of Sunnyvale → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:45:11.342] INFO (#1): [render] local https://scadbc.org — 135125 chars
+[03:45:11.342] INFO (#1): [118/139] Steel City Ambassadors → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:45:21.440] INFO (#1): [render] local https://www.sunrisersdrumcorps.org/our-design-team--staff.html — 1995 chars
+[03:45:30.182] INFO (#1): [render] local https://www.sunrisersdrumcorps.org/our-administration.html — 45222 chars
+[03:45:30.190] INFO (#1): [119/139] Sunrisers → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:47:44.734] INFO (#1): [render] Browserbase http://www.yuehfu.org
+[03:49:56.423] INFO (#1): [render] Browserbase http://www.yuehfu.org/staff
+[03:51:17.079] INFO (#1): [120/139] Taipei Yuehfu → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:51:23.664] INFO (#1): [render] local https://www.battalioncorps.org/design-team/brian-ellis — 873946 chars
+[03:51:25.921] INFO (#1): [render] local https://www.battalioncorps.org/design-team/lindsey-schueller — 872417 chars
+[03:51:28.125] INFO (#1): [render] local https://www.battalioncorps.org/design-team/tim-snyder — 875732 chars
+[03:51:29.909] INFO (#1): [render] local https://www.battalioncorps.org/design-team/jaasiel-wilson — 869642 chars
+[03:51:31.833] INFO (#1): [render] local https://www.battalioncorps.org/design-team/mitch-barnard — 873773 chars
+[03:51:34.241] INFO (#1): [render] local https://www.battalioncorps.org/design-team/robbie-halpner — 867785 chars
+[03:51:36.836] INFO (#1): [render] local https://www.battalioncorps.org/brass-staff/sam-tiemeyer — 884223 chars
+[03:51:39.117] INFO (#1): [render] local https://www.battalioncorps.org/brass-staff/brett-siebert — 882532 chars
+[03:52:23.133] INFO (#1): [121/139] The Battalion → https://www.battalioncorps.org/staff-new (44 people, 81 role-rows across 14 seasons)
+[03:52:24.997] INFO (#1): [render] local https://bluecoats.com/theblueway/register — 493968 chars
+[03:52:26.857] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/sat-night-add — 327279 chars
+[03:52:28.386] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/airportshuttle — 541645 chars
+[03:52:29.929] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/leadership-symposium-2026 — 418887 chars
+[03:52:31.094] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/performance-camp-2026 — 474220 chars
+[03:52:32.730] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/mega-bundle-2026 — 422177 chars
+[03:52:34.079] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/music-educator-2026 — 464360 chars
+[03:53:03.496] INFO (#1): [122/139] The Blue Way → https://bluecoats.com/theblueway (62 people, 66 role-rows across 14 seasons)
+[03:53:04.806] INFO (#1): [render] local https://bluecoats.com/theblueway/register — 494094 chars
+[03:53:05.609] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/sat-night-add — 353211 chars
+[03:53:06.407] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/airportshuttle — 541509 chars
+[03:53:07.339] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/leadership-symposium-2026 — 467633 chars
+[03:53:08.992] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/performance-camp-2026 — 474130 chars
+[03:53:10.274] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/mega-bundle-2026 — 474560 chars
+[03:53:11.288] INFO (#1): [render] local https://bluecoats.com/theblueway/register/p/music-educator-2026 — 465189 chars
+[03:53:14.403] INFO (#1): [123/139] The Blue Way Middle School Honor Band → https://bluecoats.com/theblueway (62 people, 66 role-rows across 14 seasons)
+[03:53:27.278] INFO (#1): [render] local http://www.theco.org.uk — 59605 chars
+[03:53:27.278] INFO (#1): [124/139] The Company → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:53:29.911] INFO (#1): [render] local https://www.themarchingelite.org — 484313 chars
+[03:53:30.419] INFO (#1): [render] local https://www.themarchingelite.org/staff — 425011 chars
+[03:53:59.444] INFO (#1): [125/139] The Marching Elite → https://www.themarchingelite.org/staff (1 people, 1 role-rows across 14 seasons)
+[03:53:59.580] INFO (#1): [render] Browserbase http://spokanethunder.org
+[03:54:18.096] INFO (#1): [render] Browserbase http://spokanethunder.org/staff
+[03:55:18.400] INFO (#1): [126/139] Thunder → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:55:28.145] INFO (#1): [render] local https://trooperslegacycorps.boosterhub.com — 128440 chars
+[03:55:28.146] INFO (#1): [127/139] Troopers Legacy Corps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:55:36.926] INFO (#1): [render] local https://www.drumcorps.marines.mil — 303 chars
+[03:55:45.075] INFO (#1): [render] local https://www.drumcorps.marines.mil/staff — 308 chars
+[03:55:45.079] INFO (#1): [128/139] U.S. Marine Drum & Bugle Corps → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[03:55:59.756] INFO (#1): [render] local https://web.archive.org/web/20221206125840/https://www.instagram.com/p/ClZbUSHBumx — 140652 chars
+[03:56:39.110] INFO (#1): [129/139] Vanguard Cadets → https://web.archive.org/web/20221204225814/http://www.scvanguard.org (21 people, 21 role-rows across 14 seasons)
+[03:58:54.104] INFO (#1): [render] Browserbase https://www.vesseldbc.org
+[04:01:01.274] INFO (#1): [render] Browserbase https://www.vesseldbc.org/staff
+[04:02:21.942] INFO (#1): [130/139] Vessel → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[04:02:33.864] INFO (#1): [render] local https://web.archive.org — 171577 chars
+[04:02:33.865] INFO (#1): [131/139] Watchmen → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[04:03:27.750] INFO (#1): [132/139] White Sabers → https://www.whitesabers.org/team (50 people, 72 role-rows across 14 seasons)
+[04:04:09.458] INFO (#1): [133/139] Zephyrus → https://www.zephyrusarts.org/corps.html (4 people, 5 role-rows across 14 seasons)
+[04:04:12.825] INFO (#1): [134/139] Zephyrus Drum & Bugle Corps → https://www.zephyrusarts.org/corps.html (4 people, 5 role-rows across 14 seasons)
+[04:04:22.982] INFO (#1): [render] local https://web.archive.org — 171581 chars
+[04:04:22.984] INFO (#1): [135/139] Amoskeag Sound → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[04:04:32.879] INFO (#1): [render] local https://web.archive.org — 171581 chars
+[04:04:32.880] INFO (#1): [136/139] Bluecoats Rhythm IN BLUE → NO STAFF PAGE (0 people, 0 role-rows across 0 seasons)
+[04:05:08.831] INFO (#1): [137/139] Mandarins Alumni → https://www.mandarins.org/staff (114 people, 143 role-rows across 14 seasons)
+[04:05:50.832] INFO (#1): [138/139] Northern Lights → https://www.northernlightsmi.org/staff (9 people, 9 role-rows across 14 seasons)
+[04:06:24.118] INFO (#1): [139/139] Phantom Regiment Alumni Corps → https://regiment.org/about/staff (38 people, 38 role-rows across 14 seasons)
+[04:06:24.118] INFO (#1): Applied 1664 staff members across 139 corps.
+[04:06:24.120] INFO (#1): Summary written to results/staff-scan/staff-scan-2026-06-16T04-06-24-118Z.json
+Done.

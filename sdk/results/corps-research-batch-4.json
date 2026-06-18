@@ -1,0 +1,255 @@
+{
+  "batch": 4,
+  "created_at": "2026-06-04",
+  "scope": "Research-only candidates for Batch 4 corps missing public profile fields/media. No database updates were made.",
+  "items": [
+    {
+      "corps_key": "sky-ryders",
+      "name": "Sky Ryders",
+      "requested_missing": ["logo", "photo"],
+      "candidates": {
+        "about": null,
+        "logo_url": "http://www.skyryders.com/wp-content/uploads/2015/01/logo-sky-ryders.png",
+        "photo_url": "https://www.dcxmuseum.org/pictures/Sky_Ryders_93_2.jpg",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "confidence": "medium",
+      "notes": "The logo is from the Sky Ryders official WordPress site header and was verified as a direct downloadable PNG. The photo is a historical DCX image, not a current SoundSport-era image, so it should be treated as a fallback candidate.",
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/sky-ryders/",
+          "title": "Sky Ryders - Drum Corps International",
+          "notes": "Confirms current DCI profile, Hutchinson, KS, website, and SoundSport return context."
+        },
+        {
+          "url": "http://www.skyryders.com/about/foundation/",
+          "title": "Sky Ryders official site",
+          "notes": "Current requested path returned 404, but the page shell includes official Sky Ryders logo assets."
+        },
+        {
+          "url": "https://www.dcxmuseum.org/index.cfm?Corpsid=28&view=corpslist",
+          "title": "DCX - Sky Ryders",
+          "notes": "Historical profile and photo gallery for Sky Ryders."
+        }
+      ]
+    },
+    {
+      "corps_key": "socal-dream",
+      "name": "SoCal Dream",
+      "requested_missing": ["about", "logo", "photo", "website", "location"],
+      "candidates": {
+        "about": "SoCal Dream, originally called the SoCal Dream Machine, was an all-age/senior drum corps that formed in Southern California in 2001 for performers no longer eligible for junior corps. The corps became independent under the Dream Association of California and competed in DCA/West Coast senior corps events through the early 2010s.",
+        "logo_url": "https://mpamdcx.org/assets/SoCalDreamLosAngelesCALP1DST-125x0625AA_U_S.jpg",
+        "photo_url": "https://mpamdcx.org/pictures/2013/20130630_2013017_Riverside/SoCal%20Dream-027.jpg",
+        "website": "http://www.socaldream.org/",
+        "city": "Huntington Beach",
+        "state": "CA",
+        "country": "United States",
+        "display_city": "Huntington Beach, CA"
+      },
+      "confidence": "medium",
+      "notes": "Location evidence conflicts: DCX lists Los Angeles, CA; The Bash says Huntington Beach, CA; an old DCI yearbook listing used a Fountain Valley mailing address. Huntington Beach is the best profile-style candidate because it is explicitly described as the base of the performing unit, but this should be reviewed before applying. The website is historical and may be inactive.",
+      "sources": [
+        {
+          "url": "https://dcxmuseum.org/index.cfm?Corpsid=2411&view=corpslist",
+          "title": "DCX - SoCal Dream",
+          "notes": "Provides history, Los Angeles location label, photo gallery, logo/collectible image, and official homepage link."
+        },
+        {
+          "url": "https://www.thebash.com/drum-and-bugle-corps/surfcitydrifters",
+          "title": "Surf City Drifters - The Bash",
+          "notes": "Describes SoCal Dream as Southern California's first all-age musical marching unit based out of Huntington Beach and part of Dream Association of California."
+        },
+        {
+          "url": "https://pubhtml5.com/xada/gfnv/basic/51-100",
+          "title": "Drum Corps International 2009 Yearbook",
+          "notes": "Lists SoCal Dream as an all-age corps with a Fountain Valley, CA mailing address and socaldream.org website."
+        }
+      ]
+    },
+    {
+      "corps_key": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "requested_missing": ["about", "photo"],
+      "candidates": {
+        "about": "Sonus Brass Theater is an all-age brass, percussion and color guard ensemble based in Woodbridge, Virginia. A longtime DCI SoundSport participant, Sonus has earned gold ratings at the SoundSport International Music & Food Festival.",
+        "logo_url": null,
+        "photo_url": "https://sonusbrasstheater.org/wp-content/uploads/2023/09/Sonus-Brass-Theater_250809_SoundSport-00229-570x342.jpg",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "confidence": "high",
+      "notes": "The photo is from the official Sonus Brass Theater site and was verified as a direct downloadable JPEG. DCI and the official site agree on the SoundSport/all-age summary.",
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/sonus-brass-theater/",
+          "title": "Sonus Brass Theater - Drum Corps International",
+          "notes": "Confirms Woodbridge, VA, official website, SoundSport history, and 2024 gold rating."
+        },
+        {
+          "url": "https://sonusbrasstheater.org/",
+          "title": "Sonus Brass Theater official site",
+          "notes": "Provides active 2026 recruiting text and direct media image."
+        },
+        {
+          "url": "https://dcxmuseum.org/index.cfm?Corpsid=1790&tab=2&view=corpslist",
+          "title": "DCX - Sonus Brass Theater",
+          "notes": "Confirms Woodbridge, VA, founded 2013, active SoundSport, and historical photo archive."
+        }
+      ]
+    },
+    {
+      "corps_key": "southern-knights",
+      "name": "Southern Knights",
+      "requested_missing": ["about", "logo", "photo", "website", "location"],
+      "candidates": {
+        "about": "Formed in 2015, Southern Knights is an all-age drum corps from Alabama. The corps' 2017 summer season marked its first season performing as part of Drum Corps International's All-Age division, and the organization emphasizes member development through teamwork, self-discipline, preparedness, accountability, critical thinking, and leadership.",
+        "logo_url": null,
+        "photo_url": null,
+        "website": "http://www.southernknightscorps.org/",
+        "city": "Pelham",
+        "state": "AL",
+        "country": "United States",
+        "display_city": "Pelham, AL"
+      },
+      "confidence": "medium",
+      "notes": "DCI's profile is strong for about/location/website. I did not find a verified direct logo or photo URL; the official site failed TLS from local fetches, and search snippets were not enough to support media assignment.",
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/southern-knights/",
+          "title": "Southern Knights - Drum Corps International",
+          "notes": "Redirects to southern-knights-2; confirms Pelham, AL, address, website, and official about text."
+        },
+        {
+          "url": "https://soundsport.com/20-ensembles-locked-in-for-exciting-2023-soundsport-season/",
+          "title": "20+ ensembles locked in for exciting 2023 SoundSport season",
+          "notes": "Notes Southern Knights' move to Chattanooga from Birmingham and experience in SoundSport/DCA; this conflicts with the current DCI profile location, so Pelham remains the DCI-backed candidate."
+        },
+        {
+          "url": "https://southernknightscorps.org/",
+          "title": "Southern Knights official site",
+          "notes": "Official website identified by DCI/search, but direct local fetch failed due to TLS, so no media candidates were taken from it."
+        }
+      ]
+    },
+    {
+      "corps_key": "steel-city-ambassadors",
+      "name": "Steel City Ambassadors",
+      "requested_missing": ["photo"],
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": "https://img1.wsimg.com/isteam/ip/d9a2a936-7f36-4b72-9838-f3a56d0bee8e/warren%20full.jpg",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "confidence": "high",
+      "notes": "The photo candidate is the Open Graph image from the current official Steel City Ambassadors website. DCX also has a verified 2024 field photo if a performance-action image is preferred: https://mpamdcx.org/pictures/2024/20240727_2024090_Sheffield/Steel_City_Ambassadors-016.jpg",
+      "sources": [
+        {
+          "url": "https://scadbc.org/",
+          "title": "Steel City Ambassadors official site",
+          "notes": "Current official site; provides Open Graph image and direct page images."
+        },
+        {
+          "url": "https://dcxmuseum.org/index.cfm?Corpsid=1872&view=corpslist",
+          "title": "DCX - Steel City Ambassadors",
+          "notes": "Confirms Pittsburgh, PA history and provides current/historical photo gallery."
+        },
+        {
+          "url": "https://www.trwea.org/member_details.php?unit_id=265",
+          "title": "TRWEA member profile - Steel City Ambassadors",
+          "notes": "Confirms Pittsburgh, PA and current organization website."
+        }
+      ]
+    },
+    {
+      "corps_key": "taipei-yuehfu",
+      "name": "Taipei Yuehfu",
+      "requested_missing": ["about", "logo", "photo", "website", "location"],
+      "candidates": {
+        "about": "Taipei Yuehfu is a junior drum corps and marching arts group from Taipei, Taiwan. Founded in 1996, the corps represented Taiwan in DCI International Class competition and won the 2005 Division III Prelims before returning to DCI in 2013.",
+        "logo_url": "https://static.wixstatic.com/media/8e906d_7ab5795c09d44e68afeaf229e72845c4~mv2_d_5450_6872_s_4_2.png/v1/fill/w_105,h_132,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%E5%85%A8%E5%BD%A9LOGO%20HD-20170804.png",
+        "photo_url": "https://static.wixstatic.com/media/8e906d_4f80443f9e1e491e9c4981612f11133a~mv2_d_5472_3648_s_4_2.jpg/v1/crop/x_0,y_0,w_4744,h_3636/fill/w_412,h_311,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/8e906d_4f80443f9e1e491e9c4981612f11133a~mv2_d_5472_3648_s_4_2.jpg",
+        "website": "http://www.yuehfu.org",
+        "city": "Taipei",
+        "state": null,
+        "country": "Taiwan",
+        "display_city": "Taipei, Taiwan"
+      },
+      "confidence": "medium",
+      "notes": "DCI strongly supports the location/history. The official website is historical and may be inactive. Logo/photo candidates come from Taiwan Marching Band Association pages and were verified as direct downloadable media, but the page is broader than a single Taipei Yuehfu profile, so media should be reviewed visually before applying.",
+      "sources": [
+        {
+          "url": "https://www.dci.org/news/taipei-yuehfu-adds-international-flavor-to-madison-competition-711-pm/",
+          "title": "Taipei Yuehfu adds international flavor to Madison competition",
+          "notes": "DCI article confirms Taipei/Taiwan, founding by Gary Brattin in 1996, and early DCI International Class context."
+        },
+        {
+          "url": "https://www.dci.org/news/spotlight-of-the-week-2005-taipei-yuehfu/",
+          "title": "Spotlight of the Week: 2005 Taipei Yuehfu",
+          "notes": "DCI article confirms 2005 Division III Prelims win, prior DCI appearances, and 2013 return."
+        },
+        {
+          "url": "https://www.taiwan-mba.org/color-guard",
+          "title": "Taiwan Marching Band Association - color guard",
+          "notes": "Provides direct Wix-hosted media candidates associated with Taiwan marching arts; review before applying to Taipei Yuehfu."
+        },
+        {
+          "url": "https://cdptw.com.tw/msb-yf/",
+          "title": "Craftsman Drum and Percussion - MSB-YF Taipei Yuehfu",
+          "notes": "Identifies Taipei Yuehfu Drum & Bugle Corps / Taipei Yuehfu marching arts group and links to its Facebook presence."
+        },
+        {
+          "url": "https://www.ptt.cc/bbs/CYHSBAND/M.1303756722.A.F06.html",
+          "title": "Taipei Yuehfu event post",
+          "notes": "Historical post lists official website as http://www.yuehfu.org."
+        }
+      ]
+    },
+    {
+      "corps_key": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "requested_missing": ["photo"],
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": "https://www.zephyrusarts.org/uploads/1/3/4/7/134760598/img-7502-copy_orig.jpg",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "confidence": "high",
+      "notes": "The photo candidate is from Zephyrus Arts Institute's official Drum & Bugle Corps page and was verified as a direct downloadable JPEG.",
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/zephyrus-drum-bugle-corps/",
+          "title": "Zephyrus - Drum Corps International",
+          "notes": "Confirms Tulsa, OK, DCI profile and Open Class Affiliate status."
+        },
+        {
+          "url": "https://www.zephyrusarts.org/corps.html",
+          "title": "Zephyrus Drum & Bugle Corps official page",
+          "notes": "Provides official corps page, active 2026 information, Tulsa-area support address, and direct photo media."
+        },
+        {
+          "url": "https://www.dcxmuseum.org/index.cfm?corpsid=11892&corpsyear=2025&view=corpslist",
+          "title": "DCX - Zephyrus",
+          "notes": "Confirms alternate name Zephyrus Drum & Bugle Corps."
+        }
+      ]
+    }
+  ]
+}

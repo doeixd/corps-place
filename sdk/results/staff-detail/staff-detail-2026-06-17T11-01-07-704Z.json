@@ -1,0 +1,139 @@
+{
+  "scrapedAt": "2026-06-17T11-01-07-704Z",
+  "apply": false,
+  "totBio": 9,
+  "totPhoto": 20,
+  "corps": [
+    {
+      "corpsKey": "001j000000iwxa3aal",
+      "name": "Mandarins",
+      "staffPageUrl": "http://www.mandarins.org/staff",
+      "targets": 451,
+      "detailLinks": 21,
+      "biosFilled": 9,
+      "photosFilled": 20,
+      "fills": [
+        {
+          "name": "Kathleen Davies",
+          "url": "https://www.mandarins.org/drum-corps-staff/kathleen-davies",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Mike Yee",
+          "url": "https://www.mandarins.org/drum-corps-staff/mike-yee",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Scott Jow",
+          "url": "https://www.mandarins.org/drum-corps-staff/scott-jow",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Darryl Yee",
+          "url": "https://www.mandarins.org/drum-corps-staff/darryl-yee",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Cindy Kazee",
+          "url": "https://www.mandarins.org/drum-corps-staff/cindy-kazee",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Marty Louie",
+          "url": "https://www.mandarins.org/drum-corps-staff/marty-louie",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Milt Gee",
+          "url": "https://www.mandarins.org/drum-corps-staff/milt-gee",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Ron Lam",
+          "url": "https://www.mandarins.org/drum-corps-staff/ron-lam",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Ray Mar",
+          "url": "https://www.mandarins.org/drum-corps-staff/ray-mar",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Saori Choulos",
+          "url": "https://www.mandarins.org/drum-corps-staff/saori-choulos",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Patrick Kennedy",
+          "url": "https://www.mandarins.org/drum-corps-staff/patrick-kennedy",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Andy Roth",
+          "url": "https://www.mandarins.org/drum-corps-staff/andy-roth",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Perry Ghilarducci",
+          "url": "https://www.mandarins.org/drum-corps-staff/perry-ghilarducci",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Sheree Meyer",
+          "url": "https://www.mandarins.org/drum-corps-staff/dr.-sheree-meyer",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Phillip Vermont",
+          "url": "https://www.mandarins.org/drum-corps-staff/phillip-vermont",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Bridget Smith",
+          "url": "https://www.mandarins.org/drum-corps-staff/bridget-smith",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Betty Low",
+          "url": "https://www.mandarins.org/drum-corps-staff/betty-low",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Scott Rosenzweig",
+          "url": "https://www.mandarins.org/drum-corps-staff/scott-rosenzweig",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jeniene Knight",
+          "url": "https://www.mandarins.org/drum-corps-staff/jeniene-knight",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Steven Winlock",
+          "url": "https://www.mandarins.org/drum-corps-staff/dr.-steven-winlock",
+          "bio": true,
+          "photo": true
+        }
+      ]
+    }
+  ]
+}

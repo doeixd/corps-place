@@ -1,0 +1,77 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for the 3 batch-4 photoless judges after deeper research (puppeteer-rendered MFA/WGI + targeted search). John Bell resolved to Dr. John Bell (SIUE/McKendree, ex-Cavaliers brass caption head) with photo. Todd Fox & Curtis Costanza enriched bios; no public headshot found.",
+  "profiles": [
+    {
+      "judgeId": "j-bell-1",
+      "displayName": "John Bell",
+      "givenName": "John",
+      "familyName": "Bell",
+      "biography": "Dr. John Bell is a music/general-effect adjudicator and conductor who directs the Wind Ensemble at McKendree University (Lebanon, IL) and is music and artistic director of the St. Louis Brass Band. He is Professor of Music Emeritus from Southern Illinois University Edwardsville, where he spent 30 years as Director of Bands and Professor of Conducting and Music Education. He served as Brass Caption Head for the Cavaliers and Blue Knights drum and bugle corps and has adjudicated for Drum Corps International, Bands of America, and the World Music Festival across the U.S., Canada, Japan, and Thailand, registered as a Master Judge with the Marching Roundtable Judges Academy. He is an elected member of the American Bandmasters Association, the American School Band Directors Association, and the North American Brass Band Association board, and holds doctoral and master's degrees from the University of Illinois and a bachelor's from LSU.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2025/09/Adobe-Express-file-45.jpg",
+      "alternateNames": ["Dr. John Bell"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/dr-john-bell/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.siue.edu/arts-and-sciences/music/about-contact-us/bell.shtml", "label": "SIUE Department of Music", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "The Cavaliers", "role": "Brass Caption Head", "sourceUrl": "https://education.musicforall.org/clinician/dr-john-bell/" },
+        { "corpsName": "Blue Knights", "role": "Brass Caption Head", "sourceUrl": "https://education.musicforall.org/clinician/dr-john-bell/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "Dr. John Bell, SIUE Prof Emeritus / McKendree Wind Ensemble; Cavaliers & Blue Knights brass caption head; DCI/BOA judge. Brass background aligns with j-bell-1's Music Brass/GE captions.", "source": "https://education.musicforall.org/clinician/dr-john-bell/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-fox-1",
+      "displayName": "Todd Fox",
+      "givenName": "Todd",
+      "familyName": "Fox",
+      "biography": "Todd Fox is a percussion/music adjudicator who has judged drum corps and the percussion music caption since 1994 and serves as the Drum Corps International Central Division Judges Coordinator. He has served as chief judge at the DCI Kalamazoo event and has held percussion-related judging roles at DCI World Championships, including Ensemble Percussion and Music Analysis, and judges the Winds Music Analysis caption for Winter Guard International.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/judges_winds/todd-fox/", "label": "WGI Winds judge profile", "kind": "organization" },
+        { "url": "https://www.dci.org/news/july-5-brings-additional-dci-judges-to-the-field/", "label": "DCI: Central Division Judges Coordinator", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI percussion judge since 1994; DCI Central Division Judges Coordinator; chief judge DCI Kalamazoo; WGI Winds Music Analysis", "source": "https://www.dci.org/news/july-5-brings-additional-dci-judges-to-the-field/", "confidence": "HIGH" },
+          { "fact": "WGI winds judge page is a caption-only stub (confirmed via JS render); no public headshot found - photoUrl null", "source": "https://www.wgi.org/judges_winds/todd-fox/", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-costanza-1",
+      "displayName": "Curtis Costanza",
+      "givenName": "Curtis",
+      "familyName": "Costanza",
+      "biography": "Curtis Costanza is a general-effect/visual adjudicator and judge administrator based in Vancouver, Washington, where he is a middle school teacher. He has extensive judging experience with Drum Corps International, Winter Guard International, Bands of America, and the Winter Guard Association of Southern California, and serves as chief judge administrator for WGI and for the Northwest Association for Performing Arts. He judged the General Effect Visual captions at DCI World Championships, including the 2008-2010 seasons.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2010-dci-world-championship-adjudication-panels", "label": "DCI 2010 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Analysis / Color Guard / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "Vancouver WA middle school teacher; chief judge administrator for WGI & Northwest Assoc. for Performing Arts; DCI/WGI/BOA judge", "source": "https://www.dci.org/news/2010-dci-world-championship-adjudication-panels", "confidence": "MEDIUM" },
+          { "fact": "MFA clinician page no longer live; no public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    }
+  ]
+}

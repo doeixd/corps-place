@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Chris Raichle: full bio + headshot from Massachusetts Judges Association page (rendered via puppeteer).",
+  "profiles": [
+    {
+      "judgeId": "c-raichle-1",
+      "displayName": "Chris Raichle",
+      "givenName": "Chris",
+      "familyName": "Raichle",
+      "biography": "Chris (Christopher Van) Raichle is a color guard and visual adjudicator from Boston, Massachusetts, who first became involved in the marching arts as a member of the Boston Crusaders Drum & Bugle Corps. A WGI color guard instructor since 1980, he has been a member of the design team at the Blessed Sacrament color guards (Cambridge, MA) since 1986 and sits on their board of directors. He has taught numerous drum corps, college and high school bands, and winter color guards to national and international titles. A member of the Massachusetts Judges Association, he holds a degree in architectural design and works for the design/build firm Haycon Building in Boston. He currently judges visual captions for Drum Corps International, Winter Guard International, NESBA, MICCA, the Maine Band Directors Association, the Marching Arts Conference, and Color Guard Netherlands.",
+      "photoUrl": "https://images.squarespace-cdn.com/content/v1/68dfcf411d546a03f865e24e/6941177a-a66c-4878-97ab-afc6a3bbe080/Mr-Christopher-Van-Raichle.jpg",
+      "alternateNames": ["Christopher Raichle", "Christopher Van Raichle"],
+      "externalLinks": [
+        { "url": "https://www.massjudge.org/new-page-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1", "label": "Massachusetts Judges Association", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Boston Crusaders", "role": "Performer (member)", "sourceUrl": "https://www.massjudge.org/new-page-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / Visual Analysis / Visual Proficiency / GE1; 2013-2025",
+        "facts": [
+          { "fact": "Boston Crusaders alum; WGI CG instructor since 1980; Blessed Sacrament design team; architect (Haycon Building); DCI/WGI/NESBA/MICCA visual judge", "source": "https://www.massjudge.org/new-page-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

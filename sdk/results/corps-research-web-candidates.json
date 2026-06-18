@@ -1,0 +1,437 @@
+[
+  {
+    "corps_key": "0010a000019s6ceaay",
+    "name": "Erie Thunderbirds",
+    "confidence": "medium",
+    "fields": {
+      "about": "The Erie Thunderbirds are a senior drum and bugle corps from northwestern Pennsylvania. The organization traces its history to 1956 in Meadville, Pennsylvania, later becoming the Erie Thunderbirds and continuing as a parade, mini-corps, and all-age drum corps organization.",
+      "website": "https://www.eriethunderbirds.org/",
+      "city": "Erie",
+      "state": "PA",
+      "country": "USA",
+      "display_city": "Erie, PA"
+    },
+    "sources": [
+      {
+        "url": "https://www.eriethunderbirds.org/",
+        "title": "Erie Thunderbirds - Home",
+        "notes": "Official site; describes 1956 founding in Meadville and current organization."
+      },
+      {
+        "url": "https://www.eriethunderbirds.org/contact-us",
+        "title": "Erie Thunderbirds - Contact Us",
+        "notes": "Official contact page; lists Erie, PA business address."
+      },
+      {
+        "url": "https://drumcorps.fandom.com/wiki/Erie_Thunderbirds",
+        "title": "Erie Thunderbirds | Drum Corps Wiki",
+        "notes": "Historical summary; lower-authority supporting source."
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwwsmaal",
+    "name": "Alliance",
+    "confidence": "medium",
+    "fields": {
+      "about": "Alliance Drum and Bugle Corps was an all-age drum and bugle corps based in the Atlanta, Georgia area. The corps was founded in 2004 and competed in Drum Corps Associates, including Class A competition.",
+      "city": "Atlanta",
+      "state": "GA",
+      "country": "USA",
+      "display_city": "Atlanta, GA"
+    },
+    "sources": [
+      {
+        "url": "https://dcxmuseum.org/index.cfm?Corpsid=2510&view=corpslist",
+        "title": "DCX - Alliance",
+        "notes": "Historical profile with founding and Atlanta-area context."
+      },
+      {
+        "url": "https://en.everybodywiki.com/Alliance_Drum_and_Bugle_Corps",
+        "title": "Alliance Drum and Bugle Corps",
+        "notes": "Secondary summary; use cautiously."
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwx9daat",
+    "name": "Eruption",
+    "confidence": "high",
+    "fields": {
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Eruption-Logo-jpg-website.jpeg"
+    },
+    "sources": [
+      {
+        "url": "https://commons.wikimedia.org/wiki/File:Eruption-Logo-jpg-website.jpeg",
+        "title": "File:Eruption-Logo-jpg-website.jpeg",
+        "notes": "Wikimedia Commons logo page; original image is CC BY-SA 3.0 and categorized for Eruption/Gig Harbor drum corps."
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwx9yaad",
+    "name": "Jubal",
+    "confidence": "high",
+    "fields": {
+      "about": "Jubal is a drum and bugle corps from Dordrecht, Netherlands. Founded in 1911, the organization is one of Europe's oldest active corps and has competed internationally, including DCI appearances in the United States and Drum Corps Europe championship competition.",
+      "website": "https://www.jubal.org/",
+      "city": "Dordrecht",
+      "country": "Netherlands",
+      "display_city": "Dordrecht, Netherlands"
+    },
+    "sources": [
+      {
+        "url": "https://www.dci.org/news/dutch-corps-jubal-excels-in-recent-trip-to-dci-world-championships/",
+        "title": "Dutch corps Jubal excels in recent trip to DCI World Championships",
+        "notes": "DCI article; confirms Dordrecht and DCI participation."
+      },
+      {
+        "url": "https://dcxmuseum.org/index.cfm?corpsid=809&view=corpslist",
+        "title": "DCX - Jubal",
+        "notes": "Historical profile; states 1911 founding and Dordrecht base."
+      },
+      {
+        "url": "https://www.jubal.org/",
+        "title": "Jubal Dordrecht",
+        "notes": "Official website."
+      }
+    ]
+  },
+  {
+    "corps_key": "conquest-drum-bugle-corps",
+    "name": "Conquest Drum & Bugle Corps",
+    "confidence": "high",
+    "fields": {
+      "about": "Conquest was founded in 2018 to bring a drum and bugle corps back to the Quad Cities region. The corps represents Geneseo, Illinois through SoundSport performances, parades, athletic events, and community appearances.",
+      "website": "https://sites.google.com/view/conquest-drum-and-bugle/home",
+      "city": "Geneseo",
+      "state": "IL",
+      "country": "USA",
+      "display_city": "Geneseo, IL"
+    },
+    "sources": [
+      {
+        "url": "https://www.dci.org/corps/conquest-drum-bugle-corps-2/",
+        "title": "Conquest Drum & Bugle Corps : Upcoming Events & Related News",
+        "notes": "DCI profile with about text, location, contact, and website."
+      }
+    ]
+  },
+  {
+    "corps_key": "gita-surosowan-banten",
+    "name": "Gita Surosowan Banten",
+    "confidence": "medium",
+    "fields": {
+      "about": "Gita Surosowan Banten is an Indonesian marching band and drum corps organization from Banten. The group represented Indonesia at the 2015 DCI World Championships and earned a Silver medal in International Class.",
+      "city": "Serang",
+      "state": "Banten",
+      "country": "Indonesia",
+      "display_city": "Serang, Banten, Indonesia"
+    },
+    "sources": [
+      {
+        "url": "https://soundsport.com/events/banten-indonesia/",
+        "title": "Banten, Indonesia - SoundSport",
+        "notes": "SoundSport page notes Gita Surosowan Banten as a local corps and 2015 DCI International Class silver medalist."
+      },
+      {
+        "url": "https://dcxmuseum.org/index.cfm?option=country%3AIndonesia&view=corps",
+        "title": "DCX - Indonesia corps list",
+        "notes": "Lists Gita Surosowan Banten in Serang City, Banten, Indonesia."
+      },
+      {
+        "url": "https://banten.antaranews.com/berita/23268/plt-gubernur-lepas-tim-gita-surosowan-ke-amerika-serikat",
+        "title": "Plt Gubernur Lepas Tim 'Gita Surosowan' Ke Amerika Serikat",
+        "notes": "Indonesian news article about the group traveling to Indianapolis."
+      }
+    ]
+  },
+  {
+    "corps_key": "high-school-affiliated-to-bit",
+    "name": "High School Affiliated to BIT",
+    "confidence": "medium",
+    "fields": {
+      "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/High_School_Affiliated_to_BIT_%2820210511141630%29.jpg",
+      "city": "Beijing",
+      "country": "China",
+      "display_city": "Beijing, China"
+    },
+    "sources": [
+      {
+        "url": "https://commons.wikimedia.org/wiki/File:High_School_Affiliated_to_BIT_(20210511141630).jpg",
+        "title": "File:High School Affiliated to BIT (20210511141630).jpg",
+        "notes": "Wikimedia Commons photo of the school, not a corps performance image; candidate only for school/location visual."
+      }
+    ]
+  },
+  {
+    "corps_key": "socal-dream",
+    "name": "SoCal Dream",
+    "confidence": "high",
+    "fields": {
+      "about": "SoCal Dream Drum & Bugle Corps was associated with The Dream Association, a nonprofit formed to support the corps through fundraising, social events, music, marching, performances, and professional management. The corps focused on field performance theater, discipline, teamwork, and competitive performance.",
+      "website": "http://www.socaldream.org"
+    },
+    "sources": [
+      {
+        "url": "https://www.innovativepercussion.com/artists/socal_dream_drum__bugle_corps",
+        "title": "SoCal Dream Drum & Bugle Corps - Innovative Percussion",
+        "notes": "Partner/artist page with organization summary and website."
+      }
+    ]
+  },
+  {
+    "corps_key": "southern-knights",
+    "name": "Southern Knights",
+    "confidence": "high",
+    "fields": {
+      "about": "Southern Knights Drum and Bugle Corps is a 501(c)(3) performing arts organization whose program focuses on music, visual arts, drum corps, color guard, teamwork, discipline, accountability, and leadership.",
+      "website": "https://southernknightscorps.org/"
+    },
+    "sources": [
+      {
+        "url": "https://southernknightscorps.org/",
+        "title": "Home - Southern Knights Drum & Bugle Corps",
+        "notes": "Official site with mission/about text."
+      }
+    ]
+  },
+  {
+    "corps_key": "taipei-yuehfu",
+    "name": "Taipei Yuehfu",
+    "confidence": "high",
+    "fields": {
+      "about": "Taipei Yuehfu is a youth drum and bugle corps from Taipei, Taiwan. Founded in 1996, the corps became a DCI International Division champion and toured North America multiple times.",
+      "website": "http://www.yuehfu.org/en/index.html",
+      "city": "Taipei",
+      "country": "Taiwan",
+      "display_city": "Taipei, Taiwan"
+    },
+    "sources": [
+      {
+        "url": "https://dcxmuseum.org/index.cfm?CorpsID=518&tab=5&view=corpslist",
+        "title": "DCX - Taipei Yuehfu",
+        "notes": "Historical profile with founding, mission, age range, DCI championships, and official link."
+      },
+      {
+        "url": "https://www.dci.org/news/taipei-yuehfu-adds-international-flavor-to-madison-competition-711-pm/",
+        "title": "Taipei Yuehfu adds international flavor to Madison competition",
+        "notes": "DCI article confirming Taiwan origin and international participation."
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a00001cxz0gaab",
+    "name": "Green Beret",
+    "confidence": "high",
+    "fields": {
+      "about": "Green Beret Marching Band is a summer youth marching organization from Janesville, Wisconsin. Formed in 1966, the group serves youth in Rock County and has participated in DCI SoundSport events.",
+      "website": "https://greenberetmarchingband.org/",
+      "city": "Janesville",
+      "state": "WI",
+      "country": "USA",
+      "display_city": "Janesville, WI"
+    },
+    "sources": [
+      {
+        "url": "https://greenberetmarchingband.org/",
+        "title": "Green Beret Marching Band - Home",
+        "notes": "Official site with history, youth mission, location, and contact."
+      },
+      {
+        "url": "https://soundsport.com/lineup-set-soundsport-international-music-food-festival/",
+        "title": "Lineup set for SoundSport International Music and Food Festival",
+        "notes": "SoundSport article confirming Janesville/Milton region and SoundSport participation."
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a00001gzbgoaax",
+    "name": "Chops",
+    "confidence": "medium",
+    "fields": {
+      "about": "Chops, Inc. was a Minneapolis, Minnesota senior drum and bugle corps that competed in DCM, DCI, DCA, and later SoundSport contexts.",
+      "city": "Minneapolis",
+      "state": "MN",
+      "country": "USA",
+      "display_city": "Minneapolis, MN"
+    },
+    "sources": [
+      {
+        "url": "https://www.dcxmuseum.org/index.cfm?Corpsid=2094&view=corpslist",
+        "title": "DCX - Chops, Inc.",
+        "notes": "Historical profile; lists Minneapolis, founded 1991, and inactive SoundSport/senior status."
+      }
+    ]
+  },
+  {
+    "corps_key": "0015b000028qtqbaae",
+    "name": "Eclipse",
+    "confidence": "medium",
+    "fields": {
+      "about": "Eclipse Drum and Bugle Corps is an all-age corps based in Indianapolis, Indiana that competes in DCI SoundSport. The corps was founded in 2023.",
+      "website": "https://eclipsedbc.org/",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "USA",
+      "display_city": "Indianapolis, IN"
+    },
+    "sources": [
+      {
+        "url": "https://dcxmuseum.org/index.cfm?Corpsid=3015&tab=2&view=corpslist",
+        "title": "DCX - Eclipse Drum and Bugle Corps",
+        "notes": "Historical profile confirming 2023 founding and SoundSport competition."
+      },
+      {
+        "url": "https://marching-arts.fandom.com/wiki/Eclipse",
+        "title": "Eclipse | Marching Arts Wiki",
+        "notes": "Secondary source with website and current summary; use cautiously."
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwwspaal",
+    "name": "Blue Saints",
+    "confidence": "high",
+    "fields": {
+      "about": "Blue Saints Drum and Bugle Corps is a youth drum corps from Sudbury, Ontario. Founded in 1952, the corps returned to DCI activity in 2025 as a SoundSport ensemble.",
+      "city": "Sudbury",
+      "state": "ON",
+      "country": "Canada",
+      "display_city": "Sudbury, ON"
+    },
+    "sources": [
+      {
+        "url": "https://www.dci.org/corps/blue-saints-2/",
+        "title": "Blue Saints : Upcoming Events & Related News",
+        "notes": "DCI profile with founding, Sudbury origin, and 2025 SoundSport return."
+      },
+      {
+        "url": "https://www.sudbury.com/local-news/blue-saints-drum-and-bugle-need-new-practice-space-10351800",
+        "title": "Blue Saints Drum and Bugle need new practice space",
+        "notes": "Local news source confirming 70+ year history and Sudbury location."
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwx96aad",
+    "name": "Coastal Surge",
+    "confidence": "medium",
+    "fields": {
+      "about": "Coastal Surge Drum and Bugle Corps was an Open Class junior drum corps based in Myrtle Beach, South Carolina. Founded in 2011, the corps competed in DCI before folding in 2015.",
+      "city": "Myrtle Beach",
+      "state": "SC",
+      "country": "USA",
+      "display_city": "Myrtle Beach, SC"
+    },
+    "sources": [
+      {
+        "url": "https://en.everybodywiki.com/Coastal_Surge_Drum_and_Bugle_Corps",
+        "title": "Coastal Surge Drum and Bugle Corps",
+        "notes": "Secondary historical source with location, dates, and DCI context; use cautiously."
+      }
+    ]
+  },
+  {
+    "corps_key": "arsenal",
+    "name": "Arsenal",
+    "confidence": "high",
+    "fields": {
+      "about": "Arsenal Drum and Bugle Corps is Sun City Musical Arts' DCI SoundSport corps and is based in El Paso, Texas. The ensemble began in Albuquerque, moved to El Paso in 2019, and was acquired under SCMA in 2023.",
+      "website": "https://www.suncitymusicalarts.org/arsenal-dbc",
+      "city": "El Paso",
+      "state": "TX",
+      "country": "USA",
+      "display_city": "El Paso, TX"
+    },
+    "sources": [
+      {
+        "url": "https://www.suncitymusicalarts.org/arsenal-dbc",
+        "title": "Arsenal Drum and Bugle Corps - Sun City Musical Arts",
+        "notes": "Official/current organization page with history and location."
+      },
+      {
+        "url": "https://www.innovativepercussion.com/artists/arsenal_drum__bugle_corps",
+        "title": "Arsenal Drum & Bugle Corps - Innovative Percussion",
+        "notes": "Partner page with earlier Albuquerque context and mission."
+      }
+    ]
+  },
+  {
+    "corps_key": "beijing-57-high-school",
+    "name": "Beijing 57 High School",
+    "confidence": "medium",
+    "fields": {
+      "city": "Beijing",
+      "country": "China",
+      "display_city": "Beijing, China"
+    },
+    "sources": [
+      {
+        "url": "https://www.dci.org/corps/",
+        "title": "Corps of the Marching Music's Major League",
+        "notes": "DCI corps directory lists Beijing 57 High School in Beijing, China."
+      }
+    ]
+  },
+  {
+    "corps_key": "chien-kuo",
+    "name": "Chien Kuo",
+    "confidence": "medium",
+    "fields": {
+      "about": "Chien Kuo Senior High School Marching Band represented Taiwan at DCI's 2015 Open Class World Championship events. The school marching band is associated with Taipei Municipal Chien Kuo Senior High School.",
+      "city": "Taipei",
+      "country": "Taiwan",
+      "display_city": "Taipei, Taiwan"
+    },
+    "sources": [
+      {
+        "url": "https://english.moe.gov.tw/cp-117-22163-6216F-1.html",
+        "title": "Chien Kuo Senior High School Marching Band Play for Major League",
+        "notes": "Taiwan Ministry of Education article confirming DCI 2015 participation."
+      },
+      {
+        "url": "https://www.taiwan-mba.org/marching-band",
+        "title": "marching band | TMBA",
+        "notes": "Taiwan marching band association page with Taipei Chien-Kuo High School marching-band history and Taipei address."
+      }
+    ]
+  },
+  {
+    "corps_key": "kilties",
+    "name": "Kilties",
+    "confidence": "high",
+    "fields": {
+      "about": "The Kilties are an all-age co-ed drum and bugle corps from Racine, Wisconsin. Founded in 1934, the organization evolved from a successful junior corps into an all-age music education and performance organization.",
+      "website": "https://kilties.com/",
+      "city": "Racine",
+      "state": "WI",
+      "country": "USA",
+      "display_city": "Racine, WI"
+    },
+    "sources": [
+      {
+        "url": "https://kilties.com/index.php/about",
+        "title": "About - Kilties Drum & Bugle Corps",
+        "notes": "Official about page with history, mission, contact, and Racine address."
+      }
+    ]
+  },
+  {
+    "corps_key": "patria",
+    "name": "Patria",
+    "confidence": "high",
+    "fields": {
+      "about": "Patria Drum and Bugle Corps is a Guatemalan marching ensemble that joined the DCI Tour in 2014, becoming one of the first Central American groups to participate in a DCI event.",
+      "country": "Guatemala",
+      "display_city": "Guatemala"
+    },
+    "sources": [
+      {
+        "url": "https://www.dci.org/news/first-guatemalan-corps-will-join-the-dci-tour-in-2014/",
+        "title": "First Guatemalan corps will join the DCI Tour in 2014",
+        "notes": "DCI article confirming Patria's Guatemala origin and 2014 DCI participation."
+      }
+    ]
+  }
+]

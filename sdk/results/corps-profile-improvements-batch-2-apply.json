@@ -1,0 +1,320 @@
+{
+  "mode": "apply",
+  "candidateCount": 15,
+  "changeCount": 38,
+  "changes": [
+    {
+      "corps_key": "brig-juice-brass",
+      "name": "Brig Juice Brass",
+      "field": "website",
+      "from": null,
+      "to": "https://www.brigjuice.com/",
+      "source_url": "https://www.brigjuice.com/"
+    },
+    {
+      "corps_key": "brig-juice-brass",
+      "name": "Brig Juice Brass",
+      "field": "about",
+      "from": "Brig Juice Brass is a Syracuse, New York ensemble listed by SoundSport as a registered 2026 ensemble and by DCI in SoundSport Showcase Rochester materials.",
+      "to": "Brig Juice Brass is part of the Brig Juice organization based in the Syracuse, New York area. The organization includes a competitive mini-corps, a non-competitive concert corps, and a holiday brass ensemble, with all-age opportunities for brass players, set drummers, and percussionists. Its public materials describe the concert corps and mini-corps as stand-still brass performance groups that appear at festivals, park concerts, drum corps shows, and DCA-style mini-corps events.",
+      "source_url": "https://www.brigjuice.com/"
+    },
+    {
+      "corps_key": "blue-way-summer-arts-camp",
+      "name": "The Blue Way",
+      "field": "website",
+      "from": null,
+      "to": "https://bluecoats.com/theblueway",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "blue-way-summer-arts-camp",
+      "name": "The Blue Way",
+      "field": "facebook",
+      "from": null,
+      "to": "http://facebook.com/bluecoats",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "blue-way-summer-arts-camp",
+      "name": "The Blue Way",
+      "field": "instagram",
+      "from": null,
+      "to": "http://instagram.com/bluecoats",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "blue-way-summer-arts-camp",
+      "name": "The Blue Way",
+      "field": "youtube",
+      "from": null,
+      "to": "http://youtube.com/@bluecoats",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "blue-way-summer-arts-camp",
+      "name": "The Blue Way",
+      "field": "about",
+      "from": "The Blue Way Summer Arts Camp is a North Canton, Ohio ensemble listed by SoundSport as a registered 2026 ensemble and appearing in Bluecoats-hosted DCI event lineups.",
+      "to": "The Blue Way Summer Arts Camp is the Bluecoats' summer education program in Northeast Ohio. Hosted around the corps' spring training residency, it offers leadership, performance, and educator tracks for students and teachers, with winds, percussion, color guard, drum major, and music education experiences. Participants rehearse, learn, and in some tracks perform alongside the Bluecoats at the Opening Night Community Celebration.",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "alisal-union-school-district-marching-band",
+      "name": "Alisal Union School District",
+      "field": "website",
+      "from": null,
+      "to": "https://www.alisal.org/apps/pages/index.jsp?pREC_ID=2581808&type=d&uREC_ID=4378197",
+      "source_url": "https://www.alisal.org/apps/pages/index.jsp?pREC_ID=2581808&type=d&uREC_ID=4378197"
+    },
+    {
+      "corps_key": "alisal-union-school-district-marching-band",
+      "name": "Alisal Union School District",
+      "field": "about",
+      "from": "Alisal Union School District Marching Band is a Salinas, California ensemble listed by SoundSport among its registered 2026 ensembles.",
+      "to": "Alisal Union School District Marching Band is part of Alisal USD's All-Star performing arts programming in Salinas, California. The district runs student music and performance programs in partnership with FORXA Inc., offering instruction in music fundamentals, drumming, marching, marimbas and xylophones, trumpet, violin, dance, cheer, and color guard. The program appears in SoundSport as a scholastic/community ensemble connected to the district's expanded-learning arts work.",
+      "source_url": "https://www.alisal.org/apps/pages/index.jsp?pREC_ID=2581808&type=d&uREC_ID=4378197"
+    },
+    {
+      "corps_key": "alisal-union-school-district-all-star-academy",
+      "name": "Alisal Union School District All-Star Academy",
+      "field": "website",
+      "from": null,
+      "to": "https://www.alisal.org/apps/pages/index.jsp?pREC_ID=2581808&type=d&uREC_ID=4378197",
+      "source_url": "https://www.alisal.org/apps/pages/index.jsp?pREC_ID=2581808&type=d&uREC_ID=4378197"
+    },
+    {
+      "corps_key": "alisal-union-school-district-all-star-academy",
+      "name": "Alisal Union School District All-Star Academy",
+      "field": "about",
+      "from": "Alisal Union School District All-Star Academy is a Salinas, California performing-arts ensemble appearing in DCI West lineups and aligned with SoundSport registered Alisal Union School District ensembles.",
+      "to": "Alisal Union School District All-Star Academy is a Salinas, California performing arts program tied to Alisal USD's expanded-learning music, dance, and color guard offerings. The district describes its All-Star performance groups as student programs in music, folklorico, Aztec dance, and related arts, with music classes covering drumming, marching, mallet instruments, guitar, trumpet, violin, dance, cheer, and color guard. In SoundSport contexts, the academy functions as a scholastic showcase ensemble.",
+      "source_url": "https://www.alisal.org/apps/pages/index.jsp?pREC_ID=2581808&type=d&uREC_ID=4378197"
+    },
+    {
+      "corps_key": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/229451620400043",
+      "source_url": "https://greenberetmarchingband.org/"
+    },
+    {
+      "corps_key": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/greenberetmb",
+      "source_url": "https://greenberetmarchingband.org/"
+    },
+    {
+      "corps_key": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "about",
+      "from": "Green Beret Marching Band is a competitive summer marching band in Rock County, Wisconsin, serving performers ages 10-21 and participating in MACBDA and DCI SoundSport-related activity.",
+      "to": "Green Beret Marching Band is a scholastic SoundSport ensemble from Janesville, Wisconsin. Its official site and SoundSport listing connect the group to Green Beret Marching Band programming, with a focus on student marching music performance and local ensemble identity. The group appears in DCI SoundSport as a school/community marching band rather than a traditional touring drum corps.",
+      "source_url": "https://greenberetmarchingband.org/"
+    },
+    {
+      "corps_key": "u-s-marine-drum-bugle-corps",
+      "name": "U.S. Marine Drum & Bugle Corps",
+      "field": "facebook",
+      "from": null,
+      "to": "http://www.facebook.com/usmcdrumcorps",
+      "source_url": "https://www.drumcorps.marines.mil/About/-The-Commandants-Own/"
+    },
+    {
+      "corps_key": "u-s-marine-drum-bugle-corps",
+      "name": "U.S. Marine Drum & Bugle Corps",
+      "field": "instagram",
+      "from": null,
+      "to": "http://www.instagram.com/usmcdrumcorps",
+      "source_url": "https://www.drumcorps.marines.mil/About/-The-Commandants-Own/"
+    },
+    {
+      "corps_key": "u-s-marine-drum-bugle-corps",
+      "name": "U.S. Marine Drum & Bugle Corps",
+      "field": "youtube",
+      "from": null,
+      "to": "http://www.youtube.com/channel/UCRJzrs8sJtKC2NPn8QR3iYA",
+      "source_url": "https://www.drumcorps.marines.mil/About/-The-Commandants-Own/"
+    },
+    {
+      "corps_key": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "facebook",
+      "from": null,
+      "to": "http://www.facebook.com/chopsinc/",
+      "source_url": "https://www.chopsinc.org/"
+    },
+    {
+      "corps_key": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "instagram",
+      "from": null,
+      "to": "http://instagram.com/chops_inc",
+      "source_url": "https://www.chopsinc.org/"
+    },
+    {
+      "corps_key": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "twitter",
+      "from": null,
+      "to": "http://www.twitter.com/chopsinc",
+      "source_url": "https://www.chopsinc.org/"
+    },
+    {
+      "corps_key": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/channel/UCkhtuFDSuAq5KCzDudSVjMg",
+      "source_url": "https://www.chopsinc.org/"
+    },
+    {
+      "corps_key": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/theboisegems/",
+      "source_url": "https://www.boisegems.org/"
+    },
+    {
+      "corps_key": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/boisegems/",
+      "source_url": "https://www.boisegems.org/"
+    },
+    {
+      "corps_key": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/@gemsdbc",
+      "source_url": "https://www.boisegems.org/"
+    },
+    {
+      "corps_key": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/northernlightsmi",
+      "source_url": "https://www.northernlightsmi.org/"
+    },
+    {
+      "corps_key": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/northernlightsdbc/",
+      "source_url": "https://www.northernlightsmi.org/"
+    },
+    {
+      "corps_key": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "youtube",
+      "from": null,
+      "to": "https://youtube.com/@northernlightsdrumbuglecor5164",
+      "source_url": "https://www.northernlightsmi.org/"
+    },
+    {
+      "corps_key": "kilties",
+      "name": "Kilties",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/RacineKilties",
+      "source_url": "https://www.kilties.com/"
+    },
+    {
+      "corps_key": "kilties",
+      "name": "Kilties",
+      "field": "twitter",
+      "from": null,
+      "to": "https://twitter.com/thekilties",
+      "source_url": "https://www.kilties.com/"
+    },
+    {
+      "corps_key": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/244957045606953",
+      "source_url": "https://thebluesaints.org/"
+    },
+    {
+      "corps_key": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/bluesaints_dbc",
+      "source_url": "https://thebluesaints.org/"
+    },
+    {
+      "corps_key": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "twitter",
+      "from": null,
+      "to": "https://www.x.com/bluesaintscorps",
+      "source_url": "https://thebluesaints.org/"
+    },
+    {
+      "corps_key": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/MinnesotaBrass",
+      "source_url": "https://mnbrass.org/corps/"
+    },
+    {
+      "corps_key": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "instagram",
+      "from": null,
+      "to": "https://instagram.com/minnesotabrass/",
+      "source_url": "https://mnbrass.org/corps/"
+    },
+    {
+      "corps_key": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/user/mnbrass",
+      "source_url": "https://mnbrass.org/corps/"
+    },
+    {
+      "corps_key": "calgary-stetson-show-band",
+      "name": "Calgary Stetson Show Band",
+      "field": "website",
+      "from": "www.stetsonband.org",
+      "to": "https://www.stetsonband.org",
+      "source_url": "https://www.stetsonband.org"
+    },
+    {
+      "corps_key": "north-star",
+      "name": "North Star",
+      "field": "website",
+      "from": "sites.google.com/northstarcorps.org/northstarcorps",
+      "to": "https://sites.google.com/northstarcorps.org/northstarcorps",
+      "source_url": "https://sites.google.com/northstarcorps.org/northstarcorps"
+    },
+    {
+      "corps_key": "crusaders-senior-drum-bugle-corps",
+      "name": "Crusaders Senior Drum & Bugle Corps",
+      "field": "website",
+      "from": "crusaderssenior.weebly.com/index.html",
+      "to": "https://crusaderssenior.weebly.com/index.html",
+      "source_url": "https://crusaderssenior.weebly.com/index.html"
+    }
+  ],
+  "skippedCount": 1,
+  "skipped": [
+    {
+      "corps_key": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "website",
+      "reason": "not empty/not better"
+    }
+  ]
+}

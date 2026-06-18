@@ -1,0 +1,391 @@
+{
+  "batch": 3,
+  "generated_at": "2026-06-04T00:00:00-04:00",
+  "notes": [
+    "Research only; no database rows were updated.",
+    "Media URLs are direct candidates for a later MediaService/cache ingest. Media was not cached in this pass.",
+    "Null values mean no source-backed candidate was found with enough confidence for this batch."
+  ],
+  "corps": [
+    {
+      "corps_key": "city-sound",
+      "name": "City Sound",
+      "division": "Open Class",
+      "missing_requested": ["logo"],
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": null,
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "field_notes": {
+        "logo_url": "No source-backed City Sound logo was found. DCI and DCX sources support identity/history but expose corps photos, not a logo."
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/news/city-sound/",
+          "title": "City Sound",
+          "notes": "DCI article with City Sound photo, but not a logo."
+        },
+        {
+          "url": "https://www.dci.org/news/open-class-corps-city-sound-will-reboot-in-2018-as-vessel/",
+          "title": "Open Class corps City Sound will reboot in 2018 as Vessel",
+          "notes": "DCI article confirming City Sound identity and later reboot as Vessel; article image is not a logo."
+        },
+        {
+          "url": "https://www.dcxmuseum.org/index.cfm?Corpsid=1653&view=corpslist",
+          "title": "DCX - Drum Corps Xperience: City Sound",
+          "notes": "Historical profile supports City Sound founded in Los Angeles in 1997; no direct logo candidate found."
+        }
+      ],
+      "confidence": "low"
+    },
+    {
+      "corps_key": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "division": "SoundSport",
+      "missing_requested": ["about", "logo", "photo"],
+      "candidates": {
+        "about": "Conquest was founded in 2018 to bring a drum and bugle corps back to the Quad Cities region. Based in Geneseo, Illinois, the SoundSport team states a mission of molding young people into responsible citizens and future leaders through dynamic music performance.",
+        "logo_url": null,
+        "photo_url": "https://lh3.googleusercontent.com/sitesv/AA5AbUAhA0x0ENwMzzzwWoBMn93eVRCFAQXSviYoQV5e7IJzqd7UmU2Bbgqt9ZzT3s9vLWCi01O-Q2Y5hDz0YmNJCwPLvHZ57GOLEuDHmEpCMb2D1ddE1UMjNDGO98WBW7F82h9z-c1smPP9BbX9W9nTHr93E03OacDomEMXi64rF-UyZohdyqXsPBM4JGA=w16383",
+        "website": "https://sites.google.com/view/conquest-drum-and-bugle/home",
+        "city": "Geneseo",
+        "state": "IL",
+        "country": "United States",
+        "display_city": "Geneseo, IL"
+      },
+      "field_notes": {
+        "logo_url": "The official Google Sites page exposes an OpenGraph image, but it was not clearly identifiable as a logo, so only photo_url is suggested."
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/conquest-drum-bugle-corps-2/",
+          "title": "Conquest Drum & Bugle Corps : Upcoming Events & Related News",
+          "notes": "DCI profile gives canonical slug, Geneseo location, official website, founding/history summary, and mission."
+        },
+        {
+          "url": "https://sites.google.com/view/conquest-drum-and-bugle/home",
+          "title": "Conquest Drum and Bugle Corps",
+          "notes": "Official site states Geneseo/IL-IA SoundSport identity and mission; OpenGraph image is the photo candidate."
+        },
+        {
+          "url": "https://www.galvaband.org/about",
+          "title": "Galva Bands - About",
+          "notes": "Staff bio corroborates late-2018 founding and SoundSport membership."
+        }
+      ],
+      "confidence": "medium"
+    },
+    {
+      "corps_key": "gita-surosowan-banten",
+      "name": "Gita Surosowan Banten",
+      "division": "International Class",
+      "missing_requested": ["about", "logo", "photo", "website", "location"],
+      "candidates": {
+        "about": "Marching Band Gita Surosowan Banten is a marching band from Banten, Indonesia. The group represented Banten and Indonesia internationally, including a 2015 trip to compete during DCI World Championships week in the United States and later WAMSB competition appearances.",
+        "logo_url": null,
+        "photo_url": "https://bantenprov.go.id/storage/banten/image_berita-9756d099-c1d8-497c-a902-456dfaf23d93.jpg",
+        "website": null,
+        "city": "Serang",
+        "state": "Banten",
+        "country": "Indonesia",
+        "display_city": "Serang, Banten, Indonesia"
+      },
+      "field_notes": {
+        "logo_url": "Search results mention a GSB logo on third-party list pages, but no reliable direct logo URL was verified.",
+        "website": "No official corps website was verified; government/news sources were used instead."
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/news/video-highlights-2015-open-class-world-championship-prelims/",
+          "title": "Video Highlights: 2015 Open Class World Championship Prelims",
+          "notes": "DCI source confirms Gita Surosowan Banten from Indonesia competed at 2015 DCI World Championships."
+        },
+        {
+          "url": "https://banten.antaranews.com/berita/23268/plt-gubernur-lepas-tim-gita-surosowan-ke-amerika-serikat",
+          "title": "Plt Gubernur Lepas Tim 'Gita Surosowan' Ke Amerika Serikat",
+          "notes": "ANTARA article confirms Banten group traveled to Indianapolis for DCI World Championships; includes a direct photo."
+        },
+        {
+          "url": "https://bantenprov.go.id/berita/marching-band-gita-surosowan-ikuti-wamsb-championship-2025",
+          "title": "Marching Band Gita Surosowan Ikuti WAMSB Championship 2025",
+          "notes": "Official Banten Province article confirms group identity, Banten representation, Serang training location, and provides photo candidate."
+        },
+        {
+          "url": "https://jptam.org/index.php/jptam/article/download/13942/10743/25791",
+          "title": "Struktur Gerak Color Guard Marching Band Gita Surosowan Banten",
+          "notes": "Academic PDF gives Serang/Banten address context and formation/history details."
+        }
+      ],
+      "confidence": "medium"
+    },
+    {
+      "corps_key": "high-school-affiliated-to-bit",
+      "name": "High School Affiliated to BIT",
+      "division": "Open Class",
+      "missing_requested": ["about", "logo", "photo", "website", "location"],
+      "candidates": {
+        "about": "The High School Affiliated to Beijing Institute of Technology Marching Band represents the Beijing public school affiliated with Beijing Institute of Technology. Marching China describes the school as having founded Beijing's first student Jinfan marching band in 1991, with a team ethos centered on unity, care, cooperation, trust, and a shared ensemble sound.",
+        "logo_url": null,
+        "photo_url": "https://images.dci.org/wp-content/uploads/2025/08/hsaffiliated-ocfinals-ARTICLE-1-1024x576.jpg",
+        "website": "http://www.lgfz.com.cn/",
+        "city": "Beijing",
+        "state": null,
+        "country": "China",
+        "display_city": "Beijing, China"
+      },
+      "field_notes": {
+        "corps_slug": "DCI canonical profile slug is beijing-institute-of-technology-bit.",
+        "logo_url": "A third-party PNG result exists, but no official/direct logo URL was verified."
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/beijing-institute-of-technology-bit/",
+          "title": "High School Affiliated to Beijing Institute of Technology : Upcoming Events & Related News",
+          "notes": "DCI profile gives canonical slug, Beijing/China location, contact, and related news."
+        },
+        {
+          "url": "https://www.dci.org/news/stampede-takes-top-prize-as-international-class-shines-in-marion/",
+          "title": "Stampede takes top prize as International Class shines in Marion",
+          "notes": "DCI article identifies the group at 2025 International Class finals and exposes a direct performance photo."
+        },
+        {
+          "url": "https://www.marching.cn/?page_id=8545",
+          "title": "Chinese Marching Band",
+          "notes": "Marching China profile describes the High School Affiliated to BIT Marching Band and its 1991 founding."
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/High_School_Affiliated_to_Beijing_Institute_of_Technology",
+          "title": "High School Affiliated to Beijing Institute of Technology",
+          "notes": "School profile supports Beijing location and official school website."
+        }
+      ],
+      "confidence": "medium"
+    },
+    {
+      "corps_key": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "division": "SoundSport Medalist Division",
+      "missing_requested": ["about", "photo"],
+      "candidates": {
+        "about": "IMPACT is a Central Florida drum and bugle corps that debuted in 2012 at the Drum Corps Associates World Championships and joined DCI SoundSport in 2016. The group operates year-round, performing at conventions, parades, high school band shows, and other engagements with members ranging from teens to older adults.",
+        "logo_url": null,
+        "photo_url": "https://impactdrumcorps.org/wp-content/uploads/2025/07/whatdevinsees_impact_dci-se-47-of-55_54686856967_o.jpg",
+        "website": "http://impactdrumcorps.org",
+        "city": "Orlando",
+        "state": "FL",
+        "country": "United States",
+        "display_city": "Orlando, FL"
+      },
+      "field_notes": {
+        "city": "DCI displays Orlando, FL while the mailing address is in Tavares, FL."
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/impact-drum-bugle-corps/",
+          "title": "IMPACT Drum & Bugle Corps : Upcoming Events & Related News",
+          "notes": "DCI profile provides about text, Orlando display city, Tavares address, website, and SoundSport context."
+        },
+        {
+          "url": "https://impactdrumcorps.org/history/",
+          "title": "About - IMPACT Drum and Bugle Corps",
+          "notes": "Official site history page corroborates Central Florida identity and exposes direct photo candidate."
+        },
+        {
+          "url": "https://soundsport.com/impact-proves-age-is-just-a-number/",
+          "title": "IMPACT proves age is just a number",
+          "notes": "SoundSport article supports founding/background context."
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "corps_key": "kilties",
+      "name": "Kilties",
+      "division": "All Age Class",
+      "missing_requested": ["about", "logo", "photo", "website", "location"],
+      "candidates": {
+        "about": "The Kilties are an all-age co-ed drum and bugle corps rooted in Racine, Wisconsin. Founded in 1934, the organization evolved from a successful junior corps into an all-age weekend corps focused on music education, mentorship, and its values of character, honor, excellence, and tradition.",
+        "logo_url": "https://kilties.com/templates/lime_light/images/s5_logo.png",
+        "photo_url": "https://kilties.com/images/generalSite/concert.png",
+        "website": "https://www.kilties.com/",
+        "city": "Racine",
+        "state": "WI",
+        "country": "United States",
+        "display_city": "Racine, WI"
+      },
+      "field_notes": {
+        "location": "DCI displays Racine, WI but lists an Oshkosh mailing address. Official Kilties text describes the corps as ambassadors of the Racine area and lists a Racine PO Box, so Racine is recommended for display."
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/kilties-2/",
+          "title": "Kilties : Upcoming Events & Related News",
+          "notes": "DCI profile gives canonical slug, Racine display city, contact, and website."
+        },
+        {
+          "url": "https://kilties.com/index.php/about",
+          "title": "About - Kilties Drum & Bugle Corps",
+          "notes": "Official about page provides history, values, all-age identity, Racine-area context, logo, and photo candidates."
+        },
+        {
+          "url": "https://www.kilties.com/index.php/faq",
+          "title": "Kiltie K-westions - Kilties Drum & Bugle Corps",
+          "notes": "Official FAQ corroborates 1934 founding, all-age membership, and history."
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "corps_key": "latrobe-music-center",
+      "name": "Latrobe Music Center",
+      "division": "SoundSport",
+      "missing_requested": ["logo", "photo", "website"],
+      "candidates": {
+        "about": null,
+        "logo_url": "https://production.assets.dci.org/63daaf2801d803a9cd0bc6c2_Qvo3fnnuvjV1NNxb4gWDn341_zaMt9T1.png",
+        "photo_url": null,
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "field_notes": {
+        "photo_url": "DCI news links to Facebook rehearsal photos, but no reliable direct downloadable photo URL was verified.",
+        "website": "DCI profile does not list an official website."
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/latrobe-music-center/",
+          "title": "Latrobe Music Center : Upcoming Events & Related News",
+          "notes": "DCI profile gives address/contact and notes 2024 SoundSport International Music & Food Festival debut and Silver rating."
+        },
+        {
+          "url": "https://www.dci.org/news/corps-news-and-announcements-20260123/",
+          "title": "Corps news and announcements",
+          "notes": "DCI SoundSport updates item exposes direct Latrobe Music Center logo URL."
+        },
+        {
+          "url": "https://www.dci.org/news/corps-news-and-announcements-20250502/",
+          "title": "Corps news and announcements",
+          "notes": "DCI item references Latrobe Music Center rehearsal photos on Facebook; not used as direct photo candidate."
+        }
+      ],
+      "confidence": "medium"
+    },
+    {
+      "corps_key": "mercedes-marching-band",
+      "name": "Mercedes Marching Band",
+      "division": "International Class",
+      "missing_requested": ["about", "photo", "website"],
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": null,
+        "website": null,
+        "city": "Mercedes Norte",
+        "state": null,
+        "country": "Costa Rica",
+        "display_city": "Mercedes Norte, Costa Rica"
+      },
+      "field_notes": {
+        "about": "The current DCI profile confirms identity and location but provides no descriptive about text.",
+        "photo_url": "No source-backed direct photo URL was verified.",
+        "website": "No official website was verified."
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/mercedes-marching-band/",
+          "title": "Mercedes Marching Band : Upcoming Events & Related News",
+          "notes": "DCI profile gives Mercedes Norte, Costa Rica location and 2026 DCI event schedule, but no about/photo/website."
+        },
+        {
+          "url": "https://www.dci.org/events/",
+          "title": "Schedule & Tickets on Sale at the DCI Box Office",
+          "notes": "DCI events listing includes Mercedes Marching Band among corps/performing groups."
+        }
+      ],
+      "confidence": "low"
+    },
+    {
+      "corps_key": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "division": "All Age Class",
+      "missing_requested": ["photo"],
+      "candidates": {
+        "about": null,
+        "logo_url": null,
+        "photo_url": "https://images.dci.org/wp-content/uploads/2025/07/16-northernlights-lisle.jpg",
+        "website": null,
+        "city": null,
+        "state": null,
+        "country": null,
+        "display_city": null
+      },
+      "field_notes": {
+        "photo_url": "DCI page and official site both expose valid performance/group photo candidates; DCI image is recommended because it is already on an allowed media host."
+      },
+      "sources": [
+        {
+          "url": "https://www.dci.org/corps/northern-lights-drum-bugle-corps/",
+          "title": "Northern Lights : Upcoming Events & Related News",
+          "notes": "DCI profile exposes direct photo and logo images and gives Grand Rapids display city."
+        },
+        {
+          "url": "https://www.northernlightsmi.org/about.html",
+          "title": "About the corps - Northern Lights Drum & Bugle Corps",
+          "notes": "Official site provides history and multiple direct image candidates."
+        },
+        {
+          "url": "https://www.northernlightsmi.org/",
+          "title": "Northern Lights Drum & Bugle Corps - Home",
+          "notes": "Official homepage exposes additional group/photo image candidates."
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "corps_key": "patria",
+      "name": "Patria",
+      "division": "International Class",
+      "missing_requested": ["about", "logo", "photo", "website", "location"],
+      "candidates": {
+        "about": "Patria Drum & Bugle Corps is a Guatemala-based ensemble connected with Colegio Evangelico La Patria Occidente. The official school page describes the corps as including drum line, brass line, front ensemble, and color guard sections; it began as a banda de guerra in 1950, became a banda latina in 1990, and in 2003 became the country's first marching band.",
+        "logo_url": "https://530d7e0b3e.clvaw-cdnwnd.com/2881853d79dc93f621a5a28c6a61c701/200000433-e2dcfe2dd1/327575418_685429343276674_6588285175179141357_n.png",
+        "photo_url": "https://530d7e0b3e.clvaw-cdnwnd.com/2881853d79dc93f621a5a28c6a61c701/200000435-f0dcbf0dcd/WhatsApp%20Image%202024-08-26%20at%208.37.35%20PM%20%281%29.jpeg",
+        "website": "https://www.colegio-la-patria-occidente.es/patria-drum-bugle-corps/",
+        "city": "Quetzaltenango",
+        "state": null,
+        "country": "Guatemala",
+        "display_city": "Quetzaltenango, Guatemala"
+      },
+      "field_notes": {
+        "location": "Official page uses Colegio La Patria Occidente identity and .gt contact; WGI source explicitly lists Patria Drum & Bugle Corps Guatemala, Quetzaltenango."
+      },
+      "sources": [
+        {
+          "url": "https://www.colegio-la-patria-occidente.es/patria-drum-bugle-corps/",
+          "title": "Patria Drum & Bugle Corps :: Colegio La Patria Occidente",
+          "notes": "Official school page provides about/history text, website, and direct logo/photo candidates."
+        },
+        {
+          "url": "https://www.wgi.org/wp-content/uploads/2018/09/WGICostaRicaPrelims.pdf",
+          "title": "WGI Costa Rica Prelims Scores",
+          "notes": "WGI recap lists Patria Drum & Bugle Corps Guatemala, Quetzaltenango."
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Drum_Corps_International",
+          "title": "Drum Corps International",
+          "notes": "Historical DCI championship table lists Patria as the 2014 International Class champion from Guatemala."
+        }
+      ],
+      "confidence": "high"
+    }
+  ]
+}

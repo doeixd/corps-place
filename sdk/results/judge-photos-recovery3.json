@@ -1,0 +1,16 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Photo-recovery pass wave 3.",
+  "profiles": [
+    {
+      "judgeId": "s-clark-1", "displayName": "Shannon Clark", "givenName": "Shannon", "familyName": "Clark",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2017/06/IMG_4906-1.jpg",
+      "biography": "Shannon Clark is a visual and color guard adjudicator for Drum Corps International, serving in the Visual Proficiency and Color Guard captions at DCI events, and is a Music for All clinician.",
+      "alternateNames": ["Shannon M. Clark"],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/shannon-clark/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/shannon-clark/", "confidence": "HIGH" }] }
+    }
+  ]
+}

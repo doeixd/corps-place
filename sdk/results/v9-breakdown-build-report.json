@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-06-05T00:21:19.172Z",
+  "db_path": "dci-relational.db",
+  "applied": true,
+  "source_v9_model_id": "anchor-synthetic-v9-breakdown-mvp",
+  "anchor_modes": [
+    "teacher_forcing",
+    "synthetic_noisy",
+    "baseline",
+    "partial_synthetic_dropout"
+  ],
+  "source_rows": 7321,
+  "build_rows": 29284,
+  "skipped_no_valid_subcaption_pairs": 0,
+  "skipped_invalid_v9_rows": 0,
+  "scale_repairs": 0,
+  "scale_exclusions": 5
+}

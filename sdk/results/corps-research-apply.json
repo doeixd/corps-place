@@ -1,0 +1,1801 @@
+{
+  "mode": "apply",
+  "dbUrl": "file:C:\\Users\\Patrick\\corps-place\\sdk\\dci-relational.db",
+  "inputFile": "sdk\\results\\corps-research-consolidated.json",
+  "candidateCount": 37,
+  "changeCount": 121,
+  "changes": [
+    {
+      "corpsKey": "001j000000iwwsmaal",
+      "name": "Alliance",
+      "field": "about",
+      "from": null,
+      "to": "Alliance was an all-age drum and bugle corps based in Atlanta, Georgia. DCX reports that the corps was formed in 2004 by Terry Reilley, Shirley Smith, and Andy Ritchie, with the intent to further music education while providing performers of all ages an affordable drum corps experience."
+    },
+    {
+      "corpsKey": "001j000000iwwsmaal",
+      "name": "Alliance",
+      "field": "city",
+      "from": null,
+      "to": "Atlanta"
+    },
+    {
+      "corpsKey": "001j000000iwwsmaal",
+      "name": "Alliance",
+      "field": "state",
+      "from": null,
+      "to": "GA"
+    },
+    {
+      "corpsKey": "001j000000iwwsmaal",
+      "name": "Alliance",
+      "field": "country",
+      "from": null,
+      "to": "USA"
+    },
+    {
+      "corpsKey": "001j000000iwwsmaal",
+      "name": "Alliance",
+      "field": "display_city",
+      "from": null,
+      "to": "Atlanta, GA"
+    },
+    {
+      "corpsKey": "001j000000iwwsmaal",
+      "name": "Alliance",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://www.dcxmuseum.org/assets/AllianceAtlantaGAJW1-AOverCircleSiteAA_U_S.jpg"
+    },
+    {
+      "corpsKey": "001j000000iwwsmaal",
+      "name": "Alliance",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://www.dcxmuseum.org/pictures/2016/20160730_2016061_Atlanta/Alliance-065.jpg"
+    },
+    {
+      "corpsKey": "arsenal",
+      "name": "Arsenal",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://images.squarespace-cdn.com/content/v1/63c9bfae6f2c8225dd5b4cc3/320254ba-c6a0-43aa-9095-ee043cbfec68/arsenal%2Bguard%2B2.jpg?format=2500w"
+    },
+    {
+      "corpsKey": "beijing-57-high-school",
+      "name": "Beijing 57 High School",
+      "field": "about",
+      "from": null,
+      "to": "Beijing No. 57 High School competed in DCI's 2025 International Class as one of two marching bands from Beijing, China. CGTN reported that Beijing No. 57 High School brought traditional Chinese melodies to the 2025 DCI Open in Indiana, blending them with modern marching arrangements."
+    },
+    {
+      "corpsKey": "beijing-57-high-school",
+      "name": "Beijing 57 High School",
+      "field": "city",
+      "from": null,
+      "to": "Beijing"
+    },
+    {
+      "corpsKey": "beijing-57-high-school",
+      "name": "Beijing 57 High School",
+      "field": "country",
+      "from": null,
+      "to": "China"
+    },
+    {
+      "corpsKey": "beijing-57-high-school",
+      "name": "Beijing 57 High School",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://news.cgtn.com/news/2025-12-06/How-do-American-DCI-players-rate-Chinese-marching-bands--1ISNGfh9cFW/img/0f27cfe47b0144c58d6b84ae4b6a0210/0f27cfe47b0144c58d6b84ae4b6a0210-1920.jpeg"
+    },
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "website",
+      "from": null,
+      "to": "https://thebluesaints.org/"
+    },
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://www.dcxmuseum.org/pictures/2025/20250809_2025082_SoundSport/thumb/Blue%20Saints_250809_SoundSport-09487.jpg"
+    },
+    {
+      "corpsKey": "0010a00001iprmyaah",
+      "name": "Cadets 2",
+      "field": "about",
+      "from": null,
+      "to": "Cadets2 was an all-age corps from Allentown, Pennsylvania, formed in 2011 as an extension of The Cadets and Youth Education in the Arts. The corps won its first DCA championship in 2016 and competed through the 2018 season in DCX archives."
+    },
+    {
+      "corpsKey": "0010a00001iprmyaah",
+      "name": "Cadets 2",
+      "field": "country",
+      "from": null,
+      "to": "USA"
+    },
+    {
+      "corpsKey": "0010a00001iprmyaah",
+      "name": "Cadets 2",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://images.dci.org/wp-content/uploads/2025/01/Cadets2-set-to-defend-World-Championship-title-in-Rochester.webp"
+    },
+    {
+      "corpsKey": "chien-kuo",
+      "name": "Chien Kuo",
+      "field": "about",
+      "from": null,
+      "to": "Taipei Chien-Kuo High School Marching Band dates its drum corps origins to 1960, transitioned to standard marching instrumentation in 1982, added color guard in 1992, and is described by the Taiwan Marching Band Association as a leading marching ensemble in Taiwan with international performance and competition experience."
+    },
+    {
+      "corpsKey": "chien-kuo",
+      "name": "Chien Kuo",
+      "field": "website",
+      "from": null,
+      "to": "https://www.taiwan-mba.org/marching-band"
+    },
+    {
+      "corpsKey": "chien-kuo",
+      "name": "Chien Kuo",
+      "field": "city",
+      "from": null,
+      "to": "Taipei"
+    },
+    {
+      "corpsKey": "chien-kuo",
+      "name": "Chien Kuo",
+      "field": "country",
+      "from": null,
+      "to": "Taiwan"
+    },
+    {
+      "corpsKey": "chien-kuo",
+      "name": "Chien Kuo",
+      "field": "display_city",
+      "from": null,
+      "to": "Taipei, Taiwan"
+    },
+    {
+      "corpsKey": "chien-kuo",
+      "name": "Chien Kuo",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://static.wixstatic.com/media/8e906d_f58837a260324ce59472da173e563bad~mv2.jpg/v1/fill/w_605,h_297,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/8e906d_f58837a260324ce59472da173e563bad~mv2.jpg"
+    },
+    {
+      "corpsKey": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "about",
+      "from": null,
+      "to": "Chops Inc. is a Minneapolis-based nonprofit music and performing arts organization. In addition to its all-age drum corps, the organization supports parade units, indoor percussion, steel-drum bands, after-school drumlines, summer camps, and other music education programs."
+    },
+    {
+      "corpsKey": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "website",
+      "from": null,
+      "to": "http://www.chopsinc.com"
+    },
+    {
+      "corpsKey": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "city",
+      "from": null,
+      "to": "Minneapolis"
+    },
+    {
+      "corpsKey": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "state",
+      "from": null,
+      "to": "MN"
+    },
+    {
+      "corpsKey": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "country",
+      "from": null,
+      "to": "USA"
+    },
+    {
+      "corpsKey": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "display_city",
+      "from": null,
+      "to": "Minneapolis, MN"
+    },
+    {
+      "corpsKey": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://static.wixstatic.com/media/72c9a2_58e0fcd921f84bb5bb5e9e9236fb4953~mv2.png/v1/fill/w_242,h_144,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Chops-black.png"
+    },
+    {
+      "corpsKey": "0010a00001gzbgoaax",
+      "name": "Chops",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://static.wixstatic.com/media/938631_50b86719eebb4b22ba21d27347f2fa81~mv2.jpg/v1/fill/w_1442,h_600,al_c/938631_50b86719eebb4b22ba21d27347f2fa81~mv2.jpg"
+    },
+    {
+      "corpsKey": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "field": "about",
+      "from": null,
+      "to": "Coastal Surge was an Open Class drum and bugle corps based in Myrtle Beach, South Carolina. DCI approved the corps for the 2014 tour after 2013 exhibition performances, and described the organization as focused on instruction, performance objectives, and educational experience for its members."
+    },
+    {
+      "corpsKey": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "field": "website",
+      "from": null,
+      "to": "http://CoastalSurge.org/"
+    },
+    {
+      "corpsKey": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "field": "city",
+      "from": null,
+      "to": "Myrtle Beach"
+    },
+    {
+      "corpsKey": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "field": "state",
+      "from": null,
+      "to": "SC"
+    },
+    {
+      "corpsKey": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "field": "country",
+      "from": null,
+      "to": "USA"
+    },
+    {
+      "corpsKey": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "field": "display_city",
+      "from": null,
+      "to": "Myrtle Beach, SC"
+    },
+    {
+      "corpsKey": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://assets.dci.org/5bd2edcd629f4b0a832f63f8_j0BSEoShYwE2aR7MN8syJU5hQoTjIhKG.jpg"
+    },
+    {
+      "corpsKey": "001j000000iwx96aad",
+      "name": "Coastal Surge",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://assets.dci.org/5bd2edce629f4b0a832f63f9_VCqWSWgPlWk74Y_cKHYBcLnqn-IkR5cN.jpg"
+    },
+    {
+      "corpsKey": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://lh3.googleusercontent.com/sitesv/AA5AbUAhA0x0ENwMzzzwWoBMn93eVRCFAQXSviYoQV5e7IJzqd7UmU2Bbgqt9ZzT3s9vLWCi01O-Q2Y5hDz0YmNJCwPLvHZ57GOLEuDHmEpCMb2D1ddE1UMjNDGO98WBW7F82h9z-c1smPP9BbX9W9nTHr93E03OacDomEMXi64rF-UyZohdyqXsPBM4JGA=w16383"
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://images.squarespace-cdn.com/content/v1/63397265e2571e10e7c29313/6b5c6dd6-2ccb-4c15-872a-3e5b324759f4/DSC_2279.jpg"
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "field": "website",
+      "from": null,
+      "to": "http://www.eriethunderbirds.org/"
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "field": "city",
+      "from": null,
+      "to": "Erie"
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "field": "state",
+      "from": null,
+      "to": "PA"
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "field": "country",
+      "from": null,
+      "to": "USA"
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://www.eriethunderbirds.org/images/2018.jpg"
+    },
+    {
+      "corpsKey": "001j000000iwx9daat",
+      "name": "Eruption",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Eruption-Logo-jpg-website.jpeg/1280px-Eruption-Logo-jpg-website.jpeg"
+    },
+    {
+      "corpsKey": "001j000000iwx9daat",
+      "name": "Eruption",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://images.dci.org/wp-content/uploads/2015/05/eruption.webp"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://boisegems.org/img/photos/boise-gems-15.jpg"
+    },
+    {
+      "corpsKey": "gita-surosowan-banten",
+      "name": "Gita Surosowan Banten",
+      "field": "about",
+      "from": null,
+      "to": "Marching Band Gita Surosowan Banten is a marching band from Banten, Indonesia. The group represented Banten and Indonesia internationally, including a 2015 trip to compete during DCI World Championships week in the United States and later WAMSB competition appearances."
+    },
+    {
+      "corpsKey": "gita-surosowan-banten",
+      "name": "Gita Surosowan Banten",
+      "field": "city",
+      "from": null,
+      "to": "Serang"
+    },
+    {
+      "corpsKey": "gita-surosowan-banten",
+      "name": "Gita Surosowan Banten",
+      "field": "state",
+      "from": null,
+      "to": "Banten"
+    },
+    {
+      "corpsKey": "gita-surosowan-banten",
+      "name": "Gita Surosowan Banten",
+      "field": "country",
+      "from": null,
+      "to": "Indonesia"
+    },
+    {
+      "corpsKey": "gita-surosowan-banten",
+      "name": "Gita Surosowan Banten",
+      "field": "display_city",
+      "from": null,
+      "to": "Serang, Banten, Indonesia"
+    },
+    {
+      "corpsKey": "gita-surosowan-banten",
+      "name": "Gita Surosowan Banten",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://bantenprov.go.id/storage/banten/image_berita-9756d099-c1d8-497c-a902-456dfaf23d93.jpg"
+    },
+    {
+      "corpsKey": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "about",
+      "from": null,
+      "to": "Green Beret Marching Band is a competitive summer marching band in Rock County, Wisconsin, serving performers ages 10-21 and participating in MACBDA and DCI SoundSport-related activity."
+    },
+    {
+      "corpsKey": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "website",
+      "from": null,
+      "to": "https://greenberetmarchingband.org/"
+    },
+    {
+      "corpsKey": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "city",
+      "from": null,
+      "to": "Janesville"
+    },
+    {
+      "corpsKey": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "state",
+      "from": null,
+      "to": "WI"
+    },
+    {
+      "corpsKey": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "country",
+      "from": null,
+      "to": "USA"
+    },
+    {
+      "corpsKey": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "display_city",
+      "from": null,
+      "to": "Janesville, WI"
+    },
+    {
+      "corpsKey": "0010a00001cxz0gaab",
+      "name": "Green Beret",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://img1.wsimg.com/isteam/ip/192a86b5-ec23-45be-8be9-d3b668c768f2/gbmb.jpg/:/cr=t:19.88%25,l:19.88%25,w:60.24%25,h:60.24%25"
+    },
+    {
+      "corpsKey": "high-school-affiliated-to-bit",
+      "name": "High School Affiliated to BIT",
+      "field": "about",
+      "from": null,
+      "to": "The High School Affiliated to Beijing Institute of Technology Marching Band represents the Beijing public school affiliated with Beijing Institute of Technology. Marching China describes the school as having founded Beijing's first student Jinfan marching band in 1991, with a team ethos centered on unity, care, cooperation, trust, and a shared ensemble sound."
+    },
+    {
+      "corpsKey": "high-school-affiliated-to-bit",
+      "name": "High School Affiliated to BIT",
+      "field": "website",
+      "from": null,
+      "to": "http://www.lgfz.com.cn/"
+    },
+    {
+      "corpsKey": "high-school-affiliated-to-bit",
+      "name": "High School Affiliated to BIT",
+      "field": "city",
+      "from": null,
+      "to": "Beijing"
+    },
+    {
+      "corpsKey": "high-school-affiliated-to-bit",
+      "name": "High School Affiliated to BIT",
+      "field": "country",
+      "from": null,
+      "to": "China"
+    },
+    {
+      "corpsKey": "high-school-affiliated-to-bit",
+      "name": "High School Affiliated to BIT",
+      "field": "display_city",
+      "from": null,
+      "to": "Beijing, China"
+    },
+    {
+      "corpsKey": "high-school-affiliated-to-bit",
+      "name": "High School Affiliated to BIT",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://images.dci.org/wp-content/uploads/2025/08/hsaffiliated-ocfinals-ARTICLE-1-1024x576.jpg"
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "about",
+      "from": null,
+      "to": "IMPACT is a Central Florida drum and bugle corps that debuted in 2012 at the Drum Corps Associates World Championships and joined DCI SoundSport in 2016. The group operates year-round, performing at conventions, parades, high school band shows, and other engagements with members ranging from teens to older adults."
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://impactdrumcorps.org/wp-content/uploads/2025/07/whatdevinsees_impact_dci-se-47-of-55_54686856967_o.jpg"
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "field": "about",
+      "from": null,
+      "to": "Jubal Dordrecht is a Dutch music organization founded in 1911. For roughly fifty years it operated as a drum and bugle corps, built a national and international reputation, toured the United States five times, and is now transitioning into new Jubal projects while preserving its history through the Jubal Legacy Project."
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "field": "city",
+      "from": null,
+      "to": "Dordrecht"
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "field": "country",
+      "from": null,
+      "to": "Netherlands"
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "field": "website",
+      "from": null,
+      "to": "https://www.kilties.com/"
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "field": "city",
+      "from": null,
+      "to": "Racine"
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "field": "state",
+      "from": null,
+      "to": "WI"
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "field": "country",
+      "from": null,
+      "to": "United States"
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://kilties.com/images/generalSite/concert.png"
+    },
+    {
+      "corpsKey": "latrobe-music-center",
+      "name": "Latrobe Music Center",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://production.assets.dci.org/63daaf2801d803a9cd0bc6c2_Qvo3fnnuvjV1NNxb4gWDn341_zaMt9T1.png"
+    },
+    {
+      "corpsKey": "mercedes-marching-band",
+      "name": "Mercedes Marching Band",
+      "field": "city",
+      "from": null,
+      "to": "Mercedes Norte"
+    },
+    {
+      "corpsKey": "mercedes-marching-band",
+      "name": "Mercedes Marching Band",
+      "field": "country",
+      "from": null,
+      "to": "Costa Rica"
+    },
+    {
+      "corpsKey": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "website",
+      "from": null,
+      "to": "https://mnbrass.org/corps/"
+    },
+    {
+      "corpsKey": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://i0.wp.com/mbiarts.org/wp-content/uploads/2026/01/2025-Ryan-Brass-1-1024x682.jpg?ssl=1"
+    },
+    {
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://images.dci.org/wp-content/uploads/2025/07/16-northernlights-lisle.jpg"
+    },
+    {
+      "corpsKey": "patria",
+      "name": "Patria",
+      "field": "about",
+      "from": null,
+      "to": "Patria Drum & Bugle Corps is a Guatemala-based ensemble connected with Colegio Evangelico La Patria Occidente. The official school page describes the corps as including drum line, brass line, front ensemble, and color guard sections; it began as a banda de guerra in 1950, became a banda latina in 1990, and in 2003 became the country's first marching band."
+    },
+    {
+      "corpsKey": "patria",
+      "name": "Patria",
+      "field": "website",
+      "from": null,
+      "to": "https://www.colegio-la-patria-occidente.es/patria-drum-bugle-corps/"
+    },
+    {
+      "corpsKey": "patria",
+      "name": "Patria",
+      "field": "city",
+      "from": null,
+      "to": "Quetzaltenango"
+    },
+    {
+      "corpsKey": "patria",
+      "name": "Patria",
+      "field": "country",
+      "from": null,
+      "to": "Guatemala"
+    },
+    {
+      "corpsKey": "patria",
+      "name": "Patria",
+      "field": "display_city",
+      "from": null,
+      "to": "Quetzaltenango, Guatemala"
+    },
+    {
+      "corpsKey": "patria",
+      "name": "Patria",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://530d7e0b3e.clvaw-cdnwnd.com/2881853d79dc93f621a5a28c6a61c701/200000433-e2dcfe2dd1/327575418_685429343276674_6588285175179141357_n.png"
+    },
+    {
+      "corpsKey": "patria",
+      "name": "Patria",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://530d7e0b3e.clvaw-cdnwnd.com/2881853d79dc93f621a5a28c6a61c701/200000435-f0dcbf0dcd/WhatsApp%20Image%202024-08-26%20at%208.37.35%20PM%20%281%29.jpeg"
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://www.dcxmuseum.org/pictures/Sky_Ryders_93_2.jpg"
+    },
+    {
+      "corpsKey": "socal-dream",
+      "name": "SoCal Dream",
+      "field": "about",
+      "from": null,
+      "to": "SoCal Dream, originally called the SoCal Dream Machine, was an all-age/senior drum corps that formed in Southern California in 2001 for performers no longer eligible for junior corps. The corps became independent under the Dream Association of California and competed in DCA/West Coast senior corps events through the early 2010s."
+    },
+    {
+      "corpsKey": "socal-dream",
+      "name": "SoCal Dream",
+      "field": "website",
+      "from": null,
+      "to": "http://www.socaldream.org/"
+    },
+    {
+      "corpsKey": "socal-dream",
+      "name": "SoCal Dream",
+      "field": "city",
+      "from": null,
+      "to": "Huntington Beach"
+    },
+    {
+      "corpsKey": "socal-dream",
+      "name": "SoCal Dream",
+      "field": "state",
+      "from": null,
+      "to": "CA"
+    },
+    {
+      "corpsKey": "socal-dream",
+      "name": "SoCal Dream",
+      "field": "country",
+      "from": null,
+      "to": "United States"
+    },
+    {
+      "corpsKey": "socal-dream",
+      "name": "SoCal Dream",
+      "field": "display_city",
+      "from": null,
+      "to": "Huntington Beach, CA"
+    },
+    {
+      "corpsKey": "socal-dream",
+      "name": "SoCal Dream",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://mpamdcx.org/assets/SoCalDreamLosAngelesCALP1DST-125x0625AA_U_S.jpg"
+    },
+    {
+      "corpsKey": "socal-dream",
+      "name": "SoCal Dream",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://mpamdcx.org/pictures/2013/20130630_2013017_Riverside/SoCal%20Dream-027.jpg"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://sonusbrasstheater.org/wp-content/uploads/2023/09/Sonus-Brass-Theater_250809_SoundSport-00229-570x342.jpg"
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "field": "country",
+      "from": null,
+      "to": "USA"
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://www.spbb.org/uploads/2/2/2/1/22215324/pxl-20220715-184302415-exported-81969-1.jpg"
+    },
+    {
+      "corpsKey": "southern-knights",
+      "name": "Southern Knights",
+      "field": "about",
+      "from": null,
+      "to": "Formed in 2015, Southern Knights is an all-age drum corps from Alabama. The corps' 2017 summer season marked its first season performing as part of Drum Corps International's All-Age division, and the organization emphasizes member development through teamwork, self-discipline, preparedness, accountability, critical thinking, and leadership."
+    },
+    {
+      "corpsKey": "southern-knights",
+      "name": "Southern Knights",
+      "field": "website",
+      "from": null,
+      "to": "http://www.southernknightscorps.org/"
+    },
+    {
+      "corpsKey": "southern-knights",
+      "name": "Southern Knights",
+      "field": "city",
+      "from": null,
+      "to": "Pelham"
+    },
+    {
+      "corpsKey": "southern-knights",
+      "name": "Southern Knights",
+      "field": "state",
+      "from": null,
+      "to": "AL"
+    },
+    {
+      "corpsKey": "southern-knights",
+      "name": "Southern Knights",
+      "field": "country",
+      "from": null,
+      "to": "United States"
+    },
+    {
+      "corpsKey": "southern-knights",
+      "name": "Southern Knights",
+      "field": "display_city",
+      "from": null,
+      "to": "Pelham, AL"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "about",
+      "from": null,
+      "to": "Spirit of Sunnyvale was an all-age community band based in the San Francisco Bay Area. Its original youth band existed from 1980 to 1998, the revived marching band operated from 2010 to 2025, and it was active in DCI SoundSport from 2016 through 2024 before its competitive SoundSport portion spun off as Sparta Ignite in 2025."
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://spiritofsunnyvale.org/images/2024-sos-stanford.jpg"
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "name": "Steel City Ambassadors",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://img1.wsimg.com/isteam/ip/d9a2a936-7f36-4b72-9838-f3a56d0bee8e/warren%20full.jpg"
+    },
+    {
+      "corpsKey": "taipei-yuehfu",
+      "name": "Taipei Yuehfu",
+      "field": "about",
+      "from": null,
+      "to": "Taipei Yuehfu is a junior drum corps and marching arts group from Taipei, Taiwan. Founded in 1996, the corps represented Taiwan in DCI International Class competition and won the 2005 Division III Prelims before returning to DCI in 2013."
+    },
+    {
+      "corpsKey": "taipei-yuehfu",
+      "name": "Taipei Yuehfu",
+      "field": "website",
+      "from": null,
+      "to": "http://www.yuehfu.org"
+    },
+    {
+      "corpsKey": "taipei-yuehfu",
+      "name": "Taipei Yuehfu",
+      "field": "city",
+      "from": null,
+      "to": "Taipei"
+    },
+    {
+      "corpsKey": "taipei-yuehfu",
+      "name": "Taipei Yuehfu",
+      "field": "country",
+      "from": null,
+      "to": "Taiwan"
+    },
+    {
+      "corpsKey": "taipei-yuehfu",
+      "name": "Taipei Yuehfu",
+      "field": "display_city",
+      "from": null,
+      "to": "Taipei, Taiwan"
+    },
+    {
+      "corpsKey": "taipei-yuehfu",
+      "name": "Taipei Yuehfu",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://static.wixstatic.com/media/8e906d_7ab5795c09d44e68afeaf229e72845c4~mv2_d_5450_6872_s_4_2.png/v1/fill/w_105,h_132,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%E5%85%A8%E5%BD%A9LOGO%20HD-20170804.png"
+    },
+    {
+      "corpsKey": "taipei-yuehfu",
+      "name": "Taipei Yuehfu",
+      "field": "corps_photo",
+      "from": null,
+      "to": "https://static.wixstatic.com/media/8e906d_4f80443f9e1e491e9c4981612f11133a~mv2_d_5472_3648_s_4_2.jpg/v1/crop/x_0,y_0,w_4744,h_3636/fill/w_412,h_311,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/8e906d_4f80443f9e1e491e9c4981612f11133a~mv2_d_5472_3648_s_4_2.jpg"
+    },
+    {
+      "corpsKey": "001j000000iwxaiaa1",
+      "name": "Thunder",
+      "field": "website",
+      "from": null,
+      "to": "http://SpokaneThunder.org/"
+    },
+    {
+      "corpsKey": "001j000000iwxaiaa1",
+      "name": "Thunder",
+      "field": "corps_logo",
+      "from": "/corps-logos/spokane-thunder.svg",
+      "to": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Thunder_Drum_and_Bugle_Corps_logo.jpeg"
+    }
+  ],
+  "skippedCount": 157,
+  "skipped": [
+    {
+      "corpsKey": "arsenal",
+      "name": "Arsenal",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "arsenal",
+      "name": "Arsenal",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "arsenal",
+      "name": "Arsenal",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "arsenal",
+      "name": "Arsenal",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "arsenal",
+      "name": "Arsenal",
+      "field": "country",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "arsenal",
+      "name": "Arsenal",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "beijing-57-high-school",
+      "name": "Beijing 57 High School",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "country",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwwspaal",
+      "name": "Blue Saints",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iprmyaah",
+      "name": "Cadets 2",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iprmyaah",
+      "name": "Cadets 2",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iprmyaah",
+      "name": "Cadets 2",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iprmyaah",
+      "name": "Cadets 2",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iprmyaah",
+      "name": "Cadets 2",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "field": "country",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "conquest-drum-bugle-corps",
+      "name": "Conquest Drum & Bugle Corps",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "field": "country",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b000028qtqbaae",
+      "name": "Eclipse",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a000019s6ceaay",
+      "name": "Erie Thunderbirds",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9daat",
+      "name": "Eruption",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9daat",
+      "name": "Eruption",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9daat",
+      "name": "Eruption",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9daat",
+      "name": "Eruption",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9daat",
+      "name": "Eruption",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002bxwbjaap",
+      "name": "Gems",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "country",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "impact-drum-bugle-corps",
+      "name": "IMPACT Drum & Bugle Corps",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "field": "facebook",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwx9yaad",
+      "name": "Jubal",
+      "field": "corps_photo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "kilties",
+      "name": "Kilties",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "latrobe-music-center",
+      "name": "Latrobe Music Center",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "latrobe-music-center",
+      "name": "Latrobe Music Center",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "latrobe-music-center",
+      "name": "Latrobe Music Center",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "facebook",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "instagram",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "twitter",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0015b00002byuh0aap",
+      "name": "Memphis Blues",
+      "field": "corps_photo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "mercedes-marching-band",
+      "name": "Mercedes Marching Band",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxa4aal",
+      "name": "Minnesota Brass",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "name": "Northern Lights Drum & Bugle Corps",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sky-ryders",
+      "name": "Sky Ryders",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "facebook",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "twitter",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "sonus-brass-theater",
+      "name": "Sonus Brass Theater",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001bpafnaar",
+      "name": "Sound of Sun Prairie",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "facebook",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "twitter",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "youtube",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000u5nhqaaj",
+      "name": "Spirit of Sunnyvale",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "name": "Steel City Ambassadors",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "name": "Steel City Ambassadors",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "name": "Steel City Ambassadors",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "name": "Steel City Ambassadors",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "name": "Steel City Ambassadors",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "steel-city-ambassadors",
+      "name": "Steel City Ambassadors",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "facebook",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "instagram",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "0010a00001iqmzuaah",
+      "name": "Sunrisers",
+      "field": "corps_photo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxaiaa1",
+      "name": "Thunder",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxaiaa1",
+      "name": "Thunder",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxaiaa1",
+      "name": "Thunder",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxaiaa1",
+      "name": "Thunder",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "001j000000iwxaiaa1",
+      "name": "Thunder",
+      "field": "phone",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "about",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "website",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "facebook",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "instagram",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "state",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "display_city",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "address",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "corps_logo",
+      "reason": "already populated"
+    },
+    {
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "name": "Zephyrus Drum & Bugle Corps",
+      "field": "corps_photo",
+      "reason": "already populated"
+    }
+  ]
+}

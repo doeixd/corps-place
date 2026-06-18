@@ -1,0 +1,3167 @@
+{
+  "version": "v9-breakdown-split-curves-2026-06-05",
+  "generatedAt": "2026-06-05T12:10:16.312Z",
+  "source": {
+    "dbPath": "dci-relational.db",
+    "sourceV9ModelId": "v9-real-v9_prod_fingerprint_preseason_final2_1779976626982-41dbeb985a04",
+    "anchorMode": "v9_predicted",
+    "rowCount": 7321,
+    "pairCount": 58563
+  },
+  "config": {
+    "bucketSize": 10,
+    "minShare": 0.49,
+    "maxShare": 0.53,
+    "divisionCaptionPrior": 20,
+    "captionPrior": 80,
+    "divisionPrior": 40,
+    "globalPrior": 80
+  },
+  "global": {
+    "count": 53067,
+    "contentShare": 0.508228,
+    "points": [
+      {
+        "percentThroughSeason": 0,
+        "contentShare": 0.513707,
+        "rawContentShare": 0.513707,
+        "count": 2207,
+        "medianContentShare": 0.512,
+        "stdContentShare": 0.009134,
+        "q10ContentShare": 0.503913,
+        "q90ContentShare": 0.525424
+      },
+      {
+        "percentThroughSeason": 10,
+        "contentShare": 0.512285,
+        "rawContentShare": 0.512285,
+        "count": 1600,
+        "medianContentShare": 0.511111,
+        "stdContentShare": 0.008382,
+        "q10ContentShare": 0.50365,
+        "q90ContentShare": 0.522134
+      },
+      {
+        "percentThroughSeason": 20,
+        "contentShare": 0.512114,
+        "rawContentShare": 0.512114,
+        "count": 4064,
+        "medianContentShare": 0.51087,
+        "stdContentShare": 0.008607,
+        "q10ContentShare": 0.503401,
+        "q90ContentShare": 0.522936
+      },
+      {
+        "percentThroughSeason": 30,
+        "contentShare": 0.511314,
+        "rawContentShare": 0.511314,
+        "count": 4766,
+        "medianContentShare": 0.510067,
+        "stdContentShare": 0.008411,
+        "q10ContentShare": 0.503145,
+        "q90ContentShare": 0.521277
+      },
+      {
+        "percentThroughSeason": 40,
+        "contentShare": 0.510447,
+        "rawContentShare": 0.510447,
+        "count": 4760,
+        "medianContentShare": 0.509434,
+        "stdContentShare": 0.007872,
+        "q10ContentShare": 0.502994,
+        "q90ContentShare": 0.52
+      },
+      {
+        "percentThroughSeason": 50,
+        "contentShare": 0.508575,
+        "rawContentShare": 0.508575,
+        "count": 6174,
+        "medianContentShare": 0.507576,
+        "stdContentShare": 0.007076,
+        "q10ContentShare": 0.5,
+        "q90ContentShare": 0.517007
+      },
+      {
+        "percentThroughSeason": 60,
+        "contentShare": 0.507373,
+        "rawContentShare": 0.507373,
+        "count": 5048,
+        "medianContentShare": 0.506579,
+        "stdContentShare": 0.006252,
+        "q10ContentShare": 0.5,
+        "q90ContentShare": 0.515152
+      },
+      {
+        "percentThroughSeason": 70,
+        "contentShare": 0.507007,
+        "rawContentShare": 0.507007,
+        "count": 6704,
+        "medianContentShare": 0.50625,
+        "stdContentShare": 0.006575,
+        "q10ContentShare": 0.5,
+        "q90ContentShare": 0.515152
+      },
+      {
+        "percentThroughSeason": 80,
+        "contentShare": 0.507343,
+        "rawContentShare": 0.507343,
+        "count": 6576,
+        "medianContentShare": 0.506494,
+        "stdContentShare": 0.006438,
+        "q10ContentShare": 0.5,
+        "q90ContentShare": 0.515152
+      },
+      {
+        "percentThroughSeason": 90,
+        "contentShare": 0.50555,
+        "rawContentShare": 0.50555,
+        "count": 5752,
+        "medianContentShare": 0.505435,
+        "stdContentShare": 0.006251,
+        "q10ContentShare": 0.498631,
+        "q90ContentShare": 0.512987
+      },
+      {
+        "percentThroughSeason": 100,
+        "contentShare": 0.503043,
+        "rawContentShare": 0.503043,
+        "count": 5416,
+        "medianContentShare": 0.502817,
+        "stdContentShare": 0.005017,
+        "q10ContentShare": 0.497238,
+        "q90ContentShare": 0.509202
+      }
+    ]
+  },
+  "byCaption": {
+    "GE1": {
+      "count": 6634,
+      "contentShare": 0.507274,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.512628,
+          "rawContentShare": 0.512315,
+          "count": 276,
+          "medianContentShare": 0.511195,
+          "stdContentShare": 0.009299,
+          "q10ContentShare": 0.503732,
+          "q90ContentShare": 0.524272
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.512511,
+          "rawContentShare": 0.512601,
+          "count": 200,
+          "medianContentShare": 0.51103,
+          "stdContentShare": 0.009331,
+          "q10ContentShare": 0.503181,
+          "q90ContentShare": 0.524759
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.510991,
+          "rawContentShare": 0.510814,
+          "count": 508,
+          "medianContentShare": 0.510381,
+          "stdContentShare": 0.009484,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.522727
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.510909,
+          "rawContentShare": 0.510855,
+          "count": 596,
+          "medianContentShare": 0.509375,
+          "stdContentShare": 0.009663,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.522832
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.508951,
+          "rawContentShare": 0.508749,
+          "count": 595,
+          "medianContentShare": 0.507692,
+          "stdContentShare": 0.007963,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.518182
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.508046,
+          "rawContentShare": 0.507991,
+          "count": 772,
+          "medianContentShare": 0.506849,
+          "stdContentShare": 0.007268,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.517218
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506738,
+          "rawContentShare": 0.506657,
+          "count": 631,
+          "medianContentShare": 0.506024,
+          "stdContentShare": 0.005967,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514085
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.506479,
+          "rawContentShare": 0.506428,
+          "count": 838,
+          "medianContentShare": 0.505618,
+          "stdContentShare": 0.006801,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.515221
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.506672,
+          "rawContentShare": 0.506607,
+          "count": 822,
+          "medianContentShare": 0.505952,
+          "stdContentShare": 0.00695,
+          "q10ContentShare": 0.498831,
+          "q90ContentShare": 0.515625
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.504193,
+          "rawContentShare": 0.504042,
+          "count": 719,
+          "medianContentShare": 0.503411,
+          "stdContentShare": 0.006134,
+          "q10ContentShare": 0.496644,
+          "q90ContentShare": 0.511313
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.501739,
+          "rawContentShare": 0.501585,
+          "count": 677,
+          "medianContentShare": 0.501416,
+          "stdContentShare": 0.00445,
+          "q10ContentShare": 0.496471,
+          "q90ContentShare": 0.507042
+        }
+      ]
+    },
+    "GE2": {
+      "count": 6634,
+      "contentShare": 0.507454,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.512698,
+          "rawContentShare": 0.512405,
+          "count": 276,
+          "medianContentShare": 0.510791,
+          "stdContentShare": 0.00831,
+          "q10ContentShare": 0.503937,
+          "q90ContentShare": 0.522091
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.510911,
+          "rawContentShare": 0.510362,
+          "count": 200,
+          "medianContentShare": 0.509806,
+          "stdContentShare": 0.007317,
+          "q10ContentShare": 0.503748,
+          "q90ContentShare": 0.518243
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.511291,
+          "rawContentShare": 0.511162,
+          "count": 508,
+          "medianContentShare": 0.510453,
+          "stdContentShare": 0.007458,
+          "q10ContentShare": 0.503388,
+          "q90ContentShare": 0.521044
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.510125,
+          "rawContentShare": 0.509965,
+          "count": 596,
+          "medianContentShare": 0.509615,
+          "stdContentShare": 0.007329,
+          "q10ContentShare": 0.503067,
+          "q90ContentShare": 0.518182
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.510079,
+          "rawContentShare": 0.510029,
+          "count": 595,
+          "medianContentShare": 0.509202,
+          "stdContentShare": 0.006789,
+          "q10ContentShare": 0.503106,
+          "q90ContentShare": 0.51894
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.508482,
+          "rawContentShare": 0.508472,
+          "count": 772,
+          "medianContentShare": 0.507246,
+          "stdContentShare": 0.006308,
+          "q10ContentShare": 0.502734,
+          "q90ContentShare": 0.516767
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506827,
+          "rawContentShare": 0.506758,
+          "count": 631,
+          "medianContentShare": 0.506173,
+          "stdContentShare": 0.004961,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512821
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.50636,
+          "rawContentShare": 0.506298,
+          "count": 838,
+          "medianContentShare": 0.505952,
+          "stdContentShare": 0.006336,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.513333
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.506653,
+          "rawContentShare": 0.506586,
+          "count": 822,
+          "medianContentShare": 0.506329,
+          "stdContentShare": 0.00527,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.511628
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.50488,
+          "rawContentShare": 0.504806,
+          "count": 719,
+          "medianContentShare": 0.505119,
+          "stdContentShare": 0.005107,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.511278
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.502206,
+          "rawContentShare": 0.502107,
+          "count": 677,
+          "medianContentShare": 0.501639,
+          "stdContentShare": 0.003953,
+          "q10ContentShare": 0.497253,
+          "q90ContentShare": 0.506786
+        }
+      ]
+    },
+    "VP": {
+      "count": 6634,
+      "contentShare": 0.50937,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.515301,
+          "rawContentShare": 0.515763,
+          "count": 276,
+          "medianContentShare": 0.514286,
+          "stdContentShare": 0.010309,
+          "q10ContentShare": 0.506056,
+          "q90ContentShare": 0.529412
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.514224,
+          "rawContentShare": 0.515,
+          "count": 200,
+          "medianContentShare": 0.512904,
+          "stdContentShare": 0.009998,
+          "q10ContentShare": 0.506579,
+          "q90ContentShare": 0.527293
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.513466,
+          "rawContentShare": 0.513678,
+          "count": 508,
+          "medianContentShare": 0.512098,
+          "stdContentShare": 0.009116,
+          "q10ContentShare": 0.503401,
+          "q90ContentShare": 0.525773
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.512487,
+          "rawContentShare": 0.512644,
+          "count": 596,
+          "medianContentShare": 0.510949,
+          "stdContentShare": 0.008659,
+          "q10ContentShare": 0.50329,
+          "q90ContentShare": 0.52381
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.51167,
+          "rawContentShare": 0.511835,
+          "count": 595,
+          "medianContentShare": 0.51049,
+          "stdContentShare": 0.009275,
+          "q10ContentShare": 0.502825,
+          "q90ContentShare": 0.522183
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.509445,
+          "rawContentShare": 0.509535,
+          "count": 772,
+          "medianContentShare": 0.509091,
+          "stdContentShare": 0.007825,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.519365
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.507976,
+          "rawContentShare": 0.508052,
+          "count": 631,
+          "medianContentShare": 0.507143,
+          "stdContentShare": 0.006692,
+          "q10ContentShare": 0.501362,
+          "q90ContentShare": 0.515873
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.507767,
+          "rawContentShare": 0.50784,
+          "count": 838,
+          "medianContentShare": 0.506757,
+          "stdContentShare": 0.00684,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.516129
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.508185,
+          "rawContentShare": 0.508266,
+          "count": 822,
+          "medianContentShare": 0.507752,
+          "stdContentShare": 0.006666,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.516108
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.506345,
+          "rawContentShare": 0.506433,
+          "count": 719,
+          "medianContentShare": 0.50625,
+          "stdContentShare": 0.006433,
+          "q10ContentShare": 0.497382,
+          "q90ContentShare": 0.515006
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.504087,
+          "rawContentShare": 0.50421,
+          "count": 677,
+          "medianContentShare": 0.503597,
+          "stdContentShare": 0.005562,
+          "q10ContentShare": 0.497371,
+          "q90ContentShare": 0.510949
+        }
+      ]
+    },
+    "VA": {
+      "count": 6634,
+      "contentShare": 0.507666,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.513375,
+          "rawContentShare": 0.513279,
+          "count": 276,
+          "medianContentShare": 0.511811,
+          "stdContentShare": 0.008683,
+          "q10ContentShare": 0.503817,
+          "q90ContentShare": 0.525387
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.51184,
+          "rawContentShare": 0.511662,
+          "count": 200,
+          "medianContentShare": 0.510638,
+          "stdContentShare": 0.009186,
+          "q10ContentShare": 0.503401,
+          "q90ContentShare": 0.521405
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.511756,
+          "rawContentShare": 0.5117,
+          "count": 508,
+          "medianContentShare": 0.510791,
+          "stdContentShare": 0.008075,
+          "q10ContentShare": 0.503311,
+          "q90ContentShare": 0.522153
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.511519,
+          "rawContentShare": 0.511547,
+          "count": 596,
+          "medianContentShare": 0.510274,
+          "stdContentShare": 0.008702,
+          "q10ContentShare": 0.503106,
+          "q90ContentShare": 0.521055
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.510709,
+          "rawContentShare": 0.510744,
+          "count": 595,
+          "medianContentShare": 0.509677,
+          "stdContentShare": 0.008798,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.521739
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.507188,
+          "rawContentShare": 0.507045,
+          "count": 772,
+          "medianContentShare": 0.506667,
+          "stdContentShare": 0.007395,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.515625
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506681,
+          "rawContentShare": 0.506593,
+          "count": 631,
+          "medianContentShare": 0.50641,
+          "stdContentShare": 0.006237,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514493
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.506344,
+          "rawContentShare": 0.50628,
+          "count": 838,
+          "medianContentShare": 0.505882,
+          "stdContentShare": 0.007533,
+          "q10ContentShare": 0.497006,
+          "q90ContentShare": 0.516129
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.506737,
+          "rawContentShare": 0.506678,
+          "count": 822,
+          "medianContentShare": 0.50625,
+          "stdContentShare": 0.007024,
+          "q10ContentShare": 0.497412,
+          "q90ContentShare": 0.514903
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.505144,
+          "rawContentShare": 0.505099,
+          "count": 719,
+          "medianContentShare": 0.504854,
+          "stdContentShare": 0.006856,
+          "q10ContentShare": 0.497256,
+          "q90ContentShare": 0.513286
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.50247,
+          "rawContentShare": 0.502402,
+          "count": 677,
+          "medianContentShare": 0.502618,
+          "stdContentShare": 0.005399,
+          "q10ContentShare": 0.496433,
+          "q90ContentShare": 0.509136
+        }
+      ]
+    },
+    "CG": {
+      "count": 6634,
+      "contentShare": 0.509583,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.515194,
+          "rawContentShare": 0.515625,
+          "count": 276,
+          "medianContentShare": 0.514779,
+          "stdContentShare": 0.009788,
+          "q10ContentShare": 0.506623,
+          "q90ContentShare": 0.528175
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.513854,
+          "rawContentShare": 0.514481,
+          "count": 200,
+          "medianContentShare": 0.51373,
+          "stdContentShare": 0.008562,
+          "q10ContentShare": 0.503859,
+          "q90ContentShare": 0.525907
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.513819,
+          "rawContentShare": 0.514088,
+          "count": 508,
+          "medianContentShare": 0.512821,
+          "stdContentShare": 0.010086,
+          "q10ContentShare": 0.503546,
+          "q90ContentShare": 0.526882
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.512883,
+          "rawContentShare": 0.513093,
+          "count": 596,
+          "medianContentShare": 0.511905,
+          "stdContentShare": 0.009785,
+          "q10ContentShare": 0.503226,
+          "q90ContentShare": 0.52381
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.511459,
+          "rawContentShare": 0.511595,
+          "count": 595,
+          "medianContentShare": 0.510204,
+          "stdContentShare": 0.008898,
+          "q10ContentShare": 0.502994,
+          "q90ContentShare": 0.522124
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.509852,
+          "rawContentShare": 0.509984,
+          "count": 772,
+          "medianContentShare": 0.509231,
+          "stdContentShare": 0.008078,
+          "q10ContentShare": 0.50027,
+          "q90ContentShare": 0.519655
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.508706,
+          "rawContentShare": 0.508875,
+          "count": 631,
+          "medianContentShare": 0.508475,
+          "stdContentShare": 0.007591,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.518519
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.5075,
+          "rawContentShare": 0.507547,
+          "count": 838,
+          "medianContentShare": 0.506494,
+          "stdContentShare": 0.007867,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.517037
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.50878,
+          "rawContentShare": 0.50892,
+          "count": 822,
+          "medianContentShare": 0.507576,
+          "stdContentShare": 0.007753,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.518519
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.506942,
+          "rawContentShare": 0.507097,
+          "count": 719,
+          "medianContentShare": 0.506024,
+          "stdContentShare": 0.008371,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.517054
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.50354,
+          "rawContentShare": 0.503598,
+          "count": 677,
+          "medianContentShare": 0.502762,
+          "stdContentShare": 0.006431,
+          "q10ContentShare": 0.496933,
+          "q90ContentShare": 0.511683
+        }
+      ]
+    },
+    "MB": {
+      "count": 6634,
+      "contentShare": 0.507851,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.513776,
+          "rawContentShare": 0.513796,
+          "count": 276,
+          "medianContentShare": 0.511906,
+          "stdContentShare": 0.008188,
+          "q10ContentShare": 0.504601,
+          "q90ContentShare": 0.524571
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.511102,
+          "rawContentShare": 0.510628,
+          "count": 200,
+          "medianContentShare": 0.510204,
+          "stdContentShare": 0.005618,
+          "q10ContentShare": 0.50365,
+          "q90ContentShare": 0.517272
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.51179,
+          "rawContentShare": 0.511739,
+          "count": 508,
+          "medianContentShare": 0.51049,
+          "stdContentShare": 0.007418,
+          "q10ContentShare": 0.503858,
+          "q90ContentShare": 0.520833
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.510649,
+          "rawContentShare": 0.51056,
+          "count": 596,
+          "medianContentShare": 0.509317,
+          "stdContentShare": 0.006998,
+          "q10ContentShare": 0.503356,
+          "q90ContentShare": 0.519494
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.509848,
+          "rawContentShare": 0.509768,
+          "count": 595,
+          "medianContentShare": 0.508671,
+          "stdContentShare": 0.007172,
+          "q10ContentShare": 0.503243,
+          "q90ContentShare": 0.518182
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.508405,
+          "rawContentShare": 0.508387,
+          "count": 772,
+          "medianContentShare": 0.507692,
+          "stdContentShare": 0.006479,
+          "q10ContentShare": 0.502796,
+          "q90ContentShare": 0.515615
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.507259,
+          "rawContentShare": 0.507244,
+          "count": 631,
+          "medianContentShare": 0.506329,
+          "stdContentShare": 0.005016,
+          "q10ContentShare": 0.502762,
+          "q90ContentShare": 0.514493
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.50676,
+          "rawContentShare": 0.506736,
+          "count": 838,
+          "medianContentShare": 0.506173,
+          "stdContentShare": 0.005141,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.5138
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.507004,
+          "rawContentShare": 0.506971,
+          "count": 822,
+          "medianContentShare": 0.50625,
+          "stdContentShare": 0.005616,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514006
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.505243,
+          "rawContentShare": 0.505208,
+          "count": 719,
+          "medianContentShare": 0.505435,
+          "stdContentShare": 0.00551,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.511494
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.502848,
+          "rawContentShare": 0.502825,
+          "count": 677,
+          "medianContentShare": 0.502825,
+          "stdContentShare": 0.004395,
+          "q10ContentShare": 0.497326,
+          "q90ContentShare": 0.508295
+        }
+      ]
+    },
+    "MA": {
+      "count": 6634,
+      "contentShare": 0.508467,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.513548,
+          "rawContentShare": 0.513501,
+          "count": 276,
+          "medianContentShare": 0.511628,
+          "stdContentShare": 0.008753,
+          "q10ContentShare": 0.503906,
+          "q90ContentShare": 0.525818
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.512941,
+          "rawContentShare": 0.513203,
+          "count": 200,
+          "medianContentShare": 0.511628,
+          "stdContentShare": 0.007397,
+          "q10ContentShare": 0.506658,
+          "q90ContentShare": 0.522222
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.512451,
+          "rawContentShare": 0.512505,
+          "count": 508,
+          "medianContentShare": 0.511278,
+          "stdContentShare": 0.007823,
+          "q10ContentShare": 0.503937,
+          "q90ContentShare": 0.521479
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.511123,
+          "rawContentShare": 0.511097,
+          "count": 596,
+          "medianContentShare": 0.509869,
+          "stdContentShare": 0.007384,
+          "q10ContentShare": 0.503268,
+          "q90ContentShare": 0.520135
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.510708,
+          "rawContentShare": 0.510743,
+          "count": 595,
+          "medianContentShare": 0.509554,
+          "stdContentShare": 0.006574,
+          "q10ContentShare": 0.503329,
+          "q90ContentShare": 0.51932
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.509055,
+          "rawContentShare": 0.509105,
+          "count": 772,
+          "medianContentShare": 0.508052,
+          "stdContentShare": 0.006433,
+          "q10ContentShare": 0.502962,
+          "q90ContentShare": 0.517241
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.507533,
+          "rawContentShare": 0.507553,
+          "count": 631,
+          "medianContentShare": 0.506494,
+          "stdContentShare": 0.006037,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.515385
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.507259,
+          "rawContentShare": 0.507283,
+          "count": 838,
+          "medianContentShare": 0.50637,
+          "stdContentShare": 0.005463,
+          "q10ContentShare": 0.502693,
+          "q90ContentShare": 0.51442
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.507456,
+          "rawContentShare": 0.507466,
+          "count": 822,
+          "medianContentShare": 0.50657,
+          "stdContentShare": 0.005619,
+          "q10ContentShare": 0.502674,
+          "q90ContentShare": 0.514286
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.505553,
+          "rawContentShare": 0.505553,
+          "count": 719,
+          "medianContentShare": 0.505415,
+          "stdContentShare": 0.004664,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.511628
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.503516,
+          "rawContentShare": 0.503572,
+          "count": 677,
+          "medianContentShare": 0.503145,
+          "stdContentShare": 0.004065,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.508236
+        }
+      ]
+    },
+    "MP": {
+      "count": 6629,
+      "contentShare": 0.508156,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.513133,
+          "rawContentShare": 0.512967,
+          "count": 275,
+          "medianContentShare": 0.511278,
+          "stdContentShare": 0.008854,
+          "q10ContentShare": 0.503694,
+          "q90ContentShare": 0.522816
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.510896,
+          "rawContentShare": 0.51034,
+          "count": 200,
+          "medianContentShare": 0.510204,
+          "stdContentShare": 0.007334,
+          "q10ContentShare": 0.503397,
+          "q90ContentShare": 0.519403
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.511344,
+          "rawContentShare": 0.511222,
+          "count": 508,
+          "medianContentShare": 0.509967,
+          "stdContentShare": 0.008403,
+          "q10ContentShare": 0.503388,
+          "q90ContentShare": 0.522584
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.510812,
+          "rawContentShare": 0.510745,
+          "count": 594,
+          "medianContentShare": 0.509434,
+          "stdContentShare": 0.007807,
+          "q10ContentShare": 0.503145,
+          "q90ContentShare": 0.519685
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.510155,
+          "rawContentShare": 0.510115,
+          "count": 595,
+          "medianContentShare": 0.509434,
+          "stdContentShare": 0.006474,
+          "q10ContentShare": 0.503106,
+          "q90ContentShare": 0.517986
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.508126,
+          "rawContentShare": 0.50808,
+          "count": 770,
+          "medianContentShare": 0.507463,
+          "stdContentShare": 0.006101,
+          "q10ContentShare": 0.502762,
+          "q90ContentShare": 0.51462
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.507262,
+          "rawContentShare": 0.507248,
+          "count": 631,
+          "medianContentShare": 0.506667,
+          "stdContentShare": 0.006734,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514184
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.507588,
+          "rawContentShare": 0.507643,
+          "count": 838,
+          "medianContentShare": 0.506667,
+          "stdContentShare": 0.0059,
+          "q10ContentShare": 0.501447,
+          "q90ContentShare": 0.514706
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.507258,
+          "rawContentShare": 0.50725,
+          "count": 822,
+          "medianContentShare": 0.506562,
+          "stdContentShare": 0.005787,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514925
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.506102,
+          "rawContentShare": 0.506164,
+          "count": 719,
+          "medianContentShare": 0.505814,
+          "stdContentShare": 0.005625,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.513218
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.503937,
+          "rawContentShare": 0.504043,
+          "count": 677,
+          "medianContentShare": 0.503268,
+          "stdContentShare": 0.004712,
+          "q10ContentShare": 0.498723,
+          "q90ContentShare": 0.510122
+        }
+      ]
+    }
+  },
+  "byDivision": {
+    "Open Class": {
+      "count": 16179,
+      "contentShare": 0.511639,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.518779,
+          "rawContentShare": 0.519504,
+          "count": 559,
+          "medianContentShare": 0.518868,
+          "stdContentShare": 0.011521,
+          "q10ContentShare": 0.50713,
+          "q90ContentShare": 0.534247
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.516783,
+          "rawContentShare": 0.5176,
+          "count": 440,
+          "medianContentShare": 0.51676,
+          "stdContentShare": 0.01056,
+          "q10ContentShare": 0.507503,
+          "q90ContentShare": 0.53
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.516851,
+          "rawContentShare": 0.51712,
+          "count": 1408,
+          "medianContentShare": 0.516393,
+          "stdContentShare": 0.010206,
+          "q10ContentShare": 0.505495,
+          "q90ContentShare": 0.529412
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.515983,
+          "rawContentShare": 0.51625,
+          "count": 1398,
+          "medianContentShare": 0.515464,
+          "stdContentShare": 0.010447,
+          "q10ContentShare": 0.504735,
+          "q90ContentShare": 0.528736
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.514021,
+          "rawContentShare": 0.5142,
+          "count": 1600,
+          "medianContentShare": 0.513514,
+          "stdContentShare": 0.00953,
+          "q10ContentShare": 0.504132,
+          "q90ContentShare": 0.525654
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.512226,
+          "rawContentShare": 0.512423,
+          "count": 1478,
+          "medianContentShare": 0.511811,
+          "stdContentShare": 0.009118,
+          "q10ContentShare": 0.503759,
+          "q90ContentShare": 0.522936
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.510454,
+          "rawContentShare": 0.510684,
+          "count": 1072,
+          "medianContentShare": 0.510638,
+          "stdContentShare": 0.007925,
+          "q10ContentShare": 0.50323,
+          "q90ContentShare": 0.52
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.511711,
+          "rawContentShare": 0.51195,
+          "count": 1576,
+          "medianContentShare": 0.511278,
+          "stdContentShare": 0.007939,
+          "q10ContentShare": 0.503597,
+          "q90ContentShare": 0.521041
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.509933,
+          "rawContentShare": 0.510018,
+          "count": 2448,
+          "medianContentShare": 0.509317,
+          "stdContentShare": 0.007478,
+          "q10ContentShare": 0.503145,
+          "q90ContentShare": 0.519275
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.506779,
+          "rawContentShare": 0.506814,
+          "count": 2792,
+          "medianContentShare": 0.506667,
+          "stdContentShare": 0.007094,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514925
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.505489,
+          "rawContentShare": 0.505628,
+          "count": 1408,
+          "medianContentShare": 0.505051,
+          "stdContentShare": 0.00601,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.513333
+        }
+      ]
+    },
+    "World Class": {
+      "count": 36888,
+      "contentShare": 0.506731,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.511831,
+          "rawContentShare": 0.51174,
+          "count": 1648,
+          "medianContentShare": 0.510949,
+          "stdContentShare": 0.007171,
+          "q10ContentShare": 0.503704,
+          "q90ContentShare": 0.520661
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.510399,
+          "rawContentShare": 0.510268,
+          "count": 1160,
+          "medianContentShare": 0.510204,
+          "stdContentShare": 0.006311,
+          "q10ContentShare": 0.503448,
+          "q90ContentShare": 0.51773
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.509537,
+          "rawContentShare": 0.509459,
+          "count": 2656,
+          "medianContentShare": 0.509434,
+          "stdContentShare": 0.006148,
+          "q10ContentShare": 0.503268,
+          "q90ContentShare": 0.516779
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.509312,
+          "rawContentShare": 0.509265,
+          "count": 3368,
+          "medianContentShare": 0.508955,
+          "stdContentShare": 0.006364,
+          "q10ContentShare": 0.503067,
+          "q90ContentShare": 0.517007
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.508594,
+          "rawContentShare": 0.508547,
+          "count": 3160,
+          "medianContentShare": 0.507463,
+          "stdContentShare": 0.006051,
+          "q10ContentShare": 0.50289,
+          "q90ContentShare": 0.516129
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.507384,
+          "rawContentShare": 0.507364,
+          "count": 4696,
+          "medianContentShare": 0.506579,
+          "stdContentShare": 0.005791,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514493
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506498,
+          "rawContentShare": 0.50648,
+          "count": 3976,
+          "medianContentShare": 0.506024,
+          "stdContentShare": 0.00538,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.513158
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.505511,
+          "rawContentShare": 0.505488,
+          "count": 5128,
+          "medianContentShare": 0.505618,
+          "stdContentShare": 0.005227,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512048
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.505787,
+          "rawContentShare": 0.505757,
+          "count": 4128,
+          "medianContentShare": 0.505747,
+          "stdContentShare": 0.00511,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512195
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.504389,
+          "rawContentShare": 0.504358,
+          "count": 2960,
+          "medianContentShare": 0.503356,
+          "stdContentShare": 0.005054,
+          "q10ContentShare": 0.497409,
+          "q90ContentShare": 0.510526
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.502152,
+          "rawContentShare": 0.502135,
+          "count": 4008,
+          "medianContentShare": 0.502564,
+          "stdContentShare": 0.00426,
+          "q10ContentShare": 0.497143,
+          "q90ContentShare": 0.507514
+        }
+      ]
+    }
+  },
+  "byDivisionCaption": {
+    "Open Class|GE1": {
+      "count": 2023,
+      "contentShare": 0.510713,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.514989,
+          "rawContentShare": 0.516986,
+          "count": 70,
+          "medianContentShare": 0.518519,
+          "stdContentShare": 0.013198,
+          "q10ContentShare": 0.503659,
+          "q90ContentShare": 0.533425
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.514328,
+          "rawContentShare": 0.518157,
+          "count": 55,
+          "medianContentShare": 0.517241,
+          "stdContentShare": 0.011654,
+          "q10ContentShare": 0.505405,
+          "q90ContentShare": 0.533043
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.514128,
+          "rawContentShare": 0.51585,
+          "count": 176,
+          "medianContentShare": 0.515152,
+          "stdContentShare": 0.011704,
+          "q10ContentShare": 0.504016,
+          "q90ContentShare": 0.529412
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.514426,
+          "rawContentShare": 0.5171,
+          "count": 175,
+          "medianContentShare": 0.516949,
+          "stdContentShare": 0.012415,
+          "q10ContentShare": 0.50412,
+          "q90ContentShare": 0.529412
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.511488,
+          "rawContentShare": 0.512413,
+          "count": 200,
+          "medianContentShare": 0.512821,
+          "stdContentShare": 0.009642,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.52381
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.510338,
+          "rawContentShare": 0.511683,
+          "count": 185,
+          "medianContentShare": 0.511628,
+          "stdContentShare": 0.008758,
+          "q10ContentShare": 0.503401,
+          "q90ContentShare": 0.521217
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.508684,
+          "rawContentShare": 0.510099,
+          "count": 134,
+          "medianContentShare": 0.51049,
+          "stdContentShare": 0.007819,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.518359
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.510041,
+          "rawContentShare": 0.51238,
+          "count": 197,
+          "medianContentShare": 0.512397,
+          "stdContentShare": 0.007828,
+          "q10ContentShare": 0.503287,
+          "q90ContentShare": 0.521368
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.508674,
+          "rawContentShare": 0.509382,
+          "count": 306,
+          "medianContentShare": 0.507692,
+          "stdContentShare": 0.008443,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.52
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.505132,
+          "rawContentShare": 0.505063,
+          "count": 349,
+          "medianContentShare": 0.503876,
+          "stdContentShare": 0.007155,
+          "q10ContentShare": 0.496392,
+          "q90ContentShare": 0.515198
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.503273,
+          "rawContentShare": 0.50357,
+          "count": 176,
+          "medianContentShare": 0.503461,
+          "stdContentShare": 0.005731,
+          "q10ContentShare": 0.497237,
+          "q90ContentShare": 0.509242
+        }
+      ]
+    },
+    "Open Class|GE2": {
+      "count": 2023,
+      "contentShare": 0.510673,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.515645,
+          "rawContentShare": 0.519436,
+          "count": 70,
+          "medianContentShare": 0.517403,
+          "stdContentShare": 0.011058,
+          "q10ContentShare": 0.509044,
+          "q90ContentShare": 0.532709
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.513006,
+          "rawContentShare": 0.514353,
+          "count": 55,
+          "medianContentShare": 0.514286,
+          "stdContentShare": 0.010536,
+          "q10ContentShare": 0.505348,
+          "q90ContentShare": 0.523654
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.513923,
+          "rawContentShare": 0.515277,
+          "count": 176,
+          "medianContentShare": 0.514563,
+          "stdContentShare": 0.008975,
+          "q10ContentShare": 0.506251,
+          "q90ContentShare": 0.525773
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.512837,
+          "rawContentShare": 0.514055,
+          "count": 175,
+          "medianContentShare": 0.513761,
+          "stdContentShare": 0.009087,
+          "q10ContentShare": 0.50417,
+          "q90ContentShare": 0.526316
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.512137,
+          "rawContentShare": 0.513259,
+          "count": 200,
+          "medianContentShare": 0.512195,
+          "stdContentShare": 0.00854,
+          "q10ContentShare": 0.504126,
+          "q90ContentShare": 0.52381
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.51102,
+          "rawContentShare": 0.512914,
+          "count": 185,
+          "medianContentShare": 0.512397,
+          "stdContentShare": 0.007477,
+          "q10ContentShare": 0.50416,
+          "q90ContentShare": 0.523193
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.50891,
+          "rawContentShare": 0.510611,
+          "count": 134,
+          "medianContentShare": 0.510204,
+          "stdContentShare": 0.005818,
+          "q10ContentShare": 0.503755,
+          "q90ContentShare": 0.517857
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.509111,
+          "rawContentShare": 0.510555,
+          "count": 197,
+          "medianContentShare": 0.508772,
+          "stdContentShare": 0.008947,
+          "q10ContentShare": 0.503629,
+          "q90ContentShare": 0.517987
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.508424,
+          "rawContentShare": 0.508973,
+          "count": 306,
+          "medianContentShare": 0.507813,
+          "stdContentShare": 0.005866,
+          "q10ContentShare": 0.503425,
+          "q90ContentShare": 0.516129
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.505998,
+          "rawContentShare": 0.506267,
+          "count": 349,
+          "medianContentShare": 0.506579,
+          "stdContentShare": 0.005292,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512616
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.503875,
+          "rawContentShare": 0.504644,
+          "count": 176,
+          "medianContentShare": 0.504717,
+          "stdContentShare": 0.004727,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.510239
+        }
+      ]
+    },
+    "Open Class|VP": {
+      "count": 2023,
+      "contentShare": 0.513286,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.517695,
+          "rawContentShare": 0.524369,
+          "count": 70,
+          "medianContentShare": 0.521739,
+          "stdContentShare": 0.012679,
+          "q10ContentShare": 0.509091,
+          "q90ContentShare": 0.537925
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.516113,
+          "rawContentShare": 0.523943,
+          "count": 55,
+          "medianContentShare": 0.522124,
+          "stdContentShare": 0.011886,
+          "q10ContentShare": 0.512078,
+          "q90ContentShare": 0.539286
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.516267,
+          "rawContentShare": 0.519295,
+          "count": 176,
+          "medianContentShare": 0.519608,
+          "stdContentShare": 0.010782,
+          "q10ContentShare": 0.505163,
+          "q90ContentShare": 0.532012
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.515201,
+          "rawContentShare": 0.518039,
+          "count": 175,
+          "medianContentShare": 0.517857,
+          "stdContentShare": 0.010096,
+          "q10ContentShare": 0.506849,
+          "q90ContentShare": 0.530261
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.514218,
+          "rawContentShare": 0.516784,
+          "count": 200,
+          "medianContentShare": 0.515831,
+          "stdContentShare": 0.01057,
+          "q10ContentShare": 0.504259,
+          "q90ContentShare": 0.530648
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.512206,
+          "rawContentShare": 0.514966,
+          "count": 185,
+          "medianContentShare": 0.513699,
+          "stdContentShare": 0.009367,
+          "q10ContentShare": 0.504538,
+          "q90ContentShare": 0.526316
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.509743,
+          "rawContentShare": 0.512,
+          "count": 134,
+          "medianContentShare": 0.511114,
+          "stdContentShare": 0.008517,
+          "q10ContentShare": 0.503542,
+          "q90ContentShare": 0.522577
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.51032,
+          "rawContentShare": 0.51242,
+          "count": 197,
+          "medianContentShare": 0.511494,
+          "stdContentShare": 0.008167,
+          "q10ContentShare": 0.503577,
+          "q90ContentShare": 0.522191
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.50985,
+          "rawContentShare": 0.51093,
+          "count": 306,
+          "medianContentShare": 0.510453,
+          "stdContentShare": 0.007414,
+          "q10ContentShare": 0.503311,
+          "q90ContentShare": 0.520747
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.506841,
+          "rawContentShare": 0.507257,
+          "count": 349,
+          "medianContentShare": 0.506944,
+          "stdContentShare": 0.006975,
+          "q10ContentShare": 0.499448,
+          "q90ContentShare": 0.515645
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.505412,
+          "rawContentShare": 0.507073,
+          "count": 176,
+          "medianContentShare": 0.506494,
+          "stdContentShare": 0.006587,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.515437
+        }
+      ]
+    },
+    "Open Class|VA": {
+      "count": 2023,
+      "contentShare": 0.511202,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.515995,
+          "rawContentShare": 0.520012,
+          "count": 70,
+          "medianContentShare": 0.519843,
+          "stdContentShare": 0.009956,
+          "q10ContentShare": 0.508562,
+          "q90ContentShare": 0.531316
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.513935,
+          "rawContentShare": 0.517312,
+          "count": 55,
+          "medianContentShare": 0.516484,
+          "stdContentShare": 0.01132,
+          "q10ContentShare": 0.504457,
+          "q90ContentShare": 0.529141
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.514543,
+          "rawContentShare": 0.51639,
+          "count": 176,
+          "medianContentShare": 0.516129,
+          "stdContentShare": 0.009291,
+          "q10ContentShare": 0.507119,
+          "q90ContentShare": 0.526316
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.514343,
+          "rawContentShare": 0.516643,
+          "count": 175,
+          "medianContentShare": 0.516949,
+          "stdContentShare": 0.010268,
+          "q10ContentShare": 0.504291,
+          "q90ContentShare": 0.529241
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.5132,
+          "rawContentShare": 0.515133,
+          "count": 200,
+          "medianContentShare": 0.515625,
+          "stdContentShare": 0.010197,
+          "q10ContentShare": 0.503931,
+          "q90ContentShare": 0.529028
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.509402,
+          "rawContentShare": 0.510107,
+          "count": 185,
+          "medianContentShare": 0.511111,
+          "stdContentShare": 0.009944,
+          "q10ContentShare": 0.497872,
+          "q90ContentShare": 0.521368
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.508192,
+          "rawContentShare": 0.508908,
+          "count": 134,
+          "medianContentShare": 0.50901,
+          "stdContentShare": 0.007591,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.516864
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.510087,
+          "rawContentShare": 0.512528,
+          "count": 197,
+          "medianContentShare": 0.512195,
+          "stdContentShare": 0.008494,
+          "q10ContentShare": 0.503526,
+          "q90ContentShare": 0.522523
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.508401,
+          "rawContentShare": 0.508912,
+          "count": 306,
+          "medianContentShare": 0.507246,
+          "stdContentShare": 0.008584,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.519084
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.50615,
+          "rawContentShare": 0.506446,
+          "count": 349,
+          "medianContentShare": 0.506494,
+          "stdContentShare": 0.008148,
+          "q10ContentShare": 0.496626,
+          "q90ContentShare": 0.514971
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.504353,
+          "rawContentShare": 0.505546,
+          "count": 176,
+          "medianContentShare": 0.504311,
+          "stdContentShare": 0.006531,
+          "q10ContentShare": 0.49662,
+          "q90ContentShare": 0.514929
+        }
+      ]
+    },
+    "Open Class|CG": {
+      "count": 2023,
+      "contentShare": 0.513798,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.516674,
+          "rawContentShare": 0.520555,
+          "count": 70,
+          "medianContentShare": 0.523046,
+          "stdContentShare": 0.013322,
+          "q10ContentShare": 0.508235,
+          "q90ContentShare": 0.534147
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.514839,
+          "rawContentShare": 0.518575,
+          "count": 55,
+          "medianContentShare": 0.518868,
+          "stdContentShare": 0.011178,
+          "q10ContentShare": 0.501709,
+          "q90ContentShare": 0.531266
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.516692,
+          "rawContentShare": 0.520044,
+          "count": 176,
+          "medianContentShare": 0.519608,
+          "stdContentShare": 0.012096,
+          "q10ContentShare": 0.505886,
+          "q90ContentShare": 0.535534
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.515653,
+          "rawContentShare": 0.518827,
+          "count": 175,
+          "medianContentShare": 0.518072,
+          "stdContentShare": 0.012235,
+          "q10ContentShare": 0.507692,
+          "q90ContentShare": 0.534047
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.513939,
+          "rawContentShare": 0.516312,
+          "count": 200,
+          "medianContentShare": 0.516129,
+          "stdContentShare": 0.011336,
+          "q10ContentShare": 0.504348,
+          "q90ContentShare": 0.529412
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.512112,
+          "rawContentShare": 0.514594,
+          "count": 185,
+          "medianContentShare": 0.514085,
+          "stdContentShare": 0.010418,
+          "q10ContentShare": 0.504043,
+          "q90ContentShare": 0.528628
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.509639,
+          "rawContentShare": 0.511305,
+          "count": 134,
+          "medianContentShare": 0.512,
+          "stdContentShare": 0.01021,
+          "q10ContentShare": 0.496019,
+          "q90ContentShare": 0.52381
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.510551,
+          "rawContentShare": 0.512994,
+          "count": 197,
+          "medianContentShare": 0.511628,
+          "stdContentShare": 0.01,
+          "q10ContentShare": 0.503338,
+          "q90ContentShare": 0.526981
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.51096,
+          "rawContentShare": 0.51261,
+          "count": 306,
+          "medianContentShare": 0.511111,
+          "stdContentShare": 0.0091,
+          "q10ContentShare": 0.503333,
+          "q90ContentShare": 0.524194
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.508586,
+          "rawContentShare": 0.509866,
+          "count": 349,
+          "medianContentShare": 0.507692,
+          "stdContentShare": 0.009912,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.52027
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.505419,
+          "rawContentShare": 0.507338,
+          "count": 176,
+          "medianContentShare": 0.506897,
+          "stdContentShare": 0.007548,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.517712
+        }
+      ]
+    },
+    "Open Class|MB": {
+      "count": 2023,
+      "contentShare": 0.510648,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.515725,
+          "rawContentShare": 0.518515,
+          "count": 70,
+          "medianContentShare": 0.516575,
+          "stdContentShare": 0.009073,
+          "q10ContentShare": 0.509597,
+          "q90ContentShare": 0.531039
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.513103,
+          "rawContentShare": 0.514528,
+          "count": 55,
+          "medianContentShare": 0.513889,
+          "stdContentShare": 0.006415,
+          "q10ContentShare": 0.507988,
+          "q90ContentShare": 0.522852
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.514169,
+          "rawContentShare": 0.515576,
+          "count": 176,
+          "medianContentShare": 0.514563,
+          "stdContentShare": 0.009437,
+          "q10ContentShare": 0.505107,
+          "q90ContentShare": 0.526316
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.51275,
+          "rawContentShare": 0.513627,
+          "count": 175,
+          "medianContentShare": 0.512605,
+          "stdContentShare": 0.009523,
+          "q10ContentShare": 0.504538,
+          "q90ContentShare": 0.524988
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.511839,
+          "rawContentShare": 0.512756,
+          "count": 200,
+          "medianContentShare": 0.512605,
+          "stdContentShare": 0.009414,
+          "q10ContentShare": 0.504065,
+          "q90ContentShare": 0.52335
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.510415,
+          "rawContentShare": 0.511689,
+          "count": 185,
+          "medianContentShare": 0.510949,
+          "stdContentShare": 0.009376,
+          "q10ContentShare": 0.50423,
+          "q90ContentShare": 0.522124
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.509169,
+          "rawContentShare": 0.510998,
+          "count": 134,
+          "medianContentShare": 0.51049,
+          "stdContentShare": 0.005751,
+          "q10ContentShare": 0.503956,
+          "q90ContentShare": 0.518519
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.509395,
+          "rawContentShare": 0.510965,
+          "count": 197,
+          "medianContentShare": 0.51049,
+          "stdContentShare": 0.005779,
+          "q10ContentShare": 0.505011,
+          "q90ContentShare": 0.518208
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.509144,
+          "rawContentShare": 0.510071,
+          "count": 306,
+          "medianContentShare": 0.509494,
+          "stdContentShare": 0.006262,
+          "q10ContentShare": 0.503497,
+          "q90ContentShare": 0.517986
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.505729,
+          "rawContentShare": 0.505761,
+          "count": 349,
+          "medianContentShare": 0.506329,
+          "stdContentShare": 0.006436,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512854
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.504178,
+          "rawContentShare": 0.505001,
+          "count": 176,
+          "medianContentShare": 0.503817,
+          "stdContentShare": 0.005367,
+          "q10ContentShare": 0.499141,
+          "q90ContentShare": 0.512104
+        }
+      ]
+    },
+    "Open Class|MA": {
+      "count": 2023,
+      "contentShare": 0.511577,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.515658,
+          "rawContentShare": 0.518515,
+          "count": 70,
+          "medianContentShare": 0.516954,
+          "stdContentShare": 0.009584,
+          "q10ContentShare": 0.509015,
+          "q90ContentShare": 0.53157
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.514489,
+          "rawContentShare": 0.51828,
+          "count": 55,
+          "medianContentShare": 0.517857,
+          "stdContentShare": 0.008658,
+          "q10ContentShare": 0.507966,
+          "q90ContentShare": 0.529236
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.515468,
+          "rawContentShare": 0.51805,
+          "count": 176,
+          "medianContentShare": 0.51676,
+          "stdContentShare": 0.009031,
+          "q10ContentShare": 0.508621,
+          "q90ContentShare": 0.529412
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.513894,
+          "rawContentShare": 0.515863,
+          "count": 175,
+          "medianContentShare": 0.513333,
+          "stdContentShare": 0.008615,
+          "q10ContentShare": 0.507333,
+          "q90ContentShare": 0.528092
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.512656,
+          "rawContentShare": 0.514046,
+          "count": 200,
+          "medianContentShare": 0.513514,
+          "stdContentShare": 0.007495,
+          "q10ContentShare": 0.505461,
+          "q90ContentShare": 0.52381
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.511177,
+          "rawContentShare": 0.512993,
+          "count": 185,
+          "medianContentShare": 0.511811,
+          "stdContentShare": 0.008362,
+          "q10ContentShare": 0.504824,
+          "q90ContentShare": 0.52197
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.50954,
+          "rawContentShare": 0.511759,
+          "count": 134,
+          "medianContentShare": 0.511278,
+          "stdContentShare": 0.006784,
+          "q10ContentShare": 0.504128,
+          "q90ContentShare": 0.519685
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.509743,
+          "rawContentShare": 0.511463,
+          "count": 197,
+          "medianContentShare": 0.510638,
+          "stdContentShare": 0.006404,
+          "q10ContentShare": 0.503704,
+          "q90ContentShare": 0.52013
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.508914,
+          "rawContentShare": 0.509573,
+          "count": 306,
+          "medianContentShare": 0.508197,
+          "stdContentShare": 0.006592,
+          "q10ContentShare": 0.503379,
+          "q90ContentShare": 0.517362
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.506112,
+          "rawContentShare": 0.506292,
+          "count": 349,
+          "medianContentShare": 0.506024,
+          "stdContentShare": 0.004917,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512532
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.504621,
+          "rawContentShare": 0.505644,
+          "count": 176,
+          "medianContentShare": 0.504777,
+          "stdContentShare": 0.004976,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.511906
+        }
+      ]
+    },
+    "Open Class|MP": {
+      "count": 2018,
+      "contentShare": 0.511217,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.515294,
+          "rawContentShare": 0.517621,
+          "count": 69,
+          "medianContentShare": 0.515152,
+          "stdContentShare": 0.01081,
+          "q10ContentShare": 0.505291,
+          "q90ContentShare": 0.53444
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.513282,
+          "rawContentShare": 0.515654,
+          "count": 55,
+          "medianContentShare": 0.514851,
+          "stdContentShare": 0.008305,
+          "q10ContentShare": 0.507894,
+          "q90ContentShare": 0.52689
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.514498,
+          "rawContentShare": 0.516481,
+          "count": 176,
+          "medianContentShare": 0.514563,
+          "stdContentShare": 0.008593,
+          "q10ContentShare": 0.507576,
+          "q90ContentShare": 0.526954
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.513806,
+          "rawContentShare": 0.51584,
+          "count": 173,
+          "medianContentShare": 0.514563,
+          "stdContentShare": 0.009565,
+          "q10ContentShare": 0.504521,
+          "q90ContentShare": 0.528096
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.511971,
+          "rawContentShare": 0.512898,
+          "count": 200,
+          "medianContentShare": 0.512098,
+          "stdContentShare": 0.007197,
+          "q10ContentShare": 0.50495,
+          "q90ContentShare": 0.521044
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.509744,
+          "rawContentShare": 0.51042,
+          "count": 183,
+          "medianContentShare": 0.509804,
+          "stdContentShare": 0.007552,
+          "q10ContentShare": 0.503771,
+          "q90ContentShare": 0.518854
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.508686,
+          "rawContentShare": 0.509793,
+          "count": 134,
+          "medianContentShare": 0.508404,
+          "stdContentShare": 0.009289,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.519451
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.510222,
+          "rawContentShare": 0.512294,
+          "count": 197,
+          "medianContentShare": 0.511278,
+          "stdContentShare": 0.006674,
+          "q10ContentShare": 0.503759,
+          "q90ContentShare": 0.521313
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.508954,
+          "rawContentShare": 0.50969,
+          "count": 306,
+          "medianContentShare": 0.509202,
+          "stdContentShare": 0.006085,
+          "q10ContentShare": 0.50329,
+          "q90ContentShare": 0.517986
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.507,
+          "rawContentShare": 0.507563,
+          "count": 349,
+          "medianContentShare": 0.507143,
+          "stdContentShare": 0.005433,
+          "q10ContentShare": 0.501425,
+          "q90ContentShare": 0.514523
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.504975,
+          "rawContentShare": 0.506208,
+          "count": 176,
+          "medianContentShare": 0.505988,
+          "stdContentShare": 0.005117,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512186
+        }
+      ]
+    },
+    "World Class|GE1": {
+      "count": 4611,
+      "contentShare": 0.505765,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.511798,
+          "rawContentShare": 0.510728,
+          "count": 206,
+          "medianContentShare": 0.510638,
+          "stdContentShare": 0.006836,
+          "q10ContentShare": 0.503732,
+          "q90ContentShare": 0.519084
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.511366,
+          "rawContentShare": 0.510494,
+          "count": 145,
+          "medianContentShare": 0.51049,
+          "stdContentShare": 0.007241,
+          "q10ContentShare": 0.503145,
+          "q90ContentShare": 0.518728
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.509274,
+          "rawContentShare": 0.508144,
+          "count": 332,
+          "medianContentShare": 0.507143,
+          "stdContentShare": 0.006667,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.515873
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.509062,
+          "rawContentShare": 0.508259,
+          "count": 421,
+          "medianContentShare": 0.507042,
+          "stdContentShare": 0.006722,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.515873
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.507763,
+          "rawContentShare": 0.506895,
+          "count": 395,
+          "medianContentShare": 0.506494,
+          "stdContentShare": 0.00618,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514286
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.507157,
+          "rawContentShare": 0.506827,
+          "count": 587,
+          "medianContentShare": 0.50625,
+          "stdContentShare": 0.006296,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514925
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506078,
+          "rawContentShare": 0.505729,
+          "count": 497,
+          "medianContentShare": 0.505703,
+          "stdContentShare": 0.004967,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512473
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.50505,
+          "rawContentShare": 0.504599,
+          "count": 641,
+          "medianContentShare": 0.503597,
+          "stdContentShare": 0.005235,
+          "q10ContentShare": 0.498559,
+          "q90ContentShare": 0.510949
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.505465,
+          "rawContentShare": 0.504961,
+          "count": 516,
+          "medianContentShare": 0.505376,
+          "stdContentShare": 0.005234,
+          "q10ContentShare": 0.498567,
+          "q90ContentShare": 0.511785
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.503674,
+          "rawContentShare": 0.503079,
+          "count": 370,
+          "medianContentShare": 0.502924,
+          "stdContentShare": 0.004787,
+          "q10ContentShare": 0.497076,
+          "q90ContentShare": 0.509102
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.501302,
+          "rawContentShare": 0.500887,
+          "count": 501,
+          "medianContentShare": 0.501272,
+          "stdContentShare": 0.003653,
+          "q10ContentShare": 0.496094,
+          "q90ContentShare": 0.505344
+        }
+      ]
+    },
+    "World Class|GE2": {
+      "count": 4611,
+      "contentShare": 0.506042,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.511451,
+          "rawContentShare": 0.510017,
+          "count": 206,
+          "medianContentShare": 0.509934,
+          "stdContentShare": 0.005334,
+          "q10ContentShare": 0.503572,
+          "q90ContentShare": 0.516671
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.510303,
+          "rawContentShare": 0.508847,
+          "count": 145,
+          "medianContentShare": 0.507813,
+          "stdContentShare": 0.004837,
+          "q10ContentShare": 0.503497,
+          "q90ContentShare": 0.514793
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.509841,
+          "rawContentShare": 0.50898,
+          "count": 332,
+          "medianContentShare": 0.508131,
+          "stdContentShare": 0.005356,
+          "q10ContentShare": 0.503234,
+          "q90ContentShare": 0.515601
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.508965,
+          "rawContentShare": 0.508266,
+          "count": 421,
+          "medianContentShare": 0.507353,
+          "stdContentShare": 0.005646,
+          "q10ContentShare": 0.502994,
+          "q90ContentShare": 0.514706
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.50891,
+          "rawContentShare": 0.508394,
+          "count": 395,
+          "medianContentShare": 0.507576,
+          "stdContentShare": 0.004953,
+          "q10ContentShare": 0.502994,
+          "q90ContentShare": 0.51441
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.507385,
+          "rawContentShare": 0.507073,
+          "count": 587,
+          "medianContentShare": 0.506579,
+          "stdContentShare": 0.005152,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.513405
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506081,
+          "rawContentShare": 0.505719,
+          "count": 497,
+          "medianContentShare": 0.505747,
+          "stdContentShare": 0.004128,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.511347
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.505337,
+          "rawContentShare": 0.50499,
+          "count": 641,
+          "medianContentShare": 0.505376,
+          "stdContentShare": 0.004538,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.510638
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.505613,
+          "rawContentShare": 0.50517,
+          "count": 516,
+          "medianContentShare": 0.505682,
+          "stdContentShare": 0.004296,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.510106
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.503997,
+          "rawContentShare": 0.503428,
+          "count": 370,
+          "medianContentShare": 0.50289,
+          "stdContentShare": 0.004512,
+          "q10ContentShare": 0.497409,
+          "q90ContentShare": 0.509317
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.50159,
+          "rawContentShare": 0.501215,
+          "count": 501,
+          "medianContentShare": 0.501333,
+          "stdContentShare": 0.003195,
+          "q10ContentShare": 0.497067,
+          "q90ContentShare": 0.50517
+        }
+      ]
+    },
+    "World Class|VP": {
+      "count": 4611,
+      "contentShare": 0.507652,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.513396,
+          "rawContentShare": 0.512839,
+          "count": 206,
+          "medianContentShare": 0.512,
+          "stdContentShare": 0.007351,
+          "q10ContentShare": 0.503704,
+          "q90ContentShare": 0.521899
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.512231,
+          "rawContentShare": 0.511608,
+          "count": 145,
+          "medianContentShare": 0.510791,
+          "stdContentShare": 0.006515,
+          "q10ContentShare": 0.506494,
+          "q90ContentShare": 0.519874
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.511242,
+          "rawContentShare": 0.510701,
+          "count": 332,
+          "medianContentShare": 0.510274,
+          "stdContentShare": 0.00632,
+          "q10ContentShare": 0.503311,
+          "q90ContentShare": 0.519055
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.510718,
+          "rawContentShare": 0.510402,
+          "count": 421,
+          "medianContentShare": 0.509934,
+          "stdContentShare": 0.00683,
+          "q10ContentShare": 0.503145,
+          "q90ContentShare": 0.518987
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.509744,
+          "rawContentShare": 0.509329,
+          "count": 395,
+          "medianContentShare": 0.509317,
+          "stdContentShare": 0.007372,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.518519
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.508043,
+          "rawContentShare": 0.507824,
+          "count": 587,
+          "medianContentShare": 0.507143,
+          "stdContentShare": 0.006376,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.515356
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.507118,
+          "rawContentShare": 0.506988,
+          "count": 497,
+          "medianContentShare": 0.506329,
+          "stdContentShare": 0.005653,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.513775
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.50657,
+          "rawContentShare": 0.506432,
+          "count": 641,
+          "medianContentShare": 0.505952,
+          "stdContentShare": 0.005678,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.513889
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.506877,
+          "rawContentShare": 0.506687,
+          "count": 516,
+          "medianContentShare": 0.506173,
+          "stdContentShare": 0.005611,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.513889
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.505649,
+          "rawContentShare": 0.505656,
+          "count": 370,
+          "medianContentShare": 0.505556,
+          "stdContentShare": 0.005769,
+          "q10ContentShare": 0.497382,
+          "q90ContentShare": 0.513256
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.503227,
+          "rawContentShare": 0.503205,
+          "count": 501,
+          "medianContentShare": 0.502959,
+          "stdContentShare": 0.004762,
+          "q10ContentShare": 0.497297,
+          "q90ContentShare": 0.509317
+        }
+      ]
+    },
+    "World Class|VA": {
+      "count": 4611,
+      "contentShare": 0.506116,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.512079,
+          "rawContentShare": 0.510991,
+          "count": 206,
+          "medianContentShare": 0.510067,
+          "stdContentShare": 0.006834,
+          "q10ContentShare": 0.503759,
+          "q90ContentShare": 0.52
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.5108,
+          "rawContentShare": 0.509518,
+          "count": 145,
+          "medianContentShare": 0.509554,
+          "stdContentShare": 0.007148,
+          "q10ContentShare": 0.503329,
+          "q90ContentShare": 0.51625
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.510057,
+          "rawContentShare": 0.509214,
+          "count": 332,
+          "medianContentShare": 0.509494,
+          "stdContentShare": 0.006014,
+          "q10ContentShare": 0.503149,
+          "q90ContentShare": 0.51634
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.509933,
+          "rawContentShare": 0.509428,
+          "count": 421,
+          "medianContentShare": 0.509091,
+          "stdContentShare": 0.006935,
+          "q10ContentShare": 0.50303,
+          "q90ContentShare": 0.51773
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.50908,
+          "rawContentShare": 0.508522,
+          "count": 395,
+          "medianContentShare": 0.507576,
+          "stdContentShare": 0.007018,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.517241
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.506512,
+          "rawContentShare": 0.506079,
+          "count": 587,
+          "medianContentShare": 0.506173,
+          "stdContentShare": 0.006072,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512987
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506242,
+          "rawContentShare": 0.505969,
+          "count": 497,
+          "medianContentShare": 0.505882,
+          "stdContentShare": 0.005659,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512887
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.504855,
+          "rawContentShare": 0.50436,
+          "count": 641,
+          "medianContentShare": 0.503401,
+          "stdContentShare": 0.006028,
+          "q10ContentShare": 0.496855,
+          "q90ContentShare": 0.511765
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.505755,
+          "rawContentShare": 0.505354,
+          "count": 516,
+          "medianContentShare": 0.505714,
+          "stdContentShare": 0.005495,
+          "q10ContentShare": 0.497396,
+          "q90ContentShare": 0.512579
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.504294,
+          "rawContentShare": 0.503828,
+          "count": 370,
+          "medianContentShare": 0.502959,
+          "stdContentShare": 0.005038,
+          "q10ContentShare": 0.497354,
+          "q90ContentShare": 0.510081
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.50168,
+          "rawContentShare": 0.501298,
+          "count": 501,
+          "medianContentShare": 0.501285,
+          "stdContentShare": 0.00444,
+          "q10ContentShare": 0.495798,
+          "q90ContentShare": 0.50641
+        }
+      ]
+    },
+    "World Class|CG": {
+      "count": 4611,
+      "contentShare": 0.507733,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.513938,
+          "rawContentShare": 0.51395,
+          "count": 206,
+          "medianContentShare": 0.514185,
+          "stdContentShare": 0.007549,
+          "q10ContentShare": 0.506623,
+          "q90ContentShare": 0.52381
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.512701,
+          "rawContentShare": 0.512928,
+          "count": 145,
+          "medianContentShare": 0.512195,
+          "stdContentShare": 0.006704,
+          "q10ContentShare": 0.504857,
+          "q90ContentShare": 0.521569
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.511438,
+          "rawContentShare": 0.510931,
+          "count": 332,
+          "medianContentShare": 0.510274,
+          "stdContentShare": 0.007023,
+          "q10ContentShare": 0.503356,
+          "q90ContentShare": 0.52
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.510978,
+          "rawContentShare": 0.51071,
+          "count": 421,
+          "medianContentShare": 0.510067,
+          "stdContentShare": 0.007346,
+          "q10ContentShare": 0.50303,
+          "q90ContentShare": 0.519231
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.509635,
+          "rawContentShare": 0.509207,
+          "count": 395,
+          "medianContentShare": 0.508876,
+          "stdContentShare": 0.006102,
+          "q10ContentShare": 0.502924,
+          "q90ContentShare": 0.516734
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.508612,
+          "rawContentShare": 0.508532,
+          "count": 587,
+          "medianContentShare": 0.507246,
+          "stdContentShare": 0.006543,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.516667
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.50808,
+          "rawContentShare": 0.50822,
+          "count": 497,
+          "medianContentShare": 0.507143,
+          "stdContentShare": 0.006559,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.516779
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.506118,
+          "rawContentShare": 0.505873,
+          "count": 641,
+          "medianContentShare": 0.505747,
+          "stdContentShare": 0.006185,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514085
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.506976,
+          "rawContentShare": 0.506731,
+          "count": 516,
+          "medianContentShare": 0.506024,
+          "stdContentShare": 0.005813,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.514085
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.504973,
+          "rawContentShare": 0.504485,
+          "count": 370,
+          "medianContentShare": 0.503448,
+          "stdContentShare": 0.005426,
+          "q10ContentShare": 0.497352,
+          "q90ContentShare": 0.511236
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.502507,
+          "rawContentShare": 0.502285,
+          "count": 501,
+          "medianContentShare": 0.502513,
+          "stdContentShare": 0.005406,
+          "q10ContentShare": 0.496875,
+          "q90ContentShare": 0.509434
+        }
+      ]
+    },
+    "World Class|MB": {
+      "count": 4611,
+      "contentShare": 0.506623,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.512767,
+          "rawContentShare": 0.512192,
+          "count": 206,
+          "medianContentShare": 0.511111,
+          "stdContentShare": 0.007191,
+          "q10ContentShare": 0.504001,
+          "q90ContentShare": 0.521218
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.510474,
+          "rawContentShare": 0.509149,
+          "count": 145,
+          "medianContentShare": 0.508197,
+          "stdContentShare": 0.004469,
+          "q10ContentShare": 0.503567,
+          "q90ContentShare": 0.514286
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.510369,
+          "rawContentShare": 0.509706,
+          "count": 332,
+          "medianContentShare": 0.509494,
+          "stdContentShare": 0.005005,
+          "q10ContentShare": 0.503602,
+          "q90ContentShare": 0.516656
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.509723,
+          "rawContentShare": 0.509284,
+          "count": 421,
+          "medianContentShare": 0.507813,
+          "stdContentShare": 0.005109,
+          "q10ContentShare": 0.503311,
+          "q90ContentShare": 0.516667
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.508787,
+          "rawContentShare": 0.508255,
+          "count": 395,
+          "medianContentShare": 0.506944,
+          "stdContentShare": 0.005079,
+          "q10ContentShare": 0.503106,
+          "q90ContentShare": 0.514671
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.507581,
+          "rawContentShare": 0.507347,
+          "count": 587,
+          "medianContentShare": 0.506757,
+          "stdContentShare": 0.004795,
+          "q10ContentShare": 0.502732,
+          "q90ContentShare": 0.513514
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506496,
+          "rawContentShare": 0.506232,
+          "count": 497,
+          "medianContentShare": 0.506024,
+          "stdContentShare": 0.004266,
+          "q10ContentShare": 0.502703,
+          "q90ContentShare": 0.511905
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.505715,
+          "rawContentShare": 0.505437,
+          "count": 641,
+          "medianContentShare": 0.505556,
+          "stdContentShare": 0.004135,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.510638
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.505625,
+          "rawContentShare": 0.505132,
+          "count": 516,
+          "medianContentShare": 0.505587,
+          "stdContentShare": 0.004231,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.510067
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.504866,
+          "rawContentShare": 0.504688,
+          "count": 370,
+          "medianContentShare": 0.505319,
+          "stdContentShare": 0.004402,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.510345
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.502267,
+          "rawContentShare": 0.50206,
+          "count": 501,
+          "medianContentShare": 0.502618,
+          "stdContentShare": 0.003706,
+          "q10ContentShare": 0.497326,
+          "q90ContentShare": 0.506173
+        }
+      ]
+    },
+    "World Class|MA": {
+      "count": 4611,
+      "contentShare": 0.507103,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.512522,
+          "rawContentShare": 0.511798,
+          "count": 206,
+          "medianContentShare": 0.510638,
+          "stdContentShare": 0.007745,
+          "q10ContentShare": 0.503788,
+          "q90ContentShare": 0.521008
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.511795,
+          "rawContentShare": 0.511277,
+          "count": 145,
+          "medianContentShare": 0.510638,
+          "stdContentShare": 0.005792,
+          "q10ContentShare": 0.506528,
+          "q90ContentShare": 0.518686
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.51038,
+          "rawContentShare": 0.509565,
+          "count": 332,
+          "medianContentShare": 0.509804,
+          "stdContentShare": 0.005046,
+          "q10ContentShare": 0.503497,
+          "q90ContentShare": 0.515873
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.509671,
+          "rawContentShare": 0.509116,
+          "count": 421,
+          "medianContentShare": 0.507692,
+          "stdContentShare": 0.005743,
+          "q10ContentShare": 0.503145,
+          "q90ContentShare": 0.517483
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.509443,
+          "rawContentShare": 0.50907,
+          "count": 395,
+          "medianContentShare": 0.508876,
+          "stdContentShare": 0.005323,
+          "q10ContentShare": 0.503083,
+          "q90ContentShare": 0.516129
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.508045,
+          "rawContentShare": 0.50788,
+          "count": 587,
+          "medianContentShare": 0.506757,
+          "stdContentShare": 0.00511,
+          "q10ContentShare": 0.502857,
+          "q90ContentShare": 0.514165
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506661,
+          "rawContentShare": 0.506419,
+          "count": 497,
+          "medianContentShare": 0.505882,
+          "stdContentShare": 0.005273,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512346
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.506192,
+          "rawContentShare": 0.505999,
+          "count": 641,
+          "medianContentShare": 0.505882,
+          "stdContentShare": 0.004404,
+          "q10ContentShare": 0.501355,
+          "q90ContentShare": 0.511364
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.506457,
+          "rawContentShare": 0.506217,
+          "count": 516,
+          "medianContentShare": 0.505814,
+          "stdContentShare": 0.004509,
+          "q10ContentShare": 0.502591,
+          "q90ContentShare": 0.511765
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.505018,
+          "rawContentShare": 0.504856,
+          "count": 370,
+          "medianContentShare": 0.505279,
+          "stdContentShare": 0.004298,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.510218
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.502904,
+          "rawContentShare": 0.502844,
+          "count": 501,
+          "medianContentShare": 0.502825,
+          "stdContentShare": 0.003405,
+          "q10ContentShare": 0.499203,
+          "q90ContentShare": 0.506829
+        }
+      ]
+    },
+    "World Class|MP": {
+      "count": 4611,
+      "contentShare": 0.506816,
+      "points": [
+        {
+          "percentThroughSeason": 0,
+          "contentShare": 0.512242,
+          "rawContentShare": 0.511408,
+          "count": 206,
+          "medianContentShare": 0.510949,
+          "stdContentShare": 0.007471,
+          "q10ContentShare": 0.503572,
+          "q90ContentShare": 0.520163
+        },
+        {
+          "percentThroughSeason": 10,
+          "contentShare": 0.51008,
+          "rawContentShare": 0.508325,
+          "count": 145,
+          "medianContentShare": 0.507692,
+          "stdContentShare": 0.005766,
+          "q10ContentShare": 0.503243,
+          "q90ContentShare": 0.515291
+        },
+        {
+          "percentThroughSeason": 20,
+          "contentShare": 0.509508,
+          "rawContentShare": 0.508434,
+          "count": 332,
+          "medianContentShare": 0.507353,
+          "stdContentShare": 0.006816,
+          "q10ContentShare": 0.503071,
+          "q90ContentShare": 0.516514
+        },
+        {
+          "percentThroughSeason": 30,
+          "contentShare": 0.509315,
+          "rawContentShare": 0.508651,
+          "count": 421,
+          "medianContentShare": 0.507576,
+          "stdContentShare": 0.005774,
+          "q10ContentShare": 0.503067,
+          "q90ContentShare": 0.516129
+        },
+        {
+          "percentThroughSeason": 40,
+          "contentShare": 0.509128,
+          "rawContentShare": 0.508707,
+          "count": 395,
+          "medianContentShare": 0.507813,
+          "stdContentShare": 0.005569,
+          "q10ContentShare": 0.502994,
+          "q90ContentShare": 0.515152
+        },
+        {
+          "percentThroughSeason": 50,
+          "contentShare": 0.507555,
+          "rawContentShare": 0.50735,
+          "count": 587,
+          "medianContentShare": 0.506494,
+          "stdContentShare": 0.005367,
+          "q10ContentShare": 0.502691,
+          "q90ContentShare": 0.513514
+        },
+        {
+          "percentThroughSeason": 60,
+          "contentShare": 0.506732,
+          "rawContentShare": 0.506562,
+          "count": 497,
+          "medianContentShare": 0.506173,
+          "stdContentShare": 0.005665,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512987
+        },
+        {
+          "percentThroughSeason": 70,
+          "contentShare": 0.506387,
+          "rawContentShare": 0.506214,
+          "count": 641,
+          "medianContentShare": 0.505814,
+          "stdContentShare": 0.004808,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512195
+        },
+        {
+          "percentThroughSeason": 80,
+          "contentShare": 0.506136,
+          "rawContentShare": 0.505803,
+          "count": 516,
+          "medianContentShare": 0.505747,
+          "stdContentShare": 0.005075,
+          "q10ContentShare": 0.5,
+          "q90ContentShare": 0.512195
+        },
+        {
+          "percentThroughSeason": 90,
+          "contentShare": 0.505088,
+          "rawContentShare": 0.504844,
+          "count": 370,
+          "medianContentShare": 0.504043,
+          "stdContentShare": 0.005482,
+          "q10ContentShare": 0.498664,
+          "q90ContentShare": 0.511934
+        },
+        {
+          "percentThroughSeason": 100,
+          "contentShare": 0.503265,
+          "rawContentShare": 0.503282,
+          "count": 501,
+          "medianContentShare": 0.502825,
+          "stdContentShare": 0.00431,
+          "q10ContentShare": 0.498615,
+          "q90ContentShare": 0.508287
+        }
+      ]
+    }
+  },
+  "evaluation": {
+    "validationPairCount": 5496,
+    "fixed50ShareMae": 0.008154787598169252,
+    "curveShareMae": 0.0047111059985265515,
+    "fixed50SubcaptionMaePtsUsingActualCaptionTotal": 0.11817230713245966,
+    "curveSubcaptionMaePtsUsingActualCaptionTotal": 0.07095049126637575,
+    "improvementVs50Pts": 0.04722181586608391,
+    "improvementVs50Tenths": 0.47221815866083916
+  }
+}

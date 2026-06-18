@@ -1,0 +1,667 @@
+{
+  "generated_at": "2026-06-02T12:18:38.732Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-hutchinson",
+    "slug": "2026-dci-hutchinson",
+    "name": "DCI Hutchinson",
+    "event_name": "DCI Hutchinson",
+    "start_date": "2026-07-14",
+    "start_time": null,
+    "web_start_time": "8:00 PM CT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Hutchinson",
+    "location_state": "KS",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260714-HUTCHINSON-KS.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260714-HUTCHINSON-KS.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-dci-hutchinson-apossk",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Ticket prices will increase June 10, 2026.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 6,
+    "matched_corps_keys": 6,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 6,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 41.86046511627907
+  },
+  "input_signature": "670fa2376fc5f95f027f3e61aee3fb800d559d390bf4df8897566d665d75153f",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 6,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwxacaa1",
+        "corps": "Spartans",
+        "division": "Open Class",
+        "performance_order": 3,
+        "time": "8:22 PM"
+      },
+      {
+        "corps_key": "001j000000iwxa5aal",
+        "corps": "Music City",
+        "division": "World Class",
+        "performance_order": 4,
+        "time": "8:39 PM"
+      },
+      {
+        "corps_key": "001j000000i6lenaa3",
+        "corps": "Madison Scouts",
+        "division": "World Class",
+        "performance_order": 5,
+        "time": "8:56 PM"
+      },
+      {
+        "corps_key": "001j000000iwxajaa1",
+        "corps": "Troopers",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "9:30 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsoaal",
+        "corps": "Blue Knights",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "9:47 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsqaal",
+        "corps": "Blue Stars",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "10:04 PM"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Sky Ryders",
+        "performance_order": 2,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Blue Knights",
+        "performance_order": 10,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 11,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-hutchinson",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-14",
+      "scored_lineup_rows": 6,
+      "matched_corps_keys": 6,
+      "excluded_lineup_rows": 6,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwsqaal",
+      "corps": "Blue Stars",
+      "city": "La Crosse, WI",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "10:04 PM",
+      "total": 82.3,
+      "GE": 33.019,
+      "Visual": 24.745,
+      "Music": 24.536,
+      "GE1": 16.567,
+      "GE2": 16.452,
+      "VP": 16.234,
+      "VA": 16.404,
+      "CG": 16.851,
+      "MB": 16.424,
+      "MA": 16.595,
+      "MP": 16.053,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.797,
+          "p50": 16.567,
+          "p90": 17.367
+        },
+        "GE2": {
+          "p10": 15.724,
+          "p50": 16.452,
+          "p90": 17.339
+        },
+        "VP": {
+          "p10": 15.438,
+          "p50": 16.234,
+          "p90": 16.978
+        },
+        "VA": {
+          "p10": 15.528,
+          "p50": 16.404,
+          "p90": 17.063
+        },
+        "CG": {
+          "p10": 15.992,
+          "p50": 16.851,
+          "p90": 17.57
+        },
+        "MB": {
+          "p10": 15.598,
+          "p50": 16.424,
+          "p90": 17.167
+        },
+        "MA": {
+          "p10": 15.957,
+          "p50": 16.595,
+          "p90": 17.536
+        },
+        "MP": {
+          "p10": 15.332,
+          "p50": 16.053,
+          "p90": 16.931
+        }
+      },
+      "raw_model_total": 91.255,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81.2,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-brass-impact",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 82.297,
+      "caption_shape_total": 83.639,
+      "total_reconciliation_delta": -1.34,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 83.638,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "city": "Casper, WY",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "9:30 PM",
+      "total": 81.115,
+      "GE": 32.384,
+      "Visual": 23.896,
+      "Music": 24.835,
+      "GE1": 16.12,
+      "GE2": 16.264,
+      "VP": 15.776,
+      "VA": 15.928,
+      "CG": 16.088,
+      "MB": 16.251,
+      "MA": 16.59,
+      "MP": 16.83,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.333,
+          "p50": 16.12,
+          "p90": 16.874
+        },
+        "GE2": {
+          "p10": 15.571,
+          "p50": 16.264,
+          "p90": 17.156
+        },
+        "VP": {
+          "p10": 14.997,
+          "p50": 15.776,
+          "p90": 16.519
+        },
+        "VA": {
+          "p10": 15.059,
+          "p50": 15.928,
+          "p90": 16.582
+        },
+        "CG": {
+          "p10": 15.279,
+          "p50": 16.088,
+          "p90": 16.832
+        },
+        "MB": {
+          "p10": 15.435,
+          "p50": 16.251,
+          "p90": 16.98
+        },
+        "MA": {
+          "p10": 15.975,
+          "p50": 16.59,
+          "p90": 17.523
+        },
+        "MP": {
+          "p10": 16.053,
+          "p50": 16.83,
+          "p90": 17.64
+        }
+      },
+      "raw_model_total": 90.144,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 81.05,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-brass-impact",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 81.115,
+      "caption_shape_total": 81.196,
+      "total_reconciliation_delta": -0.08,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 10,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 81.196,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "city": "Denver, CO",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "9:47 PM",
+      "total": 79.042,
+      "GE": 31.647,
+      "Visual": 23.43,
+      "Music": 23.965,
+      "GE1": 15.697,
+      "GE2": 15.95,
+      "VP": 15.458,
+      "VA": 15.618,
+      "CG": 15.783,
+      "MB": 15.729,
+      "MA": 16.1,
+      "MP": 16.102,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.94,
+          "p50": 15.697,
+          "p90": 16.465
+        },
+        "GE2": {
+          "p10": 15.293,
+          "p50": 15.95,
+          "p90": 16.87
+        },
+        "VP": {
+          "p10": 14.701,
+          "p50": 15.458,
+          "p90": 16.209
+        },
+        "VA": {
+          "p10": 14.744,
+          "p50": 15.618,
+          "p90": 16.244
+        },
+        "CG": {
+          "p10": 15.004,
+          "p50": 15.783,
+          "p90": 16.567
+        },
+        "MB": {
+          "p10": 14.903,
+          "p50": 15.729,
+          "p90": 16.432
+        },
+        "MA": {
+          "p10": 15.465,
+          "p50": 16.1,
+          "p90": 17.008
+        },
+        "MP": {
+          "p10": 15.333,
+          "p50": 16.102,
+          "p90": 16.905
+        }
+      },
+      "raw_model_total": 90.048,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 80.3,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-dci-new-mexico",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 79.04,
+      "caption_shape_total": 77.502,
+      "total_reconciliation_delta": 1.54,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 12,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 77.501,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000i6lenaa3",
+      "corps": "Madison Scouts",
+      "city": "Madison, WI",
+      "division": "World Class",
+      "performance_order": 5,
+      "time": "8:56 PM",
+      "total": 75.577,
+      "GE": 30.409,
+      "Visual": 22.254,
+      "Music": 22.914,
+      "GE1": 15.116,
+      "GE2": 15.293,
+      "VP": 14.514,
+      "VA": 14.752,
+      "CG": 15.242,
+      "MB": 14.987,
+      "MA": 15.44,
+      "MP": 15.401,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.29,
+          "p50": 15.116,
+          "p90": 15.79
+        },
+        "GE2": {
+          "p10": 14.677,
+          "p50": 15.293,
+          "p90": 16.193
+        },
+        "VP": {
+          "p10": 13.775,
+          "p50": 14.514,
+          "p90": 15.251
+        },
+        "VA": {
+          "p10": 13.94,
+          "p50": 14.752,
+          "p90": 15.384
+        },
+        "CG": {
+          "p10": 14.528,
+          "p50": 15.242,
+          "p90": 16.077
+        },
+        "MB": {
+          "p10": 14.231,
+          "p50": 14.987,
+          "p90": 15.738
+        },
+        "MA": {
+          "p10": 14.859,
+          "p50": 15.44,
+          "p90": 16.342
+        },
+        "MP": {
+          "p10": 14.648,
+          "p50": 15.401,
+          "p90": 16.138
+        }
+      },
+      "raw_model_total": 89.852,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 77.4,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-brass-impact",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 75.579,
+      "caption_shape_total": 73.352,
+      "total_reconciliation_delta": 2.225,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 14,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.352,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwxa5aal",
+      "corps": "Music City",
+      "city": "Nashville, TN",
+      "division": "World Class",
+      "performance_order": 4,
+      "time": "8:39 PM",
+      "total": 72.665,
+      "GE": 29.177,
+      "Visual": 21.482,
+      "Music": 22.006,
+      "GE1": 14.596,
+      "GE2": 14.581,
+      "VP": 14.085,
+      "VA": 14.315,
+      "CG": 14.565,
+      "MB": 14.06,
+      "MA": 15.021,
+      "MP": 14.931,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.801,
+          "p50": 14.596,
+          "p90": 15.296
+        },
+        "GE2": {
+          "p10": 13.978,
+          "p50": 14.581,
+          "p90": 15.473
+        },
+        "VP": {
+          "p10": 13.37,
+          "p50": 14.085,
+          "p90": 14.874
+        },
+        "VA": {
+          "p10": 13.525,
+          "p50": 14.315,
+          "p90": 14.973
+        },
+        "CG": {
+          "p10": 13.863,
+          "p50": 14.565,
+          "p90": 15.369
+        },
+        "MB": {
+          "p10": 13.326,
+          "p50": 14.06,
+          "p90": 14.831
+        },
+        "MA": {
+          "p10": 14.46,
+          "p50": 15.021,
+          "p90": 15.927
+        },
+        "MP": {
+          "p10": 14.155,
+          "p50": 14.931,
+          "p90": 15.651
+        }
+      },
+      "raw_model_total": 87.172,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 74.8,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-dci-broken-arrow",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 72.665,
+      "caption_shape_total": 70.055,
+      "total_reconciliation_delta": 2.61,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 16,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 70.055,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000iwxacaa1",
+      "corps": "Spartans",
+      "city": "Nashua, NH",
+      "division": "Open Class",
+      "performance_order": 3,
+      "time": "8:22 PM",
+      "total": 63.61,
+      "GE": 25.94,
+      "Visual": 19.141,
+      "Music": 18.529,
+      "GE1": 13.179,
+      "GE2": 12.761,
+      "VP": 12.517,
+      "VA": 12.796,
+      "CG": 12.969,
+      "MB": 12.029,
+      "MA": 12.462,
+      "MP": 12.566,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.343,
+          "p50": 13.179,
+          "p90": 13.865
+        },
+        "GE2": {
+          "p10": 12.117,
+          "p50": 12.761,
+          "p90": 13.648
+        },
+        "VP": {
+          "p10": 11.894,
+          "p50": 12.517,
+          "p90": 13.476
+        },
+        "VA": {
+          "p10": 11.99,
+          "p50": 12.796,
+          "p90": 13.5
+        },
+        "CG": {
+          "p10": 12.22,
+          "p50": 12.969,
+          "p90": 13.757
+        },
+        "MB": {
+          "p10": 11.234,
+          "p50": 12.029,
+          "p90": 12.723
+        },
+        "MA": {
+          "p10": 11.827,
+          "p50": 12.462,
+          "p90": 13.295
+        },
+        "MP": {
+          "p10": 11.777,
+          "p50": 12.566,
+          "p90": 13.297
+        }
+      },
+      "raw_model_total": 78.62,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 70.9,
+      "prior_season_comparable_percent_through": 40.476190476190474,
+      "prior_season_comparable_competition": "2025-brass-impact",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 63.608,
+      "caption_shape_total": 54.695,
+      "total_reconciliation_delta": 8.915,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 18,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 54.695,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Todd Fox: add DCI headshot supplied by user; bio already accurate.",
+  "profiles": [
+    {
+      "judgeId": "t-fox-1",
+      "displayName": "Todd Fox",
+      "givenName": "Todd",
+      "familyName": "Fox",
+      "biography": "Todd Fox is a percussion/music adjudicator who has judged drum corps and the percussion music caption since 1994 and serves as the Drum Corps International Central Division Judges Coordinator. He has served as chief judge at the DCI Kalamazoo Premier Event and has held percussion-related judging roles at DCI World Championships, including Ensemble Percussion and Music Analysis, and judges the Winds Music Analysis caption for Winter Guard International. He has been involved in DCI's ongoing refinement of the judging system, including the configuration of effect, ensemble, and field judging panels.",
+      "photoUrl": "https://assets.dci.org/5bd2e80b629f4b0a832f4135_cFHjw75M5_ozzbxEQUNucDurXc3eK7kq.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/judges_winds/todd-fox/", "label": "WGI Winds judge profile", "kind": "organization" },
+        { "url": "https://www.dci.org/news/july-5-brings-additional-dci-judges-to-the-field/", "label": "DCI: Central Division Judges Coordinator", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI percussion judge since 1994; DCI Central Division Judges Coordinator; chief judge DCI Kalamazoo; WGI Winds Music Analysis; headshot from assets.dci.org", "source": "https://www.dci.org/news/july-5-brings-additional-dci-judges-to-the-field/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Photo-recovery pass: headshots found for previously-photoless enriched judges via puppeteer-rendered news/podcast/org/MFA pages. Bios unchanged from prior enrichment (only photoUrl added).",
+  "profiles": [
+    {
+      "judgeId": "c-poole-1", "displayName": "Charles Poole", "givenName": "Charles", "familyName": "Poole",
+      "photoUrl": "https://images.squarespace-cdn.com/content/v1/586a8d4db3db2ba536764f09/1733777507454-7N5AH1TJ60F16EW7Y3Z5/unnamed-1.jpg?format=750w",
+      "biography": "Charles 'Charley' Poole Jr. is a Hall of Fame percussion adjudicator, arranger, and educator who has taught, arranged for, and adjudicated marching bands, drum corps, and percussion ensembles across the United States, Canada, and Japan. He serves as the DCI Atlantic Division percussion caption chairperson and was unanimously elected to the DCI Task Force on Judging as the percussion instructor representative (1980-1986). He arranged for and instructed the 27th Lancers of Revere, Massachusetts (1977-1986) and East Coast Jazz (2005 DCI Division II Champions), is the percussion supervisor at Everett High School (MA), and is a signature artist for Pro-Mark, Evans, Zildjian, and Pearl. He is a member of the World Drum Corps, Drum Corps International, and Massachusetts Drum Corps Halls of Fame.",
+      "alternateNames": ["Charley Poole", "Charles A. Poole Jr."],
+      "externalLinks": [
+        { "url": "https://www.dci.org/static/charley-poole-jr-dci-hall-of-fame", "label": "DCI Hall of Fame profile", "kind": "bio" },
+        { "url": "https://www.wdchof.org/members/poole-charles-a/", "label": "World Drum Corps Hall of Fame", "kind": "organization" }
+      ],
+      "corpsRelations": [{ "corpsName": "27th Lancers", "season": "1977-1986", "role": "Percussion Arranger / Instructor", "sourceUrl": "https://www.dci.org/static/charley-poole-jr-dci-hall-of-fame" }],
+      "seasonHighlights": [{ "title": "World Drum Corps, DCI, and Massachusetts Drum Corps Halls of Fame", "sourceUrl": "https://www.dci.org/static/charley-poole-jr-dci-hall-of-fame" }],
+      "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from Discussions in Percussion ep. #414 (Charley Poole)", "source": "https://www.discussionsinpercussion.com/home/2024/12/9/414-charley-poole-drummer-educator-adjudicator-and-more", "confidence": "MEDIUM" }] }
+    },
+    {
+      "judgeId": "m-lentz-1", "displayName": "Michael Lentz", "givenName": "Michael", "familyName": "Lentz",
+      "photoUrl": "https://marchingartseducation.com/wp-content/uploads/2018/10/1367589664_1_MichaelLentz2013square.jpg",
+      "biography": "Michael Lentz is a color guard and visual adjudicator and designer and a 2025 Winter Guard International Hall of Fame inductee. He co-founded Onyx in 1988, a three-time WGI World Champion independent guard based in Dayton, Ohio, and has designed for world and open class drum corps, DCA, indoor winds, high school marching bands, and WGI, serving as Artistic Director for the Boston Crusaders' 2014 production and later leading the Troopers' color guard. He has adjudicated for Bands of America and Drum Corps International, including the Color Guard caption at DCI World Championships.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://www.wgi.org/mlentzhof/", "label": "WGI Hall of Fame highlight", "kind": "bio" }],
+      "corpsRelations": [{ "corpsName": "Boston Crusaders", "season": "2014", "role": "Artistic Director", "sourceUrl": "https://www.wgi.org/mlentzhof/" }],
+      "seasonHighlights": [{ "title": "WGI Hall of Fame inductee", "season": "2025", "sourceUrl": "https://www.wgi.org/mlentzhof/" }],
+      "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from Marching Arts Education feature", "source": "https://marchingartseducation.com/episode-204-michael-lentz-the-creative-force-behind-onyx/", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "g-boulden-1", "displayName": "George Boulden", "givenName": "George", "familyName": "Boulden",
+      "photoUrl": "https://uknow.uky.edu/sites/default/files/styles/uknow_story_image/public/boulden.jpg",
+      "biography": "George R. Boulden III was a brass/music adjudicator and Professor and Associate Director of Bands at the University of Kentucky (1995-2022), where he conducted the Wildcat Marching Band (1995-2008) and the Symphony Band. He adjudicated for Music for All/Bands of America, Drum Corps International, and Drum Corps Japan, serving in the Brass and Music Analysis captions at DCI World Championships, was named the 2011 KMEA College/University Teacher of the Year, and received the 2014 Phi Beta Mu Outstanding Bandmaster award. He passed away in 2022.",
+      "alternateNames": ["George R. Boulden III"],
+      "externalLinks": [{ "url": "https://finearts.uky.edu/music/faculty-staff/george-boulden", "label": "University of Kentucky College of Fine Arts", "kind": "bio" }],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from UKNow (UK band director); d. 2022", "source": "https://uknow.uky.edu/arts-culture/uk-bands-open-season-concert-memory-professor-george-boulden", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "j-barton-1", "displayName": "Jen Barton", "givenName": "Jen", "familyName": "Barton",
+      "photoUrl": "https://qweencity.com/wp-content/uploads/2021/05/Jen-2-450x600.jpg",
+      "biography": "Jennifer 'Jen' Barton is a color guard adjudicator, choreographer, and consultant, a native of Greenwood, Indiana, who recently retired as color guard director at Rouse High School (Leander, TX) and is on the movement and visual staff of the Music City drum and bugle corps. Over a 20-year career across the Carolinas, Georgia, and Texas she has worked with scholastic and independent ensembles including Byrnes HS (a five-time WGI World Championships finalist under her direction), Origins, The Cast, and Etude winter guards, and the Pacific Crest, Spirit of Atlanta, and Phantom Regiment drum corps. As a performer she appeared with the Santa Clara Vanguard and Northeast Independent winter guard, and she served as a Color Guard judge at the 2025 DCI World Championships.",
+      "alternateNames": ["Jennifer Barton"],
+      "externalLinks": [{ "url": "https://www.hippvisualsolutions.com/choreography", "label": "Hipp Visual Solutions", "kind": "organization" }],
+      "corpsRelations": [
+        { "corpsName": "Santa Clara Vanguard", "role": "Performer (color guard)", "sourceUrl": "https://www.hippvisualsolutions.com/choreography" },
+        { "corpsName": "Music City", "role": "Movement & Visual staff", "sourceUrl": "https://www.hippvisualsolutions.com/choreography" }
+      ],
+      "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from Qween City feature", "source": "https://qweencity.com/jennifer-barton/", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "t-landess-1", "displayName": "Tim Landess", "givenName": "Tim", "familyName": "Landess",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Final5DS_7819_ppcroppedblack-and-white-1.jpg",
+      "biography": "Tim Landess is a color guard and visual adjudicator who began judging in 2003 and became a WGI judge in 2007. A member of the Florida Federation of Judges, he has judged winter guard and marching band contests nationwide (including for Bands of America since 2003) and was a visual designer and color guard director for winter guards and marching bands across Indiana for nearly two decades. He served as the Color Guard judge at the 2022 DCI World Championship Semifinals.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/tim-landess/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/tim-landess/", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "t-moddison-1", "displayName": "Travis Moddison", "givenName": "Travis", "familyName": "Moddison",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Adobe-Express-file-19.jpg",
+      "biography": "Travis Moddison is a music adjudicator for Drum Corps International, serving in the Music Analysis and Music Brass captions at DCI World Championships (including 2018).",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/travis-moddison/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/travis-moddison/", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "c-church-1", "displayName": "Chris Church", "givenName": "Chris", "familyName": "Church",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2025/09/Adobe-Express-file-36.jpg",
+      "biography": "Chris Church is a visual adjudicator and a 35-year veteran band director who spent 13 seasons on the marching/visual staff of the World Champion Phantom Regiment drum and bugle corps. He currently serves as a visual judge for Drum Corps International and a winter guard judge for the Mid-Continent Color Guard Association and Winter Guard and Percussion of Oklahoma, and is a graduate of the Marching Roundtable Judges Academy. He also adjudicates concert bands, jazz ensembles, and solo & ensemble festivals across the United States.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/chris-church/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [{ "corpsName": "Phantom Regiment", "role": "Marching/Visual staff (13 seasons)", "sourceUrl": "https://education.musicforall.org/clinician/chris-church/" }],
+      "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/chris-church/", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "m-mullinix-1", "displayName": "Max Mullinix", "givenName": "Max", "familyName": "Mullinix",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2023/09/max-mullinix.jpg",
+      "biography": "Max Mullinix is a percussion adjudicator, arranger, and instructor who served as Percussion Caption Head and arranger for the Colts drum and bugle corps and as a percussion director, and is an Evans/marching percussion artist. He adjudicates the Music Percussion and Music Analysis captions for Drum Corps International.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/max-mullinix/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [{ "corpsName": "Colts", "role": "Percussion Caption Head / Arranger", "sourceUrl": "http://marchingcorps.blogspot.com/2009/06/evans-artist-spotlight-max-mulinex.html" }],
+      "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/max-mullinix/", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "s-chumley-1", "displayName": "Shirl Chumley", "givenName": "Shirl", "familyName": "Chumley",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2024/09/file-1.png",
+      "biography": "Shirl Chumley is a visual and color guard adjudicator who has been involved in color guard, marching band, and drum and bugle corps pageantry for over 35 years as a performer, instructor, and judge. She judges the visual captions for winter guard, drum corps, and marching band competitions across the United States and in the Netherlands, and is a listed color guard judge with Winter Guard International. She returned to Colorado in 2016 and continues to adjudicate nationally.",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/shirl-chumley/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/shirl-chumley/", "confidence": "HIGH" }] }
+    },
+    {
+      "judgeId": "k-young-1", "displayName": "Kyle Young", "givenName": "Kyle", "familyName": "Young",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/YoungKyleResize.png",
+      "biography": "Kyle Young is a music adjudicator for Drum Corps International who has served as a Music Analysis judge at DCI World Championships (2022-2025).",
+      "alternateNames": [],
+      "externalLinks": [{ "url": "https://education.musicforall.org/clinician/kyle-young/", "label": "Music for All clinician bio", "kind": "bio" }],
+      "corpsRelations": [], "seasonHighlights": [], "media": [],
+      "_research": { "facts": [{ "fact": "Headshot from MFA clinician page (render)", "source": "https://education.musicforall.org/clinician/kyle-young/", "confidence": "HIGH" }] }
+    }
+  ]
+}

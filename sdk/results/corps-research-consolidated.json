@@ -1,0 +1,1015 @@
+[
+  {
+    "corps_key": "001j000000iwwsmaal",
+    "name": "Alliance",
+    "confidence": "medium",
+    "fields": {
+      "about": "Alliance was an all-age drum and bugle corps based in Atlanta, Georgia. DCX reports that the corps was formed in 2004 by Terry Reilley, Shirley Smith, and Andy Ritchie, with the intent to further music education while providing performers of all ages an affordable drum corps experience.",
+      "logo_url": "https://www.dcxmuseum.org/assets/AllianceAtlantaGAJW1-AOverCircleSiteAA_U_S.jpg",
+      "photo_url": "https://www.dcxmuseum.org/pictures/2016/20160730_2016061_Atlanta/Alliance-065.jpg",
+      "city": "Atlanta",
+      "state": "GA",
+      "country": "USA",
+      "display_city": "Atlanta, GA"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "medium"
+      }
+    ]
+  },
+  {
+    "corps_key": "arsenal",
+    "name": "Arsenal",
+    "slug": "arsenal",
+    "confidence": "high",
+    "fields": {
+      "photo_url": "https://images.squarespace-cdn.com/content/v1/63c9bfae6f2c8225dd5b4cc3/320254ba-c6a0-43aa-9095-ee043cbfec68/arsenal%2Bguard%2B2.jpg?format=2500w",
+      "about": "Arsenal Drum and Bugle Corps is Sun City Musical Arts' DCI SoundSport corps and is based in El Paso, Texas. The ensemble began in Albuquerque, moved to El Paso in 2019, and was acquired under SCMA in 2023.",
+      "website": "https://www.suncitymusicalarts.org/arsenal-dbc",
+      "city": "El Paso",
+      "state": "TX",
+      "country": "USA",
+      "display_city": "El Paso, TX"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "beijing-57-high-school",
+    "name": "Beijing 57 High School",
+    "slug": "beijing-57-high-school",
+    "confidence": "medium",
+    "fields": {
+      "about": "Beijing No. 57 High School competed in DCI's 2025 International Class as one of two marching bands from Beijing, China. CGTN reported that Beijing No. 57 High School brought traditional Chinese melodies to the 2025 DCI Open in Indiana, blending them with modern marching arrangements.",
+      "photo_url": "https://news.cgtn.com/news/2025-12-06/How-do-American-DCI-players-rate-Chinese-marching-bands--1ISNGfh9cFW/img/0f27cfe47b0144c58d6b84ae4b6a0210/0f27cfe47b0144c58d6b84ae4b6a0210-1920.jpeg",
+      "city": "Beijing",
+      "country": "China",
+      "display_city": "Beijing, China"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "medium"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwwspaal",
+    "name": "Blue Saints",
+    "slug": "blue-saints",
+    "confidence": "high",
+    "fields": {
+      "about": "The Blue Saints Drum and Bugle Corps is a Sudbury, Ontario youth music organization founded in 1952. The corps describes its mission as providing music and movement education, building confidence, teamwork, leadership, and community pride, and DCX identifies it as Canada's oldest active drum and bugle corps.",
+      "logo_url": "https://img1.wsimg.com/isteam/ip/cae390fc-c1d8-41c9-b6af-7e2c916cd8e3/Saints%20Logo.webp",
+      "photo_url": "https://www.dcxmuseum.org/pictures/2025/20250809_2025082_SoundSport/thumb/Blue%20Saints_250809_SoundSport-09487.jpg",
+      "website": "https://thebluesaints.org/",
+      "city": "Sudbury",
+      "state": "ON",
+      "country": "CAN",
+      "display_city": "Sudbury, ON"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a00001iprmyaah",
+    "name": "Cadets 2",
+    "slug": "cadets2",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/cadets2/",
+    "fields": {
+      "about": "Cadets2 was an all-age corps from Allentown, Pennsylvania, formed in 2011 as an extension of The Cadets and Youth Education in the Arts. The corps won its first DCA championship in 2016 and competed through the 2018 season in DCX archives.",
+      "photo_url": "https://images.dci.org/wp-content/uploads/2025/01/Cadets2-set-to-defend-World-Championship-title-in-Rochester.webp",
+      "city": "Allentown",
+      "state": "PA",
+      "country": "USA",
+      "display_city": "Allentown, PA",
+      "address": "601 W. Hamilton Street Allentown PA, 18101",
+      "phone": "(610) 821-0345 Ext. 115"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/cadets2/",
+        "scraped_at": "2026-06-04T00:52:20.807Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "chien-kuo",
+    "name": "Chien Kuo",
+    "slug": "chien-kuo-hs-marching-band",
+    "confidence": "medium",
+    "fields": {
+      "about": "Taipei Chien-Kuo High School Marching Band dates its drum corps origins to 1960, transitioned to standard marching instrumentation in 1982, added color guard in 1992, and is described by the Taiwan Marching Band Association as a leading marching ensemble in Taiwan with international performance and competition experience.",
+      "photo_url": "https://static.wixstatic.com/media/8e906d_f58837a260324ce59472da173e563bad~mv2.jpg/v1/fill/w_605,h_297,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/8e906d_f58837a260324ce59472da173e563bad~mv2.jpg",
+      "website": "https://www.taiwan-mba.org/marching-band",
+      "city": "Taipei",
+      "country": "Taiwan",
+      "display_city": "Taipei, Taiwan"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "medium"
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a00001gzbgoaax",
+    "name": "Chops",
+    "confidence": "high",
+    "fields": {
+      "about": "Chops Inc. is a Minneapolis-based nonprofit music and performing arts organization. In addition to its all-age drum corps, the organization supports parade units, indoor percussion, steel-drum bands, after-school drumlines, summer camps, and other music education programs.",
+      "logo_url": "https://static.wixstatic.com/media/72c9a2_58e0fcd921f84bb5bb5e9e9236fb4953~mv2.png/v1/fill/w_242,h_144,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Chops-black.png",
+      "photo_url": "https://static.wixstatic.com/media/938631_50b86719eebb4b22ba21d27347f2fa81~mv2.jpg/v1/fill/w_1442,h_600,al_c/938631_50b86719eebb4b22ba21d27347f2fa81~mv2.jpg",
+      "website": "http://www.chopsinc.com",
+      "city": "Minneapolis",
+      "state": "MN",
+      "country": "USA",
+      "display_city": "Minneapolis, MN"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "medium"
+      }
+    ]
+  },
+  {
+    "corps_key": "city-sound",
+    "name": "City Sound",
+    "confidence": "low",
+    "fields": {},
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwx96aad",
+    "name": "Coastal Surge",
+    "slug": "coastal-surge",
+    "confidence": "high",
+    "fields": {
+      "about": "Coastal Surge was an Open Class drum and bugle corps based in Myrtle Beach, South Carolina. DCI approved the corps for the 2014 tour after 2013 exhibition performances, and described the organization as focused on instruction, performance objectives, and educational experience for its members.",
+      "logo_url": "https://assets.dci.org/5bd2edcd629f4b0a832f63f8_j0BSEoShYwE2aR7MN8syJU5hQoTjIhKG.jpg",
+      "photo_url": "https://assets.dci.org/5bd2edce629f4b0a832f63f9_VCqWSWgPlWk74Y_cKHYBcLnqn-IkR5cN.jpg",
+      "website": "http://CoastalSurge.org/",
+      "city": "Myrtle Beach",
+      "state": "SC",
+      "country": "USA",
+      "display_city": "Myrtle Beach, SC"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "medium"
+      }
+    ]
+  },
+  {
+    "corps_key": "conquest-drum-bugle-corps",
+    "name": "Conquest Drum & Bugle Corps",
+    "confidence": "high",
+    "fields": {
+      "about": "Conquest was founded in 2018 to bring a drum and bugle corps back to the Quad Cities region. Based in Geneseo, Illinois, the SoundSport team states a mission of molding young people into responsible citizens and future leaders through dynamic music performance.",
+      "photo_url": "https://lh3.googleusercontent.com/sitesv/AA5AbUAhA0x0ENwMzzzwWoBMn93eVRCFAQXSviYoQV5e7IJzqd7UmU2Bbgqt9ZzT3s9vLWCi01O-Q2Y5hDz0YmNJCwPLvHZ57GOLEuDHmEpCMb2D1ddE1UMjNDGO98WBW7F82h9z-c1smPP9BbX9W9nTHr93E03OacDomEMXi64rF-UyZohdyqXsPBM4JGA=w16383",
+      "website": "https://sites.google.com/view/conquest-drum-and-bugle/home",
+      "city": "Geneseo",
+      "state": "IL",
+      "country": "United States",
+      "display_city": "Geneseo, IL"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "0015b000028qtqbaae",
+    "name": "Eclipse",
+    "confidence": "high",
+    "fields": {
+      "about": "Eclipse Drum and Bugle Corps is an Indianapolis-based DCI SoundSport program sponsored by the National Sport and Performing Arts Federation. DCI describes Eclipse as established in 2023 to provide performing arts opportunities and music education to the greater Indianapolis community.",
+      "logo_url": "https://images.squarespace-cdn.com/content/v1/63397265e2571e10e7c29313/b568bab0-a490-49ee-852a-f153c66db80a/Eclipse+circle+logo.png+%281%29.png",
+      "photo_url": "https://images.squarespace-cdn.com/content/v1/63397265e2571e10e7c29313/6b5c6dd6-2ccb-4c15-872a-3e5b324759f4/DSC_2279.jpg",
+      "website": "https://eclipsedbc.org/",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "USA",
+      "display_city": "Indianapolis, IN"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "medium"
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a000019s6ceaay",
+    "name": "Erie Thunderbirds",
+    "confidence": "high",
+    "fields": {
+      "about": "The Erie Thunderbirds are an all-age/senior drum and bugle corps based in Erie, Pennsylvania. The organization traces its history to Meadville, Pennsylvania in 1956 and has represented northwestern Pennsylvania in the drum corps activity.",
+      "logo_url": "https://www.eriethunderbirds.org/templates/tbirds/images/header.png",
+      "photo_url": "https://www.eriethunderbirds.org/images/2018.jpg",
+      "website": "http://www.eriethunderbirds.org/",
+      "city": "Erie",
+      "state": "PA",
+      "country": "USA",
+      "display_city": "Erie, PA"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "medium"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwx9daat",
+    "name": "Eruption",
+    "slug": "eruption",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/eruption/",
+    "fields": {
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Eruption-Logo-jpg-website.jpeg/1280px-Eruption-Logo-jpg-website.jpeg",
+      "photo_url": "https://images.dci.org/wp-content/uploads/2015/05/eruption.webp",
+      "city": "Gig Harbor",
+      "state": "WA",
+      "display_city": "Gig Harbor, WA",
+      "address": "3206 50th St. Ct. NW Suite A-222 Gig Harbor WA, 98335",
+      "phone": "(253) 592-1858"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/eruption/",
+        "scraped_at": "2026-06-04T00:59:00.806Z",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "0015b00002bxwbjaap",
+    "name": "Gems",
+    "slug": "gems",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/gems/",
+    "fields": {
+      "photo_url": "https://boisegems.org/img/photos/boise-gems-15.jpg",
+      "about": "Founded in 2022 and having performed in their inaugural season as a Drum Corps International SoundSport team in 2023, Gems Drum and Bugle Corps proudly represents the Treasure Valley. The Idaho organization's goal is to provide youth with performing arts programs that will help make them well rounded people in life and their musical pursuits. Gems' 2025 membership is made up of more than 80 performers representing seven different states.",
+      "website": "https://www.boisegems.org/",
+      "city": "Boise",
+      "state": "ID",
+      "display_city": "Boise, ID",
+      "address": "4440 W Franklin Rd. Apt 201 Boise ID, 83705",
+      "phone": "(208) 789-1544"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/gems/",
+        "scraped_at": "2026-06-03T16:50:43.650Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "gita-surosowan-banten",
+    "name": "Gita Surosowan Banten",
+    "confidence": "medium",
+    "fields": {
+      "about": "Marching Band Gita Surosowan Banten is a marching band from Banten, Indonesia. The group represented Banten and Indonesia internationally, including a 2015 trip to compete during DCI World Championships week in the United States and later WAMSB competition appearances.",
+      "photo_url": "https://bantenprov.go.id/storage/banten/image_berita-9756d099-c1d8-497c-a902-456dfaf23d93.jpg",
+      "city": "Serang",
+      "state": "Banten",
+      "country": "Indonesia",
+      "display_city": "Serang, Banten, Indonesia"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "medium"
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a00001cxz0gaab",
+    "name": "Green Beret",
+    "confidence": "high",
+    "fields": {
+      "about": "Green Beret Marching Band is a competitive summer marching band in Rock County, Wisconsin, serving performers ages 10-21 and participating in MACBDA and DCI SoundSport-related activity.",
+      "logo_url": "https://img1.wsimg.com/isteam/ip/192a86b5-ec23-45be-8be9-d3b668c768f2/gbmb.jpg/:/cr=t:19.88%25,l:19.88%25,w:60.24%25,h:60.24%25",
+      "website": "https://greenberetmarchingband.org/",
+      "city": "Janesville",
+      "state": "WI",
+      "country": "USA",
+      "display_city": "Janesville, WI"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "high-school-affiliated-to-bit",
+    "name": "High School Affiliated to BIT",
+    "confidence": "medium",
+    "fields": {
+      "about": "The High School Affiliated to Beijing Institute of Technology Marching Band represents the Beijing public school affiliated with Beijing Institute of Technology. Marching China describes the school as having founded Beijing's first student Jinfan marching band in 1991, with a team ethos centered on unity, care, cooperation, trust, and a shared ensemble sound.",
+      "photo_url": "https://images.dci.org/wp-content/uploads/2025/08/hsaffiliated-ocfinals-ARTICLE-1-1024x576.jpg",
+      "website": "http://www.lgfz.com.cn/",
+      "city": "Beijing",
+      "country": "China",
+      "display_city": "Beijing, China"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "medium"
+      }
+    ]
+  },
+  {
+    "corps_key": "impact-drum-bugle-corps",
+    "name": "IMPACT Drum & Bugle Corps",
+    "slug": "impact-drum-bugle-corps",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/impact-drum-bugle-corps/",
+    "fields": {
+      "about": "IMPACT is a Central Florida drum and bugle corps that debuted in 2012 at the Drum Corps Associates World Championships and joined DCI SoundSport in 2016. The group operates year-round, performing at conventions, parades, high school band shows, and other engagements with members ranging from teens to older adults.",
+      "photo_url": "https://impactdrumcorps.org/wp-content/uploads/2025/07/whatdevinsees_impact_dci-se-47-of-55_54686856967_o.jpg",
+      "website": "http://impactdrumcorps.org",
+      "city": "Orlando",
+      "state": "FL",
+      "country": "United States",
+      "display_city": "Orlando, FL",
+      "logo_url": "https://production.assets.dci.org/5a181168d670bd001b2e6372_Y5C5dwr1giTMTeBP_VQPJtYiXtN_YHKN.jpg",
+      "address": "2345 Foxtree Rd Tavares FL, 32278",
+      "phone": "(352) 551-5564"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/impact-drum-bugle-corps/",
+        "scraped_at": "2026-06-04T00:25:19.196Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwx9yaad",
+    "name": "Jubal",
+    "slug": "jubal",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/jubal/",
+    "fields": {
+      "about": "Jubal Dordrecht is a Dutch music organization founded in 1911. For roughly fifty years it operated as a drum and bugle corps, built a national and international reputation, toured the United States five times, and is now transitioning into new Jubal projects while preserving its history through the Jubal Legacy Project.",
+      "city": "Dordrecht",
+      "country": "Netherlands",
+      "display_city": "Dordrecht, Netherlands",
+      "logo_url": "https://production.assets.dci.org/5a181168d670bd001b2e6376_tT8ASS10VPNxMyHGYHGEtHm5DikxrTbU.png",
+      "photo_url": "https://production.assets.dci.org/5a181286d670bd001c6f4f68_79kVPJOHWDKpRCUODZ84SVmC1mlBQ4Pe.jpg",
+      "website": "http://jubal.org/",
+      "facebook": "https://www.facebook.com/JubalDordrecht/",
+      "address": "Postbus 8189 3301 CD Dordrecht ,"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/jubal/",
+        "scraped_at": "2026-06-04T00:55:28.806Z",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "kilties",
+    "name": "Kilties",
+    "confidence": "high",
+    "fields": {
+      "about": "The Kilties are an all-age co-ed drum and bugle corps rooted in Racine, Wisconsin. Founded in 1934, the organization evolved from a successful junior corps into an all-age weekend corps focused on music education, mentorship, and its values of character, honor, excellence, and tradition.",
+      "logo_url": "https://kilties.com/templates/lime_light/images/s5_logo.png",
+      "photo_url": "https://kilties.com/images/generalSite/concert.png",
+      "website": "https://www.kilties.com/",
+      "city": "Racine",
+      "state": "WI",
+      "country": "United States",
+      "display_city": "Racine, WI"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "latrobe-music-center",
+    "name": "Latrobe Music Center",
+    "slug": "latrobe-music-center",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/latrobe-music-center/",
+    "fields": {
+      "logo_url": "https://production.assets.dci.org/63daaf2801d803a9cd0bc6c2_Qvo3fnnuvjV1NNxb4gWDn341_zaMt9T1.png",
+      "about": "Proudly representing the greater Pittsburgh area, Latrobe Music Center made its debut at the DCI World Championships and the SoundSport International Music & Food Festival in 2024, where the group earned a Silver rating for its performance.",
+      "address": "602 Alexandria St LATROBE PA, 15650",
+      "phone": "(412) 601-0152"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/latrobe-music-center/",
+        "scraped_at": "2026-06-03T16:50:48.725Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "0015b00002byuh0aap",
+    "name": "Memphis Blues",
+    "slug": "memphis-blues",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/memphis-blues/",
+    "fields": {
+      "photo_url": "https://static.wixstatic.com/media/341345_d3e5311fd54545068f3cc8360b154f49~mv2.jpg",
+      "about": "A drum and bugle corps with a familiar name, Memphis Blues is a reboot of the Memphis Blues Brass Band of the 1980s. Bringing the drum corps experience back to students in the Memphis area, the corps made its return to the field in 2023 appearing as part of DCI�s SoundSport program. In the second year of a three-year evaluation process, Memphis Blues is currently recognized as an Open Class Affiliate.",
+      "logo_url": "https://production.assets.dci.org/64147c14bf02071332073132_8f8seLY08A04kC-OdXNkRg7WqzDnZ46P.png",
+      "website": "https://www.memphisbluesdc.org/",
+      "facebook": "https://www.facebook.com/profile.php?id=100090514550700",
+      "instagram": "https://www.instagram.com/memphisbluesdc/",
+      "twitter": "https://twitter.com/memphisbluesdc",
+      "city": "Memphis",
+      "state": "TN",
+      "display_city": "Memphis, TN",
+      "address": "PO Box 100855 Nashville TN, 37224",
+      "phone": "(615) 319-2329"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/memphis-blues/",
+        "scraped_at": "2026-06-03T00:28:04.252Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "mercedes-marching-band",
+    "name": "Mercedes Marching Band",
+    "slug": "mercedes-marching-band",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/mercedes-marching-band/",
+    "fields": {
+      "city": "Mercedes Norte",
+      "country": "Costa Rica",
+      "display_city": "Mercedes Norte, Costa Rica"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "low"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/mercedes-marching-band/",
+        "scraped_at": "2026-06-03T00:28:24.036Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwxa4aal",
+    "name": "Minnesota Brass",
+    "slug": "minnesota-brass",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/minnesota-brass/",
+    "fields": {
+      "photo_url": "https://i0.wp.com/mbiarts.org/wp-content/uploads/2026/01/2025-Ryan-Brass-1-1024x682.jpg?ssl=1",
+      "website": "https://mnbrass.org/corps/",
+      "about": "Founded as an American Legion corps in 1946, MBI has earned a number of accolades throughout its history. The group was a Drum Corps Associates (DCA) medalist from 2008-2016, and won the DCA championship title in 2011. In 2022, the corps was named \"Best of Show\" at the 2022 SoundSport International Music & Food Festival as part of DCI World Championships Week in Indianapolis. In the second year of a three-year evaluation process, MBI is currently recognized as an All-Age Class Affiliate.",
+      "city": "St. Paul",
+      "state": "MN",
+      "display_city": "St. Paul, MN",
+      "address": "4177 Kaitlin Dr Vadnais Hts MN, 55127",
+      "phone": "(952) 210-7915"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/minnesota-brass/",
+        "scraped_at": "2026-06-03T00:28:16.762Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "northern-lights-drum-bugle-corps",
+    "name": "Northern Lights Drum & Bugle Corps",
+    "slug": "northern-lights-drum-bugle-corps",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/northern-lights-drum-bugle-corps/",
+    "fields": {
+      "photo_url": "https://images.dci.org/wp-content/uploads/2025/07/16-northernlights-lisle.jpg",
+      "about": "Marking its inaugural season in 2023, Northern Lights achieved a Gold rating at the SoundSport International Music & Food Festival as part of DCI World Championships Week in Indianapolis. The corps' mission is to provide an affordable and accessible marching arts experience to all those who seek it in the Midwest. In the corps' second year of a three-year evaluation process, Northern Lights is currently recognized as an All-Age Class Affiliate.",
+      "website": "https://www.northernlightsmi.org/",
+      "city": "Grand Rapids",
+      "state": "MI",
+      "display_city": "Grand Rapids, MI",
+      "address": "5783 West River Drive Northeast Plainfield charter Township MI, 49306",
+      "phone": "6162134477"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/northern-lights-drum-bugle-corps/",
+        "scraped_at": "2026-06-04T00:31:14.807Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "patria",
+    "name": "Patria",
+    "confidence": "high",
+    "fields": {
+      "about": "Patria Drum & Bugle Corps is a Guatemala-based ensemble connected with Colegio Evangelico La Patria Occidente. The official school page describes the corps as including drum line, brass line, front ensemble, and color guard sections; it began as a banda de guerra in 1950, became a banda latina in 1990, and in 2003 became the country's first marching band.",
+      "logo_url": "https://530d7e0b3e.clvaw-cdnwnd.com/2881853d79dc93f621a5a28c6a61c701/200000433-e2dcfe2dd1/327575418_685429343276674_6588285175179141357_n.png",
+      "photo_url": "https://530d7e0b3e.clvaw-cdnwnd.com/2881853d79dc93f621a5a28c6a61c701/200000435-f0dcbf0dcd/WhatsApp%20Image%202024-08-26%20at%208.37.35%20PM%20%281%29.jpeg",
+      "website": "https://www.colegio-la-patria-occidente.es/patria-drum-bugle-corps/",
+      "city": "Quetzaltenango",
+      "country": "Guatemala",
+      "display_city": "Quetzaltenango, Guatemala"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-3.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "sky-ryders",
+    "name": "Sky Ryders",
+    "slug": "sky-ryders",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/sky-ryders/",
+    "fields": {
+      "logo_url": "http://www.skyryders.com/wp-content/uploads/2015/01/logo-sky-ryders.png",
+      "photo_url": "https://www.dcxmuseum.org/pictures/Sky_Ryders_93_2.jpg",
+      "about": "The Sky Ryders Performing Arts Foundation came into existence in 2023 to bring its namesake back to Kansas. The Sky Ryders were regular DCI finalists in the 1980s and were well known for their popular repertoire, powerful brass lines and athletic color guards. With a string of successful educational clinics, a large group of volunteer alumni, and the support of the Hutchinson community, the Sky Ryders returned to the field in 2024 as part of DCI's SoundSport program.",
+      "website": "http://www.skyryders.com/about/foundation/",
+      "city": "Hutchinson",
+      "state": "KS",
+      "display_city": "Hutchinson, KS",
+      "phone": "(920) 737-3986"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-4.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/sky-ryders/",
+        "scraped_at": "2026-06-03T16:33:24.146Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "socal-dream",
+    "name": "SoCal Dream",
+    "confidence": "high",
+    "fields": {
+      "about": "SoCal Dream, originally called the SoCal Dream Machine, was an all-age/senior drum corps that formed in Southern California in 2001 for performers no longer eligible for junior corps. The corps became independent under the Dream Association of California and competed in DCA/West Coast senior corps events through the early 2010s.",
+      "logo_url": "https://mpamdcx.org/assets/SoCalDreamLosAngelesCALP1DST-125x0625AA_U_S.jpg",
+      "photo_url": "https://mpamdcx.org/pictures/2013/20130630_2013017_Riverside/SoCal%20Dream-027.jpg",
+      "website": "http://www.socaldream.org/",
+      "city": "Huntington Beach",
+      "state": "CA",
+      "country": "United States",
+      "display_city": "Huntington Beach, CA"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-4.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "sonus-brass-theater",
+    "name": "Sonus Brass Theater",
+    "slug": "sonus-brass-theater",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/sonus-brass-theater/",
+    "fields": {
+      "about": "Sonus Brass Theater is an all-age brass, percussion and color guard ensemble based in Woodbridge, Virginia. A longtime DCI SoundSport participant, Sonus has earned gold ratings at the SoundSport International Music & Food Festival.",
+      "photo_url": "https://sonusbrasstheater.org/wp-content/uploads/2023/09/Sonus-Brass-Theater_250809_SoundSport-00229-570x342.jpg",
+      "logo_url": "https://production.assets.dci.org/5e8aa56b694c8b56285ee202_YT0j9KvZssSVmOtRzuPBLV9m8IuAVoAK.png",
+      "website": "http://www.sonusbrasstheater.org",
+      "facebook": "https://www.facebook.com/DCISonus",
+      "twitter": "https://twitter.com/SoundDrumCorps",
+      "city": "Woodbridge",
+      "state": "VA",
+      "display_city": "Woodbridge, VA",
+      "address": "P.O. Box 1975 Woodbridge VA, 22195",
+      "phone": "(703) 850-4125"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-4.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/sonus-brass-theater/",
+        "scraped_at": "2026-06-03T16:51:03.860Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a00001bpafnaar",
+    "name": "Sound of Sun Prairie",
+    "confidence": "high",
+    "fields": {
+      "about": "Sound of Sun Prairie is a voluntary extracurricular marching ensemble for Sun Prairie students in grades 8-12, built around percussion, wind instruments, and color guard. The program emphasizes cooperation, positive attitudes, personal responsibility, self-motivation, and performing at a high level.",
+      "logo_url": "https://www.spbb.org/uploads/2/2/2/1/22215324/sosp_orig.jpeg",
+      "photo_url": "https://www.spbb.org/uploads/2/2/2/1/22215324/pxl-20220715-184302415-exported-81969-1.jpg",
+      "website": "https://www.spbb.org/sosp.html",
+      "city": "Sun Prairie",
+      "state": "WI",
+      "country": "USA",
+      "display_city": "Sun Prairie, WI"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "southern-knights",
+    "name": "Southern Knights",
+    "confidence": "high",
+    "fields": {
+      "about": "Formed in 2015, Southern Knights is an all-age drum corps from Alabama. The corps' 2017 summer season marked its first season performing as part of Drum Corps International's All-Age division, and the organization emphasizes member development through teamwork, self-discipline, preparedness, accountability, critical thinking, and leadership.",
+      "website": "http://www.southernknightscorps.org/",
+      "city": "Pelham",
+      "state": "AL",
+      "country": "United States",
+      "display_city": "Pelham, AL"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-4.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000u5nhqaaj",
+    "name": "Spirit of Sunnyvale",
+    "slug": "spirit-of-sunnyvale",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/spirit-of-sunnyvale/",
+    "fields": {
+      "about": "Spirit of Sunnyvale was an all-age community band based in the San Francisco Bay Area. Its original youth band existed from 1980 to 1998, the revived marching band operated from 2010 to 2025, and it was active in DCI SoundSport from 2016 through 2024 before its competitive SoundSport portion spun off as Sparta Ignite in 2025.",
+      "photo_url": "https://spiritofsunnyvale.org/images/2024-sos-stanford.jpg",
+      "website": "https://spiritofsunnyvale.org/",
+      "logo_url": "https://production.assets.dci.org/5a18117cd670bd001b2e638d_1eBk55DyhgvePvoU8AHeIFxfPFRsAeja.png",
+      "facebook": "https://www.facebook.com/spiritofsunnyvale",
+      "twitter": "https://twitter.com/spiritofsvalemb",
+      "youtube": "https://www.youtube.com/user/spiritofsunnyvale",
+      "city": "San Jose",
+      "state": "CA",
+      "display_city": "San Jose, CA",
+      "address": "1421 Glacier Drive San Jose CA, 95118",
+      "phone": "(650) 222-5697"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/spirit-of-sunnyvale/",
+        "scraped_at": "2026-06-04T00:25:27.589Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "steel-city-ambassadors",
+    "name": "Steel City Ambassadors",
+    "slug": "steel-city-ambassadors",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/steel-city-ambassadors/",
+    "fields": {
+      "photo_url": "https://img1.wsimg.com/isteam/ip/d9a2a936-7f36-4b72-9838-f3a56d0bee8e/warren%20full.jpg",
+      "about": "Originally founded in 1980, the Steel City Ambassadors are a self-supporting all-age, drum and bugle corps representing the Pittsburgh area. In 2025, the corps returns to the field in competition for the first time in the last 10 years. The Steel City Ambassadors are currently recognized as an All-Age Class Candidate, evaluating to join DCI's All-Age Class in the future.",
+      "website": "https://scadbc.org/",
+      "city": "Pittsburgh",
+      "state": "PA",
+      "display_city": "Pittsburgh, PA",
+      "phone": "(814) 923-8285"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-4.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/steel-city-ambassadors/",
+        "scraped_at": "2026-06-03T16:51:09.514Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "0010a00001iqmzuaah",
+    "name": "Sunrisers",
+    "slug": "sunrisers",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/sunrisers/",
+    "fields": {
+      "photo_url": "https://www.sunrisersdrumcorps.org/uploads/1/4/7/9/147912889/sunrisers-champs-pic_orig.jpg",
+      "about": "Founded on Long Island in 1954, the Sunrisers have a proud history of innovation and excellence that includes seven Drum Corps Associates World Championship titles. The organization strives to enrich the lives of all its performers while providing the community with an enjoyable, entertaining and unique musical experience.",
+      "logo_url": "https://production.assets.dci.org/657b18c9ec350f75bd05b792_QgeuOSjQFJ6469rKksKpLGYdMMM7R6AC.png",
+      "website": "https://www.sunrisersdrumcorps.org",
+      "facebook": "https://www.facebook.com/lisunrisers",
+      "instagram": "https://www.instagram.com/sunriserscorps/",
+      "city": "Kings Park",
+      "state": "NY",
+      "display_city": "Kings Park, NY",
+      "address": "8 Avenue B Kings Park NY, 11754",
+      "phone": "(917) 528-9340"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-1.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/sunrisers/",
+        "scraped_at": "2026-06-03T00:28:19.987Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "taipei-yuehfu",
+    "name": "Taipei Yuehfu",
+    "confidence": "high",
+    "fields": {
+      "about": "Taipei Yuehfu is a junior drum corps and marching arts group from Taipei, Taiwan. Founded in 1996, the corps represented Taiwan in DCI International Class competition and won the 2005 Division III Prelims before returning to DCI in 2013.",
+      "logo_url": "https://static.wixstatic.com/media/8e906d_7ab5795c09d44e68afeaf229e72845c4~mv2_d_5450_6872_s_4_2.png/v1/fill/w_105,h_132,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%E5%85%A8%E5%BD%A9LOGO%20HD-20170804.png",
+      "photo_url": "https://static.wixstatic.com/media/8e906d_4f80443f9e1e491e9c4981612f11133a~mv2_d_5472_3648_s_4_2.jpg/v1/crop/x_0,y_0,w_4744,h_3636/fill/w_412,h_311,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/8e906d_4f80443f9e1e491e9c4981612f11133a~mv2_d_5472_3648_s_4_2.jpg",
+      "website": "http://www.yuehfu.org",
+      "city": "Taipei",
+      "country": "Taiwan",
+      "display_city": "Taipei, Taiwan"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-4.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-web-candidates.json",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "001j000000iwxaiaa1",
+    "name": "Thunder",
+    "slug": "thunder",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/thunder/",
+    "fields": {
+      "logo_url": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Thunder_Drum_and_Bugle_Corps_logo.jpeg",
+      "website": "http://SpokaneThunder.org/",
+      "city": "Veradale",
+      "state": "WA",
+      "display_city": "Veradale, WA",
+      "address": "P.O. Box 563 Veradale WA, 99037",
+      "phone": "(509) 844-5563"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-2.json",
+        "confidence": "medium"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/thunder/",
+        "scraped_at": "2026-06-04T01:01:46.640Z",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "corps_key": "zephyrus-drum-bugle-corps",
+    "name": "Zephyrus Drum & Bugle Corps",
+    "slug": "zephyrus-drum-bugle-corps",
+    "confidence": "high",
+    "source": "corps_page_scrapes",
+    "source_url": "https://www.dci.org/corps/zephyrus-drum-bugle-corps/",
+    "fields": {
+      "photo_url": "https://www.zephyrusarts.org/uploads/1/3/4/7/134760598/img-7502-copy_orig.jpg",
+      "about": "Formed in 2018, Zephyrus Arts Institute is an Oklahoma-based nonprofit organization devoted to providing life-changing experiences to performers and audiences alike. The organization includes the Zephyrus Drum & Bugle Corps, the Zephyrus Independent Winter Guard, the Zephyrus Marching Academy, and the Tulsa Winds Community Band. A DCI SoundSport ensemble between 2022 and 2024, Zephyrus is currently recognized as an Open Class Affiliate, in the second year of a three-year evaluation process.",
+      "logo_url": "https://production.assets.dci.org/5e8aa71b694c8b5695293482_BvFsrquBM3COVyHNDR6XSMskPuv_0F6F.png",
+      "website": "https://www.zephyrusarts.org/corps.html",
+      "facebook": "https://www.facebook.com/zephyrusarts/",
+      "instagram": "https://www.instagram.com/zephyrusarts",
+      "city": "Tulsa",
+      "state": "OK",
+      "display_city": "Tulsa, OK",
+      "address": "4039 E 26th St Tulsa Oklahoma, 74114"
+    },
+    "sources": [
+      {
+        "file": "sdk\\results\\corps-research-batch-4.json",
+        "confidence": "high"
+      },
+      {
+        "file": "sdk\\results\\corps-research-existing-scrapes-candidates.json",
+        "source": "corps_page_scrapes",
+        "source_url": "https://www.dci.org/corps/zephyrus-drum-bugle-corps/",
+        "scraped_at": "2026-06-03T00:28:07.991Z",
+        "confidence": "high"
+      }
+    ]
+  }
+]

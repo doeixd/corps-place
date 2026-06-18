@@ -1,0 +1,801 @@
+{
+  "generated_at": "2026-06-02T14:03:52.918Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-birmingham",
+    "slug": "2026-dci-birmingham",
+    "name": "DCI Birmingham",
+    "event_name": "DCI Birmingham",
+    "start_date": "2026-07-24",
+    "start_time": null,
+    "web_start_time": "7:30 PM CT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Birmingham",
+    "location_state": "AL",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260724-BIRMINGHAM-AL.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260724-BIRMINGHAM-AL.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/dci-birmingham-dccc4o",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 10,
+    "matched_corps_keys": 10,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 7,
+    "skipped_lineup_rows": 3,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 65.11627906976744
+  },
+  "input_signature": "6ce717f76fb66088fb956992b1abe739679102a00f362e58347f94979036a3c6",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 10,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000gbtqyaac",
+        "corps": "Fusion Core",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": "7:52 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsnaal",
+        "corps": "Atlanta CV",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "8:09 PM"
+      },
+      {
+        "corps_key": "0015b00002byuh0aap",
+        "corps": "Memphis Blues",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 5,
+        "time": "8:26 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9taad",
+        "corps": "Heat Wave",
+        "division": "Open Class",
+        "performance_order": 6,
+        "time": "8:43 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsoaal",
+        "corps": "Blue Knights",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwwsqaal",
+        "corps": "Blue Stars",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwx9aaat",
+        "corps": "Crossmen",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxacaa1",
+        "corps": "Spartans",
+        "division": "World Class",
+        "performance_order": 12,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxaeaa1",
+        "corps": "The Academy",
+        "division": "World Class",
+        "performance_order": 13,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxajaa1",
+        "corps": "Troopers",
+        "division": "World Class",
+        "performance_order": 14,
+        "time": "TBD"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000gbtqyaac",
+        "corps": "Fusion Core",
+        "division": "All Age Class",
+        "performance_order": 3,
+        "time": "7:52 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000iwwsnaal",
+        "corps": "Atlanta CV",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "8:09 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0015b00002byuh0aap",
+        "corps": "Memphis Blues",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 5,
+        "time": "8:26 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Apollo Marching Theatre",
+        "performance_order": 2,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 7,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 8,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-birmingham",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-24",
+      "scored_lineup_rows": 10,
+      "matched_corps_keys": 10,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwsqaal",
+      "corps": "Blue Stars",
+      "city": "La Crosse, WI",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "TBD",
+      "total": 88.294,
+      "GE": 35.572,
+      "Visual": 26.496,
+      "Music": 26.226,
+      "GE1": 17.765,
+      "GE2": 17.807,
+      "VP": 17.439,
+      "VA": 17.603,
+      "CG": 17.95,
+      "MB": 17.468,
+      "MA": 17.677,
+      "MP": 17.307,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.014,
+          "p50": 17.765,
+          "p90": 18.614
+        },
+        "GE2": {
+          "p10": 17.035,
+          "p50": 17.807,
+          "p90": 18.637
+        },
+        "VP": {
+          "p10": 16.636,
+          "p50": 17.439,
+          "p90": 18.184
+        },
+        "VA": {
+          "p10": 16.796,
+          "p50": 17.603,
+          "p90": 18.301
+        },
+        "CG": {
+          "p10": 17.007,
+          "p50": 17.95,
+          "p90": 18.587
+        },
+        "MB": {
+          "p10": 16.668,
+          "p50": 17.468,
+          "p90": 18.243
+        },
+        "MA": {
+          "p10": 17.042,
+          "p50": 17.677,
+          "p90": 18.602
+        },
+        "MP": {
+          "p10": 16.638,
+          "p50": 17.307,
+          "p90": 18.237
+        }
+      },
+      "raw_model_total": 91.598,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 86.7,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-dci-nashville",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 88.293,
+      "caption_shape_total": 90.239,
+      "total_reconciliation_delta": -1.945,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 90.24,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "city": "Casper, WY",
+      "division": "World Class",
+      "performance_order": 14,
+      "time": "TBD",
+      "total": 86.833,
+      "GE": 34.839,
+      "Visual": 25.58,
+      "Music": 26.414,
+      "GE1": 17.326,
+      "GE2": 17.513,
+      "VP": 16.975,
+      "VA": 17.044,
+      "CG": 17.141,
+      "MB": 17.181,
+      "MA": 17.604,
+      "MP": 18.043,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.546,
+          "p50": 17.326,
+          "p90": 18.127
+        },
+        "GE2": {
+          "p10": 16.771,
+          "p50": 17.513,
+          "p90": 18.364
+        },
+        "VP": {
+          "p10": 16.197,
+          "p50": 16.975,
+          "p90": 17.732
+        },
+        "VA": {
+          "p10": 16.211,
+          "p50": 17.044,
+          "p90": 17.716
+        },
+        "CG": {
+          "p10": 16.248,
+          "p50": 17.141,
+          "p90": 17.794
+        },
+        "MB": {
+          "p10": 16.374,
+          "p50": 17.181,
+          "p90": 17.933
+        },
+        "MA": {
+          "p10": 16.984,
+          "p50": 17.604,
+          "p90": 18.517
+        },
+        "MP": {
+          "p10": 17.32,
+          "p50": 18.043,
+          "p90": 18.924
+        }
+      },
+      "raw_model_total": 90.12,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 85.95,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-dci-nashville",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 86.831,
+      "caption_shape_total": 87.908,
+      "total_reconciliation_delta": -1.075,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 10,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 87.907,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwwsoaal",
+      "corps": "Blue Knights",
+      "city": "Denver, CO",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "TBD",
+      "total": 86.318,
+      "GE": 34.901,
+      "Visual": 25.544,
+      "Music": 25.873,
+      "GE1": 17.297,
+      "GE2": 17.604,
+      "VP": 16.995,
+      "VA": 17.071,
+      "CG": 17.021,
+      "MB": 16.977,
+      "MA": 17.384,
+      "MP": 17.385,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 16.54,
+          "p50": 17.297,
+          "p90": 18.115
+        },
+        "GE2": {
+          "p10": 16.884,
+          "p50": 17.604,
+          "p90": 18.498
+        },
+        "VP": {
+          "p10": 16.218,
+          "p50": 16.995,
+          "p90": 17.744
+        },
+        "VA": {
+          "p10": 16.201,
+          "p50": 17.071,
+          "p90": 17.71
+        },
+        "CG": {
+          "p10": 16.145,
+          "p50": 17.021,
+          "p90": 17.706
+        },
+        "MB": {
+          "p10": 16.12,
+          "p50": 16.977,
+          "p90": 17.685
+        },
+        "MA": {
+          "p10": 16.74,
+          "p50": 17.384,
+          "p90": 18.278
+        },
+        "MP": {
+          "p10": 16.673,
+          "p50": 17.385,
+          "p90": 18.291
+        }
+      },
+      "raw_model_total": 90.139,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 85.65,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-dci-birmingham",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 86.319,
+      "caption_shape_total": 87.137,
+      "total_reconciliation_delta": -0.82,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 12,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 87.137,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxaeaa1",
+      "corps": "The Academy",
+      "city": "Tempe, AZ",
+      "division": "World Class",
+      "performance_order": 13,
+      "time": "TBD",
+      "total": 81.576,
+      "GE": 32.656,
+      "Visual": 24.233,
+      "Music": 24.687,
+      "GE1": 16.164,
+      "GE2": 16.492,
+      "VP": 16.01,
+      "VA": 16.136,
+      "CG": 16.319,
+      "MB": 15.962,
+      "MA": 16.734,
+      "MP": 16.678,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.34,
+          "p50": 16.164,
+          "p90": 16.904
+        },
+        "GE2": {
+          "p10": 15.758,
+          "p50": 16.492,
+          "p90": 17.322
+        },
+        "VP": {
+          "p10": 15.222,
+          "p50": 16.01,
+          "p90": 16.744
+        },
+        "VA": {
+          "p10": 15.295,
+          "p50": 16.136,
+          "p90": 16.808
+        },
+        "CG": {
+          "p10": 15.485,
+          "p50": 16.319,
+          "p90": 17.042
+        },
+        "MB": {
+          "p10": 15.145,
+          "p50": 15.962,
+          "p90": 16.739
+        },
+        "MA": {
+          "p10": 16.106,
+          "p50": 16.734,
+          "p90": 17.635
+        },
+        "MP": {
+          "p10": 15.966,
+          "p50": 16.678,
+          "p90": 17.535
+        }
+      },
+      "raw_model_total": 88.296,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 78.925,
+      "prior_season_comparable_percent_through": 66.66666666666666,
+      "prior_season_comparable_competition": "2025-dci-southeastern-championship",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 81.576,
+      "caption_shape_total": 84.816,
+      "total_reconciliation_delta": -3.24,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 17,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 84.816,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwx9aaat",
+      "corps": "Crossmen",
+      "city": "San Antonio, TX",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "TBD",
+      "total": 80.648,
+      "GE": 32.431,
+      "Visual": 23.869,
+      "Music": 24.348,
+      "GE1": 16.207,
+      "GE2": 16.224,
+      "VP": 15.878,
+      "VA": 15.791,
+      "CG": 16.069,
+      "MB": 15.784,
+      "MA": 16.435,
+      "MP": 16.476,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.352,
+          "p50": 16.207,
+          "p90": 16.905
+        },
+        "GE2": {
+          "p10": 15.522,
+          "p50": 16.224,
+          "p90": 17.081
+        },
+        "VP": {
+          "p10": 15.08,
+          "p50": 15.878,
+          "p90": 16.585
+        },
+        "VA": {
+          "p10": 14.912,
+          "p50": 15.791,
+          "p90": 16.42
+        },
+        "CG": {
+          "p10": 15.247,
+          "p50": 16.069,
+          "p90": 16.827
+        },
+        "MB": {
+          "p10": 14.951,
+          "p50": 15.784,
+          "p90": 16.539
+        },
+        "MA": {
+          "p10": 15.81,
+          "p50": 16.435,
+          "p90": 17.333
+        },
+        "MP": {
+          "p10": 15.764,
+          "p50": 16.476,
+          "p90": 17.33
+        }
+      },
+      "raw_model_total": 87.991,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 80.25,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-dci-birmingham",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 80.65,
+      "caption_shape_total": 81.138,
+      "total_reconciliation_delta": -0.49,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 19,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 81.138,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000iwxacaa1",
+      "corps": "Spartans",
+      "city": "Nashua, NH",
+      "division": "World Class",
+      "performance_order": 12,
+      "time": "TBD",
+      "total": 80.099,
+      "GE": 32.138,
+      "Visual": 24.048,
+      "Music": 23.913,
+      "GE1": 16.034,
+      "GE2": 16.104,
+      "VP": 16.07,
+      "VA": 16.018,
+      "CG": 16.008,
+      "MB": 15.918,
+      "MA": 15.91,
+      "MP": 15.999,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.646,
+          "p50": 16.034,
+          "p90": 16.389
+        },
+        "GE2": {
+          "p10": 15.66,
+          "p50": 16.104,
+          "p90": 16.472
+        },
+        "VP": {
+          "p10": 15.691,
+          "p50": 16.07,
+          "p90": 16.442
+        },
+        "VA": {
+          "p10": 15.62,
+          "p50": 16.018,
+          "p90": 16.345
+        },
+        "CG": {
+          "p10": 15.568,
+          "p50": 16.008,
+          "p90": 16.32
+        },
+        "MB": {
+          "p10": 15.564,
+          "p50": 15.918,
+          "p90": 16.38
+        },
+        "MA": {
+          "p10": 15.471,
+          "p50": 15.91,
+          "p90": 16.212
+        },
+        "MP": {
+          "p10": 15.691,
+          "p50": 15.999,
+          "p90": 16.419
+        }
+      },
+      "raw_model_total": 60.627,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 77.6,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-white-rose-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 80.1,
+      "caption_shape_total": 83.154,
+      "total_reconciliation_delta": -3.055,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 5,
+      "prior_season_rank": 18,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 83.154,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 7,
+      "corps_key": "001j000000iwx9taad",
+      "corps": "Heat Wave",
+      "city": "Tampa Bay, FL",
+      "division": "Open Class",
+      "performance_order": 6,
+      "time": "8:43 PM",
+      "total": 57.653,
+      "GE": 23.35,
+      "Visual": 17.38,
+      "Music": 16.923,
+      "GE1": 11.128,
+      "GE2": 12.222,
+      "VP": 11.404,
+      "VA": 11.736,
+      "CG": 11.62,
+      "MB": 11.013,
+      "MA": 11.473,
+      "MP": 11.36,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.276,
+          "p50": 11.128,
+          "p90": 11.956
+        },
+        "GE2": {
+          "p10": 11.516,
+          "p50": 12.222,
+          "p90": 13.182
+        },
+        "VP": {
+          "p10": 10.572,
+          "p50": 11.404,
+          "p90": 12.327
+        },
+        "VA": {
+          "p10": 10.786,
+          "p50": 11.736,
+          "p90": 12.448
+        },
+        "CG": {
+          "p10": 10.788,
+          "p50": 11.62,
+          "p90": 12.448
+        },
+        "MB": {
+          "p10": 10.081,
+          "p50": 11.013,
+          "p90": 11.779
+        },
+        "MA": {
+          "p10": 10.721,
+          "p50": 11.473,
+          "p90": 12.306
+        },
+        "MP": {
+          "p10": 10.42,
+          "p50": 11.36,
+          "p90": 12.125
+        }
+      },
+      "raw_model_total": 55.43,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 62,
+      "prior_season_comparable_percent_through": 64.28571428571429,
+      "prior_season_comparable_competition": "2025-dci-birmingham",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 57.654,
+      "caption_shape_total": 52.343,
+      "total_reconciliation_delta": 5.31,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 52.343,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "3 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

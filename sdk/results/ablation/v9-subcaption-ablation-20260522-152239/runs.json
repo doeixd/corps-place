@@ -1,0 +1,22 @@
+[
+  {
+    "id": "phase_log_smoke_ctrl",
+    "stage": "interval-control",
+    "args": [],
+    "logPath": "results\\ablation\\v9-subcaption-ablation-20260522-152239\\phase_log_smoke_ctrl.log",
+    "startedAt": "2026-05-22T19:22:39.578Z",
+    "endedAt": "2026-05-22T19:22:39.579Z",
+    "durationMinutes": 0,
+    "completed": false,
+    "unstable": false,
+    "aborted": false,
+    "lastEpoch": null,
+    "lastTrainLoss": null,
+    "lastValLoss": null,
+    "lastDeltaMaePts": null,
+    "lastCoverage": null,
+    "lastMonScore": null,
+    "testMetrics": null,
+    "notes": ["Dry run only; command not executed."]
+  }
+]

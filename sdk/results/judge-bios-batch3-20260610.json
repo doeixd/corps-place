@@ -1,0 +1,308 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 26-38 by assignment count. Sources: Music for All clinician pages, DCI/WGI Hall of Fame pages, org/school staff pages, DCI adjudication panels. JudgeBioProfile + _research block.",
+  "profiles": [
+    {
+      "judgeId": "d-davis-1",
+      "displayName": "Darrin Davis",
+      "givenName": "Darrin",
+      "familyName": "Davis",
+      "biography": "Darrin Davis is a music and general-effect adjudicator for Drum Corps International, Bands of America, the Fiesta Bowl National Band Championship, and numerous state band associations, serving at DCI World Championships in Music Analysis and General Effect captions. He is the Executive Director of Fine Arts for the Broken Arrow (Oklahoma) school district, where he has taught band since 1993 and previously conducted the Broken Arrow High School Wind Ensemble and directed the Pride of Broken Arrow Marching Band. He earned a Bachelor of Music Education from Missouri Western State University and a Master of Music Education (wind conducting) from the University of Tulsa.",
+      "photoUrl": "https://www.musiciansabroad.com/img/team/davis.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.musiciansabroad.com/team/about-darrin-davis.html", "label": "Musicians Abroad bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA music & GE judge; Broken Arrow OK Exec Director of Fine Arts since 1993; MWSU & Univ. of Tulsa degrees", "source": "https://www.musiciansabroad.com/team/about-darrin-davis.html", "confidence": "HIGH" },
+          { "fact": "Music Analysis judge 2024/2025 DCI World Championships", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "g-oliviero-1",
+      "displayName": "George Oliviero",
+      "givenName": "George",
+      "familyName": "Oliviero",
+      "biography": "George Oliviero is a Hall of Fame visual adjudicator who became a DCI judge in 1974, judged his first DCI World Championships in 1975, and has served as DCI's visual education director, working extensively to develop visual-caption judge training. A visual-caption judge since 1966, he also began judging for Winter Guard International in its first year (1978) and has judged all four WGI captions, continuing in general effect and ensemble analysis. He has been instrumental in developing color guard internationally, frequently hosting judge and instructor seminars in the Netherlands since 1995. He is a member of the DCI Hall of Fame, the WGI Hall of Fame, the Massachusetts Drum Corps Hall of Fame, and the Color Guard Netherlands Hall of Fame.",
+      "photoUrl": "https://images.dci.org/wp-content/uploads/2025/01/George-Oliviero.webp",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/static/george-oliviero-dci-hall-of-fame", "label": "DCI Hall of Fame profile", "kind": "bio" },
+        { "url": "https://direct.wgi.org/judges/george-oliviero/", "label": "WGI judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [
+        { "title": "DCI Hall of Fame; WGI Hall of Fame", "sourceUrl": "https://www.dci.org/static/george-oliviero-dci-hall-of-fame" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Color Guard / GE1 / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI judge since 1974; DCI visual education director; DCI+WGI+MA+Netherlands Hall of Fame; international color guard pioneer", "source": "https://www.dci.org/static/george-oliviero-dci-hall-of-fame", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "h-nguyen-1",
+      "displayName": "Hieu Nguyen",
+      "givenName": "Hieu",
+      "familyName": "Nguyen",
+      "biography": "Hieu Nguyen is a color guard adjudicator (DCI since 2014, WGI since 2011) and choreographer, originally from Danbury, Connecticut. He began in the marching arts as a high school marching band saxophonist before finding color guard, and performed with groups including Alter Ego, St. John's of Beverly, and St. Ann's world winter guards, as well as the Cadets drum corps (2001, 2003, 2004). He choreographs for Shenendehowa High School's WGI Scholastic World Class program, a multi-year WGI fan-favorite winner. Outside the activity he is an attorney running his own family-law practice in Boston, Massachusetts, and a multiple-time Boston and NYC Marathon finisher who has raised funds for arts education.",
+      "photoUrl": "https://wgi.org/wp-content/uploads/2023/05/Hieu-judge-1.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/hieujudge/", "label": "WGI: The Judging Experience", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "The Cadets", "season": "2001,2003,2004", "role": "Performer (color guard)", "sourceUrl": "https://www.wgi.org/hieujudge/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / Visual Proficiency / GE1; 2013-2025",
+        "facts": [
+          { "fact": "DCI CG judge since 2014; Cadets 2001/2003/2004; Shenendehowa HS choreographer; Boston family-law attorney", "source": "https://www.wgi.org/hieujudge/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "a-cook-1",
+      "displayName": "Andrew Cook",
+      "givenName": "Andrew",
+      "familyName": "Cook",
+      "biography": "Andrew Cook is a brass/music adjudicator and clinician for Drum Corps International who has judged DCI Finals week numerous times, including serving as a Music Brass judge at the 2025 DCI World Championship All-Age Finals, and who also freelances as an adjudicator and clinician nationwide. He resides in Fort Branch, Indiana.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2022/09/Andy-Cook-Headshot-600.600-2024.jpg",
+      "alternateNames": ["Andy Cook"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/andrew-cook/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI music brass judge, Finals week multiple times; Fort Branch IN", "source": "https://education.musicforall.org/clinician/andrew-cook/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-dillon-1",
+      "displayName": "Christine Dillon",
+      "givenName": "Christine",
+      "familyName": "Dillon",
+      "biography": "Christine Dillon is a color guard and visual adjudicator for Bands of America/Music for All, Drum Corps International, Winter Guard International, and numerous regional circuits, judging the Color Guard, General Effect, Visual Analysis, and Ensemble Visual captions. A marching-arts designer, technician, and instructor for decades, she served for five years as Instructor Education Administrator of WGASC, overseeing classification and instructor education for more than 350 programs, and authored the 'Guard' byline for Halftime Magazine for five years. She holds a BA in Education and an MA in Cross-Cultural Studies & Education and has been an elementary school teacher for more than 23 years.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2023/09/DillonC-Headshot.jpeg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/christine-dillon/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / GE1 / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/WGI CG & visual judge; WGASC Instructor Education Administrator 5 yrs; Halftime Magazine columnist; 23+ yrs teacher", "source": "https://education.musicforall.org/clinician/christine-dillon/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-thompson-1",
+      "displayName": "Michael Thompson",
+      "givenName": "Michael",
+      "familyName": "Thompson",
+      "biography": "Michael Thompson is a color guard and visual adjudicator for Drum Corps International, serving at DCI World Championships in the Color Guard and Visual Proficiency captions (including the 2018 season).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/scores/recap/2018-drum-corps-an-american-tradition", "label": "DCI 2018 recap (judging panel)", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / Visual Proficiency / Visual Analysis / GE1; 2013-2025",
+        "facts": [
+          { "fact": "DCI color guard/visual judge (2018 panel confirmed)", "source": "https://www.dci.org/scores/recap/2018-drum-corps-an-american-tradition", "confidence": "MEDIUM" },
+          { "fact": "Very common name; no distinguishing public bio/headshot found - minimal profile, photoUrl null pending a confirmed source", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-harper-1",
+      "displayName": "Jeff Harper",
+      "givenName": "Jeff",
+      "familyName": "Harper",
+      "biography": "Jeff Harper is a brass/music adjudicator and clinician in his 27th year as a music educator, currently Associate Director of Bands at Lassiter High School in Georgia. He adjudicates and clinics for concert and marching bands across the United States and abroad through Drum Corps International, Winter Guard International, Bands of America, the Japan Marching Band Association, Drum Corps Japan, and the Malaysia Marching Band Association, serving at DCI World Championships in Music Analysis. He is also WGI's inaugural Education Coordinator for the Winds Division.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2022/09/Jeff-Harper-Headshot-2022-Web.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/jeff-harper/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.wgi.org/jeff-harper-joins-wgi-as-the-inaugural-education-coordinator-for-the-winds-division/", "label": "WGI Winds Education Coordinator", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "27th yr educator; Assoc. Dir. of Bands Lassiter HS GA; DCI/WGI/BOA music judge; WGI Winds inaugural Education Coordinator", "source": "https://education.musicforall.org/clinician/jeff-harper/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "s-page-1",
+      "displayName": "Steven Page",
+      "givenName": "Steven",
+      "familyName": "Page",
+      "biography": "Steven Page is a brass/music adjudicator and educator from Paducah, Kentucky, who has judged for Drum Corps International, Bands of America, and numerous marching circuits since 2002, adjudicating over 300 events across 35 U.S. states and provinces in the U.S., Canada, and Colombia, including 14 DCI Championships and 12 BOA Regional Championships. He has taught band and orchestra at Paducah Middle School since 1999.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2025/03/Adobe-Express-file-26.jpg",
+      "alternateNames": ["Steve Page"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/steven-page/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA brass judge since 2002, 300+ events, 14 DCI Championships; Paducah Middle School band/orchestra since 1999; Paducah KY", "source": "https://education.musicforall.org/clinician/steven-page/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "a-kristensen-1",
+      "displayName": "Allan Kristensen",
+      "givenName": "Allan",
+      "familyName": "Kristensen",
+      "biography": "Allan Kristensen is a DCI Hall of Fame percussion adjudicator (Class of 2025) who has been involved in music for more than 60 years. He marched in the Santa Clara Vanguard snare line from 1974 to 1976, later taught drum corps across the U.S. and Canada and at Santa Clara in 1986-1987, and has composed and arranged for over 100 drum corps, marching bands, and indoor percussion ensembles. He joined DCI's adjudication community in 1989 and became a go-to championship judge for four decades, judging 11 World Class Finals and 6 Open Class Finals and serving as DCI Percussion Caption Head and Judge Liaison for six years. Each fall he also judges Bands of America events, including 11 Grand National invitations.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/KristensenAllanResize.png",
+      "alternateNames": ["Allan E. Kristensen"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/allan-kristensen/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.dci.org/news/four-to-be-inducted-into-dci-hall-of-fame-class-of-2025/", "label": "DCI Hall of Fame Class of 2025", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Santa Clara Vanguard", "season": "1974-1976", "role": "Performer (snare); later instructor (1986-1987)", "sourceUrl": "https://www.scvanguard.org/staff/allan-kristensen/" }
+      ],
+      "seasonHighlights": [
+        { "title": "DCI Hall of Fame inductee", "season": "2025", "sourceUrl": "https://www.dci.org/news/four-to-be-inducted-into-dci-hall-of-fame-class-of-2025/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI HOF 2025; SCV snare 1974-76; DCI judge since 1989; Percussion Caption Head & Judge Liaison 6 yrs; 11 World Class Finals", "source": "https://education.musicforall.org/clinician/allan-kristensen/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "b-fabrizio-1",
+      "displayName": "Beth Fabrizio",
+      "givenName": "Beth",
+      "familyName": "Fabrizio",
+      "biography": "Beth Fabrizio is a brass/music adjudicator for DCI, Bands of America, WGI, and numerous state associations who recently retired after 36 years as a public school music educator, most recently Director of Bands at Village Elementary in the Hilton Central School District (NY). She has been brass caption head of the Carolina Crown, brass coordinator for the Pride of Soka (Tokyo), and brass staff for the Boston Crusaders, Glassmen, and Spirit of Atlanta. A clarinetist, she holds a Bachelor of Music in Clarinet Performance from the Eastman School of Music and a Master of Music from Ithaca College, and maintains a private clarinet studio.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2022/04/beth-fabrizio.600x600.jpg",
+      "alternateNames": ["Beth A. Fabrizio"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/beth-fabrizio/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Carolina Crown", "role": "Brass Caption Head", "sourceUrl": "https://education.musicforall.org/clinician/beth-fabrizio/" },
+        { "corpsName": "Boston Crusaders", "role": "Brass staff", "sourceUrl": "https://education.musicforall.org/clinician/beth-fabrizio/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/WGI music judge; 36-yr educator; Carolina Crown brass caption head; Eastman/Ithaca degrees", "source": "https://education.musicforall.org/clinician/beth-fabrizio/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "k-turner-1",
+      "displayName": "Ken Turner",
+      "givenName": "Ken",
+      "familyName": "Turner",
+      "biography": "Ken Turner is a DCI Hall of Fame music-effect adjudicator widely regarded as a gold standard in the caption. His drum corps career began in 1959 as a horn-line member of the Apalachin Grenadiers (Owego, NY); he later served as arranger, instructor, program coordinator, and consultant for corps including the Empire Statesmen, Syracuse Brigadiers, Oakland Crusaders, Bridgemen, and Phantom Regiment. As a DCI judge he has held the positions of DCI Chief Judge and Judge Administrator and DCI Brass Caption Chairman, and in 1994 he designed the DCI Music Effect and Music Ensemble judging system that remains largely in use today. He is a member of the DCI Hall of Fame and the New York State Band Conference Hall of Fame.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/Ken-Turner-Headshot_web.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/static/ken-turner-dci-hall-of-fame", "label": "DCI Hall of Fame profile", "kind": "bio" },
+        { "url": "https://education.musicforall.org/clinician/ken-turner/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Phantom Regiment", "role": "Arranger / Consultant", "sourceUrl": "https://www.dci.org/static/ken-turner-dci-hall-of-fame" }
+      ],
+      "seasonHighlights": [
+        { "title": "Designed DCI Music Effect / Music Ensemble judging system", "season": "1994", "sourceUrl": "https://www.dci.org/static/ken-turner-dci-hall-of-fame" },
+        { "title": "DCI Hall of Fame inductee", "season": "2018", "sourceUrl": "https://www.dci.org/news/two-to-be-inducted-into-dci-hall-of-fame-class-of-2018/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI HOF; Chief Judge/Judge Administrator & Brass Caption Chairman; designed 1994 DCI Music Effect system; corps career from 1959", "source": "https://www.dci.org/static/ken-turner-dci-hall-of-fame", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "r-kemp-1",
+      "displayName": "Richard Kemp",
+      "givenName": "Richard",
+      "familyName": "Kemp",
+      "biography": "Richard 'Rock' Kemp was a longtime general-effect and visual adjudicator and administrator in the marching arts, respected for three decades as a Winter Guard International judge and holding leadership roles in both WGI and Drum Corps International. A resident of Evergreen Park, Illinois, he served as Judge Administrator for the Midwest Color Guard Circuit and judged for multiple organizations nationwide, appearing at DCI World Championships in General Effect and Visual captions and as Chief Judge of the 2018 Show of Shows. Known for his wit and mentorship of fellow judges, he passed away in 2025.",
+      "photoUrl": "https://www.wgi.org/wp-content/uploads/2025/02/452850064_10229090278235485_3984514502366150299_n.jpg",
+      "alternateNames": ["Rich Kemp", "Rock Kemp"],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/wgi-mourns-the-passing-of-rich-rock-kemp/", "label": "WGI remembrance", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "WGI judge 3 decades; Midwest Color Guard Circuit Judge Administrator; DCI+WGI leadership; Evergreen Park IL; d. 2025", "source": "https://www.wgi.org/wgi-mourns-the-passing-of-rich-rock-kemp/", "confidence": "HIGH" },
+          { "fact": "DCI GE judge 2013/2015; Chief Judge 2018 Show of Shows", "source": "https://www.dci.org/news/2015-world-championship-adjudication-panels", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-rothe-1",
+      "displayName": "Caleb Rothe",
+      "givenName": "Caleb",
+      "familyName": "Rothe",
+      "biography": "Caleb Rothe is a percussion/general-effect adjudicator and the Percussion Education Coordinator for WGI Sport of the Arts, and a music educator in Southern California since 1997. He judges for Bands of America, Drum Corps International, WGI, Drum Corps Japan, and many regional circuits, serving as a General Effect judge at DCI World Championship Semifinals (2024, 2025). He has worked with more than 20 high schools, independent percussion ensembles, and drum corps—including Ayala HS, Pulse Percussion, Etiwanda HS, Rancho Cucamonga HS, Spirit of Atlanta (2010), and Impulse—and was inducted into the WGI Hall of Fame in 2020. He is a Zildjian and Yamaha artist.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/RotheCalebResize.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/caleb-rothe/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.wgi.org/hall-of-fame-caleb-rothe/", "label": "WGI Hall of Fame", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Spirit of Atlanta", "season": "2010", "role": "Percussion staff", "sourceUrl": "https://education.musicforall.org/clinician/caleb-rothe/" }
+      ],
+      "seasonHighlights": [
+        { "title": "WGI Hall of Fame inductee", "season": "2020", "sourceUrl": "https://www.wgi.org/hall-of-fame-caleb-rothe/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Percussion / Music Analysis / GE1; 2013-2025",
+        "facts": [
+          { "fact": "WGI Percussion Education Coordinator; DCI/BOA/WGI judge; WGI HOF 2020; SoCal educator since 1997; Zildjian/Yamaha artist", "source": "https://education.musicforall.org/clinician/caleb-rothe/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

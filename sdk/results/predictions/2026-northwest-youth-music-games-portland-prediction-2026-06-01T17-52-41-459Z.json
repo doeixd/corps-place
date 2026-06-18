@@ -1,0 +1,586 @@
+{
+  "generated_at": "2026-06-01T17:52:41.460Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-northwest-youth-music-games-portland",
+    "slug": "2026-northwest-youth-music-games-portland",
+    "name": "Northwest Youth Music Games Portland",
+    "event_name": "Northwest Youth Music Games Portland",
+    "start_date": "2026-07-01T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "7:30 PM PT",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Portland",
+    "location_state": "OR",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260701-PORTLAND-OR.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260701-PORTLAND-OR.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-northwest-youth-music-games-portland-jiszro",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Prices shown on this page do not include fees or taxes.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 6,
+    "matched_corps_keys": 6,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 5,
+    "skipped_lineup_rows": 1,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 11.627906976744185
+  },
+  "input_signature": "4c16c5692160a0c028778fb610d0d5d5bd405265d9bc4f85692f3cc14a438fba",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 6,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "0015b00002bxwbjaap",
+        "corps": "Gems",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 2,
+        "time": "7:40 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9uaad",
+        "corps": "Impulse",
+        "division": "Open Class",
+        "performance_order": 3,
+        "time": "7:52 PM"
+      },
+      {
+        "corps_key": "001j000000iwx99aad",
+        "corps": "Columbians",
+        "division": "Open Class",
+        "performance_order": 4,
+        "time": "8:07 PM"
+      },
+      {
+        "corps_key": "001j0000012y6bqaac",
+        "corps": "The Battalion",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "8:22 PM"
+      },
+      {
+        "corps_key": "001j000000h3xwcaav",
+        "corps": "Santa Clara Vanguard",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "8:52 PM"
+      },
+      {
+        "corps_key": "001j000000iwx93aad",
+        "corps": "Seattle Cascades",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "9:10 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "0015b00002bxwbjaap",
+        "corps": "Gems",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 2,
+        "time": "7:40 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 6,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Seattle Cascades",
+        "performance_order": 9,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 10,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-northwest-youth-music-games-portland",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-01T00:00:00.000Z",
+      "scored_lineup_rows": 6,
+      "matched_corps_keys": 6,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000h3xwcaav",
+      "corps": "Santa Clara Vanguard",
+      "city": "Santa Clara, CA",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "8:52 PM",
+      "total": 75.458,
+      "GE": 30.221,
+      "Visual": 22.568,
+      "Music": 22.669,
+      "GE1": 15.182,
+      "GE2": 15.039,
+      "VP": 15.039,
+      "VA": 15.147,
+      "CG": 14.95,
+      "MB": 15.184,
+      "MA": 14.916,
+      "MP": 15.237,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.351,
+          "p50": 15.182,
+          "p90": 15.897
+        },
+        "GE2": {
+          "p10": 14.37,
+          "p50": 15.039,
+          "p90": 15.938
+        },
+        "VP": {
+          "p10": 14.293,
+          "p50": 15.039,
+          "p90": 15.838
+        },
+        "VA": {
+          "p10": 14.334,
+          "p50": 15.147,
+          "p90": 15.849
+        },
+        "CG": {
+          "p10": 14.207,
+          "p50": 14.95,
+          "p90": 15.756
+        },
+        "MB": {
+          "p10": 14.435,
+          "p50": 15.184,
+          "p90": 15.929
+        },
+        "MA": {
+          "p10": 14.286,
+          "p50": 14.916,
+          "p90": 15.809
+        },
+        "MP": {
+          "p10": 14.473,
+          "p50": 15.237,
+          "p90": 15.991
+        }
+      },
+      "raw_model_total": 94.917,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 77.95,
+      "prior_season_comparable_percent_through": 11.904761904761903,
+      "prior_season_comparable_competition": "2025-northwest-youth-music-games-portland",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 75.458,
+      "caption_shape_total": 73.418,
+      "total_reconciliation_delta": 2.04,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 73.418,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwx93aad",
+      "corps": "Seattle Cascades",
+      "city": "Seattle, WA",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "9:10 PM",
+      "total": 65.441,
+      "GE": 26.65,
+      "Visual": 19.027,
+      "Music": 19.764,
+      "GE1": 13.213,
+      "GE2": 13.437,
+      "VP": 12.619,
+      "VA": 12.752,
+      "CG": 12.683,
+      "MB": 12.9,
+      "MA": 13.412,
+      "MP": 13.216,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 12.481,
+          "p50": 13.213,
+          "p90": 13.973
+        },
+        "GE2": {
+          "p10": 12.826,
+          "p50": 13.437,
+          "p90": 14.338
+        },
+        "VP": {
+          "p10": 11.934,
+          "p50": 12.619,
+          "p90": 13.449
+        },
+        "VA": {
+          "p10": 11.994,
+          "p50": 12.752,
+          "p90": 13.471
+        },
+        "CG": {
+          "p10": 11.987,
+          "p50": 12.683,
+          "p90": 13.464
+        },
+        "MB": {
+          "p10": 12.14,
+          "p50": 12.9,
+          "p90": 13.658
+        },
+        "MA": {
+          "p10": 12.842,
+          "p50": 13.412,
+          "p90": 14.309
+        },
+        "MP": {
+          "p10": 12.421,
+          "p50": 13.216,
+          "p90": 13.944
+        }
+      },
+      "raw_model_total": 83.784,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 63.2,
+      "prior_season_comparable_percent_through": 11.904761904761903,
+      "prior_season_comparable_competition": "2025-northwest-youth-music-games-portland",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 65.442,
+      "caption_shape_total": 67.276,
+      "total_reconciliation_delta": -1.835,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 23,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 67.276,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwx9uaad",
+      "corps": "Impulse",
+      "city": "Buena Park, CA",
+      "division": "Open Class",
+      "performance_order": 3,
+      "time": "7:52 PM",
+      "total": 57.126,
+      "GE": 23.406,
+      "Visual": 17.165,
+      "Music": 16.555,
+      "GE1": 11.236,
+      "GE2": 12.17,
+      "VP": 11.128,
+      "VA": 11.649,
+      "CG": 11.552,
+      "MB": 11.027,
+      "MA": 11.033,
+      "MP": 11.05,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.598,
+          "p50": 11.236,
+          "p90": 12.124
+        },
+        "GE2": {
+          "p10": 11.632,
+          "p50": 12.17,
+          "p90": 13.222
+        },
+        "VP": {
+          "p10": 10.395,
+          "p50": 11.128,
+          "p90": 11.929
+        },
+        "VA": {
+          "p10": 10.775,
+          "p50": 11.649,
+          "p90": 12.28
+        },
+        "CG": {
+          "p10": 10.768,
+          "p50": 11.552,
+          "p90": 12.296
+        },
+        "MB": {
+          "p10": 10.131,
+          "p50": 11.027,
+          "p90": 11.702
+        },
+        "MA": {
+          "p10": 10.399,
+          "p50": 11.033,
+          "p90": 11.856
+        },
+        "MP": {
+          "p10": 10.184,
+          "p50": 11.05,
+          "p90": 11.796
+        }
+      },
+      "raw_model_total": 60.806,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 56.75,
+      "prior_season_comparable_percent_through": 11.904761904761903,
+      "prior_season_comparable_competition": "2025-northwest-youth-music-games-portland",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 57.127,
+      "caption_shape_total": 57.436,
+      "total_reconciliation_delta": -0.31,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 3,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 57.435,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwx99aad",
+      "corps": "Columbians",
+      "city": "Pasco, WA",
+      "division": "Open Class",
+      "performance_order": 4,
+      "time": "8:07 PM",
+      "total": 51.623,
+      "GE": 21.339,
+      "Visual": 14.906,
+      "Music": 15.378,
+      "GE1": 10.589,
+      "GE2": 10.75,
+      "VP": 10.046,
+      "VA": 9.894,
+      "CG": 9.872,
+      "MB": 10.298,
+      "MA": 10.284,
+      "MP": 10.173,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 9.797,
+          "p50": 10.589,
+          "p90": 11.293
+        },
+        "GE2": {
+          "p10": 10.129,
+          "p50": 10.75,
+          "p90": 11.651
+        },
+        "VP": {
+          "p10": 9.417,
+          "p50": 10.046,
+          "p90": 10.955
+        },
+        "VA": {
+          "p10": 9.16,
+          "p50": 9.894,
+          "p90": 10.654
+        },
+        "CG": {
+          "p10": 9.113,
+          "p50": 9.872,
+          "p90": 10.638
+        },
+        "MB": {
+          "p10": 9.541,
+          "p50": 10.298,
+          "p90": 11.024
+        },
+        "MA": {
+          "p10": 9.616,
+          "p50": 10.284,
+          "p90": 11.048
+        },
+        "MP": {
+          "p10": 9.357,
+          "p50": 10.173,
+          "p90": 10.881
+        }
+      },
+      "raw_model_total": 71.683,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 57,
+      "prior_season_comparable_percent_through": 11.904761904761903,
+      "prior_season_comparable_competition": "2025-northwest-youth-music-games-portland",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 51.623,
+      "caption_shape_total": 47.222,
+      "total_reconciliation_delta": 4.4,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 25,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 47.223,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j0000012y6bqaac",
+      "corps": "The Battalion",
+      "city": "Salt Lake City, UT",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "8:22 PM",
+      "total": 50.9,
+      "GE": 20.501,
+      "Visual": 15.104,
+      "Music": 15.295,
+      "GE1": 10.207,
+      "GE2": 10.294,
+      "VP": 10.289,
+      "VA": 9.768,
+      "CG": 10.151,
+      "MB": 10.223,
+      "MA": 10.47,
+      "MP": 9.896,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 9.37,
+          "p50": 10.207,
+          "p90": 10.877
+        },
+        "GE2": {
+          "p10": 9.687,
+          "p50": 10.294,
+          "p90": 11.212
+        },
+        "VP": {
+          "p10": 9.666,
+          "p50": 10.289,
+          "p90": 11.263
+        },
+        "VA": {
+          "p10": 8.971,
+          "p50": 9.768,
+          "p90": 10.471
+        },
+        "CG": {
+          "p10": 9.403,
+          "p50": 10.151,
+          "p90": 10.937
+        },
+        "MB": {
+          "p10": 9.414,
+          "p50": 10.223,
+          "p90": 10.92
+        },
+        "MA": {
+          "p10": 9.834,
+          "p50": 10.47,
+          "p90": 11.292
+        },
+        "MP": {
+          "p10": 9.121,
+          "p50": 9.896,
+          "p90": 10.636
+        }
+      },
+      "raw_model_total": 73.875,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 60,
+      "prior_season_comparable_percent_through": 4.761904761904762,
+      "prior_season_comparable_competition": "2025-corps-encore",
+      "prior_season_comparable_weight": 0.25,
+      "preseason_target_total": 50.902,
+      "caption_shape_total": 47.87,
+      "total_reconciliation_delta": 3.03,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 21,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 47.869,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "1 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

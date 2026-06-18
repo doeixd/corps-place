@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Phillip Haines: MCBA adjudicator headshot confirmed (image/jpeg). Upgrades identity confidence.",
+  "profiles": [
+    {
+      "judgeId": "p-haines-1",
+      "displayName": "Phillip Haines",
+      "givenName": "Phillip",
+      "familyName": "Haines",
+      "biography": "Phillip Haines is a brass/music adjudicator for Drum Corps International and Bands of America, judging the Music Brass and Music Analysis captions at DCI World Championships, and is a listed adjudicator with the Michigan Competing Band Association. A longtime music educator, he has been a band director in the Las Vegas area (Pinecrest, Sierra Vista, and Las Vegas High Schools) and an associate professor in the music education program at UNLV, and is a recipient of a Nevada Music Educators Association Lifetime Achievement award.",
+      "photoUrl": "https://www.themcba.org/images/Adjudicators/Haines_Phil.jpeg",
+      "alternateNames": ["Phil Haines"],
+      "externalLinks": [
+        { "url": "https://www.themcba.org/index.php?option=com_content&view=article&id=36&Itemid=329", "label": "MCBA adjudicators", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI Music Brass judge; MCBA adjudicator (headshot confirmed image/jpeg); Nevada music educator", "source": "https://www.themcba.org/index.php?option=com_content&view=article&id=36&Itemid=329", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

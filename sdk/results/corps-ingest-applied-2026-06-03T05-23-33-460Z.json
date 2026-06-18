@@ -1,0 +1,4028 @@
+{
+  "mode": "applied",
+  "matched": 54,
+  "rosterCount": 54,
+  "unresolved": [],
+  "classChanges": [
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "division_name",
+      "from": "SoundSport Medalist Division",
+      "to": "Open Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "division_name",
+      "from": "SoundSport Medalist Division",
+      "to": "Open Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "division_name",
+      "from": null,
+      "to": "All Age Class",
+      "kind": "fill"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "division_name",
+      "from": "SoundSport Medalist Division",
+      "to": "All Age Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "division_name",
+      "from": "SoundSport",
+      "to": "All Age Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "white-sabers-2",
+      "corpsKey": "001jw00000d0zlniaj",
+      "field": "division_name",
+      "from": "All-Age - Open Class",
+      "to": "All Age Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "mercedes-marching-band",
+      "corpsKey": "mercedes-marching-band",
+      "field": "division_name",
+      "from": null,
+      "to": "International Class",
+      "kind": "fill"
+    }
+  ],
+  "changes": [
+    {
+      "slug": "blue-devils",
+      "corpsKey": "001j000000i6i9saav",
+      "field": "about",
+      "from": "Founded in 1970 from a drum and bell corps, The Blue Devils hold the record for the most Drum Corps International World Championship titles.  The corps has won a total of 18 times, most recently in 2017, and has not placed lower than fourth in the last 25 years.  BD Performing Arts organization sponsors The Blue Devils and a variety of performing arts ensembles including two Open Class drum corps.",
+      "to": "Founded in 1970 from a drum and bell corps, The Blue Devils hold the record for the most Drum Corps International World Championship titles. The corps has won a total of 21 times, most recently in 2023, and has not placed lower than fifth since 1975. The BD Performing Arts organization sponsors The Blue Devils and a variety of performing arts ensembles including two Open Class drum corps.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils",
+      "corpsKey": "001j000000i6i9saav",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.bluedevils.org/",
+      "to": "http://www.bluedevils.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils",
+      "corpsKey": "001j000000i6i9saav",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/thebluedevils",
+      "to": "https://www.facebook.com/thebluedevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils",
+      "corpsKey": "001j000000i6i9saav",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/TheBlueDevils",
+      "to": "https://twitter.com/TheBlueDevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils",
+      "corpsKey": "001j000000i6i9saav",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/TheBlueDevils",
+      "to": "https://instagram.com/TheBlueDevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils",
+      "corpsKey": "001j000000i6i9saav",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/TheBlueDevils",
+      "to": "https://www.youtube.com/TheBlueDevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils",
+      "corpsKey": "001j000000i6i9saav",
+      "field": "address",
+      "from": "4065 Nelson Ave",
+      "to": "4065 Nelson Ave Concord CA, 94520",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils",
+      "corpsKey": "001j000000i6i9saav",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812d0d670bd001b2e639d_AZ7JbPryDzxXBKVrhhEQyZc6Apww-vsL.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "blue-devils",
+      "corpsKey": "001j000000i6i9saav",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Blue Devils Corp Concord, CA as a part of Drum Corps International. View full schedule of Blue Devils`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "about",
+      "from": "Former vaudeville comedians and musicians, Fred and Faye Taylor, founded the Blue Knights in 1958.  Recognized for innovation in visual design and contemporary programming, the Blue Knights have been a DCI World Championship finalist more than 20 times.  Operating under Ascend Performing Arts, the organization also sponsors other ensembles including an award-winning indoor percussion ensemble and the first-ever NFL drumline, the Stampede.  Ascend also conducts numerous events, educational clinics, and provides event entertainment worldwide.",
+      "to": "Former vaudeville comedians and musicians, Fred and Faye Taylor, founded the Blue Knights in 1958. Recognized for innovation in visual design and contemporary programming, the Blue Knights have been a DCI World Championship finalist more than 20 times. Operating under Ascend Performing Arts, the organization also sponsors other ensembles including an award-winning indoor percussion ensemble and the first-ever NFL drumline, the Stampede. Ascend also conducts numerous events, educational clinics, and provides event entertainment worldwide.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.ascendperformingarts.org/",
+      "to": "http://www.ascendperformingarts.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/BlueKnightsDrumCorps",
+      "to": "https://www.facebook.com/BlueKnightsDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/TheBlueKnights",
+      "to": "https://twitter.com/TheBlueKnights",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/BlueKnightsDBC",
+      "to": "https://instagram.com/BlueKnightsDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/BlueKnights",
+      "to": "https://www.youtube.com/user/BlueKnights",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812ccd670bd001b2e639a_4SNAebygCU6_p38DNgwfL97jDdP5ULq6.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Blue Knights Corp Denver, CO as a part of Drum Corps International. View full schedule of Blue Knights`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "about",
+      "from": "Founded in 1964, Blue Stars was the silver medalist at the 1972 Drum Corps International World Championship, finishing just over a half a point away from winning the inaugural event.  Competing as an Open Class unit for much of the late 1980s, ’90s and early ’00s, the corps won the World Championship title in its class in 1989, 1993, 2001 and 2003.  Blue Stars began competing among DCI’s World Class ranks again in 2006.",
+      "to": "Founded in 1964, Blue Stars was the silver medalist at the 1972 Drum Corps International World Championship, finishing just over a half a point away from winning the inaugural event. Competing as an Open Class unit for much of the late 1980s, �90s and early �00s, the corps won the World Championship title in its class in 1989, 1993, 2001 and 2003. Blue Stars began competing among DCI�s World Class ranks again in 2006.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.bluestars.org/",
+      "to": "http://www.bluestars.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/bluestars",
+      "to": "https://www.facebook.com/bluestars",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/thebluestars",
+      "to": "https://twitter.com/thebluestars",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/BlueStarsDBC",
+      "to": "https://instagram.com/BlueStarsDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/channel/UC1eKPEEPuPJkGdd8okEH4xQ",
+      "to": "https://www.youtube.com/channel/UC1eKPEEPuPJkGdd8okEH4xQ",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "address",
+      "from": "P.O. Box 2523",
+      "to": "P.O. Box 2523 La Crosse WI, 54602",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812cad670bd001b2e6399_nE7-iWYGd_1bP884KDf9jVTIYPbksZIP.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "blue-stars",
+      "corpsKey": "001j000000iwwsqaal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Blue Stars Corp La Crosse, WI as a part of Drum Corps International. View full schedule of Blue Stars`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "about",
+      "from": "The Bluecoats organization was founded in 1972 as an outreach program of the Canton, Ohio Police Boys’ Club.  The corps’ name was chosen in tribute to the city’s retired police officers.  Making its competitive debut in 1974, fans traditionally welcome the corps to the field with a signature cheer of “Bloo!” The corps has finished in eighth place or better since 2001, winning their very first DCI World Championship title in 2016.",
+      "to": "Founded in 1972, the Bluecoats organization was founded as a small, community-focused music education program that brought the drum corps experience to the young people of Canton, Ohio. Winning DCI World Championship titles in 2016 and 2024, the corps has earned a medal in eight of the last nine competitive seasons. While pushing the boundaries of artistic exploration and creative excellence, the Bluecoats have made their performance of genre-bending productions a hallmark.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.bluecoats.com",
+      "to": "http://www.bluecoats.com",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/Bluecoats",
+      "to": "https://www.facebook.com/Bluecoats",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/Bluecoats",
+      "to": "https://twitter.com/Bluecoats",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/Canton_Bluecoats",
+      "to": "https://instagram.com/Canton_Bluecoats",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/CantonBluecoats",
+      "to": "https://www.youtube.com/user/CantonBluecoats",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "address",
+      "from": "340 Mississippi Ave SE",
+      "to": "340 Mississippi Ave SE N. Canton OH, 44720",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812d2d670bd001b2e639e_jp0hXPD4YEjmdDCVGGOsPwEEYapo_gi2.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Bluecoats Corp Canton, OH as a part of Drum Corps International. View full schedule of Bluecoats`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "about",
+      "from": "Boston Crusaders was founded in 1940 as the Most Precious Blood Crusaders.  Separating from the church parish that sponsored the group in its early years, the corps became the Hyde Park Crusaders and later the Boston Crusaders as it established itself as a national powerhouse.  A charter member of Drum Corps International in the 1970s, it would not be until 1999 that Boston skyrocketed into the DCI World Championship Finals.  The corps has retained its spot among DCI’s elite Top 12 ever since.",
+      "to": "Founded in 1940 as the Most Precious Blood Crusaders and later separating from the church parish that sponsored the group, the corps became the Hyde Park Crusaders and later the Boston Crusaders as it established itself as a national powerhouse. A charter member of DCI in the 1970s, it would not be until 1999 that Boston skyrocketed into the World Championship Finals. The corps has retained its spot among DCI�s elite Top 12 ever since. 2025 marks the organization's milestone 85th anniversary of continuous operations and programming.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.bostoncrusaders.org/",
+      "to": "http://www.bostoncrusaders.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/BostonCrusaders",
+      "to": "https://www.facebook.com/BostonCrusaders",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/bostoncrusaders",
+      "to": "https://twitter.com/bostoncrusaders",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/BostonCrusaders",
+      "to": "https://instagram.com/BostonCrusaders",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/bostoncrusaders",
+      "to": "https://www.youtube.com/user/bostoncrusaders",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "address",
+      "from": "47 Fairmount Ave",
+      "to": "47 Fairmount Ave Boston MA, 02136",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812c8d670bd001b2e6398_Amy8coL0uNn3PPPzdSvND2SsGUmm7xYl.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "boston-crusaders",
+      "corpsKey": "001j000000iwwssaal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Boston Crusaders Corp Boston, MA as a part of Drum Corps International. View full schedule of Boston Crusaders`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "about",
+      "from": "The Carolina Drum Corps Association was founded in 1988 with the goal of bringing a drum corps to the Carolinas.  The founders had their dream realized with the birth of Carolina Crown the following year.  The corps won the DCI Division II Championship in 1993, joining the ranks of the World Class the following year.  Carolina Crown has been a Finalist every year for the last decade, earning its first World Championship title in DCI’s World Class division in 2013.  The organization celebrates its 30th anniversary in 2019.",
+      "to": "The Carolina Drum Corps Association was founded in 1988 with the goal of bringing a drum corps to the Carolinas. The founders had their dream realized with the birth of Carolina Crown the following year. The corps won the DCI Division II Championship in 1993, joining the ranks of the World Class the following year. Carolina Crown has been a finalist every year for more than two decades, earning its first World Championship title in DCI's World Class division in 2013.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.carolinacrown.org/",
+      "to": "http://www.carolinacrown.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/carolinacrown",
+      "to": "https://www.facebook.com/carolinacrown",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/CarolinaCrown",
+      "to": "https://twitter.com/CarolinaCrown",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/CarolinaCrown",
+      "to": "https://instagram.com/CarolinaCrown",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/carolinacrowntv",
+      "to": "https://www.youtube.com/user/carolinacrowntv",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "address",
+      "from": "PO Box 99",
+      "to": "PO Box 99 Fort Mill SC, 29716",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "corps_logo",
+      "from": "https://production.assets.dci.org/5a181124d670bd001f490b0e_IYp8h5YRwrMtsuZQeQt2J-8QJYcL3bzC.png",
+      "to": "https://images.dci.org/wp-content/uploads/2026/04/carolina-crown-logo-2026-800x800-1.png",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812c5d670bd001b2e6396_NI7OCLu_myWatXFXXnuVLa0vIO4u5TZy.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "carolina-crown",
+      "corpsKey": "001j000000iwx91aad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Carolina Crown Corp Fort Mill, SC as a part of Drum Corps International. View full schedule of Carolina Crown`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "about",
+      "from": "Founded in 1963 as the Junior Dukes, Colts was previously known as the Legionnaires and Colt .45 before adopting its current name in 1976. Since 1993, the corps has placed in the DCI World Championship Finals numerous times. In addition to both a World Class and an Open Class drum corps, the Colts Youth Organization also sponsors a summer band for students in fourth through eighth grades. The governor of Iowa has proclaimed the Colts “Iowa’s Ambassadors of Music.”",
+      "to": "Founded in 1963 as the Junior Dukes, Colts was previously known as the Legionnaires and Colt .45 before adopting its current name in 1976. Since 1993, the corps has placed in the DCI World Championship Finals numerous times. In addition to both a World Class and an Open Class drum corps, the Colts Youth Organization also sponsors a summer band for students in fourth through eighth grades. The governor of Iowa has proclaimed the Colts �Iowa�s Ambassadors of Music.�",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.colts.org/",
+      "to": "http://www.colts.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/dcicolts/",
+      "to": "https://www.facebook.com/dcicolts/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/dcicolts",
+      "to": "https://twitter.com/dcicolts",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/DCIColts",
+      "to": "https://instagram.com/DCIColts",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/DubuqueColtsMedia",
+      "to": "https://www.youtube.com/user/DubuqueColtsMedia",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "address",
+      "from": "2300 Twin Valley Drive",
+      "to": "2300 Twin Valley Drive Dubuque IA, 52003",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812bfd670bd001b2e6393_eNx2n6rZYynXALRSyyD7nzDBKMrssiJV.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "colts",
+      "corpsKey": "001j000000iwx98aad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Colts Corp Dubuque, IA as a part of Drum Corps International. View full schedule of Colts`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "crossmen",
+      "corpsKey": "001j000000iwx9aaat",
+      "field": "about",
+      "from": "Celebrating 45 years in 2019, Crossmen first took the field in 1975 as a successful merger between two smaller suburban Philadelphia corps, the Keystone Regiment and the 507 Hornets.  As an east coast organization since its founding, the corps moved its operations cross-country to San Antonio in 2006.  Crossmen has been a Drum Corps International World Championship finalist more than 25 times.",
+      "to": "Founded in 1974, the Crossmen first took the field as a successful merger between two smaller suburban Philadelphia corps, the Keystone Regiment and the 507 Hornets. As an east coast organization since its founding, the corps moved its operations cross-country to San Antonio in 2006. Crossmen has been a DCI World Championship finalist more than 25 times. The corps has served thousands of students throughout its history providing life-changing experiences that teach excellence, perseverance, teamwork and character.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "crossmen",
+      "corpsKey": "001j000000iwx9aaat",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.crossmen.org/",
+      "to": "http://www.crossmen.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "crossmen",
+      "corpsKey": "001j000000iwx9aaat",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/CrossmenDBC/",
+      "to": "https://www.facebook.com/CrossmenDBC/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "crossmen",
+      "corpsKey": "001j000000iwx9aaat",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/Crossmen",
+      "to": "https://twitter.com/Crossmen",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "crossmen",
+      "corpsKey": "001j000000iwx9aaat",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/crossmendci",
+      "to": "https://instagram.com/crossmendci",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "crossmen",
+      "corpsKey": "001j000000iwx9aaat",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/crossmendci",
+      "to": "https://www.youtube.com/user/crossmendci",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "crossmen",
+      "corpsKey": "001j000000iwx9aaat",
+      "field": "address",
+      "from": "PO Box 591940",
+      "to": "PO Box 591940 San Antonio TX, 78259",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "crossmen",
+      "corpsKey": "001j000000iwx9aaat",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a181294d670bd001c6f4f71_-bwyD8gFRWDGrVqsKpxmeveaIBpGDWDY.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "crossmen",
+      "corpsKey": "001j000000iwx9aaat",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Crossmen Corp San Antonio, TX as a part of Drum Corps International. View full schedule of Crossmen`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "about",
+      "from": "Celebrating its 10th anniversary in 2019, Genesis got its start in 2009 through combined efforts of its founding members and the schools in the Rio Grande Valley of Texas.  Now based in Austin, the corps focuses on giving members the chance to interact with Texas communities, enrich their musical and physical educations, and to perform at the peak of their potential.  Genesis finished as a finalist in its very first trip to the Open Class Championship in 2010.  2017 marked the corps’ first year competing in DCI’s World Class division.",
+      "to": "Founded in 2009, Genesis got its start through combined efforts of its founding members and the schools in the Rio Grande Valley of Texas. Now based in Austin, the corps focuses on giving members the chance to interact with Texas communities, enrich their musical and physical educations, and to perform at the peak of their potential. A three-time Open Class World Championship bronze medalist, 2017 marked the corps� first year competing in DCI�s World Class division.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.genesisdbc.org/",
+      "to": "http://www.genesisdbc.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/pages/GENESIS-Drum-and-Bugle-Corps/188321899960",
+      "to": "https://www.facebook.com/pages/GENESIS-Drum-and-Bugle-Corps/188321899960",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/GenesisDBCTX",
+      "to": "https://twitter.com/GenesisDBCTX",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/genesisfenixcam/",
+      "to": "https://instagram.com/genesisfenixcam/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/TheFenixChannel",
+      "to": "https://www.youtube.com/user/TheFenixChannel",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "address",
+      "from": "PO Box 42038",
+      "to": "PO Box 42038 Austin TX, 78704",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1b898dd670bd00e6356963_UyJS9dEm2l9MT49qeiCW-C1F9azoTVXh.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "genesis",
+      "corpsKey": "001j000000iwx9oaad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Genesis Corp Austin, TX as a part of Drum Corps International. View full schedule of Genesis`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "madison-scouts",
+      "corpsKey": "001j000000i6lenaa3",
+      "field": "about",
+      "from": "Founded in 1938, the Madison Scouts is a premier youth performing arts organization on the modern drum and bugle corps scene.  “Proud, Loud and Pleasing the Crowd”—a mantra of the corps—the Scouts are known for their entertainment-focused programs that consistently bring audiences to their feet.  They are a founding member of Drum Corps International and have been twice crowned as DCI World Champions (1975, 1988).  Forward Performing Arts, the parent organization of the drum corps, also sponsors SoundSport, DrumLine Battle and WGI Sport of the Arts ensembles.",
+      "to": "Founded in 1920, the Madison Scouts is a premier youth performing arts organization on the modern drum and bugle corps scene. They are a founding member of Drum Corps International and have been twice crowned as World Champions (1975, 1988). Forward Performing Arts, the educationally-focused parent organization of the drum corps, also sponsors Black Star Drum Line, Forward Leadership and MadU.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "madison-scouts",
+      "corpsKey": "001j000000i6lenaa3",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.madisonscouts.org/",
+      "to": "http://www.madisonscouts.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "madison-scouts",
+      "corpsKey": "001j000000i6lenaa3",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/MadisonScouts",
+      "to": "https://www.facebook.com/MadisonScouts",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "madison-scouts",
+      "corpsKey": "001j000000i6lenaa3",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/madisonscouts",
+      "to": "https://twitter.com/madisonscouts",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "madison-scouts",
+      "corpsKey": "001j000000i6lenaa3",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/MadisonScouts",
+      "to": "https://instagram.com/MadisonScouts",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "madison-scouts",
+      "corpsKey": "001j000000i6lenaa3",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/TheMadisonScouts",
+      "to": "https://www.youtube.com/user/TheMadisonScouts",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "madison-scouts",
+      "corpsKey": "001j000000i6lenaa3",
+      "field": "address",
+      "from": "2935 S Fish Hatchery Rd #401",
+      "to": "2935 S Fish Hatchery Rd #401 Madison WI, 53711",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "madison-scouts",
+      "corpsKey": "001j000000i6lenaa3",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a18127fd670bd001c6f4f64_JUMoDv1wpt-1pqr98lTgHIfz_-8CMYdI.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "madison-scouts",
+      "corpsKey": "001j000000i6lenaa3",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Madison Scouts Corp Madison, WI as a part of Drum Corps International. View full schedule of Madison Scouts`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "mandarins",
+      "corpsKey": "001j000000iwxa3aal",
+      "field": "about",
+      "from": "Founded in 1963, the Mandarins organization has long been known for blending Asian traditions with drum corps.  The corps has been a DCI World Champion in its class eight times, including an unmatched string of four titles as a Division III unit between 1996 and 1999.  Mandarins started competing as a World Class corps in 2003 and earned a spot as a DCI World Championship finalist for the very first time in 2018.",
+      "to": "Founded in 1963 as the Ye Wah Drum & Lyre corps, the group later changed its name to the Mandarins in 1967 to become more inclusive and open to its ever-growing membership. The corps has been a DCI World Champion in its class eight times, including an unmatched string of four titles as a Division III unit between 1996 and 1999. Mandarins started competing as a World Class corps in 2003 and has earned a spot as a DCI World Championship finalist every year since 2018.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "mandarins",
+      "corpsKey": "001j000000iwxa3aal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.mandarins.org/",
+      "to": "http://www.mandarins.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "mandarins",
+      "corpsKey": "001j000000iwxa3aal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/mandarins.sacramento",
+      "to": "https://www.facebook.com/mandarins.sacramento",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "mandarins",
+      "corpsKey": "001j000000iwxa3aal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/DCIMandarins",
+      "to": "https://twitter.com/DCIMandarins",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "mandarins",
+      "corpsKey": "001j000000iwxa3aal",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/DCIMandarins",
+      "to": "https://instagram.com/DCIMandarins",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "mandarins",
+      "corpsKey": "001j000000iwxa3aal",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/channel/UCDSHOtNzup3rxeWUvs5pybQ",
+      "to": "https://www.youtube.com/channel/UCDSHOtNzup3rxeWUvs5pybQ",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "mandarins",
+      "corpsKey": "001j000000iwxa3aal",
+      "field": "address",
+      "from": "P.O. Box 22297",
+      "to": "P.O. Box 22297 Sacramento CA, 95822",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "mandarins",
+      "corpsKey": "001j000000iwxa3aal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a181230d670bd001a3d7679_wWxOn9QsQrLE6CiSnRECAC_KdWPCMNpU.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "mandarins",
+      "corpsKey": "001j000000iwxa3aal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Mandarins Corp Sacramento, CA as a part of Drum Corps International. View full schedule of Mandarins`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "about",
+      "from": "Music City originally formed when a group of music educators and enthusiasts came together with a goal of bringing a new Drum Corps International group to Nashville.  Forty-seven members strong in 2009, the corps grew tremendously while forging a tradition of fielding audience-friendly productions.  An Open Class Finalist every year since 2010, 2018 marked the corps’ first time competing in Drum Corps International’s World Class division.",
+      "to": "Music City was formed in 2009 with a charter group of forty-seven members. The corps quickly grew to a full-size Open Class corps and in 2018 Music City joined the World Class tour. Today, Music City Youth in the Arts exists to provide accessible and experiential education in music and visual performance arts to young people through programming emphasizing camaraderie, well-being and leadership development.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://musiccityyouth.org/",
+      "to": "https://musiccityyouth.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/pages/Music-City-Drum-and-Bugle-Corps/346409099447",
+      "to": "https://www.facebook.com/pages/Music-City-Drum-and-Bugle-Corps/346409099447",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/MusicCityDC",
+      "to": "https://twitter.com/MusicCityDC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/musiccitydbc/",
+      "to": "https://www.instagram.com/musiccitydbc/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/MusicCityDrumCorps",
+      "to": "https://www.youtube.com/user/MusicCityDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5c4b4716da7e9a6b930b6872_LVSAnFqhJ6_P-xCcUhbtrYLAd-OVA3j7.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Music City Corp Nashville, TN as a part of Drum Corps International. View full schedule of Music City`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "about",
+      "from": "Organized in 1993 with just 33 students, Pacific Crest has grown steadily since its founding.  The corps first competed out of the state of California in 2000, and earned a Semifinals berth in its very first trip to the DCI World Championships in 2003.  Pacific Crest has found its success over the years focusing on its impact in Southern California.  Capping off the celebration of the organization’s 25th anniversary in 2018, the corps performed at the Rose Parade in Pasadena.",
+      "to": "Organized in 1993 with just 33 students, Pacific Crest has grown steadily since its founding. The corps first competed out of the state of California in 2000, and earned a Semifinals berth in its very first trip to the DCI World Championships in 2003. Pacific Crest has found its success over the years focusing on its impact in Southern California, with a vast majority of the corps' students coming from its home region.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.pacific-crest.org/",
+      "to": "http://www.pacific-crest.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/pages/Pacific-Crest-Drum-Bugle-Corps/53001914206",
+      "to": "https://www.facebook.com/pages/Pacific-Crest-Drum-Bugle-Corps/53001914206",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/PCDrumCorps",
+      "to": "https://twitter.com/PCDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/PacificCrest",
+      "to": "https://instagram.com/PacificCrest",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/pcyaomedia",
+      "to": "https://www.youtube.com/user/pcyaomedia",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "address",
+      "from": "PO Box 5409",
+      "to": "PO Box 5409 Diamond Bar CA, 91765",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1b8aaed670bd00e57d77d2_atv4sBSN0YMJOtu_rGP_EmwKigiJEsEC.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Pacific Crest Corp City of Industry, CA as a part of Drum Corps International. View full schedule of Pacific Crest`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "phantom-regiment",
+      "corpsKey": "001j000000h3xrnaav",
+      "field": "about",
+      "from": "Founded in 1956 as the Rockford Rangers, the Phantom Regiment is a two-time DCI World Champion (1996, 2008) and has been a DCI World Championship Finalist every year since 1974.  Always staying true to its classical music identity, the corps has thrilled audiences for more than six decades with the complexity and grandeur of timeless music and the sheer explosive power that can only be described as Phantom Regiment.",
+      "to": "Founded in 1956 as the Rockford Rangers, the Phantom Regiment has earned a spot among Drum Corps International's elite Top 12 dating back to 1974. Bringing powerful performances to audiences around the world, the corps is comprised of members from over 30 states and provinces across the United States, Japan, Switzerland and the United Kingdom. The 12-time medalist has won two DCI World Championship titles in 1996 and 2008.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "phantom-regiment",
+      "corpsKey": "001j000000h3xrnaav",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.regiment.org",
+      "to": "http://www.regiment.org",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "phantom-regiment",
+      "corpsKey": "001j000000h3xrnaav",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/regiment",
+      "to": "https://www.facebook.com/regiment",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "phantom-regiment",
+      "corpsKey": "001j000000h3xrnaav",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/phantomregiment",
+      "to": "https://twitter.com/phantomregiment",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "phantom-regiment",
+      "corpsKey": "001j000000h3xrnaav",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/ThePhantomRegiment",
+      "to": "https://instagram.com/ThePhantomRegiment",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "phantom-regiment",
+      "corpsKey": "001j000000h3xrnaav",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/PhantomRegiment1956",
+      "to": "https://www.youtube.com/user/PhantomRegiment1956",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "phantom-regiment",
+      "corpsKey": "001j000000h3xrnaav",
+      "field": "address",
+      "from": "5608 International Drive",
+      "to": "5608 International Drive Rockford IL, 61109",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "phantom-regiment",
+      "corpsKey": "001j000000h3xrnaav",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a181226d670bd001a3d7675_FKTutnVe38wLo81irIrtCSAhAjPBpH6d.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "phantom-regiment",
+      "corpsKey": "001j000000h3xrnaav",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Phantom Regiment Corp Rockford, IL as a part of Drum Corps International. View full schedule of Phantom Regiment`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "santa-clara-vanguard",
+      "corpsKey": "001j000000h3xwcaav",
+      "field": "about",
+      "from": "Since founded in 1967, Santa Clara Vanguard has won seven DCI World Championship titles during the organization’s long and illustrious history, most recently in 2018.  The corps is the only group to have performed in every Finals competition since the 1972 inception of DCI, a record that will never be matched.  The organization, Vanguard Music and Performing Arts, also sponsors the Open Class Vanguard Cadets and several other community-focused ensembles.",
+      "to": "Formed in 1967, Santa Clara Vanguard is one of 13 founders of Drum Corps International. One of the most successful corps in DCI history, the California-based ensemble has won seven DCI World Championship titles between 1973 and 2018. Vanguard Music and Performing Arts has also previously sponsored the Open Class Vanguard Cadets and a number of other community-focused ensembles.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "santa-clara-vanguard",
+      "corpsKey": "001j000000h3xwcaav",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.scvanguard.org/",
+      "to": "http://www.scvanguard.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "santa-clara-vanguard",
+      "corpsKey": "001j000000h3xwcaav",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/SCV",
+      "to": "https://www.facebook.com/SCV",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "santa-clara-vanguard",
+      "corpsKey": "001j000000h3xwcaav",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/SCVanguard",
+      "to": "https://twitter.com/SCVanguard",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "santa-clara-vanguard",
+      "corpsKey": "001j000000h3xwcaav",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/SCVanguard",
+      "to": "https://instagram.com/SCVanguard",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "santa-clara-vanguard",
+      "corpsKey": "001j000000h3xwcaav",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/SantaClaraVanguard",
+      "to": "https://www.youtube.com/user/SantaClaraVanguard",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "santa-clara-vanguard",
+      "corpsKey": "001j000000h3xwcaav",
+      "field": "address",
+      "from": "1795 Space Park Drive",
+      "to": "1795 Space Park Drive Santa Clara CA, 95054",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "santa-clara-vanguard",
+      "corpsKey": "001j000000h3xwcaav",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a18121ad670bd001a3d7671_h6a7J_1grN6W-z17W4M9mi6U_B1rktKX.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "santa-clara-vanguard",
+      "corpsKey": "001j000000h3xwcaav",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Santa Clara Vanguard Corp Santa Clara, CA as a part of Drum Corps International. View full schedule of Santa Clara Vanguard`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "about",
+      "from": "The Cascades organization was formed in 1957 as the Greenwood Boys Club Corps, becoming the Seattle Thunderbirds the next year.  A split in 1966 saw many members join the new Cascade Cadets, which changed its name to the Seattle Cascades in 1970.  The corps won the DCI Division III World Championship in 2000, and then doubled its size for competition the next season.  In 2002, they became the first Pacific Northwest corps to become a World Class Finalist.",
+      "to": "Founded in 1966, Seattle Cascades is the oldest continuously active drum corps from the Pacific Northwest. Community service, inclusiveness, diversity and personal responsibility serve as core tenets of the organization�s educational program. The Cascades won the DCI Division III World Championship in 2000, and then doubled its size for competition the next season. In 2002, they became the first Pacific Northwest corps to become a World Class Finalist.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.seattlecascades.org/",
+      "to": "http://www.seattlecascades.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/SeattleCascadesDrumCorps",
+      "to": "https://www.facebook.com/SeattleCascadesDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/scascades",
+      "to": "https://twitter.com/scascades",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/seattlecascadesdrumcorps/",
+      "to": "https://instagram.com/seattlecascadesdrumcorps/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/CascadesDrumCorps",
+      "to": "https://www.youtube.com/user/CascadesDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a181218d670bd001a3d7670_Ry4jszRNAMEUcpkzr57ld8U-tDQKsvNw.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Seattle Cascades Corp Seattle, WA as a part of Drum Corps International. View full schedule of Seattle Cascades`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "about",
+      "from": "Spartans has laid claim to four DCI Division II World Championship titles since its founding in 1955, most recently in 2007.  The corps has earned numerous silver and bronze medals and was the 1999 Spirit of Disney award winner.  The only competitive drum corps in New Hampshire, Spartans has had the privilege of playing for eight different United States Presidents.",
+      "to": "Celebrating 70 years in 2025, Spartans has laid claim to eight DCI World Championship titles since its founding, most recently taking home Open Class gold in 2024. The corps has earned numerous silver and bronze medals and was the 1999 Spirit of Disney award winner. Spartans has had the privilege of playing for eight different United States Presidents. As part of a transition year in 2025, the corps will follow a �hybrid� classification structure remaining as an Open Class corps, but competing in eight DCI Tour events as a World Class corps.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.spartansdbc.org/",
+      "to": "http://www.spartansdbc.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/spartansdbc",
+      "to": "https://www.facebook.com/spartansdbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/spartansdbc",
+      "to": "https://twitter.com/spartansdbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/spartandbc/",
+      "to": "https://instagram.com/spartandbc/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/SpartansDBC",
+      "to": "https://www.youtube.com/user/SpartansDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a181210d670bd001a3d766d_FXGOU2E2BpISGcnsO7Fm0nRffqL-0EU1.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Spartans Corp Nashua, NH as a part of Drum Corps International. View full schedule of Spartans`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "about",
+      "from": "Founded in 1976, Spirit of Atlanta quickly rose to drum corps prominence with a sixth-place finish in only the corps’ second season.  Well known during its formative years for a huge brass sound and performances that evoked the soulful and sultry persona of its southern hometown region, the group has claimed a spot in the DCI World Championship Finals 20 times since 1978.",
+      "to": "Founded in the mid-1970s and celebrating their 50th anniversary in 2025, Spirit of Atlanta quickly rose to drum corps prominence with a sixth-place finish in only the corps� second season. Well known during its formative years for a huge brass sound and performances that evoked the soulful and sultry persona of its southern hometown region, the group has claimed a spot in the DCI World Championship Finals 20 times since 1978.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.spiritofatlanta.org/",
+      "to": "https://www.spiritofatlanta.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/SpiritofAtlanta",
+      "to": "https://www.facebook.com/SpiritofAtlanta",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/spiritofatlanta",
+      "to": "https://twitter.com/spiritofatlanta",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/spirit_of_atlanta/",
+      "to": "https://instagram.com/spirit_of_atlanta/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/spiritdrumcorps",
+      "to": "https://www.youtube.com/user/spiritdrumcorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "address",
+      "from": "PO Box 1010",
+      "to": "PO Box 1010 Indian Trail NC, 28079",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a18120ed670bd001a3d766c_mP38lRAMBq0wFF7n7NHU34opOb1Gogfr.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Spirit of Atlanta Corp Atlanta, GA as a part of Drum Corps International. View full schedule of Spirit of Atlanta`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "about",
+      "from": "In 2001, the Academy Brass and Percussion Ensemble was formed to introduce the youth of Arizona to the drum corps experience.  In 2004, the group was approved as a DCI sanctioned unit, changed its name to the Academy Drum and Bugle Corps, and began competing for the first time.  In the corps’ first trip to the DCI World Championships in 2006, it won the gold medal in Division II competition.  2016 marked the corps’ first year as a World Class DCI World Championship finalist.",
+      "to": "Celebrating 25 years in 2025, the Academy Brass and Percussion Ensemble was formed to introduce the youth of Arizona to the drum corps experience. In 2004, the group was approved as a DCI sanctioned unit, changed its name to the Academy Drum and Bugle Corps, and began competing for the first time. In the corps� first trip to the DCI World Championships in 2006, it won the gold medal in Division II competition. 2016 marked the corps� first year as a World Class DCI World Championship finalist.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.arizonaacademy.org/",
+      "to": "https://www.arizonaacademy.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/TheAcademyDBC",
+      "to": "https://www.facebook.com/TheAcademyDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/TheAcademyDBC",
+      "to": "https://twitter.com/TheAcademyDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/TheAcademyDBC",
+      "to": "https://instagram.com/TheAcademyDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/channel/UC3YloGEnlKvn0MkFE2uk0lQ",
+      "to": "https://www.youtube.com/channel/UC3YloGEnlKvn0MkFE2uk0lQ",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "address",
+      "from": "5861 S. Kyrene Rd #17",
+      "to": "5861 S. Kyrene Rd #17 Tempe AZ, 85283",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812d6d670bd001b2e63a0_5L1npef8eemMIyIhymof9l1CvZuwgnDC.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-academy",
+      "corpsKey": "001j000000iwxaeaa1",
+      "field": "meta_description",
+      "from": "",
+      "to": "About The Academy Corp Tempe, AZ as a part of Drum Corps International. View full schedule of The Academy`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "field": "about",
+      "from": "Scoutmaster Don Warren founded the Cavaliers in 1948 as Boy Scout Troop 111 Drum and Bugle Corps.  Long nicknamed the “Green Machine,” the all-male corps’ trademark geometric drill routines and aggressive color guard work make them instantly identifiable.  The Cavaliers have won seven DCI World Championship titles since 1992, most recently in 2006.  The organization additionally runs a number of performing arts programs including successful indoor percussion and winds programs that compete as part of the WGI Sports of the Arts competitive circuit.",
+      "to": "Scoutmaster Don Warren founded The Cavaliers in 1948 as Boy Scout Troop 111 Drum & Bugle Corps. A founding member of Drum Corps International, the group is a seven-time DCI World Champion between 1992 and 2006. The drum corps is the principal ensemble of The Cavaliers Arts Performance & Education, which includes the four-time WGI Independent Open Winds Champion Chromium Winds, GearWorks educational clinics, and the King Cobras all-ability drum line.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.cavaliers.org/",
+      "to": "http://www.cavaliers.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/TheCavaliers",
+      "to": "https://www.facebook.com/TheCavaliers",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/TheCavaliers",
+      "to": "https://twitter.com/TheCavaliers",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/TheCavaliers",
+      "to": "https://instagram.com/TheCavaliers",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/TheCavaliers",
+      "to": "https://www.youtube.com/user/TheCavaliers",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "field": "address",
+      "from": "9501 Technology Boulevard, Suite 3300",
+      "to": "9501 Technology Boulevard, Suite 3300 Rosemont IL, 60018",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812c3d670bd001b2e6395_OGGHCvHv8UdBKcscELnAVDckLOj4apwX.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-cavaliers",
+      "corpsKey": "001j000000iwxafaa1",
+      "field": "meta_description",
+      "from": "",
+      "to": "About The Cavaliers Corp Rosemont, IL as a part of Drum Corps International. View full schedule of The Cavaliers`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "troopers",
+      "corpsKey": "001j000000iwxajaa1",
+      "field": "about",
+      "from": "Founded in 1957 by Casper, Wyoming businessman Jim Jones, the Troopers are represented by members from around the world.  What started as a locally-based operation, quickly grew into an international sensation after the Troopers pioneered the touring drum corps model, making the activity accessible to young people across the country and beyond.  Ever building upon their rich and innovative history, the corps has established itself as a dominant force in the annals of drum corps history and remains an ever present fan favorite throughout the activity.",
+      "to": "Founded in 1957 by Jim Jones in Casper, Wyoming, the Troopers are one of the most historically significant groups in the marching arts. Known as \"America�s Corps,\" the Troopers pioneered the modern drum corps touring model and were a founding member of Drum Corps International in 1972. With their iconic Western theme and commitment to patriotic storytelling, the corps quickly became a fan favorite. A 12-time DCI finalist, the Troopers� motto � Honor, Loyalty, Dedication � reflects the values that continue to guide them as they inspire future generations of performers.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "troopers",
+      "corpsKey": "001j000000iwxajaa1",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.troopersdrumcorps.org/",
+      "to": "http://www.troopersdrumcorps.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "troopers",
+      "corpsKey": "001j000000iwxajaa1",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/TroopersDrumCorps",
+      "to": "https://www.facebook.com/TroopersDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "troopers",
+      "corpsKey": "001j000000iwxajaa1",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/TheCasperTroopers",
+      "to": "https://instagram.com/TheCasperTroopers",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "troopers",
+      "corpsKey": "001j000000iwxajaa1",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/TroopersDrumCorps",
+      "to": "https://www.youtube.com/user/TroopersDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "troopers",
+      "corpsKey": "001j000000iwxajaa1",
+      "field": "address",
+      "from": "1801 East E Street",
+      "to": "1801 East E Street Casper WY, 82601",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "troopers",
+      "corpsKey": "001j000000iwxajaa1",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a18120cd670bd001a3d766b_LgjUekkyezilGkI_w8nP_zs-kAAM0Ieb.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "troopers",
+      "corpsKey": "001j000000iwxajaa1",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Troopers Corp Casper, WY as a part of Drum Corps International. View full schedule of Troopers`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "about",
+      "from": "Founded in 2002 by the Surfers Alumni Association, 7th Regiment takes its name from the last Civil War unit to leave Fort Trumbull in the corps’ hometown.  After first competing in 2003, “7R” has been an Open Class finalist each year since 2009 and is a multi-year DCI DrumLine Battle Champion.  7th Regiment proudly represents the local community in New London and the state of Connecticut.",
+      "to": "Founded in 2002 by alumni of the New London Surfers Drum & Bugle Corps, 7th Regiment takes its name from the last Union Army unit to leave Fort Trumbull in the corps� hometown during the Civil War. Since first competing in 2003, �7R� has been an Open Class finalist each year since 2009 and is a multi-year DCI DrumLine Battle Champion. 7th Regiment proudly represents the local community in New London and the state of Connecticut.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.7thregiment.org/",
+      "to": "http://www.7thregiment.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/7thregiment",
+      "to": "https://www.facebook.com/7thregiment",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/7thRegiment",
+      "to": "https://twitter.com/7thRegiment",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/7thRegiment",
+      "to": "https://instagram.com/7thRegiment",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/channel/UC6LUUq3Ex3SYSyCZO_CxAKQ",
+      "to": "https://www.youtube.com/channel/UC6LUUq3Ex3SYSyCZO_CxAKQ",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "address",
+      "from": "P.O.Box 64",
+      "to": "P.O.Box 64 New London CT, 06320",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812d7d670bd001b2e63a1_h-qoe5lxw11d6pNgLQkimqFtosONVuN8.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "7th-regiment",
+      "corpsKey": "001j000000iwwslaal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About 7th Regiment Corp New London, CT as a part of Drum Corps International. View full schedule of 7th Regiment`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "about",
+      "from": "The Blue Devils organization was founded in 1957 by Tony and Ann Odello as a drum and bell corps.  Blue Devils B was born in 1973 to give additional youth the opportunity to march in a drum corps and to serve as a training ground for future “A” corps Blue Devils.  Blue Devils B won its first Open Class title in 2009 to cap off an undefeated season, and followed its winning ways in 2010, 2011, 2014, and most recently in 2016.",
+      "to": "The Blue Devils organization was founded in 1957 by Tony and Ann Odello as a drum and bell corps. Blue Devils B was born in 1973 to give additional youth the opportunity to march in a drum corps and to serve as a training ground for future �A� corps Blue Devils. Blue Devils B won its first Open Class title in 2009 to cap off an undefeated season, and followed its winning ways in 2010, 2011, 2014, and 2016. Today, the corps stands as a proud bridge between education and elite performance �preparing the next generation for excellence on and off the field.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.bluedevils.org",
+      "to": "http://www.bluedevils.org",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/thebluedevils",
+      "to": "https://www.facebook.com/thebluedevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/thebluedevils",
+      "to": "https://twitter.com/thebluedevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/TheBlueDevils",
+      "to": "https://instagram.com/TheBlueDevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/TheBlueDevils",
+      "to": "https://www.youtube.com/TheBlueDevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "address",
+      "from": "4065 Nelson Ave",
+      "to": "4065 Nelson Ave Concord CA, 94520",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812cfd670bd001b2e639c_bnHPQBnfNnS6jEDVoK-lAI-Gepwn-djr.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "blue-devils-b",
+      "corpsKey": "001j000000i6jmbaaf",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Blue Devils B Corp Concord, CA as a part of Drum Corps International. View full schedule of Blue Devils B`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "about",
+      "from": "Established alongside the Blue Devils A and B, Blue Devils C is the youngest program in the Blue Devils Organization.  In addition to local performances and field competitions, Blue Devils C is proud to have performed at many high-profile events over the years including 2016’s Super Bowl 50.",
+      "to": "Established alongside the Blue Devils A and B, Blue Devils C is the youngest program in the Blue Devils organization. In addition to local performances and field competitions, Blue Devils C is proud to have performed at many high-profile events over the years including 2016�s Super Bowl 50.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.bluedevils.org",
+      "to": "http://www.bluedevils.org",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/thebluedevils",
+      "to": "https://www.facebook.com/thebluedevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/thebluedevils",
+      "to": "https://twitter.com/thebluedevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/TheBlueDevils",
+      "to": "https://instagram.com/TheBlueDevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/TheBlueDevils",
+      "to": "https://www.youtube.com/TheBlueDevils",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "address",
+      "from": "4065 Nelson Avenue",
+      "to": "4065 Nelson Avenue Concord CA, 94520",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812cdd670bd001b2e639b_eaFMf_ROAct5nj0Fvw8FzWZVLP30nDub.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "blue-devils-c",
+      "corpsKey": "001j000000i6kalaa3",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Blue Devils C Corp Concord, CA as a part of Drum Corps International. View full schedule of Blue Devils C`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "colt-cadets",
+      "corpsKey": "001j000000iwx97aad",
+      "field": "about",
+      "from": "Founded in 1967, the Colt Cadets are the younger sibling of the Colts Drum & Bugle Corps with a majority of members in middle school and high school.  The corps fosters character development by challenging and teaching in ways that build confidence, self-discipline, work ethic and teamwork.",
+      "to": "Founded in 1967, the Colt Cadets are the younger sibling of the Colts Drum & Bugle Corps with a majority of members in middle school and high school. The two corps work in tandem with the Colt Cadets preparing many members for the World Class corps, while some less experienced auditionees for the Colts find a more successful introduction into the activity in the Open Class. The Colt Cadets foster character development by challenging and teaching in ways that build self confidence, self-discipline, work ethic and teamwork.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colt-cadets",
+      "corpsKey": "001j000000iwx97aad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.colts.org/",
+      "to": "http://www.colts.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colt-cadets",
+      "corpsKey": "001j000000iwx97aad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/coltcadets",
+      "to": "https://www.facebook.com/coltcadets",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colt-cadets",
+      "corpsKey": "001j000000iwx97aad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/dcicolts",
+      "to": "https://twitter.com/dcicolts",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colt-cadets",
+      "corpsKey": "001j000000iwx97aad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/coltcadetsdci/",
+      "to": "https://instagram.com/coltcadetsdci/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colt-cadets",
+      "corpsKey": "001j000000iwx97aad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/DubuqueColtsMedia",
+      "to": "https://www.youtube.com/user/DubuqueColtsMedia",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colt-cadets",
+      "corpsKey": "001j000000iwx97aad",
+      "field": "address",
+      "from": "2300 Twin Valley Drive",
+      "to": "2300 Twin Valley Drive Dubuque IA, 52003",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "colt-cadets",
+      "corpsKey": "001j000000iwx97aad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812c1d670bd001b2e6394_xb1WGCuDxcGnUXay5pYUF5jRfXNrUj-7.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "colt-cadets",
+      "corpsKey": "001j000000iwx97aad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Colt Cadets Corp Dubuque, IA as a part of Drum Corps International. View full schedule of Colt Cadets`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "about",
+      "from": "A drum and bugle corps originally formed in the 1930s in Pasco, Washington, later expanding to serve youth in the Tri-Cities during the 1960s and ’70s, the Columbians name reemerged in 2013 as one of the newest corps on the Drum Corps International Tour.",
+      "to": "A drum and bugle corps originally formed in the 1930s in Pasco, Washington, later expanding to serve youth in the Tri-Cities during the 1960s and �70s, the Columbians name reemerged in 2013 as an Open Class corps on the Drum Corps International Tour. With regionally-focused tours in the corps' early years, the Columbians made their very first trip to the DCI World Championships in 2023.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.columbiansdrumcorps.org/",
+      "to": "http://www.columbiansdrumcorps.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/ColumbiansDrumCorps",
+      "to": "https://www.facebook.com/ColumbiansDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/ColumbiansCorps",
+      "to": "https://twitter.com/ColumbiansCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "address",
+      "from": "P.O. Box 4190",
+      "to": "P.O. Box 4190 West Richland WA, 99353",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a181296d670bd001c6f4f72_8K6GvSnOVipywPyMSlcDJOgv4Yfg1PdI.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Columbians Corp Pasco, WA as a part of Drum Corps International. View full schedule of Columbians`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "about",
+      "from": "Gold was founded in 2005 with a mission to enrich the educational, social, ethical, philosophical and performing arts lives of young adults.  The corps is primarily made up of students from around Southern California.  The corps competed for the first time outside of California in 2011 and has been an Open Class Finalist every year since 2012.  Gold was recognized as the Most Improved Open Class corps in 2018.",
+      "to": "Celebrating 20 years in 2025, Gold exists to enrich the educational, social, ethical, philosophical, and performing arts experiences of young adults. Comprised primarily of students from across Southern California, the corps first competed outside the state in 2011 and has been an Open Class Finalist every year since 2012. Gold earned the title of Most Improved Open Class Corps in 2018 and has been a consistent medalist at the Open Class World Championships since 2022.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://golddrumcorps.org/",
+      "to": "http://golddrumcorps.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/golddrumcorps",
+      "to": "https://www.facebook.com/golddrumcorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/golddrumcorps",
+      "to": "https://twitter.com/golddrumcorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/golddrumcorps",
+      "to": "https://instagram.com/golddrumcorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/GoldDrumCorps",
+      "to": "https://www.youtube.com/user/GoldDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "address",
+      "from": "PO Box 1715",
+      "to": "PO Box 1715 Lemon Grove CA, 91946",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "corps_logo",
+      "from": "https://production.assets.dci.org/6511e2016baef2ff060a0a33_dicZze0AmKgyS1qkO5kDZ6CpdKxg142H.png",
+      "to": "https://images.dci.org/wp-content/uploads/2025/09/gold-logo-2025-800x800-1.png",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a181291d670bd001c6f4f6f_3oQLCXgdJNV_tT5uKciUuotPpJu60G-x.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Gold Corp San Diego, CA as a part of Drum Corps International. View full schedule of Gold`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "about",
+      "from": "Representing California’s San Joaquin Valley, Golden Empire was founded to give youth the opportunity to further their skills in brass, percussion and visual performance.  The drum corps is an extension of the Bakersfield College Drumline program.  Golden Empire earned a finalist spot in the corps’ very first trip to the DCI World Championships in 2018.",
+      "to": "Founded in 2014, Golden Empire was started to give youth the opportunity to further their skills in brass, percussion and visual performance. The drum corps is an extension of the Bakersfield College Drumline program. Golden Empire earned a finalist spot in the corps� very first trip to the DCI World Championships in 2018 and in recent years has followed a California-centric tour schedule.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.geperformingarts.org/",
+      "to": "http://www.geperformingarts.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/gedrumcorps",
+      "to": "https://www.facebook.com/gedrumcorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/gedrumcorps",
+      "to": "https://twitter.com/gedrumcorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/gedrumcorps",
+      "to": "https://instagram.com/gedrumcorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/GEDrumCorps",
+      "to": "https://www.youtube.com/user/GEDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a18128fd670bd001c6f4f6e_Fi2s9tNKC49VEeNzPewP9SDXRc7rstC5.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Golden Empire Corp Bakersfield, CA as a part of Drum Corps International. View full schedule of Golden Empire`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "about",
+      "from": "Founded in 2013 to participate as part of Drum Corps International’s SoundSport performance initiative, Guardians made its debut as part of DCI’s Open Class division in 2014.  The corps prides itself on offering an affordable and positive drum corps experience to youth throughout central Texas.  2016 marked the very first time Guardians competed outside of the Lone Star State, making its inaugural trip to the DCI World Championships in Indiana.",
+      "to": "Founded in 2013 to participate as part of Drum Corps International?s SoundSport performance initiative, Guardians made its debut as part of DCI?s Open Class division in 2014. The corps prides itself on offering an affordable and positive drum corps experience to youth throughout central Texas. 2016 marked the very first time Guardians competed outside of the Lone Star State, making its inaugural trip to the DCI World Championships in Indiana.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.guardiansdbc.org/",
+      "to": "http://www.guardiansdbc.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/guardiansdbc",
+      "to": "https://www.facebook.com/guardiansdbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/guardiansdbc",
+      "to": "https://twitter.com/guardiansdbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/guardiansdbc",
+      "to": "https://instagram.com/guardiansdbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a18128ed670bd001c6f4f6d_ac5NY3yGmcX3rkt0rPUJIlnKlQ82NnRa.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Guardians Corp Dallas/Fort Worth, TX as a part of Drum Corps International. View full schedule of Guardians`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "about",
+      "from": "One of the first drum corps to get its start in the Florida region in many years, Heat Wave joined the Drum Corps International Tour as a brand new Open Class corps in 2015.  Hailing from West Central Florida, Heat Wave caters to youth with a passion for music and the marching arts, while focusing on building and bettering members’ self-confidence and integrity in the local community.",
+      "to": "Celebrating their 10th anniversary in 2025, Heat Wave joined the Drum Corps International Tour as a brand new Open Class unit in 2015. The corps serves local students looking to build their passion for music and performing through the marching arts. Heat Wave is committed to an accessible and affordable experience while bringing the life-enriching skills of marching music to its members, enabling them to become the leaders of tomorrow.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.heat-wave.org/",
+      "to": "https://www.heat-wave.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/heatwavedbc/",
+      "to": "https://www.facebook.com/heatwavedbc/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/heatwavedbc",
+      "to": "https://twitter.com/heatwavedbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/heatwavedbc/",
+      "to": "https://www.instagram.com/heatwavedbc/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/c/HeatwaveoffloridaDBC",
+      "to": "https://www.youtube.com/c/HeatwaveoffloridaDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "address",
+      "from": "690 Main St #303",
+      "to": "690 Main St #303 Safety Harbor FL, 34695",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a18128cd670bd001c6f4f6c_F4QP5WEoqy5ZhyLwD50ZaBAppg2XqhqY.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Heat Wave Corp Tampa Bay, FL as a part of Drum Corps International. View full schedule of Heat Wave`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "impulse",
+      "corpsKey": "001j000000iwx9uaad",
+      "field": "about",
+      "from": "First performing in 1999 and celebrating their 20th marching season in 2019, Impulse has become instantly recognizable on the drum corps field with its baseball caps and black and yellow uniforms that prominently display the corps’ exclamation mark logo.  The Southern California-based drum corps was crowned the DCI Division III World Champion in 2006.",
+      "to": "First performing in 1999, the Impulse Youth Arts Organization was established with the purpose to bring fun and competitive productions to audiences throughout the world. The Southern California-based drum corps was crowned the DCI Division III World Champion in 2006. Dedicated to growing young people into future leaders through the arts, the organization is committed to training performers to develop the skills needed to entertain audiences and achieve new levels of competitive excellence.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "impulse",
+      "corpsKey": "001j000000iwx9uaad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.impulseyoutharts.org/",
+      "to": "http://www.impulseyoutharts.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "impulse",
+      "corpsKey": "001j000000iwx9uaad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/IMPULSE-DRUM-BUGLE-CORPS-94848182136/",
+      "to": "https://www.facebook.com/IMPULSE-DRUM-BUGLE-CORPS-94848182136/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "impulse",
+      "corpsKey": "001j000000iwx9uaad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/ImpulseDBC",
+      "to": "https://twitter.com/ImpulseDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "impulse",
+      "corpsKey": "001j000000iwx9uaad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/official_impulsedbc",
+      "to": "https://instagram.com/official_impulsedbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "impulse",
+      "corpsKey": "001j000000iwx9uaad",
+      "field": "address",
+      "from": "P.O. Box 5186",
+      "to": "P.O. Box 5186 Buena Park CA, 90622-5186",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "impulse",
+      "corpsKey": "001j000000iwx9uaad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a18128ad670bd001c6f4f6b_S6bCWczEzyt5VcZO2vszA-vxzfwfFb7e.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "impulse",
+      "corpsKey": "001j000000iwx9uaad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Impulse Corp Buena Park, CA as a part of Drum Corps International. View full schedule of Impulse`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "les-stentors",
+      "corpsKey": "001j000000iwxa1aal",
+      "field": "about",
+      "from": "The French Canadian corps Les Stentors was founded in 1988 under the name La Releve Musicale (meaning Musical Relief), after splitting ties with another Sherbrooke, Quebec drum corps organization. The corps adopted its current name in 1993 and first competed at the DCI World Championships in 1999. In 2010, Les Stentors was recognized as the Most Improved Corps in DCI’s Open Class.",
+      "to": "The French Canadian corps Les Stentors was founded in 1988 under the name La Releve Musicale (meaning Musical Relief), after splitting ties with another Sherbrooke, Quebec drum corps organization. The corps adopted its current name in 1993 and first competed at the DCI World Championships in 1999. In 2010, Les Stentors was recognized as the Most Improved Corps in DCI�s Open Class.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "les-stentors",
+      "corpsKey": "001j000000iwxa1aal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.stentors.org/",
+      "to": "http://www.stentors.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "les-stentors",
+      "corpsKey": "001j000000iwxa1aal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/stentors",
+      "to": "https://www.facebook.com/stentors",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "les-stentors",
+      "corpsKey": "001j000000iwxa1aal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/dci",
+      "to": "https://twitter.com/dci",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "les-stentors",
+      "corpsKey": "001j000000iwxa1aal",
+      "field": "address",
+      "from": "C.P. 6363, Succursale Rock Forest",
+      "to": "C.P. 6363, Succursale Rock Forest Sherbrooke QC, J1N 3C9",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "les-stentors",
+      "corpsKey": "001j000000iwxa1aal",
+      "field": "corps_logo",
+      "from": "https://production.assets.dci.org/5a181168d670bd001b2e6379_rbMW9IxBJu7QHDYiMC34EdAw43lD1vuj.png",
+      "to": "https://images.dci.org/wp-content/uploads/2025/09/stentors-logo-800x800-1.png",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "les-stentors",
+      "corpsKey": "001j000000iwxa1aal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a181283d670bd001c6f4f66_D7Xa28iq4vNxNdl9379or-6PLXrSL60w.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "les-stentors",
+      "corpsKey": "001j000000iwxa1aal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Les Stentors Corp Sherbrooke, QC as a part of Drum Corps International. View full schedule of Les Stentors`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "division_name",
+      "from": "SoundSport Medalist Division",
+      "to": "Open Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "about",
+      "from": null,
+      "to": "A drum and bugle corps with a familiar name, Memphis Blues is a reboot of the Memphis Blues Brass Band of the 1980s. Bringing the drum corps experience back to students in the Memphis area, the corps made its return to the field in 2023 appearing as part of DCI�s SoundSport program. In the second year of a three-year evaluation process, Memphis Blues is currently recognized as an Open Class Affiliate.",
+      "kind": "fill"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.memphisbluesdc.org/",
+      "to": "https://www.memphisbluesdc.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/profile.php?id=100090514550700",
+      "to": "https://www.facebook.com/profile.php?id=100090514550700",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/memphisbluesdc",
+      "to": "https://twitter.com/memphisbluesdc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/memphisbluesdc/",
+      "to": "https://www.instagram.com/memphisbluesdc/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "address",
+      "from": "PO Box 100855",
+      "to": "PO Box 100855 Nashville TN, 37224",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://production.assets.dci.org/64147c14bf02071332073132_8f8seLY08A04kC-OdXNkRg7WqzDnZ46P.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64147c14bf02071332073132_8f8seLY08A04kC-OdXNkRg7WqzDnZ46P.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Memphis Blues Corp as a part of Drum Corps International. View full schedule of Memphis Blues `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "about",
+      "from": "The New Jersey-based Raiders Drum and Bugle Corps was founded in 1990.  First competing regionally in 1991, the group made its inaugural trip to the DCI World Championships a year later.  A finalist in its division every year since 2001, Raiders won the DCI Division III World Championship title in 2005.  The drum corps operates as part of the A+ Education and Performing Arts organization.",
+      "to": "Celebrating 35 years in 2025, the New Jersey-based Raiders Drum and Bugle Corps was founded in 1990. First competing regionally in 1991, the group made its inaugural trip to the DCI World Championships a year later. A finalist in its division every year since 2001, Raiders won the DCI Division III World Championship title in 2005. The drum corps operates as part of the A+ Education and Performing Arts organization.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.raidersdbc.org/",
+      "to": "http://www.raidersdbc.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/RaidersDBC",
+      "to": "https://www.facebook.com/RaidersDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/RaidersDBC",
+      "to": "https://twitter.com/RaidersDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/RaidersDBC",
+      "to": "https://instagram.com/RaidersDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/RaidersDrumCorps",
+      "to": "https://www.youtube.com/user/RaidersDrumCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "address",
+      "from": "PO Box 8926",
+      "to": "PO Box 8926 Trenton NJ, 08650",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a181220d670bd001a3d7673_K-LHTkR6bpNHliuYd6Hs5wDcDPor7cEi.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Raiders Corp Princeton, NJ as a part of Drum Corps International. View full schedule of Raiders`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "about",
+      "from": "Celebrating its fifth anniversary as a drum corps in 2019, River City Rhythm was founded in 2009 as an indoor drumline, which still competes as part of the WGI Sport of the Arts competitive circuit.  The organization expanded to a full drum and bugle corps in 2015, participating in the DCI Tour as an Open Class corps.  Proud to be able to provide multiple performance opportunities for youth in the marching arts activities, in 2018, the River City Rhythm organization added a competitive winter guard as well.",
+      "to": "Founded in 2010 as an indoor drum line, River City Rhythm has grown to include winter guard, drum corps, and parade drum line units. Hailing from the state of Minnesota, River City Rhythm has been an Open Class finalist every year in its existence. River City Rhythm strives to be a leader in the marching arts within Minnesota through collaborative performances, educational clinics and community outreach programs. The organization is proud to celebrate its milestone 10th anniversary in 2025.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://rivercityrhythm.org/",
+      "to": "http://rivercityrhythm.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/RCRCorps",
+      "to": "https://www.facebook.com/RCRCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/RiverCityRhythm",
+      "to": "https://twitter.com/RiverCityRhythm",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/rcrdbc/",
+      "to": "https://www.instagram.com/rcrdbc/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/channel/UC7zp0_rx2avoynx1k9bymMA",
+      "to": "https://www.youtube.com/channel/UC7zp0_rx2avoynx1k9bymMA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "address",
+      "from": "PO Box 515",
+      "to": "PO Box 515 Monticello MN, 55362",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a18121dd670bd001a3d7672_38lKTw5XLsLePmXJhME9uKt2MJyY8Jkn.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "meta_description",
+      "from": "",
+      "to": "About River City Rhythm Corp Anoka, MN as a part of Drum Corps International. View full schedule of River City Rhythm`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "about",
+      "from": "The Battalion is Utah’s drum and bugle corps.  Founded in 2014, the corps completed its first tour in 2016 and aims to provide learning and performance opportunities for young adults that develop their character, leadership skills, artistry, selflessness, and spirituality in a Christian-values-based environment.",
+      "to": "The Battalion is Utah�s own drum and bugle corps, proudly representing the state on the national stage. Founded in 2014, the corps launched its first competitive tour in 2016. In 2022, The Battalion made its debut at the DCI World Championships in Indiana, and in 2024, the corps reached a major milestone, earning recognition as DCI�s Most Improved Open Class Corps and advancing to the World Championship Semifinals for the first time.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.battalioncorps.org/",
+      "to": "http://www.battalioncorps.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/battalioncorps",
+      "to": "https://www.facebook.com/battalioncorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/BattalionCorps",
+      "to": "https://twitter.com/BattalionCorps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/http://instagram.com/the_battalion",
+      "to": "http://instagram.com/the_battalion",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/channel/UCMayaTcKejKyQPOmVJ7KBJg",
+      "to": "https://www.youtube.com/channel/UCMayaTcKejKyQPOmVJ7KBJg",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "address",
+      "from": "P.O. Box 1603",
+      "to": "P.O. Box 1603 Salt Lake City UT, 84110",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5a1812d4d670bd001b2e639f_6YtarpdHomdCoRkkWbgm32iXTICy9G4_.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "the-battalion",
+      "corpsKey": "001j0000012y6bqaac",
+      "field": "meta_description",
+      "from": "",
+      "to": "About The Battalion Corp Salt Lake City, UT as a part of Drum Corps International. View full schedule of The Battalion`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "division_name",
+      "from": "SoundSport Medalist Division",
+      "to": "Open Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "about",
+      "from": null,
+      "to": "Formed in 2018, Zephyrus Arts Institute is an Oklahoma-based nonprofit organization devoted to providing life-changing experiences to performers and audiences alike. The organization includes the Zephyrus Drum & Bugle Corps, the Zephyrus Independent Winter Guard, the Zephyrus Marching Academy, and the Tulsa Winds Community Band. A DCI SoundSport ensemble between 2022 and 2024, Zephyrus is currently recognized as an Open Class Affiliate, in the second year of a three-year evaluation process.",
+      "kind": "fill"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.zephyrusarts.org/corps.html",
+      "to": "https://www.zephyrusarts.org/corps.html",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/zephyrusarts/",
+      "kind": "fill"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/zephyrusarts",
+      "kind": "fill"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "address",
+      "from": "4039 E 26th St",
+      "to": "4039 E 26th St Tulsa Oklahoma, 74114",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://production.assets.dci.org/5e8aa71b694c8b5695293482_BvFsrquBM3COVyHNDR6XSMskPuv_0F6F.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/5e8aa71b694c8b5695293482_BvFsrquBM3COVyHNDR6XSMskPuv_0F6F.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Zephyrus Corp as a part of Drum Corps International. View full schedule of Zephyrus `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "about",
+      "from": "Conceived in 1997, the all-age Atlanta CV officially got its start in 1998 performing in local Atlanta parades and in exhibition at several Drum Corps International events.  The corps made its first trip to the Drum Corps Associates World Championships in 1999, earning a silver medal finish at the event in 2017.  Outside of drum corps competitions, Atlanta CV has held educational clinic sessions for high school music students and participated in a wide variety of other community events.",
+      "to": "Founded in 1997, Atlanta CV fielded its first corps in 1998. The group won the A Class title at the Drum Corps Associates Championships in 2001 and subsequently moved up to the Open Class division. Atlanta CV�s diverse membership spans ages 16 to 54 and includes students, educators, engineers, military personnel, and professionals from a broad range of industries. While based in Atlanta, the corps attracts members from across the Southeast and beyond � reflecting a reputation for excellence, community, and inclusivity.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://atlantacv.org/",
+      "to": "http://atlantacv.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/AtlantaCorpsVets/",
+      "to": "https://www.facebook.com/AtlantaCorpsVets/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/CVDrumCorps/",
+      "to": "https://twitter.com/CVDrumCorps/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/cvdrumcorps/",
+      "to": "https://www.instagram.com/cvdrumcorps/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/corpsvets",
+      "to": "https://www.youtube.com/user/corpsvets",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "address",
+      "from": "34 Kacey Court",
+      "to": "34 Kacey Court Powder Springs GA, 30127",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64c585145ba86258b509e6c2_-XYLmGyJk_ljP3EZe0bfOQtwQJ6gwwZI.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Atlanta CV Corp Atlanta, GA as a part of Drum Corps International. View full schedule of Atlanta CV`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "about",
+      "from": "In the fall of 1980, drum corps in the east was in decline. A mere five years before there were a number of junior and senior corps in New Jersey, New York, Pennsylvania, Connecticut and Massachusetts. By 1980 there were less and even fewer would be active by 1985. So the idea of starting a brand new senior drum corps, in central Jersey, was not the best idea. Given the odds, the Bushwackers were an extreme long shot just to get started and survive a few years. After spending its first year as a parade corps, Bush stormed onto the DCA scene in 1982, placing 8th at its first DCA Championships.",
+      "to": "Founded in 1981 in Keyport, New Jersey, the Bushwackers stormed onto the Drum Corps Associates scene in 1982. Just four years later, the New Jersey corps won its first DCA championship and quickly followed up its winning ways, capturing five additional titles. With membership hailing from across the East Coast, the Bushwackers' approach has always focused on quality performances, consistently placing the corps in the upper-echelon of the all-age drum corps activity. The corps won the World Class bronze medal in the inaugural DCI All-Age Championship in 2024.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://bushwackers.org",
+      "to": "http://bushwackers.org",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/bushwackersDBC",
+      "to": "https://www.facebook.com/bushwackersDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/BushwackersDBC",
+      "to": "https://twitter.com/BushwackersDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/bushwackers_corps",
+      "to": "https://www.instagram.com/bushwackers_corps",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64f74bbf8a8bc6d39804dbf7_Nio4lmXUcjJ1zl5dNEYfT4P5na43OTFA.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Bushwackers Drum Corps Corp Princeton, NJ as a part of Drum Corps International. View full schedule of Bushwackers Drum Corps`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "about",
+      "from": "Cincinnati Tradition was formed in 1984 out of the Silver Spectrum drum line.  The group acquired its first set of instruments from the recently folded Pride of Cincinnati Drum and Bugle Corps and eagerly took to the streets of its local community for parade performances through the late ’80s.  After a two-year hiatus in 1995 and 1996, the Tradition reformed in 1999.  The group competed for the very first time at the Drum Corps Associates World Championships in 2010 and won the organization’s Class A title in 2016 and 2017.",
+      "to": "Founded in 1984, Cincinnati Tradition originally performed primarily as a parade unit and in exhibition at Drum Corps International Tour events within the Ohio Tri-State area. The group competed for the very first time at the Drum Corps Associates World Championships in 2010 and won the organization�s Class A title in 2016 and 2017. Cincinnati Tradition was the inaugural DCI All-Age Open Class Champion in 2024.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.cincinnatitradition.org",
+      "to": "http://www.cincinnatitradition.org",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/CincinnatiTradition",
+      "to": "https://www.facebook.com/CincinnatiTradition",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/cincinnatitradition",
+      "to": "https://instagram.com/cincinnatitradition",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "address",
+      "from": "190 Ewing Dr. #A",
+      "to": "190 Ewing Dr. #A Fairfield OH, 45014",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64f74bd08a8bc6d39804dbf9_d8Xvx_UXrWe1OcEpAYFF6W9ogiDeeVfc.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Cincinnati Tradition Corp Cincinnati, OH as a part of Drum Corps International. View full schedule of Cincinnati Tradition`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "columbus-saints",
+      "corpsKey": "001j000000hiripaaz",
+      "field": "about",
+      "from": null,
+      "to": "Founded in 2003, the Columbus Saints organization is dedicated to providing affordable performing arts programs for young people while building a strong community through music. The Saints are focused on the development of their youth and their community through social support, personal development, skills building and performance excellence. The group was a frequent participant in DCI's DrumLine Battle and SoundSport programs before the start of DCI's All-Age Class in 2024.",
+      "kind": "fill"
+    },
+    {
+      "slug": "columbus-saints",
+      "corpsKey": "001j000000hiripaaz",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://www.columbussaints.org/",
+      "to": "http://www.columbussaints.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbus-saints",
+      "corpsKey": "001j000000hiripaaz",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/columbussaints",
+      "to": "https://www.facebook.com/columbussaints",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbus-saints",
+      "corpsKey": "001j000000hiripaaz",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://www.twitter.com/columbussaints",
+      "to": "https://twitter.com/https://www.twitter.com/columbussaints",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbus-saints",
+      "corpsKey": "001j000000hiripaaz",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/columbussaints/",
+      "to": "https://www.instagram.com/columbussaints/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbus-saints",
+      "corpsKey": "001j000000hiripaaz",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/user/columbussaints",
+      "to": "https://www.youtube.com/user/columbussaints",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbus-saints",
+      "corpsKey": "001j000000hiripaaz",
+      "field": "address",
+      "from": "P.O. Box 248520",
+      "to": "P.O. Box 248520 Columbus OH, 43224",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbus-saints",
+      "corpsKey": "001j000000hiripaaz",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64f74bee8a8bc6d39804dbfd_mZyx9gY_WncDSYh6B1xhTRkKaJxSlUSJ.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "columbus-saints",
+      "corpsKey": "001j000000hiripaaz",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Columbus Saints Corp Columbus, OH as a part of Drum Corps International. View full schedule of Columbus Saints`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "about",
+      "from": "Fusion Core is a competitive, weekend-only drum corps that competes in the DCI All-Age circuit. The Core was founded in 2006 by a group of good friends and family who believed in creating a balance between a friendly atmosphere and competitiveness. The term “fusion” refers to the process and result of joining two or more things together to form one single entity and our group has done just that.",
+      "to": "Founded in 2006 by a group of good friends and family who believed in creating a balance between a friendly atmosphere and competitiveness, �fusion� in the corps� name refers to the process and result of joining two or more things together to form one single entity. Catering to everyone, from those who have never picked up an instrument to seasoned performers, Fusion Core relocated operations in 2025 from its New Jersey roots and is excited to bring DCI All-Age \"Core\" to the Sunshine State.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.fusioncore.org/",
+      "to": "https://www.fusioncore.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/FusionDBCore/",
+      "to": "https://www.facebook.com/FusionDBCore/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/fusioncore_/?hl=en",
+      "to": "https://www.instagram.com/fusioncore_/?hl=en",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/@fusiondrumandbuglecore2076",
+      "to": "https://www.youtube.com/@fusiondrumandbuglecore2076",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64f74be18a8bc6d39804dbfb_DdmeULvJnhOSZGfYXqvZAy62qAI63dMQ.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Fusion Core Corp Central FL as a part of Drum Corps International. View full schedule of Fusion Core`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "govenaires",
+      "corpsKey": "001j000000iwx9raad",
+      "field": "about",
+      "from": "Saint Peter, Minnesota’s Govenaires can trace its roots all the way back to 1927 when the group was organized as the St. Peter Legion Corps.  The corps took its current name in the late 1960s in honor of five Minnesota governors who had come from the corps’ hometown.  First competing at the Drum Corps Associates Championships in 2004, Govenaires took top honors in DCA’s Class A in 2006, 2009, 2011 and 2015.  In addition to drum corps events, the ensemble also takes part in a variety of community performances each year.",
+      "to": "Saint Peter, Minnesota�s Govenaires can trace their roots all the way back to 1927 when the group was organized as the St. Peter Legion Corps. The corps took its current name in the late 1960s in honor of five Minnesota governors who had come from the corps� hometown. First competing at the Drum Corps Associates Championships in 2004, Govenaires took top honors in DCA�s Class A four times and was the inaugural DCI All-Age Class A Champion in 2024. Govenaires will travel to Ireland to perform in the Rose of Tralee celebration in August of 2025.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "govenaires",
+      "corpsKey": "001j000000iwx9raad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.govenaires.org/",
+      "to": "https://www.govenaires.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "govenaires",
+      "corpsKey": "001j000000iwx9raad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/govenaires",
+      "to": "https://www.facebook.com/govenaires",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "govenaires",
+      "corpsKey": "001j000000iwx9raad",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/Govenaires/",
+      "to": "https://twitter.com/Govenaires/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "govenaires",
+      "corpsKey": "001j000000iwx9raad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/govenaires/",
+      "to": "https://instagram.com/govenaires/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "govenaires",
+      "corpsKey": "001j000000iwx9raad",
+      "field": "address",
+      "from": "PO Box 235",
+      "to": "PO Box 235 St. Peter MN, 56082",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "govenaires",
+      "corpsKey": "001j000000iwx9raad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64f74ba98a8bc6d39804dbf5_Q2JwhrZGyrDsZ0vWIbRwO737nWZh72jJ.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "govenaires",
+      "corpsKey": "001j000000iwx9raad",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Govenaires Corp St. Peter, MN as a part of Drum Corps International. View full schedule of Govenaires`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "about",
+      "from": "The Caballeros were founded in 1946 by our director James J Costello Jr. who still holds that title even after his death in 2000. The Caballero membership comes from all over the country and all over the world. The Caballeros have thousands of performances over that last 78 years, The Caballeros have performed world wide for the State Department, The President of the United States, the Queen of England, the NFL, MLB just to name a few.",
+      "to": "Founded in 1946, the Hawthorne Caballeros are one of the most decorated groups on the all-age drum and bugle corps scene, with 46 state titles, 16 national titles and 10 world championship titles to their credit. The Caballeros have performed world-wide for the State Department, the President of the United States and the Queen of England, among many other high-profile appearances. Representing the state of New Jersey, the corps was honored to be included in the �Local Legacies� project, a part of the Library of Congress� bicentennial initiatives in 2000.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.hawthornecaballeros.org/",
+      "to": "https://www.hawthornecaballeros.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/HawthorneCaballeros",
+      "to": "https://www.facebook.com/HawthorneCaballeros",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/Caballeros1946",
+      "to": "https://twitter.com/Caballeros1946",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/hawthornecaballeros/",
+      "to": "https://www.instagram.com/hawthornecaballeros/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "address",
+      "from": "PO Box 2148",
+      "to": "PO Box 2148 Wayne NJ, 07474",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64f74ba28a8bc6d39804dbf4_v1gh4TtN2HIh3TvMGH1-Okp9bktBLAk-.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Hawthorne Caballeros Corp Hawthorne, NJ as a part of Drum Corps International. View full schedule of Hawthorne Caballeros`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "division_name",
+      "from": null,
+      "to": "All Age Class",
+      "kind": "fill"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "about",
+      "from": "The Connecticut Hurricanes Drum & Bugle Corps is an All-Age Drum Corps performance organization based in Seymour, Connecticut. The Corps prides itself in being the only World Class All-Age Drum Corps in New England, and draws its members from throughout Connecticut, Massachusetts, New Hampshire, Vermont, as well as New York State and the New York City metro area.",
+      "to": "Founded in Derby, Connecticut in 1932 as the John H. Collins American Legion Post Fife Drum & Bugle Corps, the Hurricanes added bugles to their ensemble and entered the competitive arena in 1955. A charter member of Drum Corps Associates in 1963, the corps has won major championship title in the all-age drum and bugle corps activity including back-to-back DCA Open Class titles in 2022 and 2023.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://cthurricanes.org",
+      "to": "http://cthurricanes.org",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://facebook.com/cthurricanes",
+      "to": "https://facebook.com/cthurricanes",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/cthurricanes",
+      "to": "https://twitter.com/cthurricanes",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://instagram.com/cthurricanes",
+      "to": "https://instagram.com/cthurricanes",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/@cthurricanes1/",
+      "to": "https://www.youtube.com/@cthurricanes1/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "address",
+      "from": "PO Box 214",
+      "to": "PO Box 214 Seymour CT, 06483",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64f74b998a8bc6d39804dbf3_bGdJmhvhjBDHMzOkuNJffT8QbxIJ9-vv.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "hurricanes",
+      "corpsKey": "hurricanes",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Hurricanes Corp Seymour, CT as a part of Drum Corps International. View full schedule of Hurricanes`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "division_name",
+      "from": "SoundSport Medalist Division",
+      "to": "All Age Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "about",
+      "from": null,
+      "to": "Founded as an American Legion corps in 1946, MBI has earned a number of accolades throughout its history. The group was a Drum Corps Associates (DCA) medalist from 2008-2016, and won the DCA championship title in 2011. In 2022, the corps was named \"Best of Show\" at the 2022 SoundSport International Music & Food Festival as part of DCI World Championships Week in Indianapolis. In the second year of a three-year evaluation process, MBI is currently recognized as an All-Age Class Affiliate.",
+      "kind": "fill"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "address",
+      "from": "4177 Kaitlin Dr",
+      "to": "4177 Kaitlin Dr Vadnais Hts MN, 55127",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://images.dci.org/wp-content/uploads/2025/10/mn-brass-logo-800x800-1.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "meta_description",
+      "from": null,
+      "to": "About MBI Corp as a part of Drum Corps International. View full schedule of MBI `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "division_name",
+      "from": "SoundSport",
+      "to": "All Age Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "about",
+      "from": null,
+      "to": "Marking its inaugural season in 2023, Northern Lights achieved a Gold rating at the SoundSport International Music & Food Festival as part of DCI World Championships Week in Indianapolis. The corps' mission is to provide an affordable and accessible marching arts experience to all those who seek it in the Midwest. In the corps' second year of a three-year evaluation process, Northern Lights is currently recognized as an All-Age Class Affiliate.",
+      "kind": "fill"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.northernlightsmi.org/",
+      "to": "https://www.northernlightsmi.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "address",
+      "from": "5783 West River Drive Northeast",
+      "to": "5783 West River Drive Northeast Plainfield charter Township MI, 49306",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://images.dci.org/wp-content/uploads/2025/10/northern-lights-2024-800x800-1.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Northern Lights Corp as a part of Drum Corps International. View full schedule of Northern Lights `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "about",
+      "from": "The Reading Buccaneers Drum and Bugle Corps is a not-for-profit, education oriented, musical organization dedicated to providing its members with a unique performing experience. The Buccaneers are a charter member of the Drum Corps Associates (DCA) and compete annually for the DCA Championship. Additionally, the Bucs perform in various venues including, parades, exhibitions, concerts, and field shows.",
+      "to": "Organized in 1957 as a parade corps by �age-outs� of various local junior corps and WWII and Korean War veterans, the Reading Buccaneers soon embarked upon field competitions, winning three consecutive VFW championships in 1960, 1961 and 1962. Earning the inaugural Drum Corps Associates championship title in 1965, the Pennsylvania corps won the DCA championship title 19 times in total, 15 of them between 2005 and 2023. The corps was the inaugural DCI All-Age World Class Champion in 2024.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.readingbuccaneers.org/",
+      "to": "https://www.readingbuccaneers.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/readingbuccaneers",
+      "to": "https://www.facebook.com/readingbuccaneers",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/rdgbuccaneers",
+      "to": "https://twitter.com/rdgbuccaneers",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/rdgbuccaneers/",
+      "to": "https://www.instagram.com/rdgbuccaneers/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/@readingbuccaneers6532/",
+      "to": "https://www.youtube.com/@readingbuccaneers6532/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "address",
+      "from": "P.O. Box 13032",
+      "to": "P.O. Box 13032 Reading PA, 19612",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64cf1f394adf8b637d0133c8_JwBJ2imAcMlvOhrOfje-bI6vjo0p5odA.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "reading-buccaneers",
+      "corpsKey": "0010a00001e2pfhaam",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Reading Buccaneers Corp Reading, PA as a part of Drum Corps International. View full schedule of Reading Buccaneers`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "about",
+      "from": "Rogues Hollow Regiment is an all-age competitive marching music ensemble from Ohio. The group strives to provide its members a high-quality, fun and personally rewarding music education and life experience through the marching arts in a positive, family-oriented, and goal-driven environment. Rogues Hollow Regiment’s accolades include the 2019 SoundSport International Music & Food Festival “Best of Show” and the 2021 Drum Corps Associates Class A championship title.",
+      "to": "Formed in 2015 by alumni staff and students from the Chippewa High School Marching Band in Doylestown, Ohio, Rogues Hollow Regiment's mission is to \"engage, entertain, and bring joys to those around us with high-energy music and exciting visual performance,\" whether on the competition field or along the parade route. The group�s accolades include the 2019 SoundSport International Music & Food Festival �Best of Show� and the 2021 and 2023 Drum Corps Associates Class A championship titles. Rogues Hollow Regiment is proud to celebrate its 10th anniversary in 2025.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/http://rogueshollowregiment.com/",
+      "to": "http://rogueshollowregiment.com/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/rhrdbc",
+      "to": "https://www.facebook.com/rhrdbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "twitter",
+      "from": "https://web.archive.org/web/20260120145801/https://twitter.com/rhrdbc",
+      "to": "https://twitter.com/rhrdbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/rhrdbc",
+      "to": "https://www.instagram.com/rhrdbc",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/@RHRDBC",
+      "to": "https://www.youtube.com/@RHRDBC",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "address",
+      "from": "P.O. Box 1302",
+      "to": "P.O. Box 1302 Norton Ohio, 44203",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64f7458d55fa2f521f0eaa73_Jhbye5Tqk3c_TTI9F1tugQW9uzi9xQz4.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Rogues Hollow Regiment Corp Doylestown, OH as a part of Drum Corps International. View full schedule of Rogues Hollow Regiment`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "sunrisers",
+      "corpsKey": "0010a00001iqmzuaah",
+      "field": "about",
+      "from": "Founded in 1953, Sunrisers is an all-age drum and bugle corps hailing from Long Island, New York.  A powerhouse in Drum Corps Associates competitions, Sunrisers is a seven-time DCA Champion.  The corps’ most recent title was earned in 2007 as a Class A corps.  Performing in the Open Class division since 2013, the Sunrisers finished 10th at the 2018 DCA Finals.",
+      "to": "Founded on Long Island in 1954, the Sunrisers have a proud history of innovation and excellence that includes seven Drum Corps Associates World Championship titles. The organization strives to enrich the lives of all its performers while providing the community with an enjoyable, entertaining and unique musical experience.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "sunrisers",
+      "corpsKey": "0010a00001iqmzuaah",
+      "field": "website",
+      "from": "lisunrisers.org/",
+      "to": "https://www.sunrisersdrumcorps.org",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "sunrisers",
+      "corpsKey": "0010a00001iqmzuaah",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/lisunrisers",
+      "kind": "fill"
+    },
+    {
+      "slug": "sunrisers",
+      "corpsKey": "0010a00001iqmzuaah",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/sunriserscorps/",
+      "kind": "fill"
+    },
+    {
+      "slug": "sunrisers",
+      "corpsKey": "0010a00001iqmzuaah",
+      "field": "address",
+      "from": "8 Avenue B",
+      "to": "8 Avenue B Kings Park NY, 11754",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "sunrisers",
+      "corpsKey": "0010a00001iqmzuaah",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/657b18c9ec350f75bd05b792_QgeuOSjQFJ6469rKksKpLGYdMMM7R6AC.png",
+      "kind": "fill"
+    },
+    {
+      "slug": "sunrisers",
+      "corpsKey": "0010a00001iqmzuaah",
+      "field": "meta_description",
+      "from": "",
+      "to": "About Sunrisers Corp Kings Park, NY as a part of Drum Corps International. View full schedule of Sunrisers`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "white-sabers-2",
+      "corpsKey": "001jw00000d0zlniaj",
+      "field": "division_name",
+      "from": "All-Age - Open Class",
+      "to": "All Age Class",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "white-sabers-2",
+      "corpsKey": "001jw00000d0zlniaj",
+      "field": "about",
+      "from": "White Sabers Drum & Bugle Corps is an all-age competitive drum and bugle corps based in Rochester, New York. Founded in 1928, the corps has a long history as a parade corps. White Sabers is a two-time DCA Class A World Champion (2013, 2014), a perennial DCA Open Class finalist — achieving their highest placement (4th place) in 2019. The corps joined DCA's newly created All-age Class in 2022.",
+      "to": "Founded in 1928 by the commander of the American Legion Post #87 in Dansville, New York, the White Sabers got their start primarily as a concert and parade corps. After a number of years of inactivity, the organization reformed and joined Drum Corps Associates as a Class A corps in 2005. The corps was named the DCA Class A champion in 2013 and 2014. At the inaugural DCI All-Age Class Championship in 2024, White Sabers won Open Class caption awards for High Brass and High Total Effect.",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "white-sabers-2",
+      "corpsKey": "001jw00000d0zlniaj",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://www.whitesabers.org/",
+      "to": "https://www.whitesabers.org/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "white-sabers-2",
+      "corpsKey": "001jw00000d0zlniaj",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/whitesabers/",
+      "to": "https://www.facebook.com/whitesabers/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "white-sabers-2",
+      "corpsKey": "001jw00000d0zlniaj",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/whitesabers/",
+      "to": "https://www.instagram.com/whitesabers/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "white-sabers-2",
+      "corpsKey": "001jw00000d0zlniaj",
+      "field": "address",
+      "from": "2117 Buffalo Road #150",
+      "to": "2117 Buffalo Road #150 Rochester NY, 14624",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "white-sabers-2",
+      "corpsKey": "001jw00000d0zlniaj",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64f74bd98a8bc6d39804dbfa_Pg_7Bkv7RB80ayS3yxM0eiQd1v8GuvSD.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "white-sabers-2",
+      "corpsKey": "001jw00000d0zlniaj",
+      "field": "meta_description",
+      "from": "",
+      "to": "About White Sabers Corp as a part of Drum Corps International. View full schedule of White Sabers `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "high-school-57",
+      "corpsKey": "beijing-57-high-school",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://images.dci.org/wp-content/uploads/2024/12/dci-splash.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "high-school-57",
+      "corpsKey": "beijing-57-high-school",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Beijing 57 High School Corp as a part of Drum Corps International. View full schedule of Beijing 57 High School `s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "website",
+      "from": "https://web.archive.org/web/20260120145801/https://corporate.calgarystampede.com/foundation/programs/stampede-showband",
+      "to": "https://corporate.calgarystampede.com/foundation/programs/stampede-showband",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "facebook",
+      "from": "https://web.archive.org/web/20260120145801/https://www.facebook.com/ShowbandCS",
+      "to": "https://www.facebook.com/ShowbandCS",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "twitter",
+      "from": "@ShowbandCS",
+      "to": "https://twitter.com/ShowbandCS",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "instagram",
+      "from": "https://web.archive.org/web/20260120145801/https://www.instagram.com/showbandcs/",
+      "to": "https://www.instagram.com/showbandcs/",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "youtube",
+      "from": "https://web.archive.org/web/20260120145801/https://www.youtube.com/c/CalgaryStampedeShowband",
+      "to": "https://www.youtube.com/c/CalgaryStampedeShowband",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "address",
+      "from": "Box 1060, Station M",
+      "to": "Box 1060, Station M Calgary Calgary, T2P 2K8",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "cover_image",
+      "from": null,
+      "to": "https://production.assets.dci.org/64bf48786ad466fabb004472__fMxQmgL6mr-08bi1LpiCn3cY3jSMnoq.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Calgary Stampede Showband Corp Calgary, Canada as a part of Drum Corps International. View full schedule of Calgary Stampede Showband`s Upcoming Events and Related News.",
+      "kind": "fill"
+    },
+    {
+      "slug": "mercedes-marching-band",
+      "corpsKey": "mercedes-marching-band",
+      "field": "division_name",
+      "from": null,
+      "to": "International Class",
+      "kind": "fill"
+    },
+    {
+      "slug": "mercedes-marching-band",
+      "corpsKey": "mercedes-marching-band",
+      "field": "display_city",
+      "from": null,
+      "to": "Mercedes Norte, Costa Rica",
+      "kind": "fill"
+    },
+    {
+      "slug": "mercedes-marching-band",
+      "corpsKey": "mercedes-marching-band",
+      "field": "corps_logo",
+      "from": null,
+      "to": "https://images.dci.org/wp-content/uploads/2024/12/dci-splash.jpg",
+      "kind": "fill"
+    },
+    {
+      "slug": "mercedes-marching-band",
+      "corpsKey": "mercedes-marching-band",
+      "field": "meta_description",
+      "from": null,
+      "to": "About Mercedes Marching Band Corp as a part of Drum Corps International. View full schedule of Mercedes Marching Band `s Upcoming Events and Related News.",
+      "kind": "fill"
+    }
+  ],
+  "held": [
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "address",
+      "from": "3538 Peoria St\r\nSuite #500",
+      "to": "3538 Peoria St Suite #500 Aurora CO, 80010",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "city",
+      "from": "Aurora",
+      "to": "Denver",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "blue-knights",
+      "corpsKey": "001j000000iwwsoaal",
+      "field": "display_city",
+      "from": "Aurora, CO",
+      "to": "Denver, CO",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "city",
+      "from": "N. Canton",
+      "to": "Canton",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bluecoats",
+      "corpsKey": "001j000000iwwsraal",
+      "field": "display_city",
+      "from": "N. Canton, OH",
+      "to": "Canton, OH",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "music-city",
+      "corpsKey": "001j000000iwxa5aal",
+      "field": "address",
+      "from": "718 Thompson Lane, \r\nSte 108-425",
+      "to": "718 Thompson Lane, Ste 108-425 Nashville TN, 37204",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "city",
+      "from": "Diamond Bar",
+      "to": "City of Industry",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "pacific-crest",
+      "corpsKey": "001j000000iwxa7aal",
+      "field": "display_city",
+      "from": "Diamond Bar, CA",
+      "to": "City of Industry, CA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "seattle-cascades",
+      "corpsKey": "001j000000iwx93aad",
+      "field": "address",
+      "from": "13717 Linden Ave. N. #201",
+      "to": "--- Renton WA, 00000",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spartans",
+      "corpsKey": "001j000000iwxacaa1",
+      "field": "address",
+      "from": "PO Box 1429",
+      "to": "166 DW Highway A-2 Nashua NH, 03060",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "city",
+      "from": "Indian Trail",
+      "to": "Atlanta",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "state",
+      "from": "NC",
+      "to": "GA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "spirit-of-atlanta",
+      "corpsKey": "001j000000iwxadaa1",
+      "field": "display_city",
+      "from": "Indian Trail, NC",
+      "to": "Atlanta, GA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "city",
+      "from": "West Richland",
+      "to": "Pasco",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "columbians",
+      "corpsKey": "001j000000iwx99aad",
+      "field": "display_city",
+      "from": "West Richland, WA",
+      "to": "Pasco, WA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "city",
+      "from": "Lemon Grove",
+      "to": "San Diego",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "gold",
+      "corpsKey": "001j000000iwx9paad",
+      "field": "display_city",
+      "from": "Lemon Grove, CA",
+      "to": "San Diego, CA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "golden-empire",
+      "corpsKey": "001j000000iwx9qaad",
+      "field": "address",
+      "from": "1801 Panorama Dr.\r\nBC Foundation - GE Performing Arts",
+      "to": "1801 Panorama Dr. BC Foundation - GE Performing Arts Bakersfield CA, 93305",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "address",
+      "from": "PO Box 782406",
+      "to": "865 CR 2620 Mineola TX, 75773",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "city",
+      "from": "San Antonio",
+      "to": "McKinney",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "guardians",
+      "corpsKey": "001j000000iwx9saad",
+      "field": "display_city",
+      "from": "San Antonio, TX",
+      "to": "McKinney, TX",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "city",
+      "from": "Safety Harbor",
+      "to": "Tampa Bay",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "heat-wave",
+      "corpsKey": "001j000000iwx9taad",
+      "field": "display_city",
+      "from": "Safety Harbor, FL",
+      "to": "Tampa Bay, FL",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "city",
+      "from": "Nashville",
+      "to": "Memphis",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "memphis-blues",
+      "corpsKey": "0015b00002byuh0aap",
+      "field": "display_city",
+      "from": "Nashville, TN",
+      "to": "Memphis, TN",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "city",
+      "from": "Trenton",
+      "to": "Princeton",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "raiders",
+      "corpsKey": "001j000000iwxaaaa1",
+      "field": "display_city",
+      "from": "Trenton, NJ",
+      "to": "Princeton, NJ",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "city",
+      "from": "Monticello",
+      "to": "Anoka",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "river-city-rhythm",
+      "corpsKey": "001j000000qzs1qaaf",
+      "field": "display_city",
+      "from": "Monticello, MN",
+      "to": "Anoka, MN",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "state",
+      "from": "Oklahoma",
+      "to": "OK",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "zephyrus-drum-bugle-corps",
+      "corpsKey": "zephyrus-drum-bugle-corps",
+      "field": "display_city",
+      "from": "Tulsa, Oklahoma",
+      "to": "Tulsa, OK",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "city",
+      "from": "Powder Springs",
+      "to": "Atlanta",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "atlanta-cv",
+      "corpsKey": "001j000000iwwsnaal",
+      "field": "display_city",
+      "from": "Powder Springs, GA",
+      "to": "Atlanta, GA",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "bushwackers-drum-corps",
+      "corpsKey": "bushwackers-drum-corps",
+      "field": "address",
+      "from": "174 Nassau Street, #198",
+      "to": "174 Nassau Street, #198 Princeton NJ, 08542",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "city",
+      "from": "Fairfield",
+      "to": "Cincinnati",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "cincinnati-tradition",
+      "corpsKey": "001j000000iwx94aad",
+      "field": "display_city",
+      "from": "Fairfield, OH",
+      "to": "Cincinnati, OH",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "address",
+      "from": "6527 San Francesco Way\r\n#1304",
+      "to": "6527 San Francesco Way #1304 Windermere FL, 34786",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "fusion-core",
+      "corpsKey": "001j000000gbtqyaac",
+      "field": "display_city",
+      "from": "Windermere, FL",
+      "to": "Central FL",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "city",
+      "from": "Wayne",
+      "to": "Hawthorne",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "hawthorne-caballeros",
+      "corpsKey": "0015b00001mpuwcaak",
+      "field": "display_city",
+      "from": "Wayne, NJ",
+      "to": "Hawthorne, NJ",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "city",
+      "from": "Vadnais Hts",
+      "to": "St. Paul",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "minnesota-brass",
+      "corpsKey": "001j000000iwxa4aal",
+      "field": "display_city",
+      "from": "Vadnais Hts, MN",
+      "to": "St. Paul, MN",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "city",
+      "from": "Plainfield charter Township",
+      "to": "Grand Rapids",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "northern-lights-drum-bugle-corps",
+      "corpsKey": "northern-lights-drum-bugle-corps",
+      "field": "display_city",
+      "from": "Plainfield charter Township, MI",
+      "to": "Grand Rapids, MI",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "city",
+      "from": "Norton",
+      "to": "Doylestown",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "state",
+      "from": "Ohio",
+      "to": "OH",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "rogues-hollow-regiment",
+      "corpsKey": "001j000000cap31aaa",
+      "field": "display_city",
+      "from": "Norton, Ohio",
+      "to": "Doylestown, OH",
+      "kind": "overwrite"
+    },
+    {
+      "slug": "calgary-stampede-showband",
+      "corpsKey": "001j000000jtq2zaad",
+      "field": "display_city",
+      "from": "Calgary, Calgary",
+      "to": "Calgary, Canada",
+      "kind": "overwrite"
+    }
+  ]
+}

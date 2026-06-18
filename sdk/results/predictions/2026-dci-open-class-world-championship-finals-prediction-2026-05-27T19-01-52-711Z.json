@@ -1,0 +1,114 @@
+{
+  "generated_at": "2026-05-27T19:01:52.712Z",
+  "model_dir": "models\\v9_subcaption_fixed\\v9_prod_actually_final_1779812116275",
+  "event": {
+    "event_id": "web-2026-2026-dci-open-class-world-championship-finals",
+    "slug": "2026-dci-open-class-world-championship-finals",
+    "name": "DCI Open Class World Championship Finals",
+    "event_name": "DCI Open Class World Championship Finals",
+    "start_date": "2026-08-04",
+    "start_time": null,
+    "web_start_time": "6:00 PM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Dayton",
+    "location_state": "OH"
+  },
+  "readiness": {
+    "lineup_rows": 1,
+    "matched_corps_keys": 1,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 1,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 90.69767441860465
+  },
+  "input_signature": "f367303ed55686ece7c91b501b9dc4c584f35978373dffed4ad410f9a03fac79",
+  "builder_version": "v9-event-prediction-lineup-fallback-v3",
+  "input_audit": {
+    "scored_lineup_rows": 1,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "mercedes-marching-band",
+        "corps": "Mercedes Marching Band",
+        "division": null,
+        "performance_order": 3,
+        "time": "TBD"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 2,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Mercedes Marching Band",
+        "performance_order": 3,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Retreat",
+        "performance_order": 4,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-open-class-world-championship-finals",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-08-04",
+      "scored_lineup_rows": 0,
+      "matched_corps_keys": 0,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "missing_scored_lineup"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "mercedes-marching-band",
+      "corps": "Mercedes Marching Band",
+      "city": "Mercedes Norte, Costa Rica",
+      "division": "World Class",
+      "performance_order": 3,
+      "time": "TBD",
+      "total": 79.658,
+      "GE": 31.952,
+      "Visual": 23.816,
+      "Music": 23.89,
+      "GE1": 15.947,
+      "GE2": 16.005,
+      "VP": 15.959,
+      "VA": 15.909,
+      "CG": 15.764,
+      "MB": 15.892,
+      "MA": 15.947,
+      "MP": 15.941,
+      "raw_model_total": 51.212,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "baseline_rank_source": "historical_mean_rank",
+      "baseline_confidence": "estimated"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

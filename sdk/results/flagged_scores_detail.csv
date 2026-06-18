@@ -1,0 +1,614 @@
+severity,type,description,competition_slug,season,event_name,caption_name,score,count
+error,non_standard_caption,"Non-standard caption name found: "Penalties"",,,,Penalties,,8035
+error,non_standard_caption,"Non-standard caption name found: "7 Music Ensemble"",,,,7 Music Ensemble,17.1,127
+error,non_standard_caption,"Non-standard caption name found: "4 Visual Ensemble"",,,,4 Visual Ensemble,17.4,127
+error,non_standard_caption,"Non-standard caption name found: "2 Music Effect"",,,,2 Music Effect,23.8,127
+error,non_standard_caption,"Non-standard caption name found: "1 Visual Effect"",,,,1 Visual Effect,23.7,127
+error,non_standard_caption,"Non-standard caption name found: "Visual Comm"",,,,Visual Comm,8.8,101
+error,non_standard_caption,"Non-standard caption name found: "Music Comm"",,,,Music Comm,9.1,101
+error,non_standard_caption,"Non-standard caption name found: "6 Brass"",,,,6 Brass,17.2,101
+error,non_standard_caption,"Non-standard caption name found: "5 Color Guard"",,,,5 Color Guard,18.2,101
+error,non_standard_caption,"Non-standard caption name found: "8 Percussion"",,,,8 Percussion,17,100
+error,non_standard_caption,"Non-standard caption name found: "Visual"",,,,Visual,99.5,39
+error,non_standard_caption,"Non-standard caption name found: "Visual Performance"",,,,Visual Performance,93,33
+error,non_standard_caption,"Non-standard caption name found: "Overall Impression"",,,,Overall Impression,93,33
+error,non_standard_caption,"Non-standard caption name found: "Music Performance"",,,,Music Performance,92,33
+error,non_standard_caption,"Non-standard caption name found: "Woodwind"",,,,Woodwind,98,29
+error,non_standard_caption,"Non-standard caption name found: "Vocal"",,,,Vocal,97.5,25
+error,non_standard_caption,"Non-standard caption name found: "Special Perc"",,,,Special Perc,38.9,12
+error,non_standard_caption,"Non-standard caption name found: "Special GE"",,,,Special GE,78.5,12
+error,non_standard_caption,"Non-standard caption name found: "Special CG"",,,,Special CG,38.6,12
+error,non_standard_caption,"Non-standard caption name found: "Special Brass"",,,,Special Brass,38.9,12
+error,non_standard_caption,"Non-standard caption name found: "Special - Visual Proficiency"",,,,Special - Visual Proficiency,38.75,12
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,95,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,90,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,90,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,93,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,97.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,95.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,89,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,82.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,87.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,99.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Visual,85,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Visual,83.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Visual,89.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,88,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,86.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,84,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,92,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,99,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,89,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,91.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,89,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,85,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,87,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,91,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,89.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,93,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,91.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,91.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,95.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,96,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,87.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,90.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,90.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,90.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,97,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,94.75,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,95,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,94.5,
+error,category_as_caption,"Category name "Visual" appearing as caption (should be in category_scores, not caption_scores)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,98,
+error,score_out_of_range,"Score 99.5 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,99.5,
+error,score_out_of_range,"Score 99 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,99,
+error,score_out_of_range,"Score 99 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,99,
+error,score_out_of_range,"Score 98.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,98.5,
+error,score_out_of_range,"Score 98 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,98,
+error,score_out_of_range,"Score 98 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,98,
+error,score_out_of_range,"Score 97.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,97.5,
+error,score_out_of_range,"Score 97.5 exceeds normal 0-20pt range for caption "Vocal"",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Vocal,97.5,
+error,score_out_of_range,"Score 97.5 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,97.5,
+error,score_out_of_range,"Score 97.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,97.5,
+error,score_out_of_range,"Score 97.5 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,97.5,
+error,score_out_of_range,"Score 97 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,97,
+error,score_out_of_range,"Score 97 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,97,
+error,score_out_of_range,"Score 97 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,97,
+error,score_out_of_range,"Score 97 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,97,
+error,score_out_of_range,"Score 96.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,96.5,
+error,score_out_of_range,"Score 96.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,96.5,
+error,score_out_of_range,"Score 96.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,96.5,
+error,score_out_of_range,"Score 96.2 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,96.2,
+error,score_out_of_range,"Score 96 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,96,
+error,score_out_of_range,"Score 96 exceeds normal 0-20pt range for caption "Vocal"",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Vocal,96,
+error,score_out_of_range,"Score 96 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,96,
+error,score_out_of_range,"Score 96 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,96,
+error,score_out_of_range,"Score 96 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,96,
+error,score_out_of_range,"Score 95.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,95.5,
+error,score_out_of_range,"Score 95.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,95.5,
+error,score_out_of_range,"Score 95.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,95.5,
+error,score_out_of_range,"Score 95.5 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,95.5,
+error,score_out_of_range,"Score 95.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,95.5,
+error,score_out_of_range,"Score 95.5 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,95.5,
+error,score_out_of_range,"Score 95 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,95,
+error,score_out_of_range,"Score 95 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,95,
+error,score_out_of_range,"Score 95 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,95,
+error,score_out_of_range,"Score 95 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,95,
+error,score_out_of_range,"Score 95 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Percussion,95,
+error,score_out_of_range,"Score 94.75 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,94.75,
+error,score_out_of_range,"Score 94.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,94.5,
+error,score_out_of_range,"Score 94.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,94.5,
+error,score_out_of_range,"Score 94.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,94.5,
+error,score_out_of_range,"Score 94.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,94.5,
+error,score_out_of_range,"Score 94.4 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,94.4,
+error,score_out_of_range,"Score 94 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,94,
+error,score_out_of_range,"Score 94 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,94,
+error,score_out_of_range,"Score 94 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,94,
+error,score_out_of_range,"Score 94 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,94,
+error,score_out_of_range,"Score 93.75 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,93.75,
+error,score_out_of_range,"Score 93.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,93.5,
+error,score_out_of_range,"Score 93.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,93.5,
+error,score_out_of_range,"Score 93.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,93.5,
+error,score_out_of_range,"Score 93.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,93.5,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Percussion,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Visual Performance"",2023-rotary-music-festival,2023,"Rotary Music Festival",Visual Performance,93,
+error,score_out_of_range,"Score 93 exceeds normal 0-20pt range for caption "Overall Impression"",2023-rotary-music-festival,2023,"Rotary Music Festival",Overall Impression,93,
+error,score_out_of_range,"Score 92.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,92.5,
+error,score_out_of_range,"Score 92.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,92.5,
+error,score_out_of_range,"Score 92.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,92.5,
+error,score_out_of_range,"Score 92.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,92.5,
+error,score_out_of_range,"Score 92.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,92.5,
+error,score_out_of_range,"Score 92.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,92.5,
+error,score_out_of_range,"Score 92.5 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,92.5,
+error,score_out_of_range,"Score 92.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Percussion,92.5,
+error,score_out_of_range,"Score 92.4 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,92.4,
+error,score_out_of_range,"Score 92 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,92,
+error,score_out_of_range,"Score 92 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,92,
+error,score_out_of_range,"Score 92 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,92,
+error,score_out_of_range,"Score 92 exceeds normal 0-20pt range for caption "Percussion"",2018-dci-performers-showcase-venue-1,2018,"DCI Performers Showcase - Venue 1",Percussion,92,
+error,score_out_of_range,"Score 92 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,92,
+error,score_out_of_range,"Score 92 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,92,
+error,score_out_of_range,"Score 92 exceeds normal 0-20pt range for caption "Music Performance"",2023-rotary-music-festival,2023,"Rotary Music Festival",Music Performance,92,
+error,score_out_of_range,"Score 91.75 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,91.75,
+error,score_out_of_range,"Score 91.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,91.5,
+error,score_out_of_range,"Score 91.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,91.5,
+error,score_out_of_range,"Score 91.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,91.5,
+error,score_out_of_range,"Score 91.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,91.5,
+error,score_out_of_range,"Score 91.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,91.5,
+error,score_out_of_range,"Score 91.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,91.5,
+error,score_out_of_range,"Score 91.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,91.5,
+error,score_out_of_range,"Score 91.4 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,91.4,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Percussion,91,
+error,score_out_of_range,"Score 91 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,91,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,90.5,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,90.5,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,90.5,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,90.5,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,90.5,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,90.5,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,90.5,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,90.5,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,90.5,
+error,score_out_of_range,"Score 90.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,90.5,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,90,
+error,score_out_of_range,"Score 90 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,90,
+error,score_out_of_range,"Score 89.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,89.5,
+error,score_out_of_range,"Score 89.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,89.5,
+error,score_out_of_range,"Score 89.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,89.5,
+error,score_out_of_range,"Score 89.5 exceeds normal 0-20pt range for caption "Visual"",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Visual,89.5,
+error,score_out_of_range,"Score 89.5 exceeds normal 0-20pt range for caption "Vocal"",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Vocal,89.5,
+error,score_out_of_range,"Score 89.5 exceeds normal 0-20pt range for caption "Percussion"",2018-dci-performers-showcase-venue-1,2018,"DCI Performers Showcase - Venue 1",Percussion,89.5,
+error,score_out_of_range,"Score 89.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,89.5,
+error,score_out_of_range,"Score 89.5 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,89.5,
+error,score_out_of_range,"Score 89.25 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,89.25,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Overall Impression"",2022-music-on-the-march,2022,"Music on the March",Overall Impression,89,
+error,score_out_of_range,"Score 89 exceeds normal 0-20pt range for caption "Overall Impression"",2023-rotary-music-festival,2023,"Rotary Music Festival",Overall Impression,89,
+error,score_out_of_range,"Score 88.75 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,88.75,
+error,score_out_of_range,"Score 88.75 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,88.75,
+error,score_out_of_range,"Score 88.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,88.5,
+error,score_out_of_range,"Score 88.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,88.5,
+error,score_out_of_range,"Score 88.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,88.5,
+error,score_out_of_range,"Score 88.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,88.5,
+error,score_out_of_range,"Score 88.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,88.5,
+error,score_out_of_range,"Score 88.25 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,88.25,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Percussion,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Percussion,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Overall Impression"",2023-dci-broken-arrow,2023,"DCI Broken Arrow",Overall Impression,88,
+error,score_out_of_range,"Score 88 exceeds normal 0-20pt range for caption "Visual Performance"",2023-whitewater-classic,2023,"Whitewater Classic",Visual Performance,88,
+error,score_out_of_range,"Score 87.75 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,87.75,
+error,score_out_of_range,"Score 87.75 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,87.75,
+error,score_out_of_range,"Score 87.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,87.5,
+error,score_out_of_range,"Score 87.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,87.5,
+error,score_out_of_range,"Score 87.5 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,87.5,
+error,score_out_of_range,"Score 87.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,87.5,
+error,score_out_of_range,"Score 87.5 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,87.5,
+error,score_out_of_range,"Score 87.5 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,87.5,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Woodwind"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Woodwind,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Brass"",2018-dci-performers-showcase-venue-2,2018,"DCI Performers Showcase - Venue 2",Brass,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Music Performance"",2022-rotary-music-festival,2022,"Rotary Music Festival",Music Performance,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Overall Impression"",2022-rotary-music-festival,2022,"Rotary Music Festival",Overall Impression,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Music Performance"",2023-show-of-shows,2023,"Show of Shows",Music Performance,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Visual Performance"",2023-show-of-shows,2023,"Show of Shows",Visual Performance,87,
+error,score_out_of_range,"Score 87 exceeds normal 0-20pt range for caption "Music Performance"",2023-whitewater-classic,2023,"Whitewater Classic",Music Performance,87,
+error,score_out_of_range,"Score 86.75 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,86.75,
+error,score_out_of_range,"Score 86.75 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,86.75,
+error,score_out_of_range,"Score 86.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,86.5,
+error,score_out_of_range,"Score 86.5 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,86.5,
+error,score_out_of_range,"Score 86.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,86.5,
+error,score_out_of_range,"Score 86.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,86.5,
+error,score_out_of_range,"Score 86.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,86.5,
+error,score_out_of_range,"Score 86.25 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,86.25,
+error,score_out_of_range,"Score 86.25 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,86.25,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Brass"",2018-dci-performers-showcase-venue-1,2018,"DCI Performers Showcase - Venue 1",Brass,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Percussion,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Music Performance"",2022-river-city-rhapsody-la-crosse,2022,"River City Rhapsody - La Crosse",Music Performance,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Visual Performance"",2022-music-on-the-march,2022,"Music on the March",Visual Performance,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Music Performance"",2022-drums-on-parade,2022,"Drums on Parade",Music Performance,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Music Performance"",2023-dci-broken-arrow,2023,"DCI Broken Arrow",Music Performance,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Overall Impression"",2023-show-of-shows,2023,"Show of Shows",Overall Impression,86,
+error,score_out_of_range,"Score 86 exceeds normal 0-20pt range for caption "Overall Impression"",2023-whitewater-classic,2023,"Whitewater Classic",Overall Impression,86,
+error,score_out_of_range,"Score 85.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,85.5,
+error,score_out_of_range,"Score 85.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,85.5,
+error,score_out_of_range,"Score 85.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,85.5,
+error,score_out_of_range,"Score 85.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,85.5,
+error,score_out_of_range,"Score 85.5 exceeds normal 0-20pt range for caption "Woodwind"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Woodwind,85.5,
+error,score_out_of_range,"Score 85.25 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,85.25,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Percussion"",2018-dci-performers-showcase-venue-3,2018,"DCI Performers Showcase - Venue 3",Percussion,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Visual"",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Visual,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Overall Impression"",2022-river-city-rhapsody-la-crosse,2022,"River City Rhapsody - La Crosse",Overall Impression,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Visual Performance"",2023-dci-broken-arrow,2023,"DCI Broken Arrow",Visual Performance,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Music Performance"",2023-brass-impact,2023,"Brass Impact",Music Performance,85,
+error,score_out_of_range,"Score 85 exceeds normal 0-20pt range for caption "Visual Performance"",2023-corps-encore,2023,"Corps Encore",Visual Performance,85,
+error,score_out_of_range,"Score 84.8 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,84.8,
+error,score_out_of_range,"Score 84.8 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,84.8,
+error,score_out_of_range,"Score 84.75 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,84.75,
+error,score_out_of_range,"Score 84.6 exceeds normal 0-20pt range for caption "Vocal"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Vocal,84.6,
+error,score_out_of_range,"Score 84.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,84.5,
+error,score_out_of_range,"Score 84 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,84,
+error,score_out_of_range,"Score 84 exceeds normal 0-20pt range for caption "Visual"",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",Visual,84,
+error,score_out_of_range,"Score 84 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,84,
+error,score_out_of_range,"Score 84 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,84,
+error,score_out_of_range,"Score 83.5 exceeds normal 0-20pt range for caption "Visual"",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Visual,83.5,
+error,score_out_of_range,"Score 83.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,83.5,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,83,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,83,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,83,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,83,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Brass"",2018-dci-performers-showcase-venue-2,2018,"DCI Performers Showcase - Venue 2",Brass,83,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Woodwind"",2018-dci-performers-showcase-venue-2,2018,"DCI Performers Showcase - Venue 2",Woodwind,83,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,83,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Overall Impression"",2022-dci-denton,2022,"DCI Denton",Overall Impression,83,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Visual Performance"",2022-river-city-rhapsody-la-crosse,2022,"River City Rhapsody - La Crosse",Visual Performance,83,
+error,score_out_of_range,"Score 83 exceeds normal 0-20pt range for caption "Overall Impression"",2022-drums-on-parade,2022,"Drums on Parade",Overall Impression,83,
+error,score_out_of_range,"Score 82.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,82.5,
+error,score_out_of_range,"Score 82.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,82.5,
+error,score_out_of_range,"Score 82.5 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,82.5,
+error,score_out_of_range,"Score 82.5 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,82.5,
+error,score_out_of_range,"Score 82.5 exceeds normal 0-20pt range for caption "Visual"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Visual,82.5,
+error,score_out_of_range,"Score 82.25 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,82.25,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Visual Performance"",2024-northwest-youth-music-games-boise,2024,"Northwest Youth Music Games Boise",Visual Performance,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Visual Performance"",2022-march-on,2022,"March On!",Visual Performance,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Visual Performance"",2022-rotary-music-festival,2022,"Rotary Music Festival",Visual Performance,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Visual Performance"",2022-drums-on-parade,2022,"Drums on Parade",Visual Performance,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Overall Impression"",2023-brass-impact,2023,"Brass Impact",Overall Impression,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Music Performance"",2023-drums-across-the-river-region,2023,"Drums Across the River Region",Music Performance,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Music Performance"",2023-drums-on-the-chippewa,2023,"Drums on the Chippewa",Music Performance,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Visual Performance"",2023-drums-on-the-chippewa,2023,"Drums on the Chippewa",Visual Performance,82,
+error,score_out_of_range,"Score 82 exceeds normal 0-20pt range for caption "Overall Impression"",2023-drums-on-the-chippewa,2023,"Drums on the Chippewa",Overall Impression,82,
+error,score_out_of_range,"Score 81.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,81.5,
+error,score_out_of_range,"Score 81 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,81,
+error,score_out_of_range,"Score 81 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,81,
+error,score_out_of_range,"Score 81 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,81,
+error,score_out_of_range,"Score 81 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,81,
+error,score_out_of_range,"Score 81 exceeds normal 0-20pt range for caption "Visual Performance"",2022-dci-denton,2022,"DCI Denton",Visual Performance,81,
+error,score_out_of_range,"Score 81 exceeds normal 0-20pt range for caption "Overall Impression"",2023-corps-encore,2023,"Corps Encore",Overall Impression,81,
+error,score_out_of_range,"Score 81 exceeds normal 0-20pt range for caption "Visual Performance"",2023-the-kiwanis-thunder-of-drums,2023,"The Kiwanis Thunder of Drums",Visual Performance,81,
+error,score_out_of_range,"Score 80.75 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,80.75,
+error,score_out_of_range,"Score 80.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,80.5,
+error,score_out_of_range,"Score 80.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,80.5,
+error,score_out_of_range,"Score 80.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Percussion,80.5,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",Brass,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Overall Impression"",2024-northwest-youth-music-games-boise,2024,"Northwest Youth Music Games Boise",Overall Impression,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Overall Impression"",2022-march-on,2022,"March On!",Overall Impression,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Music Performance"",2022-diablo-valley-classic-pacific-open-class-championship-finals,2022,"Diablo Valley Classic Pacific Open Class Championship Finals",Music Performance,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Overall Impression"",2022-diablo-valley-classic-pacific-open-class-championship-finals,2022,"Diablo Valley Classic Pacific Open Class Championship Finals",Overall Impression,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Music Performance"",2022-dci-denton,2022,"DCI Denton",Music Performance,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Music Performance"",2022-music-on-the-march,2022,"Music on the March",Music Performance,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Visual Performance"",2023-march-on,2023,"March On!",Visual Performance,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Overall Impression"",2023-march-on,2023,"March On!",Overall Impression,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Music Performance"",2023-beats-in-the-brook,2023,"Beats in the Brook",Music Performance,80,
+error,score_out_of_range,"Score 80 exceeds normal 0-20pt range for caption "Visual Performance"",2023-dci-west,2023,"DCI West",Visual Performance,80,
+error,score_out_of_range,"Score 79.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,79.5,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,79,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,79,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,79,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Music Performance"",2024-northwest-youth-music-games-boise,2024,"Northwest Youth Music Games Boise",Music Performance,79,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Music Performance"",2022-the-thunder-of-drums,2022,"The Thunder of Drums",Music Performance,79,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Visual Performance"",2022-the-thunder-of-drums,2022,"The Thunder of Drums",Visual Performance,79,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Overall Impression"",2022-river-city-rhapsody-la-crosse,2022,"River City Rhapsody - La Crosse",Overall Impression,79,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Visual Performance"",2023-dci-open-class-world-championship-prelims,2023,"DCI Open Class World Championship Prelims",Visual Performance,79,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Overall Impression"",2023-dci-open-class-world-championship-prelims,2023,"DCI Open Class World Championship Prelims",Overall Impression,79,
+error,score_out_of_range,"Score 79 exceeds normal 0-20pt range for caption "Overall Impression"",2023-dci-west,2023,"DCI West",Overall Impression,79,
+error,score_out_of_range,"Score 78.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,78.5,
+error,score_out_of_range,"Score 78.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,78.5,
+error,score_out_of_range,"Score 78.5 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,78.5,
+error,score_out_of_range,"Score 78.5 exceeds normal 0-20pt range for caption "Percussion"",2018-dci-performers-showcase-venue-3,2018,"DCI Performers Showcase - Venue 3",Percussion,78.5,
+error,score_out_of_range,"Score 78.5 exceeds normal 0-20pt range for caption "Vocal"",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",Vocal,78.5,
+error,score_out_of_range,"Score 78.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,78.5,
+error,score_out_of_range,"Score 78 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,78,
+error,score_out_of_range,"Score 78 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,78,
+error,score_out_of_range,"Score 78 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,78,
+error,score_out_of_range,"Score 78 exceeds normal 0-20pt range for caption "Visual Performance"",2022-diablo-valley-classic-pacific-open-class-championship-finals,2022,"Diablo Valley Classic Pacific Open Class Championship Finals",Visual Performance,78,
+error,score_out_of_range,"Score 78 exceeds normal 0-20pt range for caption "Music Performance"",2022-golden-state-showdown,2022,"Golden State Showdown",Music Performance,78,
+error,score_out_of_range,"Score 78 exceeds normal 0-20pt range for caption "Visual Performance"",2022-golden-state-showdown,2022,"Golden State Showdown",Visual Performance,78,
+error,score_out_of_range,"Score 78 exceeds normal 0-20pt range for caption "Overall Impression"",2022-the-thunder-of-drums,2022,"The Thunder of Drums",Overall Impression,78,
+error,score_out_of_range,"Score 78 exceeds normal 0-20pt range for caption "Music Performance"",2023-the-kiwanis-thunder-of-drums,2023,"The Kiwanis Thunder of Drums",Music Performance,78,
+error,score_out_of_range,"Score 78 exceeds normal 0-20pt range for caption "Overall Impression"",2023-the-kiwanis-thunder-of-drums,2023,"The Kiwanis Thunder of Drums",Overall Impression,78,
+error,score_out_of_range,"Score 77.625 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,77.625,
+error,score_out_of_range,"Score 77.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,77.5,
+error,score_out_of_range,"Score 77.5 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",Brass,77.5,
+error,score_out_of_range,"Score 77.275 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,77.275,
+error,score_out_of_range,"Score 77 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,77,
+error,score_out_of_range,"Score 77 exceeds normal 0-20pt range for caption "Music Performance"",2022-rotary-music-festival,2022,"Rotary Music Festival",Music Performance,77,
+error,score_out_of_range,"Score 77 exceeds normal 0-20pt range for caption "Overall Impression"",2022-drums-on-parade,2022,"Drums on Parade",Overall Impression,77,
+error,score_out_of_range,"Score 77 exceeds normal 0-20pt range for caption "Overall Impression"",2023-beats-in-the-brook,2023,"Beats in the Brook",Overall Impression,77,
+error,score_out_of_range,"Score 77 exceeds normal 0-20pt range for caption "Visual Performance"",2023-drums-across-the-river-region,2023,"Drums Across the River Region",Visual Performance,77,
+error,score_out_of_range,"Score 76.5 exceeds normal 0-20pt range for caption "Percussion"",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",Percussion,76.5,
+error,score_out_of_range,"Score 76.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,76.5,
+error,score_out_of_range,"Score 76 exceeds normal 0-20pt range for caption "Brass"",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",Brass,76,
+error,score_out_of_range,"Score 76 exceeds normal 0-20pt range for caption "Music Performance"",2022-drums-on-parade,2022,"Drums on Parade",Music Performance,76,
+error,score_out_of_range,"Score 76 exceeds normal 0-20pt range for caption "Visual Performance"",2023-beats-in-the-brook,2023,"Beats in the Brook",Visual Performance,76,
+error,score_out_of_range,"Score 75.875 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,75.875,
+error,score_out_of_range,"Score 75.5 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,75.5,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Music Performance"",2022-march-on,2022,"March On!",Music Performance,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Overall Impression"",2022-golden-state-showdown,2022,"Golden State Showdown",Overall Impression,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Visual Performance"",2022-rotary-music-festival,2022,"Rotary Music Festival",Visual Performance,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Overall Impression"",2022-rotary-music-festival,2022,"Rotary Music Festival",Overall Impression,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Music Performance"",2023-dci-open-class-world-championship-prelims,2023,"DCI Open Class World Championship Prelims",Music Performance,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Visual Performance"",2023-brass-impact,2023,"Brass Impact",Visual Performance,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Overall Impression"",2023-midcal-champions-showcase,2023,"MidCal Champions Showcase",Overall Impression,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Music Performance"",2023-rotary-music-festival,2023,"Rotary Music Festival",Music Performance,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Visual Performance"",2023-rotary-music-festival,2023,"Rotary Music Festival",Visual Performance,75,
+error,score_out_of_range,"Score 75 exceeds normal 0-20pt range for caption "Visual Performance"",2023-drums-on-parade,2023,"Drums on Parade",Visual Performance,75,
+error,score_out_of_range,"Score 74.925 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,74.925,
+error,score_out_of_range,"Score 74.9 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,74.9,
+error,score_out_of_range,"Score 74.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,74.5,
+error,score_out_of_range,"Score 74 exceeds normal 0-20pt range for caption "Music Performance"",2023-march-on,2023,"March On!",Music Performance,74,
+error,score_out_of_range,"Score 74 exceeds normal 0-20pt range for caption "Overall Impression"",2023-drums-across-the-river-region,2023,"Drums Across the River Region",Overall Impression,74,
+error,score_out_of_range,"Score 74 exceeds normal 0-20pt range for caption "Visual Performance"",2023-dci-little-rock,2023,"DCI Little Rock",Visual Performance,74,
+error,score_out_of_range,"Score 74 exceeds normal 0-20pt range for caption "Music Performance"",2023-drums-on-parade,2023,"Drums on Parade",Music Performance,74,
+error,score_out_of_range,"Score 74 exceeds normal 0-20pt range for caption "Overall Impression"",2023-drums-on-parade,2023,"Drums on Parade",Overall Impression,74,
+error,score_out_of_range,"Score 73.3 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,73.3,
+error,score_out_of_range,"Score 73 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,73,
+error,score_out_of_range,"Score 73 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,73,
+error,score_out_of_range,"Score 72.275 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,72.275,
+error,score_out_of_range,"Score 72 exceeds normal 0-20pt range for caption "Music Performance"",2023-dci-little-rock,2023,"DCI Little Rock",Music Performance,72,
+error,score_out_of_range,"Score 72 exceeds normal 0-20pt range for caption "Overall Impression"",2023-dci-little-rock,2023,"DCI Little Rock",Overall Impression,72,
+error,score_out_of_range,"Score 71.5 exceeds normal 0-20pt range for caption "Percussion"",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",Percussion,71.5,
+error,score_out_of_range,"Score 71.475 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,71.475,
+error,score_out_of_range,"Score 71.15 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,71.15,
+error,score_out_of_range,"Score 71 exceeds normal 0-20pt range for caption "Vocal"",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",Vocal,71,
+error,score_out_of_range,"Score 71 exceeds normal 0-20pt range for caption "Music Performance"",2023-dci-west,2023,"DCI West",Music Performance,71,
+error,score_out_of_range,"Score 70.45 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,70.45,
+error,score_out_of_range,"Score 70 exceeds normal 0-20pt range for caption "Visual Performance"",2022-whitewater-classic,2022,"Whitewater Classic",Visual Performance,70,
+error,score_out_of_range,"Score 70 exceeds normal 0-20pt range for caption "Music Performance"",2023-dci-little-rock,2023,"DCI Little Rock",Music Performance,70,
+error,score_out_of_range,"Score 70 exceeds normal 0-20pt range for caption "Music Performance"",2023-midcal-champions-showcase,2023,"MidCal Champions Showcase",Music Performance,70,
+error,score_out_of_range,"Score 69.725 exceeds normal 0-20pt range for caption "Special GE"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special GE,69.725,
+error,score_out_of_range,"Score 69 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,69,
+error,score_out_of_range,"Score 69 exceeds normal 0-20pt range for caption "Music Performance"",2023-corps-encore,2023,"Corps Encore",Music Performance,69,
+error,score_out_of_range,"Score 68 exceeds normal 0-20pt range for caption "Overall Impression"",2022-whitewater-classic,2022,"Whitewater Classic",Overall Impression,68,
+error,score_out_of_range,"Score 68 exceeds normal 0-20pt range for caption "Visual Performance"",2022-river-city-rhapsody-la-crosse,2022,"River City Rhapsody - La Crosse",Visual Performance,68,
+error,score_out_of_range,"Score 68 exceeds normal 0-20pt range for caption "Visual Performance"",2023-dci-little-rock,2023,"DCI Little Rock",Visual Performance,68,
+error,score_out_of_range,"Score 68 exceeds normal 0-20pt range for caption "Overall Impression"",2023-summer-music-games-in-cincinnati,2023,"Summer Music Games in Cincinnati",Overall Impression,68,
+error,score_out_of_range,"Score 67 exceeds normal 0-20pt range for caption "Music Performance"",2022-whitewater-classic,2022,"Whitewater Classic",Music Performance,67,
+error,score_out_of_range,"Score 67 exceeds normal 0-20pt range for caption "Music Performance"",2022-river-city-rhapsody-la-crosse,2022,"River City Rhapsody - La Crosse",Music Performance,67,
+error,score_out_of_range,"Score 67 exceeds normal 0-20pt range for caption "Visual Performance"",2022-drums-on-parade,2022,"Drums on Parade",Visual Performance,67,
+error,score_out_of_range,"Score 67 exceeds normal 0-20pt range for caption "Overall Impression"",2023-dci-little-rock,2023,"DCI Little Rock",Overall Impression,67,
+error,score_out_of_range,"Score 67 exceeds normal 0-20pt range for caption "Music Performance"",2023-summer-music-games-in-cincinnati,2023,"Summer Music Games in Cincinnati",Music Performance,67,
+error,score_out_of_range,"Score 67 exceeds normal 0-20pt range for caption "Visual Performance"",2023-summer-music-games-in-cincinnati,2023,"Summer Music Games in Cincinnati",Visual Performance,67,
+error,score_out_of_range,"Score 66 exceeds normal 0-20pt range for caption "Brass"",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",Brass,66,
+error,score_out_of_range,"Score 65 exceeds normal 0-20pt range for caption "Visual Performance"",2023-midcal-champions-showcase,2023,"MidCal Champions Showcase",Visual Performance,65,
+error,score_out_of_range,"Score 38.9 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,38.9,
+error,score_out_of_range,"Score 38.9 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,38.9,
+error,score_out_of_range,"Score 38.8 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,38.8,
+error,score_out_of_range,"Score 38.75 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,38.75,
+error,score_out_of_range,"Score 38.6 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,38.6,
+error,score_out_of_range,"Score 38.5 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,38.5,
+error,score_out_of_range,"Score 38.5 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,38.5,
+error,score_out_of_range,"Score 38.5 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,38.5,
+error,score_out_of_range,"Score 38.45 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,38.45,
+error,score_out_of_range,"Score 38.35 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,38.35,
+error,score_out_of_range,"Score 38.3 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,38.3,
+error,score_out_of_range,"Score 38.15 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,38.15,
+error,score_out_of_range,"Score 38.1 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,38.1,
+error,score_out_of_range,"Score 38 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,38,
+error,score_out_of_range,"Score 37.5 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,37.5,
+error,score_out_of_range,"Score 37.5 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,37.5,
+error,score_out_of_range,"Score 37.4 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,37.4,
+error,score_out_of_range,"Score 37.4 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,37.4,
+error,score_out_of_range,"Score 37.2 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,37.2,
+error,score_out_of_range,"Score 37.1 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,37.1,
+error,score_out_of_range,"Score 36.75 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,36.75,
+error,score_out_of_range,"Score 36.75 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,36.75,
+error,score_out_of_range,"Score 36.75 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,36.75,
+error,score_out_of_range,"Score 36.7 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,36.7,
+error,score_out_of_range,"Score 36.55 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,36.55,
+error,score_out_of_range,"Score 36.4 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,36.4,
+error,score_out_of_range,"Score 36.3 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,36.3,
+error,score_out_of_range,"Score 36.3 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,36.3,
+error,score_out_of_range,"Score 36.2 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,36.2,
+error,score_out_of_range,"Score 35.9 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,35.9,
+error,score_out_of_range,"Score 35.8 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,35.8,
+error,score_out_of_range,"Score 35.8 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,35.8,
+error,score_out_of_range,"Score 35.45 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,35.45,
+error,score_out_of_range,"Score 35.4 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,35.4,
+error,score_out_of_range,"Score 35.25 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,35.25,
+error,score_out_of_range,"Score 34.9 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,34.9,
+error,score_out_of_range,"Score 34.9 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,34.9,
+error,score_out_of_range,"Score 34.75 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,34.75,
+error,score_out_of_range,"Score 34.75 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,34.75,
+error,score_out_of_range,"Score 34.65 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,34.65,
+error,score_out_of_range,"Score 34.6 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,34.6,
+error,score_out_of_range,"Score 34.55 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,34.55,
+error,score_out_of_range,"Score 34.4 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,34.4,
+error,score_out_of_range,"Score 34.3 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,34.3,
+error,score_out_of_range,"Score 34.25 exceeds normal 0-20pt range for caption "Special CG"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special CG,34.25,
+error,score_out_of_range,"Score 33.9 exceeds normal 0-20pt range for caption "Special - Visual Proficiency"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special - Visual Proficiency,33.9,
+error,score_out_of_range,"Score 33.8 exceeds normal 0-20pt range for caption "Special Brass"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Brass,33.8,
+error,score_out_of_range,"Score 33.35 exceeds normal 0-20pt range for caption "Special Perc"",2018-dci-world-championship-finals,2018,"DCI World Championship Finals",Special Perc,33.35,
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2019-dci-performers-showcase-venue-1,2019,"DCI Performers Showcase - Venue 1",,,21
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2019-dci-performers-showcase-venue-2,2019,"DCI Performers Showcase - Venue 2",,,38
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2019-dci-performers-showcase-venue-3,2019,"DCI Performers Showcase - Venue 3",,,31
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2019-dci-performers-showcase-venue-4,2019,"DCI Performers Showcase - Venue 4",,,21
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2018-dci-performers-showcase-venue-1,2018,"DCI Performers Showcase - Venue 1",,,3
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2018-dci-performers-showcase-venue-2,2018,"DCI Performers Showcase - Venue 2",,,3
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2018-dci-performers-showcase-venue-3,2018,"DCI Performers Showcase - Venue 3",,,2
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2018-dci-performers-showcase-venue-4,2018,"DCI Performers Showcase - Venue 4",,,7
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2017-dci-performers-showcase-venue-1,2017,"DCI Performers Showcase - Venue 1",,,23
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2017-dci-performers-showcase-venue-2,2017,"DCI Performers Showcase - Venue 2",,,46
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2017-dci-performers-showcase-venue-3,2017,"DCI Performers Showcase - Venue 3",,,44
+warning,performers_showcase,"Performers Showcase event found (Solo & Ensemble - should exclude from ML training)",2017-dci-performers-showcase-venue-4,2017,"DCI Performers Showcase - Venue 4",,,36
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2025,"DCI All-Age World Championship",Color Guard,,69
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2025,"DCI All-Age World Championship",General Effect 1,,69
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2025,"DCI All-Age World Championship",General Effect 2,,69
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2025,"DCI All-Age World Championship",Music - Analysis,,69
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2025,"DCI All-Age World Championship",Music - Brass,,69
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2025,"DCI All-Age World Championship",Music - Percussion,,69
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2025,"DCI All-Age World Championship",Visual - Analysis,,69
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2025,"DCI All-Age World Championship",Visual Proficiency,,69
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2024,"DCI All-Age World Championship",Color Guard,,25
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2024,"DCI All-Age World Championship",General Effect 1,,25
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2024,"DCI All-Age World Championship",General Effect 2,,25
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2024,"DCI All-Age World Championship",Music - Analysis,,25
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2024,"DCI All-Age World Championship",Music - Brass,,25
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2024,"DCI All-Age World Championship",Music - Percussion,,25
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2024,"DCI All-Age World Championship",Penalties,,25
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2024,"DCI All-Age World Championship",Visual Analysis,,25
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2024,"DCI All-Age World Championship",Visual Proficiency,,25
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",1 Visual Effect,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",2 Music Effect,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",4 Visual Ensemble,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",5 Color Guard,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",6 Brass,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",7 Music Ensemble,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",8 Percussion,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",Music Comm,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",Penalties,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2023,"DCI Cincinnati",Visual Comm,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",1 Visual Effect,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",2 Music Effect,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",4 Visual Ensemble,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",5 Color Guard,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",6 Brass,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",7 Music Ensemble,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",8 Percussion,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",Music Comm,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",Penalties,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2022,"DCI Cincinnati",Visual Comm,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",1 Visual Effect,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",2 Music Effect,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",4 Visual Ensemble,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",5 Color Guard,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",6 Brass,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",7 Music Ensemble,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",8 Percussion,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",Music Comm,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",Penalties,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2019,"March On!",Visual Comm,,11
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",1 Visual Effect,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",2 Music Effect,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",4 Visual Ensemble,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",5 Color Guard,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",6 Brass,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",7 Music Ensemble,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",8 Percussion,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",Music Comm,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",Penalties,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2018,"Tour of Champions – Chester",Visual Comm,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",1 Visual Effect,,9
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",2 Music Effect,,9
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",4 Visual Ensemble,,9
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",5 Color Guard,,6
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",6 Brass,,6
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",7 Music Ensemble,,9
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",8 Percussion,,5
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",Music Comm,,6
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",Penalties,,8
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2017,"Emerald City Music Games",Visual Comm,,6
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",1 Visual Effect,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",2 Music Effect,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",4 Visual Ensemble,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",5 Color Guard,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",6 Brass,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",7 Music Ensemble,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",8 Percussion,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",Music Comm,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",Penalties,,20
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2016,"Soaring Sounds 37",Visual Comm,,12
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",1 Visual Effect,,19
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",2 Music Effect,,19
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",4 Visual Ensemble,,19
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",5 Color Guard,,14
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",6 Brass,,14
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",7 Music Ensemble,,19
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",8 Percussion,,14
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",Music Comm,,14
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",Penalties,,16
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2015,"Soaring Sounds 36",Visual Comm,,14
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",1 Visual Effect,,9
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",2 Music Effect,,9
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",4 Visual Ensemble,,9
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",5 Color Guard,,5
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",6 Brass,,5
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",7 Music Ensemble,,9
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",8 Percussion,,5
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",Music Comm,,5
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",Penalties,,8
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2014,"A Knight of Music and Motion",Visual Comm,,5
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",1 Visual Effect,,10
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",2 Music Effect,,10
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",4 Visual Ensemble,,10
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",5 Color Guard,,4
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",6 Brass,,4
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",7 Music Ensemble,,10
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",8 Percussion,,4
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",Music Comm,,4
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",Penalties,,10
+warning,all_age_class,"All-Age Class scores found (should exclude from World/Open Class ML training)",,2013,"DCI Atlanta Southeastern Championship",Visual Comm,,4

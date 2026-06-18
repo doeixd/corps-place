@@ -1,0 +1,789 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="-1">
+	
+	
+	    <title>DCX - Drum Corps Xperience</title>
+	
+	<link rel="icon" href="data:,">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+	
+	<link href="header/css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="header/css/plugins/blueimp/css/blueimp-gallery.min.css" rel="stylesheet"> 
+	<link href="header/css/animate.css" rel="stylesheet">
+	
+	<link href="header/css/style.css" rel="stylesheet">
+	
+
+	
+	<script src="header/js/jquery-2.1.1.js"></script>
+	<script src="header/js/jquery-ui-1.10.4.min.js"></script>
+	<script src="header/js/bootstrap.min.js"></script>
+	<script src="header/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	<script src="header/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="header/js/plugins/validate/jquery.validate.min.js"></script>
+	
+	
+	<link href="header/css/plugins/footable/footable.core.bootstrap.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.core.standalone.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.editing.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.filtering.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.paging.css" rel="stylesheet">
+	<link href="header/css/plugins/footable/footable.sorting.css" rel="stylesheet">
+	<script src="header/js/plugins/footable/footable.core.js"></script>
+	<script src="header/js/plugins/footable/footable.editing.js"></script>
+	<script src="header/js/plugins/footable/footable.filtering.js"></script>
+	<script src="header/js/plugins/footable/footable.paging.js"></script>
+	<script src="header/js/plugins/footable/footable.sorting.js"></script>
+	<script src="header/js/plugins/footable/footable.state.js"></script>
+
+	
+	<link href="header/css/plugins/dropzone/dropzone.css" rel="stylesheet">
+	<script src="header/js/plugins/dropzone/dropzone.js"></script>
+
+	
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+	
+	
+	
+		<script src="header/js/inspinia.js"></script>
+		<script src="header/js/plugins/pace/pace.min.js"></script>
+	
+
+		
+	<script src="swipebox-master/src/js/jquery.swipebox.js"></script>
+	<link rel="stylesheet" href="swipebox-master/src/css/swipebox.css">
+
+
+
+	
+	<link href="fullcalendar/fullcalendar.css" rel="stylesheet">
+	<script src="header/js/plugins/fullcalendar/moment.min.js"></script>
+	<script src="fullcalendar/fullcalendar.min.js"></script>
+
+		
+	<link href="https://cdn.jquery.app/jqueryscripttop.css" rel="stylesheet" type="text/css">
+	
+	
+	<script src="header/editor/editor.js"></script>
+	
+	<link href="header/editor/editor.css" type="text/css" rel="stylesheet"/>
+	
+	
+	<link href="header/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	<script src="header/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+	
+	
+	<link href="header/themes/blue/sitestyle.css" rel="stylesheet">
+<style>
+#yourimage {
+	width:100%;
+}
+</style>
+
+<style>
+#posts {
+    margin: 0 auto;
+    padding: 0;
+    width: auto;
+    list-style-type: none;
+}
+
+article h1 {
+    text-align: left;
+    border-bottom: 1px dotted #E3E3E3;
+}
+
+article {
+    background:white;
+	padding:10px 10px;
+	margin-bottom: 10px;
+	margin-top:10px;
+}
+
+#loading {
+    display: none;
+    text-align: center;
+}
+</style>
+
+
+	
+	<script type="text/javascript">
+		var AccordionPanelIDList = '';
+		var AccordionPanelIDList2 = '';
+		
+		// Clear the reusable modal window on close, so the next call can
+		$('body').on('hidden.bs.modal', '.modal', function () {
+			$('#reusableModal').removeData('bs.modal');
+		});
+	
+		// Properly adjusts chevron icon
+		function adjustChevron(whichElement) {
+			if (whichElement.className.indexOf('chevron-down')!=-1) { 
+				whichElement.className = whichElement.className.replace("chevron-down", "chevron-up");
+			} else { 
+				whichElement.className = whichElement.className.replace("chevron-up", "chevron-down");
+			}
+		}
+	
+		// Properly adjusts chevron icon
+		function adjustChevron2(whichElement,whichPanelName) {
+			if (AccordionPanelIDList!='') {
+				var tempArray = AccordionPanelIDList.split(',');
+				for (var i=0;i<tempArray.length;i++) {
+					if (whichPanelName.toUpperCase()!=tempArray[i].toUpperCase()) {
+						document.getElementById(tempArray[i]+'_i').className = document.getElementById(tempArray[i]+'_i').className.replace("chevron-up", "chevron-down");
+					} else {
+						if (whichElement.className.indexOf('chevron-down')!=-1) { 
+							whichElement.className = whichElement.className.replace("chevron-down", "chevron-up");
+						} else { 
+							whichElement.className = whichElement.className.replace("chevron-up", "chevron-down");
+						}
+					}
+				}
+			}
+		}
+	
+		// Properly adjusts chevron icon
+		function adjustChevron3(whichElement,whichPanelName,executeExtra) {
+			if (AccordionPanelIDList2!='') {
+				var tempArray = AccordionPanelIDList2.split(',');
+				for (var i=0;i<tempArray.length;i++) {
+					if (whichPanelName.toUpperCase()!=tempArray[i].toUpperCase()) {
+						document.getElementById(tempArray[i]+'_i').className = document.getElementById(tempArray[i]+'_i').className.replace("chevron-up", "chevron-down");
+					} else if (typeof executeExtra !== 'undefined') {
+						if (whichElement.className.indexOf('chevron-down')!=-1) { 
+							whichElement.className = whichElement.className.replace("chevron-down", "chevron-up");
+						} else { 
+							whichElement.className = whichElement.className.replace("chevron-up", "chevron-down");
+						}
+					}
+				}
+			}
+		}
+	</script>
+	<noscript>
+        <meta http-equiv="refresh" content="0;no_javascript.cfm">
+	</noscript>
+	
+<script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f53ae228f43400012937689&product=inline-share-buttons' async='async'></script>
+
+<script src="x-js/ian-fixes.js"></script>	
+
+
+</head>
+<body> 
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0" nonce="xP8yEydF"></script>
+<div id="wrapper">
+
+
+<!-- cpm 2026/02/13 - suppress header --->
+
+<script>
+try {
+	if (window.self !== window.top) {
+		document.documentElement.classList.add('dcx-embedded');
+	}
+} catch(e) {}
+</script>
+<style>
+.dcx-embedded #topstuff { display:none !important; }
+.dcx-embedded #SocialMediaLinks { display:none !important; }
+.dcx-embedded #topnav { display:none !important; }
+</style>
+
+<style type="text/css">
+.topbgimg {
+    background-color: #181717;
+	background-image: url('images/dcxbanner.jpg');
+}
+</style>
+<div class="topbgimg" id="topstuff" style="padding-right:20px; padding-left:20px;"> 
+	<div class="row">
+		<div class="col-md-4">
+			<div class="row">
+				<div class="col-xs-12"><a href="index.cfm"><img src="images\dcxlogo.png" class="img-responsive img-rounded"></a></div>
+			</div>
+		</div>
+		<div class="col-md-4" align="center">
+			<div class="dropdown">
+				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">About DCX <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+				<li><a href="javascript:{}" onclick="setMainDIV('about.cfm?view=about')" title="Who We Are">Who We Are</a></li>
+				<li><a href="javascript:{}" onclick="setMainDIV('dcx_began.cfm?view=dcx_began')" title="How We Began">How We Began</a></li>
+				
+				<li><a href="javascript:{}" onclick="setMainDIV('sponsors.cfm?view=sponsors')" title="Sponsors">Sponsors</a></li>
+				<li><a href="javascript:{}" onclick="setMainDIV('faq.cfm?view=faq')">FAQ</a></li>
+				<li><a href="javascript:{}" onclick="setMainDIV('contact.cfm?view=contact')" title="Contact Us">Contact Us</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-md-4" align="right"> 
+		<div class="row">
+		<div class="col-lg-12">
+		
+					<div class="dropdown profile-element" style="padding-top:13px;padding-bottom:18px;"> 
+						<a data-toggle="dropdown" class="btn btn-primary dropdown-toggle" href="#">
+						<span class="clear"><span class="block m-t-xs" style="font-size:1.15em;">
+						<strong class="font-bold">Welcome<BR></strong>
+						<span style="padding-left:3px;"><b class="caret" style="padding-bottom:5px;"></b></span>
+						</span></span>
+						</a>
+						<ul class="dropdown-menu animated fadeInRight m-t-xs" align="right">
+							
+							<li><a href="index.cfm?view=profile">Profile</a></li>
+							<li><a href="index.cfm?view=logout">Logout</a></li>
+						</ul>
+					</div>
+			
+				<div><a data-toggle="modal" class="btn btn-info" href="#modal-form"><i class="fa fa-sign-in"></i><span class="nav-label">Login or Register</span></a></div>
+				
+<div id="modal-form" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Sign in</h3>
+                        <form role="form" action="index.cfm" method="post">
+							<input type="hidden" name="view" value="login">
+							<input type="hidden" name="returnview" value="dcihof">
+                            <div class="form-group"><label>Email</label> <input type="email" placeholder="Enter email" class="form-control" name="MemberEmail"></div>
+                            <div class="form-group"><label>Password</label> <input type="password" placeholder="Password" class="form-control" name="MemberPassword"></div>
+                            <div>
+                                <button class="btn btn-sm btn-primary pull-right m-t-n-xs" type="submit"><strong>Log in</strong></button>
+                            </div>
+							<strong>If you forgot your password, leave it blank to have it emailed to you.</strong>
+							If you had an account on Corpsreps, you already have an MPAM DCX account. Login with the same email and password.
+                        </form>
+                    </div>
+                    <div class="col-sm-6"><h4>Not a member?</h4>
+                        <p>You can create an account:</p>
+                        <p class="text-center"><a href="index.cfm?view=register&returnview=dcihof" title="Register"><i class="fa fa-sign-in big-icon"></i></a></p>
+                	</div>
+            	</div>
+        	</div>
+        </div>
+    </div>
+</div>
+		
+		</div>
+		<div class="col-lg-12"> 
+		<p class="visible-lg visible-md hidden-sm hidden-xs">&nbsp;</p>
+		<p class="visible-lg visible-md hidden-sm hidden-xs">&nbsp;</p>
+		<p class="visible-lg visible-md hidden-sm hidden-xs">&nbsp;</p>
+		<p class="visible-lg visible-md hidden-sm hidden-xs">&nbsp;</p>
+		<form role="search" action="index.cfm" method="post">
+			<input type="hidden" name="view" value="search_results">
+			<input type="text" placeholder="Search for something..." class="form-control" name="topsearch" id="top-search" style="border:1px" width="100%"> 
+		</form>
+		</div>
+		</div>		
+		</div>
+	</div>
+</div>
+
+<div id="topnav" class="row white-bg" style="border-bottom: 2px solid black; border-top: 2px solid black">
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=0" title="Rooms" class="btn btn-primary btn-xs">GALLERIES:</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=1300" title="History by Decade">Decades</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=100" title="Drum Corps Listing">Corps</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=300" title="Current Season">2026</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=200" title="Shows, Scores and Contests">Shows</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=700" title="Photos">Photos</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=900" title="Collections">Collections</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=800" title="People">People</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=rooms&roomid=1100" title="Publications">Publications</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=blog" title="Blog">Blog</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=links" title="Links">Links</a></div>
+<div class="col-xs-6 col-sm-3 col-md-1"><a href="index.cfm?view=assets&option=recent" title="Recent Additions">Newest</a></div>
+</div>
+
+
+
+<style>
+.gray-bg, .wrapper {
+	padding-top: 0 !important;
+}
+.sharethis-inline-share-buttons {
+	display: inline !important;
+}
+.ClipBtn {
+	display: inline;
+}
+.st-btn {
+	background-color: transparent !important;
+	min-width: 16px !important;
+	padding: 0 !important;
+	width: 24px !important;
+	height: 24px !important;
+	display: inline-block !important;
+}
+.st-label {
+	display: none !important;
+}
+.ClipboardBtn {
+	background-color: transparent !important;
+}
+body {
+	background-color: rgb(243, 243, 244) !important;
+}
+.st-btn > img {
+	width: 24px !important;
+	height: 24px !important;
+	top: 0 !important;
+	margin: 0 !important;
+	filter: invert(52%) sepia(81%) saturate(440%) hue-rotate(118deg) brightness(94%) contrast(85%);
+}
+</style>
+<script>
+	setCorrectLinks();
+	document.getElementById('ClipboardBtn').addEventListener('click', () => {copyTextToClipboard(window.location.href);});
+</script>
+
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg" style="margin-top:80px;">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="modal-title">Loading Content</h4>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <p>Please Wait...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal inmodal" id="reusableModal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg" style="margin-top:80px;">
+		<form id="dummyReusableModalForm" name="dummyReusableModalForm">
+			<div class="modal-content animated fadeInDown"></div>
+		</form>
+	</div>
+</div>
+
+<div class="modal inmodal" id="reusableModal2" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<form id="dummyReusableModalForm2" name="dummyReusableModalForm2">
+			<div class="modal-content animated fadeInDown"></div>
+		</form>
+	</div>
+</div>
+
+<div class="modal inmodal" id="reusableModal3" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<form id="dummyReusableModalForm3" name="dummyReusableModalForm3">
+			<div class="modal-content animated fadeInDown"></div>
+		</form>
+	</div>
+</div>
+
+<div class="modal inmodal" id="lookupModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="lookup-title">Loading Content</h4>
+      </div>
+      <div class="modal-body" id="lookup-body">
+        <p>Please Wait...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$('body').on('hidden.bs.modal', '.modal', function () {
+  $(this).removeData('bs.modal');
+});
+function fadeOutModalWindow(whichDiv) {
+	$('#'+whichDiv).fadeOut(250);
+}
+function fadeOutHideModalWindow(whichDiv) {
+	$('#'+whichDiv).fadeOut(250);
+	setTimeout(function(){ 
+							try {
+								$('#'+whichDiv).hide(); 
+								$('#'+whichDiv).data('bs.modal', null);
+						   		$('#'+whichDiv).find('.modal-content').html('');
+							} catch(err) { }
+						 },260);
+}
+function fadeInModalWindow(whichDiv) {
+	$('#'+whichDiv).fadeIn(250);
+}
+
+function LookupSetID(FieldName,id) {
+	document.getElementById(FieldName).value = id;
+	$('#lookupModal').modal('hide');
+}
+</script>
+
+<div id="page-wrapper" class="gray-bg" style="padding:10px 0px 20px 0px;margin-left: 0"> 
+	<div class="wrapper wrapper-content"> 
+		<div id="MainDIV"><button type="button" onclick="setMainDIV('people.cfm?roomid=802&view=people&option=halloffame')" class="btn btn-info">Return</button> <script>try {document.getElementById("SocialMediaLinks").setAttribute("style", "display: none;");} catch(err){}</script>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-md-2">
+		
+		</div>
+		<div class="col-md-8">
+		<ul id="posts">
+		<li><article><header><h1>Drum Corps International Hall of Fame</h1></header><img class="img-responsive" src="data:image/jpeg;base64,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"><br><br>The Drum Corps International Hall of Fame is where the legends of the drum corps activity are remembered for the indelible impressions they have left on the activity. The Hall of Fame began in 1985, with six inductees enshrined that inaugural year. Every year new members are added to this prestigious institution. New Hall of Fame members are elected by the DCI Board of Directors and Hall of Fame Members in the spring of each year. <br><br><a href="http://www.dci.org/ViewArticle.dbml?SPSID=991310&amp;SPID=169608&amp;DB_LANG=C&amp;ATCLID=209964902&amp;DB_OEM_ID=33500" target="_blank">DCI Hall of Fame Overview</a><br><br><a href="http://www.dci.org/ViewArticle.dbml?SPSID=991310&amp;SPID=169608&amp;DB_OEM_ID=33500&amp;ATCLID=209964910" target="_blank">DCI Hall of Fame Members</a><br><br></article></li>
+		</ul>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('#spinner_bg_layer').fadeOut(200);
+	$('#spinner_image_layer').fadeOut(200);
+</script>
+</div>
+		<div id="spinner_bg_layer" style="display:none; position:absolute; z-index:9995; top:0; left:0; width:100%; opacity:0.30; background-color:#000000;"></div>
+		<div id="spinner_image_layer" style="display:none; position:absolute; z-index:9996; top:0; left:0; width:100%; text-align:center;">
+			<img id="spinner_image" src="https://isi.modotech.com/root/images/ModotechGrid_Spinner.gif" alt="Loadingï¿½Please Wait">
+		</div>
+	</div>
+	
+<div class="footer" style="margin:0">
+    <div class="pull-right">
+        <a href="index.cfm?view=privacy">Privacy Notice</a>
+    </div>
+    <div>
+        <strong>Copyright</strong>  &copy; 2017-2026 <a href="http://www.modotech.com">Modotech, Inc</a>
+		in partnership with the 21st Century Foundation d/b/a DCX: The Drum Corps Xperience
+    </div>
+</div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-105458864-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</div> 
+
+</div> 
+
+    <!-- blueimp gallery -->
+    <script src="header/js/plugins/blueimp/jquery.blueimp-gallery.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	//set color when in input box
+	$("input").on({
+		focus: function() {
+			$(this).css("background-color","#d0d0d0");
+			$(this).css("border","1px solid");
+		},
+		blur: function() {
+			$(this).css("background-color",""); //reset color
+			$(this).css("border","");
+		}
+	});
+});			
+</script>
+
+	<script language="JavaScript" type="text/javascript">
+	function setMainDIV(url) {
+	//	Try {
+			// Adjust the overlay sizes and position spinner image
+			document.getElementById('spinner_bg_layer').style.height = document.getElementById('MainDIV').scrollHeight + 'px';
+			document.getElementById('spinner_image_layer').style.height = document.getElementById('MainDIV').scrollHeight + 'px';
+			document.getElementById('spinner_image').style.marginTop = (((document.getElementById('MainDIV').scrollHeight-55)/2)-3) + 'px';
+
+			// Show our 'spinner' layers
+			$('#spinner_bg_layer').fadeIn(200);
+			$('#spinner_image_layer').fadeIn(200);
+
+			// Load the 'MainDIV' content
+			setTimeout(function(){
+				// Make a call to obtain the 'MainDIV' content
+				//var xmlhttp = new XMLHttpRequest();
+				//xmlhttp.open('GET', url + '&timestamp=' + new Date().getTime(), false);  // The timestamp at the end helps ensure results are not cached.
+				//xmlhttp.send();
+
+				$("#MainDIV").load(url, function(responseTxt, statusTxt, xhr){
+				if(statusTxt == "error")
+					alert("Error: " + xhr.status + ": " + xhr.statusText);
+				});
+	//			window.__sharethis__.initialize();
+				setTimeout(function(){
+					// Hide the spinner layers
+					//$('#spinner_bg_layer').fadeOut(200);
+					//$('#spinner_image_layer').fadeOut(200);
+					setTimeout(function(){
+						document.getElementById('MainDIV').innerHTML = xmlhttp.responseText;
+					},50);
+				},500);
+			},500);
+
+	//	} catch(err) {
+	//		setTimeout(function(){
+	//		// Hide the spinner layers
+	//			$('#spinner_bg_layer').fadeOut(200);
+	//			$('#spinner_image_layer').fadeOut(200);
+	//			// Show the user any JavaScript errors that may have been trapped
+	//			document.getElementById('MainDIV').innerHTML = '<div style="text-align:center;color:#ff0000;">&nbsp;<BR>&nbsp;<BR>'+err.toString()+'<BR>&nbsp;<BR>&nbsp;</div>';
+	//			alert(err.toString().replace('<BR>','\n\n'));
+	//		},10);
+	//	}
+	}
+	</script>
+	
+<script type="text/jscript">
+	function setMainDIV2(url) {
+		$("#MainDIV").load(url, function(responseTxt, statusTxt, xhr){
+		if(statusTxt == "error")
+			alert("Error: " + xhr.status + ": " + xhr.statusText);
+		});
+//		window.__sharethis__.initialize();
+	}
+
+	function setGalleryPage(assetlist) {
+		var url="assets_display.cfm?assetlist=" + assetlist;
+		$("#AssetDIV").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+//		window.__sharethis__.initialize();
+	}
+
+	function photoDisplay(CorpsID, PictureYear,ShowID,decade,Photographer) {
+		var url = "photos.cfm?ReturnAll=Y&CorpsID=" + CorpsID + "&PictureYear=" + PictureYear + "&ShowID=" + ShowID + "&Decade=" + decade + "&Photographer=" + Photographer;
+		$("#PhotoDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+//		window.__sharethis__.initialize();
+	}
+	
+	function setPicturePage(bDisplayCorps,picturelist) {
+		var url="photo_display.cfm?ReturnAll=Y&bDisplayCorps=" + bDisplayCorps + "&picturelist=" + picturelist;
+		$("#PictureDIV").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+//		window.__sharethis__.initialize();
+	}
+	
+	function repDisplayYear(CorpsID, CorpsYear) {
+		var url = "Corpslist_RepYear.cfm?ReturnAll=Y&CorpsID=" + CorpsID + "&CorpsYear=" + CorpsYear;
+		$("#RepDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+    	});
+//		window.__sharethis__.initialize();
+	}
+
+	function repDisplayAll(CorpsID) {
+		$("#RepDiv").load("Corpslist_Repertoire.cfm?CorpsID=" + CorpsID);
+	};
+	
+	function repChangeYear(RepYear, Decade) {
+		var url = "repertoire_display.cfm?ReturnAll=Y&RepYear=" + RepYear + "&Decade=" + Decade;
+		$("#RepDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+    	});
+//		window.__sharethis__.initialize();
+	}
+
+	function scoreDisplayYearOld(CorpsID, CorpsYear,ShowID) {
+		// IA 12/20/24
+		// Added a whole new block of code to properly set the address bar and share links when a user clicks on a specific show.
+		let url2 = new URL(window.location.href);
+        let params = url2.searchParams;
+		params.set('showid', ShowID);
+        history.pushState(null, "", `${url2.pathname}?${params.toString()}`);
+		document.getElementById("TestLink").href = window.location.href;
+		document.getElementById("TestLink").innerHTML = window.location.href;
+		console.log(CorpsID);
+		// IA 12/20/24
+		// Modified this function to use lowercase parameters since camel case was causing issues
+		var url = "Corpslist_ScoreYear.cfm?ReturnAll=Y&corpsid=" + CorpsID + "&corpsyear=" + CorpsYear + "&showid=" + ShowID;
+		$("#ScoreDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+		// IA 1/21/24
+		// Added a try catch block here in case the buttons are not loaded
+		try {
+			document.getElementsByClassName("sharethis-inline-share-buttons")[0].setAttribute("data-url", window.location.href);
+			document.getElementById('ClipboardBtn').addEventListener('click', () => {copyTextToClipboard(window.location.href);});
+		} catch (err) {
+			console.log("Share buttons not loaded");
+			console.log(err);
+		}
+//		window.__sharethis__.initialize();
+	}
+	// Old version of the function
+	function scoreDisplayYear(CorpsID, CorpsYear,ShowID) {
+		var url = "Corpslist_ScoreYear.cfm?ReturnAll=Y&CorpsID=" + CorpsID + "&CorpsYear=" + CorpsYear + "&ShowID=" + ShowID;
+		$("#ScoreDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+	    });
+//		window.__sharethis__.initialize();
+	}
+
+	function scoreDisplayAll(CorpsID) {
+		$("#ScoreDiv").load("Corpslist_Scores.cfm?CorpsID=" + CorpsID);
+	}
+	function showChangeYear(ShowYear, Decade, CorpsID) {
+		// IA 12/20/24
+		// Added a whole new block of code to properly set the address bar and share links when a user clicks on a specific year.
+		let url2 = new URL(window.location.href);
+        let params = url2.searchParams;
+		params.set('season', ShowYear);
+        history.pushState(null, "", `${url2.pathname}?${params.toString()}`);
+		document.getElementById("TestLink").href = window.location.href;
+		document.getElementById("TestLink").innerHTML = window.location.href;
+		console.log(CorpsID);
+		// IA 12/20/24
+		// Modified this function to use lowercase for corpsid since camel case was causing issues
+		var url = "decade_shows.cfm?ShowYear=" + ShowYear + "&Decade=" + Decade + '&corpsid=' + CorpsID;
+		$("#ScoreDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+    	});
+		// IA 1/21/24
+		// Added a try catch block here in case the buttons are not loaded
+		try {
+			document.getElementsByClassName("sharethis-inline-share-buttons")[0].setAttribute("data-url", window.location.href);
+			document.getElementById('ClipboardBtn').addEventListener('click', () => {copyTextToClipboard(window.location.href);});
+		} catch (err) {
+			console.log("Share buttons not loaded");
+			console.log(err);
+		}
+//		window.__sharethis__.initialize();
+	}
+	// Old version of the function
+	function showChangeYear(ShowYear, Decade, CorpsID) {
+		var url = "decade_shows.cfm?ShowYear=" + ShowYear + "&Decade=" + Decade + '&corpsid=' + CorpsID;
+		$("#ScoreDiv").load(url, function(responseTxt, statusTxt, xhr){
+        if(statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+    	});
+//		window.__sharethis__.initialize();
+	}
+
+function RegExTrimString(StringToTrim) {
+	var re = /^\s+|\s+$/g;
+	return StringToTrim.toString().replace(re,'');
+}
+
+function LookupModal (Process, FieldName, Parent) {
+	var v = document.getElementById(FieldName).value;
+	if (v.length > 0) {
+		$.ajax({
+			url: 'com/corps.cfc?method=IDLookup&Process='+Process+'&Parent='+Parent+'&FieldName='+FieldName+'&FieldValue='+v,
+			dataType: 'html',
+			success: function(html) {
+				document.getElementById("lookup-title").innerHTML = "Search for " + v;
+				document.getElementById("lookup-body").innerHTML = html;
+			}
+		});
+		
+		$('#lookupModal').modal('show');
+//		window.__sharethis__.initialize();
+	} else {
+		alert('Enter a search phrase');
+	}
+}
+	
+
+
+
+function copyToClipboard(text) {
+    var dummy = document.createElement("textarea");
+    // to avoid breaking orgain page when copying more words
+    // cant copy when adding below this code
+    // dummy.style.display = 'none'
+    document.body.appendChild(dummy);
+    //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". ï¿½ Eduard
+    dummy.value = text;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+}
+
+</script>
+
+<script type="text/javascript">
+;( function( $ ) {
+
+	$( '.swipebox' ).swipebox(
+	{
+		useCSS : true, // false will force the use of jQuery for animations
+		useSVG : true, // false to force the use of png for buttons
+		initialIndexOnArray : 0, // which image index to init when a array is passed
+		hideCloseButtonOnMobile : false, // true will hide the close button on mobile devices
+		removeBarsOnMobile : false, // false will show top bar on mobile devices
+		hideBarsDelay : 0, // delay before hiding bars on desktop, use number seconds in 1000s, 0 means show always
+		videoMaxWidth : 1140, // videos max width
+		beforeOpen: function() {}, // called before opening
+		afterOpen: null, // called after opening
+		afterClose: function() {}, // called after closing
+		loopAtEnd: false // true will return to the first image after the last image is reached
+		}
+	);
+		
+} )( jQuery );
+
+</script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    //cpmwork - Disable full page right click - this does work if we really want to disable everything
+    //$("body").on("contextmenu",function(e){
+    //    return false;
+    //});
+    
+    //Disable part of page - this doesn't work when page are loaded into a DIV
+	//perhaps if this code was in the section that loads the page - didn't work
+    //$("#AssetDIV").on("contextmenu",function(e){
+    //    return false;
+    //});
+});
+</script>
+<script type="text/javascript">
+//cpmwork Disable right click
+//$('img').bind('contextmenu', function(e) {
+//    return false;
+//});
+//this approach doesn't work in FF
+//$('img').live('contextmenu', function(e) {
+//    return false;
+//});
+
+</script>
+
+</body>
+
+</html>

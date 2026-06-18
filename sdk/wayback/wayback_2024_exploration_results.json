@@ -1,0 +1,1405 @@
+{
+  "metadata": {
+    "description": "2024 DCI API exploration results",
+    "attempts": 72,
+    "successful": 48,
+    "datesChecked": 12,
+    "endpointsTested": 6
+  },
+  "successful": [
+    {
+      "date": "20240101",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240101",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240101",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20240101",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20240201",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240201",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240201",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20240201",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20240301",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240301",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240301",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20240301",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20240401",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240401",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240401",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20240401",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20240501",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240501",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240501",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20240501",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20240601",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240601",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240601",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20240601",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20240701",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240701",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240701",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20240701",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20240801",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240801",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240801",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20240801",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20240901",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240901",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20240901",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20240901",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20241001",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20241001",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20241001",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20241001",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20241101",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20241101",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20241101",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20241101",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    },
+    {
+      "date": "20241201",
+      "endpoint": "/corps",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20241201",
+      "endpoint": "/corps?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 100
+    },
+    {
+      "date": "20241201",
+      "endpoint": "/competitions",
+      "status": 200,
+      "type": "array",
+      "recordCount": 10
+    },
+    {
+      "date": "20241201",
+      "endpoint": "/competitions?limit=500",
+      "status": 200,
+      "type": "array",
+      "recordCount": 500
+    }
+  ],
+  "details": {
+    "20240101__/corps": {
+      "endpoint": "/corps",
+      "date": "20240101",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240101_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240101__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20240101",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240101_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240101__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20240101",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20240101_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240101__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20240101",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20240101_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240201__/corps": {
+      "endpoint": "/corps",
+      "date": "20240201",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240201_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240201__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20240201",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240201_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240201__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20240201",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20240201_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240201__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20240201",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20240201_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240301__/corps": {
+      "endpoint": "/corps",
+      "date": "20240301",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240301_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240301__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20240301",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240301_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240301__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20240301",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20240301_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240301__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20240301",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20240301_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240401__/corps": {
+      "endpoint": "/corps",
+      "date": "20240401",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240401_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240401__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20240401",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240401_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240401__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20240401",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20240401_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240401__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20240401",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20240401_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240501__/corps": {
+      "endpoint": "/corps",
+      "date": "20240501",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240501_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240501__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20240501",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240501_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240501__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20240501",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20240501_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240501__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20240501",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20240501_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240601__/corps": {
+      "endpoint": "/corps",
+      "date": "20240601",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240601_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240601__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20240601",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240601_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240601__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20240601",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20240601_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240601__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20240601",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20240601_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240701__/corps": {
+      "endpoint": "/corps",
+      "date": "20240701",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240701_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240701__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20240701",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240701_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240701__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20240701",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20240701_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240701__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20240701",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20240701_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240801__/corps": {
+      "endpoint": "/corps",
+      "date": "20240801",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240801_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240801__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20240801",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240801_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240801__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20240801",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20240801_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240801__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20240801",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20240801_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240901__/corps": {
+      "endpoint": "/corps",
+      "date": "20240901",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240901_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240901__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20240901",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20240901_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20240901__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20240901",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20240901_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20240901__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20240901",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20240901_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20241001__/corps": {
+      "endpoint": "/corps",
+      "date": "20241001",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20241001_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20241001__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20241001",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20241001_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20241001__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20241001",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20241001_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20241001__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20241001",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20241001_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20241101__/corps": {
+      "endpoint": "/corps",
+      "date": "20241101",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20241101_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20241101__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20241101",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20241101_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20241101__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20241101",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20241101_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20241101__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20241101",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20241101_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20241201__/corps": {
+      "endpoint": "/corps",
+      "date": "20241201",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20241201_corps.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20241201__/corps?limit=500": {
+      "endpoint": "/corps?limit=500",
+      "date": "20241201",
+      "type": "array",
+      "recordCount": 100,
+      "filename": "20241201_corps_limit=500.json",
+      "sampleKeys": [
+        "gallery",
+        "id",
+        "name",
+        "type",
+        "billingAddress",
+        "shippingCity",
+        "shippingState",
+        "phone",
+        "accountNumber",
+        "website",
+        "si",
+        "ownership",
+        "tickerSymbol",
+        "description",
+        "rating"
+      ]
+    },
+    "20241201__/competitions": {
+      "endpoint": "/competitions",
+      "date": "20241201",
+      "type": "array",
+      "recordCount": 10,
+      "filename": "20241201_competitions.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    },
+    "20241201__/competitions?limit=500": {
+      "endpoint": "/competitions?limit=500",
+      "date": "20241201",
+      "type": "array",
+      "recordCount": 500,
+      "filename": "20241201_competitions_limit=500.json",
+      "sampleKeys": [
+        "groupTypes",
+        "eventName",
+        "location",
+        "date",
+        "competitionLevel",
+        "chiefJudge",
+        "scoresReleased",
+        "recapReleased",
+        "categoryRecapReleased",
+        "seasonName",
+        "slug"
+      ]
+    }
+  }
+}

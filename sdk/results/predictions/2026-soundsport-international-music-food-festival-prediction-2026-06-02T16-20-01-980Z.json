@@ -1,0 +1,267 @@
+{
+  "generated_at": "2026-06-02T16:20:01.980Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-soundsport-international-music-food-festival",
+    "slug": "2026-soundsport-international-music-food-festival",
+    "name": "SoundSport International Music & Food Festival",
+    "event_name": "SoundSport International Music & Food Festival",
+    "start_date": "2026-08-08",
+    "start_time": null,
+    "web_start_time": "ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Indianapolis",
+    "location_state": "IN",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260808-INDY-SSIMFF.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260808-INDY-SSIMFF.jpg",
+    "buy_tickets": null,
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/40cenWy",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "All times ET and subject to change",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 4,
+    "matched_corps_keys": 4,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 1,
+    "skipped_lineup_rows": 3,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 100
+  },
+  "input_signature": "3562de224d37d661ae4753c9185631b551bcc6ad2ca4a164346d282fd90ddcd3",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 4,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwspaal",
+        "corps": "Blue Saints",
+        "division": "Open Class",
+        "performance_order": 1,
+        "time": null
+      },
+      {
+        "corps_key": "001j000000iwx92aad",
+        "corps": "Carolina Gold",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": null
+      },
+      {
+        "corps_key": "conquest-drum-bugle-corps",
+        "corps": "Conquest Drum & Bugle Corps",
+        "division": "SoundSport",
+        "performance_order": 3,
+        "time": null
+      },
+      {
+        "corps_key": "sonus-brass-theater",
+        "corps": "Sonus Brass Theater",
+        "division": "SoundSport",
+        "performance_order": 11,
+        "time": null
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000iwx92aad",
+        "corps": "Carolina Gold",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "conquest-drum-bugle-corps",
+        "corps": "Conquest Drum & Bugle Corps",
+        "division": "SoundSport",
+        "performance_order": 3,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "sonus-brass-theater",
+        "corps": "Sonus Brass Theater",
+        "division": "SoundSport",
+        "performance_order": 11,
+        "time": null,
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Apollo Marching Theatre",
+        "performance_order": 0,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Green Beret Marching Band",
+        "performance_order": 4,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Latrobe Music Center",
+        "performance_order": 5,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Legacy Drum & Bugle Corps",
+        "performance_order": 6,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Mercedes Marching Band",
+        "performance_order": 7,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Phoenix",
+        "performance_order": 8,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Rhythm IN BLUE",
+        "performance_order": 9,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Sacramento Freelancers",
+        "performance_order": 10,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Spark",
+        "performance_order": 12,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Steel City Ambassadors",
+        "performance_order": 13,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "The Marching Elite",
+        "performance_order": 14,
+        "exclusion_reason": "unresolved_corps"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-soundsport-international-music-food-festival",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-08-08",
+      "scored_lineup_rows": 4,
+      "matched_corps_keys": 4,
+      "excluded_lineup_rows": 11,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwspaal",
+      "corps": "Blue Saints",
+      "city": "Sudbury, ON",
+      "division": "Open Class",
+      "performance_order": 1,
+      "time": null,
+      "total": 55.649,
+      "GE": 22.094,
+      "Visual": 16.623,
+      "Music": 16.932,
+      "GE1": 11.2,
+      "GE2": 10.894,
+      "VP": 11.337,
+      "VA": 10.873,
+      "CG": 11.035,
+      "MB": 11.715,
+      "MA": 10.839,
+      "MP": 11.31,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.42,
+          "p50": 11.2,
+          "p90": 11.972
+        },
+        "GE2": {
+          "p10": 10.058,
+          "p50": 10.894,
+          "p90": 11.666
+        },
+        "VP": {
+          "p10": 10.597,
+          "p50": 11.337,
+          "p90": 12.181
+        },
+        "VA": {
+          "p10": 10.126,
+          "p50": 10.873,
+          "p90": 11.691
+        },
+        "CG": {
+          "p10": 10.174,
+          "p50": 11.035,
+          "p90": 11.768
+        },
+        "MB": {
+          "p10": 10.773,
+          "p50": 11.715,
+          "p90": 12.426
+        },
+        "MA": {
+          "p10": 9.971,
+          "p50": 10.839,
+          "p90": 11.545
+        },
+        "MP": {
+          "p10": 10.502,
+          "p50": 11.31,
+          "p90": 12.129
+        }
+      },
+      "raw_model_total": 54.283,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_weight": 0,
+      "caption_shape_total": 55.649,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 55.648,
+      "point_estimate_source": "caption_shape_preserving_baseline"
+    }
+  ],
+  "caveats": [
+    "3 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

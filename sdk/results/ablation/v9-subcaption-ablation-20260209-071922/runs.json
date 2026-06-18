@@ -1,0 +1,28 @@
+[
+  {
+    "id": "v9fix_w1p0",
+    "stage": "interval-w1p0",
+    "args": ["--base-width-multiplier", "1.0"],
+    "logPath": "results\\ablation\\v9-subcaption-ablation-20260209-071922\\v9fix_w1p0.log",
+    "startedAt": "2026-02-09T12:19:22.728Z",
+    "endedAt": "2026-02-09T12:19:52.778Z",
+    "durationMinutes": 0.5008333333333334,
+    "completed": true,
+    "unstable": false,
+    "aborted": false,
+    "lastEpoch": 0,
+    "lastDeltaMaePts": 1.8693,
+    "lastCoverage": 0.165,
+    "lastMonScore": 7.5161,
+    "testMetrics": {
+      "deltaMaePts": 1.0555,
+      "recapMaePts": 1.0555,
+      "categoryMaePts": 1.0792,
+      "totalMaePts": 2.256,
+      "coverage": 0.172,
+      "width": 0.9146,
+      "widthFloorPct": 0.56
+    },
+    "notes": ["Exit code: 0.", "Completion marker found in log."]
+  }
+]

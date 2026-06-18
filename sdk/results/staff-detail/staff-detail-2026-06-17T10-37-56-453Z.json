@@ -1,0 +1,43 @@
+{
+  "scrapedAt": "2026-06-17T10-37-56-453Z",
+  "apply": false,
+  "totBio": 4,
+  "totPhoto": 1,
+  "corps": [
+    {
+      "corpsKey": "001j000000iwxa3aal",
+      "name": "Mandarins",
+      "staffPageUrl": "http://www.mandarins.org/staff",
+      "targets": 457,
+      "detailLinks": 5,
+      "biosFilled": 4,
+      "photosFilled": 1,
+      "fills": [
+        {
+          "name": "Dr Dan Fong",
+          "url": "https://www.mandarins.org/drum-corps-staff/dr.-dan-fong",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Anna Keck",
+          "url": "https://www.mandarins.org/drum-corps-staff/dr.-anna-keck",
+          "bio": true,
+          "photo": false
+        },
+        {
+          "name": "JW Koester",
+          "url": "https://www.mandarins.org/drum-corps-staff/jw-koester",
+          "bio": true,
+          "photo": false
+        },
+        {
+          "name": "Joseph Khalifa",
+          "url": "https://www.mandarins.org/drum-corps-staff/joseph-khalifa",
+          "bio": true,
+          "photo": false
+        }
+      ]
+    }
+  ]
+}

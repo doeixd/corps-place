@@ -1,0 +1,873 @@
+{
+  "generated_at": "2026-06-01T23:17:38.794Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-river-city-rhapsody",
+    "slug": "2026-river-city-rhapsody",
+    "name": "River City Rhapsody",
+    "event_name": "River City Rhapsody",
+    "start_date": "2026-07-05",
+    "start_time": null,
+    "web_start_time": "7:00 PM CT",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "La Crosse",
+    "location_state": "WI",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260705-LA-CROSSE-WI.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260705-LA-CROSSE-WI.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/2026-river-city-rhapsody-dhy1mg",
+    "buy_tickets_text": null,
+    "live_stream_link": "https://flosports.link/4bkUeUv",
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": "Ticket prices will increase July 25,2026.",
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 10,
+    "matched_corps_keys": 10,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 8,
+    "skipped_lineup_rows": 2,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 20.930232558139537
+  },
+  "input_signature": "e934fe376a6463e55e28a7a021772f0ea74c643bd3905573315bb83ec781820d",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 10,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwspaal",
+        "corps": "Blue Saints",
+        "division": "Open Class",
+        "performance_order": 2,
+        "time": "7:10 PM"
+      },
+      {
+        "corps_key": "0010a00001bpafnaar",
+        "corps": "Sound of Sun Prairie",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 3,
+        "time": "7:20 PM"
+      },
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "7:32 PM"
+      },
+      {
+        "corps_key": "001j000000qzs1qaaf",
+        "corps": "River City Rhythm",
+        "division": "Open Class",
+        "performance_order": 5,
+        "time": "7:49 PM"
+      },
+      {
+        "corps_key": "001j000000i6lenaa3",
+        "corps": "Madison Scouts",
+        "division": "World Class",
+        "performance_order": 6,
+        "time": "8:06 PM"
+      },
+      {
+        "corps_key": "001j000000iwx98aad",
+        "corps": "Colts",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "8:23 PM"
+      },
+      {
+        "corps_key": "001j000000iwxajaa1",
+        "corps": "Troopers",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "9:00 PM"
+      },
+      {
+        "corps_key": "001j000000iwxafaa1",
+        "corps": "The Cavaliers",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "9:17 PM"
+      },
+      {
+        "corps_key": "001j000000h3xrnaav",
+        "corps": "Phantom Regiment",
+        "division": "World Class",
+        "performance_order": 11,
+        "time": "9:34 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsqaal",
+        "corps": "Blue Stars",
+        "division": "World Class",
+        "performance_order": 12,
+        "time": "9:51 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "0010a00001bpafnaar",
+        "corps": "Sound of Sun Prairie",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 3,
+        "time": "7:20 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000iwx9raad",
+        "corps": "Govenaires",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "7:32 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Intermission",
+        "performance_order": 8,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Encore - Blue Stars",
+        "performance_order": 13,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 14,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-river-city-rhapsody",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-05",
+      "scored_lineup_rows": 10,
+      "matched_corps_keys": 10,
+      "excluded_lineup_rows": 5,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000h3xrnaav",
+      "corps": "Phantom Regiment",
+      "city": "Rockford, IL",
+      "division": "World Class",
+      "performance_order": 11,
+      "time": "9:34 PM",
+      "total": 79.861,
+      "GE": 32.128,
+      "Visual": 23.887,
+      "Music": 23.846,
+      "GE1": 16.096,
+      "GE2": 16.032,
+      "VP": 15.766,
+      "VA": 15.889,
+      "CG": 16.119,
+      "MB": 15.898,
+      "MA": 15.807,
+      "MP": 15.987,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.326,
+          "p50": 16.096,
+          "p90": 16.862
+        },
+        "GE2": {
+          "p10": 15.329,
+          "p50": 16.032,
+          "p90": 16.894
+        },
+        "VP": {
+          "p10": 15.01,
+          "p50": 15.766,
+          "p90": 16.544
+        },
+        "VA": {
+          "p10": 15.075,
+          "p50": 15.889,
+          "p90": 16.58
+        },
+        "CG": {
+          "p10": 15.347,
+          "p50": 16.119,
+          "p90": 16.909
+        },
+        "MB": {
+          "p10": 15.139,
+          "p50": 15.898,
+          "p90": 16.656
+        },
+        "MA": {
+          "p10": 15.168,
+          "p50": 15.807,
+          "p90": 16.718
+        },
+        "MP": {
+          "p10": 15.243,
+          "p50": 15.987,
+          "p90": 16.773
+        }
+      },
+      "raw_model_total": 94.328,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 80.95,
+      "prior_season_comparable_percent_through": 21.428571428571427,
+      "prior_season_comparable_competition": "2025-drums-across-the-smokies",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 79.86,
+      "caption_shape_total": 78.526,
+      "total_reconciliation_delta": 1.335,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 78.527,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwwsqaal",
+      "corps": "Blue Stars",
+      "city": "La Crosse, WI",
+      "division": "World Class",
+      "performance_order": 12,
+      "time": "9:51 PM",
+      "total": 75.48,
+      "GE": 30.3,
+      "Visual": 22.653,
+      "Music": 22.527,
+      "GE1": 15.168,
+      "GE2": 15.132,
+      "VP": 14.892,
+      "VA": 14.911,
+      "CG": 15.504,
+      "MB": 15.006,
+      "MA": 15.201,
+      "MP": 14.847,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.409,
+          "p50": 15.168,
+          "p90": 15.946
+        },
+        "GE2": {
+          "p10": 14.46,
+          "p50": 15.132,
+          "p90": 16.009
+        },
+        "VP": {
+          "p10": 14.136,
+          "p50": 14.892,
+          "p90": 15.661
+        },
+        "VA": {
+          "p10": 14.081,
+          "p50": 14.911,
+          "p90": 15.574
+        },
+        "CG": {
+          "p10": 14.722,
+          "p50": 15.504,
+          "p90": 16.275
+        },
+        "MB": {
+          "p10": 14.233,
+          "p50": 15.006,
+          "p90": 15.749
+        },
+        "MA": {
+          "p10": 14.58,
+          "p50": 15.201,
+          "p90": 16.122
+        },
+        "MP": {
+          "p10": 14.07,
+          "p50": 14.847,
+          "p90": 15.631
+        }
+      },
+      "raw_model_total": 91.88,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 75.2,
+      "prior_season_comparable_percent_through": 19.047619047619047,
+      "prior_season_comparable_competition": "2025-river-city-rhapsody",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 75.479,
+      "caption_shape_total": 75.82,
+      "total_reconciliation_delta": -0.34,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 8,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 75.821,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000iwxafaa1",
+      "corps": "The Cavaliers",
+      "city": "Rosemont, IL",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "9:17 PM",
+      "total": 74.051,
+      "GE": 29.657,
+      "Visual": 21.986,
+      "Music": 22.408,
+      "GE1": 14.825,
+      "GE2": 14.832,
+      "VP": 14.569,
+      "VA": 14.462,
+      "CG": 14.942,
+      "MB": 14.485,
+      "MA": 14.834,
+      "MP": 15.497,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 14.043,
+          "p50": 14.825,
+          "p90": 15.584
+        },
+        "GE2": {
+          "p10": 14.173,
+          "p50": 14.832,
+          "p90": 15.718
+        },
+        "VP": {
+          "p10": 13.844,
+          "p50": 14.569,
+          "p90": 15.361
+        },
+        "VA": {
+          "p10": 13.676,
+          "p50": 14.462,
+          "p90": 15.172
+        },
+        "CG": {
+          "p10": 14.175,
+          "p50": 14.942,
+          "p90": 15.702
+        },
+        "MB": {
+          "p10": 13.762,
+          "p50": 14.485,
+          "p90": 15.234
+        },
+        "MA": {
+          "p10": 14.232,
+          "p50": 14.834,
+          "p90": 15.741
+        },
+        "MP": {
+          "p10": 14.658,
+          "p50": 15.497,
+          "p90": 16.221
+        }
+      },
+      "raw_model_total": 92.751,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 77.1,
+      "prior_season_comparable_percent_through": 23.809523809523807,
+      "prior_season_comparable_competition": "2025-the-kiwanis-thunder-of-drums",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 74.051,
+      "caption_shape_total": 71.556,
+      "total_reconciliation_delta": 2.495,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 9,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 71.556,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxajaa1",
+      "corps": "Troopers",
+      "city": "Casper, WY",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "9:00 PM",
+      "total": 71.847,
+      "GE": 28.757,
+      "Visual": 20.976,
+      "Music": 22.114,
+      "GE1": 14.316,
+      "GE2": 14.441,
+      "VP": 13.835,
+      "VA": 13.929,
+      "CG": 14.188,
+      "MB": 14.328,
+      "MA": 14.696,
+      "MP": 15.203,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.519,
+          "p50": 14.316,
+          "p90": 15.05
+        },
+        "GE2": {
+          "p10": 13.795,
+          "p50": 14.441,
+          "p90": 15.365
+        },
+        "VP": {
+          "p10": 13.114,
+          "p50": 13.835,
+          "p90": 14.651
+        },
+        "VA": {
+          "p10": 13.107,
+          "p50": 13.929,
+          "p90": 14.62
+        },
+        "CG": {
+          "p10": 13.434,
+          "p50": 14.188,
+          "p90": 14.977
+        },
+        "MB": {
+          "p10": 13.553,
+          "p50": 14.328,
+          "p90": 15.059
+        },
+        "MA": {
+          "p10": 14.11,
+          "p50": 14.696,
+          "p90": 15.629
+        },
+        "MP": {
+          "p10": 14.353,
+          "p50": 15.203,
+          "p90": 15.917
+        }
+      },
+      "raw_model_total": 89.587,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 72.95,
+      "prior_season_comparable_percent_through": 19.047619047619047,
+      "prior_season_comparable_competition": "2025-river-city-rhapsody",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 71.846,
+      "caption_shape_total": 70.496,
+      "total_reconciliation_delta": 1.35,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 10,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 70.497,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwx98aad",
+      "corps": "Colts",
+      "city": "Dubuque, IA",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "8:23 PM",
+      "total": 71.577,
+      "GE": 28.673,
+      "Visual": 21.305,
+      "Music": 21.599,
+      "GE1": 14.397,
+      "GE2": 14.276,
+      "VP": 14.04,
+      "VA": 14.052,
+      "CG": 14.518,
+      "MB": 14.039,
+      "MA": 14.521,
+      "MP": 14.639,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.643,
+          "p50": 14.397,
+          "p90": 15.171
+        },
+        "GE2": {
+          "p10": 13.63,
+          "p50": 14.276,
+          "p90": 15.187
+        },
+        "VP": {
+          "p10": 13.341,
+          "p50": 14.04,
+          "p90": 14.868
+        },
+        "VA": {
+          "p10": 13.263,
+          "p50": 14.052,
+          "p90": 14.759
+        },
+        "CG": {
+          "p10": 13.752,
+          "p50": 14.518,
+          "p90": 15.28
+        },
+        "MB": {
+          "p10": 13.289,
+          "p50": 14.039,
+          "p90": 14.785
+        },
+        "MA": {
+          "p10": 13.929,
+          "p50": 14.521,
+          "p90": 15.447
+        },
+        "MP": {
+          "p10": 13.803,
+          "p50": 14.639,
+          "p90": 15.354
+        }
+      },
+      "raw_model_total": 89.249,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 74.15,
+      "prior_season_comparable_percent_through": 19.047619047619047,
+      "prior_season_comparable_competition": "2025-river-city-rhapsody",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 71.577,
+      "caption_shape_total": 68.433,
+      "total_reconciliation_delta": 3.145,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 5,
+      "prior_season_rank": 11,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 68.432,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 6,
+      "corps_key": "001j000000i6lenaa3",
+      "corps": "Madison Scouts",
+      "city": "Madison, WI",
+      "division": "World Class",
+      "performance_order": 6,
+      "time": "8:06 PM",
+      "total": 69.52,
+      "GE": 28.095,
+      "Visual": 20.456,
+      "Music": 20.969,
+      "GE1": 14.048,
+      "GE2": 14.047,
+      "VP": 13.398,
+      "VA": 13.639,
+      "CG": 13.874,
+      "MB": 13.694,
+      "MA": 14.025,
+      "MP": 14.219,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 13.228,
+          "p50": 14.048,
+          "p90": 14.695
+        },
+        "GE2": {
+          "p10": 13.457,
+          "p50": 14.047,
+          "p90": 14.949
+        },
+        "VP": {
+          "p10": 12.696,
+          "p50": 13.398,
+          "p90": 14.171
+        },
+        "VA": {
+          "p10": 12.86,
+          "p50": 13.639,
+          "p90": 14.282
+        },
+        "CG": {
+          "p10": 13.192,
+          "p50": 13.874,
+          "p90": 14.725
+        },
+        "MB": {
+          "p10": 12.975,
+          "p50": 13.694,
+          "p90": 14.427
+        },
+        "MA": {
+          "p10": 13.467,
+          "p50": 14.025,
+          "p90": 14.91
+        },
+        "MP": {
+          "p10": 13.449,
+          "p50": 14.219,
+          "p90": 14.883
+        }
+      },
+      "raw_model_total": 88.647,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 72.05,
+      "prior_season_comparable_percent_through": 19.047619047619047,
+      "prior_season_comparable_competition": "2025-river-city-rhapsody",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 69.519,
+      "caption_shape_total": 66.424,
+      "total_reconciliation_delta": 3.095,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 6,
+      "prior_season_rank": 14,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 66.424,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 7,
+      "corps_key": "001j000000qzs1qaaf",
+      "corps": "River City Rhythm",
+      "city": "Anoka, MN",
+      "division": "Open Class",
+      "performance_order": 5,
+      "time": "7:49 PM",
+      "total": 49.93,
+      "GE": 20.007,
+      "Visual": 14.444,
+      "Music": 15.479,
+      "GE1": 10.895,
+      "GE2": 9.112,
+      "VP": 9.589,
+      "VA": 9.608,
+      "CG": 9.69,
+      "MB": 10.34,
+      "MA": 10.016,
+      "MP": 10.602,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 10.05,
+          "p50": 10.895,
+          "p90": 11.606
+        },
+        "GE2": {
+          "p10": 8.474,
+          "p50": 9.112,
+          "p90": 10.056
+        },
+        "VP": {
+          "p10": 8.937,
+          "p50": 9.589,
+          "p90": 10.542
+        },
+        "VA": {
+          "p10": 8.826,
+          "p50": 9.608,
+          "p90": 10.368
+        },
+        "CG": {
+          "p10": 8.93,
+          "p50": 9.69,
+          "p90": 10.486
+        },
+        "MB": {
+          "p10": 9.519,
+          "p50": 10.34,
+          "p90": 11.033
+        },
+        "MA": {
+          "p10": 9.288,
+          "p50": 10.016,
+          "p90": 10.782
+        },
+        "MP": {
+          "p10": 9.758,
+          "p50": 10.602,
+          "p90": 11.309
+        }
+      },
+      "raw_model_total": 70.368,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 62.1,
+      "prior_season_comparable_percent_through": 23.809523809523807,
+      "prior_season_comparable_competition": "2025-the-kiwanis-thunder-of-drums",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 49.931,
+      "caption_shape_total": 39.974,
+      "total_reconciliation_delta": 9.955,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 7,
+      "prior_season_rank": 26,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 39.975,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 8,
+      "corps_key": "001j000000iwwspaal",
+      "corps": "Blue Saints",
+      "city": "Sudbury, ON",
+      "division": "Open Class",
+      "performance_order": 2,
+      "time": "7:10 PM",
+      "total": 39.566,
+      "GE": 15.4,
+      "Visual": 11.587,
+      "Music": 12.579,
+      "GE1": 8.425,
+      "GE2": 6.975,
+      "VP": 8.033,
+      "VA": 7.526,
+      "CG": 7.616,
+      "MB": 8.805,
+      "MA": 7.881,
+      "MP": 8.471,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 7.656,
+          "p50": 8.425,
+          "p90": 9.21
+        },
+        "GE2": {
+          "p10": 6.159,
+          "p50": 6.975,
+          "p90": 7.745
+        },
+        "VP": {
+          "p10": 7.276,
+          "p50": 8.033,
+          "p90": 8.877
+        },
+        "VA": {
+          "p10": 6.85,
+          "p50": 7.526,
+          "p90": 8.426
+        },
+        "CG": {
+          "p10": 6.712,
+          "p50": 7.616,
+          "p90": 8.276
+        },
+        "MB": {
+          "p10": 7.886,
+          "p50": 8.805,
+          "p90": 9.516
+        },
+        "MA": {
+          "p10": 7.106,
+          "p50": 7.881,
+          "p90": 8.65
+        },
+        "MP": {
+          "p10": 7.729,
+          "p50": 8.471,
+          "p90": 9.327
+        }
+      },
+      "raw_model_total": 51.556,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_weight": 0,
+      "caption_shape_total": 39.566,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "baseline_rank_source": "prior_season_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 39.564,
+      "point_estimate_source": "caption_shape_preserving_baseline"
+    }
+  ],
+  "caveats": [
+    "2 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets."
+  ]
+}

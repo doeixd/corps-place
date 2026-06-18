@@ -1,0 +1,80 @@
+[
+  {
+    "id": "v9fix_shared_datefwd_ctrl",
+    "stage": "interval-control",
+    "args": [],
+    "logPath": "results\\ablation\\v9-subcaption-ablation-20260521-150951\\v9fix_shared_datefwd_ctrl.log",
+    "startedAt": "2026-05-21T19:09:51.706Z",
+    "endedAt": "2026-05-22T02:45:57.567Z",
+    "durationMinutes": 456.09768333333335,
+    "completed": true,
+    "unstable": false,
+    "aborted": false,
+    "lastEpoch": 216,
+    "lastDeltaMaePts": 0.3943,
+    "lastCoverage": 0.948,
+    "lastMonScore": 4.0092,
+    "testMetrics": {
+      "deltaMaePts": 0.3254,
+      "recapMaePts": 0.3254,
+      "categoryMaePts": null,
+      "totalMaePts": 0.6676,
+      "coverage": 0.964,
+      "width": 1.9168,
+      "widthFloorPct": null
+    },
+    "notes": ["Exit code: 0.", "Completion marker found in log."]
+  },
+  {
+    "id": "v9fix_shared_datefwd_w1p0",
+    "stage": "interval-w1p0",
+    "args": ["--base-width-multiplier", "1.0"],
+    "logPath": "results\\ablation\\v9-subcaption-ablation-20260521-150951\\v9fix_shared_datefwd_w1p0.log",
+    "startedAt": "2026-05-22T02:45:57.579Z",
+    "endedAt": "2026-05-22T10:43:03.177Z",
+    "durationMinutes": 477.0933,
+    "completed": true,
+    "unstable": false,
+    "aborted": false,
+    "lastEpoch": 217,
+    "lastDeltaMaePts": 0.3967,
+    "lastCoverage": 0.947,
+    "lastMonScore": 4.036,
+    "testMetrics": {
+      "deltaMaePts": 0.3302,
+      "recapMaePts": 0.3302,
+      "categoryMaePts": null,
+      "totalMaePts": 0.7756,
+      "coverage": 0.976,
+      "width": 1.9026,
+      "widthFloorPct": null
+    },
+    "notes": ["Exit code: 0.", "Completion marker found in log."]
+  },
+  {
+    "id": "v9fix_shared_datefwd_cov4",
+    "stage": "interval-cov4",
+    "args": ["--coverage-sharpness", "4.0"],
+    "logPath": "results\\ablation\\v9-subcaption-ablation-20260521-150951\\v9fix_shared_datefwd_cov4.log",
+    "startedAt": "2026-05-22T10:43:03.186Z",
+    "endedAt": "2026-05-22T16:20:07.610Z",
+    "durationMinutes": 337.07373333333334,
+    "completed": true,
+    "unstable": false,
+    "aborted": false,
+    "lastEpoch": 217,
+    "lastDeltaMaePts": 0.3949,
+    "lastCoverage": 0.935,
+    "lastMonScore": 4.021,
+    "testMetrics": {
+      "deltaMaePts": 0.3213,
+      "recapMaePts": 0.3213,
+      "categoryMaePts": null,
+      "totalMaePts": 0.7895,
+      "coverage": 0.969,
+      "width": 1.8677,
+      "widthFloorPct": null
+    },
+    "notes": ["Exit code: 0.", "Completion marker found in log."]
+  }
+]

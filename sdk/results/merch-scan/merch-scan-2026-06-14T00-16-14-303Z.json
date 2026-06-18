@@ -1,0 +1,104 @@
+{
+  "checkedAt": "2026-06-14T00:16:14.303Z",
+  "count": 5,
+  "results": [
+    {
+      "name": "Drum Corps International (DCI)",
+      "kind": "vendor",
+      "corpsKey": null,
+      "website": "https://www.dci.org/",
+      "checkedAt": "2026-06-14T00:16:14.303Z",
+      "merchUrl": "https://store.dci.org/",
+      "finalUrl": "https://store.dci.org/",
+      "hasMerch": true,
+      "platform": "shopify",
+      "signals": [
+        "header:powered-by-shopify",
+        "html:cdn.shopify.com",
+        "html:myshopify.com"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "DCI Shop",
+      "kind": "vendor",
+      "corpsKey": null,
+      "website": "https://shop.dci.org/",
+      "checkedAt": "2026-06-14T00:16:14.303Z",
+      "merchUrl": null,
+      "finalUrl": null,
+      "hasMerch": false,
+      "platform": "unknown",
+      "signals": [],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "none",
+      "error": "homepage fetch failed: fetch failed"
+    },
+    {
+      "name": "General Effect Media",
+      "kind": "vendor",
+      "corpsKey": null,
+      "website": "https://www.generaleffectmedia.com/",
+      "checkedAt": "2026-06-14T00:16:14.303Z",
+      "merchUrl": null,
+      "finalUrl": "https://www.generaleffectmedia.com/",
+      "hasMerch": false,
+      "platform": "none",
+      "signals": [],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Funliner Productions",
+      "kind": "vendor",
+      "corpsKey": null,
+      "website": "https://funlinerproductions.com/",
+      "checkedAt": "2026-06-14T00:16:14.303Z",
+      "merchUrl": "https://funlinerproductions.com/collections/all",
+      "finalUrl": "https://funlinerproductions.com/collections/all",
+      "hasMerch": true,
+      "platform": "shopify",
+      "signals": [
+        "header:powered-by-shopify",
+        "html:cdn.shopify.com",
+        "html:cdn/shop",
+        "html:myshopify.com",
+        "html:Shopify-js",
+        "endpoint:products.json"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    },
+    {
+      "name": "Lot Riot",
+      "kind": "vendor",
+      "corpsKey": null,
+      "website": "https://lotriot.com/",
+      "checkedAt": "2026-06-14T00:16:14.303Z",
+      "merchUrl": "https://www.lotriot.com/collections/lot-riot",
+      "finalUrl": "https://www.lotriot.com/collections/lot-riot",
+      "hasMerch": true,
+      "platform": "shopify",
+      "signals": [
+        "header:powered-by-shopify",
+        "html:cdn.shopify.com",
+        "html:cdn/shop",
+        "html:myshopify.com",
+        "html:Shopify-js",
+        "endpoint:products.json"
+      ],
+      "passwordProtected": false,
+      "parked": false,
+      "fetchVia": "direct",
+      "error": null
+    }
+  ]
+}

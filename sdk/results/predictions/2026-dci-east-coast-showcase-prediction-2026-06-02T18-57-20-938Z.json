@@ -1,0 +1,575 @@
+{
+  "generated_at": "2026-06-02T18:57:20.939Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+  "event": {
+    "event_id": "web-2026-2026-dci-east-coast-showcase",
+    "slug": "2026-dci-east-coast-showcase",
+    "name": "DCI East Coast Showcase",
+    "event_name": "DCI East Coast Showcase",
+    "start_date": "2026-07-30",
+    "start_time": null,
+    "web_start_time": "7:30 PM ET",
+    "edt_start_time": null,
+    "timezone": null,
+    "location_city": "Lawrence",
+    "location_state": "MA",
+    "event_image": "https://images.dci.org/wp-content/uploads/2025/11/20260730-LAWRENCE-MA.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2025/11/20260730-LAWRENCE-MA.jpg",
+    "buy_tickets": "https://2026-east-coast-showcase-lawrence.eventbrite.com/",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 5,
+    "matched_corps_keys": 5,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 5,
+    "skipped_lineup_rows": 0,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 79.06976744186046
+  },
+  "input_signature": "fd7b3061a24824ed1462f91d45b2c0524329868c3fff476d376cefcb03fb5ad4",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 220,
+    "feature_static_dim": 212,
+    "model_fingerprint": "9ef557d257b962dc06229ac23796b24a1f8b17032833f4a5dfb217868cb2b3ee",
+    "supports_caption_fingerprints": true,
+    "interval_scale": 0.6
+  },
+  "input_audit": {
+    "scored_lineup_rows": 5,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000iwwsraal",
+        "corps": "Bluecoats",
+        "division": "World Class",
+        "performance_order": 6,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwwssaal",
+        "corps": "Boston Crusaders",
+        "division": "World Class",
+        "performance_order": 7,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxa7aal",
+        "corps": "Pacific Crest",
+        "division": "World Class",
+        "performance_order": 8,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000h3xrnaav",
+        "corps": "Phantom Regiment",
+        "division": "World Class",
+        "performance_order": 9,
+        "time": "TBD"
+      },
+      {
+        "corps_key": "001j000000iwxacaa1",
+        "corps": "Spartans",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "TBD"
+      }
+    ],
+    "skipped_lineup_rows": [],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Crusaders Senior",
+        "performance_order": 2,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "North Star",
+        "performance_order": 3,
+        "exclusion_reason": "unresolved_corps"
+      },
+      {
+        "unit_name": "Encore - Boston Crusaders",
+        "performance_order": 4,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Scores Announced",
+        "performance_order": 5,
+        "exclusion_reason": "non_performance"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-dci-east-coast-showcase",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-07-30",
+      "scored_lineup_rows": 5,
+      "matched_corps_keys": 5,
+      "excluded_lineup_rows": 6,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwssaal",
+      "corps": "Boston Crusaders",
+      "city": "Boston, MA",
+      "division": "World Class",
+      "performance_order": 7,
+      "time": "TBD",
+      "total": 94.388,
+      "GE": 37.731,
+      "Visual": 28.198,
+      "Music": 28.459,
+      "GE1": 18.819,
+      "GE2": 18.912,
+      "VP": 18.786,
+      "VA": 18.725,
+      "CG": 18.885,
+      "MB": 19.047,
+      "MA": 18.806,
+      "MP": 19.065,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 18.031,
+          "p50": 18.819,
+          "p90": 19.656
+        },
+        "GE2": {
+          "p10": 18.077,
+          "p50": 18.912,
+          "p90": 19.707
+        },
+        "VP": {
+          "p10": 17.999,
+          "p50": 18.786,
+          "p90": 19.536
+        },
+        "VA": {
+          "p10": 17.937,
+          "p50": 18.725,
+          "p90": 19.492
+        },
+        "CG": {
+          "p10": 18.014,
+          "p50": 18.885,
+          "p90": 19.601
+        },
+        "MB": {
+          "p10": 18.245,
+          "p50": 19.047,
+          "p90": 19.841
+        },
+        "MA": {
+          "p10": 18.129,
+          "p50": 18.806,
+          "p90": 19.729
+        },
+        "MP": {
+          "p10": 18.433,
+          "p50": 19.065,
+          "p90": 20
+        }
+      },
+      "raw_model_total": 95.165,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 96.375,
+      "prior_season_comparable_percent_through": 83.33333333333334,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic-2",
+      "prior_season_comparable_weight": 0.45,
+      "preseason_target_total": 94.386,
+      "caption_shape_total": 92.758,
+      "total_reconciliation_delta": 1.63,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 1,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 92.758,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 2,
+      "corps_key": "001j000000iwwsraal",
+      "corps": "Bluecoats",
+      "city": "Canton, OH",
+      "division": "World Class",
+      "performance_order": 6,
+      "time": "TBD",
+      "total": 93.657,
+      "GE": 37.614,
+      "Visual": 28.002,
+      "Music": 28.041,
+      "GE1": 18.801,
+      "GE2": 18.813,
+      "VP": 18.665,
+      "VA": 18.773,
+      "CG": 18.565,
+      "MB": 18.6,
+      "MA": 18.759,
+      "MP": 18.722,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.952,
+          "p50": 18.801,
+          "p90": 19.577
+        },
+        "GE2": {
+          "p10": 18.001,
+          "p50": 18.813,
+          "p90": 19.63
+        },
+        "VP": {
+          "p10": 17.843,
+          "p50": 18.665,
+          "p90": 19.391
+        },
+        "VA": {
+          "p10": 17.896,
+          "p50": 18.773,
+          "p90": 19.456
+        },
+        "CG": {
+          "p10": 17.629,
+          "p50": 18.565,
+          "p90": 19.28
+        },
+        "MB": {
+          "p10": 17.805,
+          "p50": 18.6,
+          "p90": 19.426
+        },
+        "MA": {
+          "p10": 18.076,
+          "p50": 18.759,
+          "p90": 19.7
+        },
+        "MP": {
+          "p10": 18.095,
+          "p50": 18.722,
+          "p90": 19.708
+        }
+      },
+      "raw_model_total": 94.728,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 96.475,
+      "prior_season_comparable_percent_through": 80.95238095238095,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 93.658,
+      "caption_shape_total": 90.216,
+      "total_reconciliation_delta": 3.44,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 2,
+      "prior_season_rank": 2,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 90.215,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 3,
+      "corps_key": "001j000000h3xrnaav",
+      "corps": "Phantom Regiment",
+      "city": "Rockford, IL",
+      "division": "World Class",
+      "performance_order": 9,
+      "time": "TBD",
+      "total": 90.577,
+      "GE": 36.38,
+      "Visual": 27.085,
+      "Music": 27.112,
+      "GE1": 18.166,
+      "GE2": 18.214,
+      "VP": 17.98,
+      "VA": 18.066,
+      "CG": 18.124,
+      "MB": 18.117,
+      "MA": 17.929,
+      "MP": 18.178,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 17.393,
+          "p50": 18.166,
+          "p90": 18.975
+        },
+        "GE2": {
+          "p10": 17.416,
+          "p50": 18.214,
+          "p90": 19.064
+        },
+        "VP": {
+          "p10": 17.188,
+          "p50": 17.98,
+          "p90": 18.736
+        },
+        "VA": {
+          "p10": 17.212,
+          "p50": 18.066,
+          "p90": 18.769
+        },
+        "CG": {
+          "p10": 17.231,
+          "p50": 18.124,
+          "p90": 18.846
+        },
+        "MB": {
+          "p10": 17.298,
+          "p50": 18.117,
+          "p90": 18.893
+        },
+        "MA": {
+          "p10": 17.25,
+          "p50": 17.929,
+          "p90": 18.857
+        },
+        "MP": {
+          "p10": 17.491,
+          "p50": 18.178,
+          "p90": 19.082
+        }
+      },
+      "raw_model_total": 92.548,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 93.225,
+      "prior_season_comparable_percent_through": 80.95238095238095,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 90.577,
+      "caption_shape_total": 87.342,
+      "total_reconciliation_delta": 3.235,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 3,
+      "prior_season_rank": 6,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 87.341,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 4,
+      "corps_key": "001j000000iwxa7aal",
+      "corps": "Pacific Crest",
+      "city": "City of Industry, CA",
+      "division": "World Class",
+      "performance_order": 8,
+      "time": "TBD",
+      "total": 84.378,
+      "GE": 33.637,
+      "Visual": 25.043,
+      "Music": 25.698,
+      "GE1": 16.741,
+      "GE2": 16.896,
+      "VP": 16.432,
+      "VA": 16.553,
+      "CG": 17.1,
+      "MB": 16.797,
+      "MA": 17.101,
+      "MP": 17.499,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.911,
+          "p50": 16.741,
+          "p90": 17.465
+        },
+        "GE2": {
+          "p10": 16.165,
+          "p50": 16.896,
+          "p90": 17.744
+        },
+        "VP": {
+          "p10": 15.636,
+          "p50": 16.432,
+          "p90": 17.136
+        },
+        "VA": {
+          "p10": 15.725,
+          "p50": 16.553,
+          "p90": 17.22
+        },
+        "CG": {
+          "p10": 16.268,
+          "p50": 17.1,
+          "p90": 17.822
+        },
+        "MB": {
+          "p10": 15.986,
+          "p50": 16.797,
+          "p90": 17.573
+        },
+        "MA": {
+          "p10": 16.475,
+          "p50": 17.101,
+          "p90": 18.009
+        },
+        "MP": {
+          "p10": 16.803,
+          "p50": 17.499,
+          "p90": 18.362
+        }
+      },
+      "raw_model_total": 88.853,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0.25,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 83.85,
+      "prior_season_comparable_percent_through": 80.95238095238095,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 84.38,
+      "caption_shape_total": 85.028,
+      "total_reconciliation_delta": -0.65,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 4,
+      "prior_season_rank": 15,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.028,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    },
+    {
+      "rank": 5,
+      "corps_key": "001j000000iwxacaa1",
+      "corps": "Spartans",
+      "city": "Nashua, NH",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "TBD",
+      "total": 81.262,
+      "GE": 32.616,
+      "Visual": 24.34,
+      "Music": 24.306,
+      "GE1": 16.357,
+      "GE2": 16.259,
+      "VP": 16.225,
+      "VA": 16.288,
+      "CG": 16.167,
+      "MB": 16.259,
+      "MA": 16.164,
+      "MP": 16.188,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 15.967,
+          "p50": 16.357,
+          "p90": 16.707
+        },
+        "GE2": {
+          "p10": 15.816,
+          "p50": 16.259,
+          "p90": 16.626
+        },
+        "VP": {
+          "p10": 15.844,
+          "p50": 16.225,
+          "p90": 16.592
+        },
+        "VA": {
+          "p10": 15.894,
+          "p50": 16.288,
+          "p90": 16.616
+        },
+        "CG": {
+          "p10": 15.729,
+          "p50": 16.167,
+          "p90": 16.477
+        },
+        "MB": {
+          "p10": 15.904,
+          "p50": 16.259,
+          "p90": 16.717
+        },
+        "MA": {
+          "p10": 15.726,
+          "p50": 16.164,
+          "p90": 16.464
+        },
+        "MP": {
+          "p10": 15.881,
+          "p50": 16.188,
+          "p90": 16.606
+        }
+      },
+      "raw_model_total": 60.819,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.6,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 79.4,
+      "prior_season_comparable_percent_through": 80.95238095238095,
+      "prior_season_comparable_competition": "2025-dci-eastern-classic",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 81.264,
+      "caption_shape_total": 83.541,
+      "total_reconciliation_delta": -2.28,
+      "mode": "preseason_forecast",
+      "template_source": "synthetic_unknown_corps",
+      "seed_rank": 5,
+      "prior_season_rank": 18,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 220,
+      "fingerprint_confidence": 0,
+      "baseline_total": 83.541,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets.",
+    "At least one corps used synthetic unknown-corps features because no historical template row was found."
+  ]
+}

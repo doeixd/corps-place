@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Bruce Jones: MFA clinician headshot (rendered via puppeteer).",
+  "profiles": [
+    {
+      "judgeId": "b-jones-1",
+      "displayName": "Bruce Jones",
+      "givenName": "Bruce",
+      "familyName": "Jones",
+      "biography": "Bruce Jones is a visual adjudicator with over 35 years in the pageantry arts as a performer, designer, instructor, and consultant for many national drum and bugle corps, marching bands, and winter color guards, many of them DCI, DCA, BOA, and WGI finalists. A University of Pittsburgh education graduate based in Dayton, Ohio, he has more than 20 years of adjudication experience with Drum Corps International, Music for All, Drum Corps Japan, and Drum Corps Europe, judging DCI finals, semifinals, and quarterfinals over 15 times and serving as a Visual Proficiency judge at DCI World Championships.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/JonesBruceResize2.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/bruce-jones/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.wgi.org/judge/bruce-jones/", "label": "WGI judge profile", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / GE1 / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "35+ yrs; Univ. of Pittsburgh; 20+ yrs DCI adjudication, finals 15+ times; Dayton OH; Visual Proficiency judge; MFA clinician headshot", "source": "https://education.musicforall.org/clinician/bruce-jones/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

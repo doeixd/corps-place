@@ -1,0 +1,382 @@
+[
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Finals",
+    "location": "Indianapolis, IN",
+    "date": "2024-08-10T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-world-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI All-Age World Championship",
+    "location": "Indianapolis, IN",
+    "date": "2024-08-10T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Martin Griffin",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-all-age-world-championship"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Semifinals",
+    "location": "Indianapolis, IN",
+    "date": "2024-08-09T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-world-championship-semifinals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI World Championship Prelims",
+    "location": "Indianapolis, IN",
+    "date": "2024-08-08T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Phillips",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-world-championship-prelims"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Open Class World Championship Finals",
+    "location": "Marion, IN",
+    "date": "2024-08-06T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-open-class-world-championship-finals"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Innovations In Brass",
+    "location": "Canton, OH",
+    "date": "2024-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Kyle Miller",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-innovations-in-brass"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Pittsburgh",
+    "location": "Pittsburgh, PA",
+    "date": "2024-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Jackie Gilley",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-pittsburgh"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "DCI Open Class World Championship Prelims",
+    "location": "Marion, IN",
+    "date": "2024-08-05T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-dci-open-class-world-championship-prelims"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Big Sounds in Motion",
+    "location": "Downingtown, PA",
+    "date": "2024-08-04T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "Sal Adamo",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-big-sounds-in-motion"
+  },
+  {
+    "groupTypes": [
+      {
+        "id": 4,
+        "name": "Marching",
+        "competitionType": {
+          "id": 75,
+          "name": "8 Judge"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Other",
+        "competitionType": {
+          "id": 8501,
+          "name": "Individual & Ensemble"
+        }
+      },
+      {
+        "id": 43,
+        "name": "SoundSport",
+        "competitionType": {
+          "id": 15855,
+          "name": "General"
+        }
+      }
+    ],
+    "eventName": "Drums on the Ohio",
+    "location": "Evansville, IN",
+    "date": "2024-08-03T00:00:00",
+    "competitionLevel": 0,
+    "chiefJudge": "John Turner",
+    "scoresReleased": true,
+    "recapReleased": true,
+    "categoryRecapReleased": true,
+    "seasonName": "2024",
+    "slug": "2024-drums-on-the-ohio"
+  }
+]

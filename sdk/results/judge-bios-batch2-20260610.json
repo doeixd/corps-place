@@ -1,0 +1,320 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 13-25 by assignment count. Sources: Music for All clinician pages, DCI adjudication-panel announcements, org/school staff pages. JudgeBioProfile + _research block. NO DB WRITES until applied.",
+  "profiles": [
+    {
+      "judgeId": "j-sturgeon-1",
+      "displayName": "Jim Sturgeon",
+      "givenName": "Jim",
+      "familyName": "Sturgeon",
+      "biography": "Jim Sturgeon is a visual adjudicator, clinician, and professional designer for drum corps, marching bands, and color guards who judges for Drum Corps International, Bands of America, Winter Guard International, and many regional circuits. A former performer with the Madison Scouts and Glassmen drum corps and the Pride of Cincinnati Winter Guard, he has served at multiple DCI World Championships in visual captions, including Visual Proficiency (2022), Visual Analysis (2024), and General Effect.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Adobe-Express-file-5.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/jim-sturgeon/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Madison Scouts", "role": "Performer (member)", "sourceUrl": "https://education.musicforall.org/clinician/jim-sturgeon/" },
+        { "corpsName": "Glassmen", "role": "Performer (member)", "sourceUrl": "https://education.musicforall.org/clinician/jim-sturgeon/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Visual Proficiency / Color Guard / GE1; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/WGI visual judge & designer; ex-Madison Scouts/Glassmen/Pride of Cincinnati", "source": "https://education.musicforall.org/clinician/jim-sturgeon/", "confidence": "HIGH" },
+          { "fact": "Visual judge 2022/2024 DCI World Championships", "source": "https://www.dci.org/news/2024-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "d-torchia-1",
+      "displayName": "Debbie Torchia",
+      "givenName": "Debbie",
+      "familyName": "Torchia",
+      "biography": "Debbie Torchia is a color guard and visual adjudicator who has instructed and designed for drum corps, winter guards, and marching bands, including the Guardsmen Drum and Bugle Corps, St. Joseph's Grenadiers Winter Guard, Triton Regional High School, Melrose High School, and the Boston College Eagles Marching Band. She has judged locally and nationally for organizations including Eastern Massachusetts circuits, the Massachusetts Instrumental and Choral Conductors Association, WGI, Bands of America, the Western Band Association, WGASC, and Drum Corps International, serving at DCI World Championships as an Ensemble Visual judge (2010) and a Color Guard judge (2013).",
+      "photoUrl": null,
+      "alternateNames": ["Deborah Torchia"],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2013-world-championship-judging-panels", "label": "DCI 2013 judging panels", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "The Guardsmen", "role": "Instructor / Designer", "sourceUrl": "https://www.dci.org/news/well-done-video-clip-of-a-guard-judge-on-the-2003-blue-devils" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Color Guard / GE1; 2013-2025",
+        "facts": [
+          { "fact": "CG/visual instructor & national judge (WGI/BOA/DCI); DCI Ensemble Visual 2010, Color Guard 2013", "source": "https://www.dci.org/news/2013-world-championship-judging-panels", "confidence": "HIGH" },
+          { "fact": "No reliable public headshot found - photoUrl left null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-kennedy-1",
+      "displayName": "Jay Kennedy",
+      "givenName": "Jay",
+      "familyName": "Kennedy",
+      "biography": "Jay Kennedy is a composer, arranger, educator, and adjudicator who was elected to the Drum Corps International Hall of Fame in 2007. He has been an active adjudicator for marching band, drum and bugle corps, and indoor percussion for more than 30 years, composed the themes for DCI championship broadcasts, and served as DCI's judge administrator/chief judge after being named to the role in 1988 (having previously chaired the percussion caption). He wrote for the Santa Clara Vanguard, instructed percussion and brass with The Cavaliers, and was brass arranger and program coordinator for the Boston Crusaders (2002-2011). The composer or arranger of more than 200 works, he is Vice President for Academic Affairs / Vice Provost at Berklee College of Music in Boston.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/jay-kennedy-piano-web-2023.jpg",
+      "alternateNames": ["S. Jay Kennedy"],
+      "externalLinks": [
+        { "url": "https://www.dci.org/static/jay_kennedy", "label": "DCI Hall of Fame profile", "kind": "bio" },
+        { "url": "https://jaykennedymusic.com/about-jay-kennedy/", "label": "Personal site", "kind": "organization" },
+        { "url": "https://education.musicforall.org/clinician/jay-kennedy/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Boston Crusaders", "season": "2002-2011", "role": "Brass arranger / Program coordinator", "sourceUrl": "https://www.dci.org/news/kennedy-to-return-as-boston-crusaders-brass-arranger/" },
+        { "corpsName": "Santa Clara Vanguard", "role": "Arranger / Writer", "sourceUrl": "https://www.dci.org/static/jay_kennedy" },
+        { "corpsName": "The Cavaliers", "role": "Percussion & Brass instructor", "sourceUrl": "https://www.dci.org/static/jay_kennedy" }
+      ],
+      "seasonHighlights": [
+        { "title": "DCI Hall of Fame inductee", "season": "2007", "sourceUrl": "https://www.dci.org/static/jay_kennedy" },
+        { "title": "Named DCI Judge Administrator", "season": "1988", "sourceUrl": "https://www.dci.org/static/jay_kennedy" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / GE2 / Music Percussion; 2013-2025",
+        "facts": [
+          { "fact": "DCI HOF 2007; judge administrator 1988; composer of 200+ works; Boston Crusaders brass arranger 2002-11; Berklee VP", "source": "https://www.dci.org/static/jay_kennedy", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "d-deems-1",
+      "displayName": "Don Deems",
+      "givenName": "Don",
+      "familyName": "Deems",
+      "biography": "Don Deems is a color guard and general-effect adjudicator who has judged for Winter Guard International, Drum Corps Associates, and Drum Corps International since 2000, serving at DCI World Championships in General Effect and Color Guard captions. A performer with the Bluecoats Drum & Bugle Corps and the Pride of Cincinnati Winter Guard, he has instructed those organizations and regional high school programs, and has been chief judge of the Tri-State Judges Association. He holds a BA in Speech Communication from Miami University and an MEd in Secondary Education from Wright State University, and teaches English at Norwood High School in Cincinnati.",
+      "photoUrl": "https://images.squarespace-cdn.com/content/v1/5a81efc180bd5e8684c75a58/1582748385064-DWEWPZW7YUGAAC0U744C/Don+Deems.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://westcoastwg.org/don-deems", "label": "West Coast Winter Guard bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Bluecoats", "role": "Performer / Instructor", "sourceUrl": "https://westcoastwg.org/don-deems" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / GE1 / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI judge since 2000; Bluecoats & Pride of Cincinnati; Tri-State Judges chief judge; degrees; Norwood HS English teacher", "source": "https://westcoastwg.org/don-deems", "confidence": "HIGH" },
+          { "fact": "GE1 judge 2023/2025 DCI World Championships", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-stone-1",
+      "displayName": "Michael Stone",
+      "givenName": "Michael",
+      "familyName": "Stone",
+      "biography": "Michael Stone is a general-effect and visual adjudicator recognized at the highest level for Drum Corps International, Winter Guard International, and Bands of America, and a member of the DCI Judge Liaison team. He has been involved in music and the pageantry arts since 1984 and adjudicating since 1997 (2025 marked his 25th year as a pageantry adjudicator). A music education major at San Diego State University, he is based in West Hills, California, and has served as a General Effect judge at DCI World Championships including 2015 and 2018.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/04/StoneMichaelResize.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/michael-stone/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://texasmarchingclassic.org/judges/", "label": "Texas Marching Classic judges", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Color Guard / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "DCI/WGI/BOA top-level adjudicator; DCI Judge Liaison; adjudicating since 1997; SDSU; West Hills CA", "source": "https://education.musicforall.org/clinician/michael-stone/", "confidence": "HIGH" },
+          { "fact": "GE1 judge 2015/2018 DCI World Championships", "source": "https://www.dci.org/news/2018-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-gilley-1",
+      "displayName": "Jackie Gilley",
+      "givenName": "Jackie",
+      "familyName": "Gilley",
+      "biography": "Jackie Gilley is a clinician and adjudicator for Winter Guard International, Drum Corps International, Bands of America, the Texas Color Guard Circuit, and the Oklahoma Music Adjudicators Association. A native of Stratford, Texas, she was band director at Monroney Middle School in Midwest City, Oklahoma, for 29 years and taught color guard at Midwest City High School for 18 years. A National Board Certified Teacher in Instrumental Music (2002), she is in the halls of fame of OkMEA and the Oklahoma Bandmasters Association, and has served as a General Effect judge at DCI World Championships (2024, 2025).",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Jackie-Gilley-web.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "http://marchingmentor.com/marching-mentor/244/jackie-gilley/", "label": "Marching Mentor profile", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Color Guard / GE1 / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "WGI/DCI/BOA/TCGC/OMAA judge; Monroney MS band director 29 yrs; OkMEA & OK Bandmasters HOF; NBCT 2002", "source": "http://marchingmentor.com/marching-mentor/244/jackie-gilley/", "confidence": "HIGH" },
+          { "fact": "GE1 judge 2024/2025 DCI All-Age World Championships", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-davis-1",
+      "displayName": "Mike Davis",
+      "givenName": "Mike",
+      "familyName": "Davis",
+      "biography": "Mike Davis is a percussion/music adjudicator for Drum Corps International, judging both Open Class and World Class competitions at the DCI Championships and other major events, and serves on the DCI Judge Leadership Team and the WGI Steering Committee. An active adjudicator for Bands of America and Winter Guard International as well, he has served on the faculty of the Colts and Troopers drum corps and worked as a clinician and consultant for The Cavaliers. He is the percussion director at Franklin High School in Tennessee, a Sudler Shield program.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Colts", "role": "Percussion faculty", "sourceUrl": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/" },
+        { "corpsName": "Troopers", "role": "Percussion faculty", "sourceUrl": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI percussion judge; DCI Judge Leadership Team; WGI Steering Committee; Colts/Troopers faculty; Cavaliers clinician; Franklin HS (TN) percussion director", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Common name - a separate St. Louis-based 'Michael Davis' (Freedom Percussion) exists on SCPA; photoUrl left null to avoid wrong-person image", "source": "https://scpa.live/judge/profile/9783", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "p-mcgarr-1",
+      "displayName": "Paul McGarr",
+      "givenName": "Paul",
+      "familyName": "McGarr",
+      "biography": "Paul McGarr is a brass/music adjudicator and clinician with over 35 years of teaching experience in southern Ontario and 20 years as musical director, composer, and arranger for prominent Ontario drum corps. He majored in jazz performance (trumpet) with a composition minor at the University of Toronto and holds an honors degree from Mohawk College's Applied Music program. In demand across North America and Japan for DCI, Bands of America, and music festivals, he has adjudicated the DCI World Championships and U.S. National Championships some 25 times, frequently serving as a Music Brass judge. He lives in Brantford, Ontario, Canada.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/PaulMcGarrResizepng.png",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/paul-mcgarr/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "35+ yrs teaching Ontario; UToronto jazz trumpet; DCI/BOA Music Brass judge 25x; Brantford ON", "source": "https://education.musicforall.org/clinician/paul-mcgarr/", "confidence": "HIGH" },
+          { "fact": "Music Brass judge 2015/2018/2025 DCI World Championships", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-griffin-1",
+      "displayName": "Marty Griffin",
+      "givenName": "Marty",
+      "familyName": "Griffin",
+      "biography": "Martin 'Marty' Griffin is a percussion/music adjudicator who judges for Winter Guard International, Bands of America, and Drum Corps International, and serves as Percussion Caption Head for Drum Corps Associates and judging coordinator for the Mid-Atlantic Percussion Society. He holds a Bachelor's in Music Education from William Paterson University and a Master's in Educational Leadership from Kean University, and has been a New Jersey band director for 30 years, currently Director of Bands and Coordinator of Fine Arts at Monroe Township High School. He performed five seasons with the Hawthorne Caballeros and has been a percussion arranger since 1987.",
+      "photoUrl": "https://usafest.org/wp-content/uploads/2023/03/Marty.jpg",
+      "alternateNames": ["Martin Griffin"],
+      "externalLinks": [
+        { "url": "https://usafest.org/marty-griffin/", "label": "Performing Arts Consultants bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Hawthorne Caballeros", "role": "Performer (5 seasons)", "sourceUrl": "https://usafest.org/marty-griffin/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "WGI/BOA/DCI percussion judge; DCA Percussion Caption Head; Monroe Twp HS director; William Paterson & Kean degrees; Hawthorne Caballeros 5 seasons", "source": "https://usafest.org/marty-griffin/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "s-adamo-1",
+      "displayName": "Sal Adamo",
+      "givenName": "Sal",
+      "familyName": "Adamo",
+      "biography": "Sal Adamo is a visual consultant, designer, and adjudicator with 40 years in the pageantry arts and over 30 years of judging, qualified in all visual captions. Based in Belleville, New Jersey, he has adjudicated for Bands of America, Drum Corps Associates, Drum Corps International, the Indiana State School Music Association, the New Jersey Marching Band Directors Association, the New York State Field Band Conference, and Winter Guard International, often as a championship finalist judge. He is co-founder and Chief Judge of the East Coast Judges Guild and was inducted into the New Jersey Drum Corps Hall of Fame in 2018.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/sal-adamo-headshot-2023-close-crop.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/sal-adamo/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [
+        { "title": "New Jersey Drum Corps Hall of Fame inductee", "season": "2018", "sourceUrl": "https://education.musicforall.org/clinician/sal-adamo/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / Visual Proficiency / GE1 / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "40 yrs pageantry; 30+ yrs judging all visual captions DCI/DCA/BOA/WGI; East Coast Judges Guild co-founder/chief judge; NJ Drum Corps HOF 2018; Belleville NJ", "source": "https://education.musicforall.org/clinician/sal-adamo/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "d-carbone-1",
+      "displayName": "Dave Carbone",
+      "givenName": "Dave",
+      "familyName": "Carbone",
+      "biography": "David 'Dave' Carbone is a music adjudicator for Drum Corps International (since 2002), Music for All / Bands of America, and Winter Guard International, having served on the DCI World Championship panel ten times including twice as a finalist judge (2009, 2017), frequently in Music Analysis. He has over 30 years in music education, including a 25-year career as a high school and collegiate band director across Florida, Ohio, Texas, and South Carolina, and holds a Master's in Wind Band Conducting from the University of South Florida and a Bachelor's in Music Education from the University of Miami. As a performer he marched the Suncoast Sound, was a founding member of the Magic, and was a World Champion with the Star of Indiana (1991, 1992).",
+      "photoUrl": "https://davidcarbone.com/wp-content/uploads/2021/11/About-David-Headshot.jpg",
+      "alternateNames": ["David Carbone"],
+      "externalLinks": [
+        { "url": "https://davidcarbone.com/about-dave-carbone/", "label": "Personal site bio", "kind": "bio" },
+        { "url": "https://www.innovativepercussion.com/artists/david_carbone", "label": "Innovative Percussion artist", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Star of Indiana", "season": "1991-1992", "role": "Performer (World Champion)", "sourceUrl": "https://davidcarbone.com/about-dave-carbone/" },
+        { "corpsName": "Suncoast Sound", "role": "Performer", "sourceUrl": "https://davidcarbone.com/about-dave-carbone/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / GE2 / Music Percussion; 2013-2025",
+        "facts": [
+          { "fact": "DCI judge since 2002, panel 10x (finalist 2009/2017); band director 25 yrs; USF MM; Star of Indiana world champ 1991-92", "source": "https://davidcarbone.com/about-dave-carbone/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-ochran-1",
+      "displayName": "Timothy Ochran",
+      "givenName": "Timothy",
+      "familyName": "Ochran",
+      "biography": "Tim Ochran is a visual adjudicator and judge administrator who has been a Bands of America adjudicator since 1985 (over 100 BOA Regionals and 20 Grand National panels) and an active Drum Corps International judge since 1993, serving as DCI's visual judge administrator among other administrative roles. He has judged at numerous DCI World Championships in visual captions, including Visual Analysis (2013, 2015, 2017) and General Effect. He is based in Grayton Beach, Florida.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/file-2.png",
+      "alternateNames": ["Tim Ochran"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/tim-ochran/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / GE1 / Color Guard / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "BOA adjudicator since 1985; DCI judge since 1993; DCI visual judge administrator; Grayton Beach FL", "source": "https://education.musicforall.org/clinician/tim-ochran/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-leitzke-1",
+      "displayName": "Mike Leitzke",
+      "givenName": "Mike",
+      "familyName": "Leitzke",
+      "biography": "Mike Leitzke is a percussion/music adjudicator for Bands of America, Winter Guard International, and Drum Corps International who has served on DCI championship-week panels in both Open Class and World Class, including Music Percussion at the 2024 DCI World Championship Finals. A member of the Carolina Crown Drum & Bugle Corps and the Rhythm X indoor percussion ensemble (earning its first WGI World Class title), he was front-ensemble caption head and arranger for Palmetto Percussion (2010 WGI Open Class champions) and has served on the faculty of the Colts and Troopers and as a clinician for The Cavaliers' GearWORKS series. He is an adjunct faculty member at Franklin High School in Tennessee and was appointed a CWEA Percussion/Winds Judge Coordinator.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/03/Mike-Leitzke-Headshot-Web-2022.jpg",
+      "alternateNames": ["Michael Leitzke"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/mike-leitzke/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.innovativepercussion.com/artists/mike_leitzke", "label": "Innovative Percussion artist", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Carolina Crown", "role": "Performer (member)", "sourceUrl": "https://www.innovativepercussion.com/artists/mike_leitzke" },
+        { "corpsName": "Colts", "role": "Percussion faculty", "sourceUrl": "https://www.innovativepercussion.com/artists/mike_leitzke" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / GE2 / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "DCI/BOA/WGI percussion judge; ex-Carolina Crown & Rhythm X; Palmetto Percussion caption head; Colts/Troopers faculty; Franklin HS (TN)", "source": "https://education.musicforall.org/clinician/mike-leitzke/", "confidence": "HIGH" },
+          { "fact": "Music Percussion judge 2024 DCI World Championship Finals", "source": "https://www.dci.org/news/2024-dci-world-championship-adjudication-panels/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

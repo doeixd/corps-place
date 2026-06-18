@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-labelledby="title desc" shape-rendering="geometricPrecision">
+  <title id="title">Teal diamond logo with black stripes</title>
+  <desc id="desc">A teal diamond emblem with black stripe elements extending cleanly to the diamond edges on a white background.</desc>
+  <rect width="1024" height="1024" fill="#ffffff"/>
+  <g>
+    <!-- Main diamond -->
+    <polygon points="512,64 960,512 512,960 64,512" fill="#0F7D7A"/>
+
+    <!-- Black cutout / stripe elements extending to the diamond edge -->
+    <polygon points="512,64 512,150 598,150" fill="#000000"/>
+
+    <polygon points="512,225 673,225 723,275 512,275" fill="#000000"/>
+    <polygon points="512,345 793,345 843,395 512,395" fill="#000000"/>
+    <polygon points="512,465 913,465 960,512 512,512" fill="#000000"/>
+
+    <polygon points="64,512 512,512 512,562 114,562" fill="#000000"/>
+    <polygon points="184,632 512,632 512,682 234,682" fill="#000000"/>
+    <polygon points="304,752 512,752 512,802 354,802" fill="#000000"/>
+    <polygon points="424,872 512,872 512,922 474,922" fill="#000000"/>
+  </g>
+</svg>

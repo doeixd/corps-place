@@ -1,0 +1,35 @@
+# Keep the Docker build context small. The app build needs sdk/src (for @sdk/*
+# imports) but none of the heavy ML/data dirs.
+.git
+node_modules
+**/node_modules
+.output
+.tanstack
+.nitro
+.fate
+.vscode
+.claude
+
+# Local databases (mounted at runtime, never baked in)
+*.db
+*.db-*
+*.db.backup*
+read-model*
+public/read-model
+
+# Heavy SDK artifacts not needed to build the app
+sdk/models
+sdk/results
+sdk/wayback
+sdk/test
+sdk/scripts
+sdk/docs
+sdk/*.log
+sdk/*.txt
+
+# Docs / logs / scratch
+docs
+*.log
+*.md
+.deploy-status.json
+.proxy-target

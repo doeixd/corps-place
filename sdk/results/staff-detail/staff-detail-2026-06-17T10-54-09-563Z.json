@@ -1,0 +1,115 @@
+{
+  "scrapedAt": "2026-06-17T10-54-09-563Z",
+  "apply": true,
+  "totBio": 8,
+  "totPhoto": 16,
+  "corps": [
+    {
+      "corpsKey": "001j000000iwwsqaal",
+      "name": "Blue Stars",
+      "staffPageUrl": "http://www.bluestars.org/staff",
+      "targets": 604,
+      "detailLinks": 16,
+      "biosFilled": 8,
+      "photosFilled": 16,
+      "fills": [
+        {
+          "name": "Michael Shapiro",
+          "url": "http://www.bluestars.org/staff-1/2026-michael-shapiro",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Andrew Markworth",
+          "url": "http://www.bluestars.org/staff-1/2025-andrew-markworth",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Kevin Ford",
+          "url": "http://www.bluestars.org/staff-1/2020-kevin-ford",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Jim Wunderlich",
+          "url": "http://www.bluestars.org/staff-1/2020-jim-wunderlich",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Kris Galbreath",
+          "url": "http://www.bluestars.org/staff-1/2026-kris-galbreath",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Brad Furlano",
+          "url": "http://www.bluestars.org/staff-1/2022-brad-furlano",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Brad Harris",
+          "url": "http://www.bluestars.org/staff-1/2026-brad-harris",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Lizzie Miller",
+          "url": "http://www.bluestars.org/staff-1/2022-lizzie-miller",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Steve Stueck",
+          "url": "http://www.bluestars.org/staff-1/2022-steve-stueck",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Heather Tollers",
+          "url": "http://www.bluestars.org/staff-1/2022-heather-tollers",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Jack Pantaleo",
+          "url": "http://www.bluestars.org/staff-1/2024-jack-pantaleo",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Mike Andrews",
+          "url": "http://www.bluestars.org/staff-1/2023-mike-andrews",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Sue Wilson",
+          "url": "http://www.bluestars.org/staff-1/2022-sue-wilson",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Abby Musick",
+          "url": "http://www.bluestars.org/staff-1/2024-abby-musick",
+          "bio": true,
+          "photo": true
+        },
+        {
+          "name": "Fred Feeney",
+          "url": "http://www.bluestars.org/staff-1/2022-fred-feeney",
+          "bio": false,
+          "photo": true
+        },
+        {
+          "name": "Kyle Gillikin",
+          "url": "http://www.bluestars.org/staff-1/2024-kyle-gillikin",
+          "bio": false,
+          "photo": true
+        }
+      ]
+    }
+  ]
+}

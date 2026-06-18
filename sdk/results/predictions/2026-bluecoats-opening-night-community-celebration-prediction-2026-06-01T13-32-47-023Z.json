@@ -1,0 +1,280 @@
+{
+  "generated_at": "2026-06-01T13:32:47.024Z",
+  "model_dir": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9fix_lrmult_smoke_1770985071634",
+  "event": {
+    "event_id": "web-2026-2026-bluecoats-opening-night-community-celebration",
+    "slug": "2026-bluecoats-opening-night-community-celebration",
+    "name": "Bluecoats Opening Night Community Celebration",
+    "event_name": "Bluecoats Opening Night Community Celebration",
+    "start_date": "2026-06-27T00:00:00.000Z",
+    "start_time": null,
+    "web_start_time": "6:00 PM ET",
+    "edt_start_time": "",
+    "timezone": null,
+    "location_city": "Alliance",
+    "location_state": "OH",
+    "event_image": "https://images.dci.org/wp-content/uploads/2026/02/20260627-Alliance-OH-scaled.jpg",
+    "event_image_thumb": "https://images.dci.org/wp-content/uploads/2026/02/20260627-Alliance-OH-scaled.jpg",
+    "buy_tickets": "https://tickets.dci.org/event/bluecoats-opening-night-community-celebration-wxpc0c",
+    "buy_tickets_text": null,
+    "live_stream_link": null,
+    "ticket_watermark": null,
+    "ticketing_map_image": null,
+    "street_map_image": null,
+    "description": null,
+    "meta_description": null,
+    "notes_general": null,
+    "notes_lineup_times": null,
+    "venue_city": null,
+    "venue_state": null,
+    "min_ticket_price": null,
+    "max_ticket_price": null
+  },
+  "readiness": {
+    "lineup_rows": 5,
+    "matched_corps_keys": 5,
+    "lineup_source": "event_lineup",
+    "scored_prediction_rows": 1,
+    "skipped_lineup_rows": 4,
+    "judge_assignments": 0,
+    "mode": "preseason_forecast",
+    "percent_through": 50
+  },
+  "input_signature": "81f2c89992de06e9464b361bdb894e05c78e4ca7af694c8ac33d6feb7fa9b8ee",
+  "builder_version": "v9-event-prediction-fingerprints-v9",
+  "model_metadata": {
+    "model_static_dim": 177,
+    "feature_static_dim": 212,
+    "model_fingerprint": "adea02abbc1822fcd2395ab1046db7dfd29a3729f9c5b658a453ddb3f9bd731e",
+    "supports_caption_fingerprints": false,
+    "interval_scale": 0.65
+  },
+  "input_audit": {
+    "scored_lineup_rows": 5,
+    "lineup_source": "event_lineup",
+    "lineup": [
+      {
+        "corps_key": "001j000000hiripaaz",
+        "corps": "Columbus Saints",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "6:15 PM"
+      },
+      {
+        "corps_key": "001j000000cap31aaa",
+        "corps": "Rogues Hollow Regiment",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "6:32 PM"
+      },
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 5,
+        "time": "6:47 PM"
+      },
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 6,
+        "time": "7:02 PM"
+      },
+      {
+        "corps_key": "001j000000iwwsraal",
+        "corps": "The Bluecoats",
+        "division": "World Class",
+        "performance_order": 10,
+        "time": "8:09 PM"
+      }
+    ],
+    "skipped_lineup_rows": [
+      {
+        "corps_key": "001j000000hiripaaz",
+        "corps": "Columbus Saints",
+        "division": "All Age Class",
+        "performance_order": 2,
+        "time": "6:15 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000cap31aaa",
+        "corps": "Rogues Hollow Regiment",
+        "division": "All Age Class",
+        "performance_order": 4,
+        "time": "6:32 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "001j000000iwx94aad",
+        "corps": "Cincinnati Tradition",
+        "division": "All Age Class",
+        "performance_order": 5,
+        "time": "6:47 PM",
+        "reason": "unsupported division for V9 model"
+      },
+      {
+        "corps_key": "0015b000028qtqbaae",
+        "corps": "Eclipse",
+        "division": "SoundSport Medalist Division",
+        "performance_order": 6,
+        "time": "7:02 PM",
+        "reason": "unsupported division for V9 model"
+      }
+    ],
+    "exclusions": [
+      {
+        "unit_name": "Gates Open",
+        "performance_order": 0,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Welcome & National Anthem",
+        "performance_order": 1,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Columbus Saints Jr. Flag Line",
+        "performance_order": 3,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "EN-CORPS by EN-RICH-MENT",
+        "performance_order": 7,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Bluecoats Alumni Ensemble Legacy Arc",
+        "performance_order": 8,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Rhythm IN BLUE - Bluecoats",
+        "performance_order": 9,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "The Blue Way Summer Arts Camp",
+        "performance_order": 11,
+        "exclusion_reason": "exhibition"
+      },
+      {
+        "unit_name": "Encore - Bluecoats",
+        "performance_order": 12,
+        "exclusion_reason": "non_performance"
+      },
+      {
+        "unit_name": "Event Concludes",
+        "performance_order": 13,
+        "exclusion_reason": "unresolved_corps"
+      }
+    ],
+    "readiness": {
+      "event_slug": "2026-bluecoats-opening-night-community-celebration",
+      "season": "2026",
+      "year": "2026",
+      "start_date": "2026-06-27T00:00:00.000Z",
+      "scored_lineup_rows": 5,
+      "matched_corps_keys": 5,
+      "excluded_lineup_rows": 9,
+      "known_judges": 0,
+      "readiness_status": "panel_unknown"
+    }
+  },
+  "predictions": [
+    {
+      "rank": 1,
+      "corps_key": "001j000000iwwsraal",
+      "corps": "The Bluecoats",
+      "city": "Canton, OH",
+      "division": "World Class",
+      "performance_order": 10,
+      "time": "8:09 PM",
+      "total": 89.654,
+      "GE": 36.161,
+      "Visual": 26.838,
+      "Music": 26.655,
+      "GE1": 18.113,
+      "GE2": 18.048,
+      "VP": 17.82,
+      "VA": 17.995,
+      "CG": 17.862,
+      "MB": 17.694,
+      "MA": 17.879,
+      "MP": 17.737,
+      "caption_intervals": {
+        "GE1": {
+          "p10": 18.11,
+          "p50": 18.113,
+          "p90": 18.259
+        },
+        "GE2": {
+          "p10": 18.034,
+          "p50": 18.048,
+          "p90": 18.443
+        },
+        "VP": {
+          "p10": 17.815,
+          "p50": 17.82,
+          "p90": 17.966
+        },
+        "VA": {
+          "p10": 17.964,
+          "p50": 17.995,
+          "p90": 18.038
+        },
+        "CG": {
+          "p10": 17.808,
+          "p50": 17.862,
+          "p90": 17.918
+        },
+        "MB": {
+          "p10": 17.298,
+          "p50": 17.694,
+          "p90": 18.029
+        },
+        "MA": {
+          "p10": 17.743,
+          "p50": 17.879,
+          "p90": 18.075
+        },
+        "MP": {
+          "p10": 17.46,
+          "p50": 17.737,
+          "p90": 17.78
+        }
+      },
+      "raw_model_total": 84.928,
+      "model_blend_weight": 0,
+      "caption_shape_model_weight": 0,
+      "interval_scale": 0.65,
+      "observed_history_len": 0,
+      "prior_season_comparable_total": 92.825,
+      "prior_season_comparable_percent_through": 50,
+      "prior_season_comparable_competition": "2025-dci-southwestern-championship-2",
+      "prior_season_comparable_weight": 0.55,
+      "preseason_target_total": 89.657,
+      "caption_shape_total": 85.784,
+      "total_reconciliation_delta": 3.87,
+      "mode": "preseason_forecast",
+      "template_source": "historical_template",
+      "seed_rank": 1,
+      "prior_season_rank": 2,
+      "baseline_rank_source": "seed_rank",
+      "baseline_confidence": "estimated",
+      "feature_static_dim": 212,
+      "model_static_dim": 177,
+      "fingerprint_confidence": 1,
+      "baseline_total": 85.784,
+      "point_estimate_source": "caption_shape_preserving_baseline_blended_with_prior_season_comparable_total"
+    }
+  ],
+  "caveats": [
+    "4 lineup row(s) were skipped because their division is not supported by this V9 model.",
+    "Judge panel is incomplete or unknown; judge effects were masked.",
+    "No same-season history was available before this event; forecast uses preseason-style masking.",
+    "Prior-season comparable scores are blended with preseason baselines, not copied as exact targets.",
+    "Loaded model uses an older static feature shape; caption-fingerprint static features were not consumed by the neural model."
+  ]
+}

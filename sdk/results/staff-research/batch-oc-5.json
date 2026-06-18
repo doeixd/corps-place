@@ -1,0 +1,688 @@
+[
+ {
+  "person_id": "matt-penland",
+  "display_name": "Matt Penland",
+  "bio": "Matt Penland is a percussion performer, educator, and arranger based in Washington, D.C., where he is a percussionist in the U.S. Air Force Band. He is a percussion arranger for the Phantom Regiment Drum and Bugle Corps, has arranged music for Music City and Guardians Drum Corps, and has been a staff member at Santa Clara Vanguard. He is a DCI Individual and Ensemble Tenor Champion and PASIC Collegiate Tenor Solo Champion, and holds a Master of Music from Northwestern University and a Bachelor of Music from the University of North Texas.",
+  "photo_url": null,
+  "sources": [
+   "https://www.penlandpercussion.com/bio",
+   "https://www.music.af.mil/Home/Biographies/Display/Article/1308331/matthew-penland/",
+   "https://www.innovativepercussion.com/artists/matt_penland"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "tyler-sammons",
+  "display_name": "Tyler Sammons",
+  "bio": "Tyler Sammons is the percussion caption supervisor and front ensemble arranger for the Phantom Regiment Drum and Bugle Corps. He served on the percussion staff for Santa Clara Vanguard from 2012–2022, during which the corps won the Fred Sanford Award for best percussion five times and was the 2018 DCI World Champion. He was previously on the percussion staff of the Boston Crusaders and was a marching member of the Crossmen and Phantom Regiment, winning the DCI world championship with Phantom Regiment in 2008 and the Fred Sanford award in 2008 and 2010.",
+  "photo_url": "https://regiment.org/wp-content/uploads/2022/09/Percussion_TylerSammons_108883176_82589228_10156835441962304_8912855071109152768_n1-1024x1024.jpg",
+  "sources": [
+   "https://scpa.live/judge/profile/7992",
+   "https://aftermathpercussion.com/our-staff/tyler-sammons/",
+   "https://regiment.org/percussion-design-and-leadership-team/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "michael-spooner",
+  "display_name": "Michael Spooner",
+  "bio": "Michael Spooner is a percussion educator from Anoka, Minnesota, who studied at Middle Tennessee State University under Lalo Davila, Julie Davila, and Matt Jordan. He marched front ensemble and was drum major for the Blue Stars (2007–2009) and played quads for The Cavaliers (2010–2011), earning The Fred Sanford Award for Best Percussion in 2011. He has been a battery instructor for the Bluecoats and Monarch Independent since 2018 and is Percussion Director at Tompkins High School in Houston, Texas.",
+  "photo_url": null,
+  "sources": [
+   "https://www.wunderpitmusic.com/index.php/bio/michael-spooner"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "amanda-marino-stevenson",
+  "display_name": "Amanda Stevenson",
+  "bio": "Amanda Stevenson is Director of Bands at Winston Churchill High School in San Antonio, TX. She has served on brass staff for Blue Knights, Mandarins, Genesis, Troopers, Crossmen, and Phantom Regiment, and was a Visual Staff Instructor with Revolution. She performed euphonium with Capital Regiment and baritone with Revolution, and holds a Bachelor's in Music Education from Texas State University (2007).",
+  "photo_url": "https://ascendperformingarts.org/wp-content/uploads/elementor/thumbs/Screen-Shot-2022-11-02-at-4.51.21-PM-r1ugod7wso3oa4cwticn5bxyq6onktexolife7gcg0.png",
+  "sources": [
+   "https://ascendperformingarts.org/staff/amanda-stevenson/",
+   "https://ascendperformingarts.org/blue-knights-announce-2023-brass-staff/",
+   "https://www.youtube.com/watch?v=Rng2ChPwBlE"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "michael-stone",
+  "display_name": "Mike Stone",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.linkedin.com/in/mike-stone-27045228",
+   "https://en.wikipedia.org/wiki/Mike_Stone_(karate)#:~:text=Mike%20Stone%20(born%20June%2029,%2C%20author%2C%20and%20motivational%20speaker.",
+   "https://bluedevils.org/programs/a-corps/seasons/?module=staff"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "james-wunderlich",
+  "display_name": "Jim Wunderlich",
+  "bio": "Jim Wunderlich has served as music coordinator & brass arranger for the Blue Stars Drum & Bugle Corps since 2018. He was the front ensemble caption head and arranger for the Blue Devils from 2006-2017, helping the corps earn 7 DCI Championships and 4 Fred Sanford High Percussion awards. He is the owner of Wunderpit Music, a member of the WGI Hall of Fame, and a founding member of the Southern California Percussion Alliance.",
+  "photo_url": "https://zildjian.com/cdn/shop/articles/jim_wunderlich_profile.png?v=1684242683",
+  "sources": [
+   "https://bluestars.org/staff-1/2020-jim-wunderlich",
+   "https://www.wunderpitmusic.com/index.php/bio/wunderlich-bio",
+   "https://zildjian.com/blogs/artist/jim-wunderlich"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "christopher-alexander",
+  "display_name": "Chris Alexander",
+  "bio": "Chris Alexander served as the visual caption head for the Santa Clara Vanguard in 2010. He marched with The Cavaliers and has an academic background in music composition and physics/applied math. He has also worked as a commercial driver for the Bluecoats.",
+  "photo_url": null,
+  "sources": [
+   "https://www.drumcorpsplanet.com/2009/12/chris-alexander-scv-2010-visual-caption-head/",
+   "https://bluecoats.com/staff"
+  ],
+  "confidence": "MEDIUM"
+ },
+ {
+  "person_id": "dr-matt-stratton",
+  "display_name": "Matt Stratton",
+  "bio": "Matt \"Doc\" Stratton has been involved in the marching arts for over 30 years, marching with the Patriots and Cadets of Bergen County. He has taught with the Blue Stars, Bluecoats (as tuba technician and Assistant Brass Caption Head), and The Cadets, and currently serves as Brass Caption Supervisor for The Cavaliers. He is Professor of Music and Director of Bands at Olivet Nazarene University and co-authored The Blue Way Brass Program pedagogy.",
+  "photo_url": null,
+  "sources": [
+   "https://cavaliers.org/staff-bod/matt-stratton",
+   "https://www.olivet.edu/directory/matthew-stratton/",
+   "https://www.yamaha.com/artists/matthewstratton.html"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "fred-smith",
+  "display_name": "Fred Smith",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.dci.org/news/the-dciorg-interview-freddie-smith-santa-clara-vanguard-center-snare/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "josh-munoz",
+  "display_name": "Josh Muñoz",
+  "bio": "Josh Muñoz marched tuba with the Bluecoats from 2007 to 2010. He served on the brass staff of the Blue Knights from 2012 to 2016. Since 2019, he has been on the brass staff of the Boston Crusaders, focusing on low brass and tuba instruction, and was part of the staff that helped the corps earn its first Jim Ott Best Brass Performance Award and first DCI Championship in 2025.",
+  "photo_url": "https://s3.amazonaws.com/scschoolfiles/3558/img_pd_144448_98ckow.jpeg",
+  "sources": [
+   "https://www.libertyhill.txed.net/16550_3?articleID=489",
+   "https://www.lhpantherband.org/directors"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "bradley-palmer",
+  "display_name": "Brad Palmer",
+  "bio": "Brad Palmer has been a percussion instructor with the Bluecoats since 2003, working primarily with the front ensemble. He is a co-founder of DoubleStop Percussion, a Birmingham, Alabama-based company that provides percussion instruction. He holds a Bachelor of Science in Music Education from the University of Alabama at Birmingham and a Master of Arts from Middle Tennessee State University.",
+  "photo_url": "http://static1.squarespace.com/static/5b94904345776eaef2526fce/5ca009cd782e40dd8a75a34a/5ca009e0782e40dd8a75a699/1553992160956/photo5-e1412771892626-768x1024.jpg?format=original",
+  "sources": [
+   "https://bluecoats.com/news/2018/05/bluecoats-announce-2018-hall-of-fame-inductees"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "christopher-lawlor",
+  "display_name": "Christopher Lawlor",
+  "bio": "Christopher Lawlor served as percussion director for the Jersey Surf, entering his fourth season in 2018 and adding percussion arranging duties. He previously instructed with the Troopers battery (2010), the Blue Stars (2011-2012), and The Cadets quad line (2013). As a performer, Lawlor marched with East Coast Jazz (2002-2005), The Cadets (2006-2009), the Boston University Winter Percussion Ensemble (2005), and RhythmX (2009-2010).",
+  "photo_url": null,
+  "sources": [
+   "https://www.dci.org/news/new-design-staff-leading-the-way-for-2018-jersey-surf/",
+   "https://jerseysurf.org/jersey-surf-announces-2018-design-team/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "dave-cooksey",
+  "display_name": "Dave Cooksey",
+  "bio": "Dave Cooksey marched with the Racine Kilties and Madison Scouts before spending 26 years adjudicating for Drum Corps International, Bands of America, Drum Corps Europe, and Drum Corps Japan. He has served as a low brass instructor for The Madison Scouts, Crossmen, Cavaliers, and Phantom Regiment. He was Brass Program Advisor for the Madison Scouts in 2018.",
+  "photo_url": "https://cdn.prod.website-files.com/6007192fe7ff1a6dec0b5579/607fb9f691e63a0a9bccaedb_Cooksey-Dave-150x150.jpeg",
+  "sources": [
+   "https://www.forwardperformingarts.org/news/scouts-welcome-dave-cooksey-announce-brass-team",
+   "https://www.instagram.com/p/C7Ip6fZMP47/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "chris-mccarthy",
+  "display_name": "Christopher McCarthy",
+  "bio": "Christopher McCarthy is a marching-arts designer and educator who serves as Visual Coordinator for the Troopers, was previously Color Guard Caption Head for the Phantom Regiment, and has taught at the Crossmen and Genesis drum corps. He is also Co-Director of Origins Colorguard and the Color Guard Coordinator for the University of Texas Longhorn Band. Originally from Binghamton, NY, he has worked with numerous high school and independent programs across Texas and the country.",
+  "photo_url": null,
+  "sources": [
+   "https://www.originscolorguard.org/chris-mccarthy",
+   "https://www.mcneilband.org/chris-mccarthy"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "daniel-richardson",
+  "display_name": "Dan Richardson",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://bushwackersdc.org/staff/percussion-staff-2023/",
+   "https://regiment.org/remembering-dr-dan/",
+   "https://regiment.org/dr-dan-richardson-inducted-into-dci-hall-of-fame/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "joe-heininger",
+  "display_name": "Joe Heininger",
+  "bio": "Joe Heininger has been in the pageantry activity for over 22 years, starting his drum corps teaching career with the Boston Crusaders as a movement technician at age 22. He served as Lead Designer for The Cadets' color guard in 2016 and has been on the creative teams of Crossmen, Phantom Regiment, Glassmen, Spirit of Atlanta, and Santa Clara Vanguard. He also spent 20 years as artistic director and show designer of the Black Watch winter guard and took over Black Gold winter guard in 2015. Professionally, he is a performance wear and product designer who has worked with Style Plus and A Wish Come True.",
+  "photo_url": null,
+  "sources": [
+   "https://www.drumcorpsplanet.com/forums/index.php?/topic/163170-official-2016-staff-changes/page/36/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "josh-waite",
+  "display_name": "Joshua Waite",
+  "bio": "Joshua Waite served on the color guard instructional staff for Shadow Drum and Bugle Corps in 2019. He was a member of the Bluecoats color guard staff for the 2022 and 2023 seasons.",
+  "photo_url": null,
+  "sources": [
+   "https://pubhtml5.com/xada/qizk/Drum_Corps_International_2019_Yearbook/117",
+   "https://pubhtml5.com/xada/gonk/Drum_Corps_International_50th_Anniversary_Program_Information/4",
+   "https://pubhtml5.com/xada/epau/2023_DCI_Summer_Tour_Program_Information/5"
+  ],
+  "confidence": "MEDIUM"
+ },
+ {
+  "person_id": "tim-heichelheim",
+  "display_name": "Tim Heichelheim",
+  "bio": "Tim Heichelheim is the Director of Bands at Skyview High School in Vancouver, WA, and a two-time Grammy quarterfinalist for Music Education. He marched Seattle Cascades (2004-2006) and Santa Clara Vanguard (2007-2009), then served as visual instructor for Spirit of Atlanta, assistant visual caption head for Crossmen (2013-2015), visual consultant for Madison Scouts (2019), and began working with The Cadets in 2020. He joined the Troopers as Assistant Visual Caption Head in 2025 and returned for the 2026 season.",
+  "photo_url": "https://static.wixstatic.com/media/b1e0e0_30fb7caf980d45a485478a767fa974b0~mv2.jpg",
+  "sources": [
+   "https://www.troopersdrumcorps.org/team/tim-heichelheim",
+   "https://www.troopersdrumcorps.org/single-post/introducing-the-troopers-visual-team",
+   "https://www.svbd.org/staff"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "will-pitts",
+  "display_name": "Will Pitts",
+  "bio": "William Pitts served as a Conductor for the Phantom Regiment Drum and Bugle Corps for three years (2005, 2007-2008) and later as Brass Arranger for Phantom Regiment and Brass Arranger and Composer for the Spirit of Atlanta Drum and Bugle Corps. He graduated summa cum laude from Emory University, where he studied saxophone, conducting, and composition. He is active as a music designer, adjudicator, and instructor for high school band programs.",
+  "photo_url": "https://www.williampittsmusic.com/s/BioColor.jpg",
+  "sources": [
+   "https://regiment.org/will-pitts/",
+   "https://www.williampittsmusic.com/about",
+   "https://education.musicforall.org/clinician/william-pitts/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "daniel-cook",
+  "display_name": "Daniel Cook",
+  "bio": "Dr. Daniel Cook is Director of Bands and Assistant Professor of Music Performance at Ithaca College. He has served on the brass staff with the Santa Clara Vanguard as an Ensemble Specialist and Consultant and has held music instructional positions with the Phantom Regiment and Blue Knights. Cook was a marching member of Carolina Crown from 2007 to 2009.",
+  "photo_url": "https://www.ithaca.edu/sites/default/files/styles/max_width_1920/public/2023-05/Cook%20Headshot%20Cropped%202020_0.JPG.webp?itok=q38tilFN",
+  "sources": [
+   "https://www.scvanguard.org/staff/daniel-cook/",
+   "https://www.ithaca.edu/faculty/dcook1",
+   "https://education.musicforall.org/clinician/daniel-cook/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "josh-dawes",
+  "display_name": "Josh Dawes",
+  "bio": "Joshua Dawes is a marching band designer, choreographer and consultant. He marched in Phantom Regiment and served on brass or visual staff with The Academy, Phantom Regiment, Spirit of Atlanta, Boston Crusaders, Oregon Crusaders, and The Cavaliers.",
+  "photo_url": "https://twmc.or.th/assets/img/judges/CEUS-0010.jpg",
+  "sources": [
+   "https://twmc.or.th/judges/CEUS-0010/",
+   "https://pubhtml5.com/xada/cxrz/Drum_Corps_International_2015_Yearbook/63",
+   "https://pubhtml5.com/xada/dlna/Drum_Corps_International_2012_Yearbook/61",
+   "https://cavaliers.org/news-blog/cavaliers-announce-2018-visual-team"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "josh-montgomery",
+  "display_name": "Joshua Montgomery",
+  "bio": "Joshua Montgomery was a returning member of the Colts percussion instructional staff for the 2019 season.",
+  "photo_url": null,
+  "sources": [
+   "https://colts.org/news/2018_253"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "alex-cardona",
+  "display_name": "Alex Cardona",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.facebook.com/groups/DCITubas/posts/26497034156550949/",
+   "https://pubhtml5.com/xada/qizk/basic/51-100",
+   "https://www.instagram.com/p/DY8gIWGRv5W/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "alexander-blue-v",
+  "display_name": "Alex Blue V",
+  "bio": "Alex Blue V served as the 2016 Winds Caption Head for OCI Winds. He became the program design coordinator for the Guardians. He has instructed a number of drum corps.",
+  "photo_url": null,
+  "sources": [
+   "https://www.facebook.com/OCIWinds/posts/oci-winds-welcomes-alex-blue-as-our-2016-winds-caption-headalex-blue-v-is-an-acc/995317230499720/",
+   "https://www.dci.org/news/corps-news-and-announcements-20181214/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "charles-naffier",
+  "display_name": "Chuck Naffier",
+  "bio": "Chuck Naffier has been involved in marching arts for close to 40 years as a performer, instructor, arranger, and composer. He started as a performer and soloist with the Colts Drum & Bugle Corps, served as their brass arranger from 1990–1999, and was inducted into the Colts Hall of Fame in 2003. He worked with the Crossmen as brass arranger and program coordinator (2000–2003, 2011–2014) and was named Brass Caption Manager for the Madison Scouts. He also arranged for Bushwackers and Taipei Yuehfu.",
+  "photo_url": "https://cdn.prod.website-files.com/6007192fe7ff1a6dec0b5579/607fba1b1bef5637f26e804e_Naffier-Chuck-2-300x300.jpeg",
+  "sources": [
+   "https://www.forwardperformingarts.org/news/madison-scouts-welcome-chuck-naffier-brass-caption-manager",
+   "https://www.dci.org/news/learning-to-love-this-drum-corps-thing/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "joe-roche",
+  "display_name": "Joe Roche",
+  "bio": "Joe Roche began his drum corps career in 1976 as a marching member and joined The Cadets visual staff in 1987, serving as visual caption head from 1989 through 1992 and returning as a visual consultant in 2000. He also taught with the Bluecoats (2016-2017) and has served on the visual staffs of Star of Indiana, Madison Scouts, Bushwackers, Sunrisers, and Connecticut Hurricanes. He retired from the US Army after over 20 years of active service.",
+  "photo_url": "http://bushwackers.org/wp-content/uploads/2015/11/joe-roche-202x300.jpg",
+  "sources": [
+   "https://www.maroonandgoldalumni.org/joe-roche",
+   "https://bushwackersdc.org/2015/11/05/welcome-joe-roche/",
+   "https://www.drumcorpsplanet.com/2007/01/sunrisers-welcome-joe-roche-to-2007-visual-staff/"
+  ],
+  "confidence": "MEDIUM"
+ },
+ {
+  "person_id": "nicholas-hansberry",
+  "display_name": "Nick Hansberry",
+  "bio": "Nick Hansberry served on The Cavaliers visual education team in 2018 and was a visual staff member for the Blue Knights in 2023. He is the Director of Bands at Waconia High School in Minnesota and a graduate of the University of Wisconsin-Eau Claire, where he was a sousaphone player and drum major in the Blugold Marching Band.",
+  "photo_url": "https://ascendperformingarts.org/wp-content/uploads/2022/11/Screen-Shot-2022-11-16-at-5.21.37-PM-1.png",
+  "sources": [
+   "https://ascendperformingarts.org/blue-knights-announce-2023-visual-staff/",
+   "https://www.blugoldmarchingband.com/nick-hansberry-atherton",
+   "https://cavaliers.org/news-blog/cavaliers-announce-2018-visual-team"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "noah-cole",
+  "display_name": "Noah Cole",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.facebook.com/groups/301musicboosters/posts/830118288682960/",
+   "https://www.forwardperformingarts.org/madison-scouts/about/staff"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "ryan-caloud",
+  "display_name": "Ryan Caloud",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://pubhtml5.com/xada/nujr/basic/101-148",
+   "https://www.dci.org/about_drum_corps/#:~:text=First%2C%20drum%20corps%20use%20only,wants%20to%20participate%20is%20accommodated.",
+   "https://www.facebook.com/BostonCrusaders/posts/weve-made-it-to-lawrence-well-be-rehearsing-here-at-lawrence-high-school-every-d/644328224395538/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "sean-smit",
+  "display_name": "Sean Smit",
+  "bio": "Sean Smit is a visual educator and designer with over a decade of experience in the marching arts. He has served on the visual staff of the Sacramento Mandarins, Pacific Crest, and The Academy, and is currently the Visual Caption Head for GOLD Drum and Bugle Corps. He also serves on the Board of Directors for Pacific Crest Youth Arts Organization.",
+  "photo_url": "https://pacific-crest.org/wp-content/uploads/2022/12/Sean-Smit.png",
+  "sources": [
+   "https://www.halftimedesign.com/bio",
+   "https://pacific-crest.org/2022/12/sean-smit/",
+   "https://www.facebook.com/sean.smit.5/photos/im-honored-to-help-deliver-a-safe-educational-experience-this-summer-with-gold-d/10158450570049563/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "shaun-gallant",
+  "display_name": "Shaun Gallant",
+  "bio": "Shaun Gallant is a drum corps veteran who began his career in 2004 playing marimba in the front ensemble of the Vanguard Cadets and aged out of the Santa Clara Vanguard in 2008. He served as Director of Programs at Vanguard Music and Performing Arts, leading both the Vanguard Cadets and SCV to DCI World Championship titles in 2018, and was named 2018 Director of the Year. In 2018 he became Executive Director (later CEO) of BD Performing Arts, the organization behind the Blue Devils, and held that role until stepping down in 2023. He holds a Bachelor of Music in Percussion Performance from Morehead State University and a Master of Music in Percussion Performance from NYU.",
+  "photo_url": "https://bluedevils.org/news/files-articles/915/shaun.jpg",
+  "sources": [
+   "https://bluedevils.org/news/article.php?ID=915",
+   "https://bluedevils.org/news/article.php?ID=1033",
+   "https://halftimemag.com/november-december-2018/noteworthy_bd_shaungallant.html"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "taylor-poole",
+  "display_name": "Taylor Poole",
+  "bio": "Taylor Poole is a percussion educator who has worked with Mandarins, Southwind, The Academy, and Pacific Crest (2026 Front Ensemble). She performed on tenor lines with Spirit of Atlanta (2011–2013) and Gateway Indoor (2013–2014) in Drum Corps International and Winter Guard International. She holds a Master's degree in Orchestral Percussion Performance from Georgia State University.",
+  "photo_url": null,
+  "sources": [
+   "https://www.innovativepercussion.com/artists/taylor_poole",
+   "https://pacific-crest.org/about/staff/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "tim-nemzin",
+  "display_name": "Tim Nemzin",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.facebook.com/drumcorpsinternational/posts/well-never-forget-this-moment-troopers-drum-bugle-corps-%EF%B8%8Fdci2025/1201631295338976/",
+   "https://www.facebook.com/TroopersDrumCorps/#:~:text=%F0%9F%8E%A5%3A%20Roy%20Perez-,Jim%20Jones%20October%2026th%2C%201921%20%2D%20June%208th%2C%201994%20When,the%20history%20of%20the%20activity.",
+   "https://pubhtml5.com/xada/kaad/Drum_Corps_International_2018_Yearbook/101"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "todd-clevenger",
+  "display_name": "Todd Clevenger",
+  "bio": "Todd Clevenger served as Visual Caption Head for the Troopers drum and bugle corps in 2018.",
+  "photo_url": null,
+  "sources": [
+   "https://pubhtml5.com/xada/kaad/basic/101-148"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "tracy-carter",
+  "display_name": "Tracy Carter",
+  "bio": "Tracy Carter, a native of Jackson, MS, has served as Color Guard Caption Head for the Blue Knights (2021) and as Color Guard Caption and Program Coordinator for Music City and Southwind drum corps. She is the founder and director of Conversion Winter Guard, an Independent World class ensemble. Carter holds a Bachelor's in Music Education and Oboe Performance from the University of Southern Mississippi and works as a head band director in Biloxi, MS.",
+  "photo_url": "https://ascendperformingarts.org/wp-content/uploads/2021/03/IMG_2954-1.jpeg",
+  "sources": [
+   "https://ascendperformingarts.org/blue-knights-announce-tracy-carter-as-color-guard-caption-head/",
+   "https://www.facebook.com/MusicCityDrumCorps/posts/tracy-carter-returns-to-music-city-in-2018-to-serve-in-the-dual-roles-of-color-g/10156306388054448/",
+   "https://www.instagram.com/p/DXuHr3plAhL/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "tykeem-rainey",
+  "display_name": "Tykeem Rainey",
+  "bio": "Tykeem Rainey was a color guard member of the Madison Scouts from 2008 to 2011 and returned as intern and staff from 2012 to 2014. He has served as a choreographer and color guard director at Ronald Reagan High School in San Antonio, Texas. His drum corps staff work includes the 2024 Carolina Crown, 2024 Troopers, and a visual-team role with Santa Clara Vanguard. He also performs and choreographs for multiple WGI independent and world-class winter guards.",
+  "photo_url": "https://wgi.org/wp-content/uploads/2022/01/Screen-Shot-2022-01-28-at-10.29.51-AM.jpg",
+  "sources": [
+   "https://cavaliers.org/staff-bod/tykeem-rainey/",
+   "https://www.scvanguard.org/staff/tykeem-rainey/",
+   "https://www.wgi.org/black-history-month-tykeem-rainey/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "ashley-gonzalez",
+  "display_name": "Ashley Gonzalez",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://regiment.org/programs/drum-corps/staff/",
+   "https://pubhtml5.com/xada/gonk/Drum_Corps_International_50th_Anniversary_Program_Information/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "michael-ollman",
+  "display_name": "Michael Ollman",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.facebook.com/groups/296677897122747/posts/3780451335412035/",
+   "https://www.youtube.com/watch?v=-v_vqUEa-Vw",
+   "https://pubhtml5.com/xada/gonk/basic/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "russ-carroll",
+  "display_name": "Russ Carroll",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://www.wgi.org/about-wgi/what-is-wgi/hall-of-fame/",
+   "https://www.facebook.com/WDRBNews/posts/my-childhood-completely-changed-when-i-became-a-member-of-his-drum-corps/1258252466342536/",
+   "https://www.facebook.com/bluecoats/posts/congratulations-to-bluecoats-director-of-color-guard-choreography-jim-moore-on-h/1192509942921383/"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "tanner-leonardo",
+  "display_name": "Tanner Leonardo",
+  "bio": "Tanner Leonardo is the Assistant Director of Percussion at East Texas A&M University and serves as Sound Designer for Blue Knights Drum & Bugle Corps and Music Coordinator for the Blue Knights Percussion Ensemble. He has worked as an audio engineer for elite drum corps including the Blue Knights, Phantom Regiment, Troopers, and Santa Clara Vanguard, and performed with Music City Drum & Bugle Corps. He holds a Doctor of Musical Arts from the University of Kentucky, a Master of Performance from Morehead State University, and a Bachelor of Music from the University of Louisville.",
+  "photo_url": "https://static.wixstatic.com/media/c1e325_45d036c5d6da441f834ce6746198251b~mv2.jpg",
+  "sources": [
+   "https://www.tannerleonardo.com/about",
+   "https://www.tannerleonardo.com/",
+   "https://www.instagram.com/tanner.c.leonardo/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "tavius-cooper",
+  "display_name": "Tavius Cooper",
+  "bio": "Tavius Cooper is a color guard educator who performed with Spirit of Atlanta and Carolina Crown, and marched with Phantom Regiment Winterguard. He has taught color guard at Boston Crusaders, Blue Stars, Mandarins, Phantom Regiment, Madison Scouts, and Carolina Crown, and joined Atlanta CV in 2022 as their Colorguard Section Head. He currently serves as Creative Director of Colorguard at Georgia State University and Director of the University of Georgia Winterguard.",
+  "photo_url": null,
+  "sources": [
+   "https://www.instagram.com/p/Cr54-E_O51y/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "travis-hattery",
+  "display_name": "Travis Hattery",
+  "bio": "Travis Hattery was born and raised in Davenport, Iowa. He performed on tenors with the Colt Cadets (2008-2009), the Colts (2011), and the Cavaliers (2012-2014), and has served as a battery visual technician for the Boston Crusaders (2015), battery visual technician for the Cavaliers (2016), and battery music technician for the Govenaires (2015-2016). He is an endorsed Percussion Educator with Innovative Percussion and was the Executive Director of Crossroads Percussion, an independent WGI percussion unit.",
+  "photo_url": "https://images.squarespace-cdn.com/content/v1/605f9aedd87ebe0848b688bc/1616878365907-VVR0EWD5AMPA13F8EJF9/Travis%252BHattery%252BPhoto.jpg",
+  "sources": [
+   "https://www.innovativepercussion.com/artists/travis_hattery",
+   "https://www.waukeebands.org/northwest-band-staff-1"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "zachary-wilson",
+  "display_name": "Zach Wilson",
+  "bio": "Zach Wilson marched with the Bluecoats (2018–2021) and Blue Stars (2017), and joined the Bluecoats battery staff in 2022 as a snare/visual instructor. He served as a snare instructor at Pacific Crest and has been Pulse Percussion's battery staff since 2023. He is also a Maryland-based freelance percussionist and educator who has taught drumlines for numerous high schools and was a graduate assistant for the Penn State Blue Band.",
+  "photo_url": "https://pacific-crest.org/wp-content/uploads/2023/11/Zach-Wilson.jpeg",
+  "sources": [
+   "https://pacific-crest.org/2023/11/zach-wilson/",
+   "https://www.towson.edu/cofac/departments/music/facultystaff/zachary-wilson.html",
+   "https://www.yamaha.com/artists/zachwilson.html"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "keith-potter",
+  "display_name": "Keith Potter",
+  "bio": "Keith Potter has served as Artistic Director of the Boston Crusaders and was Program Designer at Carolina Crown from 2009 to 2016. He performed with The Cadets of Bergen County color guard from 1991 to 1993 and has worked as a color guard or program designer for over 25 years, including with The Cavaliers, The Pride of Cincinnati, and Escapade Winter Guard.",
+  "photo_url": "https://bostoncrusaders.org/wp-content/uploads/2016/08/Keith_Potter-300x200.jpg",
+  "sources": [
+   "https://bostoncrusaders.org/2016/09/introducing-keith-potter-as-the-artistic-director/",
+   "https://wgicon2019.sched.com/speaker/keith_potter.1zxuldi8"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "leon-may",
+  "display_name": "Leon May",
+  "bio": "Leon May began his drum corps career in 1988 with the Garfield Cadets and aged out in 1990, then served on the Cadets' visual staff through 1997. He joined the Boston Crusaders as drill designer and was part of the design team when the corps won its first DCI World Championship title in 2025. He has won numerous visual and general effect awards and multiple BOA Grand National Championships throughout his career.",
+  "photo_url": "https://bostoncrusaders.org/wp-content/uploads/2016/08/Leon_May-225x300.jpg",
+  "sources": [
+   "https://bostoncrusaders.org/2016/09/introducing-keith-potter-as-the-artistic-director/",
+   "https://www.pyware.com/the-2025-dci-world-champions-the-boston-crusaders/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "david-gibbs",
+  "display_name": "David Gibbs",
+  "bio": "David Gibbs is the executive director of the Blue Devils Drum & Bugle Corps and was inducted into the Drum Corps International Hall of Fame. He aged out of the organization as a soprano player and drum major, then joined the visual staff and designed award-winning visual programs before becoming the third corps director in Blue Devils' history in 1991. Gibbs also established the Diablo Youth Symphony, oversees all Blue Devils organization programs, and served as Chairman of the DCI Board of Directors.",
+  "photo_url": null,
+  "sources": [
+   "https://www.dci.org/hall-of-fame/david_gibbs/",
+   "https://www.youtube.com/watch?v=iLFRv37I9U0"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "derek-gipson",
+  "display_name": "Derek Gipson",
+  "bio": "Derek Gipson began his drum corps career at age 12 with the Expressions Drum & Bugle Corps and later performed with Southwind and the Cadets of Bergen County. He taught on brass staff at Carolina Crown, the Cadets, Capital Regiment, Santa Clara Vanguard, and Blue Knights before joining the Bluecoats as Brass Caption Head in 2012. Gipson holds a music education degree from Louisiana State University and played trumpet in the Tony Award-winning production of BLAST!",
+  "photo_url": "https://images.squarespace-cdn.com/content/v1/5b94904345776eaef2526fce/68d1ae3e-eb40-43ae-8f35-5dd009cc2e10/DSCF0686.jpg",
+  "sources": [
+   "https://bluecoats.com/news/2023/8/7/roger-carter-derek-gipson-dr-matthew-ryan-kilgore-dean-westman-inducted-into-2023-bluecoats-hall-of-fame",
+   "https://theinstrumentalist.com/uncategorized/secrets-of-magical-brass/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "kathy-pearson",
+  "display_name": "Kathy Pearson",
+  "bio": "Kathy Pearson has been on the color guard staff of the Bluecoats Drum and Bugle Corps since 2008, where she currently serves as Colorguard Caption Supervisor. She was inducted into the Bluecoats Hall of Fame in 2022 and the Santa Clara Vanguard Hall of Fame in 2017. She performed with the Santa Clara Vanguard and has taught at programs including SCV Winterguard, Origins Winterguard, Bluecoats Indoor, and Spirit of Atlanta.",
+  "photo_url": "https://images.squarespace-cdn.com/content/v1/5b94904345776eaef2526fce/e4ba1f66-4815-4aa9-8686-724ce7a529de/DSCF9061.jpg",
+  "sources": [
+   "https://www.originscolorguard.org/kathy-pearson",
+   "https://bluecoats.com/news/2023/9/13/jaycee-wilson-to-lead-colorguard-caption-kathy-pearson-amp-samia-vanderkolff-promoted-to-new-roles"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "kevin-stahl",
+  "display_name": "Kevin Stahl",
+  "bio": null,
+  "photo_url": null,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Drum_Corps_International",
+   "https://bluecoats.com/halloffame",
+   "https://www.innovativepercussion.com/artists/tom_rarick"
+  ],
+  "confidence": "LOW"
+ },
+ {
+  "person_id": "matthew-harloff",
+  "display_name": "Matt Harloff",
+  "bio": "Matt Harloff joined Carolina Crown as Brass Caption Head in 2003, building CrownBRASS into an elite program that won the Jim Ott Memorial Award multiple times and a DCI World Championship in 2013. He performed with Star of Indiana (1989–1995), serving as drum major in 1993, and later taught on The Cadets' brass staff. Harloff was inducted into the DCI Hall of Fame in 2025 and is the director of bands at Avon High School in Indiana.",
+  "photo_url": null,
+  "sources": [
+   "https://www.dci.org/hall-of-fame/matt-harloff/",
+   "https://www.yamaha.com/artists/matthewharloff.html",
+   "https://www.insidethecircle.band/matt-harloff"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "roger-carter",
+  "display_name": "Roger Carter",
+  "bio": "Roger Carter joined the Bluecoats percussion staff as a snare tech in 2012 and became their Percussion Caption Head in 2013, a position he held through at least 2022. Under his leadership the corps won its first DCI title in 2016 and the Fred Sanford High Percussion Award in 2022. He previously marched as center snare with the Concord Blue Devils and taught with the Blue Devils, Crossmen, and Madison Scouts.",
+  "photo_url": "https://music.sdsu.edu/_resources/images/profile-photos/roger-carter-300.jpg",
+  "sources": [
+   "https://music.sdsu.edu/people/carter-roger",
+   "https://tapspace.com/artist/roger-carter/",
+   "https://music.sdsu.edu/people/carter-roger#:~:text=Roger%20recently%20completed%20my%20Associates,studied%20privately%20with%20Paul%20Johnson."
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "sean-phelan",
+  "display_name": "Sean Phelan",
+  "bio": "Sean Phelan began his drum corps career in 2007 marching with the Madison Scouts, where he served as horn sergeant, featured soloist, and drum major, receiving the 2012 Jim Jones Leadership award from DCI. After aging out, he joined the brass staff as an intern and instructor, ultimately becoming Brass Caption Head for Pacific Crest for the 2018 season. He holds a master's degree in conducting from Indiana University and a bachelor's in music education and mathematics from the University of Wisconsin-Madison.",
+  "photo_url": "https://pacific-crest.org/wp-content/uploads/2018/09/Sean-Phelan.jpg",
+  "sources": [
+   "https://pacific-crest.org/2018/09/sean-phelan/",
+   "https://www.thebarkumd.com/arts-entertainment/2021/2/17/causing-treble-getting-to-know-umds-new-athletic-bands-teacher-sean-phelan"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "tyler-edrington",
+  "display_name": "Tyler Edrington",
+  "bio": "Tyler Edrington performed with Phantom Regiment (2008–2010) and Carolina Crown (2011) before becoming the primary color guard designer, choreographer, and caption head for Crossmen from 2012 to 2020. He then served as color guard caption supervisor for Carolina Crown in 2021 and is listed as Color Guard Designer and Caption Head on Carolina Crown’s creative team.",
+  "photo_url": null,
+  "sources": [
+   "https://www.grapevinehsband.com/edrington-bio.html",
+   "https://www.carolinacrown.org/drum-corps/staff"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "john-lowe",
+  "display_name": "John Lowe",
+  "bio": "John Lowe joined the Bluecoats Board of Directors in January 2023 and has served on Bluecoats staff since 2007 as tour cook, transportation manager, and production assistant. He was a middle and high school band director for 20 years before retiring in 2010. He holds a Bachelor of Music Education from Texas Tech University and a Master of Music in Conducting from West Texas State University, and was inducted into the Bluecoats Hall of Fame in 2018.",
+  "photo_url": "http://static1.squarespace.com/static/5b94904345776eaef2526fce/5ca009cd782e40dd8a75a34a/5ca009e0782e40dd8a75a697/1553992160947/Lowe_bio_pic3.jpg?format=original",
+  "sources": [
+   "https://bluecoats.com/news/2026/3/6/meet-the-board-lisa-smith-john-lowe-manuel-gamez",
+   "https://bluecoats.com/news/2018/05/bluecoats-announce-2018-hall-of-fame-inductees",
+   "https://bluecoats.com/halloffame"
+  ],
+  "confidence": "MEDIUM"
+ },
+ {
+  "person_id": "mark-nichols",
+  "display_name": "Mark Nichols",
+  "bio": "Mark Nichols is a brass educator who has served as Brass Caption Head for Santa Clara Vanguard and on the brass staff of the Bluecoats and Boston Crusaders Drum & Bugle Corps. He earned bachelor's and master's degrees in music education from the University of North Texas (summa cum laude) and completed postgraduate studies in instrumental conducting at Baylor University. He is also a high school band director in Texas, most recently as Associate Director of Bands at Clear Lake High School.",
+  "photo_url": null,
+  "sources": [
+   "https://education.musicforall.org/clinician/4339/",
+   "https://www.scvanguard.org/staff/mark-nichols/",
+   "https://www2.scvanguard.org/about/organization/bios/nichols_mark.cfm"
+  ],
+  "confidence": "MEDIUM"
+ },
+ {
+  "person_id": "michael-zellers",
+  "display_name": "Michael Zellers",
+  "bio": "Michael Zellers is currently the electronics designer for the Boston Crusaders Drum and Bugle Corps. He previously served on the percussion staff of The Cadets from 2011 to 2015 as a front ensemble technician (2011-2013) and electronics designer (2013-2015), during which the corps won the 2011 DCI World Championship and the percussion section received the Fred Sanford Award in 2013. Zellers has also worked with the Jersey Surf and Reading Buccaneers.",
+  "photo_url": "https://bands.stevenson.edu/wp-content/uploads/Michael_Zellers-284x300-1.jpg",
+  "sources": [
+   "https://bands.stevenson.edu/staff/",
+   "https://www.discussionsinpercussion.com/home/2021/12/15/259-tony-lymon-amp-mike-zellers-percussionists-audio-designerengineers-amp-more"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "nathan-pratt",
+  "display_name": "Nathan Pratt",
+  "bio": "Nathan Pratt served as Assistant Brass Caption Head at Pacific Crest. He marched three seasons as a member of the Madison Scouts mellophone section and spent six seasons on the Madison Scouts brass instructional staff. He earned a Bachelor of Music Education from the Indiana University Jacobs School of Music in 2014.",
+  "photo_url": "https://pacific-crest.org/wp-content/uploads/2018/09/NathanPratt.jpeg",
+  "sources": [
+   "https://pacific-crest.org/2018/09/nathan-pratt/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "peter-beckhart",
+  "display_name": "Peter Beckhart",
+  "bio": "Peter Beckhart has performed, instructed, and designed competitive shows in the marching arts, including six years in DCI aging out with the Concord Blue Devils. He taught Blue Devils B in 2012 and has been on the visual staff of the Blue Devils since 2013. He is drill designer for the Mandarins and was named their Visual Designer for the 2025 season.",
+  "photo_url": null,
+  "sources": [
+   "https://www.thebreakdowncamp.com/peter-beckhart",
+   "https://www.instagram.com/peterbeckhart/",
+   "https://www.mandarins.org/post/mandarins-2025-design-team"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "scott-chandler",
+  "display_name": "Scott Chandler",
+  "bio": "Scott Chandler began his drum corps career marching with the Madison Scouts' guard in the late 1970s, and has since instructed the Bridgemen, Spirit of Atlanta, the Cadets, and the Blue Devils. Since 1990, he has served as program coordinator and choreographer for the Blue Devils. He was inducted into the DCI Hall of Fame in 2004 and is also a member of the Winter Guard International Hall of Fame.",
+  "photo_url": null,
+  "sources": [
+   "https://www.dci.org/hall-of-fame/scott_chandler/",
+   "https://marchingartseducation.com/scott-chandler/",
+   "https://www.dci.org/news/profile-of-new-dci-hall-of-famer-scott-chandler/"
+  ],
+  "confidence": "HIGH"
+ },
+ {
+  "person_id": "sean-conway",
+  "display_name": "Sean Conway",
+  "bio": "Sean Conway is Director of Bands at St. Croix Central High School in Hammond, WI. He marched trumpet with the Madison Scouts from 2009 to 2012 and later served as a trumpet technician for the Madison Scouts (six years) and Pacific Crest (four years), as well as a brass instructor for Pacific Crest. He earned his bachelor's degree in Instrumental Music Education from the University of Wisconsin-Eau Claire and his master's in Music from Ohio University.",
+  "photo_url": "https://pacific-crest.org/wp-content/uploads/2018/09/Sean-Conway.jpg",
+  "sources": [
+   "https://pacific-crest.org/2018/09/sean-conway/",
+   "https://www.forwardperformingarts.org/madison-scouts-team-members/sean-conway",
+   "https://www.blugoldmarchingband.com/sean-conway"
+  ],
+  "confidence": "HIGH"
+ }
+]

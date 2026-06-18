@@ -1,0 +1,742 @@
+{
+  "mode": "apply",
+  "changeCount": 92,
+  "changes": [
+    {
+      "corps_key": "troopers-legacy-corps",
+      "name": "Troopers Legacy Corps",
+      "field": "website",
+      "from": null,
+      "to": "https://trooperslegacycorps.boosterhub.com/home/8939",
+      "source_url": "https://trooperslegacycorps.boosterhub.com/home/8939"
+    },
+    {
+      "corps_key": "troopers-legacy-corps",
+      "name": "Troopers Legacy Corps",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/groups/trooperslegacycorpsfans",
+      "source_url": "https://trooperslegacycorps.boosterhub.com/home/8939"
+    },
+    {
+      "corps_key": "troopers-legacy-corps",
+      "name": "Troopers Legacy Corps",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/trooperslegacycorps/",
+      "source_url": "https://trooperslegacycorps.boosterhub.com/home/8939"
+    },
+    {
+      "corps_key": "troopers-legacy-corps",
+      "name": "Troopers Legacy Corps",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/@TroopersLegacyCorps",
+      "source_url": "https://trooperslegacycorps.boosterhub.com/home/8939"
+    },
+    {
+      "corps_key": "troopers-legacy-corps",
+      "name": "Troopers Legacy Corps",
+      "field": "about",
+      "from": "Troopers Legacy Corps is a Casper, Wyoming ensemble listed by SoundSport as a registered 2026 ensemble.",
+      "to": "Troopers Legacy Corps is the alumni-and-friends ensemble connected to the Casper, Wyoming Troopers organization. Formed in 2018 as a vehicle to celebrate the Troopers' history and traditions, the corps brings together alumni, family members, and supporters for SoundSport and special-event performances. Its programming leans into classic Troopers identity, western repertoire, and the organization's long-running \"Long Blue Line\" community.",
+      "source_url": "https://trooperslegacycorps.boosterhub.com/home/8939"
+    },
+    {
+      "corps_key": "allegheny-eclipse",
+      "name": "Allegheny Eclipse",
+      "field": "website",
+      "from": null,
+      "to": "https://alleghenyeclipse.com/",
+      "source_url": "https://alleghenyeclipse.com/"
+    },
+    {
+      "corps_key": "allegheny-eclipse",
+      "name": "Allegheny Eclipse",
+      "field": "facebook",
+      "from": null,
+      "to": "https://facebook.com/alleghenyeclipse",
+      "source_url": "https://alleghenyeclipse.com/"
+    },
+    {
+      "corps_key": "allegheny-eclipse",
+      "name": "Allegheny Eclipse",
+      "field": "instagram",
+      "from": null,
+      "to": "https://instagram.com/allegheny_eclipse",
+      "source_url": "https://alleghenyeclipse.com/"
+    },
+    {
+      "corps_key": "allegheny-eclipse",
+      "name": "Allegheny Eclipse",
+      "field": "youtube",
+      "from": null,
+      "to": "https://youtube.com/@alleghenyeclipse",
+      "source_url": "https://alleghenyeclipse.com/"
+    },
+    {
+      "corps_key": "allegheny-eclipse",
+      "name": "Allegheny Eclipse",
+      "field": "about",
+      "from": "Allegheny Eclipse is a Warren, Pennsylvania ensemble listed by SoundSport as a registered 2026 ensemble.",
+      "to": "Allegheny Eclipse is an adult color guard from Warren, Pennsylvania, founded in 2025. The group was created for performers who want to continue or rediscover color guard beyond school-age programs, with a mission centered on movement, music, connection, and community performance. Its 2026 season materials describe a growing ensemble focused on skill-building, creative performance, and making color guard accessible at every stage of life.",
+      "source_url": "https://alleghenyeclipse.com/"
+    },
+    {
+      "corps_key": "rcr-street-club",
+      "name": "RCR Street Club",
+      "field": "website",
+      "from": null,
+      "to": "https://www.rivercityrhythm.org/about-street-club",
+      "source_url": "https://www.rivercityrhythm.org/about-street-club"
+    },
+    {
+      "corps_key": "rcr-street-club",
+      "name": "RCR Street Club",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/RCRCorps",
+      "source_url": "https://www.rivercityrhythm.org/about-street-club"
+    },
+    {
+      "corps_key": "rcr-street-club",
+      "name": "RCR Street Club",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/rcrstreetclub",
+      "source_url": "https://www.rivercityrhythm.org/about-street-club"
+    },
+    {
+      "corps_key": "rcr-street-club",
+      "name": "RCR Street Club",
+      "field": "about",
+      "from": "River City Rhythm Street Club is listed by SoundSport as a registered 2026 ensemble based in Monticello, Minnesota.",
+      "to": "RCR Street Club is River City Rhythm's summer street ensemble based in Minnesota. The group reinvents RCR's parade drumline, which has entertained crowds since 2014, and debuted as Street Club in summer 2025. It gives percussionists and guard performers a lower-commitment way to keep building marching, drumming, and performance skills while entertaining community audiences.",
+      "source_url": "https://www.rivercityrhythm.org/about-street-club"
+    },
+    {
+      "corps_key": "rosemont-king-cobras",
+      "name": "Rosemont King Cobras",
+      "field": "website",
+      "from": null,
+      "to": "https://cavaliers.org/king-cobras-drumline",
+      "source_url": "https://cavaliers.org/king-cobras-drumline"
+    },
+    {
+      "corps_key": "rosemont-king-cobras",
+      "name": "Rosemont King Cobras",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/kingcobrasdrumline",
+      "source_url": "https://cavaliers.org/king-cobras-drumline"
+    },
+    {
+      "corps_key": "rosemont-king-cobras",
+      "name": "Rosemont King Cobras",
+      "field": "instagram",
+      "from": null,
+      "to": "https://instagram.com/kingcobrasdrumline",
+      "source_url": "https://cavaliers.org/king-cobras-drumline"
+    },
+    {
+      "corps_key": "rosemont-king-cobras",
+      "name": "Rosemont King Cobras",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/channel/UCDUnBvbfO_BlcS0JmMDxgdA",
+      "source_url": "https://cavaliers.org/king-cobras-drumline"
+    },
+    {
+      "corps_key": "rosemont-king-cobras",
+      "name": "Rosemont King Cobras",
+      "field": "about",
+      "from": "Rosemont King Cobras Drumline is a Rosemont, Illinois ensemble listed by SoundSport as a registered 2026 ensemble.",
+      "to": "Rosemont King Cobras Drumline is a Cavaliers Arts, Performance & Education program from Rosemont, Illinois. Created for the special-needs community and people of all abilities, the group uses active drumming, recorded music, and performance opportunities to build musical, physical, and social skills. The program began in cooperation with local recreation partners and appears in DCI SoundSport contexts as a community-focused ensemble.",
+      "source_url": "https://cavaliers.org/king-cobras-drumline"
+    },
+    {
+      "corps_key": "baldwinsville-high-school-band",
+      "name": "Baldwinsville High School Band",
+      "field": "website",
+      "from": null,
+      "to": "https://beesbandsboosters.org/about/",
+      "source_url": "https://beesbandsboosters.org/about/"
+    },
+    {
+      "corps_key": "baldwinsville-high-school-band",
+      "name": "Baldwinsville High School Band",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/groups/1148147919616138",
+      "source_url": "https://beesbandsboosters.org/about/"
+    },
+    {
+      "corps_key": "baldwinsville-high-school-band",
+      "name": "Baldwinsville High School Band",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/beesbands/",
+      "source_url": "https://beesbandsboosters.org/about/"
+    },
+    {
+      "corps_key": "baldwinsville-high-school-band",
+      "name": "Baldwinsville High School Band",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/channel/UCtSq8XGNHiTkhIWKbBKwyFg",
+      "source_url": "https://beesbandsboosters.org/about/"
+    },
+    {
+      "corps_key": "baldwinsville-high-school-band",
+      "name": "Baldwinsville High School Band",
+      "field": "about",
+      "from": "Baldwinsville Marching Band is a Baldwinsville, New York ensemble listed by SoundSport as a registered 2026 ensemble.",
+      "to": "Baldwinsville High School Band, also known as the Baldwinsville Marching Bees, is a student marching band program from Baldwinsville, New York. The program includes band, drumline, and color guard, and its booster materials describe parade band, field band, indoor drumline and winds, winter guard, and pep band seasons. Baldwinsville is one of the oldest New York State Field Band Conference members, joined in 1974, and has performed nationally at events including the 2014 Macy's Thanksgiving Day Parade and the 2020 Rose Parade.",
+      "source_url": "https://beesbandsboosters.org/about/"
+    },
+    {
+      "corps_key": "hawthorne-caballeros-alumni",
+      "name": "Hawthorne Caballeros Alumni",
+      "field": "website",
+      "from": null,
+      "to": "https://hawthornecaballeros.org/",
+      "source_url": "https://www.dci.org/corps/hawthorne-caballeros-alumni/"
+    },
+    {
+      "corps_key": "hawthorne-caballeros-alumni",
+      "name": "Hawthorne Caballeros Alumni",
+      "field": "about",
+      "from": "Hawthorne Caballeros Alumni Corps is a Brick, New Jersey ensemble listed by SoundSport as a registered 2026 ensemble.",
+      "to": "Hawthorne Caballeros Alumni Drum & Bugle Corps was organized in 1994 to represent American Legion Post 199 and preserve the traditions of the Hawthorne Caballeros. The alumni corps honors one of senior drum corps' signature organizations by performing Caballeros history, repertoire, and fan favorites for modern audiences. DCX records the group as an active SoundSport/alumni ensemble with membership spanning multiple decades of Caballeros history.",
+      "source_url": "https://www.dci.org/corps/hawthorne-caballeros-alumni/"
+    },
+    {
+      "corps_key": "buccaneer-banner-brass",
+      "name": "Buccaneer Banner Brass",
+      "field": "website",
+      "from": null,
+      "to": "https://www.readingbuccaneers.org/classic",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "buccaneer-banner-brass",
+      "name": "Buccaneer Banner Brass",
+      "field": "facebook",
+      "from": null,
+      "to": "http://www.facebook.com/readingbuccaneers",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "buccaneer-banner-brass",
+      "name": "Buccaneer Banner Brass",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/rdgbuccaneers/",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "buccaneer-banner-brass",
+      "name": "Buccaneer Banner Brass",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/channel/UCvffalZaBjXezTrRlcwbL-Q",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "buccaneer-banner-brass",
+      "name": "Buccaneer Banner Brass",
+      "field": "about",
+      "from": "Reading Buccaneers Banner Brass is a Reading, Pennsylvania ensemble listed by SoundSport as a registered 2026 ensemble.",
+      "to": "Buccaneer Banner Brass is a Reading, Pennsylvania mini-corps and SoundSport ensemble connected to the Reading Buccaneers organization. It appears on Reading Buccaneers event lineups and SoundSport listings alongside the Buccaneers Alumni corps, giving the Buccaneers community a smaller-format brass performance outlet in addition to the all-age field corps.",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "blue-way-middle-school-honor-band",
+      "name": "The Blue Way Middle School Honor Band",
+      "field": "website",
+      "from": null,
+      "to": "https://bluecoats.com/theblueway",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "blue-way-middle-school-honor-band",
+      "name": "The Blue Way Middle School Honor Band",
+      "field": "facebook",
+      "from": null,
+      "to": "http://facebook.com/bluecoats",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "blue-way-middle-school-honor-band",
+      "name": "The Blue Way Middle School Honor Band",
+      "field": "instagram",
+      "from": null,
+      "to": "http://instagram.com/bluecoats",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "blue-way-middle-school-honor-band",
+      "name": "The Blue Way Middle School Honor Band",
+      "field": "youtube",
+      "from": null,
+      "to": "http://youtube.com/@bluecoats",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "blue-way-middle-school-honor-band",
+      "name": "The Blue Way Middle School Honor Band",
+      "field": "about",
+      "from": "The Blue Way Middle School Honor Band is a Canton, Ohio youth ensemble appearing in Bluecoats-hosted DCI event lineups.",
+      "to": "The Blue Way Middle School Honor Band is part of the Bluecoats' education ecosystem, connected to The Blue Way camps and youth performance opportunities in Northeast Ohio. Bluecoats describes The Blue Way as a summer arts experience where students learn and perform alongside the Bluecoats during spring training, with clinics in winds, percussion, color guard, drum major leadership, and music education. The honor band appears in Bluecoats-hosted DCI event lineups as a youth showcase ensemble.",
+      "source_url": "https://bluecoats.com/theblueway"
+    },
+    {
+      "corps_key": "ct-alumni",
+      "name": "CT Alumni",
+      "field": "website",
+      "from": null,
+      "to": "https://ctalumni.org/home/",
+      "source_url": "https://ctalumni.org/home/"
+    },
+    {
+      "corps_key": "ct-alumni",
+      "name": "CT Alumni",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/connalumni",
+      "source_url": "https://ctalumni.org/home/"
+    },
+    {
+      "corps_key": "ct-alumni",
+      "name": "CT Alumni",
+      "field": "twitter",
+      "from": null,
+      "to": "https://twitter.com/AlumniDrum",
+      "source_url": "https://ctalumni.org/home/"
+    },
+    {
+      "corps_key": "ct-alumni",
+      "name": "CT Alumni",
+      "field": "about",
+      "from": "CT Alumni Senior Drum & Bugle Corps is a Thomaston, Connecticut ensemble listed by SoundSport as a registered 2026 ensemble.",
+      "to": "CT Alumni Senior Drum & Bugle Corps is a Connecticut alumni corps with roots in the Connecticut Hurricanes community. Public Barnum Festival materials describe the group as founded in 1984 by former Hurricanes members, with performers from corps across Connecticut, New York, and Massachusetts as well as high school and college marching bands. The corps continues as a family-friendly alumni ensemble with brass, percussion, and visual sections.",
+      "source_url": "https://ctalumni.org/home/"
+    },
+    {
+      "corps_key": "rocky-mountain-brassworks",
+      "name": "Rocky Mountain Brassworks",
+      "field": "website",
+      "from": null,
+      "to": "https://www.rockymountainbrassworks.org/",
+      "source_url": "https://www.rockymountainbrassworks.org/"
+    },
+    {
+      "corps_key": "rocky-mountain-brassworks",
+      "name": "Rocky Mountain Brassworks",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/rmbrass",
+      "source_url": "https://www.rockymountainbrassworks.org/"
+    },
+    {
+      "corps_key": "rocky-mountain-brassworks",
+      "name": "Rocky Mountain Brassworks",
+      "field": "youtube",
+      "from": null,
+      "to": "http://www.youtube.com/channel/UCwHD1cBguVZPpF6Nom7ABfQ",
+      "source_url": "https://www.rockymountainbrassworks.org/"
+    },
+    {
+      "corps_key": "rocky-mountain-brassworks",
+      "name": "Rocky Mountain Brassworks",
+      "field": "about",
+      "from": "Rocky Mountain Brassworks is a Colorado ensemble appearing in DCI SoundSport update coverage and regional DCI event lineups.",
+      "to": "Rocky Mountain Brassworks is Colorado's oldest British-style brass band, performing in the Denver metro area and supporting school music education through outreach performances. The ensemble uses traditional brass-band instrumentation and presents concerts, community events, and collaborative programs at venues including the Wheat Ridge Center for Music and Arts. Its mission is to preserve and inspire love for British-style brass band music in the Rocky Mountain region through performance, member fulfillment, and community outreach.",
+      "source_url": "https://www.rockymountainbrassworks.org/"
+    },
+    {
+      "corps_key": "buccaneers-alumni",
+      "name": "Buccaneers Alumni",
+      "field": "website",
+      "from": null,
+      "to": "https://www.readingbuccaneers.org/classic",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "buccaneers-alumni",
+      "name": "Buccaneers Alumni",
+      "field": "facebook",
+      "from": null,
+      "to": "http://www.facebook.com/readingbuccaneers",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "buccaneers-alumni",
+      "name": "Buccaneers Alumni",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/rdgbuccaneers/",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "buccaneers-alumni",
+      "name": "Buccaneers Alumni",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/channel/UCvffalZaBjXezTrRlcwbL-Q",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "buccaneers-alumni",
+      "name": "Buccaneers Alumni",
+      "field": "about",
+      "from": "Reading Buccaneers Alumni Drum & Bugle Corps is a Reading, Pennsylvania ensemble listed by SoundSport as a registered 2026 ensemble.",
+      "to": "Reading Buccaneers Alumni Drum & Bugle Corps is the alumni performance ensemble associated with the Reading Buccaneers organization in Reading, Pennsylvania. The group appears in Buccaneers-produced events and DCI SoundSport listings, preserving the Buccaneers identity in alumni and exhibition settings while the competitive corps continues in all-age competition.",
+      "source_url": "https://www.readingbuccaneers.org/classic"
+    },
+    {
+      "corps_key": "rhythm-in-blue",
+      "name": "Rhythm IN BLUE",
+      "field": "website",
+      "from": null,
+      "to": "https://bluecoats.com/rhythminblue",
+      "source_url": "https://bluecoats.com/rhythminblue"
+    },
+    {
+      "corps_key": "rhythm-in-blue",
+      "name": "Rhythm IN BLUE",
+      "field": "facebook",
+      "from": null,
+      "to": "http://facebook.com/bluecoats",
+      "source_url": "https://bluecoats.com/rhythminblue"
+    },
+    {
+      "corps_key": "rhythm-in-blue",
+      "name": "Rhythm IN BLUE",
+      "field": "instagram",
+      "from": null,
+      "to": "http://instagram.com/bluecoats",
+      "source_url": "https://bluecoats.com/rhythminblue"
+    },
+    {
+      "corps_key": "rhythm-in-blue",
+      "name": "Rhythm IN BLUE",
+      "field": "youtube",
+      "from": null,
+      "to": "http://youtube.com/@bluecoats",
+      "source_url": "https://bluecoats.com/rhythminblue"
+    },
+    {
+      "corps_key": "rhythm-in-blue",
+      "name": "Rhythm IN BLUE",
+      "field": "about",
+      "from": "Rhythm IN BLUE is a North Canton, Ohio ensemble listed by SoundSport as a registered 2026 ensemble and appearing in DCI SoundSport event lineups.",
+      "to": "Rhythm IN BLUE is the Bluecoats' DCI SoundSport ensemble. Originally founded in 2014 as an alumni group and relaunched for the 2023 season, it is now open to performers ages 18 and over and offers the Bluecoats Experience with a lower time and financial commitment than a full touring corps. Bluecoats describes the ensemble as an accessible, affordable SoundSport program focused on innovative entertainment, education, and creative programming; it has earned repeated Gold Rating and Best in Show recognition at the SoundSport International Music & Food Festival.",
+      "source_url": "https://bluecoats.com/rhythminblue"
+    },
+    {
+      "corps_key": "sparta-ignite",
+      "name": "Sparta Ignite",
+      "field": "website",
+      "from": null,
+      "to": "https://bapam.org/aboutsi",
+      "source_url": "https://bapam.org/aboutsi"
+    },
+    {
+      "corps_key": "sparta-ignite",
+      "name": "Sparta Ignite",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/profile.php?id=61590452794582",
+      "source_url": "https://bapam.org/aboutsi"
+    },
+    {
+      "corps_key": "sparta-ignite",
+      "name": "Sparta Ignite",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/spartaignite/",
+      "source_url": "https://bapam.org/aboutsi"
+    },
+    {
+      "corps_key": "sparta-ignite",
+      "name": "Sparta Ignite",
+      "field": "about",
+      "from": "Sparta Ignite is a San Jose, California ensemble listed by SoundSport as a registered 2026 ensemble and appearing in DCI California event lineups.",
+      "to": "Sparta Ignite is Bay Area Performing Arts Movement's DCI SoundSport ensemble in San Jose, California. The group was created to provide a local SoundSport opportunity in the Bay Area and is built for winds, percussion, and color guard performers ages 25 and under. Its 2025 materials describe a world-class-style experience with weekend rehearsals and performances including DCI Capital Classic and DCI West at Stanford.",
+      "source_url": "https://bapam.org/aboutsi"
+    },
+    {
+      "corps_key": "mandarins-alumni",
+      "name": "Mandarins Alumni",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/groups/mandarinsalumni",
+      "source_url": "https://www.mandarins.org/alumni/"
+    },
+    {
+      "corps_key": "mandarins-alumni",
+      "name": "Mandarins Alumni",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/dcimandarins/",
+      "source_url": "https://www.mandarins.org/alumni/"
+    },
+    {
+      "corps_key": "mandarins-alumni",
+      "name": "Mandarins Alumni",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/@SacramentoMandarins",
+      "source_url": "https://www.mandarins.org/alumni/"
+    },
+    {
+      "corps_key": "mandarins-alumni",
+      "name": "Mandarins Alumni",
+      "field": "about",
+      "from": "Mandarins Alumni Corps is a Sacramento Mandarins alumni ensemble scheduled as a special guest exhibition performer at the 2026 DCI Capital Classic.",
+      "to": "Mandarins Alumni Corps represents the Sacramento Mandarins alumni community and supports the organization's ongoing connection with former members. The Mandarins alumni page keeps alumni connected through events, legacy activities, and official organization communications, while the alumni corps appears as a special exhibition ensemble in DCI event contexts such as the Capital Classic.",
+      "source_url": "https://www.mandarins.org/alumni/"
+    },
+    {
+      "corps_key": "bkxperience",
+      "name": "BKXperience",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/ascendperformingarts/",
+      "source_url": "https://ascendperformingarts.org/education/bkxperience/"
+    },
+    {
+      "corps_key": "bkxperience",
+      "name": "BKXperience",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/blueknightsdbc/?hl=en",
+      "source_url": "https://ascendperformingarts.org/education/bkxperience/"
+    },
+    {
+      "corps_key": "bkxperience",
+      "name": "BKXperience",
+      "field": "twitter",
+      "from": null,
+      "to": "https://twitter.com/TheBlueKnights",
+      "source_url": "https://ascendperformingarts.org/education/bkxperience/"
+    },
+    {
+      "corps_key": "bkxperience",
+      "name": "BKXperience",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/channel/UCCratCIjB1NEQfP5WOCxoUw",
+      "source_url": "https://ascendperformingarts.org/education/bkxperience/"
+    },
+    {
+      "corps_key": "bkxperience",
+      "name": "BKXperience",
+      "field": "about",
+      "from": "BKXperience is Ascend Performing Arts' Blue Knights educational clinic and performance experience, including BKX Perform at Drums Along the Rockies.",
+      "to": "BKXperience is Ascend Performing Arts' Blue Knights educational clinic and performance experience. The program gives students a chance to work with Blue Knights educators and performers in a DCI event environment, including BKX Perform at Drums Along the Rockies. It is best understood as an educational and exhibition experience connected to the Blue Knights rather than a standalone competitive corps.",
+      "source_url": "https://ascendperformingarts.org/education/bkxperience/"
+    },
+    {
+      "corps_key": "0015b00002eebx5aaf",
+      "name": "Connecticut Hurricanes",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/cthurricanes",
+      "source_url": "https://cthurricanes.org/about-us/"
+    },
+    {
+      "corps_key": "0015b00002eebx5aaf",
+      "name": "Connecticut Hurricanes",
+      "field": "twitter",
+      "from": null,
+      "to": "http://twitter.com/cthurricanes",
+      "source_url": "https://cthurricanes.org/about-us/"
+    },
+    {
+      "corps_key": "0015b00002eebx5aaf",
+      "name": "Connecticut Hurricanes",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/channel/UCrH1aWzUlfyRTmrfEWttJBA",
+      "source_url": "https://cthurricanes.org/about-us/"
+    },
+    {
+      "corps_key": "0015b00002eebx5aaf",
+      "name": "Connecticut Hurricanes",
+      "field": "about",
+      "from": "The Connecticut Hurricanes Drum & Bugle Corps is an all-age performance organization based in Seymour, Connecticut and competing in DCI All-Age Class.",
+      "to": "The Connecticut Hurricanes Drum & Bugle Corps is an all-age performance organization based in Seymour, Connecticut and competing in DCI All-Age Class. The corps traces its identity through Connecticut senior/all-age drum corps history and continues to field a competitive ensemble while supporting the broader Hurricanes family of alumni, volunteers, and community events. Its official site presents the Hurricanes as a nonprofit marching-arts organization with member, staff, and supporter pathways.",
+      "source_url": "https://cthurricanes.org/about-us/"
+    },
+    {
+      "corps_key": "mbi",
+      "name": "MBI",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/MinnesotaBrass",
+      "source_url": "https://mbiarts.org/corps/"
+    },
+    {
+      "corps_key": "mbi",
+      "name": "MBI",
+      "field": "instagram",
+      "from": null,
+      "to": "https://instagram.com/minnesotabrass/",
+      "source_url": "https://mbiarts.org/corps/"
+    },
+    {
+      "corps_key": "mbi",
+      "name": "MBI",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/user/mnbrass",
+      "source_url": "https://mbiarts.org/corps/"
+    },
+    {
+      "corps_key": "mbi",
+      "name": "MBI",
+      "field": "about",
+      "from": "MBI, also known as Minnesota Brass, is an all-age drum and bugle corps based in St. Paul, Minnesota and recognized by DCI as an All-Age Class affiliate.",
+      "to": "MBI, historically known as Minnesota Brass, is an all-age drum and bugle corps from St. Paul, Minnesota. The corps is part of Minnesota Brass Inc., a performing-arts organization with roots in the Upper Midwest drum corps community, and now appears in DCI All-Age Class. Its official corps page frames MBI as a modern all-age ensemble carrying forward the Minnesota Brass performance tradition through competitive and community appearances.",
+      "source_url": "https://mbiarts.org/corps/"
+    },
+    {
+      "corps_key": "phantom-regiment-alumni-corps",
+      "name": "Phantom Regiment Alumni Corps",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/regiment",
+      "source_url": "https://regiment.org/phantom-regiment-alumni-corps-70-years-strong/"
+    },
+    {
+      "corps_key": "phantom-regiment-alumni-corps",
+      "name": "Phantom Regiment Alumni Corps",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/thephantomregiment/",
+      "source_url": "https://regiment.org/phantom-regiment-alumni-corps-70-years-strong/"
+    },
+    {
+      "corps_key": "phantom-regiment-alumni-corps",
+      "name": "Phantom Regiment Alumni Corps",
+      "field": "twitter",
+      "from": null,
+      "to": "https://twitter.com/phantomregiment",
+      "source_url": "https://regiment.org/phantom-regiment-alumni-corps-70-years-strong/"
+    },
+    {
+      "corps_key": "phantom-regiment-alumni-corps",
+      "name": "Phantom Regiment Alumni Corps",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/user/PhantomRegiment1956",
+      "source_url": "https://regiment.org/phantom-regiment-alumni-corps-70-years-strong/"
+    },
+    {
+      "corps_key": "phantom-regiment-alumni-corps",
+      "name": "Phantom Regiment Alumni Corps",
+      "field": "about",
+      "from": "Phantom Regiment Alumni Corps is a Rockford, Illinois alumni ensemble assembling for a 70th-anniversary performance at the 2026 DCI World Championships.",
+      "to": "Phantom Regiment Alumni Corps is the Rockford, Illinois alumni ensemble assembled for Phantom Regiment's 70th anniversary celebration. Regiment materials describe the project as a milestone performance bringing alumni together to honor the corps' history, identity, and music. The ensemble appears on the 2026 DCI World Championships schedule as a special alumni exhibition tied to the larger Phantom Regiment organization.",
+      "source_url": "https://regiment.org/phantom-regiment-alumni-corps-70-years-strong/"
+    },
+    {
+      "corps_key": "en-corps-by-en-rich-ment",
+      "name": "EN-CORPS by EN-RICH-MENT",
+      "field": "website",
+      "from": null,
+      "to": "https://www.en-rich-ment.org/en-corps",
+      "source_url": "https://www.en-rich-ment.org/en-corps"
+    },
+    {
+      "corps_key": "en-corps-by-en-rich-ment",
+      "name": "EN-CORPS by EN-RICH-MENT",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/en.rich.ment.1",
+      "source_url": "https://www.en-rich-ment.org/en-corps"
+    },
+    {
+      "corps_key": "en-corps-by-en-rich-ment",
+      "name": "EN-CORPS by EN-RICH-MENT",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/en.rich.ment/",
+      "source_url": "https://www.en-rich-ment.org/en-corps"
+    },
+    {
+      "corps_key": "en-corps-by-en-rich-ment",
+      "name": "EN-CORPS by EN-RICH-MENT",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/channel/UCr8QPxxpos7DxDE2U3ZAg9g",
+      "source_url": "https://www.en-rich-ment.org/en-corps"
+    },
+    {
+      "corps_key": "en-corps-by-en-rich-ment",
+      "name": "EN-CORPS by EN-RICH-MENT",
+      "field": "about",
+      "from": "EN-CORPS by EN-RICH-MENT is a Canton, Ohio ensemble listed by SoundSport as a registered 2026 ensemble and connected to the Bluecoats/EN-RICH-MENT local arts partnership.",
+      "to": "EN-CORPS by EN-RICH-MENT is a Canton, Ohio youth performing ensemble that includes drumline, danceline, color guard, and pom-poms. EN-RICH-MENT describes EN-CORPS as a group of roughly 30 to 40 students ages 5 to 18 that performs at more than 70 events each year across Stark County, including parades, community events, Bluecoats Opening Night, and regional celebrations. The program is part of EN-RICH-MENT's broader mission to use music, movement, mentorship, and arts access to build confidence, discipline, and purpose for local youth.",
+      "source_url": "https://www.en-rich-ment.org/en-corps"
+    },
+    {
+      "corps_key": "marching-elite",
+      "name": "The Marching Elite",
+      "field": "facebook",
+      "from": null,
+      "to": "https://www.facebook.com/themarchingelite/",
+      "source_url": "https://www.themarchingelite.org/"
+    },
+    {
+      "corps_key": "marching-elite",
+      "name": "The Marching Elite",
+      "field": "instagram",
+      "from": null,
+      "to": "https://www.instagram.com/the_marching_elite/",
+      "source_url": "https://www.themarchingelite.org/"
+    },
+    {
+      "corps_key": "marching-elite",
+      "name": "The Marching Elite",
+      "field": "youtube",
+      "from": null,
+      "to": "https://www.youtube.com/@MarchingEliteMusicandArts",
+      "source_url": "https://www.themarchingelite.org/"
+    },
+    {
+      "corps_key": "marching-elite",
+      "name": "The Marching Elite",
+      "field": "about",
+      "from": "The Marching Elite Foundation is a Baltimore youth music and arts organization founded in 2006; its competitive brass and hornline section performs at DCI SoundSport events.",
+      "to": "The Marching Elite is a Baltimore youth music and arts organization founded in 2006. Its programs use marching music, dance, and visual performance to provide young people with training, discipline, and performance opportunities, including DCI SoundSport appearances. The organization operates as a community performing-arts program with a competitive brass/hornline presence and a broader mission of youth development through music and movement.",
+      "source_url": "https://www.themarchingelite.org/"
+    },
+    {
+      "corps_key": "phoenix",
+      "name": "Phoenix",
+      "field": "website",
+      "from": null,
+      "to": "https://www.phoenixcorps.org/",
+      "source_url": "https://www.dci.org/corps/phoenix-drum-bugle-corps/"
+    },
+    {
+      "corps_key": "phoenix",
+      "name": "Phoenix",
+      "field": "about",
+      "from": "PHOENIX Drum & Bugle Corps is a Silver City, New Mexico ensemble listed by SoundSport as a registered 2026 ensemble and in the 2026 SoundSport International Music & Food Festival lineup.",
+      "to": "PHOENIX Drum & Bugle Corps is a SoundSport ensemble from Silver City, New Mexico. DCI's profile lists the group with Silver City contact information and the phoenixcorps.org website, and SoundSport lists PHOENIX among its registered 2026 ensembles. The corps represents New Mexico in the small-ensemble SoundSport space, emphasizing accessible performance opportunities rather than a full touring corps model.",
+      "source_url": "https://www.dci.org/corps/phoenix-drum-bugle-corps/"
+    },
+    {
+      "corps_key": "apollo-marching-theatre",
+      "name": "Apollo Marching Theatre",
+      "field": "about",
+      "from": "Apollo Marching Theatre is Alabama's DCI SoundSport team, an all-ages marching ensemble with 2026 performances including DCI Northern Alabama, DCI Birmingham, and the SoundSport International Music & Food Festival.",
+      "to": "Apollo Marching Theatre is Alabama's DCI SoundSport team and a program of Hiraeth Communal. The ensemble accepts all band instruments, has no upper age limit, and rehearses weekly in the Huntsville area. Its 2026 schedule includes DCI Northern Alabama, DCI Birmingham, and the SoundSport International Music & Food Festival in Indianapolis, positioning Apollo as an accessible marching-theatre ensemble for performers who want a regional SoundSport experience.",
+      "source_url": "https://www.apollomarchingtheatre.org/"
+    }
+  ]
+}

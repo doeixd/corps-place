@@ -1,0 +1,25 @@
+{
+  "scrapedAt": "2026-06-17T10-35-39-277Z",
+  "apply": false,
+  "totBio": 0,
+  "totPhoto": 1,
+  "corps": [
+    {
+      "corpsKey": "001j000000iwxa3aal",
+      "name": "Mandarins",
+      "staffPageUrl": "http://www.mandarins.org/staff",
+      "targets": 457,
+      "detailLinks": 5,
+      "biosFilled": 0,
+      "photosFilled": 1,
+      "fills": [
+        {
+          "name": "Dr Dan Fong",
+          "url": "https://www.mandarins.org/drum-corps-staff/dr.-dan-fong",
+          "bio": false,
+          "photo": true
+        }
+      ]
+    }
+  ]
+}

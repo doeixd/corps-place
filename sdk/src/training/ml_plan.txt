@@ -1,0 +1,920 @@
+Below is a robust, production-minded implementation plan for an ML system in TypeScript / Node, using TensorFlow.js (tfjs-node) with a small embedding + MLP model (plus strong anti-leakage + anti-memorization practices). This is the best fit if you want to stay all-in on TS/Node and still “actually learn correlations” from your tabular + categorical data.
+
+Why this is the best TS/Node choice
+
+Your problem is tabular + categorical IDs (corps, judges, captions, season) + numeric state features (trend, days since, gaps).
+
+In JS/TS, the strongest practical option is:
+
+Embeddings for high-cardinality categories
+
+Numeric features for season state
+
+Small MLP with heavy regularization
+
+This generalizes well and won’t require giant models.
+
+Implementation Plan
+1) Define “prediction moments” and create separate datasets
+
+Start with one model, but structure for multiple.
+
+Model A: Pre-show score prediction
+
+Goal: predict each corps’s total score (and optionally GE/Visual/Music) for an upcoming competition, using only info available pre-show.
+
+Inputs (allowed):
+
+rolling performance (last scores, slopes)
+
+rankings-as-of (computed strictly before show time)
+
+days since last show, travel distance
+
+weather forecast
+
+event context (location, competition level, lineup strength if known)
+
+panel/judges only if known pre-show (optional)
+
+You can later add:
+
+Model B: Panel-aware adjustment
+
+Only if you can reliably know the panel beforehand.
+
+2) Data architecture (robust + rebuildable)
+
+You want 3 layers of data so you can rebuild features and avoid silent bugs.
+
+2.1 Raw store (immutable)
+
+Store raw recaps JSON and raw rankings snapshots JSON.
+
+Key by competition_slug + fetched_at (for recaps) and (season, as_of_date, pct) (snapshots).
+
+2.2 Normalized relational tables (SQLite/LibSQL)
+
+Use your ingest layer to produce stable fact tables:
+
+competitions
+
+corps_scores
+
+caption_scores
+
+judge_assignments
+
+judge_scores
+
+rankings_snapshots
+
+2.3 Feature store table (model-ready rows)
+
+Materialize one row per (competition_slug, corps_key):
+
+numeric features
+
+categorical ids (corpsId, seasonId, judgeIds…)
+
+missingness flags
+
+target score (only for training rows)
+
+Add:
+
+feature_version
+
+built_at
+
+as_of_timestamp (should equal competition datetime for training; “now” for inference)
+
+Key best practice: the feature builder is deterministic and can be rerun from normalized tables.
+
+3) Leakage prevention (non-negotiable)
+
+All features must be “as-of” time T, using only data < T.
+
+Implement an explicit rule in your feature builder:
+
+When generating a row for competition time T, every query that computes “previous” values must filter:
+
+competition_date < T
+
+Also:
+
+rankings-as-of must come from snapshots whose asOfDate < T (or computed similarly)
+
+opponent strength features must use opponents’ as-of strength, not their results at T
+
+Add automated tests:
+
+Pick random rows; verify no references to same-day results in feature queries.
+
+4) Feature design (learn correlations, don’t memorize)
+4.1 Numeric features (the real signal)
+
+These capture dynamics and reduce need for memorization:
+
+pctThroughSeason, dayOfSeason, daysTillFinals
+
+daysSinceLastShow, logDaysSinceLastShow
+
+rolling totals: lastScoreTotal, avgLast3Total, slopeLast3Total, stdLast3Total
+
+rolling caption totals too (GE/Visual/Music)
+
+gaps: gapToLeaderOverall, gapToPrevOverall, gapToNextOverall
+
+travel: distanceKmFromLastShow, distanceKmLast7Days, showCountLast7Days
+
+weather (optional): tempF, humidity, wind, precip
+
+field strength (if lineup known): corpsCountInClass, top12PresentCount, opponentsAvgAsOf
+
+4.2 Categorical features (embeddings)
+
+Use embeddings rather than one-hot:
+
+corpsId
+
+seasonId
+
+divisionId (or class)
+
+optional: competitionTypeId, groupTypeId
+
+panel (if used): a fixed-length array of judgeIds (padded)
+
+4.3 Missingness handling (critical for partial data)
+
+For every feature that can be missing, include:
+
+a value (0 or -1)
+
+a flag: has_last3, has_overall_rank, has_weather, has_last_show, etc.
+
+This is how you support early-season corps with 0–1 shows without breaking.
+
+5) Create stable ID maps for embeddings
+
+You must have repeatable integer IDs:
+
+corps_key -> corpsId
+
+judge_name -> judgeId (better: normalize name then hash; also keep a lookup table)
+
+season -> seasonId
+
+caption -> captionId (if needed)
+
+Implementation:
+
+id_map_corps.json, id_map_judges.json, etc.
+
+Update maps as new entities appear; reserve 0 for “UNK”.
+
+For judge arrays:
+
+Determine MAX_JUDGES (e.g. 16)
+
+For each competition row:
+
+build list of judgeIds used (or by caption)
+
+pad with 0s to MAX_JUDGES
+
+store judgeCount and hasJudgeInfo
+
+6) Model architecture (TF.js, robust)
+6.1 The model: embeddings + pooled judges + MLP
+
+Inputs:
+
+numeric tensor [batch, numNumeric]
+
+corpsId tensor [batch, 1]
+
+seasonId tensor [batch, 1]
+
+divisionId tensor [batch, 1]
+
+judgeIds tensor [batch, MAX_JUDGES] (optional)
+
+Embeddings:
+
+corps embedding 8–16 dims
+
+season embedding 4–8 dims
+
+division embedding 2–4 dims
+
+judge embedding 8–16 dims, then mean-pool across MAX_JUDGES (mask zeros)
+
+Concatenate:
+[numeric, corpsEmb, seasonEmb, divisionEmb, pooledJudgeEmb]
+
+MLP:
+
+Dense(128) + ReLU + Dropout(0.2) + L2
+
+Dense(64) + ReLU + Dropout(0.2) + L2
+
+Output head:
+
+total score (1)
+
+optionally: 4 outputs (GE/Visual/Music/Total)
+
+Loss:
+
+Huber loss (more robust than MSE to outliers)
+
+or MSE if you prefer
+
+6.2 Regularization to prevent memorization
+
+Dropout 0.2–0.4
+
+L2 weight decay on dense layers
+
+Embedding regularization (L2)
+
+Early stopping on validation
+
+Limit model size (small embeddings, shallow MLP)
+
+6.3 Recency weighting
+
+Implement sample weights:
+
+weight = exp(-lambda * ageInYears)
+
+or bucket weights (last 3 seasons weight 1.0, older weight 0.5, etc.)
+
+This prevents old scoring regimes from dominating.
+
+7) Training best practices (time splits + baselines)
+7.1 Train/val/test split by time
+
+Example:
+
+Train: seasons 1–7
+
+Val: season 8
+
+Test: seasons 9–10
+
+Also do “within-season forward tests”:
+
+Train on events before July 10 -> test on after July 10
+
+7.2 Baseline model (must-have)
+
+Before TF:
+
+baseline = last score + average improvement at that pctThroughSeason
+Compare against it. If TF doesn’t beat it, you have leakage or feature issues.
+
+7.3 Metrics that matter
+
+MAE on total score
+
+MAE by pctThroughSeason bucket (early season is harder)
+
+calibration if you output uncertainty
+
+rank accuracy (derived from predicted totals) as a secondary metric
+
+8) Uncertainty (makes it usable)
+
+You want the bot to say “I think 84.2 ± 0.8”.
+
+Two easy TS/Node approaches:
+
+Option A (recommended): Quantile heads
+
+Train 3 outputs:
+
+p10, p50, p90
+Use quantile loss (pinball loss).
+
+Option B: Error model
+
+Train a second model to predict absolute error based on same features.
+
+Quantiles are nicer UX and robust.
+
+9) Inference pipeline (predict upcoming shows)
+9.1 Build upcoming-show rows
+
+For each upcoming competition:
+
+Get lineup (if known)
+
+For each corps expected:
+
+Build features “as-of now” (or as-of scheduled start)
+
+Insert into feature_store with target = null
+
+Run inference to get predicted score(s) + uncertainty
+
+Save to predictions table with model_version, feature_version
+
+9.2 “Partial data” works naturally
+
+If corps hasn’t performed yet:
+
+rolling features missing -> flags show that
+
+model falls back to corps embedding + historical baseline correlations
+
+10) Model lifecycle / updating
+10.1 Update cadence
+
+In season: retrain nightly (or every 6–12h late season)
+
+Off season: weekly or only on demand
+
+10.2 Version everything
+
+Store:
+
+model_version (timestamp or git SHA)
+
+trained_through_date
+
+metrics on last validation season
+
+feature schema hash/version
+
+10.3 Regression testing
+
+On each new model:
+
+run test suite on held-out seasons
+
+compare MAE vs previous model
+
+block deployment if worse by > threshold
+
+11) Suggested repository layout (Node-first, robust)
+/ml
+  /db
+    schema.sql
+  /ingest
+    ingestRecaps.ts
+    ingestRankings.ts
+  /features
+    buildFeatures.ts
+    featureVersion.ts
+    leakageGuards.test.ts
+  /datasets
+    makeTrainingDataset.ts
+    makeInferenceDataset.ts
+  /ids
+    buildIdMaps.ts
+    idMaps.json
+  /train
+    trainModel.ts
+    evaluateModel.ts
+    exportModel.ts
+  /serve
+    loadModel.ts
+    predictUpcoming.ts
+  /monitor
+    residuals.ts
+    driftChecks.ts
+
+12) “Actually learn correlations, not memorize” checklist
+
+If you do only these things, you’ll be in good shape:
+
+✅ time-based splits only
+
+✅ baseline comparison
+
+✅ heavy regularization + small model
+
+✅ missingness flags
+
+✅ recency weighting
+
+✅ no raw high-cardinality strings (eventName only via derived features)
+
+✅ as-of feature builder with a hard < T filter everywhere
+
+✅ holdout season evaluation and deployment gating
+
+13) What to build first (fast path to something real)
+
+Implement feature store for:
+
+pctThroughSeason, last score, avg/slope last3, daysSince, gap-to-leader, travel distance
+
+Train a small embedding-MLP to predict total score
+
+Add quantile outputs
+
+Add judge pooled embeddings or judge priors only if you can pre-know panels
+
+Deploy predictions for upcoming events on your site
+
+If you want, I can follow this plan with a concrete tfjs-node training script skeleton (TypeScript) that:
+
+loads ModelReadyExample[] from SQLite
+
+builds tensors (numeric + categorical + judge array)
+
+trains with early stopping + sample weights
+
+Yeah — a bunch of “boring” things matter more than model choice here. If you do these well, you’ll get something that generalizes, survives schema drift, and stays accurate mid-season.
+
+## Data + leakage guardrails
+
+* **Hard “as-of” enforcement everywhere.** Every feature query should take `asOfTime` and filter `competition_date < asOfTime`. No exceptions.
+* **Don’t use “daysTillFinals” unless you’re sure it’s not derived from future schedule quirks** (usually safe, but verify).
+* **Rankings snapshots can leak** if they’re computed after the show you’re predicting. Only use snapshots strictly before the target show time.
+* **Be careful with “eventName” / “slug”**: never feed raw strings. They’re identifiers and encourage memorization. Only derived features (region, month, indoor/outdoor, etc.).
+
+## Normalize the world (you’ll thank yourself)
+
+* **Canonical corps keys**: stable mapping for name variants (“Blue Devils” vs “Blue Devils B” vs sponsorship suffixes).
+* **Canonical judge identities**: names change/spellings vary. Build a `judge_id` system with aliases + manual overrides.
+* **Caption taxonomy**: captions/subcaptions change over time. Maintain a mapping table and a “missing caption” flag.
+
+## Missing/partial data strategy
+
+* For every nullable feature: include a **`has_*` flag**.
+* Use safe defaults:
+
+  * `0` for standardized numeric values after normalization (because mean≈0)
+  * `UNK=0` for categorical IDs
+* Early season: explicitly include **`showCountSoFar`** and **`hasLastShow`** so the model learns the “early season uncertainty” regime.
+
+## Evaluation that matches your product
+
+* Do **time-based splits only** (you already plan this).
+* Add **bucketed metrics**:
+
+  * MAE by `% through season` deciles
+  * MAE by “days since last show”
+  * MAE by “has panel” vs not
+* Measure **rank accuracy** (derived): how often you correctly order top N for the event.
+* Build a simple baseline and keep it forever:
+
+  * `pred = lastScore + avgDailyGain(pctThroughSeason, corpsTier)`
+  * If your model can’t beat it, something’s wrong (often leakage or feature bugs).
+
+## Regularization / anti-memorization (practical knobs)
+
+* Keep the model small (you did).
+* Use **L2 on embeddings** and **dropout** in dense layers (you did).
+* Consider **embedding dropout** (randomly zero out corps/judge embeddings sometimes) so it can’t rely on IDs alone.
+* Consider **feature dropout**: randomly drop some numeric features during training to improve robustness to missing data.
+* If you include judges: prefer **judge priors** (bias/spread) as numeric features first. Judge-ID embeddings are powerful but easier to overfit.
+
+## Calibration + uncertainty
+
+* Quantiles are great — but add a check:
+
+  * enforce monotonicity at inference: if `p10 > p50`, swap/clamp; same for `p50 > p90`.
+* Track calibration: % of true scores inside [p10, p90] should be ~80%. If it’s 50%, you’re overconfident.
+
+## Data drift + rule changes
+
+DCI scoring regimes shift subtly. Protect against it:
+
+* Use **recency sample weights** (you have the hook).
+* Track metrics by season; if the newest season degrades, retrain more frequently or increase recency weighting.
+
+## Feature store versioning and reproducibility
+
+* Save:
+
+  * `feature_version`
+  * ordered feature list (names in order) next to `numeric_norm.json`
+  * the SQL hash (you did)
+  * id map versions / vocab sizes
+* Build a command to **rebuild datasets from scratch** (raw → normalized → features → train rows). This makes debugging possible.
+
+## Operational reliability
+
+* Add “data quality gates” before training:
+
+  * % rows missing key features < threshold
+  * no NaNs/infs
+  * reasonable ranges (scores 0–100, pctThrough 0–100, etc.)
+* Add “deployment gates”:
+
+  * new model must beat previous on validation by at least epsilon (or not worse beyond tolerance)
+  * otherwise keep current model
+
+## Product/UX considerations that influence ML
+
+* Users care about **relative** predictions more than exact points early season.
+
+  * Consider outputting **rank probabilities** later (derived via sampling from quantiles).
+* Explainability helps adoption:
+
+  * even simple: “Based on last show + trend + rest days”
+  * You can implement feature contribution approximations later (permutation importance offline).
+
+## The biggest gotcha: lineup/attendance
+
+If you’re “predicting event results,” you need to know **who is attending**.
+
+* If lineup is unknown: your model can still predict each corps’ next score, but event rankings become guessy.
+* If you can scrape/predict attendance: add lineup strength features and your event-ranking predictions get much better.
+
+---
+
+### 3 concrete next steps I’d do right now
+
+1. Add a `features.json` file saved with the model: ordered feature names and default/missing rules.
+2. Implement an evaluation script that reports MAE by `%through` buckets + top-3 ranking accuracy.
+3. Add embedding/feature dropout (tiny change, big generalization boost).
+
+If you want, I can write the **inference loader** next (`loadModel.ts` + `predict.ts`) that:
+
+* loads `model.json`, `numeric_norm.json`, `features.json`
+* accepts partial input
+* normalizes + pads judges
+* outputs p10/p50/p90 and a derived ranking for a given event lineup.
+
+
+“Knowledge of the rest of the season prior to the event” — does this handle it?
+
+Yes if your x_numeric_json features are computed as-of the prediction time and include season-to-date aggregates.
+
+Right now the code is model-agnostic: it will learn whatever you feed into x_numeric_json. So you make it “know the season so far” by building features like:
+
+showCountSoFar
+
+lastScoreTotal, avgLast3Total, slopeLast3Total
+
+bestScoreSoFar, medianScoreSoFar
+
+gapToLeaderSoFar, rankSoFar (computed only from shows before the target)
+
+daysSinceLastShow, distanceFromLastShow
+
+per-caption season-to-date versions of the above (GE/Vis/Music)
+
+judge-related season-to-date priors (more below)
+
+If you do that, “predicting Finals” is naturally: compute those features using all shows before Finals, then predict.
+
+Key requirement: your dataset rows must represent “what you’d know then,” not “what you know now.”
+
+Do we retrain after each show?
+
+You don’t have to, but there are two good patterns:
+
+Pattern A (recommended): One trained model + rolling features
+
+Train on many seasons.
+
+For each new show, you recompute features for future events using the latest results.
+
+You can re-run inference after each show (cheap).
+
+Retrain on a schedule (e.g. nightly/weekly) or when metrics drift.
+
+This is usually best: stable, reproducible, no constant training churn.
+
+Pattern B: Online-ish updates (retrain frequently)
+
+Retrain after each show (or daily) using the new data.
+
+It can help early season if you’re very sensitive to year-specific shifts, but it’s easy to overfit to the current season noise and harder to validate.
+
+If you do this, keep strict:
+
+time-based validation
+
+a “do not deploy if worse than baseline” gate
+
+My suggestion: start with Pattern A. Add “lightweight fine-tune” later only if you see clear drift.
+
+Finals specifically: do we “provide all prior results”?
+
+You don’t provide “all results” as raw history to the model (unless you switch to a sequence model).
+You provide summaries/features derived from all prior results.
+
+That’s the whole point of your feature store: it compresses the season-to-date history into a fixed vector.
+
+If you later want richer history, you can add a small sequence module (see below), but you don’t need it to get strong performance.
+
+Judge panels differ per show — how do we handle that?
+
+This is important, and you should treat it explicitly.
+
+You have 3 cases at prediction time:
+
+1) You know the panel for the upcoming show
+
+Then include it. Your model code already supports judgeIds (padded). Great.
+
+But: judge ID embeddings can overfit. Better approach is to feed judge priors too (numeric features):
+
+panelMeanBias_total (how high/low this panel tends to score relative to consensus)
+
+panelStd_total (how volatile)
+
+same per caption/subcaption if you want
+
+panelExperience (# prior recaps in data)
+
+panelDiversity (# unique judges, # first-time pairings)
+
+Compute these from historical data before the event date (as-of).
+
+2) You don’t know the panel
+
+Then:
+
+set judge IDs to empty (all 0s)
+
+set hasPanel = 0
+
+include a fallback numeric feature like expectedPanelBias = 0 (default)
+
+the model learns to rely more on corps trend + season context.
+
+3) You know some judges but not all
+
+That’s fine: pass the known IDs, pad the rest with 0, set hasPanelPartial=1, and maybe add knownJudgeCount.
+
+Does the current architecture “learn correlations, not memorize” given judges/panels?
+
+Mostly, yes, if you add two things (which you now have hooks for):
+
+Embedding dropout (we added)
+
+Prefer judge priors (numeric) over pure judge-ID embeddings for the strongest signal
+
+A good compromise:
+
+Keep judge embeddings, but also include judge/panel statistics as numeric inputs.
+
+Add embedding dropout + L2.
+
+Should we use a transformer/RNN for “season knowledge”?
+
+Not necessary at first.
+
+For 10 seasons of DCI, the dataset isn’t huge; a big transformer will overfit fast and adds complexity.
+
+If you want the benefits of sequence history without going full transformer, do this later:
+
+Keep your current “static features” model as baseline.
+
+Add a tiny sequence encoder per corps:
+
+input: last N show scores (and maybe caption totals), with time gaps
+
+output: a learned “form” embedding
+
+concatenate that with your static features.
+
+That upgrade is modular and low-risk.
+
+Concrete answers to your questions
+
+“Does this handle ‘rest of season prior’?”
+Yes, if your x_numeric_json contains season-to-date aggregates computed as-of the event.
+
+“If predicting Finals, should we provide all prior results?”
+Provide features computed from all prior results (not raw dumps).
+
+“Do we retrain and predict after each show?”
+Predict after each show: yes (just recompute features + run inference).
+Retrain after each show: usually no—retrain on a cadence unless drift demands it.
+
+“Panels vary show to show?”
+Supported. Add hasPanel, knownJudgeCount, judge/panel priors. Use embeddings cautiously.
+
+One key change you should make (high impact)
+
+Make your training rows simulate “prediction time” more realistically by adding multiple “as-of snapshots” per season, not just one per recap:
+
+For each recap row (event), generate features as if you were predicting it:
+
+7 days before
+
+3 days before
+
+1 day before
+
+morning-of
+
+That teaches the model how uncertainty shrinks as more info (panel, last show results, weather forecast) becomes available.
+
+If you want, I can write the SQL + TS feature-builder pattern for generating those multi-snapshot rows cleanly (and still leakage-safe).
+
+“Different shows have different judge panels”
+
+Handled cleanly with this architecture, because panel is just part of the features:
+
+If panel known: judgeIds filled + hasPanel=1 + panel priors numeric features
+
+If panel unknown: judgeIds=[] + hasPanel=0 and defaults
+
+The model will naturally learn “when panel is missing, rely on corps trend + season context.”
+
+I strongly recommend adding these panel numeric priors to reduce overfitting:
+
+panelBias_total, panelStd_total
+
+optionally per-caption
+
+Those are computed from historical judge behavior in your relational tables.
+
+“Do we retrain after each show?”
+
+With this Effect pipeline, you have options:
+
+Predict after each show: absolutely. That’s just recomputing features and running inference.
+
+Retrain: do it on a cadence:
+
+nightly during season, weekly off-season
+
+or “retrain if drift”: eval gate fails
+
+Because your DB is always current, training is always repeatable.
+
+The one thing I need from you to make this “drop-in”
+
+Right now, the missing piece is your exact feature vector definition.
+
+If you give me either:
+
+your current x_numeric_json builder code, or
+
+the list/order of numeric features you want (your featurespec.json),
+
+…I can write:
+
+the exact buildNumericFeatures() implementation that queries from the relational schema, leakage-safe
+
+the vocab upsert code (corps/judges/divisions/seasons)
+
+a production-grade BuildMlRows job that runs fast (streaming + batching + transactions)
+
+If you paste just your intended numeric feature list (names) and confirm whether you want:
+
+prediction target = total score only (for now), or also caption totals
+
+divisions = World Class only or others too
+
+…I’ll lock it into code that matches your SDK + SQLite setup.
+
+5) How to compute the features from your relational SQLite (queries)
+
+I’ll assume you have these (or similar) tables after ingest:
+
+competitions(slug, season, competition_date, day_of_season, percentage_through_season, latitude, longitude, ...)
+
+corps_competition_results(competition_slug, division_name, corps_key, corps_total_score, ...)
+
+judge_scores(competition_slug, division_name, judge_name, ...)
+
+A. Corps count in class (competition/division)
+SELECT COUNT(*) AS n
+FROM corps_competition_results
+WHERE competition_slug = ?
+  AND division_name = ?;
+
+B. Prior shows for that corps (same season, before target date)
+SELECT c.competition_date AS date, r.corps_total_score AS total, c.latitude AS lat, c.longitude AS lon
+FROM corps_competition_results r
+JOIN competitions c ON c.slug = r.competition_slug
+WHERE c.season = ?
+  AND r.division_name = ?
+  AND r.corps_key = ?
+  AND c.competition_date < ?
+ORDER BY c.competition_date DESC
+LIMIT 3;
+
+
+From this one query you can compute:
+
+hasLastShow (>=1 row)
+
+hasLast3 (==3 rows)
+
+lastScoreTotal (row[0].total)
+
+avgLast3Total (mean of 3 totals)
+
+slopeLast3Total (based on totals in chronological order)
+
+daysSinceLastShow (date diff between target date and row[0].date)
+
+distanceKmFromLastShow (if lat/lon present in row[0] and target)
+
+C. Best-so-far overall ranking as-of (division-wide)
+
+Compute best score so far for all corps in the division (prior to target date):
+
+SELECT r.corps_key, MAX(r.corps_total_score) AS best_total
+FROM corps_competition_results r
+JOIN competitions c ON c.slug = r.competition_slug
+WHERE c.season = ?
+  AND r.division_name = ?
+  AND c.competition_date < ?
+GROUP BY r.corps_key;
+
+
+Then in TS:
+
+sort descending by best_total
+
+assign rank (1..N)
+
+find leader best_total
+
+for current corps:
+
+overallRankAsOf = rank
+
+gapToLeaderOverall = leader - corps_best
+
+Set hasOverallRank=1 only if the corps appears in that map.
+
+D. Weather
+SELECT temperature_f, humidity_pct, wind_speed_mps, precipitation_mm
+FROM competition_weather
+WHERE competition_slug = ?;
+
+E. Judge info (just the flag, if you’re not embedding yet)
+SELECT 1
+FROM judge_scores
+WHERE competition_slug = ?
+  AND division_name = ?
+LIMIT 1;
+
+6) Effect job shape: BuildMlRows that uses your feature spec
+
+High-level outline:
+
+load features.json
+
+iterate competitions (season+slug+date)
+
+for each competition/division:
+
+fetch corps list + targets (y_total)
+
+compute shared features: corpsCountInClass, dayOfSeason, percentageThroughSeason
+
+per corps:
+
+fetch last3 prior
+
+fetch overall best-so-far map once per competition/division
+
+fetch weather once per competition
+
+set flags
+
+buildNumericVector(featuresSpec, values)
+
+upsert into ml_training_rows
+
+Important optimization: per competition/division, compute once:
+
+corpsCountInClass
+
+overall best-so-far map
+
+weather row
+
+judge-info flag
+
+Then corps loop only does the “last3” query.
+
+7) Answering your earlier “can it work directly with the SDK?”
+
+Yes, in two ways:
+
+Option 1 (best): Use the relational SQLite as source of truth
+
+SDK keeps it updated
+
+ML pipeline reads it
+
+Your site queries it for standings/recaps too
+
+Option 2: use SDK for “live reads”, DB for training
+
+training rows from DB
+
+for upcoming events (not yet ingested), call api.listEvents() etc.
+
+build “as-of now” features from DB + event metadata from API
+
+In practice, you’ll do both.

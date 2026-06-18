@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "Patch for Ted Wemhoff: full bio + headshot supplied by user (WGI + MFA clinician pages).",
+  "profiles": [
+    {
+      "judgeId": "t-wemhoff-1",
+      "displayName": "Ted Wemhoff",
+      "givenName": "Ted",
+      "familyName": "Wemhoff",
+      "biography": "Ted Wemhoff is a designer, instructor, performer, administrator, and adjudicator in the pageantry arts, active since 1982. Based in Frisco, Texas, he began marching at age 12 with the River City Railmen Drum and Bugle Corps (Omaha, NE) and also performed with the Sky Ryders Drum and Bugle Corps and Contempo Winter Guard. He and his wife directed the Frisco High School color guard (1995-2003) and served on the North Texas Colorguard Association (NTCA) executive board; he was inducted into the NTCA Hall of Fame in 2015 and serves as its Judges Coordinator. He was a visual design consultant for the five-time BOA Regional finalist Wakeland High School band and winter guard and the Coppell High School winter guard. Judging since 2002, he became a Winter Guard International general effect judge in 2004 and a Drum Corps International visual judge in 2015, adjudicating across the U.S. and internationally in the UK, the Netherlands, Japan, and Indonesia.",
+      "photoUrl": "https://www.wgi.org/wp-content/uploads/2023/07/Ted-Wemhoff.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/ted-wemhoff/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.wgi.org/color-guard/cg-judges/", "label": "WGI Color Guard judges", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "River City Railmen", "season": "1982", "role": "Performer (member)", "sourceUrl": "https://education.musicforall.org/clinician/ted-wemhoff/" },
+        { "corpsName": "Sky Ryders", "role": "Performer (member)", "sourceUrl": "https://education.musicforall.org/clinician/ted-wemhoff/" }
+      ],
+      "seasonHighlights": [
+        { "title": "North Texas Colorguard Association Hall of Fame", "season": "2015", "sourceUrl": "https://education.musicforall.org/clinician/ted-wemhoff/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 1 / Visual Analysis / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "Pageantry since 1982; River City Railmen/Sky Ryders/Contempo; Frisco HS guard director; NTCA HOF 2015; WGI GE judge 2004, DCI visual judge 2015; Frisco TX", "source": "https://education.musicforall.org/clinician/ted-wemhoff/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

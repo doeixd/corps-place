@@ -1,0 +1,307 @@
+{
+  "generatedAt": "2026-06-10",
+  "mode": "dry-run",
+  "note": "DCI judges ranked 104-116 by assignment count. Sources: DCI Hall of Fame, MFA clinician pages, SCPA, Dynasty, Conn-Selmer, DCI panels; JS/MFA pages rendered via puppeteer. JudgeBioProfile + _research.",
+  "profiles": [
+    {
+      "judgeId": "w-whaley-1",
+      "displayName": "WL Whaley",
+      "givenName": "WL",
+      "familyName": "Whaley",
+      "biography": "W.L. Whaley is a music/general-effect adjudicator and clinician and the former Director of Bands at Pomona High School in Arvada, Colorado (1987-2007). He is Executive Director of AdvantEdge Tours/Dramart Productions and Chief Judge for the Colorado Bandmasters Association, and works as a clinician, consultant, designer, and adjudicator across the United States, including the General Effect and Music captions for Drum Corps International. He was inducted into the Colorado Bandmasters Association Hall of Fame (2004) and named Phi Beta Mu Kappa Chapter Most Outstanding Bandmaster (2007), and is a Conn-Selmer clinician.",
+      "photoUrl": "https://conn-selmer.cdn.picturepark.com/v/cCJRgm1g/?height=800&width=800",
+      "alternateNames": ["W.L. Whaley"],
+      "externalLinks": [
+        { "url": "https://connselmer.com/education/clinicians/w-l-whaley", "label": "Conn-Selmer clinician", "kind": "bio" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Brass / Music Analysis; 2013-2025",
+        "facts": [
+          { "fact": "Former Pomona HS Dir of Bands; Colorado Bandmasters Chief Judge & HOF 2004; DCI/BOA GE & music judge; Conn-Selmer clinician", "source": "https://connselmer.com/education/clinicians/w-l-whaley", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "c-clayton-fisher-1",
+      "displayName": "Christine Clayton Fisher",
+      "givenName": "Christine",
+      "familyName": "Clayton Fisher",
+      "biography": "Christine Clayton Fisher is a color guard and visual adjudicator who performed in the color guard at the University of Southern California and with the Sacramento Freelancers drum and bugle corps, then spent 15 years teaching high school and college color guard in the Los Angeles area (including Granada Hills Charter and USC). Based in Portland, Oregon, she judges visual captions for marching band circuits in the fall and movement, general effect, and visual for guard and percussion in the winter. She has served as Director of Education for the Winter Guard Association of Southern California and Judges Liaison for the Southeastern Color Guard Circuit, holds a B.S. in Business Management and an MBA from the University of Phoenix, and is Director of Human Resources for BD Performing Arts.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/color-guard/cg-judges/", "label": "WGI Color Guard judges", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Sacramento Freelancers", "role": "Performer (color guard)", "sourceUrl": "https://www.wgi.org/color-guard/cg-judges/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / GE1 / Visual Proficiency / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "USC & Sacramento Freelancers guard; 15 yrs teaching LA guard; WGASC Director of Education; HR Director for BD Performing Arts; DCI/WGI visual judge", "source": "https://www.wgi.org/color-guard/cg-judges/", "confidence": "HIGH" },
+          { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "d-bryan-1",
+      "displayName": "Dan Bryan",
+      "givenName": "Dan",
+      "familyName": "Bryan",
+      "biography": "Dan Bryan is a percussion adjudicator, clinician, and educator who is Chair of Secondary Music for Modesto City Schools and Director of Instrumental Music at Joseph Gregori High School in Modesto, California. A former member of the DCI finalist Sacramento Freelancers (1989, 1992), where he performed in both the horn line and front ensemble, he is an eight-time Winter Guard International World Championship medal winner and four-time WGI finalist as an instructor/composer, and adjudicates for Drum Corps International and the Western Band Association.",
+      "photoUrl": "https://scpauploads.s3.amazonaws.com/judges/923_dan_bryan_bw.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://scpa.live/judge/profile/77", "label": "SCPA judge profile", "kind": "bio" },
+        { "url": "https://www.innovativepercussion.com/artists/dan_bryan", "label": "Innovative Percussion artist", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Sacramento Freelancers", "season": "1989,1992", "role": "Performer (hornline & front ensemble)", "sourceUrl": "https://scpa.live/judge/profile/77" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "Modesto City Schools Secondary Music Chair / Gregori HS Dir of Instrumental Music; Sacramento Freelancers alum; 8x WGI medalist; DCI percussion judge", "source": "https://scpa.live/judge/profile/77", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "j-mills-1",
+      "displayName": "Jeff Mills",
+      "givenName": "Jeff",
+      "familyName": "Mills",
+      "biography": "Jeff Mills is a brass/music adjudicator rostered with Drum Corps International in the music and effect captions. A native of San Jose, California, he earned a Bachelor of Arts in Education from the University of North Florida and a Master of Music from Valdosta State University, and his teaching experience spans middle school, high school, and college band, drum corps, applied trumpet, and conducting. He works as a freelance trumpeter in north and central Florida.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "label": "DCI 2025 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI rostered music/effect judge; San Jose native; UNF + Valdosta State degrees; Florida freelance trumpeter", "source": "https://www.dci.org/news/2025-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "Common name; no public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-mast-1",
+      "displayName": "Monte Mast",
+      "givenName": "Monte",
+      "familyName": "Mast",
+      "biography": "Monte Mast is a music adjudicator and arts administrator who recently retired as Executive Director of The Cavaliers AP&E (CAPE), the parent organization of the seven-time DCI champion Cavaliers. He judged for DCI for nearly 20 years across six championship panels and has judged contests in 40 states, including state championships in 12, plus a decade judging indoor guards for the Texas Color Guard Circuit. He spent three years on the Phantom Regiment brass instructional staff, including their first DCI title in 1996, and was named the Texas Music Administrators Conference 2018 Administrator of the Year. He resides in Lafayette, Oregon.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2023/09/monte-mast.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/monte-mast/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Phantom Regiment", "season": "1996", "role": "Brass instructional staff", "sourceUrl": "https://education.musicforall.org/clinician/monte-mast/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Analysis / GE2 / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "Retired Cavaliers CAPE Exec Director; DCI judge ~20 yrs / 6 championship panels; Phantom Regiment brass staff (1996 title); TX Music Administrators 2018 Administrator of the Year", "source": "https://education.musicforall.org/clinician/monte-mast/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "d-orser-1",
+      "displayName": "David Orser",
+      "givenName": "David",
+      "familyName": "Orser",
+      "biography": "David Orser is a brass/music and general-effect adjudicator for Drum Corps International, serving in the Music Brass, Music Analysis, and General Effect captions at DCI World Championships, and is a listed adjudicator with the New Jersey Marching Band Directors Association.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.njmarching.org/adjudicators.html", "label": "NJ Marching Band Directors Association", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Brass / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI music/brass/GE judge; NJ Marching Band Directors Association adjudicator", "source": "https://www.njmarching.org/adjudicators.html", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-tarr-1",
+      "displayName": "Mike Tarr",
+      "givenName": "Mike",
+      "familyName": "Tarr",
+      "biography": "Michael Brady Tarr is a visual adjudicator with over thirty years of experience consulting, designing, teaching, and leading visual programs for top drum corps including the Boston Crusaders, Cavaliers, Santa Clara Vanguard, Bluecoats, and Glassmen. He joined the Bluecoats as a visual instructor in 2001 and became their visual coordinator, directing the corps' overall visual package. In high demand as an adjudicator and clinician worldwide, he has served in the Visual Proficiency and General Effect captions at DCI World Championships.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2022/09/Michael-Tarr-Headshot-2022-Web.jpg",
+      "alternateNames": ["Michael Tarr", "Michael Brady Tarr"],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/michael-brady-tarr/", "label": "Music for All clinician bio", "kind": "bio" },
+        { "url": "https://www.dci.org/news/mcintosh-tarr-join-bluecoats-staff/", "label": "DCI: joins Bluecoats staff", "kind": "article" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Bluecoats", "role": "Visual Coordinator (since 2001)", "sourceUrl": "https://www.dci.org/news/mcintosh-tarr-join-bluecoats-staff/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / GE1 / Visual Analysis / Color Guard; 2013-2025",
+        "facts": [
+          { "fact": "30+ yrs visual designer (Boston Crusaders/Cavaliers/SCV/Bluecoats/Glassmen); Bluecoats visual coordinator; DCI visual/GE judge", "source": "https://education.musicforall.org/clinician/michael-brady-tarr/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "m-teal-1",
+      "displayName": "Mark Teal",
+      "givenName": "Mark",
+      "familyName": "Teal",
+      "biography": "Mark Teal is a percussion adjudicator, arranger, and clinician who has judged for Drum Corps International since 2015. He earned a Bachelor's in Music Education from the University of North Texas in 2002 and was named College Keyboard World Champion at the 2000 PAS Convention. He performed four years in the front ensemble of the Carolina Crown drum and bugle corps (1996, 1998-2000) and served on staff with Carolina Crown (2001, 2004), the Phantom Regiment (2005-2010), and the Santa Clara Vanguard (2011) as a front-ensemble technician, and writes for top bands nationwide.",
+      "photoUrl": "https://images.squarespace-cdn.com/content/v1/5c61939d2727be3ec81d2e61/ad911f1d-e29a-45d6-afae-0abc7270e0c5/Mark+Teal+Headshot+Sq.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dynastydrums.com/mark-teal", "label": "Dynasty artist bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Carolina Crown", "season": "1996,1998-2000", "role": "Performer (front ensemble); later staff", "sourceUrl": "https://www.dynastydrums.com/mark-teal" },
+        { "corpsName": "Phantom Regiment", "season": "2005-2010", "role": "Front ensemble technician", "sourceUrl": "https://www.dynastydrums.com/mark-teal" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI judge since 2015; UNT BME; 2000 PAS College Keyboard World Champion; Carolina Crown/Phantom Regiment/SCV front ensemble", "source": "https://www.dynastydrums.com/mark-teal", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "r-comfort-1",
+      "displayName": "Ron Comfort",
+      "givenName": "Ron",
+      "familyName": "Comfort",
+      "biography": "Ron Comfort is a visual and color guard adjudicator for Drum Corps International, serving in the Color Guard, Visual Proficiency, Visual Analysis, and General Effect captions at DCI World Championships (including Visual Performance in 2008).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2008-world-championship-adjudication-panels-announced/", "label": "DCI 2008 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Color Guard / Visual Proficiency / Visual Analysis / GE1; 2013-2025",
+        "facts": [
+          { "fact": "DCI visual/color guard judge (2008 confirmed)", "source": "https://www.dci.org/news/2008-world-championship-adjudication-panels-announced/", "confidence": "MEDIUM" },
+          { "fact": "No public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "s-chumley-1",
+      "displayName": "Shirl Chumley",
+      "givenName": "Shirl",
+      "familyName": "Chumley",
+      "biography": "Shirl Chumley is a visual and color guard adjudicator who has been involved in color guard, marching band, and drum and bugle corps pageantry for over 35 years as a performer, instructor, and judge. She judges the visual captions for winter guard, drum corps, and marching band competitions across the United States and in the Netherlands, and is a listed color guard judge with Winter Guard International. She returned to Colorado in 2016 and continues to adjudicate nationally.",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.wgi.org/color-guard-judges/", "label": "WGI Color Guard judges", "kind": "organization" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Proficiency / Color Guard / GE1 / Visual Analysis; 2013-2025",
+        "facts": [
+          { "fact": "35+ yrs pageantry; DCI/WGI visual judge across US & Netherlands; Colorado-based", "source": "https://www.wgi.org/color-guard-judges/", "confidence": "HIGH" },
+          { "fact": "No public headshot found - photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-mengel-1",
+      "displayName": "Tim Mengel",
+      "givenName": "Tim",
+      "familyName": "Mengel",
+      "biography": "Tim Mengel is a percussion/music adjudicator for Drum Corps International, serving in the Music Percussion and Music Analysis captions at DCI World Championships (including the 2024 All-Age World Championship).",
+      "photoUrl": null,
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://www.dci.org/news/2024-dci-world-championship-adjudication-panels/", "label": "DCI 2024 adjudication panels", "kind": "article" }
+      ],
+      "corpsRelations": [],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Music Percussion / Music Analysis / GE2; 2013-2025",
+        "facts": [
+          { "fact": "DCI Music Percussion judge (2024 confirmed)", "source": "https://www.dci.org/news/2024-dci-world-championship-adjudication-panels/", "confidence": "MEDIUM" },
+          { "fact": "No distinguishing public bio/headshot found - minimal profile, photoUrl null", "source": "n/a", "confidence": "LOW" }
+        ]
+      }
+    },
+    {
+      "judgeId": "t-pierce-1",
+      "displayName": "Tim Pierce",
+      "givenName": "Tim",
+      "familyName": "Pierce",
+      "biography": "Tim Pierce is a visual adjudicator, designer, and educator and an alumnus of the Cavaliers drum and bugle corps. He holds a Bachelor's in Music Education from the University of Southern Mississippi and a Master of Fine Arts from Mississippi College, and began his career as a band director. He has served on adjudication panels for Bands of America, Drum Corps International, and many state and local associations, and adjudicated WGI's Movement and Design Analysis captions while serving on the WGI Task Force as Movement Caption Facilitator. He has been Program Consultant for Music City Drum Corps, Visual Coordinator for the Blue Knights, and Program Coordinator for the WGI Independent World Class finalist Cypress Independent color guard.",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2022/09/Tim-Pierce-Adjudicator-Headshot-Web-2022.jpg",
+      "alternateNames": [],
+      "externalLinks": [
+        { "url": "https://education.musicforall.org/clinician/tim-pierce/", "label": "Music for All clinician bio", "kind": "bio" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "Blue Knights", "role": "Visual Coordinator", "sourceUrl": "https://education.musicforall.org/clinician/tim-pierce/" }
+      ],
+      "seasonHighlights": [],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "Visual Analysis / GE1 / Color Guard / Visual Proficiency; 2013-2025",
+        "facts": [
+          { "fact": "Cavaliers alum; USM BME + Mississippi College MFA; DCI/BOA/WGI visual judge; WGI Movement Caption Facilitator; Blue Knights visual coordinator", "source": "https://education.musicforall.org/clinician/tim-pierce/", "confidence": "HIGH" }
+        ]
+      }
+    },
+    {
+      "judgeId": "r-saucedo-1",
+      "displayName": "Richard Saucedo",
+      "givenName": "Richard",
+      "familyName": "Saucedo",
+      "biography": "Richard Saucedo is an internationally renowned composer, arranger, adjudicator, conductor, and clinician, and a member of the Drum Corps International Hall of Fame (2022). He spent 31 years as director of bands at Carmel High School in Indiana, where the Marching Greyhounds finished in the top ten of BOA Grand Nationals for 17 years and were BOA Champions in 2005 and 2012. He began judging drum corps in the mid-1990s, consulted on the Cavaliers' design and instructional teams beginning in 1999 and served as their arranger/composer through 2008, and also wrote for the Spirit of Atlanta and Blue Stars while continuing to judge on the DCI Tour and at World Championships. He was inducted into the Music for All Hall of Fame (2015) and named Indiana Bandmasters' Bandmaster of the Year (1998-99) and IMEA Outstanding Music Educator (2010).",
+      "photoUrl": "https://education.musicforall.org/wp-content/uploads/sites/4/2020/02/Richard-Saucedo-Headshot-2022-web.jpg",
+      "alternateNames": ["Richard L. Saucedo"],
+      "externalLinks": [
+        { "url": "https://www.dci.org/hall-of-fame/richard-saucedo-dci-hall-of-fame/", "label": "DCI Hall of Fame profile", "kind": "bio" },
+        { "url": "https://saucedomusic.com/about-richard/", "label": "Personal site", "kind": "organization" }
+      ],
+      "corpsRelations": [
+        { "corpsName": "The Cavaliers", "season": "2000-2008", "role": "Arranger / Composer", "sourceUrl": "https://www.dci.org/hall-of-fame/richard-saucedo-dci-hall-of-fame/" }
+      ],
+      "seasonHighlights": [
+        { "title": "DCI Hall of Fame inductee", "season": "2022", "sourceUrl": "https://www.dci.org/hall-of-fame/richard-saucedo-dci-hall-of-fame/" },
+        { "title": "Music for All Hall of Fame inductee", "season": "2015", "sourceUrl": "https://education.musicforall.org/clinician/richard-saucedo/" }
+      ],
+      "media": [],
+      "_research": {
+        "captionFingerprint": "General Effect 2 / Music Analysis / Music Brass; 2013-2025",
+        "facts": [
+          { "fact": "DCI HOF 2022; Carmel HS Dir of Bands 31 yrs (BOA champs 2005/2012); Cavaliers arranger 2000-2008; renowned composer/arranger; MFA HOF 2015", "source": "https://www.dci.org/hall-of-fame/richard-saucedo-dci-hall-of-fame/", "confidence": "HIGH" }
+        ]
+      }
+    }
+  ]
+}

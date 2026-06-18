@@ -1,0 +1,575 @@
+{
+  "generated_at": "2026-06-05T08:42:26.937Z",
+  "trainer": "trainModelV9Breakdown.ts",
+  "primary_metric": "content_share_mae",
+  "secondary_metric": "subcaption_mae_pts",
+  "db_path": "dci-relational.db",
+  "source_v9_model_id": "v9-real-v9_prod_fingerprint_preseason_final2_1779976626982-41dbeb985a04",
+  "source_v9": {
+    "source_v9_model_id": "v9-real-v9_prod_fingerprint_preseason_final2_1779976626982-41dbeb985a04",
+    "source_v9_model_path": "C:\\Users\\Patrick\\corps-place\\sdk\\models\\v9_subcaption_fixed\\v9_prod_fingerprint_preseason_final2_1779976626982",
+    "source_v9_model_card_sha256": "41dbeb985a0428163ee7260da2c30847f7afda7004427b8bdbe2ed91ecaf0742",
+    "anchor_modes": [
+      "baseline",
+      "partial_synthetic_dropout",
+      "v9_predicted"
+    ],
+    "row_count": 21963
+  },
+  "config": {
+    "dbPath": "dci-relational.db",
+    "sourceModelId": "v9-real-v9_prod_fingerprint_preseason_final2_1779976626982-41dbeb985a04",
+    "trialId": "v9_breakdown_real_anchor_datefwd_diag_full",
+    "epochs": 80,
+    "batchSize": 128,
+    "learningRate": 0.001,
+    "seed": 42,
+    "valMode": "date-forward",
+    "valSplit": 0.1,
+    "dropout": 0.25,
+    "outputReport": "eval_report.json",
+    "evalAnchorModes": [
+      "v9_predicted",
+      "baseline",
+      "partial_synthetic_dropout"
+    ]
+  },
+  "rows": {
+    "all": 21963,
+    "train": 19926,
+    "validation": 1881,
+    "test": 156
+  },
+  "best": {
+    "epoch": 7,
+    "validation_content_share_mae": 0.003905777875149408,
+    "validation_subcaption_mae_pts": 0.6038169987479394,
+    "validation": {
+      "pairs": 15033,
+      "content_mae_pts": 0.6102727730339383,
+      "achievement_mae_pts": 0.5973612244619404,
+      "subcaption_mae_pts": 0.6038169987479394,
+      "content_share_mae": 0.003905777875149408,
+      "anchor_caption_mae_pts": 1.1974433298034202,
+      "anchor_sum_error_pts": 2.3136102121556533e-7
+    },
+    "test": {
+      "pairs": 1248,
+      "content_mae_pts": 0.31718925482187516,
+      "achievement_mae_pts": 0.3158967225597455,
+      "subcaption_mae_pts": 0.3165429886908103,
+      "content_share_mae": 0.0031760047213771404,
+      "anchor_caption_mae_pts": 0.6186560835593786,
+      "anchor_sum_error_pts": 2.8197581951434796e-7
+    }
+  },
+  "final_validation": {
+    "pairs": 15033,
+    "content_mae_pts": 0.6087793081429859,
+    "achievement_mae_pts": 0.5997189114227478,
+    "subcaption_mae_pts": 0.6042491097828668,
+    "content_share_mae": 0.004089873598569217,
+    "anchor_caption_mae_pts": 1.1974433298034202,
+    "anchor_sum_error_pts": 2.2967989506744017e-7
+  },
+  "final_test": {
+    "pairs": 1248,
+    "content_mae_pts": 0.3180687179168065,
+    "achievement_mae_pts": 0.315642118262939,
+    "subcaption_mae_pts": 0.3168554180898728,
+    "content_share_mae": 0.00339414231861249,
+    "anchor_caption_mae_pts": 0.6186560835593786,
+    "anchor_sum_error_pts": 2.575226319141877e-7
+  },
+  "production_like_eval": {
+    "anchor_modes": [
+      "v9_predicted",
+      "baseline",
+      "partial_synthetic_dropout"
+    ],
+    "validation_rows": 1881,
+    "test_rows": 156,
+    "validation": {
+      "pairs": 15033,
+      "content_mae_pts": 0.6102727730339383,
+      "achievement_mae_pts": 0.5973612244619404,
+      "subcaption_mae_pts": 0.6038169987479394,
+      "content_share_mae": 0.003905777875149408,
+      "anchor_caption_mae_pts": 1.1974433298034202,
+      "anchor_sum_error_pts": 2.3136102121556533e-7
+    },
+    "test": {
+      "pairs": 1248,
+      "content_mae_pts": 0.31718925482187516,
+      "achievement_mae_pts": 0.3158967225597455,
+      "subcaption_mae_pts": 0.3165429886908103,
+      "content_share_mae": 0.0031760047213771404,
+      "anchor_caption_mae_pts": 0.6186560835593786,
+      "anchor_sum_error_pts": 2.8197581951434796e-7
+    },
+    "validation_by_anchor_mode": {
+      "baseline": {
+        "pairs": 5011,
+        "content_mae_pts": 0.8589589740910756,
+        "achievement_mae_pts": 0.8398177946810474,
+        "subcaption_mae_pts": 0.8493883843860615,
+        "content_share_mae": 0.003906308611432275,
+        "anchor_caption_mae_pts": 1.6933195392568297,
+        "anchor_sum_error_pts": 2.1610400843729732e-7
+      },
+      "partial_synthetic_dropout": {
+        "pairs": 5011,
+        "content_mae_pts": 0.4112155368004081,
+        "achievement_mae_pts": 0.4058256671709873,
+        "subcaption_mae_pts": 0.4085206019856977,
+        "content_share_mae": 0.0039049711169846352,
+        "anchor_caption_mae_pts": 0.7986156268168343,
+        "anchor_sum_error_pts": 2.546430323990346e-7
+      },
+      "v9_predicted": {
+        "pairs": 5011,
+        "content_mae_pts": 0.5606438082103314,
+        "achievement_mae_pts": 0.5464402115337864,
+        "subcaption_mae_pts": 0.5535420098720589,
+        "content_share_mae": 0.0039060538970313134,
+        "anchor_caption_mae_pts": 1.1003948233365966,
+        "anchor_sum_error_pts": 2.2333602281036408e-7
+      }
+    },
+    "test_by_anchor_mode": {
+      "baseline": {
+        "pairs": 416,
+        "content_mae_pts": 0.2797462269663811,
+        "achievement_mae_pts": 0.2824411472448936,
+        "subcaption_mae_pts": 0.2810936871056373,
+        "content_share_mae": 0.0031882121872443417,
+        "anchor_caption_mae_pts": 0.5444206480796521,
+        "anchor_sum_error_pts": 3.6679781400240387e-7
+      },
+      "partial_synthetic_dropout": {
+        "pairs": 416,
+        "content_mae_pts": 0.20719467619290718,
+        "achievement_mae_pts": 0.2060874797976934,
+        "subcaption_mae_pts": 0.2066410779953003,
+        "content_share_mae": 0.0031679949651543912,
+        "anchor_caption_mae_pts": 0.3943054653131045,
+        "anchor_sum_error_pts": 2.636359288142278e-7
+      },
+      "v9_predicted": {
+        "pairs": 416,
+        "content_mae_pts": 0.46462686130633724,
+        "achievement_mae_pts": 0.4591615406366495,
+        "subcaption_mae_pts": 0.46189420097149336,
+        "content_share_mae": 0.003171807011732688,
+        "anchor_caption_mae_pts": 0.9172421372853793,
+        "anchor_sum_error_pts": 2.1549371572641226e-7
+      }
+    }
+  },
+  "v9_predicted_eval": {
+    "validation_rows": 627,
+    "test_rows": 52,
+    "validation": {
+      "pairs": 5011,
+      "content_mae_pts": 0.5606438082103314,
+      "achievement_mae_pts": 0.5464402115337864,
+      "subcaption_mae_pts": 0.5535420098720589,
+      "content_share_mae": 0.0039060538970313134,
+      "anchor_caption_mae_pts": 1.1003948233365966,
+      "anchor_sum_error_pts": 2.2333602281036408e-7
+    },
+    "test": {
+      "pairs": 416,
+      "content_mae_pts": 0.46462686130633724,
+      "achievement_mae_pts": 0.4591615406366495,
+      "subcaption_mae_pts": 0.46189420097149336,
+      "content_share_mae": 0.003171807011732688,
+      "anchor_caption_mae_pts": 0.9172421372853793,
+      "anchor_sum_error_pts": 2.1549371572641226e-7
+    },
+    "validation_baselines": {
+      "fixed_50_50": {
+        "pairs": 5011,
+        "content_mae_pts": 0.5552328676910795,
+        "achievement_mae_pts": 0.5606518060267411,
+        "subcaption_mae_pts": 0.5579423368589104,
+        "content_share_mae": 0.007008437390711785,
+        "anchor_caption_mae_pts": 1.1003948114148867,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 5011,
+        "content_mae_pts": 0.5826117236295726,
+        "achievement_mae_pts": 0.5287389806907434,
+        "subcaption_mae_pts": 0.555675352160158,
+        "content_share_mae": 0.005087818080865548,
+        "anchor_caption_mae_pts": 1.1003948114148867,
+        "anchor_sum_error_pts": 1.5597625410818403e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 5011,
+        "content_mae_pts": 0.5707397409213569,
+        "achievement_mae_pts": 0.5381072087928714,
+        "subcaption_mae_pts": 0.5544234748571142,
+        "content_share_mae": 0.004384371232784056,
+        "anchor_caption_mae_pts": 1.1003948114148867,
+        "anchor_sum_error_pts": 1.4534150950989876e-17
+      },
+      "oracle_target_share": {
+        "pairs": 5011,
+        "content_mae_pts": 0.5575912162456814,
+        "achievement_mae_pts": 0.5428035951692066,
+        "subcaption_mae_pts": 0.550197405707444,
+        "content_share_mae": 0,
+        "anchor_caption_mae_pts": 1.1003948114148867,
+        "anchor_sum_error_pts": 5.707312934413097e-17
+      }
+    },
+    "test_baselines": {
+      "fixed_50_50": {
+        "pairs": 416,
+        "content_mae_pts": 0.46630084134615346,
+        "achievement_mae_pts": 0.4593131009615382,
+        "subcaption_mae_pts": 0.46280697115384584,
+        "content_share_mae": 0.00445677970588896,
+        "anchor_caption_mae_pts": 0.9172420673076928,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 416,
+        "content_mae_pts": 0.5097392673165267,
+        "achievement_mae_pts": 0.42846799400216207,
+        "subcaption_mae_pts": 0.46910363065934446,
+        "content_share_mae": 0.006178166155525662,
+        "anchor_caption_mae_pts": 0.9172420673076928,
+        "anchor_sum_error_pts": 3.843079700625542e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 416,
+        "content_mae_pts": 0.48661553090949183,
+        "achievement_mae_pts": 0.44221229207422935,
+        "subcaption_mae_pts": 0.46441391149186056,
+        "content_share_mae": 0.0044144627399267606,
+        "anchor_caption_mae_pts": 0.9172420673076928,
+        "anchor_sum_error_pts": 8.540177112501205e-18
+      },
+      "oracle_target_share": {
+        "pairs": 416,
+        "content_mae_pts": 0.4622202151529212,
+        "achievement_mae_pts": 0.4550218521547705,
+        "subcaption_mae_pts": 0.4586210336538458,
+        "content_share_mae": 0,
+        "anchor_caption_mae_pts": 0.9172420673076928,
+        "anchor_sum_error_pts": 5.551115123125783e-17
+      }
+    }
+  },
+  "validation_baselines": {
+    "fixed_50_50": {
+      "pairs": 15033,
+      "content_mae_pts": 0.6431268409499145,
+      "achievement_mae_pts": 0.5781393201623096,
+      "subcaption_mae_pts": 0.610633080556112,
+      "content_share_mae": 0.007008437390711771,
+      "anchor_caption_mae_pts": 1.1974433047295931,
+      "anchor_sum_error_pts": 0
+    },
+    "historical_ratio": {
+      "pairs": 15033,
+      "content_mae_pts": 0.613421121707627,
+      "achievement_mae_pts": 0.6037106919130605,
+      "subcaption_mae_pts": 0.6085659068103436,
+      "content_share_mae": 0.005087818080865546,
+      "anchor_caption_mae_pts": 1.1974433047295931,
+      "anchor_sum_error_pts": 2.82411550998909e-17
+    },
+    "blended_prior_ratio": {
+      "pairs": 15033,
+      "content_mae_pts": 0.6094214367625098,
+      "achievement_mae_pts": 0.6019038167252867,
+      "subcaption_mae_pts": 0.6056626267438983,
+      "content_share_mae": 0.00438437123278406,
+      "anchor_caption_mae_pts": 1.1974433047295931,
+      "anchor_sum_error_pts": 2.5641550864754496e-17
+    },
+    "oracle_target_share": {
+      "pairs": 15033,
+      "content_mae_pts": 0.6070599693723298,
+      "achievement_mae_pts": 0.5903833353572664,
+      "subcaption_mae_pts": 0.598721652364798,
+      "content_share_mae": 0,
+      "anchor_caption_mae_pts": 1.1974433047295931,
+      "anchor_sum_error_pts": 7.751547173861267e-17
+    }
+  },
+  "test_baselines": {
+    "fixed_50_50": {
+      "pairs": 1248,
+      "content_mae_pts": 0.3287609775641023,
+      "achievement_mae_pts": 0.31319671474358984,
+      "subcaption_mae_pts": 0.32097884615384603,
+      "content_share_mae": 0.004456779705888954,
+      "anchor_caption_mae_pts": 0.6186560897435895,
+      "anchor_sum_error_pts": 0
+    },
+    "historical_ratio": {
+      "pairs": 1248,
+      "content_mae_pts": 0.33847864867896643,
+      "achievement_mae_pts": 0.3260944940944444,
+      "subcaption_mae_pts": 0.3322865713867054,
+      "content_share_mae": 0.006178166155525664,
+      "anchor_caption_mae_pts": 0.6186560897435895,
+      "anchor_sum_error_pts": 3.131398274583775e-17
+    },
+    "blended_prior_ratio": {
+      "pairs": 1248,
+      "content_mae_pts": 0.3241249244200547,
+      "achievement_mae_pts": 0.31855152560288547,
+      "subcaption_mae_pts": 0.3213382250114701,
+      "content_share_mae": 0.0044144627399267606,
+      "anchor_caption_mae_pts": 0.6186560897435895,
+      "anchor_sum_error_pts": 7.11681426041767e-18
+    },
+    "oracle_target_share": {
+      "pairs": 1248,
+      "content_mae_pts": 0.312171057104736,
+      "achievement_mae_pts": 0.30648503263885474,
+      "subcaption_mae_pts": 0.3093280448717954,
+      "content_share_mae": 0,
+      "anchor_caption_mae_pts": 0.6186560897435895,
+      "anchor_sum_error_pts": 9.821203679376384e-17
+    }
+  },
+  "validation_baselines_by_anchor_mode": {
+    "baseline": {
+      "fixed_50_50": {
+        "pairs": 5011,
+        "content_mae_pts": 0.9269815406106563,
+        "achievement_mae_pts": 0.7766079624825389,
+        "subcaption_mae_pts": 0.8517947515465977,
+        "content_share_mae": 0.007008437390711785,
+        "anchor_caption_mae_pts": 1.6933194971063616,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 5011,
+        "content_mae_pts": 0.8459150582260485,
+        "achievement_mae_pts": 0.8630213569932959,
+        "subcaption_mae_pts": 0.8544682076096721,
+        "content_share_mae": 0.005087818080865548,
+        "anchor_caption_mae_pts": 1.6933194971063616,
+        "anchor_sum_error_pts": 3.7221606093998465e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 5011,
+        "content_mae_pts": 0.8479097266355127,
+        "achievement_mae_pts": 0.8548272968169623,
+        "subcaption_mae_pts": 0.8513685117262374,
+        "content_share_mae": 0.004384371232784056,
+        "anchor_caption_mae_pts": 1.6933194971063616,
+        "anchor_sum_error_pts": 3.367669122790337e-17
+      },
+      "oracle_target_share": {
+        "pairs": 5011,
+        "content_mae_pts": 0.858773139307714,
+        "achievement_mae_pts": 0.8345463577986522,
+        "subcaption_mae_pts": 0.8466597485531832,
+        "content_share_mae": 0,
+        "anchor_caption_mae_pts": 1.6933194971063616,
+        "anchor_sum_error_pts": 9.039532908542484e-17
+      }
+    },
+    "partial_synthetic_dropout": {
+      "fixed_50_50": {
+        "pairs": 5011,
+        "content_mae_pts": 0.4471661145479951,
+        "achievement_mae_pts": 0.39715819197764995,
+        "subcaption_mae_pts": 0.4221621532628225,
+        "content_share_mae": 0.007008437390711785,
+        "anchor_caption_mae_pts": 0.7986156056675309,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 5011,
+        "content_mae_pts": 0.4117365832672605,
+        "achievement_mae_pts": 0.41937173805513533,
+        "subcaption_mae_pts": 0.4155541606611979,
+        "content_share_mae": 0.005087818080865548,
+        "anchor_caption_mae_pts": 0.7986156056675309,
+        "anchor_sum_error_pts": 3.1904233794855827e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 5011,
+        "content_mae_pts": 0.4096148427306509,
+        "achievement_mae_pts": 0.4127769445660281,
+        "subcaption_mae_pts": 0.4111958936483395,
+        "content_share_mae": 0.004384371232784056,
+        "anchor_caption_mae_pts": 0.7986156056675309,
+        "anchor_sum_error_pts": 2.871381041537024e-17
+      },
+      "oracle_target_share": {
+        "pairs": 5011,
+        "content_mae_pts": 0.4048155525636007,
+        "achievement_mae_pts": 0.39380005310393096,
+        "subcaption_mae_pts": 0.39930780283376577,
+        "content_share_mae": 0,
+        "anchor_caption_mae_pts": 0.7986156056675309,
+        "anchor_sum_error_pts": 8.50779567862822e-17
+      }
+    },
+    "v9_predicted": {
+      "fixed_50_50": {
+        "pairs": 5011,
+        "content_mae_pts": 0.5552328676910795,
+        "achievement_mae_pts": 0.5606518060267411,
+        "subcaption_mae_pts": 0.5579423368589104,
+        "content_share_mae": 0.007008437390711785,
+        "anchor_caption_mae_pts": 1.1003948114148867,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 5011,
+        "content_mae_pts": 0.5826117236295726,
+        "achievement_mae_pts": 0.5287389806907434,
+        "subcaption_mae_pts": 0.555675352160158,
+        "content_share_mae": 0.005087818080865548,
+        "anchor_caption_mae_pts": 1.1003948114148867,
+        "anchor_sum_error_pts": 1.5597625410818403e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 5011,
+        "content_mae_pts": 0.5707397409213569,
+        "achievement_mae_pts": 0.5381072087928714,
+        "subcaption_mae_pts": 0.5544234748571142,
+        "content_share_mae": 0.004384371232784056,
+        "anchor_caption_mae_pts": 1.1003948114148867,
+        "anchor_sum_error_pts": 1.4534150950989876e-17
+      },
+      "oracle_target_share": {
+        "pairs": 5011,
+        "content_mae_pts": 0.5575912162456814,
+        "achievement_mae_pts": 0.5428035951692066,
+        "subcaption_mae_pts": 0.550197405707444,
+        "content_share_mae": 0,
+        "anchor_caption_mae_pts": 1.1003948114148867,
+        "anchor_sum_error_pts": 5.707312934413097e-17
+      }
+    }
+  },
+  "test_baselines_by_anchor_mode": {
+    "baseline": {
+      "fixed_50_50": {
+        "pairs": 416,
+        "content_mae_pts": 0.3002836538461538,
+        "achievement_mae_pts": 0.2730168269230768,
+        "subcaption_mae_pts": 0.2866502403846153,
+        "content_share_mae": 0.00445677970588896,
+        "anchor_caption_mae_pts": 0.5444206730769238,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 416,
+        "content_mae_pts": 0.28498596238648016,
+        "achievement_mae_pts": 0.3157446856292218,
+        "subcaption_mae_pts": 0.300365324007851,
+        "content_share_mae": 0.006178166155525662,
+        "anchor_caption_mae_pts": 0.5444206730769238,
+        "anchor_sum_error_pts": 3.416070845000482e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 416,
+        "content_mae_pts": 0.2764614902071019,
+        "achievement_mae_pts": 0.29663417842649925,
+        "subcaption_mae_pts": 0.2865478343168006,
+        "content_share_mae": 0.0044144627399267606,
+        "anchor_caption_mae_pts": 0.5444206730769238,
+        "anchor_sum_error_pts": 4.270088556250602e-18
+      },
+      "oracle_target_share": {
+        "pairs": 416,
+        "content_mae_pts": 0.2751938598084113,
+        "achievement_mae_pts": 0.26922681326851206,
+        "subcaption_mae_pts": 0.2722103365384617,
+        "content_share_mae": 0,
+        "anchor_caption_mae_pts": 0.5444206730769238,
+        "anchor_sum_error_pts": 9.394194823751324e-17
+      }
+    },
+    "partial_synthetic_dropout": {
+      "fixed_50_50": {
+        "pairs": 416,
+        "content_mae_pts": 0.21969843749999976,
+        "achievement_mae_pts": 0.20726021634615382,
+        "subcaption_mae_pts": 0.21347932692307678,
+        "content_share_mae": 0.00445677970588896,
+        "anchor_caption_mae_pts": 0.39430552884615405,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 416,
+        "content_mae_pts": 0.2207107163338921,
+        "achievement_mae_pts": 0.23407080265195057,
+        "subcaption_mae_pts": 0.22739075949292134,
+        "content_share_mae": 0.006178166155525662,
+        "anchor_caption_mae_pts": 0.39430552884615405,
+        "anchor_sum_error_pts": 2.1350442781253012e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 416,
+        "content_mae_pts": 0.20929775214357155,
+        "achievement_mae_pts": 0.21680810630792632,
+        "subcaption_mae_pts": 0.21305292922574892,
+        "content_share_mae": 0.0044144627399267606,
+        "anchor_caption_mae_pts": 0.39430552884615405,
+        "anchor_sum_error_pts": 8.540177112501205e-18
+      },
+      "oracle_target_share": {
+        "pairs": 416,
+        "content_mae_pts": 0.19909909635287393,
+        "achievement_mae_pts": 0.19520643249327965,
+        "subcaption_mae_pts": 0.1971527644230768,
+        "content_share_mae": 0,
+        "anchor_caption_mae_pts": 0.39430552884615405,
+        "anchor_sum_error_pts": 1.4518301091252047e-16
+      }
+    },
+    "v9_predicted": {
+      "fixed_50_50": {
+        "pairs": 416,
+        "content_mae_pts": 0.46630084134615346,
+        "achievement_mae_pts": 0.4593131009615382,
+        "subcaption_mae_pts": 0.46280697115384584,
+        "content_share_mae": 0.00445677970588896,
+        "anchor_caption_mae_pts": 0.9172420673076928,
+        "anchor_sum_error_pts": 0
+      },
+      "historical_ratio": {
+        "pairs": 416,
+        "content_mae_pts": 0.5097392673165267,
+        "achievement_mae_pts": 0.42846799400216207,
+        "subcaption_mae_pts": 0.46910363065934446,
+        "content_share_mae": 0.006178166155525662,
+        "anchor_caption_mae_pts": 0.9172420673076928,
+        "anchor_sum_error_pts": 3.843079700625542e-17
+      },
+      "blended_prior_ratio": {
+        "pairs": 416,
+        "content_mae_pts": 0.48661553090949183,
+        "achievement_mae_pts": 0.44221229207422935,
+        "subcaption_mae_pts": 0.46441391149186056,
+        "content_share_mae": 0.0044144627399267606,
+        "anchor_caption_mae_pts": 0.9172420673076928,
+        "anchor_sum_error_pts": 8.540177112501205e-18
+      },
+      "oracle_target_share": {
+        "pairs": 416,
+        "content_mae_pts": 0.4622202151529212,
+        "achievement_mae_pts": 0.4550218521547705,
+        "subcaption_mae_pts": 0.4586210336538458,
+        "content_share_mae": 0,
+        "anchor_caption_mae_pts": 0.9172420673076928,
+        "anchor_sum_error_pts": 5.551115123125783e-17
+      }
+    }
+  }
+}

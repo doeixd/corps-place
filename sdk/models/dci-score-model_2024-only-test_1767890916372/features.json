@@ -1,0 +1,90 @@
+{
+  "version": "auto-fallback-v1",
+  "numericOrder": [
+    {
+      "name": "f_0",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_1",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_2",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_3",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_4",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_5",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_6",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_7",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_8",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_9",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_10",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_11",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_12",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_13",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_14",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_15",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_16",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_17",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_18",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_19",
+      "defaultValue": 0
+    },
+    {
+      "name": "f_20",
+      "defaultValue": 0
+    }
+  ],
+  "notes": "Auto-generated because --featureSpec was not provided. Replace with a real spec that matches your feature builder."
+}
