@@ -5,13 +5,23 @@
 # `|| true`, so a pull failure (no creds, R2 down, checksum mismatch) NEVER blocks
 # startup. The app then serves whatever read-model is already in /data (the A/B
 # slot fallback). This replaces the old Turso embedded-replica sync-on-boot.
+#
+# Hot-deploy skip: when /data/.skip-r2-pull exists, the R2 pulls are skipped
+# entirely — the server boots from the on-disk DBs. Used for box-side deploys
+# where the data is already current.
 set -e
 
-echo "[entrypoint] refreshing read-model from R2 (best-effort)…"
-# Bound the pull so a slow/hung R2 can never delay boot past the health check.
-timeout 120 node /app/scripts/pullReadModel.mjs || echo "[entrypoint] read-model pull skipped/timed out — serving on-disk data"
+SKIP_MARKER=/data/.skip-r2-pull
 
-echo "[entrypoint] refreshing media-cache from R2 (best-effort)…"
-timeout 120 node /app/scripts/pullMediaCache.mjs || echo "[entrypoint] media-cache pull skipped/timed out — serving on-disk data"
+if [ -f "$SKIP_MARKER" ]; then
+  echo "[entrypoint] skip marker present — booting from on-disk data (no R2 pull)"
+else
+  echo "[entrypoint] refreshing read-model from R2 (best-effort)…"
+  # Bound the pull so a slow/hung R2 can never delay boot past the health check.
+  timeout 120 node /app/scripts/pullReadModel.mjs || echo "[entrypoint] read-model pull skipped/timed out — serving on-disk data"
+
+  echo "[entrypoint] refreshing media-cache from R2 (best-effort)…"
+  timeout 120 node /app/scripts/pullMediaCache.mjs || echo "[entrypoint] media-cache pull skipped/timed out — serving on-disk data"
+fi
 
 exec node .output/server/index.mjs
