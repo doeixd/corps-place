@@ -13,7 +13,9 @@
     "browser-tools": "tsx scripts/browser-tools.ts",
     "gen:icons": "node scripts/preload-icons.mjs",
     "predev": "npm run gen:icons",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "prebuild": "node scripts/check-disk-space.mjs",
+    "postbuild": "node scripts/check-build-output.mjs"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.6.19",

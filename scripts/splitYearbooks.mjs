@@ -10,7 +10,7 @@ import { finished } from 'node:stream/promises';
 
 const CHUNK_BYTES = 90 * 1024 * 1024;
 const MAX_BYTES = 100 * 1024 * 1024;
-const YEARBOOK_DIR = join(dirname(fileURLToPath(import.meta.url)), '../public/yearbook');
+const YEARBOOK_DIR = join(dirname(fileURLToPath(import.meta.url)), '../data/yearbook');
 
 async function splitFile(filePath) {
   const { size } = statSync(filePath);

@@ -566,6 +566,14 @@
     background-color: var(--primary);
     color: var(--primary-foreground);
   }
+  /* Kill all color-interpolation transitions when the user prefers reduced
+     motion — the accent snap is instant, which is the right default for
+     vestibular accessibility (plan §Hue Animation). */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      transition: none !important;
+    }
+  }
   /* Tailwind v4 Preflight sets interactive elements to `cursor: default`.
      Restore the pointer cursor for enabled buttons / button-role controls
      (covers shadcn/reui Button, Toggle, Select/Dropdown triggers, etc.). */

@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync } from
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const YEARBOOK_DIR = join(dirname(fileURLToPath(import.meta.url)), '../public/yearbook');
+const YEARBOOK_DIR = join(dirname(fileURLToPath(import.meta.url)), '../data/yearbook');
 
 function partGroups() {
   const groups = new Map();

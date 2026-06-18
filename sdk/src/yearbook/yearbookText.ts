@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 /**
  * DCI Yearbook text extraction (Show Detail Wiki, M10 — high-authority source).
  *
- * DCI's official season yearbooks (PDFs committed under public/yearbook/) are the
+ * DCI's official season yearbooks (PDFs committed under data/yearbook/) are the
  * most authoritative source for a season's show data — full staff rosters,
  * design/arranging credits, repertoire, concept copy. The 2013–2017 books carry
  * EMBEDDED TEXT (verified: ~105–135 of ~148 pages), so we extract directly with
@@ -20,11 +20,11 @@ import { fileURLToPath } from 'node:url';
  * source_authority=100.
  */
 
-// Resolve relative to this module (sdk/src/yearbook/ → repo root → public/yearbook),
+// Resolve relative to this module (sdk/src/yearbook/ → repo root → data/yearbook),
 // not process.cwd(), so it works whether invoked from the repo root or sdk/.
 const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
 export const YEARBOOK_DIR =
-  process.env.YEARBOOK_DIR ?? path.resolve(MODULE_DIR, '..', '..', '..', 'public', 'yearbook');
+  process.env.YEARBOOK_DIR ?? path.resolve(MODULE_DIR, '..', '..', '..', 'data', 'yearbook');
 
 export interface YearbookFile {
   season: string;

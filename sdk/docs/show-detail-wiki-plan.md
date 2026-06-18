@@ -641,7 +641,7 @@ electronics designers — exactly the seedable data the wiki wants.
   defeating an anti-bot challenge is evasion and brittle/ToS-hostile.
 - **Two acquisition paths, prefer the first:**
   1. **Human-supplied PDFs (preferred — CONFIRMED working).** PDFs committed under
-     `public/yearbook/` (split into `.partNNN` over GitHub's 100 MB cap; reassembled
+     `data/yearbook/` (split into `.partNNN` over GitHub's 100 MB cap; reassembled
      by `scripts/reassembleYearbooks.mjs` in dev + Docker build). **Verified: the
      2013–2017 books carry embedded text (~105–135 of ~148 pages), extracted
      directly via `unpdf` — no OCR, no vision, no captcha.** See

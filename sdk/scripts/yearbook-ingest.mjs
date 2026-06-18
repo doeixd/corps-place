@@ -16,7 +16,7 @@ const seasonArg = args.indexOf('--season');
 const season = seasonArg >= 0 ? args[seasonArg + 1] : String(new Date().getFullYear());
 
 const DB_URL = process.env.DCI_RELATIONAL_DB_URL ?? `file:${resolve(process.cwd(), 'dci-relational.db')}`;
-const YB_DIR = resolve(process.cwd(), '..', 'public', 'yearbook');
+const YB_DIR = process.env.YEARBOOK_DIR ?? resolve(process.cwd(), '..', 'data', 'yearbook');
 
 function yearbookPdf(year) {
   if (!existsSync(YB_DIR)) return null;

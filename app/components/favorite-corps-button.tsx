@@ -5,7 +5,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils';
 import type { FavoriteCorpsInput } from '@/stores/favorite-corps-store';
 import { favoriteCorpsStore, useIsFavorite } from '@/stores/favorite-corps-store';
-import { motion } from 'motion/react';
 
 export function FavoriteCorpsButton({
   corps,
@@ -42,7 +41,7 @@ export function FavoriteCorpsButton({
               }
             }}
             className={cn(
-              'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border transition-colors',
+              'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border',
               showLabel ? 'px-3 py-2 text-sm font-medium' : sizeTw,
               isFav
                 ? 'border-primary/60 bg-primary/10 text-primary'
@@ -53,20 +52,17 @@ export function FavoriteCorpsButton({
         }
       >
         <span className="relative inline-flex">
-          <motion.span
-            animate={{ opacity: isFav ? 1 : 0, scale: isFav ? 1 : 0.3 }}
-            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
-            className="absolute inset-0 inline-flex items-center justify-center"
+          <span
+            className={cn(
+              'absolute inset-0 inline-flex items-center justify-center',
+              isFav ? 'opacity-100' : 'opacity-0'
+            )}
           >
             <Icon icon={FavouriteIcon} size={iconSize} />
-          </motion.span>
-          <motion.span
-            animate={{ opacity: isFav ? 0 : 1, scale: isFav ? 0.3 : 1 }}
-            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
-            className="inline-flex"
-          >
+          </span>
+          <span className={cn('inline-flex', isFav ? 'opacity-0' : 'opacity-100')}>
             <Icon icon={HeartAddIcon} size={iconSize} />
-          </motion.span>
+          </span>
         </span>
         {showLabel ? <span>{isFav ? 'Favorited' : 'Favorite'}</span> : null}
       </TooltipTrigger>

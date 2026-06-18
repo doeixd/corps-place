@@ -9,6 +9,8 @@ node_modules
 .fate
 .vscode
 .claude
+.env
+.env.*
 
 # Local databases (mounted at runtime, never baked in)
 **/*.db
@@ -19,7 +21,7 @@ sdk/read-model*
 public/read-model
 
 # Yearbook PDFs (2.7 GB) — only used by SDK ingest scripts, not the app
-public/yearbook
+data/yearbook
 
 # Heavy SDK artifacts not needed to build the app
 sdk/models

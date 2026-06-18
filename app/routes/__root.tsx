@@ -21,10 +21,10 @@ import '@/app.css';
 // flash of the wrong theme on first load. Kept inline + tiny so it ships in the
 // initial HTML. The theme store re-syncs from this DOM state on the client.
 //
-// Also reads the favorite corps from localStorage and applies its accent as
-// --primary / --primary-foreground before paint, so the site accent color matches
-// the user's favorite corps from the very first frame (no flash of default orange).
-const noFlashThemeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.style.colorScheme=t;var f=localStorage.getItem('${FAVORITE_STORAGE_KEY}');if(f){var fav=JSON.parse(f);if(t==='dark'){r.style.setProperty('--primary',fav.darkPrimary);r.style.setProperty('--primary-foreground',fav.darkPrimaryForeground);}else{r.style.setProperty('--primary',fav.lightPrimary);r.style.setProperty('--primary-foreground',fav.lightPrimaryForeground);}if(fav.logoDark){r.style.setProperty('--logo-dark',fav.logoDark);}else{r.style.setProperty('--logo-dark','');}}}catch(e){}})();`;
+// Also reads the favorite corps from localStorage and applies the complete
+// palette (--primary, --primary-foreground, --logo-dark) + favicon before paint.
+// Validates version + required fields; ignores corrupt favorites (plan §No-Flash).
+const noFlashThemeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t=='dark');r.style.colorScheme=t;var f=localStorage.getItem('${FAVORITE_STORAGE_KEY}');if(f){var fav=JSON.parse(f);if(fav&&fav.version===2&&typeof fav.corpsKey==='string'&&typeof fav.name==='string'&&typeof fav.darkPrimary==='string'&&typeof fav.lightPrimary==='string'){if(t=='dark'){r.style.setProperty('--primary',fav.darkPrimary);r.style.setProperty('--primary-foreground',fav.darkPrimaryForeground);}else{r.style.setProperty('--primary',fav.lightPrimary);r.style.setProperty('--primary-foreground',fav.lightPrimaryForeground);}if(fav.logoDark){r.style.setProperty('--logo-dark',fav.logoDark);}else{r.style.setProperty('--logo-dark','');}if(fav.faviconSvg){var l=document.querySelector('link[rel="icon"][data-app-icon]');if(!l){l=document.createElement('link');l.rel='icon';l.type='image/svg+xml';l.setAttribute('data-app-icon','true');document.head.appendChild(l);}l.href=fav.faviconSvg;}}else{try{localStorage.removeItem('${FAVORITE_STORAGE_KEY}');}catch(e){}}}}catch(e){}})()`;
 
 function RootDocument({ children }: { children: ReactNode }) {
   // suppressHydrationWarning on <html>: the no-flash theme script (below)
@@ -36,7 +36,7 @@ function RootDocument({ children }: { children: ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" data-app-icon="true" />
         <title>Corps Place</title>
         <script dangerouslySetInnerHTML={{ __html: noFlashThemeScript }} />
         <HeadContent />

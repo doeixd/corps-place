@@ -1,6 +1,6 @@
 // DCI Yearbook staff ingestion (docs/announcement-sources-plan.md / show-detail-wiki-plan.md).
 //
-// DCI's official season yearbooks (public/yearbook/*.pdf) are the AUTHORITATIVE source for a
+// DCI's official season yearbooks (data/yearbook/*.pdf) are the AUTHORITATIVE source for a
 // season's staff: each corps has a profile page printing its full roster under section headings,
 // with the corps WEBSITE on the page (the exact join key to corps_key). 2013–2017 carry embedded
 // text (no OCR); the 2019 export is image-only (vision path, not here).

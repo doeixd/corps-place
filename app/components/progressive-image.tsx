@@ -3,10 +3,9 @@ import { proxiedImage } from '@/lib/media';
 import { cn } from '@/lib/utils';
 
 /**
- * Zero-JS progressive image. The placeholder sits as a CSS background-image on
- * the container; the real <img> renders on top and naturally covers it on load.
- * No opacity toggling, no load-event tracking, no thumbhash fetch — the browser
- * just paints the image when it arrives.
+ * Progressive image using real <img> elements for both placeholder and final
+ * artwork. The placeholder is removed after the full image loads so alpha in
+ * transparent PNG/WebP logos does not reveal a fuzzy low-res copy underneath.
  */
 export function ProgressiveImage({
   src,
@@ -42,6 +41,7 @@ export function ProgressiveImage({
   imgClassName?: string;
 }) {
   const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   const handleError = () => {
     setFailed(true);
@@ -51,10 +51,9 @@ export function ProgressiveImage({
   const proxyOpts = { assumeCached, width, dark };
   const resolved = src ? proxiedImage(src, proxyOpts) : null;
 
-  // Tiny proxy for the CSS background placeholder (browser upscale, no blur JS).
-  const placeholderUrl =
-    thumbDataUrl ??
-    (src && width > 32 ? proxiedImage(src, { assumeCached, width: 32, dark }) : null);
+  // Thumbhash data URLs are inline placeholders, so they don't add another image
+  // request. If the caller has no thumbhash, render only the final image.
+  const placeholderUrl = thumbDataUrl ?? null;
 
   const wList = widths ?? [width, width * 2];
   const srcSet = resolved
@@ -67,31 +66,37 @@ export function ProgressiveImage({
         .join(', ')
     : undefined;
 
+  const resolvedSizes = sizes ?? `${Math.round(width)}px`;
+
   if (!resolved || failed) {
     return fallback ? <>{fallback}</> : null;
   }
 
   return (
-    <div
-      className={cn('relative overflow-hidden', className)}
-      style={
-        placeholderUrl
-          ? {
-              backgroundImage: `url(${placeholderUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }
-          : undefined
-      }
-    >
+    <div className={cn('relative overflow-hidden', className)}>
+      {placeholderUrl ? (
+        <img
+          src={placeholderUrl}
+          alt=""
+          aria-hidden="true"
+          loading={lazy ? 'lazy' : undefined}
+          decoding="async"
+          className={cn(
+            'absolute inset-0 h-full w-full',
+            fit === 'cover' ? 'object-cover' : 'object-contain',
+            loaded && 'hidden'
+          )}
+        />
+      ) : null}
       <img
         src={resolved}
         srcSet={srcSet || undefined}
-        sizes={sizes || undefined}
+        sizes={resolvedSizes}
         alt={alt}
         loading={lazy ? 'lazy' : undefined}
         {...(priority ? { fetchPriority: 'high' as const } : {})}
         decoding="async"
+        onLoad={() => setLoaded(true)}
         onError={handleError}
         className={cn(
           'relative',

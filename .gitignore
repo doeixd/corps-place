@@ -75,7 +75,7 @@ media-cache.db
 # Yearbook PDFs over GitHub's 100MB limit: commit ONLY the split .partNNN files.
 # The reassembled full PDFs (rebuild via sdk/scripts/reassembleYearbooks.mjs) and the
 # PaddleOCR output (.ocr.pdf, rebuildable via the OCR pipeline) are NOT committed.
-public/yearbook/*.ocr.pdf
-public/yearbook/Drum Corps International 2012 Yearbook.pdf
-public/yearbook/Drum Corps International 2015 Yearbook.pdf
-public/yearbook/*PubHTML5.pdf
+data/yearbook/*.ocr.pdf
+data/yearbook/Drum Corps International 2012 Yearbook.pdf
+data/yearbook/Drum Corps International 2015 Yearbook.pdf
+data/yearbook/*PubHTML5.pdf
