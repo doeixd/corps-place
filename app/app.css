@@ -446,10 +446,10 @@
    corps's hue consistent across all elements. The --logo-dark may still
    be further overridden by the store's inline style (corps secondary). */
 :root[data-fav-active] {
-  --logo-accent: oklch(from var(--primary) 0.72 c calc(h + 48));
+  --logo-accent: oklch(from var(--primary) 0.72 c calc(h + 20));
   --logo-accent-vivid: oklch(from var(--primary) calc(l + 0.05) calc(c + 0.06) h);
   --logo-accent-muted: oklch(from var(--primary) calc(l + 0.1) c h);
-  --logo-dark: oklch(from var(--primary) 0.17 calc(c * 0.3) calc(h + 120));
+  --logo-dark: oklch(from var(--primary) 0.17 calc(c * 0.3) calc(h + 80));
   --logo-detail: oklch(from var(--primary) calc(l - 0.1) calc(c * 1.15) h);
   --logo-light: oklch(from var(--primary) 0.96 calc(c * 0.05) h);
 }
