@@ -181,6 +181,11 @@ export default defineConfig({
       /^reselect/,
       /^victory-vendor/,
       /^d3-/,
+      // use-sync-external-store's CJS shim (shim/with-selector.js, pulled in by
+      // @xstate/react) throws "module is not defined" when Vite's dev SSR
+      // module-runner tries to leave it as external. Bundling it (noExternal)
+      // forces Vite's CJS→ESM transform, which works.
+      'use-sync-external-store',
     ],
     optimizeDeps: {
       exclude: [
