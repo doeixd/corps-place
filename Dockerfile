@@ -17,10 +17,14 @@
 FROM node:20-bookworm-slim AS builder
 WORKDIR /app
 
+# Cap Node.js heap so the build doesn't OOM the Docker container (Vite/Rolldown +
+# TypeScript compilation is memory-hungry). Tune to your Coolify VM's RAM.
+ENV NODE_OPTIONS="--max-old-space-size=3072"
+
 # Native toolchain for sharp and any native gyp fallback
 RUN apt-get update \
- && apt-get install -y --no-install-recommends python3 build-essential ca-certificates \
- && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends python3 build-essential ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install pnpm globally
 RUN npm install -g pnpm
@@ -41,7 +45,8 @@ RUN npm run build
 FROM node:20-bookworm-slim
 WORKDIR /app
 ENV NODE_ENV=production \
-    PORT=3000
+    PORT=3000 \
+    CONTRIBUTIONS_DB_URL=file:/data/contributions.db
 
 # Only what the runtime actually needs: curl+wget (health check), ca-certificates (HTTPS)
 RUN apt-get update \
