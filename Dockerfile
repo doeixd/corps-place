@@ -22,7 +22,8 @@ RUN apt-get update \
 
 # Install ALL deps (dev + prod) — cache-friendly: deps before source
 COPY package.json package-lock.json ./
-RUN npm install --include=dev --no-audit --no-fund
+RUN --mount=type=cache,target=/root/.npm \
+ npm install --include=dev --no-audit --no-fund
 
 # App source (sdk/src is included for @sdk/* imports; heavy sdk dirs are .dockerignored)
 COPY . .
@@ -43,7 +44,8 @@ RUN apt-get update \
 
 # Install production deps only — no TypeScript, puppeteer, vite etc.
 COPY package.json package-lock.json ./
-RUN npm install --omit=dev --no-audit --no-fund
+RUN --mount=type=cache,target=/root/.npm \
+ npm install --omit=dev --no-audit --no-fund
 
 # Build output + entrypoint + R2 pull script (from builder)
 COPY --from=builder /app/.output .output
@@ -51,7 +53,8 @@ COPY --from=builder /app/docker-entrypoint.sh docker-entrypoint.sh
 COPY --from=builder /app/scripts/pullReadModel.mjs scripts/pullReadModel.mjs
 
 # @aws-sdk/client-s3 is needed by pullReadModel at runtime
-RUN npm install --no-save --no-audit --no-fund @aws-sdk/client-s3@^3 \
+RUN --mount=type=cache,target=/root/.npm \
+ npm install --no-save --no-audit --no-fund @aws-sdk/client-s3@^3 \
  && chmod +x /app/docker-entrypoint.sh
 
 EXPOSE 3000
