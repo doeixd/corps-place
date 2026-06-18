@@ -43,10 +43,10 @@ WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000
 
-# Only what the runtime actually needs: curl (health check), ca-certificates (HTTPS)
+# Only what the runtime actually needs: curl+wget (health check), ca-certificates (HTTPS)
 RUN apt-get update \
- && apt-get install -y --no-install-recommends ca-certificates curl \
- && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends ca-certificates curl wget \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install pnpm globally
 RUN npm install -g pnpm
