@@ -55,10 +55,10 @@ function TermsOfService() {
           <p>
             DrumCorps.app is an independent archival, informational, and journalistic project. We
             collect, organize, and present publicly available data and materials related to the drum
-            corps activity — including scores, schedules, corps information, staff and personnel data,
-            logos, images, and other content — for purposes of research, commentary, historical
-            preservation, and public interest reporting. The Service is not a substitute for the
-            original sources.
+            corps activity — including scores, schedules, corps information, staff and personnel
+            data, logos, images, and other content — for purposes of research, commentary,
+            historical preservation, and public interest reporting. The Service is not a substitute
+            for the original sources.
           </p>
           <p className="mt-2">
             Any copyrighted materials belonging to third parties that appear on the Service are used
@@ -69,9 +69,9 @@ function TermsOfService() {
           </p>
           <p className="mt-2">
             All rights in third-party content remain with their respective owners. Drum corps names,
-            logos, likenesses, competition results, and related intellectual property are the property
-            of their respective organizations, leagues, or rightsholders. Inclusion on the Service
-            does not imply endorsement, sponsorship, or affiliation.
+            logos, likenesses, competition results, and related intellectual property are the
+            property of their respective organizations, leagues, or rightsholders. Inclusion on the
+            Service does not imply endorsement, sponsorship, or affiliation.
           </p>
           <p className="mt-2">
             The Service's own original content, features, and software are owned by us and protected
@@ -83,9 +83,9 @@ function TermsOfService() {
         <Section heading="3. User Content">
           <p>
             The Service does not currently allow users to submit or post content publicly. If we add
-            features that allow you to submit content (such as comments or contributions), you retain
-            ownership of your content but grant us a non-exclusive, royalty-free license to display
-            and distribute it in connection with the Service.
+            features that allow you to submit content (such as comments or contributions), you
+            retain ownership of your content but grant us a non-exclusive, royalty-free license to
+            display and distribute it in connection with the Service.
           </p>
         </Section>
 
@@ -99,9 +99,9 @@ function TermsOfService() {
           </p>
           <p className="mt-2">
             Product information, pricing, and availability displayed for third-party merchandise are
-            provided by those third parties and may change without notice. We do not process payments
-            or fulfill orders — all transactions occur on the third party's platform and are subject
-            to their terms.
+            provided by those third parties and may change without notice. We do not process
+            payments or fulfill orders — all transactions occur on the third party's platform and
+            are subject to their terms.
           </p>
         </Section>
 
@@ -110,8 +110,9 @@ function TermsOfService() {
             Much of the information on the Service is collected or scraped from publicly available
             sources on the internet and may contain errors, omissions, or outdated information. This
             includes, but is not limited to, competition scores, schedules, corps rosters, staff and
-            personnel profiles, venue details, and historical records. We do not independently verify
-            all data and make no representation as to its accuracy, completeness, or currency.
+            personnel profiles, venue details, and historical records. We do not independently
+            verify all data and make no representation as to its accuracy, completeness, or
+            currency.
           </p>
           <p className="mt-2">
             Staff and personnel information displayed on the Service is compiled from public sources
@@ -145,8 +146,8 @@ function TermsOfService() {
           <p>
             To the fullest extent permitted by law, we shall not be liable for any indirect,
             incidental, special, consequential, or punitive damages, including but not limited to
-            loss of profits, data, use, or goodwill, arising out of or in connection with your use of
-            or inability to use the Service, whether based on warranty, contract, tort (including
+            loss of profits, data, use, or goodwill, arising out of or in connection with your use
+            of or inability to use the Service, whether based on warranty, contract, tort (including
             negligence), or any other legal theory, even if we have been advised of the possibility
             of such damages.
           </p>
@@ -158,8 +159,8 @@ function TermsOfService() {
 
         <Section heading="8. Indemnification">
           <p>
-            You agree to indemnify and hold us harmless from any claims, damages, liabilities, costs,
-            or expenses (including reasonable attorneys' fees) arising out of your use of the
+            You agree to indemnify and hold us harmless from any claims, damages, liabilities,
+            costs, or expenses (including reasonable attorneys' fees) arising out of your use of the
             Service, your violation of these Terms, or your violation of any third-party rights.
           </p>
         </Section>
@@ -167,10 +168,10 @@ function TermsOfService() {
         <Section heading="9. Termination">
           <p>
             We may suspend or terminate your access to the Service at any time, without prior notice
-            or liability, for any reason, including if you breach these Terms. Upon termination, your
-            right to use the Service will immediately cease. Provisions that by their nature should
-            survive termination (including intellectual property, disclaimers, and limitations of
-            liability) shall survive.
+            or liability, for any reason, including if you breach these Terms. Upon termination,
+            your right to use the Service will immediately cease. Provisions that by their nature
+            should survive termination (including intellectual property, disclaimers, and
+            limitations of liability) shall survive.
           </p>
         </Section>
 
@@ -202,8 +203,8 @@ function TermsOfService() {
           </p>
           <p className="mt-2">
             To submit a request, please include a description of the content at issue, its location
-            on the Service (URL), and your contact information. We may request additional information
-            to verify your identity or authority.
+            on the Service (URL), and your contact information. We may request additional
+            information to verify your identity or authority.
           </p>
         </Section>
 

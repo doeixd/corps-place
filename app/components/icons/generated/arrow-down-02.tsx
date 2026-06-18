@@ -16,7 +16,14 @@ export const ArrowDown02Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' |
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 18.502v-13.5m6 8s-4.419 6-6 6s-6-6-6-6"/>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M12 18.502v-13.5m6 8s-4.419 6-6 6s-6-6-6-6"
+      />
     </svg>
   );
 };

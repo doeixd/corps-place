@@ -103,7 +103,9 @@ function StaffProfilePage() {
                 {p.since_season && (
                   <span className="ml-1 text-muted-foreground tabular-nums">
                     {p.since_season}
-                    {p.through_season && p.through_season !== p.since_season ? `–${p.through_season}` : ''}
+                    {p.through_season && p.through_season !== p.since_season
+                      ? `–${p.through_season}`
+                      : ''}
                   </span>
                 )}
               </li>
@@ -112,37 +114,54 @@ function StaffProfilePage() {
         </>
       )}
 
-      {profile.bioFacts && (profile.bioFacts.education.length > 0 || profile.bioFacts.awards.length > 0 || profile.bioFacts.currentPosition || profile.bioFacts.hometown) && (
-        <>
-          <h2 className="mt-8 mb-3 text-lg font-semibold">Background</h2>
-          <dl className="flex flex-col gap-2 text-sm">
-            {profile.bioFacts.currentPosition && (
-              <div className="flex gap-2">
-                <dt className="w-28 shrink-0 text-muted-foreground">Currently</dt>
-                <dd>{profile.bioFacts.currentPosition.title}{profile.bioFacts.currentPosition.org ? ` @ ${profile.bioFacts.currentPosition.org}` : ''}</dd>
-              </div>
-            )}
-            {profile.bioFacts.hometown && (
-              <div className="flex gap-2">
-                <dt className="w-28 shrink-0 text-muted-foreground">Hometown</dt>
-                <dd>{profile.bioFacts.hometown}</dd>
-              </div>
-            )}
-            {profile.bioFacts.education.length > 0 && (
-              <div className="flex gap-2">
-                <dt className="w-28 shrink-0 text-muted-foreground">Education</dt>
-                <dd>{profile.bioFacts.education.map((e) => [e.degree, e.field, e.institution].filter(Boolean).join(', ')).join('; ')}</dd>
-              </div>
-            )}
-            {profile.bioFacts.awards.length > 0 && (
-              <div className="flex gap-2">
-                <dt className="w-28 shrink-0 text-muted-foreground">Awards</dt>
-                <dd>{profile.bioFacts.awards.map((a) => a.name + (a.year ? ` (${a.year})` : '')).join('; ')}</dd>
-              </div>
-            )}
-          </dl>
-        </>
-      )}
+      {profile.bioFacts &&
+        (profile.bioFacts.education.length > 0 ||
+          profile.bioFacts.awards.length > 0 ||
+          profile.bioFacts.currentPosition ||
+          profile.bioFacts.hometown) && (
+          <>
+            <h2 className="mt-8 mb-3 text-lg font-semibold">Background</h2>
+            <dl className="flex flex-col gap-2 text-sm">
+              {profile.bioFacts.currentPosition && (
+                <div className="flex gap-2">
+                  <dt className="w-28 shrink-0 text-muted-foreground">Currently</dt>
+                  <dd>
+                    {profile.bioFacts.currentPosition.title}
+                    {profile.bioFacts.currentPosition.org
+                      ? ` @ ${profile.bioFacts.currentPosition.org}`
+                      : ''}
+                  </dd>
+                </div>
+              )}
+              {profile.bioFacts.hometown && (
+                <div className="flex gap-2">
+                  <dt className="w-28 shrink-0 text-muted-foreground">Hometown</dt>
+                  <dd>{profile.bioFacts.hometown}</dd>
+                </div>
+              )}
+              {profile.bioFacts.education.length > 0 && (
+                <div className="flex gap-2">
+                  <dt className="w-28 shrink-0 text-muted-foreground">Education</dt>
+                  <dd>
+                    {profile.bioFacts.education
+                      .map((e) => [e.degree, e.field, e.institution].filter(Boolean).join(', '))
+                      .join('; ')}
+                  </dd>
+                </div>
+              )}
+              {profile.bioFacts.awards.length > 0 && (
+                <div className="flex gap-2">
+                  <dt className="w-28 shrink-0 text-muted-foreground">Awards</dt>
+                  <dd>
+                    {profile.bioFacts.awards
+                      .map((a) => a.name + (a.year ? ` (${a.year})` : ''))
+                      .join('; ')}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </>
+        )}
     </PageShell>
   );
 }

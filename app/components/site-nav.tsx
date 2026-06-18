@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { Icon, type IconComponent } from '@/components/icon';
+import { Logo } from '@/components/logo';
 import { useBookmarks } from '@/stores/bookmark-store';
 import {
   Home01Icon,
@@ -61,7 +62,7 @@ export function SiteNav() {
           className="mb-6 flex items-center gap-2.5 px-2 focus-visible:outline-none"
           aria-label="Corps Place home"
         >
-          <img src="/logo-transparent.png" alt="" className="size-8 shrink-0" />
+          <Logo aria-hidden="true" className="size-8 shrink-0" />
           <span className="hidden text-base font-bold text-text-primary xl:inline">
             Corps Place
           </span>

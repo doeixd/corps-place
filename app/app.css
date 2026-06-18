@@ -20,6 +20,40 @@
   initial-value: oklch(0.98 0.016 73.684);
 }
 
+/* Logo palette — derived from --primary via relative OKLCH so the entire logo
+   shifts to a favorite corps's brand hue, adjusting only lightness & chroma.
+   The initial-value on each @property is the logo's default (original) color. */
+@property --logo-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #feb403;
+}
+@property --logo-accent-vivid {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fd5007;
+}
+@property --logo-accent-muted {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fe7f02;
+}
+@property --logo-dark {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0c2e1d;
+}
+@property --logo-detail {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #e22517;
+}
+@property --logo-light {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fbfbf2;
+}
+
 :root {
   /* Mobile bottom tab bar (site-nav.tsx). `--bottom-nav-bar` is the single knob
      for the visible bar height; the bar pins itself to it (min-height) so the
@@ -395,6 +429,18 @@
   --color-success-foreground: var(--success-foreground);
   --color-success: var(--success);
   --color-destructive-foreground: var(--destructive-foreground);
+
+  /* Logo palette: derived from --primary (corps brand hue) using relative OKLCH.
+     When a corps is favorited, --primary changes → these re-derive automatically,
+     shifting only C (chroma) and L (lightness) while the corps's hue stays
+     consistent across all logo elements. --logo-dark additionally accepts a
+     direct override from the favorite corps store (corps secondary color). */
+  --logo-accent: oklch(from var(--primary) 0.72 c h);
+  --logo-accent-vivid: oklch(from var(--primary) 0.58 calc(c * 1.1) h);
+  --logo-accent-muted: oklch(from var(--primary) 0.64 calc(c * 0.85) h);
+  --logo-dark: oklch(from var(--primary) 0.17 calc(c * 0.3) h);
+  --logo-detail: oklch(from var(--primary) 0.45 calc(c * 1.15) h);
+  --logo-light: oklch(from var(--primary) 0.96 calc(c * 0.05) h);
 }
 
 @layer components {
@@ -508,7 +554,13 @@
     accent-color: var(--primary);
     transition:
       --primary 0.2s ease-out,
-      --primary-foreground 0.2s ease-out;
+      --primary-foreground 0.2s ease-out,
+      --logo-accent 0.2s ease-out,
+      --logo-accent-vivid 0.2s ease-out,
+      --logo-accent-muted 0.2s ease-out,
+      --logo-dark 0.2s ease-out,
+      --logo-detail 0.2s ease-out,
+      --logo-light 0.2s ease-out;
   }
   ::selection {
     background-color: var(--primary);

@@ -2,7 +2,7 @@
 // Only one corps can be favorited at a time; setting a new one replaces the old.
 import { useSyncExternalStore } from 'react';
 import { createStore } from '@xstate/store';
-import { corpsPalette } from '@sdk/src/corpsColors.js';
+import { corpsPalette, hexToOklch } from '@sdk/src/corpsColors.js';
 import type { CorpsBrandColors } from '@sdk/src/corpsColors.js';
 import { themeStore } from './theme-store';
 
@@ -45,6 +45,8 @@ export interface PersistedFavorite {
   lightPrimaryForeground: string;
   darkPrimary: string;
   darkPrimaryForeground: string;
+  /** Pre-computed --logo-dark for the no-flash script (corps secondary → oklch at L=0.17, C×0.3). */
+  logoDark: string | null;
   addedAt: string;
 }
 
@@ -52,18 +54,28 @@ function computePalettes(
   input: FavoriteCorpsInput
 ): Pick<
   PersistedFavorite,
-  'lightPrimary' | 'lightPrimaryForeground' | 'darkPrimary' | 'darkPrimaryForeground'
+  'lightPrimary' | 'lightPrimaryForeground' | 'darkPrimary' | 'darkPrimaryForeground' | 'logoDark'
 > {
   const colors: Partial<CorpsBrandColors> = input.colorPrimary
     ? { primary: input.colorPrimary, secondary: input.colorSecondary }
     : {};
   const light = corpsPalette(colors, 'light');
   const dark = corpsPalette(colors, 'dark');
+  // Pre-compute --logo-dark from the corps secondary color for the no-flash script.
+  // L=0.17 keeps it legible as a dark structural fill; C×0.3 keeps it muted.
+  let logoDark: string | null = null;
+  if (input.colorSecondary) {
+    const sec = hexToOklch(input.colorSecondary);
+    if (sec) {
+      logoDark = `oklch(0.17 ${+(sec.c * 0.3).toFixed(3)} ${+sec.h.toFixed(1)})`;
+    }
+  }
   return {
     lightPrimary: light.accent,
     lightPrimaryForeground: light.accentFg,
     darkPrimary: dark.accent,
     darkPrimaryForeground: dark.accentFg,
+    logoDark,
   };
 }
 
@@ -117,9 +129,15 @@ export function applyFavoriteColors(fav: PersistedFavorite | null): void {
       '--primary-foreground',
       dark ? fav.darkPrimaryForeground : fav.lightPrimaryForeground
     );
+    if (fav.logoDark) {
+      root.style.setProperty('--logo-dark', fav.logoDark);
+    } else {
+      root.style.removeProperty('--logo-dark');
+    }
   } else {
     root.style.removeProperty('--primary');
     root.style.removeProperty('--primary-foreground');
+    root.style.removeProperty('--logo-dark');
   }
 }
 

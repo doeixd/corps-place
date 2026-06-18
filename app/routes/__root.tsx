@@ -24,7 +24,7 @@ import '@/app.css';
 // Also reads the favorite corps from localStorage and applies its accent as
 // --primary / --primary-foreground before paint, so the site accent color matches
 // the user's favorite corps from the very first frame (no flash of default orange).
-const noFlashThemeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.style.colorScheme=t;var f=localStorage.getItem('${FAVORITE_STORAGE_KEY}');if(f){var fav=JSON.parse(f);if(t==='dark'){r.style.setProperty('--primary',fav.darkPrimary);r.style.setProperty('--primary-foreground',fav.darkPrimaryForeground);}else{r.style.setProperty('--primary',fav.lightPrimary);r.style.setProperty('--primary-foreground',fav.lightPrimaryForeground);}}}catch(e){}})();`;
+const noFlashThemeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.style.colorScheme=t;var f=localStorage.getItem('${FAVORITE_STORAGE_KEY}');if(f){var fav=JSON.parse(f);if(t==='dark'){r.style.setProperty('--primary',fav.darkPrimary);r.style.setProperty('--primary-foreground',fav.darkPrimaryForeground);}else{r.style.setProperty('--primary',fav.lightPrimary);r.style.setProperty('--primary-foreground',fav.lightPrimaryForeground);}if(fav.logoDark){r.style.setProperty('--logo-dark',fav.logoDark);}else{r.style.setProperty('--logo-dark','');}}}catch(e){}})();`;
 
 function RootDocument({ children }: { children: ReactNode }) {
   // suppressHydrationWarning on <html>: the no-flash theme script (below)
@@ -36,7 +36,7 @@ function RootDocument({ children }: { children: ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/logo-transparent.png" type="image/png" />
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
         <title>Corps Place</title>
         <script dangerouslySetInnerHTML={{ __html: noFlashThemeScript }} />
         <HeadContent />

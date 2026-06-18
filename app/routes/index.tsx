@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
+import { Logo } from '@/components/logo';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { WeekendShowsCarousel } from '@/components/weekend-shows';
@@ -72,7 +73,7 @@ function Home() {
       <PageHeader
         title={
           <span className="flex items-center gap-2.5">
-            <img src="/logo-transparent.png" alt="" className="size-10 shrink-0" />
+            <Logo aria-hidden="true" className="size-10 shrink-0" />
             DrumCorps.app
           </span>
         }
@@ -121,17 +122,17 @@ function Home() {
         </section>
       </div>
 
-        <footer className="mt-12 border-t border-border pt-6 text-center">
-          <p className="text-xs text-text-muted">
-            <Link to="/privacy-policy" className="hover:text-text-secondary transition-colors">
-              Privacy Policy
-            </Link>
-            <span className="mx-2 text-border">·</span>
-            <Link to="/terms-of-service" className="hover:text-text-secondary transition-colors">
-              Terms of Service
-            </Link>
-          </p>
-        </footer>
+      <footer className="mt-12 border-t border-border pt-6 text-center">
+        <p className="text-xs text-text-muted">
+          <Link to="/privacy-policy" className="hover:text-text-secondary transition-colors">
+            Privacy Policy
+          </Link>
+          <span className="mx-2 text-border">·</span>
+          <Link to="/terms-of-service" className="hover:text-text-secondary transition-colors">
+            Terms of Service
+          </Link>
+        </p>
+      </footer>
     </PageShell>
   );
 }

@@ -1,6 +1,8 @@
 import type { SVGProps } from 'react';
 
-export const ArrowRight02Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md' | 'lg' }) => {
+export const ArrowRight02Icon = (
+  props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md' | 'lg' }
+) => {
   const size = props.size === 'sm' ? 16 : props.size === 'lg' ? 24 : 20;
   const { size: _size, ...svgProps } = props;
   return (
@@ -16,7 +18,14 @@ export const ArrowRight02Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' 
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.5 12H5m8 6s6-4.419 6-6s-6-6-6-6"/>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M18.5 12H5m8 6s6-4.419 6-6s-6-6-6-6"
+      />
     </svg>
   );
 };

@@ -16,7 +16,10 @@ export const Clock01Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md
       strokeLinejoin="round"
       {...svgProps}
     >
-      <g fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l2 2"/></g>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="12" cy="12" r="10" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l2 2" />
+      </g>
     </svg>
   );
 };
