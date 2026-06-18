@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { bookmarkStore, toBookmarkItem, useBookmarks } from '@/stores/bookmark-store';
 import { cn } from '@/lib/utils';
 import type { MerchProductSummary } from '@/lib/merch-types';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 
 export function BookmarkButton({
   product,
@@ -42,18 +42,22 @@ export function BookmarkButton({
           />
         }
       >
-        <AnimatePresence mode="wait">
+        <span className="relative inline-flex">
           <motion.span
-            key={saved ? 'filled' : 'outline'}
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 50, mass: 1 }}
+            animate={{ opacity: saved ? 1 : 0, scale: saved ? 1 : 0.3 }}
+            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
+            className="absolute inset-0 inline-flex items-center justify-center"
+          >
+            <Icon icon={FavouriteIcon} size="sm" />
+          </motion.span>
+          <motion.span
+            animate={{ opacity: saved ? 0 : 1, scale: saved ? 0.3 : 1 }}
+            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
             className="inline-flex"
           >
-            <Icon icon={saved ? FavouriteIcon : HeartAddIcon} size="sm" />
+            <Icon icon={HeartAddIcon} size="sm" />
           </motion.span>
-        </AnimatePresence>
+        </span>
         {showLabel ? <span>{saved ? 'Bookmarked' : 'Bookmark'}</span> : null}
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>

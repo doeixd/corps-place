@@ -4,7 +4,12 @@
 
 import { CATALOG_IMAGE_HOSTS } from './merch-image-hosts.generated';
 
-const PROXY_HOSTS = new Set(['production.assets.dci.org', 'images.dci.org']);
+const PROXY_HOSTS = new Set([
+  'production.assets.dci.org',
+  'images.dci.org',
+  'education.musicforall.org',
+  'www.wgi.org',
+]);
 
 // Public merchant image CDNs (suffix-matched) we'll fetch-on-miss + resize for the
 // merch catalog. These are well-known shared CDNs, not arbitrary origins, so this

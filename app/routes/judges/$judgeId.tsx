@@ -202,23 +202,31 @@ function JudgeProfilePage() {
                   <div className="flex gap-2">
                     <dt className="w-28 shrink-0 text-text-secondary">Currently</dt>
                     <dd>
-                      {profile.bioFacts!.currentPosition!.title}
-                      {profile.bioFacts!.currentPosition!.org ? ` @ ${profile.bioFacts!.currentPosition!.org}` : ''}
+                      {profile.bioFacts?.currentPosition?.title ?? ''}
+                      {profile.bioFacts?.currentPosition?.org
+                        ? ` @ ${profile.bioFacts?.currentPosition?.org}`
+                        : ''}
                     </dd>
                   </div>
                 </Show>
                 <Show when={!!profile.bioFacts?.hometown}>
                   <div className="flex gap-2">
                     <dt className="w-28 shrink-0 text-text-secondary">Hometown</dt>
-                    <dd>{profile.bioFacts!.hometown}</dd>
+                    <dd>{profile.bioFacts?.hometown ?? ''}</dd>
                   </div>
                 </Show>
                 <Show when={(profile.bioFacts?.performed.length ?? 0) > 0}>
                   <div className="flex gap-2">
                     <dt className="w-28 shrink-0 text-text-secondary">Marched</dt>
                     <dd>
-                      {profile.bioFacts!.performed
-                        .map((p) => p.group + (p.startYear ? ` (${p.startYear}${p.endYear && p.endYear !== p.startYear ? `–${p.endYear}` : ''})` : ''))
+                      {(profile.bioFacts?.performed ?? [])
+                        .map(
+                          (p) =>
+                            p.group +
+                            (p.startYear
+                              ? ` (${p.startYear}${p.endYear && p.endYear !== p.startYear ? `–${p.endYear}` : ''})`
+                              : '')
+                        )
                         .join('; ')}
                     </dd>
                   </div>
@@ -226,13 +234,21 @@ function JudgeProfilePage() {
                 <Show when={(profile.bioFacts?.education.length ?? 0) > 0}>
                   <div className="flex gap-2">
                     <dt className="w-28 shrink-0 text-text-secondary">Education</dt>
-                    <dd>{profile.bioFacts!.education.map((e) => [e.degree, e.field, e.institution].filter(Boolean).join(', ')).join('; ')}</dd>
+                    <dd>
+                      {(profile.bioFacts?.education ?? [])
+                        .map((e) => [e.degree, e.field, e.institution].filter(Boolean).join(', '))
+                        .join('; ')}
+                    </dd>
                   </div>
                 </Show>
                 <Show when={(profile.bioFacts?.awards.length ?? 0) > 0}>
                   <div className="flex gap-2">
                     <dt className="w-28 shrink-0 text-text-secondary">Awards</dt>
-                    <dd>{profile.bioFacts!.awards.map((a) => a.name + (a.year ? ` (${a.year})` : '')).join('; ')}</dd>
+                    <dd>
+                      {(profile.bioFacts?.awards ?? [])
+                        .map((a) => a.name + (a.year ? ` (${a.year})` : ''))
+                        .join('; ')}
+                    </dd>
                   </div>
                 </Show>
               </dl>

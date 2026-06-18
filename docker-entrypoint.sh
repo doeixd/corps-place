@@ -11,4 +11,7 @@ echo "[entrypoint] refreshing read-model from R2 (best-effort)…"
 # Bound the pull so a slow/hung R2 can never delay boot past the health check.
 timeout 120 node /app/scripts/pullReadModel.mjs || echo "[entrypoint] read-model pull skipped/timed out — serving on-disk data"
 
+echo "[entrypoint] refreshing media-cache from R2 (best-effort)…"
+timeout 120 node /app/scripts/pullMediaCache.mjs || echo "[entrypoint] media-cache pull skipped/timed out — serving on-disk data"
+
 exec node .output/server/index.mjs

@@ -51,8 +51,9 @@ RUN --mount=type=cache,target=/root/.npm \
 COPY --from=builder /app/.output .output
 COPY --from=builder /app/docker-entrypoint.sh docker-entrypoint.sh
 COPY --from=builder /app/scripts/pullReadModel.mjs scripts/pullReadModel.mjs
+COPY --from=builder /app/scripts/pullMediaCache.mjs scripts/pullMediaCache.mjs
 
-# @aws-sdk/client-s3 is needed by pullReadModel at runtime
+# @aws-sdk/client-s3 is needed by pullReadModel / pullMediaCache at runtime
 RUN --mount=type=cache,target=/root/.npm \
  npm install --no-save --no-audit --no-fund @aws-sdk/client-s3@^3 \
  && chmod +x /app/docker-entrypoint.sh

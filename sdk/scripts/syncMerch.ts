@@ -119,6 +119,7 @@ const main = async () => {
   const { appUuid } = publishConfig(publishEnv);
   run("emit read-model", ["scripts/emitReadModel.ts", "--json-snapshot", snapshot]);
   run("push read-model → R2", ["scripts/pushData.ts", "read-model"]);
+  run("push media-cache → R2", ["scripts/pushData.ts", "media-cache"]);
   if (!noRestart) await redeployViaCoolify(appUuid);
   console.log(`\nsyncMerch: done (published → ${publishEnv}).`);
 };
