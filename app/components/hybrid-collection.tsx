@@ -45,10 +45,13 @@ function LiveBridge<T extends object>({
   loader: T[];
   children: (rows: T[]) => ReactNode;
 }) {
-  // The exported Collection type lacks the internal `NonSingleResult` brand that
-  // useLiveQuery's direct-collection overload keys on, so cast for the call only;
-  // the public props above keep every call site fully type-checked.
   const { data } = useLiveQuery(collection as never);
   const rows = (data ?? []) as T[];
-  return <>{children(rows.length > 0 ? rows : loader)}</>;
+  // The collection sorts by the configured key (e.g. corps_key), but the loader
+  // was sorted by the read-model's ORDER BY (division -> name, date, etc.).
+  // When the row counts match we know no client-side filter has been applied, so
+  // preserve the loader's order to avoid a visible reorder flash on hydration.
+  // When they differ a filter IS active — defer to the collection's result then.
+  const useLoader = rows.length > 0 && rows.length === loader.length;
+  return <>{children(useLoader ? loader : rows.length > 0 ? rows : loader)}</>;
 }
