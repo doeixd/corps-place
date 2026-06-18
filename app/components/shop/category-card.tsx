@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { ProgressiveImage } from '@/components/progressive-image';
 import type { ShopCategoryCard as ShopCategoryCardData } from '@/lib/merch-types';
+import { useThumbhash } from '@/hooks/use-thumbhash';
 
 /**
  * A category card illustrated with a representative product image from that
@@ -9,6 +10,7 @@ import type { ShopCategoryCard as ShopCategoryCardData } from '@/lib/merch-types
  */
 export function CategoryCard({ category }: { category: ShopCategoryCardData }) {
   const img = category.sampleImage;
+  const thumb = useThumbhash(img);
   return (
     <Link
       to="/shop/category/$cat"
@@ -21,9 +23,11 @@ export function CategoryCard({ category }: { category: ShopCategoryCardData }) {
             <ProgressiveImage
               src={img}
               alt={category.value}
-              width={400}
+              width={300}
+              widths={[300, 600]}
               lazy
               fit="cover"
+              thumbDataUrl={thumb}
               className="h-full w-full"
               imgClassName="transition-transform duration-200 group-hover:scale-[1.03]"
             />

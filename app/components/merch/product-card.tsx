@@ -9,8 +9,10 @@ import { LinkSquare02Icon } from '@/components/icons/generated';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ProgressiveImage } from '@/components/progressive-image';
 import { formatPrice, type MerchProductSummary } from '@/lib/merch-types';
+import { useThumbhash } from '@/hooks/use-thumbhash';
 
 export function ProductCard({ product }: { product: MerchProductSummary }) {
+  const thumb = useThumbhash(product.image);
   return (
     <Card className="card-hover flex h-full flex-col overflow-hidden">
       <Link to="/shop/$productId" params={{ productId: product.productId }} className="group block">
@@ -18,10 +20,12 @@ export function ProductCard({ product }: { product: MerchProductSummary }) {
           <ProgressiveImage
             src={product.image}
             alt={product.title}
-            width={400}
-            widths={[400, 800]}
+            width={300}
+            widths={[300, 600]}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
             lazy
             fit="cover"
+            thumbDataUrl={thumb}
             className="h-full w-full"
             imgClassName="transition-transform duration-200 group-hover:scale-[1.03]"
             fallback={

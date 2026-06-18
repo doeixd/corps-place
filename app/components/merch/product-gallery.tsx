@@ -4,6 +4,24 @@ import { ProgressiveImage } from '@/components/progressive-image';
 import { Icon } from '@/components/icon';
 import { ArrowLeft01Icon, ArrowRight01Icon } from '@/components/icons/generated';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useThumbhash } from '@/hooks/use-thumbhash';
+
+/** Single gallery slide — self-contained so it can own its thumbhash fetch. */
+function GalleryImage({ src, alt, lazy }: { src: string; alt: string; lazy: boolean }) {
+  const thumb = useThumbhash(src);
+  return (
+    <ProgressiveImage
+      src={src}
+      alt={alt}
+      width={640}
+      widths={[640, 1280]}
+      lazy={lazy}
+      fit="cover"
+      thumbDataUrl={thumb}
+      className="h-full w-full shrink-0 snap-center"
+    />
+  );
+}
 
 /**
  * Product image carousel for the detail page: a large active image with prev/next
@@ -13,9 +31,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
  */
 export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
   const mainRef = useRef<HTMLDivElement>(null);
-  // While a button-driven smooth scroll is animating, ignore the intermediate
-  // scroll events so the active thumbnail doesn't flicker through every frame
-  // before landing on the target.
   const programmaticUntil = useRef(0);
   const [active, setActive] = useState(0);
   const valid = images.filter(Boolean);
@@ -56,14 +71,11 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
           className="scrollbar-none flex h-full snap-x snap-mandatory overflow-x-auto scroll-smooth touch-pan-x"
         >
           {valid.map((src, idx) => (
-            <ProgressiveImage
+            <GalleryImage
               key={`${src}-${idx}`}
               src={src}
               alt={idx === i ? alt : ''}
-              width={720}
               lazy={idx !== 0}
-              fit="cover"
-              className="h-full w-full shrink-0 snap-center"
             />
           ))}
         </div>
@@ -116,7 +128,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
                 idx === i ? 'border-primary ring-1 ring-primary' : 'border-border'
               }`}
             >
-              <ProgressiveImage src={src} alt="" width={96} fit="cover" className="h-16 w-16" />
+              <ProgressiveImage src={src} alt="" width={72} fit="cover" className="h-16 w-16" />
             </button>
           ))}
         </div>
