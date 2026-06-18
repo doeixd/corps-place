@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { getStaffDirectory } from '@/lib/server-fns/hybrid';
 import { staffCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useWindowVirtualizer } from '@tanstack/react-virtual';
 
 type StaffSearch = { q?: string };
 
@@ -31,6 +32,10 @@ function StaffDirectory() {
   );
 }
 
+const CARD_HEIGHT = 76; // px — height of one staff card row
+const GAP = 12; // gap-3 = 12px
+const ROW_HEIGHT = CARD_HEIGHT + GAP;
+
 function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
   const [query, setQuery] = useState('');
 
@@ -44,6 +49,26 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
         (s.groups ?? []).some((g) => g.corps_name.toLowerCase().includes(q))
     );
   }, [staff, query]);
+
+  // Responsive column count: 1 on mobile, 2 at sm, 3 at lg
+  const columns = 3; // fixed to worst-case — the window virtualizer handles layout
+
+  const virtualizer = useWindowVirtualizer({
+    count: Math.ceil(rows.length / columns),
+    estimateSize: () => ROW_HEIGHT,
+    overscan: 3,
+    gap: GAP,
+  });
+
+  const virtualItems = virtualizer.getVirtualItems();
+
+  const getRow = useCallback(
+    (rowIndex: number) => {
+      const start = rowIndex * columns;
+      return rows.slice(start, start + columns);
+    },
+    [rows, columns]
+  );
 
   return (
     <PageShell>
@@ -59,13 +84,40 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {rows.map((s) => (
-          <StaffCard key={s.person_id} staff={s} />
-        ))}
+
+      <div
+        style={{
+          height: `${virtualizer.getTotalSize()}px`,
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {virtualItems.map((vi) => {
+          const row = getRow(vi.index);
+          return (
+            <div
+              key={vi.key}
+              data-index={vi.index}
+              ref={virtualizer.measureElement}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                transform: `translateY(${vi.start}px)`,
+              }}
+              className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {row.map((s) => (
+                <StaffCard key={s.person_id} staff={s} />
+              ))}
+            </div>
+          );
+        })}
       </div>
+
       {rows.length === 0 && (
-        <p className="mt-8 text-center text-sm text-muted-foreground">No staff match “{query}”.</p>
+        <p className="mt-8 text-center text-sm text-muted-foreground">No staff match "{query}".</p>
       )}
     </PageShell>
   );
