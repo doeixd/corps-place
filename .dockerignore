@@ -11,10 +11,11 @@ node_modules
 .claude
 
 # Local databases (mounted at runtime, never baked in)
-*.db
-*.db-*
-*.db.backup*
-read-model*
+**/*.db
+**/*.db-*
+**/*.db.backup*
+# read-model DB files only (not the manifest source)
+sdk/read-model*
 public/read-model
 
 # Yearbook PDFs (2.7 GB) — only used by SDK ingest scripts, not the app
