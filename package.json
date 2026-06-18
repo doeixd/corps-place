@@ -15,7 +15,7 @@
     "predev": "npm run gen:icons",
     "postinstall": "patch-package",
     "prebuild": "node scripts/check-disk-space.mjs",
-    "postbuild": "node scripts/check-build-output.mjs"
+    "postbuild": "node scripts/check-build-output.mjs && node scripts/patch-lexical-node.mjs"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.6.19",
