@@ -1,11 +1,17 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { proxiedImage } from '@/lib/media';
 import { cn } from '@/lib/utils';
 
+/** Delay before the placeholder becomes visible, so fast (cached) images
+ *  don't flash a fuzzy placeholder first. */
+const PLACEHOLDER_DELAY_MS = 120;
+
 /**
  * Progressive image using real <img> elements for both placeholder and final
- * artwork. The placeholder is removed after the full image loads so alpha in
- * transparent PNG/WebP logos does not reveal a fuzzy low-res copy underneath.
+ * artwork. The placeholder is hidden for ~120ms — if the real image loads
+ * within that window the user never sees it; otherwise it fades in so the
+ * space doesn't sit empty. Removed after the full image loads so alpha in
+ * transparent PNG/WebP logos doesn't reveal a fuzzy copy underneath.
  */
 export function ProgressiveImage({
   src,
@@ -42,6 +48,14 @@ export function ProgressiveImage({
 }) {
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [showPlaceholder, setShowPlaceholder] = useState(false);
+
+  // Delay the placeholder so fast-loading images don't flash it.
+  useEffect(() => {
+    if (loaded || !thumbDataUrl) return;
+    const t = setTimeout(() => setShowPlaceholder(true), PLACEHOLDER_DELAY_MS);
+    return () => clearTimeout(t);
+  }, [loaded, thumbDataUrl]);
 
   const handleError = () => {
     setFailed(true);
@@ -82,9 +96,10 @@ export function ProgressiveImage({
           loading={lazy ? 'lazy' : undefined}
           decoding="async"
           className={cn(
-            'absolute inset-0 h-full w-full',
+            'absolute inset-0 h-full w-full transition-opacity duration-150',
             fit === 'cover' ? 'object-cover' : 'object-contain',
-            loaded && 'hidden'
+            loaded && 'hidden',
+            showPlaceholder ? 'opacity-100' : 'opacity-0'
           )}
         />
       ) : null}

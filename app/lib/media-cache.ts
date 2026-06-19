@@ -135,7 +135,10 @@ export async function getThumbhash(rawUrl: string): Promise<string | null> {
 
   const hash = await generateThumbhash(toBytes(cr.bytes), cr.content_type ?? 'image/jpeg');
   if (hash) {
-    await db.execute({ sql: 'UPDATE media_cache SET thumbhash = ? WHERE url = ?', args: [hash, rawUrl] });
+    await db.execute({
+      sql: 'UPDATE media_cache SET thumbhash = ? WHERE url = ?',
+      args: [hash, rawUrl],
+    });
   }
   return hash;
 }
