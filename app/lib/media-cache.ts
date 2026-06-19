@@ -111,7 +111,9 @@ async function generateThumbhash(body: Uint8Array, contentType: string): Promise
 }
 
 /**
- * Return the cached thumbhash for `rawUrl`, or null if none was generated.
+ * Return the cached thumbhash for `rawUrl`. If the image is cached but no
+ * thumbhash was generated (e.g. cached before the column was added), generate
+ * it on the fly and cache it for next time.
  */
 export async function getThumbhash(rawUrl: string): Promise<string | null> {
   const db = getDb();
@@ -121,7 +123,21 @@ export async function getThumbhash(rawUrl: string): Promise<string | null> {
     args: [rawUrl],
   });
   const r = row.rows[0] as { thumbhash?: string } | undefined;
-  return r?.thumbhash ?? null;
+  if (r?.thumbhash) return r.thumbhash;
+
+  // Thumbhash missing — try to generate from cached bytes.
+  const cached = await db.execute({
+    sql: 'SELECT content_type, bytes FROM media_cache WHERE url = ? AND bytes IS NOT NULL LIMIT 1',
+    args: [rawUrl],
+  });
+  const cr = cached.rows[0] as { content_type?: string; bytes?: unknown } | undefined;
+  if (!cr?.bytes) return null;
+
+  const hash = await generateThumbhash(toBytes(cr.bytes), cr.content_type ?? 'image/jpeg');
+  if (hash) {
+    await db.execute({ sql: 'UPDATE media_cache SET thumbhash = ? WHERE url = ?', args: [hash, rawUrl] });
+  }
+  return hash;
 }
 
 /**
