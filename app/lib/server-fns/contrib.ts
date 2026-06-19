@@ -27,6 +27,7 @@ import {
 } from '@/lib/contrib/schemas';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 import { readScrapedShowDetail } from '@/lib/server-fns/hybrid';
+import { plainMatchesDoc, flattenLexicalDoc } from '@/lib/contrib/free-form';
 
 /**
  * Contribution write/read server-fns (M3). Reads are public; the write fn runs
@@ -231,6 +232,15 @@ export const saveShowBlock = createServerFn({ method: 'POST' })
     // Layer 2 (§6.6): re-parse the content with the block's own Valibot schema
     // (same schema the Formisch form used — never trust the client).
     const content = v.parse(BLOCK_SCHEMAS[data.pinnedKey], data.content);
+
+    // Free-form integrity (I-14 / §6.6): verify `plain` is the flattening of `doc`
+    // so search/diff text can't be poisoned independently of the rendered tree.
+    if (data.pinnedKey === 'about') {
+      const about = content as { format: string; doc: string; plain: string };
+      if (about.format === 'lexical' && !plainMatchesDoc(about, flattenLexicalDoc)) {
+        throw new Error('Free-form `plain` does not match `doc` (integrity check failed).');
+      }
+    }
 
     const db = await getContributionsDb();
     // Page lock gates the edit capability (§6.4). Default 'none' for a new page.
