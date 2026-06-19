@@ -25,7 +25,10 @@ import {
 import type { FreeFormDoc } from '@/lib/contrib/free-form';
 import { HistoryPanel } from '@/components/contrib/history-panel';
 import { PageGovernancePanel } from '@/components/contrib/page-governance-panel';
-import { ReferencesSection } from '@/components/contrib/references-section';
+import {
+  ReferencesSection,
+  collectScrapedReferences,
+} from '@/components/contrib/references-section';
 import { listCitations, type Citation } from '@/lib/server-fns/citations';
 import type {
   UniformInput,
@@ -227,8 +230,13 @@ function ShowDetailPage() {
           />
           <LinksSection corpsKey={corps.corps_key} season={show.season} initial={authored.links} />
 
-          {/* References / citations (M11a) */}
-          <ReferencesSection corpsKey={corps.corps_key} season={show.season} initial={citations} />
+          {/* References / citations (M11a) + scraped/yearbook provenance (M11c) */}
+          <ReferencesSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            initial={citations}
+            provenance={collectScrapedReferences(show)}
+          />
 
           {/* Source attribution */}
           <Show when={show.sourceUrl}>

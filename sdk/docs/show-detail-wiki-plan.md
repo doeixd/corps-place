@@ -800,7 +800,13 @@ show_citations (
   OG-metadata prefetch + dedupe, `listCitations`, attach via block `citationIds`) +
   the per-section Sources line + the page References section. (structured blocks)
 - **M11b** — inline citations in the free-form Lexical editor (custom node). Rides M4.
-- **M11c** — surface scraped/yearbook provenance as citations (authority-sorted).
+  **Still deferred:** a custom Lexical inline node + insert toolbar + render/numbering
+  is a self-contained editor feature (see OQ-9 on granularity). The read-side
+  allowlist (lexical-render.tsx) must gain a `citation` case when this lands.
+- **M11c — DONE.** Scraped/yearbook `source_url`s surface as read-only, authority-
+  sorted references via `collectScrapedReferences(show)` →
+  `<ReferencesSection provenance>` (yearbook sources badged "Official", sorted to
+  the top). Unifies provenance with the citation bibliography per §18.1.
 
 ### 18.5 Invariants / edge cases
 - **I-16** A citation is page-scoped + deduped by `normalized_url`; reference
