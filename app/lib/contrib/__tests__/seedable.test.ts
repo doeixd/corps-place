@@ -7,7 +7,6 @@ import {
   repertoireNaturalKey,
   designerNaturalKey,
   movementNaturalKey,
-  sourceHash,
 } from '@/lib/contrib/seedable';
 import type { OverrideRow } from '@/lib/contrib/store';
 import type {
@@ -16,7 +15,10 @@ import type {
   ShowDetailRepertoire,
 } from '@sdk/src/readModel/builders/shows.js';
 
-const rep = (workTitle: string, extra: Partial<ShowDetailRepertoire> = {}): ShowDetailRepertoire => ({
+const rep = (
+  workTitle: string,
+  extra: Partial<ShowDetailRepertoire> = {}
+): ShowDetailRepertoire => ({
   workTitle,
   composer: null,
   arranger: null,
@@ -47,7 +49,9 @@ const movement = (ordinal: number, title: string): ShowDetailMovement => ({
 });
 
 // Minimal OverrideRow factory — only the fields the merge functions read.
-const override = (o: Partial<OverrideRow> & Pick<OverrideRow, 'pinned_key' | 'natural_key' | 'state'>): OverrideRow => ({
+const override = (
+  o: Partial<OverrideRow> & Pick<OverrideRow, 'pinned_key' | 'natural_key' | 'state'>
+): OverrideRow => ({
   override_id: o.override_id ?? `ov-${o.natural_key}`,
   pinned_key: o.pinned_key,
   natural_key: o.natural_key,
@@ -65,7 +69,12 @@ describe('mergeRepertoire', () => {
     const scraped = [rep('Bolero', { composer: 'Ravel' }), rep('Firebird')];
     const merged = mergeRepertoire(scraped, []);
     expect(merged).toHaveLength(2);
-    expect(merged[0]).toMatchObject({ workTitle: 'Bolero', composer: 'Ravel', overridden: false, added: false });
+    expect(merged[0]).toMatchObject({
+      workTitle: 'Bolero',
+      composer: 'Ravel',
+      overridden: false,
+      added: false,
+    });
     expect(merged[0].naturalKey).toBe(repertoireNaturalKey(scraped[0], 0));
     expect(merged[0].sourceHash).toMatch(/^[0-9a-f]{8}$/);
   });
@@ -82,13 +91,21 @@ describe('mergeRepertoire', () => {
       }),
     ]);
     expect(merged).toHaveLength(1);
-    expect(merged[0]).toMatchObject({ workTitle: 'Boléro', composer: 'Maurice Ravel', overridden: true });
+    expect(merged[0]).toMatchObject({
+      workTitle: 'Boléro',
+      composer: 'Maurice Ravel',
+      overridden: true,
+    });
   });
 
   it('hides a scraped row when a tombstone (hidden) override exists', () => {
     const scraped = [rep('Bolero'), rep('Firebird')];
     const merged = mergeRepertoire(scraped, [
-      override({ pinned_key: 'repertoire', natural_key: repertoireNaturalKey(scraped[0], 0), state: 'hidden' }),
+      override({
+        pinned_key: 'repertoire',
+        natural_key: repertoireNaturalKey(scraped[0], 0),
+        state: 'hidden',
+      }),
     ]);
     expect(merged.map((m) => m.workTitle)).toEqual(['Firebird']);
   });
@@ -147,7 +164,10 @@ describe('mergeRepertoire', () => {
     const scraped = [rep('Bolero'), rep('Bolero')];
     const keys = mergeRepertoire(scraped, []).map((m) => m.naturalKey);
     expect(new Set(keys).size).toBe(2);
-    expect(keys).toEqual([repertoireNaturalKey(scraped[0], 0), repertoireNaturalKey(scraped[1], 1)]);
+    expect(keys).toEqual([
+      repertoireNaturalKey(scraped[0], 0),
+      repertoireNaturalKey(scraped[1], 1),
+    ]);
   });
 
   it('ignores overrides for other pinned keys', () => {
@@ -164,14 +184,17 @@ describe('mergeDesigners', () => {
   it('keys on role+name so it is stable regardless of array order', () => {
     const scraped = [designer('Brass Arranger', 'Key Poulan'), designer('Visual', 'Jane Doe')];
     const key = designerNaturalKey(scraped[0]);
-    const merged = mergeDesigners([scraped[1], scraped[0]], [
-      override({
-        pinned_key: 'designers',
-        natural_key: key,
-        state: 'edited',
-        content_json: JSON.stringify({ role: 'Brass Arranger', name: 'Key Poulan Jr.' }),
-      }),
-    ]);
+    const merged = mergeDesigners(
+      [scraped[1], scraped[0]],
+      [
+        override({
+          pinned_key: 'designers',
+          natural_key: key,
+          state: 'edited',
+          content_json: JSON.stringify({ role: 'Brass Arranger', name: 'Key Poulan Jr.' }),
+        }),
+      ]
+    );
     const edited = merged.find((m) => m.role === 'Brass Arranger');
     expect(edited).toMatchObject({ name: 'Key Poulan Jr.', overridden: true });
   });
@@ -195,7 +218,18 @@ describe('mergeMovements', () => {
 
 describe('mergeMedia', () => {
   it('keys on the url hash so reordered media keep their overrides', () => {
-    const a = { mediaType: 'video', title: 'A', description: null, url: 'https://x/a', thumbnailUrl: null, attribution: null, source: null, sourceAuthority: null, publishedAt: null, durationSeconds: null };
+    const a = {
+      mediaType: 'video',
+      title: 'A',
+      description: null,
+      url: 'https://x/a',
+      thumbnailUrl: null,
+      attribution: null,
+      source: null,
+      sourceAuthority: null,
+      publishedAt: null,
+      durationSeconds: null,
+    };
     const b = { ...a, title: 'B', url: 'https://x/b' };
     const merged = mergeMedia([b, a], []);
     expect(merged).toHaveLength(2);

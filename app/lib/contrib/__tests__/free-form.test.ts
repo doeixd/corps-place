@@ -32,7 +32,9 @@ describe('plainMatchesDoc', () => {
   });
 
   it('rejects a plain that does not match the doc (poisoned search text)', () => {
-    expect(plainMatchesDoc(doc('Hello world', 'totally different injected text'), flatten)).toBe(false);
+    expect(plainMatchesDoc(doc('Hello world', 'totally different injected text'), flatten)).toBe(
+      false
+    );
   });
 
   it('treats an empty doc as matching empty plain', () => {
@@ -57,7 +59,12 @@ describe('flattenLexicalDoc', () => {
   });
 
   it('accepts the matching plain and rejects a poisoned one through plainMatchesDoc', () => {
-    const good: FreeFormDoc = { format: 'lexical', version: 1, doc: lexDoc, plain: 'The concept is light.\n\nMovement One' };
+    const good: FreeFormDoc = {
+      format: 'lexical',
+      version: 1,
+      doc: lexDoc,
+      plain: 'The concept is light.\n\nMovement One',
+    };
     const bad: FreeFormDoc = { ...good, plain: 'buy cheap pills' };
     expect(plainMatchesDoc(good, flattenLexicalDoc)).toBe(true);
     expect(plainMatchesDoc(bad, flattenLexicalDoc)).toBe(false);

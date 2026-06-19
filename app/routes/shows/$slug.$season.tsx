@@ -4,7 +4,12 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { fadeIn } from '@/lib/motion-variants';
 import { getCorps, getShowDetail } from '@/lib/server-fns/hybrid';
-import { getShowContributions, getShowGovernance, getShowHistory } from '@/lib/server-fns/contrib';
+import {
+  getShowContributions,
+  getShowGovernance,
+  getShowHistory,
+  type HistoryEntry,
+} from '@/lib/server-fns/contrib';
 import { UniformSection } from '@/components/contrib/uniform-section';
 import { RepertoireSection } from '@/components/contrib/repertoire-section';
 import { DesignStaffSection } from '@/components/contrib/design-staff-section';
@@ -21,7 +26,7 @@ import type { FreeFormDoc } from '@/lib/contrib/free-form';
 import { HistoryPanel } from '@/components/contrib/history-panel';
 import { PageGovernancePanel } from '@/components/contrib/page-governance-panel';
 import { ReferencesSection } from '@/components/contrib/references-section';
-import { listCitations } from '@/lib/server-fns/citations';
+import { listCitations, type Citation } from '@/lib/server-fns/citations';
 import type {
   UniformInput,
   PropsInput,
@@ -41,13 +46,19 @@ export const Route = createFileRoute('/shows/$slug/$season')({
   loader: async ({ params }) => {
     const { slug, season } = params;
     const corps = await getCorps({ data: slug });
-    const show = corps?.corps_key
-      ? await getShowDetail({ data: { corpsKey: corps.corps_key, season } })
-      : null;
-    // Authored contributions overlay (uniform/props/links/symbolism, free-form).
-    const contributions = corps?.corps_key
-      ? await getShowContributions({ data: { corpsKey: corps.corps_key, season } })
-      : null;
+    // The scraped show, contributions overlay, history, governance and citations
+    // are independent reads — fan them out in parallel rather than awaiting serially.
+    const corpsKey = corps?.corps_key;
+    const arg = corpsKey ? { data: { corpsKey, season } } : null;
+    const [show, contributions, history, governance, citations] = arg
+      ? await Promise.all([
+          getShowDetail(arg),
+          getShowContributions(arg),
+          getShowHistory(arg),
+          getShowGovernance(arg),
+          listCitations(arg),
+        ])
+      : [null, null, [] as HistoryEntry[], null, [] as Citation[]];
     const blockContent = <T,>(key: string): T | null => {
       const block = contributions?.blocks.find((b) => b.pinned_key === key);
       if (!block) return null;
@@ -65,15 +76,6 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       gallery: blockContent<GalleryInput>('gallery'),
       about: blockContent<FreeFormDoc>('about'),
     };
-    const history = corps?.corps_key
-      ? await getShowHistory({ data: { corpsKey: corps.corps_key, season } })
-      : [];
-    const governance = corps?.corps_key
-      ? await getShowGovernance({ data: { corpsKey: corps.corps_key, season } })
-      : null;
-    const citations = corps?.corps_key
-      ? await listCitations({ data: { corpsKey: corps.corps_key, season } })
-      : [];
     return {
       corps,
       show,

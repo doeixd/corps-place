@@ -27,7 +27,8 @@ import {
 } from '@/lib/contrib/schemas';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 import { readScrapedShowDetail } from '@/lib/server-fns/hybrid';
-import { plainMatchesDoc, flattenLexicalDoc } from '@/lib/contrib/free-form';
+import { plainMatchesDoc, flattenLexicalDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
+import { scrapedSeedableHashes } from '@/lib/contrib/seedable';
 
 /**
  * Contribution write/read server-fns (M3). Reads are public; the write fn runs
@@ -236,7 +237,7 @@ export const saveShowBlock = createServerFn({ method: 'POST' })
     // Free-form integrity (I-14 / §6.6): verify `plain` is the flattening of `doc`
     // so search/diff text can't be poisoned independently of the rendered tree.
     if (data.pinnedKey === 'about') {
-      const about = content as { format: string; doc: string; plain: string };
+      const about = content as FreeFormDoc;
       if (about.format === 'lexical' && !plainMatchesDoc(about, flattenLexicalDoc)) {
         throw new Error('Free-form `plain` does not match `doc` (integrity check failed).');
       }
@@ -291,6 +292,7 @@ type SaveOverrideData = {
   naturalKey: string;
   state: OverrideState;
   content: unknown;
+  /** @deprecated ignored — the server recomputes the divergence baseline hash. */
   sourceHash?: string | null;
   position?: number | null;
   expectedUpdatedAt?: string | null;
@@ -306,6 +308,17 @@ export const saveShowOverride = createServerFn({ method: 'POST' })
       media: MediaRowInputSchema,
     }[data.pinnedKey];
     const content = data.state === 'hidden' ? null : v.parse(schema, data.content);
+
+    // Divergence baseline is server-authoritative (never trust the client's
+    // sourceHash): recompute the hash of the scraped row this override is based
+    // on, by its natural key. 'added' rows have no scraped counterpart → null.
+    let serverSourceHash: string | null = null;
+    if (data.state !== 'added') {
+      const show = await readScrapedShowDetail(data.corpsKey, data.season);
+      if (show) {
+        serverSourceHash = scrapedSeedableHashes(show)[data.pinnedKey]?.[data.naturalKey] ?? null;
+      }
+    }
 
     const db = await getContributionsDb();
     const lockLevel = ((
@@ -327,7 +340,7 @@ export const saveShowOverride = createServerFn({ method: 'POST' })
         naturalKey: data.naturalKey,
         state: data.state as OverrideState,
         contentJson: content ? JSON.stringify(content) : null,
-        sourceHash: data.sourceHash ?? null,
+        sourceHash: serverSourceHash,
         position: data.position,
       },
       ctx,
