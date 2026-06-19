@@ -20,10 +20,31 @@ const normalizeKeyPart = (value: string): string =>
     .replace(/[^\p{L}\p{N}\s]+/gu, '')
     .replace(/\s+/g, ' ');
 
+/**
+ * Repertoire row identity. The second arg is the row's **occurrence among rows
+ * with the same normalized title** (0-based), NOT its absolute position in the
+ * scraped array. Keying on occurrence (not index) keeps a human override attached
+ * when the scraper reorders distinct works or inserts a row above (§5): the 1st
+ * "Bolero" stays `bolero#1` regardless of where it moves. Use `repertoireKeys()`
+ * to derive these consistently for a whole show.
+ */
 export const repertoireNaturalKey = (
   piece: Pick<ShowDetailRepertoire, 'workTitle'>,
-  index: number
-): string => `${normalizeKeyPart(piece.workTitle)}#${index + 1}`;
+  occurrence: number
+): string => `${normalizeKeyPart(piece.workTitle)}#${occurrence + 1}`;
+
+/** Occurrence-based natural keys for a scraped repertoire list, aligned by index. */
+export const repertoireKeys = (
+  scraped: readonly Pick<ShowDetailRepertoire, 'workTitle'>[]
+): string[] => {
+  const seen = new Map<string, number>();
+  return scraped.map((piece) => {
+    const norm = normalizeKeyPart(piece.workTitle);
+    const occurrence = seen.get(norm) ?? 0;
+    seen.set(norm, occurrence + 1);
+    return repertoireNaturalKey(piece, occurrence);
+  });
+};
 
 export const designerNaturalKey = (designer: Pick<ShowDetailDesigner, 'role' | 'name'>): string =>
   `${normalizeKeyPart(designer.role)}:${normalizeKeyPart(designer.name)}`;
@@ -221,9 +242,10 @@ export const mergeRepertoire = (
     overrides.filter((row) => row.pinned_key === 'repertoire').map((row) => [row.natural_key, row])
   );
   const merged: MergedRepertoireRow[] = [];
+  const keys = repertoireKeys(scraped);
 
   scraped.forEach((piece, index) => {
-    const naturalKey = repertoireNaturalKey(piece, index);
+    const naturalKey = keys[index];
     const hash = sourceHash(repertoireToInput(piece));
     const override = byKey.get(naturalKey);
     byKey.delete(naturalKey);
@@ -415,9 +437,9 @@ export type SeedableHashMap = Record<string, Record<string, string>>;
 
 export const scrapedSeedableHashes = (show: ShowDetail): SeedableHashMap => ({
   repertoire: Object.fromEntries(
-    show.repertoire.map((piece, index) => [
-      repertoireNaturalKey(piece, index),
-      sourceHash(repertoireToInput(piece)),
+    repertoireKeys(show.repertoire).map((key, index) => [
+      key,
+      sourceHash(repertoireToInput(show.repertoire[index])),
     ])
   ),
   designers: Object.fromEntries(

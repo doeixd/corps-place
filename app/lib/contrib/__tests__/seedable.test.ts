@@ -123,6 +123,33 @@ describe('mergeRepertoire', () => {
     expect(merged[0].scrapeDiverged).toBe(true);
   });
 
+  it('keeps an override attached when the scraper reorders distinct works (reorder-safe key)', () => {
+    const bolero = rep('Bolero');
+    const firebird = rep('Firebird');
+    // Override authored against Firebird while it was second in the list.
+    const key = repertoireNaturalKey(firebird, 0); // first (only) occurrence of "Firebird"
+    const ov = override({
+      pinned_key: 'repertoire',
+      natural_key: key,
+      state: 'edited',
+      content_json: JSON.stringify({ workTitle: 'The Firebird Suite' }),
+    });
+    // Scraper later reorders: Firebird now comes first.
+    const merged = mergeRepertoire([firebird, bolero], [ov]);
+    const edited = merged.find((m) => m.workTitle === 'The Firebird Suite');
+    expect(edited).toBeDefined();
+    expect(edited?.overridden).toBe(true);
+    // And the untouched row is still plain.
+    expect(merged.find((m) => m.workTitle === 'Bolero')?.overridden).toBe(false);
+  });
+
+  it('distinguishes duplicate titles by occurrence', () => {
+    const scraped = [rep('Bolero'), rep('Bolero')];
+    const keys = mergeRepertoire(scraped, []).map((m) => m.naturalKey);
+    expect(new Set(keys).size).toBe(2);
+    expect(keys).toEqual([repertoireNaturalKey(scraped[0], 0), repertoireNaturalKey(scraped[1], 1)]);
+  });
+
   it('ignores overrides for other pinned keys', () => {
     const scraped = [rep('Bolero')];
     const merged = mergeRepertoire(scraped, [
