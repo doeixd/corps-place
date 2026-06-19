@@ -5,6 +5,7 @@ import { saveShowOverride } from '@/lib/server-fns/contrib';
 import type { OverrideRow } from '@/lib/contrib/store';
 import type { DesignerRowInput } from '@/lib/contrib/schemas';
 import { mergeDesigners, sourceHash, type MergedDesignerRow } from '@/lib/contrib/seedable';
+import { SourceBadge, DivergenceBadge } from '@/components/contrib/provenance';
 import {
   CitationMarks,
   CitationPicker,
@@ -191,14 +192,20 @@ function DesignerRow({
           <CitationMarks citationIds={row.citationIds} citations={citations} />
         </p>
         <div className="mt-1 flex flex-wrap gap-1.5 text-[11px] uppercase tracking-wide text-text-secondary">
-          <SourceBadge row={row} />
+          <SourceBadge
+            source={row.source}
+            sourceAuthority={row.sourceAuthority}
+            added={row.added}
+          />
           {row.overridden ? (
             <span className="rounded bg-foreground/5 px-1.5 py-0.5">Edited by fan</span>
           ) : null}
           {row.scrapeDiverged ? (
-            <span className="rounded bg-amber-500/10 px-1.5 py-0.5 text-amber-700">
-              Source changed
-            </span>
+            <DivergenceBadge
+              source={row.source}
+              sourceAuthority={row.sourceAuthority}
+              season={season}
+            />
           ) : null}
         </div>
       </div>
@@ -347,13 +354,3 @@ const newRow = (index: number): MergedDesignerRow => ({
   overridden: false,
   added: true,
 });
-
-function SourceBadge({ row }: { row: MergedDesignerRow }) {
-  if (row.sourceAuthority === 100 || row.source === 'dci-yearbook') {
-    return <span className="rounded bg-primary/10 px-1.5 py-0.5 text-primary">DCI Yearbook</span>;
-  }
-  if (row.source)
-    return <span className="rounded bg-foreground/5 px-1.5 py-0.5">{row.source}</span>;
-  if (row.added) return <span className="rounded bg-foreground/5 px-1.5 py-0.5">Fan added</span>;
-  return <span className="rounded bg-foreground/5 px-1.5 py-0.5">Scraped</span>;
-}
