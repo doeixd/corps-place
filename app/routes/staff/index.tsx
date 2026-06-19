@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMemo, useState, useCallback, useEffect } from 'react';
+import { useMemo, useCallback, useEffect } from 'react';
 import { getStaffDirectory } from '@/lib/server-fns/hybrid';
 import { staffCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
@@ -10,15 +10,16 @@ import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 
-type StaffSearch = { q?: string };
-
-const SCROLL_KEY = 'staff-scroll-y';
+type StaffSearch = { q?: string; s?: number };
 
 export const Route = createFileRoute('/staff/')({
   validateSearch: (search: Record<string, unknown>): StaffSearch => {
-    const q = typeof search.q === 'string' && search.q ? search.q : undefined;
-    return q ? { q } : {};
+    const out: StaffSearch = {};
+    if (typeof search.q === 'string' && search.q) out.q = search.q;
+    if (typeof search.s === 'number' && search.s > 0) out.s = search.s;
+    return out;
   },
   loader: async () => ({ staff: await getStaffDirectory() }),
   staleTime: 60_000,
@@ -39,7 +40,13 @@ const GAP = 12;
 const ROW_HEIGHT = CARD_HEIGHT + GAP;
 
 function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
-  const [query, setQuery] = useState('');
+  const search = useSearch({ from: '/staff/' });
+  const navigate = useNavigate();
+  const columns = 3;
+
+  const query = search.q ?? '';
+  const setQuery = (q: string) =>
+    void navigate({ search: (prev) => ({ ...prev, q: q || undefined }), replace: true });
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -52,8 +59,6 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
     );
   }, [staff, query]);
 
-  const columns = 3;
-
   const virtualizer = useWindowVirtualizer({
     count: Math.ceil(rows.length / columns),
     estimateSize: () => ROW_HEIGHT,
@@ -61,20 +66,33 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
     gap: GAP,
   });
 
-  // Restore scroll position on mount (back-button navigation).
+  // Restore scroll position from URL on back-button navigation.
   useEffect(() => {
-    const saved = sessionStorage.getItem(SCROLL_KEY);
-    if (saved) {
-      const y = Number(saved);
-      if (y > 0) {
-        requestAnimationFrame(() => window.scrollTo(0, y));
-      }
-      sessionStorage.removeItem(SCROLL_KEY);
+    if (search.s && search.s > 0) {
+      requestAnimationFrame(() => window.scrollTo(0, search.s));
     }
   }, []);
 
-  const virtualItems = virtualizer.getVirtualItems();
+  // Save scroll position to URL on scroll (debounced).
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const onScroll = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        navigate({
+          search: (prev) => ({ ...prev, s: window.scrollY || undefined }),
+          replace: true,
+        });
+      }, 200);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(timer);
+    };
+  }, []);
 
+  const virtualItems = virtualizer.getVirtualItems();
   const getRow = useCallback(
     (rowIndex: number) => {
       const start = rowIndex * columns;
@@ -140,19 +158,8 @@ function StaffCard({ staff }: { staff: StaffSummary }) {
   const seasons = staff.seasons ?? [];
   const range =
     seasons.length > 1 ? `${seasons[seasons.length - 1]}–${seasons[0]}` : (seasons[0] ?? '');
-
-  // Save scroll position before navigating to a profile.
-  const saveScroll = () => {
-    sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
-  };
-
   return (
-    <Link
-      to="/staff/$personId"
-      params={{ personId: staff.person_id }}
-      className="block"
-      onClick={saveScroll}
-    >
+    <Link to="/staff/$personId" params={{ personId: staff.person_id }} className="block">
       <Card className="h-full transition-colors hover:bg-accent/40">
         <CardContent className="flex items-center gap-3 p-3">
           <div className="size-12 shrink-0 overflow-hidden rounded-full bg-muted">

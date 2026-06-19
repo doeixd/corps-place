@@ -16,6 +16,7 @@ import {
   Calendar01Icon,
   UserMultipleIcon,
   JusticeScale01Icon,
+  UserGroupIcon,
 } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/')({
@@ -95,7 +96,7 @@ function Home() {
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">Explore</h2>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <ExploreCard
               to="/events/$yearSlug"
               params={{ yearSlug: '2026' }}
@@ -110,6 +111,13 @@ function Home() {
               icon={UserMultipleIcon}
               title="Corps Directory"
               description="Drum corps and ensembles with logos, history, and score timelines."
+            />
+            <ExploreCard
+              to="/staff"
+              preload="intent"
+              icon={UserGroupIcon}
+              title="Staff Directory"
+              description="Instructors, designers, and directors across the activity."
             />
             <ExploreCard
               to="/judges"
