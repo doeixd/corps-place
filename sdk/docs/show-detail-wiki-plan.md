@@ -431,6 +431,18 @@ divergence/pointer columns:
 Idempotent; safe to re-run. Emits a short report (pages reconciled, rows diverged,
 key collisions) like the existing scraper runbooks.
 
+**Implemented:** `scripts/reconcile-contributions.ts` (`npm run reconcile:contributions`).
+Dry-run by default; `--apply` persists orphan/divergence/show_id changes; `--limit N`
+caps pages. Reads the scraped half exactly like the app's hybrid path —
+the emitted read-model when `READ_MODEL_DB_URL` is set (production, post-emit), else
+the relational DB (dev). It writes the contributions DB at `CONTRIBUTIONS_DB_URL`
+(default `/data` in prod), so run it from a host with the repo + tsx that can reach
+that DB. The collision (M-1) guard runs only against the relational table (the
+read-model is keyed uniquely); a collision sets a non-zero exit code for alerting.
+Note: it is **not** wired into `docker-entrypoint.sh` — the slim runtime image has no
+tsx/source. Run it on a nightly cron from a box that has the repo (after the emit), or
+point `CONTRIBUTIONS_DB_URL` at the production volume.
+
 ## 10. Media uploads & backup (R2)
 
 - Reuse the existing R2 setup (read-model distribution) + `sharp` (already in
