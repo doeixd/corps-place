@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { getStaffDirectory } from '@/lib/server-fns/hybrid';
 import { staffCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
@@ -12,6 +12,8 @@ import { Input } from '@/components/ui/input';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 
 type StaffSearch = { q?: string };
+
+const SCROLL_KEY = 'staff-scroll-y';
 
 export const Route = createFileRoute('/staff/')({
   validateSearch: (search: Record<string, unknown>): StaffSearch => {
@@ -32,8 +34,8 @@ function StaffDirectory() {
   );
 }
 
-const CARD_HEIGHT = 76; // px — height of one staff card row
-const GAP = 12; // gap-3 = 12px
+const CARD_HEIGHT = 76;
+const GAP = 12;
 const ROW_HEIGHT = CARD_HEIGHT + GAP;
 
 function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
@@ -50,8 +52,7 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
     );
   }, [staff, query]);
 
-  // Responsive column count: 1 on mobile, 2 at sm, 3 at lg
-  const columns = 3; // fixed to worst-case — the window virtualizer handles layout
+  const columns = 3;
 
   const virtualizer = useWindowVirtualizer({
     count: Math.ceil(rows.length / columns),
@@ -59,6 +60,18 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
     overscan: 3,
     gap: GAP,
   });
+
+  // Restore scroll position on mount (back-button navigation).
+  useEffect(() => {
+    const saved = sessionStorage.getItem(SCROLL_KEY);
+    if (saved) {
+      const y = Number(saved);
+      if (y > 0) {
+        requestAnimationFrame(() => window.scrollTo(0, y));
+      }
+      sessionStorage.removeItem(SCROLL_KEY);
+    }
+  }, []);
 
   const virtualItems = virtualizer.getVirtualItems();
 
@@ -127,8 +140,19 @@ function StaffCard({ staff }: { staff: StaffSummary }) {
   const seasons = staff.seasons ?? [];
   const range =
     seasons.length > 1 ? `${seasons[seasons.length - 1]}–${seasons[0]}` : (seasons[0] ?? '');
+
+  // Save scroll position before navigating to a profile.
+  const saveScroll = () => {
+    sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
+  };
+
   return (
-    <Link to="/staff/$personId" params={{ personId: staff.person_id }} className="block">
+    <Link
+      to="/staff/$personId"
+      params={{ personId: staff.person_id }}
+      className="block"
+      onClick={saveScroll}
+    >
       <Card className="h-full transition-colors hover:bg-accent/40">
         <CardContent className="flex items-center gap-3 p-3">
           <div className="size-12 shrink-0 overflow-hidden rounded-full bg-muted">
