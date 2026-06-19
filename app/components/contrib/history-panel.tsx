@@ -186,7 +186,7 @@ const rel = (iso: string): string => {
 };
 
 // Group consecutive revisions by the same author within a 30-minute window.
-function groupBySession(entries: HistoryEntry[]): HistoryEntry[][] {
+export function groupBySession(entries: HistoryEntry[]): HistoryEntry[][] {
   const groups: HistoryEntry[][] = [];
   const WINDOW = 30 * 60 * 1000;
   for (const e of entries) {

@@ -14,7 +14,7 @@ import {
 import { ImageDrop } from '@/components/contrib/image-drop';
 import { ProgressiveImage } from '@/components/progressive-image';
 import { LexicalFreeForm } from '@/components/contrib/lexical-free-form';
-import { renderLexicalDoc } from '@/lib/contrib/lexical-render';
+import { renderLexicalDoc, citationNumberMap } from '@/lib/contrib/lexical-render';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon, type IconComponent } from '@/components/icon';
@@ -475,7 +475,12 @@ function GalleryEditor({ corpsKey, season, value, onSaved }: EditorProps<Gallery
 }
 
 // ── The concept (free-form Lexical essay) ─────────────────────────────────────
-export function AboutSection({ corpsKey, season, initial }: BlockProps<FreeFormDoc>) {
+export function AboutSection({
+  corpsKey,
+  season,
+  initial,
+  citationIds = [],
+}: BlockProps<FreeFormDoc> & { citationIds?: readonly string[] }) {
   const [value, setValue] = useState<FreeFormDoc | null>(initial);
   return (
     <ContribBlock
@@ -483,7 +488,7 @@ export function AboutSection({ corpsKey, season, initial }: BlockProps<FreeFormD
       title="The concept"
       emptyHint="Tell the story of this show — the concept, the journey, what it all means."
       hasContent={Boolean(value?.plain?.trim())}
-      view={renderLexicalDoc(value?.doc)}
+      view={renderLexicalDoc(value?.doc, citationNumberMap(citationIds))}
       edit={(close) => (
         <AboutEditor
           corpsKey={corpsKey}
