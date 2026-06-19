@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMemo, useCallback, useEffect } from 'react';
+import { useMemo, useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
 import { getStaffDirectory } from '@/lib/server-fns/hybrid';
 import { staffCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
@@ -10,7 +10,6 @@ import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
-import { useNavigate, useSearch } from '@tanstack/react-router';
 
 type StaffSearch = { q?: string; s?: number };
 
@@ -30,7 +29,7 @@ function StaffDirectory() {
   const { staff } = Route.useLoaderData();
   return (
     <HybridCollection collection={staffCollection} loader={staff}>
-      {(rows) => <StaffDirectoryContent staff={rows} />}
+      {(rows) => <StaffDirectoryContent staff={rows as unknown as StaffSummary[]} />}
     </HybridCollection>
   );
 }
@@ -38,15 +37,48 @@ function StaffDirectory() {
 const CARD_HEIGHT = 76;
 const GAP = 12;
 const ROW_HEIGHT = CARD_HEIGHT + GAP;
+const SCROLL_WRITE_DEBOUNCE_MS = 250;
+const SCROLL_WRITE_EPSILON = 16;
+
+const getStaffColumnSnapshot = () => {
+  if (typeof window === 'undefined') return 3;
+  if (window.matchMedia('(min-width: 1024px)').matches) return 3;
+  if (window.matchMedia('(min-width: 640px)').matches) return 2;
+  return 1;
+};
+
+const subscribeStaffColumns = (onStoreChange: () => void) => {
+  if (typeof window === 'undefined') return () => {};
+
+  const queries = ['(min-width: 640px)', '(min-width: 1024px)'].map((query) =>
+    window.matchMedia(query)
+  );
+  queries.forEach((query) => query.addEventListener('change', onStoreChange));
+
+  return () => {
+    queries.forEach((query) => query.removeEventListener('change', onStoreChange));
+  };
+};
+
+function useStaffColumns() {
+  return useSyncExternalStore(subscribeStaffColumns, getStaffColumnSnapshot, () => 3);
+}
 
 function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
-  const search = useSearch({ from: '/staff/' });
-  const navigate = useNavigate();
-  const columns = 3;
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const columns = useStaffColumns();
+  const latestSearchRef = useRef(search);
+  const didRestoreScrollRef = useRef(false);
+  latestSearchRef.current = search;
 
   const query = search.q ?? '';
   const setQuery = (q: string) =>
-    void navigate({ search: (prev) => ({ ...prev, q: q || undefined }), replace: true });
+    void navigate({
+      search: (prev) => ({ ...prev, q: q || undefined, s: undefined }),
+      replace: true,
+      resetScroll: false,
+    });
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -66,31 +98,42 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
     gap: GAP,
   });
 
-  // Restore scroll position from URL on back-button navigation.
+  // Restore the browser viewport from the URL once; later scroll writes should not replay it.
   useEffect(() => {
-    if (search.s && search.s > 0) {
-      requestAnimationFrame(() => window.scrollTo(0, search.s));
-    }
-  }, []);
+    if (didRestoreScrollRef.current) return;
+    didRestoreScrollRef.current = true;
 
-  // Save scroll position to URL on scroll (debounced).
+    const scrollY = typeof search.s === 'number' ? search.s : 0;
+    if (scrollY > 0) {
+      const frame = requestAnimationFrame(() => window.scrollTo(0, scrollY));
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [search.s]);
+
+  // Save scroll position to URL on scroll end without letting the router reset the viewport.
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const onScroll = () => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        navigate({
-          search: (prev) => ({ ...prev, s: window.scrollY || undefined }),
+        const scrollY = Math.round(window.scrollY);
+        const currentScrollY = latestSearchRef.current.s ?? 0;
+        if (Math.abs(currentScrollY - scrollY) < SCROLL_WRITE_EPSILON) return;
+
+        void navigate({
+          search: (prev) => ({ ...prev, s: scrollY > 0 ? scrollY : undefined }),
           replace: true,
+          resetScroll: false,
         });
-      }, 200);
+      }, SCROLL_WRITE_DEBOUNCE_MS);
     };
+
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
-      clearTimeout(timer);
+      if (timer) clearTimeout(timer);
     };
-  }, []);
+  }, [navigate]);
 
   const virtualItems = virtualizer.getVirtualItems();
   const getRow = useCallback(
