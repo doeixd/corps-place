@@ -13,7 +13,7 @@ import {
 } from '@/lib/contrib/schemas';
 import { ImageDrop } from '@/components/contrib/image-drop';
 import { ProgressiveImage } from '@/components/progressive-image';
-import { LexicalFreeForm } from '@/components/contrib/lexical-free-form';
+import { LexicalFreeForm, type EditorCitation } from '@/components/contrib/lexical-free-form';
 import { renderLexicalDoc, citationNumberMap } from '@/lib/contrib/lexical-render';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
 import { Card, CardContent } from '@/components/ui/card';
@@ -475,25 +475,37 @@ function GalleryEditor({ corpsKey, season, value, onSaved }: EditorProps<Gallery
 }
 
 // ── The concept (free-form Lexical essay) ─────────────────────────────────────
+export interface AboutCitation {
+  citationId: string;
+  title?: string | null;
+  url?: string | null;
+}
+
 export function AboutSection({
   corpsKey,
   season,
   initial,
-  citationIds = [],
-}: BlockProps<FreeFormDoc> & { citationIds?: readonly string[] }) {
+  citations = [],
+}: BlockProps<FreeFormDoc> & { citations?: readonly AboutCitation[] }) {
   const [value, setValue] = useState<FreeFormDoc | null>(initial);
+  const numbers = citationNumberMap(citations.map((c) => c.citationId));
+  const editorCitations = citations.map((c) => ({
+    citationId: c.citationId,
+    label: `[${numbers[c.citationId]}] ${c.title || c.url || 'Source'}`,
+  }));
   return (
     <ContribBlock
       icon={BookOpen01Icon}
       title="The concept"
       emptyHint="Tell the story of this show — the concept, the journey, what it all means."
       hasContent={Boolean(value?.plain?.trim())}
-      view={renderLexicalDoc(value?.doc, citationNumberMap(citationIds))}
+      view={renderLexicalDoc(value?.doc, numbers)}
       edit={(close) => (
         <AboutEditor
           corpsKey={corpsKey}
           season={season}
           value={value}
+          citations={editorCitations}
           onSaved={(v) => {
             setValue(v);
             close();
@@ -504,7 +516,13 @@ export function AboutSection({
   );
 }
 
-function AboutEditor({ corpsKey, season, value, onSaved }: EditorProps<FreeFormDoc>) {
+function AboutEditor({
+  corpsKey,
+  season,
+  value,
+  onSaved,
+  citations = [],
+}: EditorProps<FreeFormDoc> & { citations?: readonly EditorCitation[] }) {
   const [draft, setDraft] = useState<FreeFormDoc>(value ?? emptyFreeFormDoc('lexical'));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -522,7 +540,7 @@ function AboutEditor({ corpsKey, season, value, onSaved }: EditorProps<FreeFormD
   };
   return (
     <div className="space-y-3">
-      <LexicalFreeForm value={draft} onChange={setDraft} />
+      <LexicalFreeForm value={draft} onChange={setDraft} citations={citations} />
       {error ? <p className="text-sm text-red-500">{error}</p> : null}
       <button
         type="button"

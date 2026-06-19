@@ -600,8 +600,12 @@ point `CONTRIBUTIONS_DB_URL` at the production volume.
   `corps_show_repertoire` rows carry `source='dci-yearbook'`, `source_authority=100`.
   Flows to the app via `rm_show_detail` (verified the emitted read-model carries
   `dci-yearbook` provenance) and renders through the §2c SourceBadge ("DCI Yearbook")
-  + authority-aware DivergenceBadge. (Note: `corps_show_movements` has no `source`
-  column yet, so movement provenance isn't badged — a small schema follow-up.)
+  + authority-aware DivergenceBadge. (Movement provenance is fully plumbed —
+  `corps_show_movements` defines `source`/`source_authority` in relational.ts, the
+  builder reads them, the type + badge render them — but is data-gated: no current
+  ingest writes movement source, and the live source DB hasn't run `ensureColumns`
+  yet, so it self-heals on the next SDK schema setup. Yearbooks carry staff +
+  repertoire, not movement breakdowns.)
   Original milestone text below.
 - **M10 (original plan)** ◻ Enumerate season→bookId (OQ-8);
   fetch page images; vision-extract per page (claude/codex, webp→png) → schema'd
@@ -810,15 +814,16 @@ show_citations (
 - **M11a** — `show_citations` table + citation server-fns (`createCitation` with
   OG-metadata prefetch + dedupe, `listCitations`, attach via block `citationIds`) +
   the per-section Sources line + the page References section. (structured blocks)
-- **M11b** — inline citations in the free-form Lexical editor (custom node). Rides M4.
-  **Read/render side DONE:** `lexical-render.tsx` allowlists an inline `citation`
-  node (`{type:'citation', citationId, version}`), rendered as a superscript `[n]`
-  with the number derived from page citation order (`citationNumberMap`, I-16);
-  `flattenLexicalDoc` ignores it (no text), and AboutSection threads the page
-  citations in. Contract + numbering are unit-tested.
-  **Still deferred:** the *authoring* side — a Lexical `DecoratorNode` + insert
-  toolbar bound to a chosen citation (OQ-9 granularity). Left out deliberately
-  until it can be browser-verified (a throwing custom node breaks the whole editor).
+- **M11b — DONE (pending browser QA).** Inline citations in the free-form Lexical
+  editor. Render: `lexical-render.tsx` allowlists an inline `citation` node
+  (`{type:'citation', citationId, version}`) → superscript `[n]`, number derived
+  from page citation order (`citationNumberMap`, I-16); `flattenLexicalDoc` ignores
+  it (no text). Authoring: `CitationNode` (a `DecoratorNode` registered in the
+  editor, serializing to that exact contract) + a `CitationToolbar` insert control
+  fed the page citations through AboutSection → AboutEditor → LexicalFreeForm. The
+  node can't be unit-tested headless (Lexical node construction needs an active
+  editor), so the contract is covered by the render tests; the editor interaction
+  still needs a browser pass before shipping.
 - **M11c — DONE.** Scraped/yearbook `source_url`s surface as read-only, authority-
   sorted references via `collectScrapedReferences(show)` →
   `<ReferencesSection provenance>` (yearbook sources badged "Official", sorted to

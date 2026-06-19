@@ -215,7 +215,7 @@ function ShowDetailPage() {
             corpsKey={corps.corps_key}
             season={show.season}
             initial={authored.about}
-            citationIds={citations.map((c) => c.citationId)}
+            citations={citations}
           />
           <UniformSection
             corpsKey={corps.corps_key}

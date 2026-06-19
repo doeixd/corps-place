@@ -1,24 +1,35 @@
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
-import { $getRoot, type EditorState } from 'lexical';
+import { $getRoot, $insertNodes, type EditorState } from 'lexical';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
+import { CitationNode, $createCitationNode } from '@/components/contrib/citation-node';
+
+export interface EditorCitation {
+  citationId: string;
+  label: string;
+}
 
 /**
  * Lexical implementation of the free-form editor (M-spike candidate). Mounts
  * client-side only — see the spike route's mount guard. Serializes to the
- * editor-agnostic FreeFormDoc envelope on every change.
+ * editor-agnostic FreeFormDoc envelope on every change. When `citations` are
+ * supplied, a toolbar lets the author insert an inline citation (M11b); the
+ * CitationNode is always registered so a stored doc containing one loads safely.
  */
 export function LexicalFreeForm({
   value,
   onChange,
+  citations = [],
 }: {
   value: FreeFormDoc;
   onChange: (doc: FreeFormDoc) => void;
+  citations?: readonly EditorCitation[];
 }) {
   const handleChange = (editorState: EditorState) => {
     editorState.read(() => {
@@ -35,13 +46,14 @@ export function LexicalFreeForm({
     <LexicalComposer
       initialConfig={{
         namespace: 'free-form-spike',
-        nodes: [HeadingNode, QuoteNode],
+        nodes: [HeadingNode, QuoteNode, CitationNode],
         onError: (e) => {
           throw e;
         },
         editorState: value.doc || undefined,
       }}
     >
+      {citations.length > 0 ? <CitationToolbar citations={citations} /> : null}
       <div className="relative rounded-lg ring-1 ring-foreground/15">
         <RichTextPlugin
           contentEditable={
@@ -58,6 +70,36 @@ export function LexicalFreeForm({
         <OnChangePlugin onChange={handleChange} />
       </div>
     </LexicalComposer>
+  );
+}
+
+/** Toolbar above the editor: insert an inline citation for an existing source. */
+function CitationToolbar({ citations }: { citations: readonly EditorCitation[] }) {
+  const [editor] = useLexicalComposerContext();
+
+  const insert = (citationId: string) => {
+    if (!citationId) return;
+    editor.update(() => {
+      $insertNodes([$createCitationNode(citationId)]);
+    });
+  };
+
+  return (
+    <div className="mb-2 flex items-center gap-2 text-xs text-text-secondary">
+      <span>Cite a source:</span>
+      <select
+        value=""
+        onChange={(e) => insert(e.target.value)}
+        className="rounded border border-border bg-transparent px-1.5 py-1 text-xs"
+      >
+        <option value="">Insert citation…</option>
+        {citations.map((c) => (
+          <option key={c.citationId} value={c.citationId}>
+            {c.label}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
 
