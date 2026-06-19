@@ -242,14 +242,14 @@ export async function getOrFetchResizedMedia(
   const db = getDb();
   await ensureTables(db);
 
-  const variantKey = `${rawUrl}#w=${w}.webp`;
+  const variantKey = `${rawUrl}#w=${w}.jpg`;
   const cachedVariant = await db.execute({
     sql: 'SELECT content_type, bytes FROM media_cache WHERE url = ? LIMIT 1',
     args: [variantKey],
   });
   const vRow = cachedVariant.rows[0] as { content_type?: string; bytes?: unknown } | undefined;
   if (vRow?.bytes != null) {
-    return { contentType: vRow.content_type ?? 'image/webp', body: toBytes(vRow.bytes) };
+    return { contentType: vRow.content_type ?? 'image/jpeg', body: toBytes(vRow.bytes) };
   }
 
   const original = await getOrFetchMedia(rawUrl);
@@ -261,15 +261,15 @@ export async function getOrFetchResizedMedia(
   try {
     const resized = await getSharp()(original.body)
       .resize({ width: w, withoutEnlargement: true })
-      .webp({ quality: 80 })
+      .jpeg({ quality: 80, progressive: true })
       .toBuffer();
     const body = new Uint8Array(resized);
     await db.execute({
       sql: `INSERT OR REPLACE INTO media_cache (url, content_type, bytes, byte_length, fetched_at)
             VALUES (?, ?, ?, ?, ?)`,
-      args: [variantKey, 'image/webp', body, body.byteLength, new Date().toISOString()],
+      args: [variantKey, 'image/jpeg', body, body.byteLength, new Date().toISOString()],
     });
-    return { contentType: 'image/webp', body };
+    return { contentType: 'image/jpeg', body };
   } catch {
     return original;
   }
@@ -303,7 +303,7 @@ export async function getOrFetchDarkMedia(
   });
   const vRow = cachedVariant.rows[0] as { content_type?: string; bytes?: unknown } | undefined;
   if (vRow?.bytes != null) {
-    return { contentType: vRow.content_type ?? 'image/webp', body: toBytes(vRow.bytes) };
+    return { contentType: vRow.content_type ?? 'image/jpeg', body: toBytes(vRow.bytes) };
   }
 
   const original = await getOrFetchMedia(rawUrl);
@@ -323,9 +323,9 @@ export async function getOrFetchDarkMedia(
     await db.execute({
       sql: `INSERT OR REPLACE INTO media_cache (url, content_type, bytes, byte_length, fetched_at)
             VALUES (?, ?, ?, ?, ?)`,
-      args: [variantKey, 'image/webp', body, body.byteLength, new Date().toISOString()],
+      args: [variantKey, 'image/jpeg', body, body.byteLength, new Date().toISOString()],
     });
-    return { contentType: 'image/webp', body };
+    return { contentType: 'image/jpeg', body };
   } catch {
     return getOrFetchResizedMedia(rawUrl, w);
   }
