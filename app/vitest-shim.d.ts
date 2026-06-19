@@ -18,7 +18,11 @@ declare module 'vitest' {
     toBeNull(): R;
     toContain(expected: unknown): R;
     toThrow(expected?: string | RegExp): R;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    toBeInstanceOf(expected: any): R;
     readonly not: Matchers<R>;
+    readonly rejects: Matchers<Promise<void>>;
+    readonly resolves: Matchers<Promise<void>>;
   }
   export function expect(actual: unknown): Matchers<void>;
   export function describe(name: string, fn: () => void): void;

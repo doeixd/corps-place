@@ -108,7 +108,13 @@ const main = async () => {
   const pages = await listShowPages(db, LIMIT);
   log(`${pages.length} contribution page(s)${APPLY ? '' : ' (dry run — no writes)'}`);
 
-  const report = { pages: pages.length, orphaned: 0, reconciled: 0, rowsDiverged: 0, rowsCleared: 0 };
+  const report = {
+    pages: pages.length,
+    orphaned: 0,
+    reconciled: 0,
+    rowsDiverged: 0,
+    rowsCleared: 0,
+  };
 
   for (const page of pages) {
     const show = await fetchShow(page.corps_key, page.season);

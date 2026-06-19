@@ -29,6 +29,7 @@ import { normalizeHex } from '@sdk/src/corpsColors.js';
 import { readScrapedShowDetail } from '@/lib/server-fns/hybrid';
 import { plainMatchesDoc, flattenLexicalDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
 import { scrapedSeedableHashes } from '@/lib/contrib/seedable';
+import { enforceRateLimit } from '@/lib/contrib/rate-limit';
 
 /**
  * Contribution write/read server-fns (M3). Reads are public; the write fn runs
@@ -48,11 +49,13 @@ export const getShowContributions = createServerFn({ method: 'GET' })
 export interface ShowGovernance {
   pageId: string | null;
   lockLevel: ShowPageLock;
+  status: string;
   stewardCount: number;
   mySteward: boolean;
   stewards: StewardSummary['stewards'];
   signedIn: boolean;
   canLock: boolean;
+  canModerate: boolean;
 }
 
 const SHOW_PAGE_LOCKS = ['none', 'trusted', 'mod'] as const satisfies readonly ShowPageLock[];
@@ -67,23 +70,26 @@ const pageGovernance = async (
   corpsKey: string,
   season: string,
   userId: string | null,
-  canLockPage: boolean
+  canLockPage: boolean,
+  canModerate: boolean
 ): Promise<ShowGovernance> => {
   const page = (
     await db.execute({
-      sql: 'SELECT page_id, lock_level FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
+      sql: 'SELECT page_id, lock_level, status FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
       args: [corpsKey, season],
     })
-  ).rows[0] as unknown as { page_id: string; lock_level: ShowPageLock } | undefined;
+  ).rows[0] as unknown as { page_id: string; lock_level: ShowPageLock; status: string } | undefined;
   const steward: StewardSummary = await readStewardSummary(db, page?.page_id ?? null, userId);
   return {
     pageId: page?.page_id ?? null,
     lockLevel: page?.lock_level ?? 'none',
+    status: page?.status ?? 'active',
     stewardCount: steward.stewardCount,
     mySteward: steward.mySteward,
     stewards: steward.stewards,
     signedIn: userId != null,
     canLock: canLockPage,
+    canModerate,
   };
 };
 
@@ -97,7 +103,8 @@ export const getShowGovernance = createServerFn({ method: 'GET' })
       data.corpsKey,
       data.season,
       actor?.userId ?? null,
-      can(actor, 'lock')
+      can(actor, 'lock'),
+      can(actor, 'orphan')
     );
   });
 
@@ -127,14 +134,18 @@ export const getShowHistory = createServerFn({ method: 'GET' })
       })
     ).rows[0] as unknown as { page_id: string } | undefined;
     if (!page) return [];
+    // Moderators see hidden revisions (to review/restore); everyone else doesn't (M9).
+    const actor = await getActor(getWebRequest());
+    const includeHidden = can(actor, 'hideRevision');
     // Join better-auth's `user` table for a display name (revisions store only the id).
     const rows = (
       await db.execute({
         sql: `SELECT r.revision_id, r.target_kind, r.target_id, r.author_id, u.name AS author_name,
                      r.created_at, r.op, r.actor_role, r.summary, r.before_json, r.after_json
               FROM show_revisions r LEFT JOIN "user" u ON u.id = r.author_id
-              WHERE r.page_id = ? ORDER BY r.created_at DESC, r.revision_id DESC LIMIT 300`,
-        args: [page.page_id],
+              WHERE r.page_id = ? AND (r.hidden = 0 OR ?)
+              ORDER BY r.created_at DESC, r.revision_id DESC LIMIT 300`,
+        args: [page.page_id, includeHidden ? 1 : 0],
       })
     ).rows as unknown as Record<string, unknown>[];
     return rows.map((r) => ({
@@ -254,6 +265,7 @@ export const saveShowBlock = createServerFn({ method: 'POST' })
 
     // The chokepoint: throws ForbiddenError if not allowed (I-12).
     const actor = await requireCapability(getWebRequest(), 'edit', { lockLevel });
+    await enforceRateLimit(db, actor, 'edit'); // M9 spam throttle (trusted+ exempt)
 
     // Domain normalization the schema can't express (e.g. hex colors).
     const normalized =
@@ -328,6 +340,7 @@ export const saveShowOverride = createServerFn({ method: 'POST' })
       })
     ).rows[0]?.lock_level ?? 'none') as PageLock;
     const actor = await requireCapability(getWebRequest(), 'edit', { lockLevel });
+    await enforceRateLimit(db, actor, 'edit'); // M9 spam throttle (trusted+ exempt)
 
     const now = new Date().toISOString();
     const ctx = { authorId: actor.userId, actorRole: actor.role, now };
@@ -373,7 +386,14 @@ export const setShowSteward = createServerFn({ method: 'POST' })
     const ctx = { authorId: actor.userId, actorRole: actor.role, now };
     const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
     await setPageSteward(db, pageId, data.steward, ctx);
-    return pageGovernance(db, data.corpsKey, data.season, actor.userId, can(actor, 'lock'));
+    return pageGovernance(
+      db,
+      data.corpsKey,
+      data.season,
+      actor.userId,
+      can(actor, 'lock'),
+      can(actor, 'orphan')
+    );
   });
 
 export const setShowLockLevel = createServerFn({ method: 'POST' })
@@ -388,5 +408,54 @@ export const setShowLockLevel = createServerFn({ method: 'POST' })
     const ctx = { authorId: actor.userId, actorRole: actor.role, now };
     const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
     await setPageLockLevel(db, pageId, data.lockLevel, ctx);
-    return pageGovernance(db, data.corpsKey, data.season, actor.userId, true);
+    return pageGovernance(db, data.corpsKey, data.season, actor.userId, true, can(actor, 'orphan'));
+  });
+
+// ── Moderation (M9) — capabilities reserved in authz, enforced server-side ────
+
+/** Mark/unmark a page orphaned (moderator). Never deletes contributions (§12). */
+export const setShowOrphaned = createServerFn({ method: 'POST' })
+  .validator((data: { corpsKey: string; season: string; orphaned: boolean }) => data)
+  .handler(async ({ data }): Promise<ShowGovernance> => {
+    const actor = await requireCapability(getWebRequest(), 'orphan');
+    const now = new Date().toISOString();
+    const db = await getContributionsDb();
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now };
+    const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
+    await db.execute({
+      sql: 'UPDATE show_pages SET status = ?, updated_at = ? WHERE page_id = ?',
+      args: [data.orphaned ? 'orphaned' : 'active', now, pageId],
+    });
+    return pageGovernance(db, data.corpsKey, data.season, actor.userId, can(actor, 'lock'), true);
+  });
+
+/** Hide (or unhide) an abusive revision (moderator). History stays append-only. */
+export const setRevisionHidden = createServerFn({ method: 'POST' })
+  .validator((data: { revisionId: string; hidden: boolean }) => data)
+  .handler(async ({ data }) => {
+    await requireCapability(getWebRequest(), 'hideRevision');
+    const db = await getContributionsDb();
+    await db.execute({
+      sql: 'UPDATE show_revisions SET hidden = ? WHERE revision_id = ?',
+      args: [data.hidden ? 1 : 0, data.revisionId],
+    });
+    return { ok: true as const, hidden: data.hidden };
+  });
+
+const ROLES = ['user', 'trusted', 'moderator', 'admin'] as const;
+
+/** Grant/revoke a user's role (admin only). Frozen actor_role keeps history stable. */
+export const setUserRole = createServerFn({ method: 'POST' })
+  .validator((data: { userId: string; role: string }) => {
+    if (!ROLES.includes(data.role as (typeof ROLES)[number])) throw new Error('Invalid role');
+    return data;
+  })
+  .handler(async ({ data }) => {
+    await requireCapability(getWebRequest(), 'grantRole');
+    const db = await getContributionsDb();
+    await db.execute({
+      sql: 'UPDATE "user" SET role = ? WHERE id = ?',
+      args: [data.role, data.userId],
+    });
+    return { ok: true as const, userId: data.userId, role: data.role };
   });

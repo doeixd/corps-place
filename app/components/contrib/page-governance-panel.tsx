@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { For, Show } from 'jotai-solid-api';
 import { useSession } from '@/lib/auth-client';
-import { setShowLockLevel, setShowSteward, type ShowGovernance } from '@/lib/server-fns/contrib';
+import {
+  setShowLockLevel,
+  setShowSteward,
+  setShowOrphaned,
+  type ShowGovernance,
+} from '@/lib/server-fns/contrib';
 import type { ShowPageLock } from '@/lib/contrib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -32,8 +37,22 @@ export function PageGovernancePanel({
 }) {
   const { data: session } = useSession();
   const [governance, setGovernance] = useState(initial);
-  const [busy, setBusy] = useState<'steward' | 'lock' | null>(null);
+  const [busy, setBusy] = useState<'steward' | 'lock' | 'orphan' | null>(null);
   const signedIn = Boolean(session?.user) || governance.signedIn;
+
+  const toggleOrphan = async () => {
+    setBusy('orphan');
+    try {
+      const next = await setShowOrphaned({
+        data: { corpsKey, season, orphaned: governance.status !== 'orphaned' },
+      });
+      setGovernance(next);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Could not update page status');
+    } finally {
+      setBusy(null);
+    }
+  };
 
   const toggleSteward = async () => {
     setBusy('steward');
@@ -138,6 +157,27 @@ export function PageGovernancePanel({
             </p>
           )}
         </div>
+
+        <Show when={governance.canModerate}>
+          <div className="border-t border-foreground/10 pt-4">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <span className="text-sm font-medium text-text-primary">Page status</span>
+              <span className="text-xs text-text-secondary">
+                {governance.status === 'orphaned' ? 'Orphaned' : 'Active'}
+              </span>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => void toggleOrphan()}
+              disabled={busy === 'orphan'}
+              className="w-full"
+            >
+              {governance.status === 'orphaned' ? 'Restore page' : 'Mark orphaned'}
+            </Button>
+          </div>
+        </Show>
       </CardContent>
     </Card>
   );
