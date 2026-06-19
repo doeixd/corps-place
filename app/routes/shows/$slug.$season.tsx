@@ -4,8 +4,12 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { fadeIn } from '@/lib/motion-variants';
 import { getCorps, getShowDetail } from '@/lib/server-fns/hybrid';
-import { getShowContributions, getShowHistory } from '@/lib/server-fns/contrib';
+import { getShowContributions, getShowGovernance, getShowHistory } from '@/lib/server-fns/contrib';
 import { UniformSection } from '@/components/contrib/uniform-section';
+import { RepertoireSection } from '@/components/contrib/repertoire-section';
+import { DesignStaffSection } from '@/components/contrib/design-staff-section';
+import { MovementSection } from '@/components/contrib/movement-section';
+import { MediaSection } from '@/components/contrib/media-section';
 import {
   PropsSection,
   LinksSection,
@@ -15,6 +19,7 @@ import {
 } from '@/components/contrib/block-sections';
 import type { FreeFormDoc } from '@/lib/contrib/free-form';
 import { HistoryPanel } from '@/components/contrib/history-panel';
+import { PageGovernancePanel } from '@/components/contrib/page-governance-panel';
 import { ReferencesSection } from '@/components/contrib/references-section';
 import { listCitations } from '@/lib/server-fns/citations';
 import type {
@@ -24,22 +29,13 @@ import type {
   SymbolismInput,
   GalleryInput,
 } from '@/lib/contrib/schemas';
-import type { ShowDetail } from '@sdk/src/readModel/builders/shows.js';
 import { PageShell } from '@/components/page-shell';
 import { BackLink } from '@/components/back-link';
 import { StatusCard } from '@/components/status-card';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon, type IconComponent } from '@/components/icon';
-import { ProgressiveImage } from '@/components/progressive-image';
-import {
-  MusicNote03Icon,
-  UserGroupIcon,
-  KeyframeIcon,
-  ViewIcon,
-  RankingIcon,
-  BookOpen01Icon,
-} from '@/components/icons/generated';
+import { RankingIcon, BookOpen01Icon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/shows/$slug/$season')({
   loader: async ({ params }) => {
@@ -72,17 +68,30 @@ export const Route = createFileRoute('/shows/$slug/$season')({
     const history = corps?.corps_key
       ? await getShowHistory({ data: { corpsKey: corps.corps_key, season } })
       : [];
+    const governance = corps?.corps_key
+      ? await getShowGovernance({ data: { corpsKey: corps.corps_key, season } })
+      : null;
     const citations = corps?.corps_key
       ? await listCitations({ data: { corpsKey: corps.corps_key, season } })
       : [];
-    return { corps, show, season, authored, history, citations };
+    return {
+      corps,
+      show,
+      season,
+      authored,
+      overrides: contributions?.overrides ?? [],
+      history,
+      governance,
+      citations,
+    };
   },
   staleTime: 60_000,
   component: ShowDetailPage,
 });
 
 function ShowDetailPage() {
-  const { corps, show, season, authored, history, citations } = Route.useLoaderData();
+  const { corps, show, season, authored, overrides, history, governance, citations } =
+    Route.useLoaderData();
   const { slug } = Route.useParams();
 
   if (!corps || !show) {
@@ -140,126 +149,37 @@ function ShowDetailPage() {
             )}
           </Show>
 
-          {/* Repertoire (scraped) */}
-          <Show when={show.repertoire.length > 0} fallback={<RepertoirePlaceholder />}>
-            <Section icon={MusicNote03Icon} title="Repertoire">
-              <ul className="divide-y divide-foreground/10">
-                <For each={show.repertoire}>
-                  {(piece) => (
-                    <li className="py-2 first:pt-0 last:pb-0">
-                      <div className="font-medium text-text-primary">
-                        <Show when={piece.hyperlink} fallback={piece.workTitle}>
-                          {(href) => (
-                            <a
-                              href={href}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground"
-                            >
-                              {piece.workTitle}
-                            </a>
-                          )}
-                        </Show>
-                      </div>
-                      <Show when={creditLine(piece.composer, piece.arranger)}>
-                        {(credit) => <p className="text-sm text-text-secondary">{credit}</p>}
-                      </Show>
-                      <Show when={piece.notes}>
-                        {(n) => <p className="text-sm text-text-secondary">{n}</p>}
-                      </Show>
-                    </li>
-                  )}
-                </For>
-              </ul>
-            </Section>
-          </Show>
+          <RepertoireSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            scraped={show.repertoire}
+            overrides={overrides}
+            citations={citations}
+          />
 
-          {/* Movements (scraped) */}
-          <Show when={show.movements.length > 0}>
-            <Section icon={KeyframeIcon} title="Movements">
-              <ol className="space-y-2">
-                <For each={show.movements}>
-                  {(mv) => (
-                    <li className="flex gap-3">
-                      <span className="text-text-secondary tabular-nums">{mv.ordinal}.</span>
-                      <div className="min-w-0">
-                        <Show
-                          when={mv.title}
-                          fallback={<span className="text-text-secondary">Untitled movement</span>}
-                        >
-                          {(t) => <span className="font-medium text-text-primary">{t}</span>}
-                        </Show>
-                        <Show when={mv.description}>
-                          {(d) => <p className="text-sm text-text-secondary">{d}</p>}
-                        </Show>
-                      </div>
-                    </li>
-                  )}
-                </For>
-              </ol>
-            </Section>
-          </Show>
+          <MovementSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            scraped={show.movements}
+            overrides={overrides}
+            citations={citations}
+          />
 
-          {/* Staff / designers (scraped) */}
-          <Show when={show.designers.length > 0} fallback={<StaffPlaceholder />}>
-            <Section icon={UserGroupIcon} title="Design & staff">
-              <ul className="grid gap-2 sm:grid-cols-2">
-                <For each={show.designers}>
-                  {(d) => (
-                    <li className="flex justify-between gap-3 border-b border-foreground/10 pb-2">
-                      <span className="text-text-secondary">{d.role}</span>
-                      <span className="text-right font-medium text-text-primary">{d.name}</span>
-                    </li>
-                  )}
-                </For>
-              </ul>
-            </Section>
-          </Show>
+          <DesignStaffSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            scraped={show.designers}
+            overrides={overrides}
+            citations={citations}
+          />
 
-          {/* Media (scraped) */}
-          <Show when={show.media.length > 0} fallback={<MediaPlaceholder />}>
-            <Section icon={ViewIcon} title="Media">
-              <ul className="grid gap-3 sm:grid-cols-2">
-                <For each={show.media}>
-                  {(m) => (
-                    <li>
-                      <a
-                        href={m.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex gap-3 rounded-lg p-2 ring-1 ring-foreground/10 hover:bg-foreground/5"
-                      >
-                        <Show when={m.thumbnailUrl}>
-                          {(thumb) => (
-                            <ProgressiveImage
-                              src={thumb}
-                              alt=""
-                              width={112}
-                              fit="cover"
-                              lazy
-                              className="size-14 shrink-0 rounded"
-                            />
-                          )}
-                        </Show>
-                        <span className="min-w-0">
-                          <span className="block truncate font-medium text-text-primary">
-                            {m.title || m.mediaType || 'Media'}
-                          </span>
-                          <Show when={m.attribution}>
-                            {(a) => (
-                              <span className="block truncate text-xs text-text-secondary">
-                                {a}
-                              </span>
-                            )}
-                          </Show>
-                        </span>
-                      </a>
-                    </li>
-                  )}
-                </For>
-              </ul>
-            </Section>
-          </Show>
+          <MediaSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            scraped={show.media}
+            overrides={overrides}
+            citations={citations}
+          />
 
           {/* Reviews (scraped) */}
           <Show when={show.reviews.length > 0}>
@@ -325,7 +245,12 @@ function ShowDetailPage() {
             )}
           </Show>
         </motion.div>
-        <aside className="lg:w-80 lg:shrink-0">
+        <aside className="space-y-4 lg:w-80 lg:shrink-0">
+          <Show when={governance}>
+            {(g) => (
+              <PageGovernancePanel corpsKey={corps.corps_key} season={show.season} initial={g} />
+            )}
+          </Show>
           <HistoryPanel corpsKey={corps.corps_key} season={show.season} initial={history} />
         </aside>
       </div>
@@ -356,59 +281,6 @@ function Section({
     </Card>
   );
 }
-
-// An inviting empty state that "calls out" for a contribution (plan: "Empty is an
-// invitation"). Read-only in M1 — the editor + sign-in CTA arrive in M2/M3.
-function ContributePrompt({
-  icon,
-  title,
-  hint,
-}: {
-  icon: IconComponent;
-  title: string;
-  hint: string;
-}) {
-  return (
-    <Card className="border-2 border-dashed border-foreground/15 ring-0">
-      <CardContent className="flex items-center gap-3 py-5 text-text-secondary">
-        <Icon icon={icon} size="lg" className="opacity-60" />
-        <div>
-          <p className="font-medium text-text-primary">{title}</p>
-          <p className="text-sm">{hint}</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-const RepertoirePlaceholder = () => (
-  <ContributePrompt
-    icon={MusicNote03Icon}
-    title="Repertoire"
-    hint="No repertoire on file yet — add the works, composers and arrangers."
-  />
-);
-const StaffPlaceholder = () => (
-  <ContributePrompt
-    icon={UserGroupIcon}
-    title="Design & staff"
-    hint="The design team and staff for this show haven't been added yet."
-  />
-);
-const MediaPlaceholder = () => (
-  <ContributePrompt
-    icon={ViewIcon}
-    title="Media"
-    hint="Cover images, clips and photos are waiting to be contributed."
-  />
-);
-
-const creditLine = (composer: string | null, arranger: string | null): string => {
-  const parts: string[] = [];
-  if (composer) parts.push(`by ${composer}`);
-  if (arranger) parts.push(`arr. ${arranger}`);
-  return parts.join(' · ');
-};
 
 const hostOf = (url: string): string => {
   try {

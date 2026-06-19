@@ -73,6 +73,8 @@ export const ShowMediaAssetSchema = Schema.Struct({
   url: Schema.String,
   thumbnailUrl: optionalString,
   attribution: optionalString,
+  source: optionalString,
+  sourceAuthority: optionalNumber,
   publishedAt: optionalString,
   durationSeconds: optionalNumber,
   metadata: Schema.Unknown.pipe(optionalWith({ default: () => undefined }))
@@ -109,6 +111,8 @@ export const ShowRepertoireEntrySchema = Schema.Struct({
   hyperlink: optionalString,
   relatedCorpsKey: optionalString,
   notes: optionalString,
+  source: optionalString,
+  sourceAuthority: optionalNumber,
   metadata: Schema.Unknown.pipe(optionalWith({ default: () => undefined }))
 });
 
@@ -133,6 +137,8 @@ export const ShowDesignerSchema = Schema.Struct({
   role: Schema.String,
   name: Schema.String,
   sourceUrl: optionalString,
+  source: optionalString,
+  sourceAuthority: optionalNumber,
   scrapedAt: optionalNumber,
 });
 
@@ -144,6 +150,8 @@ export const ShowMovementSchema = Schema.Struct({
   title: optionalString,
   description: optionalString,
   sourceUrl: optionalString,
+  source: optionalString,
+  sourceAuthority: optionalNumber,
   scrapedAt: optionalNumber,
 });
 
@@ -170,6 +178,8 @@ export const CorpsShowSchema = Schema.Struct({
   tagline: optionalString,
   designerNotes: optionalString,
   sourceUrl: optionalString,
+  source: optionalString,
+  sourceAuthority: optionalNumber,
   tags: optionalStringArray,
   repertoire: Schema.Array(ShowRepertoireEntrySchema).pipe(
     optionalWith({ default: () => [] })

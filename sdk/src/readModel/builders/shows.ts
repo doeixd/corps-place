@@ -160,16 +160,23 @@ export interface ShowDetailRepertoire {
   hyperlink: string | null;
   relatedCorpsKey: string | null;
   notes: string | null;
+  source: string | null;
+  sourceAuthority: number | null;
 }
 export interface ShowDetailDesigner {
   role: string;
   name: string;
   sourceUrl: string | null;
+  source: string | null;
+  sourceAuthority: number | null;
 }
 export interface ShowDetailMovement {
   ordinal: number;
   title: string | null;
   description: string | null;
+  sourceUrl: string | null;
+  source: string | null;
+  sourceAuthority: number | null;
 }
 export interface ShowDetailMedia {
   mediaType: string | null;
@@ -178,6 +185,8 @@ export interface ShowDetailMedia {
   url: string;
   thumbnailUrl: string | null;
   attribution: string | null;
+  source: string | null;
+  sourceAuthority: number | null;
   publishedAt: string | null;
   durationSeconds: number | null;
 }
@@ -202,6 +211,8 @@ export interface ShowDetail {
   tagline: string | null;
   designerNotes: string | null;
   sourceUrl: string | null;
+  source: string | null;
+  sourceAuthority: number | null;
   tags: string[];
   repertoire: ShowDetailRepertoire[];
   designers: ShowDetailDesigner[];
@@ -223,6 +234,8 @@ interface ShowHeaderRow {
   tagline: string | null;
   designer_notes: string | null;
   source_url: string | null;
+  source?: string | null;
+  source_authority?: number | null;
 }
 
 const emptyDetailFromHeader = (h: ShowHeaderRow): ShowDetail => ({
@@ -238,6 +251,8 @@ const emptyDetailFromHeader = (h: ShowHeaderRow): ShowDetail => ({
   tagline: h.tagline,
   designerNotes: h.designer_notes,
   sourceUrl: h.source_url,
+  source: h.source ?? null,
+  sourceAuthority: h.source_authority == null ? null : Number(h.source_authority),
   tags: [],
   repertoire: [],
   designers: [],
@@ -250,6 +265,21 @@ const HEADER_COLUMNS = `cs.show_id, cs.corps_key, cs.corps_name, cs.season, cs.t
   cs.subtitle, cs.description, cs.premiere_date, cs.venue, cs.tagline,
   cs.designer_notes, cs.source_url`;
 
+const tableColumnSet = async (db: Client, table: string): Promise<Set<string>> => {
+  try {
+    const info = await db.execute(`PRAGMA table_info(${table})`);
+    return new Set((info.rows as unknown as { name: string }[]).map((row) => row.name));
+  } catch {
+    return new Set();
+  }
+};
+
+const optionalColumn = (
+  columns: Set<string>,
+  column: string,
+  alias = column
+): string => (columns.has(column) ? column : `NULL AS ${alias}`);
+
 // Fetch every related table once and group child rows into their parent show by
 // show_id (no giant cartesian join). `whereSql`/`args` scope it to one show or all.
 const assembleDetails = async (
@@ -257,9 +287,20 @@ const assembleDetails = async (
   whereSql: string,
   args: (string | number)[]
 ): Promise<ShowDetail[]> => {
+  const [showCols, repCols, designerCols, movementCols, mediaCols] = await Promise.all([
+    tableColumnSet(db, 'corps_shows'),
+    tableColumnSet(db, 'corps_show_repertoire'),
+    tableColumnSet(db, 'corps_show_designers'),
+    tableColumnSet(db, 'corps_show_movements'),
+    tableColumnSet(db, 'corps_show_media'),
+  ]);
+  const headerColumns = `${HEADER_COLUMNS}, ${optionalColumn(showCols, 'source')}, ${optionalColumn(
+    showCols,
+    'source_authority'
+  )}`;
   const headers = (
     await db.execute({
-      sql: `SELECT ${HEADER_COLUMNS} FROM corps_shows cs WHERE ${whereSql}`,
+      sql: `SELECT ${headerColumns} FROM corps_shows cs WHERE ${whereSql}`,
       args,
     })
   ).rows as unknown as ShowHeaderRow[];
@@ -274,23 +315,29 @@ const assembleDetails = async (
   const [rep, des, mov, med, rev, tag] = await Promise.all([
     db.execute({
       sql: `SELECT show_id, work_title, composer, arranger, description, hyperlink,
-              related_corps_key, notes FROM corps_show_repertoire
+              related_corps_key, notes, ${optionalColumn(repCols, 'source')},
+              ${optionalColumn(repCols, 'source_authority')} FROM corps_show_repertoire
             WHERE ${childScope} ORDER BY entry_id`,
       args,
     }),
     db.execute({
-      sql: `SELECT show_id, role, name, source_url FROM corps_show_designers
+      sql: `SELECT show_id, role, name, source_url, ${optionalColumn(designerCols, 'source')},
+              ${optionalColumn(designerCols, 'source_authority')} FROM corps_show_designers
             WHERE ${childScope} ORDER BY rowid`,
       args,
     }),
     db.execute({
-      sql: `SELECT show_id, ordinal, title, description FROM corps_show_movements
+      sql: `SELECT show_id, ordinal, title, description, source_url,
+              ${optionalColumn(movementCols, 'source')},
+              ${optionalColumn(movementCols, 'source_authority')} FROM corps_show_movements
             WHERE ${childScope} ORDER BY ordinal`,
       args,
     }),
     db.execute({
       sql: `SELECT show_id, media_type, title, description, url, thumbnail_url,
-              attribution, published_at, duration_seconds FROM corps_show_media
+              attribution, ${optionalColumn(mediaCols, 'source')},
+              ${optionalColumn(mediaCols, 'source_authority')}, published_at, duration_seconds
+            FROM corps_show_media
             WHERE ${childScope} ORDER BY rowid`,
       args,
     }),
@@ -314,6 +361,8 @@ const assembleDetails = async (
       hyperlink: r.hyperlink,
       relatedCorpsKey: r.related_corps_key,
       notes: r.notes,
+      source: r.source ?? null,
+      sourceAuthority: r.source_authority == null ? null : Number(r.source_authority),
     });
   }
   for (const r of des.rows as any[]) {
@@ -321,6 +370,8 @@ const assembleDetails = async (
       role: r.role,
       name: r.name,
       sourceUrl: r.source_url,
+      source: r.source ?? null,
+      sourceAuthority: r.source_authority == null ? null : Number(r.source_authority),
     });
   }
   for (const r of mov.rows as any[]) {
@@ -328,6 +379,9 @@ const assembleDetails = async (
       ordinal: Number(r.ordinal),
       title: r.title,
       description: r.description,
+      sourceUrl: r.source_url,
+      source: r.source ?? null,
+      sourceAuthority: r.source_authority == null ? null : Number(r.source_authority),
     });
   }
   for (const r of med.rows as any[]) {
@@ -338,6 +392,8 @@ const assembleDetails = async (
       url: r.url,
       thumbnailUrl: r.thumbnail_url,
       attribution: r.attribution,
+      source: r.source ?? null,
+      sourceAuthority: r.source_authority == null ? null : Number(r.source_authority),
       publishedAt: r.published_at,
       durationSeconds: r.duration_seconds === null ? null : Number(r.duration_seconds),
     });

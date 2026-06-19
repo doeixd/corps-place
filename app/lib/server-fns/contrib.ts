@@ -1,18 +1,32 @@
 import { createServerFn } from '@tanstack/react-start/client';
 import { getWebRequest } from '@tanstack/react-start/server';
-import { Schema, SchemaParser } from 'effect';
 import * as v from 'valibot';
-import { optionalWith } from '@sdk/src/schemaCompat.js';
 import { getContributionsDb } from '@/lib/contributions-db';
+import { reconcileShowDivergenceForDetail } from '@/lib/contrib/reconcile';
 import {
   ensureShowPage,
+  readStewardSummary,
   writeBlock,
+  writeOverride,
   readShowPageContributions,
+  setPageLockLevel,
+  setPageSteward,
   type PageContributions,
+  type OverrideState,
+  type ShowPageLock,
+  type StewardSummary,
 } from '@/lib/contrib/store';
-import { requireCapability, type PageLock } from '@/lib/authz';
-import { BLOCK_SCHEMAS, isAuthoredPinnedKey } from '@/lib/contrib/schemas';
+import { can, getActor, requireCapability, type PageLock } from '@/lib/authz';
+import {
+  BLOCK_SCHEMAS,
+  DesignerRowInputSchema,
+  MediaRowInputSchema,
+  MovementRowInputSchema,
+  RepertoireRowInputSchema,
+  isAuthoredPinnedKey,
+} from '@/lib/contrib/schemas';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
+import { readScrapedShowDetail } from '@/lib/server-fns/hybrid';
 
 /**
  * Contribution write/read server-fns (M3). Reads are public; the write fn runs
@@ -27,6 +41,62 @@ export const getShowContributions = createServerFn({ method: 'GET' })
   .handler(async ({ data }): Promise<PageContributions> => {
     const db = await getContributionsDb();
     return readShowPageContributions(db, data.corpsKey, data.season);
+  });
+
+export interface ShowGovernance {
+  pageId: string | null;
+  lockLevel: ShowPageLock;
+  stewardCount: number;
+  mySteward: boolean;
+  stewards: StewardSummary['stewards'];
+  signedIn: boolean;
+  canLock: boolean;
+}
+
+const SHOW_PAGE_LOCKS = ['none', 'trusted', 'mod'] as const satisfies readonly ShowPageLock[];
+
+const parseShowPageLock = (value: unknown): ShowPageLock => {
+  if (SHOW_PAGE_LOCKS.includes(value as ShowPageLock)) return value as ShowPageLock;
+  throw new Error('Invalid page lock level');
+};
+
+const pageGovernance = async (
+  db: Awaited<ReturnType<typeof getContributionsDb>>,
+  corpsKey: string,
+  season: string,
+  userId: string | null,
+  canLockPage: boolean
+): Promise<ShowGovernance> => {
+  const page = (
+    await db.execute({
+      sql: 'SELECT page_id, lock_level FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
+      args: [corpsKey, season],
+    })
+  ).rows[0] as unknown as { page_id: string; lock_level: ShowPageLock } | undefined;
+  const steward: StewardSummary = await readStewardSummary(db, page?.page_id ?? null, userId);
+  return {
+    pageId: page?.page_id ?? null,
+    lockLevel: page?.lock_level ?? 'none',
+    stewardCount: steward.stewardCount,
+    mySteward: steward.mySteward,
+    stewards: steward.stewards,
+    signedIn: userId != null,
+    canLock: canLockPage,
+  };
+};
+
+export const getShowGovernance = createServerFn({ method: 'GET' })
+  .validator((data: { corpsKey: string; season: string }) => data)
+  .handler(async ({ data }): Promise<ShowGovernance> => {
+    const db = await getContributionsDb();
+    const actor = await getActor(getWebRequest());
+    return pageGovernance(
+      db,
+      data.corpsKey,
+      data.season,
+      actor?.userId ?? null,
+      can(actor, 'lock')
+    );
   });
 
 // ── Read: full edit history for a show (public — the wiki's transparency) ─────
@@ -53,7 +123,7 @@ export const getShowHistory = createServerFn({ method: 'GET' })
         sql: 'SELECT page_id FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
         args: [data.corpsKey, data.season],
       })
-    ).rows[0] as { page_id: string } | undefined;
+    ).rows[0] as unknown as { page_id: string } | undefined;
     if (!page) return [];
     // Join better-auth's `user` table for a display name (revisions store only the id).
     const rows = (
@@ -90,7 +160,7 @@ export const revertRevision = createServerFn({ method: 'POST' })
         sql: `SELECT page_id, target_kind, target_id, before_json FROM show_revisions WHERE revision_id = ? LIMIT 1`,
         args: [data.revisionId],
       })
-    ).rows[0] as
+    ).rows[0] as unknown as
       | {
           page_id: string;
           target_kind: string;
@@ -110,7 +180,7 @@ export const revertRevision = createServerFn({ method: 'POST' })
               WHERE b.block_id = ? LIMIT 1`,
         args: [rev.target_id],
       })
-    ).rows[0] as
+    ).rows[0] as unknown as
       | {
           page_id: string;
           pinned_key: string | null;
@@ -145,18 +215,16 @@ export const revertRevision = createServerFn({ method: 'POST' })
   });
 
 // ── Write: save an authored pinned block (uniform/props/links/symbolism) ──────
-const SaveBlockInput = Schema.Struct({
-  corpsKey: Schema.String,
-  season: Schema.String,
-  pinnedKey: Schema.String,
-  content: Schema.Unknown,
-  expectedUpdatedAt: Schema.String.pipe(optionalWith({ nullable: true })),
-});
-
-const decodeInput = SchemaParser.decodeUnknownSync(SaveBlockInput);
+type SaveBlockData = {
+  corpsKey: string;
+  season: string;
+  pinnedKey: string;
+  content: unknown;
+  expectedUpdatedAt?: string | null;
+};
 
 export const saveShowBlock = createServerFn({ method: 'POST' })
-  .validator(decodeInput)
+  .validator((data: SaveBlockData) => data)
   .handler(async ({ data }) => {
     if (!isAuthoredPinnedKey(data.pinnedKey)) throw new Error(`Unknown block: ${data.pinnedKey}`);
 
@@ -203,4 +271,99 @@ export const saveShowBlock = createServerFn({ method: 'POST' })
       data.expectedUpdatedAt
     );
     return { ok: true as const, blockId, updatedAt: now };
+  });
+
+// ── Write: save a seedable row override ─────────────────────────────────────
+type SaveOverrideData = {
+  corpsKey: string;
+  season: string;
+  pinnedKey: 'repertoire' | 'designers' | 'movements' | 'media';
+  naturalKey: string;
+  state: OverrideState;
+  content: unknown;
+  sourceHash?: string | null;
+  position?: number | null;
+  expectedUpdatedAt?: string | null;
+};
+
+export const saveShowOverride = createServerFn({ method: 'POST' })
+  .validator((data: SaveOverrideData) => data)
+  .handler(async ({ data }) => {
+    const schema = {
+      repertoire: RepertoireRowInputSchema,
+      designers: DesignerRowInputSchema,
+      movements: MovementRowInputSchema,
+      media: MediaRowInputSchema,
+    }[data.pinnedKey];
+    const content = data.state === 'hidden' ? null : v.parse(schema, data.content);
+
+    const db = await getContributionsDb();
+    const lockLevel = ((
+      await db.execute({
+        sql: 'SELECT lock_level FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
+        args: [data.corpsKey, data.season],
+      })
+    ).rows[0]?.lock_level ?? 'none') as PageLock;
+    const actor = await requireCapability(getWebRequest(), 'edit', { lockLevel });
+
+    const now = new Date().toISOString();
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now };
+    const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
+    const overrideId = await writeOverride(
+      db,
+      {
+        pageId,
+        pinnedKey: data.pinnedKey,
+        naturalKey: data.naturalKey,
+        state: data.state as OverrideState,
+        contentJson: content ? JSON.stringify(content) : null,
+        sourceHash: data.sourceHash ?? null,
+        position: data.position,
+      },
+      ctx,
+      data.expectedUpdatedAt
+    );
+    return { ok: true as const, overrideId, updatedAt: now };
+  });
+
+export const reconcileShowDivergence = createServerFn({ method: 'POST' })
+  .validator((data: { corpsKey: string; season: string }) => data)
+  .handler(async ({ data }) => {
+    const db = await getContributionsDb();
+    const lockLevel = ((
+      await db.execute({
+        sql: 'SELECT lock_level FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
+        args: [data.corpsKey, data.season],
+      })
+    ).rows[0]?.lock_level ?? 'none') as PageLock;
+    await requireCapability(getWebRequest(), 'lock', { lockLevel });
+    const show = await readScrapedShowDetail(data.corpsKey, data.season);
+    return reconcileShowDivergenceForDetail(db, data.corpsKey, data.season, show);
+  });
+
+export const setShowSteward = createServerFn({ method: 'POST' })
+  .validator((data: { corpsKey: string; season: string; steward: boolean }) => data)
+  .handler(async ({ data }): Promise<ShowGovernance> => {
+    const actor = await requireCapability(getWebRequest(), 'edit');
+    const now = new Date().toISOString();
+    const db = await getContributionsDb();
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now };
+    const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
+    await setPageSteward(db, pageId, data.steward, ctx);
+    return pageGovernance(db, data.corpsKey, data.season, actor.userId, can(actor, 'lock'));
+  });
+
+export const setShowLockLevel = createServerFn({ method: 'POST' })
+  .validator((data: { corpsKey: string; season: string; lockLevel: unknown }) => ({
+    ...data,
+    lockLevel: parseShowPageLock(data.lockLevel),
+  }))
+  .handler(async ({ data }): Promise<ShowGovernance> => {
+    const actor = await requireCapability(getWebRequest(), 'lock');
+    const now = new Date().toISOString();
+    const db = await getContributionsDb();
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now };
+    const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
+    await setPageLockLevel(db, pageId, data.lockLevel, ctx);
+    return pageGovernance(db, data.corpsKey, data.season, actor.userId, true);
   });
