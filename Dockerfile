@@ -14,7 +14,7 @@
 # ============================================================
 # Builder: full toolchain + all deps + app build
 # ============================================================
-FROM node:20-bookworm-slim AS builder
+FROM node:22-bookworm-slim AS builder
 WORKDIR /app
 
 # Cap Node.js heap so the build doesn't OOM the Docker container (Vite/Rolldown +
@@ -42,7 +42,7 @@ RUN npm run build
 # ============================================================
 # Production: slim image with only runtime deps + build output
 # ============================================================
-FROM node:20-bookworm-slim
+FROM node:22-bookworm-slim
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000 \
