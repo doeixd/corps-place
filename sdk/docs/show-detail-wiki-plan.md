@@ -591,8 +591,19 @@ point `CONTRIBUTIONS_DB_URL` at the production volume.
   divergence banner in UI; batched writes.
 - **M8 (backup/runbook)** ◻ R2 DR backup of `/data/contributions.db` + documented
   restore + mount-guard verification; RPO stated.
-- **M9 (moderation, deferred)** ◻ Rate limits, trusted/admin roles, abuse tools.
-- **M10 (yearbook ingestion, high-authority)** ◻ Enumerate season→bookId (OQ-8);
+- **M9 (moderation)** ✅ Rate limits (edit/upload sliding window, trusted+ exempt),
+  hide-revision / orphan / grant-role server-fns behind the authz capabilities,
+  moderator orphan toggle in the governance panel. (Trusted/admin role automation
+  still hand-promoted.)
+- **M10 (yearbook ingestion, high-authority)** ✅ INGESTED. Seasons 2012–2023 are
+  `done` in `scraper_progress`; 14k+ `corps_show_designers` and 800+
+  `corps_show_repertoire` rows carry `source='dci-yearbook'`, `source_authority=100`.
+  Flows to the app via `rm_show_detail` (verified the emitted read-model carries
+  `dci-yearbook` provenance) and renders through the §2c SourceBadge ("DCI Yearbook")
+  + authority-aware DivergenceBadge. (Note: `corps_show_movements` has no `source`
+  column yet, so movement provenance isn't badged — a small schema follow-up.)
+  Original milestone text below.
+- **M10 (original plan)** ◻ Enumerate season→bookId (OQ-8);
   fetch page images; vision-extract per page (claude/codex, webp→png) → schema'd
   JSON; map to (corps_key, season); ingest into scraped show tables with
   `source='yearbook'`, `source_authority=100`; authority-aware divergence banner +

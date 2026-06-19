@@ -5041,6 +5041,10 @@ export type StaffCaption =
   | "drum-major"
   | "director"
   | "design"
+  | "audio"
+  | "media"
+  | "medical"
+  | "admin"
   | "other";
 
 export const normalizeCaption = (
@@ -5053,11 +5057,16 @@ export const normalizeCaption = (
   // silently fails on "choreographer"/"administration"/"Designs", dumping them into 'other'.
   if (/\bdrum\s*majors?\b|\bdm\b/.test(t)) return "drum-major";
   if (/\b(brass|horns?|hornline|trumpets?|mellophones?|baritones?|euphoniums?|tubas?|contras?)\b/.test(t)) return "brass";
-  if (/\b(percussion|batter\w*|drumline|front\s*ensemble|pit|mallets?|snares?|tenors?|cymbals?|timpani)\b/.test(t)) return "percussion";
+  if (/\b(percussion|batter\w*|drumline|front\s*ensemble|pit|mallets?|snares?|tenors?|quads?|cymbals?|timpani)\b/.test(t)) return "percussion";
   if (/\b(colou?r\s*guard|guard|weapons?|sab[er]+|rifles?|flags?|winter\s*guard)\b/.test(t)) return "guard";
   if (/\b(visual|drill|marching|movement|choreograph\w*|bodywork)\b/.test(t)) return "visual";
+  // Audio/electronics caption (before music/design: "sound design" is the audio caption here).
+  if (/\b(audio|sound|electronic\w*|synth\w*|sampl\w*)\b/.test(t)) return "audio";
   if (/\b(music|arrang\w*|compos\w*|orchestrat\w*)\b/.test(t)) return "music";
   if (/\bdesign\w*\b|concept|(?:program|show)\s*(?:design|coordinat)/.test(t)) return "design";
+  if (/\b(media|videograph\w*|photograph\w*|broadcast|content\s*creat\w*|social\s*media)\b/.test(t)) return "media";
+  if (/\b(medical|wellness|athletic\s*train\w*|nurse|\brn\b|\batc\b|\blat\b|physical\s*therap\w*|therapist|sports?\s*med\w*|paramedic|\bemt\b)\b/.test(t)) return "medical";
+  if (/\b(treasurer|secretary|registrar|quartermaster|volunteer|chaperone|booster|fundrais\w*|hospitality|logistics|transport\w*|\bdriver\b|seamstress|merchandise|\bintern\b|membership|tour\s*(?:manager|coordinator|assistant|team|director)|staff\s*coordinator|administrative\s*assistant|office\s*(?:manager|coordinator)|chaplain)\b/.test(t)) return "admin";
   if (/\b(directors?|executives?|ceo|president|founders?|managers?|operations?|administrat\w*|board)\b/.test(t)) return "director";
   return "other";
 };
