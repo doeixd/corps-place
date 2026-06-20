@@ -88,7 +88,11 @@ export function HistoryPanel({
             {reconcileMessage}
           </p>
         ) : null}
-        {actionError ? <p className="mb-3 text-xs text-destructive">{actionError}</p> : null}
+        {actionError ? (
+          <p role="alert" className="mb-3 text-xs text-destructive">
+            {actionError}
+          </p>
+        ) : null}
         {entries.length === 0 ? (
           <p className="text-sm text-text-secondary">No edits yet — be the first to contribute.</p>
         ) : (

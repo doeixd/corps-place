@@ -181,7 +181,11 @@ export function PageGovernancePanel({
           </div>
         </Show>
 
-        {error ? <p className="text-xs text-destructive">{error}</p> : null}
+        {error ? (
+          <p role="alert" className="text-xs text-destructive">
+            {error}
+          </p>
+        ) : null}
       </CardContent>
     </Card>
   );

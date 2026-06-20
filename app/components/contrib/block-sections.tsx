@@ -98,7 +98,11 @@ function ContribBlock({
 
 const SaveButton = ({ error }: { error: string | null }) => (
   <>
-    {error ? <p className="text-sm text-destructive">{error}</p> : null}
+    {error ? (
+      <p role="alert" className="text-sm text-destructive">
+        {error}
+      </p>
+    ) : null}
     <Button type="submit" size="sm">
       Save
     </Button>
@@ -289,7 +293,9 @@ function LinksEditor({ corpsKey, season, value, onSaved }: EditorProps<LinksInpu
                           className={inputCls}
                         />
                         {f.errors ? (
-                          <p className="text-xs text-destructive">{f.errors[0]}</p>
+                          <p role="alert" className="text-xs text-destructive">
+                            {f.errors[0]}
+                          </p>
                         ) : null}
                       </div>
                     )}
@@ -459,7 +465,11 @@ function GalleryEditor({ corpsKey, season, value, onSaved }: EditorProps<Gallery
           setItems((xs) => [...xs, { url: r.url, alt: '', width: r.width, height: r.height }])
         }
       />
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
       <button
         type="button"
         onClick={save}
@@ -539,7 +549,11 @@ function AboutEditor({
   return (
     <div className="space-y-3">
       <LexicalFreeForm value={draft} onChange={setDraft} citations={citations} />
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
       <Button type="button" size="sm" onClick={save} disabled={saving}>
         {saving ? 'Saving…' : 'Save'}
       </Button>

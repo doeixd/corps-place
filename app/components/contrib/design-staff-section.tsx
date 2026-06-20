@@ -232,7 +232,11 @@ function DesignerRow({
           </div>
         ) : null}
       </div>
-      {error ? <p className="mt-1 text-xs text-destructive">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="mt-1 text-xs text-destructive">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -305,7 +309,11 @@ function DesignerEditor({
               placeholder="Role"
               className={inputCls}
             />
-            {f.errors ? <p className="mt-1 text-xs text-destructive">{f.errors[0]}</p> : null}
+            {f.errors ? (
+              <p role="alert" className="mt-1 text-xs text-destructive">
+                {f.errors[0]}
+              </p>
+            ) : null}
           </div>
         )}
       </Field>
@@ -318,7 +326,11 @@ function DesignerEditor({
               placeholder="Name"
               className={inputCls}
             />
-            {f.errors ? <p className="mt-1 text-xs text-destructive">{f.errors[0]}</p> : null}
+            {f.errors ? (
+              <p role="alert" className="mt-1 text-xs text-destructive">
+                {f.errors[0]}
+              </p>
+            ) : null}
           </div>
         )}
       </Field>
@@ -341,7 +353,11 @@ function DesignerEditor({
           />
         )}
       </Field>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={saving}>
           {saving ? 'Saving...' : 'Save'}
