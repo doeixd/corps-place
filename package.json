@@ -11,6 +11,7 @@
     "fmt": "vp fmt",
     "test": "vp test",
     "browser-tools": "tsx scripts/browser-tools.ts",
+    "reconcile:contributions": "tsx scripts/reconcile-contributions.ts",
     "gen:icons": "node scripts/preload-icons.mjs",
     "predev": "npm run gen:icons",
     "postinstall": "patch-package",

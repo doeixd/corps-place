@@ -1,0 +1,44 @@
+[
+  {
+    "person_id": "kris-ham-mond",
+    "display_name": "Kris Hammond",
+    "bio": "Kris Hammond is a freelance trumpeter who joined the Bluecoats brass educational staff for the 2020 season. He brings drum corps educational experience from his time with the Blue Stars Drum and Bugle Corps.",
+    "sources": ["https://bluecoats.com/news/bluecoats2020brass-staff"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "kyle-smit",
+    "display_name": "Kyle Smit",
+    "bio": "Kyle Smit is a percussion educator who marched battery with the Mandarins (2013) and Blue Stars (2014-2016), as well as Pulse Percussion. He has served as a battery/tenor technician for Pacific Crest and as a battery ensemble consultant for the Blue Stars. He earned a Bachelor of Science in Business Administration from the University of La Verne.",
+    "sources": ["https://pacific-crest.org/2018/09/kyle-smit/", "https://www.zoominfo.com/p/Kyle-Smit/2435063571"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "kyle-trader",
+    "display_name": "Kyle Trader",
+    "bio": "Kyle Trader is a visual instructor in Drum Corps International, having served on the Troopers visual staff and with the Seattle Cascades visual program. His work focuses on visual technique and drill instruction.",
+    "sources": ["https://www.troopersdrumcorps.org/single-post/introducing-the-troopers-visual-team", "https://pubhtml5.com/xada/dlna/basic/101-150"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "marc-rivet",
+    "display_name": "Marc Rivet",
+    "bio": "Marc Rivet is a front ensemble instructor who has served on the percussion staff of the Bluecoats and the Louisiana Stars. He holds a Bachelor of Music in Percussion Performance, a Bachelor of Education in Music, and a Master of Music in Collaborative Piano from the University of Southern Mississippi, and has taught front ensemble at Petal High School.",
+    "sources": ["https://static1.squarespace.com/static/5c853edafd679327cacbae3c/t/66856fa196528f300a75a223/1720020898555/Bluecoats-2024_TEP_Pages.pdf", "https://rocketreach.co/marc-rivet-email_337949473"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "mark-delacey",
+    "display_name": "Mark DeLacey",
+    "bio": "Mark DeLacey served on the percussion staff of the Spartans Drum and Bugle Corps of Nashua, New Hampshire, as documented in Drum Corps International yearbook staff listings for the 2014 and 2015 seasons.",
+    "sources": ["https://pubhtml5.com/xada/kmsv/basic/101-150", "https://en.wikipedia.org/wiki/Spartans_Drum_and_Bugle_Corps"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "matt-petterson",
+    "display_name": "Matt Petterson",
+    "bio": "Matt Petterson is a freelance musician and medical student at the University of Arizona College of Medicine - Phoenix who performs as a substitute with the Phoenix Symphony. He marched with The Academy (2002-2004) and the Concord Blue Devils (2005-2008), then returned to The Academy as a brass instructor for six seasons and joined Phantom Regiment's brass instruction staff. He holds master's and bachelor's degrees in music performance, plus a bachelor's in exercise science, from Arizona State University.",
+    "sources": ["https://regiment.org/matt-petterson/"],
+    "confidence": "HIGH"
+  }
+]

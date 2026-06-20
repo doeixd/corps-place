@@ -1,0 +1,65 @@
+[
+  {
+    "person_id": "kyle-marx",
+    "display_name": "Kyle Marx",
+    "bio": "Kyle Marx is a visual designer and educator who has taught on the visual staff at the Troopers, Blue Knights, Phantom Regiment, and Crossmen drum and bugle corps, and joined the visual team at Pacific Crest. He is the Associate Director of Bands at Klein Oak High School in Spring, Texas, and works as a consultant, adjudicator, choreographer, and drill designer across Houston and Texas.",
+    "photo_url": "",
+    "sources": [
+      "https://pacific-crest.org/2022/10/kyle-marx/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "marc-whitlock",
+    "display_name": "Marc Whitlock",
+    "bio": "Marc Whitlock has been active in drum corps since 1980 as a brass clinician, program consultant, and designer for corps including the Blue Stars, Carolina Crown, Cavaliers, Madison Scouts, Phantom Regiment, Santa Clara Vanguard, Star of Indiana, and Troopers, and currently serves as a music consultant for The Cadets. Many of the corps he has worked with have been DCI Finalists and Jim Ott High Brass Award recipients. He also serves as Chief Judge for WGI Winds and adjudicates marching bands, drum corps, and percussion ensembles.",
+    "photo_url": "",
+    "sources": [
+      "https://cadets.org/marc-whitlock",
+      "https://www.troopersdrumcorps.org/single-post/announcing-our-2026-caption-leadership"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "matthew-black",
+    "display_name": "Matt Black",
+    "bio": "Matthew Black is an arranger, clinician, and composer who serves as the Sound Designer and Audio Caption Manager for The Cavaliers Drum and Bugle Corps. He has spent time on the educational staff of Phantom Regiment and Blue Stars drum and bugle corps, and was the soundscape designer for the Crossmen in 2020. He holds a Bachelor of Music from Eastern Illinois University and is associate director of bands and director of percussion at Carmel High School in Carmel, Indiana.",
+    "photo_url": "https://zildjian.com/cdn/shop/articles/Matthew-Black-Profile.jpg?v=1708019023",
+    "sources": [
+      "https://zildjian.com/blogs/artist/matthew-black",
+      "https://rhythmx.org/staff-bios/matt-black"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "matthew-ezeh",
+    "display_name": "Matthew Ezeh",
+    "bio": "Matthew Ezeh is a trombonist and brass educator who marched with Alliance (2016), the Oregon Crusaders (2017), and finished his marching career as a featured soloist with The Cavaliers in 2018. From 2019 to 2022 he was a member of the brass staff at The Cavaliers, and he taught brass at the Spirit of Atlanta Drum and Bugle Corps in 2023 before joining the brass staff at Pacific Crest. He earned a Music Education degree from Mercer University in 2020.",
+    "photo_url": "",
+    "sources": [
+      "https://pacific-crest.org/2024/04/matthew-ezeh/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "matthew-howell",
+    "display_name": "Matthew Howell",
+    "bio": "Matthew Howell, a native of Memphis, TN, has been an active percussionist since 1997 and has worked with multiple World Class organizations including Spirit of Atlanta, Phantom Regiment, Palmetto Percussion, and the Madison Scouts, where he served as a snare technician in 2017. He most recently served as the battery coordinator at the Mandarins Drum and Bugle Corps.",
+    "photo_url": "https://cdn.prod.website-files.com/6007192fe7ff1a6dec0b5579/607fb9de7a2d9d8a5658ed4c_Matthew-Howell-Headshot-150x150.jpeg",
+    "sources": [
+      "https://www.innovativepercussion.com/artists/matthew_howell",
+      "https://www.forwardperformingarts.org/news/meet-2017-scouts-percussion-staff"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "michael-loffredo",
+    "display_name": "Mike Loffredo",
+    "bio": "Mike Loffredo worked as a brass ensemble specialist with The Crossmen Drum & Bugle Corps (Texas) and The Troopers Drum & Bugle Corps (Wyoming). He has taught middle and high school band in North Florida for over 15 years and is the head band director at Kanapaha Middle School in Gainesville, FL, having earned bachelor's (2003) and master's (2005) degrees in Music Education from the University of Florida.",
+    "photo_url": "",
+    "sources": [
+      "https://sites.google.com/gm.sbac.edu/kanapahamsband/home/staff"
+    ],
+    "confidence": "HIGH"
+  }
+]

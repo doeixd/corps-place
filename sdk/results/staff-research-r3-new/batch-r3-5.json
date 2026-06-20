@@ -1,0 +1,42 @@
+[
+  {
+    "person_id": "michael-tant",
+    "display_name": "Michael Tant",
+    "bio": "Michael Tant is a native of Charlotte, North Carolina who has been involved in the marching arts since 2007. His drum corps experience began with Carolina Crown in 2012, and he went on to perform with Rhythm X after moving to Ohio in 2013. He has worked as a percussion instructor with Carolina Crown and Rhythm X.",
+    "photo_url": "",
+    "sources": ["https://www.thequadmethod.org/michael-tant", "https://rhythmx.org/blog/8/9/2019/rhythm-x-percussion-announces-2020-instructional-staff"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "robert-reder",
+    "display_name": "Rob Reder",
+    "bio": "Rob Reder is an audio engineer, sound designer, percussionist, percussion instructor, and composer/arranger based in the greater Chicagoland area. Since 2018 he has worked as the audio engineer and assistant sound designer for the Santa Clara Vanguard, and since 2019 in similar capacities with Marian Catholic High School's marching band. He completed his undergraduate studies at Eastern Illinois University under Johnny Lee Lane and Terence Mayhue, and his performing experience includes the Colts and Phantom Regiment drum corps.",
+    "photo_url": "https://www.scvanguard.org/wp-content/uploads/2022/08/Rob-R-1024x1024-1.jpeg",
+    "sources": ["https://www.scvanguard.org/staff/rob-reder/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "rocco-duranti",
+    "display_name": "Rocco Duranti",
+    "bio": "Rocco Duranti served as a movement technician on Phantom Regiment's 2019 visual staff. In December 2020 he was appointed caption head of the Mandarins' 2021 color guard staff. He has worked in color guard and visual roles across multiple drum corps organizations.",
+    "photo_url": "https://production.assets.dci.org/5a181168d670bd001b2e637c_hsc3QNRMPgTFcrZ7cGL5SZnfVa-ElLRW.png",
+    "sources": ["https://regiment.org/meet-the-2019-visual-staff/", "https://www.dci.org/news/corps-news-and-announcements-20201226/"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "ronnie-pruitt",
+    "display_name": "Ronnie Pruitt",
+    "bio": "Ronnie Pruitt has served as Assistant Brass Caption Head with the Blue Knights Drum and Bugle Corps, and was listed as a Staff/Ensemble Coordinator for the Blue Knights in 2024. He works on the brass instructional side of the corps.",
+    "photo_url": "",
+    "sources": ["https://www.linkedin.com/in/ronnie-pruitt-956a5486/", "https://www.generaleffect.media/p/dci-staff-changes-2024"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "sal-salas",
+    "display_name": "Sal Salas",
+    "bio": "Sal Salas is a DCI Hall of Fame member who transitioned to Spirit of Atlanta in 1983, serving as the corps' drill designer through 1990. During his tenure the corps earned color guard caption awards at the 1985 and 1987 DCI World Championships, and his designs were known for casting male and female performers in emotionally driven stage relationships. He later returned to Spirit of Atlanta in 2017 as program coordinator and artistic director.",
+    "photo_url": "https://images.dci.org/wp-content/uploads/2025/01/Sal-Salas.webp",
+    "sources": ["https://www.dci.org/hall-of-fame/sal-salas-dci-hall-of-fame/"],
+    "confidence": "HIGH"
+  }
+]

@@ -13,10 +13,11 @@ import {
 } from '@/lib/contrib/schemas';
 import { ImageDrop } from '@/components/contrib/image-drop';
 import { ProgressiveImage } from '@/components/progressive-image';
-import { LexicalFreeForm } from '@/components/contrib/lexical-free-form';
-import { renderLexicalDoc } from '@/lib/contrib/lexical-render';
+import { LexicalFreeForm, type EditorCitation } from '@/components/contrib/lexical-free-form';
+import { renderLexicalDoc, citationNumberMap } from '@/lib/contrib/lexical-render';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Icon, type IconComponent } from '@/components/icon';
 import {
   CubeIcon,
@@ -26,7 +27,8 @@ import {
   BookOpen01Icon,
 } from '@/components/icons/generated';
 
-const inputCls = 'w-full rounded border border-border bg-transparent px-2 py-1 text-sm';
+const inputCls =
+  'w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30';
 const str = (x: unknown) => (typeof x === 'string' ? x : '');
 
 /**
@@ -62,13 +64,9 @@ function ContribBlock({
             {title}
           </h2>
           {signedIn ? (
-            <button
-              type="button"
-              onClick={() => setEditing((e) => !e)}
-              className="text-xs text-text-secondary underline underline-offset-2 hover:text-foreground"
-            >
+            <Button type="button" variant="ghost" size="xs" onClick={() => setEditing((e) => !e)}>
               {editing ? 'Cancel' : hasContent ? 'Edit' : 'Add'}
-            </button>
+            </Button>
           ) : null}
         </div>
 
@@ -77,18 +75,19 @@ function ContribBlock({
         ) : hasContent ? (
           view
         ) : (
-          <div className="flex items-center gap-3 text-text-secondary">
+          <div className="flex flex-wrap items-center gap-3 text-text-secondary">
             <p className="text-sm">{emptyHint}</p>
             {!signedIn ? (
-              <button
+              <Button
                 type="button"
+                variant="outline"
+                size="sm"
                 onClick={() =>
                   signIn.social({ provider: 'google', callbackURL: window.location.pathname })
                 }
-                className="shrink-0 rounded-md border border-border px-3 py-1.5 text-sm hover:border-primary/60 hover:text-foreground"
               >
                 Sign in to contribute
-              </button>
+              </Button>
             ) : null}
           </div>
         )}
@@ -99,13 +98,14 @@ function ContribBlock({
 
 const SaveButton = ({ error }: { error: string | null }) => (
   <>
-    {error ? <p className="text-sm text-red-500">{error}</p> : null}
-    <button
-      type="submit"
-      className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground"
-    >
+    {error ? (
+      <p role="alert" className="text-sm text-destructive">
+        {error}
+      </p>
+    ) : null}
+    <Button type="submit" size="sm">
       Save
-    </button>
+    </Button>
   </>
 );
 
@@ -292,7 +292,11 @@ function LinksEditor({ corpsKey, season, value, onSaved }: EditorProps<LinksInpu
                           onChange={(e) => f.onChange(e.target.value)}
                           className={inputCls}
                         />
-                        {f.errors ? <p className="text-xs text-red-500">{f.errors[0]}</p> : null}
+                        {f.errors ? (
+                          <p role="alert" className="text-xs text-destructive">
+                            {f.errors[0]}
+                          </p>
+                        ) : null}
                       </div>
                     )}
                   </Field>
@@ -461,7 +465,11 @@ function GalleryEditor({ corpsKey, season, value, onSaved }: EditorProps<Gallery
           setItems((xs) => [...xs, { url: r.url, alt: '', width: r.width, height: r.height }])
         }
       />
-      {error ? <p className="text-sm text-red-500">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
       <button
         type="button"
         onClick={save}
@@ -475,20 +483,37 @@ function GalleryEditor({ corpsKey, season, value, onSaved }: EditorProps<Gallery
 }
 
 // ── The concept (free-form Lexical essay) ─────────────────────────────────────
-export function AboutSection({ corpsKey, season, initial }: BlockProps<FreeFormDoc>) {
+export interface AboutCitation {
+  citationId: string;
+  title?: string | null;
+  url?: string | null;
+}
+
+export function AboutSection({
+  corpsKey,
+  season,
+  initial,
+  citations = [],
+}: BlockProps<FreeFormDoc> & { citations?: readonly AboutCitation[] }) {
   const [value, setValue] = useState<FreeFormDoc | null>(initial);
+  const numbers = citationNumberMap(citations.map((c) => c.citationId));
+  const editorCitations = citations.map((c) => ({
+    citationId: c.citationId,
+    label: `[${numbers[c.citationId]}] ${c.title || c.url || 'Source'}`,
+  }));
   return (
     <ContribBlock
       icon={BookOpen01Icon}
       title="The concept"
       emptyHint="Tell the story of this show — the concept, the journey, what it all means."
       hasContent={Boolean(value?.plain?.trim())}
-      view={renderLexicalDoc(value?.doc)}
+      view={renderLexicalDoc(value?.doc, numbers)}
       edit={(close) => (
         <AboutEditor
           corpsKey={corpsKey}
           season={season}
           value={value}
+          citations={editorCitations}
           onSaved={(v) => {
             setValue(v);
             close();
@@ -499,7 +524,13 @@ export function AboutSection({ corpsKey, season, initial }: BlockProps<FreeFormD
   );
 }
 
-function AboutEditor({ corpsKey, season, value, onSaved }: EditorProps<FreeFormDoc>) {
+function AboutEditor({
+  corpsKey,
+  season,
+  value,
+  onSaved,
+  citations = [],
+}: EditorProps<FreeFormDoc> & { citations?: readonly EditorCitation[] }) {
   const [draft, setDraft] = useState<FreeFormDoc>(value ?? emptyFreeFormDoc('lexical'));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -517,16 +548,15 @@ function AboutEditor({ corpsKey, season, value, onSaved }: EditorProps<FreeFormD
   };
   return (
     <div className="space-y-3">
-      <LexicalFreeForm value={draft} onChange={setDraft} />
-      {error ? <p className="text-sm text-red-500">{error}</p> : null}
-      <button
-        type="button"
-        onClick={save}
-        disabled={saving}
-        className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground disabled:opacity-50"
-      >
+      <LexicalFreeForm value={draft} onChange={setDraft} citations={citations} />
+      {error ? (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
+      <Button type="button" size="sm" onClick={save} disabled={saving}>
         {saving ? 'Saving…' : 'Save'}
-      </button>
+      </Button>
     </div>
   );
 }

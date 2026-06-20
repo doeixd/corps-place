@@ -51,6 +51,50 @@ const MediaItem = v.object({
 export const GalleryInputSchema = v.object({ items: v.array(MediaItem) });
 export type GalleryInput = v.InferOutput<typeof GalleryInputSchema>;
 
+// Seedable repertoire row override. The natural key + source hash live in the
+// overlay row; this content is just the human-authored row value.
+export const RepertoireRowInputSchema = v.object({
+  workTitle: v.pipe(v.string(), v.minLength(1, 'Title required')),
+  composer: v.optional(v.string(), ''),
+  arranger: v.optional(v.string(), ''),
+  description: v.optional(v.string(), ''),
+  hyperlink: v.optional(v.string(), ''),
+  relatedCorpsKey: v.optional(v.string(), ''),
+  notes: v.optional(v.string(), ''),
+  citationIds: v.optional(v.array(v.string()), []),
+});
+export type RepertoireRowInput = v.InferOutput<typeof RepertoireRowInputSchema>;
+
+export const DesignerRowInputSchema = v.object({
+  role: v.pipe(v.string(), v.minLength(1, 'Role required')),
+  name: v.pipe(v.string(), v.minLength(1, 'Name required')),
+  sourceUrl: v.optional(v.string(), ''),
+  citationIds: v.optional(v.array(v.string()), []),
+});
+export type DesignerRowInput = v.InferOutput<typeof DesignerRowInputSchema>;
+
+export const MovementRowInputSchema = v.object({
+  ordinal: v.number(),
+  title: v.optional(v.string(), ''),
+  description: v.optional(v.string(), ''),
+  sourceUrl: v.optional(v.string(), ''),
+  citationIds: v.optional(v.array(v.string()), []),
+});
+export type MovementRowInput = v.InferOutput<typeof MovementRowInputSchema>;
+
+export const MediaRowInputSchema = v.object({
+  mediaType: v.optional(v.string(), ''),
+  title: v.optional(v.string(), ''),
+  description: v.optional(v.string(), ''),
+  url: v.pipe(v.string(), v.minLength(1, 'URL required')),
+  thumbnailUrl: v.optional(v.string(), ''),
+  attribution: v.optional(v.string(), ''),
+  publishedAt: v.optional(v.string(), ''),
+  durationSeconds: v.optional(v.number()),
+  citationIds: v.optional(v.array(v.string()), []),
+});
+export type MediaRowInput = v.InferOutput<typeof MediaRowInputSchema>;
+
 // The free-form "concept" essay — the editor-agnostic content envelope (plan §7.3).
 // `doc` is the editor-native state (opaque, size-bounded); never rendered as HTML
 // (I-14 — see lexical-render.tsx). `plain` is the flattened text for search/preview.

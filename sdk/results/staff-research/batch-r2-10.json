@@ -1,0 +1,70 @@
+[
+  {
+    "person_id": "darren-van-derp-oel",
+    "display_name": "Darren Van Derpoel",
+    "bio": "Darren Van Derpoel is a percussion educator based in Diamond Bar, California who has been active in instruction since 2005. He performed with Pacific Crest Drum and Bugle Corps and later joined the Mandarins staff, named Percussion Arranger/Caption Head for the 2017 season. He co-directs Sidle Entertainment, which produces the Los Angeles Chargers' 'Thunderbolt Drumline,' and instructs for several Southern California high schools.",
+    "photo_url": "https://mapexdrums.com/files/file_pool/1/0n175099826375234148/van-derpoel-darren.jpeg",
+    "sources": [
+      "https://mapexdrums.com/artists/darren-van-derpoel",
+      "https://www.drumcorpsplanet.com/2016/09/vanderpoel-and-ramirez-added-to-2017-mandarins-staff/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "david-isaacs",
+    "display_name": "Dave Isaacs",
+    "bio": "Dave Isaacs is a freelance composer, arranger, producer, and sound designer based in Louisville, Kentucky. A classically trained pianist and percussionist with over two decades of teaching and design experience, he serves as sound designer for Santa Clara Vanguard and Troopers Drum and Bugle Corps. In 2015 he founded INOV8 Winter Percussion, now 4th Wall Performing Arts, a World Class WGI ensemble where he is Artistic Director and lead Designer.",
+    "photo_url": "https://www.scvanguard.org/wp-content/uploads/2022/08/Dave-Isaacs.jpeg",
+    "sources": [
+      "https://www.scvanguard.org/staff/dave-isaacs/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "dominick-villaverde",
+    "display_name": "Dominick Villaverde",
+    "bio": "Dominick Villaverde has been involved with marching percussion since 2014 and earned a degree in Pure Mathematics from Cal Poly Pomona in 2021. He marched with Pacific Crest (2016-2017), the Mandarins (2019), and the Blue Devils (2020), as well as WGI groups POW Percussion and Broken City. He has taught with Gold and Blue Devils B and has designed for Meraki Percussion and Glendora High School.",
+    "sources": [
+      "https://pacific-crest.org/2022/10/dominick-villaverde/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "dr-justin-cook",
+    "display_name": "Justin Cook",
+    "bio": "Dr. Justin Cook serves as a brass instructor for Phantom Regiment and is Visiting Assistant Professor of Trombone at the University of Central Arkansas, where he teaches studio trombone, trombone choir, and low brass methods. He holds Bachelor's and Master's degrees from Northern Arizona University and pursued a Doctor of Musical Arts at the University of North Texas. He is a member of the Bell Street Four Trombone Quartet, 2008 ITA winners.",
+    "sources": [
+      "https://regiment.org/justin-cook/",
+      "https://regiment.org/programs/drum-corps/staff/"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "dr-tom-lukowicz",
+    "display_name": "Tom Lukowicz",
+    "bio": "Tom Lukowicz is a member of the brass staff at the Boston Crusaders Drum and Bugle Corps. He has a background in low brass, with a tuba/euphonium teaching history connected to the Blue Knights drum corps.",
+    "sources": [
+      "https://bostoncrusaders.org/staff/"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "efren-gutierrez",
+    "display_name": "Efren Gutierrez",
+    "bio": "Efren Gutierrez was born and raised in Bakersfield, California, and is active in both indoor drumline and drum corps. He began marching in 2008 with Blue Devils B, toured with the Bluecoats in 2011, and performed with the Cadets in 2012. He served on the Boston Crusaders' 2017 percussion staff as a battery specialist and is the Battery Coordinator and tenor tech for Golden Empire Drum and Bugle Corps and Bakersfield College Indoor Drumline.",
+    "sources": [
+      "https://www.innovativepercussion.com/artists/efren_gutierrez",
+      "https://bostoncrusaders.org/2016/10/2017-percussion-staff/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "erin-england",
+    "display_name": "Erin England",
+    "bio": "Erin England is a respected color guard educator who has served as color guard caption head for corps including the Crossmen, Carolina Crown, Madison Scouts, Bluecoats, Phantom Regiment, and Santa Clara Vanguard. She was credited with movement and guard staff roles at Carolina Crown and is known for mentoring young instructors and emphasizing freedom of expression in performance.",
+    "sources": [
+      "https://www.flomarching.com/video/6552017-erin-england-opens-up-on-the-growth-of-carolina-crowns-guard"
+    ],
+    "confidence": "MEDIUM"
+  }
+]

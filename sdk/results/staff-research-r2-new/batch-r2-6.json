@@ -1,0 +1,75 @@
+[
+  {
+    "person_id": "michael-tarr",
+    "display_name": "Mike Tarr",
+    "bio": "Michael Tarr is a visual design specialist and adjudicator from Wyandotte, Michigan, with more than three decades of experience consulting, designing, and leading visual programs for elite drum corps. He has worked the visual caption for the Boston Crusaders (2018-present), The Cavaliers (1995-1998 and 2013-2017), Santa Clara Vanguard, Bluecoats, and Glassmen. Tarr began his drum corps career as a marching member of The Cavaliers from 1988-1994 before joining their visual staff. He is an active adjudicator for Drum Corps International, Bands of America, and Winter Guard International.",
+    "photo_url": "https://education.musicforall.org/wp-content/uploads/sites/4/2022/09/Michael-Tarr-Headshot-2022-Web.jpg",
+    "sources": [
+      "https://education.musicforall.org/clinician/michael-brady-tarr/",
+      "https://bostoncrusaders.org/2017/11/michael-tarr-joins-2018-visual-team-headed-leon-may-aaron-bailey/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "richard-alvarado",
+    "display_name": "Richard Alvarado",
+    "bio": "Richard Alvarado serves as a brass instructor on the Bluecoats Drum and Bugle Corps brass educational team, helping teach the corps' brass caption.",
+    "sources": [
+      "https://bluecoats.com/staff",
+      "https://bluecoats.com/news/2022/1/18/brass-educational-team-continues-to-grow"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "richard-contreras",
+    "display_name": "Ricky Contreras",
+    "bio": "Ricky Contreras is a color guard professional affiliated with the Blue Devils organization. He performed in the Blue Devils A Corps color guard in 2007 and 2008, and later served as Caption Head and Choreographer for the Blue Devils B color guard, including the 2017 season.",
+    "sources": [
+      "https://bluedevils.org/programs/b-corps/seasons/?programID=2&season=2017&module=staff"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "richard-rodriguez",
+    "display_name": "Rick Rodriguez",
+    "bio": "Rick Rodriguez is a percussion arranger and clinician who has served on the percussion staffs of the Blue Devils, Phantom Regiment, Blue Knights, and The Cavaliers, and has worked as a consultant for Carolina Crown. He is an active band and percussion clinician and has served on the adjudicating panels of Drum Corps International, Bands of America, and Winter Guard International.",
+    "sources": [
+      "https://www.carolinacrown.org/drum-corps/staff",
+      "https://www.innovativepercussion.com/artists/rick_rodriguez"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "richard-saucedo",
+    "display_name": "Richard Saucedo",
+    "bio": "Richard Saucedo is an internationally renowned composer, arranger, and adjudicator who directed the band program at Carmel High School in Indiana for 31 years before retiring in 2013. He joined The Cavaliers Drum and Bugle Corps as brass arranger and composer beginning with the iconic 2000 program \"Niagara Falls,\" writing original scores such as \"Frameworks\" and contributing to five DCI World Championship titles (2000, 2001, 2002, 2004, 2006). He continued writing for The Cavaliers brass through 2009 and returned as brass arranger for the corps' 75th anniversary season in 2023. Saucedo was inducted into the Music for All Hall of Fame in 2015 and the Drum Corps International Hall of Fame in 2022.",
+    "photo_url": "https://images.squarespace-cdn.com/content/v1/586f009ed482e9e80753f1ad/f5af82ae-0fef-47b2-9626-933e621bd231/Richard-Saucedo-Headshot-2022-web.jpeg",
+    "sources": [
+      "https://cavaliers.org/honorary-cavalier-2024-richard-saucedo",
+      "https://dci.org/static/richard-saucedo-dci-hall-of-fame"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "taha-ahmed",
+    "display_name": "Taha Ahmed",
+    "bio": "Taha Ahmed is a percussionist and educator based in the Houston area who holds a Bachelor of Science in Neurobiology from the University of Texas at Austin. He served as battery caption head for the Mandarins Drum and Bugle Corps for four years and was a snare technician with the Blue Knights from 2016-2019 and at Spirit of Atlanta, before joining the Blue Knights as Percussion Caption Supervisor for the 2025 season. As a performer he marched snare drum with the Bluecoats (2012), Academy (2011), Santa Clara Vanguard (2010), and the Troopers (2008-2009).",
+    "photo_url": "https://ascendperformingarts.org/wp-content/uploads/elementor/thumbs/Taha-Ahmed-BW-rbbx6r29aien5mjvczmqr1vg0p2zbx3yb3t5wpqznk.png",
+    "sources": [
+      "https://ascendperformingarts.org/bkpe-staff/taha-ahmed/",
+      "https://ascendperformingarts.org/2025-bkdbc-percussion-staff-announced/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "tim-fairbanks",
+    "display_name": "Tim Fairbanks",
+    "bio": "Tim Fairbanks is a drill designer and visual educator who has served as drill designer for the Bluecoats, Blue Stars, and Crossmen drum corps. He has taught at Centerville High School in Ohio since 1997 as Marching Percussion Director and Drill Designer, and directed Rhythm X to WGI Percussion Independent World Class championships in 2008, 2009, and 2013. He serves as Vice President for WGI Sport of the Arts.",
+    "photo_url": "https://www.daddario.com/cdn/shop/files/pm_carousel_artists_timfairbanks_2938x1348_82769d08-11a7-4d76-a58b-01e56c0680fc.jpg",
+    "sources": [
+      "https://marchingartseducation.com/tim-fairbanks/",
+      "https://www.daddario.com/artists/promark/Tim_Fairbanks/"
+    ],
+    "confidence": "MEDIUM"
+  }
+]

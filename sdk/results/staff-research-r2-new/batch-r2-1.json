@@ -1,0 +1,18 @@
+[
+  {
+    "person_id": "nicholas-arce",
+    "display_name": "Nicholas Arce",
+    "bio": "Nick Arce is a percussion educator from La Quinta, CA, who has taught snare on the battery staff of The Blue Devils since 2014. He previously served as quad tech at Carolina Crown in 2013, and his performing career includes Impulse, Mystikal, and marching with The Blue Devils from 2009 to 2012. He also instructs RCC Indoor Percussion and Arcadia High School, and holds a BA in Psychology from California State University, Los Angeles.",
+    "photo_url": "",
+    "sources": ["https://www.rudimentalmindset.com/instructors/p/nick-arce"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "claire-kenney",
+    "display_name": "Claire Kenney",
+    "bio": "Claire Smith Kenney is a percussion educator, clinician, and performer in the greater Atlanta area, currently serving as Percussion Director at Pope High School and adjunct percussion instructor at Kennesaw State University. She holds a Bachelor's in Music Education from Jacksonville State University and a Master's in Percussion Performance from Texas Christian University. Her drum corps experience includes marching with the Bluecoats Drum and Bugle Corps and teaching The Cadets, and she more recently served as a front ensemble instructor on the Bluecoats' percussion educational team.",
+    "photo_url": "https://images.squarespace-cdn.com/content/v1/6310c4a34ddc2b2b4521ec29/ced07f40-9840-4701-9c55-f9ad11a59cce/C.+Kenney+Head+Shot.jpg",
+    "sources": ["https://www.kenneypercussion.com/about", "https://bluecoats.com/news/2023/1/30/percussion-team"],
+    "confidence": "HIGH"
+  }
+]

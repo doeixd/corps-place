@@ -6,11 +6,20 @@
 // installed worker and clears its caches — a kill switch so a bad/stale SW can
 // be turned off by shipping with the flag unset.
 //
-// Update strategy: poll /read-model/meta.json; when built_at changes, tell the
+// Update strategy: poll /read-model/manifest.json; when built_at changes, tell the
 // waiting worker to skipWaiting so clients pick up the new version (the SW's
 // StaleWhileRevalidate already refreshes the JSON itself).
 
 const ENABLED = import.meta.env.PROD && import.meta.env.VITE_ENABLE_SW === 'true';
+const READ_MODEL_MANIFEST_URL = '/read-model/manifest.json';
+
+function getBuiltAt(value: unknown): string | null {
+  if (value && typeof value === 'object' && 'built_at' in value) {
+    const builtAt = value.built_at;
+    return typeof builtAt === 'string' && builtAt.length > 0 ? builtAt : null;
+  }
+  return null;
+}
 
 export function registerServiceWorker(): void {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
@@ -40,15 +49,19 @@ export function registerServiceWorker(): void {
             if (sw.state === 'installed' && navigator.serviceWorker.controller) promote();
           });
         });
-        // Re-check for a new read-model version periodically (cheap HEAD-ish GET).
+        // Re-check for a new read-model version periodically (cheap GET).
         let lastBuiltAt: string | null = null;
         const checkVersion = async () => {
           try {
-            const res = await fetch('/read-model/meta.json', { cache: 'no-store' });
+            const res = await fetch(READ_MODEL_MANIFEST_URL, {
+              cache: 'no-store',
+              headers: { accept: 'application/json' },
+            });
             if (!res.ok) return;
-            const meta = await res.json();
-            if (lastBuiltAt && meta.built_at !== lastBuiltAt) void reg.update();
-            lastBuiltAt = meta.built_at ?? lastBuiltAt;
+            const builtAt = getBuiltAt(await res.json());
+            if (!builtAt) return;
+            if (lastBuiltAt && builtAt !== lastBuiltAt) void reg.update();
+            lastBuiltAt = builtAt;
           } catch {
             /* offline or missing snapshot — ignore */
           }

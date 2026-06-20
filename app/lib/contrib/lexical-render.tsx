@@ -23,7 +23,19 @@ interface LexNode {
   text?: string;
   format?: number;
   tag?: string;
+  citationId?: string;
 }
+
+/** Inline citation node type (M11b). Serialized shape: {type, citationId, version}. */
+export const CITATION_NODE_TYPE = 'citation';
+
+/** Map a page's ordered citation ids to their 1-based reference numbers (I-16). */
+export const citationNumberMap = (citationIds: readonly string[]): Record<string, number> => {
+  const map: Record<string, number> = {};
+  let n = 0;
+  for (const id of citationIds) if (!(id in map)) map[id] = n += 1;
+  return map;
+};
 
 const renderText = (node: LexNode, key: string): ReactNode => {
   let el: ReactNode = node.text ?? '';
@@ -36,20 +48,31 @@ const renderText = (node: LexNode, key: string): ReactNode => {
   return <span key={key}>{el}</span>;
 };
 
-const renderChildren = (node: LexNode): ReactNode =>
-  (node.children ?? []).map((c, i) => renderNode(c, String(i)));
+// Numbers map threaded through the walk so a citation node resolves to its [n].
+const renderChildren = (node: LexNode, numbers: Record<string, number>): ReactNode =>
+  (node.children ?? []).map((c, i) => renderNode(c, String(i), numbers));
 
 // The allowlist. Anything not matched here is dropped (returns null).
-function renderNode(node: LexNode, key: string): ReactNode {
+function renderNode(node: LexNode, key: string, numbers: Record<string, number>): ReactNode {
   switch (node.type) {
     case 'text':
       return renderText(node, key);
     case 'linebreak':
       return <br key={key} />;
+    case CITATION_NODE_TYPE: {
+      // Inline citation → superscript [n], number derived from page order (I-16).
+      const id = node.citationId;
+      const n = id ? numbers[id] : undefined;
+      return (
+        <sup key={key} className="ml-0.5 text-[0.7em] text-primary" data-citation-id={id}>
+          [{n ?? '?'}]
+        </sup>
+      );
+    }
     case 'paragraph':
       return (
         <p key={key} className="mb-3 last:mb-0">
-          {renderChildren(node)}
+          {renderChildren(node, numbers)}
         </p>
       );
     case 'heading': {
@@ -58,7 +81,7 @@ function renderNode(node: LexNode, key: string): ReactNode {
       const Tag = tag as 'h1' | 'h2' | 'h3';
       return (
         <Tag key={key} className={`mb-2 mt-4 first:mt-0 ${cls}`}>
-          {renderChildren(node)}
+          {renderChildren(node, numbers)}
         </Tag>
       );
     }
@@ -68,7 +91,7 @@ function renderNode(node: LexNode, key: string): ReactNode {
           key={key}
           className="mb-3 border-l-2 border-foreground/20 pl-3 text-text-secondary"
         >
-          {renderChildren(node)}
+          {renderChildren(node, numbers)}
         </blockquote>
       );
     default:
@@ -76,14 +99,23 @@ function renderNode(node: LexNode, key: string): ReactNode {
   }
 }
 
-/** Render a stored Lexical `doc` (stringified editor state) to safe React, or null. */
-export function renderLexicalDoc(doc: string | null | undefined): ReactNode {
+/**
+ * Render a stored Lexical `doc` (stringified editor state) to safe React, or null.
+ * `citationNumbers` (id → [n]) resolves inline citation markers; omit it and they
+ * render as `[?]`.
+ */
+export function renderLexicalDoc(
+  doc: string | null | undefined,
+  citationNumbers: Record<string, number> = {}
+): ReactNode {
   if (!doc) return null;
   try {
     const parsed = JSON.parse(doc) as { root?: LexNode };
     if (!parsed.root) return null;
     return (
-      <div className="text-sm leading-relaxed text-text-primary">{renderChildren(parsed.root)}</div>
+      <div className="text-sm leading-relaxed text-text-primary">
+        {renderChildren(parsed.root, citationNumbers)}
+      </div>
     );
   } catch {
     return null;

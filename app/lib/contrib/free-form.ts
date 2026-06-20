@@ -26,7 +26,7 @@ export const MAX_DOC_BYTES = 200_000;
 export const MAX_PLAIN_BYTES = 50_000;
 
 export const FreeFormDocSchema = Schema.Struct({
-  format: Schema.Literal(...FREE_FORM_FORMATS),
+  format: Schema.Literals([...FREE_FORM_FORMATS]),
   version: Schema.Literal(1),
   /** Editor-native serialized document (opaque to the rest of the app). */
   doc: Schema.String.check(Schema.isMaxLength(MAX_DOC_BYTES)),
@@ -59,4 +59,35 @@ export const plainMatchesDoc = (
 ): boolean => {
   const norm = (s: string) => s.replace(/\s+/g, ' ').trim();
   return norm(candidate.plain) === norm(flattenDoc(candidate.doc));
+};
+
+interface LexNode {
+  text?: string;
+  children?: LexNode[];
+}
+
+/**
+ * Server-side flattening of a Lexical `doc` to plain text, mirroring what the
+ * editor stores in `plain` (`$getRoot().getTextContent()`). Block boundaries
+ * become whitespace; `plainMatchesDoc` normalizes whitespace before comparing,
+ * so exact newline counts don't matter — only the text-token sequence. Pure and
+ * server-safe (no Lexical/DOM/JSX imports), so it runs inside the write fn.
+ */
+export const flattenLexicalDoc = (doc: string): string => {
+  if (!doc) return '';
+  let parsed: { root?: LexNode };
+  try {
+    parsed = JSON.parse(doc) as { root?: LexNode };
+  } catch {
+    return '';
+  }
+  const out: string[] = [];
+  const walk = (node: LexNode | undefined) => {
+    if (!node) return;
+    if (typeof node.text === 'string') out.push(node.text);
+    for (const child of node.children ?? []) walk(child);
+    out.push(' '); // separate blocks/nodes so adjacent texts don't fuse
+  };
+  walk(parsed.root);
+  return out.join(' ');
 };

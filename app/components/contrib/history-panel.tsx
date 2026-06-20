@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { useSession } from '@/lib/auth-client';
-import { getShowHistory, revertRevision, type HistoryEntry } from '@/lib/server-fns/contrib';
+import {
+  getShowHistory,
+  reconcileShowDivergence,
+  revertRevision,
+  type HistoryEntry,
+} from '@/lib/server-fns/contrib';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
-import { Clock01Icon, RestoreBinIcon } from '@/components/icons/generated';
+import { Clock01Icon, RefreshIcon, RestoreBinIcon } from '@/components/icons/generated';
 
 /**
  * Edit-history sidebar (M6): the full, transparent revision log for a show page —
@@ -22,16 +27,39 @@ export function HistoryPanel({
   const { data: session } = useSession();
   const [entries, setEntries] = useState(initial);
   const [busy, setBusy] = useState<string | null>(null);
+  const [reconcileMessage, setReconcileMessage] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const signedIn = Boolean(session?.user);
+  const role = (session?.user as { role?: string } | undefined)?.role ?? 'user';
+  const canReconcile = role === 'moderator' || role === 'admin';
 
   const refresh = async () => setEntries(await getShowHistory({ data: { corpsKey, season } }));
+  const reconcile = async () => {
+    setBusy('reconcile');
+    setReconcileMessage(null);
+    try {
+      const res = await reconcileShowDivergence({ data: { corpsKey, season } });
+      setReconcileMessage(
+        res.status === 'reconciled'
+          ? `${res.changed} flags updated; ${res.diverged} overridden rows differ from the current scrape.`
+          : res.status === 'missing-page'
+            ? 'No contribution page exists yet.'
+            : 'No scraped show data was found.'
+      );
+    } catch (e) {
+      setReconcileMessage(e instanceof Error ? e.message : 'Could not check scraped changes');
+    } finally {
+      setBusy(null);
+    }
+  };
   const revert = async (revisionId: string) => {
     setBusy(revisionId);
+    setActionError(null);
     try {
       await revertRevision({ data: { revisionId } });
       await refresh();
     } catch (e) {
-      alert(e instanceof Error ? e.message : 'Revert failed');
+      setActionError(e instanceof Error ? e.message : 'Revert failed');
     } finally {
       setBusy(null);
     }
@@ -44,6 +72,27 @@ export function HistoryPanel({
           <Icon icon={Clock01Icon} size="sm" />
           Edit history
         </h2>
+        {canReconcile ? (
+          <button
+            type="button"
+            onClick={() => void reconcile()}
+            disabled={busy === 'reconcile'}
+            className="mb-3 inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs text-text-secondary hover:border-primary/60 hover:text-foreground disabled:opacity-50"
+          >
+            <Icon icon={RefreshIcon} size="sm" />
+            Check scraped changes
+          </button>
+        ) : null}
+        {reconcileMessage ? (
+          <p className="mb-3 rounded-md bg-foreground/5 px-2 py-1.5 text-xs text-text-secondary">
+            {reconcileMessage}
+          </p>
+        ) : null}
+        {actionError ? (
+          <p role="alert" className="mb-3 text-xs text-destructive">
+            {actionError}
+          </p>
+        ) : null}
         {entries.length === 0 ? (
           <p className="text-sm text-text-secondary">No edits yet — be the first to contribute.</p>
         ) : (
@@ -124,6 +173,9 @@ const opLabel = (op: string): string =>
     hide: 'removed',
     restore: 'restored',
     reorder: 'reordered',
+    steward: 'started stewarding',
+    unsteward: 'stopped stewarding',
+    lock: 'changed lock for',
   })[op] ?? op;
 
 const targetLabel = (e: HistoryEntry): string => {
@@ -141,7 +193,7 @@ const rel = (iso: string): string => {
 };
 
 // Group consecutive revisions by the same author within a 30-minute window.
-function groupBySession(entries: HistoryEntry[]): HistoryEntry[][] {
+export function groupBySession(entries: HistoryEntry[]): HistoryEntry[][] {
   const groups: HistoryEntry[][] = [];
   const WINDOW = 30 * 60 * 1000;
   for (const e of entries) {

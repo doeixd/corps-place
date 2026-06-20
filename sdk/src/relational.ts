@@ -686,6 +686,8 @@ export const ensureRelationalSchema = Effect.gen(function* () {
           tagline TEXT,
           designer_notes TEXT,
           source_url TEXT,
+          source TEXT,
+          source_authority INTEGER,
           metadata_json TEXT,
           FOREIGN KEY (corps_key) REFERENCES corps(corps_key) ON DELETE CASCADE
         )`,
@@ -704,6 +706,8 @@ export const ensureRelationalSchema = Effect.gen(function* () {
           url TEXT NOT NULL,
           thumbnail_url TEXT,
           attribution TEXT,
+          source TEXT,
+          source_authority INTEGER,
           published_at TEXT,
           duration_seconds INTEGER,
           metadata_json TEXT,
@@ -719,6 +723,8 @@ export const ensureRelationalSchema = Effect.gen(function* () {
           hyperlink TEXT,
           related_corps_key TEXT,
           notes TEXT,
+          source TEXT,
+          source_authority INTEGER,
           metadata_json TEXT,
           FOREIGN KEY (show_id) REFERENCES corps_shows(show_id) ON DELETE CASCADE
         )`,
@@ -755,6 +761,8 @@ export const ensureRelationalSchema = Effect.gen(function* () {
           role TEXT NOT NULL,
           name TEXT NOT NULL,
           source_url TEXT,
+          source TEXT,
+          source_authority INTEGER,
           scraped_at INTEGER,
           FOREIGN KEY (show_id) REFERENCES corps_shows(show_id) ON DELETE CASCADE
         )`,
@@ -767,6 +775,8 @@ export const ensureRelationalSchema = Effect.gen(function* () {
           title TEXT,
           description TEXT,
           source_url TEXT,
+          source TEXT,
+          source_authority INTEGER,
           scraped_at INTEGER,
           FOREIGN KEY (show_id) REFERENCES corps_shows(show_id) ON DELETE CASCADE
         )`,
@@ -1985,6 +1995,26 @@ export const ensureRelationalSchema = Effect.gen(function* () {
     sql,
     "CREATE INDEX IF NOT EXISTS idx_shows_corps_season ON corps_shows(corps_key, season)",
   );
+  yield* ensureColumns(sql, "corps_shows", [
+    "source TEXT",
+    "source_authority INTEGER",
+  ]);
+  yield* ensureColumns(sql, "corps_show_media", [
+    "source TEXT",
+    "source_authority INTEGER",
+  ]);
+  yield* ensureColumns(sql, "corps_show_repertoire", [
+    "source TEXT",
+    "source_authority INTEGER",
+  ]);
+  yield* ensureColumns(sql, "corps_show_designers", [
+    "source TEXT",
+    "source_authority INTEGER",
+  ]);
+  yield* ensureColumns(sql, "corps_show_movements", [
+    "source TEXT",
+    "source_authority INTEGER",
+  ]);
   yield* ensureIndex(
     sql,
     "CREATE INDEX IF NOT EXISTS idx_show_repertoire_show ON corps_show_repertoire(show_id)",
@@ -4517,6 +4547,8 @@ const insertShowRow = (sql: SqlClient.SqlClient, show: CorpsShow) =>
       tagline,
       designer_notes,
       source_url,
+      source,
+      source_authority,
       metadata_json
     ) VALUES (
       ${show.showId},
@@ -4531,6 +4563,8 @@ const insertShowRow = (sql: SqlClient.SqlClient, show: CorpsShow) =>
       ${show.tagline ?? null},
       ${show.designerNotes ?? null},
       ${show.sourceUrl ?? null},
+      ${show.source ?? null},
+      ${show.sourceAuthority ?? null},
       ${toJsonText(show.metadata)}
     )
     ON CONFLICT(show_id) DO UPDATE SET
@@ -4545,6 +4579,8 @@ const insertShowRow = (sql: SqlClient.SqlClient, show: CorpsShow) =>
       tagline=excluded.tagline,
       designer_notes=excluded.designer_notes,
       source_url=excluded.source_url,
+      source=excluded.source,
+      source_authority=excluded.source_authority,
       metadata_json=excluded.metadata_json
   `.pipe(Effect.asVoid);
 
@@ -4570,6 +4606,8 @@ const insertShowMediaRow = (sql: SqlClient.SqlClient, asset: ShowMediaAsset) =>
       url,
       thumbnail_url,
       attribution,
+      source,
+      source_authority,
       published_at,
       duration_seconds,
       metadata_json
@@ -4582,6 +4620,8 @@ const insertShowMediaRow = (sql: SqlClient.SqlClient, asset: ShowMediaAsset) =>
       ${asset.url},
       ${asset.thumbnailUrl ?? null},
       ${asset.attribution ?? null},
+      ${asset.source ?? null},
+      ${asset.sourceAuthority ?? null},
       ${asset.publishedAt ?? null},
       ${asset.durationSeconds ?? null},
       ${toJsonText(asset.metadata)}
@@ -4594,6 +4634,8 @@ const insertShowMediaRow = (sql: SqlClient.SqlClient, asset: ShowMediaAsset) =>
       url=excluded.url,
       thumbnail_url=excluded.thumbnail_url,
       attribution=excluded.attribution,
+      source=excluded.source,
+      source_authority=excluded.source_authority,
       published_at=excluded.published_at,
       duration_seconds=excluded.duration_seconds,
       metadata_json=excluded.metadata_json
@@ -4614,6 +4656,8 @@ const insertShowRepertoireRow = (
       hyperlink,
       related_corps_key,
       notes,
+      source,
+      source_authority,
       metadata_json
     ) VALUES (
       ${entry.entryId},
@@ -4625,6 +4669,8 @@ const insertShowRepertoireRow = (
       ${entry.hyperlink ?? null},
       ${entry.relatedCorpsKey ?? null},
       ${entry.notes ?? null},
+      ${entry.source ?? null},
+      ${entry.sourceAuthority ?? null},
       ${toJsonText(entry.metadata)}
     )
     ON CONFLICT(entry_id) DO UPDATE SET
@@ -4635,6 +4681,8 @@ const insertShowRepertoireRow = (
       hyperlink=excluded.hyperlink,
       related_corps_key=excluded.related_corps_key,
       notes=excluded.notes,
+      source=excluded.source,
+      source_authority=excluded.source_authority,
       metadata_json=excluded.metadata_json
   `.pipe(Effect.asVoid);
 
@@ -4708,10 +4756,11 @@ const insertShowDesignerRow = (
   sql`
     INSERT INTO corps_show_designers (
       designer_id, show_id, corps_key, role, name,
-      source_url, scraped_at
+      source_url, source, source_authority, scraped_at
     ) VALUES (
       ${designer.designerId}, ${designer.showId}, ${designer.corpsKey},
       ${designer.role}, ${designer.name}, ${designer.sourceUrl ?? null},
+      ${designer.source ?? null}, ${designer.sourceAuthority ?? null},
       ${designer.scrapedAt ?? null}
     )
     ON CONFLICT(designer_id) DO UPDATE SET
@@ -4720,6 +4769,8 @@ const insertShowDesignerRow = (
       role=excluded.role,
       name=excluded.name,
       source_url=excluded.source_url,
+      source=excluded.source,
+      source_authority=excluded.source_authority,
       scraped_at=excluded.scraped_at
   `.pipe(Effect.asVoid);
 
@@ -4732,11 +4783,12 @@ const insertShowMovementRow = (
   sql`
     INSERT INTO corps_show_movements (
       movement_id, show_id, corps_key, ordinal, title,
-      description, source_url, scraped_at
+      description, source_url, source, source_authority, scraped_at
     ) VALUES (
       ${movement.movementId}, ${movement.showId}, ${movement.corpsKey},
       ${movement.ordinal}, ${movement.title ?? null},
       ${movement.description ?? null}, ${movement.sourceUrl ?? null},
+      ${movement.source ?? null}, ${movement.sourceAuthority ?? null},
       ${movement.scrapedAt ?? null}
     )
     ON CONFLICT(movement_id) DO UPDATE SET
@@ -4746,6 +4798,8 @@ const insertShowMovementRow = (
       title=excluded.title,
       description=excluded.description,
       source_url=excluded.source_url,
+      source=excluded.source,
+      source_authority=excluded.source_authority,
       scraped_at=excluded.scraped_at
   `.pipe(Effect.asVoid);
 
@@ -4987,6 +5041,10 @@ export type StaffCaption =
   | "drum-major"
   | "director"
   | "design"
+  | "audio"
+  | "media"
+  | "medical"
+  | "admin"
   | "other";
 
 export const normalizeCaption = (
@@ -4999,11 +5057,16 @@ export const normalizeCaption = (
   // silently fails on "choreographer"/"administration"/"Designs", dumping them into 'other'.
   if (/\bdrum\s*majors?\b|\bdm\b/.test(t)) return "drum-major";
   if (/\b(brass|horns?|hornline|trumpets?|mellophones?|baritones?|euphoniums?|tubas?|contras?)\b/.test(t)) return "brass";
-  if (/\b(percussion|batter\w*|drumline|front\s*ensemble|pit|mallets?|snares?|tenors?|cymbals?|timpani)\b/.test(t)) return "percussion";
+  if (/\b(percussion|batter\w*|drumline|front\s*ensemble|pit|mallets?|snares?|tenors?|quads?|cymbals?|timpani)\b/.test(t)) return "percussion";
   if (/\b(colou?r\s*guard|guard|weapons?|sab[er]+|rifles?|flags?|winter\s*guard)\b/.test(t)) return "guard";
   if (/\b(visual|drill|marching|movement|choreograph\w*|bodywork)\b/.test(t)) return "visual";
+  // Audio/electronics caption (before music/design: "sound design" is the audio caption here).
+  if (/\b(audio|sound|electronic\w*|synth\w*|sampl\w*)\b/.test(t)) return "audio";
   if (/\b(music|arrang\w*|compos\w*|orchestrat\w*)\b/.test(t)) return "music";
   if (/\bdesign\w*\b|concept|(?:program|show)\s*(?:design|coordinat)/.test(t)) return "design";
+  if (/\b(media|videograph\w*|photograph\w*|broadcast|content\s*creat\w*|social\s*media)\b/.test(t)) return "media";
+  if (/\b(medical|wellness|athletic\s*train\w*|nurse|\brn\b|\batc\b|\blat\b|physical\s*therap\w*|therapist|sports?\s*med\w*|paramedic|\bemt\b)\b/.test(t)) return "medical";
+  if (/\b(treasurer|secretary|registrar|quartermaster|volunteer|chaperone|booster|fundrais\w*|hospitality|logistics|transport\w*|\bdriver\b|seamstress|merchandise|\bintern\b|membership|tour\s*(?:manager|coordinator|assistant|team|director)|staff\s*coordinator|administrative\s*assistant|office\s*(?:manager|coordinator)|chaplain)\b/.test(t)) return "admin";
   if (/\b(directors?|executives?|ceo|president|founders?|managers?|operations?|administrat\w*|board)\b/.test(t)) return "director";
   return "other";
 };

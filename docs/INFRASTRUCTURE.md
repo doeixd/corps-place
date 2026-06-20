@@ -217,6 +217,28 @@ pwsh -File scripts\backup-relational.ps1
 > backups. It lives in `.env` and must ALSO be stored off-machine (password
 > manager). Losing it = backups permanently undecryptable.
 
+### Contributions DB
+
+The user-writable wiki store, `contributions.db`, is separate from the generated
+read-model and should be treated as irreplaceable. The VM-side wrapper
+`scripts/backup-contributions.sh` snapshots it with SQLite `.backup` and sends the
+copy to the same restic/R2 repository with tag `contributions` and host
+`corps-place-vm`.
+
+```bash
+# on the VM; reads RESTIC_*/AWS_* and CONTRIBUTIONS_DB_URL from .env when present
+bash scripts/backup-contributions.sh
+
+# optional explicit DB path, useful for host-mounted prod/dev volumes
+bash scripts/backup-contributions.sh /data/corps-place/contributions.db
+
+restic snapshots --tag contributions
+```
+
+Retention is intentionally longer than the generated relational DB wrapper:
+**14 daily / 8 weekly / 12 monthly**. The script never backs up a live WAL file
+directly; it restics only the consistent temporary `.backup` copy.
+
 ---
 
 ## 6. Secrets inventory
@@ -283,6 +305,7 @@ background so it never blocks — a complement to the schedule, not a replacemen
 | Push read-model only to Turso | `cd sdk && npx tsx scripts/emitReadModel.ts --push-turso $READ_MODEL_SYNC_URL` |
 | Prepare a VM workspace | `bash scripts/vm-sync.sh dev` (or `prod`) |
 | Back up relational DB now | `pwsh -File scripts/backup-relational.ps1` |
+| Back up contributions DB now | `bash scripts/backup-contributions.sh` |
 | Restore relational DB | `restic restore latest --target <dir>` (with `.env` loaded) |
 | SSH to box | `ssh patrick@149.28.121.248` (or `root@…`) |
 | Inspect what's deployed | `ssh patrick@149.28.121.248 "docker ps --format '{{.Names}}\t{{.Image}}'"` |
