@@ -155,7 +155,11 @@ export const buildStaffDirectory = async (db: Client): Promise<StaffSummary[]> =
             FROM corps_staff cs
             JOIN corps_staff_assignments a ON a.staff_id = cs.staff_id
             LEFT JOIN corps c ON c.corps_key = a.corps_key
-            WHERE cs.person_id IS NOT NULL`,
+            WHERE cs.person_id IS NOT NULL
+              -- Exclude Individual & Ensemble (I&E) entries: these are individual
+              -- performers (e.g. "Justin Page (Pacific Crest)") wrongly carrying a
+              -- scraped staff roster; they are not corps a person was staff for.
+              AND (c.division_name IS NULL OR c.division_name <> 'Individual')`,
       args: [],
     }),
   ]);
@@ -218,6 +222,8 @@ export const buildAllStaffProfiles = async (db: Client): Promise<StaffProfile[]>
             JOIN corps_staff_assignments a ON a.staff_id = cs.staff_id
             LEFT JOIN corps c ON c.corps_key = a.corps_key
             WHERE cs.person_id IS NOT NULL
+              -- Exclude I&E individual entries (see buildStaffDirectory).
+              AND (c.division_name IS NULL OR c.division_name <> 'Individual')
             ORDER BY a.season DESC, corps_name COLLATE NOCASE ASC, a.title ASC`,
       args: [],
     }),
@@ -283,6 +289,8 @@ export const buildStaffProfile = async (db: Client, personId: string): Promise<S
           JOIN corps_staff_assignments a ON a.staff_id = cs.staff_id
           LEFT JOIN corps c ON c.corps_key = a.corps_key
           WHERE cs.person_id = ?
+            -- Exclude I&E individual entries (see buildStaffDirectory).
+            AND (c.division_name IS NULL OR c.division_name <> 'Individual')
           ORDER BY a.season DESC, corps_name COLLATE NOCASE ASC, a.title ASC`,
     args: [personId],
   });
