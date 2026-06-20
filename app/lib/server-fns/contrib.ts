@@ -304,8 +304,6 @@ type SaveOverrideData = {
   naturalKey: string;
   state: OverrideState;
   content: unknown;
-  /** @deprecated ignored — the server recomputes the divergence baseline hash. */
-  sourceHash?: string | null;
   position?: number | null;
   expectedUpdatedAt?: string | null;
 };

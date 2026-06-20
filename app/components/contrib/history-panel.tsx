@@ -28,6 +28,7 @@ export function HistoryPanel({
   const [entries, setEntries] = useState(initial);
   const [busy, setBusy] = useState<string | null>(null);
   const [reconcileMessage, setReconcileMessage] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const signedIn = Boolean(session?.user);
   const role = (session?.user as { role?: string } | undefined)?.role ?? 'user';
   const canReconcile = role === 'moderator' || role === 'admin';
@@ -53,11 +54,12 @@ export function HistoryPanel({
   };
   const revert = async (revisionId: string) => {
     setBusy(revisionId);
+    setActionError(null);
     try {
       await revertRevision({ data: { revisionId } });
       await refresh();
     } catch (e) {
-      alert(e instanceof Error ? e.message : 'Revert failed');
+      setActionError(e instanceof Error ? e.message : 'Revert failed');
     } finally {
       setBusy(null);
     }
@@ -86,6 +88,7 @@ export function HistoryPanel({
             {reconcileMessage}
           </p>
         ) : null}
+        {actionError ? <p className="mb-3 text-xs text-destructive">{actionError}</p> : null}
         {entries.length === 0 ? (
           <p className="text-sm text-text-secondary">No edits yet — be the first to contribute.</p>
         ) : (

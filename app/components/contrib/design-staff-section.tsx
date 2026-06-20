@@ -4,8 +4,9 @@ import { useSession, signIn } from '@/lib/auth-client';
 import { saveShowOverride } from '@/lib/server-fns/contrib';
 import type { OverrideRow } from '@/lib/contrib/store';
 import type { DesignerRowInput } from '@/lib/contrib/schemas';
-import { mergeDesigners, sourceHash, type MergedDesignerRow } from '@/lib/contrib/seedable';
+import { mergeDesigners, type MergedDesignerRow } from '@/lib/contrib/seedable';
 import { SourceBadge, DivergenceBadge } from '@/components/contrib/provenance';
+import { useRowMutation } from '@/components/contrib/use-row-mutation';
 import {
   CitationMarks,
   CitationPicker,
@@ -164,10 +165,9 @@ function DesignerRow({
   onHidden: () => void;
   citations: readonly CitationOption[];
 }) {
-  const [busy, setBusy] = useState(false);
-  const hide = async () => {
-    setBusy(true);
-    try {
+  const { busy, error, run } = useRowMutation();
+  const hide = () =>
+    run(async () => {
       await saveShowOverride({
         data: {
           corpsKey,
@@ -176,63 +176,62 @@ function DesignerRow({
           naturalKey: row.naturalKey,
           state: 'hidden',
           content: null,
-          sourceHash: row.sourceHash,
           expectedUpdatedAt: row.overrideUpdatedAt,
         },
       });
       onHidden();
-    } finally {
-      setBusy(false);
-    }
-  };
+    });
 
   return (
-    <div className="flex justify-between gap-3">
-      <div className="min-w-0">
-        <p className="text-text-secondary">{row.role}</p>
-        <p className="font-medium text-text-primary">
-          {row.name}
-          <CitationMarks citationIds={row.citationIds} citations={citations} />
-        </p>
-        <div className="mt-1 flex flex-wrap gap-1.5 text-[11px] uppercase tracking-wide text-text-secondary">
-          <SourceBadge
-            source={row.source}
-            sourceAuthority={row.sourceAuthority}
-            added={row.added}
-          />
-          {row.overridden ? (
-            <span className="rounded bg-foreground/5 px-1.5 py-0.5">Edited by fan</span>
-          ) : null}
-          {row.scrapeDiverged ? (
-            <DivergenceBadge
+    <div>
+      <div className="flex justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-text-secondary">{row.role}</p>
+          <p className="font-medium text-text-primary">
+            {row.name}
+            <CitationMarks citationIds={row.citationIds} citations={citations} />
+          </p>
+          <div className="mt-1 flex flex-wrap gap-1.5 text-[11px] uppercase tracking-wide text-text-secondary">
+            <SourceBadge
               source={row.source}
               sourceAuthority={row.sourceAuthority}
-              season={season}
+              added={row.added}
             />
-          ) : null}
+            {row.overridden ? (
+              <span className="rounded bg-foreground/5 px-1.5 py-0.5">Edited by fan</span>
+            ) : null}
+            {row.scrapeDiverged ? (
+              <DivergenceBadge
+                source={row.source}
+                sourceAuthority={row.sourceAuthority}
+                season={season}
+              />
+            ) : null}
+          </div>
         </div>
-      </div>
-      {signedIn ? (
-        <div className="flex shrink-0 gap-2 text-xs">
-          <button
-            type="button"
-            onClick={onEdit}
-            className="text-text-secondary underline underline-offset-2 hover:text-foreground"
-          >
-            Edit
-          </button>
-          {!row.added ? (
+        {signedIn ? (
+          <div className="flex shrink-0 gap-2 text-xs">
             <button
               type="button"
-              onClick={() => void hide()}
-              disabled={busy}
-              className="text-text-secondary underline underline-offset-2 hover:text-foreground disabled:opacity-50"
+              onClick={onEdit}
+              className="text-text-secondary underline underline-offset-2 hover:text-foreground"
             >
-              Hide
+              Edit
             </button>
-          ) : null}
-        </div>
-      ) : null}
+            {!row.added ? (
+              <button
+                type="button"
+                onClick={() => void hide()}
+                disabled={busy}
+                className="text-text-secondary underline underline-offset-2 hover:text-foreground disabled:opacity-50"
+              >
+                Hide
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+      {error ? <p className="mt-1 text-xs text-destructive">{error}</p> : null}
     </div>
   );
 }
@@ -277,14 +276,12 @@ function DesignerEditor({
           naturalKey: row.naturalKey,
           state,
           content,
-          sourceHash: row.sourceHash,
           expectedUpdatedAt: row.overrideUpdatedAt,
         },
       });
       onSaved({
         ...row,
         ...content,
-        sourceHash: row.sourceHash ?? sourceHash(content),
         overrideUpdatedAt: res.updatedAt,
         overridden: true,
         added: state === 'added',

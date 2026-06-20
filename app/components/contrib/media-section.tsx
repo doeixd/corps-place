@@ -4,13 +4,9 @@ import { useSession, signIn } from '@/lib/auth-client';
 import { saveShowOverride } from '@/lib/server-fns/contrib';
 import type { OverrideRow } from '@/lib/contrib/store';
 import type { MediaRowInput } from '@/lib/contrib/schemas';
-import {
-  mediaNaturalKey,
-  mergeMedia,
-  sourceHash,
-  type MergedMediaRow,
-} from '@/lib/contrib/seedable';
+import { mediaNaturalKey, mergeMedia, type MergedMediaRow } from '@/lib/contrib/seedable';
 import { SourceBadge, DivergenceBadge } from '@/components/contrib/provenance';
+import { useRowMutation } from '@/components/contrib/use-row-mutation';
 import {
   CitationMarks,
   CitationPicker,
@@ -168,10 +164,9 @@ function MediaRow({
   onHidden: () => void;
   citations: readonly CitationOption[];
 }) {
-  const [busy, setBusy] = useState(false);
-  const hide = async () => {
-    setBusy(true);
-    try {
+  const { busy, error, run } = useRowMutation();
+  const hide = () =>
+    run(async () => {
       await saveShowOverride({
         data: {
           corpsKey,
@@ -180,15 +175,11 @@ function MediaRow({
           naturalKey: row.naturalKey,
           state: 'hidden',
           content: null,
-          sourceHash: row.sourceHash,
           expectedUpdatedAt: row.overrideUpdatedAt,
         },
       });
       onHidden();
-    } finally {
-      setBusy(false);
-    }
-  };
+    });
 
   return (
     <div className="rounded-lg p-2 ring-1 ring-foreground/10">
@@ -269,6 +260,7 @@ function MediaRow({
           </div>
         ) : null}
       </div>
+      {error ? <p className="mt-1 text-xs text-destructive">{error}</p> : null}
     </div>
   );
 }
@@ -309,7 +301,6 @@ function MediaEditor({
           naturalKey,
           state,
           content,
-          sourceHash: row.sourceHash,
           expectedUpdatedAt: row.overrideUpdatedAt,
         },
       });
@@ -317,7 +308,6 @@ function MediaEditor({
         ...row,
         ...content,
         naturalKey,
-        sourceHash: row.sourceHash ?? sourceHash(content),
         overrideUpdatedAt: res.updatedAt,
         overridden: true,
         added: state === 'added',

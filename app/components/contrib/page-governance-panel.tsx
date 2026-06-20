@@ -38,47 +38,49 @@ export function PageGovernancePanel({
   const { data: session } = useSession();
   const [governance, setGovernance] = useState(initial);
   const [busy, setBusy] = useState<'steward' | 'lock' | 'orphan' | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const signedIn = Boolean(session?.user) || governance.signedIn;
 
-  const toggleOrphan = async () => {
-    setBusy('orphan');
+  const runAction = async (
+    kind: 'steward' | 'lock' | 'orphan',
+    fn: () => Promise<ShowGovernance>,
+    fallback: string
+  ) => {
+    setBusy(kind);
+    setError(null);
     try {
-      const next = await setShowOrphaned({
-        data: { corpsKey, season, orphaned: governance.status !== 'orphaned' },
-      });
-      setGovernance(next);
+      setGovernance(await fn());
     } catch (e) {
-      alert(e instanceof Error ? e.message : 'Could not update page status');
+      setError(e instanceof Error ? e.message : fallback);
     } finally {
       setBusy(null);
     }
   };
 
-  const toggleSteward = async () => {
-    setBusy('steward');
-    try {
-      const next = await setShowSteward({
-        data: { corpsKey, season, steward: !governance.mySteward },
-      });
-      setGovernance(next);
-    } catch (e) {
-      alert(e instanceof Error ? e.message : 'Could not update stewardship');
-    } finally {
-      setBusy(null);
-    }
-  };
+  const toggleOrphan = () =>
+    runAction(
+      'orphan',
+      () =>
+        setShowOrphaned({
+          data: { corpsKey, season, orphaned: governance.status !== 'orphaned' },
+        }),
+      'Could not update page status'
+    );
 
-  const changeLock = async (lockLevel: ShowPageLock) => {
+  const toggleSteward = () =>
+    runAction(
+      'steward',
+      () => setShowSteward({ data: { corpsKey, season, steward: !governance.mySteward } }),
+      'Could not update stewardship'
+    );
+
+  const changeLock = (lockLevel: ShowPageLock) => {
     if (lockLevel === governance.lockLevel) return;
-    setBusy('lock');
-    try {
-      const next = await setShowLockLevel({ data: { corpsKey, season, lockLevel } });
-      setGovernance(next);
-    } catch (e) {
-      alert(e instanceof Error ? e.message : 'Could not update page lock');
-    } finally {
-      setBusy(null);
-    }
+    return runAction(
+      'lock',
+      () => setShowLockLevel({ data: { corpsKey, season, lockLevel } }),
+      'Could not update page lock'
+    );
   };
 
   return (
@@ -178,6 +180,8 @@ export function PageGovernancePanel({
             </Button>
           </div>
         </Show>
+
+        {error ? <p className="text-xs text-destructive">{error}</p> : null}
       </CardContent>
     </Card>
   );
