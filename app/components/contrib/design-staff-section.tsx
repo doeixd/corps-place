@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { useForm, Form, Field } from '@formisch/react';
 import { For, Show } from 'jotai-solid-api';
 import { useSession, signIn } from '@/lib/auth-client';
 import { saveShowOverride } from '@/lib/server-fns/contrib';
 import type { OverrideRow } from '@/lib/contrib/store';
-import type { DesignerRowInput } from '@/lib/contrib/schemas';
+import { DesignerRowInputSchema, type DesignerRowInput } from '@/lib/contrib/schemas';
 import { mergeDesigners, type MergedDesignerRow } from '@/lib/contrib/seedable';
 import { SourceBadge, DivergenceBadge } from '@/components/contrib/provenance';
 import { useRowMutation } from '@/components/contrib/use-row-mutation';
@@ -251,22 +252,22 @@ function DesignerEditor({
   onSaved: (row: MergedDesignerRow) => void;
   citations: readonly CitationOption[];
 }) {
-  const [draft, setDraft] = useState<DesignerRowInput>(row);
+  const form = useForm({
+    schema: DesignerRowInputSchema,
+    initialInput: {
+      role: row.role,
+      name: row.name,
+      sourceUrl: row.sourceUrl ?? '',
+      citationIds: row.citationIds ?? [],
+    },
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const set = (key: keyof DesignerRowInput, value: DesignerRowInput[keyof DesignerRowInput]) =>
-    setDraft((current) => ({ ...current, [key]: value }));
 
-  const save = async () => {
+  const submit = async (content: DesignerRowInput) => {
     setSaving(true);
     setError(null);
     try {
-      const content = {
-        role: draft.role.trim(),
-        name: draft.name.trim(),
-        sourceUrl: draft.sourceUrl?.trim() ?? '',
-        citationIds: draft.citationIds ?? [],
-      };
       const state = row.added ? 'added' : 'edited';
       const res = await saveShowOverride({
         data: {
@@ -294,42 +295,66 @@ function DesignerEditor({
   };
 
   return (
-    <div className="space-y-2">
-      <input
-        value={draft.role}
-        onChange={(e) => set('role', e.target.value)}
-        placeholder="Role"
-        className={inputCls}
-      />
-      <input
-        value={draft.name}
-        onChange={(e) => set('name', e.target.value)}
-        placeholder="Name"
-        className={inputCls}
-      />
-      <input
-        value={draft.sourceUrl ?? ''}
-        onChange={(e) => set('sourceUrl', e.target.value)}
-        placeholder="Source URL"
-        className={inputCls}
-      />
-      <CitationPicker
-        selected={draft.citationIds}
-        citations={citations}
-        onChange={(citationIds) => set('citationIds', citationIds)}
-      />
+    <Form of={form} onSubmit={submit} className="space-y-2">
+      <Field of={form} path={['role']}>
+        {(f) => (
+          <div>
+            <input
+              value={str(f.input)}
+              onChange={(e) => f.onChange(e.target.value)}
+              placeholder="Role"
+              className={inputCls}
+            />
+            {f.errors ? <p className="mt-1 text-xs text-destructive">{f.errors[0]}</p> : null}
+          </div>
+        )}
+      </Field>
+      <Field of={form} path={['name']}>
+        {(f) => (
+          <div>
+            <input
+              value={str(f.input)}
+              onChange={(e) => f.onChange(e.target.value)}
+              placeholder="Name"
+              className={inputCls}
+            />
+            {f.errors ? <p className="mt-1 text-xs text-destructive">{f.errors[0]}</p> : null}
+          </div>
+        )}
+      </Field>
+      <Field of={form} path={['sourceUrl']}>
+        {(f) => (
+          <input
+            value={str(f.input)}
+            onChange={(e) => f.onChange(e.target.value)}
+            placeholder="Source URL"
+            className={inputCls}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['citationIds']}>
+        {(f) => (
+          <CitationPicker
+            selected={(f.input as string[] | undefined) ?? []}
+            citations={citations}
+            onChange={(citationIds) => f.onChange(citationIds)}
+          />
+        )}
+      </Field>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <div className="flex gap-2">
-        <Button type="button" size="sm" onClick={() => void save()} disabled={saving}>
+        <Button type="submit" size="sm" disabled={saving}>
           {saving ? 'Saving...' : 'Save'}
         </Button>
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>
           Cancel
         </Button>
       </div>
-    </div>
+    </Form>
   );
 }
+
+const str = (x: unknown) => (typeof x === 'string' ? x : '');
 
 const newRow = (index: number): MergedDesignerRow => ({
   role: '',

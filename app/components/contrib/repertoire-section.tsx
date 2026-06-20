@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { useForm, Form, Field } from '@formisch/react';
 import { For, Show } from 'jotai-solid-api';
 import { useSession, signIn } from '@/lib/auth-client';
 import { saveShowOverride } from '@/lib/server-fns/contrib';
 import type { OverrideRow } from '@/lib/contrib/store';
-import type { RepertoireRowInput } from '@/lib/contrib/schemas';
+import { RepertoireRowInputSchema, type RepertoireRowInput } from '@/lib/contrib/schemas';
 import { mergeRepertoire, type MergedRepertoireRow } from '@/lib/contrib/seedable';
 import { SourceBadge, DivergenceBadge } from '@/components/contrib/provenance';
 import { useRowMutation } from '@/components/contrib/use-row-mutation';
@@ -268,19 +269,14 @@ function RepertoireEditor({
   onSaved: (row: MergedRepertoireRow) => void;
   citations: readonly CitationOption[];
 }) {
-  const [draft, setDraft] = useState<RepertoireRowInput>(row);
+  const form = useForm({ schema: RepertoireRowInputSchema, initialInput: blankToEmpty(row) });
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const set = (
-    key: keyof RepertoireRowInput,
-    value: RepertoireRowInput[keyof RepertoireRowInput]
-  ) => setDraft((current) => ({ ...current, [key]: value }));
 
-  const save = async () => {
+  const submit = async (content: RepertoireRowInput) => {
     setSaving(true);
     setError(null);
     try {
-      const content = blankToEmpty(draft);
       const state = row.added ? 'added' : 'edited';
       const res = await saveShowOverride({
         data: {
@@ -308,56 +304,85 @@ function RepertoireEditor({
   };
 
   return (
-    <div className="space-y-2">
-      <input
-        value={draft.workTitle}
-        onChange={(e) => set('workTitle', e.target.value)}
-        placeholder="Work title"
-        className={inputCls}
-      />
+    <Form of={form} onSubmit={submit} className="space-y-2">
+      <Field of={form} path={['workTitle']}>
+        {(f) => (
+          <div>
+            <input
+              value={str(f.input)}
+              onChange={(e) => f.onChange(e.target.value)}
+              placeholder="Work title"
+              className={inputCls}
+            />
+            {f.errors ? <p className="mt-1 text-xs text-destructive">{f.errors[0]}</p> : null}
+          </div>
+        )}
+      </Field>
       <div className="grid gap-2 sm:grid-cols-2">
-        <input
-          value={draft.composer ?? ''}
-          onChange={(e) => set('composer', e.target.value)}
-          placeholder="Composer"
-          className={inputCls}
-        />
-        <input
-          value={draft.arranger ?? ''}
-          onChange={(e) => set('arranger', e.target.value)}
-          placeholder="Arranger"
-          className={inputCls}
-        />
+        <Field of={form} path={['composer']}>
+          {(f) => (
+            <input
+              value={str(f.input)}
+              onChange={(e) => f.onChange(e.target.value)}
+              placeholder="Composer"
+              className={inputCls}
+            />
+          )}
+        </Field>
+        <Field of={form} path={['arranger']}>
+          {(f) => (
+            <input
+              value={str(f.input)}
+              onChange={(e) => f.onChange(e.target.value)}
+              placeholder="Arranger"
+              className={inputCls}
+            />
+          )}
+        </Field>
       </div>
-      <input
-        value={draft.hyperlink ?? ''}
-        onChange={(e) => set('hyperlink', e.target.value)}
-        placeholder="Source / listen URL"
-        className={inputCls}
-      />
-      <textarea
-        value={draft.notes ?? ''}
-        onChange={(e) => set('notes', e.target.value)}
-        placeholder="Notes"
-        className={`min-h-20 ${inputCls}`}
-      />
-      <CitationPicker
-        selected={draft.citationIds}
-        citations={citations}
-        onChange={(citationIds) => set('citationIds', citationIds)}
-      />
+      <Field of={form} path={['hyperlink']}>
+        {(f) => (
+          <input
+            value={str(f.input)}
+            onChange={(e) => f.onChange(e.target.value)}
+            placeholder="Source / listen URL"
+            className={inputCls}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['notes']}>
+        {(f) => (
+          <textarea
+            value={str(f.input)}
+            onChange={(e) => f.onChange(e.target.value)}
+            placeholder="Notes"
+            className={`min-h-20 ${inputCls}`}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['citationIds']}>
+        {(f) => (
+          <CitationPicker
+            selected={(f.input as string[] | undefined) ?? []}
+            citations={citations}
+            onChange={(citationIds) => f.onChange(citationIds)}
+          />
+        )}
+      </Field>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <div className="flex gap-2">
-        <Button type="button" size="sm" onClick={() => void save()} disabled={saving}>
+        <Button type="submit" size="sm" disabled={saving}>
           {saving ? 'Saving...' : 'Save'}
         </Button>
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>
           Cancel
         </Button>
       </div>
-    </div>
+    </Form>
   );
 }
+
+const str = (x: unknown) => (typeof x === 'string' ? x : '');
 
 const newRow = (index: number): MergedRepertoireRow => ({
   workTitle: '',

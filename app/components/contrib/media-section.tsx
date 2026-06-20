@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { useForm, Form, Field } from '@formisch/react';
 import { For, Show } from 'jotai-solid-api';
 import { useSession, signIn } from '@/lib/auth-client';
 import { saveShowOverride } from '@/lib/server-fns/contrib';
 import type { OverrideRow } from '@/lib/contrib/store';
-import type { MediaRowInput } from '@/lib/contrib/schemas';
+import { MediaRowInputSchema, type MediaRowInput } from '@/lib/contrib/schemas';
 import { mediaNaturalKey, mergeMedia, type MergedMediaRow } from '@/lib/contrib/seedable';
 import { SourceBadge, DivergenceBadge } from '@/components/contrib/provenance';
 import { useRowMutation } from '@/components/contrib/use-row-mutation';
@@ -280,17 +281,27 @@ function MediaEditor({
   onSaved: (row: MergedMediaRow) => void;
   citations: readonly CitationOption[];
 }) {
-  const [draft, setDraft] = useState<MediaRowInput>(row);
+  const form = useForm({
+    schema: MediaRowInputSchema,
+    initialInput: {
+      mediaType: row.mediaType ?? '',
+      title: row.title ?? '',
+      description: row.description ?? '',
+      url: row.url,
+      thumbnailUrl: row.thumbnailUrl ?? '',
+      attribution: row.attribution ?? '',
+      publishedAt: row.publishedAt ?? '',
+      durationSeconds: row.durationSeconds,
+      citationIds: row.citationIds ?? [],
+    },
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const set = (key: keyof MediaRowInput, value: MediaRowInput[keyof MediaRowInput]) =>
-    setDraft((current) => ({ ...current, [key]: value }));
 
-  const save = async () => {
+  const submit = async (content: MediaRowInput) => {
     setSaving(true);
     setError(null);
     try {
-      const content = blankToEmpty(draft);
       const state = row.added ? 'added' : 'edited';
       const naturalKey = row.added ? mediaNaturalKey({ url: content.url }) : row.naturalKey;
       const res = await saveShowOverride({
@@ -320,72 +331,108 @@ function MediaEditor({
   };
 
   return (
-    <div className="space-y-2">
-      <input
-        value={draft.url}
-        onChange={(e) => set('url', e.target.value)}
-        placeholder="Media URL"
-        className={inputCls}
-      />
+    <Form of={form} onSubmit={submit} className="space-y-2">
+      <Field of={form} path={['url']}>
+        {(f) => (
+          <div>
+            <input
+              value={str(f.input)}
+              onChange={(e) => f.onChange(e.target.value)}
+              placeholder="Media URL"
+              className={inputCls}
+            />
+            {f.errors ? <p className="mt-1 text-xs text-destructive">{f.errors[0]}</p> : null}
+          </div>
+        )}
+      </Field>
       <div className="grid gap-2 sm:grid-cols-2">
-        <input
-          value={draft.title ?? ''}
-          onChange={(e) => set('title', e.target.value)}
-          placeholder="Title"
-          className={inputCls}
-        />
-        <input
-          value={draft.mediaType ?? ''}
-          onChange={(e) => set('mediaType', e.target.value)}
-          placeholder="Type"
-          className={inputCls}
-        />
+        <Field of={form} path={['title']}>
+          {(f) => (
+            <input
+              value={str(f.input)}
+              onChange={(e) => f.onChange(e.target.value)}
+              placeholder="Title"
+              className={inputCls}
+            />
+          )}
+        </Field>
+        <Field of={form} path={['mediaType']}>
+          {(f) => (
+            <input
+              value={str(f.input)}
+              onChange={(e) => f.onChange(e.target.value)}
+              placeholder="Type"
+              className={inputCls}
+            />
+          )}
+        </Field>
       </div>
-      <input
-        value={draft.attribution ?? ''}
-        onChange={(e) => set('attribution', e.target.value)}
-        placeholder="Attribution"
-        className={inputCls}
-      />
-      <input
-        value={draft.thumbnailUrl ?? ''}
-        onChange={(e) => set('thumbnailUrl', e.target.value)}
-        placeholder="Thumbnail URL"
-        className={inputCls}
-      />
-      <textarea
-        value={draft.description ?? ''}
-        onChange={(e) => set('description', e.target.value)}
-        placeholder="Description"
-        className={`min-h-20 ${inputCls}`}
-      />
-      <input
-        type="number"
-        min={0}
-        value={draft.durationSeconds ?? ''}
-        onChange={(e) =>
-          set('durationSeconds', e.target.value === '' ? undefined : Number(e.target.value))
-        }
-        placeholder="Duration seconds"
-        className={inputCls}
-      />
-      <CitationPicker
-        selected={draft.citationIds}
-        citations={citations}
-        onChange={(citationIds) => set('citationIds', citationIds)}
-      />
+      <Field of={form} path={['attribution']}>
+        {(f) => (
+          <input
+            value={str(f.input)}
+            onChange={(e) => f.onChange(e.target.value)}
+            placeholder="Attribution"
+            className={inputCls}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['thumbnailUrl']}>
+        {(f) => (
+          <input
+            value={str(f.input)}
+            onChange={(e) => f.onChange(e.target.value)}
+            placeholder="Thumbnail URL"
+            className={inputCls}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['description']}>
+        {(f) => (
+          <textarea
+            value={str(f.input)}
+            onChange={(e) => f.onChange(e.target.value)}
+            placeholder="Description"
+            className={`min-h-20 ${inputCls}`}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['durationSeconds']}>
+        {(f) => (
+          <input
+            type="number"
+            min={0}
+            value={num(f.input)}
+            onChange={(e) => f.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
+            placeholder="Duration seconds"
+            className={inputCls}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['citationIds']}>
+        {(f) => (
+          <CitationPicker
+            selected={(f.input as string[] | undefined) ?? []}
+            citations={citations}
+            onChange={(citationIds) => f.onChange(citationIds)}
+          />
+        )}
+      </Field>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <div className="flex gap-2">
-        <Button type="button" size="sm" onClick={() => void save()} disabled={saving}>
+        <Button type="submit" size="sm" disabled={saving}>
           {saving ? 'Saving...' : 'Save'}
         </Button>
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>
           Cancel
         </Button>
       </div>
-    </div>
+    </Form>
   );
 }
+
+const str = (x: unknown) => (typeof x === 'string' ? x : '');
+const num = (x: unknown) => (typeof x === 'number' && !Number.isNaN(x) ? String(x) : '');
 
 const newRow = (index: number): MergedMediaRow => ({
   mediaType: '',
@@ -405,16 +452,4 @@ const newRow = (index: number): MergedMediaRow => ({
   overrideUpdatedAt: null,
   overridden: false,
   added: true,
-});
-
-const blankToEmpty = (row: MediaRowInput): MediaRowInput => ({
-  mediaType: row.mediaType?.trim() ?? '',
-  title: row.title?.trim() ?? '',
-  description: row.description?.trim() ?? '',
-  url: row.url.trim(),
-  thumbnailUrl: row.thumbnailUrl?.trim() ?? '',
-  attribution: row.attribution?.trim() ?? '',
-  publishedAt: row.publishedAt?.trim() ?? '',
-  durationSeconds: row.durationSeconds,
-  citationIds: row.citationIds ?? [],
 });

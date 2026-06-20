@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { useForm, Form, Field } from '@formisch/react';
 import { For, Show } from 'jotai-solid-api';
 import { useSession, signIn } from '@/lib/auth-client';
 import { saveShowOverride } from '@/lib/server-fns/contrib';
 import type { OverrideRow } from '@/lib/contrib/store';
-import type { MovementRowInput } from '@/lib/contrib/schemas';
+import { MovementRowInputSchema, type MovementRowInput } from '@/lib/contrib/schemas';
 import { mergeMovements, type MergedMovementRow } from '@/lib/contrib/seedable';
 import { SourceBadge, DivergenceBadge } from '@/components/contrib/provenance';
 import { useRowMutation } from '@/components/contrib/use-row-mutation';
@@ -259,23 +260,23 @@ function MovementEditor({
   onSaved: (row: MergedMovementRow) => void;
   citations: readonly CitationOption[];
 }) {
-  const [draft, setDraft] = useState<MovementRowInput>(row);
+  const form = useForm({
+    schema: MovementRowInputSchema,
+    initialInput: {
+      ordinal: row.ordinal,
+      title: row.title ?? '',
+      description: row.description ?? '',
+      sourceUrl: row.sourceUrl ?? '',
+      citationIds: row.citationIds ?? [],
+    },
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const set = (key: keyof MovementRowInput, value: MovementRowInput[keyof MovementRowInput]) =>
-    setDraft((current) => ({ ...current, [key]: value }));
 
-  const save = async () => {
+  const submit = async (content: MovementRowInput) => {
     setSaving(true);
     setError(null);
     try {
-      const content = {
-        ordinal: Number(draft.ordinal),
-        title: draft.title?.trim() ?? '',
-        description: draft.description?.trim() ?? '',
-        sourceUrl: draft.sourceUrl?.trim() ?? '',
-        citationIds: draft.citationIds ?? [],
-      };
       const state = row.added ? 'added' : 'edited';
       const res = await saveShowOverride({
         data: {
@@ -303,50 +304,73 @@ function MovementEditor({
   };
 
   return (
-    <div className="space-y-2">
-      <input
-        type="number"
-        min={1}
-        value={draft.ordinal}
-        onChange={(e) => set('ordinal', Number(e.target.value))}
-        placeholder="Order"
-        className={inputCls}
-      />
-      <input
-        value={draft.title ?? ''}
-        onChange={(e) => set('title', e.target.value)}
-        placeholder="Movement title"
-        className={inputCls}
-      />
-      <textarea
-        value={draft.description ?? ''}
-        onChange={(e) => set('description', e.target.value)}
-        placeholder="Description"
-        className={`min-h-20 ${inputCls}`}
-      />
-      <input
-        value={draft.sourceUrl ?? ''}
-        onChange={(e) => set('sourceUrl', e.target.value)}
-        placeholder="Source URL"
-        className={inputCls}
-      />
-      <CitationPicker
-        selected={draft.citationIds}
-        citations={citations}
-        onChange={(citationIds) => set('citationIds', citationIds)}
-      />
+    <Form of={form} onSubmit={submit} className="space-y-2">
+      <Field of={form} path={['ordinal']}>
+        {(f) => (
+          <input
+            type="number"
+            min={1}
+            value={num(f.input)}
+            onChange={(e) => f.onChange(Number(e.target.value))}
+            placeholder="Order"
+            className={inputCls}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['title']}>
+        {(f) => (
+          <input
+            value={str(f.input)}
+            onChange={(e) => f.onChange(e.target.value)}
+            placeholder="Movement title"
+            className={inputCls}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['description']}>
+        {(f) => (
+          <textarea
+            value={str(f.input)}
+            onChange={(e) => f.onChange(e.target.value)}
+            placeholder="Description"
+            className={`min-h-20 ${inputCls}`}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['sourceUrl']}>
+        {(f) => (
+          <input
+            value={str(f.input)}
+            onChange={(e) => f.onChange(e.target.value)}
+            placeholder="Source URL"
+            className={inputCls}
+          />
+        )}
+      </Field>
+      <Field of={form} path={['citationIds']}>
+        {(f) => (
+          <CitationPicker
+            selected={(f.input as string[] | undefined) ?? []}
+            citations={citations}
+            onChange={(citationIds) => f.onChange(citationIds)}
+          />
+        )}
+      </Field>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <div className="flex gap-2">
-        <Button type="button" size="sm" onClick={() => void save()} disabled={saving}>
+        <Button type="submit" size="sm" disabled={saving}>
           {saving ? 'Saving...' : 'Save'}
         </Button>
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>
           Cancel
         </Button>
       </div>
-    </div>
+    </Form>
   );
 }
+
+const str = (x: unknown) => (typeof x === 'string' ? x : '');
+const num = (x: unknown) => (typeof x === 'number' && !Number.isNaN(x) ? String(x) : '');
 
 const newRow = (index: number): MergedMovementRow => ({
   ordinal: index + 1,
