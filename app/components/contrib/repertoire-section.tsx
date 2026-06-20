@@ -13,10 +13,12 @@ import {
 } from '@/components/contrib/citation-controls';
 import type { ShowDetailRepertoire } from '@sdk/src/readModel/builders/shows.js';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icon';
 import { MusicNote03Icon } from '@/components/icons/generated';
 
-const inputCls = 'w-full rounded border border-border bg-transparent px-2 py-1 text-sm';
+const inputCls =
+  'w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30';
 
 export function RepertoireSection({
   corpsKey,
@@ -75,15 +77,16 @@ export function RepertoireSection({
                 No repertoire on file yet. Add the works, composers and arrangers.
               </p>
               {!signedIn ? (
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() =>
                     signIn.social({ provider: 'google', callbackURL: window.location.pathname })
                   }
-                  className="shrink-0 rounded-md border border-border px-3 py-1.5 text-sm hover:border-primary/60 hover:text-foreground"
                 >
                   Sign in to contribute
-                </button>
+                </Button>
               ) : null}
             </div>
           }
@@ -348,23 +351,14 @@ function RepertoireEditor({
         citations={citations}
         onChange={(citationIds) => set('citationIds', citationIds)}
       />
-      {error ? <p className="text-sm text-red-500">{error}</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={() => void save()}
-          disabled={saving}
-          className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground disabled:opacity-50"
-        >
+        <Button type="button" size="sm" onClick={() => void save()} disabled={saving}>
           {saving ? 'Saving...' : 'Save'}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md border border-border px-4 py-1.5 text-sm text-text-secondary"
-        >
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={onCancel}>
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -85,14 +85,14 @@ function CitationToolbar({ citations }: { citations: readonly EditorCitation[] }
   };
 
   return (
-    <div className="mb-2 flex items-center gap-2 text-xs text-text-secondary">
-      <span>Cite a source:</span>
+    <div className="mb-2 flex items-center gap-2">
       <select
         value=""
         onChange={(e) => insert(e.target.value)}
-        className="rounded border border-border bg-transparent px-1.5 py-1 text-xs"
+        aria-label="Insert a citation at the cursor"
+        className="h-7 rounded-lg border border-input bg-transparent px-2 text-xs text-text-secondary transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
       >
-        <option value="">Insert citation…</option>
+        <option value="">+ Insert citation…</option>
         {citations.map((c) => (
           <option key={c.citationId} value={c.citationId}>
             {c.label}

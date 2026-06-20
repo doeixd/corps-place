@@ -66,7 +66,7 @@ export function ImageDrop({
         onChange={(e) => void handleFiles(e.target.files)}
       />
       <span>{busy ? 'Uploading…' : 'Drop an image here, or click to choose'}</span>
-      {error ? <span className="text-red-500">{error}</span> : null}
+      {error ? <span className="text-destructive">{error}</span> : null}
     </label>
   );
 }

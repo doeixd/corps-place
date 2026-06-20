@@ -1,0 +1,48 @@
+[
+  {
+    "person_id": "matthew-sieve",
+    "display_name": "Matt Sieve",
+    "bio": "Matt Sieve is the Blue Devils C Corps Director, appointed in 2022 following Rick Odello's retirement, and has since served as Director of Open Class Programs for the Blue Devils organization. He previously marched as a tuba player in the A Corps and spent years teaching the B and C ensembles. Sieve holds a BA in Applied Mathematics from UC Berkeley.",
+    "photo_url": "https://bluedevils.org/news/files-articles/1054/Matt_headshot_article_2-1000x1147.png",
+    "sources": ["https://bluedevils.org/news/article.php?ID=1054", "https://www.drumcorpsplanet.com/2022/06/introducing-matt-sieve-blue-devils-c-corps-director/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "michael-richman",
+    "display_name": "Michael Richman",
+    "bio": "Michael Richman, originally from Omaha, Nebraska, joined Phantom Regiment as a movement designer. He has taught indoor and outdoor color guard since 2003, working with Blue Stars, Blue Knights, Phantom Regiment and Madison Scouts, and was a member of the Cavaliers color guard. Richman holds a bachelor's degree in dance and choreography from the University of Colorado-Boulder and dances with The Seán Curran Company in New York.",
+    "sources": ["https://regiment.org/michael-richman-kelly-mitchell-join-movement-design-team/", "https://www.drumcorpsplanet.com/2017/11/meet-the-2018-madison-scouts-color-guard-instructional-team/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "michael-strange",
+    "display_name": "Michael Strange",
+    "bio": "Michael Strange serves as a Front Ensemble Instructor for Santa Clara Vanguard. A percussionist and educator from Chesapeake, Virginia, he marched the Troopers front ensemble in 2013 and the Santa Clara Vanguard from 2014-2017, serving as a section leader in 2017. He is also an adjunct instructor for the University of Alabama's Million Dollar Band.",
+    "photo_url": "https://www.scvanguard.org/wp-content/uploads/2022/08/Michael-Strange-1-1024x1024-1.jpeg",
+    "sources": ["https://www.scvanguard.org/staff/michael-strange/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "michael-swain",
+    "display_name": "Michael Swain",
+    "bio": "Michael Swain serves as a Bass Instructor for Santa Clara Vanguard. He performed with both the Troopers and Santa Clara Vanguard and has since worked with both groups' education teams, and also performed in WGI with Infinity Percussion. Based in Orlando, Florida, he holds a music degree from the University of Central Florida and performs with the Orlando Magic Drumline.",
+    "photo_url": "https://www.scvanguard.org/wp-content/uploads/2022/08/Michael-Swain.jpg",
+    "sources": ["https://www.scvanguard.org/staff/michael-swain/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "nic-rundell",
+    "display_name": "Nic Rundell",
+    "bio": "Nic Rundell joined the Bluecoats as a Battery Instructor, announced as part of the corps' 2023 percussion educational team. He performed as a battery member with the Madison Scouts.",
+    "sources": ["https://bluecoats.com/news/2023/1/30/percussion-team", "https://bluecoats.com/staff"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "nicholas-putnam",
+    "display_name": "Nick Putnam",
+    "bio": "Nick Putnam joined the Madison Scouts management team in 2018 and was named an Assistant Corps Director. He marched in Drum Corps International with Spokane Thunder (2011-2013) and the Madison Scouts (2015-2017). Based in the San Diego area, he works as a drill designer and visual instructor and serves as Assistant Director with Pulse Percussion.",
+    "photo_url": "https://cdn.prod.website-files.com/6007192fe7ff1a6dec0b5579/607fba2e2e882193996d6660_Putnam-Nick-e1556170590737-230x300.jpeg",
+    "sources": ["https://www.forwardperformingarts.org/news/madison-scouts-announce-greg-mizak-nick-putnam-assistant-corps-directors"],
+    "confidence": "HIGH"
+  }
+]

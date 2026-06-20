@@ -3,12 +3,16 @@ import { useSession } from '@/lib/auth-client';
 import { createCitation, listCitations, type Citation } from '@/lib/server-fns/citations';
 import type { ShowDetail } from '@sdk/src/readModel/builders/shows.js';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import { Icon, type IconComponent } from '@/components/icon';
 import {
   GlobalIcon,
   InstagramIcon,
   YoutubeIcon,
   BookOpen01Icon,
+  AddCircleIcon,
 } from '@/components/icons/generated';
 
 /**
@@ -143,59 +147,69 @@ export function ReferencesSection({
           </div>
         ) : null}
         {cites.length > 0 ? (
-          <ol className="space-y-1.5">
-            {cites.map((c, i) => (
-              <li key={c.citationId} className="flex gap-2 text-sm">
-                <span className="tabular-nums text-text-secondary">[{i + 1}]</span>
-                <Icon
-                  icon={typeIcon(c.type)}
-                  size="sm"
-                  className="mt-0.5 shrink-0 text-text-secondary"
-                />
-                <span className="min-w-0">
-                  {c.url ? (
-                    <a
-                      href={c.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline underline-offset-2"
-                    >
-                      {c.title || c.url}
-                    </a>
-                  ) : (
-                    <span className="text-text-primary">{c.title || 'Source'}</span>
-                  )}
-                  {c.publisher ? (
-                    <span className="text-text-secondary"> · {c.publisher}</span>
-                  ) : null}
-                </span>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <p className="text-sm text-text-secondary">No sources cited yet.</p>
-        )}
+          <>
+            {provenance.length > 0 ? (
+              <p className="mb-1.5 text-xs uppercase tracking-wide text-text-secondary">
+                Cited by contributors
+              </p>
+            ) : null}
+            <ol className="space-y-1.5">
+              {cites.map((c, i) => (
+                <li
+                  key={c.citationId}
+                  className="flex gap-2 rounded-md px-1 py-0.5 text-sm transition-colors hover:bg-foreground/5"
+                >
+                  <span className="tabular-nums text-text-secondary">[{i + 1}]</span>
+                  <Icon
+                    icon={typeIcon(c.type)}
+                    size="sm"
+                    className="mt-0.5 shrink-0 text-text-secondary"
+                  />
+                  <span className="min-w-0">
+                    {c.url ? (
+                      <a
+                        href={c.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground"
+                      >
+                        {c.title || c.url}
+                      </a>
+                    ) : (
+                      <span className="text-text-primary">{c.title || 'Source'}</span>
+                    )}
+                    {c.publisher ? (
+                      <span className="text-text-secondary"> · {c.publisher}</span>
+                    ) : null}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </>
+        ) : signedIn ? (
+          <p className="text-sm text-text-secondary">
+            No fan-added citations yet — paste a URL below to cite a source.
+          </p>
+        ) : null}
 
         {signedIn ? (
-          <div className="mt-3 flex gap-2">
-            <input
+          <div className="mt-4 flex gap-2 border-t border-foreground/10 pt-4">
+            <Input
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && void add()}
               placeholder="Paste a source URL…"
-              className="flex-1 rounded border border-border bg-transparent px-2 py-1 text-sm"
-            />
-            <button
-              type="button"
-              onClick={add}
+              aria-label="Source URL"
               disabled={busy}
-              className="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground disabled:opacity-50"
-            >
-              {busy ? 'Adding…' : 'Add source'}
-            </button>
+              className="flex-1"
+            />
+            <Button type="button" size="sm" onClick={add} disabled={busy || !url.trim()}>
+              {busy ? <Spinner /> : <Icon icon={AddCircleIcon} size="sm" />}
+              {busy ? 'Adding…' : 'Add'}
+            </Button>
           </div>
         ) : null}
-        {error ? <p className="mt-1 text-sm text-red-500">{error}</p> : null}
+        {error ? <p className="mt-2 text-sm text-destructive">{error}</p> : null}
       </CardContent>
     </Card>
   );

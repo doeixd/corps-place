@@ -1,0 +1,44 @@
+[
+  {
+    "person_id": "nicole-casino",
+    "display_name": "Nicole Casino",
+    "bio": "Nicole Casino is a percussion educator who serves as Percussion Co-Caption Head for Pacific Crest and has also worked with the Blue Knights. She performed with award-winning DCI and WGI ensembles including Pulse Percussion (2011-2013), RCC, the Bluecoats (2011), and the Blue Devils (2012-2013), where in 2013 she became the first female center snare. She holds a Master of Arts from Berklee College of Music in Music Business and Global Entertainment and has taught at Chino Hills High School, Vista Murrieta High School, Vessel, and the Malmo Drum Corps in Sweden.",
+    "sources": ["https://pacific-crest.org/2020/07/nicole-casino/", "https://www.nicolecasino.com/about"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "nicole-davis",
+    "display_name": "Nicole Davis",
+    "bio": "Nicole Davis (Diamond) is a visual instructor and Troopers alumna who marched baritone with the Troopers in 2015 before continuing as a euphonium player with the Bluecoats from 2016 through 2018, where she served as a brass section leader during her age-out season. She went on to teach visual for the Cadets Drum & Bugle Corps from 2021 to 2023 and has instructed numerous South Florida ensembles including Marjory Stoneman Douglas High School, Park Vista High School, and STRYKE Wynds.",
+    "sources": ["https://www.troopersdrumcorps.org/single-post/introducing-the-troopers-visual-team"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "otto-peralta",
+    "display_name": "Otto Peralta",
+    "bio": "Otto Peralta is a Southern California percussion educator who serves as a Bass Drum Instructor at Pacific Crest. His performing experience includes Gold Drum & Bugle Corps, charter membership with POW Percussion, and aging out with The Academy Drum & Bugle Corps and Pulse Percussion. He has worked with ensembles including Palisades Charter High School, La Quinta High School, Vessel Indoor, and the Mandarins Drum & Bugle Corps, and currently teaches at Mira Costa High School, POW Percussion, and as Battery Caption Head at West High School in Torrance.",
+    "sources": ["https://pacific-crest.org/2023/11/otto-peralta/"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "pablo-coppola",
+    "display_name": "Pablo Coppola",
+    "bio": "Pablo Coppola is a visual educator and designer who served as Visual Caption Head and visual instructor with Pacific Crest from 2008 to 2011 and with Spirit of Atlanta from 2013 to 2015. He was also part of the visual staff for Santa Clara Vanguard during the 2010 season. He began teaching in 2004 at Diamond Bar High School and has pursued an educational studies degree with an emphasis on music and special education at Arizona State University.",
+    "sources": ["https://www.pacific-crest.org/2015/09/pablo-coppola/", "https://pubhtml5.com/xada/fgkd/basic/101-150"],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "phil-snyder",
+    "display_name": "Phil Snyder",
+    "bio": "Phil Snyder is an alumnus of the Colts, having aged out on trumpet in 2004, and has served on the Colts brass staff for several years, most recently from 2014 to 2016. He went on to serve as Program Coordinator and Visual Designer for the Colt Cadets and as a Design Consultant for River City Rhythm. He is an active designer, adjudicator, and band director in Minnesota.",
+    "sources": ["https://colts.org/news/2017_212", "https://www.dci.org/news/the-dciorg-interview-phil-snyder-colts-soprano-section-leader-horn-sergeant/"],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "reggie-humphrey",
+    "display_name": "Reggie Humphrey",
+    "bio": "Reggie Humphrey is a brass and visual educator from Dalton, Georgia, who served as Brass Caption Head for Pacific Crest from 2016 to 2018 and as a brass/visual technician for Phantom Regiment and the Troopers (visual instructor, summer 2013). He marched with Spirit from Jacksonville (2007) and Phantom Regiment (2009-2012) and earned his bachelor's degree in Instrumental Music Education from the University of West Georgia, with trumpet as his primary instrument. He currently serves as Director of Bands at Center Grove High School in Greenwood, Indiana.",
+    "sources": ["https://regiment.org/reggie-humphrey/", "https://centergrovebands.com/directors/"],
+    "confidence": "HIGH"
+  }
+]

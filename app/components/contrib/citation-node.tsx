@@ -77,9 +77,9 @@ export class CitationNode extends DecoratorNode<ReactNode> {
   decorate(_editor: unknown, _config: EditorConfig): ReactNode {
     return (
       <sup
-        className="ml-0.5 cursor-default select-none rounded bg-primary/10 px-1 text-[0.7em] text-primary"
+        className="mx-0.5 inline-flex cursor-default select-none items-center rounded bg-primary/10 px-1 align-super text-[0.65em] font-medium uppercase tracking-wide text-primary ring-1 ring-primary/20"
         data-citation-id={this.__citationId}
-        title="Citation"
+        title="Inline citation — numbered at read time"
       >
         cite
       </sup>

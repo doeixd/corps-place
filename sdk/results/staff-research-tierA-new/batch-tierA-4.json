@@ -1,0 +1,76 @@
+[
+  {
+    "person_id": "tim-jackson",
+    "display_name": "Tim Jackson",
+    "bio": "Tim Jackson began his drumming career at age ten studying rudimental, drumset, and keyboard percussion, and is now a highly sought-after percussion consultant and instructor. He performed with The Concord Blue Devils (2003-2006), where he was a four-time DCI Individual and Ensemble Multi-Tenor champion and the 2005 PASIC Multi-Tenor champion. Jackson has served on The Cavaliers' staff as a percussion instructor, choreographer, and design consultant, and works on the percussion ensemble design team at Rhythm X. He holds a Bachelor of Science in Mathematics from Ohio State University and is a Promark Signature Artist who endorses Pearl/Adams and Evans Drumheads.",
+    "photo_url": "https://images.squarespace-cdn.com/content/v1/586f009ed482e9e80753f1ad/1556147025638-Y9TCW5VOTAP3SFQL0ESM/Tim+Jackson.jpg",
+    "sources": [
+      "https://cavaliers.org/staff-bod/tim-jackson"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "vince-oliver",
+    "display_name": "Vince Oliver",
+    "bio": "Vince Oliver is a music designer best known in the drum corps activity for his audio and electronics work with the Bluecoats, where he has served as music coordinator, composer, and electronics designer. He was later added to the Mandarins as a brass arranger. His work spans music coordination, composition, and electronic music design across DCI World Class ensembles.",
+    "photo_url": "",
+    "sources": [
+      "https://www.flomarching.com/articles/7970603-dci-update-a-running-list-of-official-staff-changes-for-dci-2023",
+      "https://bluecoats.com/staff"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "zachary-crissman",
+    "display_name": "Zack Crissman",
+    "bio": "Zack Crissman is a drum corps performer and instructor who served as a drum major for the Blue Stars Drum and Bugle Corps. He has worked on the brass staff of the Colts Drum and Bugle Corps and on the visual staff of the Concord Blue Devils. His drum corps experience spans multiple captions including brass, visual, and drum major.",
+    "photo_url": "",
+    "sources": [
+      "https://www.dci.org/news/blue-devils-hold-strong-in-atlanta/",
+      "https://colts.org/program-colts.html"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "aaron-dugger",
+    "display_name": "Aaron Dugger",
+    "bio": "Aaron Dugger is a Pennsylvania native and brass educator who was a performing member of the Bluecoats from 2013-2015, earning Bluecoats Brass Performer of the Year honors in 2014. He served on the brass staff of The Academy Drum and Bugle Corps in 2016 and has returned to the Bluecoats as a brass instructor (tuba). Dugger graduated from Pennsylvania State University with a degree in Music Education, where he performed in the Wind Ensemble, Symphonic Band, Tuba/Euphonium Ensemble, and the Penn State Marching Blue Band.",
+    "photo_url": "",
+    "sources": [
+      "http://www.prosperband.com/aaron-dugger-bio.html",
+      "https://bluecoats.com/news/2022/10/12/new-educators-join-brass-team-alongside-many-returning-team-members"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "aaron-renzenbrink",
+    "display_name": "Aaron Renzenbrink",
+    "bio": "Aaron Renzenbrink has been involved in drum corps since 2009 and serves as a mellophone instructor on the brass staff of the Bluecoats Drum and Bugle Corps, having previously served as a mellophone technician for the Blue Stars. He marched two years in the Bluecoats mellophone line before aging out in 2010. Renzenbrink graduated Magna Cum Laude in December 2011 from the University of Houston with a bachelor's degree in Music Education, where he performed in the Wind Ensemble, Symphony Orchestra, Chamber Orchestra, and Opera Orchestra.",
+    "photo_url": "",
+    "sources": [
+      "https://bluecoats.com/news/2022/10/12/new-educators-join-brass-team-alongside-many-returning-team-members"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "adam-sanchez",
+    "display_name": "Adam Sanchez",
+    "bio": "Adam Sanchez is a percussion instructor on the staff of Pacific Crest Youth Arts Organization. As a performer he has marched with the Bakersfield College Indoor Drumline, the Golden Empire Drum & Bugle Corps, the Boston Crusaders Drum & Bugle Corps, and Pulse Percussion, among others. He has also served as Percussion Director at Los Osos High School and as a battery instructor at the high school and indoor percussion level.",
+    "photo_url": "",
+    "sources": [
+      "https://pacific-crest.org/about/staff/"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "adam-steltenpohl",
+    "display_name": "Adam Steltenpohl",
+    "bio": "Adam Steltenpohl is a Carolina Crown alumnus (marching member 2011-2013) who has served on Carolina Crown's visual staff (2015 and 2018). He worked as a technician and choreographer for The Academy from 2015-2017 and joined the Pacific Crest design team and color guard instructional staff as a choreographer in 2019. He has also taught with the Spirit of Atlanta visual staff and serves as a Visual Caption Head at Roswell High School in the Atlanta area.",
+    "photo_url": "",
+    "sources": [
+      "https://spiritdrumcorps.org/2019-visual-staff/",
+      "https://www.carolinacrown.org/drum-corps/staff"
+    ],
+    "confidence": "MEDIUM"
+  }
+]

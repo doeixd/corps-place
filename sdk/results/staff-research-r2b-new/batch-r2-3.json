@@ -1,0 +1,40 @@
+[
+  {
+    "person_id": "eric-perry",
+    "display_name": "Eric Perry",
+    "bio": "Eric Perry was inducted into the DCI Hall of Fame in 2015 in association with the Madison Scouts. A Crossmen alumnus, Perry began his drum corps design career with the Crossmen, designing programs from 1987 through 1991, 1996 and 1997, then serving as staff coordinator in 1998 and program coordinator and assistant director in 2004. He also worked as drill designer for the Velvet Knights, Skyliners, and Spirit of Atlanta, and as visual coordinator and designer for the Bluecoats.",
+    "sources": [
+      "https://www.dci.org/dci-hall-of-fame-overview/",
+      "https://www.forwardperformingarts.org/madison-scouts/about/staff"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "ernie-mclaurin",
+    "display_name": "Ernie McLaurin",
+    "bio": "Ernie McLaurin is a Southern California percussion instructor active since 1993 who has worked with the Mandarins Drum and Bugle Corps in various capacities since 2013. He previously served on the percussion staff at Impulse Drum and Bugle Corps from 2002 to 2006, contributing to their 2006 DCI Division III World Championship, then directed Impulse from 2007 to 2010 and served as assistant director of the Velvet Knights in 2011 and 2012. He is one of the most sought-after cymbal instructors in Southern California and is an education artist with Zildjian Cymbals.",
+    "sources": [
+      "https://www.rudimentalmindset.com/instructors/p/ernie-mclaurin"
+    ],
+    "confidence": "MEDIUM"
+  },
+  {
+    "person_id": "evan-woods",
+    "display_name": "Evan Woods",
+    "bio": "Evan Woods is a euphonium instructor who joined the Blue Knights brass staff and resides in Denton, TX. He earned a Music Education degree on euphonium from Abilene Christian University in 2008 and marched with the Crossmen (euphonium in 2004, assistant drum major in 2006). He served in administrative and educational roles with Carolina Crown from 2012 to 2016 and taught Stryke Wynds. In 2012 he founded Box 7 Ministries, a year-round non-profit serving roughly 300 drum corps students annually.",
+    "photo_url": "https://ascendperformingarts.org/wp-content/uploads/2019/04/2017-Evan-DCI-smallheadshot.jpg",
+    "sources": [
+      "https://ascendperformingarts.org/blue-knights-announce-2020-brass-staff/"
+    ],
+    "confidence": "HIGH"
+  },
+  {
+    "person_id": "jared-thomas",
+    "display_name": "Jared Thomas",
+    "bio": "Jared Thomas is a percussion educator who performed in drum corps from 2003 to 2007 with Carolina Crown, the Bluecoats, and Rhythm X. He spent the summers of 2012 through 2015 as a battery educator at the Bluecoats and served as assistant caption head at the Crossmen from 2016 to 2018. He was percussion director at Lebanon High School from 2010 to 2018.",
+    "sources": [
+      "http://www.marchingartssociety.com/instructors"
+    ],
+    "confidence": "MEDIUM"
+  }
+]
