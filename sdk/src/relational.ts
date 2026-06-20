@@ -4884,27 +4884,42 @@ const deriveCompetitionMeta = (
   return { dayOfSeason, daysTillFinals, percentThrough };
 };
 
+/** Corps_key for a staff member: explicit assignment corps wins, else the staffId
+ *  prefix (`<corps_key>:<slug>`). */
+const staffMemberCorpsKey = (member: CorpsStaffMember): string | null => {
+  const fromAssignment = member.assignments?.[0]?.corpsKey;
+  if (fromAssignment) return fromAssignment;
+  const i = member.staffId.lastIndexOf(":");
+  return i > 0 ? member.staffId.slice(0, i) : null;
+};
+
 export const upsertStaffMember = (
   sql: SqlClient.SqlClient,
   member: CorpsStaffMember,
 ) =>
-  insertStaffMemberRow(sql, member).pipe(
-    Effect.andThen(
-      Effect.forEach(member.externalLinks ?? [], (link) =>
-        insertStaffLinkRow(sql, member.staffId, link),
-      ),
-    ),
-    Effect.andThen(
-      Effect.forEach(member.assignments ?? [], (assignment) =>
-        insertStaffAssignmentRow(sql, member.staffId, assignment),
-      ),
-    ),
-    Effect.andThen(
-      Effect.forEach(member.affiliations ?? [], (affiliation) =>
-        insertStaffAffiliationRow(sql, member.staffId, affiliation),
-      ),
-    ),
-  );
+  Effect.gen(function* () {
+    // Skip DCI Individual & Ensemble entries (division_name='Individual'): these
+    // are individual performers (e.g. "Justin Page (Pacific Crest)"), not corps —
+    // scraping a "staff roster" for one attributes the parent corps's staff to the
+    // performer. Guarding here protects EVERY scraper path, not just one.
+    const corpsKey = staffMemberCorpsKey(member);
+    if (corpsKey) {
+      const rows = yield* sql<{ division_name: string | null }>`
+        SELECT division_name FROM corps WHERE corps_key = ${corpsKey} LIMIT 1`;
+      if (rows[0]?.division_name === "Individual") return;
+    }
+
+    yield* insertStaffMemberRow(sql, member);
+    yield* Effect.forEach(member.externalLinks ?? [], (link) =>
+      insertStaffLinkRow(sql, member.staffId, link),
+    );
+    yield* Effect.forEach(member.assignments ?? [], (assignment) =>
+      insertStaffAssignmentRow(sql, member.staffId, assignment),
+    );
+    yield* Effect.forEach(member.affiliations ?? [], (affiliation) =>
+      insertStaffAffiliationRow(sql, member.staffId, affiliation),
+    );
+  });
 
 /**
  * Canonical-person id derived from a display name (e.g. "John Smith" -> "john-smith").
