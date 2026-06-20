@@ -700,8 +700,6 @@ export const readShowDetail = async (
       tagline: null,
       designerNotes: null,
       sourceUrl: info.sourceUrl,
-      source: null,
-      sourceAuthority: null,
       tags: [],
       repertoire: info.repertoire.map((p) => ({
         workTitle: p.workTitle,
@@ -711,8 +709,6 @@ export const readShowDetail = async (
         hyperlink: null,
         relatedCorpsKey: null,
         notes: null,
-        source: null,
-        sourceAuthority: null,
       })),
       designers: [],
       movements: [],

@@ -4,7 +4,6 @@ import { createRequire } from 'node:module';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { ensureShowPage } from '@/lib/contrib/store';
 import { requireCapability, type PageLock } from '@/lib/authz';
-import { enforceRateLimit } from '@/lib/contrib/rate-limit';
 import { putUpload, uploadKey } from '@/lib/r2';
 
 /**
@@ -48,7 +47,6 @@ export const uploadShowMedia = createServerFn({ method: 'POST' })
       })
     ).rows[0]?.lock_level ?? 'none') as PageLock;
     const actor = await requireCapability(getWebRequest(), 'upload', { lockLevel });
-    await enforceRateLimit(db, actor, 'upload'); // M9 spam throttle (trusted+ exempt)
 
     // Re-encode to WebP: .rotate() bakes orientation; webp() emits no metadata → EXIF/GPS gone.
     const { data: webp, info } = await getSharp()(raw)

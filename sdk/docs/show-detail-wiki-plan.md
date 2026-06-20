@@ -431,18 +431,6 @@ divergence/pointer columns:
 Idempotent; safe to re-run. Emits a short report (pages reconciled, rows diverged,
 key collisions) like the existing scraper runbooks.
 
-**Implemented:** `scripts/reconcile-contributions.ts` (`npm run reconcile:contributions`).
-Dry-run by default; `--apply` persists orphan/divergence/show_id changes; `--limit N`
-caps pages. Reads the scraped half exactly like the app's hybrid path —
-the emitted read-model when `READ_MODEL_DB_URL` is set (production, post-emit), else
-the relational DB (dev). It writes the contributions DB at `CONTRIBUTIONS_DB_URL`
-(default `/data` in prod), so run it from a host with the repo + tsx that can reach
-that DB. The collision (M-1) guard runs only against the relational table (the
-read-model is keyed uniquely); a collision sets a non-zero exit code for alerting.
-Note: it is **not** wired into `docker-entrypoint.sh` — the slim runtime image has no
-tsx/source. Run it on a nightly cron from a box that has the repo (after the emit), or
-point `CONTRIBUTIONS_DB_URL` at the production volume.
-
 ## 10. Media uploads & backup (R2)
 
 - Reuse the existing R2 setup (read-model distribution) + `sharp` (already in
@@ -591,23 +579,8 @@ point `CONTRIBUTIONS_DB_URL` at the production volume.
   divergence banner in UI; batched writes.
 - **M8 (backup/runbook)** ◻ R2 DR backup of `/data/contributions.db` + documented
   restore + mount-guard verification; RPO stated.
-- **M9 (moderation)** ✅ Rate limits (edit/upload sliding window, trusted+ exempt),
-  hide-revision / orphan / grant-role server-fns behind the authz capabilities,
-  moderator orphan toggle in the governance panel. (Trusted/admin role automation
-  still hand-promoted.)
-- **M10 (yearbook ingestion, high-authority)** ✅ INGESTED. Seasons 2012–2023 are
-  `done` in `scraper_progress`; 14k+ `corps_show_designers` and 800+
-  `corps_show_repertoire` rows carry `source='dci-yearbook'`, `source_authority=100`.
-  Flows to the app via `rm_show_detail` (verified the emitted read-model carries
-  `dci-yearbook` provenance) and renders through the §2c SourceBadge ("DCI Yearbook")
-  + authority-aware DivergenceBadge. (Movement provenance is fully plumbed —
-  `corps_show_movements` defines `source`/`source_authority` in relational.ts, the
-  builder reads them, the type + badge render them — but is data-gated: no current
-  ingest writes movement source, and the live source DB hasn't run `ensureColumns`
-  yet, so it self-heals on the next SDK schema setup. Yearbooks carry staff +
-  repertoire, not movement breakdowns.)
-  Original milestone text below.
-- **M10 (original plan)** ◻ Enumerate season→bookId (OQ-8);
+- **M9 (moderation, deferred)** ◻ Rate limits, trusted/admin roles, abuse tools.
+- **M10 (yearbook ingestion, high-authority)** ◻ Enumerate season→bookId (OQ-8);
   fetch page images; vision-extract per page (claude/codex, webp→png) → schema'd
   JSON; map to (corps_key, season); ingest into scraped show tables with
   `source='yearbook'`, `source_authority=100`; authority-aware divergence banner +
@@ -814,20 +787,8 @@ show_citations (
 - **M11a** — `show_citations` table + citation server-fns (`createCitation` with
   OG-metadata prefetch + dedupe, `listCitations`, attach via block `citationIds`) +
   the per-section Sources line + the page References section. (structured blocks)
-- **M11b — DONE (pending browser QA).** Inline citations in the free-form Lexical
-  editor. Render: `lexical-render.tsx` allowlists an inline `citation` node
-  (`{type:'citation', citationId, version}`) → superscript `[n]`, number derived
-  from page citation order (`citationNumberMap`, I-16); `flattenLexicalDoc` ignores
-  it (no text). Authoring: `CitationNode` (a `DecoratorNode` registered in the
-  editor, serializing to that exact contract) + a `CitationToolbar` insert control
-  fed the page citations through AboutSection → AboutEditor → LexicalFreeForm. The
-  node can't be unit-tested headless (Lexical node construction needs an active
-  editor), so the contract is covered by the render tests; the editor interaction
-  still needs a browser pass before shipping.
-- **M11c — DONE.** Scraped/yearbook `source_url`s surface as read-only, authority-
-  sorted references via `collectScrapedReferences(show)` →
-  `<ReferencesSection provenance>` (yearbook sources badged "Official", sorted to
-  the top). Unifies provenance with the citation bibliography per §18.1.
+- **M11b** — inline citations in the free-form Lexical editor (custom node). Rides M4.
+- **M11c** — surface scraped/yearbook provenance as citations (authority-sorted).
 
 ### 18.5 Invariants / edge cases
 - **I-16** A citation is page-scoped + deduped by `normalized_url`; reference

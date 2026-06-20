@@ -16,7 +16,6 @@ import { durableStorageStatus } from '@/lib/contributions-db';
  */
 
 export type OverrideState = 'edited' | 'added' | 'hidden';
-export type ShowPageLock = 'none' | 'trusted' | 'mod';
 
 export interface WriteContext {
   authorId: string;
@@ -86,23 +85,6 @@ export interface PageContributions {
   blocks: BlockRow[];
 }
 
-export interface DivergenceSummary {
-  checked: number;
-  changed: number;
-  diverged: number;
-  cleared: number;
-}
-
-export interface StewardSummary {
-  stewardCount: number;
-  mySteward: boolean;
-  stewards: {
-    userId: string;
-    name: string | null;
-    createdAt: string;
-  }[];
-}
-
 /** All contributed rows for a show, by its stable (corps_key, season) key. */
 export const readShowPageContributions = async (
   db: Client,
@@ -141,51 +123,6 @@ export const listRevisions = async (db: Client, pageId: string, limit = 200) => 
   return r.rows;
 };
 
-export const listShowPages = async (db: Client, limit = 500): Promise<PageRow[]> => {
-  const r = await db.execute({
-    sql: 'SELECT * FROM show_pages ORDER BY updated_at DESC LIMIT ?',
-    args: [limit],
-  });
-  return r.rows as unknown as PageRow[];
-};
-
-export const readStewardSummary = async (
-  db: Client,
-  pageId: string | null,
-  userId: string | null
-): Promise<StewardSummary> => {
-  if (!pageId) return { stewardCount: 0, mySteward: false, stewards: [] };
-  const [count, mine, stewards] = await Promise.all([
-    db.execute({
-      sql: 'SELECT COUNT(*) AS n FROM show_stewards WHERE page_id = ?',
-      args: [pageId],
-    }),
-    userId
-      ? db.execute({
-          sql: 'SELECT 1 FROM show_stewards WHERE page_id = ? AND user_id = ? LIMIT 1',
-          args: [pageId, userId],
-        })
-      : Promise.resolve({ rows: [] }),
-    db.execute({
-      sql: `SELECT s.user_id, u.name, s.created_at
-            FROM show_stewards s LEFT JOIN "user" u ON u.id = s.user_id
-            WHERE s.page_id = ?
-            ORDER BY s.created_at ASC, s.user_id ASC
-            LIMIT 8`,
-      args: [pageId],
-    }),
-  ]);
-  return {
-    stewardCount: Number(count.rows[0]?.n ?? 0),
-    mySteward: mine.rows.length > 0,
-    stewards: (stewards.rows as unknown as Record<string, unknown>[]).map((row) => ({
-      userId: String(row.user_id),
-      name: (row.name as string) ?? null,
-      createdAt: String(row.created_at),
-    })),
-  };
-};
-
 // ── Writes ─────────────────────────────────────────────────────────────────
 
 /** Resolve the page_id for (corps_key, season), creating the page lazily (I-10). */
@@ -200,8 +137,7 @@ export const ensureShowPage = async (
     sql: 'SELECT page_id FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
     args: [corpsKey, season],
   });
-  const existingPage = existing.rows[0] as unknown as { page_id: string } | undefined;
-  if (existingPage) return existingPage.page_id;
+  if (existing.rows[0]) return String(existing.rows[0].page_id);
 
   const pageId = newId();
   const tx = await db.transaction('write');
@@ -253,7 +189,7 @@ export const writeOverride = async (
       sql: 'SELECT override_id, content_json, updated_at FROM show_block_overrides WHERE page_id = ? AND pinned_key = ? AND natural_key = ? LIMIT 1',
       args: [input.pageId, input.pinnedKey, input.naturalKey],
     });
-    const existing = prev.rows[0] as unknown as
+    const existing = prev.rows[0] as
       | { override_id: string; content_json: string | null; updated_at: string }
       | undefined;
     assertFresh(existing?.updated_at ?? null, expectedUpdatedAt);
@@ -375,121 +311,6 @@ export const writeBlock = async (
     });
     await tx.commit();
     return blockId;
-  } catch (e) {
-    await tx.rollback();
-    throw e;
-  }
-};
-
-export const reconcileOverrideDivergence = async (
-  db: Client,
-  pageId: string,
-  currentHashes: Record<string, Record<string, string>>
-): Promise<DivergenceSummary> => {
-  assertWritable();
-  const rows = (
-    await db.execute({
-      sql: `SELECT override_id, pinned_key, natural_key, source_hash, scrape_diverged
-            FROM show_block_overrides WHERE page_id = ?`,
-      args: [pageId],
-    })
-  ).rows as unknown as Pick<
-    OverrideRow,
-    'override_id' | 'pinned_key' | 'natural_key' | 'source_hash' | 'scrape_diverged'
-  >[];
-
-  const tx = await db.transaction('write');
-  const summary: DivergenceSummary = { checked: rows.length, changed: 0, diverged: 0, cleared: 0 };
-  try {
-    for (const row of rows) {
-      const currentHash = currentHashes[row.pinned_key]?.[row.natural_key] ?? null;
-      const nextDiverged = row.source_hash != null && currentHash !== row.source_hash ? 1 : 0;
-      if (nextDiverged) summary.diverged += 1;
-      if (Number(row.scrape_diverged) === nextDiverged) continue;
-      await tx.execute({
-        sql: 'UPDATE show_block_overrides SET scrape_diverged = ? WHERE override_id = ?',
-        args: [nextDiverged, row.override_id],
-      });
-      summary.changed += 1;
-      if (!nextDiverged) summary.cleared += 1;
-    }
-    await tx.commit();
-    return summary;
-  } catch (e) {
-    await tx.rollback();
-    throw e;
-  }
-};
-
-export const setPageSteward = async (
-  db: Client,
-  pageId: string,
-  steward: boolean,
-  ctx: WriteContext
-): Promise<void> => {
-  assertWritable();
-  const tx = await db.transaction('write');
-  try {
-    if (steward) {
-      await tx.execute({
-        sql: 'INSERT OR IGNORE INTO show_stewards (page_id, user_id, created_at) VALUES (?, ?, ?)',
-        args: [pageId, ctx.authorId, ctx.now],
-      });
-    } else {
-      await tx.execute({
-        sql: 'DELETE FROM show_stewards WHERE page_id = ? AND user_id = ?',
-        args: [pageId, ctx.authorId],
-      });
-    }
-    await touchPage(tx, pageId, ctx.now);
-    await insertRevision(tx, {
-      pageId,
-      targetKind: 'page',
-      targetId: pageId,
-      op: steward ? 'steward' : 'unsteward',
-      before: null,
-      after: JSON.stringify({ steward }),
-      summary: steward ? 'Started stewarding this page' : 'Stopped stewarding this page',
-      ctx,
-    });
-    await tx.commit();
-  } catch (e) {
-    await tx.rollback();
-    throw e;
-  }
-};
-
-export const setPageLockLevel = async (
-  db: Client,
-  pageId: string,
-  lockLevel: ShowPageLock,
-  ctx: WriteContext
-): Promise<void> => {
-  assertWritable();
-  const tx = await db.transaction('write');
-  try {
-    const prev = (
-      await tx.execute({
-        sql: 'SELECT lock_level FROM show_pages WHERE page_id = ? LIMIT 1',
-        args: [pageId],
-      })
-    ).rows[0] as unknown as { lock_level: string } | undefined;
-    const before = prev?.lock_level ?? 'none';
-    await tx.execute({
-      sql: 'UPDATE show_pages SET lock_level = ?, updated_at = ? WHERE page_id = ?',
-      args: [lockLevel, ctx.now, pageId],
-    });
-    await insertRevision(tx, {
-      pageId,
-      targetKind: 'page',
-      targetId: pageId,
-      op: 'lock',
-      before: JSON.stringify({ lockLevel: before }),
-      after: JSON.stringify({ lockLevel }),
-      summary: `Set page lock to ${lockLevel}`,
-      ctx,
-    });
-    await tx.commit();
   } catch (e) {
     await tx.rollback();
     throw e;

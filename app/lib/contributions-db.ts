@@ -161,15 +161,6 @@ const SCHEMA = [
      created_by     TEXT NOT NULL,
      UNIQUE (page_id, normalized_url)
    )`,
-  // Rate-limit ledger (M9): one row per rate-limited write, pruned by window.
-  // Used to throttle base-`user` edits/uploads; trusted+ are exempt at the call site.
-  `CREATE TABLE IF NOT EXISTS contrib_rate_events (
-     event_id   TEXT PRIMARY KEY,
-     user_id    TEXT NOT NULL,
-     action     TEXT NOT NULL,              -- edit | upload
-     created_at TEXT NOT NULL
-   )`,
-  `CREATE INDEX IF NOT EXISTS idx_rate_user_action ON contrib_rate_events (user_id, action, created_at)`,
   `CREATE INDEX IF NOT EXISTS idx_citations_page ON show_citations (page_id)`,
   `CREATE INDEX IF NOT EXISTS idx_overrides_page_key ON show_block_overrides (page_id, pinned_key)`,
   `CREATE INDEX IF NOT EXISTS idx_blocks_page ON show_blocks (page_id)`,
@@ -177,25 +168,6 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS idx_media_page ON show_media (page_id)`,
   `CREATE INDEX IF NOT EXISTS idx_stewards_user ON show_stewards (user_id)`,
 ];
-
-// Idempotent ADD COLUMN migrations for tables that predate a column (guarded — a
-// duplicate-column error on an already-migrated DB is swallowed). Never via
-// CREATE-IF-NOT-EXISTS, which won't alter an existing table.
-const MIGRATIONS = [
-  // M9: moderators can hide an abusive revision without deleting history (I-5).
-  `ALTER TABLE show_revisions ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0`,
-];
-
-const applyMigrations = async (db: Client) => {
-  for (const sql of MIGRATIONS) {
-    try {
-      await db.execute(sql);
-    } catch (e) {
-      const msg = String((e as Error)?.message ?? e).toLowerCase();
-      if (!msg.includes('duplicate column')) throw e; // already applied → ignore
-    }
-  }
-};
 
 /**
  * Lazily create the shared client, apply PRAGMAs, and ensure the schema — exactly
@@ -209,7 +181,6 @@ export const getContributionsDb = (): Promise<Client> => {
       const db = (sharedDb ??= createClient({ url: dbUrl }));
       for (const pragma of PRAGMAS) await db.execute(pragma);
       await db.batch(SCHEMA, 'write');
-      await applyMigrations(db);
       return db;
     })().catch((cause) => {
       initialized = null;

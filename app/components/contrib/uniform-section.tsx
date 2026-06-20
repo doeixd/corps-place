@@ -7,8 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
 import { GiftIcon } from '@/components/icons/generated';
 
-const inputCls =
-  'w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30';
+const inputCls = 'w-full rounded border border-border bg-transparent px-2 py-1 text-sm';
 
 /**
  * Uniform block (M3) — the first live wiki editor. Renders authored colors +
@@ -217,7 +216,7 @@ function UniformEditor({
         )}
       </Field>
 
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? <p className="text-sm text-red-500">{error}</p> : null}
       <button
         type="submit"
         className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground"

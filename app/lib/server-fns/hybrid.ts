@@ -145,26 +145,20 @@ const getShowInfoForSeason = Effect.fn('getShowInfoForSeason')(function* (season
 // show-detail wiki overlay; the app merges contributions on top at read time.
 const showDetailCache = new Map<string, { expiresAt: number; value: ShowDetail | null }>();
 
-export const readScrapedShowDetail = async (
-  corpsKey: string,
-  season: string
-): Promise<ShowDetail | null> => {
-  const key = `${corpsKey}|${season}`;
-  const cached = showDetailCache.get(key);
-  if (cached && cached.expiresAt > Date.now()) return cached.value;
-
-  const value = await (readModelEnabled()
-    ? readShowDetail(getReadModelClient(), corpsKey, season)
-    : buildShowDetail(getShowTitlesBigDb(), corpsKey, season));
-
-  showDetailCache.set(key, { expiresAt: Date.now() + SHOW_TITLES_CACHE_MS, value });
-  return value;
-};
-
 export const getShowDetail = createServerFn({ method: 'GET' })
   .validator((data: { corpsKey: string; season: string }) => data)
   .handler(async ({ data }): Promise<ShowDetail | null> => {
-    return readScrapedShowDetail(data.corpsKey, data.season);
+    const { corpsKey, season } = data;
+    const key = `${corpsKey}|${season}`;
+    const cached = showDetailCache.get(key);
+    if (cached && cached.expiresAt > Date.now()) return cached.value;
+
+    const value = await (readModelEnabled()
+      ? readShowDetail(getReadModelClient(), corpsKey, season)
+      : buildShowDetail(getShowTitlesBigDb(), corpsKey, season));
+
+    showDetailCache.set(key, { expiresAt: Date.now() + SHOW_TITLES_CACHE_MS, value });
+    return value;
   });
 
 // List the corps directory (cards + logos)

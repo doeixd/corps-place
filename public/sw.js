@@ -10,15 +10,15 @@
 //
 // Cache name carries a version; bump CACHE_VERSION (or rely on the activate step
 // that drops caches not matching) to invalidate. The client registration keys
-// updates on /read-model/manifest.json built_at.
+// updates on /read-model/meta.json built_at.
 
-const CACHE_VERSION = 'rm-v2';
+const CACHE_VERSION = 'rm-v1';
 const DOC_CACHE = `${CACHE_VERSION}-docs`;
 const ASSET_CACHE = `${CACHE_VERSION}-assets`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 const ALL_CACHES = [DOC_CACHE, ASSET_CACHE, DATA_CACHE];
 
-self.addEventListener('install', () => {
+self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
@@ -73,17 +73,15 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return; // same-origin only
   if (isBypassed(url)) return; // server fns / API — passthrough
 
-  // Navigations: NetworkFirst so online always renders fresh SSR; cache only
-  // successful docs for offline, and fall back to cached docs offline.
+  // Navigations: NetworkFirst so online always renders fresh SSR; cache the doc
+  // for offline, and fall back to the cached doc (then any cached doc) offline.
   if (request.mode === 'navigate') {
     event.respondWith(
       (async () => {
         try {
           const fresh = await fetch(request);
-          if (fresh.ok) {
-            const cache = await caches.open(DOC_CACHE);
-            await cache.put(request, fresh.clone());
-          }
+          const cache = await caches.open(DOC_CACHE);
+          cache.put(request, fresh.clone());
           return fresh;
         } catch {
           const cache = await caches.open(DOC_CACHE);
@@ -102,7 +100,7 @@ self.addEventListener('fetch', (event) => {
         const hit = await cache.match(request);
         if (hit) return hit;
         const fresh = await fetch(request);
-        if (fresh.ok) await cache.put(request, fresh.clone());
+        if (fresh.ok) cache.put(request, fresh.clone());
         return fresh;
       })()
     );

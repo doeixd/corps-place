@@ -1,15 +1,6 @@
 # Home "Shows near you this weekend" — implementation plan
 
-Status: code complete; carousel live via builder fallback.
-
-Update (2026-06-19): Step 1 geocoding is at its ceiling — 80/81 2026 venues
-geocoded, 1 guarded/unparseable address (re-running won't help). Step 2 read-model
-wiring verified: a full `emitReadModel.ts` publishes `rm_home_weekend_shows` (7
-weekend buckets) + `rm_home_latest_results` + `rm_home_standings` and flips the
-pointer (SCHEMA_VERSION 12). The local dev read-model has been re-emitted. Remaining
-ops step to move production off the builder fallback onto the read-model hot path:
-push the read-model to R2 (`npm run push:data read-model`) so the serving container
-pulls it. Step 3 UI (carousel, geo, useGeolocation) is complete and live.
+Status: in progress. Step 1 (geocoding) underway.
 
 ## Goal
 

@@ -30,7 +30,7 @@ import { ensureStaffSchema, makeStaffPersonId, normalizeCaption, upsertStaffMemb
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SDK_DIR = resolve(__dirname, "..");
 loadRepoEnv(SDK_DIR);
-const YB_DIR = process.env.YEARBOOK_DIR ?? resolve(SDK_DIR, "..", "data", "yearbook");
+const YB_DIR = resolve(SDK_DIR, "..", "public", "yearbook");
 
 const args = process.argv.slice(2);
 const hasFlag = (f: string) => args.includes(f);
