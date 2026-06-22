@@ -68,6 +68,8 @@ export interface ShopGroup {
   storeId: string;
   /** Human-readable storefront slug (corps slug, else slugified store_id). */
   slug: string;
+  /** Linked corps's slug for its `/corps/<slug>` page; null for vendor stores. */
+  corpsSlug: string | null;
   name: string;
   storeUrl: string;
   count: number;

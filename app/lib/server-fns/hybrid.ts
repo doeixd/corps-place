@@ -647,6 +647,7 @@ export const getShopGroup = createServerFn({ method: 'GET' })
       return {
         storeId: store.storeId,
         slug: store.slug,
+        corpsSlug: store.corpsSlug,
         name: store.name,
         storeUrl: store.storeUrl,
         count: store.productCount,

@@ -62,6 +62,10 @@ export interface MerchStoreSummary {
   /** Human-readable slug for the storefront URL: the corps slug for corps stores,
    *  else the (already-slugified) store_id. Unique per store; used by /shop/group. */
   slug: string;
+  /** The linked corps's slug (its `/corps/<slug>` page), or null for vendor stores
+   *  / corps not in the directory. Distinct from `slug`, which falls back to the
+   *  store_id — `corpsSlug` is non-null ONLY when a real corps page exists. */
+  corpsSlug: string | null;
   /** Corps logo fields for the group (null for non-corps vendors). Joined here at
    *  build time so the group logo never depends on rm_corps directory coverage. */
   logo: MerchLogoFields | null;
@@ -259,6 +263,8 @@ export const buildMerchStores = async (
     // Corps stores link by their corps slug; vendors by the (slugified) store_id.
     // Treat an empty/missing corps slug as absent so the slug never collapses to "".
     slug: str(r.corps_slug) || String(r.store_id),
+    // The real corps slug (null when there's no corps page to link to).
+    corpsSlug: str(r.corps_slug) || null,
     logo: corpsLogo
       ? {
           corps_logo: corpsLogo,

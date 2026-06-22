@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute, notFound, Link } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import { Show } from 'jotai-solid-api';
 import { getShopGroup } from '@/lib/server-fns/hybrid';
@@ -17,6 +17,18 @@ import type { ShopGroup } from '@/lib/merch-types';
 import { buildSeo } from '@/lib/seo';
 
 const DISPLAY_CHUNK = 60;
+
+/** A concrete, ~150-char meta description: real product count + the store's top
+ *  categories so the snippet reads like the actual catalog, not boilerplate. */
+function shopGroupDescription(g: ShopGroup): string {
+  const cats = g.categories.slice(0, 3).map((c) => c.value);
+  const what = cats.length ? `${cats.join(', ')} and more` : 'apparel, gear and accessories';
+  if (g.count === 0) {
+    return `Browse ${g.name}'s drum corps merch storefront — apparel, gear and more — on DrumCorps.app.`;
+  }
+  return `Shop ${g.count} ${g.name} drum corps merch item${g.count === 1 ? '' : 's'}: ${what}. Prices, photos and links on DrumCorps.app.`;
+}
+
 const SORTS: { value: MerchSort; label: string }[] = [
   { value: 'featured', label: 'Featured' },
   { value: 'price-asc', label: 'Price ↑' },
@@ -35,7 +47,7 @@ export const Route = createFileRoute('/shop/group/$storeId')({
     if (!g) return {};
     return buildSeo({
       title: `${g.name} — Drum Corps Merch`,
-      description: `Shop ${g.count} product${g.count === 1 ? '' : 's'} from ${g.name}.`,
+      description: shopGroupDescription(g),
       path: `/shop/group/${encodeURIComponent(params.storeId)}`,
       image: g.products.find((p) => p.image)?.image ?? undefined,
     });
@@ -86,7 +98,17 @@ function GroupStorefront() {
           />
           <div className="min-w-0 space-y-2">
             <h1 className="break-words text-3xl font-bold leading-tight text-text-primary sm:text-[2.5rem]">
-              {group.name}
+              {group.corpsSlug ? (
+                <Link
+                  to="/corps/$slug/{-$season}"
+                  params={{ slug: group.corpsSlug }}
+                  className="hover:text-primary hover:underline"
+                >
+                  {group.name}
+                </Link>
+              ) : (
+                group.name
+              )}
             </h1>
             <div className="flex flex-wrap items-center gap-2 text-base text-text-secondary">
               <span>{group.count} items</span>
