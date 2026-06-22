@@ -1099,7 +1099,12 @@ const bonfireAdapter: MerchAdapter = {
 // unrelated orgs (schools/teams) from ONE Wix store — a corps that links it has no
 // scoped catalog there, so the universal adapter over-scrapes the whole platform
 // (Cincinnati Tradition → 613 products belonging to other orgs). Treat as link-only.
-const LINK_ONLY_HOSTS = ["square.site", "atozwearproductorders.com"] as const;
+// `stores.inksoft.com` is a multi-tenant InkSoft platform: each org is a
+// `/tenant/shop/...` sub-path, but the universal adapter follows the storefront's
+// cross-promo / "What customers say" carousels into OTHER tenants' product pages,
+// so a corps scoped to one tenant over-scrapes the whole platform (Raiders →
+// 28 products all belonging to NYLacrosse / East Eagles / etc.). Link-only.
+const LINK_ONLY_HOSTS = ["square.site", "atozwearproductorders.com", "inksoft.com"] as const;
 
 /** True when a store URL is on a platform we deliberately don't auto-ingest. */
 export const isLinkOnlyHost = (storeUrl: string): boolean => {
