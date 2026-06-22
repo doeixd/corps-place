@@ -149,6 +149,8 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
       <PageHeader
         title="Staff"
         subtitle={`${staff.length} instructors, designers & directors across the activity`}
+        backTo="/"
+        backLabel="Home"
       />
       <div className="mb-6 max-w-sm">
         <Input
