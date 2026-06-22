@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSyncExternalStore } from 'react';
+import { motion } from 'motion/react';
 import { Icon } from '@/components/icon';
 import { HeartAddIcon } from '@/components/icons/generated';
 import { FavouriteIcon } from '@/components/icons/favourite-filled';
@@ -99,17 +100,20 @@ export function FavoriteCorpsButton({
         }
       >
         <span className="relative inline-flex">
-          <span
-            className={cn(
-              'absolute inset-0 inline-flex items-center justify-center',
-              isFav ? 'opacity-100' : 'opacity-0'
-            )}
+          <motion.span
+            animate={{ opacity: isFav ? 1 : 0, scale: isFav ? 1 : 0.3 }}
+            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
+            className="absolute inset-0 inline-flex items-center justify-center"
           >
             <Icon icon={FavouriteIcon} size={iconSize} />
-          </span>
-          <span className={cn('inline-flex', isFav ? 'opacity-0' : 'opacity-100')}>
+          </motion.span>
+          <motion.span
+            animate={{ opacity: isFav ? 0 : 1, scale: isFav ? 0.3 : 1 }}
+            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
+            className="inline-flex"
+          >
             <Icon icon={HeartAddIcon} size={iconSize} />
-          </span>
+          </motion.span>
         </span>
         {showLabel ? <span>{isFav ? 'Favorited' : 'Favorite'}</span> : null}
       </TooltipTrigger>

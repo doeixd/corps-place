@@ -150,16 +150,37 @@ function faviconDataUrl(accent: string, accentFg: string, logoDark: string | nul
 
 export function setFavicon(href: string): void {
   if (typeof document === 'undefined') return;
-  const sel = 'link[rel="icon"][data-app-icon]';
-  let link = document.querySelector<HTMLLinkElement>(sel);
-  if (!link) {
-    link = document.createElement('link');
-    link.rel = 'icon';
-    link.type = 'image/svg+xml';
-    link.setAttribute('data-app-icon', 'true');
-    document.head.appendChild(link);
+  // Update both the tab favicon and the apple-touch / homescreen icon so an
+  // installed PWA / bookmarked shortcut picks up the favorited corps's mark too.
+  for (const [rel, type] of [
+    ['icon', 'image/svg+xml'],
+    ['apple-touch-icon', null],
+  ] as const) {
+    const sel = `link[rel="${rel}"][data-app-icon]`;
+    let link = document.querySelector<HTMLLinkElement>(sel);
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = rel;
+      if (type) link.type = type;
+      link.setAttribute('data-app-icon', 'true');
+      document.head.appendChild(link);
+    }
+    link.href = href;
   }
-  link.href = href;
+}
+
+/** Updates the browser/PWA chrome color (address bar, task switcher, splash) to
+ *  match the favorited corps. Uses the raw corps hex so every UA can parse it. */
+export function setThemeColor(color: string | null): void {
+  if (typeof document === 'undefined') return;
+  let meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"][data-app-theme]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.name = 'theme-color';
+    meta.setAttribute('data-app-theme', 'true');
+    document.head.appendChild(meta);
+  }
+  meta.content = color ?? '#0b0b0c';
 }
 
 // ── Persist / clean ───────────────────────────────────────────────────────────
@@ -234,6 +255,7 @@ export function applyFavoriteBranding(fav: PersistedFavorite): void {
   }
   root.setAttribute('data-fav-active', '');
   setFavicon(fav.faviconSvg);
+  setThemeColor(fav.colorPrimary ?? (dark ? fav.darkPrimary : fav.lightPrimary));
 }
 
 export function clearFavoriteBranding(): void {
@@ -244,6 +266,7 @@ export function clearFavoriteBranding(): void {
   root.style.removeProperty('--logo-dark');
   root.removeAttribute('data-fav-active');
   setFavicon('/logo.svg');
+  setThemeColor(null);
 }
 
 // Backward-compat alias kept for existing call sites (theme store, etc.).
