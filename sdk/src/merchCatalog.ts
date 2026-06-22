@@ -197,6 +197,24 @@ const hasProductJsonLd = (html: string): boolean =>
   /<script[^>]+application\/ld\+json/i.test(html) &&
   /"@type"\s*:\s*(?:"Product"|\[[^\]]*"Product")/i.test(html);
 
+/**
+ * True when the STATIC HTML already carries enough for productFromHtml to extract
+ * a product — JSON-LD Product, OpenGraph `product` type / price, or an og:image +
+ * og:title pair. Used as the render-escalation gate: we only spend a headless
+ * render on a page that is a genuinely bare SPA shell (none of these present).
+ *
+ * Without this, every universal product page that lacks JSON-LD (Woo/WordPress
+ * stores like spartansdbc.org, Printify SPAs like the Northern Lights store) would
+ * escalate to a render even though its og: tags are right there in the static
+ * markup — hundreds of needless renders that swamp a memory-tight box.
+ */
+const hasExtractableProductSignal = (html: string): boolean =>
+  hasProductJsonLd(html) ||
+  /property=["']og:type["'][^>]*content=["']product/i.test(html) ||
+  /property=["']product:price:amount["']/i.test(html) ||
+  (/property=["']og:image["']/i.test(html) &&
+    /property=["']og:title["']/i.test(html));
+
 const toNumber = (v: unknown): number | null => {
   if (typeof v === "number" && Number.isFinite(v)) return v;
   if (typeof v === "string") {
@@ -1071,7 +1089,7 @@ const universalJsonLdAdapter: MerchAdapter = {
           // Demand a rendered page: client-rendered storefronts inject the
           // Product JSON-LD only after hydration, so escalate to Browserbase
           // when the plain fetch returns a signal-less shell.
-          fetchHtmlWithFallback(url, timeoutMs, hasProductJsonLd).pipe(
+          fetchHtmlWithFallback(url, timeoutMs, hasExtractableProductSignal).pipe(
             Effect.map((html) => (html ? productFromHtml(html, url) : null)),
           ),
         { concurrency: UNIVERSAL_CONCURRENCY },
