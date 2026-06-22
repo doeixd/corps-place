@@ -33,7 +33,11 @@ import {
   ViewIcon,
   RankingIcon,
   BookOpen01Icon,
+  SpotifyIcon,
+  AppleMusicIcon,
+  YoutubeIcon,
 } from '@/components/icons/generated';
+import { musicSearchLinks, dcxRepYearUrl } from '@/lib/music-search';
 
 export const Route = createFileRoute('/shows/$slug/$season')({
   loader: async ({ params }) => {
@@ -209,10 +213,24 @@ function ShowDetailPage() {
                       <Show when={piece.notes}>
                         {(n) => <p className="text-sm text-text-secondary">{n}</p>}
                       </Show>
+                      <ListenLinks workTitle={piece.workTitle} composer={piece.composer} />
                     </li>
                   )}
                 </For>
               </ul>
+              <Show when={dcxRepYearUrl(corps.dcx_museum_url, show.season)}>
+                {(href) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-3 inline-flex items-center gap-1.5 text-xs text-text-secondary underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground"
+                  >
+                    <Icon icon={BookOpen01Icon} size="xs" />
+                    {corps.name}’s {show.season} repertoire in the DCX Museum
+                  </a>
+                )}
+              </Show>
             </Section>
           </Show>
 
@@ -439,6 +457,36 @@ const MediaPlaceholder = () => (
     hint="Cover images, clips and photos are waiting to be contributed."
   />
 );
+
+// Small row of "search this work on …" icon links (Spotify / Apple Music /
+// YouTube). Streaming services have no stable per-track deep link without an API
+// lookup, so these open a pre-filled search (see app/lib/music-search.ts).
+function ListenLinks({ workTitle, composer }: { workTitle: string; composer: string | null }) {
+  const links = musicSearchLinks(workTitle, composer);
+  const services: { label: string; href: string; icon: IconComponent }[] = [
+    { label: `Search “${workTitle}” on Spotify`, href: links.spotify, icon: SpotifyIcon },
+    { label: `Search “${workTitle}” on Apple Music`, href: links.appleMusic, icon: AppleMusicIcon },
+    { label: `Search “${workTitle}” on YouTube`, href: links.youtube, icon: YoutubeIcon },
+  ];
+  return (
+    <div className="mt-1.5 flex items-center gap-1">
+      <For each={services}>
+        {(s) => (
+          <a
+            href={s.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={s.label}
+            title={s.label}
+            className="text-text-secondary transition-colors hover:text-foreground"
+          >
+            <Icon icon={s.icon} size="sm" />
+          </a>
+        )}
+      </For>
+    </div>
+  );
+}
 
 const creditLine = (composer: string | null, arranger: string | null): string => {
   const parts: string[] = [];
