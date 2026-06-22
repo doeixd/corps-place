@@ -30,3 +30,11 @@ export PATH="$HOME/.vite-plus/bin:$PATH"
 echo "[refresh-prod-read-model] emitting into /data/corps-place/read-model.db (A/B hot-swap)…"
 npx tsx scripts/emitReadModel.ts --out /data/corps-place/read-model.db "$@"
 echo "[refresh-prod-read-model] done — server hot-swaps within ~5s."
+
+# Always travel the product-image bytes WITH the read-model — otherwise newly
+# ingested products reference media-cache keys whose bytes aren't on prod yet and
+# render as broken images (prod has .skip-r2-pull; /api/media can't fetch-on-miss
+# for merch-product keys). No-op when nothing new. Skip with SKIP_MEDIA_SYNC=1.
+if [ "${SKIP_MEDIA_SYNC:-0}" != "1" ]; then
+  bash "$repo_root/scripts/sync-prod-media-cache.sh" || echo "[refresh-prod-read-model] media-cache sync skipped/failed (non-fatal)"
+fi
