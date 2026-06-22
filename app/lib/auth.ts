@@ -3,6 +3,7 @@ import { magicLink } from 'better-auth/plugins';
 import { passkey } from '@better-auth/passkey';
 import { LibsqlDialect } from '@libsql/kysely-libsql';
 import * as path from 'node:path';
+import { sendEmail } from './email';
 
 /**
  * Auth for the Show Detail Wiki (plan §6). Three passwordless methods — Google,
@@ -28,25 +29,18 @@ const rpID = (() => {
   }
 })();
 
-// Magic-link delivery. Uses Resend when RESEND_API_KEY is set; otherwise logs the
-// link (dev) so sign-in still works, and warns that email isn't configured (plan
-// §6.1 — magic link's one external dependency). Google + passkey work regardless.
+// Magic-link delivery. Delegates to the shared `sendEmail` helper (app/lib/email.ts),
+// which uses Resend when RESEND_API_KEY is set and otherwise logs (dev) so sign-in
+// still works (plan §6.1 — magic link's one external dependency). Google + passkey
+// work regardless.
 const sendMagicLink = async ({ email, url }: { email: string; url: string }) => {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) {
-    console.warn(
-      `[auth] RESEND_API_KEY not set — magic link NOT emailed. Dev link for ${email}:\n  ${url}`
-    );
-    return;
-  }
-  const { Resend } = await import('resend');
-  const { error } = await new Resend(key).emails.send({
-    from: process.env.MAGIC_LINK_FROM ?? 'corps.place <login@drumcorps.app>',
+  await sendEmail({
     to: email,
     subject: 'Your corps.place sign-in link',
     html: `<p>Click to sign in:</p><p><a href="${url}">Sign in to corps.place</a></p><p>This link expires shortly. If you didn't request it, ignore this email.</p>`,
+    tag: 'magic_link',
+    from: process.env.MAGIC_LINK_FROM,
   });
-  if (error) throw new Error(`Resend send failed: ${JSON.stringify(error)}`);
 };
 
 export const auth = betterAuth({

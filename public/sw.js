@@ -138,3 +138,37 @@ self.addEventListener('fetch', (event) => {
   }
   // Everything else: passthrough (no respondWith).
 });
+
+// --- Web Push (Fantasy DCI, §8.2) -------------------------------------------
+// A push payload is JSON: { title, body, url? }. We show a notification and, on
+// click, focus an existing tab on that URL or open a new one.
+self.addEventListener('push', (event) => {
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch (e) {
+    payload = {};
+  }
+  const title = payload.title || 'Fantasy DCI';
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body: payload.body || '',
+      icon: '/favicon.ico',
+      data: { url: payload.url || '/fantasy' },
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = (event.notification.data && event.notification.data.url) || '/fantasy';
+  event.waitUntil(
+    (async () => {
+      const clientList = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      for (const client of clientList) {
+        if (client.url.includes(target) && 'focus' in client) return client.focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(target);
+    })()
+  );
+});

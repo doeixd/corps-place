@@ -8,7 +8,9 @@ import {
   UserMultipleIcon,
   JusticeScale01Icon,
   GiftIcon,
+  RankingIcon,
 } from '@/components/icons/generated';
+import { FANTASY_ENABLED } from '@/lib/fantasy/flag';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Home', icon: Home01Icon, exact: true },
@@ -16,6 +18,10 @@ const NAV_ITEMS = [
   { to: '/corps', label: 'Corps', icon: UserMultipleIcon, exact: false },
   { to: '/judges', label: 'Judges', icon: JusticeScale01Icon, exact: false },
   { to: '/shop', label: 'Shop', icon: GiftIcon, exact: false },
+  // Fantasy DCI — only when the feature flag is on (plan §0.5 #9).
+  ...(FANTASY_ENABLED
+    ? [{ to: '/fantasy', label: 'Fantasy', icon: RankingIcon, exact: false } as const]
+    : []),
 ] as const;
 
 /** Icon with an optional bookmark-count badge overlaid (only on the Shop item). */
@@ -73,7 +79,9 @@ export function SiteNav() {
               key={item.to}
               to={item.to}
               activeOptions={{ exact: item.exact }}
-              activeProps={{ className: 'font-semibold text-text-primary bg-accent' }}
+              activeProps={{
+                className: 'font-semibold text-text-primary bg-accent [&_svg]:text-primary',
+              }}
               inactiveProps={{ className: 'text-text-secondary' }}
               className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent hover:text-text-primary xl:px-3"
             >
@@ -87,7 +95,8 @@ export function SiteNav() {
       {/* Mobile bottom tabs */}
       <nav
         aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-40 grid min-h-[var(--bottom-nav-bar)] grid-cols-5 border-t border-border bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 grid min-h-[var(--bottom-nav-bar)] border-t border-border bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
+        style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length}, minmax(0, 1fr))` }}
       >
         {NAV_ITEMS.map((item) => (
           <Link

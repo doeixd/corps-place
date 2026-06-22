@@ -167,6 +167,198 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS idx_revisions_page_time ON show_revisions (page_id, created_at)`,
   `CREATE INDEX IF NOT EXISTS idx_media_page ON show_media (page_id)`,
   `CREATE INDEX IF NOT EXISTS idx_stewards_user ON show_stewards (user_id)`,
+
+  // ---------------------------------------------------------------------------
+  // Fantasy DCI (docs/plans/FANTASY_DCI_PLAN.md, Appendix B). Additive +
+  // idempotent. All ids are UUID strings, all timestamps ISO-8601 UTC TEXT.
+  // CaptionKey values are stored as the 8 keys ('GE1'…'MP'), never long names.
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS fantasy_leagues (
+     league_id      TEXT PRIMARY KEY,
+     slug           TEXT NOT NULL UNIQUE,
+     name           TEXT NOT NULL,
+     owner_user_id  TEXT NOT NULL,
+     season         TEXT NOT NULL,
+     status         TEXT NOT NULL DEFAULT 'setup',  -- setup|quiz|scheduled|drafting|active|complete|canceled
+     config_json    TEXT NOT NULL,                  -- validated LeagueConfig (Appendix E.0)
+     max_members    INTEGER NOT NULL DEFAULT 12,
+     payment_status TEXT NOT NULL DEFAULT 'none',   -- none|paid|refunded (reserved)
+     payment_ref    TEXT,
+     created_at     TEXT NOT NULL,
+     updated_at     TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_leagues_owner  ON fantasy_leagues (owner_user_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_leagues_season ON fantasy_leagues (season, status)`,
+
+  `CREATE TABLE IF NOT EXISTS fantasy_members (
+     league_id           TEXT NOT NULL,
+     user_id             TEXT NOT NULL,
+     role                TEXT NOT NULL DEFAULT 'member', -- owner|member
+     corps_name          TEXT,
+     show_title          TEXT,
+     corps_logo_media_id TEXT,
+     corps_color         TEXT,
+     quiz_score          REAL,
+     draft_position      INTEGER,
+     status              TEXT NOT NULL DEFAULT 'active', -- active|removed
+     joined_at           TEXT NOT NULL,
+     PRIMARY KEY (league_id, user_id)
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_members_user ON fantasy_members (user_id)`,
+
+  `CREATE TABLE IF NOT EXISTS fantasy_invites (
+     invite_id   TEXT PRIMARY KEY,
+     league_id   TEXT NOT NULL,
+     token       TEXT NOT NULL UNIQUE,
+     created_by  TEXT NOT NULL,
+     email       TEXT,
+     max_uses    INTEGER NOT NULL DEFAULT 1,
+     used_count  INTEGER NOT NULL DEFAULT 0,
+     expires_at  TEXT NOT NULL,
+     revoked_at  TEXT,
+     created_at  TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_invites_league ON fantasy_invites (league_id)`,
+
+  `CREATE TABLE IF NOT EXISTS fantasy_quiz_questions (
+     question_id    TEXT PRIMARY KEY,
+     prompt         TEXT NOT NULL,
+     choices_json   TEXT NOT NULL,           -- JSON array of 2..6 strings
+     correct_index  INTEGER NOT NULL,
+     explanation    TEXT,
+     difficulty     TEXT NOT NULL,           -- easy|medium|hard
+     tags_json      TEXT NOT NULL DEFAULT '[]',
+     active         INTEGER NOT NULL DEFAULT 1,
+     author_user_id TEXT NOT NULL,
+     created_at     TEXT NOT NULL,
+     updated_at     TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_questions_active ON fantasy_quiz_questions (active, difficulty)`,
+
+  `CREATE TABLE IF NOT EXISTS fantasy_quiz_attempts (
+     attempt_id        TEXT PRIMARY KEY,
+     league_id         TEXT NOT NULL,
+     user_id           TEXT NOT NULL,
+     question_ids_json TEXT NOT NULL,        -- ordered JSON array of question_id served
+     answers_json      TEXT NOT NULL DEFAULT '[]', -- ordered JSON array of chosen indexes
+     raw_score         REAL,
+     max_score         REAL,
+     weighted_score    REAL,                 -- raw/max, 0..1
+     started_at        TEXT NOT NULL,
+     completed_at      TEXT
+   )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS uq_fantasy_attempt_completed
+     ON fantasy_quiz_attempts (league_id, user_id) WHERE completed_at IS NOT NULL`,
+
+  `CREATE TABLE IF NOT EXISTS fantasy_drafts (
+     draft_id        TEXT PRIMARY KEY,
+     league_id       TEXT NOT NULL UNIQUE,
+     status          TEXT NOT NULL DEFAULT 'scheduled', -- scheduled|live|paused|complete
+     scheduled_at    TEXT,
+     order_json      TEXT,                  -- JSON array of user_id (base round-1 order)
+     draft_type      TEXT NOT NULL,         -- snake|linear (frozen from config)
+     pick_seconds    INTEGER NOT NULL DEFAULT 60,
+     total_rounds    INTEGER NOT NULL,      -- = sum(captionCaps)
+     current_pick_no INTEGER NOT NULL DEFAULT 0, -- 0-based global counter
+     current_user_id TEXT,
+     pick_deadline_at TEXT,
+     started_at      TEXT,
+     completed_at    TEXT
+   )`,
+
+  `CREATE TABLE IF NOT EXISTS fantasy_picks (
+     pick_id            TEXT PRIMARY KEY,
+     league_id          TEXT NOT NULL,
+     user_id            TEXT NOT NULL,
+     corps_key          TEXT NOT NULL,
+     caption            TEXT NOT NULL,       -- one of the 8 keys
+     round              INTEGER NOT NULL,
+     pick_no            INTEGER NOT NULL,
+     caption_slot_index INTEGER NOT NULL,    -- 1-based within (user, caption)
+     weight             REAL NOT NULL DEFAULT 1.0,
+     auto_picked        INTEGER NOT NULL DEFAULT 0,
+     created_at         TEXT NOT NULL
+   )`,
+  // U1: a (corps,caption) is owned by at most one member in a league.
+  `CREATE UNIQUE INDEX IF NOT EXISTS uq_fantasy_pick_corps_caption
+     ON fantasy_picks (league_id, corps_key, caption)`,
+  // U2: one caption per corps per member (relied on under default oneCaptionPerCorps=true).
+  `CREATE UNIQUE INDEX IF NOT EXISTS uq_fantasy_pick_user_corps
+     ON fantasy_picks (league_id, user_id, corps_key)`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_picks_user ON fantasy_picks (league_id, user_id)`,
+
+  `CREATE TABLE IF NOT EXISTS fantasy_standings (
+     league_id                TEXT NOT NULL,
+     user_id                  TEXT NOT NULL,
+     through_competition_slug TEXT,
+     total_score              REAL NOT NULL DEFAULT 0,
+     ge_score                 REAL NOT NULL DEFAULT 0,
+     visual_score             REAL NOT NULL DEFAULT 0,
+     music_score              REAL NOT NULL DEFAULT 0,
+     breakdown_json           TEXT NOT NULL DEFAULT '{}',
+     rank                     INTEGER,
+     computed_at              TEXT NOT NULL,
+     is_final                 INTEGER NOT NULL DEFAULT 0,
+     PRIMARY KEY (league_id, user_id)
+   )`,
+
+  `CREATE TABLE IF NOT EXISTS fantasy_notifications (
+     notif_id      TEXT PRIMARY KEY,
+     user_id       TEXT NOT NULL,
+     league_id     TEXT,
+     kind          TEXT NOT NULL,
+     payload_json  TEXT NOT NULL DEFAULT '{}',
+     read_at       TEXT,
+     email_sent_at TEXT,
+     push_sent_at  TEXT,
+     created_at    TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_notifs_user ON fantasy_notifications (user_id, read_at)`,
+
+  // Reserved; empty until M5 (push).
+  `CREATE TABLE IF NOT EXISTS fantasy_push_subscriptions (
+     user_id    TEXT NOT NULL,
+     endpoint   TEXT NOT NULL,
+     p256dh     TEXT NOT NULL,
+     auth       TEXT NOT NULL,
+     created_at TEXT NOT NULL,
+     PRIMARY KEY (user_id, endpoint)
+   )`,
+
+  // Scheduled jobs — drives draft reminders + season-complete via cron (Appendix H.4).
+  `CREATE TABLE IF NOT EXISTS fantasy_scheduled_jobs (
+     job_id       TEXT PRIMARY KEY,
+     league_id    TEXT,
+     kind         TEXT NOT NULL,         -- draft_soon_60|draft_soon_10|draft_start|...
+     due_at       TEXT NOT NULL,
+     payload_json TEXT NOT NULL DEFAULT '{}',
+     done_at      TEXT,
+     created_at   TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_jobs_due ON fantasy_scheduled_jobs (done_at, due_at)`,
+
+  `CREATE TABLE IF NOT EXISTS fantasy_admin_audit (
+     audit_id      TEXT PRIMARY KEY,
+     actor_user_id TEXT NOT NULL,
+     action        TEXT NOT NULL,
+     league_id     TEXT,
+     before_json   TEXT,
+     after_json    TEXT,
+     created_at    TEXT NOT NULL
+   )`,
+  // Fantasy corps logos (plan §19.2 R1): a DEDICATED media table so logo uploads
+  // never touch show_pages/show_media. Served via /api/fantasy-media/$id.
+  `CREATE TABLE IF NOT EXISTS fantasy_media (
+     media_id    TEXT PRIMARY KEY,
+     league_id   TEXT NOT NULL,
+     user_id     TEXT NOT NULL,
+     r2_key      TEXT NOT NULL,
+     width       INTEGER,
+     height      INTEGER,
+     uploaded_by TEXT NOT NULL,
+     uploaded_at TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_media_league ON fantasy_media (league_id, user_id)`,
 ];
 
 /**
