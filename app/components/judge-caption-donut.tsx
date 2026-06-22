@@ -6,9 +6,11 @@ import { CaptionChip } from '@/components/caption-chip';
 import { JudgeAvatar } from '@/components/judge-avatar';
 
 const SIZE = 168;
-const OUTER = 82;
-const INNER = 72;
-// The photo fills the hole, leaving a small gap to the (now thin) ring.
+const OUTER = 84;
+// A thicker ring gives a much larger touch target so segments are easy to tap
+// on mobile (the old 10px ring was nearly impossible to hit).
+const INNER = 64;
+// The photo fills the hole, leaving a small gap to the (now thicker) ring.
 const PHOTO = INNER * 2 - 12;
 
 function DonutTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
@@ -106,10 +108,7 @@ export function JudgeCaptionDonut({
           activation. Shown only when a segment is tapped on touch devices;
           desktop hover still uses recharts' built-in Tooltip. */}
       {activeIndex !== null && slices[activeIndex] ? (
-        <div
-          className="pointer-events-none absolute z-50 -translate-x-1/2 -translate-y-full rounded-md border border-border bg-popover px-3 py-2 text-xs shadow-md"
-          style={{ left: '50%', top: -4 }}
-        >
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-md border border-border bg-popover px-3 py-2 text-center text-xs shadow-md">
           <div className="font-medium text-foreground">{slices[activeIndex].caption}</div>
           <div className="text-muted-foreground">
             {slices[activeIndex].count} assignment

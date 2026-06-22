@@ -228,7 +228,7 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
       </div>
 
       <div
-        className="carousel-scrollbar -mx-2 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-pl-2 px-2 pt-1 pb-3"
+        className="carousel-scrollbar -mx-2 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-pl-2 px-2 pt-3 pb-3"
         tabIndex={0}
         role="group"
         aria-label="Weekend shows, scroll horizontally"

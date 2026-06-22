@@ -60,11 +60,11 @@ export function SiteNav() {
         <Link
           to="/"
           className="mb-6 flex items-center gap-2.5 px-2 focus-visible:outline-none"
-          aria-label="Corps Place home"
+          aria-label="DrumCorps.app home"
         >
           <Logo aria-hidden="true" className="size-8 shrink-0" />
           <span className="hidden text-base font-bold text-text-primary xl:inline">
-            Corps Place
+            DrumCorps.app
           </span>
         </Link>
         <div className="flex flex-col gap-1">

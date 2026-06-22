@@ -35,7 +35,7 @@ export function CategoryCard({ category }: { category: ShopCategoryCardData }) {
                 behind the text so it stays legible over any product image. In
                 light mode the strip is white with dark text; in dark mode it's
                 a dark strip with white text. The gradient feathers the top edge. */}
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/92 via-55% to-transparent px-2.5 pb-2.5 pt-4 backdrop-blur-md [text-shadow:0_1px_2px_rgb(255_255_255/0.5)] dark:from-black dark:via-black/88 dark:via-55% dark:to-transparent dark:[text-shadow:0_1px_3px_rgb(0_0_0/0.6)]">
+            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-white via-white/92 via-55% to-transparent px-2.5 pb-2.5 pt-4 backdrop-blur-md [text-shadow:0_1px_2px_rgb(255_255_255/0.5)] dark:from-black dark:via-black/88 dark:via-55% dark:to-transparent dark:[text-shadow:0_1px_3px_rgb(0_0_0/0.6)]">
               <div className="line-clamp-1 text-sm font-semibold text-black dark:text-white">
                 {category.value}
               </div>
@@ -44,8 +44,8 @@ export function CategoryCard({ category }: { category: ShopCategoryCardData }) {
           </>
         ) : (
           // No image: a dark brand tile so white text reads in both themes.
-          <div className="relative flex h-full w-full items-center justify-center bg-gradient-to-tr from-primary/40 to-primary/15 p-3">
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/65 to-black/25" />
+          <div className="relative flex h-full w-full items-center justify-center bg-linear-to-tr from-primary/40 to-primary/15 p-3">
+            <div className="absolute inset-0 bg-linear-to-tr from-black/65 to-black/25" />
             <div className="relative text-center [text-shadow:0_1px_2px_rgb(0_0_0/0.3)] dark:[text-shadow:0_1px_3px_rgb(0_0_0/0.55)]">
               <div className="line-clamp-2 text-sm font-semibold text-white">{category.value}</div>
               <div className="text-xs text-white/85">{category.count} items</div>
