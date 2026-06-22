@@ -687,6 +687,78 @@ const locsOf = (xml: string): string[] =>
     decodeEntities(m[1]!),
   );
 
+// A LINK to an actual product detail page: a `/product(s)/<slug>` (Woo, Printify,
+// Shopify), `/product-page/<slug>` (Wix), `/item/<slug>`, or `/p/<slug>` segment
+// with something after it. Tighter than PRODUCT_URL_RE (which also matches bare
+// `/shop/` and `/store/` landing/category pages) so anchor-harvesting collects
+// products, not category indexes.
+const PRODUCT_PAGE_RE = /\/(products?|product-page|item|p|merch)\/[^/?#]+/i;
+// Listing pages worth following one level to reach their products (shop landing,
+// category/collection indexes, paginated shop pages).
+const LISTING_PAGE_RE =
+  /\/(shop|store|products|collections?|category|product-category|merch)(\/|\/page\/\d+|$)/i;
+const SHOP_SEED_PATHS = ["", "/shop", "/shop/", "/store", "/store/", "/products"];
+
+/**
+ * Harvest product-detail URLs by crawling a store's shop/landing pages and
+ * reading their anchors — robust against stores whose product sitemap is missing
+ * or 404s (common on WooCommerce sites that ship only a posts/pages sitemap).
+ * Without this, sitemap discovery falls back to the blog/news sitemap and scrapes
+ * articles as "products" while the real `/shop/product/...` pages go unseen.
+ *
+ * Two bounded levels: collect product + listing anchors from the seed pages, then
+ * follow up to a handful of listing pages (categories / shop page 2…) to reach the
+ * rest of the catalog. Same-origin only; capped by fetch + product budgets.
+ */
+const harvestProductAnchors = (
+  origin: string,
+  timeoutMs: number,
+): Effect.Effect<string[], never, never> =>
+  Effect.gen(function* () {
+    const products = new Set<string>();
+    const listings = new Set<string>();
+    const visited = new Set<string>();
+    const scan = (html: string) => {
+      const $ = cheerio.load(html);
+      $("a[href]").each((_i, el) => {
+        const href = $(el).attr("href");
+        if (!href) return;
+        let abs: string;
+        try {
+          abs = new URL(href, origin).toString().split("#")[0]!;
+        } catch {
+          return;
+        }
+        if (!abs.startsWith(origin)) return; // same-origin only
+        if (PRODUCT_PAGE_RE.test(abs)) products.add(abs);
+        else if (LISTING_PAGE_RE.test(abs)) listings.add(abs);
+      });
+    };
+
+    // Level 0 — seed pages (homepage + common shop roots).
+    for (const path of SHOP_SEED_PATHS) {
+      const url = `${origin}${path}`;
+      if (visited.has(url)) continue;
+      visited.add(url);
+      const html = yield* fetchHtmlWithFallback(url, timeoutMs);
+      if (html) scan(html);
+      if (products.size >= UNIVERSAL_MAX_PRODUCTS) return [...products];
+    }
+
+    // Level 1 — follow listing pages (categories, shop page 2…) to reach products
+    // the landing page didn't link directly. Bounded by the sitemap fetch budget.
+    let budget = UNIVERSAL_MAX_SITEMAPS;
+    for (const url of listings) {
+      if (budget <= 0 || products.size >= UNIVERSAL_MAX_PRODUCTS) break;
+      if (visited.has(url)) continue;
+      visited.add(url);
+      budget--;
+      const html = yield* fetchHtmlWithFallback(url, timeoutMs);
+      if (html) scan(html);
+    }
+    return [...products];
+  });
+
 /**
  * Collect product URLs from a store's sitemap(s). Two-phase:
  *   1. Expand sitemap *indexes* to their leaf sitemaps.
@@ -723,13 +795,19 @@ const discoverProductUrls = (
       }
     }
 
+    // Phase 1.5 — harvest product links straight from the shop/landing pages, so a
+    // store with a missing/404 product sitemap (its real products only reachable by
+    // crawling /shop/) still gets ingested instead of its blog pages.
+    const harvested = yield* harvestProductAnchors(origin, timeoutMs);
+
     // Phase 2 — read product sitemaps first; fall back to all leaves otherwise.
     const leaves = [...leafXml.keys()];
     const productSitemaps = leaves.filter((s) => PRODUCT_SITEMAP_RE.test(s));
     const ordered = productSitemaps.length > 0 ? productSitemaps : leaves;
 
-    const seen = new Set<string>();
-    const productUrls: string[] = [];
+    // Harvested product-detail URLs rank first and pre-seed the dedup set.
+    const seen = new Set<string>(harvested);
+    const productUrls: string[] = [...harvested];
     const genericUrls: string[] = [];
     const total = () => productUrls.length + genericUrls.length;
     const collect = (xml: string) => {
@@ -757,7 +835,13 @@ const discoverProductUrls = (
         }
       }
     }
-    return productUrls.concat(genericUrls).slice(0, UNIVERSAL_MAX_PRODUCTS);
+    // When we harvested a real catalog from the shop, trust it and drop the generic
+    // sitemap URLs (blog/news/about) — they're not products and would only burn
+    // fetches (each escalates to a headless render looking for absent JSON-LD). Gate
+    // on a small count so one stray `/p/` anchor can't suppress the generic fallback
+    // for a store whose products genuinely live in non-product-pattern URLs.
+    const tail = harvested.length >= 3 ? [] : genericUrls;
+    return productUrls.concat(tail).slice(0, UNIVERSAL_MAX_PRODUCTS);
   });
 
 const AVAILABILITY_IN_STOCK = /InStock|LimitedAvailability|PreOrder|BackOrder/i;
@@ -920,8 +1004,14 @@ const productFromHtml = (
 
   // Last resort — a rendered SPA product page (e.g. Shopify Hydrogen / store.dci.org)
   // with NEITHER JSON-LD nor og:product, but the product is in the DOM: title in an
-  // <h1>, a CDN product image, and a visible price. Only reached after both
-  // structured paths fail, so it never overrides good data on the working stores.
+  // <h1>, a product image, and a visible price. Only reached after both structured
+  // paths fail, so it never overrides good data on the working stores.
+  //
+  // CRITICAL guard against marketing-site noise: a WordPress/Wix site (e.g.
+  // spartansdbc.org) hands the crawler hundreds of blog/news pages that all have an
+  // <h1> but are NOT products. We only accept an <h1>-only page as a product when
+  // it carries real product signal: a price, OR (it sits on a product-pattern URL
+  // AND has an image). A bare <h1> with neither is rejected.
   const h1 = $("h1").first().text().replace(/\s+/g, " ").trim();
   if (h1) {
     const imgRaw =
@@ -929,8 +1019,10 @@ const productFromHtml = (
         .toArray()
         .map((e) => $(e).attr("src") || $(e).attr("data-src") || "")
         .find((s) => /cdn\.shopify|\/products?\//i.test(s)) ?? null;
-    // Drop the resizing query so we keep the full-size original.
-    const image = imgRaw ? imgRaw.split("?")[0]! : null;
+    // Prefer a matched content image; fall back to og:image (Printify/Woo host
+    // their mockups off-CDN, e.g. images-api.printify.com / S3, so the pattern
+    // match misses them but og:image is present). Drop the resizing query.
+    const image = (imgRaw ?? og("og:image"))?.split("?")[0] ?? null;
     // Require cents ($10.00) so we don't grab a "$75 free shipping" threshold or a
     // bare quantity. Prefer a price-classed element, else the main content text.
     const priceText =
@@ -939,6 +1031,9 @@ const productFromHtml = (
       $("body").text();
     const m = priceText.match(/\$\s?([0-9]+\.[0-9]{2})\b/);
     const price = m ? Number(m[1]) : null;
+    const onProductUrl = PRODUCT_URL_RE.test(pageUrl);
+    // Reject non-product pages: no price AND (not a product URL, or no image).
+    if (price === null && !(onProductUrl && image)) return null;
     return {
       externalId: pageUrl,
       title: h1,
