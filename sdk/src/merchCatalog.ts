@@ -521,6 +521,9 @@ const SqsVariant = Schema.Struct({
       value: Schema.String.pipe(optionalWith({ nullable: true })),
     }),
   ).pipe(optionalWith({ default: () => [] })),
+  mainImage: Schema.Struct({
+    assetUrl: Schema.String.pipe(optionalWith({ nullable: true })),
+  }).pipe(optionalWith({ nullable: true })),
 });
 const SqsStructured = Schema.Struct({
   priceCents: Schema.Number.pipe(optionalWith({ nullable: true })),
@@ -548,6 +551,15 @@ const centsToDollars = (c: number | null | undefined): number | null =>
 const bucketCategory = (text: string): string | null => {
   for (const [re, label] of CATEGORY_SYNONYMS) if (re.test(text)) return label;
   return null;
+};
+
+const uniqueStrings = (values: ReadonlyArray<string | null | undefined>): string[] => {
+  const out: string[] = [];
+  for (const value of values) {
+    if (!value || out.includes(value)) continue;
+    out.push(value);
+  }
+  return out;
 };
 
 const squarespaceAdapter: MerchAdapter = {
@@ -619,13 +631,17 @@ const squarespaceAdapter: MerchAdapter = {
             sc.priceMoney?.currency ??
             sc.variants?.[0]?.priceMoney?.currency ??
             null;
+          const images = uniqueStrings([
+            ...(sc.variants ?? []).map((v) => v.mainImage?.assetUrl),
+            it.assetUrl,
+          ]);
           out.push({
             externalId: it.id,
             title: it.title,
             description: stripHtml(it.excerpt ?? it.body),
             productUrl,
-            image: it.assetUrl ?? null,
-            images: it.assetUrl ? [it.assetUrl] : [],
+            image: images[0] ?? null,
+            images,
             priceMin: vMin ?? fallbackPrice,
             priceMax: vMax ?? fallbackPrice,
             currency,

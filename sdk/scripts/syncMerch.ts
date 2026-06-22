@@ -101,6 +101,7 @@ const main = async () => {
     ]);
   run("seed stores", ["scripts/seedMerchStores.ts"]);
   run("ingest products", ["scripts/ingestMerch.ts", "--concurrency", "6"]);
+  run("validate merch images", ["scripts/validateMerchImages.ts"]);
   // Regenerate the image-host allowlist from the fresh catalog (app/lib/
   // merch-image-hosts.generated.ts). Commit it so a code deploy picks it up —
   // new stores' image hosts otherwise can't proxy. warmMerchImages reports gaps.
