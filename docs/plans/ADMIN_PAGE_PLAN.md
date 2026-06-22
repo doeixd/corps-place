@@ -968,3 +968,148 @@ CREATE INDEX IF NOT EXISTS idx_email_log_user ON email_log (user_id, sent_at);
 > guarded step (check `PRAGMA table_info` first, or try/catch the ALTER) at M4, the way
 > a one-shot migration would. Everything above is `CREATE … IF NOT EXISTS` and is safe
 > in the batch.
+
+---
+
+## Progress log (headless work done 2026-06-22)
+
+Committed on `feat/fantasy-dci` (route-independent foundation; fantasy work untouched):
+- `18390f8` — plan + authz caps (`viewAdmin`/`runJobs`/`manageUsers`/`customerSupport`/
+  `impersonate`) + `getActor` banned-check (R3).
+- `625bffa` — `app/lib/server-fns/admin.ts` (`requireAdmin` discriminated gate +
+  `adminStatus` snapshot) and `app/lib/admin-loader.ts` (`requireAdminLoader`).
+- `5ed8c27` — `app/components/admin/{admin-nav,admin-shell}.tsx`,
+  `app/machines/admin-status-machine.ts`, 6 new generated icons + barrel.
+
+All typecheck-clean and formatted.
+
+### ⚠️ Blocker for the route files (needs an owner/dev session)
+`app/routes/admin/` is **root-owned** (`drwxr-sr-x`, group `corps-place` not writable),
+and the editing user is `patrick` — so new route files can't be created there nor can
+`corps-colors.tsx` be modified headlessly. **Fix once, as the dir owner/root:**
+`chmod -R g+w app/routes/admin` (or `chown` it to the dev user). Then add the route
+files below with the **dev server running** (`npm run dev`) so `routeTree.gen.ts`
+regenerates (it has `@ts-nocheck`; never hand-edit it).
+
+### Appendix C — `app/routes/admin/index.tsx` (Overview — ready to drop in)
+
+Drafted + reviewed against the committed foundation; mirrors `fantasy/index.tsx`
+(loader gate + `useSession`/`signIn` for the signed-out case) and uses `ui/card`.
+
+```tsx
+import { createFileRoute } from '@tanstack/react-router';
+import { useMachine } from '@xstate/react';
+import { requireAdminLoader } from '@/lib/admin-loader';
+import { AdminShell } from '@/components/admin/admin-shell';
+import { adminStatusMachine } from '@/machines/admin-status-machine';
+import { PageHeader } from '@/components/page-header';
+import { PageShell } from '@/components/page-shell';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { signIn, useSession } from '@/lib/auth-client';
+import { seoHead } from '@/lib/seo';
+
+export const Route = createFileRoute('/admin/')({
+  loader: requireAdminLoader('viewAdmin'),
+  head: () => seoHead({ title: 'Admin — Overview', description: 'Operator console', path: '/admin' }),
+  component: AdminOverview,
+});
+
+const fmtBytes = (n: number): string => {
+  if (!n) return '—';
+  const mb = n / (1024 * 1024);
+  return mb >= 1024 ? `${(mb / 1024).toFixed(2)} GB` : `${mb.toFixed(1)} MB`;
+};
+
+function StatCard({ title, rows }: { title: string; rows: [string, number | string][] }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm font-semibold text-text-secondary">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+        {rows.map(([label, value]) => (
+          <div key={label} className="contents">
+            <span className="text-text-secondary">{label}</span>
+            <span className="text-right font-medium tabular-nums">{value}</span>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+function AdminOverview() {
+  const gate = Route.useLoaderData();
+  const { data: session } = useSession();
+
+  if (!gate.signedIn) {
+    return (
+      <PageShell>
+        <PageHeader title="Admin" subtitle="Operator console" />
+        <Card className="mx-auto mt-6 max-w-md">
+          <CardHeader><CardTitle>Sign in required</CardTitle></CardHeader>
+          <CardContent className="flex flex-col gap-3 text-sm text-text-secondary">
+            <p>{session ? 'Your account does not have access to this area.' : 'Sign in with an authorized account to continue.'}</p>
+            {!session ? (
+              <Button onClick={() => void signIn.social({ provider: 'google', callbackURL: '/admin' })}>
+                Continue with Google
+              </Button>
+            ) : null}
+          </CardContent>
+        </Card>
+      </PageShell>
+    );
+  }
+
+  return (
+    <AdminShell role={gate.actor.role}>
+      <Overview />
+    </AdminShell>
+  );
+}
+
+function Overview() {
+  const [state] = useMachine(adminStatusMachine);
+  const s = state.context.status;
+  const loading = !s && state.matches('fetching');
+
+  return (
+    <>
+      <PageHeader
+        title="Overview"
+        subtitle={s ? `Snapshot ${new Date(s.generatedAt).toLocaleTimeString()}` : 'Loading…'}
+      />
+      {state.context.error ? <p className="mb-4 text-sm text-destructive">{state.context.error}</p> : null}
+      {loading ? (
+        <p className="text-sm text-text-secondary">Loading status…</p>
+      ) : s ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <StatCard title="Wiki (contributions)" rows={[['Pages', s.wiki.pages], ['Revisions', s.wiki.revisions], ['Media', s.wiki.media], ['Citations', s.wiki.citations]]} />
+          <StatCard title="Fantasy" rows={[['Leagues', s.fantasy.leagues], ['Members', s.fantasy.members]]} />
+          <StatCard title="Storage" rows={[['contributions.db', fmtBytes(s.contributionsDb.sizeBytes)]]} />
+        </div>
+      ) : null}
+    </>
+  );
+}
+```
+
+### Appendix D — migrate `app/routes/admin/corps-colors.tsx` onto the gate
+
+Replace the dev-only gate with the role gate + shell. NOTE the save still writes
+`dci-relational.db` directly, which only works in dev (§1.1) — so either keep it
+dev-only-functional for now or re-route its save through the worker at M6. Minimal
+gate change:
+
+```tsx
+// remove: const isDev = import.meta.env.DEV; and the beforeLoad notFound()
+import { requireAdminLoader } from '@/lib/admin-loader';
+import { AdminShell } from '@/components/admin/admin-shell';
+// in the route:
+export const Route = createFileRoute('/admin/corps-colors')({
+  loader: requireAdminLoader('viewAdmin'),
+  // ...keep getCorpsDirectory load inside the component or merge into the loader
+});
+// wrap the component's returned JSX in <AdminShell role={gate.actor.role}> when signed in.
+```
