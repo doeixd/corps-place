@@ -1,17 +1,14 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useSyncExternalStore } from 'react';
 import { motion } from 'motion/react';
+import { corpsPalette } from '@sdk/src/corpsColors.js';
 import { Icon } from '@/components/icon';
 import { HeartAddIcon } from '@/components/icons/generated';
 import { FavouriteIcon } from '@/components/icons/favourite-filled';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import type { FavoriteCorpsInput } from '@/stores/favorite-corps-store';
-import {
-  favoriteCorpsStore,
-  useIsFavorite,
-  computeFavoriteBranding,
-} from '@/stores/favorite-corps-store';
+import { favoriteCorpsStore, useIsFavorite } from '@/stores/favorite-corps-store';
 import { themeStore } from '@/stores/theme-store';
 
 /**
@@ -37,6 +34,13 @@ export function FavoriteCorpsButton({
   const sizeTw = size === 'sm' ? 'size-7' : size === 'lg' ? 'size-10' : 'size-8';
   const iconSize = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'md';
 
+  // The corps accent is only needed when this card is favorited (snap to its
+  // brand color) or once the user hovers (the hover-color preview). On a large
+  // grid, deferring it means non-favorited, un-hovered cards do ZERO palette
+  // work on mount — only the ≤1 favorited card computes anything up front.
+  const [primed, setPrimed] = useState(false);
+  const needAccent = isFav || primed;
+
   // React to theme toggles so the hover/fav color stays in sync with light/dark.
   const theme = useSyncExternalStore(
     (onChange) => themeStore.subscribe(onChange).unsubscribe,
@@ -44,27 +48,26 @@ export function FavoriteCorpsButton({
     () => 'light'
   );
 
-  // Compute the corps's own accent so we snap to it immediately on click
-  // (bypassing the global --primary CSS transition on the shell/logo). Memoized
-  // so a favorite toggle — which re-renders many cards — doesn't recompute two
-  // palettes + a favicon SVG per card on every render.
-  const palette = useMemo(() => computeButtonPalette(corps, theme), [corps.corpsKey, theme]);
+  // One single-mode palette (not the full light+dark+logo branding), computed
+  // lazily and memoized on the primitives that actually change it.
+  const palette = useMemo(
+    () => (needAccent ? computeButtonAccent(corps, theme) : null),
+    [needAccent, corps.corpsKey, corps.colorPrimary, corps.colorSecondary, theme]
+  );
 
-  const inlineFav = isFav
-    ? ({
-        '--btn-accent': palette.accent,
-        '--btn-accent-fg': palette.accentFg,
-        borderColor: 'var(--btn-accent)',
-        backgroundColor: 'color-mix(in oklch, var(--btn-accent), transparent 90%)',
-        color: 'var(--btn-accent)',
-      } as React.CSSProperties)
-    : undefined;
+  const inlineFav =
+    isFav && palette
+      ? ({
+          '--btn-accent': palette.accent,
+          '--btn-accent-fg': palette.accentFg,
+          borderColor: 'var(--btn-accent)',
+          backgroundColor: 'color-mix(in oklch, var(--btn-accent), transparent 90%)',
+          color: 'var(--btn-accent)',
+        } as React.CSSProperties)
+      : undefined;
 
-  const hoverAccent = isFav
-    ? undefined
-    : ({
-        '--btn-hover': palette.accent,
-      } as React.CSSProperties);
+  const hoverAccent =
+    !isFav && palette ? ({ '--btn-hover': palette.accent } as React.CSSProperties) : undefined;
 
   return (
     <Tooltip>
@@ -74,6 +77,9 @@ export function FavoriteCorpsButton({
             type="button"
             aria-label={label}
             aria-pressed={isFav}
+            // Compute the hover accent only once the user actually reaches for it.
+            onPointerEnter={() => setPrimed(true)}
+            onFocus={() => setPrimed(true)}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -125,17 +131,16 @@ export function FavoriteCorpsButton({
   );
 }
 
-/** Compute the accent + accentFg for a corps in the current theme, using the
- *  shared palette derivation so it matches what the store would set on :root. */
-function computeButtonPalette(
+/** Compute just the accent + accentFg for a corps in the *current* theme — a
+ *  single `corpsPalette` derivation, not the full light+dark+logo branding the
+ *  store persists. Pure (no DOM), so it's cheap and SSR-safe. */
+function computeButtonAccent(
   corps: FavoriteCorpsInput,
   theme: string
 ): { accent: string; accentFg: string } {
-  if (typeof document === 'undefined') return { accent: '#fd5007', accentFg: '#fff' };
-  const branding = computeFavoriteBranding(corps);
-  const dark = theme === 'dark';
-  return {
-    accent: dark ? branding.darkPrimary : branding.lightPrimary,
-    accentFg: dark ? branding.darkPrimaryForeground : branding.lightPrimaryForeground,
-  };
+  const colors = corps.colorPrimary
+    ? { primary: corps.colorPrimary, secondary: corps.colorSecondary ?? undefined }
+    : {};
+  const p = corpsPalette(colors, theme === 'dark' ? 'dark' : 'light');
+  return { accent: p.accent, accentFg: p.accentFg };
 }
