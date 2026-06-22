@@ -19,6 +19,7 @@ export { ArrowUp01Icon } from './arrow-up-01';
 export { ArrowUp02Icon } from './arrow-up-02';
 export { BookOpen01Icon } from './book-open-01';
 export { Calendar01Icon } from './calendar-01';
+export { Cancel01Icon } from './cancel-01';
 export { ChartCandlestickIcon } from './chart-candlestick';
 export { ChartScatterIcon } from './chart-scatter';
 export { CheckmarkCircle02Icon } from './checkmark-circle-02';

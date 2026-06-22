@@ -4,10 +4,11 @@ import { useSession, signIn } from '@/lib/auth-client';
 import { saveShowBlock } from '@/lib/server-fns/contrib';
 import { UniformInputSchema, type UniformInput } from '@/lib/contrib/schemas';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icon';
-import { GiftIcon } from '@/components/icons/generated';
-
-const inputCls = 'w-full rounded border border-border bg-transparent px-2 py-1 text-sm';
+import { GiftIcon, AddCircleIcon, Cancel01Icon } from '@/components/icons/generated';
 
 /**
  * Uniform block (M3) — the first live wiki editor. Renders authored colors +
@@ -40,13 +41,9 @@ export function UniformSection({
             Uniform
           </h2>
           {signedIn ? (
-            <button
-              type="button"
-              onClick={() => setEditing((e) => !e)}
-              className="text-xs text-text-secondary underline underline-offset-2 hover:text-foreground"
-            >
+            <Button type="button" variant="ghost" size="xs" onClick={() => setEditing((e) => !e)}>
               {editing ? 'Cancel' : hasContent ? 'Edit' : 'Add'}
-            </button>
+            </Button>
           ) : null}
         </div>
 
@@ -68,15 +65,16 @@ export function UniformSection({
               Colors, photos, the about text and the reveal announcement — waiting to be added.
             </p>
             {!signedIn ? (
-              <button
+              <Button
                 type="button"
+                variant="outline"
+                size="sm"
                 onClick={() =>
                   signIn.social({ provider: 'google', callbackURL: window.location.pathname })
                 }
-                className="shrink-0 rounded-md border border-border px-3 py-1.5 text-sm hover:border-primary/60 hover:text-foreground"
               >
                 Sign in to contribute
-              </button>
+              </Button>
             ) : null}
           </div>
         )}
@@ -165,64 +163,64 @@ function UniformEditor({
                 </Field>
                 <Field of={form} path={['colors', i, 'label']}>
                   {(f) => (
-                    <input
+                    <Input
                       placeholder="label (e.g. Maroon)"
                       value={typeof f.input === 'string' ? f.input : ''}
                       onChange={(e) => f.onChange(e.target.value)}
-                      className={`flex-1 ${inputCls}`}
+                      className="flex-1"
                     />
                   )}
                 </Field>
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon-sm"
                   onClick={() => remove(form, { path: ['colors'], at: i })}
-                  className="text-text-secondary"
+                  aria-label="Remove color"
                 >
-                  ✕
-                </button>
+                  <Icon icon={Cancel01Icon} size="sm" />
+                </Button>
               </div>
             ))}
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="xs"
               onClick={() =>
                 insert(form, { path: ['colors'], initialInput: { hex: '#000000', label: '' } })
               }
-              className="text-xs text-text-secondary underline underline-offset-2"
             >
-              + Add color
-            </button>
+              <Icon icon={AddCircleIcon} size="sm" />
+              Add color
+            </Button>
           </div>
         )}
       </FieldArray>
 
       <Field of={form} path={['description']}>
         {(f) => (
-          <textarea
+          <Textarea
             placeholder="About the uniform…"
             value={typeof f.input === 'string' ? f.input : ''}
             onChange={(e) => f.onChange(e.target.value)}
-            className={`min-h-20 ${inputCls}`}
+            className="min-h-20"
           />
         )}
       </Field>
       <Field of={form} path={['announcementUrl']}>
         {(f) => (
-          <input
+          <Input
             placeholder="Uniform announcement URL"
             value={typeof f.input === 'string' ? f.input : ''}
             onChange={(e) => f.onChange(e.target.value)}
-            className={inputCls}
           />
         )}
       </Field>
 
-      {error ? <p className="text-sm text-red-500">{error}</p> : null}
-      <button
-        type="submit"
-        className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground"
-      >
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <Button type="submit" size="sm">
         Save
-      </button>
+      </Button>
     </Form>
   );
 }

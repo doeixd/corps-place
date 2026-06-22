@@ -17,6 +17,9 @@ import { LexicalFreeForm } from '@/components/contrib/lexical-free-form';
 import { renderLexicalDoc } from '@/lib/contrib/lexical-render';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import { Icon, type IconComponent } from '@/components/icon';
 import {
   CubeIcon,
@@ -24,10 +27,26 @@ import {
   Target02Icon,
   ViewIcon,
   BookOpen01Icon,
+  AddCircleIcon,
+  Cancel01Icon,
 } from '@/components/icons/generated';
 
-const inputCls = 'w-full rounded border border-border bg-transparent px-2 py-1 text-sm';
 const str = (x: unknown) => (typeof x === 'string' ? x : '');
+
+// A small inline row-remove button shared by the FieldArray editors.
+const RemoveRowButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
+  <Button type="button" variant="ghost" size="icon-sm" onClick={onClick} aria-label={label}>
+    <Icon icon={Cancel01Icon} size="sm" />
+  </Button>
+);
+
+// "+ Add …" affordance shared by the FieldArray editors.
+const AddRowButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
+  <Button type="button" variant="ghost" size="xs" onClick={onClick}>
+    <Icon icon={AddCircleIcon} size="sm" />
+    {label}
+  </Button>
+);
 
 /**
  * Shared chrome for an authored block (M3): title + icon, signed-in Edit/Add
@@ -62,13 +81,9 @@ function ContribBlock({
             {title}
           </h2>
           {signedIn ? (
-            <button
-              type="button"
-              onClick={() => setEditing((e) => !e)}
-              className="text-xs text-text-secondary underline underline-offset-2 hover:text-foreground"
-            >
+            <Button type="button" variant="ghost" size="xs" onClick={() => setEditing((e) => !e)}>
               {editing ? 'Cancel' : hasContent ? 'Edit' : 'Add'}
-            </button>
+            </Button>
           ) : null}
         </div>
 
@@ -77,18 +92,19 @@ function ContribBlock({
         ) : hasContent ? (
           view
         ) : (
-          <div className="flex items-center gap-3 text-text-secondary">
+          <div className="flex flex-wrap items-center gap-3 text-text-secondary">
             <p className="text-sm">{emptyHint}</p>
             {!signedIn ? (
-              <button
+              <Button
                 type="button"
+                variant="outline"
+                size="sm"
                 onClick={() =>
                   signIn.social({ provider: 'google', callbackURL: window.location.pathname })
                 }
-                className="shrink-0 rounded-md border border-border px-3 py-1.5 text-sm hover:border-primary/60 hover:text-foreground"
               >
                 Sign in to contribute
-              </button>
+              </Button>
             ) : null}
           </div>
         )}
@@ -99,13 +115,10 @@ function ContribBlock({
 
 const SaveButton = ({ error }: { error: string | null }) => (
   <>
-    {error ? <p className="text-sm text-red-500">{error}</p> : null}
-    <button
-      type="submit"
-      className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground"
-    >
+    {error ? <p className="text-sm text-destructive">{error}</p> : null}
+    <Button type="submit" size="sm">
       Save
-    </button>
+    </Button>
   </>
 );
 
@@ -164,46 +177,38 @@ function PropsEditor({ corpsKey, season, value, onSaved }: EditorProps<PropsInpu
           <div className="space-y-2">
             {arr.items.map((id, i) => (
               <div key={id} className="flex items-start gap-2">
-                <div className="flex-1 space-y-1">
+                <div className="flex-1 space-y-1.5">
                   <Field of={form} path={['items', i, 'name']}>
                     {(f) => (
-                      <input
+                      <Input
                         placeholder="Prop name"
                         value={str(f.input)}
                         onChange={(e) => f.onChange(e.target.value)}
-                        className={inputCls}
                       />
                     )}
                   </Field>
                   <Field of={form} path={['items', i, 'description']}>
                     {(f) => (
-                      <input
+                      <Input
                         placeholder="Description"
                         value={str(f.input)}
                         onChange={(e) => f.onChange(e.target.value)}
-                        className={inputCls}
                       />
                     )}
                   </Field>
                 </div>
-                <button
-                  type="button"
+                <RemoveRowButton
                   onClick={() => remove(form, { path: ['items'], at: i })}
-                  className="text-text-secondary"
-                >
-                  ✕
-                </button>
+                  label="Remove prop"
+                />
               </div>
             ))}
-            <button
-              type="button"
+            <AddRowButton
               onClick={() =>
                 insert(form, { path: ['items'], initialInput: { name: '', description: '' } })
               }
-              className="text-xs text-text-secondary underline underline-offset-2"
-            >
-              + Add prop
-            </button>
+              label="Add prop"
+            />
           </div>
         )}
       </FieldArray>
@@ -272,49 +277,44 @@ function LinksEditor({ corpsKey, season, value, onSaved }: EditorProps<LinksInpu
           <div className="space-y-2">
             {arr.items.map((id, i) => (
               <div key={id} className="flex items-start gap-2">
-                <div className="flex-1 space-y-1">
+                <div className="flex-1 space-y-1.5">
                   <Field of={form} path={['items', i, 'label']}>
                     {(f) => (
-                      <input
+                      <Input
                         placeholder="Label (e.g. Show announcement)"
                         value={str(f.input)}
                         onChange={(e) => f.onChange(e.target.value)}
-                        className={inputCls}
                       />
                     )}
                   </Field>
                   <Field of={form} path={['items', i, 'url']}>
                     {(f) => (
                       <div>
-                        <input
+                        <Input
                           placeholder="https://…"
                           value={str(f.input)}
                           onChange={(e) => f.onChange(e.target.value)}
-                          className={inputCls}
+                          aria-invalid={f.errors ? true : undefined}
                         />
-                        {f.errors ? <p className="text-xs text-red-500">{f.errors[0]}</p> : null}
+                        {f.errors ? (
+                          <p className="mt-1 text-xs text-destructive">{f.errors[0]}</p>
+                        ) : null}
                       </div>
                     )}
                   </Field>
                 </div>
-                <button
-                  type="button"
+                <RemoveRowButton
                   onClick={() => remove(form, { path: ['items'], at: i })}
-                  className="text-text-secondary"
-                >
-                  ✕
-                </button>
+                  label="Remove link"
+                />
               </div>
             ))}
-            <button
-              type="button"
+            <AddRowButton
               onClick={() =>
                 insert(form, { path: ['items'], initialInput: { label: '', url: '' } })
               }
-              className="text-xs text-text-secondary underline underline-offset-2"
-            >
-              + Add link
-            </button>
+              label="Add link"
+            />
           </div>
         )}
       </FieldArray>
@@ -364,11 +364,11 @@ function SymbolismEditor({ corpsKey, season, value, onSaved }: EditorProps<Symbo
     <Form of={form} onSubmit={submit} className="space-y-3">
       <Field of={form} path={['text']}>
         {(f) => (
-          <textarea
+          <Textarea
             placeholder="What is the show about? What do the moments / colors / staging mean?"
             value={str(f.input)}
             onChange={(e) => f.onChange(e.target.value)}
-            className={`min-h-32 ${inputCls}`}
+            className="min-h-32"
           />
         )}
       </Field>
@@ -446,9 +446,10 @@ function GalleryEditor({ corpsKey, season, value, onSaved }: EditorProps<Gallery
             <button
               type="button"
               onClick={() => setItems((xs) => xs.filter((_, j) => j !== i))}
-              className="absolute right-1 top-1 rounded bg-black/60 px-1.5 text-xs text-white"
+              aria-label="Remove photo"
+              className="absolute right-1 top-1 flex size-6 items-center justify-center rounded-md bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 focus-visible:opacity-100 group-hover:opacity-100"
             >
-              ✕
+              <Icon icon={Cancel01Icon} size="sm" />
             </button>
           </div>
         ))}
@@ -461,15 +462,10 @@ function GalleryEditor({ corpsKey, season, value, onSaved }: EditorProps<Gallery
           setItems((xs) => [...xs, { url: r.url, alt: '', width: r.width, height: r.height }])
         }
       />
-      {error ? <p className="text-sm text-red-500">{error}</p> : null}
-      <button
-        type="button"
-        onClick={save}
-        disabled={saving}
-        className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground disabled:opacity-50"
-      >
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <Button type="button" size="sm" onClick={save} disabled={saving}>
         {saving ? 'Saving…' : 'Save gallery'}
-      </button>
+      </Button>
     </div>
   );
 }
@@ -518,15 +514,10 @@ function AboutEditor({ corpsKey, season, value, onSaved }: EditorProps<FreeFormD
   return (
     <div className="space-y-3">
       <LexicalFreeForm value={draft} onChange={setDraft} />
-      {error ? <p className="text-sm text-red-500">{error}</p> : null}
-      <button
-        type="button"
-        onClick={save}
-        disabled={saving}
-        className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground disabled:opacity-50"
-      >
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <Button type="button" size="sm" onClick={save} disabled={saving}>
         {saving ? 'Saving…' : 'Save'}
-      </button>
+      </Button>
     </div>
   );
 }
