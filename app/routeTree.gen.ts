@@ -18,8 +18,10 @@ import { Route as StaffIndexRouteImport } from './routes/staff/index'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as MerchIndexRouteImport } from './routes/merch.index'
 import { Route as JudgesIndexRouteImport } from './routes/judges/index'
+import { Route as FantasyIndexRouteImport } from './routes/fantasy/index'
 import { Route as EventsIndexRouteImport } from './routes/events/index'
 import { Route as CorpsIndexRouteImport } from './routes/corps/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as StaffPersonIdRouteImport } from './routes/staff/$personId'
 import { Route as ShopStoresRouteImport } from './routes/shop/stores'
 import { Route as ShopCartRouteImport } from './routes/shop/cart'
@@ -28,12 +30,19 @@ import { Route as ShopAllRouteImport } from './routes/shop/all'
 import { Route as ShopProductIdRouteImport } from './routes/shop/$productId'
 import { Route as MerchSplatRouteImport } from './routes/merch.$'
 import { Route as JudgesJudgeIdRouteImport } from './routes/judges/$judgeId'
+import { Route as FantasyQuizAdminRouteImport } from './routes/fantasy/quiz-admin'
+import { Route as FantasyCreateRouteImport } from './routes/fantasy/create'
 import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spike'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
+import { Route as FantasySlugIndexRouteImport } from './routes/fantasy/$slug/index'
 import { Route as EventsYearSlugIndexRouteImport } from './routes/events/$yearSlug/index'
 import { Route as ShowsSlugSeasonRouteImport } from './routes/shows/$slug.$season'
 import { Route as ShopGroupStoreIdRouteImport } from './routes/shop/group/$storeId'
 import { Route as ShopCategoryCatRouteImport } from './routes/shop/category/$cat'
+import { Route as FantasyJoinTokenRouteImport } from './routes/fantasy/join/$token'
+import { Route as FantasySlugStandingsRouteImport } from './routes/fantasy/$slug/standings'
+import { Route as FantasySlugQuizRouteImport } from './routes/fantasy/$slug/quiz'
+import { Route as FantasySlugDraftRouteImport } from './routes/fantasy/$slug/draft'
 import { Route as CorpsSlugChar123SeasonChar125RouteImport } from './routes/corps/$slug.{-$season}'
 import { Route as EventsYearSlugSlugPredictionRouteImport } from './routes/events/$yearSlug/$slug/prediction'
 import { ServerRoute as SitemapDotxmlServerRouteImport } from './routes/sitemap[.]xml'
@@ -41,7 +50,11 @@ import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]
 import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[.]ico'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
 import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
+import { ServerRoute as ApiFantasyMediaIdServerRouteImport } from './routes/api/fantasy-media/$id'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
+import { ServerRoute as ApiFantasyJobsRecomputeServerRouteImport } from './routes/api/fantasy/jobs/recompute'
+import { ServerRoute as ApiFantasyJobsDispatchServerRouteImport } from './routes/api/fantasy/jobs/dispatch'
+import { ServerRoute as ApiFantasyDraftLeagueIdStreamServerRouteImport } from './routes/api/fantasy/draft/$leagueId/stream'
 
 const rootServerRouteImport = createServerRootRoute()
 
@@ -80,6 +93,11 @@ const JudgesIndexRoute = JudgesIndexRouteImport.update({
   path: '/judges/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FantasyIndexRoute = FantasyIndexRouteImport.update({
+  id: '/fantasy/',
+  path: '/fantasy/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsIndexRoute = EventsIndexRouteImport.update({
   id: '/events/',
   path: '/events/',
@@ -88,6 +106,11 @@ const EventsIndexRoute = EventsIndexRouteImport.update({
 const CorpsIndexRoute = CorpsIndexRouteImport.update({
   id: '/corps/',
   path: '/corps/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StaffPersonIdRoute = StaffPersonIdRouteImport.update({
@@ -130,6 +153,16 @@ const JudgesJudgeIdRoute = JudgesJudgeIdRouteImport.update({
   path: '/judges/$judgeId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FantasyQuizAdminRoute = FantasyQuizAdminRouteImport.update({
+  id: '/fantasy/quiz-admin',
+  path: '/fantasy/quiz-admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FantasyCreateRoute = FantasyCreateRouteImport.update({
+  id: '/fantasy/create',
+  path: '/fantasy/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevFreeFormSpikeRoute = DevFreeFormSpikeRouteImport.update({
   id: '/dev/free-form-spike',
   path: '/dev/free-form-spike',
@@ -138,6 +171,11 @@ const DevFreeFormSpikeRoute = DevFreeFormSpikeRouteImport.update({
 const AdminCorpsColorsRoute = AdminCorpsColorsRouteImport.update({
   id: '/admin/corps-colors',
   path: '/admin/corps-colors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FantasySlugIndexRoute = FantasySlugIndexRouteImport.update({
+  id: '/fantasy/$slug/',
+  path: '/fantasy/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsYearSlugIndexRoute = EventsYearSlugIndexRouteImport.update({
@@ -158,6 +196,26 @@ const ShopGroupStoreIdRoute = ShopGroupStoreIdRouteImport.update({
 const ShopCategoryCatRoute = ShopCategoryCatRouteImport.update({
   id: '/shop/category/$cat',
   path: '/shop/category/$cat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FantasyJoinTokenRoute = FantasyJoinTokenRouteImport.update({
+  id: '/fantasy/join/$token',
+  path: '/fantasy/join/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FantasySlugStandingsRoute = FantasySlugStandingsRouteImport.update({
+  id: '/fantasy/$slug/standings',
+  path: '/fantasy/$slug/standings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FantasySlugQuizRoute = FantasySlugQuizRouteImport.update({
+  id: '/fantasy/$slug/quiz',
+  path: '/fantasy/$slug/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FantasySlugDraftRoute = FantasySlugDraftRouteImport.update({
+  id: '/fantasy/$slug/draft',
+  path: '/fantasy/$slug/draft',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CorpsSlugChar123SeasonChar125Route =
@@ -197,11 +255,34 @@ const ApiShowMediaIdServerRoute = ApiShowMediaIdServerRouteImport.update({
   path: '/api/show-media/$id',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiFantasyMediaIdServerRoute = ApiFantasyMediaIdServerRouteImport.update({
+  id: '/api/fantasy-media/$id',
+  path: '/api/fantasy-media/$id',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiFantasyJobsRecomputeServerRoute =
+  ApiFantasyJobsRecomputeServerRouteImport.update({
+    id: '/api/fantasy/jobs/recompute',
+    path: '/api/fantasy/jobs/recompute',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiFantasyJobsDispatchServerRoute =
+  ApiFantasyJobsDispatchServerRouteImport.update({
+    id: '/api/fantasy/jobs/dispatch',
+    path: '/api/fantasy/jobs/dispatch',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiFantasyDraftLeagueIdStreamServerRoute =
+  ApiFantasyDraftLeagueIdStreamServerRouteImport.update({
+    id: '/api/fantasy/draft/$leagueId/stream',
+    path: '/api/fantasy/draft/$leagueId/stream',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -209,6 +290,8 @@ export interface FileRoutesByFullPath {
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
+  '/fantasy/create': typeof FantasyCreateRoute
+  '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -217,17 +300,24 @@ export interface FileRoutesByFullPath {
   '/shop/cart': typeof ShopCartRoute
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
+  '/admin': typeof AdminIndexRoute
   '/corps': typeof CorpsIndexRoute
   '/events': typeof EventsIndexRoute
+  '/fantasy': typeof FantasyIndexRoute
   '/judges': typeof JudgesIndexRoute
   '/merch': typeof MerchIndexRoute
   '/shop': typeof ShopIndexRoute
   '/staff': typeof StaffIndexRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
+  '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
+  '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
+  '/fantasy/$slug/standings': typeof FantasySlugStandingsRoute
+  '/fantasy/join/$token': typeof FantasyJoinTokenRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
   '/events/$yearSlug': typeof EventsYearSlugIndexRoute
+  '/fantasy/$slug': typeof FantasySlugIndexRoute
   '/events/$yearSlug/$slug/prediction': typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileRoutesByTo {
@@ -236,6 +326,8 @@ export interface FileRoutesByTo {
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
+  '/fantasy/create': typeof FantasyCreateRoute
+  '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -244,17 +336,24 @@ export interface FileRoutesByTo {
   '/shop/cart': typeof ShopCartRoute
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
+  '/admin': typeof AdminIndexRoute
   '/corps': typeof CorpsIndexRoute
   '/events': typeof EventsIndexRoute
+  '/fantasy': typeof FantasyIndexRoute
   '/judges': typeof JudgesIndexRoute
   '/merch': typeof MerchIndexRoute
   '/shop': typeof ShopIndexRoute
   '/staff': typeof StaffIndexRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
+  '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
+  '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
+  '/fantasy/$slug/standings': typeof FantasySlugStandingsRoute
+  '/fantasy/join/$token': typeof FantasyJoinTokenRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
   '/events/$yearSlug': typeof EventsYearSlugIndexRoute
+  '/fantasy/$slug': typeof FantasySlugIndexRoute
   '/events/$yearSlug/$slug/prediction': typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileRoutesById {
@@ -264,6 +363,8 @@ export interface FileRoutesById {
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
+  '/fantasy/create': typeof FantasyCreateRoute
+  '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -272,17 +373,24 @@ export interface FileRoutesById {
   '/shop/cart': typeof ShopCartRoute
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/corps/': typeof CorpsIndexRoute
   '/events/': typeof EventsIndexRoute
+  '/fantasy/': typeof FantasyIndexRoute
   '/judges/': typeof JudgesIndexRoute
   '/merch/': typeof MerchIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/staff/': typeof StaffIndexRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
+  '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
+  '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
+  '/fantasy/$slug/standings': typeof FantasySlugStandingsRoute
+  '/fantasy/join/$token': typeof FantasyJoinTokenRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
   '/events/$yearSlug/': typeof EventsYearSlugIndexRoute
+  '/fantasy/$slug/': typeof FantasySlugIndexRoute
   '/events/$yearSlug/$slug/prediction': typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileRouteTypes {
@@ -293,6 +401,8 @@ export interface FileRouteTypes {
     | '/terms-of-service'
     | '/admin/corps-colors'
     | '/dev/free-form-spike'
+    | '/fantasy/create'
+    | '/fantasy/quiz-admin'
     | '/judges/$judgeId'
     | '/merch/$'
     | '/shop/$productId'
@@ -301,17 +411,24 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/stores'
     | '/staff/$personId'
+    | '/admin'
     | '/corps'
     | '/events'
+    | '/fantasy'
     | '/judges'
     | '/merch'
     | '/shop'
     | '/staff'
     | '/corps/$slug/{-$season}'
+    | '/fantasy/$slug/draft'
+    | '/fantasy/$slug/quiz'
+    | '/fantasy/$slug/standings'
+    | '/fantasy/join/$token'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
     | '/events/$yearSlug'
+    | '/fantasy/$slug'
     | '/events/$yearSlug/$slug/prediction'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -320,6 +437,8 @@ export interface FileRouteTypes {
     | '/terms-of-service'
     | '/admin/corps-colors'
     | '/dev/free-form-spike'
+    | '/fantasy/create'
+    | '/fantasy/quiz-admin'
     | '/judges/$judgeId'
     | '/merch/$'
     | '/shop/$productId'
@@ -328,17 +447,24 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/stores'
     | '/staff/$personId'
+    | '/admin'
     | '/corps'
     | '/events'
+    | '/fantasy'
     | '/judges'
     | '/merch'
     | '/shop'
     | '/staff'
     | '/corps/$slug/{-$season}'
+    | '/fantasy/$slug/draft'
+    | '/fantasy/$slug/quiz'
+    | '/fantasy/$slug/standings'
+    | '/fantasy/join/$token'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
     | '/events/$yearSlug'
+    | '/fantasy/$slug'
     | '/events/$yearSlug/$slug/prediction'
   id:
     | '__root__'
@@ -347,6 +473,8 @@ export interface FileRouteTypes {
     | '/terms-of-service'
     | '/admin/corps-colors'
     | '/dev/free-form-spike'
+    | '/fantasy/create'
+    | '/fantasy/quiz-admin'
     | '/judges/$judgeId'
     | '/merch/$'
     | '/shop/$productId'
@@ -355,17 +483,24 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/stores'
     | '/staff/$personId'
+    | '/admin/'
     | '/corps/'
     | '/events/'
+    | '/fantasy/'
     | '/judges/'
     | '/merch/'
     | '/shop/'
     | '/staff/'
     | '/corps/$slug/{-$season}'
+    | '/fantasy/$slug/draft'
+    | '/fantasy/$slug/quiz'
+    | '/fantasy/$slug/standings'
+    | '/fantasy/join/$token'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
     | '/events/$yearSlug/'
+    | '/fantasy/$slug/'
     | '/events/$yearSlug/$slug/prediction'
   fileRoutesById: FileRoutesById
 }
@@ -375,6 +510,8 @@ export interface RootRouteChildren {
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
   DevFreeFormSpikeRoute: typeof DevFreeFormSpikeRoute
+  FantasyCreateRoute: typeof FantasyCreateRoute
+  FantasyQuizAdminRoute: typeof FantasyQuizAdminRoute
   JudgesJudgeIdRoute: typeof JudgesJudgeIdRoute
   MerchSplatRoute: typeof MerchSplatRoute
   ShopProductIdRoute: typeof ShopProductIdRoute
@@ -383,17 +520,24 @@ export interface RootRouteChildren {
   ShopCartRoute: typeof ShopCartRoute
   ShopStoresRoute: typeof ShopStoresRoute
   StaffPersonIdRoute: typeof StaffPersonIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   CorpsIndexRoute: typeof CorpsIndexRoute
   EventsIndexRoute: typeof EventsIndexRoute
+  FantasyIndexRoute: typeof FantasyIndexRoute
   JudgesIndexRoute: typeof JudgesIndexRoute
   MerchIndexRoute: typeof MerchIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
   StaffIndexRoute: typeof StaffIndexRoute
   CorpsSlugChar123SeasonChar125Route: typeof CorpsSlugChar123SeasonChar125Route
+  FantasySlugDraftRoute: typeof FantasySlugDraftRoute
+  FantasySlugQuizRoute: typeof FantasySlugQuizRoute
+  FantasySlugStandingsRoute: typeof FantasySlugStandingsRoute
+  FantasyJoinTokenRoute: typeof FantasyJoinTokenRoute
   ShopCategoryCatRoute: typeof ShopCategoryCatRoute
   ShopGroupStoreIdRoute: typeof ShopGroupStoreIdRoute
   ShowsSlugSeasonRoute: typeof ShowsSlugSeasonRoute
   EventsYearSlugIndexRoute: typeof EventsYearSlugIndexRoute
+  FantasySlugIndexRoute: typeof FantasySlugIndexRoute
   EventsYearSlugSlugPredictionRoute: typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileServerRoutesByFullPath {
@@ -402,7 +546,11 @@ export interface FileServerRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
+  '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
+  '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
 }
 export interface FileServerRoutesByTo {
   '/favicon.ico': typeof FaviconDoticoServerRoute
@@ -410,7 +558,11 @@ export interface FileServerRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
+  '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
+  '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
@@ -419,7 +571,11 @@ export interface FileServerRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
+  '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
+  '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
@@ -429,7 +585,11 @@ export interface FileServerRouteTypes {
     | '/sitemap.xml'
     | '/api/media'
     | '/api/auth/$'
+    | '/api/fantasy-media/$id'
     | '/api/show-media/$id'
+    | '/api/fantasy/jobs/dispatch'
+    | '/api/fantasy/jobs/recompute'
+    | '/api/fantasy/draft/$leagueId/stream'
   fileServerRoutesByTo: FileServerRoutesByTo
   to:
     | '/favicon.ico'
@@ -437,7 +597,11 @@ export interface FileServerRouteTypes {
     | '/sitemap.xml'
     | '/api/media'
     | '/api/auth/$'
+    | '/api/fantasy-media/$id'
     | '/api/show-media/$id'
+    | '/api/fantasy/jobs/dispatch'
+    | '/api/fantasy/jobs/recompute'
+    | '/api/fantasy/draft/$leagueId/stream'
   id:
     | '__root__'
     | '/favicon.ico'
@@ -445,7 +609,11 @@ export interface FileServerRouteTypes {
     | '/sitemap.xml'
     | '/api/media'
     | '/api/auth/$'
+    | '/api/fantasy-media/$id'
     | '/api/show-media/$id'
+    | '/api/fantasy/jobs/dispatch'
+    | '/api/fantasy/jobs/recompute'
+    | '/api/fantasy/draft/$leagueId/stream'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
@@ -454,7 +622,11 @@ export interface RootServerRouteChildren {
   SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
   ApiMediaServerRoute: typeof ApiMediaServerRoute
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
+  ApiFantasyMediaIdServerRoute: typeof ApiFantasyMediaIdServerRoute
   ApiShowMediaIdServerRoute: typeof ApiShowMediaIdServerRoute
+  ApiFantasyJobsDispatchServerRoute: typeof ApiFantasyJobsDispatchServerRoute
+  ApiFantasyJobsRecomputeServerRoute: typeof ApiFantasyJobsRecomputeServerRoute
+  ApiFantasyDraftLeagueIdStreamServerRoute: typeof ApiFantasyDraftLeagueIdStreamServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -508,6 +680,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JudgesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fantasy/': {
+      id: '/fantasy/'
+      path: '/fantasy'
+      fullPath: '/fantasy'
+      preLoaderRoute: typeof FantasyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events/': {
       id: '/events/'
       path: '/events'
@@ -520,6 +699,13 @@ declare module '@tanstack/react-router' {
       path: '/corps'
       fullPath: '/corps'
       preLoaderRoute: typeof CorpsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/staff/$personId': {
@@ -578,6 +764,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JudgesJudgeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fantasy/quiz-admin': {
+      id: '/fantasy/quiz-admin'
+      path: '/fantasy/quiz-admin'
+      fullPath: '/fantasy/quiz-admin'
+      preLoaderRoute: typeof FantasyQuizAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fantasy/create': {
+      id: '/fantasy/create'
+      path: '/fantasy/create'
+      fullPath: '/fantasy/create'
+      preLoaderRoute: typeof FantasyCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/free-form-spike': {
       id: '/dev/free-form-spike'
       path: '/dev/free-form-spike'
@@ -590,6 +790,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/corps-colors'
       fullPath: '/admin/corps-colors'
       preLoaderRoute: typeof AdminCorpsColorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fantasy/$slug/': {
+      id: '/fantasy/$slug/'
+      path: '/fantasy/$slug'
+      fullPath: '/fantasy/$slug'
+      preLoaderRoute: typeof FantasySlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events/$yearSlug/': {
@@ -618,6 +825,34 @@ declare module '@tanstack/react-router' {
       path: '/shop/category/$cat'
       fullPath: '/shop/category/$cat'
       preLoaderRoute: typeof ShopCategoryCatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fantasy/join/$token': {
+      id: '/fantasy/join/$token'
+      path: '/fantasy/join/$token'
+      fullPath: '/fantasy/join/$token'
+      preLoaderRoute: typeof FantasyJoinTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fantasy/$slug/standings': {
+      id: '/fantasy/$slug/standings'
+      path: '/fantasy/$slug/standings'
+      fullPath: '/fantasy/$slug/standings'
+      preLoaderRoute: typeof FantasySlugStandingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fantasy/$slug/quiz': {
+      id: '/fantasy/$slug/quiz'
+      path: '/fantasy/$slug/quiz'
+      fullPath: '/fantasy/$slug/quiz'
+      preLoaderRoute: typeof FantasySlugQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fantasy/$slug/draft': {
+      id: '/fantasy/$slug/draft'
+      path: '/fantasy/$slug/draft'
+      fullPath: '/fantasy/$slug/draft'
+      preLoaderRoute: typeof FantasySlugDraftRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/corps/$slug/{-$season}': {
@@ -673,11 +908,39 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiShowMediaIdServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/fantasy-media/$id': {
+      id: '/api/fantasy-media/$id'
+      path: '/api/fantasy-media/$id'
+      fullPath: '/api/fantasy-media/$id'
+      preLoaderRoute: typeof ApiFantasyMediaIdServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/fantasy/jobs/recompute': {
+      id: '/api/fantasy/jobs/recompute'
+      path: '/api/fantasy/jobs/recompute'
+      fullPath: '/api/fantasy/jobs/recompute'
+      preLoaderRoute: typeof ApiFantasyJobsRecomputeServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/fantasy/jobs/dispatch': {
+      id: '/api/fantasy/jobs/dispatch'
+      path: '/api/fantasy/jobs/dispatch'
+      fullPath: '/api/fantasy/jobs/dispatch'
+      preLoaderRoute: typeof ApiFantasyJobsDispatchServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/fantasy/draft/$leagueId/stream': {
+      id: '/api/fantasy/draft/$leagueId/stream'
+      path: '/api/fantasy/draft/$leagueId/stream'
+      fullPath: '/api/fantasy/draft/$leagueId/stream'
+      preLoaderRoute: typeof ApiFantasyDraftLeagueIdStreamServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
   }
@@ -689,6 +952,8 @@ const rootRouteChildren: RootRouteChildren = {
   TermsOfServiceRoute: TermsOfServiceRoute,
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
   DevFreeFormSpikeRoute: DevFreeFormSpikeRoute,
+  FantasyCreateRoute: FantasyCreateRoute,
+  FantasyQuizAdminRoute: FantasyQuizAdminRoute,
   JudgesJudgeIdRoute: JudgesJudgeIdRoute,
   MerchSplatRoute: MerchSplatRoute,
   ShopProductIdRoute: ShopProductIdRoute,
@@ -697,17 +962,24 @@ const rootRouteChildren: RootRouteChildren = {
   ShopCartRoute: ShopCartRoute,
   ShopStoresRoute: ShopStoresRoute,
   StaffPersonIdRoute: StaffPersonIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
   CorpsIndexRoute: CorpsIndexRoute,
   EventsIndexRoute: EventsIndexRoute,
+  FantasyIndexRoute: FantasyIndexRoute,
   JudgesIndexRoute: JudgesIndexRoute,
   MerchIndexRoute: MerchIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
   StaffIndexRoute: StaffIndexRoute,
   CorpsSlugChar123SeasonChar125Route: CorpsSlugChar123SeasonChar125Route,
+  FantasySlugDraftRoute: FantasySlugDraftRoute,
+  FantasySlugQuizRoute: FantasySlugQuizRoute,
+  FantasySlugStandingsRoute: FantasySlugStandingsRoute,
+  FantasyJoinTokenRoute: FantasyJoinTokenRoute,
   ShopCategoryCatRoute: ShopCategoryCatRoute,
   ShopGroupStoreIdRoute: ShopGroupStoreIdRoute,
   ShowsSlugSeasonRoute: ShowsSlugSeasonRoute,
   EventsYearSlugIndexRoute: EventsYearSlugIndexRoute,
+  FantasySlugIndexRoute: FantasySlugIndexRoute,
   EventsYearSlugSlugPredictionRoute: EventsYearSlugSlugPredictionRoute,
 }
 export const routeTree = rootRouteImport
@@ -719,7 +991,12 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
   ApiMediaServerRoute: ApiMediaServerRoute,
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
+  ApiFantasyMediaIdServerRoute: ApiFantasyMediaIdServerRoute,
   ApiShowMediaIdServerRoute: ApiShowMediaIdServerRoute,
+  ApiFantasyJobsDispatchServerRoute: ApiFantasyJobsDispatchServerRoute,
+  ApiFantasyJobsRecomputeServerRoute: ApiFantasyJobsRecomputeServerRoute,
+  ApiFantasyDraftLeagueIdStreamServerRoute:
+    ApiFantasyDraftLeagueIdStreamServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)
