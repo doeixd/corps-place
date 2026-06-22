@@ -85,11 +85,18 @@ export function FavoriteCorpsButton({
             }}
             style={{ ...inlineFav, ...hoverAccent }}
             className={cn(
-              'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border',
+              'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border transition-colors',
               showLabel ? 'px-3 py-2 text-sm font-medium' : sizeTw,
               isFav
                 ? 'border-(--btn-accent)/60 bg-(--btn-accent)/10 text-(--btn-accent)'
-                : 'border-transparent text-text-muted hover:border-(--btn-hover)/40 hover:text-(--btn-hover)',
+                : // Labelled variant reads as a proper button (resting border);
+                  // the icon-only card variant stays a ghost heart.
+                  cn(
+                    showLabel
+                      ? 'border-border text-text-secondary'
+                      : 'border-transparent text-text-muted',
+                    'hover:border-(--btn-hover)/40 hover:text-(--btn-hover)'
+                  ),
               className
             )}
           />

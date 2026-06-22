@@ -284,19 +284,26 @@ function CorpsDetailPage() {
                   </span>
                 </Show>
               </div>
-              <FavoriteCorpsButton corps={toFavoriteInput(corps)} size="lg" showLabel />
-              <Show when={showForSeason}>
-                {(show) => (
-                  <Link
-                    to="/shows/$slug/$season"
-                    params={{ slug, season: activeSeason }}
-                    className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm text-text-secondary transition-colors hover:border-primary/60 hover:text-foreground"
-                  >
-                    <Icon icon={BookOpen01Icon} size="sm" />
-                    {activeSeason} show: {show.title}
-                  </Link>
-                )}
-              </Show>
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <FavoriteCorpsButton
+                  corps={toFavoriteInput(corps)}
+                  size="md"
+                  showLabel
+                  className="h-9"
+                />
+                <Show when={showForSeason}>
+                  {(show) => (
+                    <Link
+                      to="/shows/$slug/$season"
+                      params={{ slug, season: activeSeason }}
+                      className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border px-3 text-sm font-medium text-text-secondary transition-colors hover:border-primary/60 hover:text-foreground"
+                    >
+                      <Icon icon={BookOpen01Icon} size="md" />
+                      {activeSeason} show: {show.title}
+                    </Link>
+                  )}
+                </Show>
+              </div>
             </div>
           </div>
 
