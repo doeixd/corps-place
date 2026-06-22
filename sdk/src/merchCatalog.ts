@@ -1050,8 +1050,12 @@ const productFromHtml = (
     const m = priceText.match(/\$\s?([0-9]+\.[0-9]{2})\b/);
     const price = m ? Number(m[1]) : null;
     const onProductUrl = PRODUCT_URL_RE.test(pageUrl);
-    // Reject non-product pages: no price AND (not a product URL, or no image).
-    if (price === null && !(onProductUrl && image)) return null;
+    const isProductDetail = PRODUCT_PAGE_RE.test(pageUrl);
+    // Accept only with real product signal: an IMAGE on a product-ish URL, or a
+    // PRICE on an actual product-detail URL (`/product/<slug>`). This rejects shop
+    // landing / category index pages (`/shop/`, `/shop/category/x`) that merely
+    // surface a price range, plus bare marketing/blog pages with neither.
+    if (!(image && onProductUrl) && !(price !== null && isProductDetail)) return null;
     return {
       externalId: pageUrl,
       title: h1,
