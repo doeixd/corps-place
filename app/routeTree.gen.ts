@@ -34,6 +34,7 @@ import { Route as FantasyQuizAdminRouteImport } from './routes/fantasy/quiz-admi
 import { Route as FantasyCreateRouteImport } from './routes/fantasy/create'
 import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spike'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
+import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as FantasySlugIndexRouteImport } from './routes/fantasy/$slug/index'
 import { Route as EventsYearSlugIndexRouteImport } from './routes/events/$yearSlug/index'
 import { Route as ShowsSlugSeasonRouteImport } from './routes/shows/$slug.$season'
@@ -50,6 +51,7 @@ import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]
 import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[.]ico'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
 import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
+import { ServerRoute as ApiFantasyStripeWebhookServerRouteImport } from './routes/api/fantasy/stripe-webhook'
 import { ServerRoute as ApiFantasyMediaIdServerRouteImport } from './routes/api/fantasy-media/$id'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
 import { ServerRoute as ApiFantasyJobsRecomputeServerRouteImport } from './routes/api/fantasy/jobs/recompute'
@@ -173,6 +175,11 @@ const AdminCorpsColorsRoute = AdminCorpsColorsRouteImport.update({
   path: '/admin/corps-colors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminContentRoute = AdminContentRouteImport.update({
+  id: '/admin/content',
+  path: '/admin/content',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FantasySlugIndexRoute = FantasySlugIndexRouteImport.update({
   id: '/fantasy/$slug/',
   path: '/fantasy/$slug/',
@@ -255,6 +262,12 @@ const ApiShowMediaIdServerRoute = ApiShowMediaIdServerRouteImport.update({
   path: '/api/show-media/$id',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiFantasyStripeWebhookServerRoute =
+  ApiFantasyStripeWebhookServerRouteImport.update({
+    id: '/api/fantasy/stripe-webhook',
+    path: '/api/fantasy/stripe-webhook',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
 const ApiFantasyMediaIdServerRoute = ApiFantasyMediaIdServerRouteImport.update({
   id: '/api/fantasy-media/$id',
   path: '/api/fantasy-media/$id',
@@ -288,6 +301,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -324,6 +338,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -361,6 +376,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -399,6 +415,7 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/admin/content'
     | '/admin/corps-colors'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -435,6 +452,7 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/admin/content'
     | '/admin/corps-colors'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -471,6 +489,7 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/admin/content'
     | '/admin/corps-colors'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -508,6 +527,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
+  AdminContentRoute: typeof AdminContentRoute
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
   DevFreeFormSpikeRoute: typeof DevFreeFormSpikeRoute
   FantasyCreateRoute: typeof FantasyCreateRoute
@@ -547,6 +567,7 @@ export interface FileServerRoutesByFullPath {
   '/api/media': typeof ApiMediaServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
+  '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
@@ -559,6 +580,7 @@ export interface FileServerRoutesByTo {
   '/api/media': typeof ApiMediaServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
+  '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
@@ -572,6 +594,7 @@ export interface FileServerRoutesById {
   '/api/media': typeof ApiMediaServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
+  '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
@@ -586,6 +609,7 @@ export interface FileServerRouteTypes {
     | '/api/media'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
+    | '/api/fantasy/stripe-webhook'
     | '/api/show-media/$id'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
@@ -598,6 +622,7 @@ export interface FileServerRouteTypes {
     | '/api/media'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
+    | '/api/fantasy/stripe-webhook'
     | '/api/show-media/$id'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
@@ -610,6 +635,7 @@ export interface FileServerRouteTypes {
     | '/api/media'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
+    | '/api/fantasy/stripe-webhook'
     | '/api/show-media/$id'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
@@ -623,6 +649,7 @@ export interface RootServerRouteChildren {
   ApiMediaServerRoute: typeof ApiMediaServerRoute
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
   ApiFantasyMediaIdServerRoute: typeof ApiFantasyMediaIdServerRoute
+  ApiFantasyStripeWebhookServerRoute: typeof ApiFantasyStripeWebhookServerRoute
   ApiShowMediaIdServerRoute: typeof ApiShowMediaIdServerRoute
   ApiFantasyJobsDispatchServerRoute: typeof ApiFantasyJobsDispatchServerRoute
   ApiFantasyJobsRecomputeServerRoute: typeof ApiFantasyJobsRecomputeServerRoute
@@ -792,6 +819,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCorpsColorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/content': {
+      id: '/admin/content'
+      path: '/admin/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fantasy/$slug/': {
       id: '/fantasy/$slug/'
       path: '/fantasy/$slug'
@@ -908,6 +942,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiShowMediaIdServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/fantasy/stripe-webhook': {
+      id: '/api/fantasy/stripe-webhook'
+      path: '/api/fantasy/stripe-webhook'
+      fullPath: '/api/fantasy/stripe-webhook'
+      preLoaderRoute: typeof ApiFantasyStripeWebhookServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/fantasy-media/$id': {
       id: '/api/fantasy-media/$id'
       path: '/api/fantasy-media/$id'
@@ -950,6 +991,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
+  AdminContentRoute: AdminContentRoute,
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
   DevFreeFormSpikeRoute: DevFreeFormSpikeRoute,
   FantasyCreateRoute: FantasyCreateRoute,
@@ -992,6 +1034,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ApiMediaServerRoute: ApiMediaServerRoute,
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
   ApiFantasyMediaIdServerRoute: ApiFantasyMediaIdServerRoute,
+  ApiFantasyStripeWebhookServerRoute: ApiFantasyStripeWebhookServerRoute,
   ApiShowMediaIdServerRoute: ApiShowMediaIdServerRoute,
   ApiFantasyJobsDispatchServerRoute: ApiFantasyJobsDispatchServerRoute,
   ApiFantasyJobsRecomputeServerRoute: ApiFantasyJobsRecomputeServerRoute,

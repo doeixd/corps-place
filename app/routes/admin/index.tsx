@@ -6,13 +6,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { requireAdminLoader } from '@/lib/admin-loader';
-import { AdminShell } from '@/components/admin/admin-shell';
+import { AdminPage } from '@/components/admin/admin-page';
 import { adminStatusMachine } from '@/machines/admin-status-machine';
 import { PageHeader } from '@/components/page-header';
-import { PageShell } from '@/components/page-shell';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { signIn, useSession } from '@/lib/auth-client';
 import { seoHead } from '@/lib/seo';
 
 export const Route = createFileRoute('/admin/')({
@@ -48,40 +45,7 @@ function StatCard({ title, rows }: { title: string; rows: [string, number | stri
 
 function AdminOverview() {
   const gate = Route.useLoaderData();
-  const { data: session } = useSession();
-
-  if (!gate.signedIn) {
-    return (
-      <PageShell>
-        <PageHeader title="Admin" subtitle="Operator console" />
-        <Card className="mx-auto mt-6 max-w-md">
-          <CardHeader>
-            <CardTitle>Sign in required</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3 text-sm text-text-secondary">
-            <p>
-              {session
-                ? 'Your account does not have access to this area.'
-                : 'Sign in with an authorized account to continue.'}
-            </p>
-            {!session ? (
-              <Button
-                onClick={() => void signIn.social({ provider: 'google', callbackURL: '/admin' })}
-              >
-                Continue with Google
-              </Button>
-            ) : null}
-          </CardContent>
-        </Card>
-      </PageShell>
-    );
-  }
-
-  return (
-    <AdminShell role={gate.actor.role}>
-      <Overview />
-    </AdminShell>
-  );
+  return <AdminPage gate={gate}>{() => <Overview />}</AdminPage>;
 }
 
 function Overview() {
