@@ -8,6 +8,7 @@ import { PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { StatusCard } from '@/components/status-card';
 import { Card, CardContent } from '@/components/ui/card';
+import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 
 // Person-slugs consolidated into a canonical person during identity resolution
 // (a merged-away staff_id slug, or an old wrong-merge person_id that no longer
@@ -31,6 +32,43 @@ export const Route = createFileRoute('/staff/$personId')({
         getStaffProfile({ data: params.personId })
       ),
     };
+  },
+  head: ({ loaderData }) => {
+    const d = loaderData;
+    if (!d) return {};
+    const p = d.profile;
+    if (!p) return {};
+    const corpsNames = [...new Set(p.groups.map((g) => g.corps_name))];
+    const span = p.seasons.length
+      ? p.seasons.length > 1
+        ? `${p.seasons[p.seasons.length - 1]}–${p.seasons[0]}`
+        : p.seasons[0]
+      : '';
+    return seoHead({
+      title: `${p.display_name} — Drum Corps Instructor`,
+      description: clampDescription(
+        p.biography,
+        `${p.display_name} has worked with ${corpsNames.length} drum corps${corpsNames.length ? `: ${corpsNames.slice(0, 3).join(', ')}${corpsNames.length > 3 ? ' and more' : ''}` : ''}${span ? ` (${span})` : ''}. Roles, bio and corps history on DrumCorps.app.`
+      ),
+      path: `/staff/${p.person_id}`,
+      image: p.photo_url ?? undefined,
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: p.display_name,
+          jobTitle: 'Drum Corps Instructor',
+          ...(p.photo_url ? { image: p.photo_url } : {}),
+          ...(p.biography ? { description: clampDescription(p.biography, p.display_name) } : {}),
+          url: `${SITE_URL}/staff/${p.person_id}`,
+        },
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Staff', path: '/staff' },
+          { name: p.display_name, path: `/staff/${p.person_id}` },
+        ]),
+      ],
+    });
   },
   staleTime: 60_000,
   component: StaffProfilePage,

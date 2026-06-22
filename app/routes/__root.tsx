@@ -15,6 +15,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { SiteNav } from '@/components/site-nav';
 import { THEME_STORAGE_KEY } from '@/stores/theme-store';
 import { FAVORITE_STORAGE_KEY } from '@/stores/favorite-corps-store';
+import { buildSeo } from '@/lib/seo';
 import '@/app.css';
 
 // Runs before paint to set `.dark` from storage / system preference, avoiding a
@@ -39,7 +40,9 @@ function RootDocument({ children }: { children: ReactNode }) {
         <link rel="icon" href="/logo.svg" type="image/svg+xml" data-app-icon="true" />
         <link rel="apple-touch-icon" href="/logo.svg" data-app-icon="true" />
         <meta name="theme-color" content="#0b0b0c" data-app-theme="true" />
-        <title>DrumCorps.app</title>
+        {/* No static <title> here — HeadContent renders the managed title from the
+            root head() default below, which each route's head() overrides (a static
+            JSX title would double up with the managed one). */}
         <script dangerouslySetInnerHTML={{ __html: noFlashThemeScript }} />
         <HeadContent />
       </head>
@@ -98,6 +101,14 @@ function ServiceWorkerManager() {
 }
 
 export const Route = createRootRoute({
+  // Default title + meta for any route without its own head() (error boundaries,
+  // redirect routes). Child route head()s override the title via HeadContent.
+  head: () =>
+    buildSeo({
+      title: 'DrumCorps.app — DCI Drum Corps Scores, Schedules & Predictions',
+      description:
+        'Live DCI drum corps scores, competition schedules, AI score predictions, judge & staff profiles, show programs, and official corps merch.',
+    }),
   component: () => (
     <RootDocument>
       <ServiceWorkerManager />

@@ -16,6 +16,7 @@ import { Icon } from '@/components/icon';
 import { Input } from '@/components/ui/input';
 import { Toggle } from '@/components/ui/toggle';
 import { Search01Icon, ViewIcon, ViewOffIcon } from '@/components/icons/generated';
+import { seoHead, breadcrumbLd } from '@/lib/seo';
 
 // Class filter chips. `value` is the URL-friendly key carried in the query
 // string and matches a DivisionCategory (plus 'all' and the derived 'alumni').
@@ -48,6 +49,22 @@ export const Route = createFileRoute('/corps/')({
   // Fetch server-side during navigation (and preload on intent). Cached so repeat
   // navigations render instantly from the router cache.
   loader: async () => ({ corps: await getCorpsDirectory() }),
+  head: ({ loaderData }) => {
+    const d = loaderData;
+    if (!d) return {};
+    const n = d.corps.length;
+    return seoHead({
+      title: 'Drum Corps Directory — DCI Corps, Scores & Shows',
+      description: `Browse ${n} drum corps — World Class, Open Class and all-age units — with scores, schedules, show programs, staff and merch on DrumCorps.app.`,
+      path: '/corps',
+      jsonLd: [
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Corps', path: '/corps' },
+        ]),
+      ],
+    });
+  },
   staleTime: 60_000,
   component: CorpsDirectory,
 });

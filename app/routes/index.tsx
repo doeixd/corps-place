@@ -11,6 +11,7 @@ import { LatestResultsPanel } from '@/components/latest-results';
 import { StandingsSnapshot } from '@/components/standings-snapshot';
 import { FeaturedPredictionPanel } from '@/components/featured-prediction';
 import { getHomePageData } from '@/lib/server-fns/home';
+import { seoHead, SITE_URL } from '@/lib/seo';
 import {
   ArrowRight02Icon,
   Calendar01Icon,
@@ -21,6 +22,36 @@ import {
 
 export const Route = createFileRoute('/')({
   loader: async () => getHomePageData(),
+  head: () =>
+    seoHead({
+      title: 'DrumCorps.app — DCI Drum Corps Scores, Schedules & Predictions',
+      description:
+        'Live DCI drum corps scores, competition schedules, AI score predictions, judge & staff profiles, show programs, and official corps merch — all in one place.',
+      path: '/',
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'DrumCorps.app',
+          url: SITE_URL,
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: {
+              '@type': 'EntryPoint',
+              urlTemplate: `${SITE_URL}/corps?q={search_term_string}`,
+            },
+            'query-input': 'required name=search_term_string',
+          },
+        },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: 'DrumCorps.app',
+          url: SITE_URL,
+          logo: `${SITE_URL}/logo.svg`,
+        },
+      ],
+    }),
   staleTime: 5 * 60_000,
   component: Home,
 });

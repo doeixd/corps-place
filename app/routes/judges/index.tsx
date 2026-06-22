@@ -21,6 +21,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { StaggeredGrid } from '@/components/staggered-grid';
 import { JudgeAvatarRing } from '@/components/judge-avatar-ring';
 import { ArrowDown01Icon, ArrowRight02Icon, Search01Icon } from '@/components/icons/generated';
+import { seoHead, breadcrumbLd } from '@/lib/seo';
 
 type JudgesSearch = { season?: string; q?: string; sort?: string; dir?: 'asc' };
 
@@ -37,6 +38,17 @@ export const Route = createFileRoute('/judges/')({
     return out;
   },
   loader: async () => ({ judges: await getJudgeDirectory() }),
+  head: ({ loaderData }) => {
+    const d = loaderData;
+    if (!d) return {};
+    const n = d.judges.length;
+    return seoHead({
+      title: 'DCI Judges Directory — Adjudicators & Caption Assignments',
+      description: `Browse ${n} DCI drum corps judges and adjudicators — caption assignments, scores given, and event history by season on DrumCorps.app.`,
+      path: '/judges',
+      jsonLd: [breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Judges', path: '/judges' }])],
+    });
+  },
   staleTime: 60_000,
   component: JudgesDirectory,
 });

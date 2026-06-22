@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { seoHead, breadcrumbLd } from '@/lib/seo';
 import { useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import { eventsCollection } from '@/db/collections';
@@ -40,6 +41,22 @@ export const Route = createFileRoute('/events/')({
     return out;
   },
   loader: async () => ({ events: await getHybridAllEvents() }),
+  head: ({ loaderData }) => {
+    const d = loaderData;
+    if (!d) return {};
+    const n = d.events.length;
+    return seoHead({
+      title: 'Drum Corps Competitions, Schedules & Scores',
+      description: `Browse ${n} DCI drum corps competitions — schedules, lineups, scores and AI predictions by season on DrumCorps.app.`,
+      path: '/events',
+      jsonLd: [
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Events', path: '/events' },
+        ]),
+      ],
+    });
+  },
   staleTime: 60_000,
   component: EventsDirectory,
 });

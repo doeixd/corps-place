@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 import { useMachine } from '@xstate/react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Show, For } from 'jotai-solid-api';
@@ -234,6 +235,51 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
     return wantFull
       ? loadDetailOrServer(`prediction-page/${yearSlug}/${slug}.json`, fromServer)
       : fromServer();
+  },
+  head: ({ loaderData, params }) => {
+    const d = loaderData as any;
+    if (!d) return {};
+    const e = d.event;
+    if (!e) return {};
+    const ename = e.event_name ?? e.name;
+    const loc = [e.location_city, e.location_state].filter(Boolean).join(', ');
+    const corpsCount = d.corps?.length ?? 0;
+    const place =
+      e.venue_name || loc
+        ? {
+            location: {
+              '@type': 'Place',
+              ...(e.venue_name ? { name: e.venue_name } : {}),
+              address: [e.venue_address, loc].filter(Boolean).join(', ') || undefined,
+            },
+          }
+        : {};
+    return seoHead({
+      title: `${ename} ${params.yearSlug} — Schedule, Scores & Predictions`,
+      description: clampDescription(
+        null,
+        `${ename} (${params.yearSlug})${loc ? ` in ${loc}` : ''}${corpsCount ? `, ${corpsCount} corps` : ''} — schedule, lineup, scores and AI score predictions on DrumCorps.app.`
+      ),
+      path: `/events/${params.yearSlug}/${params.slug}/prediction`,
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'Event',
+          name: `${ename} ${params.yearSlug}`,
+          ...(e.start_date ? { startDate: e.start_date } : {}),
+          url: `${SITE_URL}/events/${params.yearSlug}/${params.slug}/prediction`,
+          ...place,
+        },
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Events', path: '/events' },
+          {
+            name: `${ename} ${params.yearSlug}`,
+            path: `/events/${params.yearSlug}/${params.slug}/prediction`,
+          },
+        ]),
+      ],
+    });
   },
   staleTime: 30_000,
   component: PredictionPage,

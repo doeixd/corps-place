@@ -10,6 +10,7 @@ import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import { seoHead, breadcrumbLd } from '@/lib/seo';
 
 type StaffSearch = { q?: string; s?: number };
 
@@ -21,6 +22,17 @@ export const Route = createFileRoute('/staff/')({
     return out;
   },
   loader: async () => ({ staff: await getStaffDirectory() }),
+  head: ({ loaderData }) => {
+    const d = loaderData;
+    if (!d) return {};
+    const n = d.staff.length;
+    return seoHead({
+      title: 'Drum Corps Staff & Instructors Directory',
+      description: `Browse ${n} drum corps instructors, designers and directors — the people who teach DCI corps, with roles, corps history and bios on DrumCorps.app.`,
+      path: '/staff',
+      jsonLd: [breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Staff', path: '/staff' }])],
+    });
+  },
   staleTime: 60_000,
   component: StaffDirectory,
 });

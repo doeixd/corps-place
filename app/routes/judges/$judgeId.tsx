@@ -35,6 +35,7 @@ import {
   ViewIcon,
   ViewOffIcon as ViewGroupIcon,
 } from '@/components/icons/generated';
+import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 
 type GroupBy = 'show' | 'corps';
 
@@ -64,6 +65,43 @@ export const Route = createFileRoute('/judges/$judgeId')({
       getJudgeProfile({ data: params.judgeId })
     ),
   }),
+  head: ({ loaderData }) => {
+    const d = loaderData;
+    if (!d) return {};
+    const p = d.profile;
+    if (!p) return {};
+    const seasons = p.seasons;
+    const span = seasons.length
+      ? seasons.length > 1
+        ? `${seasons[seasons.length - 1]}–${seasons[0]}`
+        : seasons[0]
+      : '';
+    return seoHead({
+      title: `${p.display_name} — DCI Judge`,
+      description: clampDescription(
+        p.biography,
+        `${p.display_name} is a DCI drum corps judge with ${p.assignments.length} adjudication assignment${p.assignments.length === 1 ? '' : 's'}${span ? ` (${span})` : ''}. Captions, scores and event history on DrumCorps.app.`
+      ),
+      path: `/judges/${p.judge_id}`,
+      image: p.photo_url ?? undefined,
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: p.display_name,
+          jobTitle: 'Drum Corps Judge',
+          ...(p.photo_url ? { image: p.photo_url } : {}),
+          ...(p.biography ? { description: clampDescription(p.biography, p.display_name) } : {}),
+          url: `${SITE_URL}/judges/${p.judge_id}`,
+        },
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Judges', path: '/judges' },
+          { name: p.display_name, path: `/judges/${p.judge_id}` },
+        ]),
+      ],
+    });
+  },
   staleTime: 60_000,
   component: JudgeProfilePage,
 });

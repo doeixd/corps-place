@@ -60,3 +60,35 @@ export function clampDescription(text: string | null | undefined, fallback: stri
   if (!clean) return fallback;
   return clean.length > 160 ? `${clean.slice(0, 157)}…` : clean;
 }
+
+/** A `head()` script entry for a JSON-LD blob. */
+export function jsonLdScript(obj: object): { type: string; children: string } {
+  return { type: 'application/ld+json', children: JSON.stringify(obj) };
+}
+
+/** schema.org BreadcrumbList from a list of {name, path} (path is site-relative). */
+export function breadcrumbLd(items: { name: string; path: string }[]): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      item: `${SITE_URL}${it.path}`,
+    })),
+  };
+}
+
+/** buildSeo + optional JSON-LD blobs → a complete TanStack `head()` object
+ *  ({ meta, links, scripts }). Keeps each route's head() to one call. */
+export function seoHead(input: SeoInput & { jsonLd?: (object | null | undefined)[] }): {
+  meta: HeadMeta[];
+  links: { rel: string; href: string }[];
+  scripts?: { type: string; children: string }[];
+} {
+  const { jsonLd, ...seo } = input;
+  const base = buildSeo(seo);
+  const blobs = (jsonLd ?? []).filter((b): b is object => Boolean(b));
+  return blobs.length ? { ...base, scripts: blobs.map(jsonLdScript) } : base;
+}

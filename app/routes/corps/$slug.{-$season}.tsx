@@ -44,6 +44,7 @@ import {
   YoutubeIcon,
   GiftIcon,
 } from '@/components/icons/generated';
+import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 
 export const Route = createFileRoute('/corps/$slug/{-$season}')({
   // On client navigation, read the three static corps shards (CDN-cached, no
@@ -112,6 +113,60 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
       showForSeason,
       coverThumbDataUrl,
     };
+  },
+  head: ({ loaderData, params }) => {
+    const d = loaderData;
+    if (!d) return {};
+    const c = d.corps;
+    if (!c) return {};
+    const slug = c.slug ?? params.slug;
+    const where = c.display_city ? ` from ${c.display_city}` : '';
+    const div = c.division_name ? ` (${c.division_name})` : '';
+    const image = c.corps_photo ?? c.corps_logo ?? undefined;
+
+    const sameAs = [c.website, c.facebook, c.instagram, c.twitter, c.youtube].filter(
+      Boolean
+    ) as string[];
+
+    const musicGroup: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': 'MusicGroup',
+      name: c.name,
+      url: `${SITE_URL}/corps/${slug}`,
+    };
+    if (image) musicGroup.image = image;
+    if (c.corps_logo) musicGroup.logo = c.corps_logo;
+    if (c.about || c.description)
+      musicGroup.description = clampDescription(c.about ?? c.description, c.name);
+    if (sameAs.length > 0) musicGroup.sameAs = sameAs;
+    if (c.city || c.state)
+      musicGroup.location = {
+        '@type': 'Place',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: c.city ?? undefined,
+          addressRegion: c.state ?? undefined,
+          addressCountry: c.country ?? undefined,
+        },
+      };
+
+    return seoHead({
+      title: `${c.name} — Drum Corps${where}${div}`,
+      description: clampDescription(
+        c.about ?? c.description,
+        `${c.name}${where}: scores, schedules, show programs, staff history and official merch on DrumCorps.app.`
+      ),
+      path: `/corps/${slug}`,
+      image,
+      jsonLd: [
+        musicGroup,
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Corps', path: '/corps' },
+          { name: c.name, path: `/corps/${slug}` },
+        ]),
+      ],
+    });
   },
   staleTime: 60_000,
   component: CorpsDetailPage,

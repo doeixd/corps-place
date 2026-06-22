@@ -5,6 +5,7 @@ import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { StoreCard } from '@/components/merch/store-card';
 import type { MerchStoreSummary } from '@/lib/merch-types';
+import { seoHead, breadcrumbLd } from '@/lib/seo';
 
 export const Route = createFileRoute('/shop/stores')({
   loader: async () => ({
@@ -12,6 +13,21 @@ export const Route = createFileRoute('/shop/stores')({
       getMerchStores()
     ),
   }),
+  head: ({ loaderData }) => {
+    const d = loaderData;
+    if (!d) return {};
+    return seoHead({
+      title: 'Drum Corps Merch Stores — Shop by Corps',
+      description: `Browse official merch storefronts from ${d.stores.length} drum corps — shirts, hats, hoodies and gear, with prices and links on DrumCorps.app.`,
+      path: '/shop/stores',
+      jsonLd: [
+        breadcrumbLd([
+          { name: 'Shop', path: '/shop' },
+          { name: 'Stores', path: '/shop/stores' },
+        ]),
+      ],
+    });
+  },
   staleTime: 60_000,
   component: MerchStores,
 });
