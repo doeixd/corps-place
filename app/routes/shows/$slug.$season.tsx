@@ -7,6 +7,7 @@ import { fadeIn } from '@/lib/motion-variants';
 import { getCorps, getShowDetail } from '@/lib/server-fns/hybrid';
 import { getShowContributions, getShowHistory } from '@/lib/server-fns/contrib';
 import { UniformSection } from '@/components/contrib/uniform-section';
+import { CoverSection } from '@/components/contrib/cover-section';
 import {
   PropsSection,
   LinksSection,
@@ -17,7 +18,13 @@ import type { FreeFormDoc } from '@/lib/contrib/free-form';
 import { HistoryPanel } from '@/components/contrib/history-panel';
 import { ReferencesSection } from '@/components/contrib/references-section';
 import { listCitations } from '@/lib/server-fns/citations';
-import type { UniformInput, PropsInput, LinksInput, GalleryInput } from '@/lib/contrib/schemas';
+import type {
+  UniformInput,
+  PropsInput,
+  LinksInput,
+  GalleryInput,
+  CoverInput,
+} from '@/lib/contrib/schemas';
 import type { ShowDetail } from '@sdk/src/readModel/builders/shows.js';
 import { PageShell } from '@/components/page-shell';
 import { BackLink } from '@/components/back-link';
@@ -64,6 +71,7 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       props: blockContent<PropsInput>('props'),
       links: blockContent<LinksInput>('links'),
       gallery: blockContent<GalleryInput>('gallery'),
+      cover: blockContent<CoverInput>('cover'),
       about: blockContent<FreeFormDoc>('about'),
     };
     const history = corps?.corps_key
@@ -152,6 +160,9 @@ function ShowDetailPage() {
           initial={false}
           animate="visible"
         >
+          {/* Cover image (authored hero) */}
+          <CoverSection corpsKey={corps.corps_key} season={show.season} initial={authored.cover} />
+
           {/* Identity / header */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
             <CorpsLogo

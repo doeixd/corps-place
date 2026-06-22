@@ -56,6 +56,11 @@ export type SymbolismInput = v.InferOutput<typeof SymbolismInputSchema>;
 export const GalleryInputSchema = v.object({ items: v.array(MediaItem) });
 export type GalleryInput = v.InferOutput<typeof GalleryInputSchema>;
 
+// Cover image: a single uploaded image shown as the page hero (wiki plan §7.1
+// `media` cover; show_media.kind='cover'). Optional so an empty save clears it.
+export const CoverInputSchema = v.object({ image: v.optional(MediaItem) });
+export type CoverInput = v.InferOutput<typeof CoverInputSchema>;
+
 // The free-form "concept" essay — the editor-agnostic content envelope (plan §7.3).
 // `doc` is the editor-native state (opaque, size-bounded); never rendered as HTML
 // (I-14 — see lexical-render.tsx). `plain` is the flattened text for search/preview.
@@ -74,6 +79,7 @@ export const BLOCK_SCHEMAS = {
   links: LinksInputSchema,
   symbolism: SymbolismInputSchema,
   gallery: GalleryInputSchema,
+  cover: CoverInputSchema,
   about: AboutInputSchema,
 } as const;
 
