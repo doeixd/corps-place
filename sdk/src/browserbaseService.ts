@@ -51,11 +51,63 @@ const findLocalChrome = (): string | null => {
   return candidates.find((p) => existsSync(p)) ?? null;
 };
 
+/** Resolve a CDP base (e.g. http://localhost:9222) to its browser-level
+ *  webSocketDebuggerUrl, so puppeteer can connect to an already-running Chrome. */
+const resolveCdpWsEndpoint = async (base: string): Promise<string> => {
+  const root = base.replace(/\/+$/, '');
+  const res = await fetch(`${root}/json/version`, {
+    signal: AbortSignal.timeout(8000),
+  });
+  const info = (await res.json()) as { webSocketDebuggerUrl?: string };
+  if (!info.webSocketDebuggerUrl)
+    throw new Error(`no webSocketDebuggerUrl at ${root}/json/version`);
+  return info.webSocketDebuggerUrl;
+};
+
 export const BrowserbaseServiceLive = Layer.effect(
   BrowserbaseService,
   Effect.gen(function* () {
     const chromePath = findLocalChrome();
     const apiKey = process.env.BROWSERBASE_API_KEY;
+    // A remote DevTools endpoint (e.g. the home Chrome reached over the Tailscale
+    // reverse tunnel at http://localhost:9222). When set, rendering runs on THAT
+    // machine — keeping heavy Chromium off a memory-tight box — and uses a real
+    // desktop-Chrome fingerprint, which also clears bot walls that block our plain
+    // fetch. Tried FIRST, ahead of local Chromium. See docs: tailnet bridge.
+    const remoteCdpUrl = process.env.CHROME_CDP_URL || null;
+
+    // --- Remote Chrome over CDP (preferred when configured). ---
+    let remoteBrowser: Promise<Browser> | null = null;
+    const getRemote = (): Promise<Browser> => {
+      if (!remoteBrowser) {
+        remoteBrowser = resolveCdpWsEndpoint(remoteCdpUrl!)
+          .then((browserWSEndpoint) => puppeteer.connect({ browserWSEndpoint }))
+          .then((br) => {
+            // If the tunnel/Chrome drops, clear the cache so the next call retries.
+            br.on('disconnected', () => {
+              remoteBrowser = null;
+            });
+            return br;
+          })
+          .catch((e) => {
+            remoteBrowser = null;
+            throw e;
+          });
+      }
+      return remoteBrowser;
+    };
+    const renderRemote = async (url: string): Promise<string> => {
+      const browser = await getRemote();
+      // A fresh tab in the user's real Chrome; close the TAB only, never the browser.
+      const page = await browser.newPage();
+      try {
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: NAV_TIMEOUT_MS });
+        await settleForContent(page);
+        return await page.content();
+      } finally {
+        await page.close().catch(() => {});
+      }
+    };
 
     // --- Local Chromium (primary) — one shared browser, a page per fetch. ---
     let localBrowser: Promise<Browser> | null = null;
@@ -123,15 +175,34 @@ export const BrowserbaseServiceLive = Layer.effect(
       }
     };
 
-    yield* chromePath
-      ? Effect.logInfo(`[render] local Chromium → ${chromePath}${bb ? ' (Browserbase fallback ready)' : ''}`)
-      : bb
-        ? Effect.logInfo('[render] no local Chromium; using Browserbase cloud')
-        : Effect.logWarning('[render] no local Chromium and no Browserbase key — rendering disabled');
+    yield* remoteCdpUrl
+      ? Effect.logInfo(`[render] remote Chrome → ${remoteCdpUrl}${chromePath ? ' (local fallback)' : ''}`)
+      : chromePath
+        ? Effect.logInfo(`[render] local Chromium → ${chromePath}${bb ? ' (Browserbase fallback ready)' : ''}`)
+        : bb
+          ? Effect.logInfo('[render] no local Chromium; using Browserbase cloud')
+          : Effect.logWarning('[render] no local Chromium and no Browserbase key — rendering disabled');
 
     const fetchHtml = (url: string): Effect.Effect<string, DciNetworkError, never> =>
       Effect.gen(function* () {
-        // 1) Local Chromium first (free). On failure, fall through to the cloud.
+        // 0) Remote Chrome over the tunnel (keeps Chromium off this box). On
+        //    failure, fall through to local Chromium / cloud.
+        if (remoteCdpUrl) {
+          const remote = yield* Effect.tryPromise({
+            try: () => renderRemote(url),
+            catch: (cause) =>
+              new DciNetworkError({
+                message: `remote render failed for ${url}: ${String(cause)}`,
+                statusCode: 0,
+                cause,
+              }),
+          }).pipe(Effect.catch(() => Effect.succeed('')));
+          if (remote.trim().length > 0) {
+            yield* Effect.logInfo(`[render] remote ${url} — ${remote.length} chars`);
+            return remote;
+          }
+        }
+        // 1) Local Chromium (free). On failure, fall through to the cloud.
         if (chromePath) {
           const local = yield* Effect.tryPromise({
             try: () => renderLocal(url),
