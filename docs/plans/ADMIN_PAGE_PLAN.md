@@ -983,13 +983,19 @@ Committed on `feat/fantasy-dci` (route-independent foundation; fantasy work unto
 
 All typecheck-clean and formatted.
 
-### ⚠️ Blocker for the route files (needs an owner/dev session)
-`app/routes/admin/` is **root-owned** (`drwxr-sr-x`, group `corps-place` not writable),
-and the editing user is `patrick` — so new route files can't be created there nor can
-`corps-colors.tsx` be modified headlessly. **Fix once, as the dir owner/root:**
-`chmod -R g+w app/routes/admin` (or `chown` it to the dev user). Then add the route
-files below with the **dev server running** (`npm run dev`) so `routeTree.gen.ts`
-regenerates (it has `@ts-nocheck`; never hand-edit it).
+### ✅ Overview route landed (`6a31ee3`)
+- Resolved the dir-perms blocker via the **docker-group trick** (root-owned
+  `app/routes/admin/` → `docker run --rm -v …:/target alpine chown -R 1001:1001 /target`).
+- Created `app/routes/admin/index.tsx` (Appendix C) and regenerated `routeTree.gen.ts`
+  with `npx vite` ("Generated route tree in 1186ms" — vite then crashes on an
+  **ENOSPC fs.inotify watcher limit**, unrelated; the tree was already written).
+  `/admin/` is registered + typecheck-clean.
+- **Runtime smoke-test still pending:** a live `npm run dev` is blocked by that watcher
+  limit. Fix with `sudo sysctl fs.inotify.max_user_watches=524288` (or run vite with
+  `usePolling`) to click through `/admin` in a browser.
+- **corps-colors migration (Appendix D) deliberately deferred to M6.** Moving it off
+  the `isDev` gate would make it reachable in prod, where its direct `dci-relational.db`
+  write fails (§1.1). Keep it dev-only until its save is re-routed through the VM worker.
 
 ### Appendix C — `app/routes/admin/index.tsx` (Overview — ready to drop in)
 
