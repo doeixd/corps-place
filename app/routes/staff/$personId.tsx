@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { getStaffProfile } from '@/lib/server-fns/hybrid';
 import { loadDetailOrServer } from '@/db/detail-shard';
@@ -9,12 +9,29 @@ import { PageShell } from '@/components/page-shell';
 import { StatusCard } from '@/components/status-card';
 import { Card, CardContent } from '@/components/ui/card';
 
+// Person-slugs consolidated into a canonical person during identity resolution
+// (a merged-away staff_id slug, or an old wrong-merge person_id that no longer
+// exists). Redirect them so stale bookmarks / inbound links land on the live
+// profile instead of a "not found". Staff merges are manual and rare, so a
+// curated map is the simplest prod-safe mechanism — the read-model carries only
+// current person_ids, not their history. Add an entry whenever records are merged.
+const STAFF_REDIRECTS: Record<string, string> = {
+  'richard-valentin': 'ricardo-valentin',
+  'richard-valentin-tyler-wiernusz': 'ricardo-valentin',
+};
+
 export const Route = createFileRoute('/staff/$personId')({
-  loader: async ({ params }) => ({
-    profile: await loadDetailOrServer<StaffProfile | null>(`staff/${params.personId}.json`, () =>
-      getStaffProfile({ data: params.personId })
-    ),
-  }),
+  loader: async ({ params }) => {
+    const dest = STAFF_REDIRECTS[params.personId];
+    if (dest && dest !== params.personId) {
+      throw redirect({ to: '/staff/$personId', params: { personId: dest }, replace: true });
+    }
+    return {
+      profile: await loadDetailOrServer<StaffProfile | null>(`staff/${params.personId}.json`, () =>
+        getStaffProfile({ data: params.personId })
+      ),
+    };
+  },
   staleTime: 60_000,
   component: StaffProfilePage,
 });

@@ -2,45 +2,77 @@
 // logo palette, and favicon. Only one corps can be favorited at a time.
 import { useSyncExternalStore } from 'react';
 import { createStore } from '@xstate/store';
-import { corpsPalette, hexToOklch, FALLBACK_PRIMARY } from '@sdk/src/corpsColors.js';
+import { corpsPalette, hexToOklch, oklchToRgb, rgbToHex, FALLBACK_PRIMARY } from '@sdk/src/corpsColors.js';
 import type { CorpsBrandColors } from '@sdk/src/corpsColors.js';
 import { themeStore } from './theme-store';
 
 export const FAVORITE_STORAGE_KEY = 'corps-place-favorite-corps';
 const VERSION = 2;
 
-// ── Pure SVG favicon generator ────────────────────────────────────────────────
-// A simple mark generated from the corps palette so the no-flash script can set
-// it before React mounts. Renders as a stacked shape: an outer circle in the
-// primary accent, an inner cutout in the logo-dark (or soft tone when absent),
-// and a tiny highlight dot. No CSS variables — actual oklch() values are baked
-// in so it works inside an <img> / <link rel="icon"> context.
+// ── Favicon: the site logo, recolored to the corps's brand ────────────────────
+// The favicon IS the site logo (public/logo.svg), recolored exactly like the
+// on-page <Logo> does — the logo's 6 palette fills are the *defaults* of the
+// --logo-* CSS variables, and CSS re-derives those from --primary via relative
+// oklch (app.css §logo palette). We replicate those same formulas in JS and bake
+// the resulting hex values into the SVG, since a <link rel="icon"> data: URL has
+// no access to the page's CSS variables. The logo markup is fetched at runtime
+// (cached) rather than bundled, so its ~63 KB stays out of the JS.
 
-const FAVICON_SVG = (accent: string, accentFg: string, logoDark: string | null): string => {
-  // When no logoDark is available use a very low-L, low-C tone from the
-  // accent foreground so the inner shape stays soft rather than harsh black.
-  const inner = logoDark ?? colorMixOklch(accentFg, accent, 0.85);
-  return [
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">',
-    `<circle cx="32" cy="32" r="30" fill="${accent}"/>`,
-    `<circle cx="32" cy="32" r="14" fill="${inner}"/>`,
-    `<circle cx="22" cy="24" r="4" fill="${accentFg}" opacity=".55"/>`,
-    '</svg>',
-  ].join('');
+// The default fills baked into public/logo.svg, paired with the relative-oklch
+// derivation each one gets from --primary. Keep in sync with app.css §logo.
+type Lch = { l: number; c: number; h: number };
+const LOGO_FILLS: { hex: string; derive: (p: Lch) => Lch }[] = [
+  { hex: '#feb403', derive: (p) => ({ l: 0.72, c: p.c, h: p.h + 12 }) }, // --logo-accent
+  { hex: '#fd5007', derive: (p) => ({ l: p.l + 0.02, c: p.c * 1.15, h: p.h }) }, // --logo-accent-vivid
+  { hex: '#fe7f02', derive: (p) => ({ l: p.l + 0.08, c: p.c * 0.75, h: p.h }) }, // --logo-accent-muted
+  { hex: '#0c2e1d', derive: (p) => ({ l: 0.17, c: p.c * 0.3, h: p.h + 50 }) }, // --logo-dark
+  { hex: '#e22517', derive: (p) => ({ l: p.l - 0.1, c: p.c * 1.1, h: p.h }) }, // --logo-detail
+  { hex: '#fbfbf2', derive: (p) => ({ l: 0.96, c: p.c * 0.08, h: p.h }) }, // --logo-light
+];
+
+const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
+const lchToHex = ({ l, c, h }: Lch): string => {
+  const [r, g, b] = oklchToRgb({ l: clamp01(l), c: Math.max(0, c), h: ((h % 360) + 360) % 360 });
+  return rgbToHex(r, g, b);
 };
 
-/** Quick-and-dirty oklch color-mix for the favicon generator (no external deps). */
-function colorMixOklch(a: string, b: string, ratio: number): string {
-  const parse = (s: string) => {
-    const m = /oklch\(([^)]+)\)/.exec(s);
-    if (!m) return null;
-    const parts = m[1].split(/\s+/).map(Number);
-    return { l: parts[0], c: parts[1], h: parts[2] };
-  };
-  const pa = parse(a);
-  const pb = parse(b);
-  if (!pa || !pb) return a;
-  return `oklch(${(pa.l * (1 - ratio) + pb.l * ratio).toFixed(3)} ${(pa.c * (1 - ratio) + pb.c * ratio).toFixed(3)} ${(pa.h * (1 - ratio) + pb.h * ratio).toFixed(1)})`;
+/** Parse an `oklch(l c h)` string (the form --logo-dark is stored in). */
+const parseOklchString = (s: string): Lch | null => {
+  const m = /oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.-]+)/i.exec(s);
+  return m ? { l: +m[1], c: +m[2], h: +m[3] } : null;
+};
+
+// Fetch + cache the logo markup once (it's a static asset, so this is ~free after
+// the browser cache warms). Module-level so repeated favorites reuse it.
+let logoMarkupPromise: Promise<string | null> | null = null;
+const loadLogoMarkup = (): Promise<string | null> => {
+  if (!logoMarkupPromise) {
+    logoMarkupPromise = fetch('/logo.svg')
+      .then((r) => (r.ok ? r.text() : null))
+      .catch(() => null);
+  }
+  return logoMarkupPromise;
+};
+
+/** Recolor the site logo to a corps's palette and return it as a data: URL, or
+ *  null if the logo can't be loaded (caller falls back to the default favicon).
+ *  `logoDark` (oklch string) overrides the derived structural-dark fill so the
+ *  favicon matches what the page renders. */
+async function generateLogoFavicon(
+  primaryHex: string,
+  logoDark: string | null
+): Promise<string | null> {
+  const primary = hexToOklch(primaryHex);
+  const markup = await loadLogoMarkup();
+  if (!primary || !markup) return null;
+  const darkOverride = logoDark ? parseOklchString(logoDark) : null;
+  let out = markup;
+  for (const { hex, derive } of LOGO_FILLS) {
+    const color =
+      hex === '#0c2e1d' && darkOverride ? lchToHex(darkOverride) : lchToHex(derive(primary));
+    out = out.replaceAll(hex, color);
+  }
+  return `data:image/svg+xml,${encodeURIComponent(out)}`;
 }
 
 // ── Input / persisted types ───────────────────────────────────────────────────
@@ -110,14 +142,16 @@ export function computeFavoriteBranding(input: FavoriteCorpsInput): FavoriteBran
   const light = corpsPalette(colors, 'light');
   const dark = corpsPalette(colors, 'dark');
   const logoDark = computeLogoDark(input.colorSecondary ?? null, light.accent);
-  const faviconSvg = faviconDataUrl(light.accent, light.accentFg, logoDark);
   return {
     lightPrimary: light.accent,
     lightPrimaryForeground: light.accentFg,
     darkPrimary: dark.accent,
     darkPrimaryForeground: dark.accentFg,
     logoDark,
-    faviconSvg,
+    // The recolored-logo favicon is generated asynchronously (it fetches the logo
+    // markup) by applyFavoriteBranding, then persisted back for the next load's
+    // no-flash before-paint set. Empty here → no-flash leaves the default favicon.
+    faviconSvg: '',
   };
 }
 
@@ -142,11 +176,6 @@ function computeLogoDark(secondaryHex: string | null, primaryOklch: string): str
 }
 
 // ── Favicon helpers ───────────────────────────────────────────────────────────
-
-function faviconDataUrl(accent: string, accentFg: string, logoDark: string | null): string {
-  const svg = FAVICON_SVG(accent, accentFg, logoDark);
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-}
 
 export function setFavicon(href: string): void {
   if (typeof document === 'undefined') return;
@@ -254,9 +283,35 @@ export function applyFavoriteBranding(fav: PersistedFavorite): void {
     root.style.removeProperty('--logo-dark');
   }
   root.setAttribute('data-fav-active', '');
-  setFavicon(fav.faviconSvg);
   setThemeColor(fav.colorPrimary ?? (dark ? fav.darkPrimary : fav.lightPrimary));
+
+  // Favicon = the site logo recolored to this corps. Use the already-generated
+  // data URL immediately when present (set before-paint by the no-flash script,
+  // or cached this session); otherwise generate it (fetches the logo markup) and
+  // set + persist it so the next load can paint it instantly. Falls back to the
+  // default logo when the corps has no brand color or the logo can't be loaded.
+  const primaryHex = fav.colorPrimary;
+  const cached = fav.faviconSvg || (primaryHex ? faviconCache.get(faviconKey(fav)) : null);
+  if (cached) {
+    setFavicon(cached);
+  } else if (primaryHex) {
+    void generateLogoFavicon(primaryHex, fav.logoDark).then((url) => {
+      if (!url || favoriteCorpsStore.getSnapshot().context.favorite?.corpsKey !== fav.corpsKey)
+        return;
+      faviconCache.set(faviconKey(fav), url);
+      setFavicon(url);
+      persist({ ...fav, faviconSvg: url });
+    });
+  } else {
+    setFavicon('/logo.svg');
+  }
 }
+
+// Recolored-logo favicons generated this session, keyed by corps + structural
+// dark, so re-applying the same favorite (e.g. on theme toggle) is instant and
+// doesn't re-run the SVG recolor or re-persist.
+const faviconCache = new Map<string, string>();
+const faviconKey = (fav: PersistedFavorite) => `${fav.colorPrimary}|${fav.logoDark ?? ''}`;
 
 export function clearFavoriteBranding(): void {
   if (typeof document === 'undefined') return;
