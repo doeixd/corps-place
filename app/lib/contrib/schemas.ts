@@ -9,6 +9,15 @@ import * as v from 'valibot';
 
 const Hex = v.pipe(v.string(), v.regex(/^#[0-9a-fA-F]{6}$/, 'Use a #rrggbb color'));
 
+// A served image reference (uploaded via /api/show-media/<id>). Shared by the
+// uniform, gallery and cover blocks.
+const MediaItem = v.object({
+  url: v.pipe(v.string(), v.minLength(1)),
+  alt: v.optional(v.string(), ''),
+  width: v.optional(v.number()),
+  height: v.optional(v.number()),
+});
+
 const UniformColor = v.object({
   hex: Hex,
   label: v.optional(v.string(), ''),
@@ -18,6 +27,8 @@ export const UniformInputSchema = v.object({
   colors: v.array(UniformColor),
   description: v.optional(v.string(), ''),
   announcementUrl: v.optional(v.string(), ''),
+  // Uniform photos (wiki plan §7.1 field name `images`).
+  images: v.optional(v.array(MediaItem), []),
 });
 export type UniformInput = v.InferOutput<typeof UniformInputSchema>;
 
@@ -42,12 +53,6 @@ export const SymbolismInputSchema = v.object({ text: v.optional(v.string(), '') 
 export type SymbolismInput = v.InferOutput<typeof SymbolismInputSchema>;
 
 // Photos & media gallery: uploaded images (served via /api/show-media/<id>).
-const MediaItem = v.object({
-  url: v.pipe(v.string(), v.minLength(1)),
-  alt: v.optional(v.string(), ''),
-  width: v.optional(v.number()),
-  height: v.optional(v.number()),
-});
 export const GalleryInputSchema = v.object({ items: v.array(MediaItem) });
 export type GalleryInput = v.InferOutput<typeof GalleryInputSchema>;
 

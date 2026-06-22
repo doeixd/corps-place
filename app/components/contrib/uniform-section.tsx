@@ -3,12 +3,16 @@ import { useForm, Form, Field, FieldArray, insert, remove } from '@formisch/reac
 import { useSession, signIn } from '@/lib/auth-client';
 import { saveShowBlock } from '@/lib/server-fns/contrib';
 import { UniformInputSchema, type UniformInput } from '@/lib/contrib/schemas';
+import { ImageDrop } from '@/components/contrib/image-drop';
+import { ProgressiveImage } from '@/components/progressive-image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icon';
 import { GiftIcon, AddCircleIcon, Cancel01Icon } from '@/components/icons/generated';
+
+type UniformImage = NonNullable<UniformInput['images']>[number];
 
 /**
  * Uniform block (M3) — the first live wiki editor. Renders authored colors +
@@ -30,7 +34,11 @@ export function UniformSection({
 
   const signedIn = Boolean(session?.user);
   const hasContent =
-    value && (value.colors.length > 0 || value.description || value.announcementUrl);
+    value &&
+    (value.colors.length > 0 ||
+      value.description ||
+      value.announcementUrl ||
+      (value.images?.length ?? 0) > 0);
 
   return (
     <Card className={hasContent ? undefined : 'border-2 border-dashed border-foreground/15 ring-0'}>
@@ -86,6 +94,20 @@ export function UniformSection({
 function UniformView({ value }: { value: UniformInput }) {
   return (
     <div className="space-y-3">
+      {value.images && value.images.length > 0 ? (
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {value.images.map((img, i) => (
+            <ProgressiveImage
+              key={i}
+              src={img.url}
+              alt={img.alt || 'Uniform photo'}
+              width={240}
+              fit="cover"
+              className="aspect-[4/3] overflow-hidden rounded-lg ring-1 ring-foreground/10"
+            />
+          ))}
+        </div>
+      ) : null}
       {value.colors.length > 0 ? (
         <div className="flex flex-wrap gap-3">
           {value.colors.map((c, i) => (
@@ -127,18 +149,23 @@ function UniformEditor({
   value: UniformInput | null;
   onSaved: (v: UniformInput) => void;
 }) {
-  // Formisch form driven by the shared Valibot schema; onSubmit gets validated output.
+  // Formisch form driven by the shared Valibot schema; onSubmit gets validated
+  // output. Photos aren't a typed form field (they're uploaded async), so they
+  // ride alongside in local state and merge into the saved content — mirroring
+  // GalleryEditor.
   const form = useForm({
     schema: UniformInputSchema,
-    initialInput: value ?? { colors: [], description: '', announcementUrl: '' },
+    initialInput: value ?? { colors: [], description: '', announcementUrl: '', images: [] },
   });
+  const [images, setImages] = useState<UniformImage[]>(value?.images ?? []);
   const [error, setError] = useState<string | null>(null);
 
   const submit = async (content: UniformInput) => {
     setError(null);
     try {
-      await saveShowBlock({ data: { corpsKey, season, pinnedKey: 'uniform', content } });
-      onSaved(content);
+      const merged = { ...content, images };
+      await saveShowBlock({ data: { corpsKey, season, pinnedKey: 'uniform', content: merged } });
+      onSaved(merged);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed');
     }
@@ -216,6 +243,38 @@ function UniformEditor({
           />
         )}
       </Field>
+
+      {/* Uniform photos (uploaded → R2 → /api/show-media). */}
+      <div className="space-y-2">
+        {images.length > 0 ? (
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+            {images.map((img, i) => (
+              <div
+                key={i}
+                className="group relative aspect-[4/3] overflow-hidden rounded-lg ring-1 ring-foreground/10"
+              >
+                <ProgressiveImage src={img.url} alt={img.alt || ''} width={160} fit="cover" />
+                <button
+                  type="button"
+                  onClick={() => setImages((xs) => xs.filter((_, j) => j !== i))}
+                  aria-label="Remove photo"
+                  className="absolute right-1 top-1 flex size-6 items-center justify-center rounded-md bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 focus-visible:opacity-100 group-hover:opacity-100"
+                >
+                  <Icon icon={Cancel01Icon} size="sm" />
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : null}
+        <ImageDrop
+          corpsKey={corpsKey}
+          season={season}
+          kind="uniform"
+          onUploaded={(r) =>
+            setImages((xs) => [...xs, { url: r.url, alt: '', width: r.width, height: r.height }])
+          }
+        />
+      </div>
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <Button type="submit" size="sm">
