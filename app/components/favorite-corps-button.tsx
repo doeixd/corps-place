@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { useSyncExternalStore } from 'react';
 import { motion } from 'motion/react';
 import { Icon } from '@/components/icon';
@@ -45,14 +45,10 @@ export function FavoriteCorpsButton({
   );
 
   // Compute the corps's own accent so we snap to it immediately on click
-  // (bypassing the global --primary CSS transition on the shell/logo).
-  const [palette, setPalette] = useState(() => computeButtonPalette(corps, theme));
-  if (typeof window !== 'undefined') {
-    const next = computeButtonPalette(corps, theme);
-    if (next.accent !== palette.accent || next.accentFg !== palette.accentFg) {
-      setPalette(next);
-    }
-  }
+  // (bypassing the global --primary CSS transition on the shell/logo). Memoized
+  // so a favorite toggle — which re-renders many cards — doesn't recompute two
+  // palettes + a favicon SVG per card on every render.
+  const palette = useMemo(() => computeButtonPalette(corps, theme), [corps.corpsKey, theme]);
 
   const inlineFav = isFav
     ? ({
@@ -102,20 +98,14 @@ export function FavoriteCorpsButton({
         <span className="relative inline-flex">
           <motion.span
             animate={{ opacity: isFav ? 1 : 0, scale: isFav ? 1 : 0.3 }}
-            transition={{
-              scale: { type: 'spring', stiffness: 600, damping: 16, mass: 0.5 },
-              opacity: { duration: 0.15, ease: 'easeOut' },
-            }}
+            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
             className="absolute inset-0 inline-flex items-center justify-center"
           >
             <Icon icon={FavouriteIcon} size={iconSize} />
           </motion.span>
           <motion.span
             animate={{ opacity: isFav ? 0 : 1, scale: isFav ? 0.3 : 1 }}
-            transition={{
-              scale: { type: 'spring', stiffness: 600, damping: 16, mass: 0.5 },
-              opacity: { duration: 0.15, ease: 'easeOut' },
-            }}
+            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
             className="inline-flex"
           >
             <Icon icon={HeartAddIcon} size={iconSize} />

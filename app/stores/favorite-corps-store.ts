@@ -338,6 +338,12 @@ export function useFavoriteCorps(): PersistedFavorite | null {
 }
 
 export function useIsFavorite(corpsKey: string): boolean {
-  const fav = useFavoriteCorps();
-  return fav?.corpsKey === corpsKey;
+  // Subscribe with a boolean snapshot rather than the whole favorite object, so
+  // toggling one favorite only re-renders the cards whose state actually flips —
+  // not every FavoriteCorpsButton on the grid.
+  return useSyncExternalStore(
+    subscribeFavorite,
+    () => favoriteCorpsStore.getSnapshot().context.favorite?.corpsKey === corpsKey,
+    () => false
+  );
 }
