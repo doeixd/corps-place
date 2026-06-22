@@ -20,7 +20,15 @@ export type Capability =
   | 'hideRevision' // hide a revision/media
   | 'orphan' // mark page orphaned / merge
   | 'grantRole' // grant/revoke roles, ban
-  | 'deletePage';
+  | 'deletePage'
+  | 'manageFantasyQuiz' // author the fantasy knowledge-quiz bank (Fantasy plan G.4)
+  | 'manageFantasyLeagues' // support ops on fantasy leagues (cancel/refund, take-down)
+  // Admin console (ADMIN_PAGE_PLAN §2). Operator capabilities on top of the wiki set.
+  | 'viewAdmin' // see the /admin console at all
+  | 'runJobs' // enqueue SDK jobs (scrape/ingest/predict/fine-tune) for the VM worker
+  | 'manageUsers' // list users, grant/revoke role, ban, GDPR delete/export
+  | 'customerSupport' // user lookup, support inbox, account recovery
+  | 'impersonate'; // "view as user" — high-trust debugging
 
 // Minimum role per capability (the §6.2 matrix). Editing/upload/revert = any user.
 const MIN_ROLE: Record<Capability, Role> = {
@@ -32,6 +40,13 @@ const MIN_ROLE: Record<Capability, Role> = {
   orphan: 'moderator',
   grantRole: 'admin',
   deletePage: 'admin',
+  manageFantasyQuiz: 'moderator',
+  manageFantasyLeagues: 'admin',
+  viewAdmin: 'moderator',
+  runJobs: 'admin',
+  manageUsers: 'admin',
+  customerSupport: 'moderator',
+  impersonate: 'admin',
 };
 
 export type PageLock = 'none' | 'trusted' | 'mod';
@@ -74,6 +89,11 @@ export class ForbiddenError extends Error {
 export const getActor = async (request: Request): Promise<Actor | null> => {
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session?.user) return null;
+  // Defense-in-depth: reject banned users even on an already-valid cookie. The
+  // better-auth admin plugin deletes sessions on ban + blocks new sign-ins, but
+  // getSession() doesn't re-check the flag — so we do (ADMIN_PAGE_PLAN R3). `banned`
+  // is undefined until the admin plugin is enabled, so this is a safe no-op until then.
+  if ((session.user as { banned?: boolean | null }).banned) return null;
   return { userId: session.user.id, role: (session.user as { role?: Role }).role ?? 'user' };
 };
 
