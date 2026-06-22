@@ -30,8 +30,15 @@ export type DraftableCorps = {
   corpsLogo: string | null;
 };
 
-/** Active World + Open corps for the season (Appendix C.4). */
+// The corps directory changes rarely, but the pool is read on every draft pick
+// (twice — legality + the UI snapshot) and on every auto-pick. Memoize it for a
+// short window so a fast-paced draft doesn't hammer the score DB.
+const POOL_TTL_MS = 60_000;
+let poolCache: { at: number; value: DraftableCorps[] } | null = null;
+
+/** Active World + Open corps for the season (Appendix C.4). Cached ~60s. */
 export async function getDraftPool(): Promise<DraftableCorps[]> {
+  if (poolCache && Date.now() - poolCache.at < POOL_TTL_MS) return poolCache.value;
   const res = await scoreDb().execute({
     sql: `SELECT corps_key, slug, name, division_name, display_city, corps_logo
           FROM corps
@@ -39,7 +46,7 @@ export async function getDraftPool(): Promise<DraftableCorps[]> {
           ORDER BY division_name, name COLLATE NOCASE`,
     args: DRAFT_DIVISIONS,
   });
-  return res.rows.map((r) => ({
+  const value = res.rows.map((r) => ({
     corpsKey: r.corps_key as string,
     slug: (r.slug as string | null) ?? null,
     name: r.name as string,
@@ -47,6 +54,8 @@ export async function getDraftPool(): Promise<DraftableCorps[]> {
     displayCity: (r.display_city as string | null) ?? null,
     corpsLogo: (r.corps_logo as string | null) ?? null,
   }));
+  poolCache = { at: Date.now(), value };
+  return value;
 }
 
 /** `${corpsKey}|${captionKey}` → prior-season finals score. */
@@ -60,7 +69,13 @@ export const rankingKey = (corpsKey: string, caption: CaptionKey): string =>
  * to rank the draft pool for auto-pick + suggestions — never as a scoring input.
  * Corps/captions with no finals row simply don't appear (they rank last).
  */
+// Prior-season finals scores are historical/immutable — cache permanently per
+// season (read on every auto-pick).
+const rankingCache = new Map<string, RankingLookup>();
+
 export async function getPriorSeasonRanking(prevSeason: string): Promise<RankingLookup> {
+  const cached = rankingCache.get(prevSeason);
+  if (cached) return cached;
   const res = await scoreDb().execute({
     sql: `SELECT cap.corps_key, cap.caption_name, cap.score
           FROM caption_scores cap
@@ -78,6 +93,7 @@ export async function getPriorSeasonRanking(prevSeason: string): Promise<Ranking
     if (!key) continue;
     lookup.set(rankingKey(r.corps_key as string, key), r.score as number);
   }
+  rankingCache.set(prevSeason, lookup);
   return lookup;
 }
 
