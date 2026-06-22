@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 import { For, Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
@@ -9,7 +10,6 @@ import { UniformSection } from '@/components/contrib/uniform-section';
 import {
   PropsSection,
   LinksSection,
-  SymbolismSection,
   GallerySection,
   AboutSection,
 } from '@/components/contrib/block-sections';
@@ -17,13 +17,7 @@ import type { FreeFormDoc } from '@/lib/contrib/free-form';
 import { HistoryPanel } from '@/components/contrib/history-panel';
 import { ReferencesSection } from '@/components/contrib/references-section';
 import { listCitations } from '@/lib/server-fns/citations';
-import type {
-  UniformInput,
-  PropsInput,
-  LinksInput,
-  SymbolismInput,
-  GalleryInput,
-} from '@/lib/contrib/schemas';
+import type { UniformInput, PropsInput, LinksInput, GalleryInput } from '@/lib/contrib/schemas';
 import type { ShowDetail } from '@sdk/src/readModel/builders/shows.js';
 import { PageShell } from '@/components/page-shell';
 import { BackLink } from '@/components/back-link';
@@ -48,7 +42,7 @@ export const Route = createFileRoute('/shows/$slug/$season')({
     const show = corps?.corps_key
       ? await getShowDetail({ data: { corpsKey: corps.corps_key, season } })
       : null;
-    // Authored contributions overlay (uniform/props/links/symbolism, free-form).
+    // Authored contributions overlay (uniform/props/links, free-form concept).
     const contributions = corps?.corps_key
       ? await getShowContributions({ data: { corpsKey: corps.corps_key, season } })
       : null;
@@ -65,7 +59,6 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       uniform: blockContent<UniformInput>('uniform'),
       props: blockContent<PropsInput>('props'),
       links: blockContent<LinksInput>('links'),
-      symbolism: blockContent<SymbolismInput>('symbolism'),
       gallery: blockContent<GalleryInput>('gallery'),
       about: blockContent<FreeFormDoc>('about'),
     };
@@ -76,6 +69,50 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       ? await listCitations({ data: { corpsKey: corps.corps_key, season } })
       : [];
     return { corps, show, season, authored, history, citations };
+  },
+  head: ({ loaderData, params }) => {
+    const d = loaderData;
+    if (!d) return {};
+    const s = d.show;
+    const corps = d.corps;
+    if (!s) return {};
+    const corpsName = corps?.name ?? s.corpsName ?? '';
+    const firstMedia = s.media.find((m) => m.thumbnailUrl || m.url);
+    const image = firstMedia ? (firstMedia.thumbnailUrl ?? firstMedia.url) : undefined;
+    return seoHead({
+      title: `${corpsName ? corpsName + ' ' : ''}${d.season} — ${s.title} (Drum Corps Show)`,
+      description: clampDescription(
+        s.description ?? s.tagline ?? s.subtitle ?? s.designerNotes,
+        `${corpsName} ${d.season} drum corps production${s.title ? ` "${s.title}"` : ''} — program, repertoire, designers and media on DrumCorps.app.`
+      ),
+      path: `/shows/${params.slug}/${params.season}`,
+      image,
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'CreativeWork',
+          name: s.title,
+          ...(s.subtitle ? { alternateName: s.subtitle } : {}),
+          ...(s.description || s.tagline
+            ? { description: clampDescription(s.description ?? s.tagline, s.title) }
+            : {}),
+          ...(corpsName ? { creator: { '@type': 'MusicGroup', name: corpsName } } : {}),
+          ...(s.premiereDate ? { datePublished: s.premiereDate } : {}),
+          url: `${SITE_URL}/shows/${params.slug}/${params.season}`,
+        },
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          {
+            name: corpsName || 'Corps',
+            path: corps?.slug ? `/corps/${corps.slug}` : '/corps',
+          },
+          {
+            name: `${d.season} ${s.title}`,
+            path: `/shows/${params.slug}/${params.season}`,
+          },
+        ]),
+      ],
+    });
   },
   staleTime: 60_000,
   component: ShowDetailPage,
@@ -112,17 +149,22 @@ function ShowDetailPage() {
           animate="visible"
         >
           {/* Identity / header */}
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <CorpsLogo name={corps.name} logo={corpsLogoSource(corps)} width={72} />
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+            <CorpsLogo
+              name={corps.name}
+              logo={corpsLogoSource(corps)}
+              width={72}
+              className="size-12 sm:size-[72px]"
+            />
             <div className="min-w-0 space-y-1">
-              <p className="text-xs uppercase tracking-wide text-text-secondary">
-                {corps.name} · {show.season}
-              </p>
               <h1 className="text-2xl font-bold text-text-primary">{show.title}</h1>
               <Show when={show.subtitle}>{(s) => <p className="text-text-secondary">{s}</p>}</Show>
               <Show when={show.tagline}>
                 {(t) => <p className="text-sm italic text-text-secondary">“{t}”</p>}
               </Show>
+              <p className="text-xs uppercase tracking-wide text-text-secondary">
+                {corps.name} · {show.season}
+              </p>
             </div>
           </div>
 
@@ -293,11 +335,6 @@ function ShowDetailPage() {
             initial={authored.uniform}
           />
           <PropsSection corpsKey={corps.corps_key} season={show.season} initial={authored.props} />
-          <SymbolismSection
-            corpsKey={corps.corps_key}
-            season={show.season}
-            initial={authored.symbolism}
-          />
           <GallerySection
             corpsKey={corps.corps_key}
             season={show.season}
