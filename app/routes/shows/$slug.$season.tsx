@@ -203,27 +203,29 @@ function ShowDetailPage() {
               <ul className="divide-y divide-foreground/10">
                 <For each={show.repertoire}>
                   {(piece) => (
-                    <li className="py-2 first:pt-0 last:pb-0">
-                      <div className="font-medium text-text-primary">
-                        <Show when={piece.hyperlink} fallback={piece.workTitle}>
-                          {(href) => (
-                            <a
-                              href={href}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground"
-                            >
-                              {piece.workTitle}
-                            </a>
-                          )}
+                    <li className="flex items-start justify-between gap-3 py-2 first:pt-0 last:pb-0">
+                      <div className="min-w-0">
+                        <div className="font-medium text-text-primary">
+                          <Show when={piece.hyperlink} fallback={piece.workTitle}>
+                            {(href) => (
+                              <a
+                                href={href}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground"
+                              >
+                                {piece.workTitle}
+                              </a>
+                            )}
+                          </Show>
+                        </div>
+                        <Show when={creditLine(piece.composer, piece.arranger)}>
+                          {(credit) => <p className="text-sm text-text-secondary">{credit}</p>}
+                        </Show>
+                        <Show when={piece.notes}>
+                          {(n) => <p className="text-sm text-text-secondary">{n}</p>}
                         </Show>
                       </div>
-                      <Show when={creditLine(piece.composer, piece.arranger)}>
-                        {(credit) => <p className="text-sm text-text-secondary">{credit}</p>}
-                      </Show>
-                      <Show when={piece.notes}>
-                        {(n) => <p className="text-sm text-text-secondary">{n}</p>}
-                      </Show>
                       <ListenLinks workTitle={piece.workTitle} composer={piece.composer} />
                     </li>
                   )}
@@ -235,10 +237,10 @@ function ShowDetailPage() {
                     href={href}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-3 inline-flex items-center gap-1.5 text-xs text-text-secondary underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground"
+                    className="mt-5 inline-flex items-center gap-1.5 text-xs text-text-secondary underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground"
                   >
                     <Icon icon={BookOpen01Icon} size="xs" />
-                    {corps.name}’s {show.season} repertoire in the DCX Museum
+                    View {corps.name}’s {show.season} repertoire in the DCX Museum
                   </a>
                 )}
               </Show>
@@ -480,7 +482,7 @@ function ListenLinks({ workTitle, composer }: { workTitle: string; composer: str
     { label: `Search “${workTitle}” on YouTube`, href: links.youtube, icon: YoutubeIcon },
   ];
   return (
-    <div className="mt-1.5 flex items-center gap-1">
+    <div className="flex shrink-0 items-center gap-1.5 pt-0.5">
       <For each={services}>
         {(s) => (
           <a
