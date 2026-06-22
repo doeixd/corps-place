@@ -39,7 +39,7 @@ function RootDocument({ children }: { children: ReactNode }) {
         <link rel="icon" href="/logo.svg" type="image/svg+xml" data-app-icon="true" />
         <link rel="apple-touch-icon" href="/logo.svg" data-app-icon="true" />
         <meta name="theme-color" content="#0b0b0c" data-app-theme="true" />
-        <title>Corps Place</title>
+        <title>DrumCorps.app</title>
         <script dangerouslySetInnerHTML={{ __html: noFlashThemeScript }} />
         <HeadContent />
       </head>
