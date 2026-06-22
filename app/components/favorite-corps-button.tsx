@@ -102,14 +102,20 @@ export function FavoriteCorpsButton({
         <span className="relative inline-flex">
           <motion.span
             animate={{ opacity: isFav ? 1 : 0, scale: isFav ? 1 : 0.3 }}
-            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
+            transition={{
+              scale: { type: 'spring', stiffness: 600, damping: 16, mass: 0.5 },
+              opacity: { duration: 0.15, ease: 'easeOut' },
+            }}
             className="absolute inset-0 inline-flex items-center justify-center"
           >
             <Icon icon={FavouriteIcon} size={iconSize} />
           </motion.span>
           <motion.span
             animate={{ opacity: isFav ? 0 : 1, scale: isFav ? 0.3 : 1 }}
-            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
+            transition={{
+              scale: { type: 'spring', stiffness: 600, damping: 16, mass: 0.5 },
+              opacity: { duration: 0.15, ease: 'easeOut' },
+            }}
             className="inline-flex"
           >
             <Icon icon={HeartAddIcon} size={iconSize} />

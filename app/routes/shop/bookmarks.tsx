@@ -161,12 +161,11 @@ function BookmarksPage() {
         </div>
       ) : null}
 
-      {/* Always-mounted so cards can animate out on unbookmark / clear all. */}
-      <motion.div
-        layout
-        transition={{ type: 'spring', stiffness: 500, damping: 50, mass: 1 }}
-        className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-      >
+      {/* Always-mounted so cards can animate out on unbookmark / clear all. The
+          grid container is a plain div (matching StaggeredGrid): only the cards
+          carry `layout`. Putting `layout` on the container projects a transform
+          onto the whole grid, which clips the leftmost card's outset ring. */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         <AnimatePresence
           mode="popLayout"
           initial={false}
@@ -180,18 +179,18 @@ function BookmarksPage() {
               layout
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.85 }}
+              exit={{ opacity: 0, scale: 0.92 }}
               transition={{
-                layout: { type: 'spring', stiffness: 500, damping: 50, mass: 1 },
                 duration: 0.2,
                 ease: 'easeOut',
+                layout: { duration: 0.25, ease: 'easeOut' },
               }}
             >
               <ProductCard product={product} />
             </motion.div>
           ))}
         </AnimatePresence>
-      </motion.div>
+      </div>
 
       {showEmpty && visibleCount === 0 ? (
         bookmarks.length === 0 ? (
