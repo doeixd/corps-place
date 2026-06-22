@@ -52,6 +52,28 @@ export type LinksInput = v.InferOutput<typeof LinksInputSchema>;
 export const SymbolismInputSchema = v.object({ text: v.optional(v.string(), '') });
 export type SymbolismInput = v.InferOutput<typeof SymbolismInputSchema>;
 
+// Design & staff: a role + a name, optionally linked to a staff-directory
+// person (→ /staff/<personId>). Seedable — the editor pre-fills from the scraped
+// designers so contributors refine rather than retype.
+const StaffMember = v.object({
+  role: v.optional(v.string(), ''),
+  name: v.pipe(v.string(), v.minLength(1, 'Name required')),
+  personId: v.optional(v.string(), ''),
+});
+export const StaffInputSchema = v.object({ items: v.array(StaffMember) });
+export type StaffInput = v.InferOutput<typeof StaffInputSchema>;
+
+// Media wall: external links (clips, full-show video, photo sets). Seedable from
+// the scraped media list.
+const MediaLinkItem = v.object({
+  url: v.pipe(v.string(), v.url('Enter a valid URL')),
+  title: v.optional(v.string(), ''),
+  mediaType: v.optional(v.string(), ''),
+  thumbnailUrl: v.optional(v.string(), ''),
+});
+export const MediaLinksInputSchema = v.object({ items: v.array(MediaLinkItem) });
+export type MediaLinksInput = v.InferOutput<typeof MediaLinksInputSchema>;
+
 // Photos & media gallery: uploaded images (served via /api/show-media/<id>).
 export const GalleryInputSchema = v.object({ items: v.array(MediaItem) });
 export type GalleryInput = v.InferOutput<typeof GalleryInputSchema>;
@@ -78,6 +100,8 @@ export const BLOCK_SCHEMAS = {
   props: PropsInputSchema,
   links: LinksInputSchema,
   symbolism: SymbolismInputSchema,
+  staff: StaffInputSchema,
+  media: MediaLinksInputSchema,
   gallery: GalleryInputSchema,
   cover: CoverInputSchema,
   about: AboutInputSchema,

@@ -53,7 +53,7 @@ const AddRowButton = ({ onClick, label }: { onClick: () => void; label: string }
  * toggle, signed-out sign-in CTA, the empty "calling out to contribute" state, and
  * the view/edit switch. The per-block view + Formisch editor are passed in.
  */
-function ContribBlock({
+export function ContribBlock({
   icon,
   title,
   emptyHint,

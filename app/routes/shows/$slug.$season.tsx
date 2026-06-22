@@ -8,6 +8,8 @@ import { getCorps, getShowDetail } from '@/lib/server-fns/hybrid';
 import { getShowContributions, getShowHistory } from '@/lib/server-fns/contrib';
 import { UniformSection } from '@/components/contrib/uniform-section';
 import { CoverSection } from '@/components/contrib/cover-section';
+import { StaffSection } from '@/components/contrib/staff-section';
+import { MediaSection } from '@/components/contrib/media-section';
 import {
   PropsSection,
   LinksSection,
@@ -24,6 +26,8 @@ import type {
   LinksInput,
   GalleryInput,
   CoverInput,
+  StaffInput,
+  MediaLinksInput,
 } from '@/lib/contrib/schemas';
 import type { ShowDetail } from '@sdk/src/readModel/builders/shows.js';
 import { PageShell } from '@/components/page-shell';
@@ -32,12 +36,9 @@ import { StatusCard } from '@/components/status-card';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon, type IconComponent } from '@/components/icon';
-import { ProgressiveImage } from '@/components/progressive-image';
 import {
   MusicNote03Icon,
-  UserGroupIcon,
   KeyframeIcon,
-  ViewIcon,
   RankingIcon,
   BookOpen01Icon,
   SpotifyIcon,
@@ -70,6 +71,8 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       uniform: blockContent<UniformInput>('uniform'),
       props: blockContent<PropsInput>('props'),
       links: blockContent<LinksInput>('links'),
+      staff: blockContent<StaffInput>('staff'),
+      media: blockContent<MediaLinksInput>('media'),
       gallery: blockContent<GalleryInput>('gallery'),
       cover: blockContent<CoverInput>('cover'),
       about: blockContent<FreeFormDoc>('about'),
@@ -273,66 +276,21 @@ function ShowDetailPage() {
             </Section>
           </Show>
 
-          {/* Staff / designers (scraped) */}
-          <Show when={show.designers.length > 0} fallback={<StaffPlaceholder />}>
-            <Section icon={UserGroupIcon} title="Design & staff">
-              <ul className="grid gap-2 sm:grid-cols-2">
-                <For each={show.designers}>
-                  {(d) => (
-                    <li className="flex justify-between gap-3 border-b border-foreground/10 pb-2">
-                      <span className="text-text-secondary">{d.role}</span>
-                      <span className="text-right font-medium text-text-primary">{d.name}</span>
-                    </li>
-                  )}
-                </For>
-              </ul>
-            </Section>
-          </Show>
+          {/* Design & staff (scraped seed + authored overlay) */}
+          <StaffSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            initial={authored.staff}
+            scraped={show.designers}
+          />
 
-          {/* Media (scraped) */}
-          <Show when={show.media.length > 0} fallback={<MediaPlaceholder />}>
-            <Section icon={ViewIcon} title="Media">
-              <ul className="grid gap-3 sm:grid-cols-2">
-                <For each={show.media}>
-                  {(m) => (
-                    <li>
-                      <a
-                        href={m.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex gap-3 rounded-lg p-2 ring-1 ring-foreground/10 hover:bg-foreground/5"
-                      >
-                        <Show when={m.thumbnailUrl}>
-                          {(thumb) => (
-                            <ProgressiveImage
-                              src={thumb}
-                              alt=""
-                              width={112}
-                              fit="cover"
-                              lazy
-                              className="size-14 shrink-0 rounded"
-                            />
-                          )}
-                        </Show>
-                        <span className="min-w-0">
-                          <span className="block truncate font-medium text-text-primary">
-                            {m.title || m.mediaType || 'Media'}
-                          </span>
-                          <Show when={m.attribution}>
-                            {(a) => (
-                              <span className="block truncate text-xs text-text-secondary">
-                                {a}
-                              </span>
-                            )}
-                          </Show>
-                        </span>
-                      </a>
-                    </li>
-                  )}
-                </For>
-              </ul>
-            </Section>
-          </Show>
+          {/* Media (scraped seed + authored overlay) */}
+          <MediaSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            initial={authored.media}
+            scraped={show.media}
+          />
 
           {/* Reviews (scraped) */}
           <Show when={show.reviews.length > 0}>
@@ -454,20 +412,6 @@ const RepertoirePlaceholder = () => (
     icon={MusicNote03Icon}
     title="Repertoire"
     hint="No repertoire on file yet — add the works, composers and arrangers."
-  />
-);
-const StaffPlaceholder = () => (
-  <ContributePrompt
-    icon={UserGroupIcon}
-    title="Design & staff"
-    hint="The design team and staff for this show haven't been added yet."
-  />
-);
-const MediaPlaceholder = () => (
-  <ContributePrompt
-    icon={ViewIcon}
-    title="Media"
-    hint="Cover images, clips and photos are waiting to be contributed."
   />
 );
 

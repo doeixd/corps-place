@@ -533,6 +533,42 @@ export const getStaffProfile = createServerFn({ method: 'GET' })
     return Effect.runPromise(program);
   });
 
+// Typeahead for the show-page staff editor: top name matches from the directory,
+// trimmed to the fields a picker needs. Server-side filter keeps the ~9k-row
+// directory off the client.
+export interface StaffSearchResult {
+  personId: string;
+  displayName: string;
+  defaultTitle: string | null;
+  photoUrl: string | null;
+}
+export const searchStaff = createServerFn({ method: 'GET' })
+  .validator((query: string) => query)
+  .handler(async ({ data }): Promise<StaffSearchResult[]> => {
+    const q = data.trim().toLowerCase();
+    if (q.length < 2) return [];
+    const program = Effect.flatMap(StaffDirectoryService, (s) => s.listStaff()).pipe(
+      provideServices
+    );
+    const all = await Effect.runPromise(program);
+    const matches = all
+      .filter((p) => p.display_name.toLowerCase().includes(q))
+      .sort((a, b) => {
+        // Prefix matches first, then by how many corps they've taught (prominence).
+        const ap = a.display_name.toLowerCase().startsWith(q) ? 0 : 1;
+        const bp = b.display_name.toLowerCase().startsWith(q) ? 0 : 1;
+        return ap - bp || b.corps_count - a.corps_count;
+      })
+      .slice(0, 8)
+      .map((p) => ({
+        personId: p.person_id,
+        displayName: p.display_name,
+        defaultTitle: p.default_title,
+        photoUrl: p.photo_url,
+      }));
+    return matches;
+  });
+
 // ── Merch (MERCH_PLAN §6) ────────────────────────────────────────────────────
 // Fallback path only: the happy path is the static shards under /read-model/merch
 // (loaded via loadDetailOrServer). These thin server fns delegate to
