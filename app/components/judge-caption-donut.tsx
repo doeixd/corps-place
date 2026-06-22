@@ -6,11 +6,11 @@ import { CaptionChip } from '@/components/caption-chip';
 import { JudgeAvatar } from '@/components/judge-avatar';
 
 const SIZE = 168;
-const OUTER = 84;
-// A thicker ring gives a much larger touch target so segments are easy to tap
-// on mobile (the old 10px ring was nearly impossible to hit).
-const INNER = 64;
-// The photo fills the hole, leaving a small gap to the (now thicker) ring.
+const OUTER = 82;
+// A slim ring around the photo — the thicker variant we briefly shipped looked
+// too heavy, so we're back to the original ~10px ring.
+const INNER = 72;
+// The photo fills the hole, leaving a small gap to the (thin) ring.
 const PHOTO = INNER * 2 - 12;
 
 function DonutTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
