@@ -252,24 +252,47 @@ function LiveDraft({
   const isMyTurn = draft.status === 'live' && draft.currentUserId === viewerId;
   const onClock = draft.currentUserId ? membersById.get(draft.currentUserId) : undefined;
   const takenPairs = new Set(picks.map((p) => `${p.corpsKey}|${p.caption}`));
+  const memberCount = membersById.size;
+  const round = memberCount > 0 ? Math.floor(draft.currentPickNo / memberCount) + 1 : 1;
 
   return (
     <div className="flex flex-col gap-6">
-      <Card>
+      <Card className={cn('transition-colors', isMyTurn && 'border-primary ring-1 ring-primary')}>
         <CardContent className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">On the clock:</span>
-            <span
-              className="font-medium"
-              style={onClock?.corps_color ? { color: onClock.corps_color } : undefined}
-            >
-              {onClock?.corps_name || onClock?.user_name || '—'}
-            </span>
+            {onClock?.corps_logo_media_id ? (
+              <img
+                src={`/api/fantasy-media/${onClock.corps_logo_media_id}`}
+                alt=""
+                className="size-9 rounded object-contain"
+              />
+            ) : (
+              <div
+                className="size-9 rounded bg-muted"
+                style={onClock?.corps_color ? { backgroundColor: onClock.corps_color } : undefined}
+              />
+            )}
+            <div className="flex flex-col">
+              <span className="text-xs text-muted-foreground">
+                {isMyTurn ? "You're on the clock" : 'On the clock'}
+              </span>
+              <span
+                className="font-semibold"
+                style={onClock?.corps_color ? { color: onClock.corps_color } : undefined}
+              >
+                {onClock?.corps_name || onClock?.user_name || '—'}
+              </span>
+            </div>
             {isMyTurn ? (
-              <span className="text-sm font-semibold text-primary">Your pick!</span>
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+                Your pick!
+              </span>
             ) : null}
           </div>
           <div className="flex items-center gap-3 text-sm">
+            <span className="text-xs text-muted-foreground">
+              Round {round} · Pick {draft.currentPickNo + 1}
+            </span>
             {draft.status === 'paused' ? (
               <span className="font-medium text-destructive">Paused</span>
             ) : draft.pickDeadlineAt ? (
