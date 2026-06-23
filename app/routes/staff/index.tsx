@@ -5,6 +5,7 @@ import { staffCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
 import type { StaffSummary } from '@/lib/staff-directory';
 import { ProgressiveImage } from '@/components/progressive-image';
+import { DataDisclaimer } from '@/components/data-disclaimer';
 import { PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
@@ -213,10 +214,7 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
         <p className="mt-8 text-center text-sm text-muted-foreground">No staff match "{query}".</p>
       )}
 
-      <p className="mt-8 text-xs text-muted-foreground text-center">
-        Information was obtained using publicly available information from the internet, and may be
-        wrong.
-      </p>
+      <DataDisclaimer />
     </PageShell>
   );
 }

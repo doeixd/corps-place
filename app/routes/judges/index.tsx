@@ -19,6 +19,7 @@ import { Icon } from '@/components/icon';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { StaggeredGrid } from '@/components/staggered-grid';
+import { DataDisclaimer } from '@/components/data-disclaimer';
 import { JudgeAvatarRing } from '@/components/judge-avatar-ring';
 import { ArrowDown01Icon, ArrowRight02Icon, Search01Icon } from '@/components/icons/generated';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
@@ -225,10 +226,7 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
         />
       </Show>
 
-      <p className="mt-8 text-xs text-muted-foreground text-center">
-        Information was obtained using publicly available information from the internet, and may be
-        wrong.
-      </p>
+      <DataDisclaimer />
     </PageShell>
   );
 }

@@ -7,6 +7,7 @@ import { ProgressiveImage } from '@/components/progressive-image';
 import { PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { StatusCard } from '@/components/status-card';
+import { DataDisclaimer } from '@/components/data-disclaimer';
 import { Card, CardContent } from '@/components/ui/card';
 import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 
@@ -218,10 +219,7 @@ function StaffProfilePage() {
           </>
         )}
 
-      <p className="mt-8 text-xs text-muted-foreground text-center">
-        Information was obtained using publicly available information from the internet, and may be
-        wrong.
-      </p>
+      <DataDisclaimer />
     </PageShell>
   );
 }
