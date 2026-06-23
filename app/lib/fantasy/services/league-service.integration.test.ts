@@ -189,6 +189,28 @@ describe('LeagueService.get (Effect path)', () => {
     );
     expect(none.leagues).toHaveLength(0);
   });
+
+  it('returns the reusable share invite to the owner only (single-use excluded)', async () => {
+    // Only the single-use inv-race exists initially → no default share link.
+    const before = await runGet('summer-snake', 'u-owner');
+    expect(before.shareInvite).toBeNull();
+
+    await db.execute({
+      sql: `INSERT INTO fantasy_invites
+              (invite_id, league_id, token, created_by, max_uses, used_count, expires_at, created_at)
+            VALUES ('inv-share', 'lg-1', 'tok-share', 'u-owner', 50, 3, '2999-01-01T00:00:00.000Z', ?)`,
+      args: [NOW],
+    });
+
+    const owner = await runGet('summer-snake', 'u-owner');
+    expect(owner.shareInvite?.url).toContain('/fantasy/join/tok-share');
+    expect(owner.shareInvite?.usedCount).toBe(3);
+    expect(owner.shareInvite?.maxUses).toBe(50);
+
+    // A non-owner viewer never receives the link.
+    const member = await runGet('summer-snake', 'u-mem');
+    expect(member.shareInvite).toBeNull();
+  });
 });
 
 describe('LeagueService.create / updateConfig (Effect path)', () => {

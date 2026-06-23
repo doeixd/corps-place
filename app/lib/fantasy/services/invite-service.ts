@@ -9,7 +9,12 @@
 import { Context, Effect, Layer } from 'effect';
 import { randomUUID } from 'node:crypto';
 import type { Actor } from '@/lib/authz';
-import { mintInviteToken, isoPlusDays, DEFAULT_INVITE_DAYS } from '@/lib/fantasy/invites';
+import {
+  mintInviteToken,
+  isoPlusDays,
+  inviteUrl,
+  DEFAULT_INVITE_DAYS,
+} from '@/lib/fantasy/invites';
 import { sendEmail } from '@/lib/email';
 import { rateLimit } from '@/lib/rate-limit';
 import { LeagueConflict, NotFound, RateLimited } from './errors';
@@ -18,9 +23,6 @@ import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from '.
 
 // League statuses that still allow new members to join (§7.3).
 const JOINABLE = new Set(['setup', 'quiz', 'scheduled']);
-
-const siteOrigin = (): string =>
-  (process.env.BETTER_AUTH_URL ?? 'http://localhost:5173').replace(/\/+$/, '');
 
 const escapeHtml = (s: string): string =>
   s.replace(
@@ -68,7 +70,7 @@ const makeInviteService = Effect.gen(function* () {
               ${input.email ?? null}, ${input.maxUses ?? 1}, 0, ${expiresAt}, ${now})
     `.pipe(Effect.orDie);
 
-    const url = `${siteOrigin()}/fantasy/join/${token}`;
+    const url = inviteUrl(token);
     if (input.email) {
       const to = input.email;
       const name = league.name;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createFileRoute, notFound, useRouter, Link } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
@@ -121,7 +121,14 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
 
       {viewer.isMember && data.pushEnabled ? <PushToggle /> : null}
 
-      {viewer.isOwner ? <InvitePanel leagueId={league.leagueId} /> : null}
+      {viewer.isOwner ? (
+        <InvitePanel
+          leagueId={league.leagueId}
+          maxMembers={league.maxMembers}
+          shareInvite={data.shareInvite}
+          onChanged={refresh}
+        />
+      ) : null}
 
       {viewer.isMember && (needsIdentity || editing) ? (
         <Card>
@@ -300,13 +307,40 @@ function PaymentPanel({
   );
 }
 
-function InvitePanel({ leagueId }: { leagueId: string }) {
-  const [inviteUrl, setInviteUrl] = useState<string | null>(null);
+function InvitePanel({
+  leagueId,
+  maxMembers,
+  shareInvite,
+  onChanged,
+}: {
+  leagueId: string;
+  maxMembers: number;
+  shareInvite: LeagueData['shareInvite'];
+  onChanged: () => Promise<void> | void;
+}) {
   const { copied, copy } = useCopyToClipboard();
+  // Client-only capability detection — gate the Share button on navigator.share
+  // after mount so SSR and first client render agree (no hydration mismatch).
+  const [canShare, setCanShare] = useState(false);
+  useEffect(() => {
+    setCanShare(typeof navigator !== 'undefined' && typeof navigator.share === 'function');
+  }, []);
+
   const mint = useAsyncAction(async () => {
-    const res = await createInvite({ data: { leagueId } });
-    setInviteUrl(res.url);
+    // A reusable link (many uses, longer-lived) — the league's default share link,
+    // distinct from a one-shot emailed invite. Refresh so getLeague returns it and
+    // the panel shows it by default from here on.
+    await createInvite({ data: { leagueId, maxUses: 50, expiresInDays: 60 } });
+    await onChanged();
   });
+
+  const share = async (url: string) => {
+    try {
+      await navigator.share({ title: 'Join my Fantasy DCI league', url });
+    } catch {
+      copy(url); // cancelled or unsupported — fall back to copying
+    }
+  };
 
   return (
     <Card>
@@ -314,23 +348,43 @@ function InvitePanel({ leagueId }: { leagueId: string }) {
         <CardTitle>Invite players</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
-        <BusyButton
-          className="self-start"
-          size="sm"
-          busy={mint.busy}
-          onClick={() => void mint.run()}
-        >
-          Create invite link
-        </BusyButton>
+        <p className="text-sm text-muted-foreground">
+          Share this link to invite friends — anyone who opens it can join your league (up to{' '}
+          {maxMembers} members). Each person can only join once.
+        </p>
+        {shareInvite ? (
+          <>
+            <div className="flex items-center gap-2">
+              <Input
+                readOnly
+                value={shareInvite.url}
+                onFocus={(e) => e.currentTarget.select()}
+                aria-label="Invite link"
+              />
+              <Button size="sm" variant="outline" onClick={() => copy(shareInvite.url)}>
+                {copied ? 'Copied' : 'Copy'}
+              </Button>
+              {canShare ? (
+                <Button size="sm" onClick={() => void share(shareInvite.url)}>
+                  Share
+                </Button>
+              ) : null}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {shareInvite.usedCount} of {shareInvite.maxUses} uses claimed.
+            </p>
+          </>
+        ) : (
+          <BusyButton
+            className="self-start"
+            size="sm"
+            busy={mint.busy}
+            onClick={() => void mint.run()}
+          >
+            Create shareable link
+          </BusyButton>
+        )}
         {mint.error ? <p className="text-sm text-destructive">{mint.error}</p> : null}
-        {inviteUrl ? (
-          <div className="flex items-center gap-2">
-            <Input readOnly value={inviteUrl} onFocus={(e) => e.currentTarget.select()} />
-            <Button size="sm" variant="outline" onClick={() => copy(inviteUrl)}>
-              {copied ? 'Copied' : 'Copy'}
-            </Button>
-          </div>
-        ) : null}
       </CardContent>
     </Card>
   );

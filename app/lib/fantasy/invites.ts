@@ -39,3 +39,10 @@ export const DEFAULT_INVITE_DAYS = 14;
 /** ISO string `days` from `fromIso`. */
 export const isoPlusDays = (fromIso: string, days: number): string =>
   new Date(new Date(fromIso).getTime() + days * 86_400_000).toISOString();
+
+/** The site's public origin (no trailing slash), for building absolute links. */
+export const siteOrigin = (): string =>
+  (process.env.BETTER_AUTH_URL ?? 'http://localhost:5173').replace(/\/+$/, '');
+
+/** Absolute join URL for an invite token. */
+export const inviteUrl = (token: string): string => `${siteOrigin()}/fantasy/join/${token}`;

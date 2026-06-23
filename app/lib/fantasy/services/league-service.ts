@@ -21,7 +21,7 @@ import {
   draftShapeChanged,
   type LeagueConfig,
 } from '@/lib/fantasy/config';
-import { makeLeagueSlug } from '@/lib/fantasy/invites';
+import { makeLeagueSlug, inviteUrl } from '@/lib/fantasy/invites';
 import { getSeasonFinals } from '@/lib/fantasy/score-db';
 import { LeagueConflict, NotFound, RateLimited } from './errors';
 import { makeGuards } from './guards';
@@ -140,6 +140,25 @@ const makeLeagueService = Effect.gen(function* () {
       isOwner: input.viewerUserId ? league.owner_user_id === input.viewerUserId : false,
     };
 
+    // Default shareable invite link, shown to the owner without a button — the
+    // newest still-usable reusable invite (max_uses > 1). Read-only here; null
+    // means the owner hasn't created one yet (§ invite rework).
+    const shareRows = viewer.isOwner
+      ? yield* sql<{ token: string; used_count: number; max_uses: number }>`
+          SELECT token, used_count, max_uses FROM fantasy_invites
+          WHERE league_id = ${league.league_id} AND revoked_at IS NULL AND max_uses > 1
+            AND expires_at > ${new Date().toISOString()} AND used_count < max_uses
+          ORDER BY created_at DESC LIMIT 1
+        `.pipe(Effect.orDie)
+      : [];
+    const shareInvite = shareRows[0]
+      ? {
+          url: inviteUrl(shareRows[0].token),
+          usedCount: Number(shareRows[0].used_count),
+          maxUses: Number(shareRows[0].max_uses),
+        }
+      : null;
+
     return {
       league: {
         leagueId: league.league_id,
@@ -154,6 +173,7 @@ const makeLeagueService = Effect.gen(function* () {
       members,
       draft,
       viewer,
+      shareInvite,
       paymentsEnabled: paymentsEnabled(),
       // Push is only usable when VAPID keys are configured; the dashboard gates the
       // "draft alerts" toggle on this so it never renders as a dead control (§2.2).
