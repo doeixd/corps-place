@@ -8,6 +8,7 @@ import { leaguesCollection } from '@/db/fantasy-collections';
 import { HybridCollection } from '@/components/hybrid-collection';
 import { useSession } from '@/lib/auth-client';
 import { SignInButton } from '@/components/fantasy/sign-in-button';
+import { HowItWorks } from '@/components/fantasy/how-it-works';
 
 type LeagueRow = Awaited<ReturnType<typeof listMyLeagues>>['leagues'][number];
 
@@ -60,14 +61,21 @@ function FantasyHomeContent({ signedIn, leagues }: { signedIn: boolean; leagues:
       </div>
 
       {!isSignedIn ? (
-        <p className="text-muted-foreground">
-          Sign in to create a private league, draft real drum corps, and compete on standings
-          computed from real recaps.
-        </p>
+        <>
+          <p className="text-muted-foreground">
+            Sign in to create a private league, draft real drum corps, and compete on standings
+            computed from real recaps.
+          </p>
+          <HowItWorks />
+        </>
       ) : leagues.length === 0 ? (
-        <p className="text-muted-foreground">
-          You're not in any leagues yet. Create one to get started.
-        </p>
+        <>
+          <p className="text-muted-foreground">
+            You&apos;re not in any leagues yet — create one, or ask a friend to invite you to
+            theirs.
+          </p>
+          <HowItWorks />
+        </>
       ) : (
         <ul className="flex flex-col gap-2">
           {leagues.map((l) => (

@@ -8,6 +8,7 @@ import { refetchMyLeagues } from '@/db/fantasy-collections';
 import { signIn, useSession } from '@/lib/auth-client';
 import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
 import { BusyButton } from '@/components/fantasy/busy-button';
+import { HowItWorks } from '@/components/fantasy/how-it-works';
 
 const INVALID_MESSAGES: Record<string, string> = {
   invalid: 'This invite link is invalid, expired, or has been revoked.',
@@ -80,9 +81,14 @@ function JoinLeague() {
       <Card className="max-w-md">
         <CardContent className="flex flex-col items-start gap-3">
           <p className="text-muted-foreground">
-            You've been invited to join this fantasy drum corps league ({league.memberCount}/
-            {league.maxMembers} members).
+            You&apos;ve been invited to join this fantasy drum corps league ({league.memberCount}/
+            {league.maxMembers} members). Here&apos;s what happens after you join:
           </p>
+          <ol className="flex flex-col gap-1 text-sm text-muted-foreground">
+            <li>1. Name your corps — your team&apos;s identity.</li>
+            <li>2. Take a quick DCI quiz; your score sets your draft order.</li>
+            <li>3. Draft real drum corps and compete on the standings.</li>
+          </ol>
 
           {session?.user ? (
             <BusyButton busy={join.busy} onClick={() => void join.run()}>
@@ -95,6 +101,9 @@ function JoinLeague() {
           {join.error ? <p className="text-sm text-destructive">{join.error}</p> : null}
         </CardContent>
       </Card>
+
+      {/* A cold invite link may be someone's first exposure — teach the concept. */}
+      <HowItWorks className="max-w-md" />
     </PageShell>
   );
 }
