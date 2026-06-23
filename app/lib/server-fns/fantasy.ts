@@ -26,7 +26,7 @@ import { getActor, requireCapability, type Actor } from '@/lib/authz';
 import { totalRounds, type LeagueConfig } from '@/lib/fantasy/config';
 import { getDraftPool } from '@/lib/fantasy/score-db';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
-import { enqueueDraftReminders } from '@/lib/fantasy/jobs';
+import { NotificationService } from '@/lib/fantasy/services/notification-service';
 import { vapidPublicKey } from '@/lib/fantasy/push';
 import {
   paymentsEnabled,
@@ -455,7 +455,11 @@ export const scheduleDraft = createServerFn({ method: 'POST' })
       sql: "UPDATE fantasy_leagues SET status = 'scheduled', updated_at = ? WHERE league_id = ?",
       args: [new Date().toISOString(), data.leagueId],
     });
-    await enqueueDraftReminders(data.leagueId, data.scheduledAt);
+    await runFantasy(
+      Effect.flatMap(NotificationService, (s) =>
+        s.enqueueDraftReminders(data.leagueId, data.scheduledAt)
+      ).pipe(provideFantasy)
+    );
     return { ok: true as const };
   });
 
