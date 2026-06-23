@@ -7,6 +7,7 @@ import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/reui/badge';
 import { JOB_KIND_META, JOB_KINDS, isJobKind, type JobKind } from '@/lib/admin-jobs';
 import {
   adminEnqueueJob,
@@ -25,12 +26,14 @@ export const Route = createFileRoute('/admin/jobs')({
   },
 });
 
-const STATUS_TINT: Record<string, string> = {
-  queued: 'text-text-secondary',
-  running: 'text-primary',
-  success: 'text-green-600',
-  failed: 'text-destructive',
-  canceled: 'text-text-secondary',
+import type { BadgeProps } from '@/components/reui/badge';
+
+const STATUS_VARIANT: Record<string, NonNullable<BadgeProps['variant']>> = {
+  queued: 'secondary',
+  running: 'info-light',
+  success: 'success-light',
+  failed: 'destructive-light',
+  canceled: 'outline',
 };
 
 function Jobs() {
@@ -115,7 +118,9 @@ function Jobs() {
                   <span className="font-medium">
                     {isJobKind(j.kind) ? JOB_KIND_META[j.kind].label : j.kind}
                   </span>
-                  <span className={STATUS_TINT[j.status] ?? ''}>{j.status}</span>
+                  <Badge variant={STATUS_VARIANT[j.status] ?? 'secondary'} size="sm">
+                    {j.status}
+                  </Badge>
                   {j.exitCode != null ? (
                     <span className="text-xs text-text-secondary">exit {j.exitCode}</span>
                   ) : null}

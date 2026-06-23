@@ -6,6 +6,7 @@ import { requireAdminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/reui/badge';
 import { listAudit, type AuditRow } from '@/lib/server-fns/admin';
 import { seoHead } from '@/lib/seo';
 
@@ -50,9 +51,9 @@ function Audit() {
                   key={r.auditId}
                   className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-2"
                 >
-                  <span className="rounded bg-accent px-1.5 py-0.5 text-xs font-medium">
+                  <Badge variant="secondary" size="sm">
                     {r.action}
-                  </span>
+                  </Badge>
                   <span className="text-text-secondary">{r.actorName ?? r.actorId}</span>
                   <span className="text-xs text-text-secondary">{r.actorRole}</span>
                   {r.target ? <span className="text-text-secondary">→ {r.target}</span> : null}

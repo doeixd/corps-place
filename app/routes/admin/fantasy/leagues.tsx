@@ -7,6 +7,7 @@ import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/reui/badge';
 import { Input } from '@/components/ui/input';
 import {
   adminListLeagues,
@@ -106,15 +107,23 @@ function Leagues() {
             <div className="flex flex-col divide-y divide-border">
               {leagues.map((l) => (
                 <div key={l.leagueId} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
-                  <button
-                    className="font-medium underline-offset-2 hover:underline"
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="h-auto px-0 font-medium"
                     onClick={() => void openDetail(l.leagueId)}
                   >
                     {l.name}
-                  </button>
+                  </Button>
                   <span className="text-text-secondary">
-                    {l.season} · {l.members} members · {l.status}
+                    {l.season} · {l.members} members
                   </span>
+                  <Badge
+                    variant={l.status === 'canceled' ? 'destructive-light' : 'secondary'}
+                    size="sm"
+                  >
+                    {l.status}
+                  </Badge>
                   <span className="ml-auto flex gap-1">
                     <Button
                       variant="ghost"

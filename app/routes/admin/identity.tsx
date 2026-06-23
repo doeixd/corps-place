@@ -10,6 +10,13 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { adminEnqueueJob } from '@/lib/server-fns/admin-jobs';
 import { seoHead } from '@/lib/seo';
 
@@ -82,14 +89,15 @@ function Identity() {
             </Button>
           </div>
           <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3">
-            <select
-              className="rounded border border-border bg-transparent px-2 py-1"
-              value={op}
-              onChange={(e) => setOp(e.target.value as 'merge' | 'split')}
-            >
-              <option value="merge">merge</option>
-              <option value="split">split</option>
-            </select>
+            <Select value={op} onValueChange={(v) => v && setOp(v as 'merge' | 'split')}>
+              <SelectTrigger size="sm" className="w-28">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="merge">merge</SelectItem>
+                <SelectItem value="split">split</SelectItem>
+              </SelectContent>
+            </Select>
             <Input
               className="w-40"
               placeholder="staff_id A"

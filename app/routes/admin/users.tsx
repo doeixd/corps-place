@@ -9,6 +9,14 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/reui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   listUsers,
   setUserRole,
@@ -120,22 +128,28 @@ function Users() {
                   <span className="font-medium">{u.name ?? '—'}</span>
                   <span className="text-text-secondary">{u.email ?? u.id}</span>
                   {u.banned ? (
-                    <span className="rounded bg-destructive/10 px-1.5 py-0.5 text-xs text-destructive">
+                    <Badge variant="destructive-light" size="sm">
                       banned
-                    </span>
+                    </Badge>
                   ) : null}
-                  <select
-                    className="ml-auto rounded border border-border bg-transparent px-2 py-1 text-sm"
+                  <Select
                     value={u.role}
                     disabled={busy === u.id}
-                    onChange={(e) => void changeRole(u.id, e.target.value as Role)}
+                    onValueChange={(v) => {
+                      if (v) void changeRole(u.id, v as Role);
+                    }}
                   >
-                    {ROLES.map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger size="sm" className="ml-auto w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ROLES.map((r) => (
+                        <SelectItem key={r} value={r}>
+                          {r}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <Button
                     variant="ghost"
                     size="sm"

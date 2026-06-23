@@ -9,6 +9,7 @@ import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/reui/badge';
 import {
   listRecentRevisions,
   listShowPages,
@@ -88,7 +89,9 @@ function Content() {
                     {p.corpsKey} · {p.season}
                   </span>
                   <span className="flex items-center gap-2">
-                    <span className="text-text-secondary">{p.lockLevel}</span>
+                    <Badge variant="warning-light" size="sm">
+                      {p.lockLevel}
+                    </Badge>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -130,9 +133,9 @@ function Content() {
                   <span className="font-medium">
                     {r.corpsKey ?? '—'} · {r.season ?? '—'}
                   </span>
-                  <span className="rounded bg-accent px-1.5 py-0.5 text-xs text-text-secondary">
+                  <Badge variant="secondary" size="sm">
                     {r.op} {r.targetKind}
-                  </span>
+                  </Badge>
                   <span className="text-text-secondary">{r.authorName ?? r.authorId}</span>
                   <span className="ml-auto text-xs text-text-secondary tabular-nums">
                     {new Date(r.createdAt).toLocaleString()}

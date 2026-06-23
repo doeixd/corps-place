@@ -11,6 +11,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Badge } from '@/components/reui/badge';
+import {
   adminListQuestions,
   adminUpsertQuestion,
   adminSetQuestionActive,
@@ -122,15 +130,16 @@ function Quiz() {
               value={String(correctIndex)}
               onChange={(e) => setCorrectIndex(Number(e.target.value))}
             />
-            <select
-              className="rounded border border-border bg-transparent px-2 py-1"
-              value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value as Difficulty)}
-            >
-              <option value="easy">easy</option>
-              <option value="medium">medium</option>
-              <option value="hard">hard</option>
-            </select>
+            <Select value={difficulty} onValueChange={(v) => v && setDifficulty(v as Difficulty)}>
+              <SelectTrigger size="sm" className="w-28">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="easy">easy</SelectItem>
+                <SelectItem value="medium">medium</SelectItem>
+                <SelectItem value="hard">hard</SelectItem>
+              </SelectContent>
+            </Select>
             <Button
               size="sm"
               className="ml-auto"
@@ -168,7 +177,9 @@ function Quiz() {
                   >
                     {q.prompt}
                   </span>
-                  <span className="text-xs text-text-secondary">{q.difficulty}</span>
+                  <Badge variant="secondary" size="sm">
+                    {q.difficulty}
+                  </Badge>
                   <span className="text-xs text-text-secondary">
                     {q.choices.length} choices · correct #{q.correctIndex}
                   </span>

@@ -10,6 +10,7 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/reui/badge';
 import { adminSystem, getAnnouncement, setAnnouncement } from '@/lib/server-fns/admin';
 import { seoHead } from '@/lib/seo';
 
@@ -111,8 +112,14 @@ function System() {
             <span className="text-text-secondary">contributions.db</span>
             <span className="text-right">{sys ? fmtBytes(sys.contributionsDbBytes) : '—'}</span>
             <span className="text-text-secondary">Durable storage</span>
-            <span className={`text-right ${sys && !sys.durable.ready ? 'text-destructive' : ''}`}>
-              {sys ? (sys.durable.ready ? 'ready' : 'NOT READY') : '—'}
+            <span className="flex justify-end">
+              {sys ? (
+                <Badge variant={sys.durable.ready ? 'success-light' : 'destructive'} size="sm">
+                  {sys.durable.ready ? 'ready' : 'NOT READY'}
+                </Badge>
+              ) : (
+                '—'
+              )}
             </span>
           </CardContent>
         </Card>
