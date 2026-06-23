@@ -16,6 +16,7 @@ import { getStandings } from '@/lib/server-fns/fantasy';
 import { standingsCollection } from '@/db/fantasy-collections';
 import { HybridCollection } from '@/components/hybrid-collection';
 import { CAPTION_KEYS } from '@/lib/fantasy/captions';
+import { Explain } from '@/components/fantasy/explain';
 
 type Standings = Awaited<ReturnType<typeof getStandings>>;
 type Row = Standings['rows'][number];
@@ -81,28 +82,35 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
           </CardContent>
         </Card>
       ) : (
-        <Table containerClassName="overflow-x-auto">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-8">#</TableHead>
-              <TableHead>Corps</TableHead>
-              <TableHead className="text-right font-semibold">Total</TableHead>
-              <TableHead className="text-right">GE</TableHead>
-              <TableHead className="text-right">Visual</TableHead>
-              <TableHead className="border-r border-border text-right">Music</TableHead>
-              {CAPTION_KEYS.map((c) => (
-                <TableHead key={c} className="text-right">
-                  {c}
-                </TableHead>
+        <>
+          <p className="text-sm text-muted-foreground">
+            Each player&apos;s total is the sum of their drafted corps&apos; caption scores from
+            real DCI <Explain term="recap">recaps</Explain>, grouped into General Effect, Visual,
+            and Music. Hover any caption code to see what it means.
+          </p>
+          <Table containerClassName="overflow-x-auto">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-8">#</TableHead>
+                <TableHead>Corps</TableHead>
+                <TableHead className="text-right font-semibold">Total</TableHead>
+                <TableHead className="text-right">GE</TableHead>
+                <TableHead className="text-right">Visual</TableHead>
+                <TableHead className="border-r border-border text-right">Music</TableHead>
+                {CAPTION_KEYS.map((c) => (
+                  <TableHead key={c} className="text-right">
+                    <Explain term={c}>{c}</Explain>
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rows.map((row) => (
+                <StandingRow key={row.userId} row={row} />
               ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {rows.map((row) => (
-              <StandingRow key={row.userId} row={row} />
-            ))}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
+        </>
       )}
     </PageShell>
   );
