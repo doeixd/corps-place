@@ -30,7 +30,12 @@ export const Route = createFileRoute('/staff/')({
       title: 'Drum Corps Staff & Instructors Directory',
       description: `Browse ${n} drum corps instructors, designers and directors — the people who teach DCI corps, with roles, corps history and bios on DrumCorps.app.`,
       path: '/staff',
-      jsonLd: [breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Staff', path: '/staff' }])],
+      jsonLd: [
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Staff', path: '/staff' },
+        ]),
+      ],
     });
   },
   staleTime: 60_000,

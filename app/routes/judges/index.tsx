@@ -46,7 +46,12 @@ export const Route = createFileRoute('/judges/')({
       title: 'DCI Judges Directory — Adjudicators & Caption Assignments',
       description: `Browse ${n} DCI drum corps judges and adjudicators — caption assignments, scores given, and event history by season on DrumCorps.app.`,
       path: '/judges',
-      jsonLd: [breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Judges', path: '/judges' }])],
+      jsonLd: [
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Judges', path: '/judges' },
+        ]),
+      ],
     });
   },
   staleTime: 60_000,

@@ -2,7 +2,13 @@
 // logo palette, and favicon. Only one corps can be favorited at a time.
 import { useSyncExternalStore } from 'react';
 import { createStore } from '@xstate/store';
-import { corpsPalette, hexToOklch, oklchToRgb, rgbToHex, FALLBACK_PRIMARY } from '@sdk/src/corpsColors.js';
+import {
+  corpsPalette,
+  hexToOklch,
+  oklchToRgb,
+  rgbToHex,
+  FALLBACK_PRIMARY,
+} from '@sdk/src/corpsColors.js';
 import type { CorpsBrandColors } from '@sdk/src/corpsColors.js';
 import { themeStore } from './theme-store';
 
