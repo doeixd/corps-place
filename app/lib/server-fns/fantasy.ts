@@ -18,6 +18,8 @@ import { StandingsService } from '@/lib/fantasy/services/standings-service';
 import { InviteService } from '@/lib/fantasy/services/invite-service';
 import { MembershipService } from '@/lib/fantasy/services/membership-service';
 import { QuizService } from '@/lib/fantasy/services/quiz-service';
+import { DraftService } from '@/lib/fantasy/services/draft-service';
+import { effectDraftEnabled } from '@/lib/fantasy/flag';
 import { provideFantasy } from '@/rpc';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
@@ -457,6 +459,8 @@ export const scheduleDraft = createServerFn({ method: 'POST' })
     return { ok: true as const };
   });
 
+// Draft shims (P3): authz/rate-limit stay at the boundary; the engine is selected
+// by the FANTASY_EFFECT_DRAFT sub-flag (Effect DraftService vs legacy draft-engine).
 export const startDraft = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
@@ -464,7 +468,11 @@ export const startDraft = createServerFn({ method: 'POST' })
     assertDurable();
     const db = await getContributionsDb();
     requirePaid(await requireOwner(db, data.leagueId, actor));
-    const result = await draftEngine.startDraft(data.leagueId);
+    const result = effectDraftEnabled()
+      ? await runFantasy(
+          Effect.flatMap(DraftService, (s) => s.start(data.leagueId)).pipe(provideFantasy)
+        )
+      : await draftEngine.startDraft(data.leagueId);
     return result.ok ? { ok: true as const } : { ok: false as const, reason: result.reason };
   });
 
@@ -479,7 +487,20 @@ export const makePick = createServerFn({ method: 'POST' })
     // The engine already rejects anyone who isn't the current picker; this is an
     // explicit membership gate (defense-in-depth + a clear error for non-members).
     await requireMember(await getContributionsDb(), data.leagueId, actor);
-    await draftEngine.makePick(data.leagueId, actor.userId, data.corpsKey, data.caption);
+    if (effectDraftEnabled()) {
+      await runFantasy(
+        Effect.flatMap(DraftService, (s) =>
+          s.makePick({
+            leagueId: data.leagueId,
+            userId: actor.userId,
+            corpsKey: data.corpsKey,
+            caption: data.caption,
+          })
+        ).pipe(provideFantasy)
+      );
+    } else {
+      await draftEngine.makePick(data.leagueId, actor.userId, data.corpsKey, data.caption);
+    }
     return { ok: true as const };
   });
 
@@ -490,7 +511,13 @@ export const pauseDraft = createServerFn({ method: 'POST' })
     assertDurable();
     const db = await getContributionsDb();
     await requireOwner(db, data.leagueId, actor);
-    await draftEngine.pauseDraft(data.leagueId);
+    if (effectDraftEnabled()) {
+      await runFantasy(
+        Effect.flatMap(DraftService, (s) => s.pause(data.leagueId)).pipe(provideFantasy)
+      );
+    } else {
+      await draftEngine.pauseDraft(data.leagueId);
+    }
     return { ok: true as const };
   });
 
@@ -501,7 +528,13 @@ export const resumeDraft = createServerFn({ method: 'POST' })
     assertDurable();
     const db = await getContributionsDb();
     await requireOwner(db, data.leagueId, actor);
-    await draftEngine.resumeDraft(data.leagueId);
+    if (effectDraftEnabled()) {
+      await runFantasy(
+        Effect.flatMap(DraftService, (s) => s.resume(data.leagueId)).pipe(provideFantasy)
+      );
+    } else {
+      await draftEngine.resumeDraft(data.leagueId);
+    }
     return { ok: true as const };
   });
 
@@ -512,10 +545,12 @@ export const getDraftState = createServerFn({ method: 'GET' })
     const actor = await requireActor();
     const db = await getContributionsDb();
     await requireMember(db, data.leagueId, actor);
-    const [snapshot, pool] = await Promise.all([
-      draftEngine.getSnapshot(data.leagueId),
-      getDraftPool(),
-    ]);
+    const snapshotP = effectDraftEnabled()
+      ? runFantasy(
+          Effect.flatMap(DraftService, (s) => s.getSnapshot(data.leagueId)).pipe(provideFantasy)
+        )
+      : draftEngine.getSnapshot(data.leagueId);
+    const [snapshot, pool] = await Promise.all([snapshotP, getDraftPool()]);
     return { snapshot, pool };
   });
 

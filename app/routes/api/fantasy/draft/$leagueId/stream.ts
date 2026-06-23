@@ -1,8 +1,11 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
+import { Effect, Fiber, Stream } from 'effect';
 import { getActor } from '@/lib/authz';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { subscribe } from '@/lib/fantasy/bus';
 import { getSnapshot } from '@/lib/fantasy/draft-engine';
+import { effectDraftEnabled } from '@/lib/fantasy/flag';
+import { DraftService, DraftServiceLive, draftPubSub } from '@/lib/fantasy/services/draft-service';
 
 /**
  * Live draft channel (Fantasy DCI plan H.2): a Server-Sent Events stream. On
@@ -26,6 +29,7 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/draft/$leagueId/s
     if (!member) return new Response('Forbidden', { status: 403 });
 
     const leagueId = params.leagueId;
+    const useEffect = effectDraftEnabled();
     const encoder = new TextEncoder();
     let unsubscribe = () => {};
     let heartbeat: ReturnType<typeof setInterval> | null = null;
@@ -40,13 +44,36 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/draft/$leagueId/s
           controller.enqueue(encoder.encode(frame));
         };
 
-        const snapshot = await getSnapshot(leagueId);
+        // Engine A/B (P3): the Effect path reads the snapshot from DraftService and
+        // fans out from its PubSub; the legacy path uses draft-engine + bus.ts. The
+        // SSE wire format is identical, so the client is unchanged either way.
+        const snapshot = useEffect
+          ? await Effect.runPromise(
+              Effect.flatMap(DraftService, (s) => s.getSnapshot(leagueId)).pipe(
+                Effect.provide(DraftServiceLive)
+              )
+            )
+          : await getSnapshot(leagueId);
         write('snapshot', snapshot, snapshot.draft?.currentPickNo ?? 0);
 
-        unsubscribe = subscribe(leagueId, {
-          id: crypto.randomUUID(),
-          send: ({ event, data }) => write(event, data),
-        });
+        if (useEffect) {
+          // Subscribe a Stream from the league PubSub; interrupt the fiber on cancel.
+          const fiber = Effect.runFork(
+            Stream.fromPubSub(draftPubSub(leagueId)).pipe(
+              Stream.runForEach((e: { event: string; data: unknown }) =>
+                Effect.sync(() => write(e.event, e.data))
+              )
+            )
+          );
+          unsubscribe = () => {
+            Effect.runFork(Fiber.interrupt(fiber));
+          };
+        } else {
+          unsubscribe = subscribe(leagueId, {
+            id: crypto.randomUUID(),
+            send: ({ event, data }) => write(event, data),
+          });
+        }
         heartbeat = setInterval(() => {
           try {
             controller.enqueue(encoder.encode(': ping\n\n'));

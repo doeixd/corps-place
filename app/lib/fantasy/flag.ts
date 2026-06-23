@@ -13,3 +13,13 @@ export const FANTASY_ENABLED = import.meta.env.VITE_ENABLE_FANTASY === 'true';
 export const requireFantasyEnabled = (): void => {
   if (!FANTASY_ENABLED) throw notFound();
 };
+
+/**
+ * Server-only sub-flag (strangler A/B, plan P3/R2): when `FANTASY_EFFECT_DRAFT=1`
+ * the draft runs on the Effect `DraftService` (+ its PubSub SSE source) instead of
+ * the legacy `draft-engine.ts` (+ `bus.ts`). Defaults OFF so production keeps the
+ * proven legacy engine until the Effect path is verified live. Runtime env (NOT a
+ * `VITE_` build flag) — it only gates server-side engine selection; the client SSE
+ * endpoint + server-fn signatures are identical either way, so no client change.
+ */
+export const effectDraftEnabled = (): boolean => process.env.FANTASY_EFFECT_DRAFT === '1';
