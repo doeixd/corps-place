@@ -75,9 +75,13 @@ beforeAll(async () => {
           `INSERT INTO corps VALUES ('${k}', '${k.toUpperCase()}', '${k}', 'World Class', 'City', NULL)`
       ),
       `INSERT INTO competitions VALUES ('2025-world-championship-finals', '2025', '2025-08-09')`,
-      // c1 has the best prior-season GE1, then c2 — auto-pick should prefer c1|GE1.
-      `INSERT INTO corps_scores VALUES ('2025-world-championship-finals', 'c1', 'World Class')`,
-      `INSERT INTO corps_scores VALUES ('2025-world-championship-finals', 'c2', 'World Class')`,
+      // All six corps competed in 2025 → all eligible (getDraftPool now filters to
+      // latest-season World/Open participants). c1 has the best prior-season GE1,
+      // then c2 — auto-pick should prefer c1|GE1.
+      ...['c1', 'c2', 'c3', 'c4', 'c5', 'c6'].map(
+        (k) =>
+          `INSERT INTO corps_scores VALUES ('2025-world-championship-finals', '${k}', 'World Class')`
+      ),
       `INSERT INTO caption_scores VALUES ('2025-world-championship-finals', 'c1', 'General Effect 1', 19.5)`,
       `INSERT INTO caption_scores VALUES ('2025-world-championship-finals', 'c2', 'General Effect 1', 18.0)`,
     ],

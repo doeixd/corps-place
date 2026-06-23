@@ -55,15 +55,26 @@ export type DraftableCorps = {
 const POOL_TTL_MS = 60_000;
 let poolCache: { at: number; value: DraftableCorps[] } | null = null;
 
-/** Active World + Open corps for the season (Appendix C.4). Cached ~60s. */
+/**
+ * Eligible draftable corps (Appendix C.4): World + Open class corps that actually
+ * COMPETED in the latest season with results — not the whole all-time corps table
+ * (which includes folded/hiatus corps), and not the stale `corps.active` flag. The
+ * division is taken from that season's participation (`corps_scores.division_name`,
+ * which can differ from the corps' static division). Pre-season this resolves to
+ * the prior completed season — the same season the auto-pick ranking uses — and it
+ * auto-advances once the new season's shows land. Cached ~60s.
+ */
 export async function getDraftPool(): Promise<DraftableCorps[]> {
   if (poolCache && Date.now() - poolCache.at < POOL_TTL_MS) return poolCache.value;
   try {
     const res = await scoreDb().execute({
-      sql: `SELECT corps_key, slug, name, division_name, display_city, corps_logo
-            FROM corps
-            WHERE division_name IN (?, ?)
-            ORDER BY division_name, name COLLATE NOCASE`,
+      sql: `SELECT DISTINCT co.corps_key, co.slug, co.name, cs.division_name, co.display_city, co.corps_logo
+            FROM corps co
+            JOIN corps_scores cs ON cs.corps_key = co.corps_key
+            JOIN competitions c ON c.slug = cs.competition_slug
+            WHERE c.season = (SELECT MAX(season) FROM competitions)
+              AND cs.division_name IN (?, ?)
+            ORDER BY cs.division_name, co.name COLLATE NOCASE`,
       args: DRAFT_DIVISIONS,
     });
     const value = res.rows.map((r) => ({
