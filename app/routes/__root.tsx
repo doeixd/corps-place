@@ -13,6 +13,7 @@ import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { SiteNav } from '@/components/site-nav';
+import { AnnouncementBanner } from '@/components/announcement-banner';
 import { THEME_STORAGE_KEY } from '@/stores/theme-store';
 import { FAVORITE_STORAGE_KEY } from '@/stores/favorite-corps-store';
 import { buildSeo } from '@/lib/seo';
@@ -121,6 +122,7 @@ export const Route = createRootRoute({
               (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
               (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}
           <main className="pb-bottom-nav pl-side-nav">
+            <AnnouncementBanner />
             <Outlet />
           </main>
         </TooltipProvider>
