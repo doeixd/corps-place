@@ -113,7 +113,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
         />
       ) : null}
 
-      {viewer.isMember ? <PushToggle /> : null}
+      {viewer.isMember && data.pushEnabled ? <PushToggle /> : null}
 
       {viewer.isOwner ? <InvitePanel leagueId={league.leagueId} /> : null}
 

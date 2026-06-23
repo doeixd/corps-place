@@ -13,6 +13,7 @@ import { Context, Effect, Layer } from 'effect';
 import { randomUUID } from 'node:crypto';
 import type { Actor } from '@/lib/authz';
 import { paymentsEnabled } from '@/lib/fantasy/payments';
+import { vapidPublicKey } from '@/lib/fantasy/push';
 import { rateLimit } from '@/lib/rate-limit';
 import {
   DEFAULT_CONFIG,
@@ -154,6 +155,9 @@ const makeLeagueService = Effect.gen(function* () {
       draft,
       viewer,
       paymentsEnabled: paymentsEnabled(),
+      // Push is only usable when VAPID keys are configured; the dashboard gates the
+      // "draft alerts" toggle on this so it never renders as a dead control (§2.2).
+      pushEnabled: vapidPublicKey() !== null,
     };
   });
 
