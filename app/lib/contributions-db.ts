@@ -414,6 +414,16 @@ const ADD_COLUMNS: { table: string; column: string; ddl: string }[] = [
     column: 'hidden',
     ddl: 'ALTER TABLE show_media ADD COLUMN hidden INTEGER DEFAULT 0',
   },
+  // better-auth admin plugin columns on the `user` table (ADMIN_PAGE_PLAN §7). Added
+  // here (guarded) since this app has no better-auth CLI/migrate step; matches the
+  // plugin's schema. `user` is a reserved word → quote it.
+  {
+    table: 'user',
+    column: 'banned',
+    ddl: 'ALTER TABLE "user" ADD COLUMN banned INTEGER DEFAULT 0',
+  },
+  { table: 'user', column: 'banReason', ddl: 'ALTER TABLE "user" ADD COLUMN banReason TEXT' },
+  { table: 'user', column: 'banExpires', ddl: 'ALTER TABLE "user" ADD COLUMN banExpires TEXT' },
 ];
 
 const ensureColumns = async (db: Client): Promise<void> => {

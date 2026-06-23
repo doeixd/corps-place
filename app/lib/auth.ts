@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth';
-import { magicLink } from 'better-auth/plugins';
+import { magicLink, admin } from 'better-auth/plugins';
 import { passkey } from '@better-auth/passkey';
 import { LibsqlDialect } from '@libsql/kysely-libsql';
 import * as path from 'node:path';
@@ -62,6 +62,12 @@ export const auth = betterAuth({
   plugins: [
     magicLink({ sendMagicLink }),
     passkey({ rpID, rpName: 'corps.place', origin: baseURL }),
+    // Admin plugin (ADMIN_PAGE_PLAN §7): adds banned/banReason/banExpires to `user`
+    // + list-users/set-role/ban/impersonate/session endpoints. `adminRoles` aligns the
+    // plugin's own guard with our top tier; our authz.can() remains the brain (we wrap
+    // these endpoints in manageUsers-gated server-fns). The banned columns are added by
+    // the guarded migration in contributions-db.ts (ensureColumns) so ban persists.
+    admin({ defaultRole: 'user', adminRoles: ['admin'] }),
   ],
 });
 

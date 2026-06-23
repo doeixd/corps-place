@@ -21,6 +21,7 @@ export interface AdminUserRow {
   name: string | null;
   email: string | null;
   role: Role;
+  banned: boolean;
   createdAt: string | null;
 }
 
@@ -39,7 +40,7 @@ export const listUsers = createServerFn({ method: 'GET' })
     const like = `%${q}%`;
     const rows = (
       await db.execute({
-        sql: `SELECT id, name, email, role, "createdAt"
+        sql: `SELECT id, name, email, role, banned, "createdAt"
               FROM "user"
               ${q ? 'WHERE name LIKE ? OR email LIKE ?' : ''}
               ORDER BY "createdAt" DESC LIMIT ?`,
@@ -51,8 +52,39 @@ export const listUsers = createServerFn({ method: 'GET' })
       name: (r.name as string) ?? null,
       email: (r.email as string) ?? null,
       role: ((r.role as Role) ?? 'user') as Role,
+      banned: Boolean(r.banned),
       createdAt: (r.createdAt as string) ?? null,
     }));
+  });
+
+const BanInput = v.object({
+  userId: v.string(),
+  banned: v.boolean(),
+  reason: v.optional(v.pipe(v.string(), v.maxLength(500)), ''),
+});
+
+/** Ban/unban a user. Effective via getActor's banned-check + the plugin's
+ *  session.create hook (blocks new sign-ins). Cap: manageUsers. */
+export const setUserBanned = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(BanInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'manageUsers');
+    if (data.userId === actor.userId) throw new Error('FORBIDDEN: cannot ban yourself');
+    const db = await getContributionsDb();
+    const target = (
+      await db.execute({ sql: 'SELECT role FROM "user" WHERE id = ?', args: [data.userId] })
+    ).rows[0] as { role?: string } | undefined;
+    if (!target) throw new Error('NOT_FOUND');
+    await db.execute({
+      sql: 'UPDATE "user" SET banned = ?, banReason = ?, banExpires = NULL WHERE id = ?',
+      args: [data.banned ? 1 : 0, data.banned ? (data.reason ?? '') : null, data.userId],
+    });
+    await writeAudit(db, actor, {
+      action: data.banned ? 'ban_user' : 'unban_user',
+      target: data.userId,
+      after: data.banned ? { reason: data.reason ?? '' } : null,
+    });
+    return { ok: true as const, userId: data.userId, banned: data.banned };
   });
 
 const SetRoleInput = v.object({

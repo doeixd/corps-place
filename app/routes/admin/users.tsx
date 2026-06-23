@@ -1,6 +1,6 @@
-// User management (ADMIN_PAGE_PLAN §7, M3). List/search users and change roles
-// (guard-railed + audited server-side). Ban/impersonate arrive with the better-auth
-// admin plugin. Gated to admins via requireAdminLoader('manageUsers').
+// User management (ADMIN_PAGE_PLAN §7/§10). List/search users, change roles, ban,
+// and impersonate ("view as user") — all guard-railed + audited server-side. Gated to
+// admins via requireAdminLoader('manageUsers').
 import { createFileRoute } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { requireAdminLoader } from '@/lib/admin-loader';
@@ -8,8 +8,15 @@ import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { listUsers, setUserRole, type AdminUserRow } from '@/lib/server-fns/admin-users';
+import { Button } from '@/components/ui/button';
+import {
+  listUsers,
+  setUserRole,
+  setUserBanned,
+  type AdminUserRow,
+} from '@/lib/server-fns/admin-users';
 import type { Role } from '@/lib/authz';
+import { authClient } from '@/lib/auth-client';
 import { seoHead } from '@/lib/seo';
 
 const ROLES: Role[] = ['user', 'trusted', 'moderator', 'admin'];
@@ -55,6 +62,32 @@ function Users() {
     }
   };
 
+  const toggleBan = async (u: AdminUserRow) => {
+    if (u.banned ? false : !confirm(`Ban ${u.email ?? u.id}?`)) return;
+    setBusy(u.id);
+    setError(null);
+    try {
+      await setUserBanned({ data: { userId: u.id, banned: !u.banned, reason: '' } });
+      setUsers(
+        (prev) => prev?.map((x) => (x.id === u.id ? { ...x, banned: !u.banned } : x)) ?? prev
+      );
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  // Impersonation rides the better-auth client (cookies via the auth route). On
+  // success we land on the home page acting as that user; an admin banner/stop lives
+  // in the global session UI.
+  const impersonate = async (id: string) => {
+    setError(null);
+    const res = await authClient.admin.impersonateUser({ userId: id });
+    if (res.error) return setError(res.error.message ?? 'Impersonation failed');
+    window.location.href = '/';
+  };
+
   return (
     <>
       <PageHeader title="Users" subtitle="Roles, search" />
@@ -78,6 +111,11 @@ function Users() {
                 <div key={u.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
                   <span className="font-medium">{u.name ?? '—'}</span>
                   <span className="text-text-secondary">{u.email ?? u.id}</span>
+                  {u.banned ? (
+                    <span className="rounded bg-destructive/10 px-1.5 py-0.5 text-xs text-destructive">
+                      banned
+                    </span>
+                  ) : null}
                   <select
                     className="ml-auto rounded border border-border bg-transparent px-2 py-1 text-sm"
                     value={u.role}
@@ -90,6 +128,17 @@ function Users() {
                       </option>
                     ))}
                   </select>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={busy === u.id}
+                    onClick={() => void toggleBan(u)}
+                  >
+                    {u.banned ? 'Unban' : 'Ban'}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => void impersonate(u.id)}>
+                    Impersonate
+                  </Button>
                 </div>
               ))}
             </div>
