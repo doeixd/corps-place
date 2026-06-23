@@ -1,5 +1,7 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
-import { recomputeFantasyStandingsForSeason } from '@/lib/fantasy/standings';
+import { Effect } from 'effect';
+import { StandingsService } from '@/lib/fantasy/services/standings-service';
+import { provideFantasy } from '@/rpc';
 
 /**
  * Cron-hit standings recompute (Fantasy DCI plan §5.5). The recap scraper is
@@ -16,7 +18,9 @@ const run = async ({ request }: { request: Request }): Promise<Response> => {
   if (!authorized(request)) return new Response('Not found', { status: 404 });
   const season =
     new URL(request.url).searchParams.get('season') ?? String(new Date().getFullYear());
-  const summary = await recomputeFantasyStandingsForSeason(season);
+  const summary = await Effect.runPromise(
+    Effect.flatMap(StandingsService, (s) => s.recompute(season)).pipe(provideFantasy)
+  );
   return Response.json({ ok: true, season, ...summary });
 };
 

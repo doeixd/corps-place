@@ -11,9 +11,11 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { resolveLeagueConfig } from './config';
+import { Effect } from 'effect';
 import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from './captions';
 
-let recompute: typeof import('./standings').recomputeFantasyStandingsForSeason;
+// P4: the recompute orchestrator now lives in StandingsService; drive it via runPromise.
+let recompute: (season: string) => Promise<{ leagues: number; members: number; finalized: number }>;
 let contribDb: Client;
 
 const CONFIG = resolveLeagueConfig({}); // default weights 40/30/30, recap mode
@@ -72,7 +74,13 @@ beforeAll(async () => {
     'CREATE TABLE IF NOT EXISTS "user" (id TEXT PRIMARY KEY, name TEXT, email TEXT, image TEXT, role TEXT)'
   );
 
-  ({ recomputeFantasyStandingsForSeason: recompute } = await import('./standings'));
+  const { StandingsService, StandingsServiceLive } = await import('./services/standings-service');
+  recompute = (season: string) =>
+    Effect.runPromise(
+      Effect.flatMap(StandingsService, (s) => s.recompute(season)).pipe(
+        Effect.provide(StandingsServiceLive)
+      )
+    );
   const { getContributionsDb } = await import('@/lib/contributions-db');
   contribDb = await getContributionsDb();
 

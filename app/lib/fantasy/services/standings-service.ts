@@ -7,12 +7,25 @@
  * SERVER-ONLY. Mirrors the `Context.Service` shape of `league-service.ts`.
  */
 import { Context, Effect, Layer } from 'effect';
+import { randomUUID } from 'node:crypto';
+import { getSeasonBestLookup, getSeasonFinals } from '@/lib/fantasy/score-db';
+import {
+  buildStandings,
+  buildBreakdown,
+  seasonBestFrom,
+  type MemberPicks,
+} from '@/lib/fantasy/standings';
+import { type Pick } from '@/lib/fantasy/scoring';
+import { type CaptionKey } from '@/lib/fantasy/captions';
+import type { LeagueConfig } from '@/lib/fantasy/config';
 import { NotFound } from './errors';
 import { ContributionsSql, ContributionsSqlLive } from './sql';
 
 const strOrNull = (v: unknown): string | null => (v == null ? null : (v as string));
 
 type CaptionTotals = Record<string, number>;
+
+export type RecomputeSummary = { leagues: number; members: number; finalized: number };
 
 interface LeagueRow {
   league_id: string;
@@ -94,7 +107,140 @@ const makeStandingsService = Effect.gen(function* () {
     };
   });
 
-  return { getStandings };
+  /**
+   * Recompute standings for every active/complete league in `season`, lock
+   * `is_final` once the finals recap has landed (§5.5), and enqueue change
+   * notifications. Idempotent — standings are a pure function of (picks,
+   * season-best, weights). Ports the legacy `recomputeFantasyStandingsForSeason`.
+   */
+  const recompute = Effect.fn('StandingsService.recompute')(function* (season: string) {
+    const bestLookup = yield* Effect.promise(() => getSeasonBestLookup(season));
+    const finals = yield* Effect.promise(() => getSeasonFinals(season));
+    const best = seasonBestFrom(bestLookup);
+    const now = new Date().toISOString();
+    const isFinal = Boolean(finals && finals.recapPresent && now >= finals.date);
+    const through = finals?.recapPresent ? finals.slug : null;
+
+    const leagues = yield* sql<{ league_id: string; config_json: string }>`
+      SELECT league_id, config_json FROM fantasy_leagues
+      WHERE season = ${season} AND status IN ('active', 'complete')
+    `.pipe(Effect.orDie);
+
+    let memberTotal = 0;
+    let finalized = 0;
+
+    for (const league of leagues) {
+      const leagueId = league.league_id;
+      const config = JSON.parse(league.config_json) as LeagueConfig;
+
+      const pickRows = yield* sql<{
+        user_id: string;
+        corps_key: string;
+        caption: string;
+        caption_slot_index: number;
+        weight: number;
+      }>`
+        SELECT user_id, corps_key, caption, caption_slot_index, weight
+        FROM fantasy_picks WHERE league_id = ${leagueId}
+      `.pipe(Effect.orDie);
+
+      const priorRows = yield* sql<{ user_id: string; total_score: number; is_final: number }>`
+        SELECT user_id, total_score, is_final FROM fantasy_standings WHERE league_id = ${leagueId}
+      `.pipe(Effect.orDie);
+      const prior = new Map(
+        priorRows.map((r) => [
+          r.user_id,
+          { total: Number(r.total_score), final: Boolean(r.is_final) },
+        ])
+      );
+
+      const byUser = new Map<string, Pick[]>();
+      for (const r of pickRows) {
+        const list = byUser.get(r.user_id) ?? [];
+        list.push({
+          corpsKey: r.corps_key,
+          caption: r.caption as CaptionKey,
+          captionSlotIndex: Number(r.caption_slot_index),
+          weight: Number(r.weight),
+        });
+        byUser.set(r.user_id, list);
+      }
+      if (byUser.size === 0) continue;
+
+      const members: MemberPicks[] = [...byUser.entries()].map(([userId, picks]) => ({
+        userId,
+        picks,
+      }));
+      const rows = buildStandings(members, best, config.weights, config.scoringMode);
+
+      yield* sql
+        .withTransaction(
+          Effect.forEach(
+            rows,
+            (row) => {
+              const breakdown = buildBreakdown(byUser.get(row.userId) ?? [], best);
+              const payload = JSON.stringify({
+                perCaption: row.perCaption,
+                contributions: breakdown,
+              });
+              return sql`
+                INSERT INTO fantasy_standings
+                  (league_id, user_id, through_competition_slug, total_score, ge_score, visual_score,
+                   music_score, breakdown_json, rank, computed_at, is_final)
+                VALUES (${leagueId}, ${row.userId}, ${through}, ${row.total}, ${row.ge}, ${row.visual},
+                        ${row.music}, ${payload}, ${row.rank}, ${now}, ${isFinal ? 1 : 0})
+                ON CONFLICT(league_id, user_id) DO UPDATE SET
+                  through_competition_slug = excluded.through_competition_slug,
+                  total_score = excluded.total_score, ge_score = excluded.ge_score,
+                  visual_score = excluded.visual_score, music_score = excluded.music_score,
+                  breakdown_json = excluded.breakdown_json, rank = excluded.rank,
+                  computed_at = excluded.computed_at, is_final = excluded.is_final
+              `;
+            },
+            { discard: true }
+          )
+        )
+        .pipe(Effect.orDie);
+
+      // Notify only members whose total moved, or when the season just finalized.
+      const changed = rows
+        .filter((r) => {
+          const p = prior.get(r.userId);
+          if (!p) return true;
+          if (Math.abs(p.total - r.total) > 1e-9) return true;
+          return isFinal && !p.final;
+        })
+        .map((r) => r.userId);
+      if (changed.length > 0) {
+        const kind = isFinal ? 'season_complete' : 'standings';
+        yield* sql
+          .withTransaction(
+            Effect.forEach(
+              changed,
+              (userId) => sql`
+                INSERT INTO fantasy_notifications
+                  (notif_id, user_id, league_id, kind, payload_json, created_at)
+                VALUES (${randomUUID()}, ${userId}, ${leagueId}, ${kind}, '{}', ${now})
+              `,
+              { discard: true }
+            )
+          )
+          .pipe(Effect.orDie);
+      }
+
+      if (isFinal) {
+        yield* sql`
+          UPDATE fantasy_leagues SET status = 'complete', updated_at = ${now} WHERE league_id = ${leagueId}
+        `.pipe(Effect.orDie);
+        finalized++;
+      }
+      memberTotal += rows.length;
+    }
+
+    return { leagues: leagues.length, members: memberTotal, finalized } as RecomputeSummary;
+  });
+
+  return { getStandings, recompute };
 });
 
 export class StandingsService extends Context.Service<

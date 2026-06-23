@@ -11,7 +11,9 @@ import { getContributionsDb } from '@/lib/contributions-db';
 import { requireCapability } from '@/lib/authz';
 import { writeAudit } from '@/lib/admin-audit';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
-import { recomputeFantasyStandingsForSeason } from '@/lib/fantasy/standings';
+import { Effect } from 'effect';
+import { StandingsService } from '@/lib/fantasy/services/standings-service';
+import { provideFantasy } from '@/rpc';
 
 export interface AdminLeagueRow {
   leagueId: string;
@@ -201,7 +203,9 @@ export const adminRecomputeStandings = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
-    const summary = await recomputeFantasyStandingsForSeason(data.season);
+    const summary = await Effect.runPromise(
+      Effect.flatMap(StandingsService, (s) => s.recompute(data.season)).pipe(provideFantasy)
+    );
     await writeAudit(await getContributionsDb(), actor, {
       action: 'fantasy_recompute_standings',
       target: data.season,

@@ -58,7 +58,7 @@ export function buildStandings(
 }
 
 /** Per-caption list of which picks contributed (drives the expandable UI). */
-function buildBreakdown(
+export function buildBreakdown(
   picks: readonly Pick[],
   best: SeasonBest
 ): Record<CaptionKey, Array<{ corpsKey: string; value: number; weight: number }>> {
