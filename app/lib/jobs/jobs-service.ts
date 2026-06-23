@@ -911,6 +911,43 @@ const makeJobsService = Effect.gen(function* () {
     }
   });
 
+  // ── Payments / Boosting ──────────────────────────────────────────────────
+
+  const createBoostOrder = Effect.fn('JobsService.createBoostOrder')(function* (
+    userId: string,
+    postingId: string,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    const orderId = newId();
+    const amountCents = 2000; // $20 base boost price
+    yield* sql`INSERT INTO jobs_order (order_id, user_id, kind, posting_id, amount_cents, currency, status, created_at)
+               VALUES (${orderId}, ${userId}, 'boost', ${postingId}, ${amountCents}, 'usd', 'pending', ${ctx.now})`;
+    return orderId;
+  });
+
+  const markBoostPaid = Effect.fn('JobsService.markBoostPaid')(function* (
+    sessionId: string,
+    paymentIntent: string | null
+  ) {
+    const now = new Date().toISOString();
+    // Find the order by stripe_session_id, mark completed
+    const order = yield* sql<{
+      order_id: string;
+      posting_id: string | null;
+    }>`SELECT order_id, posting_id FROM jobs_order WHERE stripe_session_id = ${sessionId} AND status = 'pending' LIMIT 1`;
+    if (!order[0]) return; // Idempotent — already processed
+
+    yield* sql`UPDATE jobs_order SET status = 'completed', completed_at = ${now} WHERE order_id = ${order[0].order_id}`;
+
+    // If the order is for a boost, flip the posting
+    if (order[0].posting_id) {
+      const boostUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days
+      yield* sql`UPDATE jobs_posting SET is_boosted = 1, boosted_until = ${boostUntil}, updated_at = ${now}
+                 WHERE posting_id = ${order[0].posting_id}`;
+    }
+  });
+
   return {
     getProfileBySlug,
     getProfileByUser,
@@ -944,6 +981,9 @@ const makeJobsService = Effect.gen(function* () {
     listAlerts,
     deleteAlert,
     fireAlertsForNewPosting,
+    // Payments
+    createBoostOrder,
+    markBoostPaid,
   };
 });
 

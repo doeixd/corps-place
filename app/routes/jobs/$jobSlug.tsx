@@ -6,12 +6,18 @@ import { Icon } from '@/components/icon';
 import { Badge } from '@/components/ui/badge';
 import { PageShell } from '@/components/page-shell';
 import { buildSeo, clampDescription, jsonLdScript } from '@/lib/seo';
-import { getJobPosting, applyToJob, reportContent } from '@/lib/server-fns/jobs';
+import {
+  getJobPosting,
+  applyToJob,
+  reportContent,
+  createBoostCheckout,
+} from '@/lib/server-fns/jobs';
 import {
   Briefcase01Icon,
   MapPin01Icon,
   CheckmarkCircle02Icon,
   Alert02Icon,
+  FireIcon,
 } from '@/components/icons/generated';
 import { useState } from 'react';
 
@@ -177,6 +183,25 @@ function JobDetail() {
               >
                 <Icon icon={Alert02Icon} size="xs" /> Report
               </Button>
+              {!job.is_boosted ? (
+                <Button
+                  onClick={async () => {
+                    try {
+                      const result = await createBoostCheckout({
+                        postingId: job.posting_id,
+                        slug: job.slug,
+                      });
+                      if (result.url) window.location.href = result.url;
+                    } catch (e) {
+                      alert((e as Error).message);
+                    }
+                  }}
+                  variant="outline"
+                  size="xs"
+                >
+                  <Icon icon={FireIcon} size="xs" /> Boost
+                </Button>
+              ) : null}
             </div>
           </div>
 

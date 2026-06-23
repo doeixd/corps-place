@@ -37,8 +37,33 @@ export const fantasyWebhook = await WebhookEndpoint('fantasy-stripe-webhook', {
   enabledEvents: ['checkout.session.completed', 'charge.refunded'],
 });
 
+// ── PageantryJobs (M5) ──────────────────────────────────────────────────────
+const jobsApp = await alchemy('pageantry-jobs');
+
+export const jobsBoostProduct = await Product('jobs-boost', {
+  apiKey,
+  name: 'Job Listing Boost',
+  description: 'Boost a job posting to the top of search results for 30 days.',
+});
+
+export const jobsBoostPrice = await Price('jobs-boost-fee', {
+  apiKey,
+  product: jobsBoostProduct.id,
+  currency: 'usd',
+  unitAmount: 2000, // $20.00 for a 30-day boost
+});
+
+export const jobsWebhook = await WebhookEndpoint('jobs-stripe-webhook', {
+  apiKey,
+  url: `${origin}/api/jobs/stripe-webhook`,
+  enabledEvents: ['checkout.session.completed'],
+});
+
 console.log('Set these in the app environment:');
 console.log(`  STRIPE_LEAGUE_PRICE_ID=${leaguePrice.id}`);
 console.log(`  STRIPE_WEBHOOK_SECRET=${fantasyWebhook.secret}`);
+console.log(`  STRIPE_BOOST_PRICE_ID=${jobsBoostPrice.id}`);
+console.log(`  STRIPE_JOBS_WEBHOOK_SECRET=${jobsWebhook.secret}`);
 
 await app.finalize();
+await jobsApp.finalize();

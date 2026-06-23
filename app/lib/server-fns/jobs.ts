@@ -373,6 +373,25 @@ export const listMyAlerts = createServerFn({ method: 'GET' }).handler(async () =
   );
 });
 
+// ── Payments / Boosting ──────────────────────────────────────────────────────
+
+export const createBoostCheckout = createServerFn({ method: 'POST' })
+  .validator((d: { postingId: string; slug: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    const { createBoostCheckoutSession } = await import('@/lib/jobs/payments');
+    const orderId = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.createBoostOrder(ctx.authorId, data.postingId, ctx)
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+    const { url } = await createBoostCheckoutSession({
+      postingId: data.postingId,
+      slug: data.slug,
+    });
+    return { ok: true as const, url, orderId };
+  });
+
 export const deleteJobAlert = createServerFn({ method: 'POST' })
   .validator((d: { alertId: string }) => d)
   .handler(async ({ data }) => {
