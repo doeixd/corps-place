@@ -18,6 +18,7 @@ import {
 } from '@/lib/server-fns/fantasy';
 import { uploadFantasyLogo } from '@/lib/server-fns/fantasy-media';
 import { PhotoUpload, fileToBase64 } from '@/components/fantasy/photo-upload';
+import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
 import { CorpsIdentityForm } from '@/components/fantasy/corps-identity-form';
 import { PushToggle } from '@/components/fantasy/push-toggle';
 import { BusyButton } from '@/components/fantasy/busy-button';
@@ -232,18 +233,6 @@ function DangerZone({
   onLeft: () => Promise<void> | void;
   onCanceled: () => Promise<void> | void;
 }) {
-  const leave = useAsyncAction(async () => {
-    if (!window.confirm('Leave this league? You can rejoin from an invite link before the draft.'))
-      return;
-    await leaveLeague({ data: { leagueId } });
-    await onLeft();
-  });
-  const cancel = useAsyncAction(async () => {
-    if (!window.confirm('Cancel this league for everyone? This cannot be undone.')) return;
-    await cancelLeague({ data: { leagueId } });
-    await onCanceled();
-  });
-
   if (status === 'canceled') {
     return <p className="text-sm text-muted-foreground">This league has been canceled.</p>;
   }
@@ -251,22 +240,38 @@ function DangerZone({
   return (
     <section className="flex flex-col items-start gap-2 border-t border-border pt-4">
       {isOwner ? (
-        <BusyButton
-          variant="outline"
-          size="sm"
-          busy={cancel.busy}
-          onClick={() => void cancel.run()}
-        >
-          Cancel league
-        </BusyButton>
+        <ConfirmDialog
+          trigger={
+            <Button variant="destructive" size="sm">
+              Cancel league
+            </Button>
+          }
+          title="Cancel this league?"
+          description="This ends the league for everyone and can't be undone."
+          confirmLabel="Cancel league"
+          destructive
+          onConfirm={async () => {
+            await cancelLeague({ data: { leagueId } });
+            await onCanceled();
+          }}
+        />
       ) : (
-        <BusyButton variant="outline" size="sm" busy={leave.busy} onClick={() => void leave.run()}>
-          Leave league
-        </BusyButton>
+        <ConfirmDialog
+          trigger={
+            <Button variant="outline" size="sm">
+              Leave league
+            </Button>
+          }
+          title="Leave this league?"
+          description="You can rejoin from an invite link before the draft starts."
+          confirmLabel="Leave league"
+          destructive
+          onConfirm={async () => {
+            await leaveLeague({ data: { leagueId } });
+            await onLeft();
+          }}
+        />
       )}
-      {leave.error || cancel.error ? (
-        <p className="text-sm text-destructive">{leave.error ?? cancel.error}</p>
-      ) : null}
     </section>
   );
 }
