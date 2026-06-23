@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vite-plus/test';
-import { DEFAULT_CONFIG, parseLeagueConfig, resolveLeagueConfig, totalRounds } from './config';
+import {
+  DEFAULT_CONFIG,
+  parseLeagueConfig,
+  resolveLeagueConfig,
+  totalRounds,
+  draftShapeChanged,
+} from './config';
 
 describe('LeagueConfig', () => {
   it('accepts and round-trips the default config', () => {
@@ -39,5 +45,24 @@ describe('LeagueConfig', () => {
 
   it('rejects all-zero weights (cannot normalize)', () => {
     expect(() => resolveLeagueConfig({ weights: { ge: 0, visual: 0, music: 0 } })).toThrow();
+  });
+});
+
+describe('draftShapeChanged', () => {
+  it('is false when only weights or notify change (still editable post-draft)', () => {
+    const a = DEFAULT_CONFIG;
+    const weightsOnly = resolveLeagueConfig({ weights: { ge: 50, visual: 25, music: 25 } });
+    const notifyOnly = resolveLeagueConfig({ notify: { email: false, push: true } });
+    expect(draftShapeChanged(a, weightsOnly)).toBe(false);
+    expect(draftShapeChanged(a, notifyOnly)).toBe(false);
+  });
+
+  it('is true when a draft-shape field changes', () => {
+    const a = DEFAULT_CONFIG;
+    expect(draftShapeChanged(a, resolveLeagueConfig({ draftType: 'linear' }))).toBe(true);
+    expect(draftShapeChanged(a, resolveLeagueConfig({ pickSeconds: 45 }))).toBe(true);
+    expect(
+      draftShapeChanged(a, resolveLeagueConfig({ captionCaps: { ...a.captionCaps, MP: 3 } }))
+    ).toBe(true);
   });
 });

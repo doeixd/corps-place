@@ -18,6 +18,7 @@ import {
   DEFAULT_CONFIG,
   resolveLeagueConfig,
   totalRounds,
+  draftShapeChanged,
   type LeagueConfig,
 } from '@/lib/fantasy/config';
 import {
@@ -27,7 +28,7 @@ import {
   type ServedQuestion,
 } from '@/lib/fantasy/quiz';
 import { seededShuffle } from '@/lib/fantasy/draft-order';
-import { getDraftPool } from '@/lib/fantasy/score-db';
+import { getDraftPool, getSeasonFinals } from '@/lib/fantasy/score-db';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { enqueueDraftReminders } from '@/lib/fantasy/jobs';
 import { vapidPublicKey } from '@/lib/fantasy/push';
@@ -285,14 +286,37 @@ export const updateLeagueConfig = createServerFn({ method: 'POST' })
     assertDurable();
     const db = await getContributionsDb();
     const league = await requireOwner(db, data.leagueId, actor);
-    // M1: no draft exists yet, so draft-shape fields are freely editable. The
-    // post-draft freeze is enforced in M3 once fantasy_drafts is populated.
-    // TODO(plan-gap F.1): reject draft-shape changes once draft.status != 'scheduled'.
-    const config = resolveLeagueConfig(data.config as Partial<LeagueConfig>);
+    const current = JSON.parse(str(league.config_json)) as LeagueConfig;
+    const next = resolveLeagueConfig(data.config as Partial<LeagueConfig>);
+
+    // Draft-shape fields freeze once the draft is past 'scheduled' (§6); only
+    // `weights` (and notify prefs) stay editable after that.
+    const draftStarted = Boolean(
+      (
+        await db.execute({
+          sql: "SELECT 1 FROM fantasy_drafts WHERE league_id = ? AND status != 'scheduled' LIMIT 1",
+          args: [data.leagueId],
+        })
+      ).rows[0]
+    );
+    if (draftStarted && draftShapeChanged(current, next)) {
+      throw new Error('CONFLICT:draft-shape-locked');
+    }
+
+    // Scoring weights are editable until finals week, then locked (§16 V3).
+    const weightsChanged = JSON.stringify(current.weights) !== JSON.stringify(next.weights);
+    if (weightsChanged && next.weightsLockedAt === 'finals_week') {
+      const finals = await getSeasonFinals(str(league.season));
+      const locked = Boolean(
+        finals && finals.recapPresent && new Date().toISOString() >= finals.date
+      );
+      if (locked) throw new Error('CONFLICT:weights-locked');
+    }
+
     const now = new Date().toISOString();
     await db.execute({
       sql: 'UPDATE fantasy_leagues SET config_json = ?, updated_at = ? WHERE league_id = ?',
-      args: [JSON.stringify(config), now, str(league.league_id)],
+      args: [JSON.stringify(next), now, str(league.league_id)],
     });
     return { ok: true as const };
   });

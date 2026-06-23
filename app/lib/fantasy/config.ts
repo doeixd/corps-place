@@ -138,3 +138,27 @@ export const resolveLeagueConfig = (override?: Partial<LeagueConfig>): LeagueCon
 /** Total draft rounds = sum of caption caps. */
 export const totalRounds = (config: LeagueConfig): number =>
   CAPTION_KEYS.reduce((sum, k) => sum + config.captionCaps[k], 0);
+
+/**
+ * Draft-shape fields that freeze once the draft starts (§6) — everything except
+ * scoring `weights` (editable until finals week) and `notify` prefs.
+ */
+const DRAFT_SHAPE_KEYS: (keyof LeagueConfig)[] = [
+  'draftType',
+  'pickSeconds',
+  'quizOrderDir',
+  'captionCaps',
+  'oneCaptionPerCorps',
+  'allowedDivisions',
+  'reverseWeighting',
+  'scoringMode',
+  'weightsLockedAt',
+  'missingCaptionPolicy',
+  'draftPhase',
+  'rankingSource',
+  'quiz',
+];
+
+/** True if any draft-shape field differs between two configs (ignores weights + notify). */
+export const draftShapeChanged = (a: LeagueConfig, b: LeagueConfig): boolean =>
+  DRAFT_SHAPE_KEYS.some((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k]));
