@@ -25,7 +25,7 @@ import type { FantasyError } from '@/lib/fantasy/services/errors';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
 import { totalRounds, type LeagueConfig } from '@/lib/fantasy/config';
-import { getDraftPool } from '@/lib/fantasy/score-db';
+import { getDraftPool, getPriorSeasonRanking } from '@/lib/fantasy/score-db';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { NotificationService } from '@/lib/fantasy/services/notification-service';
 import { vapidPublicKey } from '@/lib/fantasy/push';
@@ -592,11 +592,20 @@ export const getDraftState = createServerFn({ method: 'GET' })
     const actor = await requireActor();
     const db = await getContributionsDb();
     await requireMember(db, data.leagueId, actor);
+    const league = await loadLeagueById(db, data.leagueId);
+    const prevSeason = String(Number(str(league.season)) - 1);
     const snapshotP = effectDraftEnabled()
       ? runFantasy(Effect.flatMap(DraftService, (s) => s.getSnapshot(data.leagueId)))
       : draftEngine.getSnapshot(data.leagueId);
-    const [snapshot, pool] = await Promise.all([snapshotP, getDraftPool()]);
-    return { snapshot, pool };
+    const [snapshot, pool, ranking] = await Promise.all([
+      snapshotP,
+      getDraftPool(),
+      getPriorSeasonRanking(prevSeason),
+    ]);
+    // `${corpsKey}|${caption}` → prior-season finals score, for ordering the pool
+    // by previous-season rank per caption in the picker (empty until §2.1 lands).
+    const rank: Record<string, number> = Object.fromEntries(ranking);
+    return { snapshot, pool, rank };
   });
 
 // ===========================================================================

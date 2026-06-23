@@ -15,7 +15,16 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import { CorpsLogo } from '@/components/corps-logo';
+import { cn } from '@/lib/utils';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getLeague, getDraftState } from '@/lib/server-fns/fantasy';
@@ -118,6 +127,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           draft={draft}
           picks={snapshot.picks}
           pool={initial.pool}
+          rank={initial.rank}
           viewerId={league.viewer.userId}
           isOwner={league.viewer.isOwner}
           membersById={membersById}
@@ -220,6 +230,7 @@ type LiveDraftProps = {
   draft: NonNullable<DraftState['snapshot']['draft']>;
   picks: DraftState['snapshot']['picks'];
   pool: DraftState['pool'];
+  rank: DraftState['rank'];
   viewerId: string | null;
   isOwner: boolean;
   membersById: Map<string, Member>;
@@ -233,6 +244,7 @@ function LiveDraft({
   draft,
   picks,
   pool,
+  rank,
   viewerId,
   isOwner,
   membersById,
@@ -290,79 +302,136 @@ function LiveDraft({
         pool={pool}
         currentUserId={draft.currentUserId}
       />
-      <PoolPicker
-        pool={pool}
-        takenPairs={takenPairs}
-        canPick={isMyTurn && !picking}
-        onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
-      />
+
+      {/* Desktop: the section picker inline. Mobile: behind a bottom-sheet drawer. */}
+      <Card className="hidden md:block">
+        <CardHeader>
+          <CardTitle>Available corps</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SectionPicker
+            pool={pool}
+            rank={rank}
+            takenPairs={takenPairs}
+            canPick={isMyTurn && !picking}
+            onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
+          />
+        </CardContent>
+      </Card>
+      <div className="md:hidden">
+        <Drawer>
+          <DrawerTrigger
+            render={
+              <Button className="w-full" disabled={!isMyTurn || picking}>
+                {isMyTurn ? 'Make your pick' : 'View available corps'}
+              </Button>
+            }
+          />
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Available corps</DrawerTitle>
+            </DrawerHeader>
+            <div className="overflow-y-auto px-4 pb-4">
+              <SectionPicker
+                pool={pool}
+                rank={rank}
+                takenPairs={takenPairs}
+                canPick={isMyTurn && !picking}
+                onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
+              />
+            </div>
+          </DrawerContent>
+        </Drawer>
+      </div>
     </div>
   );
 }
 
-function PoolPicker({
+/**
+ * The section picker (UI/UX plan §12.5 board redesign): an exclusive caption
+ * toggle, then every available corps for that caption listed in previous-season
+ * rank order, with already-taken (corps, caption) pairs grayed out. Rendered
+ * inline on desktop and inside the bottom-sheet Drawer on mobile.
+ */
+function SectionPicker({
   pool,
+  rank,
   takenPairs,
   canPick,
   onPick,
 }: {
   pool: DraftState['pool'];
+  rank: DraftState['rank'];
   takenPairs: Set<string>;
   canPick: boolean;
   onPick: (corpsKey: string, caption: CaptionKey) => void;
 }) {
-  const [query, setQuery] = useState('');
-  const q = query.trim().toLowerCase();
-  const filtered = q ? pool.filter((c) => c.name.toLowerCase().includes(q)) : pool;
+  const [caption, setCaption] = useState<CaptionKey>('GE1');
+
+  if (pool.length === 0) {
+    return (
+      <p className="text-sm text-muted-foreground">
+        Draftable corps aren&apos;t available right now — the pool appears once this season&apos;s
+        corps data is published.
+      </p>
+    );
+  }
+
+  // Order this caption's corps by previous-season rank (highest first); unranked last.
+  const ranked = [...pool].sort(
+    (a, b) =>
+      (rank[`${b.corpsKey}|${caption}`] ?? -Infinity) -
+      (rank[`${a.corpsKey}|${caption}`] ?? -Infinity)
+  );
 
   return (
-    <Card>
-      <CardHeader className="flex-row items-center justify-between gap-2">
-        <CardTitle>Available corps</CardTitle>
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Filter corps…"
-          className="w-48"
-        />
-      </CardHeader>
-      <CardContent>
-        {pool.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Draftable corps aren&apos;t available right now — the pool appears once this
-            season&apos;s corps data is published.
-          </p>
-        ) : (
-          <ul className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto">
-            {filtered.map((corps) => (
-              <li key={corps.corpsKey} className="rounded-lg border border-border p-2">
-                <div className="mb-1 flex items-center gap-2 text-sm font-medium">
-                  <span>{corps.name}</span>
-                  <span className="text-xs text-muted-foreground">{corps.divisionName}</span>
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {CAPTION_KEYS.map((caption) => {
-                    const taken = takenPairs.has(`${corps.corpsKey}|${caption}`);
-                    return (
-                      <Button
-                        key={caption}
-                        size="xs"
-                        variant={taken ? 'ghost' : 'outline'}
-                        disabled={taken || !canPick}
-                        title={`${KEY_TO_CAPTION_NAME[caption]}${taken ? ' — already drafted' : ''}`}
-                        onClick={() => onPick(corps.corpsKey, caption)}
-                      >
-                        {caption}
-                      </Button>
-                    );
-                  })}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </CardContent>
-    </Card>
+    <div className="flex flex-col gap-3">
+      <ToggleGroup
+        value={[caption]}
+        onValueChange={(v) => {
+          const c = v[v.length - 1];
+          if (c) setCaption(c as CaptionKey);
+        }}
+        className="flex-wrap"
+      >
+        {CAPTION_KEYS.map((c) => (
+          <ToggleGroupItem key={c} value={c} title={KEY_TO_CAPTION_NAME[c]}>
+            {c}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+
+      <ul className="flex max-h-[55vh] flex-col gap-1 overflow-y-auto">
+        {ranked.map((corps) => {
+          const taken = takenPairs.has(`${corps.corpsKey}|${caption}`);
+          return (
+            <li key={corps.corpsKey}>
+              <button
+                type="button"
+                disabled={taken || !canPick}
+                onClick={() => onPick(corps.corpsKey, caption)}
+                className={cn(
+                  'flex w-full items-center gap-2 rounded-lg border border-border p-2 text-left text-sm hover:bg-muted disabled:cursor-not-allowed disabled:hover:bg-transparent',
+                  taken && 'opacity-40'
+                )}
+              >
+                <CorpsLogo
+                  name={corps.name}
+                  logo={corps.corpsLogo ?? ''}
+                  width={28}
+                  className="size-7"
+                />
+                <span className="font-medium">{corps.name}</span>
+                <span className="text-xs text-muted-foreground">{corps.divisionName}</span>
+                {taken ? (
+                  <span className="ml-auto text-xs text-muted-foreground">taken</span>
+                ) : null}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
