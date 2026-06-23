@@ -58,6 +58,15 @@ export interface GetLeagueInput {
   viewerUserId: string | null;
 }
 
+interface LeagueSummaryRow {
+  league_id: string;
+  slug: string;
+  name: string;
+  season: string;
+  status: string;
+  role: string;
+}
+
 const makeLeagueService = Effect.gen(function* () {
   // Capture the SqlClient once at construction (provided by ContributionsSqlLive
   // on the *Live layer) so the methods below close over the concrete client and
@@ -137,7 +146,27 @@ const makeLeagueService = Effect.gen(function* () {
     };
   });
 
-  return { get };
+  const listMyLeagues = Effect.fn('LeagueService.listMyLeagues')(function* (userId: string) {
+    const rows = yield* sql<LeagueSummaryRow>`
+      SELECT l.league_id, l.slug, l.name, l.season, l.status, m.role
+      FROM fantasy_members m
+      JOIN fantasy_leagues l ON l.league_id = m.league_id
+      WHERE m.user_id = ${userId} AND m.status = 'active'
+      ORDER BY l.created_at DESC
+    `.pipe(Effect.orDie);
+    return {
+      leagues: rows.map((l) => ({
+        league_id: l.league_id,
+        slug: l.slug,
+        name: l.name,
+        season: l.season,
+        status: l.status,
+        role: l.role,
+      })),
+    };
+  });
+
+  return { get, listMyLeagues };
 });
 
 export class LeagueService extends Context.Service<

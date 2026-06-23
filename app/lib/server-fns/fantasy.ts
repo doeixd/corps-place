@@ -14,6 +14,7 @@ import type { Client, Row } from '@libsql/client';
 import { Effect } from 'effect';
 import * as v from 'valibot';
 import { LeagueService } from '@/lib/fantasy/services/league-service';
+import { StandingsService } from '@/lib/fantasy/services/standings-service';
 import { provideFantasy } from '@/rpc';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
@@ -199,27 +200,13 @@ export const getLeague = createServerFn({ method: 'GET' })
     return Effect.runPromise(program);
   });
 
+// Strangler shim (P1): delegates to LeagueService over the Effect path.
 export const listMyLeagues = createServerFn({ method: 'GET' }).handler(async () => {
   const actor = await requireActor();
-  const db = await getContributionsDb();
-  const rows = (
-    await db.execute({
-      sql: `SELECT l.league_id, l.slug, l.name, l.season, l.status, m.role
-            FROM fantasy_members m
-            JOIN fantasy_leagues l ON l.league_id = m.league_id
-            WHERE m.user_id = ? AND m.status = 'active'
-            ORDER BY l.created_at DESC`,
-      args: [actor.userId],
-    })
-  ).rows.map((l) => ({
-    league_id: str(l.league_id),
-    slug: str(l.slug),
-    name: str(l.name),
-    season: str(l.season),
-    status: str(l.status),
-    role: str(l.role),
-  }));
-  return { leagues: rows };
+  const program = Effect.flatMap(LeagueService, (svc) => svc.listMyLeagues(actor.userId)).pipe(
+    provideFantasy
+  );
+  return Effect.runPromise(program);
 });
 
 const UpdateConfigInput = v.object({ leagueId: v.string(), config: v.unknown() });
@@ -1037,66 +1024,16 @@ export const getDraftState = createServerFn({ method: 'GET' })
 // STANDINGS — recap-style leaderboard read (M4)
 // ===========================================================================
 
-type CaptionTotals = Record<string, number>;
-
 /** Public read: a league's standings (one recap-style row per member). */
+// Strangler shim (P1): delegates to StandingsService over the Effect path.
 export const getStandings = createServerFn({ method: 'GET' })
   .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
   .handler(async ({ data }) => {
-    const db = await getContributionsDb();
-    const league = (
-      await db.execute({
-        sql: 'SELECT league_id, name, slug, status, season FROM fantasy_leagues WHERE slug = ?',
-        args: [data.slug],
-      })
-    ).rows[0];
-    if (!league) throw new Error('NOT_FOUND');
-
-    const rows = (
-      await db.execute({
-        sql: `SELECT s.user_id, s.total_score, s.ge_score, s.visual_score, s.music_score,
-                     s.breakdown_json, s.rank, s.is_final, s.computed_at,
-                     m.corps_name, m.show_title, m.corps_color, m.corps_logo_media_id,
-                     u.name AS user_name
-              FROM fantasy_standings s
-              JOIN fantasy_members m ON m.league_id = s.league_id AND m.user_id = s.user_id
-              LEFT JOIN user u ON u.id = s.user_id
-              WHERE s.league_id = ?
-              ORDER BY s.rank`,
-        args: [league.league_id],
-      })
-    ).rows.map((r) => {
-      const breakdown = JSON.parse(str(r.breakdown_json)) as {
-        perCaption?: CaptionTotals;
-        contributions?: Record<string, Array<{ corpsKey: string; value: number; weight: number }>>;
-      };
-      return {
-        userId: str(r.user_id),
-        rank: r.rank == null ? null : Number(r.rank),
-        total: Number(r.total_score),
-        ge: Number(r.ge_score),
-        visual: Number(r.visual_score),
-        music: Number(r.music_score),
-        perCaption: (breakdown.perCaption ?? {}) as CaptionTotals,
-        contributions: breakdown.contributions ?? {},
-        isFinal: Boolean(r.is_final),
-        corpsName: strOrNull(r.corps_name),
-        showTitle: strOrNull(r.show_title),
-        corpsColor: strOrNull(r.corps_color),
-        corpsLogoMediaId: strOrNull(r.corps_logo_media_id),
-        userName: strOrNull(r.user_name),
-      };
-    });
-
-    return {
-      league: {
-        name: str(league.name),
-        slug: str(league.slug),
-        status: str(league.status),
-        season: str(league.season),
-      },
-      rows,
-    };
+    const program = Effect.flatMap(StandingsService, (svc) => svc.getStandings(data.slug)).pipe(
+      provideFantasy,
+      Effect.catchTag('NotFound', () => Effect.fail(new Error('NOT_FOUND')))
+    );
+    return Effect.runPromise(program);
   });
 
 // ===========================================================================
