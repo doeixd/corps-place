@@ -117,7 +117,12 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           scheduledAt={draft?.scheduledAt ?? null}
         />
       ) : draft.status === 'complete' ? (
-        <CompletePanel league={league} />
+        <CompletePanel
+          league={league}
+          picks={snapshot.picks}
+          pool={initial.pool}
+          members={[...membersById.values()]}
+        />
       ) : (
         <LiveDraft
           send={send}
@@ -209,16 +214,39 @@ function SchedulePanel({
   );
 }
 
-function CompletePanel({ league }: { league: LeagueData }) {
+function CompletePanel({
+  league,
+  picks,
+  pool,
+  members,
+}: {
+  league: LeagueData;
+  picks: DraftState['snapshot']['picks'];
+  pool: DraftState['pool'];
+  members: Member[];
+}) {
   return (
-    <Card>
-      <CardContent className="flex flex-col items-start gap-3">
-        <p className="text-lg">The draft is complete — rosters are locked.</p>
-        <Button render={<Link to="/fantasy/$slug" params={{ slug: league.league.slug }} />}>
-          Back to league
-        </Button>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col gap-6">
+      <Card>
+        <CardContent className="flex flex-col items-start gap-3">
+          <p className="text-lg">The draft is complete — rosters are locked.</p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              render={<Link to="/fantasy/$slug/standings" params={{ slug: league.league.slug }} />}
+            >
+              View standings
+            </Button>
+            <Button
+              variant="outline"
+              render={<Link to="/fantasy/$slug" params={{ slug: league.league.slug }} />}
+            >
+              Back to league
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+      <DraftBoard picks={picks} members={members} pool={pool} currentUserId={null} />
+    </div>
   );
 }
 
