@@ -16,13 +16,6 @@ import {
 } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer';
 import { CorpsLogo } from '@/components/corps-logo';
 import { cn } from '@/lib/utils';
 import { seoHead } from '@/lib/seo';
@@ -365,8 +358,11 @@ function LiveDraft({
         currentUserId={draft.currentUserId}
       />
 
-      {/* Desktop: the section picker inline. Mobile: behind a bottom-sheet drawer. */}
-      <Card className="hidden md:block">
+      {/* Picking is the primary, time-pressured action, so it's inline + always
+          visible (no modal) on every screen — the board stays in view for context,
+          and the caption tabs hold their place while the corps list scrolls under
+          them. (The drawer is reserved for the calmer pre-draft queue editor.) */}
+      <Card>
         <CardHeader>
           <CardTitle>Available corps</CardTitle>
         </CardHeader>
@@ -380,31 +376,6 @@ function LiveDraft({
           />
         </CardContent>
       </Card>
-      <div className="md:hidden">
-        <Drawer>
-          <DrawerTrigger
-            render={
-              <Button className="w-full" disabled={!isMyTurn || picking}>
-                {isMyTurn ? 'Make your pick' : 'View available corps'}
-              </Button>
-            }
-          />
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Available corps</DrawerTitle>
-            </DrawerHeader>
-            <div className="overflow-y-auto px-4 pb-4">
-              <SectionPicker
-                pool={pool}
-                rank={rank}
-                takenPairs={takenPairs}
-                canPick={isMyTurn && !picking}
-                onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
-              />
-            </div>
-          </DrawerContent>
-        </Drawer>
-      </div>
     </div>
   );
 }
@@ -514,74 +485,81 @@ function DraftBoard({
   pool: DraftState['pool'];
   currentUserId: string | null;
 }) {
+  // Collapsible so it doesn't eat the screen on mobile while you're picking.
+  const [open, setOpen] = useState(true);
   const corpsByKey = new Map(pool.map((c) => [c.corpsKey, c]));
   const pickAt = new Map<string, DraftState['snapshot']['picks'][number]>();
   for (const p of picks) pickAt.set(`${p.userId}|${p.caption}`, p);
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex-row items-center justify-between gap-2">
         <CardTitle>Draft board</CardTitle>
+        <Button size="xs" variant="ghost" onClick={() => setOpen((v) => !v)}>
+          {open ? 'Hide' : 'Show'}
+        </Button>
       </CardHeader>
-      <CardContent className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="sticky left-0 bg-background">Player</TableHead>
-              {CAPTION_KEYS.map((c) => (
-                <TableHead key={c} className="px-2 text-center" title={KEY_TO_CAPTION_NAME[c]}>
-                  {c}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {members.map((m) => (
-              <TableRow
-                key={m.user_id}
-                className={m.user_id === currentUserId ? 'bg-muted/40' : undefined}
-              >
-                <TableCell
-                  className="sticky left-0 bg-background font-medium whitespace-nowrap"
-                  style={m.corps_color ? { color: m.corps_color } : undefined}
-                >
-                  {m.corps_name || m.user_name || 'Player'}
-                </TableCell>
-                {CAPTION_KEYS.map((c) => {
-                  const pick = pickAt.get(`${m.user_id}|${c}`);
-                  const corps = pick ? corpsByKey.get(pick.corpsKey) : undefined;
-                  return (
-                    <TableCell key={c} className="p-1 text-center">
-                      {pick ? (
-                        <Tooltip>
-                          <TooltipTrigger
-                            render={
-                              <span className="mx-auto inline-flex size-8 items-center justify-center" />
-                            }
-                          >
-                            <CorpsLogo
-                              name={corps?.name ?? pick.corpsKey}
-                              logo={corps?.corpsLogo ?? ''}
-                              width={32}
-                              className="size-8"
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            {corps?.name ?? pick.corpsKey} — {KEY_TO_CAPTION_NAME[c]}
-                            {pick.autoPicked ? ' (auto)' : ''}
-                          </TooltipContent>
-                        </Tooltip>
-                      ) : (
-                        <span className="text-muted-foreground">·</span>
-                      )}
-                    </TableCell>
-                  );
-                })}
+      {open ? (
+        <CardContent className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="sticky left-0 bg-background">Player</TableHead>
+                {CAPTION_KEYS.map((c) => (
+                  <TableHead key={c} className="px-2 text-center" title={KEY_TO_CAPTION_NAME[c]}>
+                    {c}
+                  </TableHead>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
+            </TableHeader>
+            <TableBody>
+              {members.map((m) => (
+                <TableRow
+                  key={m.user_id}
+                  className={m.user_id === currentUserId ? 'bg-muted/40' : undefined}
+                >
+                  <TableCell
+                    className="sticky left-0 bg-background font-medium whitespace-nowrap"
+                    style={m.corps_color ? { color: m.corps_color } : undefined}
+                  >
+                    {m.corps_name || m.user_name || 'Player'}
+                  </TableCell>
+                  {CAPTION_KEYS.map((c) => {
+                    const pick = pickAt.get(`${m.user_id}|${c}`);
+                    const corps = pick ? corpsByKey.get(pick.corpsKey) : undefined;
+                    return (
+                      <TableCell key={c} className="p-1 text-center">
+                        {pick ? (
+                          <Tooltip>
+                            <TooltipTrigger
+                              render={
+                                <span className="mx-auto inline-flex size-8 items-center justify-center" />
+                              }
+                            >
+                              <CorpsLogo
+                                name={corps?.name ?? pick.corpsKey}
+                                logo={corps?.corpsLogo ?? ''}
+                                width={32}
+                                className="size-8"
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {corps?.name ?? pick.corpsKey} — {KEY_TO_CAPTION_NAME[c]}
+                              {pick.autoPicked ? ' (auto)' : ''}
+                            </TooltipContent>
+                          </Tooltip>
+                        ) : (
+                          <span className="text-muted-foreground">·</span>
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      ) : null}
     </Card>
   );
 }
