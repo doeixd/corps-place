@@ -28,15 +28,9 @@ import { getDraftPool } from '@/lib/fantasy/score-db';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { NotificationService } from '@/lib/fantasy/services/notification-service';
 import { vapidPublicKey } from '@/lib/fantasy/push';
-import {
-  paymentsEnabled,
-  createLeagueCheckoutSession,
-  refundPaymentIntent,
-} from '@/lib/fantasy/payments';
+import { paymentsEnabled } from '@/lib/fantasy/payments';
+import { PaymentService } from '@/lib/fantasy/services/payment-service';
 import { rateLimit } from '@/lib/rate-limit';
-
-// League statuses that still allow new members to join (§7.3).
-const JOINABLE = new Set(['setup', 'quiz', 'scheduled']);
 
 // ---------------------------------------------------------------------------
 // Effect boundary (strangler): map the fantasy typed domain errors back to the
@@ -76,7 +70,6 @@ const limitPerUser = (action: string, userId: string, max: number, windowMs = 60
 // as a known primitive (our columns only ever hold text/int/null) and keep the
 // `no-base-to-string` lint quiet (no String()/template coercion of a wide type).
 const str = (v: unknown): string => v as string;
-const strOrNull = (v: unknown): string | null => (v == null ? null : (v as string));
 
 // ---------------------------------------------------------------------------
 // shared guards
@@ -627,53 +620,30 @@ export const deletePushSubscription = createServerFn({ method: 'POST' })
 // ===========================================================================
 
 /** Owner starts a Checkout session to unlock a league (create-then-pay, §12.2). */
+// Strangler shim (P4): delegates to PaymentService.createCheckout.
 export const createLeagueCheckout = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    assertDurable();
-    if (!paymentsEnabled()) throw new Error('CONFLICT:payments-disabled');
-    const db = await getContributionsDb();
-    const league = await requireOwner(db, data.leagueId, actor);
-    if (str(league.payment_status) === 'paid') throw new Error('CONFLICT:already-paid');
-    const { url } = await createLeagueCheckoutSession({
-      leagueId: data.leagueId,
-      slug: str(league.slug),
-    });
-    return { ok: true as const, url };
+    return runFantasy(
+      Effect.flatMap(PaymentService, (s) =>
+        s.createCheckout({ actor, leagueId: data.leagueId })
+      ).pipe(provideFantasy)
+    );
   });
 
 /**
  * Self-serve full refund BEFORE the draft starts (§12.3). After the draft begins
  * the product is delivered — no refund. Sets the league canceled + revokes invites.
  */
+// Strangler shim (P4): delegates to PaymentService.requestRefund.
 export const requestRefund = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    assertDurable();
-    const db = await getContributionsDb();
-    const league = await requireOwner(db, data.leagueId, actor);
-    if (str(league.payment_status) !== 'paid') throw new Error('CONFLICT:not-paid');
-    if (!JOINABLE.has(str(league.status))) throw new Error('CONFLICT:draft-started');
-
-    const paymentRef = strOrNull(league.payment_ref);
-    if (!paymentRef) throw new Error('CONFLICT:no-payment-ref');
-    await refundPaymentIntent(paymentRef);
-
-    const now = new Date().toISOString();
-    await db.batch(
-      [
-        {
-          sql: "UPDATE fantasy_leagues SET payment_status = 'refunded', status = 'canceled', updated_at = ? WHERE league_id = ?",
-          args: [now, data.leagueId],
-        },
-        {
-          sql: 'UPDATE fantasy_invites SET revoked_at = ? WHERE league_id = ? AND revoked_at IS NULL',
-          args: [now, data.leagueId],
-        },
-      ],
-      'write'
+    return runFantasy(
+      Effect.flatMap(PaymentService, (s) =>
+        s.requestRefund({ actor, leagueId: data.leagueId })
+      ).pipe(provideFantasy)
     );
-    return { ok: true as const };
   });

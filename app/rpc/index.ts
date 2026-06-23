@@ -11,6 +11,8 @@ import { MembershipServiceLive } from '@/lib/fantasy/services/membership-service
 import { QuizServiceLive } from '@/lib/fantasy/services/quiz-service';
 import { DraftServiceLive } from '@/lib/fantasy/services/draft-service';
 import { NotificationServiceLive } from '@/lib/fantasy/services/notification-service';
+import { PaymentServiceLive } from '@/lib/fantasy/services/payment-service';
+import { MediaServiceLive } from '@/lib/fantasy/services/media-service';
 
 // Re-export the individual groups + lives (the primary units).
 export {
@@ -33,7 +35,9 @@ const FantasyServicesLive = Layer.mergeAll(
   MembershipServiceLive,
   QuizServiceLive,
   DraftServiceLive,
-  NotificationServiceLive
+  NotificationServiceLive,
+  PaymentServiceLive,
+  MediaServiceLive
 );
 
 // The fantasy slice for AppLive: the RPC handlers wired OVER the services (so the

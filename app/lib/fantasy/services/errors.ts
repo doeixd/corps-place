@@ -47,6 +47,7 @@ export const LeagueConflictReason = Schema.Literals([
   'joinable-closed',
   'not-a-member',
   'cannot-remove-owner',
+  'no-payment-ref',
 ]);
 export type LeagueConflictReason = typeof LeagueConflictReason.Type;
 
