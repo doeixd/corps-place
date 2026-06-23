@@ -63,9 +63,10 @@ function JoinLeague() {
   const { league } = invite;
 
   const continueWithGoogle = () => {
-    // Belt-and-suspenders fallback if the path token is lost across the OAuth
-    // round-trip; the callbackURL already returns us to this exact route (G.2).
-    document.cookie = `fantasy_invite=${token}; Path=/; Max-Age=1800; SameSite=Lax`;
+    // The token lives in the route path, and better-auth returns us to that exact
+    // path via callbackURL — so it survives the OAuth round-trip with no cookie
+    // (the plan's G.2 fallback cookie is unnecessary for a /$token route, and a
+    // JS-readable invite cookie would be pure attack surface).
     void signIn.social({ provider: 'google', callbackURL: `/fantasy/join/${token}` });
   };
 
