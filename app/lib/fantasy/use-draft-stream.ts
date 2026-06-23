@@ -1,4 +1,4 @@
-import { useMemo, useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react';
 import type { DraftSnapshot } from './draft-engine';
 
 /**
@@ -57,11 +57,23 @@ function makeDraftStore(leagueId: string, initial: DraftSnapshot | null) {
   return { subscribe, getSnapshot: () => snapshot };
 }
 
+// One store per league, kept in a module registry so its identity is stable
+// across renders without a manual useMemo (React Compiler is on — AGENTS.md).
+const stores = new Map<string, ReturnType<typeof makeDraftStore>>();
+const storeFor = (leagueId: string, initial: DraftSnapshot | null) => {
+  let store = stores.get(leagueId);
+  if (!store) {
+    store = makeDraftStore(leagueId, initial);
+    stores.set(leagueId, store);
+  }
+  return store;
+};
+
 /** Live draft snapshot, seeded by the loader value and kept fresh over SSE. */
 export function useDraftStream(
   leagueId: string,
   initial: DraftSnapshot | null
 ): DraftSnapshot | null {
-  const store = useMemo(() => makeDraftStore(leagueId, initial), [leagueId, initial]);
+  const store = storeFor(leagueId, initial);
   return useSyncExternalStore(store.subscribe, store.getSnapshot, () => initial);
 }

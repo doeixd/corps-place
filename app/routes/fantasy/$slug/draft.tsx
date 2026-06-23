@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { createFileRoute, notFound, Link } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
@@ -71,14 +71,9 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
   const snapshot = useDraftStream(leagueId, initial.snapshot) ?? initial.snapshot;
   const draft = snapshot.draft;
 
-  const membersById = useMemo(
-    () => new Map<string, Member>(league.members.map((m) => [m.user_id, m])),
-    [league.members]
-  );
-  const corpsName = useMemo(
-    () => new Map(initial.pool.map((c) => [c.corpsKey, c.name])),
-    [initial.pool]
-  );
+  // React Compiler memoizes these derived maps — no manual useMemo (AGENTS.md).
+  const membersById = new Map<string, Member>(league.members.map((m) => [m.user_id, m]));
+  const corpsName = new Map(initial.pool.map((c) => [c.corpsKey, c.name]));
 
   return (
     <PageShell className="flex flex-col gap-6">
@@ -237,10 +232,7 @@ function LiveDraft({
 }: LiveDraftProps) {
   const isMyTurn = draft.status === 'live' && draft.currentUserId === viewerId;
   const onClock = draft.currentUserId ? membersById.get(draft.currentUserId) : undefined;
-  const takenPairs = useMemo(
-    () => new Set(picks.map((p) => `${p.corpsKey}|${p.caption}`)),
-    [picks]
-  );
+  const takenPairs = new Set(picks.map((p) => `${p.corpsKey}|${p.caption}`));
 
   const pick = useAsyncAction(
     async (corpsKey: string, caption: CaptionKey) => {
@@ -327,10 +319,8 @@ function PoolPicker({
   onPick: (corpsKey: string, caption: CaptionKey) => void;
 }) {
   const [query, setQuery] = useState('');
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return q ? pool.filter((c) => c.name.toLowerCase().includes(q)) : pool;
-  }, [pool, query]);
+  const q = query.trim().toLowerCase();
+  const filtered = q ? pool.filter((c) => c.name.toLowerCase().includes(q)) : pool;
 
   return (
     <Card>
@@ -385,15 +375,12 @@ function RosterBoard({
   membersById: Map<string, Member>;
   corpsName: Map<string, string>;
 }) {
-  const byMember = useMemo(() => {
-    const map = new Map<string, DraftState['snapshot']['picks']>();
-    for (const p of picks) {
-      const list = map.get(p.userId) ?? [];
-      list.push(p);
-      map.set(p.userId, list);
-    }
-    return map;
-  }, [picks]);
+  const byMember = new Map<string, DraftState['snapshot']['picks']>();
+  for (const p of picks) {
+    const list = byMember.get(p.userId) ?? [];
+    list.push(p);
+    byMember.set(p.userId, list);
+  }
 
   return (
     <Card>
