@@ -1,5 +1,12 @@
 import { defineConfig } from 'vite-plus';
-import type { PluginOption } from '@voidzero-dev/vite-plus-core';
+// `@voidzero-dev/vite-plus-core` (where vite-plus's PluginOption lives) isn't
+// resolvable from here, and vite's own PluginOption trips a deep-instantiation
+// clash with vite-plus's defineConfig. The plugins below are all cast through
+// `unknown` anyway, so alias it locally (`any` so it satisfies defineConfig's
+// own plugin-array param, whose element type resolves to `any` when its core
+// dep is unreachable).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type PluginOption = any;
 import { tanstackStart } from '@tanstack/react-start-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';

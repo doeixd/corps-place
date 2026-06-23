@@ -57,7 +57,7 @@ export const judgeProfileMachine = setup({
 
 export const judgeProfileSearchCodec = (): SearchCodec<
   JudgeProfileContext,
-  { season?: string; groupBy?: 'corps'; captions?: string }
+  { season?: string; groupBy?: JudgeProfileGroupBy; captions?: string }
 > => ({
   // Defaults (all seasons, by-show, no caption filter) are omitted to keep URLs clean.
   encode: (ctx) => ({

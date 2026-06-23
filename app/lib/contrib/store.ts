@@ -189,7 +189,7 @@ export const writeOverride = async (
       sql: 'SELECT override_id, content_json, updated_at FROM show_block_overrides WHERE page_id = ? AND pinned_key = ? AND natural_key = ? LIMIT 1',
       args: [input.pageId, input.pinnedKey, input.naturalKey],
     });
-    const existing = prev.rows[0] as
+    const existing = prev.rows[0] as unknown as
       | { override_id: string; content_json: string | null; updated_at: string }
       | undefined;
     assertFresh(existing?.updated_at ?? null, expectedUpdatedAt);

@@ -26,7 +26,7 @@ export const MAX_DOC_BYTES = 200_000;
 export const MAX_PLAIN_BYTES = 50_000;
 
 export const FreeFormDocSchema = Schema.Struct({
-  format: Schema.Literal(...FREE_FORM_FORMATS),
+  format: Schema.Literals(FREE_FORM_FORMATS),
   version: Schema.Literal(1),
   /** Editor-native serialized document (opaque to the rest of the app). */
   doc: Schema.String.check(Schema.isMaxLength(MAX_DOC_BYTES)),

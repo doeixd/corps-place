@@ -19,13 +19,15 @@ export const ServerRoute = createServerFileRoute('/api/show-media/$id').methods(
         sql: 'SELECT r2_key FROM show_media WHERE media_id = ? LIMIT 1',
         args: [params.id],
       })
-    ).rows[0] as { r2_key: string } | undefined;
+    ).rows[0] as unknown as { r2_key: string } | undefined;
     if (!row || !isUploadKey(row.r2_key)) return new Response('Not found', { status: 404 });
 
     const obj = await getUpload(row.r2_key);
     if (!obj) return new Response('Not found', { status: 404 });
 
-    return new Response(obj.body, {
+    // `obj.body` is a Uint8Array (a valid runtime BodyInit); its `ArrayBufferLike`
+    // generic doesn't line up with the DOM BodyInit type, so assert it.
+    return new Response(obj.body as unknown as BodyInit, {
       headers: {
         'Content-Type': obj.contentType,
         'Cache-Control': 'public, max-age=31536000, immutable',

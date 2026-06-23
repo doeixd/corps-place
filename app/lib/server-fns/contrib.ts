@@ -2,7 +2,6 @@ import { createServerFn } from '@tanstack/react-start/client';
 import { getWebRequest } from '@tanstack/react-start/server';
 import { Schema, SchemaParser } from 'effect';
 import * as v from 'valibot';
-import { optionalWith } from '@sdk/src/schemaCompat.js';
 import { getContributionsDb } from '@/lib/contributions-db';
 import {
   ensureShowPage,
@@ -53,7 +52,7 @@ export const getShowHistory = createServerFn({ method: 'GET' })
         sql: 'SELECT page_id FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
         args: [data.corpsKey, data.season],
       })
-    ).rows[0] as { page_id: string } | undefined;
+    ).rows[0] as unknown as { page_id: string } | undefined;
     if (!page) return [];
     // Join better-auth's `user` table for a display name (revisions store only the id).
     const rows = (
@@ -90,7 +89,7 @@ export const revertRevision = createServerFn({ method: 'POST' })
         sql: `SELECT page_id, target_kind, target_id, before_json FROM show_revisions WHERE revision_id = ? LIMIT 1`,
         args: [data.revisionId],
       })
-    ).rows[0] as
+    ).rows[0] as unknown as
       | {
           page_id: string;
           target_kind: string;
@@ -110,7 +109,7 @@ export const revertRevision = createServerFn({ method: 'POST' })
               WHERE b.block_id = ? LIMIT 1`,
         args: [rev.target_id],
       })
-    ).rows[0] as
+    ).rows[0] as unknown as
       | {
           page_id: string;
           pinned_key: string | null;
@@ -150,7 +149,9 @@ const SaveBlockInput = Schema.Struct({
   season: Schema.String,
   pinnedKey: Schema.String,
   content: Schema.Unknown,
-  expectedUpdatedAt: Schema.String.pipe(optionalWith({ nullable: true })),
+  // v3 `optionalWith({ nullable: true })` expanded to its native v4 form (the
+  // compat helper's overload doesn't resolve under the app tsconfig here).
+  expectedUpdatedAt: Schema.optional(Schema.NullOr(Schema.String)),
 });
 
 const decodeInput = SchemaParser.decodeUnknownSync(SaveBlockInput);
