@@ -6,6 +6,9 @@ import { getActor, ForbiddenError } from '@/lib/authz';
 import { JobsService, JobsServiceLive } from '@/lib/jobs/jobs-service';
 import { JOBS_BLOCK_SCHEMAS, isJobsBlockKind } from '@/lib/jobs/schemas';
 
+const run = <A, E>(fn: () => Effect.Effect<A, E, never>) =>
+  Effect.runPromise(fn().pipe(Effect.provide(JobsServiceLive)));
+
 const getJobsCtx = async () => {
   const actor = await getActor(getWebRequest());
   if (!actor) throw new ForbiddenError('edit');
@@ -346,3 +349,37 @@ export const checkClaimByEntity = createServerFn({ method: 'GET' })
       ).pipe(Effect.provide(JobsServiceLive))
     )
   );
+
+// ── Saved search alerts ──────────────────────────────────────────────────────
+
+export const createJobAlert = createServerFn({ method: 'POST' })
+  .validator((d: { kind: string; filtersJson: string; frequency?: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    const alertId = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.createAlert(ctx.authorId, data.kind, data.filtersJson, data.frequency ?? 'daily')
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+    return { ok: true as const, alertId };
+  });
+
+export const listMyAlerts = createServerFn({ method: 'GET' }).handler(async () => {
+  const ctx = await getJobsCtx();
+  return Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) => svc.listAlerts(ctx.authorId)).pipe(
+      Effect.provide(JobsServiceLive)
+    )
+  );
+});
+
+export const deleteJobAlert = createServerFn({ method: 'POST' })
+  .validator((d: { alertId: string }) => d)
+  .handler(async ({ data }) => {
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.deleteAlert(data.alertId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    return { ok: true as const };
+  });

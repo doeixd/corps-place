@@ -828,6 +828,73 @@ const makeJobsService = Effect.gen(function* () {
     return flagId;
   });
 
+  // ── Saved search alerts ───────────────────────────────────────────────────
+
+  const createAlert = Effect.fn('JobsService.createAlert')(function* (
+    userId: string,
+    kind: string,
+    filtersJson: string,
+    frequency: string
+  ) {
+    const alertId = newId();
+    const now = new Date().toISOString();
+    yield* sql`INSERT INTO jobs_alert (alert_id, user_id, kind, filters_json, frequency, active, created_at)
+               VALUES (${alertId}, ${userId}, ${kind}, ${filtersJson}, ${frequency}, 1, ${now})`;
+    return alertId;
+  });
+
+  const listAlerts = Effect.fn('JobsService.listAlerts')(function* (userId: string) {
+    return yield* sql<{
+      alert_id: string;
+      kind: string;
+      filters_json: string;
+      frequency: string;
+      active: number;
+      created_at: string;
+    }>`SELECT alert_id, kind, filters_json, frequency, active, created_at FROM jobs_alert WHERE user_id = ${userId} ORDER BY created_at DESC`;
+  });
+
+  const deleteAlert = Effect.fn('JobsService.deleteAlert')(function* (alertId: string) {
+    yield* requireDurableStorage;
+    yield* sql`DELETE FROM jobs_alert WHERE alert_id = ${alertId}`;
+  });
+
+  const fireAlertsForNewPosting = Effect.fn('JobsService.fireAlertsForNewPosting')(function* (
+    postingId: string,
+    title: string,
+    location: string | null,
+    remoteOk: number
+  ) {
+    const activeAlerts = yield* sql<{
+      alert_id: string;
+      user_id: string;
+      filters_json: string;
+      frequency: string;
+    }>`SELECT alert_id, user_id, filters_json, frequency FROM jobs_alert WHERE active = 1 AND kind = 'employee'`;
+
+    // Simple matching: alert fires if no filters or keyword matches title
+    const matched: Array<{ alertId: string; userId: string }> = [];
+    for (const alert of activeAlerts) {
+      try {
+        const filters = JSON.parse(alert.filters_json) as Record<string, string>;
+        const keyword = (filters.q ?? '').toLowerCase();
+        if (!keyword || title.toLowerCase().includes(keyword)) {
+          matched.push({ alertId: alert.alert_id, userId: alert.user_id });
+        }
+      } catch {
+        /* skip malformed alert */
+      }
+    }
+
+    // Update last_sent_at for matched alerts
+    const now = new Date().toISOString();
+    for (const m of matched) {
+      yield* sql`UPDATE jobs_alert SET last_sent_at = ${now} WHERE alert_id = ${m.alertId}`;
+    }
+
+    return matched;
+  });
+
   // ── Ownership guard ─────────────────────────────────────────────────────
 
   const requireOwner = Effect.fn('JobsService.requireOwner')(function* (
@@ -873,6 +940,10 @@ const makeJobsService = Effect.gen(function* () {
     actionFlag,
     listPendingClaims,
     reportBad,
+    createAlert,
+    listAlerts,
+    deleteAlert,
+    fireAlertsForNewPosting,
   };
 });
 
