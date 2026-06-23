@@ -236,6 +236,25 @@ const makeLeagueService = Effect.gen(function* () {
     return { ok: true as const };
   });
 
+  const rename = Effect.fn('LeagueService.rename')(function* (input: {
+    actor: Actor;
+    leagueId: string;
+    name: string;
+  }) {
+    yield* requireDurableStorage;
+    const league = yield* requireOwner(input.leagueId, input.actor);
+    const name = input.name.trim();
+    // Display name only — the slug stays put so existing invite links and
+    // bookmarks keep resolving (§ inline rename). 2–60 chars, mirroring create.
+    if (name.length < 2 || name.length > 60)
+      return yield* Effect.fail(new LeagueConflict({ reason: 'bad-name' }));
+    yield* sql`
+      UPDATE fantasy_leagues SET name = ${name}, updated_at = ${new Date().toISOString()}
+      WHERE league_id = ${league.league_id}
+    `.pipe(Effect.orDie);
+    return { ok: true as const, name };
+  });
+
   const listMyLeagues = Effect.fn('LeagueService.listMyLeagues')(function* (userId: string) {
     const rows = yield* sql<LeagueSummaryRow>`
       SELECT l.league_id, l.slug, l.name, l.season, l.status, m.role
@@ -256,7 +275,7 @@ const makeLeagueService = Effect.gen(function* () {
     };
   });
 
-  return { get, listMyLeagues, create, updateConfig };
+  return { get, listMyLeagues, create, updateConfig, rename };
 });
 
 export class LeagueService extends Context.Service<

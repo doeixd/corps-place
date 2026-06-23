@@ -197,6 +197,20 @@ export const updateLeagueConfig = createServerFn({ method: 'POST' })
     );
   });
 
+const RenameLeagueInput = v.object({ leagueId: v.string(), name: v.string() });
+
+// Owner-only display-name rename (slug stays put). Delegates to LeagueService.
+export const renameLeague = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(RenameLeagueInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireActor();
+    return runFantasy(
+      Effect.flatMap(LeagueService, (svc) =>
+        svc.rename({ actor, leagueId: data.leagueId, name: data.name })
+      )
+    );
+  });
+
 // ---------------------------------------------------------------------------
 // invites
 // ---------------------------------------------------------------------------

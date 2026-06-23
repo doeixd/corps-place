@@ -11,6 +11,7 @@ import {
   createInvite,
   createLeagueCheckout,
   requestRefund,
+  renameLeague,
 } from '@/lib/server-fns/fantasy';
 import { CorpsIdentityForm } from '@/components/fantasy/corps-identity-form';
 import { PushToggle } from '@/components/fantasy/push-toggle';
@@ -71,7 +72,12 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
   return (
     <PageShell className="flex flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">{league.name}</h1>
+        <LeagueNameHeading
+          leagueId={league.leagueId}
+          name={league.name}
+          canEdit={viewer.isOwner}
+          onRenamed={refresh}
+        />
         <p className="text-sm text-muted-foreground">
           Season {league.season} · {league.status} · {members.length}/{league.maxMembers} members
         </p>
@@ -157,6 +163,76 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
         </ul>
       </section>
     </PageShell>
+  );
+}
+
+function LeagueNameHeading({
+  leagueId,
+  name,
+  canEdit,
+  onRenamed,
+}: {
+  leagueId: string;
+  name: string;
+  canEdit: boolean;
+  onRenamed: () => Promise<void> | void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(name);
+  const save = useAsyncAction(async () => {
+    const next = draft.trim();
+    if (next !== name) await renameLeague({ data: { leagueId, name: next } });
+    setEditing(false);
+    await onRenamed();
+  });
+
+  if (!editing) {
+    return (
+      <div className="flex items-center gap-2">
+        <h1 className="text-2xl font-semibold">{name}</h1>
+        {canEdit ? (
+          <Button
+            size="xs"
+            variant="ghost"
+            onClick={() => {
+              setDraft(name);
+              setEditing(true);
+            }}
+          >
+            Rename
+          </Button>
+        ) : null}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-2">
+        <Input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && draft.trim().length >= 2) void save.run();
+            if (e.key === 'Escape') setEditing(false);
+          }}
+          aria-label="League name"
+          className="max-w-xs text-lg font-semibold"
+        />
+        <BusyButton
+          size="sm"
+          busy={save.busy}
+          disabled={draft.trim().length < 2}
+          onClick={() => void save.run()}
+        >
+          Save
+        </BusyButton>
+        <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
+          Cancel
+        </Button>
+      </div>
+      {save.error ? <span className="text-sm text-destructive">{save.error}</span> : null}
+    </div>
   );
 }
 

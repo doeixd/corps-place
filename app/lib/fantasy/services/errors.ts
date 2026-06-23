@@ -48,6 +48,7 @@ export const LeagueConflictReason = Schema.Literals([
   'not-a-member',
   'cannot-remove-owner',
   'no-payment-ref',
+  'bad-name',
 ]);
 export type LeagueConflictReason = typeof LeagueConflictReason.Type;
 

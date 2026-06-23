@@ -206,6 +206,12 @@ describe('LeagueService.create / updateConfig (Effect path)', () => {
         Effect.provide(LeagueServiceLive)
       )
     );
+  const rename = (input: { actor: never; leagueId: string; name: string }) =>
+    Effect.runPromise(
+      Effect.flatMap(LeagueService, (svc) => svc.rename(input)).pipe(
+        Effect.provide(LeagueServiceLive)
+      )
+    );
 
   it('creates a league + owner membership atomically', async () => {
     const res = await create({ actor: actor('u-creator'), name: 'Fresh League', season: '2026' });
@@ -257,6 +263,29 @@ describe('LeagueService.create / updateConfig (Effect path)', () => {
     await expect(
       updateConfig({ actor: actor('u-cfg'), leagueId: 'nope', config: {} })
     ).rejects.toThrow();
+  });
+
+  it('renames the display name for the owner (slug unchanged); rejects bad name / non-owner', async () => {
+    const { leagueId, slug } = await create({
+      actor: actor('u-rename'),
+      name: 'Old Name',
+      season: '2026',
+    });
+
+    const res = await rename({ actor: actor('u-rename'), leagueId, name: '  New Name  ' });
+    expect(res).toEqual({ ok: true, name: 'New Name' });
+    const row = (
+      await db.execute({
+        sql: 'SELECT name, slug FROM fantasy_leagues WHERE league_id = ?',
+        args: [leagueId],
+      })
+    ).rows[0];
+    expect(row?.name).toBe('New Name'); // trimmed
+    expect(row?.slug).toBe(slug); // slug stays put so links keep resolving
+
+    // Too-short name → LeagueConflict(bad-name); non-owner → Forbidden (both reject).
+    await expect(rename({ actor: actor('u-rename'), leagueId, name: 'x' })).rejects.toThrow();
+    await expect(rename({ actor: actor('other'), leagueId, name: 'Hostile' })).rejects.toThrow();
   });
 });
 
