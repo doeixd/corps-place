@@ -24,6 +24,19 @@ import { HybridRecord } from '@/components/hybrid-collection';
 type LeagueData = Awaited<ReturnType<typeof getLeague>>;
 type Member = LeagueData['members'][number];
 
+// One plain-language line per league phase, so members always know what's
+// happening and what comes next (the core "explain what's going on" ask).
+const STATUS_NARRATION: Record<string, string> = {
+  setup:
+    'Getting set up — name your corps and invite players. The owner opens the quiz once everyone has joined.',
+  quiz: 'Quiz time — members take the knowledge quiz to earn their draft position. The owner schedules the draft when ready.',
+  scheduled:
+    'Draft scheduled — everyone meets in the draft room at draft time to pick corps and captions for their lineup.',
+  active:
+    'Season underway — scores update automatically from real DCI results as competitions are recapped. Watch the standings.',
+  complete: 'Season complete — check the final standings to see who won.',
+};
+
 export const Route = createFileRoute('/fantasy/$slug/')({
   beforeLoad: requireFantasyEnabled,
   loader: async ({ params }) => {
@@ -81,32 +94,35 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
         <p className="text-sm text-muted-foreground">
           Season {league.season} · {league.status} · {members.length}/{league.maxMembers} members
         </p>
-        <nav className="flex flex-wrap gap-4 text-sm">
+        {STATUS_NARRATION[league.status] ? (
+          <p className="text-sm text-muted-foreground">{STATUS_NARRATION[league.status]}</p>
+        ) : null}
+        <nav className="flex flex-wrap gap-2">
           {viewer.isMember && league.config.quiz.enabled ? (
-            <Link
-              to="/fantasy/$slug/quiz"
-              params={{ slug: league.slug }}
-              className="text-primary hover:underline"
+            <Button
+              variant="outline"
+              size="sm"
+              render={<Link to="/fantasy/$slug/quiz" params={{ slug: league.slug }} />}
             >
-              Take the knowledge quiz →
-            </Link>
+              Quiz
+            </Button>
           ) : null}
           {viewer.isMember ? (
-            <Link
-              to="/fantasy/$slug/draft"
-              params={{ slug: league.slug }}
-              className="text-primary hover:underline"
+            <Button
+              variant="outline"
+              size="sm"
+              render={<Link to="/fantasy/$slug/draft" params={{ slug: league.slug }} />}
             >
-              Draft room →
-            </Link>
+              Draft room
+            </Button>
           ) : null}
-          <Link
-            to="/fantasy/$slug/standings"
-            params={{ slug: league.slug }}
-            className="text-primary hover:underline"
+          <Button
+            variant="outline"
+            size="sm"
+            render={<Link to="/fantasy/$slug/standings" params={{ slug: league.slug }} />}
           >
-            Standings →
-          </Link>
+            Standings
+          </Button>
         </nav>
       </header>
 
