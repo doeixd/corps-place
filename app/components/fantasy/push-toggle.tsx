@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { BusyButton } from '@/components/fantasy/busy-button';
 import {
   getVapidPublicKey,
   savePushSubscription,
@@ -74,14 +74,14 @@ export function PushToggle() {
 
   return (
     <div className="flex items-center gap-2">
-      <Button
+      <BusyButton
         size="sm"
         variant="outline"
+        busy={busy}
         onClick={() => void (on ? disable.run() : enable.run())}
-        disabled={busy}
       >
-        {busy ? '…' : on ? 'Disable draft alerts' : 'Enable draft alerts'}
-      </Button>
+        {on ? 'Disable draft alerts' : 'Enable draft alerts'}
+      </BusyButton>
       {error ? <span className="text-xs text-destructive">{error}</span> : null}
     </div>
   );

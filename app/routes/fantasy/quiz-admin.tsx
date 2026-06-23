@@ -7,8 +7,18 @@ import { useState } from 'react';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import {
@@ -16,10 +26,12 @@ import {
   adminUpsertQuestion,
   adminSetQuestionActive,
 } from '@/lib/server-fns/fantasy';
+import { BusyButton } from '@/components/fantasy/busy-button';
 import { useAsyncAction } from '@/lib/use-async-action';
 
 type Question = Awaited<ReturnType<typeof adminListQuestions>>['questions'][number];
 type Difficulty = Question['difficulty'];
+const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
 
 type FormState = {
   questionId?: string;
@@ -145,92 +157,106 @@ function QuestionForm({
   const choiceLines = form.choicesText.split('\n').filter((l) => l.trim());
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit();
-      }}
-      className="flex max-w-2xl flex-col gap-4 rounded-lg border border-border p-4"
-    >
-      <h2 className="font-medium">{form.questionId ? 'Edit question' : 'New question'}</h2>
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="prompt">Prompt</Label>
-        <Input
-          id="prompt"
-          value={form.prompt}
-          required
-          onChange={(e) => setForm({ ...form, prompt: e.target.value })}
-        />
-      </div>
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="choices">Choices (one per line, 2–6)</Label>
-        <textarea
-          id="choices"
-          value={form.choicesText}
-          rows={4}
-          required
-          onChange={(e) => setForm({ ...form, choicesText: e.target.value })}
-          className="rounded border border-border bg-background p-2 text-sm"
-        />
-      </div>
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="correct">Correct choice</Label>
-          <select
-            id="correct"
-            value={form.correctIndex}
-            onChange={(e) => setForm({ ...form, correctIndex: Number(e.target.value) })}
-            className="h-8 rounded border border-border bg-background px-2 text-sm"
-          >
-            {choiceLines.map((c, i) => (
-              <option key={i} value={i}>
-                {i + 1}. {c.slice(0, 40)}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="difficulty">Difficulty</Label>
-          <select
-            id="difficulty"
-            value={form.difficulty}
-            onChange={(e) => setForm({ ...form, difficulty: e.target.value as Difficulty })}
-            className="h-8 rounded border border-border bg-background px-2 text-sm"
-          >
-            <option value="easy">easy</option>
-            <option value="medium">medium</option>
-            <option value="hard">hard</option>
-          </select>
-        </div>
-      </div>
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="tags">Tags (comma-separated)</Label>
-        <Input
-          id="tags"
-          value={form.tagsText}
-          onChange={(e) => setForm({ ...form, tagsText: e.target.value })}
-        />
-      </div>
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="explanation">Explanation (shown after answering)</Label>
-        <Input
-          id="explanation"
-          value={form.explanation}
-          onChange={(e) => setForm({ ...form, explanation: e.target.value })}
-        />
-      </div>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-      <div className="flex gap-2">
-        <Button type="submit" disabled={busy}>
-          {busy ? 'Saving…' : form.questionId ? 'Update' : 'Add question'}
-        </Button>
-        {form.questionId ? (
-          <Button type="button" variant="ghost" onClick={onCancel}>
-            Cancel
-          </Button>
-        ) : null}
-      </div>
-    </form>
+    <Card className="max-w-2xl">
+      <CardHeader>
+        <CardTitle>{form.questionId ? 'Edit question' : 'New question'}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+          className="flex flex-col gap-4"
+        >
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="prompt">Prompt</Label>
+            <Input
+              id="prompt"
+              value={form.prompt}
+              required
+              onChange={(e) => setForm({ ...form, prompt: e.target.value })}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="choices">Choices (one per line, 2–6)</Label>
+            <Textarea
+              id="choices"
+              value={form.choicesText}
+              rows={4}
+              required
+              onChange={(e) => setForm({ ...form, choicesText: e.target.value })}
+            />
+          </div>
+          <div className="flex flex-wrap items-end gap-6">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="correct">Correct choice</Label>
+              <Select
+                value={String(form.correctIndex)}
+                onValueChange={(v) => setForm({ ...form, correctIndex: Number(v) })}
+              >
+                <SelectTrigger id="correct" size="sm" className="w-56">
+                  <SelectValue placeholder="Pick the answer" />
+                </SelectTrigger>
+                <SelectContent>
+                  {choiceLines.map((c, i) => (
+                    <SelectItem key={i} value={String(i)}>
+                      {i + 1}. {c.slice(0, 40)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label>Difficulty</Label>
+              <ToggleGroup
+                variant="outline"
+                size="sm"
+                spacing={0}
+                value={[form.difficulty]}
+                onValueChange={(v) => {
+                  const next = v[0] as Difficulty | undefined;
+                  if (next) setForm({ ...form, difficulty: next });
+                }}
+              >
+                {DIFFICULTIES.map((d) => (
+                  <ToggleGroupItem key={d} value={d}>
+                    {d}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="tags">Tags (comma-separated)</Label>
+            <Input
+              id="tags"
+              value={form.tagsText}
+              onChange={(e) => setForm({ ...form, tagsText: e.target.value })}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="explanation">Explanation (shown after answering)</Label>
+            <Input
+              id="explanation"
+              value={form.explanation}
+              onChange={(e) => setForm({ ...form, explanation: e.target.value })}
+            />
+          </div>
+          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          <div className="flex gap-2">
+            <BusyButton type="submit" busy={busy}>
+              {form.questionId ? 'Update' : 'Add question'}
+            </BusyButton>
+            {form.questionId ? (
+              <Button type="button" variant="ghost" onClick={onCancel}>
+                Cancel
+              </Button>
+            ) : null}
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -272,14 +298,14 @@ function QuestionList({
             <Button size="xs" variant="ghost" onClick={() => onEdit(q)}>
               Edit
             </Button>
-            <Button
+            <BusyButton
               size="xs"
               variant={q.active ? 'outline' : 'default'}
-              disabled={toggle.busy}
+              busy={toggle.busy}
               onClick={() => void toggle.run(q)}
             >
               {q.active ? 'Deactivate' : 'Activate'}
-            </Button>
+            </BusyButton>
           </li>
         ))}
       </ul>

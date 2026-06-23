@@ -1,6 +1,15 @@
 import { createFileRoute, notFound, Link } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getStandings } from '@/lib/server-fns/fantasy';
@@ -53,34 +62,34 @@ function StandingsPage() {
       </header>
 
       {rows.length === 0 ? (
-        <p className="text-muted-foreground">
-          No standings yet — they appear once the draft is done and the first recap is scored.
-        </p>
+        <Card>
+          <CardContent className="text-sm text-muted-foreground">
+            No standings yet — they appear once the draft is done and the first recap is scored.
+          </CardContent>
+        </Card>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-xs text-muted-foreground">
-                <th className="px-2 py-2">#</th>
-                <th className="px-2 py-2">Corps</th>
-                <th className="px-2 py-2 text-right font-semibold">Total</th>
-                <th className="px-2 py-2 text-right">GE</th>
-                <th className="px-2 py-2 text-right">Visual</th>
-                <th className="border-r border-border px-2 py-2 text-right">Music</th>
-                {CAPTION_KEYS.map((c) => (
-                  <th key={c} className="px-2 py-2 text-right">
-                    {c}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <StandingRow key={row.userId} row={row} />
+        <Table containerClassName="overflow-x-auto">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-8">#</TableHead>
+              <TableHead>Corps</TableHead>
+              <TableHead className="text-right font-semibold">Total</TableHead>
+              <TableHead className="text-right">GE</TableHead>
+              <TableHead className="text-right">Visual</TableHead>
+              <TableHead className="border-r border-border text-right">Music</TableHead>
+              {CAPTION_KEYS.map((c) => (
+                <TableHead key={c} className="text-right">
+                  {c}
+                </TableHead>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((row) => (
+              <StandingRow key={row.userId} row={row} />
+            ))}
+          </TableBody>
+        </Table>
       )}
     </PageShell>
   );
@@ -88,12 +97,9 @@ function StandingsPage() {
 
 function StandingRow({ row }: { row: Row }) {
   return (
-    <tr
-      className="border-b border-border/60"
-      style={row.corpsColor ? { borderLeft: `3px solid ${row.corpsColor}` } : undefined}
-    >
-      <td className="px-2 py-2 text-muted-foreground">{row.rank ?? '—'}</td>
-      <td className="px-2 py-2">
+    <TableRow style={row.corpsColor ? { borderLeft: `3px solid ${row.corpsColor}` } : undefined}>
+      <TableCell className="text-muted-foreground">{row.rank ?? '—'}</TableCell>
+      <TableCell>
         <div className="flex items-center gap-2">
           {row.corpsLogoMediaId ? (
             <img
@@ -104,16 +110,16 @@ function StandingRow({ row }: { row: Row }) {
           ) : null}
           <span className="font-medium">{row.corpsName || row.userName || 'Player'}</span>
         </div>
-      </td>
-      <td className="px-2 py-2 text-right font-semibold">{row.total.toFixed(3)}</td>
-      <td className="px-2 py-2 text-right">{fmt(row.ge)}</td>
-      <td className="px-2 py-2 text-right">{fmt(row.visual)}</td>
-      <td className="border-r border-border px-2 py-2 text-right">{fmt(row.music)}</td>
+      </TableCell>
+      <TableCell className="text-right font-semibold">{row.total.toFixed(3)}</TableCell>
+      <TableCell className="text-right">{fmt(row.ge)}</TableCell>
+      <TableCell className="text-right">{fmt(row.visual)}</TableCell>
+      <TableCell className="border-r border-border text-right">{fmt(row.music)}</TableCell>
       {CAPTION_KEYS.map((c) => (
-        <td key={c} className="px-2 py-2 text-right text-muted-foreground">
+        <TableCell key={c} className="text-right text-muted-foreground">
           {fmt(row.perCaption[c] ?? 0)}
-        </td>
+        </TableCell>
       ))}
-    </tr>
+    </TableRow>
   );
 }

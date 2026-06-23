@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { createFileRoute, notFound, Link } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import {
@@ -14,10 +16,11 @@ import {
   pauseDraft,
   resumeDraft,
 } from '@/lib/server-fns/fantasy';
-import { CAPTION_KEYS, type CaptionKey } from '@/lib/fantasy/captions';
+import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from '@/lib/fantasy/captions';
 import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
 import { useDraftStream } from '@/lib/fantasy/use-draft-stream';
 import { Countdown } from '@/components/fantasy/countdown';
+import { BusyButton } from '@/components/fantasy/busy-button';
 
 type LeagueData = Awaited<ReturnType<typeof getLeague>>;
 type DraftState = Awaited<ReturnType<typeof getDraftState>>;
@@ -155,50 +158,58 @@ function SchedulePanel({
   }
 
   return (
-    <section className="flex flex-col gap-4 rounded-lg border border-border p-4">
-      <h2 className="font-medium">Schedule & start</h2>
-      <div className="flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1.5 text-sm">
-          Draft time
-          <Input
-            type="datetime-local"
-            value={when}
-            onChange={(e) => setWhen(e.target.value)}
-            className="w-auto"
-          />
-        </label>
-        <Button
-          variant="outline"
-          onClick={() => void schedule.run()}
-          disabled={schedule.busy || !when}
-        >
-          {schedule.busy ? 'Saving…' : scheduledAt ? 'Reschedule' : 'Schedule'}
-        </Button>
-      </div>
-      {scheduledAt ? (
-        <p className="text-sm text-muted-foreground">
-          Scheduled for {new Date(scheduledAt).toLocaleString()}.
-        </p>
-      ) : null}
-      <div className="flex items-center gap-3">
-        <Button onClick={() => void start.run()} disabled={start.busy}>
-          {start.busy ? 'Starting…' : 'Start draft now'}
-        </Button>
-        {start.error ? <span className="text-sm text-destructive">{start.error}</span> : null}
-        {feasibility ? <span className="text-sm text-destructive">{feasibility}</span> : null}
-      </div>
-    </section>
+    <Card>
+      <CardHeader>
+        <CardTitle>Schedule & start</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="draft-time">Draft time</Label>
+            <Input
+              id="draft-time"
+              type="datetime-local"
+              value={when}
+              onChange={(e) => setWhen(e.target.value)}
+              className="w-auto"
+            />
+          </div>
+          <BusyButton
+            variant="outline"
+            busy={schedule.busy}
+            disabled={!when}
+            onClick={() => void schedule.run()}
+          >
+            {scheduledAt ? 'Reschedule' : 'Schedule'}
+          </BusyButton>
+        </div>
+        {scheduledAt ? (
+          <p className="text-sm text-muted-foreground">
+            Scheduled for {new Date(scheduledAt).toLocaleString()}.
+          </p>
+        ) : null}
+        <div className="flex items-center gap-3">
+          <BusyButton busy={start.busy} onClick={() => void start.run()}>
+            Start draft now
+          </BusyButton>
+          {start.error ? <span className="text-sm text-destructive">{start.error}</span> : null}
+          {feasibility ? <span className="text-sm text-destructive">{feasibility}</span> : null}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 function CompletePanel({ league }: { league: LeagueData }) {
   return (
-    <div className="flex flex-col items-start gap-3">
-      <p className="text-lg">The draft is complete — rosters are locked.</p>
-      <Button render={<Link to="/fantasy/$slug" params={{ slug: league.league.slug }} />}>
-        Back to league
-      </Button>
-    </div>
+    <Card>
+      <CardContent className="flex flex-col items-start gap-3">
+        <p className="text-lg">The draft is complete — rosters are locked.</p>
+        <Button render={<Link to="/fantasy/$slug" params={{ slug: league.league.slug }} />}>
+          Back to league
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -250,40 +261,44 @@ function LiveDraft({
 
   return (
     <div className="flex flex-col gap-6">
-      <section className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-4">
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">On the clock:</span>
-          <span
-            className="font-medium"
-            style={onClock?.corps_color ? { color: onClock.corps_color } : undefined}
-          >
-            {onClock?.corps_name || onClock?.user_name || '—'}
-          </span>
-          {isMyTurn ? <span className="text-sm font-semibold text-primary">Your pick!</span> : null}
-        </div>
-        <div className="flex items-center gap-3 text-sm">
-          {draft.status === 'paused' ? (
-            <span className="font-medium text-destructive">Paused</span>
-          ) : draft.pickDeadlineAt ? (
-            <Countdown endsAt={draft.pickDeadlineAt} />
-          ) : null}
-          {isOwner && draft.status === 'live' ? (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => void pause.run()}
-              disabled={pause.busy}
+      <Card>
+        <CardContent className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground">On the clock:</span>
+            <span
+              className="font-medium"
+              style={onClock?.corps_color ? { color: onClock.corps_color } : undefined}
             >
-              Pause
-            </Button>
-          ) : null}
-          {isOwner && draft.status === 'paused' ? (
-            <Button size="sm" onClick={() => void resume.run()} disabled={resume.busy}>
-              Resume
-            </Button>
-          ) : null}
-        </div>
-      </section>
+              {onClock?.corps_name || onClock?.user_name || '—'}
+            </span>
+            {isMyTurn ? (
+              <span className="text-sm font-semibold text-primary">Your pick!</span>
+            ) : null}
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            {draft.status === 'paused' ? (
+              <span className="font-medium text-destructive">Paused</span>
+            ) : draft.pickDeadlineAt ? (
+              <Countdown endsAt={draft.pickDeadlineAt} />
+            ) : null}
+            {isOwner && draft.status === 'live' ? (
+              <BusyButton
+                size="sm"
+                variant="outline"
+                busy={pause.busy}
+                onClick={() => void pause.run()}
+              >
+                Pause
+              </BusyButton>
+            ) : null}
+            {isOwner && draft.status === 'paused' ? (
+              <BusyButton size="sm" busy={resume.busy} onClick={() => void resume.run()}>
+                Resume
+              </BusyButton>
+            ) : null}
+          </div>
+        </CardContent>
+      </Card>
 
       {pick.error ? <p className="text-sm text-destructive">{pick.error}</p> : null}
 
@@ -318,43 +333,46 @@ function PoolPicker({
   }, [pool, query]);
 
   return (
-    <section className="flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <h2 className="font-medium">Available corps</h2>
+    <Card>
+      <CardHeader className="flex-row items-center justify-between gap-2">
+        <CardTitle>Available corps</CardTitle>
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Filter corps…"
           className="w-48"
         />
-      </div>
-      <ul className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto">
-        {filtered.map((corps) => (
-          <li key={corps.corpsKey} className="rounded-lg border border-border p-2">
-            <div className="mb-1 flex items-center gap-2 text-sm font-medium">
-              <span>{corps.name}</span>
-              <span className="text-xs text-muted-foreground">{corps.divisionName}</span>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {CAPTION_KEYS.map((caption) => {
-                const taken = takenPairs.has(`${corps.corpsKey}|${caption}`);
-                return (
-                  <Button
-                    key={caption}
-                    size="xs"
-                    variant={taken ? 'ghost' : 'outline'}
-                    disabled={taken || !canPick}
-                    onClick={() => onPick(corps.corpsKey, caption)}
-                  >
-                    {caption}
-                  </Button>
-                );
-              })}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </section>
+      </CardHeader>
+      <CardContent>
+        <ul className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto">
+          {filtered.map((corps) => (
+            <li key={corps.corpsKey} className="rounded-lg border border-border p-2">
+              <div className="mb-1 flex items-center gap-2 text-sm font-medium">
+                <span>{corps.name}</span>
+                <span className="text-xs text-muted-foreground">{corps.divisionName}</span>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {CAPTION_KEYS.map((caption) => {
+                  const taken = takenPairs.has(`${corps.corpsKey}|${caption}`);
+                  return (
+                    <Button
+                      key={caption}
+                      size="xs"
+                      variant={taken ? 'ghost' : 'outline'}
+                      disabled={taken || !canPick}
+                      title={`${KEY_TO_CAPTION_NAME[caption]}${taken ? ' — already drafted' : ''}`}
+                      onClick={() => onPick(corps.corpsKey, caption)}
+                    >
+                      {caption}
+                    </Button>
+                  );
+                })}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -378,9 +396,11 @@ function RosterBoard({
   }, [picks]);
 
   return (
-    <section className="flex flex-col gap-3">
-      <h2 className="font-medium">Rosters</h2>
-      <div className="flex flex-col gap-3">
+    <Card>
+      <CardHeader>
+        <CardTitle>Rosters</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
         {[...membersById.values()].map((m) => {
           const roster = byMember.get(m.user_id) ?? [];
           return (
@@ -394,7 +414,9 @@ function RosterBoard({
               <ul className="mt-1 flex flex-col gap-0.5 text-xs text-muted-foreground">
                 {roster.map((p) => (
                   <li key={p.pickNo}>
-                    <span className="font-mono">{p.caption}</span>{' '}
+                    <span className="font-mono" title={KEY_TO_CAPTION_NAME[p.caption]}>
+                      {p.caption}
+                    </span>{' '}
                     {corpsName.get(p.corpsKey) ?? p.corpsKey}
                     {p.autoPicked ? ' (auto)' : ''}
                   </li>
@@ -403,7 +425,7 @@ function RosterBoard({
             </div>
           );
         })}
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 }

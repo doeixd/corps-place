@@ -1,11 +1,12 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getInvite, acceptInvite } from '@/lib/server-fns/fantasy';
 import { signIn, useSession } from '@/lib/auth-client';
 import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
+import { BusyButton } from '@/components/fantasy/busy-button';
 
 const INVALID_MESSAGES: Record<string, string> = {
   invalid: 'This invite link is invalid, expired, or has been revoked.',
@@ -73,22 +74,24 @@ function JoinLeague() {
   return (
     <PageShell className="flex flex-col gap-4">
       <h1 className="text-2xl font-semibold">{league.name}</h1>
-      <p className="text-muted-foreground">
-        You've been invited to join this fantasy drum corps league ({league.memberCount}/
-        {league.maxMembers} members).
-      </p>
+      <Card className="max-w-md">
+        <CardContent className="flex flex-col items-start gap-3">
+          <p className="text-muted-foreground">
+            You've been invited to join this fantasy drum corps league ({league.memberCount}/
+            {league.maxMembers} members).
+          </p>
 
-      {session?.user ? (
-        <Button className="self-start" onClick={() => void join.run()} disabled={join.busy}>
-          {join.busy ? 'Joining…' : 'Join this league'}
-        </Button>
-      ) : (
-        <Button className="self-start" onClick={continueWithGoogle}>
-          Continue with Google to join
-        </Button>
-      )}
+          {session?.user ? (
+            <BusyButton busy={join.busy} onClick={() => void join.run()}>
+              Join this league
+            </BusyButton>
+          ) : (
+            <BusyButton onClick={continueWithGoogle}>Continue with Google to join</BusyButton>
+          )}
 
-      {join.error ? <p className="text-sm text-destructive">{join.error}</p> : null}
+          {join.error ? <p className="text-sm text-destructive">{join.error}</p> : null}
+        </CardContent>
+      </Card>
     </PageShell>
   );
 }

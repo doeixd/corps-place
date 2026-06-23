@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { createFileRoute, notFound, useRouter, Link } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import {
@@ -12,6 +14,7 @@ import {
 } from '@/lib/server-fns/fantasy';
 import { CorpsIdentityForm } from '@/components/fantasy/corps-identity-form';
 import { PushToggle } from '@/components/fantasy/push-toggle';
+import { BusyButton } from '@/components/fantasy/busy-button';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { useCopyToClipboard } from '@/lib/use-copy-to-clipboard';
 
@@ -47,17 +50,17 @@ function LeagueDashboard() {
 
   return (
     <PageShell className="flex flex-col gap-6">
-      <header className="flex flex-col gap-1">
+      <header className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold">{league.name}</h1>
         <p className="text-sm text-muted-foreground">
           Season {league.season} · {league.status} · {members.length}/{league.maxMembers} members
         </p>
-        <div className="flex gap-4">
+        <nav className="flex flex-wrap gap-4 text-sm">
           {viewer.isMember && league.config.quiz.enabled ? (
             <Link
               to="/fantasy/$slug/quiz"
               params={{ slug: league.slug }}
-              className="text-sm text-primary hover:underline"
+              className="text-primary hover:underline"
             >
               Take the knowledge quiz →
             </Link>
@@ -66,7 +69,7 @@ function LeagueDashboard() {
             <Link
               to="/fantasy/$slug/draft"
               params={{ slug: league.slug }}
-              className="text-sm text-primary hover:underline"
+              className="text-primary hover:underline"
             >
               Draft room →
             </Link>
@@ -74,11 +77,11 @@ function LeagueDashboard() {
           <Link
             to="/fantasy/$slug/standings"
             params={{ slug: league.slug }}
-            className="text-sm text-primary hover:underline"
+            className="text-primary hover:underline"
           >
             Standings →
           </Link>
-        </div>
+        </nav>
       </header>
 
       {paymentsEnabled && viewer.isOwner ? (
@@ -94,22 +97,26 @@ function LeagueDashboard() {
       {viewer.isOwner ? <InvitePanel leagueId={league.leagueId} /> : null}
 
       {viewer.isMember && (needsIdentity || editing) ? (
-        <section className="flex flex-col gap-3 rounded-lg border border-border p-4">
-          <h2 className="font-medium">{needsIdentity ? 'Name your corps' : 'Edit your corps'}</h2>
-          <CorpsIdentityForm
-            leagueId={league.leagueId}
-            initial={{
-              corpsName: me?.corps_name,
-              showTitle: me?.show_title,
-              color: me?.corps_color,
-              logoMediaId: me?.corps_logo_media_id,
-            }}
-            onSaved={() => {
-              setEditing(false);
-              void router.invalidate();
-            }}
-          />
-        </section>
+        <Card>
+          <CardHeader>
+            <CardTitle>{needsIdentity ? 'Name your corps' : 'Edit your corps'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CorpsIdentityForm
+              leagueId={league.leagueId}
+              initial={{
+                corpsName: me?.corps_name,
+                showTitle: me?.show_title,
+                color: me?.corps_color,
+                logoMediaId: me?.corps_logo_media_id,
+              }}
+              onSaved={() => {
+                setEditing(false);
+                void router.invalidate();
+              }}
+            />
+          </CardContent>
+        </Card>
       ) : null}
 
       <section className="flex flex-col gap-2">
@@ -152,40 +159,46 @@ function PaymentPanel({
   });
 
   return (
-    <section className="flex flex-col gap-2 rounded-lg border border-border p-4">
-      <h2 className="font-medium">Billing</h2>
-      {paymentStatus === 'paid' ? (
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">League unlocked — payment received.</span>
-          {canRefund ? (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => void refund.run()}
-              disabled={refund.busy}
-            >
-              {refund.busy ? 'Refunding…' : 'Request refund'}
-            </Button>
-          ) : null}
-        </div>
-      ) : paymentStatus === 'refunded' ? (
-        <span className="text-sm text-muted-foreground">
-          Refunded — this league has been canceled.
-        </span>
-      ) : (
-        <div className="flex flex-col items-start gap-1">
-          <p className="text-sm text-muted-foreground">
-            Pay the one-time fee to unlock invites and the draft. Full refund any time before the
-            draft starts.
-          </p>
-          <Button size="sm" onClick={() => void pay.run()} disabled={pay.busy}>
-            {pay.busy ? 'Redirecting…' : 'Pay to unlock league'}
-          </Button>
-        </div>
-      )}
-      {pay.error ? <p className="text-sm text-destructive">{pay.error}</p> : null}
-      {refund.error ? <p className="text-sm text-destructive">{refund.error}</p> : null}
-    </section>
+    <Card>
+      <CardHeader>
+        <CardTitle>Billing</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-2">
+        {paymentStatus === 'paid' ? (
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground">
+              League unlocked — payment received.
+            </span>
+            {canRefund ? (
+              <BusyButton
+                size="sm"
+                variant="outline"
+                busy={refund.busy}
+                onClick={() => void refund.run()}
+              >
+                Request refund
+              </BusyButton>
+            ) : null}
+          </div>
+        ) : paymentStatus === 'refunded' ? (
+          <span className="text-sm text-muted-foreground">
+            Refunded — this league has been canceled.
+          </span>
+        ) : (
+          <div className="flex flex-col items-start gap-2">
+            <p className="text-sm text-muted-foreground">
+              Pay the one-time fee to unlock invites and the draft. Full refund any time before the
+              draft starts.
+            </p>
+            <BusyButton size="sm" busy={pay.busy} onClick={() => void pay.run()}>
+              Pay to unlock league
+            </BusyButton>
+          </div>
+        )}
+        {pay.error ? <p className="text-sm text-destructive">{pay.error}</p> : null}
+        {refund.error ? <p className="text-sm text-destructive">{refund.error}</p> : null}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -198,26 +211,30 @@ function InvitePanel({ leagueId }: { leagueId: string }) {
   });
 
   return (
-    <section className="flex flex-col gap-2 rounded-lg border border-border p-4">
-      <h2 className="font-medium">Invite players</h2>
-      <Button className="self-start" size="sm" onClick={() => void mint.run()} disabled={mint.busy}>
-        {mint.busy ? 'Generating…' : 'Create invite link'}
-      </Button>
-      {mint.error ? <p className="text-sm text-destructive">{mint.error}</p> : null}
-      {inviteUrl ? (
-        <div className="flex items-center gap-2">
-          <input
-            readOnly
-            value={inviteUrl}
-            className="flex-1 rounded border border-border bg-muted px-2 py-1 text-sm"
-            onFocus={(e) => e.currentTarget.select()}
-          />
-          <Button size="sm" variant="outline" onClick={() => copy(inviteUrl)}>
-            {copied ? 'Copied' : 'Copy'}
-          </Button>
-        </div>
-      ) : null}
-    </section>
+    <Card>
+      <CardHeader>
+        <CardTitle>Invite players</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-2">
+        <BusyButton
+          className="self-start"
+          size="sm"
+          busy={mint.busy}
+          onClick={() => void mint.run()}
+        >
+          Create invite link
+        </BusyButton>
+        {mint.error ? <p className="text-sm text-destructive">{mint.error}</p> : null}
+        {inviteUrl ? (
+          <div className="flex items-center gap-2">
+            <Input readOnly value={inviteUrl} onFocus={(e) => e.currentTarget.select()} />
+            <Button size="sm" variant="outline" onClick={() => copy(inviteUrl)}>
+              {copied ? 'Copied' : 'Copy'}
+            </Button>
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }
 

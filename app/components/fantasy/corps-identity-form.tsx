@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { setCorpsIdentity } from '@/lib/server-fns/fantasy';
 import { uploadFantasyLogo } from '@/lib/server-fns/fantasy-media';
 import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
+import { BusyButton } from '@/components/fantasy/busy-button';
 
 const fileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -142,9 +142,9 @@ export function CorpsIdentityForm({
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-      <Button type="submit" disabled={busy || corpsName.trim().length === 0}>
-        {save.busy ? 'Saving…' : 'Save corps identity'}
-      </Button>
+      <BusyButton type="submit" busy={busy} disabled={corpsName.trim().length === 0}>
+        Save corps identity
+      </BusyButton>
     </form>
   );
 }

@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { createFileRoute, notFound, Link } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getLeague, getQuizForLeague, submitQuiz } from '@/lib/server-fns/fantasy';
 import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
 import { Countdown } from '@/components/fantasy/countdown';
+import { BusyButton } from '@/components/fantasy/busy-button';
 
 type Quiz = Awaited<ReturnType<typeof getQuizForLeague>>;
 type InProgressQuiz = Extract<Quiz, { state: 'in_progress' }>;
@@ -98,15 +101,17 @@ function QuizSession({ slug, leagueId }: { slug: string; leagueId: string }) {
 
   if (!quiz) {
     return (
-      <div className="flex flex-col items-start gap-3">
-        <p className="text-muted-foreground">
-          You get one timed attempt. Your score sets your draft seeding.
-        </p>
-        {start.error ? <p className="text-sm text-destructive">{start.error}</p> : null}
-        <Button onClick={() => start.run()} disabled={start.busy}>
-          {start.busy ? 'Loading…' : 'Start quiz'}
-        </Button>
-      </div>
+      <Card>
+        <CardContent className="flex flex-col items-start gap-3">
+          <p className="text-muted-foreground">
+            You get one timed attempt. Your score sets your draft seeding.
+          </p>
+          {start.error ? <p className="text-sm text-destructive">{start.error}</p> : null}
+          <BusyButton busy={start.busy} onClick={() => void start.run()}>
+            Start quiz
+          </BusyButton>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -135,6 +140,8 @@ function QuizForm({
 }) {
   const [answers, setAnswers] = useState<number[]>(() => quiz.questions.map(() => -1));
   const allAnswered = answers.every((a) => a >= 0);
+  const setAnswer = (qi: number, ci: number) =>
+    setAnswers((prev) => prev.map((a, i) => (i === qi ? ci : a)));
 
   return (
     <div className="flex flex-col gap-6">
@@ -148,32 +155,36 @@ function QuizForm({
       </div>
 
       {quiz.questions.map((q, qi) => (
-        <fieldset
-          key={q.questionId}
-          className="flex flex-col gap-2 rounded-lg border border-border p-4"
-        >
-          <legend className="px-1 font-medium">
-            {qi + 1}. {q.prompt}
-          </legend>
-          {q.choices.map((choice, ci) => (
-            <label key={ci} className="flex cursor-pointer items-center gap-2 text-sm">
-              <input
-                type="radio"
-                name={`q-${qi}`}
-                checked={answers[qi] === ci}
-                onChange={() => setAnswers((prev) => prev.map((a, i) => (i === qi ? ci : a)))}
-              />
-              {choice}
-            </label>
-          ))}
-        </fieldset>
+        <Card key={q.questionId}>
+          <CardContent className="flex flex-col gap-3">
+            <p className="font-medium">
+              {qi + 1}. {q.prompt}
+            </p>
+            <ToggleGroup
+              variant="outline"
+              orientation="vertical"
+              className="w-full"
+              value={answers[qi] >= 0 ? [String(answers[qi])] : []}
+              onValueChange={(v) => {
+                const next = v[0];
+                if (next != null) setAnswer(qi, Number(next));
+              }}
+            >
+              {q.choices.map((choice, ci) => (
+                <ToggleGroupItem key={ci} value={String(ci)} className="justify-start">
+                  {choice}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </CardContent>
+        </Card>
       ))}
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <div className="flex items-center gap-3">
-        <Button onClick={() => onSubmit(answers)} disabled={busy || !allAnswered}>
-          {busy ? 'Submitting…' : 'Submit quiz'}
-        </Button>
+        <BusyButton busy={busy} disabled={!allAnswered} onClick={() => onSubmit(answers)}>
+          Submit quiz
+        </BusyButton>
         {!allAnswered ? (
           <span className="text-sm text-muted-foreground">Answer every question to submit.</span>
         ) : null}
@@ -184,21 +195,25 @@ function QuizForm({
 
 function Completed({ slug, score }: { slug: string; score: number }) {
   return (
-    <div className="flex flex-col items-start gap-3">
-      <p className="text-lg">
-        You scored <strong>{Math.round(score * 100)}%</strong>. This sets your draft seeding.
-      </p>
-      <BackToLeague slug={slug} />
-    </div>
+    <Card>
+      <CardContent className="flex flex-col items-start gap-3">
+        <p className="text-lg">
+          You scored <strong>{Math.round(score * 100)}%</strong>. This sets your draft seeding.
+        </p>
+        <BackToLeague slug={slug} />
+      </CardContent>
+    </Card>
   );
 }
 
 function Notice({ slug, children }: { slug: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-start gap-3">
-      <p className="text-muted-foreground">{children}</p>
-      <BackToLeague slug={slug} />
-    </div>
+    <Card>
+      <CardContent className="flex flex-col items-start gap-3">
+        <p className="text-muted-foreground">{children}</p>
+        <BackToLeague slug={slug} />
+      </CardContent>
+    </Card>
   );
 }
 
