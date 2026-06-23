@@ -213,6 +213,62 @@ export const applyToJob = createServerFn({ method: 'POST' })
     return { ok: true as const, applicationId: result.applicationId };
   });
 
+// ── Moderation ───────────────────────────────────────────────────────────────
+
+export const reportContent = createServerFn({ method: 'POST' })
+  .validator((d: { targetKind: string; targetId: string; reason?: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    const flagId = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.reportBad(ctx.authorId, data.targetKind, data.targetId, data.reason)
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+    return { ok: true as const, flagId };
+  });
+
+export const getFlagQueue = createServerFn({ method: 'GET' }).handler(async () => {
+  const ctx = await getJobsCtx();
+  return Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) => svc.listFlags('open')).pipe(
+      Effect.provide(JobsServiceLive)
+    )
+  );
+});
+
+export const getPendingClaims = createServerFn({ method: 'GET' }).handler(async () => {
+  await getJobsCtx();
+  return Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) => svc.listPendingClaims()).pipe(
+      Effect.provide(JobsServiceLive)
+    )
+  );
+});
+
+export const dismissFlag = createServerFn({ method: 'POST' })
+  .validator((d: { flagId: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.dismissFlag(data.flagId, ctx.authorId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    return { ok: true as const };
+  });
+
+export const actionFlag = createServerFn({ method: 'POST' })
+  .validator((d: { flagId: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.actionFlag(data.flagId, ctx.authorId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    return { ok: true as const };
+  });
+
 // ── Talent search (employer-only) ────────────────────────────────────────────
 
 export const searchTalent = createServerFn({ method: 'GET' })

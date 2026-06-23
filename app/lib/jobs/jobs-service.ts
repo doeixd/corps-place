@@ -743,6 +743,91 @@ const makeJobsService = Effect.gen(function* () {
     return { rows, total: Number(countRows[0]?.c ?? 0) };
   });
 
+  // ── Moderation ────────────────────────────────────────────────────────────
+
+  const createFlag = Effect.fn('JobsService.createFlag')(function* (
+    flaggerId: string,
+    targetKind: string,
+    targetId: string,
+    reason?: string
+  ) {
+    const flagId = newId();
+    const now = new Date().toISOString();
+    yield* sql`INSERT INTO jobs_flag (flag_id, flagger_id, target_kind, target_id, reason, created_at)
+               VALUES (${flagId}, ${flaggerId}, ${targetKind}, ${targetId}, ${reason ?? null}, ${now})`;
+    return flagId;
+  });
+
+  const listFlags = Effect.fn('JobsService.listFlags')(function* (status: string = 'open') {
+    return yield* sql<{
+      flag_id: string;
+      flagger_id: string;
+      target_kind: string;
+      target_id: string;
+      reason: string | null;
+      status: string;
+      created_at: string;
+    }>`SELECT * FROM jobs_flag WHERE status = ${status} ORDER BY created_at DESC LIMIT 50`;
+  });
+
+  const dismissFlag = Effect.fn('JobsService.dismissFlag')(function* (
+    flagId: string,
+    reviewerId: string
+  ) {
+    yield* requireDurableStorage;
+    const now = new Date().toISOString();
+    yield* sql`UPDATE jobs_flag SET status = 'dismissed', reviewed_by = ${reviewerId}, reviewed_at = ${now} WHERE flag_id = ${flagId}`;
+  });
+
+  const actionFlag = Effect.fn('JobsService.actionFlag')(function* (
+    flagId: string,
+    reviewerId: string
+  ) {
+    yield* requireDurableStorage;
+    const now = new Date().toISOString();
+    const flag = yield* sql<{
+      target_kind: string;
+      target_id: string;
+    }>`SELECT target_kind, target_id FROM jobs_flag WHERE flag_id = ${flagId} LIMIT 1`;
+
+    yield* sql`UPDATE jobs_flag SET status = 'actioned', reviewed_by = ${reviewerId}, reviewed_at = ${now} WHERE flag_id = ${flagId}`;
+
+    // Hide the flagged content
+    if (flag[0]?.target_kind === 'posting') {
+      yield* sql`UPDATE jobs_posting SET status = 'closed', updated_at = ${now} WHERE posting_id = ${flag[0].target_id}`;
+    } else if (flag[0]?.target_kind === 'profile') {
+      yield* sql`UPDATE jobs_profile SET status = 'hidden', updated_at = ${now} WHERE profile_id = ${flag[0].target_id}`;
+    }
+  });
+
+  const listPendingClaims = Effect.fn('JobsService.listPendingClaims')(function* () {
+    // Claims requiring review: those on entities with >5 assignments (possible impersonation)
+    return yield* sql<{
+      claim_id: string;
+      user_id: string;
+      profile_id: string;
+      entity_type: string;
+      entity_id: string;
+      claimed_at: string;
+    }>`SELECT c.claim_id, c.user_id, c.profile_id, c.entity_type, c.entity_id, c.claimed_at
+       FROM jobs_person_claim c
+       WHERE c.status = 'active'
+       ORDER BY c.claimed_at DESC LIMIT 50`;
+  });
+
+  const reportBad = Effect.fn('JobsService.reportBad')(function* (
+    reporterId: string,
+    targetKind: string,
+    targetId: string,
+    reason?: string
+  ) {
+    const flagId = newId();
+    const now = new Date().toISOString();
+    yield* sql`INSERT INTO jobs_flag (flag_id, flagger_id, target_kind, target_id, reason, created_at)
+               VALUES (${flagId}, ${reporterId}, ${targetKind}, ${targetId}, ${reason ?? null}, ${now})`;
+    return flagId;
+  });
+
   // ── Ownership guard ─────────────────────────────────────────────────────
 
   const requireOwner = Effect.fn('JobsService.requireOwner')(function* (
@@ -782,6 +867,12 @@ const makeJobsService = Effect.gen(function* () {
     revokeClaim,
     suggestClaimMatches,
     searchTalent,
+    createFlag,
+    listFlags,
+    dismissFlag,
+    actionFlag,
+    listPendingClaims,
+    reportBad,
   };
 });
 
