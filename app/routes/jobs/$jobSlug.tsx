@@ -5,12 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icon';
 import { Badge } from '@/components/reui/badge';
 import { PageShell } from '@/components/page-shell';
-import { buildSeo, clampDescription, jsonLdScript } from '@/lib/seo';
+import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 import {
   getJobPosting,
   applyToJob,
   reportContent,
-  createBoostCheckout,
   createBoostCheckout,
   bookmarkJob,
   removeBookmark,
@@ -22,67 +21,55 @@ import {
   Alert02Icon,
   FireIcon,
   BookOpen01Icon,
+  SentIcon,
 } from '@/components/icons/generated';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/jobs/$jobSlug')({
   loader: async ({ params }) => getJobPosting({ slug: params.jobSlug }),
   head: ({ loaderData }) => {
-    if (!loaderData)
-      return buildSeo({ title: 'Job Not Found — PageantryJobs', description: '', path: '' });
-    const orgName = 'PageantryJobs'; // would come from employer profile join
-    return {
-      meta: [
-        { title: `${loaderData.title} — ${orgName} — PageantryJobs` },
-        {
-          name: 'description',
-          content: clampDescription(loaderData.comp_text, `${loaderData.title} at ${orgName}`),
-        },
-        { property: 'og:title', content: `${loaderData.title} — ${orgName}` },
-        {
-          property: 'og:description',
-          content: clampDescription(loaderData.comp_text, `${loaderData.title} position`),
-        },
-        { property: 'og:type', content: 'website' },
-        { name: 'twitter:card', content: 'summary' },
-      ],
-      links: [{ rel: 'canonical', href: `https://pageantryjobs.com/jobs/${loaderData.slug}` }],
-      scripts: [
-        jsonLdScript({
-          '@context': 'https://schema.org',
-          '@type': 'JobPosting',
-          title: loaderData.title,
-          description: loaderData.comp_text ?? '',
-          datePosted: loaderData.published_at ?? loaderData.created_at,
-          hiringOrganization: { '@type': 'Organization', name: orgName },
-          ...(loaderData.location
-            ? {
-                jobLocation: {
-                  '@type': 'Place',
-                  address: { addressLocality: loaderData.location },
-                },
-              }
-            : {}),
-          ...(loaderData.remote_ok ? { employmentType: 'SEASONAL', remote: true } : {}),
-          ...(loaderData.salary_min || loaderData.salary_max
-            ? {
-                baseSalary: {
-                  '@type': 'MonetaryAmount',
-                  ...(loaderData.salary_min && loaderData.salary_max
-                    ? {
-                        value: {
-                          '@type': 'QuantitativeValue',
-                          minValue: loaderData.salary_min,
-                          maxValue: loaderData.salary_max,
-                        },
-                      }
-                    : {}),
-                },
-              }
-            : {}),
-        }),
-      ],
+    if (!loaderData) return seoHead({ title: 'Job Not Found — PageantryJobs', description: '' });
+    const title = `${loaderData.title} — PageantryJobs`;
+    const desc = clampDescription(loaderData.comp_text, `${loaderData.title} job posting`);
+    const url = `/jobs/${loaderData.slug}`;
+    const jobPostingLd: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': 'JobPosting',
+      title: loaderData.title,
+      description: loaderData.comp_text ?? '',
+      datePosted: loaderData.published_at ?? loaderData.created_at,
+      hiringOrganization: { '@type': 'Organization', name: 'PageantryJobs' },
     };
+    if (loaderData.location) {
+      jobPostingLd.jobLocation = {
+        '@type': 'Place',
+        address: { addressLocality: loaderData.location },
+      };
+    }
+    if (loaderData.remote_ok) {
+      jobPostingLd.employmentType = 'SEASONAL';
+      jobPostingLd.remote = true;
+    }
+    if (loaderData.salary_min || loaderData.salary_max) {
+      const value: Record<string, unknown> = { '@type': 'QuantitativeValue' };
+      if (loaderData.salary_min) value.minValue = loaderData.salary_min;
+      if (loaderData.salary_max) value.maxValue = loaderData.salary_max;
+      jobPostingLd.baseSalary = { '@type': 'MonetaryAmount', value };
+    }
+
+    return seoHead({
+      title,
+      description: desc,
+      path: url,
+      image: 'https://pageantryjobs.com/og-jobs.png',
+      jsonLd: [
+        breadcrumbLd([
+          { name: 'Job Board', path: '/jobs/board' },
+          { name: loaderData.title, path: url },
+        ]),
+        jobPostingLd,
+      ],
+    });
   },
   component: JobDetail,
 });
@@ -207,6 +194,7 @@ function JobDetail() {
                 </Button>
               ) : null}
               <BookmarkButton postingId={job.posting_id} />
+              <ShareButton />
             </div>
           </div>
 
@@ -278,6 +266,31 @@ function BookmarkButton({ postingId }: { postingId: string }) {
     >
       <Icon icon={BookOpen01Icon} size="xs" /> {bookmarked ? 'Saved' : 'Save'}
     </Button>
+  );
+}
+
+function ShareButton() {
+  const onShare = async () => {
+    if (typeof navigator === 'undefined') return;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: document.title, url: window.location.href });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(window.location.href);
+      }
+    } catch {
+      /* user dismissed */
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={onShare}
+      aria-label="Share"
+      className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-border text-text-secondary transition-colors hover:border-primary/60 hover:text-primary"
+    >
+      <Icon icon={SentIcon} size="sm" className="-translate-x-px translate-y-px" />
+    </button>
   );
 }
 
