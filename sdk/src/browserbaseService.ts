@@ -24,7 +24,11 @@ export const BrowserbaseService = Context.Service<BrowserbaseService>('Browserba
 const NAV_TIMEOUT_MS = 30000;
 /** Recycle the shared local Chromium after this many renders to reap leaked
  *  renderer/helper processes (prevents OOM on small-RAM hosts over a long batch). */
-const RENDER_RECYCLE_EVERY = 20;
+const RENDER_RECYCLE_EVERY = 12;
+
+// Process-exit reaping handlers are registered once per process (the service
+// layer may be built more than once); guard so we don't stack duplicates.
+let localReapRegistered = false;
 
 /**
  * After domcontentloaded, wait briefly for product JSON-LD to be injected (SPAs
@@ -112,6 +116,7 @@ export const BrowserbaseServiceLive = Layer.effect(
     // --- Local Chromium (primary) — one shared browser, a page per fetch. ---
     let localBrowser: Promise<Browser> | null = null;
     let renderCount = 0;
+    let pagesInFlight = 0; // recycle only when idle, so we never close mid-render
     const getLocal = (): Promise<Browser> => {
       if (!localBrowser) {
         localBrowser = puppeteer
@@ -136,13 +141,32 @@ export const BrowserbaseServiceLive = Layer.effect(
       localBrowser = null;
       if (b) await b.then((br) => br.close()).catch(() => {});
     };
+    // Reap the shared local Chromium on process exit so a finished OR interrupted
+    // run never orphans the renderer tree (small-RAM box OOM guard). puppeteer's
+    // own signal handling kills the launched process; this also covers normal
+    // completion (`beforeExit`) and re-asserts the close on signals.
+    if (!localReapRegistered) {
+      localReapRegistered = true;
+      const reap = () => {
+        void closeLocal();
+      };
+      process.once('beforeExit', reap);
+      for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP'] as const) process.once(sig, reap);
+    }
     const renderLocal = async (url: string): Promise<string> => {
       // Chromium leaks renderer/helper processes that `page.close()` doesn't reap; on a
       // small-RAM box a long batch accumulates them until OOM. Recycle the whole browser
-      // every N renders so the OS reaps the tree, then relaunch fresh.
-      if (renderCount > 0 && renderCount % RENDER_RECYCLE_EVERY === 0) await closeLocal();
+      // every N renders so the OS reaps the tree, then relaunch fresh — but only when no
+      // pages are in flight, so a concurrent batch never closes a browser mid-render.
+      if (
+        renderCount > 0 &&
+        renderCount % RENDER_RECYCLE_EVERY === 0 &&
+        pagesInFlight === 0
+      )
+        await closeLocal();
       renderCount++;
       const browser = await getLocal();
+      pagesInFlight++;
       const page = await browser.newPage();
       try {
         await page.goto(url, { waitUntil: 'domcontentloaded', timeout: NAV_TIMEOUT_MS });
@@ -150,6 +174,7 @@ export const BrowserbaseServiceLive = Layer.effect(
         return await page.content();
       } finally {
         await page.close().catch(() => {});
+        pagesInFlight--;
       }
     };
 

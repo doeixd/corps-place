@@ -18,6 +18,7 @@ import * as SqlClient from "effect/unstable/sql/SqlClient";
 import { LibsqlClient } from "@effect/sql-libsql";
 import { createClient } from "@libsql/client";
 import { createHash } from "node:crypto";
+import { totalmem } from "node:os";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { loadRepoEnv } from "./scriptEnv.js";
@@ -45,10 +46,25 @@ const onlyStores = getOpt("--stores")
   ?.split(",")
   .map((s) => s.trim())
   .filter(Boolean);
-const concurrency = Math.max(
-  1,
-  Math.min(getOpt("--concurrency") ? Number(getOpt("--concurrency")) : 4, 16),
-);
+// Each unit of concurrency drives a page on the shared render Chromium (plus its
+// leaked renderer/helper procs between recycles), so high concurrency spikes RAM
+// and OOMs a small box. Cap by total RAM unless explicitly overridden with
+// --max-concurrency (escape hatch for a big box).
+const requestedConcurrency = getOpt("--concurrency")
+  ? Number(getOpt("--concurrency"))
+  : 4;
+const ramGb = totalmem() / 1024 ** 3;
+const memCap = getOpt("--max-concurrency")
+  ? Number(getOpt("--max-concurrency"))
+  : ramGb < 6
+    ? 2
+    : 16;
+const concurrency = Math.max(1, Math.min(requestedConcurrency, memCap));
+if (concurrency < requestedConcurrency) {
+  console.warn(
+    `[ingest] capping concurrency ${requestedConcurrency} → ${concurrency} (RAM ${ramGb.toFixed(1)}GB; override with --max-concurrency)`,
+  );
+}
 
 const DB_URL =
   process.env.DCI_RELATIONAL_DB_URL ??
