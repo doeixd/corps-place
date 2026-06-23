@@ -212,6 +212,11 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
       {rows.length === 0 && (
         <p className="mt-8 text-center text-sm text-muted-foreground">No staff match "{query}".</p>
       )}
+
+      <p className="mt-8 text-xs text-muted-foreground text-center">
+        Information was obtained using publicly available information from the internet, and may be
+        wrong.
+      </p>
     </PageShell>
   );
 }

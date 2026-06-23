@@ -481,6 +481,11 @@ function JudgeProfilePage() {
             </Show>
           </Show>
         </section>
+
+        <p className="mt-8 text-xs text-muted-foreground text-center">
+          Information was obtained using publicly available information from the internet, and may
+          be wrong.
+        </p>
       </motion.div>
     </PageShell>
   );

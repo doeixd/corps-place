@@ -224,6 +224,11 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
           )}
         />
       </Show>
+
+      <p className="mt-8 text-xs text-muted-foreground text-center">
+        Information was obtained using publicly available information from the internet, and may be
+        wrong.
+      </p>
     </PageShell>
   );
 }
