@@ -318,33 +318,40 @@ function PoolPicker({
         />
       </CardHeader>
       <CardContent>
-        <ul className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto">
-          {filtered.map((corps) => (
-            <li key={corps.corpsKey} className="rounded-lg border border-border p-2">
-              <div className="mb-1 flex items-center gap-2 text-sm font-medium">
-                <span>{corps.name}</span>
-                <span className="text-xs text-muted-foreground">{corps.divisionName}</span>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {CAPTION_KEYS.map((caption) => {
-                  const taken = takenPairs.has(`${corps.corpsKey}|${caption}`);
-                  return (
-                    <Button
-                      key={caption}
-                      size="xs"
-                      variant={taken ? 'ghost' : 'outline'}
-                      disabled={taken || !canPick}
-                      title={`${KEY_TO_CAPTION_NAME[caption]}${taken ? ' — already drafted' : ''}`}
-                      onClick={() => onPick(corps.corpsKey, caption)}
-                    >
-                      {caption}
-                    </Button>
-                  );
-                })}
-              </div>
-            </li>
-          ))}
-        </ul>
+        {pool.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Draftable corps aren&apos;t available right now — the pool appears once this
+            season&apos;s corps data is published.
+          </p>
+        ) : (
+          <ul className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto">
+            {filtered.map((corps) => (
+              <li key={corps.corpsKey} className="rounded-lg border border-border p-2">
+                <div className="mb-1 flex items-center gap-2 text-sm font-medium">
+                  <span>{corps.name}</span>
+                  <span className="text-xs text-muted-foreground">{corps.divisionName}</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {CAPTION_KEYS.map((caption) => {
+                    const taken = takenPairs.has(`${corps.corpsKey}|${caption}`);
+                    return (
+                      <Button
+                        key={caption}
+                        size="xs"
+                        variant={taken ? 'ghost' : 'outline'}
+                        disabled={taken || !canPick}
+                        title={`${KEY_TO_CAPTION_NAME[caption]}${taken ? ' — already drafted' : ''}`}
+                        onClick={() => onPick(corps.corpsKey, caption)}
+                      >
+                        {caption}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </CardContent>
     </Card>
   );
