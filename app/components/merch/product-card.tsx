@@ -27,7 +27,6 @@ export function ProductCard({ product }: { product: MerchProductSummary }) {
             fit="cover"
             className="h-full w-full"
             thumbDataUrl={thumb}
-            thumbDataUrl={thumb}
             imgClassName="transition-transform duration-200 group-hover:scale-[1.03]"
             fallback={
               <div className="flex h-full w-full items-center justify-center text-text-muted">

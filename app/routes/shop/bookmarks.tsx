@@ -180,11 +180,7 @@ function BookmarksPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.92 }}
-              transition={{
-                duration: 0.2,
-                ease: 'easeOut',
-                layout: { duration: 0.25, ease: 'easeOut' },
-              }}
+              transition={{ type: 'spring', stiffness: 500, damping: 50, mass: 1 }}
             >
               <ProductCard product={product} />
             </motion.div>

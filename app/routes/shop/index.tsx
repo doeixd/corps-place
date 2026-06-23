@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Show } from 'jotai-solid-api';
 import { getShopHome } from '@/lib/server-fns/hybrid';
 import { PageShell } from '@/components/page-shell';
@@ -106,11 +107,21 @@ function ShopLanding() {
               </Link>
             </div>
             <div className="carousel-scrollbar flex snap-x gap-3 overflow-x-auto pl-1 pt-2 pb-2">
-              {recentBookmarks.map((product) => (
-                <div key={product.productId} className="w-44 shrink-0 snap-start sm:w-48">
-                  <ProductCard product={product} />
-                </div>
-              ))}
+              <AnimatePresence mode="popLayout" initial={false}>
+                {recentBookmarks.map((product) => (
+                  <motion.div
+                    key={product.productId}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.92 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 50, mass: 1 }}
+                    className="w-44 shrink-0 snap-start sm:w-48"
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           </section>
         </Show>
