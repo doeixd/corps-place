@@ -4,7 +4,9 @@
 // chunks so a large array never blocks the main thread, with `markReady()` after
 // the first chunk so the UI can render progressively.
 
-import type { CollectionConfig } from '@tanstack/db';
+// Import the core type via '@tanstack/react-db' (it re-exports '@tanstack/db'
+// via `export *`); importing '@tanstack/db' directly fails to resolve here.
+import type { CollectionConfig } from '@tanstack/react-db';
 import {
   indexShardUrl,
   loadReadModelManifest,

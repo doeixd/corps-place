@@ -22,7 +22,10 @@ export function HybridCollection<T extends object>({
   loader,
   children,
 }: {
-  collection: Collection<T, string | number, any>;
+  // Row type is inferred from `loader`, not the collection: the collection's
+  // own row type widens to a deep-writable `Record<string, unknown>`, so binding
+  // T to it would clash with the loader/children's concrete row type.
+  collection: Collection<any, string | number, any>;
   loader: T[];
   children: (rows: T[]) => ReactNode;
 }) {
@@ -50,7 +53,8 @@ export function HybridRecord<T extends object>({
   loader,
   children,
 }: {
-  collection: Collection<T, string | number, any>;
+  // See HybridCollection: row type comes from `loader`, not the collection.
+  collection: Collection<any, string | number, any>;
   loader: T;
   children: (row: T) => ReactNode;
 }) {
