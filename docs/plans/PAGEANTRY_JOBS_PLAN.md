@@ -135,8 +135,132 @@ These are verified facts about this repo. Guessing differently will break the bu
   dev server / build — never hand-edit it. Define routes with
   `createFileRoute('/jobs/...')({ ... })`. Search params use `validateSearch` (see
   `app/routes/judges/$judgeId.tsx`).
+  **After adding new route files, run `npx tsr generate`** to regenerate the route tree
+  before typechecking, or keep `npm run dev` running (it auto-generates on file changes).
 - **Build a thin vertical slice first**, then iterate. Don't scaffold all seven routes before
   one profile saves and renders.
+
+## Pattern cheat sheet (LESSONS FROM IMPLEMENTATION — read before coding)
+
+These patterns were settled during M0–M2 implementation. Deviating from them
+caused type errors, dead code, or architectural drift. Follow them exactly.
+
+### Effect service (not raw DB access)
+Write business logic as an **Effect v4 `Context.Service`**, never as plain
+async functions over `@libsql/client`. The `store.ts` pattern from the show wiki
+is considered legacy and being migrated — do not replicate it for jobs.
+
+```typescript
+// 1. SQL layer tag (app/lib/jobs/jobs-sql.ts)
+import { Context, Effect, Layer } from 'effect';
+import { SqlClient } from 'effect/unstable/sql';
+import { LibsqlClient } from '@effect/sql-libsql';
+import { getContributionsDb } from '@/lib/contributions-db';
+
+export class JobsSql extends Context.Service<JobsSql, SqlClient.SqlClient>()('JobsSql') {}
+export const JobsSqlLive = Layer.unwrap(Effect.gen(function* () {
+  const liveClient = yield* Effect.promise(() => getContributionsDb());
+  return Layer.effect(JobsSql, SqlClient.SqlClient).pipe(
+    Layer.provide(LibsqlClient.layer({ liveClient }))
+  );
+}));
+
+// 2. Service tag (app/lib/jobs/jobs-service.ts)
+const makeService = Effect.gen(function* () {
+  const sql = yield* JobsSql;
+  const myMethod = Effect.fn('JobsService.myMethod')(function* (input: string) {
+    const rows = yield* sql<SomeType>`SELECT * FROM table WHERE x = ${input}`;
+    return rows[0] ?? null;
+  });
+  return { myMethod };
+});
+export class JobsService extends Context.Service<
+  JobsService, Effect.Success<typeof makeService>
+>()('JobsService') {}
+export const JobsServiceLive = Layer.effect(JobsService, makeService).pipe(
+  Layer.provide(JobsSqlLive)
+);
+```
+
+### Server-fn shim (not RPC for simple CRUD)
+Do NOT create an `RpcGroup` for simple CRUD operations. RPC groups add
+serialization ceremony and type complexity with no benefit for basic creates,
+reads, updates. Use a thin `createServerFn` that calls the Effect service:
+
+```typescript
+// ✅ DO THIS — thin shim in app/lib/server-fns/jobs.ts
+export const getMyJobsProfile = createServerFn({ method: 'GET' }).handler(async () => {
+  const actor = await getActor(getWebRequest());
+  if (!actor) return null;
+  return Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(actor.userId)).pipe(
+      Effect.provide(JobsServiceLive)
+    )
+  );
+});
+```
+
+**Critical:** The `.pipe(Effect.provide(JobsServiceLive))` MUST be inside
+`Effect.runPromise(...)`, not around it. This strips the `JobsService` from
+the effect's `R` type so `runPromise` accepts it.
+
+**Use RPC only when:** you need bidirectional streaming, the client needs to
+call the server without a server-fn import, or the mutation is part of a
+complex multi-step transaction (see Fantasy DCI draft for reference).
+
+### useMachine destructuring
+`@xstate/react`'s `useMachine` returns a **tuple `[snapshot, send]`**:
+
+```typescript
+const [snapshot, send] = useMachine(myMachine, { input: { ... } });
+// snapshot.matches('state'), snapshot.context, send({ type: 'EVENT' })
+```
+
+NOT `{ snapshot, send }`. This changed from earlier XState versions.
+
+### Effect.runPromise providing pattern
+Every call to `Effect.runPromise` must provide the service layer inside the
+call, not outside. The pattern:
+
+```typescript
+const result = await Effect.runPromise(
+  Effect.flatMap(JobsService, (svc) => svc.method(arg)).pipe(
+    Effect.provide(JobsServiceLive)
+  )
+);
+```
+
+If you need to call multiple service methods in one handler, wrap them in
+a single Effect pipeline rather than making separate `runPromise` calls.
+
+### Verify icons exist before importing
+Icons are in `app/components/icons/generated/` — check the file exists before
+importing. List available icons with `ls app/components/icons/generated/`.
+The import pattern is always:
+```typescript
+import { Search01Icon } from '@/components/icons/generated';
+// NOT from '@hugeicons/react' (that import was removed)
+```
+If the icon you want doesn't exist, pick the closest available one. Never add
+new icon files — the generated set covers all Hugeicons used across the site.
+
+### ReUI / shadcn import paths
+ReUI-namespaced components import from `@/components/reui/<name>` (e.g.
+`@/components/reui/badge`, `@/components/reui/data-grid`).
+Base shadcn primitives import from `@/components/ui/<name>` (e.g.
+`@/components/ui/button`, `@/components/ui/card`).
+**Always check which registry a component belongs to** before importing.
+The `components.json` file documents the registry setup.
+
+### Route tree regeneration
+After adding or removing route files under `app/routes/`, regenerate the
+route tree before typechecking:
+```bash
+npx tsr generate
+```
+Or keep `npm run dev` running — it auto-regenerates on file changes.
+If you see errors like `Type '"/jobs/..."' is not assignable to
+parameter of type 'keyof FileRoutesByPath'`, the route tree is stale.
 
 ---
 
