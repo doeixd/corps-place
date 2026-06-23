@@ -30,6 +30,12 @@ import {
   type DraftType,
 } from '@/lib/fantasy/draft';
 import { DraftConflict, Forbidden, NotFound } from './errors';
+import {
+  draftReducer,
+  type DraftMachineState,
+  type DraftReducerError,
+  type DraftStatus,
+} from '../machines/draft';
 import { ContributionsSql, ContributionsSqlLive } from './sql';
 
 export type DraftEvent = { event: string; data: unknown };
@@ -112,6 +118,20 @@ const mapDraft = (d: DraftRow): NonNullable<DraftSnapshot['draft']> => ({
   scheduledAt: d.scheduled_at ?? null,
   order: d.order_json ? (JSON.parse(d.order_json) as string[]) : [],
 });
+
+// The draft lifecycle (status transitions) is delegated to the pure reducer in
+// ../machines/draft (UI/UX plan §13): the service validates each move through it so
+// an illegal transition is impossible by construction. Reducer reasons map back to
+// the existing typed errors — out-of-turn → Forbidden, everything else → DraftConflict.
+const toMachineState = (d: NonNullable<DraftSnapshot['draft']>): DraftMachineState => ({
+  status: d.status as DraftStatus,
+  draftType: d.draftType,
+  order: d.order,
+  totalRounds: d.totalRounds,
+  currentPickNo: d.currentPickNo,
+});
+const reducerError = (reason: DraftReducerError) =>
+  reason === 'out-of-turn' ? new Forbidden() : new DraftConflict({ reason });
 
 const divisionKey = (name: string | null): 'world' | 'open' | null => {
   const d = (name ?? '').toLowerCase();
@@ -503,9 +523,11 @@ const makeDraftService = Effect.gen(function* () {
         if (!rows[0]) return yield* Effect.fail(new NotFound({ message: 'draft' }));
         const draft = mapDraft(rows[0]);
 
-        if (draft.status !== 'live')
-          return yield* Effect.fail(new DraftConflict({ reason: 'not-live' }));
-        if (draft.currentUserId !== input.userId) return yield* Effect.fail(new Forbidden());
+        const move = draftReducer(toMachineState(draft), {
+          type: 'PICK',
+          userId: input.userId,
+        });
+        if (!move.ok) return yield* Effect.fail(reducerError(move.reason));
         if (draft.pickDeadlineAt && new Date(draft.pickDeadlineAt).getTime() < Date.now())
           return yield* Effect.fail(new DraftConflict({ reason: 'expired' }));
         if (!isCaptionKey(input.caption))
@@ -544,8 +566,9 @@ const makeDraftService = Effect.gen(function* () {
     yield* lockFor(leagueId).withPermits(1)(
       Effect.gen(function* () {
         const rows = yield* loadDraft(leagueId);
-        if (!rows[0] || rows[0].status !== 'live')
-          return yield* Effect.fail(new DraftConflict({ reason: 'not-live' }));
+        if (!rows[0]) return yield* Effect.fail(new DraftConflict({ reason: 'not-live' }));
+        const move = draftReducer(toMachineState(mapDraft(rows[0])), { type: 'PAUSE' });
+        if (!move.ok) return yield* Effect.fail(reducerError(move.reason));
         yield* Effect.sync(() => clearTimer(leagueId));
         yield* sql`
           UPDATE fantasy_drafts SET status = 'paused', pick_deadline_at = NULL WHERE league_id = ${leagueId}
@@ -559,8 +582,9 @@ const makeDraftService = Effect.gen(function* () {
     yield* lockFor(leagueId).withPermits(1)(
       Effect.gen(function* () {
         const rows = yield* loadDraft(leagueId);
-        if (!rows[0] || rows[0].status !== 'paused')
-          return yield* Effect.fail(new DraftConflict({ reason: 'not-paused' }));
+        if (!rows[0]) return yield* Effect.fail(new DraftConflict({ reason: 'not-paused' }));
+        const move = draftReducer(toMachineState(mapDraft(rows[0])), { type: 'RESUME' });
+        if (!move.ok) return yield* Effect.fail(reducerError(move.reason));
         const deadline = new Date(Date.now() + Number(rows[0].pick_seconds) * 1000).toISOString();
         yield* sql`
           UPDATE fantasy_drafts SET status = 'live', pick_deadline_at = ${deadline} WHERE league_id = ${leagueId}
