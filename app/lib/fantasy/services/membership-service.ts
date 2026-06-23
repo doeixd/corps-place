@@ -66,7 +66,31 @@ const makeMembershipService = Effect.gen(function* () {
     return { ok: true as const };
   });
 
-  return { setCorpsIdentity, removeMember };
+  // Member-initiated departure (self-only). Owners can't leave — they cancel or
+  // transfer instead (§4.9). Pre-draft only; frees the seat by going 'removed'.
+  const leave = Effect.fn('MembershipService.leave')(function* (input: {
+    actor: Actor;
+    leagueId: string;
+  }) {
+    yield* requireDurableStorage;
+    const league = yield* g.loadLeagueById(input.leagueId);
+    if (input.actor.userId === league.owner_user_id)
+      return yield* Effect.fail(new LeagueConflict({ reason: 'cannot-remove-owner' }));
+    yield* g.requireMember(input.leagueId, input.actor);
+
+    const started = yield* sql<{ status: string }>`
+      SELECT status FROM fantasy_drafts WHERE league_id = ${input.leagueId} AND status != 'scheduled'
+    `.pipe(Effect.orDie);
+    if (started[0]) return yield* Effect.fail(new LeagueConflict({ reason: 'draft-started' }));
+
+    yield* sql`
+      UPDATE fantasy_members SET status = 'removed'
+      WHERE league_id = ${input.leagueId} AND user_id = ${input.actor.userId}
+    `.pipe(Effect.orDie);
+    return { ok: true as const };
+  });
+
+  return { setCorpsIdentity, removeMember, leave };
 });
 
 export class MembershipService extends Context.Service<

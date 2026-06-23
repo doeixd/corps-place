@@ -277,6 +277,23 @@ const makeLeagueService = Effect.gen(function* () {
     return { ok: true as const, name };
   });
 
+  const cancel = Effect.fn('LeagueService.cancel')(function* (input: {
+    actor: Actor;
+    leagueId: string;
+  }) {
+    yield* requireDurableStorage;
+    const league = yield* requireOwner(input.leagueId, input.actor);
+    // Owner exit hatch (§4.9) — mark the league canceled. Idempotent; a finished
+    // league stays as-is so we don't rewrite history.
+    if (league.status === 'complete')
+      return yield* Effect.fail(new LeagueConflict({ reason: 'joinable-closed' }));
+    yield* sql`
+      UPDATE fantasy_leagues SET status = 'canceled', updated_at = ${new Date().toISOString()}
+      WHERE league_id = ${league.league_id}
+    `.pipe(Effect.orDie);
+    return { ok: true as const };
+  });
+
   const setImage = Effect.fn('LeagueService.setImage')(function* (input: {
     actor: Actor;
     leagueId: string;
@@ -311,7 +328,7 @@ const makeLeagueService = Effect.gen(function* () {
     };
   });
 
-  return { get, listMyLeagues, create, updateConfig, rename, setImage };
+  return { get, listMyLeagues, create, updateConfig, rename, setImage, cancel };
 });
 
 export class LeagueService extends Context.Service<

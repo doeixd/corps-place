@@ -13,6 +13,8 @@ import {
   requestRefund,
   renameLeague,
   setLeagueImage,
+  leaveLeague,
+  cancelLeague,
 } from '@/lib/server-fns/fantasy';
 import { uploadFantasyLogo } from '@/lib/server-fns/fantasy-media';
 import { PhotoUpload, fileToBase64 } from '@/components/fantasy/photo-upload';
@@ -203,7 +205,69 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
           ))}
         </ul>
       </section>
+
+      {viewer.isMember ? (
+        <DangerZone
+          leagueId={league.leagueId}
+          isOwner={viewer.isOwner}
+          status={league.status}
+          onLeft={() => router.navigate({ to: '/fantasy' })}
+          onCanceled={refresh}
+        />
+      ) : null}
     </PageShell>
+  );
+}
+
+function DangerZone({
+  leagueId,
+  isOwner,
+  status,
+  onLeft,
+  onCanceled,
+}: {
+  leagueId: string;
+  isOwner: boolean;
+  status: string;
+  onLeft: () => Promise<void> | void;
+  onCanceled: () => Promise<void> | void;
+}) {
+  const leave = useAsyncAction(async () => {
+    if (!window.confirm('Leave this league? You can rejoin from an invite link before the draft.'))
+      return;
+    await leaveLeague({ data: { leagueId } });
+    await onLeft();
+  });
+  const cancel = useAsyncAction(async () => {
+    if (!window.confirm('Cancel this league for everyone? This cannot be undone.')) return;
+    await cancelLeague({ data: { leagueId } });
+    await onCanceled();
+  });
+
+  if (status === 'canceled') {
+    return <p className="text-sm text-muted-foreground">This league has been canceled.</p>;
+  }
+
+  return (
+    <section className="flex flex-col items-start gap-2 border-t border-border pt-4">
+      {isOwner ? (
+        <BusyButton
+          variant="outline"
+          size="sm"
+          busy={cancel.busy}
+          onClick={() => void cancel.run()}
+        >
+          Cancel league
+        </BusyButton>
+      ) : (
+        <BusyButton variant="outline" size="sm" busy={leave.busy} onClick={() => void leave.run()}>
+          Leave league
+        </BusyButton>
+      )}
+      {leave.error || cancel.error ? (
+        <p className="text-sm text-destructive">{leave.error ?? cancel.error}</p>
+      ) : null}
+    </section>
   );
 }
 

@@ -349,6 +349,28 @@ export const removeMember = createServerFn({ method: 'POST' })
     );
   });
 
+const LeagueIdInput = v.object({ leagueId: v.string() });
+
+// Member leaves a league (self-only; owners cancel instead). §4.9
+export const leaveLeague = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(LeagueIdInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireActor();
+    return runFantasy(
+      Effect.flatMap(MembershipService, (svc) => svc.leave({ actor, leagueId: data.leagueId }))
+    );
+  });
+
+// Owner cancels a league (owner exit hatch). §4.9
+export const cancelLeague = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(LeagueIdInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireActor();
+    return runFantasy(
+      Effect.flatMap(LeagueService, (svc) => svc.cancel({ actor, leagueId: data.leagueId }))
+    );
+  });
+
 // ===========================================================================
 // QUIZ — admin bank CRUD (capability manageFantasyQuiz) + member run (M2)
 // ===========================================================================

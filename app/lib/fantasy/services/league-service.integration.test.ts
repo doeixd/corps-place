@@ -240,6 +240,12 @@ describe('LeagueService.create / updateConfig (Effect path)', () => {
         Effect.provide(LeagueServiceLive)
       )
     );
+  const cancel = (input: { actor: never; leagueId: string }) =>
+    Effect.runPromise(
+      Effect.flatMap(LeagueService, (svc) => svc.cancel(input)).pipe(
+        Effect.provide(LeagueServiceLive)
+      )
+    );
 
   it('creates a league + owner membership atomically', async () => {
     const res = await create({ actor: actor('u-creator'), name: 'Fresh League', season: '2026' });
@@ -330,6 +336,18 @@ describe('LeagueService.create / updateConfig (Effect path)', () => {
       setImage({ actor: actor('intruder'), leagueId, mediaId: 'evil' })
     ).rejects.toThrow();
   });
+
+  it('lets the owner cancel the league; rejects non-owner', async () => {
+    const { leagueId, slug } = await create({
+      actor: actor('u-cancel'),
+      name: 'Cancel Me',
+      season: '2026',
+    });
+    await expect(cancel({ actor: actor('rando'), leagueId })).rejects.toThrow();
+    await cancel({ actor: actor('u-cancel'), leagueId });
+    const got = await runGet(slug, 'u-cancel');
+    expect(got.league.status).toBe('canceled');
+  });
 });
 
 describe('MembershipService (Effect path)', () => {
@@ -385,6 +403,37 @@ describe('MembershipService (Effect path)', () => {
     await expect(
       remove({ actor: asActor('u-mem'), leagueId: 'lg-1', userId: 'u-owner' })
     ).rejects.toThrow();
+  });
+
+  it('lets a member leave but not the owner (§4.9)', async () => {
+    await db.batch(
+      [
+        `INSERT INTO fantasy_leagues
+           (league_id, slug, name, owner_user_id, season, status, config_json, max_members, payment_status, created_at, updated_at)
+         VALUES ('lg-leave', 'leave-slug', 'Leave Test', 'own-1', '2026', 'quiz',
+                 '${JSON.stringify(CONFIG)}', 12, 'none', '${NOW}', '${NOW}')`,
+        `INSERT INTO fantasy_members (league_id, user_id, role, status, joined_at) VALUES ('lg-leave', 'own-1', 'owner', 'active', '${NOW}')`,
+        `INSERT INTO fantasy_members (league_id, user_id, role, status, joined_at) VALUES ('lg-leave', 'mem-1', 'member', 'active', '${NOW}')`,
+        `INSERT INTO fantasy_drafts (draft_id, league_id, status, draft_type, total_rounds, current_pick_no) VALUES ('dr-leave', 'lg-leave', 'scheduled', 'snake', 8, 0)`,
+      ],
+      'write'
+    );
+    const leave = (userId: string) =>
+      Effect.runPromise(
+        Effect.flatMap(MembershipService, (s) =>
+          s.leave({ actor: asActor(userId), leagueId: 'lg-leave' })
+        ).pipe(Effect.provide(MembershipServiceLive))
+      );
+
+    await expect(leave('own-1')).rejects.toThrow(); // owner can't leave
+    await leave('mem-1');
+    const row = (
+      await db.execute({
+        sql: `SELECT status FROM fantasy_members WHERE league_id = 'lg-leave' AND user_id = 'mem-1'`,
+        args: [],
+      })
+    ).rows[0];
+    expect(row?.status).toBe('removed');
   });
 });
 
