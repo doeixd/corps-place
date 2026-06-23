@@ -285,6 +285,17 @@ function LiveDraft({
 
   return (
     <div className="flex flex-col gap-6">
+      {/* Screen-reader announcement of turn changes (plan §3.7). */}
+      <div className="sr-only" role="status" aria-live="polite">
+        {draft.status === 'paused'
+          ? 'The draft is paused.'
+          : isMyTurn
+            ? "You're on the clock — make your pick."
+            : onClock
+              ? `${onClock.corps_name || onClock.user_name || 'A player'} is on the clock.`
+              : ''}
+      </div>
+
       <Card className={cn('transition-colors', isMyTurn && 'border-primary ring-1 ring-primary')}>
         <CardContent className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
