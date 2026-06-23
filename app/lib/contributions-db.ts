@@ -396,6 +396,34 @@ const SCHEMA = [
    )`,
   `CREATE INDEX IF NOT EXISTS idx_admin_jobs_status ON admin_jobs (status, queued_at)`,
   `CREATE INDEX IF NOT EXISTS idx_admin_jobs_kind_time ON admin_jobs (kind, queued_at)`,
+
+  // Public /contact submissions → support inbox (ADMIN_PAGE_PLAN §10.3).
+  `CREATE TABLE IF NOT EXISTS contact_messages (
+     message_id TEXT PRIMARY KEY,
+     user_id    TEXT,                      -- null when signed out
+     email      TEXT,
+     subject    TEXT,
+     body       TEXT NOT NULL,
+     topic      TEXT,
+     status     TEXT NOT NULL DEFAULT 'open',  -- open | replied | closed
+     created_at TEXT NOT NULL,
+     handled_by TEXT,
+     handled_at TEXT
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_contact_status ON contact_messages (status, created_at)`,
+
+  // Outbound email delivery log (ADMIN_PAGE_PLAN §10.3) — written by the support
+  // reply fn so operators can see/resend what went out.
+  `CREATE TABLE IF NOT EXISTS email_log (
+     email_id    TEXT PRIMARY KEY,
+     to_addr     TEXT NOT NULL,
+     subject     TEXT,
+     tag         TEXT,
+     user_id     TEXT,
+     sent_at     TEXT NOT NULL,
+     sent_by     TEXT
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_email_log_user ON email_log (user_id, sent_at)`,
 ];
 
 /**

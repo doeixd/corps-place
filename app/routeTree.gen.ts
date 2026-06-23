@@ -13,6 +13,8 @@ import { createServerRootRoute } from '@tanstack/react-start/server'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StaffIndexRouteImport } from './routes/staff/index'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
@@ -34,6 +36,7 @@ import { Route as FantasyQuizAdminRouteImport } from './routes/fantasy/quiz-admi
 import { Route as FantasyCreateRouteImport } from './routes/fantasy/create'
 import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spike'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminSupportRouteImport } from './routes/admin/support'
 import { Route as AdminJobsRouteImport } from './routes/admin/jobs'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
@@ -48,6 +51,7 @@ import { Route as FantasySlugStandingsRouteImport } from './routes/fantasy/$slug
 import { Route as FantasySlugQuizRouteImport } from './routes/fantasy/$slug/quiz'
 import { Route as FantasySlugDraftRouteImport } from './routes/fantasy/$slug/draft'
 import { Route as CorpsSlugChar123SeasonChar125RouteImport } from './routes/corps/$slug.{-$season}'
+import { Route as AdminUsersIdRouteImport } from './routes/admin/users.$id'
 import { Route as AdminFantasyQuizRouteImport } from './routes/admin/fantasy/quiz'
 import { Route as AdminFantasyLeaguesRouteImport } from './routes/admin/fantasy/leagues'
 import { Route as EventsYearSlugSlugPredictionRouteImport } from './routes/events/$yearSlug/$slug/prediction'
@@ -73,6 +77,16 @@ const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -180,6 +194,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/admin/users',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/admin/support',
+  path: '/admin/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminJobsRoute = AdminJobsRouteImport.update({
   id: '/admin/jobs',
   path: '/admin/jobs',
@@ -251,6 +270,11 @@ const CorpsSlugChar123SeasonChar125Route =
     path: '/corps/$slug/{-$season}',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminUsersIdRoute = AdminUsersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminUsersRoute,
+} as any)
 const AdminFantasyQuizRoute = AdminFantasyQuizRouteImport.update({
   id: '/admin/fantasy/quiz',
   path: '/admin/fantasy/quiz',
@@ -329,13 +353,16 @@ const ApiFantasyDraftLeagueIdStreamServerRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/jobs': typeof AdminJobsRoute
-  '/admin/users': typeof AdminUsersRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/users': typeof AdminUsersRouteWithChildren
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
   '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
@@ -357,6 +384,7 @@ export interface FileRoutesByFullPath {
   '/staff': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
+  '/admin/users/$id': typeof AdminUsersIdRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
   '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
@@ -371,13 +399,16 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/jobs': typeof AdminJobsRoute
-  '/admin/users': typeof AdminUsersRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/users': typeof AdminUsersRouteWithChildren
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
   '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
@@ -399,6 +430,7 @@ export interface FileRoutesByTo {
   '/staff': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
+  '/admin/users/$id': typeof AdminUsersIdRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
   '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
@@ -414,13 +446,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/jobs': typeof AdminJobsRoute
-  '/admin/users': typeof AdminUsersRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/users': typeof AdminUsersRouteWithChildren
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
   '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
@@ -442,6 +477,7 @@ export interface FileRoutesById {
   '/staff/': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
+  '/admin/users/$id': typeof AdminUsersIdRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
   '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
@@ -458,12 +494,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/contact'
+    | '/faq'
     | '/privacy-policy'
     | '/terms-of-service'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
     | '/admin/jobs'
+    | '/admin/support'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -486,6 +525,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
+    | '/admin/users/$id'
     | '/corps/$slug/{-$season}'
     | '/fantasy/$slug/draft'
     | '/fantasy/$slug/quiz'
@@ -500,12 +540,15 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/contact'
+    | '/faq'
     | '/privacy-policy'
     | '/terms-of-service'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
     | '/admin/jobs'
+    | '/admin/support'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -528,6 +571,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
+    | '/admin/users/$id'
     | '/corps/$slug/{-$season}'
     | '/fantasy/$slug/draft'
     | '/fantasy/$slug/quiz'
@@ -542,12 +586,15 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/contact'
+    | '/faq'
     | '/privacy-policy'
     | '/terms-of-service'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
     | '/admin/jobs'
+    | '/admin/support'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -570,6 +617,7 @@ export interface FileRouteTypes {
     | '/staff/'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
+    | '/admin/users/$id'
     | '/corps/$slug/{-$season}'
     | '/fantasy/$slug/draft'
     | '/fantasy/$slug/quiz'
@@ -585,13 +633,16 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
   AdminJobsRoute: typeof AdminJobsRoute
-  AdminUsersRoute: typeof AdminUsersRoute
+  AdminSupportRoute: typeof AdminSupportRoute
+  AdminUsersRoute: typeof AdminUsersRouteWithChildren
   DevFreeFormSpikeRoute: typeof DevFreeFormSpikeRoute
   FantasyCreateRoute: typeof FantasyCreateRoute
   FantasyQuizAdminRoute: typeof FantasyQuizAdminRoute
@@ -735,6 +786,20 @@ declare module '@tanstack/react-router' {
       path: '/privacy-policy'
       fullPath: '/privacy-policy'
       preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -884,6 +949,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/support': {
+      id: '/admin/support'
+      path: '/admin/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/jobs': {
       id: '/admin/jobs'
       path: '/admin/jobs'
@@ -981,6 +1053,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/corps/$slug/{-$season}'
       preLoaderRoute: typeof CorpsSlugChar123SeasonChar125RouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/users/$id': {
+      id: '/admin/users/$id'
+      path: '/$id'
+      fullPath: '/admin/users/$id'
+      preLoaderRoute: typeof AdminUsersIdRouteImport
+      parentRoute: typeof AdminUsersRoute
     }
     '/admin/fantasy/quiz': {
       id: '/admin/fantasy/quiz'
@@ -1087,15 +1166,30 @@ declare module '@tanstack/react-start/server' {
   }
 }
 
+interface AdminUsersRouteChildren {
+  AdminUsersIdRoute: typeof AdminUsersIdRoute
+}
+
+const AdminUsersRouteChildren: AdminUsersRouteChildren = {
+  AdminUsersIdRoute: AdminUsersIdRoute,
+}
+
+const AdminUsersRouteWithChildren = AdminUsersRoute._addFileChildren(
+  AdminUsersRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminContentRoute: AdminContentRoute,
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
   AdminJobsRoute: AdminJobsRoute,
-  AdminUsersRoute: AdminUsersRoute,
+  AdminSupportRoute: AdminSupportRoute,
+  AdminUsersRoute: AdminUsersRouteWithChildren,
   DevFreeFormSpikeRoute: DevFreeFormSpikeRoute,
   FantasyCreateRoute: FantasyCreateRoute,
   FantasyQuizAdminRoute: FantasyQuizAdminRoute,
