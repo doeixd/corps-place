@@ -48,6 +48,8 @@ import { Route as FantasySlugStandingsRouteImport } from './routes/fantasy/$slug
 import { Route as FantasySlugQuizRouteImport } from './routes/fantasy/$slug/quiz'
 import { Route as FantasySlugDraftRouteImport } from './routes/fantasy/$slug/draft'
 import { Route as CorpsSlugChar123SeasonChar125RouteImport } from './routes/corps/$slug.{-$season}'
+import { Route as AdminFantasyQuizRouteImport } from './routes/admin/fantasy/quiz'
+import { Route as AdminFantasyLeaguesRouteImport } from './routes/admin/fantasy/leagues'
 import { Route as EventsYearSlugSlugPredictionRouteImport } from './routes/events/$yearSlug/$slug/prediction'
 import { ServerRoute as SitemapDotxmlServerRouteImport } from './routes/sitemap[.]xml'
 import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]txt'
@@ -249,6 +251,16 @@ const CorpsSlugChar123SeasonChar125Route =
     path: '/corps/$slug/{-$season}',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminFantasyQuizRoute = AdminFantasyQuizRouteImport.update({
+  id: '/admin/fantasy/quiz',
+  path: '/admin/fantasy/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFantasyLeaguesRoute = AdminFantasyLeaguesRouteImport.update({
+  id: '/admin/fantasy/leagues',
+  path: '/admin/fantasy/leagues',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsYearSlugSlugPredictionRoute =
   EventsYearSlugSlugPredictionRouteImport.update({
     id: '/events/$yearSlug/$slug/prediction',
@@ -343,6 +355,8 @@ export interface FileRoutesByFullPath {
   '/merch': typeof MerchIndexRoute
   '/shop': typeof ShopIndexRoute
   '/staff': typeof StaffIndexRoute
+  '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
+  '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
   '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
@@ -383,6 +397,8 @@ export interface FileRoutesByTo {
   '/merch': typeof MerchIndexRoute
   '/shop': typeof ShopIndexRoute
   '/staff': typeof StaffIndexRoute
+  '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
+  '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
   '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
@@ -424,6 +440,8 @@ export interface FileRoutesById {
   '/merch/': typeof MerchIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/staff/': typeof StaffIndexRoute
+  '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
+  '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
   '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
@@ -466,6 +484,8 @@ export interface FileRouteTypes {
     | '/merch'
     | '/shop'
     | '/staff'
+    | '/admin/fantasy/leagues'
+    | '/admin/fantasy/quiz'
     | '/corps/$slug/{-$season}'
     | '/fantasy/$slug/draft'
     | '/fantasy/$slug/quiz'
@@ -506,6 +526,8 @@ export interface FileRouteTypes {
     | '/merch'
     | '/shop'
     | '/staff'
+    | '/admin/fantasy/leagues'
+    | '/admin/fantasy/quiz'
     | '/corps/$slug/{-$season}'
     | '/fantasy/$slug/draft'
     | '/fantasy/$slug/quiz'
@@ -546,6 +568,8 @@ export interface FileRouteTypes {
     | '/merch/'
     | '/shop/'
     | '/staff/'
+    | '/admin/fantasy/leagues'
+    | '/admin/fantasy/quiz'
     | '/corps/$slug/{-$season}'
     | '/fantasy/$slug/draft'
     | '/fantasy/$slug/quiz'
@@ -587,6 +611,8 @@ export interface RootRouteChildren {
   MerchIndexRoute: typeof MerchIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
   StaffIndexRoute: typeof StaffIndexRoute
+  AdminFantasyLeaguesRoute: typeof AdminFantasyLeaguesRoute
+  AdminFantasyQuizRoute: typeof AdminFantasyQuizRoute
   CorpsSlugChar123SeasonChar125Route: typeof CorpsSlugChar123SeasonChar125Route
   FantasySlugDraftRoute: typeof FantasySlugDraftRoute
   FantasySlugQuizRoute: typeof FantasySlugQuizRoute
@@ -956,6 +982,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CorpsSlugChar123SeasonChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/fantasy/quiz': {
+      id: '/admin/fantasy/quiz'
+      path: '/admin/fantasy/quiz'
+      fullPath: '/admin/fantasy/quiz'
+      preLoaderRoute: typeof AdminFantasyQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/fantasy/leagues': {
+      id: '/admin/fantasy/leagues'
+      path: '/admin/fantasy/leagues'
+      fullPath: '/admin/fantasy/leagues'
+      preLoaderRoute: typeof AdminFantasyLeaguesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events/$yearSlug/$slug/prediction': {
       id: '/events/$yearSlug/$slug/prediction'
       path: '/events/$yearSlug/$slug/prediction'
@@ -1075,6 +1115,8 @@ const rootRouteChildren: RootRouteChildren = {
   MerchIndexRoute: MerchIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
   StaffIndexRoute: StaffIndexRoute,
+  AdminFantasyLeaguesRoute: AdminFantasyLeaguesRoute,
+  AdminFantasyQuizRoute: AdminFantasyQuizRoute,
   CorpsSlugChar123SeasonChar125Route: CorpsSlugChar123SeasonChar125Route,
   FantasySlugDraftRoute: FantasySlugDraftRoute,
   FantasySlugQuizRoute: FantasySlugQuizRoute,
