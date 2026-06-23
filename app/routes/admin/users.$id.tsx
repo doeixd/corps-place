@@ -6,7 +6,9 @@ import { requireAdminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { getUserDetail } from '@/lib/server-fns/support';
+import { exportUserData, anonymizeUser } from '@/lib/server-fns/admin-users';
 import { seoHead } from '@/lib/seo';
 
 type Detail = Awaited<ReturnType<typeof getUserDetail>>;
@@ -34,6 +36,34 @@ function UserDetail({ id }: { id: string }) {
       alive = false;
     };
   }, [id]);
+
+  const [actionMsg, setActionMsg] = useState<string | null>(null);
+
+  const exportData = async () => {
+    try {
+      const data = await exportUserData({ data: { userId: id } });
+      const blob = new Blob([data.json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `user-${id}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setActionMsg((e as Error).message);
+    }
+  };
+
+  const erase = async () => {
+    if (!confirm('Erase this user’s PII (GDPR)? Content is kept but anonymized. This bans them.'))
+      return;
+    try {
+      await anonymizeUser({ data: { userId: id } });
+      setActionMsg('User anonymized.');
+    } catch (e) {
+      setActionMsg((e as Error).message);
+    }
+  };
 
   if (error) return <p className="text-sm text-destructive">{error}</p>;
   if (!detail) return <p className="text-sm text-text-secondary">Loading…</p>;
@@ -89,6 +119,23 @@ function UserDetail({ id }: { id: string }) {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold text-text-secondary">GDPR</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2 text-sm">
+          {actionMsg ? <p className="text-text-secondary">{actionMsg}</p> : null}
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" onClick={() => void exportData()}>
+              Export data (JSON)
+            </Button>
+            <Button size="sm" variant="destructive" onClick={() => void erase()}>
+              Erase PII
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </>
   );
 }

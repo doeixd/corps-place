@@ -87,6 +87,74 @@ export const setUserBanned = createServerFn({ method: 'POST' })
     return { ok: true as const, userId: data.userId, banned: data.banned };
   });
 
+// ---------------------------------------------------------------------------
+// GDPR (ADMIN_PAGE_PLAN §7.1)
+// ---------------------------------------------------------------------------
+const UserIdInput = v.object({ userId: v.string() });
+
+/** Export a user's data as a JSON-serializable object (right to access). Cap: manageUsers. */
+export const exportUserData = createServerFn({ method: 'GET' })
+  .validator((d: unknown) => v.parse(UserIdInput, d))
+  .handler(async ({ data }) => {
+    await requireCapability(getWebRequest(), 'manageUsers');
+    const db = await getContributionsDb();
+    const rowsOf = async (sql: string) =>
+      (await db.execute({ sql, args: [data.userId] })).rows as unknown as Record<string, unknown>[];
+    const user = (
+      await db.execute({
+        sql: 'SELECT id, name, email, role, "createdAt" FROM "user" WHERE id = ?',
+        args: [data.userId],
+      })
+    ).rows[0] as unknown as Record<string, unknown> | undefined;
+    if (!user) throw new Error('NOT_FOUND');
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      user,
+      revisions: await rowsOf('SELECT * FROM show_revisions WHERE author_id = ?'),
+      media: await rowsOf('SELECT * FROM show_media WHERE uploaded_by = ?'),
+      leaguesOwned: await rowsOf('SELECT * FROM fantasy_leagues WHERE owner_user_id = ?'),
+      memberships: await rowsOf('SELECT * FROM fantasy_members WHERE user_id = ?'),
+      contactMessages: await rowsOf('SELECT * FROM contact_messages WHERE user_id = ?'),
+    };
+    // Serialize server-side so the GET return is a plain string (avoids the
+    // not-provably-JSON Record<string, unknown> return-type constraint).
+    return { json: JSON.stringify(payload, null, 2) };
+  });
+
+/** Right to erasure: anonymize the user (remove PII) while keeping content ids intact
+ *  for scoring/wiki integrity. Bans to prevent re-login. Cap: manageUsers. */
+export const anonymizeUser = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(UserIdInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'manageUsers');
+    if (data.userId === actor.userId) throw new Error('FORBIDDEN: cannot erase yourself');
+    const db = await getContributionsDb();
+    const target = (
+      await db.execute({ sql: 'SELECT role FROM "user" WHERE id = ?', args: [data.userId] })
+    ).rows[0] as { role?: string } | undefined;
+    if (!target) throw new Error('NOT_FOUND');
+    if (target.role === 'admin') {
+      const n = Number(
+        (await db.execute(`SELECT COUNT(*) AS n FROM "user" WHERE role = 'admin'`)).rows[0]?.n ?? 0
+      );
+      if (n <= 1) throw new Error('FORBIDDEN: cannot erase the last admin');
+    }
+    // Anonymize the PII-bearing rows; keep author_id/uploaded_by so content survives.
+    await db.batch(
+      [
+        {
+          sql: `UPDATE "user" SET name = 'Deleted user', email = ?, image = NULL,
+                  banned = 1, banReason = 'account erased' WHERE id = ?`,
+          args: [`deleted+${data.userId}@deleted.invalid`, data.userId],
+        },
+        { sql: 'UPDATE contact_messages SET email = NULL WHERE user_id = ?', args: [data.userId] },
+      ],
+      'write'
+    );
+    await writeAudit(db, actor, { action: 'gdpr_anonymize_user', target: data.userId });
+    return { ok: true as const };
+  });
+
 const SetRoleInput = v.object({
   userId: v.string(),
   role: v.picklist(['user', 'trusted', 'moderator', 'admin'] as const),
