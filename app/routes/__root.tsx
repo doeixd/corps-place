@@ -18,6 +18,7 @@ import { THEME_COOKIE, readThemeCookie } from '@/lib/theme-cookie';
 import type { Theme } from '@/lib/theme-cookie';
 import { FAVORITE_COOKIE, readFavoriteCookie } from '@/lib/favorite-cookie';
 import { buildAppIconHref } from '@/lib/logo-recolor';
+import { getBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
 import { buildSeo } from '@/lib/seo';
 import '@/app.css';
 
@@ -54,7 +55,7 @@ function favoriteHead(): { iconHref: string; themeColor: string } {
 // so they're not touched here. Ignores corrupt favorites (plan §No-Flash).
 const noFlashThemeScript = `(function(){try{var tc=document.cookie.match('(?:^|; )${THEME_COOKIE}=([^;]*)');var t=tc?tc[1]:null;if(t!=='dark'&&t!=='light'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t=='dark');r.style.colorScheme=t;var c=document.cookie.match('(?:^|; )${FAVORITE_COOKIE}=([^;]*)');if(c){var fav=JSON.parse(decodeURIComponent(c[1]));if(fav&&typeof fav.corpsKey==='string'&&typeof fav.darkPrimary==='string'&&typeof fav.lightPrimary==='string'){if(t=='dark'){r.style.setProperty('--primary',fav.darkPrimary);r.style.setProperty('--primary-foreground',fav.darkPrimaryForeground);}else{r.style.setProperty('--primary',fav.lightPrimary);r.style.setProperty('--primary-foreground',fav.lightPrimaryForeground);}if(fav.logoDark){r.style.setProperty('--logo-dark',fav.logoDark);}else{r.style.setProperty('--logo-dark','');}r.setAttribute('data-fav-active','');}}}catch(e){}})()`;
 
-function RootDocument({ children, theme }: { children: ReactNode; theme: Theme | null }) {
+function RootDocument({ children, theme, brand }: { children: ReactNode; theme: Theme | null; brand: Brand }) {
   // suppressHydrationWarning on <html>: when there's no theme cookie the no-flash
   // script (below) resolves the OS preference and mutates the class + colorScheme
   // before hydration, and browser extensions inject data-* attrs here too — both
@@ -63,7 +64,7 @@ function RootDocument({ children, theme }: { children: ReactNode; theme: Theme |
   return (
     <html
       lang="en"
-      className={theme === 'dark' ? 'dark' : undefined}
+      className={[theme === 'dark' ? 'dark' : '', brand === 'jobs' ? 'brand-jobs' : ''].filter(Boolean).join(' ') || undefined}
       style={theme ? { colorScheme: theme } : undefined}
       suppressHydrationWarning
     >
@@ -133,7 +134,10 @@ function ServiceWorkerManager() {
 export const Route = createRootRoute({
   // Read the favorite cookie so head() can render the corps's favicon + theme-color
   // into the SSR HTML (correct first paint, no hydration reset).
-  loader: () => ({ favorite: favoriteHead(), theme: readThemeCookie() }),
+  loader: ({ request }) => {
+    const brand = getBrand(request ?? new Request('http://localhost:5173'));
+    return { brand, favorite: favoriteHead(), theme: readThemeCookie() };
+  },
   // Default title + meta for any route without its own head() (error boundaries,
   // redirect routes). Child route head()s override the title via HeadContent.
   head: ({ loaderData }) => {
@@ -141,10 +145,11 @@ export const Route = createRootRoute({
       iconHref: '/logo.svg',
       themeColor: DEFAULT_THEME_COLOR,
     };
+    const brand = loaderData?.brand ?? 'corps';
+    const brandCfg = BRAND_CONFIG[brand];
     const seo = buildSeo({
-      title: 'DrumCorps.app — DCI Drum Corps Scores, Schedules & Predictions',
-      description:
-        'Live DCI drum corps scores, competition schedules, AI score predictions, judge & staff profiles, show programs, and official corps merch.',
+      title: brandCfg.seo.title,
+      description: brandCfg.seo.description,
     });
     return {
       ...seo,
@@ -160,9 +165,9 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { theme } = Route.useLoaderData();
+  const { theme, brand } = Route.useLoaderData();
   return (
-    <RootDocument theme={theme}>
+    <RootDocument theme={theme} brand={brand}>
       <ServiceWorkerManager />
       <MotionConfig reducedMotion={REDUCED_MOTION}>
         <TooltipProvider delay={150}>

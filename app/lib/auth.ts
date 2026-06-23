@@ -47,6 +47,13 @@ export const auth = betterAuth({
   database: { dialect: new LibsqlDialect({ url: dbUrl }), type: 'sqlite' },
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL,
+  trustedOrigins: [
+    'https://drumcorps.app',
+    'https://www.drumcorps.app',
+    'https://pageantryjobs.com',
+    'https://www.pageantryjobs.com',
+    'http://localhost:5173',
+  ],
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID ?? '',

@@ -442,6 +442,148 @@ const SCHEMA = [
    )`,
   `CREATE INDEX IF NOT EXISTS idx_email_log_user ON email_log (user_id, sent_at)`,
   `CREATE INDEX IF NOT EXISTS idx_email_log_to ON email_log (to_addr, sent_at)`,
+
+  // ---------------------------------------------------------------------------
+  // PageantryJobs (docs/plans/PAGEANTRY_JOBS_PLAN.md). Additive + idempotent.
+  // All ids are UUID strings, all timestamps ISO-8601 UTC TEXT.
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS jobs_profile (
+     profile_id           TEXT PRIMARY KEY,
+     user_id              TEXT NOT NULL,
+     kind                 TEXT NOT NULL,
+     slug                 TEXT NOT NULL,
+     display_name         TEXT NOT NULL,
+     headline             TEXT,
+     location             TEXT,
+     location_lat         REAL,
+     location_lng         REAL,
+     status               TEXT NOT NULL DEFAULT 'draft',
+     contact_email        TEXT,
+     contact_visibility   TEXT NOT NULL DEFAULT 'signed_in',
+     links_json           TEXT,
+     notify_on_apply      INTEGER NOT NULL DEFAULT 1,
+     accepted_terms_version TEXT,
+     created_at           TEXT NOT NULL,
+     updated_at           TEXT NOT NULL,
+     UNIQUE (user_id),
+     UNIQUE (slug)
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_profile_kind_status ON jobs_profile (kind, status)`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_profile_location ON jobs_profile (location)`,
+
+  `CREATE TABLE IF NOT EXISTS jobs_profile_block (
+     block_id     TEXT PRIMARY KEY,
+     profile_id   TEXT NOT NULL,
+     kind         TEXT NOT NULL,
+     content_json TEXT NOT NULL,
+     position     INTEGER NOT NULL DEFAULT 0,
+     updated_at   TEXT NOT NULL,
+     updated_by   TEXT NOT NULL,
+     UNIQUE (profile_id, kind)
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_profile_block_profile ON jobs_profile_block (profile_id)`,
+
+  `CREATE TABLE IF NOT EXISTS jobs_posting (
+     posting_id          TEXT PRIMARY KEY,
+     employer_profile_id TEXT NOT NULL,
+     slug                TEXT NOT NULL,
+     title               TEXT NOT NULL,
+     location            TEXT,
+     remote_ok           INTEGER NOT NULL DEFAULT 0,
+     comp_text           TEXT,
+     salary_min          INTEGER,
+     salary_max          INTEGER,
+     salary_currency     TEXT DEFAULT 'USD',
+     apply_url           TEXT,
+     apply_email         TEXT,
+     content_json        TEXT NOT NULL,
+     status              TEXT NOT NULL DEFAULT 'draft',
+     published_at        TEXT,
+     expires_at          TEXT,
+     is_boosted          INTEGER NOT NULL DEFAULT 0,
+     boosted_until       TEXT,
+     created_at          TEXT NOT NULL,
+     updated_at          TEXT NOT NULL,
+     UNIQUE (slug)
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_posting_status_pub ON jobs_posting (status, published_at)`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_posting_employer ON jobs_posting (employer_profile_id)`,
+
+  `CREATE TABLE IF NOT EXISTS jobs_application (
+     application_id    TEXT PRIMARY KEY,
+     posting_id        TEXT NOT NULL,
+     applicant_user_id TEXT NOT NULL,
+     message           TEXT,
+     created_at        TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_application_posting ON jobs_application (posting_id)`,
+
+  `CREATE TABLE IF NOT EXISTS jobs_revision (
+     revision_id   TEXT PRIMARY KEY,
+     target_kind   TEXT NOT NULL,
+     target_id     TEXT,
+     actor_user_id TEXT NOT NULL,
+     actor_role    TEXT NOT NULL,
+     op            TEXT NOT NULL,
+     before_json   TEXT,
+     after_json    TEXT,
+     created_at    TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_revision_target ON jobs_revision (target_kind, target_id)`,
+
+  `CREATE TABLE IF NOT EXISTS jobs_person_claim (
+     claim_id    TEXT PRIMARY KEY,
+     user_id     TEXT NOT NULL,
+     profile_id  TEXT NOT NULL,
+     entity_type TEXT NOT NULL,
+     entity_id   TEXT NOT NULL,
+     status      TEXT NOT NULL DEFAULT 'active',
+     claimed_at  TEXT NOT NULL,
+     revoked_at  TEXT,
+     revoked_by  TEXT,
+     UNIQUE (entity_type, entity_id)
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_claim_user ON jobs_person_claim (user_id)`,
+
+  `CREATE TABLE IF NOT EXISTS jobs_flag (
+     flag_id      TEXT PRIMARY KEY,
+     flagger_id   TEXT NOT NULL,
+     target_kind  TEXT NOT NULL,
+     target_id    TEXT NOT NULL,
+     reason       TEXT,
+     status       TEXT NOT NULL DEFAULT 'open',
+     reviewed_by  TEXT,
+     reviewed_at  TEXT,
+     created_at   TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_flag_status ON jobs_flag (status)`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_flag_target ON jobs_flag (target_kind, target_id)`,
+
+  `CREATE TABLE IF NOT EXISTS jobs_order (
+     order_id          TEXT PRIMARY KEY,
+     user_id           TEXT NOT NULL,
+     kind              TEXT NOT NULL,
+     posting_id        TEXT,
+     stripe_session_id TEXT,
+     amount_cents      INTEGER NOT NULL,
+     currency          TEXT NOT NULL DEFAULT 'usd',
+     status            TEXT NOT NULL DEFAULT 'pending',
+     created_at        TEXT NOT NULL,
+     completed_at      TEXT
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_order_user ON jobs_order (user_id)`,
+
+  `CREATE TABLE IF NOT EXISTS jobs_alert (
+     alert_id    TEXT PRIMARY KEY,
+     user_id     TEXT NOT NULL,
+     kind        TEXT NOT NULL,
+     filters_json TEXT NOT NULL,
+     frequency   TEXT NOT NULL DEFAULT 'daily',
+     active      INTEGER NOT NULL DEFAULT 1,
+     last_sent_at TEXT,
+     created_at  TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_alert_user ON jobs_alert (user_id)`,
 ];
 
 /**

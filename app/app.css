@@ -228,6 +228,19 @@
   --caption-music-solid: oklch(0.6 0.18 285);
 }
 
+/* PageantryJobs brand — overrides --primary with a professional teal.
+   The class is set on <html> by __root.tsx when brand === 'jobs'. */
+.brand-jobs {
+  --color-primary: oklch(0.55 0.12 220);
+  --color-primary-fg: oklch(0.98 0.005 220);
+  --color-primary-muted: oklch(0.92 0.04 220);
+}
+.brand-jobs.dark {
+  --color-primary: oklch(0.62 0.13 220);
+  --color-primary-fg: oklch(0.98 0.005 220);
+  --color-primary-muted: oklch(0.93 0.04 220);
+}
+
 .dark {
   --surface-page: oklch(0.15 0.02 260);
   --surface-card: oklch(0.2 0.02 260);
