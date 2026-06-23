@@ -14,8 +14,10 @@ import { createServerFn } from '@tanstack/react-start/client';
 import { getWebRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import type { Client } from '@libsql/client';
-import { getContributionsDb } from '@/lib/contributions-db';
+import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
+import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
 import { can, getActor, requireCapability, type Capability } from '@/lib/authz';
+import { writeAudit } from '@/lib/admin-audit';
 
 // Admin capabilities the loader gate may be asked to check (validated, never trusted).
 const ADMIN_CAPS = [
@@ -103,6 +105,105 @@ export const listAudit = createServerFn({ method: 'GET' })
       target: (r.target as string) ?? null,
       createdAt: String(r.created_at),
     }));
+  });
+
+/** System & ops snapshot (§8.1): read-model generation + data-quality (both on the
+ *  serving container) + contributions.db size. Scrape freshness lives in
+ *  dci-relational.db (not on this container) → VM-fed later. Cap: viewAdmin. */
+export const adminSystem = createServerFn({ method: 'GET' }).handler(async () => {
+  await requireCapability(getWebRequest(), 'viewAdmin');
+  const db = await getContributionsDb();
+  const contributionsDbBytes = await dbSizeBytes(db);
+
+  let readModel: {
+    enabled: boolean;
+    builtAt: string | null;
+    schemaVersion: string | null;
+    ingestCommit: string | null;
+    currentSeason: string | null;
+    rowCounts: Record<string, number> | null;
+    dqCounts: Record<string, number> | null;
+  } = {
+    enabled: false,
+    builtAt: null,
+    schemaVersion: null,
+    ingestCommit: null,
+    currentSeason: null,
+    rowCounts: null,
+    dqCounts: null,
+  };
+
+  if (readModelEnabled()) {
+    try {
+      const rm = getReadModelClient();
+      const rows = (await rm.execute('SELECT key, value FROM rm_meta')).rows as unknown as {
+        key: string;
+        value: string;
+      }[];
+      const meta = new Map(rows.map((r) => [String(r.key), r.value as string]));
+      const parse = (s: string | undefined) => {
+        if (!s) return null;
+        try {
+          return JSON.parse(s) as Record<string, number>;
+        } catch {
+          return null;
+        }
+      };
+      readModel = {
+        enabled: true,
+        builtAt: meta.get('built_at') ?? null,
+        schemaVersion: meta.get('schema_version') ?? null,
+        ingestCommit: meta.get('ingest_commit') ?? null,
+        currentSeason: meta.get('current_season') ?? null,
+        rowCounts: parse(meta.get('row_counts_json')),
+        dqCounts: parse(meta.get('dq_counts_json')),
+      };
+    } catch {
+      readModel = { ...readModel, enabled: true };
+    }
+  }
+
+  return {
+    generatedAt: new Date().toISOString(),
+    contributionsDbBytes,
+    readModel,
+    durable: durableStorageStatus(),
+  };
+});
+
+// ---------------------------------------------------------------------------
+// announcement banner (§8.2) — public read, admin write, stored in admin_settings
+// ---------------------------------------------------------------------------
+/** Public: current site announcement (null when none). No cap. */
+export const getAnnouncement = createServerFn({ method: 'GET' }).handler(async () => {
+  const db = await getContributionsDb();
+  const row = (
+    await db.execute({ sql: "SELECT value_json FROM admin_settings WHERE key = 'announcement'" })
+  ).rows[0] as { value_json?: string } | undefined;
+  if (!row?.value_json) return { text: null as string | null };
+  try {
+    return { text: (JSON.parse(row.value_json) as { text?: string }).text ?? null };
+  } catch {
+    return { text: null as string | null };
+  }
+});
+
+/** Set/clear the announcement banner. Cap: runJobs (admin operator action). */
+export const setAnnouncement = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(v.object({ text: v.pipe(v.string(), v.maxLength(280)) }), d))
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'runJobs');
+    const db = await getContributionsDb();
+    const now = new Date().toISOString();
+    await db.execute({
+      sql: `INSERT INTO admin_settings (key, value_json, updated_by, updated_at)
+            VALUES ('announcement', ?, ?, ?)
+            ON CONFLICT(key) DO UPDATE SET value_json = excluded.value_json,
+              updated_by = excluded.updated_by, updated_at = excluded.updated_at`,
+      args: [JSON.stringify({ text: data.text }), actor.userId, now],
+    });
+    await writeAudit(db, actor, { action: 'set_announcement', after: { text: data.text } });
+    return { ok: true as const };
   });
 
 /** Overview snapshot (§4) — contributions.db only in this slice. Cap: viewAdmin. */

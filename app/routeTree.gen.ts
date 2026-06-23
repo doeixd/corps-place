@@ -36,6 +36,7 @@ import { Route as FantasyQuizAdminRouteImport } from './routes/fantasy/quiz-admi
 import { Route as FantasyCreateRouteImport } from './routes/fantasy/create'
 import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spike'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminSystemRouteImport } from './routes/admin/system'
 import { Route as AdminSupportRouteImport } from './routes/admin/support'
 import { Route as AdminJobsRouteImport } from './routes/admin/jobs'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
@@ -192,6 +193,11 @@ const DevFreeFormSpikeRoute = DevFreeFormSpikeRouteImport.update({
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/admin/users',
   path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSystemRoute = AdminSystemRouteImport.update({
+  id: '/admin/system',
+  path: '/admin/system',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSupportRoute = AdminSupportRouteImport.update({
@@ -362,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/support': typeof AdminSupportRoute
+  '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -408,6 +415,7 @@ export interface FileRoutesByTo {
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/support': typeof AdminSupportRoute
+  '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -455,6 +463,7 @@ export interface FileRoutesById {
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/support': typeof AdminSupportRoute
+  '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -503,6 +512,7 @@ export interface FileRouteTypes {
     | '/admin/corps-colors'
     | '/admin/jobs'
     | '/admin/support'
+    | '/admin/system'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -549,6 +559,7 @@ export interface FileRouteTypes {
     | '/admin/corps-colors'
     | '/admin/jobs'
     | '/admin/support'
+    | '/admin/system'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -595,6 +606,7 @@ export interface FileRouteTypes {
     | '/admin/corps-colors'
     | '/admin/jobs'
     | '/admin/support'
+    | '/admin/system'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -642,6 +654,7 @@ export interface RootRouteChildren {
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
   AdminJobsRoute: typeof AdminJobsRoute
   AdminSupportRoute: typeof AdminSupportRoute
+  AdminSystemRoute: typeof AdminSystemRoute
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
   DevFreeFormSpikeRoute: typeof DevFreeFormSpikeRoute
   FantasyCreateRoute: typeof FantasyCreateRoute
@@ -949,6 +962,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/system': {
+      id: '/admin/system'
+      path: '/admin/system'
+      fullPath: '/admin/system'
+      preLoaderRoute: typeof AdminSystemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/support': {
       id: '/admin/support'
       path: '/admin/support'
@@ -1189,6 +1209,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
   AdminJobsRoute: AdminJobsRoute,
   AdminSupportRoute: AdminSupportRoute,
+  AdminSystemRoute: AdminSystemRoute,
   AdminUsersRoute: AdminUsersRouteWithChildren,
   DevFreeFormSpikeRoute: DevFreeFormSpikeRoute,
   FantasyCreateRoute: FantasyCreateRoute,

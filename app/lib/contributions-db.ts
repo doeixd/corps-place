@@ -375,6 +375,14 @@ const SCHEMA = [
    )`,
   `CREATE INDEX IF NOT EXISTS idx_admin_audit_time ON admin_audit (created_at)`,
 
+  // Admin console: operator settings (announcement banner, misc) — ADMIN_PAGE_PLAN §8.2.
+  `CREATE TABLE IF NOT EXISTS admin_settings (
+     key        TEXT PRIMARY KEY,
+     value_json TEXT NOT NULL,
+     updated_by TEXT,
+     updated_at TEXT NOT NULL
+   )`,
+
   // Admin console: job queue. The web tier ENQUEUES (status 'queued'); a VM worker
   // (where sdk/ + dci-relational.db exist) claims + runs the script and streams
   // status/stdout back here. The serving container cannot run SDK scripts, so it
