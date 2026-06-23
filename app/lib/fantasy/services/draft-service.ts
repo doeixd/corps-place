@@ -305,6 +305,16 @@ const makeDraftService = Effect.gen(function* () {
           .pipe(Effect.orDie);
         yield* Effect.sync(() => clearTimer(leagueId));
         yield* broadcast(leagueId, { event: 'state', data: { status: 'complete' } });
+        // The draft is over — drop the per-league lock/timer/bus so they don't
+        // accumulate for the process lifetime (a league drafts once). The bus is
+        // only deleted from the map (not shutdown): any still-connected SSE fiber
+        // keeps its reference and the PubSub is GC'd once it disconnects; a fresh
+        // connect to a completed draft just gets the snapshot (no more publishes).
+        yield* Effect.sync(() => {
+          locks.delete(leagueId);
+          timerFibers.delete(leagueId);
+          buses.delete(leagueId);
+        });
         return;
       }
 

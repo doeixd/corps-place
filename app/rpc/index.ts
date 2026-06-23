@@ -1,4 +1,4 @@
-import { Effect, Layer } from 'effect';
+import { Effect, Layer, ManagedRuntime } from 'effect';
 import { DirectoryRpc, DirectoryRpcLive } from './directory-rpc';
 import { PredictionRpc, PredictionRpcLive } from './prediction-rpc';
 import { FantasyRpc, FantasyRpcLive } from './fantasy-rpc';
@@ -65,9 +65,15 @@ export const AppRpcLive = AppLive;
 export const provideApp = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
   effect.pipe(Effect.provide(AppLive));
 
-/** Boundary helper for fantasy server-fn shims / loaders — provides the self-contained services. */
-export const provideFantasy = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
-  effect.pipe(Effect.provide(FantasyServicesLive));
+/**
+ * Process-memoized runtime for the fantasy services. Built ONCE (lazily, on first
+ * run) and reused for every boundary call — `boundary.runPromise(program)` instead
+ * of `Effect.runPromise(program.pipe(Effect.provide(FantasyServicesLive)))`, which
+ * would rebuild all 9 service records + a fresh SqlClient wrapper on every request.
+ * The DraftService's module-global state is independent of this, so memoizing is
+ * purely a win.
+ */
+export const fantasyRuntime = ManagedRuntime.make(FantasyServicesLive);
 
 /** @deprecated Use provideApp (or provideAppRpc for pure RPC transport later) */
 export const provideAppRpc = provideApp;

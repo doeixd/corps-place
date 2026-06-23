@@ -108,35 +108,50 @@ export const refetchMyLeagues = myLeagues.refetch;
 // per-slug collections — keyed registries (a module singleton can't hold a slug)
 // ---------------------------------------------------------------------------
 
-const standingsRegistry = new Map<string, Entry<StandingRow>>();
-const standingsEntry = (slug: string): Entry<StandingRow> => {
-  let entry = standingsRegistry.get(slug);
+// Cap the per-slug registries so a long session browsing many leagues doesn't
+// grow them unbounded. Detail/standings are route-scoped — only the current
+// slug's collection is mounted/subscribed at a time — so evicting the
+// oldest-inserted entry is safe (the just-requested slug is newest, never
+// evicted, and older slugs' routes have already unmounted).
+const REGISTRY_CAP = 8;
+const getOrCreateEntry = <T extends object>(
+  registry: Map<string, Entry<T>>,
+  slug: string,
+  make: () => Entry<T>
+): Entry<T> => {
+  let entry = registry.get(slug);
   if (!entry) {
-    entry = serverBackedCollection<StandingRow>({
-      id: `fantasy-standings-${slug}`,
-      getKey: (r) => r.userId,
-      fetchRows: async () => (await getStandings({ data: { slug } })).rows,
-    });
-    standingsRegistry.set(slug, entry);
+    entry = make();
+    registry.set(slug, entry);
+    while (registry.size > REGISTRY_CAP) {
+      const oldest = registry.keys().next().value as string;
+      registry.delete(oldest);
+    }
   }
   return entry;
 };
+
+const standingsRegistry = new Map<string, Entry<StandingRow>>();
+const standingsEntry = (slug: string): Entry<StandingRow> =>
+  getOrCreateEntry(standingsRegistry, slug, () =>
+    serverBackedCollection<StandingRow>({
+      id: `fantasy-standings-${slug}`,
+      getKey: (r) => r.userId,
+      fetchRows: async () => (await getStandings({ data: { slug } })).rows,
+    })
+  );
 export const standingsCollection = (slug: string) => standingsEntry(slug).collection;
 export const refetchStandings = (slug: string) => standingsEntry(slug).refetch();
 
 const detailRegistry = new Map<string, Entry<LeagueDetail>>();
-const detailEntry = (slug: string): Entry<LeagueDetail> => {
-  let entry = detailRegistry.get(slug);
-  if (!entry) {
-    entry = serverBackedCollection<LeagueDetail>({
+const detailEntry = (slug: string): Entry<LeagueDetail> =>
+  getOrCreateEntry(detailRegistry, slug, () =>
+    serverBackedCollection<LeagueDetail>({
       id: `fantasy-league-${slug}`,
       // Single composite record per slug (league + members + draft + viewer).
       getKey: (d) => d.league.slug,
       fetchRows: async () => [await getLeague({ data: { slug } })],
-    });
-    detailRegistry.set(slug, entry);
-  }
-  return entry;
-};
+    })
+  );
 export const leagueDetailCollection = (slug: string) => detailEntry(slug).collection;
 export const refetchLeagueDetail = (slug: string) => detailEntry(slug).refetch();

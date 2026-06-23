@@ -13,7 +13,7 @@ import { writeAudit } from '@/lib/admin-audit';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { Effect } from 'effect';
 import { StandingsService } from '@/lib/fantasy/services/standings-service';
-import { provideFantasy } from '@/rpc';
+import { fantasyRuntime } from '@/rpc';
 
 export interface AdminLeagueRow {
   leagueId: string;
@@ -203,8 +203,8 @@ export const adminRecomputeStandings = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
-    const summary = await Effect.runPromise(
-      Effect.flatMap(StandingsService, (s) => s.recompute(data.season)).pipe(provideFantasy)
+    const summary = await fantasyRuntime.runPromise(
+      Effect.flatMap(StandingsService, (s) => s.recompute(data.season))
     );
     await writeAudit(await getContributionsDb(), actor, {
       action: 'fantasy_recompute_standings',

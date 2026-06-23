@@ -125,7 +125,7 @@ export const fantasyQuizMachine = setup({
                 event.error as Error,
                 {
                   expired: 'Time is up — this attempt has expired.',
-                  already: 'You have already completed this quiz.',
+                  'already-done': 'You have already completed this quiz.',
                 },
                 `Could not submit: ${(event.error as Error).message}`
               ),

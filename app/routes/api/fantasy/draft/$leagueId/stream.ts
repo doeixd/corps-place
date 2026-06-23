@@ -5,7 +5,8 @@ import { getContributionsDb } from '@/lib/contributions-db';
 import { subscribe } from '@/lib/fantasy/bus';
 import { getSnapshot } from '@/lib/fantasy/draft-engine';
 import { effectDraftEnabled } from '@/lib/fantasy/flag';
-import { DraftService, DraftServiceLive, draftPubSub } from '@/lib/fantasy/services/draft-service';
+import { DraftService, draftPubSub } from '@/lib/fantasy/services/draft-service';
+import { fantasyRuntime } from '@/rpc';
 
 /**
  * Live draft channel (Fantasy DCI plan H.2): a Server-Sent Events stream. On
@@ -48,10 +49,8 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/draft/$leagueId/s
         // fans out from its PubSub; the legacy path uses draft-engine + bus.ts. The
         // SSE wire format is identical, so the client is unchanged either way.
         const snapshot = useEffect
-          ? await Effect.runPromise(
-              Effect.flatMap(DraftService, (s) => s.getSnapshot(leagueId)).pipe(
-                Effect.provide(DraftServiceLive)
-              )
+          ? await fantasyRuntime.runPromise(
+              Effect.flatMap(DraftService, (s) => s.getSnapshot(leagueId))
             )
           : await getSnapshot(leagueId);
         write('snapshot', snapshot, snapshot.draft?.currentPickNo ?? 0);

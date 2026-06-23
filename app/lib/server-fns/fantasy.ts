@@ -20,7 +20,8 @@ import { MembershipService } from '@/lib/fantasy/services/membership-service';
 import { QuizService } from '@/lib/fantasy/services/quiz-service';
 import { DraftService } from '@/lib/fantasy/services/draft-service';
 import { effectDraftEnabled } from '@/lib/fantasy/flag';
-import { provideFantasy } from '@/rpc';
+import { fantasyRuntime } from '@/rpc';
+import type { FantasyError } from '@/lib/fantasy/services/errors';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
 import { totalRounds, type LeagueConfig } from '@/lib/fantasy/config';
@@ -38,26 +39,43 @@ import { rateLimit } from '@/lib/rate-limit';
 // `runPromise` lives ONLY here, at the server-fn boundary (AGENTS.md).
 // ---------------------------------------------------------------------------
 
-const legacyFantasyMessage = (e: { _tag: string; reason?: string }): string =>
-  Match.value(e._tag).pipe(
-    Match.when('Unauthenticated', () => 'UNAUTHENTICATED'),
-    Match.when('Forbidden', () => 'FORBIDDEN'),
-    Match.when('NotFound', () => 'NOT_FOUND'),
-    Match.when('StorageUnavailable', () => `STORAGE_UNAVAILABLE: ${e.reason ?? ''}`),
-    Match.when('RateLimited', () => 'CONFLICT:rate-limited'),
-    Match.when('LeagueConflict', () => `CONFLICT:${e.reason}`),
-    Match.when('DraftConflict', () => `CONFLICT:${e.reason}`),
-    Match.when('QuizConflict', () => `CONFLICT:${e.reason}`),
-    Match.when('PaymentDisabled', () => 'CONFLICT:payments-disabled'),
-    Match.orElse(() => 'CONFLICT:unknown')
+// Exhaustive over the FantasyError union: adding a new domain error class without
+// a mapping here is a COMPILE error (Match.exhaustive), so a new error can't
+// silently collapse to a generic string the client doesn't recognize.
+const legacyFantasyMessage = (e: FantasyError): string =>
+  Match.value(e).pipe(
+    Match.tag('Unauthenticated', () => 'UNAUTHENTICATED'),
+    Match.tag('Forbidden', () => 'FORBIDDEN'),
+    Match.tag('NotFound', () => 'NOT_FOUND'),
+    Match.tag('StorageUnavailable', (x) => `STORAGE_UNAVAILABLE: ${x.reason}`),
+    Match.tag('RateLimited', () => 'CONFLICT:rate-limited'),
+    Match.tag('LeagueConflict', (x) => `CONFLICT:${x.reason}`),
+    Match.tag('DraftConflict', (x) => `CONFLICT:${x.reason}`),
+    Match.tag('QuizConflict', (x) => `CONFLICT:${x.reason}`),
+    Match.tag('PaymentDisabled', () => 'CONFLICT:payments-disabled'),
+    Match.tag('MediaInvalid', (x) => x.message),
+    Match.exhaustive
   );
 
-/** Run a fully-provided fantasy program, rethrowing typed errors as legacy strings. */
-const runFantasy = <A, E extends { _tag: string; reason?: string }>(
-  program: Effect.Effect<A, E, never>
-): Promise<A> =>
-  Effect.runPromise(
-    program.pipe(Effect.catch((e) => Effect.fail(new Error(legacyFantasyMessage(e)))))
+/**
+ * Run a fantasy program against the shared `fantasyRuntime` (services provided
+ * once per process), mapping typed domain errors back to the legacy `Error`
+ * strings the routes branch on. Unexpected defects (orDie'd infra failures) are
+ * logged + normalized to `INTERNAL` instead of leaking an Effect cause dump.
+ */
+const runFantasy = <A, E extends FantasyError, R>(program: Effect.Effect<A, E, R>): Promise<A> =>
+  fantasyRuntime.runPromise(
+    program.pipe(
+      Effect.catch((e) => Effect.fail(new Error(legacyFantasyMessage(e)))),
+      Effect.catchDefect((d) =>
+        Effect.andThen(
+          Effect.logError('fantasy boundary defect', d),
+          Effect.fail(new Error('INTERNAL'))
+        )
+      )
+      // The fantasyRuntime supplies every fantasy service, so the program's R is
+      // satisfied at run time; cast it away for the runtime's run signature.
+    ) as Effect.Effect<A, Error, never>
   );
 
 /** Throw a uniform CONFLICT when a per-user action exceeds its rate budget (§13). */
@@ -137,7 +155,7 @@ export const createLeague = createServerFn({ method: 'POST' })
     return runFantasy(
       Effect.flatMap(LeagueService, (svc) =>
         svc.create({ actor, name: data.name, season: data.season, config: data.config })
-      ).pipe(provideFantasy)
+      )
     );
   });
 
@@ -151,22 +169,17 @@ export const getLeague = createServerFn({ method: 'GET' })
   .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
   .handler(async ({ data }) => {
     const actor = await getActor(getWebRequest());
-    const program = Effect.flatMap(LeagueService, (svc) =>
-      svc.get({ slug: data.slug, viewerUserId: actor?.userId ?? null })
-    ).pipe(
-      provideFantasy,
-      Effect.catchTag('NotFound', () => Effect.fail(new Error('NOT_FOUND')))
+    return runFantasy(
+      Effect.flatMap(LeagueService, (svc) =>
+        svc.get({ slug: data.slug, viewerUserId: actor?.userId ?? null })
+      )
     );
-    return Effect.runPromise(program);
   });
 
 // Strangler shim (P1): delegates to LeagueService over the Effect path.
 export const listMyLeagues = createServerFn({ method: 'GET' }).handler(async () => {
   const actor = await requireActor();
-  const program = Effect.flatMap(LeagueService, (svc) => svc.listMyLeagues(actor.userId)).pipe(
-    provideFantasy
-  );
-  return Effect.runPromise(program);
+  return runFantasy(Effect.flatMap(LeagueService, (svc) => svc.listMyLeagues(actor.userId)));
 });
 
 const UpdateConfigInput = v.object({ leagueId: v.string(), config: v.unknown() });
@@ -180,7 +193,7 @@ export const updateLeagueConfig = createServerFn({ method: 'POST' })
     return runFantasy(
       Effect.flatMap(LeagueService, (svc) =>
         svc.updateConfig({ actor, leagueId: data.leagueId, config: data.config })
-      ).pipe(provideFantasy)
+      )
     );
   });
 
@@ -209,7 +222,7 @@ export const createInvite = createServerFn({ method: 'POST' })
           maxUses: data.maxUses,
           expiresInDays: data.expiresInDays,
         })
-      ).pipe(provideFantasy)
+      )
     );
   });
 
@@ -219,9 +232,7 @@ export const revokeInvite = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const actor = await requireActor();
     return runFantasy(
-      Effect.flatMap(InviteService, (svc) => svc.revoke({ actor, inviteId: data.inviteId })).pipe(
-        provideFantasy
-      )
+      Effect.flatMap(InviteService, (svc) => svc.revoke({ actor, inviteId: data.inviteId }))
     );
   });
 
@@ -230,9 +241,7 @@ export const revokeInvite = createServerFn({ method: 'POST' })
 export const getInvite = createServerFn({ method: 'GET' })
   .validator((d: { token: string }) => v.parse(v.object({ token: v.string() }), d))
   .handler(async ({ data }) => {
-    return runFantasy(
-      Effect.flatMap(InviteService, (svc) => svc.getInvite(data.token)).pipe(provideFantasy)
-    );
+    return runFantasy(Effect.flatMap(InviteService, (svc) => svc.getInvite(data.token)));
   });
 
 const AcceptInviteInput = v.object({
@@ -260,7 +269,7 @@ export const acceptInvite = createServerFn({ method: 'POST' })
           color: data.color,
           logoMediaId: data.logoMediaId,
         })
-      ).pipe(provideFantasy)
+      )
     );
   });
 
@@ -293,7 +302,7 @@ export const setCorpsIdentity = createServerFn({ method: 'POST' })
           color: data.color,
           logoMediaId: data.logoMediaId,
         })
-      ).pipe(provideFantasy)
+      )
     );
   });
 
@@ -307,7 +316,7 @@ export const removeMember = createServerFn({ method: 'POST' })
     return runFantasy(
       Effect.flatMap(MembershipService, (svc) =>
         svc.removeMember({ actor, leagueId: data.leagueId, userId: data.userId })
-      ).pipe(provideFantasy)
+      )
     );
   });
 
@@ -320,9 +329,7 @@ export const removeMember = createServerFn({ method: 'POST' })
 // Strangler shim (P2): capability-gated at the boundary, then QuizService.
 export const adminListQuestions = createServerFn({ method: 'GET' }).handler(async () => {
   await requireCapability(getWebRequest(), 'manageFantasyQuiz');
-  return runFantasy(
-    Effect.flatMap(QuizService, (svc) => svc.adminListQuestions()).pipe(provideFantasy)
-  );
+  return runFantasy(Effect.flatMap(QuizService, (svc) => svc.adminListQuestions()));
 });
 
 const QuestionInput = v.object({
@@ -356,7 +363,7 @@ export const adminUpsertQuestion = createServerFn({ method: 'POST' })
           difficulty: data.difficulty,
           tags: data.tags,
         })
-      ).pipe(provideFantasy)
+      )
     );
   });
 
@@ -368,7 +375,7 @@ export const adminSetQuestionActive = createServerFn({ method: 'POST' })
     return runFantasy(
       Effect.flatMap(QuizService, (svc) =>
         svc.adminSetQuestionActive({ actor, questionId: data.questionId, active: data.active })
-      ).pipe(provideFantasy)
+      )
     );
   });
 
@@ -380,9 +387,7 @@ export const getQuizForLeague = createServerFn({ method: 'GET' })
   .handler(async ({ data }) => {
     const actor = await requireActor();
     return runFantasy(
-      Effect.flatMap(QuizService, (svc) =>
-        svc.getQuizForLeague({ actor, leagueId: data.leagueId })
-      ).pipe(provideFantasy)
+      Effect.flatMap(QuizService, (svc) => svc.getQuizForLeague({ actor, leagueId: data.leagueId }))
     );
   });
 
@@ -396,7 +401,7 @@ export const submitQuiz = createServerFn({ method: 'POST' })
     return runFantasy(
       Effect.flatMap(QuizService, (svc) =>
         svc.submitQuiz({ actor, leagueId: data.leagueId, answers: data.answers })
-      ).pipe(provideFantasy)
+      )
     );
   });
 
@@ -451,7 +456,7 @@ export const scheduleDraft = createServerFn({ method: 'POST' })
     await runFantasy(
       Effect.flatMap(NotificationService, (s) =>
         s.enqueueDraftReminders(data.leagueId, data.scheduledAt)
-      ).pipe(provideFantasy)
+      )
     );
     return { ok: true as const };
   });
@@ -466,9 +471,7 @@ export const startDraft = createServerFn({ method: 'POST' })
     const db = await getContributionsDb();
     requirePaid(await requireOwner(db, data.leagueId, actor));
     const result = effectDraftEnabled()
-      ? await runFantasy(
-          Effect.flatMap(DraftService, (s) => s.start(data.leagueId)).pipe(provideFantasy)
-        )
+      ? await runFantasy(Effect.flatMap(DraftService, (s) => s.start(data.leagueId)))
       : await draftEngine.startDraft(data.leagueId);
     return result.ok ? { ok: true as const } : { ok: false as const, reason: result.reason };
   });
@@ -493,7 +496,7 @@ export const makePick = createServerFn({ method: 'POST' })
             corpsKey: data.corpsKey,
             caption: data.caption,
           })
-        ).pipe(provideFantasy)
+        )
       );
     } else {
       await draftEngine.makePick(data.leagueId, actor.userId, data.corpsKey, data.caption);
@@ -509,9 +512,7 @@ export const pauseDraft = createServerFn({ method: 'POST' })
     const db = await getContributionsDb();
     await requireOwner(db, data.leagueId, actor);
     if (effectDraftEnabled()) {
-      await runFantasy(
-        Effect.flatMap(DraftService, (s) => s.pause(data.leagueId)).pipe(provideFantasy)
-      );
+      await runFantasy(Effect.flatMap(DraftService, (s) => s.pause(data.leagueId)));
     } else {
       await draftEngine.pauseDraft(data.leagueId);
     }
@@ -526,9 +527,7 @@ export const resumeDraft = createServerFn({ method: 'POST' })
     const db = await getContributionsDb();
     await requireOwner(db, data.leagueId, actor);
     if (effectDraftEnabled()) {
-      await runFantasy(
-        Effect.flatMap(DraftService, (s) => s.resume(data.leagueId)).pipe(provideFantasy)
-      );
+      await runFantasy(Effect.flatMap(DraftService, (s) => s.resume(data.leagueId)));
     } else {
       await draftEngine.resumeDraft(data.leagueId);
     }
@@ -543,9 +542,7 @@ export const getDraftState = createServerFn({ method: 'GET' })
     const db = await getContributionsDb();
     await requireMember(db, data.leagueId, actor);
     const snapshotP = effectDraftEnabled()
-      ? runFantasy(
-          Effect.flatMap(DraftService, (s) => s.getSnapshot(data.leagueId)).pipe(provideFantasy)
-        )
+      ? runFantasy(Effect.flatMap(DraftService, (s) => s.getSnapshot(data.leagueId)))
       : draftEngine.getSnapshot(data.leagueId);
     const [snapshot, pool] = await Promise.all([snapshotP, getDraftPool()]);
     return { snapshot, pool };
@@ -560,11 +557,7 @@ export const getDraftState = createServerFn({ method: 'GET' })
 export const getStandings = createServerFn({ method: 'GET' })
   .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
   .handler(async ({ data }) => {
-    const program = Effect.flatMap(StandingsService, (svc) => svc.getStandings(data.slug)).pipe(
-      provideFantasy,
-      Effect.catchTag('NotFound', () => Effect.fail(new Error('NOT_FOUND')))
-    );
-    return Effect.runPromise(program);
+    return runFantasy(Effect.flatMap(StandingsService, (svc) => svc.getStandings(data.slug)));
   });
 
 // ===========================================================================
@@ -626,9 +619,7 @@ export const createLeagueCheckout = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const actor = await requireActor();
     return runFantasy(
-      Effect.flatMap(PaymentService, (s) =>
-        s.createCheckout({ actor, leagueId: data.leagueId })
-      ).pipe(provideFantasy)
+      Effect.flatMap(PaymentService, (s) => s.createCheckout({ actor, leagueId: data.leagueId }))
     );
   });
 
@@ -642,8 +633,6 @@ export const requestRefund = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const actor = await requireActor();
     return runFantasy(
-      Effect.flatMap(PaymentService, (s) =>
-        s.requestRefund({ actor, leagueId: data.leagueId })
-      ).pipe(provideFantasy)
+      Effect.flatMap(PaymentService, (s) => s.requestRefund({ actor, leagueId: data.leagueId }))
     );
   });

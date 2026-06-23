@@ -100,3 +100,21 @@ export class RateLimited extends Schema.TaggedErrorClass<RateLimited>()('RateLim
 export class MediaInvalid extends Schema.TaggedErrorClass<MediaInvalid>()('MediaInvalid', {
   message: Schema.String,
 }) {}
+
+/**
+ * The full union of fantasy domain errors. The boundary error-mapper matches over
+ * this exhaustively, so adding a new error class here forces a new mapping arm
+ * (compile error otherwise) — no error can silently fall through to a generic
+ * string the client doesn't recognize.
+ */
+export type FantasyError =
+  | Unauthenticated
+  | Forbidden
+  | NotFound
+  | LeagueConflict
+  | DraftConflict
+  | QuizConflict
+  | PaymentDisabled
+  | StorageUnavailable
+  | RateLimited
+  | MediaInvalid;

@@ -3,7 +3,7 @@ import { createServerFileRoute } from '@tanstack/react-start/server';
 import { Effect } from 'effect';
 import { constructWebhookEvent } from '@/lib/fantasy/payments';
 import { PaymentService } from '@/lib/fantasy/services/payment-service';
-import { provideFantasy } from '@/rpc';
+import { fantasyRuntime } from '@/rpc';
 
 /**
  * Stripe webhook (Fantasy DCI plan §12.2/§12.4). The ONLY thing that flips a
@@ -33,10 +33,8 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/stripe-webhook').
       const paymentIntent =
         typeof session.payment_intent === 'string' ? session.payment_intent : null;
       if (leagueId) {
-        await Effect.runPromise(
-          Effect.flatMap(PaymentService, (s) => s.markPaid({ leagueId, paymentIntent })).pipe(
-            provideFantasy
-          )
+        await fantasyRuntime.runPromise(
+          Effect.flatMap(PaymentService, (s) => s.markPaid({ leagueId, paymentIntent }))
         );
       }
     } else if (event.type === 'charge.refunded') {
@@ -44,8 +42,8 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/stripe-webhook').
       const paymentIntent =
         typeof charge.payment_intent === 'string' ? charge.payment_intent : null;
       if (paymentIntent) {
-        await Effect.runPromise(
-          Effect.flatMap(PaymentService, (s) => s.markRefunded(paymentIntent)).pipe(provideFantasy)
+        await fantasyRuntime.runPromise(
+          Effect.flatMap(PaymentService, (s) => s.markRefunded(paymentIntent))
         );
       }
     }

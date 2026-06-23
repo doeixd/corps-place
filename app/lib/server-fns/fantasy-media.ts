@@ -14,7 +14,7 @@ import { Effect, Match } from 'effect';
 import * as v from 'valibot';
 import { getActor } from '@/lib/authz';
 import { MediaService, type FantasyLogoResult } from '@/lib/fantasy/services/media-service';
-import { provideFantasy } from '@/rpc';
+import { fantasyRuntime } from '@/rpc';
 
 export type { FantasyLogoResult };
 
@@ -29,11 +29,10 @@ export const uploadFantasyLogo = createServerFn({ method: 'POST' })
   .handler(async ({ data }): Promise<FantasyLogoResult> => {
     const actor = await getActor(getWebRequest());
     if (!actor) throw new Error('UNAUTHENTICATED');
-    return Effect.runPromise(
+    return fantasyRuntime.runPromise(
       Effect.flatMap(MediaService, (s) =>
         s.uploadLogo({ actor, leagueId: data.leagueId, dataBase64: data.dataBase64 })
       ).pipe(
-        provideFantasy,
         Effect.catch((e: { _tag: string; message?: string }) =>
           Effect.fail(
             new Error(

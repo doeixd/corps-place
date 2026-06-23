@@ -1,7 +1,7 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
 import { Effect } from 'effect';
 import { NotificationService } from '@/lib/fantasy/services/notification-service';
-import { provideFantasy } from '@/rpc';
+import { fantasyRuntime } from '@/rpc';
 
 /**
  * Cron-hit reminder + notification dispatcher (Fantasy DCI plan H.4 / §8.1).
@@ -15,8 +15,8 @@ const authorized = (request: Request): boolean => {
 
 const run = async ({ request }: { request: Request }): Promise<Response> => {
   if (!authorized(request)) return new Response('Not found', { status: 404 });
-  const summary = await Effect.runPromise(
-    Effect.flatMap(NotificationService, (s) => s.dispatch()).pipe(provideFantasy)
+  const summary = await fantasyRuntime.runPromise(
+    Effect.flatMap(NotificationService, (s) => s.dispatch())
   );
   return Response.json({ ok: true, ...summary });
 };
