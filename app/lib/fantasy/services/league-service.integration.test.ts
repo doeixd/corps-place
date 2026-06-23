@@ -26,6 +26,8 @@ let InviteService: typeof import('./invite-service').InviteService;
 let InviteServiceLive: typeof import('./invite-service').InviteServiceLive;
 let MembershipService: typeof import('./membership-service').MembershipService;
 let MembershipServiceLive: typeof import('./membership-service').MembershipServiceLive;
+let QuizService: typeof import('./quiz-service').QuizService;
+let QuizServiceLive: typeof import('./quiz-service').QuizServiceLive;
 let db: Client;
 
 const asActor = (userId: string) => ({ userId, role: 'user' as const }) as never;
@@ -56,6 +58,7 @@ beforeAll(async () => {
   ({ StandingsService, StandingsServiceLive } = await import('./standings-service'));
   ({ InviteService, InviteServiceLive } = await import('./invite-service'));
   ({ MembershipService, MembershipServiceLive } = await import('./membership-service'));
+  ({ QuizService, QuizServiceLive } = await import('./quiz-service'));
   const { getContributionsDb } = await import('@/lib/contributions-db');
   db = await getContributionsDb();
 
@@ -91,6 +94,16 @@ beforeAll(async () => {
       `INSERT INTO fantasy_invites
          (invite_id, league_id, token, created_by, max_uses, used_count, expires_at, created_at)
        VALUES ('inv-race', 'lg-1', 'tok-race', 'u-owner', 1, 0, '2999-01-01T00:00:00.000Z', '${NOW}')`,
+      // Active quiz questions (one per difficulty) for the quiz double-submit test.
+      `INSERT INTO fantasy_quiz_questions
+         (question_id, prompt, choices_json, correct_index, difficulty, tags_json, active, author_user_id, created_at, updated_at)
+       VALUES ('q-e', 'Easy?', '["a","b"]', 0, 'easy', '[]', 1, 'u-owner', '${NOW}', '${NOW}')`,
+      `INSERT INTO fantasy_quiz_questions
+         (question_id, prompt, choices_json, correct_index, difficulty, tags_json, active, author_user_id, created_at, updated_at)
+       VALUES ('q-m', 'Medium?', '["a","b","c"]', 1, 'medium', '[]', 1, 'u-owner', '${NOW}', '${NOW}')`,
+      `INSERT INTO fantasy_quiz_questions
+         (question_id, prompt, choices_json, correct_index, difficulty, tags_json, active, author_user_id, created_at, updated_at)
+       VALUES ('q-h', 'Hard?', '["a","b","c","d"]', 2, 'hard', '[]', 1, 'u-owner', '${NOW}', '${NOW}')`,
     ],
     'write'
   );
@@ -300,6 +313,42 @@ describe('MembershipService (Effect path)', () => {
     await expect(
       remove({ actor: asActor('u-mem'), leagueId: 'lg-1', userId: 'u-owner' })
     ).rejects.toThrow();
+  });
+});
+
+describe('QuizService — served set hides answers + double-submit guard', () => {
+  const getQuiz = (userId: string) =>
+    Effect.runPromise(
+      Effect.flatMap(QuizService, (svc) =>
+        svc.getQuizForLeague({ actor: asActor(userId), leagueId: 'lg-1' })
+      ).pipe(Effect.provide(QuizServiceLive))
+    );
+  const submit = (userId: string, answers: number[]) =>
+    Effect.runPromise(
+      Effect.flatMap(QuizService, (svc) =>
+        svc.submitQuiz({ actor: asActor(userId), leagueId: 'lg-1', answers })
+      ).pipe(Effect.provide(QuizServiceLive))
+    );
+
+  it('serves prompts + choices but never correct_index, then guards double-submit', async () => {
+    const quiz = await getQuiz('u-mem');
+    expect(quiz.state).toBe('in_progress');
+    if (quiz.state !== 'in_progress') throw new Error('unreachable');
+    expect(quiz.questions.length).toBeGreaterThan(0);
+    // The served payload must not leak the answer key.
+    for (const q of quiz.questions) {
+      expect(q).not.toHaveProperty('correctIndex');
+      expect(q).not.toHaveProperty('correct_index');
+    }
+
+    const answers = quiz.questions.map(() => 0);
+    const [a, b] = await Promise.allSettled([submit('u-mem', answers), submit('u-mem', answers)]);
+    const ok = [a, b].filter((r) => r.status === 'fulfilled');
+    expect(ok).toHaveLength(1); // exactly one submit completes the attempt
+
+    // A subsequent getQuiz reports the attempt as done (one scored attempt).
+    const after = await getQuiz('u-mem');
+    expect(after.state).toBe('done');
   });
 });
 

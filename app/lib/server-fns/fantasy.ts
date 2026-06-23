@@ -17,17 +17,11 @@ import { LeagueService } from '@/lib/fantasy/services/league-service';
 import { StandingsService } from '@/lib/fantasy/services/standings-service';
 import { InviteService } from '@/lib/fantasy/services/invite-service';
 import { MembershipService } from '@/lib/fantasy/services/membership-service';
+import { QuizService } from '@/lib/fantasy/services/quiz-service';
 import { provideFantasy } from '@/rpc';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
 import { totalRounds, type LeagueConfig } from '@/lib/fantasy/config';
-import {
-  planQuestionCounts,
-  scoreQuiz,
-  type Difficulty,
-  type ServedQuestion,
-} from '@/lib/fantasy/quiz';
-import { seededShuffle } from '@/lib/fantasy/draft-order';
 import { getDraftPool } from '@/lib/fantasy/score-db';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { enqueueDraftReminders } from '@/lib/fantasy/jobs';
@@ -326,53 +320,14 @@ export const removeMember = createServerFn({ method: 'POST' })
 // QUIZ — admin bank CRUD (capability manageFantasyQuiz) + member run (M2)
 // ===========================================================================
 
-const GRACE_SECONDS = 30;
-
-const auditFantasy = async (
-  db: Client,
-  actorId: string,
-  action: string,
-  leagueId: string | null,
-  before: unknown,
-  after: unknown
-): Promise<void> => {
-  await db.execute({
-    sql: `INSERT INTO fantasy_admin_audit (audit_id, actor_user_id, action, league_id, before_json, after_json, created_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    args: [
-      crypto.randomUUID(),
-      actorId,
-      action,
-      leagueId,
-      before == null ? null : JSON.stringify(before),
-      after == null ? null : JSON.stringify(after),
-      new Date().toISOString(),
-    ],
-  });
-};
-
 // ---- admin: list / upsert / activate questions --------------------------------
 
+// Strangler shim (P2): capability-gated at the boundary, then QuizService.
 export const adminListQuestions = createServerFn({ method: 'GET' }).handler(async () => {
   await requireCapability(getWebRequest(), 'manageFantasyQuiz');
-  const db = await getContributionsDb();
-  const rows = (
-    await db.execute({
-      sql: `SELECT question_id, prompt, choices_json, correct_index, explanation, difficulty,
-                   tags_json, active, created_at, updated_at
-            FROM fantasy_quiz_questions ORDER BY created_at DESC`,
-    })
-  ).rows.map((q) => ({
-    questionId: str(q.question_id),
-    prompt: str(q.prompt),
-    choices: JSON.parse(str(q.choices_json)) as string[],
-    correctIndex: Number(q.correct_index),
-    explanation: strOrNull(q.explanation),
-    difficulty: str(q.difficulty) as Difficulty,
-    tags: JSON.parse(str(q.tags_json)) as string[],
-    active: Boolean(q.active),
-  }));
-  return { questions: rows };
+  return runFantasy(
+    Effect.flatMap(QuizService, (svc) => svc.adminListQuestions()).pipe(provideFantasy)
+  );
 });
 
 const QuestionInput = v.object({
@@ -389,273 +344,65 @@ const QuestionInput = v.object({
   tags: v.optional(v.array(v.pipe(v.string(), v.trim())), []),
 });
 
+// Strangler shim (P2): delegates to QuizService.adminUpsertQuestion.
 export const adminUpsertQuestion = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(QuestionInput, d))
   .handler(async ({ data }) => {
     const actor = await requireCapability(getWebRequest(), 'manageFantasyQuiz');
-    assertDurable();
-    if (data.correctIndex >= data.choices.length) throw new Error('CONFLICT:bad-correct-index');
-    const db = await getContributionsDb();
-    const now = new Date().toISOString();
-    const questionId = data.questionId ?? crypto.randomUUID();
-    const choicesJson = JSON.stringify(data.choices);
-    const tagsJson = JSON.stringify(data.tags ?? []);
-
-    if (data.questionId) {
-      await db.execute({
-        sql: `UPDATE fantasy_quiz_questions
-              SET prompt = ?, choices_json = ?, correct_index = ?, explanation = ?,
-                  difficulty = ?, tags_json = ?, updated_at = ?
-              WHERE question_id = ?`,
-        args: [
-          data.prompt,
-          choicesJson,
-          data.correctIndex,
-          data.explanation ?? '',
-          data.difficulty,
-          tagsJson,
-          now,
-          questionId,
-        ],
-      });
-    } else {
-      await db.execute({
-        sql: `INSERT INTO fantasy_quiz_questions
-                (question_id, prompt, choices_json, correct_index, explanation, difficulty,
-                 tags_json, active, author_user_id, created_at, updated_at)
-              VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)`,
-        args: [
-          questionId,
-          data.prompt,
-          choicesJson,
-          data.correctIndex,
-          data.explanation ?? '',
-          data.difficulty,
-          tagsJson,
-          actor.userId,
-          now,
-          now,
-        ],
-      });
-    }
-    await auditFantasy(
-      db,
-      actor.userId,
-      data.questionId ? 'quiz.update' : 'quiz.create',
-      null,
-      null,
-      {
-        questionId,
-      }
+    return runFantasy(
+      Effect.flatMap(QuizService, (svc) =>
+        svc.adminUpsertQuestion({
+          actor,
+          questionId: data.questionId,
+          prompt: data.prompt,
+          choices: data.choices,
+          correctIndex: data.correctIndex,
+          explanation: data.explanation,
+          difficulty: data.difficulty,
+          tags: data.tags,
+        })
+      ).pipe(provideFantasy)
     );
-    return { ok: true as const, questionId };
   });
 
+// Strangler shim (P2): delegates to QuizService.adminSetQuestionActive.
 export const adminSetQuestionActive = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ questionId: v.string(), active: v.boolean() }), d))
   .handler(async ({ data }) => {
     const actor = await requireCapability(getWebRequest(), 'manageFantasyQuiz');
-    assertDurable();
-    const db = await getContributionsDb();
-    await db.execute({
-      sql: 'UPDATE fantasy_quiz_questions SET active = ?, updated_at = ? WHERE question_id = ?',
-      args: [data.active ? 1 : 0, new Date().toISOString(), data.questionId],
-    });
-    await auditFantasy(db, actor.userId, 'quiz.setActive', null, null, {
-      questionId: data.questionId,
-      active: data.active,
-    });
-    return { ok: true as const };
+    return runFantasy(
+      Effect.flatMap(QuizService, (svc) =>
+        svc.adminSetQuestionActive({ actor, questionId: data.questionId, active: data.active })
+      ).pipe(provideFantasy)
+    );
   });
 
 // ---- member: take the quiz (served set has NO correct answers) -----------------
 
-type LeagueQuizConfig = LeagueConfig['quiz'];
-
+// Strangler shim (P2): delegates to QuizService.getQuizForLeague.
 export const getQuizForLeague = createServerFn({ method: 'GET' })
   .validator((d: { leagueId: string }) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    const db = await getContributionsDb();
-    await requireMember(db, data.leagueId, actor);
-
-    const league = await loadLeagueById(db, data.leagueId);
-    const config = JSON.parse(str(league.config_json)) as LeagueConfig;
-    const quizCfg: LeagueQuizConfig = config.quiz;
-    if (!quizCfg.enabled) return { state: 'disabled' as const };
-
-    // Already completed? (one scored attempt per member, §A9.)
-    const done = (
-      await db.execute({
-        sql: 'SELECT weighted_score FROM fantasy_quiz_attempts WHERE league_id = ? AND user_id = ? AND completed_at IS NOT NULL',
-        args: [data.leagueId, actor.userId],
-      })
-    ).rows[0];
-    if (done) return { state: 'done' as const, weightedScore: Number(done.weighted_score) };
-
-    // Resume an in-progress attempt, else create one.
-    let attempt = (
-      await db.execute({
-        sql: 'SELECT * FROM fantasy_quiz_attempts WHERE league_id = ? AND user_id = ? AND completed_at IS NULL',
-        args: [data.leagueId, actor.userId],
-      })
-    ).rows[0];
-
-    let startedAt: string;
-    let questionIds: string[];
-    if (attempt) {
-      startedAt = str(attempt.started_at);
-      questionIds = JSON.parse(str(attempt.question_ids_json)) as string[];
-    } else {
-      // Compose a fresh served set (E.3).
-      const active = (
-        await db.execute({
-          sql: 'SELECT question_id, difficulty FROM fantasy_quiz_questions WHERE active = 1',
-        })
-      ).rows.map((r) => ({ id: str(r.question_id), difficulty: str(r.difficulty) as Difficulty }));
-      if (active.length === 0) return { state: 'unavailable' as const };
-
-      const byDiff = {
-        easy: active.filter((q) => q.difficulty === 'easy').map((q) => q.id),
-        medium: active.filter((q) => q.difficulty === 'medium').map((q) => q.id),
-        hard: active.filter((q) => q.difficulty === 'hard').map((q) => q.id),
-      };
-      const counts = planQuestionCounts(quizCfg.questionCount, {
-        easy: byDiff.easy.length,
-        medium: byDiff.medium.length,
-        hard: byDiff.hard.length,
-      });
-      const seed = `${data.leagueId}:${actor.userId}`;
-      const pick = (ids: string[], n: number) => seededShuffle(ids, seed).slice(0, n);
-      questionIds = seededShuffle(
-        [
-          ...pick(byDiff.easy, counts.easy),
-          ...pick(byDiff.medium, counts.medium),
-          ...pick(byDiff.hard, counts.hard),
-        ],
-        seed
-      );
-
-      startedAt = new Date().toISOString();
-      const attemptId = crypto.randomUUID();
-      await db.execute({
-        sql: `INSERT INTO fantasy_quiz_attempts
-                (attempt_id, league_id, user_id, question_ids_json, answers_json, started_at)
-              VALUES (?, ?, ?, ?, '[]', ?)`,
-        args: [attemptId, data.leagueId, actor.userId, JSON.stringify(questionIds), startedAt],
-      });
-      attempt = (
-        await db.execute({
-          sql: 'SELECT * FROM fantasy_quiz_attempts WHERE attempt_id = ?',
-          args: [attemptId],
-        })
-      ).rows[0];
-    }
-
-    // Hydrate prompts + choices ONLY (never correct_index) in served order.
-    const rows = (
-      await db.execute({
-        sql: `SELECT question_id, prompt, choices_json FROM fantasy_quiz_questions WHERE question_id IN (${questionIds.map(() => '?').join(',')})`,
-        args: questionIds,
-      })
-    ).rows;
-    const byId = new Map(rows.map((r) => [str(r.question_id), r]));
-    const questions = questionIds
-      .map((id) => byId.get(id))
-      .filter((r): r is NonNullable<typeof r> => r != null)
-      .map((r) => ({
-        questionId: str(r.question_id),
-        prompt: str(r.prompt),
-        choices: JSON.parse(str(r.choices_json)) as string[],
-      }));
-
-    const endsAt = new Date(
-      new Date(startedAt).getTime() + questionIds.length * quizCfg.perQuestionSeconds * 1000
-    ).toISOString();
-
-    return {
-      state: 'in_progress' as const,
-      attemptId: str(attempt.attempt_id),
-      questions,
-      startedAt,
-      endsAt,
-    };
+    return runFantasy(
+      Effect.flatMap(QuizService, (svc) =>
+        svc.getQuizForLeague({ actor, leagueId: data.leagueId })
+      ).pipe(provideFantasy)
+    );
   });
 
+// Strangler shim (P2): delegates to QuizService.submitQuiz (race-safe completion).
 export const submitQuiz = createServerFn({ method: 'POST' })
   .validator((d: unknown) =>
     v.parse(v.object({ leagueId: v.string(), answers: v.array(v.number()) }), d)
   )
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    assertDurable();
-    const db = await getContributionsDb();
-    await requireMember(db, data.leagueId, actor);
-
-    const attempt = (
-      await db.execute({
-        sql: 'SELECT * FROM fantasy_quiz_attempts WHERE league_id = ? AND user_id = ? AND completed_at IS NULL',
-        args: [data.leagueId, actor.userId],
-      })
-    ).rows[0];
-    if (!attempt) throw new Error('CONFLICT:no-attempt');
-
-    const league = await loadLeagueById(db, data.leagueId);
-    const config = JSON.parse(str(league.config_json)) as LeagueConfig;
-    const perQuestionSeconds = config.quiz.perQuestionSeconds;
-
-    const questionIds = JSON.parse(str(attempt.question_ids_json)) as string[];
-    const startedAt = str(attempt.started_at);
-    const elapsedSec = (Date.now() - new Date(startedAt).getTime()) / 1000;
-    if (elapsedSec > questionIds.length * perQuestionSeconds + GRACE_SECONDS) {
-      throw new Error('CONFLICT:expired');
-    }
-
-    // Load difficulty + correct answers (server-side only) in served order.
-    const rows = (
-      await db.execute({
-        sql: `SELECT question_id, difficulty, correct_index FROM fantasy_quiz_questions WHERE question_id IN (${questionIds.map(() => '?').join(',')})`,
-        args: questionIds,
-      })
-    ).rows;
-    const byId = new Map(
-      rows.map((r) => [
-        str(r.question_id),
-        { difficulty: str(r.difficulty) as Difficulty, correctIndex: Number(r.correct_index) },
-      ])
+    return runFantasy(
+      Effect.flatMap(QuizService, (svc) =>
+        svc.submitQuiz({ actor, leagueId: data.leagueId, answers: data.answers })
+      ).pipe(provideFantasy)
     );
-    const served: ServedQuestion[] = questionIds.map((id) => {
-      const q = byId.get(id);
-      return { difficulty: q?.difficulty ?? 'easy', correctIndex: q?.correctIndex ?? -1 };
-    });
-
-    const score = scoreQuiz(served, data.answers);
-    const now = new Date().toISOString();
-
-    // Race-safe completion: only the FIRST submit (completed_at still NULL) wins,
-    // so a member can't re-score the same attempt with different answers. The
-    // partial unique index can't catch this (both submits hit the same row).
-    const completed = await db.execute({
-      sql: `UPDATE fantasy_quiz_attempts
-            SET answers_json = ?, raw_score = ?, max_score = ?, weighted_score = ?, completed_at = ?
-            WHERE attempt_id = ? AND completed_at IS NULL`,
-      args: [
-        JSON.stringify(data.answers),
-        score.raw,
-        score.max,
-        score.weighted,
-        now,
-        str(attempt.attempt_id),
-      ],
-    });
-    if (completed.rowsAffected !== 1) throw new Error('CONFLICT:already-done');
-
-    await db.execute({
-      sql: 'UPDATE fantasy_members SET quiz_score = ? WHERE league_id = ? AND user_id = ?',
-      args: [score.weighted, data.leagueId, actor.userId],
-    });
-
-    return { ok: true as const, weightedScore: score.weighted };
   });
 
 // ===========================================================================

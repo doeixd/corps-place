@@ -73,10 +73,10 @@ export class DraftConflict extends Schema.TaggedErrorClass<DraftConflict>()('Dra
 
 /** Reasons a quiz action can conflict. */
 export const QuizConflictReason = Schema.Literals([
-  'already-completed',
-  'not-in-progress',
-  'deadline-passed',
-  'unavailable',
+  'no-attempt',
+  'expired',
+  'already-done',
+  'bad-correct-index',
 ]);
 export type QuizConflictReason = typeof QuizConflictReason.Type;
 
