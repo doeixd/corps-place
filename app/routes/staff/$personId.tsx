@@ -1,6 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { getStaffProfile } from '@/lib/server-fns/hybrid';
+import { checkClaimByEntity } from '@/lib/server-fns/jobs';
 import { loadDetailOrServer } from '@/db/detail-shard';
 import type { StaffAssignment, StaffProfile } from '@/lib/staff-directory';
 import { ProgressiveImage } from '@/components/progressive-image';
@@ -32,6 +33,7 @@ export const Route = createFileRoute('/staff/$personId')({
       profile: await loadDetailOrServer<StaffProfile | null>(`staff/${params.personId}.json`, () =>
         getStaffProfile({ data: params.personId })
       ),
+      claimProfileId: null as string | null, // M2.5.4: resolve slug from checkClaimByEntity
     };
   },
   head: ({ loaderData }) => {
