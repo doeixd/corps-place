@@ -1452,13 +1452,76 @@ A step-by-step wizard that replaces the blank profile editor for first-time user
   `jobs_posting.is_boosted` / `boosted_until`. Gate publish/boost/email-talent behind a
   paid order. Boosted jobs sort first on the board + eligible for landing hero.
 
-### M6 — AI résumé-parser prefill (later)
-- Employee uploads résumé (PDF/img) → extract text (`unpdf` for PDF; OCR lib for images)
-  → LLM structured extraction (latest Claude model via the API) into the jobs block schema
-  → **user reviews/edits before publish**. **Ground extraction against the extracted text**
-  to avoid hallucinated experience entries (same lesson as the staff yearbook ingest —
-  see `[[dci-yearbooks-authoritative-staff]]`). Optional prefill step, never a hard
-  dependency.
+### M6 — Résumé-parser prefill (`resume-parser-ats`)
+
+Uses the **`resume-parser-ats`** npm package ([github.com/dhanushk-offl/resume-parser](https://github.com/dhanushk-offl/resume-parser)),
+which implements the OpenResume 4-step algorithm locally (no external API calls, privacy-first).
+It extracts 10+ fields from PDF or raw text, computes ATS compatibility scores, and generates
+improvement suggestions.
+
+**Installation:**
+```bash
+npm install resume-parser-ats
+```
+
+**Integration:** When an employee uploads a résumé on `/jobs/onboard` or `/jobs/me`, the
+parsed output pre-fills profile blocks:
+
+| Source field | → Jobs profile target |
+|---|---|
+| `profile.name` | `display_name` |
+| `profile.email` | `contact_email` |
+| `profile.phone`, `profile.location` | `location` (free-text, user refines) |
+| `education[]` (school, degree, dates) | `education` block entries |
+| `workExperience[]` (company, title, dates, description) | `experience` block entries |
+| `skills[]` | `skills` block |
+| `summary` (derived from parsed profile) | `summary` freeform block (Lexical) |
+
+**Architecture — server-side parsing, client-side preview:**
+1. User uploads a PDF via the existing `ImageDrop` / `uploadShowMedia` pipeline (reuse R2
+   storage for the raw file, or use a temp upload).
+2. A new server function `parseResume(fileUrl)` calls `parseResume({ filePath })` from
+   `resume-parser-ats` on the server (Node.js can access the local temp file).
+3. The structured result is returned to the client as JSON.
+4. The user sees a **prefill review** screen (same pattern as the Claim prefill review —
+   diff-like summary showing what was detected per block).
+5. The user can **accept, edit, or discard** each detected field before it's written to
+   the profile (never auto-save without review).
+6. ATS scoring is optional — shown as an informational "Your résumé scores X/100" badge
+   on the profile dashboard.
+
+**Key decisions:**
+- **Server-side parsing, not client-side.** The `resume-parser-ats` library uses Node.js
+  file system access for PDF parsing. Running it on the server also keeps the raw résumé
+  off the client bundle.
+- **Review before save.** Never silently overwrite existing profile data. The review screen
+  is the same pattern used in M2.5 (claim prefill review) — green checkmarks for detected
+  fields, grey "not found" for missing ones, and an "Apply" / "Skip" per section.
+- **PII boundary.** The raw uploaded résumé is stored temporarily (purged after parsing or
+  kept only if the user opts in for later re-import). `jobs_revision` captures the
+  prefill event but not the raw file bytes.
+- **No OCR.** Scanned image résumés are not supported in v1. The library works on PDF text
+  and raw text input. If scanned PDFs become a common case, add OCR via `unpdf` + Tesseract
+  (or a similar offline library) in a later iteration.
+
+**Milestones:**
+1. `npm install resume-parser-ats`
+2. Create server fn `parseResumeFile(fileUrl: string)` → returns structured `ParsedResume`
+   (typed via `import type { ParseResumeOutput } from 'resume-parser-ats'`).
+3. Create a `ResumeUploadStep` component in the onboarding wizard (or a standalone
+   "Import from résumé" button on `/jobs/me`):
+   - File picker (PDF only, max 10 MB).
+   - Upload to R2 → call parseResumeFile → show prefill review.
+4. Create a `PrefillReview` component (reusable with the claim flow's M2.5 prefill review):
+   - Green checkmark + preview text per detected field.
+   - Grey "Not detected" for missing fields.
+   - "Apply all" / "Apply section" / "Skip" buttons.
+5. On apply, call `saveJobsProfileBlock` for each block (summary, experience, education,
+   skills) and `upsertJobsProfile` for profile-level fields (name, location).
+6. After prefill, redirect to the profile editor with a success banner showing what was
+   imported. **Acceptance:** uploading a PDF résumé pre-fills ≥ 5 fields with no
+   hallucinated data; user reviews and selectively applies sections; the raw file is
+   not stored long-term.
 
 ### M7 — Editable canonical staff/judge pages (later, large)
 - Build a staff/judge override + revision layer mirroring the shows wiki
