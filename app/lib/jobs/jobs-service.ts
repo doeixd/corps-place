@@ -895,6 +895,82 @@ const makeJobsService = Effect.gen(function* () {
     return matched;
   });
 
+  // ── Bookmarks ───────────────────────────────────────────────────────────
+
+  const bookmarkJob = Effect.fn('JobsService.bookmarkJob')(function* (
+    userId: string,
+    postingId: string
+  ) {
+    yield* sql`INSERT OR IGNORE INTO jobs_bookmark (user_id, posting_id, created_at)
+               VALUES (${userId}, ${postingId}, ${new Date().toISOString()})`;
+  });
+
+  const removeBookmark = Effect.fn('JobsService.removeBookmark')(function* (
+    userId: string,
+    postingId: string
+  ) {
+    yield* sql`DELETE FROM jobs_bookmark WHERE user_id = ${userId} AND posting_id = ${postingId}`;
+  });
+
+  const getMyBookmarks = Effect.fn('JobsService.getMyBookmarks')(function* (userId: string) {
+    return yield* sql<{
+      posting_id: string;
+      slug: string;
+      title: string;
+      location: string | null;
+      created_at: string;
+    }>`SELECT b.posting_id, p.slug, p.title, p.location, b.created_at
+       FROM jobs_bookmark b JOIN jobs_posting p ON p.posting_id = b.posting_id
+       WHERE b.user_id = ${userId} ORDER BY b.created_at DESC`;
+  });
+
+  const isBookmarked = Effect.fn('JobsService.isBookmarked')(function* (
+    userId: string,
+    postingId: string
+  ) {
+    const rows = yield* sql<{
+      c: number;
+    }>`SELECT 1 AS c FROM jobs_bookmark WHERE user_id = ${userId} AND posting_id = ${postingId} LIMIT 1`;
+    return rows[0]?.c === 1;
+  });
+
+  // ── Application tracking ───────────────────────────────────────────────
+
+  const getMyApplications = Effect.fn('JobsService.getMyApplications')(function* (userId: string) {
+    return yield* sql<{
+      application_id: string;
+      posting_id: string;
+      slug: string;
+      title: string;
+      employer_name: string;
+      created_at: string;
+    }>`SELECT a.application_id, a.posting_id, p.slug, p.title,
+              COALESCE(pr.display_name, '') AS employer_name, a.created_at
+       FROM jobs_application a
+       JOIN jobs_posting p ON p.posting_id = a.posting_id
+       LEFT JOIN jobs_profile pr ON pr.profile_id = p.employer_profile_id
+       WHERE a.applicant_user_id = ${userId}
+       ORDER BY a.created_at DESC`;
+  });
+
+  const getPostingApplications = Effect.fn('JobsService.getPostingApplications')(function* (
+    postingId: string
+  ) {
+    return yield* sql<{
+      application_id: string;
+      applicant_user_id: string;
+      display_name: string;
+      headline: string | null;
+      slug: string | null;
+      created_at: string;
+    }>`SELECT a.application_id, a.applicant_user_id, pr.display_name,
+              pr.headline, pr.slug, a.created_at
+       FROM jobs_application a
+       LEFT JOIN jobs_profile pr ON pr.user_id = a.applicant_user_id
+       WHERE a.posting_id = ${postingId}
+       ORDER BY a.created_at DESC`;
+  });
+
   // ── Ownership guard ─────────────────────────────────────────────────────
 
   const requireOwner = Effect.fn('JobsService.requireOwner')(function* (
@@ -981,9 +1057,14 @@ const makeJobsService = Effect.gen(function* () {
     listAlerts,
     deleteAlert,
     fireAlertsForNewPosting,
-    // Payments
     createBoostOrder,
     markBoostPaid,
+    bookmarkJob,
+    removeBookmark,
+    getMyBookmarks,
+    isBookmarked,
+    getMyApplications,
+    getPostingApplications,
   };
 });
 

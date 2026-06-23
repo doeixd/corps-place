@@ -60,6 +60,7 @@
     "radix-ui": "^1.4.3",
     "react": "19.2.7",
     "react-dom": "19.2.7",
+    "resume-parser-ats": "^1.2.3",
     "react-fate": "1.1.0",
     "react-is": "19.2.7",
     "recharts": "3.8.1",

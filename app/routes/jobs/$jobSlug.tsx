@@ -3,7 +3,7 @@ import { useSession } from '@/lib/auth-client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icon';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/reui/badge';
 import { PageShell } from '@/components/page-shell';
 import { buildSeo, clampDescription, jsonLdScript } from '@/lib/seo';
 import {
@@ -11,6 +11,9 @@ import {
   applyToJob,
   reportContent,
   createBoostCheckout,
+  createBoostCheckout,
+  bookmarkJob,
+  removeBookmark,
 } from '@/lib/server-fns/jobs';
 import {
   Briefcase01Icon,
@@ -18,6 +21,7 @@ import {
   CheckmarkCircle02Icon,
   Alert02Icon,
   FireIcon,
+  BookOpen01Icon,
 } from '@/components/icons/generated';
 import { useState } from 'react';
 
@@ -202,6 +206,7 @@ function JobDetail() {
                   <Icon icon={FireIcon} size="xs" /> Boost
                 </Button>
               ) : null}
+              <BookmarkButton postingId={job.posting_id} />
             </div>
           </div>
 
@@ -235,6 +240,81 @@ function JobDetail() {
           )}
         </CardContent>
       </Card>
+      {/* Similar jobs — same location or remote */}
+      {job.location ? <SimilarJobsSection location={job.location} slug={job.slug} /> : null}
     </PageShell>
+  );
+}
+
+function BookmarkButton({ postingId }: { postingId: string }) {
+  const { data: session } = useSession();
+  const [bookmarked, setBookmarked] = useState(false);
+  const [toggling, setToggling] = useState(false);
+
+  if (!session) return null;
+
+  return (
+    <Button
+      onClick={async () => {
+        setToggling(true);
+        try {
+          if (bookmarked) {
+            await removeBookmark({ postingId });
+            setBookmarked(false);
+          } else {
+            await bookmarkJob({ postingId });
+            setBookmarked(true);
+          }
+        } catch {
+          /* ignore */
+        } finally {
+          setToggling(false);
+        }
+      }}
+      disabled={toggling}
+      variant="ghost"
+      size="xs"
+      className={bookmarked ? 'text-primary' : 'text-text-muted hover:text-primary'}
+    >
+      <Icon icon={BookOpen01Icon} size="xs" /> {bookmarked ? 'Saved' : 'Save'}
+    </Button>
+  );
+}
+
+function SimilarJobsSection({ location, slug }: { location: string; slug: string }) {
+  const [similar, setSimilar] = useState<any[] | null>(null);
+  if (!similar) {
+    // Simple client-side fetch for similar jobs by location
+    import('@/lib/server-fns/jobs')
+      .then((m) => m.listJobs({ location, offset: 0, limit: 3 }))
+      .then((r) => setSimilar(r.rows.filter((j: any) => j.slug !== slug).slice(0, 3)))
+      .catch(() => setSimilar([]));
+  }
+  if (!similar || similar.length === 0) return null;
+
+  return (
+    <Card>
+      <CardContent className="py-5">
+        <h2 className="mb-3 text-base font-semibold text-text-primary">Similar Jobs</h2>
+        <div className="space-y-2">
+          {similar.map((j: any) => (
+            <Link
+              key={j.posting_id}
+              to="/jobs/$jobSlug"
+              params={{ jobSlug: j.slug }}
+              className="group flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-muted/50"
+            >
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-text-primary group-hover:text-primary">
+                  {j.title}
+                </p>
+                {j.location ? <p className="text-xs text-text-muted">{j.location}</p> : null}
+              </div>
+              <Icon icon={Briefcase01Icon} size="sm" className="icon-shift text-text-muted" />
+            </Link>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

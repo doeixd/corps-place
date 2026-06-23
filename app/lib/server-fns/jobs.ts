@@ -392,6 +392,106 @@ export const createBoostCheckout = createServerFn({ method: 'POST' })
     return { ok: true as const, url, orderId };
   });
 
+// ── Resume parsing (M6) ─────────────────────────────────────────────────────
+
+export const parseResumeFile = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(v.object({ rawText: v.string() }), d))
+  .handler(async ({ data }) => {
+    try {
+      const { parseResume } = await import('resume-parser-ats');
+      const result = parseResume({ rawText: data.rawText });
+      return { ok: true as const, parsed: result.data };
+    } catch (e) {
+      return { ok: false as const, error: (e as Error).message };
+    }
+  });
+
+const UploadResumeInput = v.object({
+  base64: v.string(),
+  fileName: v.string(),
+});
+
+export const uploadAndParseResume = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(UploadResumeInput, d))
+  .handler(async ({ data }) => {
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+    const os = await import('node:os');
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'resume-'));
+    const filePath = path.join(tmpDir, data.fileName);
+    try {
+      const buffer = Buffer.from(data.base64, 'base64');
+      fs.writeFileSync(filePath, buffer);
+      const { parseResume } = await import('resume-parser-ats');
+      const result = parseResume({ filePath });
+      return { ok: true as const, parsed: result.data };
+    } catch (e) {
+      return { ok: false as const, error: (e as Error).message };
+    } finally {
+      try {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+      } catch {
+        /* ignore cleanup errors */
+      }
+    }
+  });
+
+// ── Bookmarks ────────────────────────────────────────────────────────────────
+
+export const bookmarkJob = createServerFn({ method: 'POST' })
+  .validator((d: { postingId: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.bookmarkJob(ctx.authorId, data.postingId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    return { ok: true as const };
+  });
+
+export const removeBookmark = createServerFn({ method: 'POST' })
+  .validator((d: { postingId: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.removeBookmark(ctx.authorId, data.postingId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    return { ok: true as const };
+  });
+
+export const getMyBookmarks = createServerFn({ method: 'GET' }).handler(async () => {
+  const ctx = await getJobsCtx();
+  return Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) => svc.getMyBookmarks(ctx.authorId)).pipe(
+      Effect.provide(JobsServiceLive)
+    )
+  );
+});
+
+// ── Application tracking ─────────────────────────────────────────────────────
+
+export const getMyApplications = createServerFn({ method: 'GET' }).handler(async () => {
+  const ctx = await getJobsCtx();
+  return Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) => svc.getMyApplications(ctx.authorId)).pipe(
+      Effect.provide(JobsServiceLive)
+    )
+  );
+});
+
+export const getPostingApplications = createServerFn({ method: 'GET' })
+  .validator((d: { postingId: string }) => d)
+  .handler(async ({ data }) =>
+    Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.getPostingApplications(data.postingId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    )
+  );
+
 export const deleteJobAlert = createServerFn({ method: 'POST' })
   .validator((d: { alertId: string }) => d)
   .handler(async ({ data }) => {

@@ -584,6 +584,14 @@ const SCHEMA = [
      created_at  TEXT NOT NULL
    )`,
   `CREATE INDEX IF NOT EXISTS idx_jobs_alert_user ON jobs_alert (user_id)`,
+
+  `CREATE TABLE IF NOT EXISTS jobs_bookmark (
+     user_id    TEXT NOT NULL,
+     posting_id TEXT NOT NULL,
+     created_at TEXT NOT NULL,
+     PRIMARY KEY (user_id, posting_id)
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_jobs_bookmark_user ON jobs_bookmark (user_id)`,
 ];
 
 /**
