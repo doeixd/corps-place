@@ -44,6 +44,7 @@ interface StandingRow {
   breakdown_json: string;
   rank: unknown;
   is_final: unknown;
+  computed_at: unknown;
   corps_name: unknown;
   show_title: unknown;
   corps_color: unknown;
@@ -88,6 +89,7 @@ const makeStandingsService = Effect.gen(function* () {
         perCaption: (breakdown.perCaption ?? {}) as CaptionTotals,
         contributions: breakdown.contributions ?? {},
         isFinal: Boolean(r.is_final),
+        computedAt: strOrNull(r.computed_at),
         corpsName: strOrNull(r.corps_name),
         showTitle: strOrNull(r.show_title),
         corpsColor: strOrNull(r.corps_color),

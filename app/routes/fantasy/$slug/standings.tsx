@@ -56,6 +56,10 @@ function StandingsPage() {
 
 function StandingsContent({ league, rows }: { league: Standings['league']; rows: Row[] }) {
   const final = rows.some((r) => r.isFinal);
+  const lastUpdated = rows.reduce<string | null>(
+    (max, r) => (r.computedAt && (!max || r.computedAt > max) ? r.computedAt : max),
+    null
+  );
 
   return (
     <PageShell className="flex flex-col gap-6">
@@ -65,6 +69,7 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
           <p className="text-sm text-muted-foreground">
             Season {league.season}
             {final ? ' · final' : rows.length ? ' · live' : ''}
+            {lastUpdated ? ` · updated ${new Date(lastUpdated).toLocaleDateString()}` : ''}
           </p>
         </div>
         <Button

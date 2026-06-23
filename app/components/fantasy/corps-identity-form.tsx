@@ -74,6 +74,10 @@ export function CorpsIdentityForm({
       }}
       className="flex max-w-md flex-col gap-4"
     >
+      <p className="text-sm text-muted-foreground">
+        This is <strong>your team&apos;s</strong> identity — its name, color, and logo. (You&apos;ll
+        draft the real drum corps during the draft.)
+      </p>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="corpsName">Corps name</Label>
         <Input

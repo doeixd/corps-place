@@ -47,4 +47,16 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     label: 'Caption',
     description: 'A judged category. You draft one corps per caption to build your lineup.',
   },
+
+  // League settings.
+  'draft-type': {
+    label: 'Draft type',
+    description:
+      'Snake reverses the pick order each round so it stays fair; linear keeps the same order every round.',
+  },
+  'scoring-mode': {
+    label: 'Scoring mode',
+    description:
+      'Recap = a weighted average capped at 100 (like DCI scoring). Sum = raw caption points add up with no cap.',
+  },
 };

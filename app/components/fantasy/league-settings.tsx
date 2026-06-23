@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { updateLeagueConfig } from '@/lib/server-fns/fantasy';
+import { Explain } from '@/components/fantasy/explain';
 import type { LeagueConfig } from '@/lib/fantasy/config';
 
 /**
@@ -90,7 +91,9 @@ export function LeagueSettings({
         </p>
 
         <div className="grid grid-cols-2 items-center gap-3">
-          <Label htmlFor="s-drafttype">Draft type</Label>
+          <Label htmlFor="s-drafttype">
+            <Explain term="draft-type">Draft type</Explain>
+          </Label>
           <Select
             value={draftType}
             onValueChange={(v) => setDraftType(v as LeagueConfig['draftType'])}
@@ -140,7 +143,9 @@ export function LeagueSettings({
         ) : null}
 
         <div className="grid grid-cols-2 items-center gap-3">
-          <Label htmlFor="s-mode">Scoring mode</Label>
+          <Label htmlFor="s-mode">
+            <Explain term="scoring-mode">Scoring mode</Explain>
+          </Label>
           <Select
             value={scoringMode}
             onValueChange={(v) => setScoringMode(v as LeagueConfig['scoringMode'])}
