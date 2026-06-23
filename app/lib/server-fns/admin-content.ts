@@ -13,6 +13,7 @@ import { getWebRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { requireCapability } from '@/lib/authz';
+import { writeAudit } from '@/lib/admin-audit';
 
 export interface AdminRevisionRow {
   revisionId: string;
@@ -114,14 +115,25 @@ const SetLockInput = v.object({
 export const setPageLock = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(SetLockInput, d))
   .handler(async ({ data }) => {
-    await requireCapability(getWebRequest(), 'lock');
+    const actor = await requireCapability(getWebRequest(), 'lock');
     const db = await getContributionsDb();
+    const prior = (
+      await db.execute({
+        sql: 'SELECT lock_level FROM show_pages WHERE page_id = ?',
+        args: [data.pageId],
+      })
+    ).rows[0] as { lock_level?: string } | undefined;
+    if (!prior) throw new Error('NOT_FOUND');
     const now = new Date().toISOString();
-    const res = await db.execute({
+    await db.execute({
       sql: 'UPDATE show_pages SET lock_level = ?, updated_at = ? WHERE page_id = ?',
       args: [data.level, now, data.pageId],
     });
-    if (res.rowsAffected === 0) throw new Error('NOT_FOUND');
-    // TODO(§8): append an admin_audit row once that table lands (M3).
+    await writeAudit(db, actor, {
+      action: 'set_page_lock',
+      target: data.pageId,
+      before: prior.lock_level ?? null,
+      after: data.level,
+    });
     return { ok: true as const, pageId: data.pageId, level: data.level };
   });

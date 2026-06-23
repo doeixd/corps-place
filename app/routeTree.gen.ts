@@ -33,8 +33,10 @@ import { Route as JudgesJudgeIdRouteImport } from './routes/judges/$judgeId'
 import { Route as FantasyQuizAdminRouteImport } from './routes/fantasy/quiz-admin'
 import { Route as FantasyCreateRouteImport } from './routes/fantasy/create'
 import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spike'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
+import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as FantasySlugIndexRouteImport } from './routes/fantasy/$slug/index'
 import { Route as EventsYearSlugIndexRouteImport } from './routes/events/$yearSlug/index'
 import { Route as ShowsSlugSeasonRouteImport } from './routes/shows/$slug.$season'
@@ -170,6 +172,11 @@ const DevFreeFormSpikeRoute = DevFreeFormSpikeRouteImport.update({
   path: '/dev/free-form-spike',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCorpsColorsRoute = AdminCorpsColorsRouteImport.update({
   id: '/admin/corps-colors',
   path: '/admin/corps-colors',
@@ -178,6 +185,11 @@ const AdminCorpsColorsRoute = AdminCorpsColorsRouteImport.update({
 const AdminContentRoute = AdminContentRouteImport.update({
   id: '/admin/content',
   path: '/admin/content',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/admin/audit',
+  path: '/admin/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FantasySlugIndexRoute = FantasySlugIndexRouteImport.update({
@@ -301,8 +313,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
   '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
@@ -338,8 +352,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
   '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
@@ -376,8 +392,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
   '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
@@ -415,8 +433,10 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
+    | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
     | '/fantasy/quiz-admin'
@@ -452,8 +472,10 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
+    | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
     | '/fantasy/quiz-admin'
@@ -489,8 +511,10 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
+    | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
     | '/fantasy/quiz-admin'
@@ -527,8 +551,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
+  AdminAuditRoute: typeof AdminAuditRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   DevFreeFormSpikeRoute: typeof DevFreeFormSpikeRoute
   FantasyCreateRoute: typeof FantasyCreateRoute
   FantasyQuizAdminRoute: typeof FantasyQuizAdminRoute
@@ -812,6 +838,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevFreeFormSpikeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/corps-colors': {
       id: '/admin/corps-colors'
       path: '/admin/corps-colors'
@@ -824,6 +857,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/content'
       fullPath: '/admin/content'
       preLoaderRoute: typeof AdminContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/admin/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fantasy/$slug/': {
@@ -991,8 +1031,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
+  AdminAuditRoute: AdminAuditRoute,
   AdminContentRoute: AdminContentRoute,
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
+  AdminUsersRoute: AdminUsersRoute,
   DevFreeFormSpikeRoute: DevFreeFormSpikeRoute,
   FantasyCreateRoute: FantasyCreateRoute,
   FantasyQuizAdminRoute: FantasyQuizAdminRoute,

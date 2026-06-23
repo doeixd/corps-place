@@ -65,6 +65,46 @@ const dbSizeBytes = async (db: Client): Promise<number> => {
   }
 };
 
+export interface AuditRow {
+  auditId: string;
+  actorId: string;
+  actorName: string | null;
+  actorRole: string;
+  action: string;
+  target: string | null;
+  createdAt: string;
+}
+
+const ListAuditInput = v.object({
+  limit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(500)), 100),
+});
+
+/** Recent admin actions (§8). Cap: viewAdmin. */
+export const listAudit = createServerFn({ method: 'GET' })
+  .validator((d: unknown) => v.parse(ListAuditInput, d))
+  .handler(async ({ data }): Promise<AuditRow[]> => {
+    await requireCapability(getWebRequest(), 'viewAdmin');
+    const db = await getContributionsDb();
+    const rows = (
+      await db.execute({
+        sql: `SELECT a.audit_id, a.actor_id, u.name AS actor_name, a.actor_role,
+                     a.action, a.target, a.created_at
+              FROM admin_audit a LEFT JOIN "user" u ON u.id = a.actor_id
+              ORDER BY a.created_at DESC LIMIT ?`,
+        args: [data.limit],
+      })
+    ).rows as unknown as Record<string, unknown>[];
+    return rows.map((r) => ({
+      auditId: String(r.audit_id),
+      actorId: String(r.actor_id),
+      actorName: (r.actor_name as string) ?? null,
+      actorRole: String(r.actor_role),
+      action: String(r.action),
+      target: (r.target as string) ?? null,
+      createdAt: String(r.created_at),
+    }));
+  });
+
 /** Overview snapshot (§4) — contributions.db only in this slice. Cap: viewAdmin. */
 export const adminStatus = createServerFn({ method: 'GET' }).handler(async () => {
   await requireCapability(getWebRequest(), 'viewAdmin');

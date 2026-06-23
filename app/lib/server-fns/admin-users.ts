@@ -1,0 +1,100 @@
+/**
+ * User management (ADMIN_PAGE_PLAN §7). Direct on the better-auth `user` table in
+ * `contributions.db` — the `role` additionalField column already exists, so role
+ * grants need no plugin. Ban/impersonate require enabling the better-auth admin
+ * plugin (a schema migration + auth-flow test) and are deferred to that session.
+ *
+ * Cap `manageUsers` (admin) on every fn; guard rails (no escalation above self, no
+ * demoting the last admin) + an audit row on each change.
+ */
+import { createServerFn } from '@tanstack/react-start/client';
+import { getWebRequest } from '@tanstack/react-start/server';
+import * as v from 'valibot';
+import { getContributionsDb } from '@/lib/contributions-db';
+import { requireCapability, type Role } from '@/lib/authz';
+import { writeAudit } from '@/lib/admin-audit';
+
+const RANK: Record<Role, number> = { user: 1, trusted: 2, moderator: 3, admin: 4 };
+
+export interface AdminUserRow {
+  id: string;
+  name: string | null;
+  email: string | null;
+  role: Role;
+  createdAt: string | null;
+}
+
+const ListUsersInput = v.object({
+  q: v.optional(v.string(), ''),
+  limit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(500)), 100),
+});
+
+/** List/search users by name or email. Cap: manageUsers. */
+export const listUsers = createServerFn({ method: 'GET' })
+  .validator((d: unknown) => v.parse(ListUsersInput, d))
+  .handler(async ({ data }): Promise<AdminUserRow[]> => {
+    await requireCapability(getWebRequest(), 'manageUsers');
+    const db = await getContributionsDb();
+    const q = data.q.trim();
+    const like = `%${q}%`;
+    const rows = (
+      await db.execute({
+        sql: `SELECT id, name, email, role, "createdAt"
+              FROM "user"
+              ${q ? 'WHERE name LIKE ? OR email LIKE ?' : ''}
+              ORDER BY "createdAt" DESC LIMIT ?`,
+        args: q ? [like, like, data.limit] : [data.limit],
+      })
+    ).rows as unknown as Record<string, unknown>[];
+    return rows.map((r) => ({
+      id: String(r.id),
+      name: (r.name as string) ?? null,
+      email: (r.email as string) ?? null,
+      role: ((r.role as Role) ?? 'user') as Role,
+      createdAt: (r.createdAt as string) ?? null,
+    }));
+  });
+
+const SetRoleInput = v.object({
+  userId: v.string(),
+  role: v.picklist(['user', 'trusted', 'moderator', 'admin'] as const),
+});
+
+/** Grant/revoke a user's role with guard rails. Cap: manageUsers. */
+export const setUserRole = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(SetRoleInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'manageUsers');
+
+    // Can't grant a role higher than your own.
+    if (RANK[data.role as Role] > RANK[actor.role])
+      throw new Error('FORBIDDEN: cannot escalate above your own role');
+
+    const db = await getContributionsDb();
+    const target = (
+      await db.execute({ sql: 'SELECT role FROM "user" WHERE id = ?', args: [data.userId] })
+    ).rows[0] as { role?: string } | undefined;
+    if (!target) throw new Error('NOT_FOUND');
+    const before = (target.role as Role) ?? 'user';
+    if (before === data.role) return { ok: true as const, userId: data.userId, role: data.role };
+
+    // Can't demote the last remaining admin.
+    if (before === 'admin' && data.role !== 'admin') {
+      const n = Number(
+        (await db.execute(`SELECT COUNT(*) AS n FROM "user" WHERE role = 'admin'`)).rows[0]?.n ?? 0
+      );
+      if (n <= 1) throw new Error('FORBIDDEN: cannot demote the last admin');
+    }
+
+    await db.execute({
+      sql: 'UPDATE "user" SET role = ? WHERE id = ?',
+      args: [data.role, data.userId],
+    });
+    await writeAudit(db, actor, {
+      action: 'set_user_role',
+      target: data.userId,
+      before,
+      after: data.role,
+    });
+    return { ok: true as const, userId: data.userId, role: data.role };
+  });

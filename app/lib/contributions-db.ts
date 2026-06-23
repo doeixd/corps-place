@@ -359,6 +359,21 @@ const SCHEMA = [
      uploaded_at TEXT NOT NULL
    )`,
   `CREATE INDEX IF NOT EXISTS idx_fantasy_media_league ON fantasy_media (league_id, user_id)`,
+
+  // Admin console: unified, append-only audit of every mutating admin action
+  // (ADMIN_PAGE_PLAN §8). The fantasy-specific fantasy_admin_audit predates this and
+  // can fold in later; new admin writes target this table.
+  `CREATE TABLE IF NOT EXISTS admin_audit (
+     audit_id    TEXT PRIMARY KEY,
+     actor_id    TEXT NOT NULL,
+     actor_role  TEXT NOT NULL,
+     action      TEXT NOT NULL,
+     target      TEXT,
+     before_json TEXT,
+     after_json  TEXT,
+     created_at  TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_admin_audit_time ON admin_audit (created_at)`,
 ];
 
 /**

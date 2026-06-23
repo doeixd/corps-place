@@ -49,7 +49,7 @@ function AdminOverview() {
 }
 
 function Overview() {
-  const [state] = useMachine(adminStatusMachine);
+  const [state] = useMachine(adminStatusMachine, { input: {} });
   const s = state.context.status;
   const loading = !s && state.matches('fetching');
 
