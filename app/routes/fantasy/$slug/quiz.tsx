@@ -1,18 +1,15 @@
-import { useState } from 'react';
 import { createFileRoute, notFound, Link } from '@tanstack/react-router';
+import { useMachine } from '@xstate/react';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
-import { getLeague, getQuizForLeague, submitQuiz } from '@/lib/server-fns/fantasy';
-import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
+import { getLeague, getQuizForLeague } from '@/lib/server-fns/fantasy';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
-
-type Quiz = Awaited<ReturnType<typeof getQuizForLeague>>;
-type InProgressQuiz = Extract<Quiz, { state: 'in_progress' }>;
+import { fantasyQuizMachine } from '@/machines/fantasy-quiz-machine';
 
 export const Route = createFileRoute('/fantasy/$slug/quiz')({
   beforeLoad: requireFantasyEnabled,
@@ -26,10 +23,9 @@ export const Route = createFileRoute('/fantasy/$slug/quiz')({
     }
     const me = league.members.find((m) => m.user_id === league.viewer.userId);
     const quizEnabled = league.league.config.quiz.enabled;
-    // Only fetch the attempt when we KNOW it won't create one — i.e. the member
-    // has already completed it (the server's done-branch returns without writing).
-    // Starting/resuming is an explicit user action below, so a hover-prefetch of
-    // this route never spins up a timed attempt.
+    // Only fetch the attempt when we KNOW it won't create one (already completed);
+    // starting/resuming is an explicit user action in the machine, so a hover-
+    // prefetch of this route never spins up a timed attempt.
     const completedScore =
       me?.quiz_taken && quizEnabled
         ? await getQuizForLeague({ data: { leagueId: league.league.leagueId } }).then((q) =>
@@ -62,8 +58,7 @@ function QuizRoute() {
   let body: React.ReactNode;
   if (!isMember) body = <Notice slug={slug}>You're not a member of this league.</Notice>;
   else if (!quizEnabled) body = <Notice slug={slug}>The quiz is disabled for this league.</Notice>;
-  else if (completedScore != null) body = <Completed slug={slug} score={completedScore} />;
-  else body = <QuizSession slug={slug} leagueId={leagueId} />;
+  else body = <QuizSession slug={slug} leagueId={leagueId} completedScore={completedScore} />;
 
   return (
     <PageShell className="flex flex-col gap-4">
@@ -73,41 +68,32 @@ function QuizRoute() {
   );
 }
 
-/** Start/resume the timed attempt (explicit action — never on prefetch). */
-function QuizSession({ slug, leagueId }: { slug: string; leagueId: string }) {
-  const [quiz, setQuiz] = useState<Quiz | null>(null);
-  const [score, setScore] = useState<number | null>(null);
+function QuizSession({
+  slug,
+  leagueId,
+  completedScore,
+}: {
+  slug: string;
+  leagueId: string;
+  completedScore: number | null;
+}) {
+  const [state, send] = useMachine(fantasyQuizMachine, { input: { leagueId, completedScore } });
+  const { quiz, answers, score, error } = state.context;
 
-  const start = useAsyncAction(async () => {
-    setQuiz(await getQuizForLeague({ data: { leagueId } }));
-  });
-  const submit = useAsyncAction(
-    async (answers: number[]) => {
-      const res = await submitQuiz({ data: { leagueId, answers } });
-      setScore(res.weightedScore);
-    },
-    (err) =>
-      matchMessage(
-        err,
-        {
-          expired: 'Time is up — this attempt has expired.',
-          already: 'You have already completed this quiz.',
-        },
-        `Could not submit: ${err.message}`
-      )
-  );
+  if (state.matches('done')) return <Completed slug={slug} score={score ?? 0} />;
+  if (state.matches('unavailable')) {
+    return <Notice slug={slug}>No quiz questions are available yet. Check back soon.</Notice>;
+  }
 
-  if (score != null) return <Completed slug={slug} score={score} />;
-
-  if (!quiz) {
+  if (state.matches('idle') || state.matches('starting')) {
     return (
       <Card>
         <CardContent className="flex flex-col items-start gap-3">
           <p className="text-muted-foreground">
             You get one timed attempt. Your score sets your draft seeding.
           </p>
-          {start.error ? <p className="text-sm text-destructive">{start.error}</p> : null}
-          <BusyButton busy={start.busy} onClick={() => void start.run()}>
+          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          <BusyButton busy={state.matches('starting')} onClick={() => send({ type: 'START' })}>
             Start quiz
           </BusyButton>
         </CardContent>
@@ -115,33 +101,9 @@ function QuizSession({ slug, leagueId }: { slug: string; leagueId: string }) {
     );
   }
 
-  switch (quiz.state) {
-    case 'in_progress':
-      return <QuizForm quiz={quiz} onSubmit={submit.run} busy={submit.busy} error={submit.error} />;
-    case 'done':
-      return <Completed slug={slug} score={quiz.weightedScore} />;
-    case 'unavailable':
-      return <Notice slug={slug}>No quiz questions are available yet. Check back soon.</Notice>;
-    default:
-      return <Notice slug={slug}>The quiz is disabled for this league.</Notice>;
-  }
-}
-
-function QuizForm({
-  quiz,
-  onSubmit,
-  busy,
-  error,
-}: {
-  quiz: InProgressQuiz;
-  onSubmit: (answers: number[]) => void;
-  busy: boolean;
-  error: string | null;
-}) {
-  const [answers, setAnswers] = useState<number[]>(() => quiz.questions.map(() => -1));
+  // answering | submitting
+  if (!quiz) return null;
   const allAnswered = answers.every((a) => a >= 0);
-  const setAnswer = (qi: number, ci: number) =>
-    setAnswers((prev) => prev.map((a, i) => (i === qi ? ci : a)));
 
   return (
     <div className="flex flex-col gap-6">
@@ -167,7 +129,8 @@ function QuizForm({
               value={answers[qi] >= 0 ? [String(answers[qi])] : []}
               onValueChange={(v) => {
                 const next = v[0];
-                if (next != null) setAnswer(qi, Number(next));
+                if (next != null)
+                  send({ type: 'ANSWER', questionIndex: qi, choiceIndex: Number(next) });
               }}
             >
               {q.choices.map((choice, ci) => (
@@ -182,7 +145,11 @@ function QuizForm({
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <div className="flex items-center gap-3">
-        <BusyButton busy={busy} disabled={!allAnswered} onClick={() => onSubmit(answers)}>
+        <BusyButton
+          busy={state.matches('submitting')}
+          disabled={!allAnswered}
+          onClick={() => send({ type: 'SUBMIT' })}
+        >
           Submit quiz
         </BusyButton>
         {!allAnswered ? (
