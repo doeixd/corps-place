@@ -54,21 +54,13 @@ export class LeagueConflict extends Schema.TaggedErrorClass<LeagueConflict>()('L
   reason: LeagueConflictReason,
 }) {}
 
-/** Reasons an in-draft action can conflict. */
-export const DraftConflictReason = Schema.Literals([
-  'expired',
-  'pair-taken',
-  'corps-on-roster',
-  'caption-full',
-  'not-live',
-  'not-on-clock',
-  'already-started',
-  'illegal-pick',
-]);
-export type DraftConflictReason = typeof DraftConflictReason.Type;
-
+// Draft conflict reasons span the legality checks (`pair-taken`, `corps-on-roster`,
+// `caption-full`, `not-in-pool`) and the lifecycle (`not-live`, `not-paused`,
+// `not-scheduled`, `already-started`, `need-two-members`, `identities-incomplete`,
+// `expired`, `bad-caption`) — a free string keeps the boundary's `CONFLICT:<reason>`
+// mapping in lockstep with the legacy strings without an exhaustive literal list.
 export class DraftConflict extends Schema.TaggedErrorClass<DraftConflict>()('DraftConflict', {
-  reason: DraftConflictReason,
+  reason: Schema.String,
 }) {}
 
 /** Reasons a quiz action can conflict. */
