@@ -36,6 +36,7 @@ import {
   type DraftReducerError,
   type DraftStatus,
 } from '../machines/draft';
+import { leagueReducer, type LeagueStatus } from '../machines/league';
 import { ContributionsSql, ContributionsSqlLive } from './sql';
 
 export type DraftEvent = { event: string; data: unknown };
@@ -479,6 +480,17 @@ const makeDraftService = Effect.gen(function* () {
         const feasible = checkFeasibility(memberRows.length, totalRounds, poolSize, config);
         if (!feasible.ok) return feasible;
 
+        // The league lifecycle machine authorizes setup/quiz/scheduled → drafting,
+        // so a canceled/finished league can't be resurrected by starting its draft.
+        const leagueRows = yield* sql<{ status: string }>`
+          SELECT status FROM fantasy_leagues WHERE league_id = ${leagueId}
+        `.pipe(Effect.orDie);
+        const leagueMove = leagueReducer((leagueRows[0]?.status ?? 'setup') as LeagueStatus, {
+          type: 'START_DRAFT',
+        });
+        if (!leagueMove.ok)
+          return yield* Effect.fail(new DraftConflict({ reason: 'league-not-startable' }));
+
         const members: DraftMember[] = memberRows.map((m) => ({
           userId: m.user_id,
           quizScore: m.quiz_score == null ? null : Number(m.quiz_score),
@@ -497,7 +509,7 @@ const makeDraftService = Effect.gen(function* () {
                 started_at = ${now} WHERE league_id = ${leagueId}
             `;
               yield* sql`
-              UPDATE fantasy_leagues SET status = 'drafting', updated_at = ${now} WHERE league_id = ${leagueId}
+              UPDATE fantasy_leagues SET status = ${leagueMove.next}, updated_at = ${now} WHERE league_id = ${leagueId}
             `;
             })
           )
