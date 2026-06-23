@@ -13,6 +13,8 @@ import {
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getStandings } from '@/lib/server-fns/fantasy';
+import { standingsCollection } from '@/lib/fantasy/collections';
+import { HybridCollection } from '@/components/hybrid-collection';
 import { CAPTION_KEYS } from '@/lib/fantasy/captions';
 
 type Standings = Awaited<ReturnType<typeof getStandings>>;
@@ -41,6 +43,17 @@ const fmt = (n: number) => (n === 0 ? '—' : n.toFixed(3));
 
 function StandingsPage() {
   const { league, rows } = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  // Loader SSRs first paint; the live collection takes over after hydration so a
+  // recompute (or another tab) reflects without a manual reload.
+  return (
+    <HybridCollection collection={standingsCollection(slug)} loader={rows}>
+      {(liveRows) => <StandingsContent league={league} rows={liveRows} />}
+    </HybridCollection>
+  );
+}
+
+function StandingsContent({ league, rows }: { league: Standings['league']; rows: Row[] }) {
   const final = rows.some((r) => r.isFinal);
 
   return (

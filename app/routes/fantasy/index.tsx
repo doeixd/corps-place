@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { listMyLeagues } from '@/lib/server-fns/fantasy';
+import { leaguesCollection } from '@/lib/fantasy/collections';
+import { HybridCollection } from '@/components/hybrid-collection';
 import { useSession } from '@/lib/auth-client';
 import { SignInButton } from '@/components/fantasy/sign-in-button';
 
@@ -33,6 +35,16 @@ export const Route = createFileRoute('/fantasy/')({
 
 function FantasyHome() {
   const { signedIn, leagues } = Route.useLoaderData();
+  // SSR + first paint render from the loader; after hydration the live
+  // collection drives the list (e.g. picks up a league created in another tab).
+  return (
+    <HybridCollection collection={leaguesCollection} loader={leagues}>
+      {(rows) => <FantasyHomeContent signedIn={signedIn} leagues={rows} />}
+    </HybridCollection>
+  );
+}
+
+function FantasyHomeContent({ signedIn, leagues }: { signedIn: boolean; leagues: LeagueRow[] }) {
   const { data: session } = useSession();
   const isSignedIn = signedIn || Boolean(session?.user);
 

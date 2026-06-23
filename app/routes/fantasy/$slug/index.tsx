@@ -17,6 +17,8 @@ import { PushToggle } from '@/components/fantasy/push-toggle';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { useCopyToClipboard } from '@/lib/use-copy-to-clipboard';
+import { leagueDetailCollection, refetchLeagueDetail } from '@/lib/fantasy/collections';
+import { HybridRecord } from '@/components/hybrid-collection';
 
 type LeagueData = Awaited<ReturnType<typeof getLeague>>;
 type Member = LeagueData['members'][number];
@@ -41,9 +43,27 @@ export const Route = createFileRoute('/fantasy/$slug/')({
 });
 
 function LeagueDashboard() {
-  const { league, members, viewer, paymentsEnabled } = Route.useLoaderData();
+  const data = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  // Loader SSRs first paint; the live per-slug record drives the page after
+  // hydration, and mutations below refresh it via refetchLeagueDetail(slug).
+  return (
+    <HybridRecord collection={leagueDetailCollection(slug)} loader={data}>
+      {(d) => <LeagueDashboardContent data={d} slug={slug} />}
+    </HybridRecord>
+  );
+}
+
+function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string }) {
+  const { league, members, viewer, paymentsEnabled } = data;
   const router = useRouter();
   const [editing, setEditing] = useState(false);
+
+  // Refresh both the loader cache (for SSR/next nav) and the live collection (for
+  // the currently displayed page) after a mutation changes league data.
+  const refresh = async () => {
+    await Promise.all([router.invalidate(), refetchLeagueDetail(slug)]);
+  };
 
   const me = members.find((m) => m.user_id === viewer.userId);
   const needsIdentity = viewer.isMember && !me?.corps_name;
@@ -89,6 +109,7 @@ function LeagueDashboard() {
           leagueId={league.leagueId}
           paymentStatus={league.paymentStatus}
           canRefund={['setup', 'quiz', 'scheduled'].includes(league.status)}
+          onChanged={refresh}
         />
       ) : null}
 
@@ -112,7 +133,7 @@ function LeagueDashboard() {
               }}
               onSaved={() => {
                 setEditing(false);
-                void router.invalidate();
+                void refresh();
               }}
             />
           </CardContent>
@@ -143,19 +164,20 @@ function PaymentPanel({
   leagueId,
   paymentStatus,
   canRefund,
+  onChanged,
 }: {
   leagueId: string;
   paymentStatus: string;
   canRefund: boolean;
+  onChanged: () => Promise<void> | void;
 }) {
-  const router = useRouter();
   const pay = useAsyncAction(async () => {
     const res = await createLeagueCheckout({ data: { leagueId } });
     window.location.href = res.url;
   });
   const refund = useAsyncAction(async () => {
     await requestRefund({ data: { leagueId } });
-    await router.invalidate();
+    await onChanged();
   });
 
   return (

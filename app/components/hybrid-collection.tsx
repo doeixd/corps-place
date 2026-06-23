@@ -34,6 +34,50 @@ export function HybridCollection<T extends object>({
   );
 }
 
+/**
+ * Single-record variant of {@link HybridCollection} for a collection that holds
+ * ONE composite row (e.g. a per-slug league detail payload). Renders the loader
+ * record during SSR + first paint, then the live row once the collection has
+ * synced — falling back to the loader until then (and on sync error).
+ *
+ * Usage:
+ *   <HybridRecord collection={leagueDetailCollection(slug)} loader={data}>
+ *     {(league) => <LeagueDashboard data={league} />}
+ *   </HybridRecord>
+ */
+export function HybridRecord<T extends object>({
+  collection,
+  loader,
+  children,
+}: {
+  collection: Collection<T, string | number, any>;
+  loader: T;
+  children: (row: T) => ReactNode;
+}) {
+  if (typeof window === 'undefined') return <>{children(loader)}</>;
+  return (
+    <RecordBridge collection={collection} loader={loader}>
+      {children}
+    </RecordBridge>
+  );
+}
+
+function RecordBridge<T extends object>({
+  collection,
+  loader,
+  children,
+}: {
+  collection: Collection<T, string | number, any>;
+  loader: T;
+  children: (row: T) => ReactNode;
+}) {
+  const { data } = useLiveQuery(collection as never);
+  const rows = (data ?? []) as T[];
+  // Prefer the live record once present; until the collection syncs (or if it
+  // errored), render the SSR loader payload so the page never flashes empty.
+  return <>{children(rows.length > 0 ? rows[0] : loader)}</>;
+}
+
 // Client-only: subscribes to the collection and falls back to the loader payload
 // until the shard has loaded (the collection is empty on the first client render).
 function LiveBridge<T extends object>({
