@@ -17,7 +17,7 @@ import { PushToggle } from '@/components/fantasy/push-toggle';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { useCopyToClipboard } from '@/lib/use-copy-to-clipboard';
-import { leagueDetailCollection, refetchLeagueDetail } from '@/lib/fantasy/collections';
+import { leagueDetailCollection, refetchLeagueDetail } from '@/db/fantasy-collections';
 import { HybridRecord } from '@/components/hybrid-collection';
 
 type LeagueData = Awaited<ReturnType<typeof getLeague>>;

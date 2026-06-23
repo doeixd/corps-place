@@ -1,13 +1,8 @@
 // Server-backed TanStack DB collections for the Fantasy DCI read pages
 // (migration plan §3.6 / P1b). Unlike the static read-model index shards
-// (`app/db/json-collection.ts`), fantasy data is dynamic + per-user/per-league,
-// so the `sync` fetches the current value by calling the **server-fn** (which
-// runs the Effect path server-side) and writes it via
-// `begin/truncate/write/commit`.
-//
-// NOTE: the plan files this at `app/db/fantasy-collections.ts`; it lives here
-// under `app/lib/fantasy/` because `app/db/` is not writable in this environment.
-// Functionally identical (resolved via the `@/` alias either way).
+// (`./json-collection.ts`), fantasy data is dynamic + per-user/per-league, so the
+// `sync` fetches the current value by calling the **server-fn** (which runs the
+// Effect path server-side) and writes it via `begin/truncate/write/commit`.
 //
 // The browser bundle stays Effect-free: this imports only the server-fn
 // references (thin client proxies) + plain `fetch` under the hood — never the

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { listMyLeagues } from '@/lib/server-fns/fantasy';
-import { leaguesCollection } from '@/lib/fantasy/collections';
+import { leaguesCollection } from '@/db/fantasy-collections';
 import { HybridCollection } from '@/components/hybrid-collection';
 import { useSession } from '@/lib/auth-client';
 import { SignInButton } from '@/components/fantasy/sign-in-button';

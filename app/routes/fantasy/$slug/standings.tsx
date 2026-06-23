@@ -13,7 +13,7 @@ import {
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getStandings } from '@/lib/server-fns/fantasy';
-import { standingsCollection } from '@/lib/fantasy/collections';
+import { standingsCollection } from '@/db/fantasy-collections';
 import { HybridCollection } from '@/components/hybrid-collection';
 import { CAPTION_KEYS } from '@/lib/fantasy/captions';
 
