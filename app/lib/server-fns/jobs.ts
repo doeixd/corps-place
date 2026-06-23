@@ -126,3 +126,89 @@ export const publishJobsProfile = createServerFn({ method: 'POST' })
     );
     return { ok: true as const };
   });
+
+// ── Postings ─────────────────────────────────────────────────────────────────
+
+export const getJobPosting = createServerFn({ method: 'GET' })
+  .validator((d: { slug: string }) => d)
+  .handler(async ({ data }) =>
+    Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.getPostingBySlug(data.slug)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    )
+  );
+
+export const listJobs = createServerFn({ method: 'GET' })
+  .validator(
+    (d: {
+      keyword?: string;
+      location?: string;
+      remote?: boolean;
+      offset?: number;
+      limit?: number;
+    }) => d
+  )
+  .handler(async ({ data }) =>
+    Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.listPostings(data)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    )
+  );
+
+const CreatePostingInput = v.object({
+  title: v.pipe(v.string(), v.minLength(1, 'Title required')),
+  location: v.optional(v.string(), ''),
+  remoteOk: v.optional(v.boolean(), false),
+  compText: v.optional(v.string(), ''),
+  salaryMin: v.optional(v.nullable(v.number())),
+  salaryMax: v.optional(v.nullable(v.number())),
+  applyUrl: v.optional(v.string(), ''),
+  applyEmail: v.optional(v.string(), ''),
+  contentJson: v.string(),
+});
+
+export const createJobPosting = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(CreatePostingInput, d))
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    const profile = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    if (!profile || profile.profile.kind !== 'employer')
+      throw new Error('Only employers can post jobs');
+    const postingId = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.createPosting(profile.profile.profile_id, data, ctx)
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+    return { ok: true as const, postingId };
+  });
+
+export const closeJobPosting = createServerFn({ method: 'POST' })
+  .validator((d: { postingId: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.closePosting(data.postingId, ctx)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    return { ok: true as const };
+  });
+
+export const applyToJob = createServerFn({ method: 'POST' })
+  .validator((d: { postingId: string; message?: string }) => d)
+  .handler(async ({ data }) => {
+    const actor = await getActor(getWebRequest());
+    if (!actor) throw new Error('Sign in to apply');
+    const result = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.applyToPosting(data.postingId, actor.userId, data.message)
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+    return { ok: true as const, applicationId: result.applicationId };
+  });

@@ -243,6 +243,282 @@ const makeJobsService = Effect.gen(function* () {
                VALUES (${newId()}, 'profile', ${profileId}, ${ctx.authorId}, ${ctx.actorRole}, 'publish', ${before}, 'published', ${ctx.now})`;
   });
 
+  // ── Posting reads ───────────────────────────────────────────────────────
+
+  const getPostingBySlug = Effect.fn('JobsService.getPostingBySlug')(function* (slug: string) {
+    const rows = yield* sql<{
+      posting_id: string;
+      employer_profile_id: string;
+      slug: string;
+      title: string;
+      location: string | null;
+      remote_ok: number;
+      comp_text: string | null;
+      salary_min: number | null;
+      salary_max: number | null;
+      salary_currency: string | null;
+      apply_url: string | null;
+      apply_email: string | null;
+      content_json: string;
+      status: string;
+      published_at: string | null;
+      expires_at: string | null;
+      is_boosted: number;
+      boosted_until: string | null;
+      created_at: string;
+      updated_at: string;
+    }>`SELECT * FROM jobs_posting WHERE slug = ${slug} LIMIT 1`;
+    return rows[0] ?? null;
+  });
+
+  const listPostings = Effect.fn('JobsService.listPostings')(function* (
+    filters: {
+      status?: string;
+      keyword?: string;
+      location?: string;
+      remote?: boolean;
+      offset?: number;
+      limit?: number;
+    } = {}
+  ) {
+    const conditions: string[] = [];
+    const args: unknown[] = [];
+    let sqlStr = 'SELECT * FROM jobs_posting WHERE 1=1';
+
+    if (filters.status) {
+      conditions.push('status = ?');
+      args.push(filters.status);
+    } else {
+      conditions.push("status = 'published'");
+    }
+
+    if (filters.keyword) {
+      conditions.push('title LIKE ?');
+      args.push(`%${filters.keyword}%`);
+    }
+    if (filters.location) {
+      conditions.push('location LIKE ?');
+      args.push(`%${filters.location}%`);
+    }
+    if (filters.remote) {
+      conditions.push('remote_ok = 1');
+    }
+
+    if (conditions.length) sqlStr += ' AND ' + conditions.join(' AND ');
+    sqlStr += ' ORDER BY is_boosted DESC, published_at DESC';
+    sqlStr += ` LIMIT ${filters.limit ?? 20} OFFSET ${filters.offset ?? 0}`;
+
+    const rows = yield* sql<{
+      posting_id: string;
+      employer_profile_id: string;
+      slug: string;
+      title: string;
+      location: string | null;
+      remote_ok: number;
+      comp_text: string | null;
+      salary_min: number | null;
+      salary_max: number | null;
+      apply_url: string | null;
+      content_json: string;
+      status: string;
+      published_at: string | null;
+      is_boosted: number;
+      created_at: string;
+    }>(sqlStr).pipe(Effect.orDie);
+
+    const countRows = yield* sql<{ c: number }>(
+      `SELECT COUNT(*) AS c FROM jobs_posting WHERE ${conditions.join(' AND ')}`
+    ).pipe(Effect.orDie);
+
+    return { rows, total: Number(countRows[0]?.c ?? 0) };
+  });
+
+  const listPostingsByEmployer = Effect.fn('JobsService.listPostingsByEmployer')(function* (
+    employerProfileId: string
+  ) {
+    return yield* sql<{
+      posting_id: string;
+      slug: string;
+      title: string;
+      location: string | null;
+      status: string;
+      published_at: string | null;
+      is_boosted: number;
+      created_at: string;
+    }>`SELECT posting_id, slug, title, location, status, published_at, is_boosted, created_at
+       FROM jobs_posting WHERE employer_profile_id = ${employerProfileId}
+       ORDER BY created_at DESC`;
+  });
+
+  // ── Posting writes ──────────────────────────────────────────────────────
+
+  const generatePostingSlug = Effect.fn('JobsService.generatePostingSlug')(function* (
+    base: string
+  ) {
+    let slug = base
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+    if (!slug) slug = 'job';
+    let candidate = slug;
+    let suffix = 2;
+    while (true) {
+      const existing = yield* sql<{
+        c: number;
+      }>`SELECT 1 AS c FROM jobs_posting WHERE slug = ${candidate} LIMIT 1`;
+      if (!existing[0]) return candidate;
+      candidate = `${slug}-${suffix}`;
+      suffix++;
+    }
+  });
+
+  const createPosting = Effect.fn('JobsService.createPosting')(function* (
+    employerProfileId: string,
+    data: {
+      title: string;
+      location?: string;
+      remoteOk?: boolean;
+      compText?: string;
+      salaryMin?: number | null;
+      salaryMax?: number | null;
+      applyUrl?: string;
+      applyEmail?: string;
+      contentJson: string;
+    },
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    const postingId = newId();
+    const slug = yield* generatePostingSlug(data.title);
+
+    yield* sql`INSERT INTO jobs_posting (posting_id, employer_profile_id, slug, title,
+                 location, remote_ok, comp_text, salary_min, salary_max,
+                 apply_url, apply_email, content_json, status, created_at, updated_at)
+               VALUES (${postingId}, ${employerProfileId}, ${slug}, ${data.title},
+                 ${data.location ?? null}, ${data.remoteOk ? 1 : 0}, ${data.compText ?? null},
+                 ${data.salaryMin ?? null}, ${data.salaryMax ?? null},
+                 ${data.applyUrl ?? null}, ${data.applyEmail ?? null}, ${data.contentJson},
+                 'published', ${ctx.now}, ${ctx.now})`;
+
+    yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
+               VALUES (${newId()}, 'posting', ${postingId}, ${ctx.authorId}, ${ctx.actorRole}, 'create', ${ctx.now})`;
+    return postingId;
+  });
+
+  const updatePosting = Effect.fn('JobsService.updatePosting')(function* (
+    postingId: string,
+    data: {
+      title?: string;
+      location?: string;
+      remoteOk?: boolean;
+      compText?: string;
+      salaryMin?: number | null;
+      salaryMax?: number | null;
+      applyUrl?: string;
+      applyEmail?: string;
+      contentJson?: string;
+      status?: string;
+    },
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    const fields: string[] = [];
+    const args: unknown[] = [];
+
+    if (data.title !== undefined) {
+      fields.push('title = ?');
+      args.push(data.title);
+    }
+    if (data.location !== undefined) {
+      fields.push('location = ?');
+      args.push(data.location);
+    }
+    if (data.remoteOk !== undefined) {
+      fields.push('remote_ok = ?');
+      args.push(data.remoteOk ? 1 : 0);
+    }
+    if (data.compText !== undefined) {
+      fields.push('comp_text = ?');
+      args.push(data.compText);
+    }
+    if (data.salaryMin !== undefined) {
+      fields.push('salary_min = ?');
+      args.push(data.salaryMin);
+    }
+    if (data.salaryMax !== undefined) {
+      fields.push('salary_max = ?');
+      args.push(data.salaryMax);
+    }
+    if (data.applyUrl !== undefined) {
+      fields.push('apply_url = ?');
+      args.push(data.applyUrl);
+    }
+    if (data.applyEmail !== undefined) {
+      fields.push('apply_email = ?');
+      args.push(data.applyEmail);
+    }
+    if (data.contentJson !== undefined) {
+      fields.push('content_json = ?');
+      args.push(data.contentJson);
+    }
+    if (data.status !== undefined) {
+      fields.push('status = ?');
+      args.push(data.status);
+    }
+
+    if (fields.length === 0) return;
+    fields.push('updated_at = ?');
+    args.push(ctx.now);
+    args.push(postingId);
+    yield* sql(`UPDATE jobs_posting SET ${fields.join(', ')} WHERE posting_id = ?`).pipe(
+      Effect.orDie
+    );
+
+    yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
+               VALUES (${newId()}, 'posting', ${postingId}, ${ctx.authorId}, ${ctx.actorRole}, 'edit', ${ctx.now})`;
+  });
+
+  const closePosting = Effect.fn('JobsService.closePosting')(function* (
+    postingId: string,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    yield* sql`UPDATE jobs_posting SET status = 'closed', updated_at = ${ctx.now} WHERE posting_id = ${postingId}`;
+    yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
+               VALUES (${newId()}, 'posting', ${postingId}, ${ctx.authorId}, ${ctx.actorRole}, 'close', ${ctx.now})`;
+  });
+
+  // ── Applications ─────────────────────────────────────────────────────────
+
+  const applyToPosting = Effect.fn('JobsService.applyToPosting')(function* (
+    postingId: string,
+    applicantUserId: string,
+    message?: string
+  ) {
+    yield* requireDurableStorage;
+    const applicationId = newId();
+    const now = new Date().toISOString();
+    yield* sql`INSERT INTO jobs_application (application_id, posting_id, applicant_user_id, message, created_at)
+               VALUES (${applicationId}, ${postingId}, ${applicantUserId}, ${message ?? null}, ${now})`;
+
+    // Fetch employer contact info for notification
+    const posting = yield* sql<{
+      employer_profile_id: string;
+      title: string;
+    }>`SELECT employer_profile_id, title FROM jobs_posting WHERE posting_id = ${postingId} LIMIT 1`;
+    const employer = yield* sql<{
+      contact_email: string | null;
+      display_name: string;
+      notify_on_apply: number;
+    }>`SELECT contact_email, display_name, notify_on_apply FROM jobs_profile WHERE profile_id = ${posting[0]?.employer_profile_id} LIMIT 1`;
+
+    return {
+      applicationId,
+      employerEmail: employer[0]?.contact_email ?? null,
+      jobTitle: posting[0]?.title ?? '',
+    };
+  });
+
   // ── Ownership guard ─────────────────────────────────────────────────────
 
   const requireOwner = Effect.fn('JobsService.requireOwner')(function* (
@@ -268,6 +544,14 @@ const makeJobsService = Effect.gen(function* () {
     publishProfile,
     generateSlug,
     requireOwner,
+    // Postings
+    getPostingBySlug,
+    listPostings,
+    listPostingsByEmployer,
+    createPosting,
+    updatePosting,
+    closePosting,
+    applyToPosting,
   };
 });
 
