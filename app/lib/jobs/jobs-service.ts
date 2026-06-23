@@ -691,6 +691,58 @@ const makeJobsService = Effect.gen(function* () {
     return [...staffMatches, ...judgeMatches].slice(0, 8);
   });
 
+  // ── Talent search ────────────────────────────────────────────────────────
+
+  const searchTalent = Effect.fn('JobsService.searchTalent')(function* (filters: {
+    keyword?: string;
+    location?: string;
+    skills?: string[];
+    offset?: number;
+    limit?: number;
+  }) {
+    let sqlStr = `SELECT p.profile_id, p.slug, p.display_name, p.headline, p.location, p.created_at
+                  FROM jobs_profile p
+                  WHERE p.kind = 'employee' AND p.status = 'published'`;
+    const conditions: string[] = [];
+
+    if (filters.keyword) {
+      conditions.push(
+        `(p.display_name LIKE ${filters.keyword} OR p.headline LIKE ${filters.keyword})`
+      );
+    }
+    if (filters.location) {
+      conditions.push(`p.location LIKE ${filters.location}`);
+    }
+
+    // For skills filtering, join against profile blocks
+    if (filters.skills && filters.skills.length > 0) {
+      const skillConditions = filters.skills.map(
+        (s) =>
+          `EXISTS (SELECT 1 FROM jobs_profile_block b WHERE b.profile_id = p.profile_id AND b.kind = 'skills' AND b.content_json LIKE ${s})`
+      );
+      conditions.push(`(${skillConditions.join(' OR ')})`);
+    }
+
+    if (conditions.length > 0) sqlStr += ' AND ' + conditions.join(' AND ');
+    sqlStr += ' ORDER BY p.updated_at DESC';
+    sqlStr += ` LIMIT ${filters.limit ?? 20} OFFSET ${filters.offset ?? 0}`;
+
+    const rows = yield* sql<{
+      profile_id: string;
+      slug: string;
+      display_name: string;
+      headline: string | null;
+      location: string | null;
+      created_at: string;
+    }>(sqlStr).pipe(Effect.orDie);
+
+    const countRows = yield* sql<{ c: number }>(
+      `SELECT COUNT(*) AS c FROM jobs_profile p WHERE p.kind = 'employee' AND p.status = 'published'`
+    ).pipe(Effect.orDie);
+
+    return { rows, total: Number(countRows[0]?.c ?? 0) };
+  });
+
   // ── Ownership guard ─────────────────────────────────────────────────────
 
   const requireOwner = Effect.fn('JobsService.requireOwner')(function* (
@@ -729,6 +781,7 @@ const makeJobsService = Effect.gen(function* () {
     claimPerson,
     revokeClaim,
     suggestClaimMatches,
+    searchTalent,
   };
 });
 

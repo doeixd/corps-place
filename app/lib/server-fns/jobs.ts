@@ -213,6 +213,28 @@ export const applyToJob = createServerFn({ method: 'POST' })
     return { ok: true as const, applicationId: result.applicationId };
   });
 
+// ── Talent search (employer-only) ────────────────────────────────────────────
+
+export const searchTalent = createServerFn({ method: 'GET' })
+  .validator(
+    (d: {
+      keyword?: string;
+      location?: string;
+      skills?: string[];
+      offset?: number;
+      limit?: number;
+    }) => d
+  )
+  .handler(async ({ data }) => {
+    const actor = await getActor(getWebRequest());
+    if (!actor) throw new Error('Employer access required');
+    return Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.searchTalent(data)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+  });
+
 // ── Claims ───────────────────────────────────────────────────────────────────
 
 export const suggestClaimMatches = createServerFn({ method: 'GET' })
