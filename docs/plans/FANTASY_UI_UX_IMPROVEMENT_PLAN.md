@@ -144,11 +144,27 @@ being configured).
 **Acceptance:** the toggle only appears when push is actually available; enabling
 it subscribes and shows confirmation; a draft-soon / on-the-clock push is received.
 
-### 2.3 Audit the other score-DB-dependent flows
-Sweep for any other request-path read of `dci-relational.db` under
-`app/**/fantasy*` and route it through the read-model (§2.1). Add a prod smoke
-test (a tiny script or healthcheck) that hits `getDraftPool`-equivalent and fails
-loudly if the data source is missing, so this class of bug is caught pre-deploy.
+> Note: `getDraftState` runs in the **route loader** (SSR), so this is a
+> server-side 500 on first paint, not a client fetch — there's no graceful
+> client fallback today. The route `head` also reads `loaderData.league.…`, so a
+> loader throw takes the whole page down.
+
+### 2.3 Prod safety net (this class of bug must not recur)
+The draft 500 reached prod **only because `VITE_ENABLE_FANTASY` was flipped on
+without a live end-to-end pass** (the §10 discipline from the migration plan was
+skipped). Bake the lesson in:
+- **Sweep** for any other request-path read of `dci-relational.db` /
+  `score-db.ts` under `app/**/fantasy*` and route it through the read-model (§2.1).
+- **Prod data-source healthcheck**: a tiny endpoint/script that asserts the
+  fantasy data source (draft pool, season-best) is actually reachable in the
+  serving environment, and fails loudly — wire it into the deploy healthcheck or a
+  post-deploy smoke check so a missing source is caught before users hit it.
+- **Mandatory dev E2E before enabling on prod**: enable on `dev.drumcorps.app`
+  first and click through create→invite→quiz→**draft**→standings (the draft is the
+  step that exercises the score DB). Only then flip prod. Add this to the deploy
+  runbook.
+- **Surface server errors**: today a fantasy 500 leaves no trace in the app logs
+  (see §3.8) — fix observability so the *next* one is visible immediately.
 
 ---
 
@@ -203,6 +219,20 @@ header — easy to miss, no active state, no hierarchy.
 - **A "Getting started" checklist** on the dashboard for owners (name your corps →
   invite → schedule the draft) and members (name your corps → take the quiz → be
   in the room at draft time), with checkmarks.
+- **A dedicated help/FAQ surface** ("answer questions" — explicit ask): a
+  `/fantasy/how-it-works` (or a slide-over `Sheet` reachable from every fantasy
+  page via a persistent `?` button) that explains the whole game — leagues,
+  invites, the quiz/seeding, the draft + captions, scoring + recaps, standings,
+  finals lock — with the glossary inline. Reuse/expand the one-line FAQ entry in
+  `app/routes/faq.tsx`. SSR'd, shareable, linkable from empty states.
+- **Live "what's happening now" narration** ("explain what's going on" — explicit
+  ask): every league/draft view shows a single, plain-language status line driven
+  by the current state, e.g. *"Waiting for the owner to schedule the draft."* /
+  *"Quiz is open — 3 of 6 members have taken it."* / *"Draft starts in 1h 12m —
+  you're seeded #2."* / *"On the clock: Phantom Regiment (you're up in 2 picks)."*
+  / *"Season in progress — standings update after each scored show."* Centralize
+  this in a pure `describeLeagueState(league, draft, viewer)` selector + a
+  `<StatusNarration>` component so the copy is consistent and testable.
 
 ### 3.4 Loading / empty / error states
 - **Skeletons** for the read pages (index, dashboard, standings) during hydration
@@ -236,6 +266,35 @@ header — easy to miss, no active state, no hierarchy.
   without a tooltip or legend.
 - Confirmations after meaningful actions (league created, identity saved, invite
   copied, quiz submitted) via a toast/inline success, not a silent navigation.
+
+### 3.7 Accessibility (first-class, not an afterthought)
+- **Keyboard**: the per-league tab nav (roving tabindex / arrow keys), the draft
+  pick buttons, inline rename, and the photo uploader must be fully keyboard
+  operable; visible focus rings throughout.
+- **Screen readers**: label every control; the draft clock + "on the clock" and
+  incoming picks announce via `aria-live` (polite) regions; the standings table
+  has proper `<caption>`/`scope` headers; status badges have text, not color-only.
+- **Color contrast**: corps `corps_color` accents render on light **and** dark
+  backgrounds (the app uses oklch theming) — never rely on the user-chosen color
+  for contrast; pair it with a text label and a contrast-safe surface. Status
+  badges meet AA.
+- **Reduced motion**: gate the new `motion/react` animations on
+  `prefers-reduced-motion`.
+- **Timeouts**: the quiz/draft countdowns are time-pressure UI — provide clear
+  warnings and don't trap keyboard users.
+
+### 3.8 Observability (so the next prod bug is visible)
+The draft 500 left **no trace in the app logs** — that's the real failure. Fix it:
+- **Log server-fn / loader failures** with route + actor + the typed error (the
+  Effect boundary already has `Effect.logError` for defects — ensure fantasy
+  loaders/server-fns surface 500s to the container logs, not just to the client).
+- **Client error boundary** for the fantasy route subtree → a friendly "something
+  went wrong" + a report path, instead of a raw 500/blank.
+- Consider lightweight client + server **error reporting** (even a structured log
+  line shipped to the existing logging) so a spike is noticed.
+- A **fantasy health indicator** (data source reachable, push configured, payments
+  configured) on an internal/admin page so ops can see config gaps at a glance
+  (this would have shown "score DB: MISSING" and "VAPID: not set" immediately).
 
 ---
 
@@ -336,6 +395,25 @@ landing:
 - Inline choice editor (add/remove rows) instead of a newline textarea.
 - Search/filter/sort the bank; success toasts; empty-state copy.
 
+### 4.9 League lifecycle & privacy (gaps surfaced during review)
+- **Leave a league (member).** Today only the **owner** can `removeMember`; a
+  member has no way to leave. Add a member-initiated "Leave league" (pre-draft;
+  sets their `status='removed'`, frees their seat) with a confirm. Backend:
+  `MembershipService.leave(actor, leagueId)` (self-only; not the owner — owners
+  cancel/transfer instead).
+- **Owner: cancel / transfer.** There's an admin `adminCancelLeague`, but the
+  owner has no in-app "cancel league" or "transfer ownership". Add both
+  (confirm-gated), so an owner isn't stuck.
+- **Privacy / spectator view.** `getLeague` is **not** member-gated — anyone with
+  the slug can see the league name + member roster. Decide the privacy model:
+  either (a) gate the dashboard/standings to members + a tokened spectator link,
+  or (b) intentionally allow a read-only spectator view (and design it). Either
+  way, make it deliberate; add `noindex` to league/invite pages so private leagues
+  aren't search-indexed.
+- **Empty/off-season states.** If the draftable pool is empty (off-season / no
+  active corps for the season) or no shows are scored yet, the draft and standings
+  must degrade gracefully with an explainer, not an error or a blank.
+
 ---
 
 ## 5. New: league image + a unified photo-upload component
@@ -413,12 +491,19 @@ The user's explicit asks, plus the join-once guarantee:
     (draft room + recompute work). §2.2 gate + configure push (VAPID). §2.3 sweep.
   - **Accept:** draft room 200 in prod; a full draft can run; push toggle only
     shows when usable; recompute runs in-container.
-- **F1 — UX foundations.** Design language (icons/cards/badges/motion), the
-  per-league **tab nav**, skeletons + friendly errors, the glossary/`<Explain>`
-  primitive, mobile shells. (§3)
+- **F1 — UX foundations + the cross-cutting decisions.** Design language
+  (icons/cards/badges/motion), the per-league **tab nav**, skeletons + friendly
+  errors, the glossary/`<Explain>` primitive + help surface + `<StatusNarration>`,
+  **accessibility** + **observability** baselines (§3.7/§3.8), the fantasy error
+  boundary, and **resolve the privacy model (Q7)** — it gates the dashboard
+  redesign. (§3, §4.9)
+  - **Accept:** tab nav + skeletons + status narration render across states;
+    a11y keyboard pass; a fantasy 500 now shows in logs + a friendly boundary;
+    privacy model decided.
 - **F2 — Index + dashboard + create.** Informative landing, league cards, the
-  dashboard hub with header + checklist + organized sections, and **inline league
-  rename** (owner; `LeagueService.rename`, slug stays stable). (§4.1–4.3)
+  dashboard hub with header + checklist + organized sections, **inline league
+  rename** (owner; `LeagueService.rename`, slug stays stable), and **member
+  leave / owner cancel** (§4.9). (§4.1–4.3)
 - **F3 — League image + `<PhotoUpload>`.** Schema + service + the shared uploader;
   wire into create/settings/corps-identity; show on cards/header/join. (§5)
 - **F4 — Invite rework.** Auto-link + share + explain + join-once UX. (§6)
@@ -426,13 +511,77 @@ The user's explicit asks, plus the join-once guarantee:
   reworks, draft pool sort/filter, auto-pick warning, standings highlights. (§4.4–4.6)
 - **F6 — Quiz-admin polish.** (§4.8)
 
-> F0 is non-negotiable and independent. F1 unblocks F2–F6. Commit per surface
-> (AGENTS.md). Everything stays behind `VITE_ENABLE_FANTASY`; verify on dev before
-> prod (the §10 live-E2E discipline from the migration plan still applies).
+> F0 is non-negotiable and independent — ship it first. F1 makes the
+> cross-cutting decisions (privacy) and primitives that F2–F6 reuse. Commit per
+> surface (AGENTS.md). Everything stays behind `VITE_ENABLE_FANTASY`; **verify on
+> dev (incl. a real draft, on a phone) before prod** — the §10 live-E2E discipline
+> is now mandatory (§2.3), not optional.
 
 ---
 
-## 8. Open questions
+## 8. Testing & verification
+
+UI work is the easiest to ship broken (the draft 500 proves it). Gate each
+milestone:
+- **Keep the backend integration tests green** (the services already have them);
+  add tests for the new backend bits: `LeagueService.rename` (slug stable),
+  `MembershipService.leave` (self-only), invite `getOrCreateShareLink` (reuses a
+  valid link; second accept by the same user is a no-op), and the read-model
+  fantasy readers (§2.1) — point a test at the emitted `rm_fantasy_*` and assert
+  parity with the relational source.
+- **Pure-selector tests** for `describeLeagueState` (the status narration) and the
+  status-badge map across every league/draft state.
+- **Component/interaction tests** (vite-plus/test + Testing Library) for the
+  `<PhotoUpload>` (validation/preview/error), the tab nav (keyboard), inline
+  rename, and the invite share/copy.
+- **Accessibility checks**: keyboard pass + an axe-style audit on each fantasy
+  route; verify `prefers-reduced-motion` and dark-mode contrast.
+- **Live E2E on dev before prod** (the §2.3 rule) — the full flow including a real
+  draft, on a phone for the mobile reworks.
+- **Prod data-source healthcheck** (§2.3/§3.8) wired into the deploy.
+- **Bundle guard**: confirm the client chunk stays Effect-free after adding the
+  uploader/rename server-fns (the `createServerFn` split handles this — verify in
+  the deployed container per the no-local-builds memory).
+
+## 9. Risks & mitigations
+- **R1 — Read-model emit scope/cadence (§2.1).** The fantasy slices must refresh
+  with each scrape; a stale `rm_fantasy_season_best` makes standings look frozen.
+  *Mitigate:* emit them in the same `emitReadModel.ts` pass; verify freshness in
+  the healthcheck.
+- **R2 — Enabling on prod without dev E2E** (how the draft 500 shipped).
+  *Mitigate:* the §2.3 mandatory dev-E2E rule + healthcheck before flag flips.
+- **R3 — Scope creep.** This plan is large; F0 is the only urgent part. *Mitigate:*
+  ship F0 first and independently; treat F1–F6 as incremental, each shippable.
+- **R4 — Optimistic UI desync.** Inline rename / identity / picks via optimistic
+  collection updates can diverge from the server. *Mitigate:* reconcile from the
+  authoritative refetch/SSE; key by id; roll back on error.
+- **R5 — `<PhotoUpload>` convergence.** Replacing contrib's `ImageDrop` risks
+  regressing the wiki upload. *Mitigate:* build the new component for fantasy
+  first; migrate contrib later behind its own verification (Q3).
+- **R6 — Privacy decision (§4.9).** Shipping nav/preview polish before deciding the
+  spectator/privacy model could leak private rosters. *Mitigate:* resolve Q (privacy)
+  in F1, before the dashboard/standings redesign goes to prod.
+- **R7 — Mobile draft realtime.** SSE + sticky clock + tabs on mobile is the
+  hardest interaction and unverifiable without a device. *Mitigate:* real-device
+  test; reconnection indicator; keep the legacy layout behind a fallback until
+  verified.
+
+## 10. Component & backend inventory (concrete deliverables)
+**New shared components:** `<PhotoUpload>`, `<StatusNarration>` (+
+`describeLeagueState` selector), `<Explain term>` (+ glossary map),
+`<LeagueTabs>` (per-league nav), `<StatusBadge>` (+ `STATUS_BADGE` map),
+`<GettingStartedChecklist>`, `<LeagueCard>`, `<StandingsCardList>` (mobile),
+`<ShareButton>` (navigator.share + copy fallback), a fantasy route error boundary,
+skeletons per read page.
+**New/changed backend:** read-model fantasy readers + `rm_fantasy_*` emit (§2.1);
+`LeagueService.rename` + `renameLeague` shim; `MembershipService.leave` +
+shim; owner cancel/transfer; `InviteService.getOrCreateShareLink`;
+`MediaService` generalized for league images + `fantasy_leagues.logo_media_id`
+(+ optional cover) via `ensureColumns`; push gating (`getVapidPublicKey`-null);
+`describeLeagueState` (pure, shared client+server).
+**Config/ops:** VAPID keys in prod; fantasy healthcheck; dev-E2E runbook step.
+
+## 11. Open questions
 - **Q1 — Read-model size/cadence.** The fantasy slices (draft pool, prior-finals,
   season-best, finals) must refresh with each scrape/emit. Confirm they're small
   enough to ride the existing read-model push and that `season-best` updates often
@@ -449,3 +598,12 @@ The user's explicit asks, plus the join-once guarantee:
 - **Q6 — Draft engine flag.** This UX work targets whichever engine is active; when
   `FANTASY_EFFECT_DRAFT` flips on (migration plan), re-verify the draft room UI
   against the Effect `DraftService` + its PubSub SSE.
+- **Q7 — Privacy model (§4.9).** Is a league private (members-only dashboard +
+  tokened spectator link) or a public read-only spectator view? `getLeague` is
+  currently ungated. Decide before the dashboard/standings redesign ships (R6).
+- **Q8 — Leave/cancel semantics.** Can a member leave after the draft (rosters
+  lock)? Does leaving forfeit their standings row? Owner cancel vs transfer — what
+  happens to a paid league's refund? (§4.9, ties to payments.)
+- **Q9 — Status narration source.** `describeLeagueState` needs draft timing +
+  quiz-taken counts; confirm `getLeague`'s payload carries enough (draft
+  scheduled_at, per-member quiz_taken) or extend it.
