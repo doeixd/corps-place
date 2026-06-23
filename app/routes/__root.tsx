@@ -55,7 +55,15 @@ function favoriteHead(): { iconHref: string; themeColor: string } {
 // so they're not touched here. Ignores corrupt favorites (plan §No-Flash).
 const noFlashThemeScript = `(function(){try{var tc=document.cookie.match('(?:^|; )${THEME_COOKIE}=([^;]*)');var t=tc?tc[1]:null;if(t!=='dark'&&t!=='light'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var r=document.documentElement;r.classList.toggle('dark',t=='dark');r.style.colorScheme=t;var c=document.cookie.match('(?:^|; )${FAVORITE_COOKIE}=([^;]*)');if(c){var fav=JSON.parse(decodeURIComponent(c[1]));if(fav&&typeof fav.corpsKey==='string'&&typeof fav.darkPrimary==='string'&&typeof fav.lightPrimary==='string'){if(t=='dark'){r.style.setProperty('--primary',fav.darkPrimary);r.style.setProperty('--primary-foreground',fav.darkPrimaryForeground);}else{r.style.setProperty('--primary',fav.lightPrimary);r.style.setProperty('--primary-foreground',fav.lightPrimaryForeground);}if(fav.logoDark){r.style.setProperty('--logo-dark',fav.logoDark);}else{r.style.setProperty('--logo-dark','');}r.setAttribute('data-fav-active','');}}}catch(e){}})()`;
 
-function RootDocument({ children, theme, brand }: { children: ReactNode; theme: Theme | null; brand: Brand }) {
+function RootDocument({
+  children,
+  theme,
+  brand,
+}: {
+  children: ReactNode;
+  theme: Theme | null;
+  brand: Brand;
+}) {
   // suppressHydrationWarning on <html>: when there's no theme cookie the no-flash
   // script (below) resolves the OS preference and mutates the class + colorScheme
   // before hydration, and browser extensions inject data-* attrs here too — both
@@ -64,7 +72,11 @@ function RootDocument({ children, theme, brand }: { children: ReactNode; theme: 
   return (
     <html
       lang="en"
-      className={[theme === 'dark' ? 'dark' : '', brand === 'jobs' ? 'brand-jobs' : ''].filter(Boolean).join(' ') || undefined}
+      className={
+        [theme === 'dark' ? 'dark' : '', brand === 'jobs' ? 'brand-jobs' : '']
+          .filter(Boolean)
+          .join(' ') || undefined
+      }
       style={theme ? { colorScheme: theme } : undefined}
       suppressHydrationWarning
     >

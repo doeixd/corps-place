@@ -1,3 +1,5 @@
+import { getWebRequest } from '@tanstack/react-start/server';
+import type { Client } from '@libsql/client';
 import { auth } from './auth';
 
 /**
@@ -106,4 +108,20 @@ export const requireCapability = async (
   const actor = await getActor(request);
   if (!can(actor, action, ctx)) throw new ForbiddenError(action);
   return actor!;
+};
+
+/** Throws unless the session user owns `profileId` (moderators may override). */
+export const requireJobsProfileOwner = async (db: Client, profileId: string): Promise<Actor> => {
+  const actor = await getActor(getWebRequest());
+  if (!actor) throw new ForbiddenError('edit');
+  const row = (
+    await db.execute({
+      sql: 'SELECT user_id FROM jobs_profile WHERE profile_id = ? LIMIT 1',
+      args: [profileId],
+    })
+  ).rows[0] as { user_id: string } | undefined;
+  if (!row) throw new Error('Profile not found');
+  const isModerator = can(actor, 'hideRevision');
+  if (row.user_id !== actor.userId && !isModerator) throw new ForbiddenError('edit');
+  return actor;
 };

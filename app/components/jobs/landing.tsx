@@ -18,7 +18,8 @@ export function JobsLanding() {
           Find your next gig in the pageantry world
         </h1>
         <p className="max-w-lg text-lg text-text-secondary">
-          The job board for drum corps, marching band, winter guard, and indoor percussion professionals.
+          The job board for drum corps, marching band, winter guard, and indoor percussion
+          professionals.
         </p>
 
         {/* Search bar */}
@@ -66,7 +67,8 @@ export function JobsLanding() {
               </div>
               <h3 className="font-semibold text-text-primary">Create your profile</h3>
               <p className="text-sm text-text-secondary">
-                Showcase your experience, skills, and availability. Your profile is your industry home page.
+                Showcase your experience, skills, and availability. Your profile is your industry
+                home page.
               </p>
             </CardContent>
           </Card>
@@ -77,7 +79,8 @@ export function JobsLanding() {
               </div>
               <h3 className="font-semibold text-text-primary">Get discovered</h3>
               <p className="text-sm text-text-secondary">
-                Employers search by location, skills, and experience. Save searches and get notified when new jobs match.
+                Employers search by location, skills, and experience. Save searches and get notified
+                when new jobs match.
               </p>
             </CardContent>
           </Card>
@@ -88,7 +91,8 @@ export function JobsLanding() {
               </div>
               <h3 className="font-semibold text-text-primary">Apply or hire</h3>
               <p className="text-sm text-text-secondary">
-                Apply with one click or post openings to find the best talent in the pageantry community.
+                Apply with one click or post openings to find the best talent in the pageantry
+                community.
               </p>
             </CardContent>
           </Card>
@@ -97,7 +101,9 @@ export function JobsLanding() {
 
       {/* CTA footer */}
       <section className="flex flex-col items-center gap-4 py-12 text-center">
-        <h2 className="text-2xl font-bold text-text-primary">Ready to find your next opportunity?</h2>
+        <h2 className="text-2xl font-bold text-text-primary">
+          Ready to find your next opportunity?
+        </h2>
         <div className="flex gap-3">
           <Link
             to="/jobs/me"

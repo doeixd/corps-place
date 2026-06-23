@@ -24,12 +24,12 @@ function JobsTerms() {
       />
       <div className="mx-auto max-w-3xl space-y-6 text-text-secondary">
         <p>
-          These Terms of Service ("Terms") govern your use of the PageantryJobs website and
-          services (the "Service"). By using the Service, you agree to these Terms.
+          These Terms of Service ("Terms") govern your use of the PageantryJobs website and services
+          (the "Service"). By using the Service, you agree to these Terms.
         </p>
         <p className="rounded-lg border border-warning/30 bg-warning-muted/30 px-4 py-3 text-sm text-warning-foreground">
-          These terms are a work in progress and will be finalized before public launch.
-          They are provided as a placeholder for legal review.
+          These terms are a work in progress and will be finalized before public launch. They are
+          provided as a placeholder for legal review.
         </p>
 
         <Section heading="1. Accounts">
@@ -51,25 +51,29 @@ function JobsTerms() {
 
         <Section heading="3. User Conduct">
           <p>
-            You agree not to misuse the Service, including by impersonating others, submitting
-            false information, or engaging in any activity that disrupts the Service.
+            You agree not to misuse the Service, including by impersonating others, submitting false
+            information, or engaging in any activity that disrupts the Service.
           </p>
         </Section>
 
         <Section heading="4. Limitation of Liability">
           <p>
             The Service is provided "as is" without warranties of any kind. PageantryJobs is not
-            responsible for the accuracy of job listings, the conduct of employers or applicants,
-            or any hiring decisions made through the Service.
+            responsible for the accuracy of job listings, the conduct of employers or applicants, or
+            any hiring decisions made through the Service.
           </p>
         </Section>
 
         <Section heading="5. Contact">
           <p>
             For questions about these Terms, contact us at{' '}
-            <a href="mailto:legal@pageantryjobs.com" className="text-primary underline hover:no-underline">
+            <a
+              href="mailto:legal@pageantryjobs.com"
+              className="text-primary underline hover:no-underline"
+            >
               legal@pageantryjobs.com
-            </a>.
+            </a>
+            .
           </p>
         </Section>
       </div>

@@ -24,12 +24,12 @@ function JobsPrivacy() {
       />
       <div className="mx-auto max-w-3xl space-y-6 text-text-secondary">
         <p>
-          This Privacy Policy describes how PageantryJobs ("we", "our", or "us") collects, uses,
-          and discloses information about you when you use our website (the "Service").
+          This Privacy Policy describes how PageantryJobs ("we", "our", or "us") collects, uses, and
+          discloses information about you when you use our website (the "Service").
         </p>
         <p className="rounded-lg border border-warning/30 bg-warning-muted/30 px-4 py-3 text-sm text-warning-foreground">
-          These terms are a work in progress and will be finalized before public launch.
-          They are provided as a placeholder for legal review.
+          These terms are a work in progress and will be finalized before public launch. They are
+          provided as a placeholder for legal review.
         </p>
 
         <Section heading="1. Information We Collect">
@@ -59,9 +59,13 @@ function JobsPrivacy() {
         <Section heading="4. Contact">
           <p>
             For questions about this Privacy Policy, contact us at{' '}
-            <a href="mailto:privacy@pageantryjobs.com" className="text-primary underline hover:no-underline">
+            <a
+              href="mailto:privacy@pageantryjobs.com"
+              className="text-primary underline hover:no-underline"
+            >
               privacy@pageantryjobs.com
-            </a>.
+            </a>
+            .
           </p>
         </Section>
       </div>

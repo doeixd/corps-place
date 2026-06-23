@@ -145,7 +145,13 @@ export default defineConfig({
     // Allow Cloudflare quick-tunnel hosts (`cloudflared tunnel --url ...`) through
     // Vite's dev host check so the app can be shared via a public URL. The leading
     // dot matches any `*.trycloudflare.com` subdomain (they're randomized per run).
-    allowedHosts: ['.trycloudflare.com', 'drumcorps.app', '.drumcorps.app', 'pageantryjobs.com', '.pageantryjobs.com'],
+    allowedHosts: [
+      '.trycloudflare.com',
+      'drumcorps.app',
+      '.drumcorps.app',
+      'pageantryjobs.com',
+      '.pageantryjobs.com',
+    ],
     // When serving the dev server through the Cloudflare tunnel (deploy.ps1 -Dev),
     // the HMR websocket must connect back over the public HTTPS host on 443 — the
     // default `ws://localhost:3000` is unreachable from a remote browser. The host

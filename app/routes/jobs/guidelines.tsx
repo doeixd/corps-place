@@ -32,8 +32,14 @@ function JobsGuidelines() {
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>Accurately describe the position and its requirements.</li>
             <li>Include a valid contact method or application link.</li>
-            <li>Be relevant to the pageantry arts (drum corps, marching band, winter guard, indoor percussion, or related fields).</li>
-            <li>Not discriminate based on race, gender, age, religion, or other protected characteristics.</li>
+            <li>
+              Be relevant to the pageantry arts (drum corps, marching band, winter guard, indoor
+              percussion, or related fields).
+            </li>
+            <li>
+              Not discriminate based on race, gender, age, religion, or other protected
+              characteristics.
+            </li>
           </ul>
         </Section>
 
