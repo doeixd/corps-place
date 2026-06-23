@@ -22,7 +22,11 @@ let LeagueService: typeof import('./league-service').LeagueService;
 let LeagueServiceLive: typeof import('./league-service').LeagueServiceLive;
 let StandingsService: typeof import('./standings-service').StandingsService;
 let StandingsServiceLive: typeof import('./standings-service').StandingsServiceLive;
+let InviteService: typeof import('./invite-service').InviteService;
+let InviteServiceLive: typeof import('./invite-service').InviteServiceLive;
 let db: Client;
+
+const asActor = (userId: string) => ({ userId, role: 'user' as const }) as never;
 
 const CONFIG = resolveLeagueConfig({});
 const NOW = '2026-06-01T00:00:00.000Z';
@@ -48,6 +52,7 @@ beforeAll(async () => {
   // Importing the service after env is set wires ContributionsSql at the temp DB.
   ({ LeagueService, LeagueServiceLive } = await import('./league-service'));
   ({ StandingsService, StandingsServiceLive } = await import('./standings-service'));
+  ({ InviteService, InviteServiceLive } = await import('./invite-service'));
   const { getContributionsDb } = await import('@/lib/contributions-db');
   db = await getContributionsDb();
 
@@ -79,6 +84,10 @@ beforeAll(async () => {
        VALUES ('lg-1', 'u-owner', 95.4, 38.6, 28.3, 28.5,
                '${JSON.stringify({ perCaption: { GE1: 19.4 }, contributions: { GE1: [{ corpsKey: 'bd', value: 19.4, weight: 1 }] } })}',
                1, '${NOW}', 0)`,
+      // A single-use invite for the race test.
+      `INSERT INTO fantasy_invites
+         (invite_id, league_id, token, created_by, max_uses, used_count, expires_at, created_at)
+       VALUES ('inv-race', 'lg-1', 'tok-race', 'u-owner', 1, 0, '2999-01-01T00:00:00.000Z', '${NOW}')`,
     ],
     'write'
   );
@@ -232,6 +241,50 @@ describe('LeagueService.create / updateConfig (Effect path)', () => {
     await expect(
       updateConfig({ actor: actor('u-cfg'), leagueId: 'nope', config: {} })
     ).rejects.toThrow();
+  });
+});
+
+describe('InviteService.accept — race-safe single-use claim', () => {
+  const accept = (token: string, userId: string) =>
+    Effect.runPromise(
+      Effect.flatMap(InviteService, (svc) => svc.accept({ actor: asActor(userId), token })).pipe(
+        Effect.provide(InviteServiceLive)
+      )
+    );
+
+  it('lets exactly one of two concurrent accepts claim the only seat', async () => {
+    const [a, b] = await Promise.allSettled([
+      accept('tok-race', 'u-race1'),
+      accept('tok-race', 'u-race2'),
+    ]);
+    const ok = [a, b].filter((r) => r.status === 'fulfilled');
+    const failed = [a, b].filter((r) => r.status === 'rejected');
+    expect(ok).toHaveLength(1);
+    expect(failed).toHaveLength(1);
+
+    // used_count settled at exactly 1 (the loser released / never claimed).
+    const used = Number(
+      (
+        await db.execute({
+          sql: "SELECT used_count FROM fantasy_invites WHERE invite_id = 'inv-race'",
+          args: [],
+        })
+      ).rows[0]?.used_count
+    );
+    expect(used).toBe(1);
+
+    // Exactly one of the two racers is now an active member.
+    const members = (
+      await db.execute({
+        sql: "SELECT COUNT(*) AS n FROM fantasy_members WHERE league_id = 'lg-1' AND user_id IN ('u-race1','u-race2') AND status = 'active'",
+        args: [],
+      })
+    ).rows[0];
+    expect(Number(members?.n)).toBe(1);
+  });
+
+  it('rejects an unknown token', async () => {
+    await expect(accept('does-not-exist', 'u-race3')).rejects.toThrow();
   });
 });
 

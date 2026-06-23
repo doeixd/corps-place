@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getInvite, acceptInvite } from '@/lib/server-fns/fantasy';
+import { refetchMyLeagues } from '@/db/fantasy-collections';
 import { signIn, useSession } from '@/lib/auth-client';
 import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
 import { BusyButton } from '@/components/fantasy/busy-button';
@@ -35,6 +36,8 @@ function JoinLeague() {
   const join = useAsyncAction(
     async () => {
       const res = await acceptInvite({ data: { token } });
+      // The new membership should appear on /fantasy after joining.
+      void refetchMyLeagues();
       await navigate({ to: '/fantasy/$slug', params: { slug: res.slug } });
     },
     (err) =>

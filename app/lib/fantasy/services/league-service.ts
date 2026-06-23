@@ -22,7 +22,8 @@ import {
 } from '@/lib/fantasy/config';
 import { makeLeagueSlug } from '@/lib/fantasy/invites';
 import { getSeasonFinals } from '@/lib/fantasy/score-db';
-import { Forbidden, LeagueConflict, NotFound, RateLimited } from './errors';
+import { LeagueConflict, NotFound, RateLimited } from './errors';
+import { makeGuards } from './guards';
 import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from './sql';
 
 // libsql cell readers (text/int/null columns only), matching the legacy server-fn.
@@ -156,19 +157,7 @@ const makeLeagueService = Effect.gen(function* () {
     };
   });
 
-  // Owner guard: load the league (NotFound if missing) + assert ownership.
-  const requireOwner = Effect.fn('LeagueService.requireOwner')(function* (
-    leagueId: string,
-    actor: Actor
-  ) {
-    const rows = yield* sql<LeagueRow>`
-      SELECT * FROM fantasy_leagues WHERE league_id = ${leagueId}
-    `.pipe(Effect.orDie);
-    const league = rows[0];
-    if (!league) return yield* Effect.fail(new NotFound({ message: 'league' }));
-    if (league.owner_user_id !== actor.userId) return yield* Effect.fail(new Forbidden());
-    return league;
-  });
+  const { requireOwner } = makeGuards(sql);
 
   const create = Effect.fn('LeagueService.create')(function* (input: {
     actor: Actor;

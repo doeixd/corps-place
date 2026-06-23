@@ -15,6 +15,7 @@ import { Effect, Match } from 'effect';
 import * as v from 'valibot';
 import { LeagueService } from '@/lib/fantasy/services/league-service';
 import { StandingsService } from '@/lib/fantasy/services/standings-service';
+import { InviteService } from '@/lib/fantasy/services/invite-service';
 import { provideFantasy } from '@/rpc';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
@@ -35,8 +36,6 @@ import {
   createLeagueCheckoutSession,
   refundPaymentIntent,
 } from '@/lib/fantasy/payments';
-import { mintInviteToken, isoPlusDays, DEFAULT_INVITE_DAYS } from '@/lib/fantasy/invites';
-import { sendEmail } from '@/lib/email';
 import { rateLimit } from '@/lib/rate-limit';
 
 // League statuses that still allow new members to join (§7.3).
@@ -74,9 +73,6 @@ const runFantasy = <A, E extends { _tag: string; reason?: string }>(
 const limitPerUser = (action: string, userId: string, max: number, windowMs = 60_000): void => {
   if (!rateLimit(`${action}:${userId}`, max, windowMs)) throw new Error('CONFLICT:rate-limited');
 };
-
-const siteOrigin = (): string =>
-  (process.env.BETTER_AUTH_URL ?? 'http://localhost:5173').replace(/\/+$/, '');
 
 // libsql Row cells are typed `Value` (string|number|bigint|ArrayBuffer|null),
 // which isn't JSON-serializable for a server-fn return. These casts read a cell
@@ -130,16 +126,6 @@ const requireMember = async (db: Client, leagueId: string, actor: Actor): Promis
 const requirePaid = (league: Row): void => {
   if (paymentsEnabled() && str(league.payment_status) !== 'paid')
     throw new Error('CONFLICT:unpaid');
-};
-
-const activeMemberCount = async (db: Client, leagueId: string): Promise<number> => {
-  const row = (
-    await db.execute({
-      sql: "SELECT COUNT(*) AS n FROM fantasy_members WHERE league_id = ? AND status = 'active'",
-      args: [leagueId],
-    })
-  ).rows[0];
-  return Number(row?.n ?? 0);
 };
 
 // ---------------------------------------------------------------------------
@@ -219,111 +205,44 @@ const CreateInviteInput = v.object({
   expiresInDays: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(90))),
 });
 
+// Strangler shim (P2): delegates to InviteService.create.
 export const createInvite = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(CreateInviteInput, d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    assertDurable();
-    limitPerUser('invite-create', actor.userId, 30);
-    const db = await getContributionsDb();
-    const league = await requireOwner(db, data.leagueId, actor);
-    requirePaid(league);
-    const leagueName = str(league.name);
-
-    const inviteId = crypto.randomUUID();
-    const token = mintInviteToken();
-    const now = new Date().toISOString();
-    const expiresAt = isoPlusDays(now, data.expiresInDays ?? DEFAULT_INVITE_DAYS);
-
-    await db.execute({
-      sql: `INSERT INTO fantasy_invites
-              (invite_id, league_id, token, created_by, email, max_uses, used_count, expires_at, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)`,
-      args: [
-        inviteId,
-        data.leagueId,
-        token,
-        actor.userId,
-        data.email ?? null,
-        data.maxUses ?? 1,
-        expiresAt,
-        now,
-      ],
-    });
-
-    const url = `${siteOrigin()}/fantasy/join/${token}`;
-    if (data.email) {
-      await sendEmail({
-        to: data.email,
-        subject: `You're invited to ${leagueName} — Fantasy DCI`,
-        html: `<p>You've been invited to join the fantasy drum corps league <strong>${escapeHtml(leagueName)}</strong>.</p>
-               <p><a href="${url}">Accept your invite</a></p>
-               <p>This link expires on ${expiresAt.slice(0, 10)}.</p>`,
-        tag: 'fantasy_invite',
-      });
-    }
-
-    return { ok: true as const, token, url };
+    return runFantasy(
+      Effect.flatMap(InviteService, (svc) =>
+        svc.create({
+          actor,
+          leagueId: data.leagueId,
+          email: data.email,
+          maxUses: data.maxUses,
+          expiresInDays: data.expiresInDays,
+        })
+      ).pipe(provideFantasy)
+    );
   });
 
+// Strangler shim (P2): delegates to InviteService.revoke.
 export const revokeInvite = createServerFn({ method: 'POST' })
   .validator((d: { inviteId: string }) => v.parse(v.object({ inviteId: v.string() }), d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    assertDurable();
-    const db = await getContributionsDb();
-    const invite = (
-      await db.execute({
-        sql: 'SELECT league_id FROM fantasy_invites WHERE invite_id = ?',
-        args: [data.inviteId],
-      })
-    ).rows[0];
-    if (!invite) throw new Error('NOT_FOUND');
-    await requireOwner(db, str(invite.league_id), actor);
-    await db.execute({
-      sql: 'UPDATE fantasy_invites SET revoked_at = ? WHERE invite_id = ?',
-      args: [new Date().toISOString(), data.inviteId],
-    });
-    return { ok: true as const };
+    return runFantasy(
+      Effect.flatMap(InviteService, (svc) => svc.revoke({ actor, inviteId: data.inviteId })).pipe(
+        provideFantasy
+      )
+    );
   });
 
 /** Public loader read: validate a token and describe the invite (no token echoed back). */
+// Strangler shim (P2): delegates to InviteService.getInvite.
 export const getInvite = createServerFn({ method: 'GET' })
   .validator((d: { token: string }) => v.parse(v.object({ token: v.string() }), d))
   .handler(async ({ data }) => {
-    const db = await getContributionsDb();
-    const invite = (
-      await db.execute({
-        sql: 'SELECT * FROM fantasy_invites WHERE token = ?',
-        args: [data.token],
-      })
-    ).rows[0];
-    if (!invite) return { state: 'invalid' as const };
-
-    const now = new Date().toISOString();
-    if (invite.revoked_at) return { state: 'invalid' as const };
-    if (str(invite.expires_at) <= now) return { state: 'invalid' as const };
-    if (Number(invite.used_count) >= Number(invite.max_uses)) return { state: 'used_up' as const };
-
-    const league = (
-      await db.execute({
-        sql: 'SELECT name, slug, status, max_members FROM fantasy_leagues WHERE league_id = ?',
-        args: [invite.league_id],
-      })
-    ).rows[0];
-    if (!league) return { state: 'invalid' as const };
-    if (!JOINABLE.has(str(league.status))) return { state: 'closed' as const };
-
-    const memberCount = await activeMemberCount(db, str(invite.league_id));
-    return {
-      state: 'ok' as const,
-      league: {
-        name: str(league.name),
-        slug: str(league.slug),
-        memberCount,
-        maxMembers: Number(league.max_members),
-      },
-    };
+    return runFantasy(
+      Effect.flatMap(InviteService, (svc) => svc.getInvite(data.token)).pipe(provideFantasy)
+    );
   });
 
 const AcceptInviteInput = v.object({
@@ -335,110 +254,24 @@ const AcceptInviteInput = v.object({
   logoMediaId: v.optional(v.pipe(v.string(), v.maxLength(64))),
 });
 
+// Strangler shim (P2): delegates to InviteService.accept (race-safe CAS + seat
+// release live in the service).
 export const acceptInvite = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(AcceptInviteInput, d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    limitPerUser('invite-accept', actor.userId, 15);
-    assertDurable();
-    const db = await getContributionsDb();
-    const now = new Date().toISOString();
-
-    const invite = (
-      await db.execute({ sql: 'SELECT * FROM fantasy_invites WHERE token = ?', args: [data.token] })
-    ).rows[0];
-    if (!invite) throw new Error('NOT_FOUND');
-    const inviteId = str(invite.invite_id);
-    const leagueId = str(invite.league_id);
-
-    // Race-safe seat claim (Appendix G.3): atomically consume one use.
-    const claim = await db.execute({
-      sql: `UPDATE fantasy_invites SET used_count = used_count + 1
-            WHERE token = ? AND revoked_at IS NULL AND expires_at > ? AND used_count < max_uses`,
-      args: [data.token, now],
-    });
-    if (claim.rowsAffected !== 1) throw new Error('CONFLICT:used-up');
-
-    // Anything past this point that fails must release the claimed seat.
-    const releaseSeat = () =>
-      db.execute({
-        sql: 'UPDATE fantasy_invites SET used_count = used_count - 1 WHERE invite_id = ?',
-        args: [inviteId],
-      });
-
-    try {
-      const league = await loadLeagueById(db, leagueId);
-      if (!JOINABLE.has(str(league.status))) throw new Error('CONFLICT:draft-started');
-
-      const existing = (
-        await db.execute({
-          sql: 'SELECT corps_name, status FROM fantasy_members WHERE league_id = ? AND user_id = ?',
-          args: [leagueId, actor.userId],
+    return runFantasy(
+      Effect.flatMap(InviteService, (svc) =>
+        svc.accept({
+          actor,
+          token: data.token,
+          corpsName: data.corpsName,
+          showTitle: data.showTitle,
+          color: data.color,
+          logoMediaId: data.logoMediaId,
         })
-      ).rows[0];
-
-      if (existing && existing.status === 'active') {
-        // Already in — re-click is a no-op; we didn't consume a seat.
-        await releaseSeat();
-        return {
-          ok: true as const,
-          already: true,
-          leagueId,
-          slug: str(league.slug),
-          needsIdentity: existing.corps_name == null,
-        };
-      }
-
-      if ((await activeMemberCount(db, leagueId)) >= Number(league.max_members)) {
-        throw new Error('CONFLICT:full');
-      }
-
-      const corpsName = data.corpsName?.trim() || null;
-      if (existing) {
-        // Re-activate a previously-removed member.
-        await db.execute({
-          sql: `UPDATE fantasy_members
-                SET status = 'active', corps_name = COALESCE(?, corps_name),
-                    show_title = COALESCE(?, show_title), corps_color = COALESCE(?, corps_color),
-                    corps_logo_media_id = COALESCE(?, corps_logo_media_id)
-                WHERE league_id = ? AND user_id = ?`,
-          args: [
-            corpsName,
-            data.showTitle ?? null,
-            data.color ?? null,
-            data.logoMediaId ?? null,
-            leagueId,
-            actor.userId,
-          ],
-        });
-      } else {
-        await db.execute({
-          sql: `INSERT INTO fantasy_members
-                  (league_id, user_id, role, corps_name, show_title, corps_color, corps_logo_media_id, status, joined_at)
-                VALUES (?, ?, 'member', ?, ?, ?, ?, 'active', ?)`,
-          args: [
-            leagueId,
-            actor.userId,
-            corpsName,
-            data.showTitle ?? null,
-            data.color ?? null,
-            data.logoMediaId ?? null,
-            now,
-          ],
-        });
-      }
-
-      return {
-        ok: true as const,
-        already: false,
-        leagueId,
-        slug: str(league.slug),
-        needsIdentity: corpsName == null,
-      };
-    } catch (err) {
-      await releaseSeat();
-      throw err;
-    }
+      ).pipe(provideFantasy)
+    );
   });
 
 // ---------------------------------------------------------------------------
@@ -515,15 +348,6 @@ export const removeMember = createServerFn({ method: 'POST' })
     });
     return { ok: true as const };
   });
-
-// Minimal HTML escape for values interpolated into invite emails.
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
 
 // ===========================================================================
 // QUIZ — admin bank CRUD (capability manageFantasyQuiz) + member run (M2)

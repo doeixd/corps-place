@@ -6,6 +6,7 @@ import { EventDirectoryServiceLive } from '@/lib/event-directory';
 import { EventPredictionServiceLive } from '@/lib/event-prediction-api';
 import { LeagueServiceLive } from '@/lib/fantasy/services/league-service';
 import { StandingsServiceLive } from '@/lib/fantasy/services/standings-service';
+import { InviteServiceLive } from '@/lib/fantasy/services/invite-service';
 
 // Re-export the individual groups + lives (the primary units).
 export {
@@ -21,7 +22,11 @@ export {
 // These are what a direct-call boundary (server-fn shim, loader) provides — they
 // have no residual requirements. Append further fantasy *Live layers as
 // milestones land.
-const FantasyServicesLive = Layer.mergeAll(LeagueServiceLive, StandingsServiceLive);
+const FantasyServicesLive = Layer.mergeAll(
+  LeagueServiceLive,
+  StandingsServiceLive,
+  InviteServiceLive
+);
 
 // The fantasy slice for AppLive: the RPC handlers wired OVER the services (so the
 // group's LeagueService requirement is satisfied), plus the services themselves.
