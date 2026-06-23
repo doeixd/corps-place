@@ -85,8 +85,9 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
         <>
           <p className="text-sm text-muted-foreground">
             Each player&apos;s total is the sum of their drafted corps&apos; caption scores from
-            real DCI <Explain term="recap">recaps</Explain>, grouped into General Effect, Visual,
-            and Music. Hover any caption code to see what it means.
+            real DCI <Explain term="recap">recaps</Explain>. On a wider screen the total breaks down
+            by General Effect, Visual, Music, and the eight captions — hover any code to see what it
+            means.
           </p>
           <Table containerClassName="overflow-x-auto">
             <TableHeader>
@@ -94,11 +95,13 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
                 <TableHead className="w-8">#</TableHead>
                 <TableHead>Corps</TableHead>
                 <TableHead className="text-right font-semibold">Total</TableHead>
-                <TableHead className="text-right">GE</TableHead>
-                <TableHead className="text-right">Visual</TableHead>
-                <TableHead className="border-r border-border text-right">Music</TableHead>
+                <TableHead className="hidden text-right sm:table-cell">GE</TableHead>
+                <TableHead className="hidden text-right sm:table-cell">Visual</TableHead>
+                <TableHead className="hidden border-r border-border text-right sm:table-cell">
+                  Music
+                </TableHead>
                 {CAPTION_KEYS.map((c) => (
-                  <TableHead key={c} className="text-right">
+                  <TableHead key={c} className="hidden text-right lg:table-cell">
                     <Explain term={c}>{c}</Explain>
                   </TableHead>
                 ))}
@@ -133,11 +136,13 @@ function StandingRow({ row }: { row: Row }) {
         </div>
       </TableCell>
       <TableCell className="text-right font-semibold">{row.total.toFixed(3)}</TableCell>
-      <TableCell className="text-right">{fmt(row.ge)}</TableCell>
-      <TableCell className="text-right">{fmt(row.visual)}</TableCell>
-      <TableCell className="border-r border-border text-right">{fmt(row.music)}</TableCell>
+      <TableCell className="hidden text-right sm:table-cell">{fmt(row.ge)}</TableCell>
+      <TableCell className="hidden text-right sm:table-cell">{fmt(row.visual)}</TableCell>
+      <TableCell className="hidden border-r border-border text-right sm:table-cell">
+        {fmt(row.music)}
+      </TableCell>
       {CAPTION_KEYS.map((c) => (
-        <TableCell key={c} className="text-right text-muted-foreground">
+        <TableCell key={c} className="hidden text-right text-muted-foreground lg:table-cell">
           {fmt(row.perCaption[c] ?? 0)}
         </TableCell>
       ))}
