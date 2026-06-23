@@ -374,6 +374,28 @@ const SCHEMA = [
      created_at  TEXT NOT NULL
    )`,
   `CREATE INDEX IF NOT EXISTS idx_admin_audit_time ON admin_audit (created_at)`,
+
+  // Admin console: job queue. The web tier ENQUEUES (status 'queued'); a VM worker
+  // (where sdk/ + dci-relational.db exist) claims + runs the script and streams
+  // status/stdout back here. The serving container cannot run SDK scripts, so it
+  // never spawns (ADMIN_PAGE_PLAN §5).
+  `CREATE TABLE IF NOT EXISTS admin_jobs (
+     job_id        TEXT PRIMARY KEY,
+     kind          TEXT NOT NULL,
+     args_json     TEXT,
+     status        TEXT NOT NULL CHECK(status IN ('queued','running','success','failed','canceled')),
+     requested_by  TEXT NOT NULL,
+     claimed_by    TEXT,
+     queued_at     TEXT NOT NULL,
+     started_at    TEXT,
+     finished_at   TEXT,
+     exit_code     INTEGER,
+     stdout        TEXT,
+     stderr        TEXT,
+     error_message TEXT
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_admin_jobs_status ON admin_jobs (status, queued_at)`,
+  `CREATE INDEX IF NOT EXISTS idx_admin_jobs_kind_time ON admin_jobs (kind, queued_at)`,
 ];
 
 /**

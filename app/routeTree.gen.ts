@@ -34,6 +34,7 @@ import { Route as FantasyQuizAdminRouteImport } from './routes/fantasy/quiz-admi
 import { Route as FantasyCreateRouteImport } from './routes/fantasy/create'
 import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spike'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminJobsRouteImport } from './routes/admin/jobs'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
@@ -177,6 +178,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/admin/users',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminJobsRoute = AdminJobsRouteImport.update({
+  id: '/admin/jobs',
+  path: '/admin/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCorpsColorsRoute = AdminCorpsColorsRouteImport.update({
   id: '/admin/corps-colors',
   path: '/admin/corps-colors',
@@ -316,6 +322,7 @@ export interface FileRoutesByFullPath {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
+  '/admin/jobs': typeof AdminJobsRoute
   '/admin/users': typeof AdminUsersRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -355,6 +362,7 @@ export interface FileRoutesByTo {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
+  '/admin/jobs': typeof AdminJobsRoute
   '/admin/users': typeof AdminUsersRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -395,6 +403,7 @@ export interface FileRoutesById {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
+  '/admin/jobs': typeof AdminJobsRoute
   '/admin/users': typeof AdminUsersRoute
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -436,6 +445,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
+    | '/admin/jobs'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -475,6 +485,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
+    | '/admin/jobs'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -514,6 +525,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
+    | '/admin/jobs'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -554,6 +566,7 @@ export interface RootRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
+  AdminJobsRoute: typeof AdminJobsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   DevFreeFormSpikeRoute: typeof DevFreeFormSpikeRoute
   FantasyCreateRoute: typeof FantasyCreateRoute
@@ -845,6 +858,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/jobs': {
+      id: '/admin/jobs'
+      path: '/admin/jobs'
+      fullPath: '/admin/jobs'
+      preLoaderRoute: typeof AdminJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/corps-colors': {
       id: '/admin/corps-colors'
       path: '/admin/corps-colors'
@@ -1034,6 +1054,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminContentRoute: AdminContentRoute,
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
+  AdminJobsRoute: AdminJobsRoute,
   AdminUsersRoute: AdminUsersRoute,
   DevFreeFormSpikeRoute: DevFreeFormSpikeRoute,
   FantasyCreateRoute: FantasyCreateRoute,
