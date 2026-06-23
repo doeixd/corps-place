@@ -184,6 +184,7 @@ const SCHEMA = [
      max_members    INTEGER NOT NULL DEFAULT 12,
      payment_status TEXT NOT NULL DEFAULT 'none',   -- none|paid|refunded (reserved)
      payment_ref    TEXT,
+     image_media_id TEXT,                            -- league banner/avatar (fantasy_media id)
      created_at     TEXT NOT NULL,
      updated_at     TEXT NOT NULL
    )`,
@@ -614,6 +615,12 @@ const ADD_COLUMNS: { table: string; column: string; ddl: string }[] = [
   { table: 'user', column: 'banExpires', ddl: 'ALTER TABLE "user" ADD COLUMN banExpires TEXT' },
   // email_log gained a status column after its first deploy (ADMIN_PAGE_PLAN §10.3).
   { table: 'email_log', column: 'status', ddl: 'ALTER TABLE email_log ADD COLUMN status TEXT' },
+  // League banner/avatar image, added after fantasy_leagues' first deploy.
+  {
+    table: 'fantasy_leagues',
+    column: 'image_media_id',
+    ddl: 'ALTER TABLE fantasy_leagues ADD COLUMN image_media_id TEXT',
+  },
 ];
 
 const ensureColumns = async (db: Client): Promise<void> => {

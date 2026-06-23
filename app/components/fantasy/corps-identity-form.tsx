@@ -5,14 +5,7 @@ import { setCorpsIdentity } from '@/lib/server-fns/fantasy';
 import { uploadFantasyLogo } from '@/lib/server-fns/fantasy-media';
 import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
 import { BusyButton } from '@/components/fantasy/busy-button';
-
-const fileToBase64 = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve((r.result as string).split(',')[1] ?? '');
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
+import { PhotoUpload, fileToBase64 } from '@/components/fantasy/photo-upload';
 
 export type CorpsIdentityInitial = {
   corpsName?: string | null;
@@ -116,29 +109,13 @@ export function CorpsIdentityForm({
         <span className="text-sm text-muted-foreground">{color}</span>
       </div>
 
-      <div className="flex items-center gap-3">
-        {logoMediaId ? (
-          <img
-            src={`/api/fantasy-media/${logoMediaId}`}
-            alt="Corps logo"
-            className="size-12 rounded object-contain"
-          />
-        ) : null}
-        <label className="cursor-pointer">
-          <span className="inline-flex h-8 items-center rounded-lg border border-border bg-background px-2.5 text-sm hover:bg-muted">
-            {upload.busy ? 'Uploading…' : logoMediaId ? 'Change logo' : 'Upload logo'}
-          </span>
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) void upload.run(file);
-            }}
-          />
-        </label>
-      </div>
+      <PhotoUpload
+        mediaId={logoMediaId}
+        busy={upload.busy}
+        onFile={(file) => upload.run(file)}
+        alt="Corps logo"
+        labels={{ empty: 'Upload logo', change: 'Change logo' }}
+      />
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 

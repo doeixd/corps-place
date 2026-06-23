@@ -234,6 +234,12 @@ describe('LeagueService.create / updateConfig (Effect path)', () => {
         Effect.provide(LeagueServiceLive)
       )
     );
+  const setImage = (input: { actor: never; leagueId: string; mediaId: string | null }) =>
+    Effect.runPromise(
+      Effect.flatMap(LeagueService, (svc) => svc.setImage(input)).pipe(
+        Effect.provide(LeagueServiceLive)
+      )
+    );
 
   it('creates a league + owner membership atomically', async () => {
     const res = await create({ actor: actor('u-creator'), name: 'Fresh League', season: '2026' });
@@ -308,6 +314,21 @@ describe('LeagueService.create / updateConfig (Effect path)', () => {
     // Too-short name → LeagueConflict(bad-name); non-owner → Forbidden (both reject).
     await expect(rename({ actor: actor('u-rename'), leagueId, name: 'x' })).rejects.toThrow();
     await expect(rename({ actor: actor('other'), leagueId, name: 'Hostile' })).rejects.toThrow();
+  });
+
+  it('sets the league image for the owner; get returns it; rejects non-owner', async () => {
+    const { leagueId, slug } = await create({
+      actor: actor('u-img'),
+      name: 'Img League',
+      season: '2026',
+    });
+    await setImage({ actor: actor('u-img'), leagueId, mediaId: 'media-123' });
+    const got = await runGet(slug, 'u-img');
+    expect(got.league.imageMediaId).toBe('media-123');
+
+    await expect(
+      setImage({ actor: actor('intruder'), leagueId, mediaId: 'evil' })
+    ).rejects.toThrow();
   });
 });
 

@@ -211,6 +211,21 @@ export const renameLeague = createServerFn({ method: 'POST' })
     );
   });
 
+const SetLeagueImageInput = v.object({ leagueId: v.string(), mediaId: v.nullable(v.string()) });
+
+// Owner-only: point the league at an already-uploaded fantasy_media image (or
+// null to clear). The image bytes go through uploadFantasyLogo first.
+export const setLeagueImage = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(SetLeagueImageInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireActor();
+    return runFantasy(
+      Effect.flatMap(LeagueService, (svc) =>
+        svc.setImage({ actor, leagueId: data.leagueId, mediaId: data.mediaId })
+      )
+    );
+  });
+
 // ---------------------------------------------------------------------------
 // invites
 // ---------------------------------------------------------------------------

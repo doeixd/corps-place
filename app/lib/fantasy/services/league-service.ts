@@ -41,6 +41,7 @@ interface LeagueRow {
   config_json: string;
   payment_status: string;
   owner_user_id: string;
+  image_media_id: unknown;
 }
 
 interface MemberRow {
@@ -169,6 +170,7 @@ const makeLeagueService = Effect.gen(function* () {
         maxMembers: Number(league.max_members),
         config: JSON.parse(league.config_json) as LeagueConfig,
         paymentStatus: league.payment_status,
+        imageMediaId: strOrNull(league.image_media_id),
       },
       members,
       draft,
@@ -275,6 +277,20 @@ const makeLeagueService = Effect.gen(function* () {
     return { ok: true as const, name };
   });
 
+  const setImage = Effect.fn('LeagueService.setImage')(function* (input: {
+    actor: Actor;
+    leagueId: string;
+    mediaId: string | null;
+  }) {
+    yield* requireDurableStorage;
+    const league = yield* requireOwner(input.leagueId, input.actor);
+    yield* sql`
+      UPDATE fantasy_leagues SET image_media_id = ${input.mediaId}, updated_at = ${new Date().toISOString()}
+      WHERE league_id = ${league.league_id}
+    `.pipe(Effect.orDie);
+    return { ok: true as const };
+  });
+
   const listMyLeagues = Effect.fn('LeagueService.listMyLeagues')(function* (userId: string) {
     const rows = yield* sql<LeagueSummaryRow>`
       SELECT l.league_id, l.slug, l.name, l.season, l.status, m.role
@@ -295,7 +311,7 @@ const makeLeagueService = Effect.gen(function* () {
     };
   });
 
-  return { get, listMyLeagues, create, updateConfig, rename };
+  return { get, listMyLeagues, create, updateConfig, rename, setImage };
 });
 
 export class LeagueService extends Context.Service<

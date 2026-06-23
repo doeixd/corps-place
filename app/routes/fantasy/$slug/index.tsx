@@ -12,7 +12,10 @@ import {
   createLeagueCheckout,
   requestRefund,
   renameLeague,
+  setLeagueImage,
 } from '@/lib/server-fns/fantasy';
+import { uploadFantasyLogo } from '@/lib/server-fns/fantasy-media';
+import { PhotoUpload, fileToBase64 } from '@/components/fantasy/photo-upload';
 import { CorpsIdentityForm } from '@/components/fantasy/corps-identity-form';
 import { PushToggle } from '@/components/fantasy/push-toggle';
 import { BusyButton } from '@/components/fantasy/busy-button';
@@ -85,12 +88,27 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
   return (
     <PageShell className="flex flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <LeagueNameHeading
-          leagueId={league.leagueId}
-          name={league.name}
-          canEdit={viewer.isOwner}
-          onRenamed={refresh}
-        />
+        <div className="flex items-center gap-3">
+          {viewer.isOwner ? (
+            <LeagueImageUpload
+              leagueId={league.leagueId}
+              mediaId={league.imageMediaId}
+              onChanged={refresh}
+            />
+          ) : league.imageMediaId ? (
+            <img
+              src={`/api/fantasy-media/${league.imageMediaId}`}
+              alt=""
+              className="size-12 rounded border border-border object-contain"
+            />
+          ) : null}
+          <LeagueNameHeading
+            leagueId={league.leagueId}
+            name={league.name}
+            canEdit={viewer.isOwner}
+            onRenamed={refresh}
+          />
+        </div>
         <p className="text-sm text-muted-foreground">
           Season {league.season} · {league.status} · {members.length}/{league.maxMembers} members
         </p>
@@ -186,6 +204,38 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
         </ul>
       </section>
     </PageShell>
+  );
+}
+
+function LeagueImageUpload({
+  leagueId,
+  mediaId,
+  onChanged,
+}: {
+  leagueId: string;
+  mediaId: string | null;
+  onChanged: () => Promise<void> | void;
+}) {
+  const upload = useAsyncAction(
+    async (file: File) => {
+      const dataBase64 = await fileToBase64(file);
+      const res = await uploadFantasyLogo({ data: { leagueId, dataBase64 } });
+      await setLeagueImage({ data: { leagueId, mediaId: res.mediaId } });
+      await onChanged();
+    },
+    (err) => `Image upload failed: ${err.message}`
+  );
+  return (
+    <div className="flex flex-col gap-1">
+      <PhotoUpload
+        mediaId={mediaId}
+        busy={upload.busy}
+        onFile={(file) => upload.run(file)}
+        alt="League image"
+        labels={{ empty: 'Add image', change: 'Change image' }}
+      />
+      {upload.error ? <span className="text-xs text-destructive">{upload.error}</span> : null}
+    </div>
   );
 }
 
