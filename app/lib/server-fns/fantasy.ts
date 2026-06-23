@@ -11,7 +11,10 @@
 import { createServerFn } from '@tanstack/react-start/client';
 import { getWebRequest } from '@tanstack/react-start/server';
 import type { Client, Row } from '@libsql/client';
+import { Effect } from 'effect';
 import * as v from 'valibot';
+import { LeagueService } from '@/lib/fantasy/services/league-service';
+import { provideFantasy } from '@/rpc';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
 import {
@@ -63,7 +66,6 @@ const siteOrigin = (): string =>
 // `no-base-to-string` lint quiet (no String()/template coercion of a wide type).
 const str = (v: unknown): string => v as string;
 const strOrNull = (v: unknown): string | null => (v == null ? null : (v as string));
-const numOrNull = (v: unknown): number | null => (v == null ? null : Number(v));
 
 // ---------------------------------------------------------------------------
 // shared guards
@@ -178,80 +180,23 @@ export const createLeague = createServerFn({ method: 'POST' })
     return { ok: true as const, leagueId, slug };
   });
 
+// Strangler shim (migration plan P0): the handler stays a thin `createServerFn`
+// boundary but delegates to `LeagueService` over the Effect/SqlClient path
+// (`runPromise` lives only here, at the boundary, per AGENTS.md). The actor is
+// resolved here and passed in; the returned payload is identical to the legacy
+// raw-SQL version. A failed `NotFound` is re-thrown as the legacy `NOT_FOUND`
+// string so route branching is unchanged during the strangler.
 export const getLeague = createServerFn({ method: 'GET' })
   .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
   .handler(async ({ data }) => {
-    const db = await getContributionsDb();
-    const league = (
-      await db.execute({ sql: 'SELECT * FROM fantasy_leagues WHERE slug = ?', args: [data.slug] })
-    ).rows[0];
-    if (!league) throw new Error('NOT_FOUND');
-
-    const members = (
-      await db.execute({
-        sql: `SELECT m.user_id, m.role, m.corps_name, m.show_title, m.corps_logo_media_id,
-                     m.corps_color, m.draft_position, m.status,
-                     (m.quiz_score IS NOT NULL) AS quiz_taken,
-                     u.name AS user_name, u.image AS user_image
-              FROM fantasy_members m
-              LEFT JOIN user u ON u.id = m.user_id
-              WHERE m.league_id = ? AND m.status = 'active'
-              ORDER BY m.joined_at`,
-        args: [league.league_id],
-      })
-    ).rows.map((m) => ({
-      user_id: str(m.user_id),
-      role: str(m.role),
-      corps_name: strOrNull(m.corps_name),
-      show_title: strOrNull(m.show_title),
-      corps_logo_media_id: strOrNull(m.corps_logo_media_id),
-      corps_color: strOrNull(m.corps_color),
-      draft_position: numOrNull(m.draft_position),
-      quiz_taken: Boolean(m.quiz_taken),
-      user_name: strOrNull(m.user_name),
-      user_image: strOrNull(m.user_image),
-    }));
-
-    const draftRow = (
-      await db.execute({
-        sql: `SELECT status, scheduled_at, draft_type, total_rounds, current_pick_no
-              FROM fantasy_drafts WHERE league_id = ?`,
-        args: [league.league_id],
-      })
-    ).rows[0];
-    const draft = draftRow
-      ? {
-          status: str(draftRow.status),
-          scheduled_at: strOrNull(draftRow.scheduled_at),
-          draft_type: str(draftRow.draft_type),
-          total_rounds: Number(draftRow.total_rounds),
-          current_pick_no: Number(draftRow.current_pick_no),
-        }
-      : null;
-
     const actor = await getActor(getWebRequest());
-    const viewer = {
-      userId: actor?.userId ?? null,
-      isMember: actor ? members.some((m) => m.user_id === actor.userId) : false,
-      isOwner: actor ? str(league.owner_user_id) === actor.userId : false,
-    };
-
-    return {
-      league: {
-        leagueId: str(league.league_id),
-        slug: str(league.slug),
-        name: str(league.name),
-        season: str(league.season),
-        status: str(league.status),
-        maxMembers: Number(league.max_members),
-        config: JSON.parse(str(league.config_json)) as LeagueConfig,
-        paymentStatus: str(league.payment_status),
-      },
-      members,
-      draft,
-      viewer,
-      paymentsEnabled: paymentsEnabled(),
-    };
+    const program = Effect.flatMap(LeagueService, (svc) =>
+      svc.get({ slug: data.slug, viewerUserId: actor?.userId ?? null })
+    ).pipe(
+      provideFantasy,
+      Effect.catchTag('NotFound', () => Effect.fail(new Error('NOT_FOUND')))
+    );
+    return Effect.runPromise(program);
   });
 
 export const listMyLeagues = createServerFn({ method: 'GET' }).handler(async () => {

@@ -32,6 +32,9 @@ importers:
       '@dnd-kit/utilities':
         specifier: ^3.2.2
         version: 3.2.2(react@19.2.7)
+      '@effect/sql-libsql':
+        specifier: 4.0.0-beta.80
+        version: 4.0.0-beta.80(bufferutil@4.1.0)(effect@4.0.0-beta.84)
       '@fontsource-variable/instrument-sans':
         specifier: 5.2.8
         version: 5.2.8
@@ -948,6 +951,11 @@ packages:
     resolution: {integrity: sha512-c6pDar/1TYqeFc8Z6uxNC+065ElSJ4A0AuACZi0CT1riLAfGLCFIpejonkJ1tz6rsBTDyBm0JPdyb0aqyGAYAA==}
     peerDependencies:
       effect: ^3.14.21
+
+  '@effect/sql-libsql@4.0.0-beta.80':
+    resolution: {integrity: sha512-F0Fhg4DPNna6E3rMyrtaqznXHsM5BNpZB+KdtQ70Xm3dK1lSl2LHR3bGHQXHkqorIZO/la9X2+pQvbWaXkZQfw==}
+    peerDependencies:
+      effect: ^4.0.0-beta.80
 
   '@effect/typeclass@0.33.22':
     resolution: {integrity: sha512-7ncvdO47Snd39DVJofJra+mVV44cbVfWn/HOkfFkx9CxpgITTsw/ZNbp9daQKjaCzMzriraSFIB7wb2Ya4OJJA==}
@@ -9095,6 +9103,14 @@ snapshots:
       find-my-way-ts: 0.1.6
       msgpackr: 1.12.1
       multipasta: 0.2.7
+
+  '@effect/sql-libsql@4.0.0-beta.80(bufferutil@4.1.0)(effect@4.0.0-beta.84)':
+    dependencies:
+      '@libsql/client': 0.17.4(bufferutil@4.1.0)
+      effect: 4.0.0-beta.84
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   '@effect/typeclass@0.33.22(effect@3.21.3)':
     dependencies:
