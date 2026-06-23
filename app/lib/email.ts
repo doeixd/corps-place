@@ -20,6 +20,28 @@ export type SendEmailInput = {
 
 const DEFAULT_FROM = 'corps.place <login@drumcorps.app>';
 
+// Best-effort delivery log (ADMIN_PAGE_PLAN §10.3): record every send so operators can
+// see a user's communications on /admin/users/$id. Never let logging break a send —
+// swallow its errors. `userId`/`sentBy` are null for system sends (correlated by address).
+const logSend = async (
+  toAddr: string,
+  subject: string,
+  tag: string | undefined,
+  status: 'sent' | 'failed' | 'skipped'
+): Promise<void> => {
+  try {
+    const { getContributionsDb } = await import('@/lib/contributions-db');
+    const db = await getContributionsDb();
+    await db.execute({
+      sql: `INSERT INTO email_log (email_id, to_addr, subject, tag, status, sent_at)
+            VALUES (?, ?, ?, ?, ?, ?)`,
+      args: [crypto.randomUUID(), toAddr, subject, tag ?? null, status, new Date().toISOString()],
+    });
+  } catch {
+    /* logging is best-effort */
+  }
+};
+
 export const sendEmail = async ({
   to,
   subject,
@@ -36,6 +58,7 @@ export const sendEmail = async ({
       `[email] RESEND_API_KEY not set — email NOT sent${tag ? ` (${tag})` : ''}. ` +
         `Would have sent to ${to}: ${subject}`
     );
+    await logSend(to, subject, tag, 'skipped');
     return;
   }
 
@@ -47,5 +70,6 @@ export const sendEmail = async ({
     html,
     ...(tag ? { tags: [{ name: 'category', value: tag }] } : {}),
   });
+  await logSend(to, subject, tag, error ? 'failed' : 'sent');
   if (error) throw new Error(`Resend send failed: ${JSON.stringify(error)}`);
 };

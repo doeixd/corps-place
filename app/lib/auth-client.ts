@@ -1,5 +1,5 @@
 import { createAuthClient } from 'better-auth/react';
-import { adminClient } from 'better-auth/client/plugins';
+import { adminClient, magicLinkClient } from 'better-auth/client/plugins';
 
 /**
  * Browser auth client (plan §6). Talks to the /api/auth/* handler on the same
@@ -12,5 +12,5 @@ import { adminClient } from 'better-auth/client/plugins';
  * The server admin plugin enforces adminRoles; role grants/bans use our own
  * manageUsers-gated server-fns (extra guard rails + audit).
  */
-export const authClient = createAuthClient({ plugins: [adminClient()] });
+export const authClient = createAuthClient({ plugins: [adminClient(), magicLinkClient()] });
 export const { useSession, signIn, signOut } = authClient;

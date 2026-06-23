@@ -146,6 +146,7 @@ export const replyContact = createServerFn({ method: 'POST' })
       })
     ).rows[0] as { email?: string; user_id?: string } | undefined;
     if (!msg?.email) throw new Error('NOT_FOUND');
+    // sendEmail logs the delivery to email_log itself (by address) — no manual insert.
     await sendEmail({
       to: msg.email,
       subject: data.subject,
@@ -153,11 +154,6 @@ export const replyContact = createServerFn({ method: 'POST' })
       tag: 'support_reply',
     });
     const now = new Date().toISOString();
-    await db.execute({
-      sql: `INSERT INTO email_log (email_id, to_addr, subject, tag, user_id, sent_at, sent_by)
-            VALUES (?, ?, ?, 'support_reply', ?, ?, ?)`,
-      args: [crypto.randomUUID(), msg.email, data.subject, msg.user_id ?? null, now, actor.userId],
-    });
     await db.execute({
       sql: 'UPDATE contact_messages SET status = ?, handled_by = ?, handled_at = ? WHERE message_id = ?',
       args: ['replied', actor.userId, now, data.messageId],
@@ -201,4 +197,110 @@ export const getUserDetail = createServerFn({ method: 'GET' })
       },
       activity: { revisions, uploads, leaguesOwned, leaguesJoined, contacts },
     };
+  });
+
+// ---------------------------------------------------------------------------
+// admin: communications + sessions for a user (§10.2/§10.3)
+// ---------------------------------------------------------------------------
+const lookupEmail = async (
+  db: Awaited<ReturnType<typeof getContributionsDb>>,
+  userId: string
+): Promise<string | null> => {
+  const u = (await db.execute({ sql: 'SELECT email FROM "user" WHERE id = ?', args: [userId] }))
+    .rows[0] as { email?: string } | undefined;
+  return u?.email ?? null;
+};
+
+export interface EmailLogRow {
+  emailId: string;
+  subject: string | null;
+  tag: string | null;
+  status: string | null;
+  sentAt: string;
+}
+
+/** Emails sent to a user (delivery log, correlated by address). Cap: customerSupport. */
+export const listUserEmails = createServerFn({ method: 'GET' })
+  .validator((d: unknown) => v.parse(v.object({ userId: v.string() }), d))
+  .handler(async ({ data }): Promise<EmailLogRow[]> => {
+    await requireCapability(getWebRequest(), 'customerSupport');
+    const db = await getContributionsDb();
+    const email = await lookupEmail(db, data.userId);
+    if (!email) return [];
+    const rows = (
+      await db.execute({
+        sql: `SELECT email_id, subject, tag, status, sent_at
+              FROM email_log WHERE to_addr = ? ORDER BY sent_at DESC LIMIT 100`,
+        args: [email],
+      })
+    ).rows as unknown as Record<string, unknown>[];
+    return rows.map((r) => ({
+      emailId: String(r.email_id),
+      subject: (r.subject as string) ?? null,
+      tag: (r.tag as string) ?? null,
+      status: (r.status as string) ?? null,
+      sentAt: String(r.sent_at),
+    }));
+  });
+
+export interface SessionRow {
+  id: string;
+  createdAt: string | null;
+  expiresAt: string | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+}
+
+/** A user's active better-auth sessions. Cap: customerSupport. */
+export const listUserSessions = createServerFn({ method: 'GET' })
+  .validator((d: unknown) => v.parse(v.object({ userId: v.string() }), d))
+  .handler(async ({ data }): Promise<SessionRow[]> => {
+    await requireCapability(getWebRequest(), 'customerSupport');
+    const db = await getContributionsDb();
+    const rows = (
+      await db.execute({
+        sql: `SELECT id, "createdAt", "expiresAt", "ipAddress", "userAgent"
+              FROM session WHERE "userId" = ? ORDER BY "createdAt" DESC`,
+        args: [data.userId],
+      })
+    ).rows as unknown as Record<string, unknown>[];
+    return rows.map((r) => ({
+      id: String(r.id),
+      createdAt: (r.createdAt as string) ?? null,
+      expiresAt: (r.expiresAt as string) ?? null,
+      ipAddress: (r.ipAddress as string) ?? null,
+      userAgent: (r.userAgent as string) ?? null,
+    }));
+  });
+
+/** Force-logout: revoke all of a user's sessions (account recovery / security).
+ *  Cap: customerSupport. Audited. */
+export const revokeUserSessions = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(v.object({ userId: v.string() }), d))
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'customerSupport');
+    const db = await getContributionsDb();
+    const res = await db.execute({
+      sql: 'DELETE FROM session WHERE "userId" = ?',
+      args: [data.userId],
+    });
+    await writeAudit(db, actor, {
+      action: 'revoke_sessions',
+      target: data.userId,
+      after: { revoked: res.rowsAffected },
+    });
+    return { ok: true as const, revoked: res.rowsAffected };
+  });
+
+/** Audit a support-initiated sign-in-link send (the magic link itself is sent by the
+ *  better-auth client flow to the user's own inbox). Cap: customerSupport. */
+export const logSignInLinkSent = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(v.object({ userId: v.string() }), d))
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'customerSupport');
+    await writeAudit(await getContributionsDb(), actor, {
+      action: 'send_signin_link',
+      target: data.userId,
+    });
+    return { ok: true as const };
   });

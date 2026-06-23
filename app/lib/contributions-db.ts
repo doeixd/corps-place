@@ -436,10 +436,12 @@ const SCHEMA = [
      subject     TEXT,
      tag         TEXT,
      user_id     TEXT,
+     status      TEXT,                    -- sent | failed | skipped
      sent_at     TEXT NOT NULL,
      sent_by     TEXT
    )`,
   `CREATE INDEX IF NOT EXISTS idx_email_log_user ON email_log (user_id, sent_at)`,
+  `CREATE INDEX IF NOT EXISTS idx_email_log_to ON email_log (to_addr, sent_at)`,
 ];
 
 /**
@@ -468,6 +470,8 @@ const ADD_COLUMNS: { table: string; column: string; ddl: string }[] = [
   },
   { table: 'user', column: 'banReason', ddl: 'ALTER TABLE "user" ADD COLUMN banReason TEXT' },
   { table: 'user', column: 'banExpires', ddl: 'ALTER TABLE "user" ADD COLUMN banExpires TEXT' },
+  // email_log gained a status column after its first deploy (ADMIN_PAGE_PLAN §10.3).
+  { table: 'email_log', column: 'status', ddl: 'ALTER TABLE email_log ADD COLUMN status TEXT' },
 ];
 
 const ensureColumns = async (db: Client): Promise<void> => {

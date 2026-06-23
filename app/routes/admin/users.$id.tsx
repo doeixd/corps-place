@@ -7,8 +7,18 @@ import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { getUserDetail } from '@/lib/server-fns/support';
+import { Badge } from '@/components/reui/badge';
+import {
+  getUserDetail,
+  listUserEmails,
+  listUserSessions,
+  revokeUserSessions,
+  logSignInLinkSent,
+  type EmailLogRow,
+  type SessionRow,
+} from '@/lib/server-fns/support';
 import { exportUserData, anonymizeUser } from '@/lib/server-fns/admin-users';
+import { authClient } from '@/lib/auth-client';
 import { seoHead } from '@/lib/seo';
 
 type Detail = Awaited<ReturnType<typeof getUserDetail>>;
@@ -25,6 +35,8 @@ export const Route = createFileRoute('/admin/users/$id')({
 
 function UserDetail({ id }: { id: string }) {
   const [detail, setDetail] = useState<Detail | null>(null);
+  const [emails, setEmails] = useState<EmailLogRow[] | null>(null);
+  const [sessions, setSessions] = useState<SessionRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,12 +44,43 @@ function UserDetail({ id }: { id: string }) {
     getUserDetail({ data: { userId: id } })
       .then((d) => alive && setDetail(d))
       .catch((e: unknown) => alive && setError((e as Error).message));
+    listUserEmails({ data: { userId: id } })
+      .then((e) => alive && setEmails(e))
+      .catch(() => {});
+    listUserSessions({ data: { userId: id } })
+      .then((s) => alive && setSessions(s))
+      .catch(() => {});
     return () => {
       alive = false;
     };
   }, [id]);
 
   const [actionMsg, setActionMsg] = useState<string | null>(null);
+
+  const revokeSessions = async () => {
+    if (!confirm('Sign this user out of all sessions?')) return;
+    try {
+      const r = await revokeUserSessions({ data: { userId: id } });
+      setActionMsg(`Revoked ${r.revoked} session(s).`);
+      setSessions([]);
+    } catch (e) {
+      setActionMsg((e as Error).message);
+    }
+  };
+
+  const sendSignInLink = async () => {
+    const email = detail?.user.email;
+    if (!email) return setActionMsg('No email on file.');
+    try {
+      await logSignInLinkSent({ data: { userId: id } });
+      const res = await authClient.signIn.magicLink({ email, callbackURL: '/' });
+      setActionMsg(
+        res.error ? (res.error.message ?? 'Send failed') : `Sign-in link sent to ${email}.`
+      );
+    } catch (e) {
+      setActionMsg((e as Error).message);
+    }
+  };
 
   const exportData = async () => {
     try {
@@ -119,6 +162,88 @@ function UserDetail({ id }: { id: string }) {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold text-text-secondary">
+            Sessions {sessions ? `(${sessions.length})` : ''}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2 text-sm">
+          {!sessions ? (
+            <p className="text-text-secondary">Loading…</p>
+          ) : sessions.length === 0 ? (
+            <p className="text-text-secondary">No active sessions.</p>
+          ) : (
+            <div className="flex flex-col divide-y divide-border">
+              {sessions.map((s) => (
+                <div key={s.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-1.5">
+                  <span>{s.ipAddress ?? 'unknown IP'}</span>
+                  <span className="truncate text-xs text-text-secondary">{s.userAgent ?? ''}</span>
+                  <span className="ml-auto text-xs text-text-secondary tabular-nums">
+                    {s.createdAt ? new Date(s.createdAt).toLocaleString() : ''}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={!sessions || sessions.length === 0}
+              onClick={() => void revokeSessions()}
+            >
+              Sign out everywhere
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => void sendSignInLink()}>
+              Send sign-in link
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold text-text-secondary">
+            Communications {emails ? `(${emails.length})` : ''}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm">
+          {!emails ? (
+            <p className="text-text-secondary">Loading…</p>
+          ) : emails.length === 0 ? (
+            <p className="text-text-secondary">No emails sent to this user.</p>
+          ) : (
+            <div className="flex flex-col divide-y divide-border">
+              {emails.map((e) => (
+                <div
+                  key={e.emailId}
+                  className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-1.5"
+                >
+                  <span className="font-medium">{e.subject ?? '(no subject)'}</span>
+                  {e.tag ? (
+                    <Badge variant="secondary" size="sm">
+                      {e.tag}
+                    </Badge>
+                  ) : null}
+                  {e.status && e.status !== 'sent' ? (
+                    <Badge
+                      variant={e.status === 'failed' ? 'destructive-light' : 'outline'}
+                      size="sm"
+                    >
+                      {e.status}
+                    </Badge>
+                  ) : null}
+                  <span className="ml-auto text-xs text-text-secondary tabular-nums">
+                    {new Date(e.sentAt).toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card className="mt-4">
         <CardHeader>
