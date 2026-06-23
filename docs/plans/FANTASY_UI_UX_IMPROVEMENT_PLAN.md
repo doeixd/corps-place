@@ -607,3 +607,186 @@ shim; owner cancel/transfer; `InviteService.getOrCreateShareLink`;
 - **Q9 — Status narration source.** `describeLeagueState` needs draft timing +
   quiz-taken counts; confirm `getLeague`'s payload carries enough (draft
   scheduled_at, per-member quiz_taken) or extend it.
+
+---
+
+## 12. Draft scheduling, notifications & the auto-picker
+
+### 12.1 How it works today (grounded in the code)
+- `scheduledAt` is stored on `fantasy_drafts`; the SchedulePanel sets it. On schedule,
+  `enqueueDraftReminders` (`app/lib/fantasy/jobs.ts`) writes `draft_soon_60` +
+  `draft_soon_10` rows into `fantasy_scheduled_jobs`; the cron
+  `NotificationService.dispatch` emails active members — **only when**
+  `config.notify.email` is on.
+- The draft does **not** auto-start at `scheduledAt`. An owner must click "Start draft
+  now" (`DraftService.start`). The scheduled time is purely a reminder anchor + a label.
+- The per-pick clock is an **in-memory detached `Fiber` per league** (`armTimer` /
+  `timerFibers`); on expiry it runs `runAutoPickIfDue`. On boot, self-heal re-arms live
+  drafts from `pick_deadline_at`. The on-clock user gets a **push** ("You're on the
+  clock"); nothing else is pushed.
+- Auto-pick = the highest prior-season-finals-ranked **legal** `(corps, caption)` pair
+  (`rankedOptions` × `selectAutoPick`, filtered by `legalityError`). The member has no
+  input; they only learn a pick was auto-made from the `auto_picked` flag in the snapshot.
+
+### 12.2 Problems
+- **Scheduling is half-built**: a time + email reminders, but no auto-start, so a
+  scheduled draft stalls until the owner is online to click. On a small async league the
+  owner may simply not be there — defeating the point of scheduling.
+- **Inconsistent channels**: email-only reminders, push-only on-clock, and *nothing* for
+  "draft is live now", "you were auto-picked X", "you're up next", or "draft complete".
+- **Auto-pick ignores intent**: it can hand a member a caption they never wanted while a
+  corps they were targeting is still on the board. There's no pre-draft queue.
+- **The clock isn't durable**: in-memory + single-instance. A process restart only
+  re-arms on boot (a deadline that passed during downtime isn't actioned until then), and
+  any horizontal scaling would double-fire timers.
+
+### 12.3 Auto-start — decision
+**Recommended: auto-start at `scheduledAt`, owner-gated by quorum + a kill switch.**
+When the T-10 reminder fires, also schedule an `auto_start` job at `scheduledAt`. At T-0
+the cron transitions `scheduled → live` **iff** a quorum is met (≥2 active members with a
+corps identity; quiz seeding complete if `quiz.enabled`). If quorum fails, hold and notify
+the owner ("not enough players — start manually or reschedule"). The owner keeps **Start
+now** (early) and **Postpone**.
+- *Lighter alternative*: keep manual start, but at T-0 push/email the owner a one-tap
+  "Your draft is ready — start it" deep link. Less magic; the owner must still act.
+- *Open*: auto-start a draft whose quiz seeding isn't complete? (needs quiz_taken counts —
+  ties Q9.)
+
+### 12.4 Notification matrix (event → audience → channel)
+Centralize every draft/league event behind one `NotificationService.emit(kind, leagueId,
+payload)` that resolves audience + channels + per-user prefs (default from
+`config.notify`) + dedups. Retire the ad-hoc `sendPushToUser` / `notifyOnClock` calls.
+
+| Event | Audience | Channels | Notes |
+|---|---|---|---|
+| `draft_scheduled` / `rescheduled` | all members | push + email | optionally attach an `.ics` |
+| `draft_soon_60` / `_10` | all members | push + email | currently email-only |
+| `draft_started` | all members | push | "the room is open" deep link |
+| `on_clock` | the picker | push | exists; add a **T-30s** "hurry" nudge |
+| `up_next` (N picks away) | next picker | push | lookahead so they can get to the room |
+| `auto_picked_you` | the picker | push + email | "we auto-picked GE1 — Blue Devils for you" |
+| `draft_paused` / `resumed` | all members | push | owner action |
+| `draft_complete` | all members | push + email | link to rosters / standings |
+| `standings` / `season_complete` (existing) | members | email | keep the digests |
+
+### 12.5 The auto-picker — what it should do
+A **layered policy** (first layer that yields a legal pick wins), kept as a *pure*
+function `chooseAutoPick(state) -> pick | null` (extends `selectAutoPick`) so it's
+exhaustively unit-testable; the service stays the IO shell:
+1. **Member draft queue (autodraft list)** — the biggest win and what makes async/away
+   drafts viable. A member pre-ranks a personal wishlist of `(corps[, caption])`; auto-pick
+   takes their top still-legal entry. New table
+   `fantasy_draft_queue(league_id, user_id, seq, corps_key, caption?)`, editable pre-draft
+   and live.
+2. **Roster-need fill** — if the queue is empty/exhausted, prefer the best legal pair for a
+   caption the member still *must* fill (scarce remaining slots under `captionCaps`), so
+   nobody is stranded unable to complete a roster.
+3. **Best-ranked legal** — current behavior, as the final fallback.
+
+Behavior controls (per-league `config` and/or per-member):
+- **Presence-aware timing** — only auto-pick if the picker is *absent* (no heartbeat). If
+  present, let the full timer run and push a T-30s warning instead of picking early.
+- **Skip vs auto-pick** — league option: on timeout either auto-pick (default) or
+  *skip-and-return* (a deferred slot the member can fill before the round closes).
+- **Always notify** the member what was auto-picked and *why* (queue / need / rank).
+
+### 12.6 Clock durability
+- Make the cron `dispatch` ALSO sweep overdue live drafts (`pick_deadline_at < now`) and
+  run `runAutoPickIfDue` — so a deadline missed during downtime is caught on the next tick,
+  not only on reboot. The DB's `pick_deadline_at` is the single source of truth; the Fiber
+  is just a low-latency optimization.
+- `runAutoPickIfDue` already CASes on `pick_deadline_at` (no-op if it moved) — make that
+  the authority so the Fiber and the cron sweep are idempotent together (a pre-req before
+  ever running >1 instance).
+
+### 12.7 Milestone
+**F7 — Scheduling + notifications + smart auto-pick.** Auto-start (or one-tap owner start)
+at `scheduledAt`; the full notification matrix via a unified `emit`; the member draft
+queue + layered auto-pick policy + presence-aware timing; the cron overdue-sweep.
+- **Accept:** a scheduled draft starts (or prompts) at its time; members get push+email
+  across the lifecycle; a queue-driven auto-pick fires for an away member and notifies
+  them; killing the process mid-draft and waiting past a deadline still advances on the
+  next cron tick.
+
+---
+
+## 13. Business logic as state machines
+
+### 13.1 Where machines already are (keep)
+Client UI orchestration is already xstate: `fantasy-draft-machine`
+(ready→scheduling→starting→picking→pausing→resuming) and `fantasy-quiz-machine`
+(deciding→idle→starting→answering→done). These model the **component's request
+lifecycle** (invoke server-fns, track busy/error) — leave them as-is.
+
+### 13.2 Where the domain logic is NOT a machine (and should be)
+Server-side, the real lifecycle transitions are imperative Effect + scattered SQL UPDATEs
+with ad-hoc guards:
+- **Draft lifecycle** (`draft.status`: scheduled → live ↔ paused → complete) —
+  `start` / `pause` / `resume` / `makePick` / auto-pick / complete each hand-roll their own
+  status checks and the next-state UPDATE. Legal transitions aren't enforced in one place,
+  so a new code path can drive an inconsistent state.
+- **League lifecycle** (`league.status`: setup → quiz → scheduled → drafting → active →
+  complete → canceled) — transitions are implicit and spread across
+  create / updateConfig / draft-start / draft-complete / cancel. `league.status` and
+  `draft.status` are coupled but maintained independently (e.g. draft 'live' while the
+  league isn't 'drafting').
+- **Quiz attempt** (not_started → in_progress → completed) — resume + one-scored-attempt
+  enforced by inline SQL guards in `QuizService`.
+
+### 13.3 Recommended shape — a pure transition core + an Effect IO shell
+Don't run a stateful xstate **actor** on the server (persistence + horizontal-scaling
+pain). Model each domain lifecycle as a **pure reducer**:
+```
+transition(state, event): { next: State; effects: Effect[] } | IllegalTransition
+```
+- The machine is *data*: states, events, guards, next state — exhaustively + property
+  testable with zero IO.
+- The service becomes a thin shell: load state → `transition()` → persist `next` + run
+  `effects` (SQL writes, PubSub broadcast, `NotificationService.emit`, arm/cancel timer)
+  inside one `sql.withTransaction`.
+- Illegal transitions become a single typed error (`DraftConflict` / `LeagueConflict`) **by
+  construction**, not a forgotten `if`.
+
+This stays idiomatic Effect (services + layers) while making each lifecycle explicit,
+testable, and impossible to drive into an inconsistent state.
+
+### 13.4 Candidates, in priority order
+1. **Draft machine (server)** — highest value; most stateful + concurrency-sensitive (clock,
+   auto-pick, pause). Fold per-pick advance + auto-pick into the reducer; the Fiber/cron
+   only inject a `DEADLINE` event. Pairs directly with §12.
+2. **League lifecycle machine** — make `league.status` transitions *total* and couple them
+   to draft events (draft started ⇒ 'drafting'; draft complete ⇒ 'active'; cancel ⇒
+   'canceled' from any non-terminal). One owner of "what's a legal next status."
+3. **Quiz attempt machine** — small, but centralizes the resume + one-scored-attempt
+   invariant.
+
+Leave plain CRUD (invites, membership identity, media) as ordinary service methods — a
+machine there is over-engineering.
+
+### 13.5 Migration approach (non-breaking)
+- Add `app/lib/fantasy/machines/draft.ts` as a pure module: `DraftState`, `DraftEvent`,
+  `draftReducer`. Unit-test every state×event (including illegal).
+- Refactor `DraftService` method-by-method to delegate the *decision* to the reducer,
+  keeping the existing integration tests green as the safety net — **pure extraction, no
+  behavior change** in the first pass.
+- Then layer §12's new events (`DEADLINE` with queue policy, `AUTO_START`, presence) onto
+  the reducer.
+- Repeat for the league + quiz lifecycles.
+- **Accept:** the reducer has full state×event coverage; `DraftService` / `LeagueService`
+  delegate to it; integration tests unchanged; an illegal transition returns a typed
+  conflict (proven by a test).
+
+**F8 — State-machine extraction.** Ship the draft reducer first (behind the green
+integration tests), then league + quiz. Independent of F7 but they compose: F7's new
+scheduling/auto-pick events land cleanly as reducer events once F8's draft machine exists,
+so prefer **F8 draft reducer → F7 behaviors** if doing both.
+
+### 13.6 Open questions
+- **Q10 — xstate vs hand-rolled reducer server-side?** Recommend a plain typed reducer (no
+  xstate runtime on the server) for testability + zero deps; xstate stays client-only.
+- **Q11 — One machine or two?** Collapse `league.status` + `draft.status` into one machine,
+  or two coordinated machines (draft emits events the league machine consumes)? Lean two
+  coordinated (separate tables, clear ownership).
+- **Q12 — Presence source.** For presence-aware auto-pick, where does the heartbeat live —
+  a lightweight `fantasy_presence` table updated over the SSE connection, or ephemeral
+  in-memory? Durability vs simplicity.
