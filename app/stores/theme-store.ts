@@ -1,8 +1,8 @@
 import { createStore } from '@xstate/store';
+import { writeThemeCookie } from '@/lib/theme-cookie';
+import type { Theme } from '@/lib/theme-cookie';
 
-export type Theme = 'light' | 'dark';
-
-export const THEME_STORAGE_KEY = 'corps-place-theme';
+export type { Theme };
 
 /**
  * Read the theme the no-FOUC inline script (see `__root.tsx`) already committed
@@ -41,11 +41,8 @@ export function applyTheme(theme: Theme): void {
     requestAnimationFrame(() => style.remove());
   });
 
-  try {
-    localStorage.setItem(THEME_STORAGE_KEY, theme);
-  } catch {
-    // Ignore storage failures (private mode, disabled cookies, etc.)
-  }
+  // Cookie (not localStorage) so the server can render the right theme during SSR.
+  writeThemeCookie(theme);
 }
 
 export const themeStore = createStore({

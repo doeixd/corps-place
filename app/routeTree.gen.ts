@@ -60,6 +60,7 @@ import { Route as EventsYearSlugSlugPredictionRouteImport } from './routes/event
 import { ServerRoute as SitemapDotxmlServerRouteImport } from './routes/sitemap[.]xml'
 import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]txt'
 import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[.]ico'
+import { ServerRoute as AppIconDotsvgServerRouteImport } from './routes/app-icon[.]svg'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
 import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
 import { ServerRoute as ApiFantasyStripeWebhookServerRouteImport } from './routes/api/fantasy/stripe-webhook'
@@ -316,6 +317,11 @@ const RobotsDottxtServerRoute = RobotsDottxtServerRouteImport.update({
 const FaviconDoticoServerRoute = FaviconDoticoServerRouteImport.update({
   id: '/favicon.ico',
   path: '/favicon.ico',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const AppIconDotsvgServerRoute = AppIconDotsvgServerRouteImport.update({
+  id: '/app-icon.svg',
+  path: '/app-icon.svg',
   getParentRoute: () => rootServerRouteImport,
 } as any)
 const ApiMediaServerRoute = ApiMediaServerRouteImport.update({
@@ -703,6 +709,7 @@ export interface RootRouteChildren {
   EventsYearSlugSlugPredictionRoute: typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileServerRoutesByFullPath {
+  '/app-icon.svg': typeof AppIconDotsvgServerRoute
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
@@ -716,6 +723,7 @@ export interface FileServerRoutesByFullPath {
   '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
 }
 export interface FileServerRoutesByTo {
+  '/app-icon.svg': typeof AppIconDotsvgServerRoute
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
@@ -730,6 +738,7 @@ export interface FileServerRoutesByTo {
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
+  '/app-icon.svg': typeof AppIconDotsvgServerRoute
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
@@ -745,6 +754,7 @@ export interface FileServerRoutesById {
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
   fullPaths:
+    | '/app-icon.svg'
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
@@ -758,6 +768,7 @@ export interface FileServerRouteTypes {
     | '/api/fantasy/draft/$leagueId/stream'
   fileServerRoutesByTo: FileServerRoutesByTo
   to:
+    | '/app-icon.svg'
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
@@ -771,6 +782,7 @@ export interface FileServerRouteTypes {
     | '/api/fantasy/draft/$leagueId/stream'
   id:
     | '__root__'
+    | '/app-icon.svg'
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
@@ -785,6 +797,7 @@ export interface FileServerRouteTypes {
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
+  AppIconDotsvgServerRoute: typeof AppIconDotsvgServerRoute
   FaviconDoticoServerRoute: typeof FaviconDoticoServerRoute
   RobotsDottxtServerRoute: typeof RobotsDottxtServerRoute
   SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
@@ -1147,6 +1160,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof FaviconDoticoServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/app-icon.svg': {
+      id: '/app-icon.svg'
+      path: '/app-icon.svg'
+      fullPath: '/app-icon.svg'
+      preLoaderRoute: typeof AppIconDotsvgServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/media': {
       id: '/api/media'
       path: '/api/media'
@@ -1269,6 +1289,7 @@ export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 const rootServerRouteChildren: RootServerRouteChildren = {
+  AppIconDotsvgServerRoute: AppIconDotsvgServerRoute,
   FaviconDoticoServerRoute: FaviconDoticoServerRoute,
   RobotsDottxtServerRoute: RobotsDottxtServerRoute,
   SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
