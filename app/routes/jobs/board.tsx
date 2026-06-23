@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useActionState } from 'react';
+import { useState, useActionState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,21 +23,50 @@ export const Route = createFileRoute('/jobs/board')({
 
 function BoardPage() {
   const initial = Route.useLoaderData();
+  const [keyword, setKeyword] = useState('');
+  const [data, setData] = useState(initial);
+  const [loading, setLoading] = useState(false);
 
-  const [state, fetchMore, isPending] = useActionState(async (prev: typeof initial) => {
-    const next = await listJobs({ offset: prev.rows.length, limit: 20 });
-    return { rows: [...prev.rows, ...next.rows], total: next.total };
-  }, initial);
+  const doSearch = async () => {
+    setLoading(true);
+    const results = await listJobs({ keyword: keyword || undefined, offset: 0, limit: 20 });
+    setData(results);
+    setLoading(false);
+  };
 
-  const rows = state.rows;
-  const total = state.total;
+  const loadMore = async () => {
+    setLoading(true);
+    const next = await listJobs({
+      keyword: keyword || undefined,
+      offset: data.rows.length,
+      limit: 20,
+    });
+    setData((prev) => ({ rows: [...prev.rows, ...next.rows], total: next.total }));
+    setLoading(false);
+  };
+
+  const rows = data.rows;
+  const total = data.total;
   const hasMore = rows.length < total;
 
   return (
     <PageShell>
       <PageHeader title="Job Board" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
 
-      {rows.length === 0 ? (
+      <div className="flex gap-2">
+        <input
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && doSearch()}
+          placeholder="Search jobs by keyword…"
+          className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+        />
+        <Button onClick={doSearch} disabled={loading} variant="outline" size="sm">
+          <Icon icon={Search01Icon} size="sm" /> {loading ? '…' : 'Search'}
+        </Button>
+      </div>
+
+      {rows.length === 0 && !loading ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
             <Icon icon={Search01Icon} size="xl" className="text-text-muted" />
@@ -95,8 +124,8 @@ function BoardPage() {
 
           {hasMore ? (
             <div className="flex justify-center pt-2">
-              <Button onClick={fetchMore} disabled={isPending} variant="outline" size="sm">
-                {isPending ? 'Loading…' : `Load more (${rows.length} of ${total})`}
+              <Button onClick={loadMore} disabled={loading} variant="outline" size="sm">
+                {loading ? 'Loading…' : `Load more (${rows.length} of ${total})`}
               </Button>
             </div>
           ) : null}

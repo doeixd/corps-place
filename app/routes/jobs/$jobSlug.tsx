@@ -6,8 +6,13 @@ import { Icon } from '@/components/icon';
 import { Badge } from '@/components/ui/badge';
 import { PageShell } from '@/components/page-shell';
 import { buildSeo, clampDescription, jsonLdScript } from '@/lib/seo';
-import { getJobPosting, applyToJob } from '@/lib/server-fns/jobs';
-import { Briefcase01Icon, MapPin01Icon, CheckmarkCircle02Icon } from '@/components/icons/generated';
+import { getJobPosting, applyToJob, reportContent } from '@/lib/server-fns/jobs';
+import {
+  Briefcase01Icon,
+  MapPin01Icon,
+  CheckmarkCircle02Icon,
+  Alert02Icon,
+} from '@/components/icons/generated';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/jobs/$jobSlug')({
@@ -157,6 +162,21 @@ function JobDetail() {
                   <Icon icon={CheckmarkCircle02Icon} size="xs" /> Applied
                 </span>
               ) : null}
+              <Button
+                onClick={async () => {
+                  if (confirm('Report this job posting as inappropriate?')) {
+                    await reportContent({ targetKind: 'posting', targetId: job.posting_id }).catch(
+                      () => {}
+                    );
+                    alert('Report submitted. A moderator will review it.');
+                  }
+                }}
+                variant="ghost"
+                size="xs"
+                className="text-text-muted hover:text-destructive"
+              >
+                <Icon icon={Alert02Icon} size="xs" /> Report
+              </Button>
             </div>
           </div>
 
