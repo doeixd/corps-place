@@ -212,3 +212,59 @@ export const applyToJob = createServerFn({ method: 'POST' })
     );
     return { ok: true as const, applicationId: result.applicationId };
   });
+
+// ── Claims ───────────────────────────────────────────────────────────────────
+
+export const suggestClaimMatches = createServerFn({ method: 'GET' })
+  .validator((d: { userName: string }) => d)
+  .handler(async ({ data }) =>
+    Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.suggestClaimMatches(data.userName)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    )
+  );
+
+export const claimPerson = createServerFn({ method: 'POST' })
+  .validator((d: { entityType: string; entityId: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    const profile = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    if (!profile) throw new Error('Create a profile first');
+    const claimId = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.claimPerson(
+          ctx.authorId,
+          profile.profile.profile_id,
+          data.entityType,
+          data.entityId,
+          ctx
+        )
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+    return { ok: true as const, claimId };
+  });
+
+export const getMyClaims = createServerFn({ method: 'GET' }).handler(async () => {
+  const ctx = await getJobsCtx().catch(() => null);
+  if (!ctx) return [];
+  return Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) => svc.getClaimsForUser(ctx.authorId)).pipe(
+      Effect.provide(JobsServiceLive)
+    )
+  );
+});
+
+export const checkClaimByEntity = createServerFn({ method: 'GET' })
+  .validator((d: { entityType: string; entityId: string }) => d)
+  .handler(async ({ data }) =>
+    Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.getClaimByEntity(data.entityType, data.entityId)
+      ).pipe(Effect.provide(JobsServiceLive))
+    )
+  );

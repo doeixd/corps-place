@@ -2,14 +2,12 @@ import { Context, Effect, Layer } from 'effect';
 import { SqlClient } from 'effect/unstable/sql';
 import { randomUUID } from 'node:crypto';
 import { JobsSql, JobsSqlLive, requireDurableStorage } from './jobs-sql';
-import {
-  NotFound,
-  Forbidden,
-  StaleWrite,
-  SlugConflict,
-  ProfileExists,
-  type JobsError,
-} from './errors';
+import { getReadModelClient } from '@/lib/read-model-db';
+import { readStaffDirectory, readStaffProfile } from '@sdk/src/readModel/readers';
+import { readJudgeDirectory, readJudgeProfile } from '@sdk/src/readModel/readers';
+import type { StaffProfile, StaffSummary } from '@sdk/src/readModel/builders/staff';
+import type { JudgeProfile, JudgeSummary } from '@sdk/src/readModel/builders/judges';
+import { NotFound, Forbidden, ProfileExists } from './errors';
 
 const newId = () => randomUUID();
 
@@ -519,6 +517,180 @@ const makeJobsService = Effect.gen(function* () {
     };
   });
 
+  // ── Claims ────────────────────────────────────────────────────────────────
+
+  const getClaimsForUser = Effect.fn('JobsService.getClaimsForUser')(function* (userId: string) {
+    return yield* sql<{
+      claim_id: string;
+      profile_id: string;
+      entity_type: string;
+      entity_id: string;
+      status: string;
+      claimed_at: string;
+    }>`SELECT claim_id, profile_id, entity_type, entity_id, status, claimed_at
+       FROM jobs_person_claim WHERE user_id = ${userId} ORDER BY claimed_at DESC`;
+  });
+
+  const getClaimByEntity = Effect.fn('JobsService.getClaimByEntity')(function* (
+    entityType: string,
+    entityId: string
+  ) {
+    const rows = yield* sql<{
+      claim_id: string;
+      user_id: string;
+      profile_id: string;
+      status: string;
+    }>`SELECT claim_id, user_id, profile_id, status FROM jobs_person_claim
+       WHERE entity_type = ${entityType} AND entity_id = ${entityId} AND status = 'active' LIMIT 1`;
+    return rows[0] ?? null;
+  });
+
+  const claimPerson = Effect.fn('JobsService.claimPerson')(function* (
+    userId: string,
+    profileId: string,
+    entityType: string,
+    entityId: string,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+
+    // Check not already claimed
+    const existing = yield* sql<{
+      claim_id: string;
+    }>`SELECT claim_id FROM jobs_person_claim WHERE entity_type = ${entityType} AND entity_id = ${entityId} AND status = 'active' LIMIT 1`;
+    if (existing[0]) return yield* Effect.fail(new Error('This page is already claimed'));
+
+    const claimId = newId();
+    yield* sql`INSERT INTO jobs_person_claim (claim_id, user_id, profile_id, entity_type, entity_id, status, claimed_at)
+               VALUES (${claimId}, ${userId}, ${profileId}, ${entityType}, ${entityId}, 'active', ${ctx.now})`;
+    yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
+               VALUES (${newId()}, 'claim', ${claimId}, ${ctx.authorId}, ${ctx.actorRole}, 'create', ${ctx.now})`;
+
+    // Read read-model profile to seed blocks (bridge async SDK readers via Effect.promise)
+    const db = getReadModelClient();
+    let displayName = '';
+    if (entityType === 'staff') {
+      const profile = yield* Effect.promise(() => readStaffProfile(db, entityId));
+      if (profile) {
+        displayName = profile.display_name;
+        // Seed summary from biography
+        if (profile.biography) {
+          const summaryJson = JSON.stringify({
+            format: 'lexical',
+            version: 1,
+            doc: profile.biography,
+            plain: profile.biography.slice(0, 500),
+          });
+          yield* writeBlock(profileId, 'summary', summaryJson, ctx);
+        }
+        // Seed experience from assignments
+        if (profile.assignments.length > 0) {
+          const exp = {
+            items: profile.assignments.map((a) => ({
+              org: a.corps_name ?? '',
+              role: a.title ?? '',
+              startYear: a.season ?? '',
+              endYear: a.season ?? '',
+            })),
+          };
+          yield* writeBlock(profileId, 'experience', JSON.stringify(exp), ctx);
+        }
+        // Seed location from bioFacts
+        if (profile.bioFacts?.hometown) {
+          yield* sql`UPDATE jobs_profile SET location = ${profile.bioFacts.hometown}, updated_at = ${ctx.now} WHERE profile_id = ${profileId}`;
+        }
+        // Seed skills from caption assignments
+        const captions = [...new Set(profile.assignments.map((a) => a.caption).filter(Boolean))];
+        if (captions.length > 0) {
+          yield* writeBlock(profileId, 'skills', JSON.stringify({ items: captions }), ctx);
+        }
+      }
+    } else if (entityType === 'judge') {
+      const profile = yield* Effect.promise(() => readJudgeProfile(db, entityId));
+      if (profile) {
+        displayName = profile.display_name;
+        if (profile.biography) {
+          const summaryJson = JSON.stringify({
+            format: 'lexical',
+            version: 1,
+            doc: profile.biography,
+            plain: profile.biography.slice(0, 500),
+          });
+          yield* writeBlock(profileId, 'summary', summaryJson, ctx);
+        }
+        if (profile.assignments.length > 0) {
+          const exp = {
+            items: profile.assignments.map((a) => ({
+              org: a.competition_name ?? '',
+              role: `Judge — ${a.caption ?? ''}`,
+              startYear: a.season ?? '',
+              endYear: a.season ?? '',
+            })),
+          };
+          yield* writeBlock(profileId, 'experience', JSON.stringify(exp), ctx);
+        }
+      }
+    }
+
+    // Update display name from the read-model
+    if (displayName) {
+      yield* sql`UPDATE jobs_profile SET display_name = ${displayName}, updated_at = ${ctx.now} WHERE profile_id = ${profileId}`;
+    }
+
+    return claimId;
+  });
+
+  const revokeClaim = Effect.fn('JobsService.revokeClaim')(function* (
+    claimId: string,
+    revokedBy: string,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    yield* sql`UPDATE jobs_person_claim SET status = 'revoked', revoked_at = ${ctx.now}, revoked_by = ${revokedBy}
+               WHERE claim_id = ${claimId}`;
+    yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
+               VALUES (${newId()}, 'claim', ${claimId}, ${ctx.authorId}, ${ctx.actorRole}, 'revoke', ${ctx.now})`;
+  });
+
+  const suggestClaimMatches = Effect.fn('JobsService.suggestClaimMatches')(function* (
+    userName: string
+  ) {
+    const q = userName.toLowerCase().trim();
+    if (q.length < 2) return [];
+    const db = getReadModelClient();
+
+    // Search staff directory
+    const staffAll = readStaffDirectory(db);
+    const judgeAll = readJudgeDirectory(db);
+    const [staffList, judgeList] = yield* Effect.promise(() => Promise.all([staffAll, judgeAll]));
+
+    const staffMatches = staffList
+      .filter((s) => s.display_name.toLowerCase().includes(q))
+      .slice(0, 5)
+      .map((s) => ({
+        entityType: 'staff' as const,
+        entityId: s.person_id,
+        displayName: s.display_name,
+        photoUrl: s.photo_url ?? null,
+        description: s.default_title ?? `${s.corps_count} corps`,
+        seasons: s.seasons,
+      }));
+
+    const judgeMatches = judgeList
+      .filter((j) => j.display_name.toLowerCase().includes(q))
+      .slice(0, 5)
+      .map((j) => ({
+        entityType: 'judge' as const,
+        entityId: j.judge_id,
+        displayName: j.display_name,
+        photoUrl: j.photo_url ?? null,
+        description: `${j.assignment_count} assignments`,
+        seasons: j.seasons,
+      }));
+
+    return [...staffMatches, ...judgeMatches].slice(0, 8);
+  });
+
   // ── Ownership guard ─────────────────────────────────────────────────────
 
   const requireOwner = Effect.fn('JobsService.requireOwner')(function* (
@@ -552,6 +724,11 @@ const makeJobsService = Effect.gen(function* () {
     updatePosting,
     closePosting,
     applyToPosting,
+    getClaimsForUser,
+    getClaimByEntity,
+    claimPerson,
+    revokeClaim,
+    suggestClaimMatches,
   };
 });
 
