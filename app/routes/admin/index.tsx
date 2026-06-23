@@ -5,15 +5,18 @@
 // and lands later.
 import { createFileRoute } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
-import { requireAdminLoader } from '@/lib/admin-loader';
+import { Show } from 'jotai-solid-api';
+import { adminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
-import { adminStatusMachine } from '@/machines/admin-status-machine';
+import { adminStatusMachine, type AdminStatus } from '@/machines/admin-status-machine';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { adminStatus } from '@/lib/server-fns/admin';
 import { seoHead } from '@/lib/seo';
 
 export const Route = createFileRoute('/admin/')({
-  loader: requireAdminLoader('viewAdmin'),
+  // Fetch the first snapshot in the loader (SSR); the machine re-polls from there.
+  loader: adminLoader('viewAdmin', () => adminStatus()),
   head: () =>
     seoHead({ title: 'Admin — Overview', description: 'Operator console', path: '/admin' }),
   component: AdminOverview,
@@ -44,14 +47,13 @@ function StatCard({ title, rows }: { title: string; rows: [string, number | stri
 }
 
 function AdminOverview() {
-  const gate = Route.useLoaderData();
-  return <AdminPage gate={gate}>{() => <Overview />}</AdminPage>;
+  const { gate, data } = Route.useLoaderData();
+  return <AdminPage gate={gate}>{() => <Overview initial={data} />}</AdminPage>;
 }
 
-function Overview() {
-  const [state] = useMachine(adminStatusMachine, { input: {} });
+function Overview({ initial }: { initial: AdminStatus | null }) {
+  const [state] = useMachine(adminStatusMachine, { input: { status: initial } });
   const s = state.context.status;
-  const loading = !s && state.matches('fetching');
 
   return (
     <>
@@ -59,35 +61,33 @@ function Overview() {
         title="Overview"
         subtitle={s ? `Snapshot ${new Date(s.generatedAt).toLocaleTimeString()}` : 'Loading…'}
       />
-      {state.context.error ? (
+      <Show when={state.context.error}>
         <p className="mb-4 text-sm text-destructive">{state.context.error}</p>
-      ) : null}
-      {loading ? (
-        <p className="text-sm text-text-secondary">Loading status…</p>
-      ) : s ? (
+      </Show>
+      <Show when={s} fallback={<p className="text-sm text-text-secondary">Loading status…</p>}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard
             title="Wiki (contributions)"
             rows={[
-              ['Pages', s.wiki.pages],
-              ['Revisions', s.wiki.revisions],
-              ['Media', s.wiki.media],
-              ['Citations', s.wiki.citations],
+              ['Pages', s!.wiki.pages],
+              ['Revisions', s!.wiki.revisions],
+              ['Media', s!.wiki.media],
+              ['Citations', s!.wiki.citations],
             ]}
           />
           <StatCard
             title="Fantasy"
             rows={[
-              ['Leagues', s.fantasy.leagues],
-              ['Members', s.fantasy.members],
+              ['Leagues', s!.fantasy.leagues],
+              ['Members', s!.fantasy.members],
             ]}
           />
           <StatCard
             title="Storage"
-            rows={[['contributions.db', fmtBytes(s.contributionsDb.sizeBytes)]]}
+            rows={[['contributions.db', fmtBytes(s!.contributionsDb.sizeBytes)]]}
           />
         </div>
-      ) : null}
+      </Show>
     </>
   );
 }

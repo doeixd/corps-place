@@ -1,12 +1,13 @@
-// Unified user detail — the support home base (ADMIN_PAGE_PLAN §10.1). Aggregates an
-// account + its activity across features. Cap: customerSupport.
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
-import { requireAdminLoader } from '@/lib/admin-loader';
+// Unified user detail — the support home base (ADMIN_PAGE_PLAN §10.1). Account +
+// activity + sessions + communications, with recovery (revoke sessions, sign-in link)
+// and GDPR (export, erase). All fetched in the loader; refresh via invalidate.
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
+import { Show, For } from 'jotai-solid-api';
+import { adminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { BusyButton } from '@/components/fantasy/busy-button';
 import { Badge } from '@/components/reui/badge';
 import {
   getUserDetail,
@@ -14,103 +15,67 @@ import {
   listUserSessions,
   revokeUserSessions,
   logSignInLinkSent,
-  type EmailLogRow,
-  type SessionRow,
 } from '@/lib/server-fns/support';
 import { exportUserData, anonymizeUser } from '@/lib/server-fns/admin-users';
+import { useAsyncAction } from '@/lib/use-async-action';
 import { authClient } from '@/lib/auth-client';
 import { seoHead } from '@/lib/seo';
 
-type Detail = Awaited<ReturnType<typeof getUserDetail>>;
-
 export const Route = createFileRoute('/admin/users/$id')({
-  loader: requireAdminLoader('customerSupport'),
+  loader: async ({ params }) =>
+    adminLoader('customerSupport', async () => ({
+      detail: await getUserDetail({ data: { userId: params.id } }),
+      emails: await listUserEmails({ data: { userId: params.id } }),
+      sessions: await listUserSessions({ data: { userId: params.id } }),
+    }))(),
   head: () => seoHead({ title: 'Admin — User', description: 'User detail', path: '/admin/users' }),
   component: () => {
-    const gate = Route.useLoaderData();
+    const { gate, data } = Route.useLoaderData();
     const { id } = Route.useParams();
-    return <AdminPage gate={gate}>{() => <UserDetail id={id} />}</AdminPage>;
+    return (
+      <AdminPage gate={gate}>{() => (data ? <UserDetail id={id} data={data} /> : null)}</AdminPage>
+    );
   },
 });
 
-function UserDetail({ id }: { id: string }) {
-  const [detail, setDetail] = useState<Detail | null>(null);
-  const [emails, setEmails] = useState<EmailLogRow[] | null>(null);
-  const [sessions, setSessions] = useState<SessionRow[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+type Data = {
+  detail: Awaited<ReturnType<typeof getUserDetail>>;
+  emails: Awaited<ReturnType<typeof listUserEmails>>;
+  sessions: Awaited<ReturnType<typeof listUserSessions>>;
+};
 
-  useEffect(() => {
-    let alive = true;
-    getUserDetail({ data: { userId: id } })
-      .then((d) => alive && setDetail(d))
-      .catch((e: unknown) => alive && setError((e as Error).message));
-    listUserEmails({ data: { userId: id } })
-      .then((e) => alive && setEmails(e))
-      .catch(() => {});
-    listUserSessions({ data: { userId: id } })
-      .then((s) => alive && setSessions(s))
-      .catch(() => {});
-    return () => {
-      alive = false;
-    };
-  }, [id]);
+function UserDetail({ id, data }: { id: string; data: Data }) {
+  const router = useRouter();
+  const { user, activity } = data.detail;
 
-  const [actionMsg, setActionMsg] = useState<string | null>(null);
-
-  const revokeSessions = async () => {
+  const revoke = useAsyncAction(async () => {
     if (!confirm('Sign this user out of all sessions?')) return;
-    try {
-      const r = await revokeUserSessions({ data: { userId: id } });
-      setActionMsg(`Revoked ${r.revoked} session(s).`);
-      setSessions([]);
-    } catch (e) {
-      setActionMsg((e as Error).message);
-    }
-  };
-
-  const sendSignInLink = async () => {
-    const email = detail?.user.email;
-    if (!email) return setActionMsg('No email on file.');
-    try {
-      await logSignInLinkSent({ data: { userId: id } });
-      const res = await authClient.signIn.magicLink({ email, callbackURL: '/' });
-      setActionMsg(
-        res.error ? (res.error.message ?? 'Send failed') : `Sign-in link sent to ${email}.`
-      );
-    } catch (e) {
-      setActionMsg((e as Error).message);
-    }
-  };
-
-  const exportData = async () => {
-    try {
-      const data = await exportUserData({ data: { userId: id } });
-      const blob = new Blob([data.json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `user-${id}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      setActionMsg((e as Error).message);
-    }
-  };
-
-  const erase = async () => {
+    await revokeUserSessions({ data: { userId: id } });
+    await router.invalidate();
+  });
+  const signin = useAsyncAction(async () => {
+    if (!user.email) throw new Error('No email on file.');
+    await logSignInLinkSent({ data: { userId: id } });
+    const res = await authClient.signIn.magicLink({ email: user.email, callbackURL: '/' });
+    if (res.error) throw new Error(res.error.message ?? 'Send failed');
+  });
+  const exportAction = useAsyncAction(async () => {
+    const out = await exportUserData({ data: { userId: id } });
+    const url = URL.createObjectURL(new Blob([out.json], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `user-${id}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+  const erase = useAsyncAction(async () => {
     if (!confirm('Erase this user’s PII (GDPR)? Content is kept but anonymized. This bans them.'))
       return;
-    try {
-      await anonymizeUser({ data: { userId: id } });
-      setActionMsg('User anonymized.');
-    } catch (e) {
-      setActionMsg((e as Error).message);
-    }
-  };
+    await anonymizeUser({ data: { userId: id } });
+    await router.invalidate();
+  });
 
-  if (error) return <p className="text-sm text-destructive">{error}</p>;
-  if (!detail) return <p className="text-sm text-text-secondary">Loading…</p>;
-  const { user, activity } = detail;
+  const anyError = revoke.error ?? signin.error ?? exportAction.error ?? erase.error;
 
   return (
     <>
@@ -126,6 +91,10 @@ function UserDetail({ id }: { id: string }) {
           </Link>
         }
       />
+      <Show when={anyError}>
+        <p className="mb-4 text-sm text-destructive">{anyError}</p>
+      </Show>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Card>
           <CardHeader>
@@ -166,39 +135,48 @@ function UserDetail({ id }: { id: string }) {
       <Card className="mt-4">
         <CardHeader>
           <CardTitle className="text-sm font-semibold text-text-secondary">
-            Sessions {sessions ? `(${sessions.length})` : ''}
+            Sessions ({data.sessions.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-2 text-sm">
-          {!sessions ? (
-            <p className="text-text-secondary">Loading…</p>
-          ) : sessions.length === 0 ? (
-            <p className="text-text-secondary">No active sessions.</p>
-          ) : (
+          <Show
+            when={data.sessions.length > 0}
+            fallback={<p className="text-text-secondary">No active sessions.</p>}
+          >
             <div className="flex flex-col divide-y divide-border">
-              {sessions.map((s) => (
-                <div key={s.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-1.5">
-                  <span>{s.ipAddress ?? 'unknown IP'}</span>
-                  <span className="truncate text-xs text-text-secondary">{s.userAgent ?? ''}</span>
-                  <span className="ml-auto text-xs text-text-secondary tabular-nums">
-                    {s.createdAt ? new Date(s.createdAt).toLocaleString() : ''}
-                  </span>
-                </div>
-              ))}
+              <For each={data.sessions}>
+                {(s) => (
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-1.5">
+                    <span>{s.ipAddress ?? 'unknown IP'}</span>
+                    <span className="truncate text-xs text-text-secondary">
+                      {s.userAgent ?? ''}
+                    </span>
+                    <span className="ml-auto text-xs text-text-secondary tabular-nums">
+                      {s.createdAt ? new Date(s.createdAt).toLocaleString() : ''}
+                    </span>
+                  </div>
+                )}
+              </For>
             </div>
-          )}
+          </Show>
           <div className="flex flex-wrap gap-2 pt-1">
-            <Button
+            <BusyButton
               size="sm"
               variant="outline"
-              disabled={!sessions || sessions.length === 0}
-              onClick={() => void revokeSessions()}
+              busy={revoke.busy}
+              disabled={data.sessions.length === 0}
+              onClick={() => void revoke.run()}
             >
               Sign out everywhere
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => void sendSignInLink()}>
+            </BusyButton>
+            <BusyButton
+              size="sm"
+              variant="outline"
+              busy={signin.busy}
+              onClick={() => void signin.run()}
+            >
               Send sign-in link
-            </Button>
+            </BusyButton>
           </div>
         </CardContent>
       </Card>
@@ -206,42 +184,40 @@ function UserDetail({ id }: { id: string }) {
       <Card className="mt-4">
         <CardHeader>
           <CardTitle className="text-sm font-semibold text-text-secondary">
-            Communications {emails ? `(${emails.length})` : ''}
+            Communications ({data.emails.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm">
-          {!emails ? (
-            <p className="text-text-secondary">Loading…</p>
-          ) : emails.length === 0 ? (
-            <p className="text-text-secondary">No emails sent to this user.</p>
-          ) : (
+          <Show
+            when={data.emails.length > 0}
+            fallback={<p className="text-text-secondary">No emails sent to this user.</p>}
+          >
             <div className="flex flex-col divide-y divide-border">
-              {emails.map((e) => (
-                <div
-                  key={e.emailId}
-                  className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-1.5"
-                >
-                  <span className="font-medium">{e.subject ?? '(no subject)'}</span>
-                  {e.tag ? (
-                    <Badge variant="secondary" size="sm">
-                      {e.tag}
-                    </Badge>
-                  ) : null}
-                  {e.status && e.status !== 'sent' ? (
-                    <Badge
-                      variant={e.status === 'failed' ? 'destructive-light' : 'outline'}
-                      size="sm"
-                    >
-                      {e.status}
-                    </Badge>
-                  ) : null}
-                  <span className="ml-auto text-xs text-text-secondary tabular-nums">
-                    {new Date(e.sentAt).toLocaleString()}
-                  </span>
-                </div>
-              ))}
+              <For each={data.emails}>
+                {(e) => (
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-1.5">
+                    <span className="font-medium">{e.subject ?? '(no subject)'}</span>
+                    <Show when={e.tag}>
+                      <Badge variant="secondary" size="sm">
+                        {e.tag}
+                      </Badge>
+                    </Show>
+                    <Show when={e.status && e.status !== 'sent'}>
+                      <Badge
+                        variant={e.status === 'failed' ? 'destructive-light' : 'outline'}
+                        size="sm"
+                      >
+                        {e.status}
+                      </Badge>
+                    </Show>
+                    <span className="ml-auto text-xs text-text-secondary tabular-nums">
+                      {new Date(e.sentAt).toLocaleString()}
+                    </span>
+                  </div>
+                )}
+              </For>
             </div>
-          )}
+          </Show>
         </CardContent>
       </Card>
 
@@ -249,16 +225,23 @@ function UserDetail({ id }: { id: string }) {
         <CardHeader>
           <CardTitle className="text-sm font-semibold text-text-secondary">GDPR</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-2 text-sm">
-          {actionMsg ? <p className="text-text-secondary">{actionMsg}</p> : null}
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => void exportData()}>
-              Export data (JSON)
-            </Button>
-            <Button size="sm" variant="destructive" onClick={() => void erase()}>
-              Erase PII
-            </Button>
-          </div>
+        <CardContent className="flex gap-2 text-sm">
+          <BusyButton
+            size="sm"
+            variant="outline"
+            busy={exportAction.busy}
+            onClick={() => void exportAction.run()}
+          >
+            Export data (JSON)
+          </BusyButton>
+          <BusyButton
+            size="sm"
+            variant="destructive"
+            busy={erase.busy}
+            onClick={() => void erase.run()}
+          >
+            Erase PII
+          </BusyButton>
         </CardContent>
       </Card>
     </>

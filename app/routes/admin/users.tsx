@@ -1,14 +1,15 @@
-// User management (ADMIN_PAGE_PLAN §7/§10). List/search users, change roles, ban,
-// and impersonate ("view as user") — all guard-railed + audited server-side. Gated to
-// admins via requireAdminLoader('manageUsers').
-import { createFileRoute } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
-import { requireAdminLoader } from '@/lib/admin-loader';
+// User management (ADMIN_PAGE_PLAN §7/§10). List, role, ban, impersonate — guard-railed
+// + audited server-side. Users fetched in the loader; the search box filters the loaded
+// list in render (no client re-fetch). Gated to admins.
+import { useState } from 'react';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { Show, For } from 'jotai-solid-api';
+import { adminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { BusyButton } from '@/components/fantasy/busy-button';
 import { Badge } from '@/components/reui/badge';
 import {
   Select,
@@ -17,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useAsyncAction } from '@/lib/use-async-action';
 import {
   listUsers,
   setUserRole,
@@ -31,82 +33,43 @@ import { seoHead } from '@/lib/seo';
 const ROLES: Role[] = ['user', 'trusted', 'moderator', 'admin'];
 
 export const Route = createFileRoute('/admin/users')({
-  loader: requireAdminLoader('manageUsers'),
+  loader: adminLoader('manageUsers', () => listUsers({ data: { q: '', limit: 200 } })),
   head: () =>
     seoHead({ title: 'Admin — Users', description: 'User management', path: '/admin/users' }),
   component: () => {
-    const gate = Route.useLoaderData();
-    return <AdminPage gate={gate}>{() => <Users />}</AdminPage>;
+    const { gate, data } = Route.useLoaderData();
+    return <AdminPage gate={gate}>{() => <Users all={data ?? []} />}</AdminPage>;
   },
 });
 
-function Users() {
+function Users({ all }: { all: AdminUserRow[] }) {
+  const router = useRouter();
   const [q, setQ] = useState('');
-  const [users, setUsers] = useState<AdminUserRow[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState<string | null>(null);
+  // Derived in render (no effect) — filter the loaded list.
+  const term = q.trim().toLowerCase();
+  const users = term
+    ? all.filter(
+        (u) =>
+          (u.name ?? '').toLowerCase().includes(term) ||
+          (u.email ?? '').toLowerCase().includes(term)
+      )
+    : all;
 
-  const load = useCallback((query: string) => {
-    setError(null);
-    listUsers({ data: { q: query, limit: 100 } })
-      .then(setUsers)
-      .catch((e: unknown) => setError((e as Error).message));
-  }, []);
+  const act = useAsyncAction(async (fn: () => Promise<unknown>) => {
+    await fn();
+    await router.invalidate();
+  });
 
-  useEffect(() => {
-    const t = setTimeout(() => load(q), 250);
-    return () => clearTimeout(t);
-  }, [q, load]);
-
-  const changeRole = async (id: string, role: Role) => {
-    setBusy(id);
-    setError(null);
-    try {
-      await setUserRole({ data: { userId: id, role } });
-      setUsers((prev) => prev?.map((u) => (u.id === id ? { ...u, role } : u)) ?? prev);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const toggleBan = async (u: AdminUserRow) => {
-    if (u.banned ? false : !confirm(`Ban ${u.email ?? u.id}?`)) return;
-    setBusy(u.id);
-    setError(null);
-    try {
-      await setUserBanned({ data: { userId: u.id, banned: !u.banned, reason: '' } });
-      setUsers(
-        (prev) => prev?.map((x) => (x.id === u.id ? { ...x, banned: !u.banned } : x)) ?? prev
-      );
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  // Impersonation rides the better-auth client (cookies via the auth route). On
-  // success we land on the home page acting as that user; an admin banner/stop lives
-  // in the global session UI.
-  const impersonate = async (id: string) => {
-    setError(null);
-    try {
-      // Enforce our `impersonate` capability + write the audit row before the actual
-      // (better-auth) impersonation, which only checks adminRoles (H2).
-      await logImpersonation({ data: { userId: id } });
-    } catch (e) {
-      return setError((e as Error).message);
-    }
+  const impersonate = useAsyncAction(async (id: string) => {
+    await logImpersonation({ data: { userId: id } });
     const res = await authClient.admin.impersonateUser({ userId: id });
-    if (res.error) return setError(res.error.message ?? 'Impersonation failed');
+    if (res.error) throw new Error(res.error.message ?? 'Impersonation failed');
     window.location.href = '/';
-  };
+  });
 
   return (
     <>
-      <PageHeader title="Users" subtitle="Roles, search" />
+      <PageHeader title="Users" subtitle="Roles, ban, impersonate" />
       <div className="mb-4 max-w-sm">
         <Input
           placeholder="Search name or email…"
@@ -114,57 +77,66 @@ function Users() {
           onChange={(e) => setQ(e.target.value)}
         />
       </div>
-      {error ? <p className="mb-4 text-sm text-destructive">{error}</p> : null}
+      <Show when={act.error || impersonate.error}>
+        <p className="mb-4 text-sm text-destructive">{act.error ?? impersonate.error}</p>
+      </Show>
       <Card>
         <CardContent className="text-sm">
-          {!users ? (
-            <p className="text-text-secondary">Loading…</p>
-          ) : users.length === 0 ? (
-            <p className="text-text-secondary">No users.</p>
-          ) : (
+          <Show when={users.length > 0} fallback={<p className="text-text-secondary">No users.</p>}>
             <div className="flex flex-col divide-y divide-border">
-              {users.map((u) => (
-                <div key={u.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
-                  <span className="font-medium">{u.name ?? '—'}</span>
-                  <span className="text-text-secondary">{u.email ?? u.id}</span>
-                  {u.banned ? (
-                    <Badge variant="destructive-light" size="sm">
-                      banned
-                    </Badge>
-                  ) : null}
-                  <Select
-                    value={u.role}
-                    disabled={busy === u.id}
-                    onValueChange={(v) => {
-                      if (v) void changeRole(u.id, v as Role);
-                    }}
-                  >
-                    <SelectTrigger size="sm" className="ml-auto w-32">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ROLES.map((r) => (
-                        <SelectItem key={r} value={r}>
-                          {r}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={busy === u.id}
-                    onClick={() => void toggleBan(u)}
-                  >
-                    {u.banned ? 'Unban' : 'Ban'}
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => void impersonate(u.id)}>
-                    Impersonate
-                  </Button>
-                </div>
-              ))}
+              <For each={users}>
+                {(u) => (
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
+                    <span className="font-medium">{u.name ?? '—'}</span>
+                    <span className="text-text-secondary">{u.email ?? u.id}</span>
+                    <Show when={u.banned}>
+                      <Badge variant="destructive-light" size="sm">
+                        banned
+                      </Badge>
+                    </Show>
+                    <Select
+                      value={u.role}
+                      disabled={act.busy}
+                      onValueChange={(v) => {
+                        if (v)
+                          void act.run(() =>
+                            setUserRole({ data: { userId: u.id, role: v as Role } })
+                          );
+                      }}
+                    >
+                      <SelectTrigger size="sm" className="ml-auto w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <For each={ROLES}>{(r) => <SelectItem value={r}>{r}</SelectItem>}</For>
+                      </SelectContent>
+                    </Select>
+                    <BusyButton
+                      variant="ghost"
+                      size="sm"
+                      busy={act.busy}
+                      onClick={() => {
+                        if (!u.banned && !confirm(`Ban ${u.email ?? u.id}?`)) return;
+                        void act.run(() =>
+                          setUserBanned({ data: { userId: u.id, banned: !u.banned, reason: '' } })
+                        );
+                      }}
+                    >
+                      {u.banned ? 'Unban' : 'Ban'}
+                    </BusyButton>
+                    <BusyButton
+                      variant="ghost"
+                      size="sm"
+                      busy={impersonate.busy}
+                      onClick={() => void impersonate.run(u.id)}
+                    >
+                      Impersonate
+                    </BusyButton>
+                  </div>
+                )}
+              </For>
             </div>
-          )}
+          </Show>
         </CardContent>
       </Card>
     </>

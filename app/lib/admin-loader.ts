@@ -36,3 +36,16 @@ export const requireAdminLoader = (cap: AdminCap) => async (): Promise<AdminGate
   if (result.status === 'signed_out') return { actor: null, signedIn: false };
   throw notFound(); // signed in but unauthorized → don't reveal the console
 };
+
+/**
+ * Loader that gates AND fetches the page's data server-side (AGENTS: data fetching
+ * belongs in the loader, never a client `useEffect`). Returns `{ gate, data }`; `data`
+ * is fetched only when authorized (null otherwise). Components read it via
+ * `Route.useLoaderData()` and refresh after mutations with `router.invalidate()`.
+ */
+export const adminLoader =
+  <T>(cap: AdminCap, fetch: () => Promise<T>) =>
+  async (): Promise<{ gate: AdminGate; data: T | null }> => {
+    const gate = await requireAdminLoader(cap)();
+    return { gate, data: gate.signedIn ? await fetch() : null };
+  };

@@ -1,14 +1,14 @@
 // Entity/identity data console (ADMIN_PAGE_PLAN §6.5). Staff identity is in
-// dci-relational.db (NOT on the serving container), so the live review queue can't be
-// read here — actions are ENQUEUED to the VM worker (§1.1). Corps-colors lives at
-// /admin/corps-colors (read-model list is web-readable). Cap: runJobs (actions enqueue).
-import { createFileRoute, Link } from '@tanstack/react-router';
+// dci-relational.db (NOT on the serving container) so the live review queue can't be
+// read here — actions are ENQUEUED to the VM worker (§1.1). Cap: runJobs.
 import { useState } from 'react';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { Show } from 'jotai-solid-api';
 import { requireAdminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { BusyButton } from '@/components/fantasy/busy-button';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useAsyncAction } from '@/lib/use-async-action';
 import { adminEnqueueJob } from '@/lib/server-fns/admin-jobs';
 import { seoHead } from '@/lib/seo';
 
@@ -35,22 +36,15 @@ function Identity() {
   const [a, setA] = useState('');
   const [b, setB] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
 
-  const enqueue = async (fn: () => Promise<unknown>, label: string) => {
-    setBusy(true);
-    setError(null);
-    setMsg(null);
-    try {
-      await fn();
+  const enqueue = useAsyncAction(
+    async (kind: 'merge_staff_by_name' | 'resolve_staff_identity', label: string) => {
+      setMsg(null);
+      const args = kind === 'resolve_staff_identity' ? { op, a, b } : {};
+      await adminEnqueueJob({ data: { kind, args } });
       setMsg(`Enqueued: ${label}. The VM worker will run it; watch /admin/jobs.`);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
     }
-  };
+  );
 
   return (
     <>
@@ -58,8 +52,12 @@ function Identity() {
         title="Identity & entity data"
         subtitle="Staff merges + corps colors (VM-executed)"
       />
-      {error ? <p className="mb-4 text-sm text-destructive">{error}</p> : null}
-      {msg ? <p className="mb-4 text-sm text-green-600">{msg}</p> : null}
+      <Show when={enqueue.error}>
+        <p className="mb-4 text-sm text-destructive">{enqueue.error}</p>
+      </Show>
+      <Show when={msg}>
+        <p className="mb-4 text-sm text-green-600">{msg}</p>
+      </Show>
 
       <Card className="mb-4">
         <CardHeader>
@@ -72,21 +70,18 @@ function Identity() {
             the next re-emit.
           </p>
           <div>
-            <Button
+            <BusyButton
               variant="destructive"
               size="sm"
-              disabled={busy}
+              busy={enqueue.busy}
               onClick={() => {
                 if (!confirm('Merge all exact-name duplicate staff? (respects keep-separate)'))
                   return;
-                void enqueue(
-                  () => adminEnqueueJob({ data: { kind: 'merge_staff_by_name', args: {} } }),
-                  'merge staff by name'
-                );
+                void enqueue.run('merge_staff_by_name', 'merge staff by name');
               }}
             >
               Merge by name (apply)
-            </Button>
+            </BusyButton>
           </div>
           <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3">
             <Select value={op} onValueChange={(v) => v && setOp(v as 'merge' | 'split')}>
@@ -110,21 +105,14 @@ function Identity() {
               value={b}
               onChange={(e) => setB(e.target.value)}
             />
-            <Button
+            <BusyButton
               size="sm"
-              disabled={busy || !a || !b}
-              onClick={() =>
-                void enqueue(
-                  () =>
-                    adminEnqueueJob({
-                      data: { kind: 'resolve_staff_identity', args: { op, a, b } },
-                    }),
-                  `${op} ${a} ${b}`
-                )
-              }
+              busy={enqueue.busy}
+              disabled={!a || !b}
+              onClick={() => void enqueue.run('resolve_staff_identity', `${op} ${a} ${b}`)}
             >
               Enqueue {op}
-            </Button>
+            </BusyButton>
           </div>
         </CardContent>
       </Card>

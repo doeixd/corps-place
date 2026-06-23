@@ -1,13 +1,13 @@
-// Fantasy quiz bank CRUD (ADMIN_PAGE_PLAN §9.1). Reuses the existing quiz server-fns
-// (adminListQuestions/adminUpsertQuestion/adminSetQuestionActive). Gated by
-// manageFantasyQuiz. correct_index is intentionally only ever shown to admins here.
-import { createFileRoute } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
-import { requireAdminLoader } from '@/lib/admin-loader';
+// Fantasy quiz bank CRUD (ADMIN_PAGE_PLAN §9.1). Reuses the quiz server-fns; questions
+// fetched in the loader, refreshed via invalidate. correct_index shown only to admins.
+import { useState } from 'react';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { Show, For } from 'jotai-solid-api';
+import { adminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { BusyButton } from '@/components/fantasy/busy-button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/reui/badge';
+import { useAsyncAction } from '@/lib/use-async-action';
 import {
   adminListQuestions,
   adminUpsertQuestion,
@@ -26,19 +27,11 @@ import {
 import { seoHead } from '@/lib/seo';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
-interface Question {
-  questionId: string;
-  prompt: string;
-  choices: string[];
-  correctIndex: number;
-  explanation: string | null;
-  difficulty: Difficulty;
-  tags: string[];
-  active: boolean;
-}
+type Question = Awaited<ReturnType<typeof adminListQuestions>>['questions'][number];
+const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
 
 export const Route = createFileRoute('/admin/fantasy/quiz')({
-  loader: requireAdminLoader('manageFantasyQuiz'),
+  loader: adminLoader('manageFantasyQuiz', async () => (await adminListQuestions()).questions),
   head: () =>
     seoHead({
       title: 'Admin — Fantasy quiz',
@@ -46,69 +39,48 @@ export const Route = createFileRoute('/admin/fantasy/quiz')({
       path: '/admin/fantasy/quiz',
     }),
   component: () => {
-    const gate = Route.useLoaderData();
-    return <AdminPage gate={gate}>{() => <Quiz />}</AdminPage>;
+    const { gate, data } = Route.useLoaderData();
+    return (
+      <AdminPage gate={gate}>{() => <Quiz questions={(data ?? []) as Question[]} />}</AdminPage>
+    );
   },
 });
 
-function Quiz() {
-  const [questions, setQuestions] = useState<Question[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-
-  // New-question form
+function Quiz({ questions }: { questions: Question[] }) {
+  const router = useRouter();
   const [prompt, setPrompt] = useState('');
   const [choicesText, setChoicesText] = useState('');
   const [correctIndex, setCorrectIndex] = useState(0);
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
 
-  const reload = useCallback(() => {
-    adminListQuestions()
-      .then((r) => setQuestions(r.questions as Question[]))
-      .catch((e: unknown) => setError((e as Error).message));
-  }, []);
-  useEffect(() => reload(), [reload]);
+  const counts = (['easy', 'medium', 'hard'] as Difficulty[]).map(
+    (d) => `${d}: ${questions.filter((q) => q.active && q.difficulty === d).length}`
+  );
 
-  const counts = questions
-    ? (['easy', 'medium', 'hard'] as Difficulty[]).map(
-        (d) => `${d}: ${questions.filter((q) => q.active && q.difficulty === d).length}`
-      )
-    : [];
-
-  const add = async () => {
+  const add = useAsyncAction(async () => {
     const choices = choicesText
       .split('\n')
       .map((c) => c.trim())
       .filter(Boolean);
-    if (choices.length < 2) return setError('At least 2 choices (one per line).');
-    if (correctIndex >= choices.length) return setError('Correct index out of range.');
-    setBusy(true);
-    setError(null);
-    try {
-      await adminUpsertQuestion({ data: { prompt, choices, correctIndex, difficulty, tags: [] } });
-      setPrompt('');
-      setChoicesText('');
-      setCorrectIndex(0);
-      reload();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const toggle = (q: Question) =>
-    adminSetQuestionActive({ data: { questionId: q.questionId, active: !q.active } })
-      .then(reload)
-      .catch((e: unknown) => setError((e as Error).message));
+    if (choices.length < 2) throw new Error('At least 2 choices (one per line).');
+    if (correctIndex >= choices.length) throw new Error('Correct index out of range.');
+    await adminUpsertQuestion({ data: { prompt, choices, correctIndex, difficulty, tags: [] } });
+    setPrompt('');
+    setChoicesText('');
+    setCorrectIndex(0);
+    await router.invalidate();
+  });
+  const toggle = useAsyncAction(async (q: Question) => {
+    await adminSetQuestionActive({ data: { questionId: q.questionId, active: !q.active } });
+    await router.invalidate();
+  });
 
   return (
     <>
-      <PageHeader
-        title="Fantasy quiz bank"
-        subtitle={counts.length ? `Active — ${counts.join(' · ')}` : ''}
-      />
-      {error ? <p className="mb-4 text-sm text-destructive">{error}</p> : null}
+      <PageHeader title="Fantasy quiz bank" subtitle={`Active — ${counts.join(' · ')}`} />
+      <Show when={add.error || toggle.error}>
+        <p className="mb-4 text-sm text-destructive">{add.error ?? toggle.error}</p>
+      </Show>
 
       <Card className="mb-6">
         <CardHeader>
@@ -135,19 +107,18 @@ function Quiz() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="easy">easy</SelectItem>
-                <SelectItem value="medium">medium</SelectItem>
-                <SelectItem value="hard">hard</SelectItem>
+                <For each={DIFFICULTIES}>{(d) => <SelectItem value={d}>{d}</SelectItem>}</For>
               </SelectContent>
             </Select>
-            <Button
+            <BusyButton
               size="sm"
               className="ml-auto"
-              disabled={busy || !prompt}
-              onClick={() => void add()}
+              busy={add.busy}
+              disabled={!prompt}
+              onClick={() => void add.run()}
             >
               Add
-            </Button>
+            </BusyButton>
           </div>
         </CardContent>
       </Card>
@@ -155,46 +126,45 @@ function Quiz() {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm font-semibold text-text-secondary">
-            Bank {questions ? `(${questions.length})` : ''}
+            Bank ({questions.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm">
-          {!questions ? (
-            <p className="text-text-secondary">Loading…</p>
-          ) : questions.length === 0 ? (
-            <p className="text-text-secondary">No questions yet.</p>
-          ) : (
+          <Show
+            when={questions.length > 0}
+            fallback={<p className="text-text-secondary">No questions yet.</p>}
+          >
             <div className="flex flex-col divide-y divide-border">
-              {questions.map((q) => (
-                <div
-                  key={q.questionId}
-                  className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-2"
-                >
-                  <span
-                    className={
-                      q.active ? 'font-medium' : 'font-medium text-text-secondary line-through'
-                    }
-                  >
-                    {q.prompt}
-                  </span>
-                  <Badge variant="secondary" size="sm">
-                    {q.difficulty}
-                  </Badge>
-                  <span className="text-xs text-text-secondary">
-                    {q.choices.length} choices · correct #{q.correctIndex}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="ml-auto"
-                    onClick={() => void toggle(q)}
-                  >
-                    {q.active ? 'Deactivate' : 'Activate'}
-                  </Button>
-                </div>
-              ))}
+              <For each={questions}>
+                {(q) => (
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-2">
+                    <span
+                      className={
+                        q.active ? 'font-medium' : 'font-medium text-text-secondary line-through'
+                      }
+                    >
+                      {q.prompt}
+                    </span>
+                    <Badge variant="secondary" size="sm">
+                      {q.difficulty}
+                    </Badge>
+                    <span className="text-xs text-text-secondary">
+                      {q.choices.length} choices · correct #{q.correctIndex}
+                    </span>
+                    <BusyButton
+                      variant="ghost"
+                      size="sm"
+                      className="ml-auto"
+                      busy={toggle.busy}
+                      onClick={() => void toggle.run(q)}
+                    >
+                      {q.active ? 'Deactivate' : 'Activate'}
+                    </BusyButton>
+                  </div>
+                )}
+              </For>
             </div>
-          )}
+          </Show>
         </CardContent>
       </Card>
     </>
