@@ -47,6 +47,7 @@ export const listRecentRevisions = createServerFn({ method: 'GET' })
               FROM show_revisions r
               LEFT JOIN show_pages p ON p.page_id = r.page_id
               LEFT JOIN "user" u ON u.id = r.author_id
+              WHERE COALESCE(r.hidden, 0) = 0
               ORDER BY r.created_at DESC, r.revision_id DESC
               LIMIT ?`,
         args: [data.limit],
@@ -104,6 +105,29 @@ export const listShowPages = createServerFn({ method: 'GET' })
       lockLevel: String(r.lock_level),
       updatedAt: String(r.updated_at),
     }));
+  });
+
+const HideRevisionInput = v.object({
+  revisionId: v.string(),
+  hidden: v.optional(v.boolean(), true),
+});
+
+/** Tombstone (or un-hide) a revision so it drops from the public history. Cap: hideRevision. */
+export const hideRevision = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(HideRevisionInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'hideRevision');
+    const db = await getContributionsDb();
+    const res = await db.execute({
+      sql: 'UPDATE show_revisions SET hidden = ? WHERE revision_id = ?',
+      args: [data.hidden ? 1 : 0, data.revisionId],
+    });
+    if (res.rowsAffected === 0) throw new Error('NOT_FOUND');
+    await writeAudit(db, actor, {
+      action: data.hidden ? 'hide_revision' : 'unhide_revision',
+      target: data.revisionId,
+    });
+    return { ok: true as const, revisionId: data.revisionId, hidden: data.hidden };
   });
 
 const SetLockInput = v.object({

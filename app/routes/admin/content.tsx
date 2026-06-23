@@ -3,17 +3,21 @@
 // reusing revertRevision and the §6.3 hidden-column migration). Gated in the loader;
 // every server-fn re-checks capability.
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { requireAdminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   listRecentRevisions,
   listShowPages,
+  hideRevision,
+  setPageLock,
   type AdminRevisionRow,
   type AdminPageRow,
 } from '@/lib/server-fns/admin-content';
+import { revertRevision } from '@/lib/server-fns/contrib';
 import { seoHead } from '@/lib/seo';
 
 export const Route = createFileRoute('/admin/content')({
@@ -30,23 +34,35 @@ function Content() {
   const [revisions, setRevisions] = useState<AdminRevisionRow[] | null>(null);
   const [locked, setLocked] = useState<AdminPageRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
 
-  useEffect(() => {
-    let alive = true;
+  const reload = useCallback(() => {
+    setError(null);
     Promise.all([
       listRecentRevisions({ data: { limit: 100 } }),
       listShowPages({ data: { lockedOnly: true, limit: 100 } }),
     ])
       .then(([revs, pages]) => {
-        if (!alive) return;
         setRevisions(revs);
         setLocked(pages);
       })
-      .catch((e: unknown) => alive && setError((e as Error).message));
-    return () => {
-      alive = false;
-    };
+      .catch((e: unknown) => setError((e as Error).message));
   }, []);
+
+  useEffect(() => reload(), [reload]);
+
+  const act = async (key: string, fn: () => Promise<unknown>) => {
+    setBusy(key);
+    setError(null);
+    try {
+      await fn();
+      reload();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(null);
+    }
+  };
 
   return (
     <>
@@ -67,11 +83,25 @@ function Content() {
           ) : (
             <ul className="flex flex-col gap-1">
               {locked.map((p) => (
-                <li key={p.pageId} className="flex justify-between gap-4">
+                <li key={p.pageId} className="flex items-center justify-between gap-4">
                   <span>
                     {p.corpsKey} · {p.season}
                   </span>
-                  <span className="text-text-secondary">{p.lockLevel}</span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-text-secondary">{p.lockLevel}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={busy === `lock:${p.pageId}`}
+                      onClick={() =>
+                        void act(`lock:${p.pageId}`, () =>
+                          setPageLock({ data: { pageId: p.pageId, level: 'none' } })
+                        )
+                      }
+                    >
+                      Unlock
+                    </Button>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -106,6 +136,34 @@ function Content() {
                   <span className="text-text-secondary">{r.authorName ?? r.authorId}</span>
                   <span className="ml-auto text-xs text-text-secondary tabular-nums">
                     {new Date(r.createdAt).toLocaleString()}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    {r.targetKind === 'block' ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled={busy === `rev:${r.revisionId}`}
+                        onClick={() =>
+                          void act(`rev:${r.revisionId}`, () =>
+                            revertRevision({ data: { revisionId: r.revisionId } })
+                          )
+                        }
+                      >
+                        Revert
+                      </Button>
+                    ) : null}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={busy === `hide:${r.revisionId}`}
+                      onClick={() =>
+                        void act(`hide:${r.revisionId}`, () =>
+                          hideRevision({ data: { revisionId: r.revisionId, hidden: true } })
+                        )
+                      }
+                    >
+                      Hide
+                    </Button>
                   </span>
                   {r.summary ? (
                     <span className="w-full text-xs text-text-secondary">{r.summary}</span>

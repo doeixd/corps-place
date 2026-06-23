@@ -377,6 +377,33 @@ const SCHEMA = [
 ];
 
 /**
+ * Additive column migrations that can't live in the `CREATE … IF NOT EXISTS` batch
+ * because SQLite's `ALTER TABLE ADD COLUMN` errors if the column already exists
+ * (ADMIN_PAGE_PLAN §6.3). Guard each with a `table_info` check so it's idempotent.
+ */
+const ADD_COLUMNS: { table: string; column: string; ddl: string }[] = [
+  {
+    table: 'show_revisions',
+    column: 'hidden',
+    ddl: 'ALTER TABLE show_revisions ADD COLUMN hidden INTEGER DEFAULT 0',
+  },
+  {
+    table: 'show_media',
+    column: 'hidden',
+    ddl: 'ALTER TABLE show_media ADD COLUMN hidden INTEGER DEFAULT 0',
+  },
+];
+
+const ensureColumns = async (db: Client): Promise<void> => {
+  for (const { table, column, ddl } of ADD_COLUMNS) {
+    const cols = (await db.execute(`PRAGMA table_info(${table})`)).rows as unknown as {
+      name: string;
+    }[];
+    if (!cols.some((c) => c.name === column)) await db.execute(ddl);
+  }
+};
+
+/**
  * Lazily create the shared client, apply PRAGMAs, and ensure the schema — exactly
  * once per process. Subsequent calls return the same ready client. On failure the
  * init promise is cleared so the next caller retries instead of caching a broken
@@ -388,6 +415,7 @@ export const getContributionsDb = (): Promise<Client> => {
       const db = (sharedDb ??= createClient({ url: dbUrl }));
       for (const pragma of PRAGMAS) await db.execute(pragma);
       await db.batch(SCHEMA, 'write');
+      await ensureColumns(db);
       return db;
     })().catch((cause) => {
       initialized = null;
