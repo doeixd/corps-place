@@ -94,3 +94,9 @@ export class StorageUnavailable extends Schema.TaggedErrorClass<StorageUnavailab
 export class RateLimited extends Schema.TaggedErrorClass<RateLimited>()('RateLimited', {
   action: Schema.optional(Schema.String),
 }) {}
+
+/** A media upload failed client-side validation (empty / too large). Carries the
+ *  user-facing message so the boundary can surface it verbatim (legacy parity). */
+export class MediaInvalid extends Schema.TaggedErrorClass<MediaInvalid>()('MediaInvalid', {
+  message: Schema.String,
+}) {}

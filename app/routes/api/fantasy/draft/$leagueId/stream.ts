@@ -61,7 +61,15 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/draft/$leagueId/s
           const fiber = Effect.runFork(
             Stream.fromPubSub(draftPubSub(leagueId)).pipe(
               Stream.runForEach((e: { event: string; data: unknown }) =>
-                Effect.sync(() => write(e.event, e.data))
+                Effect.sync(() => {
+                  // The controller may close (client gone) before cancel() fires;
+                  // swallow the enqueue throw — cancel() will interrupt this fiber.
+                  try {
+                    write(e.event, e.data);
+                  } catch {
+                    /* controller closed */
+                  }
+                })
               )
             )
           );

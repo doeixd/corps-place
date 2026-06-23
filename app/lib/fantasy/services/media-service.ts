@@ -13,7 +13,7 @@ import { Buffer } from 'node:buffer';
 import { randomUUID } from 'node:crypto';
 import type { Actor } from '@/lib/authz';
 import { putUpload, uploadKey } from '@/lib/r2';
-import { Forbidden } from './errors';
+import { Forbidden, MediaInvalid } from './errors';
 import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from './sql';
 
 // Runtime-require sharp (same untraced-specifier trick as media-cache.ts).
@@ -49,10 +49,11 @@ const makeMediaService = Effect.gen(function* () {
     if (!member[0]) return yield* Effect.fail(new Forbidden());
 
     const raw = Buffer.from(input.dataBase64, 'base64');
-    // Plain validation failures (empty / too large) — these become 500-ish defects,
-    // matching the legacy thrown Errors (the upload UI surfaces a generic failure).
-    if (raw.length === 0) return yield* Effect.die(new Error('Empty upload'));
-    if (raw.length > MAX_BYTES) return yield* Effect.die(new Error('Image too large (max 8 MB)'));
+    // Typed validation failures so the boundary surfaces the exact message (legacy
+    // parity) — a defect would be swallowed into a generic 500.
+    if (raw.length === 0) return yield* Effect.fail(new MediaInvalid({ message: 'Empty upload' }));
+    if (raw.length > MAX_BYTES)
+      return yield* Effect.fail(new MediaInvalid({ message: 'Image too large (max 8 MB)' }));
 
     const { webp, info } = yield* Effect.promise(async () => {
       const out = await getSharp()(raw)

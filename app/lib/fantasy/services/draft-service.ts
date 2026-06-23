@@ -240,13 +240,16 @@ const makeDraftService = Effect.gen(function* () {
 
   const ensureSelfHeal = Effect.suspend(() => {
     if (selfHealed) return Effect.void;
-    selfHealed = true;
     return sql<{ league_id: string; pick_deadline_at: string | null }>`
       SELECT league_id, pick_deadline_at FROM fantasy_drafts WHERE status = 'live'
     `.pipe(
       Effect.orDie,
       Effect.map((rows) => {
         for (const r of rows) if (r.pick_deadline_at) armTimer(r.league_id, r.pick_deadline_at);
+        // Set the flag only AFTER a successful scan — a transient DB failure must
+        // not permanently disable self-heal. A concurrent double-scan is harmless
+        // (re-arming a timer is idempotent).
+        selfHealed = true;
       })
     );
   });

@@ -19,7 +19,7 @@ import { type Pick } from '@/lib/fantasy/scoring';
 import { type CaptionKey } from '@/lib/fantasy/captions';
 import type { LeagueConfig } from '@/lib/fantasy/config';
 import { NotFound } from './errors';
-import { ContributionsSql, ContributionsSqlLive } from './sql';
+import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from './sql';
 
 const strOrNull = (v: unknown): string | null => (v == null ? null : (v as string));
 
@@ -114,6 +114,7 @@ const makeStandingsService = Effect.gen(function* () {
    * season-best, weights). Ports the legacy `recomputeFantasyStandingsForSeason`.
    */
   const recompute = Effect.fn('StandingsService.recompute')(function* (season: string) {
+    yield* requireDurableStorage; // I-7: never write standings to ephemeral storage
     const bestLookup = yield* Effect.promise(() => getSeasonBestLookup(season));
     const finals = yield* Effect.promise(() => getSeasonFinals(season));
     const best = seasonBestFrom(bestLookup);

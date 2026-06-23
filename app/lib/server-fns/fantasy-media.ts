@@ -34,12 +34,14 @@ export const uploadFantasyLogo = createServerFn({ method: 'POST' })
         s.uploadLogo({ actor, leagueId: data.leagueId, dataBase64: data.dataBase64 })
       ).pipe(
         provideFantasy,
-        Effect.catch((e: { _tag: string }) =>
+        Effect.catch((e: { _tag: string; message?: string }) =>
           Effect.fail(
             new Error(
               Match.value(e._tag).pipe(
                 Match.when('Forbidden', () => 'FORBIDDEN'),
                 Match.when('StorageUnavailable', () => 'STORAGE_UNAVAILABLE'),
+                // MediaInvalid carries the user-facing message verbatim.
+                Match.when('MediaInvalid', () => e.message ?? 'Invalid image'),
                 Match.orElse(() => 'CONFLICT:unknown')
               )
             )

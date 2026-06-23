@@ -48,13 +48,17 @@ function serverBackedCollection<T extends object>(opts: {
   fetchRows: () => Promise<T[]>;
 }): Entry<T> {
   let writer: SyncWriter | null = null;
+  // Monotonic token so an older overlapping refetch can't clobber a newer one's
+  // rows (begin/truncate/write/commit must not interleave between two loads).
+  let seq = 0;
 
   const load = async (): Promise<void> => {
     if (typeof window === 'undefined' || !writer) return;
     const w = writer;
+    const mySeq = ++seq;
     try {
       const rows = await opts.fetchRows();
-      if (writer !== w) return; // unsubscribed mid-flight
+      if (writer !== w || mySeq !== seq) return; // unsubscribed or superseded mid-flight
       w.begin();
       w.truncate();
       for (const row of rows) w.write({ type: 'insert', value: row as never });
@@ -62,7 +66,7 @@ function serverBackedCollection<T extends object>(opts: {
       w.markReady();
     } catch (err) {
       console.error(`[fantasy] collection "${opts.id}" sync failed`, err);
-      w.markReady();
+      if (mySeq === seq) w.markReady();
     }
   };
 

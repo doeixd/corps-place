@@ -21,7 +21,6 @@
 import { Context, Effect, Layer } from 'effect';
 import { SqlClient } from 'effect/unstable/sql';
 import { LibsqlClient } from '@effect/sql-libsql';
-import * as path from 'node:path';
 import { durableStorageStatus, getContributionsDb } from '@/lib/contributions-db';
 import { StorageUnavailable } from './errors';
 
@@ -33,7 +32,11 @@ export class ContributionsSql extends Context.Service<ContributionsSql, SqlClien
   'FantasyContributionsSql'
 ) {}
 
-export class ScoreSql extends Context.Service<ScoreSql, SqlClient.SqlClient>()('FantasyScoreSql') {}
+// Note: the read-only score DB (dci-relational.db) is still accessed via
+// `score-db.ts`'s plain libsql client (wrapped in `Effect.promise` by the
+// services). A dedicated `ScoreSql` SqlClient tag was prototyped here but never
+// wired — removed to avoid implying a capability that doesn't exist. Migrate the
+// score reads onto a SqlClient later if/when they need transactions or tracing.
 
 // ---------------------------------------------------------------------------
 // ContributionsSql — wraps the shared getContributionsDb() client
@@ -50,24 +53,6 @@ export const ContributionsSqlLive = Layer.unwrap(
       Layer.provide(LibsqlClient.layer({ liveClient }))
     );
   })
-);
-
-// ---------------------------------------------------------------------------
-// ScoreSql — read-only client over dci-relational.db (own managed client)
-// ---------------------------------------------------------------------------
-
-const scoreDbUrl = (): string =>
-  process.env.DCI_RELATIONAL_DB_URL ??
-  `file:${path.resolve(process.cwd(), 'sdk', 'dci-relational.db')}`;
-
-// URL is resolved lazily (inside Layer.unwrap) so a test that sets
-// DCI_RELATIONAL_DB_URL before importing this module is honored.
-export const ScoreSqlLive = Layer.unwrap(
-  Effect.sync(() =>
-    Layer.effect(ScoreSql, SqlClient.SqlClient).pipe(
-      Layer.provide(LibsqlClient.layer({ url: scoreDbUrl() }))
-    )
-  )
 );
 
 // ---------------------------------------------------------------------------

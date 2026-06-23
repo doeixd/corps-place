@@ -11,7 +11,7 @@ import { Context, Effect, Layer } from 'effect';
 import { randomUUID } from 'node:crypto';
 import { sendEmail } from '@/lib/email';
 import type { LeagueConfig } from '@/lib/fantasy/config';
-import { ContributionsSql, ContributionsSqlLive } from './sql';
+import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from './sql';
 
 const MIN = 60_000;
 
@@ -147,6 +147,7 @@ const makeNotificationService = Effect.gen(function* () {
   });
 
   const dispatch = Effect.fn('NotificationService.dispatch')(function* () {
+    yield* requireDurableStorage; // I-7: don't mark jobs done / write digests on ephemeral storage
     const now = new Date().toISOString();
     const due = yield* sql<{ job_id: string; kind: string; league_id: string | null }>`
       SELECT * FROM fantasy_scheduled_jobs WHERE done_at IS NULL AND due_at <= ${now}
@@ -154,8 +155,11 @@ const makeNotificationService = Effect.gen(function* () {
     `.pipe(Effect.orDie);
 
     for (const job of due) {
-      // Best-effort: a failed reminder still gets marked done to avoid a poison loop.
-      yield* handleJob(job).pipe(Effect.catchCause(() => Effect.void));
+      // Best-effort: a failed reminder still gets marked done to avoid a poison loop,
+      // but log the cause so a Resend outage isn't silently swallowed.
+      yield* handleJob(job).pipe(
+        Effect.catchCause((cause) => Effect.logError('fantasy job dispatch failed', cause))
+      );
       yield* sql`
         UPDATE fantasy_scheduled_jobs SET done_at = ${new Date().toISOString()} WHERE job_id = ${job.job_id}
       `.pipe(Effect.orDie);
