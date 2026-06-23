@@ -27,8 +27,14 @@ all green). It is therefore a **strangler migration behind the existing
   SDK's Effect+SQL convention.
 - Express mutations/logic as **Effect Services** (`app/lib/fantasy/services/*`)
   exposed via an **Effect RPC group** (`app/rpc/fantasy-rpc.ts`), merged into
-  `AppLive`. `createServerFn` becomes a thin boundary that `Effect.runPromise`s,
-  then is removed where the RPC client/collections replace it.
+  `AppLive`. **`createServerFn` is RETAINED as the thin boundary** — it
+  `Effect.runPromise`s the service/RPC handler (`provide` the fantasy layers) and
+  is *not* deleted. This is deliberate (see §3.5): the server-fn is the natural
+  integration point for TanStack Start/Router **loaders + actions**, and its
+  server-only code-split is exactly what keeps Effect/RPC out of the **client
+  bundle** (smaller bundle, no `node:`/`effect` leak). The strangler removes the
+  *raw `@libsql/client` bodies and duplicated logic inside* those handlers, not
+  the `createServerFn` boundary itself.
 - Re-implement the **stateful draft engine** on Effect primitives — `Semaphore`
   (per-league lock), `PubSub` (SSE fan-out), `Fiber` + `Schedule` (auto-pick
   clock + self-heal), `Scope` (lifecycle). This is the highest-value and
@@ -97,9 +103,11 @@ all green). It is therefore a **strangler migration behind the existing
 
 ```
             ┌────────────────────────── server (Effect) ──────────────────────────┐
- routes ──▶ │ app/rpc/fantasy-rpc.ts  (RpcGroup; mutations + reads)                │
- (loaders/  │   └─ delegates to ─▶ app/lib/fantasy/services/*  (Context.Service)   │
-  SSE)      │        LeagueService, MembershipService, InviteService,              │
+ routes ──▶ │ app/lib/server-fns/fantasy.ts  (createServerFn — RETAINED boundary)  │
+ (loaders/  │   └─ runPromise + provideFantasy ─▶                                  │
+  actions/  │ app/rpc/fantasy-rpc.ts  (RpcGroup; mutations + reads)                │
+  SSE)      │   └─ delegates to ─▶ app/lib/fantasy/services/*  (Context.Service)   │
+            │        LeagueService, MembershipService, InviteService,              │
             │        QuizService, DraftService, StandingsService,                  │
             │        PaymentService, NotificationService, MediaService             │
             │   └─ each uses ─▶ ContributionsSql (SqlClient over contributions.db) │
@@ -185,19 +193,54 @@ process-scoped Effect state (one `Scope` for the app):
 ### 3.5 RPC + boundaries
 `app/rpc/fantasy-rpc.ts` — `FantasyRpc = RpcGroup.make(Rpc.make('createLeague', …), …)`,
 `FantasyRpcLive = FantasyRpc.toLayer({ createLeague: ({ payload }) => LeagueService.create(payload), … })`;
-add `FantasyRpcLive` + the service `*Live`s to `AppLive`. During the strangler the
-existing route `createServerFn`s keep their signatures but their handlers become
-`Effect.runPromise(FantasyRpc-handler.pipe(provideAppLive))` — call sites
-(machines, loaders) don't change until P5.
+add `FantasyRpcLive` + the service `*Live`s to `AppLive`. The existing route
+`createServerFn`s keep their signatures and their handlers become
+`Effect.runPromise(program.pipe(provideFantasy))` — call sites (machines,
+loaders) don't change.
+
+**`createServerFn` is a retained, permanent boundary — not transitional
+scaffolding.** It is the right place to live because:
+- **TanStack Start/Router integration.** Loaders (`loader: () => getLeague(...)`)
+  and form **actions** consume server-fns natively — SSR on first paint, preload
+  on intent, and the `validator` is the input-validation seam. Calling a raw RPC
+  client from a loader would forfeit that wiring.
+- **Bundle size / Effect-free client (R3/R4).** The server-fn body is
+  code-split server-side, so everything it imports — Effect, the RPC handler, the
+  services, `SqlClient`, `node:*` — is **stripped from the client chunk**. This is
+  the primary guard against the contrib `node:fs`-into-client-chunk incident
+  (memory `contrib-client-bundle-node-leak`): keep Effect *behind* a server-fn and
+  it can never reach the browser. The client imports only the thin server-fn
+  reference + plain `fetch`/`EventSource`.
+- **One boundary, two consumers.** The boundary may call the **service directly**
+  (`provideFantasy`) for SSR loaders, or the **RPC handler** when the typed RPC
+  envelope/codec is wanted (client mutations, the machine actors). Both are valid;
+  prefer the service directly for loaders, the RPC group for client-initiated
+  mutations. Either way the `createServerFn` wrapper stays.
+
+So the strangler deletes the **raw `@libsql/client` query bodies + duplicated
+logic *inside* the handlers** (replaced by a `runPromise(service…)` one-liner) and
+`useAsyncAction`/legacy engine modules — **never the `createServerFn` boundary
+itself.**
 
 ### 3.6 Client reads = TanStack DB
 `app/db/fantasy-collections.ts`. Fantasy data is **dynamic** (not static
 read-model shards), so these are **server-backed** collections, NOT
 `jsonIndexCollectionOptions`:
 - `leaguesCollection` (my leagues), `leagueDetailCollection`,
-  `standingsCollection` — a `sync` that fetches the current value from the RPC
-  (or a `queryCollectionOptions`-style adapter) and `markReady()`; refetched on
-  mutation/`invalidate`.
+  `standingsCollection` — an Effect-free `sync` that fetches the current value by
+  calling the **server-fn** (`getLeague`/`listMyLeagues`/`getStandings`, which run
+  the Effect path server-side) and writes it via `begin/write/commit/markReady`;
+  refetched on mutation/`invalidate`. **Verified against the installed
+  `@tanstack/react-db@0.1.86` (Q1):** that version ships only `createCollection` +
+  a custom `sync` — there is **no** `queryCollectionOptions`/query-adapter package
+  installed, so the server-backed collection IS a custom `sync` calling the
+  server-fn (mirrors `json-collection.ts`, bridged to SSR by `HybridCollection`).
+  Note `leaguesCollection` (a global per-user **list**) fits the module-singleton
+  collection model cleanly; `leagueDetailCollection`/`standingsCollection` are
+  **per-slug** + (detail) a single composite object, which don't fit a singleton —
+  build them route-scoped (a collection created per `$slug` route) or keep them on
+  the server-fn loader until a live-update consumer (P2 mutations / P3 SSE)
+  actually needs the collection.
 - `draftCollection` — its `sync` opens the **SSE EventSource** and writes
   `snapshot`/`pick`/`state` deltas into the collection (`begin/write/commit`),
   replacing `use-draft-stream.ts`. Components `useLiveQuery(draftCollection)`.
@@ -266,11 +309,15 @@ client** call. Components still render from `state.matches()`/`context` + the
   MediaService; webhook + jobs + recompute routes run Effect programs. **Accept:**
   the **standings integration test re-pointed at StandingsService** reproduces
   the Appendix-D recap (95.40), idempotent, finals lock; Stripe test-mode flow.
-- **P5 — Remove shims.** Delete the `createServerFn` wrappers that are now fully
-  replaced by the RPC client + collections; delete `useAsyncAction` from the
-  fantasy components (forms move to machine/`useActionState` as appropriate);
-  delete `bus.ts`/`use-draft-stream.ts`/`draft-engine.ts` legacy. **Accept:** no
-  `createServerFn`/`useAsyncAction`/raw `@libsql/client` left under `app/**/fantasy*`;
+- **P5 — Remove dead bodies (NOT the `createServerFn` boundary).** The
+  `createServerFn` wrappers **stay** (§3.5 — they're the Start/Router loader/action
+  seam and the client-bundle split). What gets deleted is the *now-dead code they
+  used to contain or sit beside*: the raw `@libsql/client` query bodies (already
+  replaced by `runPromise(service…)` one-liners), `useAsyncAction` in the fantasy
+  components (forms move to machine/`useActionState`), and the legacy
+  `bus.ts`/`use-draft-stream.ts`/`draft-engine.ts` modules. **Accept:** no
+  `useAsyncAction` or raw `@libsql/client` left under `app/**/fantasy*`; every
+  fantasy `createServerFn` handler is a thin `runPromise(service/RPC)` boundary;
   `vp check` + all tests green.
 
 ---
@@ -344,18 +391,25 @@ app/db/fantasy-collections.ts  # leagues/leagueDetail/standings/draft collection
 app/lib/fantasy/rpc-client.ts  # Effect-free RPC client for machines/collections
 # unchanged (pure): scoring.ts, draft.ts, draft-order.ts, config.ts, quiz.ts,
 #                    captions.ts, standings.ts (buildStandings stays)
-# deleted at P5: server-fns/fantasy.ts shims, bus.ts, use-draft-stream.ts,
-#                draft-engine.ts, use-async-action usages in fantasy
+# RETAINED: server-fns/fantasy.ts (createServerFn boundaries — bodies become
+#           runPromise(service/RPC) one-liners; the wrappers stay, §3.5)
+# deleted at P5: bus.ts, use-draft-stream.ts, draft-engine.ts (legacy engine),
+#                use-async-action usages in fantasy
 ```
 
 ---
 
 ## 9. Open questions (resolve before P3/P4)
 
-- **Q1 — Read transport for collections.** Server-backed TanStack DB collections:
-  use a custom `sync` that calls the RPC client, or `@tanstack/query`-backed
-  collection options? Decide by what `0.1.86` supports cleanly (the repo only
-  uses `jsonIndexCollectionOptions` today; this is a new pattern — spike it).
+- **Q1 — Read transport for collections. RESOLVED (P1b spike).** Installed
+  `@tanstack/react-db@0.1.86` exposes only `createCollection` + a custom `sync`
+  (no `@tanstack/query`-backed collection-options package is installed). So a
+  server-backed collection IS a custom Effect-free `sync` that calls the
+  **server-fn** (not a raw RPC client — keeps the boundary, §3.5) and writes via
+  `begin/write/commit/markReady`, mirroring `json-collection.ts` and bridged to SSR
+  by `HybridCollection`. Caveat: only a **global list** (`leaguesCollection`) fits
+  a module-singleton collection; **per-slug** detail/standings need a route-scoped
+  collection or stay on the server-fn loader until a live consumer needs them.
 - **Q2 — Optimistic draft pick reconciliation.** Confirm the collection's
   optimistic insert reconciles correctly when the authoritative SSE `pick`
   arrives (key by `pick_no`); define rollback on RPC error.
@@ -363,9 +417,14 @@ app/lib/fantasy/rpc-client.ts  # Effect-free RPC client for machines/collections
   vs a `Map<leagueId, PubSub>` with lifecycle. Lean per-league + Scope cleanup.
 - **Q4 — Webhook/cron boundaries.** These are non-RPC HTTP routes; confirm they
   `Effect.runPromise(... provideAppLive)` cleanly without the RPC envelope.
-- **Q5 — Keep `createServerFn` for SSR loaders?** Loaders run server-side; they
-  can call services directly via `runPromise`. Decide whether loaders use the RPC
-  group or the services directly (likely services directly; RPC for client).
+- **Q5 — Keep `createServerFn` for SSR loaders? RESOLVED: yes, always.**
+  `createServerFn` is the retained, permanent boundary for **all** fantasy reads
+  and mutations (§3.5) — not just loaders. SSR loaders call the **service**
+  directly via `runPromise(program.pipe(provideFantasy))`; client-initiated
+  mutations / machine actors go through the **RPC** handler. The `createServerFn`
+  wrapper is never removed (it's the Start/Router integration + client-bundle
+  split). P0/P1a already follow this (`getLeague`/`listMyLeagues`/`getStandings`
+  call the service directly).
 
 ---
 
