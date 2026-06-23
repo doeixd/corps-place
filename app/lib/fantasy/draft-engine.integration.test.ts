@@ -84,6 +84,13 @@ beforeAll(async () => {
     'write'
   );
 
+  // getContributionsDb runs an ensureColumns migration that ALTERs the better-auth
+  // `user` table (added by the admin console). Stub it so the migration succeeds.
+  const stub = createClient({ url: process.env.CONTRIBUTIONS_DB_URL });
+  await stub.execute(
+    'CREATE TABLE IF NOT EXISTS "user" (id TEXT PRIMARY KEY, name TEXT, email TEXT, image TEXT, role TEXT)'
+  );
+
   engine = await import('./draft-engine');
   const { getContributionsDb } = await import('@/lib/contributions-db');
   contribDb = await getContributionsDb();

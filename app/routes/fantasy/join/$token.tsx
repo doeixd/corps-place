@@ -43,6 +43,7 @@ function JoinLeague() {
           full: 'This league is full.',
           'draft-started': 'The draft has already started — joining is closed.',
           'used-up': 'This invite link has already been used up.',
+          'rate-limited': 'Too many attempts — wait a moment and try again.',
         },
         `Could not join: ${err.message}`
       )

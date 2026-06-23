@@ -43,9 +43,15 @@ import {
   DEFAULT_INVITE_DAYS,
 } from '@/lib/fantasy/invites';
 import { sendEmail } from '@/lib/email';
+import { rateLimit } from '@/lib/rate-limit';
 
 // League statuses that still allow new members to join (§7.3).
 const JOINABLE = new Set(['setup', 'quiz', 'scheduled']);
+
+/** Throw a uniform CONFLICT when a per-user action exceeds its rate budget (§13). */
+const limitPerUser = (action: string, userId: string, max: number, windowMs = 60_000): void => {
+  if (!rateLimit(`${action}:${userId}`, max, windowMs)) throw new Error('CONFLICT:rate-limited');
+};
 
 const siteOrigin = (): string =>
   (process.env.BETTER_AUTH_URL ?? 'http://localhost:5173').replace(/\/+$/, '');
@@ -129,6 +135,7 @@ export const createLeague = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(CreateLeagueInput, d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
+    limitPerUser('league-create', actor.userId, 5);
     assertDurable();
     const db = await getContributionsDb();
 
@@ -306,6 +313,7 @@ export const createInvite = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const actor = await requireActor();
     assertDurable();
+    limitPerUser('invite-create', actor.userId, 30);
     const db = await getContributionsDb();
     const league = await requireOwner(db, data.leagueId, actor);
     requirePaid(league);
@@ -420,6 +428,7 @@ export const acceptInvite = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(AcceptInviteInput, d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
+    limitPerUser('invite-accept', actor.userId, 15);
     assertDurable();
     const db = await getContributionsDb();
     const now = new Date().toISOString();
@@ -1010,6 +1019,7 @@ export const makePick = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const actor = await requireActor();
+    limitPerUser('pick', actor.userId, 120);
     assertDurable();
     // The engine already rejects anyone who isn't the current picker; this is an
     // explicit membership gate (defense-in-depth + a clear error for non-members).
