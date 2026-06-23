@@ -37,6 +37,8 @@ export class NotFound extends Schema.TaggedErrorClass<NotFound>()('NotFound', {
 export const LeagueConflictReason = Schema.Literals([
   'unpaid',
   'draft-started',
+  'draft-shape-locked',
+  'weights-locked',
   'full',
   'used-up',
   'name-taken',

@@ -166,6 +166,75 @@ describe('LeagueService.get (Effect path)', () => {
   });
 });
 
+describe('LeagueService.create / updateConfig (Effect path)', () => {
+  const actor = (userId: string) => ({ userId, role: 'user' as const }) as never;
+
+  const create = (input: { actor: never; name: string; season: string; config?: unknown }) =>
+    Effect.runPromise(
+      Effect.flatMap(LeagueService, (svc) => svc.create(input)).pipe(
+        Effect.provide(LeagueServiceLive)
+      )
+    );
+  const updateConfig = (input: { actor: never; leagueId: string; config: unknown }) =>
+    Effect.runPromise(
+      Effect.flatMap(LeagueService, (svc) => svc.updateConfig(input)).pipe(
+        Effect.provide(LeagueServiceLive)
+      )
+    );
+
+  it('creates a league + owner membership atomically', async () => {
+    const res = await create({ actor: actor('u-creator'), name: 'Fresh League', season: '2026' });
+    expect(res.ok).toBe(true);
+    expect(res.leagueId).toBeTruthy();
+    expect(res.slug).toMatch(/^fresh-league/);
+
+    const row = (
+      await db.execute({
+        sql: 'SELECT owner_user_id, status, payment_status FROM fantasy_leagues WHERE league_id = ?',
+        args: [res.leagueId],
+      })
+    ).rows[0];
+    expect(row?.owner_user_id).toBe('u-creator');
+    expect(row?.status).toBe('setup');
+
+    const member = (
+      await db.execute({
+        sql: "SELECT role, status FROM fantasy_members WHERE league_id = ? AND user_id = 'u-creator'",
+        args: [res.leagueId],
+      })
+    ).rows[0];
+    expect(member?.role).toBe('owner');
+    expect(member?.status).toBe('active');
+  });
+
+  it('updates config for the owner; rejects non-owner / unknown', async () => {
+    const { leagueId } = await create({
+      actor: actor('u-cfg'),
+      name: 'Cfg League',
+      season: '2026',
+    });
+
+    await updateConfig({ actor: actor('u-cfg'), leagueId, config: { pickSeconds: 90 } });
+    const saved = JSON.parse(
+      (
+        await db.execute({
+          sql: 'SELECT config_json FROM fantasy_leagues WHERE league_id = ?',
+          args: [leagueId],
+        })
+      ).rows[0]?.config_json as string
+    );
+    expect(saved.pickSeconds).toBe(90);
+
+    // Non-owner → Forbidden; unknown league → NotFound (both reject).
+    await expect(
+      updateConfig({ actor: actor('someone-else'), leagueId, config: {} })
+    ).rejects.toThrow();
+    await expect(
+      updateConfig({ actor: actor('u-cfg'), leagueId: 'nope', config: {} })
+    ).rejects.toThrow();
+  });
+});
+
 describe('StandingsService.getStandings (Effect path)', () => {
   const run = (slug: string) =>
     Effect.runPromise(

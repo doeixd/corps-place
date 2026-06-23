@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { createLeague } from '@/lib/server-fns/fantasy';
+import { refetchMyLeagues } from '@/db/fantasy-collections';
 import { useSession } from '@/lib/auth-client';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { SignInButton } from '@/components/fantasy/sign-in-button';
@@ -33,6 +34,8 @@ function CreateLeague() {
 
   const create = useAsyncAction(async () => {
     const res = await createLeague({ data: { name: name.trim(), season } });
+    // Refresh the my-leagues collection so the new league is present on /fantasy.
+    void refetchMyLeagues();
     await navigate({ to: '/fantasy/$slug', params: { slug: res.slug } });
   });
 

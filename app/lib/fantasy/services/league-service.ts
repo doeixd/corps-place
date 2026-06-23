@@ -10,10 +10,20 @@
  * SERVER-ONLY.
  */
 import { Context, Effect, Layer } from 'effect';
+import { randomUUID } from 'node:crypto';
+import type { Actor } from '@/lib/authz';
 import { paymentsEnabled } from '@/lib/fantasy/payments';
-import type { LeagueConfig } from '@/lib/fantasy/config';
-import { NotFound } from './errors';
-import { ContributionsSql, ContributionsSqlLive } from './sql';
+import { rateLimit } from '@/lib/rate-limit';
+import {
+  DEFAULT_CONFIG,
+  resolveLeagueConfig,
+  draftShapeChanged,
+  type LeagueConfig,
+} from '@/lib/fantasy/config';
+import { makeLeagueSlug } from '@/lib/fantasy/invites';
+import { getSeasonFinals } from '@/lib/fantasy/score-db';
+import { Forbidden, LeagueConflict, NotFound, RateLimited } from './errors';
+import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from './sql';
 
 // libsql cell readers (text/int/null columns only), matching the legacy server-fn.
 const strOrNull = (v: unknown): string | null => (v == null ? null : (v as string));
@@ -146,6 +156,93 @@ const makeLeagueService = Effect.gen(function* () {
     };
   });
 
+  // Owner guard: load the league (NotFound if missing) + assert ownership.
+  const requireOwner = Effect.fn('LeagueService.requireOwner')(function* (
+    leagueId: string,
+    actor: Actor
+  ) {
+    const rows = yield* sql<LeagueRow>`
+      SELECT * FROM fantasy_leagues WHERE league_id = ${leagueId}
+    `.pipe(Effect.orDie);
+    const league = rows[0];
+    if (!league) return yield* Effect.fail(new NotFound({ message: 'league' }));
+    if (league.owner_user_id !== actor.userId) return yield* Effect.fail(new Forbidden());
+    return league;
+  });
+
+  const create = Effect.fn('LeagueService.create')(function* (input: {
+    actor: Actor;
+    name: string;
+    season: string;
+    config?: unknown;
+  }) {
+    yield* requireDurableStorage;
+    if (!rateLimit(`league-create:${input.actor.userId}`, 5, 60_000))
+      return yield* Effect.fail(new RateLimited({ action: 'league-create' }));
+
+    const config = input.config
+      ? resolveLeagueConfig(input.config as Partial<LeagueConfig>)
+      : DEFAULT_CONFIG;
+    const leagueId = randomUUID();
+    const slug = makeLeagueSlug(input.name);
+    const now = new Date().toISOString();
+
+    yield* sql
+      .withTransaction(
+        Effect.gen(function* () {
+          yield* sql`
+            INSERT INTO fantasy_leagues
+              (league_id, slug, name, owner_user_id, season, status, config_json,
+               max_members, payment_status, created_at, updated_at)
+            VALUES (${leagueId}, ${slug}, ${input.name}, ${input.actor.userId}, ${input.season},
+                    'setup', ${JSON.stringify(config)}, 12, 'none', ${now}, ${now})
+          `;
+          yield* sql`
+            INSERT INTO fantasy_members (league_id, user_id, role, status, joined_at)
+            VALUES (${leagueId}, ${input.actor.userId}, 'owner', 'active', ${now})
+          `;
+        })
+      )
+      .pipe(Effect.orDie);
+
+    return { ok: true as const, leagueId, slug };
+  });
+
+  const updateConfig = Effect.fn('LeagueService.updateConfig')(function* (input: {
+    actor: Actor;
+    leagueId: string;
+    config: unknown;
+  }) {
+    yield* requireDurableStorage;
+    const league = yield* requireOwner(input.leagueId, input.actor);
+    const current = JSON.parse(league.config_json) as LeagueConfig;
+    const next = resolveLeagueConfig(input.config as Partial<LeagueConfig>);
+
+    // Draft-shape fields freeze once the draft is past 'scheduled' (§6).
+    const started = yield* sql<{ one: number }>`
+      SELECT 1 AS one FROM fantasy_drafts WHERE league_id = ${input.leagueId} AND status != 'scheduled' LIMIT 1
+    `.pipe(Effect.orDie);
+    if (started.length > 0 && draftShapeChanged(current, next))
+      return yield* Effect.fail(new LeagueConflict({ reason: 'draft-shape-locked' }));
+
+    // Scoring weights are editable until finals week, then locked (§16 V3).
+    const weightsChanged = JSON.stringify(current.weights) !== JSON.stringify(next.weights);
+    if (weightsChanged && next.weightsLockedAt === 'finals_week') {
+      const finals = yield* Effect.promise(() => getSeasonFinals(league.season));
+      const locked = Boolean(
+        finals && finals.recapPresent && new Date().toISOString() >= finals.date
+      );
+      if (locked) return yield* Effect.fail(new LeagueConflict({ reason: 'weights-locked' }));
+    }
+
+    const now = new Date().toISOString();
+    yield* sql`
+      UPDATE fantasy_leagues SET config_json = ${JSON.stringify(next)}, updated_at = ${now}
+      WHERE league_id = ${league.league_id}
+    `.pipe(Effect.orDie);
+    return { ok: true as const };
+  });
+
   const listMyLeagues = Effect.fn('LeagueService.listMyLeagues')(function* (userId: string) {
     const rows = yield* sql<LeagueSummaryRow>`
       SELECT l.league_id, l.slug, l.name, l.season, l.status, m.role
@@ -166,7 +263,7 @@ const makeLeagueService = Effect.gen(function* () {
     };
   });
 
-  return { get, listMyLeagues };
+  return { get, listMyLeagues, create, updateConfig };
 });
 
 export class LeagueService extends Context.Service<

@@ -11,20 +11,14 @@
 import { createServerFn } from '@tanstack/react-start/client';
 import { getWebRequest } from '@tanstack/react-start/server';
 import type { Client, Row } from '@libsql/client';
-import { Effect } from 'effect';
+import { Effect, Match } from 'effect';
 import * as v from 'valibot';
 import { LeagueService } from '@/lib/fantasy/services/league-service';
 import { StandingsService } from '@/lib/fantasy/services/standings-service';
 import { provideFantasy } from '@/rpc';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
-import {
-  DEFAULT_CONFIG,
-  resolveLeagueConfig,
-  totalRounds,
-  draftShapeChanged,
-  type LeagueConfig,
-} from '@/lib/fantasy/config';
+import { totalRounds, type LeagueConfig } from '@/lib/fantasy/config';
 import {
   planQuestionCounts,
   scoreQuiz,
@@ -32,7 +26,7 @@ import {
   type ServedQuestion,
 } from '@/lib/fantasy/quiz';
 import { seededShuffle } from '@/lib/fantasy/draft-order';
-import { getDraftPool, getSeasonFinals } from '@/lib/fantasy/score-db';
+import { getDraftPool } from '@/lib/fantasy/score-db';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { enqueueDraftReminders } from '@/lib/fantasy/jobs';
 import { vapidPublicKey } from '@/lib/fantasy/push';
@@ -41,17 +35,40 @@ import {
   createLeagueCheckoutSession,
   refundPaymentIntent,
 } from '@/lib/fantasy/payments';
-import {
-  makeLeagueSlug,
-  mintInviteToken,
-  isoPlusDays,
-  DEFAULT_INVITE_DAYS,
-} from '@/lib/fantasy/invites';
+import { mintInviteToken, isoPlusDays, DEFAULT_INVITE_DAYS } from '@/lib/fantasy/invites';
 import { sendEmail } from '@/lib/email';
 import { rateLimit } from '@/lib/rate-limit';
 
 // League statuses that still allow new members to join (§7.3).
 const JOINABLE = new Set(['setup', 'quiz', 'scheduled']);
+
+// ---------------------------------------------------------------------------
+// Effect boundary (strangler): map the fantasy typed domain errors back to the
+// legacy `Error` messages routes/components still branch on, and run the program.
+// `runPromise` lives ONLY here, at the server-fn boundary (AGENTS.md).
+// ---------------------------------------------------------------------------
+
+const legacyFantasyMessage = (e: { _tag: string; reason?: string }): string =>
+  Match.value(e._tag).pipe(
+    Match.when('Unauthenticated', () => 'UNAUTHENTICATED'),
+    Match.when('Forbidden', () => 'FORBIDDEN'),
+    Match.when('NotFound', () => 'NOT_FOUND'),
+    Match.when('StorageUnavailable', () => `STORAGE_UNAVAILABLE: ${e.reason ?? ''}`),
+    Match.when('RateLimited', () => 'CONFLICT:rate-limited'),
+    Match.when('LeagueConflict', () => `CONFLICT:${e.reason}`),
+    Match.when('DraftConflict', () => `CONFLICT:${e.reason}`),
+    Match.when('QuizConflict', () => `CONFLICT:${e.reason}`),
+    Match.when('PaymentDisabled', () => 'CONFLICT:payments-disabled'),
+    Match.orElse(() => 'CONFLICT:unknown')
+  );
+
+/** Run a fully-provided fantasy program, rethrowing typed errors as legacy strings. */
+const runFantasy = <A, E extends { _tag: string; reason?: string }>(
+  program: Effect.Effect<A, E, never>
+): Promise<A> =>
+  Effect.runPromise(
+    program.pipe(Effect.catch((e) => Effect.fail(new Error(legacyFantasyMessage(e)))))
+  );
 
 /** Throw a uniform CONFLICT when a per-user action exceeds its rate budget (§13). */
 const limitPerUser = (action: string, userId: string, max: number, windowMs = 60_000): void => {
@@ -135,50 +152,17 @@ const CreateLeagueInput = v.object({
   config: v.optional(v.unknown()),
 });
 
+// Strangler shim (P2): delegates to LeagueService.create (durable-guard +
+// rate-limit + atomic insert run inside the service); actor resolved here.
 export const createLeague = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(CreateLeagueInput, d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    limitPerUser('league-create', actor.userId, 5);
-    assertDurable();
-    const db = await getContributionsDb();
-
-    const config: LeagueConfig = data.config
-      ? resolveLeagueConfig(data.config as Partial<LeagueConfig>)
-      : DEFAULT_CONFIG;
-
-    const leagueId = crypto.randomUUID();
-    const slug = makeLeagueSlug(data.name);
-    const now = new Date().toISOString();
-
-    await db.batch(
-      [
-        {
-          sql: `INSERT INTO fantasy_leagues
-                  (league_id, slug, name, owner_user_id, season, status, config_json,
-                   max_members, payment_status, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, 'setup', ?, 12, 'none', ?, ?)`,
-          args: [
-            leagueId,
-            slug,
-            data.name,
-            actor.userId,
-            data.season,
-            JSON.stringify(config),
-            now,
-            now,
-          ],
-        },
-        {
-          sql: `INSERT INTO fantasy_members (league_id, user_id, role, status, joined_at)
-                VALUES (?, ?, 'owner', 'active', ?)`,
-          args: [leagueId, actor.userId, now],
-        },
-      ],
-      'write'
+    return runFantasy(
+      Effect.flatMap(LeagueService, (svc) =>
+        svc.create({ actor, name: data.name, season: data.season, config: data.config })
+      ).pipe(provideFantasy)
     );
-
-    return { ok: true as const, leagueId, slug };
   });
 
 // Strangler shim (migration plan P0): the handler stays a thin `createServerFn`
@@ -211,46 +195,17 @@ export const listMyLeagues = createServerFn({ method: 'GET' }).handler(async () 
 
 const UpdateConfigInput = v.object({ leagueId: v.string(), config: v.unknown() });
 
+// Strangler shim (P2): delegates to LeagueService.updateConfig (owner guard +
+// draft-shape/weights freeze checks run inside the service).
 export const updateLeagueConfig = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UpdateConfigInput, d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    assertDurable();
-    const db = await getContributionsDb();
-    const league = await requireOwner(db, data.leagueId, actor);
-    const current = JSON.parse(str(league.config_json)) as LeagueConfig;
-    const next = resolveLeagueConfig(data.config as Partial<LeagueConfig>);
-
-    // Draft-shape fields freeze once the draft is past 'scheduled' (§6); only
-    // `weights` (and notify prefs) stay editable after that.
-    const draftStarted = Boolean(
-      (
-        await db.execute({
-          sql: "SELECT 1 FROM fantasy_drafts WHERE league_id = ? AND status != 'scheduled' LIMIT 1",
-          args: [data.leagueId],
-        })
-      ).rows[0]
+    return runFantasy(
+      Effect.flatMap(LeagueService, (svc) =>
+        svc.updateConfig({ actor, leagueId: data.leagueId, config: data.config })
+      ).pipe(provideFantasy)
     );
-    if (draftStarted && draftShapeChanged(current, next)) {
-      throw new Error('CONFLICT:draft-shape-locked');
-    }
-
-    // Scoring weights are editable until finals week, then locked (§16 V3).
-    const weightsChanged = JSON.stringify(current.weights) !== JSON.stringify(next.weights);
-    if (weightsChanged && next.weightsLockedAt === 'finals_week') {
-      const finals = await getSeasonFinals(str(league.season));
-      const locked = Boolean(
-        finals && finals.recapPresent && new Date().toISOString() >= finals.date
-      );
-      if (locked) throw new Error('CONFLICT:weights-locked');
-    }
-
-    const now = new Date().toISOString();
-    await db.execute({
-      sql: 'UPDATE fantasy_leagues SET config_json = ?, updated_at = ? WHERE league_id = ?',
-      args: [JSON.stringify(next), now, str(league.league_id)],
-    });
-    return { ok: true as const };
   });
 
 // ---------------------------------------------------------------------------
