@@ -9,6 +9,7 @@ import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getLeague, getQuizForLeague } from '@/lib/server-fns/fantasy';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
+import { Explain } from '@/components/fantasy/explain';
 import { fantasyQuizMachine } from '@/machines/fantasy-quiz-machine';
 
 export const Route = createFileRoute('/fantasy/$slug/quiz')({
@@ -90,7 +91,8 @@ function QuizSession({
       <Card>
         <CardContent className="flex flex-col items-start gap-3">
           <p className="text-muted-foreground">
-            You get one timed attempt. Your score sets your draft seeding.
+            A quick DCI knowledge quiz. You get one timed attempt, and your score sets your{' '}
+            <Explain term="seeding">draft order</Explain> — higher scores pick earlier.
           </p>
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
           <BusyButton busy={state.matches('starting')} onClick={() => send({ type: 'START' })}>
@@ -109,7 +111,7 @@ function QuizSession({
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {quiz.questions.length} questions · one attempt
+          {answers.filter((a) => a >= 0).length} of {quiz.questions.length} answered · one attempt
         </p>
         <p className="text-sm">
           Time left: <Countdown endsAt={quiz.endsAt} />
@@ -165,7 +167,12 @@ function Completed({ slug, score }: { slug: string; score: number }) {
     <Card>
       <CardContent className="flex flex-col items-start gap-3">
         <p className="text-lg">
-          You scored <strong>{Math.round(score * 100)}%</strong>. This sets your draft seeding.
+          You scored <strong>{Math.round(score * 100)}%</strong> — your{' '}
+          <Explain term="seeding">draft order</Explain> is set.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          When the owner starts the draft you&apos;ll pick in score order. We&apos;ll remind you
+          before it begins.
         </p>
         <BackToLeague slug={slug} />
       </CardContent>
