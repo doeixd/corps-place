@@ -19,6 +19,7 @@ import {
 import { uploadFantasyLogo } from '@/lib/server-fns/fantasy-media';
 import { PhotoUpload, fileToBase64 } from '@/components/fantasy/photo-upload';
 import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
+import { LeagueSettingsDialog } from '@/components/fantasy/league-settings-dialog';
 import { CorpsIdentityForm } from '@/components/fantasy/corps-identity-form';
 import { PushToggle } from '@/components/fantasy/push-toggle';
 import { BusyButton } from '@/components/fantasy/busy-button';
@@ -146,6 +147,15 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
           </Button>
         </nav>
       </header>
+
+      {viewer.isOwner ? (
+        <LeagueSettingsDialog
+          leagueId={league.leagueId}
+          config={league.config}
+          draftStarted={data.draft ? data.draft.status !== 'scheduled' : false}
+          onSaved={refresh}
+        />
+      ) : null}
 
       {paymentsEnabled && viewer.isOwner ? (
         <PaymentPanel
