@@ -6,6 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { CorpsLogo } from '@/components/corps-logo';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getLeague, getDraftState } from '@/lib/server-fns/fantasy';
@@ -69,9 +79,8 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
     input: { leagueId, onChanged: () => void router.invalidate() },
   });
 
-  // React Compiler memoizes these derived maps — no manual useMemo (AGENTS.md).
+  // React Compiler memoizes this derived map — no manual useMemo (AGENTS.md).
   const membersById = new Map<string, Member>(league.members.map((m) => [m.user_id, m]));
-  const corpsName = new Map(initial.pool.map((c) => [c.corpsKey, c.name]));
 
   return (
     <PageShell className="flex flex-col gap-6">
@@ -112,7 +121,6 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           viewerId={league.viewer.userId}
           isOwner={league.viewer.isOwner}
           membersById={membersById}
-          corpsName={corpsName}
         />
       )}
     </PageShell>
@@ -215,7 +223,6 @@ type LiveDraftProps = {
   viewerId: string | null;
   isOwner: boolean;
   membersById: Map<string, Member>;
-  corpsName: Map<string, string>;
 };
 
 function LiveDraft({
@@ -229,7 +236,6 @@ function LiveDraft({
   viewerId,
   isOwner,
   membersById,
-  corpsName,
 }: LiveDraftProps) {
   const isMyTurn = draft.status === 'live' && draft.currentUserId === viewerId;
   const onClock = draft.currentUserId ? membersById.get(draft.currentUserId) : undefined;
@@ -278,15 +284,18 @@ function LiveDraft({
 
       {actionError ? <p className="text-sm text-destructive">{actionError}</p> : null}
 
-      <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
-        <PoolPicker
-          pool={pool}
-          takenPairs={takenPairs}
-          canPick={isMyTurn && !picking}
-          onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
-        />
-        <RosterBoard picks={picks} membersById={membersById} corpsName={corpsName} />
-      </div>
+      <DraftBoard
+        picks={picks}
+        members={[...membersById.values()]}
+        pool={pool}
+        currentUserId={draft.currentUserId}
+      />
+      <PoolPicker
+        pool={pool}
+        takenPairs={takenPairs}
+        canPick={isMyTurn && !picking}
+        onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
+      />
     </div>
   );
 }
@@ -357,52 +366,90 @@ function PoolPicker({
   );
 }
 
-function RosterBoard({
+/**
+ * The draft board — a compact grid like the recap table, but cells are the corps
+ * LOGO each participant drafted for that caption (tooltip = corps + caption).
+ * Rows are participants; columns are the caption sections. The on-clock member's
+ * row is highlighted. Horizontally scrollable on narrow screens.
+ */
+function DraftBoard({
   picks,
-  membersById,
-  corpsName,
+  members,
+  pool,
+  currentUserId,
 }: {
   picks: DraftState['snapshot']['picks'];
-  membersById: Map<string, Member>;
-  corpsName: Map<string, string>;
+  members: Member[];
+  pool: DraftState['pool'];
+  currentUserId: string | null;
 }) {
-  const byMember = new Map<string, DraftState['snapshot']['picks']>();
-  for (const p of picks) {
-    const list = byMember.get(p.userId) ?? [];
-    list.push(p);
-    byMember.set(p.userId, list);
-  }
+  const corpsByKey = new Map(pool.map((c) => [c.corpsKey, c]));
+  const pickAt = new Map<string, DraftState['snapshot']['picks'][number]>();
+  for (const p of picks) pickAt.set(`${p.userId}|${p.caption}`, p);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Rosters</CardTitle>
+        <CardTitle>Draft board</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-3">
-        {[...membersById.values()].map((m) => {
-          const roster = byMember.get(m.user_id) ?? [];
-          return (
-            <div key={m.user_id} className="rounded-lg border border-border p-2">
-              <p
-                className="text-sm font-medium"
-                style={m.corps_color ? { color: m.corps_color } : undefined}
+      <CardContent className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="sticky left-0 bg-background">Player</TableHead>
+              {CAPTION_KEYS.map((c) => (
+                <TableHead key={c} className="px-2 text-center" title={KEY_TO_CAPTION_NAME[c]}>
+                  {c}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {members.map((m) => (
+              <TableRow
+                key={m.user_id}
+                className={m.user_id === currentUserId ? 'bg-muted/40' : undefined}
               >
-                {m.corps_name || m.user_name || 'Player'} · {roster.length}
-              </p>
-              <ul className="mt-1 flex flex-col gap-0.5 text-xs text-muted-foreground">
-                {roster.map((p) => (
-                  <li key={p.pickNo}>
-                    <span className="font-mono" title={KEY_TO_CAPTION_NAME[p.caption]}>
-                      {p.caption}
-                    </span>{' '}
-                    {corpsName.get(p.corpsKey) ?? p.corpsKey}
-                    {p.autoPicked ? ' (auto)' : ''}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+                <TableCell
+                  className="sticky left-0 bg-background font-medium whitespace-nowrap"
+                  style={m.corps_color ? { color: m.corps_color } : undefined}
+                >
+                  {m.corps_name || m.user_name || 'Player'}
+                </TableCell>
+                {CAPTION_KEYS.map((c) => {
+                  const pick = pickAt.get(`${m.user_id}|${c}`);
+                  const corps = pick ? corpsByKey.get(pick.corpsKey) : undefined;
+                  return (
+                    <TableCell key={c} className="p-1 text-center">
+                      {pick ? (
+                        <Tooltip>
+                          <TooltipTrigger
+                            render={
+                              <span className="mx-auto inline-flex size-8 items-center justify-center" />
+                            }
+                          >
+                            <CorpsLogo
+                              name={corps?.name ?? pick.corpsKey}
+                              logo={corps?.corpsLogo ?? ''}
+                              width={32}
+                              className="size-8"
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {corps?.name ?? pick.corpsKey} — {KEY_TO_CAPTION_NAME[c]}
+                            {pick.autoPicked ? ' (auto)' : ''}
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <span className="text-muted-foreground">·</span>
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );
