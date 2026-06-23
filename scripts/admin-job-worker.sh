@@ -44,6 +44,15 @@ cmd_for() {
       [ -n "$slug" ] || { echo "__ERR__ regenerate_event needs args.event"; return; }
       echo "npx tsx scripts/predictEventRecap.ts --event $slug --season 2026 --save-db --force-refresh" ;;
     fine_tune)            echo "npx tsx src/training/trainModelV9Subcaption-fixed.ts --load-model latest --trial-id cron_$(date +%s)" ;;
+    merge_staff_by_name)  echo "npx tsx scripts/mergeByNameDefault.ts --apply" ;;
+    resolve_staff_identity)
+      local op a b
+      op="$(printf '%s' "$args" | sed -n 's/.*"op"[: ]*"\([^"]*\)".*/\1/p')"
+      a="$(printf '%s' "$args" | sed -n 's/.*"a"[: ]*"\([^"]*\)".*/\1/p')"
+      b="$(printf '%s' "$args" | sed -n 's/.*"b"[: ]*"\([^"]*\)".*/\1/p')"
+      { [ "$op" = merge ] || [ "$op" = split ]; } && [ -n "$a" ] && [ -n "$b" ] \
+        || { echo "__ERR__ resolve_staff_identity needs op=merge|split, a, b"; return; }
+      echo "npx tsx scripts/resolveStaffIdentity.ts --$op $a $b --apply" ;;
     *)                    echo "__ERR__ unknown kind: $kind" ;;
   esac
 }

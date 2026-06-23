@@ -39,6 +39,7 @@ import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSystemRouteImport } from './routes/admin/system'
 import { Route as AdminSupportRouteImport } from './routes/admin/support'
 import { Route as AdminJobsRouteImport } from './routes/admin/jobs'
+import { Route as AdminIdentityRouteImport } from './routes/admin/identity'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
@@ -210,6 +211,11 @@ const AdminJobsRoute = AdminJobsRouteImport.update({
   path: '/admin/jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIdentityRoute = AdminIdentityRouteImport.update({
+  id: '/admin/identity',
+  path: '/admin/identity',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCorpsColorsRoute = AdminCorpsColorsRouteImport.update({
   id: '/admin/corps-colors',
   path: '/admin/corps-colors',
@@ -366,6 +372,7 @@ export interface FileRoutesByFullPath {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
+  '/admin/identity': typeof AdminIdentityRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
@@ -413,6 +420,7 @@ export interface FileRoutesByTo {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
+  '/admin/identity': typeof AdminIdentityRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
@@ -461,6 +469,7 @@ export interface FileRoutesById {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
+  '/admin/identity': typeof AdminIdentityRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
@@ -510,6 +519,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
+    | '/admin/identity'
     | '/admin/jobs'
     | '/admin/support'
     | '/admin/system'
@@ -557,6 +567,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
+    | '/admin/identity'
     | '/admin/jobs'
     | '/admin/support'
     | '/admin/system'
@@ -604,6 +615,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
+    | '/admin/identity'
     | '/admin/jobs'
     | '/admin/support'
     | '/admin/system'
@@ -652,6 +664,7 @@ export interface RootRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
+  AdminIdentityRoute: typeof AdminIdentityRoute
   AdminJobsRoute: typeof AdminJobsRoute
   AdminSupportRoute: typeof AdminSupportRoute
   AdminSystemRoute: typeof AdminSystemRoute
@@ -983,6 +996,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminJobsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/identity': {
+      id: '/admin/identity'
+      path: '/admin/identity'
+      fullPath: '/admin/identity'
+      preLoaderRoute: typeof AdminIdentityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/corps-colors': {
       id: '/admin/corps-colors'
       path: '/admin/corps-colors'
@@ -1207,6 +1227,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminContentRoute: AdminContentRoute,
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
+  AdminIdentityRoute: AdminIdentityRoute,
   AdminJobsRoute: AdminJobsRoute,
   AdminSupportRoute: AdminSupportRoute,
   AdminSystemRoute: AdminSystemRoute,

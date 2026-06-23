@@ -5,27 +5,44 @@
 //
 // No auth gate exists yet, so the route 404s outside development.
 
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
+import { requireAdmin } from '@/lib/server-fns/admin';
+import { AdminPage } from '@/components/admin/admin-page';
+import type { AdminGate } from '@/lib/admin-loader';
+import { notFound } from '@tanstack/react-router';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { saveCorpsColors } from '@/lib/server-fns/corps-colors';
 import { corpsPalette, normalizeHex, FALLBACK_PRIMARY } from '@sdk/src/corpsColors.js';
 import type { CorpsSummary } from '@/lib/corps-directory';
 import { PageHeader } from '@/components/page-header';
-import { PageShell } from '@/components/page-shell';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-const isDev = import.meta.env.DEV;
-
 export const Route = createFileRoute('/admin/corps-colors')({
-  beforeLoad: () => {
-    if (!isDev) throw notFound();
+  // Migrated onto the real role gate (was dev-only). Reads the corps directory from
+  // the read-model (web-readable). NOTE: saveCorpsColors still writes dci-relational.db
+  // directly, which only succeeds where that DB exists (dev/VM) — in the prod serving
+  // container the save errors until it's re-routed through the worker (ADMIN_PAGE_PLAN
+  // §6.5, a follow-up needing a setCorpsColors SDK script).
+  loader: async () => {
+    const gate: AdminGate = await (async () => {
+      const r = await requireAdmin({ data: { cap: 'viewAdmin' } });
+      if (r.status === 'ok') return { actor: { userId: r.userId, role: r.role }, signedIn: true };
+      if (r.status === 'signed_out') return { actor: null, signedIn: false };
+      throw notFound();
+    })();
+    const corps = gate.signedIn ? await getCorpsDirectory() : [];
+    return { gate, corps };
   },
-  loader: async () => ({ corps: await getCorpsDirectory() }),
-  component: CorpsColorsEditor,
+  component: CorpsColorsRoute,
 });
+
+function CorpsColorsRoute() {
+  const { gate } = Route.useLoaderData();
+  return <AdminPage gate={gate}>{() => <CorpsColorsEditor />}</AdminPage>;
+}
 
 // A small preview of the derived palette for one mode, rendered on that mode's
 // surface so light/dark targets are visible side by side.
@@ -169,13 +186,8 @@ function CorpsColorsEditor() {
   }, [corps, q]);
 
   return (
-    <PageShell>
-      <PageHeader
-        title="Corps Colors"
-        subtitle="Dev-only — edit per-corps brand accent colors"
-        backTo="/corps"
-        backLabel="Corps"
-      />
+    <>
+      <PageHeader title="Corps Colors" subtitle="Edit per-corps brand accent colors" />
       <div className="mb-4 w-full sm:w-80">
         <Input
           placeholder="Filter corps by name…"
@@ -188,6 +200,6 @@ function CorpsColorsEditor() {
           <CorpsRow key={c.corps_key} corps={c} />
         ))}
       </div>
-    </PageShell>
+    </>
   );
 }

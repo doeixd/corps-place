@@ -13,6 +13,8 @@ export const JOB_KINDS = [
   'generate_predictions',
   'regenerate_event',
   'fine_tune',
+  'merge_staff_by_name',
+  'resolve_staff_identity',
 ] as const;
 
 export type JobKind = (typeof JOB_KINDS)[number];
@@ -68,6 +70,18 @@ export const JOB_KIND_META: Record<JobKind, JobKindMeta> = {
     label: 'Fine-tune model',
     description: 'Long CPU job — fine-tune the v9 model from the latest checkpoint.',
     danger: true,
+  },
+  merge_staff_by_name: {
+    kind: 'merge_staff_by_name',
+    label: 'Merge staff by name',
+    description: 'Collapse exact-name duplicate staff into one person (respects keep-separate).',
+    danger: true,
+  },
+  resolve_staff_identity: {
+    kind: 'resolve_staff_identity',
+    label: 'Merge/split two staff',
+    description: 'Manually merge or split two staff_ids (needs op + two ids).',
+    needsArgs: true,
   },
 };
 
