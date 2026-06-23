@@ -266,6 +266,17 @@ landing:
 ### 4.3 `/fantasy/$slug` (dashboard) — the hub
 - **League header** with the **league image** (banner/avatar), name, **status
   badge**, season, member count, and the **per-league tab bar** (§3.2) underneath.
+- **Editable league name (owner).** The name is currently fixed at create time —
+  make it **naturally editable in place**: the header name is an inline-editable
+  field for the owner (click-to-edit / pencil affordance → input → Enter/blur to
+  save, Esc to cancel; optimistic update via the detail collection's `refetch`).
+  Validate like create (trim, 1–60 chars). Backend: add
+  **`LeagueService.rename(actor, leagueId, name)`** (owner-gated, durable-guard) +
+  a `renameLeague` server-fn shim — do NOT reuse `updateLeagueConfig` (that's
+  config-only). **Keep the `slug` stable** on rename (don't re-slug) so existing
+  URLs and invite links keep working; only the display `name` changes. The new
+  name then propagates everywhere via the collections (index cards, header, join
+  preview, standings/draft titles, emails). Non-owners see read-only.
 - **Getting-started checklist** (§3.3) for the viewer's role.
 - **Organized sections** (cards with icons + titles), not a flat stack:
   - *Your corps* (identity) — with inline preview, not a bare form (§5).
@@ -406,7 +417,8 @@ The user's explicit asks, plus the join-once guarantee:
   per-league **tab nav**, skeletons + friendly errors, the glossary/`<Explain>`
   primitive, mobile shells. (§3)
 - **F2 — Index + dashboard + create.** Informative landing, league cards, the
-  dashboard hub with header + checklist + organized sections. (§4.1–4.3)
+  dashboard hub with header + checklist + organized sections, and **inline league
+  rename** (owner; `LeagueService.rename`, slug stays stable). (§4.1–4.3)
 - **F3 — League image + `<PhotoUpload>`.** Schema + service + the shared uploader;
   wire into create/settings/corps-identity; show on cards/header/join. (§5)
 - **F4 — Invite rework.** Auto-link + share + explain + join-once UX. (§6)
