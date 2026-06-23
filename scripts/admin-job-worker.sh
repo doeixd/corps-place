@@ -27,6 +27,9 @@ flock -n 9 || { echo "another worker holds the lock; exiting"; exit 0; }
 
 sq() { sqlite3 "$DB" "$@"; }
 esc() { printf "%s" "$1" | sed "s/'/''/g"; } # SQL-escape single quotes
+# Defense-in-depth (C1): args are also whitelisted server-side at enqueue, but never
+# interpolate an unvalidated value into a command. Returns 0 iff value is safe.
+safe_arg() { printf '%s' "$1" | grep -Eq '^[A-Za-z0-9_.-]+$'; }
 
 # Map kind (+ args JSON) → the command to run in sdk/. Keep in sync with
 # app/lib/admin-jobs.ts JOB_KINDS.
@@ -41,7 +44,7 @@ cmd_for() {
     generate_predictions) echo "$REPO_DIR/scripts/nightly-predictions.sh" ;;
     regenerate_event)
       local slug; slug="$(printf '%s' "$args" | sed -n 's/.*"event"[: ]*"\([^"]*\)".*/\1/p')"
-      [ -n "$slug" ] || { echo "__ERR__ regenerate_event needs args.event"; return; }
+      safe_arg "$slug" || { echo "__ERR__ regenerate_event needs a valid args.event"; return; }
       echo "npx tsx scripts/predictEventRecap.ts --event $slug --season 2026 --save-db --force-refresh" ;;
     fine_tune)            echo "npx tsx src/training/trainModelV9Subcaption-fixed.ts --load-model latest --trial-id cron_$(date +%s)" ;;
     merge_staff_by_name)  echo "npx tsx scripts/mergeByNameDefault.ts --apply" ;;
@@ -50,8 +53,8 @@ cmd_for() {
       op="$(printf '%s' "$args" | sed -n 's/.*"op"[: ]*"\([^"]*\)".*/\1/p')"
       a="$(printf '%s' "$args" | sed -n 's/.*"a"[: ]*"\([^"]*\)".*/\1/p')"
       b="$(printf '%s' "$args" | sed -n 's/.*"b"[: ]*"\([^"]*\)".*/\1/p')"
-      { [ "$op" = merge ] || [ "$op" = split ]; } && [ -n "$a" ] && [ -n "$b" ] \
-        || { echo "__ERR__ resolve_staff_identity needs op=merge|split, a, b"; return; }
+      { [ "$op" = merge ] || [ "$op" = split ]; } && safe_arg "$a" && safe_arg "$b" \
+        || { echo "__ERR__ resolve_staff_identity needs op=merge|split + valid a, b"; return; }
       echo "npx tsx scripts/resolveStaffIdentity.ts --$op $a $b --apply" ;;
     *)                    echo "__ERR__ unknown kind: $kind" ;;
   esac

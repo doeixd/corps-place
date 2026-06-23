@@ -10,6 +10,14 @@ import { getActor, requireCapability } from '@/lib/authz';
 import { writeAudit } from '@/lib/admin-audit';
 import { sendEmail } from '@/lib/email';
 
+// Escape all HTML-significant chars before interpolating user text into an email body
+// (review M7 — the prior `<`-only replace left `&`/`"`/`>` unescaped).
+const esc = (s: string): string =>
+  s.replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!
+  );
+
 // ---------------------------------------------------------------------------
 // public: submit a contact message
 // ---------------------------------------------------------------------------
@@ -46,7 +54,7 @@ export const submitContact = createServerFn({ method: 'POST' })
     await sendEmail({
       to: process.env.SUPPORT_INBOX ?? process.env.MAGIC_LINK_FROM ?? 'login@drumcorps.app',
       subject: `[contact] ${data.subject || data.topic || 'New message'}`,
-      html: `<p>From: ${data.email}</p><p>${data.body.replace(/</g, '&lt;')}</p>`,
+      html: `<p>From: ${esc(data.email)}</p><p>${esc(data.body)}</p>`,
       tag: 'contact',
     }).catch(() => {});
     return { ok: true as const };
@@ -141,7 +149,7 @@ export const replyContact = createServerFn({ method: 'POST' })
     await sendEmail({
       to: msg.email,
       subject: data.subject,
-      html: `<p>${data.body.replace(/</g, '&lt;')}</p>`,
+      html: `<p>${esc(data.body)}</p>`,
       tag: 'support_reply',
     });
     const now = new Date().toISOString();

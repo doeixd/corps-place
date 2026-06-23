@@ -13,6 +13,7 @@ import {
   listUsers,
   setUserRole,
   setUserBanned,
+  logImpersonation,
   type AdminUserRow,
 } from '@/lib/server-fns/admin-users';
 import type { Role } from '@/lib/authz';
@@ -83,6 +84,13 @@ function Users() {
   // in the global session UI.
   const impersonate = async (id: string) => {
     setError(null);
+    try {
+      // Enforce our `impersonate` capability + write the audit row before the actual
+      // (better-auth) impersonation, which only checks adminRoles (H2).
+      await logImpersonation({ data: { userId: id } });
+    } catch (e) {
+      return setError((e as Error).message);
+    }
     const res = await authClient.admin.impersonateUser({ userId: id });
     if (res.error) return setError(res.error.message ?? 'Impersonation failed');
     window.location.href = '/';

@@ -39,9 +39,12 @@ const mapRow = (r: Record<string, unknown>): JobRow => ({
   errorMessage: (r.error_message as string) ?? null,
 });
 
+// Arg VALUES are interpolated into a shell command by the VM worker, so they must be
+// a strict whitelist — no shell metacharacters (C1). Slugs/ids/uuids fit [A-Za-z0-9_.-].
+const SafeArg = v.pipe(v.string(), v.maxLength(128), v.regex(/^[A-Za-z0-9_.-]+$/, 'invalid arg'));
 const EnqueueInput = v.object({
   kind: v.picklist(JOB_KINDS),
-  args: v.optional(v.record(v.string(), v.string()), {}),
+  args: v.optional(v.record(v.string(), SafeArg), {}),
 });
 
 /** Enqueue a job (per-kind dedupe). Does NOT spawn. Cap: runJobs. */
@@ -61,11 +64,18 @@ export const adminEnqueueJob = createServerFn({ method: 'POST' })
 
     const jobId = crypto.randomUUID();
     const now = new Date().toISOString();
-    await db.execute({
-      sql: `INSERT INTO admin_jobs (job_id, kind, args_json, status, requested_by, queued_at)
-            VALUES (?, ?, ?, 'queued', ?, ?)`,
-      args: [jobId, data.kind, JSON.stringify(data.args), actor.userId, now],
-    });
+    try {
+      await db.execute({
+        sql: `INSERT INTO admin_jobs (job_id, kind, args_json, status, requested_by, queued_at)
+              VALUES (?, ?, ?, 'queued', ?, ?)`,
+        args: [jobId, data.kind, JSON.stringify(data.args), actor.userId, now],
+      });
+    } catch (e) {
+      // The partial unique index (one active job per kind) backstops the SELECT race.
+      if (String(e).includes('UNIQUE'))
+        throw new Error(`A ${data.kind} job is already queued or running`);
+      throw e;
+    }
     await writeAudit(db, actor, {
       action: 'enqueue_job',
       target: jobId,

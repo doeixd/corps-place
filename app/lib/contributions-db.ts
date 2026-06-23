@@ -404,6 +404,10 @@ const SCHEMA = [
    )`,
   `CREATE INDEX IF NOT EXISTS idx_admin_jobs_status ON admin_jobs (status, queued_at)`,
   `CREATE INDEX IF NOT EXISTS idx_admin_jobs_kind_time ON admin_jobs (kind, queued_at)`,
+  // Enforce "one active job per kind" at the DB level (backstops the SELECT-then-INSERT
+  // dedupe race — ADMIN_PAGE_PLAN review M6).
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_admin_jobs_active_kind
+     ON admin_jobs (kind) WHERE status IN ('queued', 'running')`,
 
   // Public /contact submissions → support inbox (ADMIN_PAGE_PLAN §10.3).
   `CREATE TABLE IF NOT EXISTS contact_messages (

@@ -16,6 +16,15 @@ import { writeAudit } from '@/lib/admin-audit';
 
 const RANK: Record<Role, number> = { user: 1, trusted: 2, moderator: 3, admin: 4 };
 
+/** H3: you may only ban/erase/modify users ranked BELOW you — never a peer or higher
+ *  (prevents two admins from banning/erasing each other). Self-action is blocked
+ *  separately by each fn. */
+const assertCanActOn = (actorRole: Role, targetRole: Role): void => {
+  if (RANK[targetRole] >= RANK[actorRole]) {
+    throw new Error('FORBIDDEN: cannot act on a user at or above your role');
+  }
+};
+
 export interface AdminUserRow {
   id: string;
   name: string | null;
@@ -75,10 +84,16 @@ export const setUserBanned = createServerFn({ method: 'POST' })
       await db.execute({ sql: 'SELECT role FROM "user" WHERE id = ?', args: [data.userId] })
     ).rows[0] as { role?: string } | undefined;
     if (!target) throw new Error('NOT_FOUND');
+    assertCanActOn(actor.role, (target.role as Role) ?? 'user'); // H3
     await db.execute({
       sql: 'UPDATE "user" SET banned = ?, banReason = ?, banExpires = NULL WHERE id = ?',
       args: [data.banned ? 1 : 0, data.banned ? (data.reason ?? '') : null, data.userId],
     });
+    // M4: revoke existing sessions on ban (direct column write bypasses the plugin's
+    // session deletion, so do it here). getActor also re-checks `banned` as backstop.
+    if (data.banned) {
+      await db.execute({ sql: 'DELETE FROM session WHERE "userId" = ?', args: [data.userId] });
+    }
     await writeAudit(db, actor, {
       action: data.banned ? 'ban_user' : 'unban_user',
       target: data.userId,
@@ -92,8 +107,21 @@ export const setUserBanned = createServerFn({ method: 'POST' })
 // ---------------------------------------------------------------------------
 const UserIdInput = v.object({ userId: v.string() });
 
+/** Enforce the `impersonate` capability + audit BEFORE the client calls the better-auth
+ *  admin impersonate endpoint (H2 — the plugin only checks adminRoles; this adds our
+ *  distinct cap gate + the audit trail). Cap: impersonate. */
+export const logImpersonation = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(UserIdInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'impersonate');
+    if (data.userId === actor.userId) throw new Error('FORBIDDEN: cannot impersonate yourself');
+    const db = await getContributionsDb();
+    await writeAudit(db, actor, { action: 'impersonate_user', target: data.userId });
+    return { ok: true as const };
+  });
+
 /** Export a user's data as a JSON-serializable object (right to access). Cap: manageUsers. */
-export const exportUserData = createServerFn({ method: 'GET' })
+export const exportUserData = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UserIdInput, d))
   .handler(async ({ data }) => {
     await requireCapability(getWebRequest(), 'manageUsers');
@@ -133,12 +161,7 @@ export const anonymizeUser = createServerFn({ method: 'POST' })
       await db.execute({ sql: 'SELECT role FROM "user" WHERE id = ?', args: [data.userId] })
     ).rows[0] as { role?: string } | undefined;
     if (!target) throw new Error('NOT_FOUND');
-    if (target.role === 'admin') {
-      const n = Number(
-        (await db.execute(`SELECT COUNT(*) AS n FROM "user" WHERE role = 'admin'`)).rows[0]?.n ?? 0
-      );
-      if (n <= 1) throw new Error('FORBIDDEN: cannot erase the last admin');
-    }
+    assertCanActOn(actor.role, (target.role as Role) ?? 'user'); // H3 (also blocks erasing admins)
     // Anonymize the PII-bearing rows; keep author_id/uploaded_by so content survives.
     await db.batch(
       [
@@ -177,14 +200,9 @@ export const setUserRole = createServerFn({ method: 'POST' })
     if (!target) throw new Error('NOT_FOUND');
     const before = (target.role as Role) ?? 'user';
     if (before === data.role) return { ok: true as const, userId: data.userId, role: data.role };
-
-    // Can't demote the last remaining admin.
-    if (before === 'admin' && data.role !== 'admin') {
-      const n = Number(
-        (await db.execute(`SELECT COUNT(*) AS n FROM "user" WHERE role = 'admin'`)).rows[0]?.n ?? 0
-      );
-      if (n <= 1) throw new Error('FORBIDDEN: cannot demote the last admin');
-    }
+    // H3: can't change the role of a peer/higher (incl. yourself, another admin) — this
+    // also means admins can't be demoted here, so the last admin is always protected.
+    assertCanActOn(actor.role, before);
 
     await db.execute({
       sql: 'UPDATE "user" SET role = ? WHERE id = ?',
