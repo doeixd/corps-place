@@ -21,6 +21,25 @@ const dbUrl = (): string =>
 let sharedDb: Client | null = null;
 const scoreDb = (): Client => (sharedDb ??= createClient({ url: dbUrl() }));
 
+// In production the relational score DB is intentionally NOT on the request path
+// (the serving image ships only the read-model), so these reads can fail there
+// until the fantasy slices are emitted into the read-model
+// (FANTASY_UI_UX_IMPROVEMENT_PLAN §2.1). Degrade to safe empties rather than throw,
+// so the draft room renders an explainer instead of a 500 that takes the whole
+// page + nav down (§2.3). Warn once.
+let warnedScoreDbUnavailable = false;
+function scoreDbFallback<T>(fn: string, fallback: T, err: unknown): T {
+  if (!warnedScoreDbUnavailable) {
+    warnedScoreDbUnavailable = true;
+    console.error(
+      `[fantasy/score-db] ${fn} failed — scoring DB unavailable on this host; degrading to empty ` +
+        `(emit the fantasy read-model slices to fix; see FANTASY_UI_UX_IMPROVEMENT_PLAN §2.1).`,
+      err
+    );
+  }
+  return fallback;
+}
+
 export type DraftableCorps = {
   corpsKey: string;
   slug: string | null;
@@ -39,23 +58,27 @@ let poolCache: { at: number; value: DraftableCorps[] } | null = null;
 /** Active World + Open corps for the season (Appendix C.4). Cached ~60s. */
 export async function getDraftPool(): Promise<DraftableCorps[]> {
   if (poolCache && Date.now() - poolCache.at < POOL_TTL_MS) return poolCache.value;
-  const res = await scoreDb().execute({
-    sql: `SELECT corps_key, slug, name, division_name, display_city, corps_logo
-          FROM corps
-          WHERE division_name IN (?, ?)
-          ORDER BY division_name, name COLLATE NOCASE`,
-    args: DRAFT_DIVISIONS,
-  });
-  const value = res.rows.map((r) => ({
-    corpsKey: r.corps_key as string,
-    slug: (r.slug as string | null) ?? null,
-    name: r.name as string,
-    divisionName: (r.division_name as string | null) ?? null,
-    displayCity: (r.display_city as string | null) ?? null,
-    corpsLogo: (r.corps_logo as string | null) ?? null,
-  }));
-  poolCache = { at: Date.now(), value };
-  return value;
+  try {
+    const res = await scoreDb().execute({
+      sql: `SELECT corps_key, slug, name, division_name, display_city, corps_logo
+            FROM corps
+            WHERE division_name IN (?, ?)
+            ORDER BY division_name, name COLLATE NOCASE`,
+      args: DRAFT_DIVISIONS,
+    });
+    const value = res.rows.map((r) => ({
+      corpsKey: r.corps_key as string,
+      slug: (r.slug as string | null) ?? null,
+      name: r.name as string,
+      divisionName: (r.division_name as string | null) ?? null,
+      displayCity: (r.display_city as string | null) ?? null,
+      corpsLogo: (r.corps_logo as string | null) ?? null,
+    }));
+    poolCache = { at: Date.now(), value };
+    return value;
+  } catch (err) {
+    return scoreDbFallback('getDraftPool', [] as DraftableCorps[], err);
+  }
 }
 
 /** `${corpsKey}|${captionKey}` → prior-season finals score. */
@@ -76,25 +99,29 @@ const rankingCache = new Map<string, RankingLookup>();
 export async function getPriorSeasonRanking(prevSeason: string): Promise<RankingLookup> {
   const cached = rankingCache.get(prevSeason);
   if (cached) return cached;
-  const res = await scoreDb().execute({
-    sql: `SELECT cap.corps_key, cap.caption_name, cap.score
-          FROM caption_scores cap
-          JOIN competitions c  ON c.slug = cap.competition_slug
-          JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
-          WHERE c.season = ?
-            AND c.slug LIKE '%world-championship-finals'
-            AND cs.division_name IN (?, ?)
-            AND cap.score IS NOT NULL`,
-    args: [prevSeason, ...DRAFT_DIVISIONS],
-  });
-  const lookup: RankingLookup = new Map();
-  for (const r of res.rows) {
-    const key = CAPTION_NAME_TO_KEY[r.caption_name as string];
-    if (!key) continue;
-    lookup.set(rankingKey(r.corps_key as string, key), r.score as number);
+  try {
+    const res = await scoreDb().execute({
+      sql: `SELECT cap.corps_key, cap.caption_name, cap.score
+            FROM caption_scores cap
+            JOIN competitions c  ON c.slug = cap.competition_slug
+            JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
+            WHERE c.season = ?
+              AND c.slug LIKE '%world-championship-finals'
+              AND cs.division_name IN (?, ?)
+              AND cap.score IS NOT NULL`,
+      args: [prevSeason, ...DRAFT_DIVISIONS],
+    });
+    const lookup: RankingLookup = new Map();
+    for (const r of res.rows) {
+      const key = CAPTION_NAME_TO_KEY[r.caption_name as string];
+      if (!key) continue;
+      lookup.set(rankingKey(r.corps_key as string, key), r.score as number);
+    }
+    rankingCache.set(prevSeason, lookup);
+    return lookup;
+  } catch (err) {
+    return scoreDbFallback('getPriorSeasonRanking', new Map() as RankingLookup, err);
   }
-  rankingCache.set(prevSeason, lookup);
-  return lookup;
 }
 
 /**
@@ -103,24 +130,28 @@ export async function getPriorSeasonRanking(prevSeason: string): Promise<Ranking
  * World/Open competitions. This is the scoring input for standings.
  */
 export async function getSeasonBestLookup(season: string): Promise<RankingLookup> {
-  const res = await scoreDb().execute({
-    sql: `SELECT cap.corps_key, cap.caption_name, MAX(cap.score) AS best
-          FROM caption_scores cap
-          JOIN competitions c  ON c.slug = cap.competition_slug
-          JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
-          WHERE c.season = ?
-            AND cs.division_name IN (?, ?)
-            AND cap.score IS NOT NULL
-          GROUP BY cap.corps_key, cap.caption_name`,
-    args: [season, ...DRAFT_DIVISIONS],
-  });
-  const lookup: RankingLookup = new Map();
-  for (const r of res.rows) {
-    const key = CAPTION_NAME_TO_KEY[r.caption_name as string];
-    if (!key) continue;
-    lookup.set(rankingKey(r.corps_key as string, key), r.best as number);
+  try {
+    const res = await scoreDb().execute({
+      sql: `SELECT cap.corps_key, cap.caption_name, MAX(cap.score) AS best
+            FROM caption_scores cap
+            JOIN competitions c  ON c.slug = cap.competition_slug
+            JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
+            WHERE c.season = ?
+              AND cs.division_name IN (?, ?)
+              AND cap.score IS NOT NULL
+            GROUP BY cap.corps_key, cap.caption_name`,
+      args: [season, ...DRAFT_DIVISIONS],
+    });
+    const lookup: RankingLookup = new Map();
+    for (const r of res.rows) {
+      const key = CAPTION_NAME_TO_KEY[r.caption_name as string];
+      if (!key) continue;
+      lookup.set(rankingKey(r.corps_key as string, key), r.best as number);
+    }
+    return lookup;
+  } catch (err) {
+    return scoreDbFallback('getSeasonBestLookup', new Map() as RankingLookup, err);
   }
-  return lookup;
 }
 
 export type SeasonFinals = {
@@ -136,19 +167,23 @@ export type SeasonFinals = {
  * — verify the exact 2026 slug against the DB during M4 acceptance.
  */
 export async function getSeasonFinals(season: string): Promise<SeasonFinals> {
-  const res = await scoreDb().execute({
-    sql: `SELECT c.slug, c.date,
-                 EXISTS (SELECT 1 FROM caption_scores cap WHERE cap.competition_slug = c.slug) AS has_recap
-          FROM competitions c
-          WHERE c.season = ? AND c.slug LIKE '%world-championship-finals'
-          ORDER BY c.date DESC LIMIT 1`,
-    args: [season],
-  });
-  const row = res.rows[0];
-  if (!row) return null;
-  return {
-    slug: row.slug as string,
-    date: row.date as string,
-    recapPresent: Boolean(row.has_recap),
-  };
+  try {
+    const res = await scoreDb().execute({
+      sql: `SELECT c.slug, c.date,
+                   EXISTS (SELECT 1 FROM caption_scores cap WHERE cap.competition_slug = c.slug) AS has_recap
+            FROM competitions c
+            WHERE c.season = ? AND c.slug LIKE '%world-championship-finals'
+            ORDER BY c.date DESC LIMIT 1`,
+      args: [season],
+    });
+    const row = res.rows[0];
+    if (!row) return null;
+    return {
+      slug: row.slug as string,
+      date: row.date as string,
+      recapPresent: Boolean(row.has_recap),
+    };
+  } catch (err) {
+    return scoreDbFallback('getSeasonFinals', null as SeasonFinals, err);
+  }
 }
