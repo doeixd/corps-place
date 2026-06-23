@@ -24,6 +24,7 @@ import {
 import { makeLeagueSlug, inviteUrl } from '@/lib/fantasy/invites';
 import { getSeasonFinals } from '@/lib/fantasy/score-db';
 import { LeagueConflict, NotFound, RateLimited } from './errors';
+import { leagueReducer, type LeagueStatus } from '@/lib/fantasy/machines/league';
 import { makeGuards } from './guards';
 import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from './sql';
 
@@ -283,12 +284,12 @@ const makeLeagueService = Effect.gen(function* () {
   }) {
     yield* requireDurableStorage;
     const league = yield* requireOwner(input.leagueId, input.actor);
-    // Owner exit hatch (§4.9) — mark the league canceled. Idempotent; a finished
-    // league stays as-is so we don't rewrite history.
-    if (league.status === 'complete')
-      return yield* Effect.fail(new LeagueConflict({ reason: 'joinable-closed' }));
+    // Owner exit hatch (§4.9) — the league lifecycle machine decides legality:
+    // cancelable from any non-terminal status, refused once complete/canceled.
+    const move = leagueReducer(league.status as LeagueStatus, { type: 'CANCEL' });
+    if (!move.ok) return yield* Effect.fail(new LeagueConflict({ reason: 'joinable-closed' }));
     yield* sql`
-      UPDATE fantasy_leagues SET status = 'canceled', updated_at = ${new Date().toISOString()}
+      UPDATE fantasy_leagues SET status = ${move.next}, updated_at = ${new Date().toISOString()}
       WHERE league_id = ${league.league_id}
     `.pipe(Effect.orDie);
     return { ok: true as const };
