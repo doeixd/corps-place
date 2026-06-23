@@ -11,6 +11,20 @@ import { requireCapability } from '@/lib/authz';
 import { writeAudit } from '@/lib/admin-audit';
 import { JOB_KINDS } from '@/lib/admin-jobs';
 
+// Singleton kinds: only one may be queued/running at a time (heavy, no per-item args).
+// Parameterized kinds (regenerate_event, resolve_staff_identity, save_corps_colors) may
+// have many distinct jobs queued. Mirrors the partial unique index in contributions-db.ts.
+const SINGLETON_KINDS = new Set<string>([
+  'season_update',
+  'scrape_corps',
+  'scrape_event_pages',
+  'scrape_recaps',
+  'ingest_lineups',
+  'generate_predictions',
+  'fine_tune',
+  'merge_staff_by_name',
+]);
+
 export interface JobRow {
   jobId: string;
   kind: string;
@@ -53,14 +67,16 @@ export const adminEnqueueJob = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const actor = await requireCapability(getWebRequest(), 'runJobs');
     const db = await getContributionsDb();
-    // Per-kind dedupe: refuse a second queued/running job of the same kind.
-    const active = (
-      await db.execute({
-        sql: `SELECT job_id FROM admin_jobs WHERE kind = ? AND status IN ('queued','running') LIMIT 1`,
-        args: [data.kind],
-      })
-    ).rows[0];
-    if (active) throw new Error(`A ${data.kind} job is already queued or running`);
+    // Per-kind dedupe for SINGLETON kinds only (parameterized kinds allow many).
+    if (SINGLETON_KINDS.has(data.kind)) {
+      const active = (
+        await db.execute({
+          sql: `SELECT job_id FROM admin_jobs WHERE kind = ? AND status IN ('queued','running') LIMIT 1`,
+          args: [data.kind],
+        })
+      ).rows[0];
+      if (active) throw new Error(`A ${data.kind} job is already queued or running`);
+    }
 
     const jobId = crypto.randomUUID();
     const now = new Date().toISOString();

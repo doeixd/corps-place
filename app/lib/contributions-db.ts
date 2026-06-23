@@ -404,10 +404,14 @@ const SCHEMA = [
    )`,
   `CREATE INDEX IF NOT EXISTS idx_admin_jobs_status ON admin_jobs (status, queued_at)`,
   `CREATE INDEX IF NOT EXISTS idx_admin_jobs_kind_time ON admin_jobs (kind, queued_at)`,
-  // Enforce "one active job per kind" at the DB level (backstops the SELECT-then-INSERT
-  // dedupe race — ADMIN_PAGE_PLAN review M6).
+  // Enforce "one active job per kind" for SINGLETON workflow jobs only (backstops the
+  // SELECT-then-INSERT dedupe race — review M6). Parameterized kinds (regenerate_event,
+  // resolve_staff_identity, save_corps_colors) are intentionally excluded: multiple
+  // distinct ones may legitimately be queued at once.
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_admin_jobs_active_kind
-     ON admin_jobs (kind) WHERE status IN ('queued', 'running')`,
+     ON admin_jobs (kind) WHERE status IN ('queued', 'running')
+       AND kind IN ('season_update','scrape_corps','scrape_event_pages','scrape_recaps',
+                    'ingest_lineups','generate_predictions','fine_tune','merge_staff_by_name')`,
 
   // Public /contact submissions → support inbox (ADMIN_PAGE_PLAN §10.3).
   `CREATE TABLE IF NOT EXISTS contact_messages (

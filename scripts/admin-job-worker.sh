@@ -56,6 +56,14 @@ cmd_for() {
       { [ "$op" = merge ] || [ "$op" = split ]; } && safe_arg "$a" && safe_arg "$b" \
         || { echo "__ERR__ resolve_staff_identity needs op=merge|split + valid a, b"; return; }
       echo "npx tsx scripts/resolveStaffIdentity.ts --$op $a $b --apply" ;;
+    save_corps_colors)
+      local corps primary secondary
+      corps="$(printf '%s' "$args" | sed -n 's/.*"corps"[: ]*"\([^"]*\)".*/\1/p')"
+      primary="$(printf '%s' "$args" | sed -n 's/.*"primary"[: ]*"\([^"]*\)".*/\1/p')"
+      secondary="$(printf '%s' "$args" | sed -n 's/.*"secondary"[: ]*"\([^"]*\)".*/\1/p')"
+      safe_arg "$corps" && safe_arg "$primary" && safe_arg "${secondary:-none}" \
+        || { echo "__ERR__ save_corps_colors needs valid corps, primary, secondary"; return; }
+      echo "npx tsx scripts/setCorpsColors.ts --corps $corps --primary $primary --secondary ${secondary:-none}" ;;
     *)                    echo "__ERR__ unknown kind: $kind" ;;
   esac
 }
@@ -75,21 +83,23 @@ process_one() {
   cmd="$(cmd_for "$kind" "$args")"
   echo "[worker] $job $kind -> $cmd"
 
-  local out fin code
-  out="$(mktemp)"
+  local out err fin code
+  out="$(mktemp)"; err="$(mktemp)"
   if [[ "$cmd" == __ERR__* ]]; then
-    code=2; echo "${cmd#__ERR__ }" >"$out"
+    code=2; echo "${cmd#__ERR__ }" >"$err"
   else
-    ( cd "$SDK_DIR" && bash -lc "$cmd" ) >"$out" 2>&1 && code=0 || code=$?
+    # Separate streams (L8): stdout and stderr land in their own columns.
+    ( cd "$SDK_DIR" && bash -lc "$cmd" ) >"$out" 2>"$err" && code=0 || code=$?
   fi
   fin="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   local status; [ "$code" -eq 0 ] && status=success || status=failed
-  # Keep only the tail to bound row growth.
-  local tail; tail="$(tail -c 60000 "$out")"
+  # Keep only the tail of each stream to bound row growth.
+  local outtail errtail; outtail="$(tail -c 60000 "$out")"; errtail="$(tail -c 20000 "$err")"
   sq "UPDATE admin_jobs SET status='$status', finished_at='$fin', exit_code=$code,
-         stdout='$(esc "$tail")', error_message=$([ "$code" -eq 0 ] && echo NULL || echo "'exit $code'")
+         stdout='$(esc "$outtail")', stderr='$(esc "$errtail")',
+         error_message=$([ "$code" -eq 0 ] && echo NULL || echo "'exit $code'")
       WHERE job_id='$job';"
-  rm -f "$out"
+  rm -f "$out" "$err"
   return 0
 }
 

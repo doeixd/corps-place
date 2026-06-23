@@ -1,19 +1,17 @@
-// Dev-only color editor save (CORPS_COLORS_PLAN step 4). Writes a corps's two
-// brand colors to the relational source DB (the durable source of truth) and
-// marks them curated so a re-ingest/re-extract never clobbers a hand-pick. Also
-// best-effort patches the live read-model slot so the change shows immediately in
-// dev without a full re-emit.
-//
-// Gated on DEV: there is no admin auth yet, so this never ships to production.
+// Corps-colors save (CORPS_COLORS_PLAN step 4 / ADMIN_PAGE_PLAN §6.5). The serving
+// container has no dci-relational.db, so the durable write can't happen here. Instead
+// we (a) patch the live read-model slot for an immediate visual effect, and (b) enqueue
+// a `save_corps_colors` job the VM worker runs against the relational source DB. Gated
+// by the real role system (was dev-only).
 
 import { createServerFn } from '@tanstack/react-start/client';
+import { getWebRequest } from '@tanstack/react-start/server';
 import { Schema, SchemaParser } from 'effect';
-import { createClient, type Client } from '@libsql/client';
-import * as path from 'node:path';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
-
-const isDev = process.env.NODE_ENV !== 'production';
+import { getContributionsDb } from '@/lib/contributions-db';
+import { requireCapability } from '@/lib/authz';
+import { writeAudit } from '@/lib/admin-audit';
 
 const SaveInput = Schema.Struct({
   corpsKey: Schema.String.check(Schema.isMinLength(1)),
@@ -22,19 +20,10 @@ const SaveInput = Schema.Struct({
   secondary: Schema.String,
 });
 
-// Lazily-resolved relational client (server-only; mirrors corps-directory.ts).
-let _dbUrl: string | undefined;
-const dbUrl = () =>
-  (_dbUrl ??=
-    process.env.DCI_RELATIONAL_DB_URL ??
-    `file:${path.resolve(process.cwd(), 'sdk', 'dci-relational.db')}`);
-let sharedDb: Client | null = null;
-const getDb = () => (sharedDb ??= createClient({ url: dbUrl() }));
-
 export const saveCorpsColors = createServerFn({ method: 'POST' })
   .validator(SchemaParser.decodeUnknownSync(SaveInput))
   .handler(async ({ data }) => {
-    if (!isDev) throw new Error('The corps color editor is only available in development.');
+    const actor = await requireCapability(getWebRequest(), 'viewAdmin');
 
     const primary = normalizeHex(data.primary);
     if (!primary) throw new Error(`Invalid primary color: ${data.primary}`);
@@ -42,29 +31,8 @@ export const saveCorpsColors = createServerFn({ method: 'POST' })
     if (data.secondary.trim() && !secondary)
       throw new Error(`Invalid secondary color: ${data.secondary}`);
 
-    const db = getDb();
-    // Source of truth: the corps row + a curated-field marker so extract/ingest
-    // leaves this corps's colors alone going forward.
-    await db.execute({
-      sql: `UPDATE corps SET color_primary = ?, color_secondary = ?, color_source = 'manual' WHERE corps_key = ?`,
-      args: [primary, secondary, data.corpsKey],
-    });
-    await db.execute({
-      sql: `CREATE TABLE IF NOT EXISTS corps_curated_fields (
-              corps_key TEXT NOT NULL, field TEXT NOT NULL, source TEXT, set_at TEXT NOT NULL,
-              PRIMARY KEY (corps_key, field))`,
-      args: [],
-    });
-    await db.execute({
-      sql: `INSERT INTO corps_curated_fields (corps_key, field, source, set_at)
-            VALUES (?, 'colors', 'color-editor', ?)
-            ON CONFLICT(corps_key, field) DO UPDATE SET source = excluded.source, set_at = excluded.set_at`,
-      args: [data.corpsKey, new Date().toISOString()],
-    });
-
-    // Best-effort live patch of the active read-model slot so the editor + site
-    // reflect the change without a 2-minute full re-emit. Durability is already
-    // guaranteed by the relational write above; a later full emit re-publishes it.
+    // (a) Immediate, best-effort patch of the active read-model slot so the editor +
+    // site reflect the change now. Durability comes from the enqueued job below.
     if (readModelEnabled()) {
       try {
         await getReadModelClient().execute({
@@ -72,9 +40,33 @@ export const saveCorpsColors = createServerFn({ method: 'POST' })
           args: [primary, secondary, data.corpsKey],
         });
       } catch {
-        /* slot patch is best-effort; relational write is the durable one */
+        /* slot patch is best-effort; the enqueued job is the durable write */
       }
     }
+
+    // (b) Durable write via the VM worker (relational DB isn't on this container).
+    // Colors are passed as 6 hex chars (no '#') to satisfy the worker arg whitelist.
+    const db = await getContributionsDb();
+    const now = new Date().toISOString();
+    await db.execute({
+      sql: `INSERT INTO admin_jobs (job_id, kind, args_json, status, requested_by, queued_at)
+            VALUES (?, 'save_corps_colors', ?, 'queued', ?, ?)`,
+      args: [
+        crypto.randomUUID(),
+        JSON.stringify({
+          corps: data.corpsKey,
+          primary: primary.slice(1),
+          secondary: secondary ? secondary.slice(1) : 'none',
+        }),
+        actor.userId,
+        now,
+      ],
+    });
+    await writeAudit(db, actor, {
+      action: 'save_corps_colors',
+      target: data.corpsKey,
+      after: { primary, secondary },
+    });
 
     return { corpsKey: data.corpsKey, primary, secondary, color_source: 'manual' as const };
   });

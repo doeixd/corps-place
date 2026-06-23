@@ -15,6 +15,7 @@ export const JOB_KINDS = [
   'fine_tune',
   'merge_staff_by_name',
   'resolve_staff_identity',
+  'save_corps_colors',
 ] as const;
 
 export type JobKind = (typeof JOB_KINDS)[number];
@@ -81,6 +82,12 @@ export const JOB_KIND_META: Record<JobKind, JobKindMeta> = {
     kind: 'resolve_staff_identity',
     label: 'Merge/split two staff',
     description: 'Manually merge or split two staff_ids (needs op + two ids).',
+    needsArgs: true,
+  },
+  save_corps_colors: {
+    kind: 'save_corps_colors',
+    label: 'Save corps colors',
+    description: 'Durable write of a corps’ brand colors (enqueued by the colors editor).',
     needsArgs: true,
   },
 };
