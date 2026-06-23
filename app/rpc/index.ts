@@ -7,6 +7,7 @@ import { EventPredictionServiceLive } from '@/lib/event-prediction-api';
 import { LeagueServiceLive } from '@/lib/fantasy/services/league-service';
 import { StandingsServiceLive } from '@/lib/fantasy/services/standings-service';
 import { InviteServiceLive } from '@/lib/fantasy/services/invite-service';
+import { MembershipServiceLive } from '@/lib/fantasy/services/membership-service';
 
 // Re-export the individual groups + lives (the primary units).
 export {
@@ -25,7 +26,8 @@ export {
 const FantasyServicesLive = Layer.mergeAll(
   LeagueServiceLive,
   StandingsServiceLive,
-  InviteServiceLive
+  InviteServiceLive,
+  MembershipServiceLive
 );
 
 // The fantasy slice for AppLive: the RPC handlers wired OVER the services (so the

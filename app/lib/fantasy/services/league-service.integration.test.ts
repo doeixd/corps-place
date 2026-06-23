@@ -24,6 +24,8 @@ let StandingsService: typeof import('./standings-service').StandingsService;
 let StandingsServiceLive: typeof import('./standings-service').StandingsServiceLive;
 let InviteService: typeof import('./invite-service').InviteService;
 let InviteServiceLive: typeof import('./invite-service').InviteServiceLive;
+let MembershipService: typeof import('./membership-service').MembershipService;
+let MembershipServiceLive: typeof import('./membership-service').MembershipServiceLive;
 let db: Client;
 
 const asActor = (userId: string) => ({ userId, role: 'user' as const }) as never;
@@ -53,6 +55,7 @@ beforeAll(async () => {
   ({ LeagueService, LeagueServiceLive } = await import('./league-service'));
   ({ StandingsService, StandingsServiceLive } = await import('./standings-service'));
   ({ InviteService, InviteServiceLive } = await import('./invite-service'));
+  ({ MembershipService, MembershipServiceLive } = await import('./membership-service'));
   const { getContributionsDb } = await import('@/lib/contributions-db');
   db = await getContributionsDb();
 
@@ -240,6 +243,62 @@ describe('LeagueService.create / updateConfig (Effect path)', () => {
     ).rejects.toThrow();
     await expect(
       updateConfig({ actor: actor('u-cfg'), leagueId: 'nope', config: {} })
+    ).rejects.toThrow();
+  });
+});
+
+describe('MembershipService (Effect path)', () => {
+  const setIdentity = (input: {
+    actor: never;
+    leagueId: string;
+    corpsName: string;
+    showTitle?: string;
+    color?: string;
+  }) =>
+    Effect.runPromise(
+      Effect.flatMap(MembershipService, (svc) => svc.setCorpsIdentity(input)).pipe(
+        Effect.provide(MembershipServiceLive)
+      )
+    );
+  const remove = (input: { actor: never; leagueId: string; userId: string }) =>
+    Effect.runPromise(
+      Effect.flatMap(MembershipService, (svc) => svc.removeMember(input)).pipe(
+        Effect.provide(MembershipServiceLive)
+      )
+    );
+
+  it('saves a corps identity for an active member', async () => {
+    await setIdentity({
+      actor: asActor('u-mem'),
+      leagueId: 'lg-1',
+      corpsName: 'Carolina Crown',
+      color: '#7c3aed',
+    });
+    const row = (
+      await db.execute({
+        sql: "SELECT corps_name, corps_color FROM fantasy_members WHERE league_id = 'lg-1' AND user_id = 'u-mem'",
+        args: [],
+      })
+    ).rows[0];
+    expect(row?.corps_name).toBe('Carolina Crown');
+    expect(row?.corps_color).toBe('#7c3aed');
+  });
+
+  it('rejects a duplicate corps name (case-insensitive)', async () => {
+    await expect(
+      setIdentity({ actor: asActor('u-mem'), leagueId: 'lg-1', corpsName: 'blue devils' })
+    ).rejects.toThrow();
+  });
+
+  it('refuses to remove the owner', async () => {
+    await expect(
+      remove({ actor: asActor('u-owner'), leagueId: 'lg-1', userId: 'u-owner' })
+    ).rejects.toThrow();
+  });
+
+  it('rejects a non-owner remover (Forbidden)', async () => {
+    await expect(
+      remove({ actor: asActor('u-mem'), leagueId: 'lg-1', userId: 'u-owner' })
     ).rejects.toThrow();
   });
 });

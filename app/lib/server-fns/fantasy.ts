@@ -16,6 +16,7 @@ import * as v from 'valibot';
 import { LeagueService } from '@/lib/fantasy/services/league-service';
 import { StandingsService } from '@/lib/fantasy/services/standings-service';
 import { InviteService } from '@/lib/fantasy/services/invite-service';
+import { MembershipService } from '@/lib/fantasy/services/membership-service';
 import { provideFantasy } from '@/rpc';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
@@ -288,65 +289,37 @@ const SetIdentityInput = v.object({
   logoMediaId: v.optional(v.string()),
 });
 
+// Strangler shim (P2): delegates to MembershipService.setCorpsIdentity.
 export const setCorpsIdentity = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(SetIdentityInput, d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    assertDurable();
-    const db = await getContributionsDb();
-    await requireMember(db, data.leagueId, actor);
-
-    // Corps name must be unique within the league (case-insensitive), excluding self.
-    const clash = (
-      await db.execute({
-        sql: `SELECT 1 FROM fantasy_members
-              WHERE league_id = ? AND user_id != ? AND status = 'active'
-                AND lower(corps_name) = lower(?) LIMIT 1`,
-        args: [data.leagueId, actor.userId, data.corpsName],
-      })
-    ).rows[0];
-    if (clash) throw new Error('CONFLICT:name-taken');
-
-    await db.execute({
-      sql: `UPDATE fantasy_members
-            SET corps_name = ?, show_title = ?, corps_color = ?, corps_logo_media_id = COALESCE(?, corps_logo_media_id)
-            WHERE league_id = ? AND user_id = ?`,
-      args: [
-        data.corpsName,
-        data.showTitle ?? '',
-        data.color ?? null,
-        data.logoMediaId ?? null,
-        data.leagueId,
-        actor.userId,
-      ],
-    });
-    return { ok: true as const };
+    return runFantasy(
+      Effect.flatMap(MembershipService, (svc) =>
+        svc.setCorpsIdentity({
+          actor,
+          leagueId: data.leagueId,
+          corpsName: data.corpsName,
+          showTitle: data.showTitle,
+          color: data.color,
+          logoMediaId: data.logoMediaId,
+        })
+      ).pipe(provideFantasy)
+    );
   });
 
 const RemoveMemberInput = v.object({ leagueId: v.string(), userId: v.string() });
 
+// Strangler shim (P2): delegates to MembershipService.removeMember.
 export const removeMember = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(RemoveMemberInput, d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
-    assertDurable();
-    const db = await getContributionsDb();
-    const league = await requireOwner(db, data.leagueId, actor);
-    // Pre-draft only (no draft row yet in M1, but guard for forward-compat).
-    const draft = (
-      await db.execute({
-        sql: "SELECT status FROM fantasy_drafts WHERE league_id = ? AND status != 'scheduled'",
-        args: [data.leagueId],
-      })
-    ).rows[0];
-    if (draft) throw new Error('CONFLICT:draft-started');
-    if (data.userId === str(league.owner_user_id)) throw new Error('CONFLICT:cannot-remove-owner');
-
-    await db.execute({
-      sql: "UPDATE fantasy_members SET status = 'removed' WHERE league_id = ? AND user_id = ?",
-      args: [data.leagueId, data.userId],
-    });
-    return { ok: true as const };
+    return runFantasy(
+      Effect.flatMap(MembershipService, (svc) =>
+        svc.removeMember({ actor, leagueId: data.leagueId, userId: data.userId })
+      ).pipe(provideFantasy)
+    );
   });
 
 // ===========================================================================
