@@ -288,6 +288,17 @@ const SCHEMA = [
      ON fantasy_picks (league_id, user_id, corps_key)`,
   `CREATE INDEX IF NOT EXISTS idx_fantasy_picks_user ON fantasy_picks (league_id, user_id)`,
 
+  // A member's pre-ranked auto-pick queue (UI/UX plan §12.5). seq ascending =
+  // higher priority; caption NULL = "any caption for this corps".
+  `CREATE TABLE IF NOT EXISTS fantasy_draft_queue (
+     league_id TEXT NOT NULL,
+     user_id   TEXT NOT NULL,
+     seq       INTEGER NOT NULL,
+     corps_key TEXT NOT NULL,
+     caption   TEXT,
+     PRIMARY KEY (league_id, user_id, seq)
+   )`,
+
   `CREATE TABLE IF NOT EXISTS fantasy_standings (
      league_id                TEXT NOT NULL,
      user_id                  TEXT NOT NULL,

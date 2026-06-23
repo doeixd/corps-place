@@ -26,9 +26,9 @@ import {
   pickWeight,
   isDraftComplete,
   legalityError,
-  selectAutoPick,
   type DraftType,
 } from '@/lib/fantasy/draft';
+import { chooseAutoPick } from '@/lib/fantasy/auto-pick';
 import { DraftConflict, Forbidden, NotFound } from './errors';
 import {
   draftReducer,
@@ -37,7 +37,7 @@ import {
   type DraftStatus,
 } from '../machines/draft';
 import { leagueReducer, type LeagueStatus } from '../machines/league';
-import { ContributionsSql, ContributionsSqlLive } from './sql';
+import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from './sql';
 
 export type DraftEvent = { event: string; data: unknown };
 
@@ -394,19 +394,36 @@ const makeDraftService = Effect.gen(function* () {
         );
         const options = yield* rankedOptions(prevSeason, pool);
 
-        const choice = selectAutoPick(
-          options,
-          (o) =>
-            legalityError({
-              caption: o.caption,
-              captionCaps: config.captionCaps,
-              oneCaptionPerCorps: config.oneCaptionPerCorps,
-              memberCaptionCount: myCaptionCount.get(o.caption) ?? 0,
-              memberHasCorps: myCorps.has(o.corpsKey),
-              pairTakenInLeague: takenPairs.has(`${o.corpsKey}|${o.caption}`),
-              inPool: pool.has(o.corpsKey),
-            }) === null
+        const isLegal = (o: { corpsKey: string; caption: CaptionKey }) =>
+          legalityError({
+            caption: o.caption,
+            captionCaps: config.captionCaps,
+            oneCaptionPerCorps: config.oneCaptionPerCorps,
+            memberCaptionCount: myCaptionCount.get(o.caption) ?? 0,
+            memberHasCorps: myCorps.has(o.corpsKey),
+            pairTakenInLeague: takenPairs.has(`${o.corpsKey}|${o.caption}`),
+            inPool: pool.has(o.corpsKey),
+          }) === null;
+
+        // The member's pre-ranked queue + which captions they still must fill drive
+        // the layered auto-pick policy (queue → roster-need → best-ranked rank).
+        const queueRows = yield* sql<{ corps_key: string; caption: string | null }>`
+          SELECT corps_key, caption FROM fantasy_draft_queue
+          WHERE league_id = ${leagueId} AND user_id = ${draft.currentUserId}
+          ORDER BY seq ASC
+        `.pipe(Effect.orDie);
+        const neededCaptions = new Set(
+          CAPTION_KEYS.filter((c) => (myCaptionCount.get(c) ?? 0) < config.captionCaps[c])
         );
+        const choice = chooseAutoPick({
+          queue: queueRows.map((r) => ({
+            corpsKey: r.corps_key,
+            caption: (r.caption as CaptionKey | null) ?? null,
+          })),
+          ranked: options,
+          neededCaptions,
+          isLegal,
+        });
 
         yield* commitPickAndAdvance(
           leagueId,
@@ -619,7 +636,59 @@ const makeDraftService = Effect.gen(function* () {
     yield* runAutoPickIfDue(leagueId, expectedDeadline);
   });
 
-  return { start, makePick, pause, resume, getSnapshot, runAutoPickIfDue: autoPick };
+  // A member's auto-pick queue (§12.5). Authz (active membership) is enforced at
+  // the boundary; userId is always the acting member's own id.
+  const getQueue = Effect.fn('DraftService.getQueue')(function* (input: {
+    leagueId: string;
+    userId: string;
+  }) {
+    const rows = yield* sql<{ corps_key: string; caption: string | null }>`
+      SELECT corps_key, caption FROM fantasy_draft_queue
+      WHERE league_id = ${input.leagueId} AND user_id = ${input.userId}
+      ORDER BY seq ASC
+    `.pipe(Effect.orDie);
+    return {
+      entries: rows.map((r) => ({
+        corpsKey: r.corps_key,
+        caption: (r.caption as CaptionKey | null) ?? null,
+      })),
+    };
+  });
+
+  const setQueue = Effect.fn('DraftService.setQueue')(function* (input: {
+    leagueId: string;
+    userId: string;
+    entries: ReadonlyArray<{ corpsKey: string; caption: CaptionKey | null }>;
+  }) {
+    yield* requireDurableStorage;
+    // Replace the whole queue atomically (re-sequenced 0..n by array order).
+    yield* sql
+      .withTransaction(
+        Effect.gen(function* () {
+          yield* sql`DELETE FROM fantasy_draft_queue WHERE league_id = ${input.leagueId} AND user_id = ${input.userId}`;
+          for (let seq = 0; seq < input.entries.length; seq++) {
+            const e = input.entries[seq];
+            yield* sql`
+              INSERT INTO fantasy_draft_queue (league_id, user_id, seq, corps_key, caption)
+              VALUES (${input.leagueId}, ${input.userId}, ${seq}, ${e.corpsKey}, ${e.caption})
+            `;
+          }
+        })
+      )
+      .pipe(Effect.orDie);
+    return { ok: true as const };
+  });
+
+  return {
+    start,
+    makePick,
+    pause,
+    resume,
+    getSnapshot,
+    runAutoPickIfDue: autoPick,
+    getQueue,
+    setQueue,
+  };
 });
 
 export class DraftService extends Context.Service<

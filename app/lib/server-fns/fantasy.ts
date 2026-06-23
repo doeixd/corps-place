@@ -26,6 +26,7 @@ import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
 import { totalRounds, type LeagueConfig } from '@/lib/fantasy/config';
 import { getDraftPool, getPriorSeasonRanking } from '@/lib/fantasy/score-db';
+import { CAPTION_KEYS } from '@/lib/fantasy/captions';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { NotificationService } from '@/lib/fantasy/services/notification-service';
 import { vapidPublicKey } from '@/lib/fantasy/push';
@@ -606,6 +607,40 @@ export const getDraftState = createServerFn({ method: 'GET' })
     // by previous-season rank per caption in the picker (empty until §2.1 lands).
     const rank: Record<string, number> = Object.fromEntries(ranking);
     return { snapshot, pool, rank };
+  });
+
+// The acting member's auto-pick queue (§12.5). Member-gated; userId is always self.
+export const getDraftQueue = createServerFn({ method: 'GET' })
+  .validator((d: { leagueId: string }) => v.parse(v.object({ leagueId: v.string() }), d))
+  .handler(async ({ data }) => {
+    const actor = await requireActor();
+    const db = await getContributionsDb();
+    await requireMember(db, data.leagueId, actor);
+    return runFantasy(
+      Effect.flatMap(DraftService, (s) =>
+        s.getQueue({ leagueId: data.leagueId, userId: actor.userId })
+      )
+    );
+  });
+
+const SetQueueInput = v.object({
+  leagueId: v.string(),
+  entries: v.array(
+    v.object({ corpsKey: v.string(), caption: v.nullable(v.picklist(CAPTION_KEYS)) })
+  ),
+});
+
+export const setDraftQueue = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(SetQueueInput, d))
+  .handler(async ({ data }) => {
+    const actor = await requireActor();
+    const db = await getContributionsDb();
+    await requireMember(db, data.leagueId, actor);
+    return runFantasy(
+      Effect.flatMap(DraftService, (s) =>
+        s.setQueue({ leagueId: data.leagueId, userId: actor.userId, entries: data.entries })
+      )
+    );
   });
 
 // ===========================================================================

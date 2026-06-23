@@ -200,4 +200,25 @@ describe('DraftService — auto-pick (Effect path)', () => {
 
     await pause(leagueId);
   });
+
+  it('auto-picks from the member queue ahead of prior-season rank', async () => {
+    const { leagueId } = await seedLeague();
+    await start(leagueId);
+    const onClock = (await snapshot(leagueId)).draft!.currentUserId!;
+    // Queue prefers c4|GE2 even though c1|GE1 is the higher-ranked option.
+    await run(
+      Effect.flatMap(DraftService, (s) =>
+        s.setQueue({ leagueId, userId: onClock, entries: [{ corpsKey: 'c4', caption: 'GE2' }] })
+      )
+    );
+
+    await autoPick(leagueId);
+
+    const pick = (await snapshot(leagueId)).picks.find((p) => p.userId === onClock);
+    expect(pick?.corpsKey).toBe('c4');
+    expect(pick?.caption).toBe('GE2');
+    expect(pick?.autoPicked).toBe(true);
+
+    await pause(leagueId);
+  });
 });
