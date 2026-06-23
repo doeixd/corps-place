@@ -16,11 +16,21 @@ import {
 } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import { CorpsLogo } from '@/components/corps-logo';
 import { cn } from '@/lib/utils';
+import { useAsyncAction } from '@/lib/use-async-action';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
-import { getLeague, getDraftState } from '@/lib/server-fns/fantasy';
+import { getLeague, getDraftState, getDraftQueue, setDraftQueue } from '@/lib/server-fns/fantasy';
 import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from '@/lib/fantasy/captions';
 import { useDraftStream } from '@/lib/fantasy/use-draft-stream';
 import { Countdown } from '@/components/fantasy/countdown';
@@ -98,6 +108,12 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           League
         </Button>
       </header>
+
+      {draft && draft.status !== 'complete' && league.viewer.isMember ? (
+        <div className="flex justify-end">
+          <DraftQueueEditor leagueId={leagueId} pool={initial.pool} rank={initial.rank} />
+        </div>
+      ) : null}
 
       {!draft || draft.status === 'scheduled' ? (
         <SchedulePanel
@@ -377,6 +393,187 @@ function LiveDraft({
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+/**
+ * The draft-queue editor (UI/UX plan §12.5) — the drawer's home: a calm,
+ * non-time-pressured surface where a member pre-ranks an auto-pick wishlist. If
+ * their timer runs out, the engine takes the highest still-legal entry
+ * (chooseAutoPick). Reorder with arrows; add from the rank-ordered pool per caption.
+ */
+function DraftQueueEditor({
+  leagueId,
+  pool,
+  rank,
+}: {
+  leagueId: string;
+  pool: DraftState['pool'];
+  rank: DraftState['rank'];
+}) {
+  const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [queue, setQueue] = useState<Array<{ corpsKey: string; caption: CaptionKey }>>([]);
+  const [caption, setCaption] = useState<CaptionKey>('GE1');
+
+  const load = useAsyncAction(async () => {
+    const res = await getDraftQueue({ data: { leagueId } });
+    setQueue(res.entries.map((e) => ({ corpsKey: e.corpsKey, caption: e.caption ?? 'GE1' })));
+    setLoaded(true);
+  });
+  const save = useAsyncAction(async () => {
+    await setDraftQueue({ data: { leagueId, entries: queue } });
+    setOpen(false);
+  });
+
+  const corpsByKey = new Map(pool.map((c) => [c.corpsKey, c]));
+  const queuedKeys = new Set(queue.map((e) => `${e.corpsKey}|${e.caption}`));
+  const ranked = [...pool].sort(
+    (a, b) =>
+      (rank[`${b.corpsKey}|${caption}`] ?? -Infinity) -
+      (rank[`${a.corpsKey}|${caption}`] ?? -Infinity)
+  );
+
+  const move = (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= queue.length) return;
+    const next = [...queue];
+    [next[i], next[j]] = [next[j], next[i]];
+    setQueue(next);
+  };
+
+  return (
+    <Drawer
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (o && !loaded) void load.run();
+      }}
+    >
+      <DrawerTrigger
+        render={
+          <Button variant="outline" size="sm">
+            Draft queue{queue.length > 0 ? ` (${queue.length})` : ''}
+          </Button>
+        }
+      />
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Your draft queue</DrawerTitle>
+          <DrawerDescription>
+            If your pick timer runs out, we auto-pick the highest entry that&apos;s still available.
+            Reorder with the arrows.
+          </DrawerDescription>
+        </DrawerHeader>
+
+        <div className="flex flex-col gap-4 overflow-y-auto px-4 pb-4">
+          <ol className="flex flex-col gap-1">
+            {queue.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Your queue is empty — add corps from the list below.
+              </p>
+            ) : (
+              queue.map((e, i) => (
+                <li
+                  key={`${e.corpsKey}|${e.caption}`}
+                  className="flex items-center gap-2 rounded-lg border border-border p-2 text-sm"
+                >
+                  <span className="w-4 text-xs text-muted-foreground">{i + 1}</span>
+                  <CorpsLogo
+                    name={corpsByKey.get(e.corpsKey)?.name ?? e.corpsKey}
+                    logo={corpsByKey.get(e.corpsKey)?.corpsLogo ?? ''}
+                    width={24}
+                    className="size-6"
+                  />
+                  <span className="font-medium">
+                    {corpsByKey.get(e.corpsKey)?.name ?? e.corpsKey}
+                  </span>
+                  <span className="text-xs text-muted-foreground">{e.caption}</span>
+                  <div className="ml-auto flex gap-0.5">
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      disabled={i === 0}
+                      onClick={() => move(i, -1)}
+                      aria-label="Move up"
+                    >
+                      ↑
+                    </Button>
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      disabled={i === queue.length - 1}
+                      onClick={() => move(i, 1)}
+                      aria-label="Move down"
+                    >
+                      ↓
+                    </Button>
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      onClick={() => setQueue(queue.filter((_, k) => k !== i))}
+                      aria-label="Remove"
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                </li>
+              ))
+            )}
+          </ol>
+
+          <div className="flex flex-col gap-2">
+            <ToggleGroup
+              value={[caption]}
+              onValueChange={(v) => {
+                const c = v[v.length - 1];
+                if (c) setCaption(c as CaptionKey);
+              }}
+              className="flex-wrap"
+            >
+              {CAPTION_KEYS.map((c) => (
+                <ToggleGroupItem key={c} value={c} title={KEY_TO_CAPTION_NAME[c]}>
+                  {c}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+            <ul className="flex max-h-[35vh] flex-col gap-1 overflow-y-auto">
+              {ranked.map((corps) => {
+                const already = queuedKeys.has(`${corps.corpsKey}|${caption}`);
+                return (
+                  <li key={corps.corpsKey}>
+                    <button
+                      type="button"
+                      disabled={already}
+                      onClick={() => setQueue([...queue, { corpsKey: corps.corpsKey, caption }])}
+                      className="flex w-full items-center gap-2 rounded-lg border border-border p-2 text-left text-sm hover:bg-muted disabled:opacity-40"
+                    >
+                      <CorpsLogo
+                        name={corps.name}
+                        logo={corps.corpsLogo ?? ''}
+                        width={24}
+                        className="size-6"
+                      />
+                      <span className="font-medium">{corps.name}</span>
+                      <span className="ml-auto text-xs text-muted-foreground">
+                        {already ? 'queued' : '+ add'}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+
+        <DrawerFooter>
+          <BusyButton busy={save.busy} onClick={() => void save.run()}>
+            Save queue
+          </BusyButton>
+          {save.error ? <p className="text-sm text-destructive">{save.error}</p> : null}
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
