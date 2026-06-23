@@ -51,7 +51,12 @@ function CreateLeague() {
 
   return (
     <PageShell className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">Create a league</h1>
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold">Create a league</h1>
+        <p className="text-sm text-muted-foreground">
+          Name your league — you&apos;ll invite friends and draft corps next.
+        </p>
+      </div>
       <Card className="max-w-md">
         <CardContent>
           <form
@@ -81,6 +86,9 @@ function CreateLeague() {
                 required
                 onChange={(e) => setSeason(e.target.value)}
               />
+              <p className="text-xs text-muted-foreground">
+                The DCI season to score from — usually the current year.
+              </p>
             </div>
             {create.error ? <p className="text-sm text-destructive">{create.error}</p> : null}
             <BusyButton type="submit" busy={create.busy} disabled={name.trim().length === 0}>
