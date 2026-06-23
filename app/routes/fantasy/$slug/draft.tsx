@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { createFileRoute, notFound, Link } from '@tanstack/react-router';
+import { createFileRoute, notFound, Link, useRouter } from '@tanstack/react-router';
+import { useMachine } from '@xstate/react';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,24 +8,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
-import {
-  getLeague,
-  getDraftState,
-  scheduleDraft,
-  startDraft,
-  makePick,
-  pauseDraft,
-  resumeDraft,
-} from '@/lib/server-fns/fantasy';
+import { getLeague, getDraftState } from '@/lib/server-fns/fantasy';
 import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from '@/lib/fantasy/captions';
-import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
 import { useDraftStream } from '@/lib/fantasy/use-draft-stream';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
+import { fantasyDraftMachine, type FantasyDraftEvent } from '@/machines/fantasy-draft-machine';
 
 type LeagueData = Awaited<ReturnType<typeof getLeague>>;
 type DraftState = Awaited<ReturnType<typeof getDraftState>>;
 type Member = LeagueData['members'][number];
+type Send = (event: FantasyDraftEvent) => void;
 
 export const Route = createFileRoute('/fantasy/$slug/draft')({
   beforeLoad: requireFantasyEnabled,
@@ -68,8 +62,12 @@ function DraftPage() {
 
 function DraftView({ league, initial }: { league: LeagueData; initial: DraftState }) {
   const leagueId = league.league.leagueId;
+  const router = useRouter();
   const snapshot = useDraftStream(leagueId, initial.snapshot) ?? initial.snapshot;
   const draft = snapshot.draft;
+  const [state, send] = useMachine(fantasyDraftMachine, {
+    input: { leagueId, onChanged: () => void router.invalidate() },
+  });
 
   // React Compiler memoizes these derived maps — no manual useMemo (AGENTS.md).
   const membersById = new Map<string, Member>(league.members.map((m) => [m.user_id, m]));
@@ -92,7 +90,11 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
 
       {!draft || draft.status === 'scheduled' ? (
         <SchedulePanel
-          leagueId={leagueId}
+          send={send}
+          scheduling={state.matches('scheduling')}
+          starting={state.matches('starting')}
+          error={state.context.error}
+          feasibility={state.context.feasibility}
           isOwner={league.viewer.isOwner}
           scheduledAt={draft?.scheduledAt ?? null}
         />
@@ -100,8 +102,10 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
         <CompletePanel league={league} />
       ) : (
         <LiveDraft
-          leagueId={leagueId}
-          slug={league.league.slug}
+          send={send}
+          picking={state.matches('picking')}
+          actionBusy={!state.matches('ready')}
+          actionError={state.context.error}
           draft={draft}
           picks={snapshot.picks}
           pool={initial.pool}
@@ -116,31 +120,23 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
 }
 
 function SchedulePanel({
-  leagueId,
+  send,
+  scheduling,
+  starting,
+  error,
+  feasibility,
   isOwner,
   scheduledAt,
 }: {
-  leagueId: string;
+  send: Send;
+  scheduling: boolean;
+  starting: boolean;
+  error: string | null;
+  feasibility: string | null;
   isOwner: boolean;
   scheduledAt: string | null;
 }) {
   const [when, setWhen] = useState('');
-  const [feasibility, setFeasibility] = useState<string | null>(null);
-
-  const schedule = useAsyncAction(async () => {
-    await scheduleDraft({ data: { leagueId, scheduledAt: new Date(when).toISOString() } });
-  });
-  const start = useAsyncAction(
-    async () => {
-      const res = await startDraft({ data: { leagueId } });
-      if (!res.ok) setFeasibility(res.reason);
-    },
-    (err) =>
-      matchMessage(err, {
-        'need-two-members': 'You need at least two members to start.',
-        'identities-incomplete': 'Every member must name their corps first.',
-      })
-  );
 
   if (!isOwner) {
     return (
@@ -171,9 +167,9 @@ function SchedulePanel({
           </div>
           <BusyButton
             variant="outline"
-            busy={schedule.busy}
+            busy={scheduling}
             disabled={!when}
-            onClick={() => void schedule.run()}
+            onClick={() => send({ type: 'SCHEDULE', scheduledAt: new Date(when).toISOString() })}
           >
             {scheduledAt ? 'Reschedule' : 'Schedule'}
           </BusyButton>
@@ -184,10 +180,10 @@ function SchedulePanel({
           </p>
         ) : null}
         <div className="flex items-center gap-3">
-          <BusyButton busy={start.busy} onClick={() => void start.run()}>
+          <BusyButton busy={starting} onClick={() => send({ type: 'START' })}>
             Start draft now
           </BusyButton>
-          {start.error ? <span className="text-sm text-destructive">{start.error}</span> : null}
+          {error ? <span className="text-sm text-destructive">{error}</span> : null}
           {feasibility ? <span className="text-sm text-destructive">{feasibility}</span> : null}
         </div>
       </CardContent>
@@ -209,8 +205,10 @@ function CompletePanel({ league }: { league: LeagueData }) {
 }
 
 type LiveDraftProps = {
-  leagueId: string;
-  slug: string;
+  send: Send;
+  picking: boolean;
+  actionBusy: boolean;
+  actionError: string | null;
   draft: NonNullable<DraftState['snapshot']['draft']>;
   picks: DraftState['snapshot']['picks'];
   pool: DraftState['pool'];
@@ -221,7 +219,10 @@ type LiveDraftProps = {
 };
 
 function LiveDraft({
-  leagueId,
+  send,
+  picking,
+  actionBusy,
+  actionError,
   draft,
   picks,
   pool,
@@ -233,23 +234,6 @@ function LiveDraft({
   const isMyTurn = draft.status === 'live' && draft.currentUserId === viewerId;
   const onClock = draft.currentUserId ? membersById.get(draft.currentUserId) : undefined;
   const takenPairs = new Set(picks.map((p) => `${p.corpsKey}|${p.caption}`));
-
-  const pick = useAsyncAction(
-    async (corpsKey: string, caption: CaptionKey) => {
-      await makePick({ data: { leagueId, corpsKey, caption } });
-    },
-    (err) =>
-      matchMessage(err, {
-        expired: 'The clock ran out.',
-        'not-your-turn': "It's not your turn.",
-        FORBIDDEN: "It's not your turn.",
-        'pair-taken': 'Already drafted by someone.',
-        'corps-on-roster': 'That corps is already on your roster.',
-        'caption-full': "You've filled that caption.",
-      })
-  );
-  const pause = useAsyncAction(async () => void (await pauseDraft({ data: { leagueId } })));
-  const resume = useAsyncAction(async () => void (await resumeDraft({ data: { leagueId } })));
 
   return (
     <div className="flex flex-col gap-6">
@@ -277,14 +261,14 @@ function LiveDraft({
               <BusyButton
                 size="sm"
                 variant="outline"
-                busy={pause.busy}
-                onClick={() => void pause.run()}
+                busy={actionBusy}
+                onClick={() => send({ type: 'PAUSE' })}
               >
                 Pause
               </BusyButton>
             ) : null}
             {isOwner && draft.status === 'paused' ? (
-              <BusyButton size="sm" busy={resume.busy} onClick={() => void resume.run()}>
+              <BusyButton size="sm" busy={actionBusy} onClick={() => send({ type: 'RESUME' })}>
                 Resume
               </BusyButton>
             ) : null}
@@ -292,14 +276,14 @@ function LiveDraft({
         </CardContent>
       </Card>
 
-      {pick.error ? <p className="text-sm text-destructive">{pick.error}</p> : null}
+      {actionError ? <p className="text-sm text-destructive">{actionError}</p> : null}
 
       <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
         <PoolPicker
           pool={pool}
           takenPairs={takenPairs}
-          canPick={isMyTurn && !pick.busy}
-          onPick={(corpsKey, caption) => void pick.run(corpsKey, caption)}
+          canPick={isMyTurn && !picking}
+          onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
         />
         <RosterBoard picks={picks} membersById={membersById} corpsName={corpsName} />
       </div>
