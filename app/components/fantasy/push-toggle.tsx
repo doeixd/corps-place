@@ -73,16 +73,23 @@ export function PushToggle() {
   const error = enable.error ?? disable.error;
 
   return (
-    <div className="flex items-center gap-2">
-      <BusyButton
-        size="sm"
-        variant="outline"
-        busy={busy}
-        onClick={() => void (on ? disable.run() : enable.run())}
-      >
-        {on ? 'Disable draft alerts' : 'Enable draft alerts'}
-      </BusyButton>
-      {error ? <span className="text-xs text-destructive">{error}</span> : null}
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-2">
+        <BusyButton
+          size="sm"
+          variant="outline"
+          busy={busy}
+          onClick={() => void (on ? disable.run() : enable.run())}
+        >
+          {on ? 'Disable draft alerts' : 'Enable draft alerts'}
+        </BusyButton>
+        {error ? <span className="text-xs text-destructive">{error}</span> : null}
+      </div>
+      <p className="text-xs text-muted-foreground">
+        {on
+          ? '✓ On — we’ll alert this device when the draft goes live and when you’re on the clock.'
+          : 'Get a heads-up when the draft starts and when it’s your turn to pick.'}
+      </p>
     </div>
   );
 }

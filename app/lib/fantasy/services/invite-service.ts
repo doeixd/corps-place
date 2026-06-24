@@ -119,14 +119,28 @@ const makeInviteService = Effect.gen(function* () {
     if (invite.expires_at <= now) return { state: 'invalid' as const };
     if (Number(invite.used_count) >= Number(invite.max_uses)) return { state: 'used_up' as const };
 
-    const leagues = yield* sql<{ name: string; slug: string; status: string; max_members: number }>`
-      SELECT name, slug, status, max_members FROM fantasy_leagues WHERE league_id = ${invite.league_id}
+    const leagues = yield* sql<{
+      name: string;
+      slug: string;
+      status: string;
+      max_members: number;
+      owner_user_id: string;
+    }>`
+      SELECT name, slug, status, max_members, owner_user_id
+      FROM fantasy_leagues WHERE league_id = ${invite.league_id}
     `.pipe(Effect.orDie);
     const league = leagues[0];
     if (!league) return { state: 'invalid' as const };
     if (!JOINABLE.has(league.status)) return { state: 'closed' as const };
 
     const memberCount = yield* g.activeMemberCount(invite.league_id);
+    // Context for the invitee (§ P3): who's hosting + when the draft is.
+    const owners = yield* sql<{ name: string | null }>`
+      SELECT name FROM "user" WHERE id = ${league.owner_user_id}
+    `.pipe(Effect.orDie);
+    const drafts = yield* sql<{ scheduled_at: string | null }>`
+      SELECT scheduled_at FROM fantasy_drafts WHERE league_id = ${invite.league_id}
+    `.pipe(Effect.orDie);
     return {
       state: 'ok' as const,
       league: {
@@ -134,6 +148,8 @@ const makeInviteService = Effect.gen(function* () {
         slug: league.slug,
         memberCount,
         maxMembers: Number(league.max_members),
+        hostName: owners[0]?.name ?? null,
+        draftScheduledAt: drafts[0]?.scheduled_at ?? null,
       },
     };
   });

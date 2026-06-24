@@ -84,6 +84,15 @@ function JoinLeague() {
             You&apos;ve been invited to join this fantasy drum corps league ({league.memberCount}/
             {league.maxMembers} members). Here&apos;s what happens after you join:
           </p>
+          {league.hostName || league.draftScheduledAt ? (
+            <p className="text-sm text-muted-foreground">
+              {league.hostName ? `Hosted by ${league.hostName}` : null}
+              {league.hostName && league.draftScheduledAt ? ' · ' : ''}
+              {league.draftScheduledAt
+                ? `Draft ${new Date(league.draftScheduledAt).toLocaleString()}`
+                : null}
+            </p>
+          ) : null}
           <ol className="flex flex-col gap-1 text-sm text-muted-foreground">
             <li>1. Name your corps — your team&apos;s identity.</li>
             <li>2. Take a quick DCI quiz; your score sets your draft order.</li>
