@@ -33,6 +33,7 @@ import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getLeague, getDraftState, getDraftQueue, setDraftQueue } from '@/lib/server-fns/fantasy';
 import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from '@/lib/fantasy/captions';
+import { pickWeight, type ReverseWeighting } from '@/lib/fantasy/draft';
 import { useDraftStream } from '@/lib/fantasy/use-draft-stream';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
@@ -114,6 +115,36 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
         />
       </header>
 
+      <details className="rounded-lg border border-border bg-muted/30 px-4 py-3 text-sm">
+        <summary className="cursor-pointer font-medium text-text-primary">
+          How the draft works
+        </summary>
+        <ul className="mt-2 flex list-disc flex-col gap-1.5 pl-5 text-muted-foreground">
+          <li>
+            Players take turns. When you&apos;re <strong>on the clock</strong>, pick a corps for one
+            caption from the available list before your timer runs out.
+          </li>
+          <li>
+            Each <strong>caption</strong> (GE1, VP, MB, …) holds a set number of corps for your
+            lineup. Fill them across your picks — the same corps + caption can only be taken once in
+            the league.
+          </li>
+          <li>
+            Picks are <strong>weighted</strong>: later picks count for more toward your score, so
+            save your strongest corps for later rounds. The weight is shown on the picker and the
+            board.
+          </li>
+          <li>
+            Set a <strong>draft queue</strong> (the button below) and if your timer runs out we
+            auto-pick your highest-ranked available corps for you.
+          </li>
+          <li>
+            The <strong>draft board</strong> lists everyone&apos;s picks and weights as they happen.
+            Scores are tallied from real drum corps results once the season starts.
+          </li>
+        </ul>
+      </details>
+
       {draft && draft.status !== 'complete' && league.viewer.isMember ? (
         <div className="flex justify-end">
           <DraftQueueEditor leagueId={leagueId} pool={initial.pool} rank={initial.rank} />
@@ -153,6 +184,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           isOwner={league.viewer.isOwner}
           membersById={membersById}
           captionCaps={league.league.config.captionCaps}
+          reverseWeighting={league.league.config.reverseWeighting}
         />
       )}
     </PageShell>
@@ -329,6 +361,7 @@ type LiveDraftProps = {
   isOwner: boolean;
   membersById: Map<string, Member>;
   captionCaps: Record<CaptionKey, number>;
+  reverseWeighting: ReverseWeighting;
 };
 
 function LiveDraft({
@@ -340,6 +373,7 @@ function LiveDraft({
   picks,
   pool,
   captionCaps,
+  reverseWeighting,
   rank,
   viewerId,
   isOwner,
@@ -350,6 +384,11 @@ function LiveDraft({
   const takenPairs = new Set(picks.map((p) => `${p.corpsKey}|${p.caption}`));
   const memberCount = membersById.size;
   const round = memberCount > 0 ? Math.floor(draft.currentPickNo / memberCount) + 1 : 1;
+
+  // The weight the viewer's NEXT pick will score (by their own pick count) — the
+  // same for every option this turn, so it's shown once on the picker.
+  const myPicksSoFar = picks.filter((p) => p.userId === viewerId).length;
+  const nextWeight = pickWeight(myPicksSoFar + 1, draft.totalRounds, reverseWeighting);
 
   return (
     <div className="flex flex-col gap-6">
@@ -448,6 +487,7 @@ function LiveDraft({
             rank={rank}
             takenPairs={takenPairs}
             canPick={isMyTurn && !picking}
+            nextWeight={nextWeight}
             onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
           />
         </CardContent>
@@ -648,12 +688,14 @@ function SectionPicker({
   rank,
   takenPairs,
   canPick,
+  nextWeight,
   onPick,
 }: {
   pool: DraftState['pool'];
   rank: DraftState['rank'];
   takenPairs: Set<string>;
   canPick: boolean;
+  nextWeight: number;
   onPick: (corpsKey: string, caption: CaptionKey) => void;
 }) {
   const [caption, setCaption] = useState<CaptionKey>('GE1');
@@ -684,6 +726,13 @@ function SectionPicker({
 
   return (
     <div className="flex flex-col gap-3">
+      <p className="text-sm text-muted-foreground">
+        Pick a caption tab, then choose a corps for it.{' '}
+        <span className="font-medium text-text-primary">
+          This pick scores ×{nextWeight.toFixed(2)}
+        </span>{' '}
+        toward your total — later picks are worth more, so save your best corps.
+      </p>
       <ToggleGroup
         value={[caption]}
         onValueChange={(v) => {
@@ -745,10 +794,9 @@ function SectionPicker({
 }
 
 /**
- * The draft board — a compact grid like the recap table, but cells are the corps
- * LOGO each participant drafted for that caption (tooltip = corps + caption).
- * Rows are participants; columns are the caption sections. The on-clock member's
- * row is highlighted. Horizontally scrollable on narrow screens.
+ * The draft board — a flat list of every pick, grouped per player (the player cell
+ * row-spans their picks). Columns: Corps, Caption, and the scoring Weight of each
+ * pick (later picks weigh more under reverse weighting). Collapsible.
  */
 function DraftBoard({
   picks,
@@ -763,22 +811,16 @@ function DraftBoard({
   currentUserId: string | null;
   captionCaps: Record<CaptionKey, number>;
 }) {
-  // Collapsible so it doesn't eat the screen on mobile while you're picking.
   const [open, setOpen] = useState(true);
   const corpsByKey = new Map(pool.map((c) => [c.corpsKey, c]));
+  const totalSlots = CAPTION_KEYS.reduce((s, c) => s + (captionCaps[c] ?? 0), 0);
 
-  // Every pick per (player, caption), in draft order — a caption can hold more
-  // than one corps (captionCaps), so each fills its own slot/row.
-  const cell = new Map<string, DraftState['snapshot']['picks']>();
+  const byUser = new Map<string, DraftState['snapshot']['picks']>();
   for (const p of [...picks].sort((a, b) => a.pickNo - b.pickNo)) {
-    const k = `${p.userId}|${p.caption}`;
-    const arr = cell.get(k);
+    const arr = byUser.get(p.userId);
     if (arr) arr.push(p);
-    else cell.set(k, [p]);
+    else byUser.set(p.userId, [p]);
   }
-  // One row per slot depth; the tallest caption sets how many rows a player spans.
-  const maxCap = Math.max(1, ...CAPTION_KEYS.map((c) => captionCaps[c] ?? 1));
-  const slots = Array.from({ length: maxCap }, (_, i) => i);
 
   return (
     <Card>
@@ -791,76 +833,81 @@ function DraftBoard({
       {open ? (
         <CardContent className="overflow-x-auto">
           <p className="mb-2 text-xs text-muted-foreground">
-            Each corps shows its scoring weight (×). Captions that hold more than one
-            corps stack down the rows.
+            Every pick so far. <span className="font-medium">Weight</span> is how much that corps
+            counts toward the player&apos;s score — later picks weigh more.
           </p>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="sticky left-0 bg-background">Player</TableHead>
-                {CAPTION_KEYS.map((c) => (
-                  <TableHead key={c} className="px-2 text-center" title={KEY_TO_CAPTION_NAME[c]}>
-                    {c}
-                    {(captionCaps[c] ?? 1) > 1 ? (
-                      <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">
-                        ×{captionCaps[c]}
-                      </span>
-                    ) : null}
-                  </TableHead>
-                ))}
+                <TableHead>Player</TableHead>
+                <TableHead>Corps</TableHead>
+                <TableHead className="text-center">Caption</TableHead>
+                <TableHead className="text-right">Weight</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {members.map((m) =>
-                slots.map((slot) => (
-                  <TableRow
-                    key={`${m.user_id}-${slot}`}
-                    className={cn(
-                      m.user_id === currentUserId && 'bg-muted/40',
-                      slot > 0 && 'border-t-0'
-                    )}
+              {members.map((m) => {
+                const ps = byUser.get(m.user_id) ?? [];
+                const nameCell = (
+                  <TableCell
+                    rowSpan={Math.max(1, ps.length)}
+                    className="align-top font-medium whitespace-nowrap"
+                    style={m.corps_color ? { color: m.corps_color } : undefined}
                   >
-                    {slot === 0 ? (
-                      <TableCell
-                        rowSpan={maxCap}
-                        className="sticky left-0 bg-background align-middle font-medium whitespace-nowrap"
-                        style={m.corps_color ? { color: m.corps_color } : undefined}
-                      >
-                        {m.corps_name || m.user_name || 'Player'}
+                    {m.corps_name || m.user_name || 'Player'}
+                    <span className="block text-xs font-normal text-text-secondary">
+                      {ps.length}/{totalSlots} picks
+                    </span>
+                  </TableCell>
+                );
+                if (ps.length === 0) {
+                  return (
+                    <TableRow
+                      key={m.user_id}
+                      className={cn(m.user_id === currentUserId && 'bg-muted/40')}
+                    >
+                      {nameCell}
+                      <TableCell colSpan={3} className="text-sm text-muted-foreground">
+                        No picks yet
                       </TableCell>
-                    ) : null}
-                    {CAPTION_KEYS.map((c) => {
-                      const cap = captionCaps[c] ?? 1;
-                      // This caption holds fewer corps than the tallest column — no slot here.
-                      if (slot >= cap) return <TableCell key={c} className="bg-muted/15 p-1" aria-hidden />;
-                      const pick = cell.get(`${m.user_id}|${c}`)?.[slot];
-                      const corps = pick ? corpsByKey.get(pick.corpsKey) : undefined;
-                      return (
-                        <TableCell key={c} className="p-1 text-center align-middle">
-                          {pick ? (
-                            <span
-                              className="inline-flex flex-col items-center gap-0.5"
-                              title={`${corps?.name ?? pick.corpsKey} — ${KEY_TO_CAPTION_NAME[c]}${pick.autoPicked ? ' (auto-pick)' : ''}`}
-                            >
-                              <CorpsLogo
-                                name={corps?.name ?? pick.corpsKey}
-                                logo={corps?.corpsLogo ?? ''}
-                                width={32}
-                                className="size-8"
-                              />
-                              <span className="text-[10px] leading-none tabular-nums text-muted-foreground">
-                                ×{pick.weight.toFixed(1)}
-                              </span>
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground">·</span>
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))
-              )}
+                    </TableRow>
+                  );
+                }
+                return ps.map((pick, i) => {
+                  const corps = corpsByKey.get(pick.corpsKey);
+                  return (
+                    <TableRow
+                      key={pick.pickNo}
+                      className={cn(
+                        m.user_id === currentUserId && 'bg-muted/40',
+                        i > 0 && 'border-t-0'
+                      )}
+                    >
+                      {i === 0 ? nameCell : null}
+                      <TableCell>
+                        <span className="flex items-center gap-2">
+                          <CorpsLogo
+                            name={corps?.name ?? pick.corpsKey}
+                            logo={corps?.corpsLogo ?? ''}
+                            width={24}
+                            className="size-6 shrink-0"
+                          />
+                          <span className="whitespace-nowrap">{corps?.name ?? pick.corpsKey}</span>
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center" title={KEY_TO_CAPTION_NAME[pick.caption]}>
+                        {pick.caption}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        ×{pick.weight.toFixed(2)}
+                        {pick.autoPicked ? (
+                          <span className="ml-1 text-[10px] text-muted-foreground">auto</span>
+                        ) : null}
+                      </TableCell>
+                    </TableRow>
+                  );
+                });
+              })}
             </TableBody>
           </Table>
         </CardContent>
