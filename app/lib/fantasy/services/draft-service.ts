@@ -45,6 +45,8 @@ export type DraftEvent = { event: string; data: unknown };
 const escapeHtml = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+const APP_URL = (process.env.BETTER_AUTH_URL ?? 'https://drumcorps.app').replace(/\/$/, '');
+
 export type DraftSnapshot = {
   draft: {
     status: string;
@@ -341,6 +343,44 @@ const makeDraftService = Effect.gen(function* () {
       );
     }).pipe(Effect.catchCause(() => Effect.void));
 
+  // Email parity for the auto-pick (§12.4). Unlike on-clock/on-deck — which target an
+  // engaged member who'll see the push/app — an auto-pick happens precisely BECAUSE the
+  // member wasn't watching, so an email is the channel most likely to reach them. Sent
+  // only to that one member, gated by their email pref + the league's notify.email.
+  const emailAutoPick = (leagueId: string, userId: string, caption: CaptionKey) =>
+    Effect.gen(function* () {
+      const rows = yield* sql<{ name: string; slug: string; config_json: string }>`
+        SELECT name, slug, config_json FROM fantasy_leagues WHERE league_id = ${leagueId}
+      `.pipe(Effect.orDie);
+      const league = rows[0];
+      if (!league) return;
+      const config = JSON.parse(league.config_json) as LeagueConfig;
+      if (!config.notify?.email) return;
+
+      const recipients = yield* sql<{ email: string }>`
+        SELECT u.email FROM fantasy_members m
+        JOIN user u ON u.id = m.user_id
+        WHERE m.league_id = ${leagueId} AND m.user_id = ${userId} AND m.status = 'active'
+          AND u.email IS NOT NULL AND m.notify_email = 1 AND u.contactConsent = 1
+      `.pipe(Effect.orDie);
+      const to = recipients[0]?.email;
+      if (!to) return;
+
+      const safeName = escapeHtml(league.name);
+      const url = `${APP_URL}/fantasy/${league.slug}/draft`;
+      yield* Effect.promise(() =>
+        sendEmail({
+          to,
+          subject: `We made your ${league.name} pick`,
+          html:
+            `<p>Your timer ran out in <strong>${safeName}</strong>, so we auto-picked your ` +
+            `<strong>${caption}</strong> corps for you.</p>` +
+            `<p><a href="${url}">Open the draft room</a> to see it and get ready for your next turn.</p>`,
+          tag: 'fantasy_auto_pick',
+        })
+      );
+    }).pipe(Effect.catchCause(() => Effect.void));
+
   // --- self-heal: re-arm timers for drafts left live by a prior process -------
 
   const ensureSelfHeal = Effect.suspend(() => {
@@ -547,14 +587,19 @@ const makeDraftService = Effect.gen(function* () {
               }
             : null
         );
-        // Tell the member what we picked for them when their timer ran out (§12.4).
-        if (choice)
+        // Tell the member what we picked for them when their timer ran out (§12.4) —
+        // push for immediacy, and email since they clearly weren't watching.
+        if (choice) {
           yield* pushToLeagueUsers(
             leagueId,
             [onClockUser],
             'We made your pick',
             `Your timer ran out — we auto-picked ${choice.caption} for you.`
           );
+          yield* Effect.sync(() =>
+            Effect.runFork(emailAutoPick(leagueId, onClockUser, choice.caption))
+          );
+        }
         yield* broadcast(leagueId, { event: 'pick', data: yield* snapshot(leagueId) });
       })
     );

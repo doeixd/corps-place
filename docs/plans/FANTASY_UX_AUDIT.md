@@ -124,7 +124,7 @@ Three issues repeat at **every** stage and are the highest-leverage fixes:
 
 ## Prioritized punch list
 
-> Status after the post-audit pass: **P0 ✅ · P2 ✅ · P3 ✅ · P1 partial.**
+> Status after the post-audit pass: **P0 ✅ · P2 ✅ · P3 ✅ · P1 ✅ (email parity + per-user prefs done; only the optional unified-emit refactor remains).**
 
 **P0 — comprehension (cheap, highest impact) — ✅ DONE**
 1. ✅ Landing "what is this + how it works" strip (`HowItWorks`).
@@ -133,12 +133,19 @@ Three issues repeat at **every** stage and are the highest-leverage fixes:
 3. ✅ An `<Explain>` / glossary primitive → caption legend on standings + the quiz
    "seeding" wording + settings (draft-type / scoring-mode) help.
 
-**P1 — the notification matrix (§12.4, already designed) — ⚠️ PARTIAL**
-4. Unified `NotificationService.emit` (push **and** email, per-user prefs) is still
-   the goal. **Done so far:** lifecycle **push** for draft-live / draft-complete /
-   auto-picked-you (`notifyMembers` in DraftService), on top of the existing
-   on-clock push + email reminders/digests. **Remaining:** the unified emit, email
-   parity for the new events, up-next lookahead, draft-scheduled, and per-user prefs.
+**P1 — the notification matrix (§12.4, already designed) — ✅ DONE (functional)**
+4. Every channel now reaches users per their prefs:
+   - ✅ **Per-user prefs** — per-member `notify_email` / `notify_push` toggles + the
+     account-wide contact opt-in, all enforced in the push/email queries.
+   - ✅ **Email parity for lifecycle events** — `draft_live`, `draft_complete`, and the
+     **auto-pick** ("we made your pick") now email the affected member(s), alongside
+     the existing push. Per-pick **on-clock / on-deck stay push-only** by design (an
+     email per pick is spam; those target an engaged member).
+   - ✅ **Draft-scheduled email** — with each recipient's **time zone** and an
+     **add-to-calendar** (Google link + `.ics`).
+   - **Remaining (optional polish):** fold `pushToLeagueUsers` + the `emailX` helpers
+     into a single `NotificationService.emit(event, audience)` so channel routing lives
+     in one place. Purely a refactor — no user-facing gap.
 
 **P2 — surface polish — ✅ DONE**
 5. ✅ Standings: scoring explainer + "· updated {date}" + **mobile-compact** layout
