@@ -257,6 +257,13 @@ const makeDraftService = Effect.gen(function* () {
     }).catch(() => {});
   };
 
+  // Fan a lifecycle push out to every drafter (no-op for anyone without a push
+  // subscription). Fire-and-forget, like notifyOnClock (§12.4 notification matrix).
+  const notifyMembers = (userIds: readonly string[], title: string, body: string): void => {
+    for (const id of userIds)
+      void sendPushToUser(id, { title, body, url: '/fantasy' }).catch(() => {});
+  };
+
   // --- self-heal: re-arm timers for drafts left live by a prior process -------
 
   const ensureSelfHeal = Effect.suspend(() => {
@@ -325,6 +332,13 @@ const makeDraftService = Effect.gen(function* () {
           )
           .pipe(Effect.orDie);
         yield* Effect.sync(() => clearTimer(leagueId));
+        yield* Effect.sync(() =>
+          notifyMembers(
+            draft.order,
+            'Draft complete',
+            'Every pick is in — see the final rosters and the standings.'
+          )
+        );
         yield* broadcast(leagueId, { event: 'state', data: { status: 'complete' } });
         // The draft is over — drop the per-league lock/timer/bus so they don't
         // accumulate for the process lifetime (a league drafts once). The bus is
@@ -383,6 +397,7 @@ const makeDraftService = Effect.gen(function* () {
         if (!rows[0]) return;
         const draft = mapDraft(rows[0]);
         if (draft.status !== 'live' || !draft.currentUserId) return;
+        const onClockUser = draft.currentUserId;
         if (expectedDeadline && draft.pickDeadlineAt !== expectedDeadline) return;
 
         const config = yield* loadConfig(leagueId);
@@ -438,6 +453,15 @@ const makeDraftService = Effect.gen(function* () {
               }
             : null
         );
+        // Tell the member what we picked for them when their timer ran out (§12.4).
+        if (choice)
+          yield* Effect.sync(() =>
+            notifyMembers(
+              [onClockUser],
+              'We made your pick',
+              `Your timer ran out — we auto-picked ${choice.caption} for you.`
+            )
+          );
         yield* broadcast(leagueId, { event: 'pick', data: yield* snapshot(leagueId) });
       })
     );
@@ -533,6 +557,15 @@ const makeDraftService = Effect.gen(function* () {
           .pipe(Effect.orDie);
         yield* Effect.sync(() => armTimer(leagueId, deadline));
         yield* Effect.sync(() => notifyOnClock(order[0]));
+        // Tell everyone else the room is open (the on-clock member already got
+        // their own, more urgent "you're on the clock" push).
+        yield* Effect.sync(() =>
+          notifyMembers(
+            order.filter((u) => u !== order[0]),
+            'Your draft is live',
+            'The draft room is open — come watch and make your picks.'
+          )
+        );
         yield* broadcast(leagueId, { event: 'snapshot', data: yield* snapshot(leagueId) });
         return { ok: true } as StartFeasibility;
       })
