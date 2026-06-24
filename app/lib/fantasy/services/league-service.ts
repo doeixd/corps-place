@@ -56,6 +56,8 @@ interface MemberRow {
   draft_position: unknown;
   quiz_taken: unknown;
   quiz_score: unknown;
+  notify_email: unknown;
+  notify_push: unknown;
   user_name: unknown;
   user_image: unknown;
 }
@@ -104,6 +106,7 @@ const makeLeagueService = Effect.gen(function* () {
       SELECT m.user_id, m.role, m.corps_name, m.show_title, m.corps_logo_media_id,
              m.corps_color, m.draft_position, m.status, m.quiz_score,
              (m.quiz_score IS NOT NULL) AS quiz_taken,
+             m.notify_email, m.notify_push,
              u.name AS user_name, u.image AS user_image
       FROM fantasy_members m
       LEFT JOIN user u ON u.id = m.user_id
@@ -119,6 +122,8 @@ const makeLeagueService = Effect.gen(function* () {
       corps_color: strOrNull(m.corps_color),
       draft_position: numOrNull(m.draft_position),
       quiz_taken: Boolean(m.quiz_taken),
+      notify_email: m.notify_email == null ? true : Boolean(m.notify_email),
+      notify_push: m.notify_push == null ? true : Boolean(m.notify_push),
       user_name: strOrNull(m.user_name),
       user_image: strOrNull(m.user_image),
     }));

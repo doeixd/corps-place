@@ -202,6 +202,8 @@ const SCHEMA = [
      quiz_score          REAL,
      draft_position      INTEGER,
      status              TEXT NOT NULL DEFAULT 'active', -- active|removed
+     notify_email        INTEGER NOT NULL DEFAULT 1, -- per-member email opt-out
+     notify_push         INTEGER NOT NULL DEFAULT 1, -- per-member push opt-out
      joined_at           TEXT NOT NULL,
      PRIMARY KEY (league_id, user_id)
    )`,
@@ -631,6 +633,33 @@ const ADD_COLUMNS: { table: string; column: string; ddl: string }[] = [
     table: 'fantasy_leagues',
     column: 'image_media_id',
     ddl: 'ALTER TABLE fantasy_leagues ADD COLUMN image_media_id TEXT',
+  },
+  // First-sign-in consent (site-wide gate). camelCase column names match the
+  // better-auth `additionalFields` keys in auth.ts so the session exposes them.
+  // termsAcceptedAt/termsVersion record acceptance (re-gate when the version bumps);
+  // contactConsent is the optional email opt-in (master switch for all emails).
+  {
+    table: 'user',
+    column: 'termsAcceptedAt',
+    ddl: 'ALTER TABLE "user" ADD COLUMN termsAcceptedAt TEXT',
+  },
+  { table: 'user', column: 'termsVersion', ddl: 'ALTER TABLE "user" ADD COLUMN termsVersion TEXT' },
+  {
+    table: 'user',
+    column: 'contactConsent',
+    ddl: 'ALTER TABLE "user" ADD COLUMN contactConsent INTEGER DEFAULT 0',
+  },
+  // Per-member notification opt-outs (default on). The owner's league-wide
+  // notify.email/push is the gate; these let an individual member mute their own.
+  {
+    table: 'fantasy_members',
+    column: 'notify_email',
+    ddl: 'ALTER TABLE fantasy_members ADD COLUMN notify_email INTEGER DEFAULT 1',
+  },
+  {
+    table: 'fantasy_members',
+    column: 'notify_push',
+    ddl: 'ALTER TABLE fantasy_members ADD COLUMN notify_push INTEGER DEFAULT 1',
   },
 ];
 

@@ -14,6 +14,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { SiteNav } from '@/components/site-nav';
 import { AnnouncementBanner } from '@/components/announcement-banner';
+import { ConsentGate } from '@/components/consent-gate';
 import { THEME_COOKIE, readThemeCookie } from '@/lib/theme-cookie';
 import type { Theme } from '@/lib/theme-cookie';
 import { FAVORITE_COOKIE, readFavoriteCookie } from '@/lib/favorite-cookie';
@@ -186,6 +187,7 @@ function RootComponent() {
           <NavigationProgressBar />
           <ThemeToggle className="fixed top-4 right-4 z-50" />
           <SiteNav />
+          <ConsentGate />
           {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
               (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
               (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}

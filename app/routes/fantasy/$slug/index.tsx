@@ -25,6 +25,7 @@ import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
 import { LeagueSettings } from '@/components/fantasy/league-settings';
 import { CorpsIdentityForm } from '@/components/fantasy/corps-identity-form';
 import { PushToggle } from '@/components/fantasy/push-toggle';
+import { NotificationPrefs } from '@/components/fantasy/notification-prefs';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { useCopyToClipboard } from '@/lib/use-copy-to-clipboard';
@@ -155,6 +156,14 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
       ) : null}
 
       {viewer.isMember && data.pushEnabled ? <PushToggle /> : null}
+
+      {viewer.isMember && me ? (
+        <NotificationPrefs
+          leagueId={league.leagueId}
+          initialEmail={me.notify_email}
+          initialPush={me.notify_push}
+        />
+      ) : null}
 
       {viewer.isOwner ? (
         <InvitePanel

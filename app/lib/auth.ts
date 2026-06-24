@@ -64,6 +64,11 @@ export const auth = betterAuth({
     additionalFields: {
       // Capability role (§6.2). Not user-settable; promoted by an admin later (M9).
       role: { type: 'string', required: false, defaultValue: 'user', input: false },
+      // First-sign-in consent gate. Set by the acceptTerms server-fn (not at signup),
+      // so the session carries them for the client-side gate. See ConsentGate.
+      termsAcceptedAt: { type: 'string', required: false, input: false },
+      termsVersion: { type: 'string', required: false, input: false },
+      contactConsent: { type: 'boolean', required: false, defaultValue: false, input: false },
     },
   },
   plugins: [

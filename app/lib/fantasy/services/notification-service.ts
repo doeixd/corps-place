@@ -38,6 +38,7 @@ const makeNotificationService = Effect.gen(function* () {
         SELECT u.email FROM fantasy_members m
         JOIN user u ON u.id = m.user_id
         WHERE m.league_id = ${leagueId} AND m.status = 'active' AND u.email IS NOT NULL
+          AND m.notify_email = 1 AND u.contactConsent = 1
       `.pipe(Effect.orDie);
       return { name: league.name, emails: members.map((m) => m.email) };
     });
@@ -113,6 +114,7 @@ const makeNotificationService = Effect.gen(function* () {
         SELECT u.email, u.name FROM fantasy_members m
         JOIN user u ON u.id = m.user_id
         WHERE m.league_id = ${leagueId} AND m.status = 'active' AND u.email IS NOT NULL
+          AND m.notify_email = 1 AND u.contactConsent = 1
       `.pipe(Effect.orDie);
 
       const name = league?.name ?? 'your league';
@@ -146,6 +148,7 @@ const makeNotificationService = Effect.gen(function* () {
       JOIN user u ON u.id = n.user_id
       LEFT JOIN fantasy_leagues l ON l.league_id = n.league_id
       WHERE n.email_sent_at IS NULL AND n.kind IN ('standings', 'season_complete')
+        AND u.contactConsent = 1
       ORDER BY n.user_id
     `.pipe(Effect.orDie);
     if (rows.length === 0) return 0;

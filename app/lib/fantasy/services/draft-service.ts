@@ -253,19 +253,41 @@ const makeDraftService = Effect.gen(function* () {
   const broadcast = (leagueId: string, event: DraftEvent) =>
     PubSub.publish(busFor(leagueId), event).pipe(Effect.asVoid);
 
-  const notifyOnClock = (userId: string): void => {
-    void sendPushToUser(userId, {
-      title: "You're on the clock",
-      body: 'Make your fantasy draft pick before the timer runs out.',
-      url: '/fantasy',
-    }).catch(() => {});
-  };
+  // Push to specific league members, skipping anyone who muted push for THIS
+  // league (per-user prefs). Each send is fire-and-forget (no-op without a push
+  // subscription) so it never blocks the draft lock; the helper itself is an Effect
+  // only so it can read the mute set from `sql` (§12.4 notification matrix).
+  const pushToLeagueUsers = (
+    leagueId: string,
+    userIds: readonly string[],
+    title: string,
+    body: string
+  ) =>
+    Effect.gen(function* () {
+      const targets = [...new Set(userIds.filter(Boolean))];
+      if (targets.length === 0) return;
+      const muted = yield* sql<{ user_id: string }>`
+        SELECT user_id FROM fantasy_members WHERE league_id = ${leagueId} AND notify_push = 0
+      `.pipe(Effect.orDie);
+      const mutedSet = new Set(muted.map((r) => r.user_id));
+      for (const id of targets)
+        if (!mutedSet.has(id))
+          void sendPushToUser(id, { title, body, url: '/fantasy' }).catch(() => {});
+    });
 
-  // Fan a lifecycle push out to every drafter (no-op for anyone without a push
-  // subscription). Fire-and-forget, like notifyOnClock (§12.4 notification matrix).
-  const notifyMembers = (userIds: readonly string[], title: string, body: string): void => {
-    for (const id of userIds)
-      void sendPushToUser(id, { title, body, url: '/fantasy' }).catch(() => {});
+  // The member who picks immediately AFTER the current on-clock pick (the "on deck"
+  // heads-up). null at the final pick, or when it's the same member (a snake turn
+  // boundary where one member picks twice — no point pinging them as on-deck).
+  const onDeckUser = (
+    order: readonly string[],
+    currentPickNo: number,
+    type: DraftType,
+    totalRounds: number
+  ): string | null => {
+    const nextPickNo = currentPickNo + 1;
+    if (isDraftComplete(nextPickNo, order.length, totalRounds)) return null;
+    const next = userAt(order, nextPickNo, type);
+    return next === userAt(order, currentPickNo, type) ? null : next;
   };
 
   // Email parity for the *big* lifecycle moments (draft opens / completes) so a
@@ -300,6 +322,7 @@ const makeDraftService = Effect.gen(function* () {
         SELECT u.email FROM fantasy_members m
         JOIN user u ON u.id = m.user_id
         WHERE m.league_id = ${leagueId} AND m.status = 'active' AND u.email IS NOT NULL
+          AND m.notify_email = 1 AND u.contactConsent = 1
       `.pipe(Effect.orDie);
       if (members.length === 0) return;
 
@@ -386,12 +409,11 @@ const makeDraftService = Effect.gen(function* () {
           )
           .pipe(Effect.orDie);
         yield* Effect.sync(() => clearTimer(leagueId));
-        yield* Effect.sync(() =>
-          notifyMembers(
-            draft.order,
-            'Draft complete',
-            'Every pick is in — see the final rosters and the standings.'
-          )
+        yield* pushToLeagueUsers(
+          leagueId,
+          draft.order,
+          'Draft complete',
+          'Every pick is in — see the final rosters and the standings.'
         );
         yield* Effect.sync(() => Effect.runFork(emailMembers(leagueId, 'draft_complete')));
         yield* broadcast(leagueId, { event: 'state', data: { status: 'complete' } });
@@ -415,7 +437,20 @@ const makeDraftService = Effect.gen(function* () {
           pick_deadline_at = ${deadline} WHERE league_id = ${leagueId}
       `.pipe(Effect.orDie);
       yield* Effect.sync(() => armTimer(leagueId, deadline));
-      yield* Effect.sync(() => notifyOnClock(nextUser));
+      yield* pushToLeagueUsers(
+        leagueId,
+        [nextUser],
+        "You're on the clock",
+        'Make your fantasy draft pick before the timer runs out.'
+      );
+      const deck = onDeckUser(draft.order, nextPickNo, draft.draftType, draft.totalRounds);
+      if (deck)
+        yield* pushToLeagueUsers(
+          leagueId,
+          [deck],
+          "You're on deck",
+          "You're up right after the current pick — get your corps ready."
+        );
     });
 
   // --- auto-pick --------------------------------------------------------------
@@ -510,12 +545,11 @@ const makeDraftService = Effect.gen(function* () {
         );
         // Tell the member what we picked for them when their timer ran out (§12.4).
         if (choice)
-          yield* Effect.sync(() =>
-            notifyMembers(
-              [onClockUser],
-              'We made your pick',
-              `Your timer ran out — we auto-picked ${choice.caption} for you.`
-            )
+          yield* pushToLeagueUsers(
+            leagueId,
+            [onClockUser],
+            'We made your pick',
+            `Your timer ran out — we auto-picked ${choice.caption} for you.`
           );
         yield* broadcast(leagueId, { event: 'pick', data: yield* snapshot(leagueId) });
       })
@@ -611,15 +645,27 @@ const makeDraftService = Effect.gen(function* () {
           )
           .pipe(Effect.orDie);
         yield* Effect.sync(() => armTimer(leagueId, deadline));
-        yield* Effect.sync(() => notifyOnClock(order[0]));
+        yield* pushToLeagueUsers(
+          leagueId,
+          [order[0]],
+          "You're on the clock",
+          'Make your fantasy draft pick before the timer runs out.'
+        );
+        const firstDeck = onDeckUser(order, 0, config.draftType, totalRounds);
+        if (firstDeck)
+          yield* pushToLeagueUsers(
+            leagueId,
+            [firstDeck],
+            "You're on deck",
+            "You're up right after the first pick — get your corps ready."
+          );
         // Tell everyone else the room is open (the on-clock member already got
         // their own, more urgent "you're on the clock" push).
-        yield* Effect.sync(() =>
-          notifyMembers(
-            order.filter((u) => u !== order[0]),
-            'Your draft is live',
-            'The draft room is open — come watch and make your picks.'
-          )
+        yield* pushToLeagueUsers(
+          leagueId,
+          order.filter((u) => u !== order[0]),
+          'Your draft is live',
+          'The draft room is open — come watch and make your picks.'
         );
         yield* Effect.sync(() => Effect.runFork(emailMembers(leagueId, 'draft_live')));
         yield* broadcast(leagueId, { event: 'snapshot', data: yield* snapshot(leagueId) });

@@ -706,6 +706,23 @@ export const deletePushSubscription = createServerFn({ method: 'POST' })
     return { ok: true as const };
   });
 
+/** A member mutes/unmutes their OWN email/push for one league (per-user prefs). */
+export const setMemberNotifyPrefs = createServerFn({ method: 'POST' })
+  .validator((d: unknown) =>
+    v.parse(v.object({ leagueId: v.string(), email: v.boolean(), push: v.boolean() }), d)
+  )
+  .handler(async ({ data }) => {
+    const actor = await requireActor();
+    assertDurable();
+    const db = await getContributionsDb();
+    await db.execute({
+      sql: `UPDATE fantasy_members SET notify_email = ?, notify_push = ?
+            WHERE league_id = ? AND user_id = ?`,
+      args: [data.email ? 1 : 0, data.push ? 1 : 0, data.leagueId, actor.userId],
+    });
+    return { ok: true as const };
+  });
+
 // ===========================================================================
 // PAYMENTS — one-time league fee via Stripe Checkout + self-serve refund (M6, §12)
 // ===========================================================================
