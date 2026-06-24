@@ -13,7 +13,7 @@ import { requireCapability } from '@/lib/authz';
 import { writeAudit } from '@/lib/admin-audit';
 import { makeLeagueSlug } from '@/lib/fantasy/invites';
 import { resolveLeagueConfig, type LeagueConfig } from '@/lib/fantasy/config';
-import { CAPTION_KEYS } from '@/lib/fantasy/captions';
+import { CAPTION_KEYS, CAPTION_CATEGORY, type CaptionKey } from '@/lib/fantasy/captions';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { Effect } from 'effect';
 import { StandingsService } from '@/lib/fantasy/services/standings-service';
@@ -455,4 +455,150 @@ export const adminFastForwardDraft = createServerFn({ method: 'POST' })
       after: { picks } as unknown,
     });
     return { ok: true as const, picks };
+  });
+
+// --- Test Lab P2: quiz seeding ----------------------------------------------
+
+const SAMPLE_QUESTIONS: { q: string; choices: string[]; correct: number; diff: 'easy' | 'medium' | 'hard'; exp: string }[] = [
+  { q: 'What does “GE” stand for in drum corps scoring?', choices: ['Group Energy', 'General Effect', 'Guard Ensemble', 'Grand Entrance'], correct: 1, diff: 'easy', exp: 'General Effect rewards the overall emotional and artistic impact.' },
+  { q: 'How many on-field performers may a World Class corps have?', choices: ['Up to 100', 'Up to 135', 'Up to 150', 'Unlimited'], correct: 2, diff: 'medium', exp: 'World Class corps may field up to 150 performers.' },
+  { q: 'Which section is NOT part of a modern drum corps?', choices: ['Brass', 'Woodwinds', 'Battery percussion', 'Color guard'], correct: 1, diff: 'easy', exp: 'Drum corps use brass and percussion — no woodwinds.' },
+  { q: 'Where is the DCI World Championship Finals traditionally held?', choices: ['Pasadena, CA', 'Indianapolis, IN', 'Allentown, PA', 'San Antonio, TX'], correct: 1, diff: 'medium', exp: 'Lucas Oil Stadium in Indianapolis hosts Finals.' },
+  { q: 'The “pit” refers to which section?', choices: ['Front-ensemble percussion', 'The drum majors', 'The brass soloists', 'The guard captains'], correct: 0, diff: 'easy', exp: 'The front ensemble (pit) is the stationary percussion at the front sideline.' },
+  { q: 'What is the maximum total score in a recap-style fantasy league here?', choices: ['50', '100', '200', 'No cap'], correct: 1, diff: 'medium', exp: 'Recap mode is a weighted average capped at 100.' },
+  { q: 'Which caption family does “MB” belong to?', choices: ['Music', 'Visual', 'General Effect', 'Guard'], correct: 0, diff: 'easy', exp: 'MB = Music Brass.' },
+  { q: 'A “snake” draft means…', choices: ['Order reverses each round', 'Owner picks twice', 'Random every pick', 'Fastest typer wins'], correct: 0, diff: 'easy', exp: 'Snake reverses the pick order every round to keep it fair.' },
+  { q: 'Which is a real DCI corps?', choices: ['Bluecoats', 'Blue Thunder FC', 'Sky Ravens', 'The Octets'], correct: 0, diff: 'medium', exp: 'Bluecoats are a World Class corps from Canton, OH.' },
+  { q: 'What does the color guard primarily use?', choices: ['Flags, rifles, sabres', 'Trumpets', 'Snare drums', 'Keyboards'], correct: 0, diff: 'easy', exp: 'The guard performs with flags, rifles, and sabres.' },
+  { q: 'How many judged captions feed a corps’ score in this game?', choices: ['Four', 'Six', 'Eight', 'Ten'], correct: 2, diff: 'hard', exp: 'Eight captions: GE1, GE2, VP, VA, CG, MB, MA, MP.' },
+  { q: 'Open Class corps differ from World Class mainly by…', choices: ['Size/resources', 'Instrument type', 'Field shape', 'Time of year'], correct: 0, diff: 'hard', exp: 'Open Class corps are typically smaller programs than World Class.' },
+];
+
+/** Seed a starter quiz bank (idempotent — fixed ids). Cap: manageFantasyLeagues. */
+export const adminSeedQuizQuestions = createServerFn({ method: 'POST' }).handler(async () => {
+  const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+  const db = await getContributionsDb();
+  const now = new Date().toISOString();
+  let added = 0;
+  for (let i = 0; i < SAMPLE_QUESTIONS.length; i++) {
+    const s = SAMPLE_QUESTIONS[i];
+    const res = await db.execute({
+      sql: `INSERT INTO fantasy_quiz_questions
+              (question_id, prompt, choices_json, correct_index, explanation, difficulty,
+               tags_json, active, author_user_id, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, '["sample"]', 1, ?, ?, ?)
+            ON CONFLICT(question_id) DO NOTHING`,
+      args: [`seed-q${i + 1}`, s.q, JSON.stringify(s.choices), s.correct, s.exp, s.diff, actor.userId, now, now],
+    });
+    added += Number(res.rowsAffected ?? 0);
+  }
+  await writeAudit(db, actor, { action: 'seed_quiz_questions', after: { added } as unknown });
+  return { ok: true as const, added, total: SAMPLE_QUESTIONS.length };
+});
+
+/** Clear the admin's own quiz attempt for a test league so they can re-take. Cap: manageFantasyLeagues. */
+export const adminResetQuizAttempt = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const db = await getContributionsDb();
+    await assertTestLeague(db, data.leagueId);
+    await db.execute({
+      sql: `DELETE FROM fantasy_quiz_attempts WHERE league_id = ? AND user_id = ?`,
+      args: [data.leagueId, actor.userId],
+    });
+    await db.execute({
+      sql: `UPDATE fantasy_members SET quiz_score = NULL WHERE league_id = ? AND user_id = ?`,
+      args: [data.leagueId, actor.userId],
+    });
+    return { ok: true as const };
+  });
+
+// --- Test Lab P4: synthetic standings scores --------------------------------
+
+interface SynthAgg {
+  perCaption: Record<string, number>;
+  contributions: Record<string, Array<{ corpsKey: string; value: number; weight: number }>>;
+  ge: number;
+  visual: number;
+  music: number;
+}
+
+/**
+ * Inject believable standings from the league's actual picks so the standings UI
+ * is testable without real recap data. Each drafted corps gets a deterministic
+ * caption score (stable per corps) × the pick weight. `final` locks the table.
+ * Cap: manageFantasyLeagues.
+ */
+export const adminSeedSyntheticScores = createServerFn({ method: 'POST' })
+  .validator((d: unknown) =>
+    v.parse(v.object({ leagueId: v.string(), final: v.optional(v.boolean(), false) }), d)
+  )
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const db = await getContributionsDb();
+    await assertTestLeague(db, data.leagueId);
+    const now = new Date().toISOString();
+
+    const picks = (
+      await db.execute({
+        sql: `SELECT user_id, corps_key, caption, weight FROM fantasy_picks WHERE league_id = ?`,
+        args: [data.leagueId],
+      })
+    ).rows as unknown as Array<{ user_id: string; corps_key: string; caption: string; weight: number }>;
+    if (picks.length === 0) throw new Error('NO_PICKS:run the draft first');
+
+    // Stable pseudo-score per corps in ~[70.0, 92.9].
+    const corpsScore = (k: string): number => {
+      let h = 0;
+      for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) >>> 0;
+      return Math.round((70 + (h % 230) / 10) * 10) / 10;
+    };
+
+    const byUser = new Map<string, SynthAgg>();
+    for (const p of picks) {
+      const e: SynthAgg =
+        byUser.get(p.user_id) ?? { perCaption: {}, contributions: {}, ge: 0, visual: 0, music: 0 };
+      const val = Math.round(corpsScore(p.corps_key) * Number(p.weight) * 10) / 10;
+      e.perCaption[p.caption] = Math.round(((e.perCaption[p.caption] ?? 0) + val) * 10) / 10;
+      (e.contributions[p.caption] ??= []).push({
+        corpsKey: p.corps_key, value: val, weight: Number(p.weight),
+      });
+      const cat = CAPTION_CATEGORY[p.caption as CaptionKey] ?? 'ge';
+      e[cat] = Math.round((e[cat] + val) * 10) / 10;
+      byUser.set(p.user_id, e);
+    }
+
+    const rows = [...byUser.entries()]
+      .map(([userId, e]) => ({ userId, total: Math.round((e.ge + e.visual + e.music) * 10) / 10, e }))
+      .sort((a, b) => b.total - a.total);
+
+    let rank = 1;
+    for (const r of rows) {
+      await db.execute({
+        sql: `INSERT INTO fantasy_standings
+                (league_id, user_id, through_competition_slug, total_score, ge_score, visual_score,
+                 music_score, breakdown_json, rank, computed_at, is_final)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              ON CONFLICT(league_id, user_id) DO UPDATE SET
+                through_competition_slug = excluded.through_competition_slug,
+                total_score = excluded.total_score, ge_score = excluded.ge_score,
+                visual_score = excluded.visual_score, music_score = excluded.music_score,
+                breakdown_json = excluded.breakdown_json, rank = excluded.rank,
+                computed_at = excluded.computed_at, is_final = excluded.is_final`,
+        args: [
+          data.leagueId, r.userId, data.final ? 'test-finals' : null, r.total, r.e.ge,
+          r.e.visual, r.e.music,
+          JSON.stringify({ perCaption: r.e.perCaption, contributions: r.e.contributions }),
+          rank, now, data.final ? 1 : 0,
+        ],
+      });
+      rank++;
+    }
+    await writeAudit(db, actor, {
+      action: 'seed_synthetic_scores',
+      target: data.leagueId,
+      after: { members: rows.length, final: data.final } as unknown,
+    });
+    return { ok: true as const, members: rows.length };
   });

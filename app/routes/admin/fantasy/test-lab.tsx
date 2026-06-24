@@ -22,6 +22,9 @@ import {
   adminAutoPickCurrent,
   adminFastForwardDraft,
   adminRecomputeStandings,
+  adminSeedQuizQuestions,
+  adminResetQuizAttempt,
+  adminSeedSyntheticScores,
 } from '@/lib/server-fns/admin-fantasy';
 
 type TestLeague = Awaited<ReturnType<typeof adminListTestLeagues>>['leagues'][number];
@@ -46,6 +49,12 @@ function TestLab({ leagues }: { leagues: TestLeague[] }) {
   const [pickSeconds, setPickSeconds] = useState('60');
   const [quizScores, setQuizScores] = useState(true);
 
+  const [seedMsg, setSeedMsg] = useState<string | null>(null);
+  const seedQuiz = useAsyncAction(async () => {
+    const r = await adminSeedQuizQuestions();
+    setSeedMsg(`Quiz bank seeded — ${r.added} added (${r.total} sample questions).`);
+  });
+
   const create = useAsyncAction(async () => {
     const res = await adminCreateTestLeague({
       data: {
@@ -67,6 +76,14 @@ function TestLab({ leagues }: { leagues: TestLeague[] }) {
         backTo="/admin"
         backLabel="Admin"
       />
+
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <Button variant="outline" size="sm" disabled={seedQuiz.busy} onClick={() => void seedQuiz.run()}>
+          {seedQuiz.busy ? 'Seeding…' : 'Seed quiz bank'}
+        </Button>
+        {seedMsg ? <span className="text-sm text-text-secondary">{seedMsg}</span> : null}
+        {seedQuiz.error ? <span className="text-sm text-destructive">{seedQuiz.error}</span> : null}
+      </div>
 
       <Card className="mb-4">
         <CardHeader>
@@ -199,6 +216,30 @@ function TestLeagueRow({ league, onChanged }: { league: TestLeague; onChanged: (
               onClick={() => void act.run(() => adminFastForwardDraft({ data: { leagueId: league.leagueId } }))}
             >
               Fast-forward draft
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={act.busy}
+              onClick={() => void act.run(() => adminResetQuizAttempt({ data: { leagueId: league.leagueId } }))}
+            >
+              Reset my quiz
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={act.busy}
+              onClick={() => void act.run(() => adminSeedSyntheticScores({ data: { leagueId: league.leagueId, final: false } }))}
+            >
+              Seed scores
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={act.busy}
+              onClick={() => void act.run(() => adminSeedSyntheticScores({ data: { leagueId: league.leagueId, final: true } }))}
+            >
+              Seed final scores
             </Button>
             <Button
               size="sm"
