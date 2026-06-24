@@ -391,16 +391,23 @@ function LiveDraft({
   const memberCount = membersById.size;
   const round = memberCount > 0 ? Math.floor(draft.currentPickNo / memberCount) + 1 : 1;
 
-  // The weight the viewer's NEXT pick will score (by their own pick count) — the
-  // same for every option this turn, so it's shown once on the picker.
-  const myPicksSoFar = picks.filter((p) => p.userId === viewerId).length;
-  const nextWeight = pickWeight(myPicksSoFar + 1, draft.totalRounds, reverseWeighting);
+  // The viewer's pick count per caption — drives both the next-pick weight (weight
+  // is by slot within the caption) and the filled-caption dimming.
+  const myCaptionCount = new Map<CaptionKey, number>();
+  for (const p of picks) {
+    if (p.userId === viewerId)
+      myCaptionCount.set(p.caption, (myCaptionCount.get(p.caption) ?? 0) + 1);
+  }
+  // Weight the viewer's NEXT pick in caption `c` would score — its slot in that
+  // caption (later slots are worth more).
+  const nextWeightFor = (c: CaptionKey): number =>
+    pickWeight((myCaptionCount.get(c) ?? 0) + 1, captionCaps[c] ?? 1, reverseWeighting);
 
   // Captions the viewer has already filled (picked the full cap) — dimmed in the tabs.
   const filledCaptions = new Set(
     CAPTION_KEYS.filter((c) => {
       const cap = captionCaps[c] ?? 0;
-      return cap > 0 && picks.filter((p) => p.userId === viewerId && p.caption === c).length >= cap;
+      return cap > 0 && (myCaptionCount.get(c) ?? 0) >= cap;
     })
   );
 
@@ -500,7 +507,7 @@ function LiveDraft({
             rank={rank}
             takenPairs={takenPairs}
             canPick={isMyTurn && !picking}
-            nextWeight={nextWeight}
+            nextWeightFor={nextWeightFor}
             filledCaptions={filledCaptions}
             onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
           />
@@ -702,7 +709,7 @@ function SectionPicker({
   rank,
   takenPairs,
   canPick,
-  nextWeight,
+  nextWeightFor,
   filledCaptions,
   onPick,
 }: {
@@ -710,11 +717,12 @@ function SectionPicker({
   rank: DraftState['rank'];
   takenPairs: Set<string>;
   canPick: boolean;
-  nextWeight: number;
+  nextWeightFor: (caption: CaptionKey) => number;
   filledCaptions: Set<CaptionKey>;
   onPick: (corpsKey: string, caption: CaptionKey) => void;
 }) {
   const [caption, setCaption] = useState<CaptionKey>('GE1');
+  const nextWeight = nextWeightFor(caption);
 
   if (pool.length === 0) {
     return (
@@ -756,9 +764,9 @@ function SectionPicker({
       <p className="text-sm text-muted-foreground">
         Pick a caption tab, then choose a corps for it.{' '}
         <span className="font-medium text-text-primary">
-          This pick scores ×{nextWeight.toFixed(2)}
+          This {caption} pick scores ×{nextWeight.toFixed(2)}
         </span>{' '}
-        toward your total — later picks are worth more, so save your best corps.
+        toward your total — later slots in a caption are worth more, so save your best corps.
       </p>
       <ToggleGroup
         value={[caption]}
@@ -891,7 +899,7 @@ function DraftBoard({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="sticky left-0 bg-background">Player</TableHead>
+                <TableHead className="sticky left-0 z-20 bg-background">Player</TableHead>
                 {CAPTION_KEYS.map((c) => (
                   <TableHead key={c} className="px-2 text-center" title={KEY_TO_CAPTION_NAME[c]}>
                     {c}
@@ -917,7 +925,7 @@ function DraftBoard({
                     {slot === 0 ? (
                       <TableCell
                         rowSpan={maxCap}
-                        className="sticky left-0 bg-background align-middle font-medium whitespace-nowrap"
+                        className="sticky left-0 z-20 bg-background align-middle font-medium whitespace-nowrap"
                         style={m.corps_color ? { color: m.corps_color } : undefined}
                       >
                         {m.corps_name || m.user_name || 'Player'}

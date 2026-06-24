@@ -381,7 +381,11 @@ const makeDraftService = Effect.gen(function* () {
         `.pipe(Effect.orDie);
         const round = priorByMember.length + 1;
         const captionSlotIndex = priorByMember.filter((r) => r.caption === pick.caption).length + 1;
-        const weight = pickWeight(round, draft.totalRounds, pick.config.reverseWeighting);
+        // Weight is tied to the SLOT within the caption (increasing per slot), not the
+        // global draft round — so every player's Nth corps in a caption weighs the same
+        // and the draft board's rows are uniform weight tiers.
+        const captionCap = pick.config.captionCaps[pick.caption];
+        const weight = pickWeight(captionSlotIndex, captionCap, pick.config.reverseWeighting);
         yield* sql`
           INSERT INTO fantasy_picks
             (pick_id, league_id, user_id, corps_key, caption, round, pick_no, caption_slot_index, weight, auto_picked, created_at)

@@ -158,11 +158,14 @@ describe('DraftService — startDraft + makePick advance (Effect path)', () => {
 
     const picks = snap.picks;
     expect(picks).toHaveLength(4);
+    // Weight is by SLOT within the caption: every pick here is slot 1 of a cap-1
+    // caption (GE1 then GE2), so all weigh minWeight (1.0). The per-slot ramp is
+    // covered directly by the pickWeight unit tests.
     const byRound = Object.fromEntries(picks.map((p) => [`${p.userId}:${p.round}`, p]));
     expect(byRound[`${A}:1`].weight).toBeCloseTo(1.0, 5);
-    expect(byRound[`${A}:2`].weight).toBeCloseTo(2.0, 5);
+    expect(byRound[`${A}:2`].weight).toBeCloseTo(1.0, 5);
     expect(byRound[`${B}:1`].weight).toBeCloseTo(1.0, 5);
-    expect(byRound[`${B}:2`].weight).toBeCloseTo(2.0, 5);
+    expect(byRound[`${B}:2`].weight).toBeCloseTo(1.0, 5);
   });
 
   it('rejects a pick out of turn (Forbidden) and a duplicate pair (DraftConflict)', async () => {

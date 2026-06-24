@@ -37,13 +37,15 @@ export const isDraftComplete = (
 export type ReverseWeighting = LeagueConfig['reverseWeighting'];
 
 /**
- * Reverse-weight for a member's `round`-th pick (1-based) of `totalRounds`
- * (Appendix E.2 / §6): a linear ramp from minWeight (round 1) to maxWeight (last
- * round). Disabled or a single round → minWeight.
+ * Weight for the `position`-th slot (1-based) of `slots` total — a linear ramp from
+ * minWeight (slot 1) to maxWeight (last slot). Used to weight a pick by its slot
+ * WITHIN its caption (Appendix E.2 / §6): every player's Nth corps in a caption
+ * weighs the same, so the draft board's rows are uniform tiers. A single slot (or
+ * weighting disabled) → minWeight.
  */
-export function pickWeight(round: number, totalRounds: number, rw: ReverseWeighting): number {
-  if (!rw.enabled || totalRounds <= 1) return rw.minWeight;
-  return rw.minWeight + ((rw.maxWeight - rw.minWeight) * (round - 1)) / (totalRounds - 1);
+export function pickWeight(position: number, slots: number, rw: ReverseWeighting): number {
+  if (!rw.enabled || slots <= 1) return rw.minWeight;
+  return rw.minWeight + ((rw.maxWeight - rw.minWeight) * (position - 1)) / (slots - 1);
 }
 
 export type LegalityInput = {

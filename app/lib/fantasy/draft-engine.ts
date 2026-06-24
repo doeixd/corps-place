@@ -230,7 +230,10 @@ async function commitPickAndAdvance(
     const round = priorByMember.length + 1; // member's pick ordinal == draft round
     const captionSlotIndex =
       priorByMember.filter((r) => (r.caption as string) === pick.caption).length + 1;
-    const weight = pickWeight(round, draft.totalRounds, pick.config.reverseWeighting);
+    // Weight by the slot WITHIN the caption (increasing per slot), not the global
+    // draft round — every player's Nth corps in a caption weighs the same.
+    const captionCap = pick.config.captionCaps[pick.caption];
+    const weight = pickWeight(captionSlotIndex, captionCap, pick.config.reverseWeighting);
     await db.execute({
       sql: `INSERT INTO fantasy_picks
               (pick_id, league_id, user_id, corps_key, caption, round, pick_no, caption_slot_index, weight, auto_picked, created_at)
