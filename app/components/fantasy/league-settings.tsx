@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import { updateLeagueConfig } from '@/lib/server-fns/fantasy';
 import { Explain } from '@/components/fantasy/explain';
+import { CAPTION_KEYS } from '@/lib/fantasy/captions';
 import type { LeagueConfig } from '@/lib/fantasy/config';
 
 /**
@@ -41,6 +42,10 @@ export function LeagueSettings({
   const [ge, setGe] = useState(String(config.weights.ge));
   const [visual, setVisual] = useState(String(config.weights.visual));
   const [music, setMusic] = useState(String(config.weights.music));
+  const [caps, setCaps] = useState<Record<string, string>>(() =>
+    Object.fromEntries(CAPTION_KEYS.map((k) => [k, String(config.captionCaps[k] ?? 0)]))
+  );
+  const totalRounds = CAPTION_KEYS.reduce((s, k) => s + (Number(caps[k]) || 0), 0);
   const [quizEnabled, setQuizEnabled] = useState(config.quiz.enabled);
   const [questionCount, setQuestionCount] = useState(String(config.quiz.questionCount));
   const [notifyEmail, setNotifyEmail] = useState(config.notify?.email ?? true);
@@ -57,6 +62,9 @@ export function LeagueSettings({
       const next: LeagueConfig = {
         ...config,
         draftType,
+        captionCaps: Object.fromEntries(
+          CAPTION_KEYS.map((k) => [k, Math.max(0, Math.floor(Number(caps[k]) || 0))])
+        ) as LeagueConfig['captionCaps'],
         pickSeconds: Number(pickSeconds) || config.pickSeconds,
         scoringMode,
         weights: {
@@ -132,6 +140,35 @@ export function LeagueSettings({
             queue.
           </p>
         </div>
+
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-1 text-sm font-medium">Corps per caption</legend>
+          <p className="text-xs text-muted-foreground">
+            How many corps each player drafts for each caption. The total is the number of draft
+            rounds.{draftStarted ? ' Locked — the draft has started.' : ''}
+          </p>
+          <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
+            {CAPTION_KEYS.map((k) => (
+              <div key={k} className="flex flex-col gap-1">
+                <Label htmlFor={`s-cap-${k}`} className="text-xs">
+                  <Explain term={k}>{k}</Explain>
+                </Label>
+                <Input
+                  id={`s-cap-${k}`}
+                  type="number"
+                  min={0}
+                  value={caps[k]}
+                  onChange={(e) => setCaps((c) => ({ ...c, [k]: e.target.value }))}
+                  disabled={draftStarted}
+                />
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-text-secondary">
+            = <span className="font-medium tabular-nums">{totalRounds}</span> draft round
+            {totalRounds === 1 ? '' : 's'} per player
+          </p>
+        </fieldset>
 
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-2">
