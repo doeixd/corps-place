@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
 import { useSession, authClient } from '@/lib/auth-client';
 import {
@@ -36,6 +36,18 @@ export function ConsentGate() {
   const [dismissed, setDismissed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // A returning (already-consented) user never opens this gate, so drop any stored
+  // post-auth redirect — it would otherwise fire on a future terms-version prompt.
+  useEffect(() => {
+    if (user && !needsConsent(user)) {
+      try {
+        sessionStorage.removeItem('post-auth-redirect');
+      } catch {
+        /* storage unavailable */
+      }
+    }
+  }, [user]);
+
   const open = !dismissed && !onLegalPage && needsConsent(user);
   if (!open) return null;
 
@@ -47,6 +59,16 @@ export function ConsentGate() {
       await acceptTerms({ data: { contactConsent: contact } });
       setDismissed(true);
       void authClient.getSession(); // refresh the cached session in the background
+      // If sign-in was started to reach a specific page (e.g. "create a league"),
+      // land there now — the OAuth callbackURL can get dropped by the consent step.
+      let dest: string | null = null;
+      try {
+        dest = sessionStorage.getItem('post-auth-redirect');
+        sessionStorage.removeItem('post-auth-redirect');
+      } catch {
+        /* storage unavailable */
+      }
+      if (dest && dest.startsWith('/') && dest !== pathname) window.location.assign(dest);
     } catch (e) {
       setError((e as Error).message);
       setBusy(false);

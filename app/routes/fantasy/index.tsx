@@ -51,7 +51,7 @@ function FantasyHomeContent({ signedIn, leagues }: { signedIn: boolean; leagues:
 
   return (
     <PageShell className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 pr-12">
         <h1 className="text-2xl font-bold text-text-primary">Fantasy Drum Corps</h1>
         {isSignedIn ? (
           <Button render={<Link to="/fantasy/create" />}>Create a league</Button>

@@ -14,7 +14,16 @@ export function SignInButton({
   return (
     <Button
       className={className}
-      onClick={() => void signIn.social({ provider: 'google', callbackURL })}
+      onClick={() => {
+        // Remember where to land even if the first-sign-in consent step interrupts
+        // the OAuth callbackURL — the consent gate reads this after the user agrees.
+        try {
+          sessionStorage.setItem('post-auth-redirect', callbackURL);
+        } catch {
+          /* private mode / storage disabled — fall back to callbackURL only */
+        }
+        void signIn.social({ provider: 'google', callbackURL });
+      }}
     >
       {children}
     </Button>

@@ -24,14 +24,16 @@ export function HowItWorks({ className }: { className?: string }) {
           Draft real drum corps with your friends, then earn points from how those corps actually
           score at drum corps competitions. The highest total at the end of the season wins your league.
         </p>
-        <ol className="grid gap-3 sm:grid-cols-5">
+        <ol className="flex flex-col gap-3">
           {STEPS.map((s) => (
-            <li key={s.n} className="flex flex-col gap-1">
-              <span className="flex size-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+            <li key={s.n} className="flex items-start gap-3">
+              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
                 {s.n}
               </span>
-              <span className="text-sm font-medium">{s.title}</span>
-              <span className="text-xs text-muted-foreground">{s.desc}</span>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-medium">{s.title}</span>
+                <span className="text-xs text-muted-foreground">{s.desc}</span>
+              </div>
             </li>
           ))}
         </ol>
