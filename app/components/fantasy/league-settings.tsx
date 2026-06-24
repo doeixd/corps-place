@@ -90,7 +90,7 @@ export function LeagueSettings({
             : 'Configure the draft and scoring. Draft-shape settings lock once the draft starts.'}
         </p>
 
-        <div className="grid grid-cols-2 items-center gap-3">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="s-drafttype">
             <Explain term="draft-type">Draft type</Explain>
           </Label>
@@ -99,7 +99,7 @@ export function LeagueSettings({
             onValueChange={(v) => setDraftType(v as LeagueConfig['draftType'])}
             disabled={draftStarted}
           >
-            <SelectTrigger size="sm" id="s-drafttype">
+            <SelectTrigger size="sm" id="s-drafttype" className="w-full sm:w-56">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -107,7 +107,13 @@ export function LeagueSettings({
               <SelectItem value="linear">Linear</SelectItem>
             </SelectContent>
           </Select>
+          <p className="text-xs text-muted-foreground">
+            Snake reverses the pick order each round, so picking last isn't a lasting
+            disadvantage. Linear keeps the same order every round.
+          </p>
+        </div>
 
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="s-pick">Pick timer (seconds)</Label>
           <Input
             id="s-pick"
@@ -116,20 +122,31 @@ export function LeagueSettings({
             value={pickSeconds}
             onChange={(e) => setPickSeconds(e.target.value)}
             disabled={draftStarted}
+            className="sm:w-56"
           />
+          <p className="text-xs text-muted-foreground">
+            How long each player has on the clock before their pick is auto-made from their
+            queue.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id="s-quiz"
-            checked={quizEnabled}
-            onCheckedChange={(v) => setQuizEnabled(!!v)}
-            disabled={draftStarted}
-          />
-          <Label htmlFor="s-quiz">Knowledge quiz sets the draft order</Label>
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="s-quiz"
+              checked={quizEnabled}
+              onCheckedChange={(v) => setQuizEnabled(!!v)}
+              disabled={draftStarted}
+            />
+            <Label htmlFor="s-quiz">Knowledge quiz sets the draft order</Label>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Players take a short drum corps quiz; higher scores draft earlier. Turn this off to
+            set the draft order at random instead.
+          </p>
         </div>
         {quizEnabled ? (
-          <div className="grid grid-cols-2 items-center gap-3">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="s-qcount">Quiz questions</Label>
             <Input
               id="s-qcount"
@@ -138,11 +155,15 @@ export function LeagueSettings({
               value={questionCount}
               onChange={(e) => setQuestionCount(e.target.value)}
               disabled={draftStarted}
+              className="sm:w-56"
             />
+            <p className="text-xs text-muted-foreground">
+              How many questions each player answers in their one timed attempt.
+            </p>
           </div>
         ) : null}
 
-        <div className="grid grid-cols-2 items-center gap-3">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="s-mode">
             <Explain term="scoring-mode">Scoring mode</Explain>
           </Label>
@@ -151,7 +172,7 @@ export function LeagueSettings({
             onValueChange={(v) => setScoringMode(v as LeagueConfig['scoringMode'])}
             disabled={draftStarted}
           >
-            <SelectTrigger size="sm" id="s-mode">
+            <SelectTrigger size="sm" id="s-mode" className="w-full sm:w-56">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -159,12 +180,17 @@ export function LeagueSettings({
               <SelectItem value="sum">Sum (points pile)</SelectItem>
             </SelectContent>
           </Select>
+          <p className="text-xs text-muted-foreground">
+            Recap scores each show as a weighted average capped at 100. Sum piles up raw caption
+            points across the whole season.
+          </p>
         </div>
 
         <fieldset className="flex flex-col gap-2">
           <legend className="mb-1 text-sm font-medium">Caption weights</legend>
           <p className="text-xs text-muted-foreground">
-            GE / Visual / Music — normalized to 100 when saved.
+            How much each caption counts toward a corps' score. GE / Visual / Music are
+            normalized to 100 when you save, so only their ratio matters.
           </p>
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col gap-1">

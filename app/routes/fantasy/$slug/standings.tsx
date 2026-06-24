@@ -1,6 +1,7 @@
-import { createFileRoute, notFound, Link } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
-import { Button } from '@/components/ui/button';
+import { BackLink } from '@/components/back-link';
+import { LeagueTabs } from '@/components/fantasy/league-tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Table,
@@ -34,7 +35,7 @@ export const Route = createFileRoute('/fantasy/$slug/standings')({
   head: ({ loaderData }) =>
     seoHead({
       title: loaderData ? `Standings — ${loaderData.league.name}` : 'Standings',
-      description: 'Fantasy DCI league standings.',
+      description: 'Fantasy drum corps league standings.',
       path: '/fantasy',
     }),
   component: StandingsPage,
@@ -63,21 +64,28 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
 
   return (
     <PageShell className="flex flex-col gap-6">
-      <header className="flex items-center justify-between">
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-semibold">{league.name} — Standings</h1>
-          <p className="text-sm text-muted-foreground">
-            Season {league.season}
-            {final ? ' · final' : rows.length ? ' · live' : ''}
+      <header className="space-y-3">
+        <BackLink to="/fantasy/$slug" params={{ slug: league.slug }} label="League home" />
+        <div className="space-y-1">
+          <p className="text-xs uppercase tracking-wide text-text-secondary">
+            {league.name} · Season {league.season}
+          </p>
+          <h1 className="text-2xl font-bold text-text-primary">Standings</h1>
+          <p className="text-sm text-text-secondary">
+            {final
+              ? 'Final results'
+              : rows.length
+                ? 'Live — updates as recaps land'
+                : 'Not started yet'}
             {lastUpdated ? ` · updated ${new Date(lastUpdated).toLocaleDateString()}` : ''}
           </p>
         </div>
-        <Button
-          variant="outline"
-          render={<Link to="/fantasy/$slug" params={{ slug: league.slug }} />}
-        >
-          League
-        </Button>
+        <LeagueTabs
+          slug={league.slug}
+          active="standings"
+          isMember={league.viewerIsMember}
+          quizEnabled={league.quizEnabled}
+        />
       </header>
 
       {rows.length === 0 ? (
@@ -90,7 +98,7 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
         <>
           <p className="text-sm text-muted-foreground">
             Each player&apos;s total is the sum of their drafted corps&apos; caption scores from
-            real DCI <Explain term="recap">recaps</Explain>. On a wider screen the total breaks down
+            real drum corps <Explain term="recap">recaps</Explain>. On a wider screen the total breaks down
             by General Effect, Visual, Music, and the eight captions — hover any code to see what it
             means.
           </p>

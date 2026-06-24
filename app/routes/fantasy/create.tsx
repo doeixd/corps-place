@@ -87,7 +87,7 @@ function CreateLeague() {
                 onChange={(e) => setSeason(e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                The DCI season to score from — usually the current year.
+                The drum corps season to score from — usually the current year.
               </p>
             </div>
             {create.error ? <p className="text-sm text-destructive">{create.error}</p> : null}

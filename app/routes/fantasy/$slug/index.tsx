@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { createFileRoute, notFound, useRouter, Link } from '@tanstack/react-router';
+import { createFileRoute, notFound, useRouter } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
+import { BackLink } from '@/components/back-link';
+import { LeagueTabs } from '@/components/fantasy/league-tabs';
+import { NoteEditIcon } from '@/components/icons/generated';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -40,7 +43,7 @@ const STATUS_NARRATION: Record<string, string> = {
   scheduled:
     'Draft scheduled — everyone meets in the draft room at draft time to pick corps and captions for their lineup.',
   active:
-    'Season underway — scores update automatically from real DCI results as competitions are recapped. Watch the standings.',
+    'Season underway — scores update automatically from real drum corps results as competitions are recapped. Watch the standings.',
   complete: 'Season complete — check the final standings to see who won.',
 };
 
@@ -56,7 +59,7 @@ export const Route = createFileRoute('/fantasy/$slug/')({
   },
   head: ({ loaderData }) =>
     seoHead({
-      title: loaderData ? `${loaderData.league.name} — Fantasy DCI` : 'Fantasy DCI',
+      title: loaderData ? `${loaderData.league.name} — Fantasy Drum Corps` : 'Fantasy Drum Corps',
       description: 'A private fantasy drum corps league.',
       path: loaderData ? `/fantasy/${loaderData.league.slug}` : '/fantasy',
     }),
@@ -91,8 +94,9 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
 
   return (
     <PageShell className="flex flex-col gap-6">
-      <header className="flex flex-col gap-2">
-        <div className="flex items-center gap-3">
+      <header className="mb-2 space-y-3">
+        <BackLink to="/fantasy" label="My leagues" />
+        <div className="flex items-start gap-3">
           {viewer.isOwner ? (
             <LeagueImageUpload
               leagueId={league.leagueId}
@@ -103,49 +107,33 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
             <img
               src={`/api/fantasy-media/${league.imageMediaId}`}
               alt=""
-              className="size-12 rounded border border-border object-contain"
+              className="size-12 shrink-0 rounded border border-border object-contain"
             />
           ) : null}
-          <LeagueNameHeading
-            leagueId={league.leagueId}
-            name={league.name}
-            canEdit={viewer.isOwner}
-            onRenamed={refresh}
-          />
+          <div className="min-w-0 space-y-1">
+            <p className="text-xs uppercase tracking-wide text-text-secondary">
+              Fantasy Drum Corps · Season {league.season}
+            </p>
+            <LeagueNameHeading
+              leagueId={league.leagueId}
+              name={league.name}
+              canEdit={viewer.isOwner}
+              onRenamed={refresh}
+            />
+            <p className="text-sm text-text-secondary">
+              {league.status} · {members.length}/{league.maxMembers} members
+            </p>
+          </div>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Season {league.season} · {league.status} · {members.length}/{league.maxMembers} members
-        </p>
         {STATUS_NARRATION[league.status] ? (
           <p className="text-sm text-muted-foreground">{STATUS_NARRATION[league.status]}</p>
         ) : null}
-        <nav className="flex flex-wrap gap-2">
-          {viewer.isMember && league.config.quiz.enabled ? (
-            <Button
-              variant="outline"
-              size="sm"
-              render={<Link to="/fantasy/$slug/quiz" params={{ slug: league.slug }} />}
-            >
-              Quiz
-            </Button>
-          ) : null}
-          {viewer.isMember ? (
-            <Button
-              variant="outline"
-              size="sm"
-              render={<Link to="/fantasy/$slug/draft" params={{ slug: league.slug }} />}
-            >
-              Draft room
-            </Button>
-          ) : null}
-          <Button
-            variant="outline"
-            size="sm"
-            render={<Link to="/fantasy/$slug/standings" params={{ slug: league.slug }} />}
-          >
-            Standings
-          </Button>
-        </nav>
+        <LeagueTabs
+          slug={league.slug}
+          active="home"
+          isMember={viewer.isMember}
+          quizEnabled={league.config.quiz.enabled}
+        />
       </header>
 
       {viewer.isOwner ? (
@@ -311,6 +299,7 @@ function LeagueImageUpload({
         busy={upload.busy}
         onFile={(file) => upload.run(file)}
         alt="League image"
+        variant="overlay"
         labels={{ empty: 'Add image', change: 'Change image' }}
       />
       {upload.error ? <span className="text-xs text-destructive">{upload.error}</span> : null}
@@ -340,18 +329,22 @@ function LeagueNameHeading({
 
   if (!editing) {
     return (
-      <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-semibold">{name}</h1>
+      <div className="flex items-center gap-1.5">
+        <h1 className="text-2xl font-bold text-text-primary">{name}</h1>
         {canEdit ? (
           <Button
             size="xs"
             variant="ghost"
+            aria-label="Rename league"
+            title="Rename league"
+            className="gap-1 text-text-secondary"
             onClick={() => {
               setDraft(name);
               setEditing(true);
             }}
           >
-            Rename
+            <NoteEditIcon className="size-4" />
+            <span className="hidden sm:inline">Rename</span>
           </Button>
         ) : null}
       </div>
@@ -481,7 +474,7 @@ function InvitePanel({
 
   const share = async (url: string) => {
     try {
-      await navigator.share({ title: 'Join my Fantasy DCI league', url });
+      await navigator.share({ title: 'Join my fantasy drum corps league', url });
     } catch {
       copy(url); // cancelled or unsupported — fall back to copying
     }

@@ -24,7 +24,7 @@ const FAQS: { q: string; a: string }[] = [
     a: 'Use the contact form and include the page and what’s off — corrections are welcome.',
   },
   {
-    q: 'What is Fantasy DCI?',
+    q: 'What is Fantasy Drum Corps?',
     a: 'A season-long fantasy game where you draft per-caption scores from real corps and earn standings recomputed after every show.',
   },
 ];

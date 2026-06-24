@@ -520,7 +520,7 @@ describe('InviteService.accept — race-safe single-use claim', () => {
 describe('StandingsService.getStandings (Effect path)', () => {
   const run = (slug: string) =>
     Effect.runPromise(
-      Effect.flatMap(StandingsService, (svc) => svc.getStandings(slug)).pipe(
+      Effect.flatMap(StandingsService, (svc) => svc.getStandings(slug, null)).pipe(
         Effect.provide(StandingsServiceLive)
       )
     );
@@ -532,6 +532,8 @@ describe('StandingsService.getStandings (Effect path)', () => {
       slug: 'summer-snake',
       status: 'quiz',
       season: '2026',
+      quizEnabled: true,
+      viewerIsMember: false,
     });
     expect(res.rows).toHaveLength(1);
     const row = res.rows[0];

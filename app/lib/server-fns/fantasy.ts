@@ -652,7 +652,10 @@ export const setDraftQueue = createServerFn({ method: 'POST' })
 export const getStandings = createServerFn({ method: 'GET' })
   .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
   .handler(async ({ data }) => {
-    return runFantasy(Effect.flatMap(StandingsService, (svc) => svc.getStandings(data.slug)));
+    const actor = await getActor(getWebRequest());
+    return runFantasy(
+      Effect.flatMap(StandingsService, (svc) => svc.getStandings(data.slug, actor?.userId ?? null))
+    );
   });
 
 // ===========================================================================

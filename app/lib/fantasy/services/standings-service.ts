@@ -33,6 +33,7 @@ interface LeagueRow {
   slug: string;
   status: string;
   season: string;
+  config_json: string;
 }
 
 interface StandingRow {
@@ -55,12 +56,26 @@ interface StandingRow {
 const makeStandingsService = Effect.gen(function* () {
   const sql = yield* ContributionsSql;
 
-  const getStandings = Effect.fn('StandingsService.getStandings')(function* (slug: string) {
+  const getStandings = Effect.fn('StandingsService.getStandings')(function* (
+    slug: string,
+    viewerId: string | null
+  ) {
     const leagues = yield* sql<LeagueRow>`
-      SELECT league_id, name, slug, status, season FROM fantasy_leagues WHERE slug = ${slug}
+      SELECT league_id, name, slug, status, season, config_json FROM fantasy_leagues WHERE slug = ${slug}
     `.pipe(Effect.orDie);
     const league = leagues[0];
     if (!league) return yield* Effect.fail(new NotFound({ message: 'league' }));
+
+    // Drives the league nav tabs on the standings page (quiz/draft are member-only;
+    // the quiz tab also hides when the league disabled it).
+    const quizEnabled = (JSON.parse(league.config_json) as LeagueConfig).quiz.enabled;
+    const membership = viewerId
+      ? yield* sql<{ one: number }>`
+          SELECT 1 AS one FROM fantasy_members
+          WHERE league_id = ${league.league_id} AND user_id = ${viewerId}
+        `.pipe(Effect.orDie)
+      : [];
+    const viewerIsMember = membership.length > 0;
 
     const standingRows = yield* sql<StandingRow>`
       SELECT s.user_id, s.total_score, s.ge_score, s.visual_score, s.music_score,
@@ -104,6 +119,8 @@ const makeStandingsService = Effect.gen(function* () {
         slug: league.slug,
         status: league.status,
         season: league.season,
+        quizEnabled,
+        viewerIsMember,
       },
       rows,
     };

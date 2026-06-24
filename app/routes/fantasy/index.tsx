@@ -27,7 +27,7 @@ export const Route = createFileRoute('/fantasy/')({
   },
   head: () =>
     seoHead({
-      title: 'Fantasy DCI — My Leagues',
+      title: 'Fantasy Drum Corps — My Leagues',
       description: 'Your fantasy drum corps leagues.',
       path: '/fantasy',
     }),
@@ -52,7 +52,7 @@ function FantasyHomeContent({ signedIn, leagues }: { signedIn: boolean; leagues:
   return (
     <PageShell className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Fantasy DCI</h1>
+        <h1 className="text-2xl font-bold text-text-primary">Fantasy Drum Corps</h1>
         {isSignedIn ? (
           <Button render={<Link to="/fantasy/create" />}>Create a league</Button>
         ) : (

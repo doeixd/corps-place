@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { createFileRoute, notFound, Link, useRouter } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { PageShell } from '@/components/page-shell';
+import { BackLink } from '@/components/back-link';
+import { LeagueTabs } from '@/components/fantasy/league-tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -96,17 +98,21 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
 
   return (
     <PageShell className="flex flex-col gap-6">
-      <header className="flex items-center justify-between">
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-semibold">{league.league.name} — Draft</h1>
-          <p className="text-sm text-muted-foreground">{draft ? draft.status : 'not scheduled'}</p>
+      <header className="space-y-3">
+        <BackLink to="/fantasy/$slug" params={{ slug: league.league.slug }} label="League home" />
+        <div className="space-y-1">
+          <p className="text-xs uppercase tracking-wide text-text-secondary">
+            {league.league.name} · Season {league.league.season}
+          </p>
+          <h1 className="text-2xl font-bold text-text-primary">Draft room</h1>
+          <p className="text-sm text-text-secondary">{draft ? draft.status : 'not scheduled'}</p>
         </div>
-        <Button
-          variant="outline"
-          render={<Link to="/fantasy/$slug" params={{ slug: league.league.slug }} />}
-        >
-          League
-        </Button>
+        <LeagueTabs
+          slug={league.league.slug}
+          active="draft"
+          isMember={league.viewer.isMember}
+          quizEnabled={league.league.config.quiz.enabled}
+        />
       </header>
 
       {draft && draft.status !== 'complete' && league.viewer.isMember ? (

@@ -1,6 +1,8 @@
 import { createFileRoute, notFound, Link } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { PageShell } from '@/components/page-shell';
+import { BackLink } from '@/components/back-link';
+import { LeagueTabs } from '@/components/fantasy/league-tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
@@ -46,7 +48,7 @@ export const Route = createFileRoute('/fantasy/$slug/quiz')({
   head: ({ loaderData }) =>
     seoHead({
       title: loaderData ? `Quiz — ${loaderData.leagueName}` : 'Quiz',
-      description: 'Fantasy DCI knowledge quiz.',
+      description: 'Fantasy drum corps knowledge quiz.',
       path: '/fantasy',
     }),
   component: QuizRoute,
@@ -63,7 +65,14 @@ function QuizRoute() {
 
   return (
     <PageShell className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">Knowledge Quiz — {leagueName}</h1>
+      <header className="space-y-3">
+        <BackLink to="/fantasy/$slug" params={{ slug }} label="League home" />
+        <div className="space-y-1">
+          <p className="text-xs uppercase tracking-wide text-text-secondary">{leagueName}</p>
+          <h1 className="text-2xl font-bold text-text-primary">Knowledge quiz</h1>
+        </div>
+        <LeagueTabs slug={slug} active="quiz" isMember={isMember} quizEnabled={quizEnabled} />
+      </header>
       {body}
     </PageShell>
   );
@@ -91,7 +100,7 @@ function QuizSession({
       <Card>
         <CardContent className="flex flex-col items-start gap-3">
           <p className="text-muted-foreground">
-            A quick DCI knowledge quiz. You get one timed attempt, and your score sets your{' '}
+            A quick drum corps knowledge quiz. You get one timed attempt, and your score sets your{' '}
             <Explain term="seeding">draft order</Explain> — higher scores pick earlier.
           </p>
           {error ? <p className="text-sm text-destructive">{error}</p> : null}

@@ -95,7 +95,7 @@ function JoinLeague() {
           ) : null}
           <ol className="flex flex-col gap-1 text-sm text-muted-foreground">
             <li>1. Name your corps — your team&apos;s identity.</li>
-            <li>2. Take a quick DCI quiz; your score sets your draft order.</li>
+            <li>2. Take a quick drum corps quiz; your score sets your draft order.</li>
             <li>3. Draft real drum corps and compete on the standings.</li>
           </ol>
 

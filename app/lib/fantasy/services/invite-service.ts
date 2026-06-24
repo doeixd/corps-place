@@ -77,7 +77,7 @@ const makeInviteService = Effect.gen(function* () {
       yield* Effect.promise(() =>
         sendEmail({
           to,
-          subject: `You're invited to ${name} — Fantasy DCI`,
+          subject: `You're invited to ${name} — Fantasy Drum Corps`,
           html: `<p>You've been invited to join the fantasy drum corps league <strong>${escapeHtml(name)}</strong>.</p>
                  <p><a href="${url}">Accept your invite</a></p>
                  <p>This link expires on ${expiresAt.slice(0, 10)}.</p>`,

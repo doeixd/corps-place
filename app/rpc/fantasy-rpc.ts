@@ -51,6 +51,6 @@ export const FantasyRpcLive = FantasyRpc.toLayer({
   }),
   getStandings: Effect.fn('FantasyRpc.getStandings')(function* (payload) {
     const svc = yield* StandingsService;
-    return yield* svc.getStandings(payload.slug);
+    return yield* svc.getStandings(payload.slug, null);
   }),
 });
