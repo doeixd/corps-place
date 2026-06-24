@@ -154,6 +154,30 @@ function NavigationProgressBar({ delayMs = 150 }: { delayMs?: number }) {
 function ServiceWorkerManager() {
   useEffect(() => {
     registerServiceWorker();
+
+    // Self-heal stale chunks after a deploy. A tab that was open before a deploy
+    // still references the OLD content-hashed chunk URLs; those 404 on the new
+    // container the moment a lazy route loads — which reads as "the site broke."
+    // Vite fires `vite:preloadError` on that failure; reload once to pull fresh HTML
+    // + new assets. Guarded by a timestamp so a genuinely-missing chunk can't loop.
+    const onPreloadError = () => {
+      let last = 0;
+      try {
+        last = Number(sessionStorage.getItem('chunkReloadAt') || '0');
+      } catch {
+        /* storage unavailable */
+      }
+      if (Date.now() - last > 10_000) {
+        try {
+          sessionStorage.setItem('chunkReloadAt', String(Date.now()));
+        } catch {
+          /* ignore */
+        }
+        window.location.reload();
+      }
+    };
+    window.addEventListener('vite:preloadError', onPreloadError);
+    return () => window.removeEventListener('vite:preloadError', onPreloadError);
   }, []);
   return null;
 }
