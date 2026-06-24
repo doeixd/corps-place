@@ -5,7 +5,7 @@ import { setCorpsIdentity } from '@/lib/server-fns/fantasy';
 import { uploadFantasyLogo } from '@/lib/server-fns/fantasy-media';
 import { useAsyncAction, matchMessage } from '@/lib/use-async-action';
 import { BusyButton } from '@/components/fantasy/busy-button';
-import { PhotoUpload, fileToBase64 } from '@/components/fantasy/photo-upload';
+import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo-upload';
 
 export type CorpsIdentityInitial = {
   corpsName?: string | null;
@@ -35,7 +35,7 @@ export function CorpsIdentityForm({
 
   const upload = useAsyncAction(
     async (file: File) => {
-      const dataBase64 = await fileToBase64(file);
+      const dataBase64 = await imageFileToUploadBase64(file);
       const res = await uploadFantasyLogo({ data: { leagueId, dataBase64 } });
       setLogoMediaId(res.mediaId);
     },

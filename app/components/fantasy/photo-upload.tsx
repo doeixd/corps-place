@@ -19,6 +19,41 @@ export const fileToBase64 = (file: File): Promise<string> =>
     r.readAsDataURL(file);
   });
 
+/**
+ * Prepare an image File for upload: orient it, downscale to ≤1600px, and re-encode
+ * to JPEG via canvas. This makes phone uploads robust — it shrinks huge camera
+ * photos and converts iOS HEIC to a format the server's sharp pipeline always reads
+ * (Safari can decode HEIC into a canvas). If the browser can't decode the file
+ * (e.g. HEIC on desktop), it falls back to the raw bytes and lets the server try.
+ */
+export async function imageFileToUploadBase64(file: File): Promise<string> {
+  try {
+    if (typeof createImageBitmap !== 'function' || typeof document === 'undefined') {
+      return await fileToBase64(file);
+    }
+    const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    const MAX = 1600;
+    const scale = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
+    const w = Math.max(1, Math.round(bitmap.width * scale));
+    const h = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('no 2d context');
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    bitmap.close?.();
+    const blob = await new Promise<Blob | null>((res) =>
+      canvas.toBlob(res, 'image/jpeg', 0.9)
+    );
+    if (!blob) throw new Error('encode failed');
+    return await fileToBase64(new File([blob], 'upload.jpg', { type: 'image/jpeg' }));
+  } catch {
+    // Unsupported decode (e.g. HEIC on desktop) / no canvas — send the raw bytes.
+    return fileToBase64(file);
+  }
+}
+
 export function PhotoUpload({
   mediaId,
   onFile,

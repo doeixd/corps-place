@@ -22,7 +22,7 @@ let _sharp: typeof import('sharp') | null = null;
 const getSharp = () =>
   (_sharp ??= nodeRequire(process.env.SHARP_MODULE ?? 'sharp') as typeof import('sharp'));
 
-const MAX_BYTES = 8 * 1024 * 1024; // 8 MB pre-encode cap
+const MAX_BYTES = 16 * 1024 * 1024; // 16 MB pre-encode cap (raw phone photos can be large)
 const MAX_DIM = 512; // logos are small; downscale to 512px longest axis
 
 export interface FantasyLogoResult {
@@ -53,16 +53,30 @@ const makeMediaService = Effect.gen(function* () {
     // parity) — a defect would be swallowed into a generic 500.
     if (raw.length === 0) return yield* Effect.fail(new MediaInvalid({ message: 'Empty upload' }));
     if (raw.length > MAX_BYTES)
-      return yield* Effect.fail(new MediaInvalid({ message: 'Image too large (max 8 MB)' }));
+      return yield* Effect.fail(new MediaInvalid({ message: 'Image too large (max 16 MB)' }));
 
-    const { webp, info } = yield* Effect.promise(async () => {
-      const out = await getSharp()(raw)
-        .rotate()
-        .resize({ width: MAX_DIM, height: MAX_DIM, fit: 'inside', withoutEnlargement: true })
-        .webp({ quality: 85 })
-        .toBuffer({ resolveWithObject: true });
-      return { webp: out.data, info: out.info };
+    // sharp throws on formats it can't decode (e.g. HEIC without libheif, or a
+    // non-image file). Catch it and surface a clear, typed message instead of a 500
+    // — the client also re-encodes to JPEG first, so this is the last resort.
+    const encoded = yield* Effect.promise(async () => {
+      try {
+        const out = await getSharp()(raw)
+          .rotate()
+          .resize({ width: MAX_DIM, height: MAX_DIM, fit: 'inside', withoutEnlargement: true })
+          .webp({ quality: 85 })
+          .toBuffer({ resolveWithObject: true });
+        return { ok: true as const, webp: out.data, info: out.info };
+      } catch {
+        return { ok: false as const };
+      }
     });
+    if (!encoded.ok)
+      return yield* Effect.fail(
+        new MediaInvalid({
+          message: "Couldn't read that image — please try a JPG, PNG, or a screenshot.",
+        })
+      );
+    const { webp, info } = encoded;
 
     const mediaId = randomUUID();
     const key = uploadKey(`fantasy-logos/${input.leagueId}/${mediaId}.webp`);

@@ -21,7 +21,7 @@ import {
   cancelLeague,
 } from '@/lib/server-fns/fantasy';
 import { uploadFantasyLogo } from '@/lib/server-fns/fantasy-media';
-import { PhotoUpload, fileToBase64 } from '@/components/fantasy/photo-upload';
+import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo-upload';
 import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
 import { LeagueSettings } from '@/components/fantasy/league-settings';
 import { CorpsIdentityForm } from '@/components/fantasy/corps-identity-form';
@@ -115,9 +115,8 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
             </div>
           ) : null}
           <div className="min-w-0 space-y-1">
-            <p className="flex items-center gap-2 text-[11px] tracking-wider text-text-secondary lowercase [font-variant:small-caps]">
-              Fantasy Drum Corps · Season{' '}
-              <span className="text-[0.85em] tabular-nums">{league.season}</span>
+            <p className="flex items-center gap-2 text-xs tracking-wide text-text-secondary [font-variant:small-caps]">
+              Fantasy Drum Corps · Season {league.season}
               {league.isTest ? (
                 <Badge variant="warning-light" size="sm">
                   TEST
@@ -303,7 +302,7 @@ function LeagueImageUpload({
 }) {
   const upload = useAsyncAction(
     async (file: File) => {
-      const dataBase64 = await fileToBase64(file);
+      const dataBase64 = await imageFileToUploadBase64(file);
       const res = await uploadFantasyLogo({ data: { leagueId, dataBase64 } });
       await setLeagueImage({ data: { leagueId, mediaId: res.mediaId } });
       await onChanged();
