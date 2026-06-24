@@ -16,7 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
   Drawer,
@@ -153,6 +152,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           viewerId={league.viewer.userId}
           isOwner={league.viewer.isOwner}
           membersById={membersById}
+          captionCaps={league.league.config.captionCaps}
         />
       )}
     </PageShell>
@@ -305,7 +305,13 @@ function CompletePanel({
           </div>
         </CardContent>
       </Card>
-      <DraftBoard picks={picks} members={members} pool={pool} currentUserId={null} />
+      <DraftBoard
+        picks={picks}
+        members={members}
+        pool={pool}
+        currentUserId={null}
+        captionCaps={league.league.config.captionCaps}
+      />
     </div>
   );
 }
@@ -322,6 +328,7 @@ type LiveDraftProps = {
   viewerId: string | null;
   isOwner: boolean;
   membersById: Map<string, Member>;
+  captionCaps: Record<CaptionKey, number>;
 };
 
 function LiveDraft({
@@ -332,6 +339,7 @@ function LiveDraft({
   draft,
   picks,
   pool,
+  captionCaps,
   rank,
   viewerId,
   isOwner,
@@ -423,6 +431,7 @@ function LiveDraft({
         members={[...membersById.values()]}
         pool={pool}
         currentUserId={draft.currentUserId}
+        captionCaps={captionCaps}
       />
 
       {/* Picking is the primary, time-pressured action, so it's inline + always
@@ -746,17 +755,30 @@ function DraftBoard({
   members,
   pool,
   currentUserId,
+  captionCaps,
 }: {
   picks: DraftState['snapshot']['picks'];
   members: Member[];
   pool: DraftState['pool'];
   currentUserId: string | null;
+  captionCaps: Record<CaptionKey, number>;
 }) {
   // Collapsible so it doesn't eat the screen on mobile while you're picking.
   const [open, setOpen] = useState(true);
   const corpsByKey = new Map(pool.map((c) => [c.corpsKey, c]));
-  const pickAt = new Map<string, DraftState['snapshot']['picks'][number]>();
-  for (const p of picks) pickAt.set(`${p.userId}|${p.caption}`, p);
+
+  // Every pick per (player, caption), in draft order — a caption can hold more
+  // than one corps (captionCaps), so each fills its own slot/row.
+  const cell = new Map<string, DraftState['snapshot']['picks']>();
+  for (const p of [...picks].sort((a, b) => a.pickNo - b.pickNo)) {
+    const k = `${p.userId}|${p.caption}`;
+    const arr = cell.get(k);
+    if (arr) arr.push(p);
+    else cell.set(k, [p]);
+  }
+  // One row per slot depth; the tallest caption sets how many rows a player spans.
+  const maxCap = Math.max(1, ...CAPTION_KEYS.map((c) => captionCaps[c] ?? 1));
+  const slots = Array.from({ length: maxCap }, (_, i) => i);
 
   return (
     <Card>
@@ -768,6 +790,10 @@ function DraftBoard({
       </CardHeader>
       {open ? (
         <CardContent className="overflow-x-auto">
+          <p className="mb-2 text-xs text-muted-foreground">
+            Each corps shows its scoring weight (×). Captions that hold more than one
+            corps stack down the rows.
+          </p>
           <Table>
             <TableHeader>
               <TableRow>
@@ -775,33 +801,46 @@ function DraftBoard({
                 {CAPTION_KEYS.map((c) => (
                   <TableHead key={c} className="px-2 text-center" title={KEY_TO_CAPTION_NAME[c]}>
                     {c}
+                    {(captionCaps[c] ?? 1) > 1 ? (
+                      <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">
+                        ×{captionCaps[c]}
+                      </span>
+                    ) : null}
                   </TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {members.map((m) => (
-                <TableRow
-                  key={m.user_id}
-                  className={m.user_id === currentUserId ? 'bg-muted/40' : undefined}
-                >
-                  <TableCell
-                    className="sticky left-0 bg-background font-medium whitespace-nowrap"
-                    style={m.corps_color ? { color: m.corps_color } : undefined}
+              {members.map((m) =>
+                slots.map((slot) => (
+                  <TableRow
+                    key={`${m.user_id}-${slot}`}
+                    className={cn(
+                      m.user_id === currentUserId && 'bg-muted/40',
+                      slot > 0 && 'border-t-0'
+                    )}
                   >
-                    {m.corps_name || m.user_name || 'Player'}
-                  </TableCell>
-                  {CAPTION_KEYS.map((c) => {
-                    const pick = pickAt.get(`${m.user_id}|${c}`);
-                    const corps = pick ? corpsByKey.get(pick.corpsKey) : undefined;
-                    return (
-                      <TableCell key={c} className="p-1 text-center">
-                        {pick ? (
-                          <Tooltip>
-                            <TooltipTrigger
-                              render={
-                                <span className="mx-auto inline-flex size-8 items-center justify-center" />
-                              }
+                    {slot === 0 ? (
+                      <TableCell
+                        rowSpan={maxCap}
+                        className="sticky left-0 bg-background align-middle font-medium whitespace-nowrap"
+                        style={m.corps_color ? { color: m.corps_color } : undefined}
+                      >
+                        {m.corps_name || m.user_name || 'Player'}
+                      </TableCell>
+                    ) : null}
+                    {CAPTION_KEYS.map((c) => {
+                      const cap = captionCaps[c] ?? 1;
+                      // This caption holds fewer corps than the tallest column — no slot here.
+                      if (slot >= cap) return <TableCell key={c} className="bg-muted/15 p-1" aria-hidden />;
+                      const pick = cell.get(`${m.user_id}|${c}`)?.[slot];
+                      const corps = pick ? corpsByKey.get(pick.corpsKey) : undefined;
+                      return (
+                        <TableCell key={c} className="p-1 text-center align-middle">
+                          {pick ? (
+                            <span
+                              className="inline-flex flex-col items-center gap-0.5"
+                              title={`${corps?.name ?? pick.corpsKey} — ${KEY_TO_CAPTION_NAME[c]}${pick.autoPicked ? ' (auto-pick)' : ''}`}
                             >
                               <CorpsLogo
                                 name={corps?.name ?? pick.corpsKey}
@@ -809,20 +848,19 @@ function DraftBoard({
                                 width={32}
                                 className="size-8"
                               />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              {corps?.name ?? pick.corpsKey} — {KEY_TO_CAPTION_NAME[c]}
-                              {pick.autoPicked ? ' (auto)' : ''}
-                            </TooltipContent>
-                          </Tooltip>
-                        ) : (
-                          <span className="text-muted-foreground">·</span>
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
+                              <span className="text-[10px] leading-none tabular-nums text-muted-foreground">
+                                ×{pick.weight.toFixed(1)}
+                              </span>
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">·</span>
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
