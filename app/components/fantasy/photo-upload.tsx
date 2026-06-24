@@ -85,7 +85,11 @@ export function PhotoUpload({
             className={`${box} ${radius} grid place-items-center border border-dashed border-border text-muted-foreground transition-colors group-hover:border-text-secondary group-hover:text-text-secondary`}
             aria-hidden
           >
-            {busy ? <span className="text-xs">…</span> : <AddCircleIcon className="size-5" />}
+            {busy ? (
+              <span className="text-xs">…</span>
+            ) : (
+              <AddCircleIcon className="size-5 opacity-40" />
+            )}
           </div>
         )}
         {fileInput}
