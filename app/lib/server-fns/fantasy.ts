@@ -587,26 +587,54 @@ export const resumeDraft = createServerFn({ method: 'POST' })
   });
 
 /** Members-only live draft state: the snapshot + the draftable corps pool. */
+// Shared draft-state load (snapshot + pool + prior-season rank). Caller does the
+// member gate. Factored out so `getDraftPage` can fetch it alongside the league in
+// ONE round-trip instead of forcing the client into a league→draftState waterfall.
+async function loadDraftStateData(
+  db: Awaited<ReturnType<typeof getContributionsDb>>,
+  leagueId: string
+) {
+  const league = await loadLeagueById(db, leagueId);
+  const prevSeason = String(Number(str(league.season)) - 1);
+  const snapshotP = effectDraftEnabled()
+    ? runFantasy(Effect.flatMap(DraftService, (s) => s.getSnapshot(leagueId)))
+    : draftEngine.getSnapshot(leagueId);
+  const [snapshot, pool, ranking] = await Promise.all([
+    snapshotP,
+    getDraftPool(),
+    getPriorSeasonRanking(prevSeason),
+  ]);
+  // `${corpsKey}|${caption}` → prior-season finals score, for ordering the pool
+  // by previous-season rank per caption in the picker.
+  const rank: Record<string, number> = Object.fromEntries(ranking);
+  return { snapshot, pool, rank };
+}
+
 export const getDraftState = createServerFn({ method: 'GET' })
   .validator((d: { leagueId: string }) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
     const actor = await requireActor();
     const db = await getContributionsDb();
     await requireMember(db, data.leagueId, actor);
-    const league = await loadLeagueById(db, data.leagueId);
-    const prevSeason = String(Number(str(league.season)) - 1);
-    const snapshotP = effectDraftEnabled()
-      ? runFantasy(Effect.flatMap(DraftService, (s) => s.getSnapshot(data.leagueId)))
-      : draftEngine.getSnapshot(data.leagueId);
-    const [snapshot, pool, ranking] = await Promise.all([
-      snapshotP,
-      getDraftPool(),
-      getPriorSeasonRanking(prevSeason),
-    ]);
-    // `${corpsKey}|${caption}` → prior-season finals score, for ordering the pool
-    // by previous-season rank per caption in the picker (empty until §2.1 lands).
-    const rank: Record<string, number> = Object.fromEntries(ranking);
-    return { snapshot, pool, rank };
+    return loadDraftStateData(db, data.leagueId);
+  });
+
+// One-round-trip draft page: league + (for members) draft state in a single request,
+// collapsing the client league→draftState waterfall. The two reads run server-side
+// against local SQLite, so it's far cheaper than a second network round-trip.
+export const getDraftPage = createServerFn({ method: 'GET' })
+  .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
+  .handler(async ({ data }) => {
+    const actor = await getActor(getWebRequest());
+    const league = await runFantasy(
+      Effect.flatMap(LeagueService, (svc) =>
+        svc.get({ slug: data.slug, viewerUserId: actor?.userId ?? null })
+      )
+    );
+    if (!league.viewer.isMember) return { league, draftState: null };
+    const db = await getContributionsDb();
+    const draftState = await loadDraftStateData(db, league.league.leagueId);
+    return { league, draftState };
   });
 
 // The acting member's auto-pick queue (§12.5). Member-gated; userId is always self.

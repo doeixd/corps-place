@@ -32,7 +32,13 @@ import { cn } from '@/lib/utils';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
-import { getLeague, getDraftState, getDraftQueue, setDraftQueue } from '@/lib/server-fns/fantasy';
+import {
+  getLeague,
+  getDraftState,
+  getDraftPage,
+  getDraftQueue,
+  setDraftQueue,
+} from '@/lib/server-fns/fantasy';
 import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from '@/lib/fantasy/captions';
 import { pickWeight, type ReverseWeighting } from '@/lib/fantasy/draft';
 import { useDraftStream } from '@/lib/fantasy/use-draft-stream';
@@ -48,18 +54,16 @@ type Send = (event: FantasyDraftEvent) => void;
 export const Route = createFileRoute('/fantasy/$slug/draft')({
   beforeLoad: requireFantasyEnabled,
   loader: async ({ params }) => {
-    let league: LeagueData;
+    // Single round-trip: league + draft state together (no league→draftState waterfall).
     try {
-      league = await getLeague({ data: { slug: params.slug } });
+      return (await getDraftPage({ data: { slug: params.slug } })) as {
+        league: LeagueData;
+        draftState: DraftState | null;
+      };
     } catch (e) {
       if ((e as Error).message.includes('NOT_FOUND')) throw notFound();
       throw e;
     }
-    if (!league.viewer.isMember) {
-      return { league, draftState: null as DraftState | null };
-    }
-    const draftState = await getDraftState({ data: { leagueId: league.league.leagueId } });
-    return { league, draftState };
   },
   head: ({ loaderData }) =>
     seoHead({
