@@ -124,7 +124,7 @@ Three issues repeat at **every** stage and are the highest-leverage fixes:
 
 ## Prioritized punch list
 
-> Status after the post-audit pass: **P0 ✅ · P2 ✅ · P1 partial · P3 open.**
+> Status after the post-audit pass: **P0 ✅ · P2 ✅ · P3 ✅ · P1 partial.**
 
 **P0 — comprehension (cheap, highest impact) — ✅ DONE**
 1. ✅ Landing "what is this + how it works" strip (`HowItWorks`).
@@ -147,9 +147,10 @@ Three issues repeat at **every** stage and are the highest-leverage fixes:
 7. ✅ Create framing + the corps-identity "this is your team, you draft real corps
    later" clarity.
 
-**P3 — nice-to-haves — ❌ OPEN**
-8. Pre-draft order preview; richer invite metadata (who invited / draft date); push
-   success confirmation.
+**P3 — nice-to-haves — ✅ DONE**
+8. ✅ Pre-draft **projected draft-order** preview (scores stay server-side) · ✅ richer
+   invite metadata ("Hosted by {name} · Draft {date}") · ✅ push toggle explainer +
+   "✓ On" confirmation.
 
 ---
 
