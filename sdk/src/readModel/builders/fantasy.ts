@@ -47,16 +47,24 @@ export interface FantasyCaptionRow {
   score: number;
 }
 
-/** Prior-season finals caption scores, per season (World/Open finals only). */
+/**
+ * Prior-season CHAMPIONSHIPS-WEEK caption ranking, per season: each corps' best
+ * caption score across prelims (everyone) / semifinals / finals (World + Open).
+ * Using the whole week — not just finals night — means every corps that competed
+ * gets a rank, not just the ~12 finalists. MAX per (season, corps, caption).
+ */
 export async function buildFantasyPriorFinals(src: Client): Promise<FantasyCaptionRow[]> {
   const res = await src.execute({
-    sql: `SELECT c.season, cap.corps_key, cap.caption_name, cap.score
+    sql: `SELECT c.season, cap.corps_key, cap.caption_name, MAX(cap.score) AS score
           FROM caption_scores cap
           JOIN competitions c  ON c.slug = cap.competition_slug
           JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
-          WHERE c.slug LIKE '%world-championship-finals'
+          WHERE (c.slug LIKE '%world-championship-prelims'
+                 OR c.slug LIKE '%world-championship-semifinals'
+                 OR c.slug LIKE '%world-championship-finals')
             AND cs.division_name IN (?, ?)
-            AND cap.score IS NOT NULL`,
+            AND cap.score IS NOT NULL
+          GROUP BY c.season, cap.corps_key, cap.caption_name`,
     args: DRAFT_DIVISIONS,
   });
   return res.rows.map((r) => ({

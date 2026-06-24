@@ -390,6 +390,14 @@ function LiveDraft({
   const myPicksSoFar = picks.filter((p) => p.userId === viewerId).length;
   const nextWeight = pickWeight(myPicksSoFar + 1, draft.totalRounds, reverseWeighting);
 
+  // Captions the viewer has already filled (picked the full cap) — dimmed in the tabs.
+  const filledCaptions = new Set(
+    CAPTION_KEYS.filter((c) => {
+      const cap = captionCaps[c] ?? 0;
+      return cap > 0 && picks.filter((p) => p.userId === viewerId && p.caption === c).length >= cap;
+    })
+  );
+
   return (
     <div className="flex flex-col gap-6">
       {/* Screen-reader announcement of turn changes (plan §3.7). */}
@@ -488,6 +496,7 @@ function LiveDraft({
             takenPairs={takenPairs}
             canPick={isMyTurn && !picking}
             nextWeight={nextWeight}
+            filledCaptions={filledCaptions}
             onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
           />
         </CardContent>
@@ -689,6 +698,7 @@ function SectionPicker({
   takenPairs,
   canPick,
   nextWeight,
+  filledCaptions,
   onPick,
 }: {
   pool: DraftState['pool'];
@@ -696,6 +706,7 @@ function SectionPicker({
   takenPairs: Set<string>;
   canPick: boolean;
   nextWeight: number;
+  filledCaptions: Set<CaptionKey>;
   onPick: (corpsKey: string, caption: CaptionKey) => void;
 }) {
   const [caption, setCaption] = useState<CaptionKey>('GE1');
@@ -709,19 +720,30 @@ function SectionPicker({
     );
   }
 
-  // Order this caption's corps by previous-season rank (highest first); unranked last.
+  // Each corps' OVERALL latest-finals standing = the total of its finals caption
+  // scores. One rank per corps (its finishing place), shown the same for every
+  // caption — not a per-caption position. Corps that didn't make finals have none.
+  const finalsTotal = (corpsKey: string): number | null => {
+    let total = 0;
+    let any = false;
+    for (const cap of CAPTION_KEYS) {
+      const s = rank[`${corpsKey}|${cap}`];
+      if (s != null) {
+        total += s;
+        any = true;
+      }
+    }
+    return any ? total : null;
+  };
+  const totals = new Map(pool.map((c) => [c.corpsKey, finalsTotal(c.corpsKey)]));
   const ranked = [...pool].sort(
-    (a, b) =>
-      (rank[`${b.corpsKey}|${caption}`] ?? -Infinity) -
-      (rank[`${a.corpsKey}|${caption}`] ?? -Infinity)
+    (a, b) => (totals.get(b.corpsKey) ?? -Infinity) - (totals.get(a.corpsKey) ?? -Infinity)
   );
-
-  // Per-caption rank position (1 = best prior-season finals score in this caption);
-  // corps with no prior score for this caption show "—".
+  // #1 = highest prior-finals total; ranks are stable across caption tabs.
   const rankByKey = new Map<string, number>();
   let nextRank = 0;
   for (const c of ranked) {
-    if (rank[`${c.corpsKey}|${caption}`] != null) rankByKey.set(c.corpsKey, ++nextRank);
+    if (totals.get(c.corpsKey) != null) rankByKey.set(c.corpsKey, ++nextRank);
   }
 
   return (
@@ -741,11 +763,20 @@ function SectionPicker({
         }}
         className="flex-wrap"
       >
-        {CAPTION_KEYS.map((c) => (
-          <ToggleGroupItem key={c} value={c} title={KEY_TO_CAPTION_NAME[c]}>
-            {c}
-          </ToggleGroupItem>
-        ))}
+        {CAPTION_KEYS.map((c) => {
+          const filled = filledCaptions.has(c);
+          return (
+            <ToggleGroupItem
+              key={c}
+              value={c}
+              title={`${KEY_TO_CAPTION_NAME[c]}${filled ? ' — filled' : ''}`}
+              className={cn(filled && 'text-text-secondary/50')}
+            >
+              {filled ? '✓ ' : ''}
+              {c}
+            </ToggleGroupItem>
+          );
+        })}
       </ToggleGroup>
 
       <div className="flex items-center gap-2 px-2 text-[10px] font-medium uppercase tracking-wide text-text-secondary">

@@ -168,14 +168,17 @@ export async function getPriorSeasonRanking(prevSeason: string): Promise<Ranking
           args: [prevSeason],
         })
       : await scoreDb().execute({
-          sql: `SELECT cap.corps_key, cap.caption_name, cap.score
+          sql: `SELECT cap.corps_key, cap.caption_name, MAX(cap.score) AS score
                 FROM caption_scores cap
                 JOIN competitions c  ON c.slug = cap.competition_slug
                 JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
                 WHERE c.season = ?
-                  AND c.slug LIKE '%world-championship-finals'
+                  AND (c.slug LIKE '%world-championship-prelims'
+                       OR c.slug LIKE '%world-championship-semifinals'
+                       OR c.slug LIKE '%world-championship-finals')
                   AND cs.division_name IN (?, ?)
-                  AND cap.score IS NOT NULL`,
+                  AND cap.score IS NOT NULL
+                GROUP BY cap.corps_key, cap.caption_name`,
           args: [prevSeason, ...DRAFT_DIVISIONS],
         });
     const lookup: RankingLookup = new Map();
