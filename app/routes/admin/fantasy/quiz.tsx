@@ -8,6 +8,7 @@ import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { BusyButton } from '@/components/fantasy/busy-button';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -48,26 +49,55 @@ export const Route = createFileRoute('/admin/fantasy/quiz')({
 
 function Quiz({ questions }: { questions: Question[] }) {
   const router = useRouter();
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [choicesText, setChoicesText] = useState('');
   const [correctIndex, setCorrectIndex] = useState(0);
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
+  const [explanation, setExplanation] = useState('');
 
   const counts = (['easy', 'medium', 'hard'] as Difficulty[]).map(
     (d) => `${d}: ${questions.filter((q) => q.active && q.difficulty === d).length}`
   );
 
-  const add = useAsyncAction(async () => {
+  const resetForm = () => {
+    setEditingId(null);
+    setPrompt('');
+    setChoicesText('');
+    setCorrectIndex(0);
+    setDifficulty('medium');
+    setExplanation('');
+  };
+  const startEdit = (q: Question) => {
+    setEditingId(q.questionId);
+    setPrompt(q.prompt);
+    setChoicesText(q.choices.join('\n'));
+    setCorrectIndex(q.correctIndex);
+    setDifficulty(q.difficulty);
+    setExplanation(q.explanation ?? '');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // One form, two modes: create (no editingId) or update (editingId set → UPDATE by id).
+  const save = useAsyncAction(async () => {
     const choices = choicesText
       .split('\n')
       .map((c) => c.trim())
       .filter(Boolean);
     if (choices.length < 2) throw new Error('At least 2 choices (one per line).');
     if (correctIndex >= choices.length) throw new Error('Correct index out of range.');
-    await adminUpsertQuestion({ data: { prompt, choices, correctIndex, difficulty, tags: [] } });
-    setPrompt('');
-    setChoicesText('');
-    setCorrectIndex(0);
+    await adminUpsertQuestion({
+      data: {
+        questionId: editingId ?? undefined,
+        prompt,
+        choices,
+        correctIndex,
+        explanation,
+        difficulty,
+        tags: [],
+      },
+    });
+    resetForm();
     await router.invalidate();
   });
   const toggle = useAsyncAction(async (q: Question) => {
@@ -78,13 +108,15 @@ function Quiz({ questions }: { questions: Question[] }) {
   return (
     <>
       <PageHeader title="Fantasy quiz bank" subtitle={`Active — ${counts.join(' · ')}`} />
-      <Show when={add.error || toggle.error}>
-        <p className="mb-4 text-sm text-destructive">{add.error ?? toggle.error}</p>
+      <Show when={save.error || toggle.error}>
+        <p className="mb-4 text-sm text-destructive">{save.error ?? toggle.error}</p>
       </Show>
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-sm font-semibold">New question</CardTitle>
+          <CardTitle className="text-sm font-semibold">
+            {editingId ? 'Edit question' : 'New question'}
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-2 text-sm">
           <Input placeholder="Prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
@@ -93,6 +125,11 @@ function Quiz({ questions }: { questions: Question[] }) {
             value={choicesText}
             onChange={(e) => setChoicesText(e.target.value)}
             rows={4}
+          />
+          <Input
+            placeholder="Explanation (optional — shown on the post-quiz review)"
+            value={explanation}
+            onChange={(e) => setExplanation(e.target.value)}
           />
           <div className="flex items-center gap-2">
             <label className="text-text-secondary">Correct index</label>
@@ -110,14 +147,19 @@ function Quiz({ questions }: { questions: Question[] }) {
                 <For each={DIFFICULTIES}>{(d) => <SelectItem value={d}>{d}</SelectItem>}</For>
               </SelectContent>
             </Select>
+            {editingId ? (
+              <Button size="sm" variant="ghost" onClick={resetForm}>
+                Cancel
+              </Button>
+            ) : null}
             <BusyButton
               size="sm"
-              className="ml-auto"
-              busy={add.busy}
+              className={editingId ? '' : 'ml-auto'}
+              busy={save.busy}
               disabled={!prompt}
-              onClick={() => void add.run()}
+              onClick={() => void save.run()}
             >
-              Add
+              {editingId ? 'Save changes' : 'Add'}
             </BusyButton>
           </div>
         </CardContent>
@@ -151,10 +193,17 @@ function Quiz({ questions }: { questions: Question[] }) {
                     <span className="text-xs text-text-secondary">
                       {q.choices.length} choices · correct #{q.correctIndex}
                     </span>
-                    <BusyButton
+                    <Button
                       variant="ghost"
                       size="sm"
                       className="ml-auto"
+                      onClick={() => startEdit(q)}
+                    >
+                      Edit
+                    </Button>
+                    <BusyButton
+                      variant="ghost"
+                      size="sm"
                       busy={toggle.busy}
                       onClick={() => void toggle.run(q)}
                     >
