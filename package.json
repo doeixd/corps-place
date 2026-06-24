@@ -66,6 +66,7 @@
     "resend": "^6.13.0",
     "shadcn": "4.10.0",
     "sharp": "^0.34.5",
+    "sonner": "^2.0.7",
     "stripe": "^22.2.3",
     "tailwind-merge": "^3.6.0",
     "thumbhash": "^0.1.1",

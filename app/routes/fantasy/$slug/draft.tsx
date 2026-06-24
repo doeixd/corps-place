@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { createFileRoute, notFound, Link, useRouter } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { PageShell } from '@/components/page-shell';
@@ -92,6 +93,12 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
   const [state, send] = useMachine(fantasyDraftMachine, {
     input: { leagueId, onChanged: () => void router.invalidate() },
   });
+
+  // Surface pick/schedule/start errors (caption full, not your turn, …) as a toast.
+  const draftError = state.context.error;
+  useEffect(() => {
+    if (draftError) toast.error(draftError);
+  }, [draftError]);
 
   // React Compiler memoizes this derived map — no manual useMemo (AGENTS.md).
   const membersById = new Map<string, Member>(league.members.map((m) => [m.user_id, m]));
@@ -298,7 +305,6 @@ function SchedulePanel({
           <BusyButton busy={starting} onClick={() => send({ type: 'START' })}>
             Start draft now
           </BusyButton>
-          {error ? <span className="text-sm text-destructive">{error}</span> : null}
           {feasibility ? <span className="text-sm text-destructive">{feasibility}</span> : null}
         </div>
       </CardContent>
@@ -471,7 +477,6 @@ function LiveDraft({
         </CardContent>
       </Card>
 
-      {actionError ? <p className="text-sm text-destructive">{actionError}</p> : null}
 
       <DraftBoard
         picks={picks}

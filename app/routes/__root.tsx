@@ -15,6 +15,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { SiteNav } from '@/components/site-nav';
 import { AnnouncementBanner } from '@/components/announcement-banner';
 import { ConsentGate } from '@/components/consent-gate';
+import { Toaster } from '@/components/ui/sonner';
 import { THEME_COOKIE, readThemeCookie } from '@/lib/theme-cookie';
 import type { Theme } from '@/lib/theme-cookie';
 import { FAVORITE_COOKIE, readFavoriteCookie } from '@/lib/favorite-cookie';
@@ -188,6 +189,7 @@ function RootComponent() {
           <ThemeToggle className="fixed top-4 right-4 z-50" />
           <SiteNav />
           <ConsentGate />
+          <Toaster theme={theme} />
           {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
               (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
               (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}
