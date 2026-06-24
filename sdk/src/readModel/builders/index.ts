@@ -17,3 +17,4 @@ export * from './staff.js';
 export * from './predictions.js';
 export * from './shows.js';
 export * from './merch.js';
+export * from './fantasy.js';

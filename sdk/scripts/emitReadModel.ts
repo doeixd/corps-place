@@ -63,6 +63,10 @@ import {
   buildMerchStores,
   buildMerchFacets,
   buildCorpsMerchTeasers,
+  buildFantasyDraftPool,
+  buildFantasyPriorFinals,
+  buildFantasySeasonBest,
+  buildFantasySeasonFinals,
   type EventDirectoryRow,
 } from "../src/readModel/builders/index.js";
 import {
@@ -91,7 +95,10 @@ import {
 // v11: + rm_staff / rm_staff_detail (staff directory + per-person profile).
 // v12: rm_staff_detail.detail_json gains performed[] (grounded corps marched in) + bioFacts
 //      {education, awards, performedOther, hometown, currentPosition} mined from bio prose (S3).
-const SCHEMA_VERSION = 12;
+// v13: + rm_fantasy_draft_pool / rm_fantasy_prior_finals / rm_fantasy_season_best /
+//      rm_fantasy_season_finals — the four score-DB reads the fantasy draft needs, so the
+//      serving container can run drafts without the 3.4 GB relational DB (UI/UX plan §2.1).
+const SCHEMA_VERSION = 13;
 
 type Section =
   | "events"
@@ -102,7 +109,8 @@ type Section =
   | "predictions"
   | "shows"
   | "home"
-  | "merch";
+  | "merch"
+  | "fantasy";
 const ALL_SECTIONS: Section[] = [
   "events",
   "corps",
@@ -113,6 +121,7 @@ const ALL_SECTIONS: Section[] = [
   "shows",
   "home",
   "merch",
+  "fantasy",
 ];
 
 interface Args {
@@ -319,6 +328,28 @@ CREATE TABLE rm_home_standings (id INTEGER PRIMARY KEY, standings_json TEXT);
 CREATE TABLE rm_merch_meta (id INTEGER PRIMARY KEY, index_json TEXT, facets_json TEXT, stores_json TEXT);
 CREATE TABLE rm_merch_product (product_id TEXT PRIMARY KEY, detail_json TEXT);
 CREATE TABLE rm_merch_corps_teaser (slug TEXT PRIMARY KEY, teaser_json TEXT);
+
+-- Fantasy draft (UI/UX plan §2.1). The four score-DB reads the live draft needs,
+-- frozen so the serving container can run drafts without the relational DB.
+-- rm_fantasy_draft_pool: the eligible World/Open corps (latest competed season),
+-- pre-ordered (sort_index). prior_finals / season_best are caption scores keyed by
+-- season (caption_name mapped to a CaptionKey in score-db, matching the live path).
+CREATE TABLE rm_fantasy_draft_pool (
+  corps_key TEXT, slug TEXT, name TEXT, division_name TEXT, display_city TEXT,
+  corps_logo TEXT, sort_index INTEGER
+);
+CREATE TABLE rm_fantasy_prior_finals (
+  season TEXT, corps_key TEXT, caption_name TEXT, score REAL
+);
+CREATE INDEX rm_fantasy_prior_finals_season ON rm_fantasy_prior_finals(season);
+CREATE TABLE rm_fantasy_season_best (
+  season TEXT, corps_key TEXT, caption_name TEXT, best REAL
+);
+CREATE INDEX rm_fantasy_season_best_season ON rm_fantasy_season_best(season);
+CREATE TABLE rm_fantasy_season_finals (
+  season TEXT, slug TEXT, date TEXT, recap_present INTEGER
+);
+CREATE INDEX rm_fantasy_season_finals_season ON rm_fantasy_season_finals(season);
 `;
 
 const schemaStatements = () =>
@@ -1044,6 +1075,56 @@ export const runEmit = async (args: Args) => {
           slug,
           JSON.stringify(teaser),
         ]),
+      );
+    }
+  }
+
+  // ── Fantasy draft (UI/UX plan §2.1) ──────────────────────────────────────────
+  // The four score-DB reads, frozen so prod can run drafts without the relational DB.
+  if (args.only.includes("fantasy")) {
+    log("building fantasy draft read-model…");
+    const [pool, priorFinals, seasonBest, seasonFinals] = await Promise.all([
+      buildFantasyDraftPool(src),
+      buildFantasyPriorFinals(src),
+      buildFantasySeasonBest(src),
+      buildFantasySeasonFinals(src),
+    ]);
+    rowCounts.rm_fantasy_draft_pool = pool.length;
+    rowCounts.rm_fantasy_prior_finals = priorFinals.length;
+    rowCounts.rm_fantasy_season_best = seasonBest.length;
+    rowCounts.rm_fantasy_season_finals = seasonFinals.length;
+    if (dst) {
+      await insertRows(
+        dst,
+        "rm_fantasy_draft_pool",
+        ["corps_key", "slug", "name", "division_name", "display_city", "corps_logo", "sort_index"],
+        pool.map((p, idx) => [
+          p.corps_key,
+          p.slug,
+          p.name,
+          p.division_name,
+          p.display_city,
+          p.corps_logo,
+          idx,
+        ]),
+      );
+      await insertRows(
+        dst,
+        "rm_fantasy_prior_finals",
+        ["season", "corps_key", "caption_name", "score"],
+        priorFinals.map((r) => [r.season, r.corps_key, r.caption_name, r.score]),
+      );
+      await insertRows(
+        dst,
+        "rm_fantasy_season_best",
+        ["season", "corps_key", "caption_name", "best"],
+        seasonBest.map((r) => [r.season, r.corps_key, r.caption_name, r.score]),
+      );
+      await insertRows(
+        dst,
+        "rm_fantasy_season_finals",
+        ["season", "slug", "date", "recap_present"],
+        seasonFinals.map((r) => [r.season, r.slug, r.date, r.recap_present]),
       );
     }
   }

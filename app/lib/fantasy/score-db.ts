@@ -1,13 +1,21 @@
 /**
- * Read-only access to the score DB (`dci-relational.db`) for the draft:
- * the draftable corps pool (Appendix C.4) and the prior-season finals caption
- * ranking that powers auto-pick + the suggested-pick hint (Appendix C.3).
+ * Read-only access to the fantasy score data for the draft: the draftable corps
+ * pool (Appendix C.4) and the prior-season finals caption ranking that powers
+ * auto-pick + the suggested-pick hint (Appendix C.3).
+ *
+ * Two sources, transparently (UI/UX plan §2.1): in production the serving image
+ * ships only the read-model (no 3.4 GB `dci-relational.db`), so when
+ * `readModelEnabled()` these read the frozen `rm_fantasy_*` tables; otherwise (dev,
+ * the ingest box) they query `dci-relational.db` directly. The emit
+ * (sdk/scripts/emitReadModel.ts) builds the rm_fantasy_* tables with the SAME SQL,
+ * so the two sources can't drift. Both paths degrade to empty on error.
  *
  * SERVER-ONLY. Never writes. The client is created lazily (not at module load)
  * so importing this from a server module stays browse-safe in the dev bundle.
  */
 import { createClient, type Client } from '@libsql/client';
 import * as path from 'node:path';
+import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
 import { CAPTION_NAME_TO_KEY, type CaptionKey } from './captions';
 
 const DRAFT_DIVISIONS = ['World Class', 'Open Class'];
@@ -67,16 +75,21 @@ let poolCache: { at: number; value: DraftableCorps[] } | null = null;
 export async function getDraftPool(): Promise<DraftableCorps[]> {
   if (poolCache && Date.now() - poolCache.at < POOL_TTL_MS) return poolCache.value;
   try {
-    const res = await scoreDb().execute({
-      sql: `SELECT DISTINCT co.corps_key, co.slug, co.name, cs.division_name, co.display_city, co.corps_logo
-            FROM corps co
-            JOIN corps_scores cs ON cs.corps_key = co.corps_key
-            JOIN competitions c ON c.slug = cs.competition_slug
-            WHERE c.season = (SELECT MAX(season) FROM competitions)
-              AND cs.division_name IN (?, ?)
-            ORDER BY cs.division_name, co.name COLLATE NOCASE`,
-      args: DRAFT_DIVISIONS,
-    });
+    const res = readModelEnabled()
+      ? await getReadModelClient().execute(
+          `SELECT corps_key, slug, name, division_name, display_city, corps_logo
+           FROM rm_fantasy_draft_pool ORDER BY sort_index`
+        )
+      : await scoreDb().execute({
+          sql: `SELECT DISTINCT co.corps_key, co.slug, co.name, cs.division_name, co.display_city, co.corps_logo
+                FROM corps co
+                JOIN corps_scores cs ON cs.corps_key = co.corps_key
+                JOIN competitions c ON c.slug = cs.competition_slug
+                WHERE c.season = (SELECT MAX(season) FROM competitions)
+                  AND cs.division_name IN (?, ?)
+                ORDER BY cs.division_name, co.name COLLATE NOCASE`,
+          args: DRAFT_DIVISIONS,
+        });
     const value = res.rows.map((r) => ({
       corpsKey: r.corps_key as string,
       slug: (r.slug as string | null) ?? null,
@@ -111,17 +124,22 @@ export async function getPriorSeasonRanking(prevSeason: string): Promise<Ranking
   const cached = rankingCache.get(prevSeason);
   if (cached) return cached;
   try {
-    const res = await scoreDb().execute({
-      sql: `SELECT cap.corps_key, cap.caption_name, cap.score
-            FROM caption_scores cap
-            JOIN competitions c  ON c.slug = cap.competition_slug
-            JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
-            WHERE c.season = ?
-              AND c.slug LIKE '%world-championship-finals'
-              AND cs.division_name IN (?, ?)
-              AND cap.score IS NOT NULL`,
-      args: [prevSeason, ...DRAFT_DIVISIONS],
-    });
+    const res = readModelEnabled()
+      ? await getReadModelClient().execute({
+          sql: `SELECT corps_key, caption_name, score FROM rm_fantasy_prior_finals WHERE season = ?`,
+          args: [prevSeason],
+        })
+      : await scoreDb().execute({
+          sql: `SELECT cap.corps_key, cap.caption_name, cap.score
+                FROM caption_scores cap
+                JOIN competitions c  ON c.slug = cap.competition_slug
+                JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
+                WHERE c.season = ?
+                  AND c.slug LIKE '%world-championship-finals'
+                  AND cs.division_name IN (?, ?)
+                  AND cap.score IS NOT NULL`,
+          args: [prevSeason, ...DRAFT_DIVISIONS],
+        });
     const lookup: RankingLookup = new Map();
     for (const r of res.rows) {
       const key = CAPTION_NAME_TO_KEY[r.caption_name as string];
@@ -142,17 +160,22 @@ export async function getPriorSeasonRanking(prevSeason: string): Promise<Ranking
  */
 export async function getSeasonBestLookup(season: string): Promise<RankingLookup> {
   try {
-    const res = await scoreDb().execute({
-      sql: `SELECT cap.corps_key, cap.caption_name, MAX(cap.score) AS best
-            FROM caption_scores cap
-            JOIN competitions c  ON c.slug = cap.competition_slug
-            JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
-            WHERE c.season = ?
-              AND cs.division_name IN (?, ?)
-              AND cap.score IS NOT NULL
-            GROUP BY cap.corps_key, cap.caption_name`,
-      args: [season, ...DRAFT_DIVISIONS],
-    });
+    const res = readModelEnabled()
+      ? await getReadModelClient().execute({
+          sql: `SELECT corps_key, caption_name, best FROM rm_fantasy_season_best WHERE season = ?`,
+          args: [season],
+        })
+      : await scoreDb().execute({
+          sql: `SELECT cap.corps_key, cap.caption_name, MAX(cap.score) AS best
+                FROM caption_scores cap
+                JOIN competitions c  ON c.slug = cap.competition_slug
+                JOIN corps_scores cs ON cs.competition_slug = cap.competition_slug AND cs.corps_key = cap.corps_key
+                WHERE c.season = ?
+                  AND cs.division_name IN (?, ?)
+                  AND cap.score IS NOT NULL
+                GROUP BY cap.corps_key, cap.caption_name`,
+          args: [season, ...DRAFT_DIVISIONS],
+        });
     const lookup: RankingLookup = new Map();
     for (const r of res.rows) {
       const key = CAPTION_NAME_TO_KEY[r.caption_name as string];
@@ -179,14 +202,20 @@ export type SeasonFinals = {
  */
 export async function getSeasonFinals(season: string): Promise<SeasonFinals> {
   try {
-    const res = await scoreDb().execute({
-      sql: `SELECT c.slug, c.date,
-                   EXISTS (SELECT 1 FROM caption_scores cap WHERE cap.competition_slug = c.slug) AS has_recap
-            FROM competitions c
-            WHERE c.season = ? AND c.slug LIKE '%world-championship-finals'
-            ORDER BY c.date DESC LIMIT 1`,
-      args: [season],
-    });
+    const res = readModelEnabled()
+      ? await getReadModelClient().execute({
+          sql: `SELECT slug, date, recap_present AS has_recap FROM rm_fantasy_season_finals
+                WHERE season = ? ORDER BY date DESC LIMIT 1`,
+          args: [season],
+        })
+      : await scoreDb().execute({
+          sql: `SELECT c.slug, c.date,
+                       EXISTS (SELECT 1 FROM caption_scores cap WHERE cap.competition_slug = c.slug) AS has_recap
+                FROM competitions c
+                WHERE c.season = ? AND c.slug LIKE '%world-championship-finals'
+                ORDER BY c.date DESC LIMIT 1`,
+          args: [season],
+        });
     const row = res.rows[0];
     if (!row) return null;
     return {
