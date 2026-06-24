@@ -115,7 +115,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
             </div>
           ) : null}
           <div className="min-w-0 space-y-1">
-            <p className="flex items-center gap-2 text-xs tracking-wide text-text-secondary [font-variant:small-caps]">
+            <p className="flex items-center gap-2 text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
               Fantasy Drum Corps · Season {league.season}
               {league.isTest ? (
                 <Badge variant="warning-light" size="sm">
