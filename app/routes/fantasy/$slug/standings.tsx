@@ -67,7 +67,7 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
       <header className="space-y-3">
         <BackLink to="/fantasy/$slug" params={{ slug: league.slug }} label="League home" />
         <div className="space-y-1">
-          <p className="text-xs uppercase tracking-wide text-text-secondary">
+          <p className="text-[11px] tracking-wider text-text-secondary [font-variant:small-caps]">
             {league.name} · Season {league.season}
           </p>
           <h1 className="text-2xl font-bold text-text-primary">Standings</h1>

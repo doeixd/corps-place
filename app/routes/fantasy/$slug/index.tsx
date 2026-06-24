@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createFileRoute, notFound, useRouter } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { BackLink } from '@/components/back-link';
@@ -95,7 +95,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
   const needsIdentity = viewer.isMember && !me?.corps_name;
 
   return (
-    <PageShell className="flex flex-col gap-6">
+    <PageShell className="flex flex-col gap-8">
       <header className="mb-2 space-y-3">
         <BackLink to="/fantasy" label="My leagues" />
         <div className="flex items-start gap-3">
@@ -113,7 +113,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
             />
           ) : null}
           <div className="min-w-0 space-y-1">
-            <p className="flex items-center gap-2 text-xs uppercase tracking-wide text-text-secondary">
+            <p className="flex items-center gap-2 text-[11px] tracking-wider text-text-secondary [font-variant:small-caps]">
               Fantasy Drum Corps · Season {league.season}
               {league.isTest ? (
                 <Badge variant="warning-light" size="sm">
@@ -487,6 +487,17 @@ function InvitePanel({
     await onChanged();
   });
 
+  // Show a share link by default — auto-create one the first time an owner opens a
+  // league that has none yet (guarded so it mints exactly once, even under React's
+  // double-invoked effects).
+  const mintedRef = useRef(false);
+  useEffect(() => {
+    if (!shareInvite && !mintedRef.current) {
+      mintedRef.current = true;
+      void mint.run();
+    }
+  }, [shareInvite]);
+
   const share = async (url: string) => {
     try {
       await navigator.share({ title: 'Join my fantasy drum corps league', url });
@@ -528,14 +539,7 @@ function InvitePanel({
             </p>
           </>
         ) : (
-          <BusyButton
-            className="self-start"
-            size="sm"
-            busy={mint.busy}
-            onClick={() => void mint.run()}
-          >
-            Create shareable link
-          </BusyButton>
+          <p className="text-sm text-muted-foreground">Generating your shareable link…</p>
         )}
         {mint.error ? <p className="text-sm text-destructive">{mint.error}</p> : null}
       </CardContent>

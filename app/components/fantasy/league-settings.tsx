@@ -94,7 +94,7 @@ export function LeagueSettings({
       <CardHeader>
         <CardTitle>League settings</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-7">
         <p className="text-sm text-muted-foreground">
           {draftStarted
             ? 'The draft has started, so draft-shape settings are locked. Scoring weights stay editable until finals week.'
@@ -105,6 +105,10 @@ export function LeagueSettings({
           <Label htmlFor="s-drafttype">
             <Explain term="draft-type">Draft type</Explain>
           </Label>
+          <p className="text-xs text-muted-foreground">
+            Snake reverses the pick order each round, so picking last isn't a lasting
+            disadvantage. Linear keeps the same order every round.
+          </p>
           <Select
             value={draftType}
             onValueChange={(v) => setDraftType(v as LeagueConfig['draftType'])}
@@ -118,14 +122,14 @@ export function LeagueSettings({
               <SelectItem value="linear">Linear</SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-xs text-muted-foreground">
-            Snake reverses the pick order each round, so picking last isn't a lasting
-            disadvantage. Linear keeps the same order every round.
-          </p>
         </div>
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="s-pick">Pick timer (seconds)</Label>
+          <p className="text-xs text-muted-foreground">
+            How long each player has on the clock before their pick is auto-made from their
+            queue.
+          </p>
           <Input
             id="s-pick"
             type="number"
@@ -135,10 +139,6 @@ export function LeagueSettings({
             disabled={draftStarted}
             className="sm:w-56"
           />
-          <p className="text-xs text-muted-foreground">
-            How long each player has on the clock before their pick is auto-made from their
-            queue.
-          </p>
         </div>
 
         <fieldset className="flex flex-col gap-2">
@@ -188,6 +188,9 @@ export function LeagueSettings({
         {quizEnabled ? (
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="s-qcount">Quiz questions</Label>
+            <p className="text-xs text-muted-foreground">
+              How many questions each player answers in their one timed attempt.
+            </p>
             <Input
               id="s-qcount"
               type="number"
@@ -197,9 +200,6 @@ export function LeagueSettings({
               disabled={draftStarted}
               className="sm:w-56"
             />
-            <p className="text-xs text-muted-foreground">
-              How many questions each player answers in their one timed attempt.
-            </p>
           </div>
         ) : null}
 
@@ -207,6 +207,10 @@ export function LeagueSettings({
           <Label htmlFor="s-mode">
             <Explain term="scoring-mode">Scoring mode</Explain>
           </Label>
+          <p className="text-xs text-muted-foreground">
+            Recap scores each show as a weighted average capped at 100. Sum piles up raw caption
+            points across the whole season.
+          </p>
           <Select
             value={scoringMode}
             onValueChange={(v) => setScoringMode(v as LeagueConfig['scoringMode'])}
@@ -220,10 +224,6 @@ export function LeagueSettings({
               <SelectItem value="sum">Sum (points pile)</SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-xs text-muted-foreground">
-            Recap scores each show as a weighted average capped at 100. Sum piles up raw caption
-            points across the whole season.
-          </p>
         </div>
 
         <fieldset className="flex flex-col gap-2">
