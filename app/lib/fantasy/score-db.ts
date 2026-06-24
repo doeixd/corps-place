@@ -27,11 +27,13 @@ const EXCLUDED_CORPS_KEYS = new Set([
   'high-school-affiliated-to-bit',
   'calgary-round-up-band',
   '001j000000i6kalaa3', // Blue Devils C
+  '001j000000iwxa3aal', // Mandarins — not performing the 2026 season
 ]);
 const EXCLUDED_CORPS_NAMES = new Set([
   'high school affiliated to bit',
   'calgary round-up band',
   'blue devils c',
+  'mandarins',
 ]);
 const isExcludedCorps = (corpsKey: string, name: string): boolean =>
   EXCLUDED_CORPS_KEYS.has(corpsKey) ||

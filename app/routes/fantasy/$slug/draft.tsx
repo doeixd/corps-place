@@ -665,6 +665,14 @@ function SectionPicker({
       (rank[`${a.corpsKey}|${caption}`] ?? -Infinity)
   );
 
+  // Per-caption rank position (1 = best prior-season finals score in this caption);
+  // corps with no prior score for this caption show "—".
+  const rankByKey = new Map<string, number>();
+  let nextRank = 0;
+  for (const c of ranked) {
+    if (rank[`${c.corpsKey}|${caption}`] != null) rankByKey.set(c.corpsKey, ++nextRank);
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <ToggleGroup
@@ -682,6 +690,11 @@ function SectionPicker({
         ))}
       </ToggleGroup>
 
+      <div className="flex items-center gap-2 px-2 text-[10px] font-medium uppercase tracking-wide text-text-secondary">
+        <span className="w-8 shrink-0 text-center">Rank</span>
+        <span>Corps</span>
+      </div>
+
       <ul className="flex max-h-[55vh] flex-col gap-1 overflow-y-auto">
         {ranked.map((corps) => {
           const taken = takenPairs.has(`${corps.corpsKey}|${caption}`);
@@ -696,6 +709,12 @@ function SectionPicker({
                   taken && 'opacity-40'
                 )}
               >
+                <span
+                  className="w-8 shrink-0 text-center text-xs font-medium tabular-nums text-muted-foreground"
+                  title="Previous-season rank in this caption"
+                >
+                  {rankByKey.has(corps.corpsKey) ? `#${rankByKey.get(corps.corpsKey)}` : '—'}
+                </span>
                 <CorpsLogo
                   name={corps.name}
                   logo={corps.corpsLogo ?? ''}
