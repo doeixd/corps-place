@@ -8,7 +8,7 @@ import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
 import { searchTalent } from '@/lib/server-fns/jobs';
-import { Search01Icon, UserMultipleIcon, MapPin01Icon } from '@/components/icons/generated';
+import { Search01Icon, UserMultipleIcon, Location01Icon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/jobs/talent')({
   head: () =>
@@ -93,7 +93,7 @@ function TalentPage() {
                     </div>
                     {p.location ? (
                       <p className="flex items-center gap-1 text-xs text-text-muted">
-                        <Icon icon={MapPin01Icon} size="xs" /> {p.location}
+                        <Icon icon={Location01Icon} size="xs" /> {p.location}
                       </p>
                     ) : null}
                   </CardContent>

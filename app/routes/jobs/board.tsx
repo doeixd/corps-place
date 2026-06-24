@@ -8,7 +8,7 @@ import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
 import { listJobs } from '@/lib/server-fns/jobs';
-import { Search01Icon, MapPin01Icon, Briefcase01Icon } from '@/components/icons/generated';
+import { Search01Icon, Location01Icon, Briefcase01Icon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/jobs/board')({
   head: () =>
@@ -100,7 +100,7 @@ function BoardPage() {
                     <h3 className="font-semibold text-text-primary">{job.title}</h3>
                     {job.location ? (
                       <p className="mt-0.5 flex items-center gap-1 text-sm text-text-secondary">
-                        <Icon icon={MapPin01Icon} size="xs" /> {job.location}
+                        <Icon icon={Location01Icon} size="xs" /> {job.location}
                       </p>
                     ) : null}
                     <div className="mt-2 flex flex-wrap gap-2">

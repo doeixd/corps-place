@@ -14,7 +14,7 @@ import {
 } from '@/lib/server-fns/jobs';
 import {
   Briefcase01Icon,
-  MapPin01Icon,
+  Location01Icon,
   CheckmarkCircle02Icon,
   Alert02Icon,
   FireIcon,
@@ -132,7 +132,7 @@ function JobDetail() {
               <h1 className="text-2xl font-bold text-text-primary">{job.title}</h1>
               {job.location ? (
                 <p className="mt-1 flex items-center gap-1.5 text-text-secondary">
-                  <Icon icon={MapPin01Icon} size="xs" /> {job.location}
+                  <Icon icon={Location01Icon} size="xs" /> {job.location}
                 </p>
               ) : null}
               <div className="mt-2 flex flex-wrap gap-2">
