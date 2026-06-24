@@ -101,7 +101,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
       <header className="space-y-3">
         <BackLink to="/fantasy/$slug" params={{ slug: league.league.slug }} label="League home" />
         <div className="space-y-1">
-          <p className="text-[11px] tracking-wider text-text-secondary [font-variant:small-caps]">
+          <p className="text-[11px] tracking-wider text-text-secondary lowercase [font-variant:small-caps]">
             {league.league.name} · Season {league.league.season}
           </p>
           <h1 className="text-2xl font-bold text-text-primary">Draft room</h1>

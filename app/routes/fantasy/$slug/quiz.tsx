@@ -68,7 +68,7 @@ function QuizRoute() {
       <header className="space-y-3">
         <BackLink to="/fantasy/$slug" params={{ slug }} label="League home" />
         <div className="space-y-1">
-          <p className="text-[11px] tracking-wider text-text-secondary [font-variant:small-caps]">
+          <p className="text-[11px] tracking-wider text-text-secondary lowercase [font-variant:small-caps]">
             {leagueName}
           </p>
           <h1 className="text-2xl font-bold text-text-primary">Knowledge quiz</h1>
