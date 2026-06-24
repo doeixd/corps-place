@@ -131,14 +131,27 @@ function Quiz({ questions }: { questions: Question[] }) {
             value={explanation}
             onChange={(e) => setExplanation(e.target.value)}
           />
-          <div className="flex items-center gap-2">
-            <label className="text-text-secondary">Correct index</label>
-            <Input
-              className="w-20"
-              type="number"
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="text-text-secondary">Correct answer</label>
+            <Select
               value={String(correctIndex)}
-              onChange={(e) => setCorrectIndex(Number(e.target.value))}
-            />
+              onValueChange={(v) => v && setCorrectIndex(Number(v))}
+            >
+              <SelectTrigger size="sm" className="w-auto min-w-44 max-w-xs">
+                <SelectValue placeholder="Pick the correct choice" />
+              </SelectTrigger>
+              <SelectContent>
+                {choicesText
+                  .split('\n')
+                  .map((c) => c.trim())
+                  .filter(Boolean)
+                  .map((choice, i) => (
+                    <SelectItem key={i} value={String(i)}>
+                      {i + 1}. {choice}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
             <Select value={difficulty} onValueChange={(v) => v && setDifficulty(v as Difficulty)}>
               <SelectTrigger size="sm" className="w-28">
                 <SelectValue />
