@@ -124,32 +124,41 @@ Three issues repeat at **every** stage and are the highest-leverage fixes:
 
 ## Prioritized punch list
 
-**P0 — comprehension (cheap, highest impact)**
-1. Landing "what is this + how it works" strip (§3.1).
-2. Join page: "what joining means" + a post-join step-1 (§4.7).
-3. An `<Explain>` / glossary primitive → caption legend on standings + the quiz
-   "seeding" wording + settings help (§3).
+> Status after the post-audit pass: **P0 ✅ · P2 ✅ · P1 partial · P3 open.**
 
-**P1 — the notification matrix (§12.4, already designed)**
-4. A unified `NotificationService.emit`: push **and** email for draft-scheduled /
-   live / up-next / auto-picked / complete; per-user prefs. The single biggest
-   functional gap.
+**P0 — comprehension (cheap, highest impact) — ✅ DONE**
+1. ✅ Landing "what is this + how it works" strip (`HowItWorks`).
+2. ✅ Join page: "what joining means" pre-steps + the post-join step-1 (the dashboard
+   lands you on status narration + the Name-your-corps card).
+3. ✅ An `<Explain>` / glossary primitive → caption legend on standings + the quiz
+   "seeding" wording + settings (draft-type / scoring-mode) help.
 
-**P2 — surface polish**
-5. Standings: a scoring explainer + "updated after X" + a **mobile-compact** layout.
-6. Quiz: a progress indicator + a concrete completion next-step ("draft is {date}").
-7. Create / identity: "what's next" framing + team-vs-real-corps clarity.
+**P1 — the notification matrix (§12.4, already designed) — ⚠️ PARTIAL**
+4. Unified `NotificationService.emit` (push **and** email, per-user prefs) is still
+   the goal. **Done so far:** lifecycle **push** for draft-live / draft-complete /
+   auto-picked-you (`notifyMembers` in DraftService), on top of the existing
+   on-clock push + email reminders/digests. **Remaining:** the unified emit, email
+   parity for the new events, up-next lookahead, draft-scheduled, and per-user prefs.
 
-**P3 — nice-to-haves**
-8. Pre-draft order preview; richer invite metadata; push success confirmation.
+**P2 — surface polish — ✅ DONE**
+5. ✅ Standings: scoring explainer + "· updated {date}" + **mobile-compact** layout
+   (rank|corps|total always; subtotals at sm+; captions at lg+).
+6. ✅ Quiz: live answered-progress + a concrete completion next-step.
+7. ✅ Create framing + the corps-identity "this is your team, you draft real corps
+   later" clarity.
+
+**P3 — nice-to-haves — ❌ OPEN**
+8. Pre-draft order preview; richer invite metadata (who invited / draft date); push
+   success confirmation.
 
 ---
 
 ## Verdict
 
 The **engagement core is strong** — the draft room, logo board, queue, and settings
-all landed this pass and hold up. The **edges are thin**: the top of the funnel
-doesn't teach the game, the hand-offs between stages are silent, and notifications
-only cover a single moment. The cheapest wins are **P0** (comprehension copy + the
-glossary primitive); the biggest functional win is **P1** (the §12.4 notification
-matrix, already designed).
+hold up. After the post-audit pass the **edges are much thinner**: the funnel now
+teaches the game (landing/join), the jargon is explained (glossary across standings /
+quiz / settings), the hand-offs got copy (quiz completion, join steps), and
+notifications now cover the key draft-lifecycle moments via push. The remaining work
+is the **full §12.4 notification matrix** (unified emit + email parity + per-user
+prefs) and the **P3 niceties** — both larger and best validated against a live deploy.
