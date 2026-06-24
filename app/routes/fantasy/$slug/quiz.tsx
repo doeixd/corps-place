@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { createFileRoute, notFound, Link } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { PageShell } from '@/components/page-shell';
@@ -8,10 +9,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
-import { getLeague, getQuizForLeague } from '@/lib/server-fns/fantasy';
+import { getLeague, getQuizForLeague, getQuizReview } from '@/lib/server-fns/fantasy';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { Explain } from '@/components/fantasy/explain';
+import { useAsyncAction } from '@/lib/use-async-action';
+import { cn } from '@/lib/utils';
 import { fantasyQuizMachine } from '@/machines/fantasy-quiz-machine';
 
 export const Route = createFileRoute('/fantasy/$slug/quiz')({
@@ -92,7 +95,8 @@ function QuizSession({
   const [state, send] = useMachine(fantasyQuizMachine, { input: { leagueId, completedScore } });
   const { quiz, answers, score, error } = state.context;
 
-  if (state.matches('done')) return <Completed slug={slug} score={score ?? 0} />;
+  if (state.matches('done'))
+    return <Completed slug={slug} leagueId={leagueId} score={score ?? 0} />;
   if (state.matches('unavailable')) {
     return <Notice slug={slug}>No quiz questions are available yet. Check back soon.</Notice>;
   }
@@ -173,21 +177,113 @@ function QuizSession({
   );
 }
 
-function Completed({ slug, score }: { slug: string; score: number }) {
+type ReviewItem = {
+  prompt: string;
+  choices: string[];
+  correctIndex: number;
+  yourIndex: number;
+  explanation: string | null;
+};
+
+function Completed({
+  slug,
+  leagueId,
+  score,
+}: {
+  slug: string;
+  leagueId: string;
+  score: number;
+}) {
+  const [review, setReview] = useState<ReviewItem[] | null>(null);
+  const load = useAsyncAction(async () => {
+    const res = await getQuizReview({ data: { leagueId } });
+    setReview(res.available ? res.items : []);
+  });
+
   return (
-    <Card>
-      <CardContent className="flex flex-col items-start gap-3">
-        <p className="text-lg">
-          You scored <strong>{Math.round(score * 100)}%</strong> — your{' '}
-          <Explain term="seeding">draft order</Explain> is set.
-        </p>
-        <p className="text-sm text-muted-foreground">
-          When the owner starts the draft you&apos;ll pick in score order. We&apos;ll remind you
-          before it begins.
-        </p>
-        <BackToLeague slug={slug} />
-      </CardContent>
-    </Card>
+    <div className="flex flex-col gap-4">
+      <Card>
+        <CardContent className="flex flex-col items-start gap-3">
+          <p className="text-lg">
+            You scored <strong>{Math.round(score * 100)}%</strong> — your{' '}
+            <Explain term="seeding">draft order</Explain> is set.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            When the owner starts the draft you&apos;ll pick in score order. We&apos;ll remind you
+            before it begins.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            {review === null ? (
+              <BusyButton variant="outline" busy={load.busy} onClick={() => void load.run()}>
+                Review answers
+              </BusyButton>
+            ) : null}
+            <BackToLeague slug={slug} />
+          </div>
+          {load.error ? <p className="text-sm text-destructive">{load.error}</p> : null}
+        </CardContent>
+      </Card>
+
+      {review && review.length > 0
+        ? review.map((item, qi) => {
+            const gotIt = item.yourIndex === item.correctIndex;
+            return (
+              <Card key={qi}>
+                <CardContent className="flex flex-col gap-3">
+                  <p className="flex items-start gap-2 font-medium">
+                    <span>
+                      {qi + 1}. {item.prompt}
+                    </span>
+                    <span
+                      className={cn(
+                        'ml-auto shrink-0 text-xs font-semibold',
+                        gotIt ? 'text-green-600 dark:text-green-400' : 'text-destructive'
+                      )}
+                    >
+                      {gotIt ? 'Correct' : 'Missed'}
+                    </span>
+                  </p>
+                  <ul className="flex flex-col gap-1.5">
+                    {item.choices.map((choice, ci) => {
+                      const isCorrect = ci === item.correctIndex;
+                      const isYours = ci === item.yourIndex;
+                      return (
+                        <li
+                          key={ci}
+                          className={cn(
+                            'flex items-center gap-2 rounded-md border px-3 py-2 text-sm',
+                            isCorrect && 'border-green-500/40 bg-green-500/10 text-text-primary',
+                            !isCorrect && isYours && 'border-destructive/40 bg-destructive/10',
+                            !isCorrect && !isYours && 'border-border text-text-secondary'
+                          )}
+                        >
+                          <span>{choice}</span>
+                          {isCorrect ? (
+                            <span className="ml-auto text-xs font-medium text-green-600 dark:text-green-400">
+                              ✓ Correct answer
+                            </span>
+                          ) : isYours ? (
+                            <span className="ml-auto text-xs font-medium text-destructive">
+                              Your answer
+                            </span>
+                          ) : null}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {item.explanation ? (
+                    <p className="text-xs text-muted-foreground">{item.explanation}</p>
+                  ) : null}
+                </CardContent>
+              </Card>
+            );
+          })
+        : null}
+
+      {review !== null && review.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Your answers aren&apos;t available to review.</p>
+      ) : null}
+    </div>
   );
 }
 

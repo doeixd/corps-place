@@ -443,6 +443,17 @@ export const getQuizForLeague = createServerFn({ method: 'GET' })
     );
   });
 
+// Post-completion quiz review: the member's answers vs. the correct ones. Member-gated;
+// QuizService returns data only once the attempt is completed.
+export const getQuizReview = createServerFn({ method: 'GET' })
+  .validator((d: { leagueId: string }) => v.parse(v.object({ leagueId: v.string() }), d))
+  .handler(async ({ data }) => {
+    const actor = await requireActor();
+    return runFantasy(
+      Effect.flatMap(QuizService, (svc) => svc.getQuizReview({ actor, leagueId: data.leagueId }))
+    );
+  });
+
 // Strangler shim (P2): delegates to QuizService.submitQuiz (race-safe completion).
 export const submitQuiz = createServerFn({ method: 'POST' })
   .validator((d: unknown) =>

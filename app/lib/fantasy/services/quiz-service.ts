@@ -291,12 +291,60 @@ const makeQuizService = Effect.gen(function* () {
     return { ok: true as const, weightedScore: score.weighted };
   });
 
+  // Post-completion review: the member's finished attempt with each served question,
+  // their answer, and the correct answer. Only for a COMPLETED attempt (the quiz is
+  // over, so revealing correct_index can't be used to game the score). Member-gated.
+  const getQuizReview = Effect.fn('QuizService.getQuizReview')(function* (input: {
+    actor: Actor;
+    leagueId: string;
+  }) {
+    yield* g.requireMember(input.leagueId, input.actor);
+    const attempts = yield* sql<{ question_ids_json: string; answers_json: string | null }>`
+      SELECT question_ids_json, answers_json FROM fantasy_quiz_attempts
+      WHERE league_id = ${input.leagueId} AND user_id = ${input.actor.userId} AND completed_at IS NOT NULL
+    `.pipe(Effect.orDie);
+    const attempt = attempts[0];
+    if (!attempt) return { available: false as const };
+
+    const questionIds = JSON.parse(attempt.question_ids_json) as string[];
+    const answers = (attempt.answers_json ? JSON.parse(attempt.answers_json) : []) as number[];
+
+    const rows = yield* sql<{
+      question_id: string;
+      prompt: string;
+      choices_json: string;
+      correct_index: number;
+      explanation: string | null;
+    }>`
+      SELECT question_id, prompt, choices_json, correct_index, explanation
+      FROM fantasy_quiz_questions WHERE ${sql.in('question_id', questionIds)}
+    `.pipe(Effect.orDie);
+    const byId = new Map(rows.map((r) => [r.question_id, r]));
+
+    const items = questionIds
+      .map((id, i) => {
+        const r = byId.get(id);
+        if (!r) return null;
+        return {
+          prompt: r.prompt,
+          choices: JSON.parse(r.choices_json) as string[],
+          correctIndex: Number(r.correct_index),
+          yourIndex: typeof answers[i] === 'number' ? answers[i] : -1,
+          explanation: r.explanation ?? null,
+        };
+      })
+      .filter((x): x is NonNullable<typeof x> => x != null);
+
+    return { available: true as const, items };
+  });
+
   return {
     adminListQuestions,
     adminUpsertQuestion,
     adminSetQuestionActive,
     getQuizForLeague,
     submitQuiz,
+    getQuizReview,
   };
 });
 
