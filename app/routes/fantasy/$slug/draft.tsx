@@ -115,6 +115,8 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
         </div>
       ) : null}
 
+      {draft?.status === 'scheduled' ? <ProjectedOrder league={league} /> : null}
+
       {!draft || draft.status === 'scheduled' ? (
         <SchedulePanel
           send={send}
@@ -148,6 +150,49 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
         />
       )}
     </PageShell>
+  );
+}
+
+/** Pre-draft seeding preview (§ P3) — the projected pick order from quiz scores. */
+function ProjectedOrder({ league }: { league: LeagueData }) {
+  const byId = new Map(league.members.map((m) => [m.user_id, m]));
+  const anyQuiz = league.members.some((m) => m.quiz_taken);
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Projected draft order</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-2">
+        {anyQuiz ? (
+          <ol className="flex flex-col gap-1 text-sm">
+            {league.draftOrderPreview.map((uid, i) => {
+              const m = byId.get(uid);
+              return (
+                <li key={uid} className="flex items-center gap-2">
+                  <span className="w-5 text-xs text-muted-foreground">{i + 1}.</span>
+                  <span
+                    className="font-medium"
+                    style={m?.corps_color ? { color: m.corps_color } : undefined}
+                  >
+                    {m?.corps_name || m?.user_name || 'Player'}
+                  </span>
+                  {!m?.quiz_taken ? (
+                    <span className="text-xs text-muted-foreground">(quiz not taken)</span>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ol>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            The order is set by quiz scores — it&apos;ll appear here as members take the quiz.
+          </p>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Projected from quiz scores so far; the final order locks when the draft starts.
+        </p>
+      </CardContent>
+    </Card>
   );
 }
 

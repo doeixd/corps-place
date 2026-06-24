@@ -22,6 +22,7 @@ import {
   type LeagueConfig,
 } from '@/lib/fantasy/config';
 import { makeLeagueSlug, inviteUrl } from '@/lib/fantasy/invites';
+import { resolveDraftOrder } from '@/lib/fantasy/draft-order';
 import { getSeasonFinals } from '@/lib/fantasy/score-db';
 import { LeagueConflict, NotFound, RateLimited } from './errors';
 import { leagueReducer, type LeagueStatus } from '@/lib/fantasy/machines/league';
@@ -54,6 +55,7 @@ interface MemberRow {
   corps_color: unknown;
   draft_position: unknown;
   quiz_taken: unknown;
+  quiz_score: unknown;
   user_name: unknown;
   user_image: unknown;
 }
@@ -100,7 +102,7 @@ const makeLeagueService = Effect.gen(function* () {
 
     const memberRows = yield* sql<MemberRow>`
       SELECT m.user_id, m.role, m.corps_name, m.show_title, m.corps_logo_media_id,
-             m.corps_color, m.draft_position, m.status,
+             m.corps_color, m.draft_position, m.status, m.quiz_score,
              (m.quiz_score IS NOT NULL) AS quiz_taken,
              u.name AS user_name, u.image AS user_image
       FROM fantasy_members m
@@ -142,6 +144,24 @@ const makeLeagueService = Effect.gen(function* () {
       isOwner: input.viewerUserId ? league.owner_user_id === input.viewerUserId : false,
     };
 
+    // Projected draft seeding (§ P3) — quiz scores stay server-side; only the
+    // resulting order (member ids) is returned. Reflects who's taken the quiz so far.
+    const config = JSON.parse(league.config_json) as LeagueConfig;
+    const manualOrder = memberRows
+      .filter((m) => m.draft_position != null)
+      .sort((a, b) => Number(a.draft_position) - Number(b.draft_position))
+      .map((m) => m.user_id);
+    const draftOrderPreview = resolveDraftOrder(
+      memberRows.map((m) => ({
+        userId: m.user_id,
+        quizScore: m.quiz_score == null ? null : Number(m.quiz_score),
+        completedAt: null,
+      })),
+      config.quizOrderDir,
+      league.league_id,
+      manualOrder
+    );
+
     // Default shareable invite link, shown to the owner without a button — the
     // newest still-usable reusable invite (max_uses > 1). Read-only here; null
     // means the owner hasn't created one yet (§ invite rework).
@@ -169,12 +189,13 @@ const makeLeagueService = Effect.gen(function* () {
         season: league.season,
         status: league.status,
         maxMembers: Number(league.max_members),
-        config: JSON.parse(league.config_json) as LeagueConfig,
+        config,
         paymentStatus: league.payment_status,
         imageMediaId: strOrNull(league.image_media_id),
       },
       members,
       draft,
+      draftOrderPreview,
       viewer,
       shareInvite,
       paymentsEnabled: paymentsEnabled(),
