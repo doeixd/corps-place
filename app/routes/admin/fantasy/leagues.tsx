@@ -154,47 +154,49 @@ function Leagues({ leagues }: { leagues: AdminLeagueRow[] }) {
       </Card>
 
       <Show when={detail}>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-semibold">
-              {detail!.league.name} — members{' '}
-              <span className="text-text-secondary">(draft: {detail!.draftStatus ?? 'none'})</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm">
-            <div className="flex flex-col divide-y divide-border">
-              <For each={detail!.members}>
-                {(m) => (
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
-                    <span className="font-medium">{m.corpsName ?? '(no corps name)'}</span>
-                    <span className="text-text-secondary">
-                      {m.role} · {m.status}
-                    </span>
-                    <BusyButton
-                      variant="ghost"
-                      size="sm"
-                      className="ml-auto"
-                      busy={act.busy}
-                      onClick={() => {
-                        if (!confirm('Clear this member’s corps identity (name/logo/colors)?'))
-                          return;
-                        void act.run(
-                          () =>
-                            adminTakedownIdentity({
-                              data: { leagueId: detail!.league.leagueId, userId: m.userId },
-                            }),
-                          detail!.league.leagueId
-                        );
-                      }}
-                    >
-                      Take down identity
-                    </BusyButton>
-                  </div>
-                )}
-              </For>
-            </div>
-          </CardContent>
-        </Card>
+        {(d) => (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold">
+                {d.league.name} — members{' '}
+                <span className="text-text-secondary">(draft: {d.draftStatus ?? 'none'})</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm">
+              <div className="flex flex-col divide-y divide-border">
+                <For each={d.members}>
+                  {(m) => (
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
+                      <span className="font-medium">{m.corpsName ?? '(no corps name)'}</span>
+                      <span className="text-text-secondary">
+                        {m.role} · {m.status}
+                      </span>
+                      <BusyButton
+                        variant="ghost"
+                        size="sm"
+                        className="ml-auto"
+                        busy={act.busy}
+                        onClick={() => {
+                          if (!confirm('Clear this member’s corps identity (name/logo/colors)?'))
+                            return;
+                          void act.run(
+                            () =>
+                              adminTakedownIdentity({
+                                data: { leagueId: d.league.leagueId, userId: m.userId },
+                              }),
+                            d.league.leagueId
+                          );
+                        }}
+                      >
+                        Take down identity
+                      </BusyButton>
+                    </div>
+                  )}
+                </For>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </Show>
     </>
   );

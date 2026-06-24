@@ -67,6 +67,9 @@ COPY --from=builder /app/.output .output
 COPY --from=builder /app/docker-entrypoint.sh docker-entrypoint.sh
 COPY --from=builder /app/scripts/pullReadModel.mjs scripts/pullReadModel.mjs
 COPY --from=builder /app/scripts/pullMediaCache.mjs scripts/pullMediaCache.mjs
+# Deterministic boot-time contributions.db migration + its shared column list.
+COPY --from=builder /app/scripts/migrate-contributions.mjs scripts/migrate-contributions.mjs
+COPY --from=builder /app/scripts/contributions-migrations.mjs scripts/contributions-migrations.mjs
 
 RUN chmod +x /app/docker-entrypoint.sh
 

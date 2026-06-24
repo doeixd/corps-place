@@ -24,4 +24,10 @@ else
   timeout 120 node /app/scripts/pullMediaCache.mjs || echo "[entrypoint] media-cache pull skipped/timed out — serving on-disk data"
 fi
 
+# Apply contributions.db column migrations deterministically, before serving — the
+# lazy first-request path proved unreliable. Best-effort: never blocks boot (the
+# app's own ensureColumns remains a fallback).
+echo "[entrypoint] applying contributions.db migrations…"
+node /app/scripts/migrate-contributions.mjs || echo "[entrypoint] migration step failed — continuing"
+
 exec node .output/server/index.mjs

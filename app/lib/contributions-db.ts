@@ -1,6 +1,9 @@
 import { createClient, type Client } from '@libsql/client';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
+// Additive-column migrations: single source of truth shared with the boot-time
+// migrator (scripts/migrate-contributions.mjs) so the two can never drift.
+import { applyAddColumns } from '../../scripts/contributions-migrations.mjs';
 
 /**
  * The contributions store (Show Detail Wiki, M0).
@@ -601,84 +604,13 @@ const SCHEMA = [
 ];
 
 /**
- * Additive column migrations that can't live in the `CREATE … IF NOT EXISTS` batch
- * because SQLite's `ALTER TABLE ADD COLUMN` errors if the column already exists
- * (ADMIN_PAGE_PLAN §6.3). Guard each with a `table_info` check so it's idempotent.
+ * Apply the additive column migrations. The list lives in
+ * scripts/contributions-migrations.mjs (single source of truth, shared with the
+ * boot-time migrator scripts/migrate-contributions.mjs). Resilient: a single
+ * failing ALTER logs + continues, so it never aborts the rest or blocks startup.
  */
-const ADD_COLUMNS: { table: string; column: string; ddl: string }[] = [
-  {
-    table: 'show_revisions',
-    column: 'hidden',
-    ddl: 'ALTER TABLE show_revisions ADD COLUMN hidden INTEGER DEFAULT 0',
-  },
-  {
-    table: 'show_media',
-    column: 'hidden',
-    ddl: 'ALTER TABLE show_media ADD COLUMN hidden INTEGER DEFAULT 0',
-  },
-  // better-auth admin plugin columns on the `user` table (ADMIN_PAGE_PLAN §7). Added
-  // here (guarded) since this app has no better-auth CLI/migrate step; matches the
-  // plugin's schema. `user` is a reserved word → quote it.
-  {
-    table: 'user',
-    column: 'banned',
-    ddl: 'ALTER TABLE "user" ADD COLUMN banned INTEGER DEFAULT 0',
-  },
-  { table: 'user', column: 'banReason', ddl: 'ALTER TABLE "user" ADD COLUMN banReason TEXT' },
-  { table: 'user', column: 'banExpires', ddl: 'ALTER TABLE "user" ADD COLUMN banExpires TEXT' },
-  // email_log gained a status column after its first deploy (ADMIN_PAGE_PLAN §10.3).
-  { table: 'email_log', column: 'status', ddl: 'ALTER TABLE email_log ADD COLUMN status TEXT' },
-  // League banner/avatar image, added after fantasy_leagues' first deploy.
-  {
-    table: 'fantasy_leagues',
-    column: 'image_media_id',
-    ddl: 'ALTER TABLE fantasy_leagues ADD COLUMN image_media_id TEXT',
-  },
-  // First-sign-in consent (site-wide gate). camelCase column names match the
-  // better-auth `additionalFields` keys in auth.ts so the session exposes them.
-  // termsAcceptedAt/termsVersion record acceptance (re-gate when the version bumps);
-  // contactConsent is the optional email opt-in (master switch for all emails).
-  {
-    table: 'user',
-    column: 'termsAcceptedAt',
-    ddl: 'ALTER TABLE "user" ADD COLUMN termsAcceptedAt TEXT',
-  },
-  { table: 'user', column: 'termsVersion', ddl: 'ALTER TABLE "user" ADD COLUMN termsVersion TEXT' },
-  {
-    table: 'user',
-    column: 'contactConsent',
-    ddl: 'ALTER TABLE "user" ADD COLUMN contactConsent INTEGER DEFAULT 0',
-  },
-  // Per-member notification opt-outs (default on). The owner's league-wide
-  // notify.email/push is the gate; these let an individual member mute their own.
-  {
-    table: 'fantasy_members',
-    column: 'notify_email',
-    ddl: 'ALTER TABLE fantasy_members ADD COLUMN notify_email INTEGER DEFAULT 1',
-  },
-  {
-    table: 'fantasy_members',
-    column: 'notify_push',
-    ddl: 'ALTER TABLE fantasy_members ADD COLUMN notify_push INTEGER DEFAULT 1',
-  },
-  // Fantasy Test Lab (docs/plans/FANTASY_TEST_LAB_PLAN.md): a sandbox league + bot
-  // users an admin drives to exercise the features. Flagged rows are excluded from
-  // the real standings cron, notification dispatch, and admin adoption stats.
-  {
-    table: 'fantasy_leagues',
-    column: 'is_test',
-    ddl: 'ALTER TABLE fantasy_leagues ADD COLUMN is_test INTEGER DEFAULT 0',
-  },
-  { table: 'user', column: 'isBot', ddl: 'ALTER TABLE "user" ADD COLUMN isBot INTEGER DEFAULT 0' },
-];
-
 const ensureColumns = async (db: Client): Promise<void> => {
-  for (const { table, column, ddl } of ADD_COLUMNS) {
-    const cols = (await db.execute(`PRAGMA table_info(${table})`)).rows as unknown as {
-      name: string;
-    }[];
-    if (!cols.some((c) => c.name === column)) await db.execute(ddl);
-  }
+  await applyAddColumns(db);
 };
 
 /**
