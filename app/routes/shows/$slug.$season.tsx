@@ -51,13 +51,19 @@ export const Route = createFileRoute('/shows/$slug/$season')({
   loader: async ({ params }) => {
     const { slug, season } = params;
     const corps = await getCorps({ data: slug });
-    const show = corps?.corps_key
-      ? await getShowDetail({ data: { corpsKey: corps.corps_key, season } })
-      : null;
+    const key = corps?.corps_key;
+    // show / contributions / history / citations each depend only on the corps key —
+    // NOT on one another — so fetch them in one parallel batch instead of a 4-deep
+    // server-fn waterfall (one round-trip instead of four after the corps lookup).
+    const [show, contributions, history, citations] = key
+      ? await Promise.all([
+          getShowDetail({ data: { corpsKey: key, season } }),
+          getShowContributions({ data: { corpsKey: key, season } }),
+          getShowHistory({ data: { corpsKey: key, season } }),
+          listCitations({ data: { corpsKey: key, season } }),
+        ])
+      : [null, null, [] as Awaited<ReturnType<typeof getShowHistory>>, [] as Awaited<ReturnType<typeof listCitations>>];
     // Authored contributions overlay (uniform/props/links, free-form concept).
-    const contributions = corps?.corps_key
-      ? await getShowContributions({ data: { corpsKey: corps.corps_key, season } })
-      : null;
     const blockContent = <T,>(key: string): T | null => {
       const block = contributions?.blocks.find((b) => b.pinned_key === key);
       if (!block) return null;
@@ -77,12 +83,6 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       cover: blockContent<CoverInput>('cover'),
       about: blockContent<FreeFormDoc>('about'),
     };
-    const history = corps?.corps_key
-      ? await getShowHistory({ data: { corpsKey: corps.corps_key, season } })
-      : [];
-    const citations = corps?.corps_key
-      ? await listCitations({ data: { corpsKey: corps.corps_key, season } })
-      : [];
     return { corps, show, season, authored, history, citations };
   },
   head: ({ loaderData, params }) => {
