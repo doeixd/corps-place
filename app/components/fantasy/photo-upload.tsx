@@ -45,7 +45,8 @@ export function PhotoUpload({
 }) {
   const radius = shape === 'round' ? 'rounded-full' : 'rounded';
   // In fill mode the box stretches to the parent's height and stays square.
-  const box = fill ? 'h-full aspect-square' : size;
+  // In fill mode the parent reserves the (square) footprint; the box just fills it.
+  const box = fill ? 'h-full w-full' : size;
   const fileInput = (
     <input
       type="file"
@@ -61,7 +62,7 @@ export function PhotoUpload({
   if (variant === 'overlay') {
     return (
       <label
-        className={`group relative cursor-pointer ${fill ? 'flex h-full' : 'inline-block'}`}
+        className={`group relative cursor-pointer ${fill ? 'flex h-full w-full' : 'inline-block'}`}
         title={mediaId ? (labels?.change ?? 'Change image') : (labels?.empty ?? 'Add image')}
       >
         {mediaId ? (

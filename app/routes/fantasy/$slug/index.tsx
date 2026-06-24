@@ -106,11 +106,13 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
               onChanged={refresh}
             />
           ) : league.imageMediaId ? (
-            <img
-              src={`/api/fantasy-media/${league.imageMediaId}`}
-              alt=""
-              className="aspect-square h-full shrink-0 self-stretch rounded border border-border object-contain"
-            />
+            <div className="aspect-square shrink-0 self-stretch overflow-hidden rounded border border-border">
+              <img
+                src={`/api/fantasy-media/${league.imageMediaId}`}
+                alt=""
+                className="h-full w-full object-contain"
+              />
+            </div>
           ) : null}
           <div className="min-w-0 space-y-1">
             <p className="flex items-center gap-2 text-[11px] tracking-wider text-text-secondary lowercase [font-variant:small-caps]">
@@ -308,7 +310,7 @@ function LeagueImageUpload({
     (err) => `Image upload failed: ${err.message}`
   );
   return (
-    <div className="relative self-stretch">
+    <div className="relative aspect-square shrink-0 self-stretch">
       <PhotoUpload
         mediaId={mediaId}
         busy={upload.busy}
