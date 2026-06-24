@@ -855,8 +855,6 @@ function DraftBoard({
   currentUserId: string | null;
   captionCaps: Record<CaptionKey, number>;
 }) {
-  // Collapsible so it doesn't eat the screen on mobile while you're picking.
-  const [open, setOpen] = useState(true);
   const corpsByKey = new Map(pool.map((c) => [c.corpsKey, c]));
 
   // Every pick per (player, caption), in draft order — a caption can hold more
@@ -884,14 +882,10 @@ function DraftBoard({
 
   return (
     <Card>
-      <CardHeader className="flex-row items-center justify-between gap-2">
+      <CardHeader>
         <CardTitle>Draft board</CardTitle>
-        <Button size="xs" variant="ghost" onClick={() => setOpen((v) => !v)}>
-          {open ? 'Hide' : 'Show'}
-        </Button>
       </CardHeader>
-      {open ? (
-        <CardContent className="overflow-x-auto">
+      <CardContent className="overflow-x-auto">
           <p className="mb-2 text-xs text-muted-foreground">
             Each corps shows its scoring weight (×) — bigger logos count for more. Captions
             that hold more than one corps stack down the rows.
@@ -973,7 +967,6 @@ function DraftBoard({
             </TableBody>
           </Table>
         </CardContent>
-      ) : null}
     </Card>
   );
 }

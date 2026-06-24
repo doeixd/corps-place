@@ -98,7 +98,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
     <PageShell className="flex flex-col gap-8">
       <header className="mb-2 space-y-3">
         <BackLink to="/fantasy" label="My leagues" />
-        <div className="flex items-stretch gap-3">
+        <div className="flex items-start gap-3">
           {viewer.isOwner ? (
             <LeagueImageUpload
               leagueId={league.leagueId}
@@ -106,7 +106,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
               onChanged={refresh}
             />
           ) : league.imageMediaId ? (
-            <div className="aspect-square shrink-0 self-stretch overflow-hidden rounded border border-border">
+            <div className="size-16 shrink-0 overflow-hidden rounded border border-border">
               <img
                 src={`/api/fantasy-media/${league.imageMediaId}`}
                 alt=""
@@ -116,7 +116,8 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
           ) : null}
           <div className="min-w-0 space-y-1">
             <p className="flex items-center gap-2 text-[11px] tracking-wider text-text-secondary lowercase [font-variant:small-caps]">
-              Fantasy Drum Corps · Season {league.season}
+              Fantasy Drum Corps · Season{' '}
+              <span className="text-[0.85em] tabular-nums">{league.season}</span>
               {league.isTest ? (
                 <Badge variant="warning-light" size="sm">
                   TEST
@@ -310,14 +311,14 @@ function LeagueImageUpload({
     (err) => `Image upload failed: ${err.message}`
   );
   return (
-    <div className="relative aspect-square shrink-0 self-stretch">
+    <div className="relative shrink-0">
       <PhotoUpload
         mediaId={mediaId}
         busy={upload.busy}
         onFile={(file) => upload.run(file)}
         alt="League image"
         variant="overlay"
-        fill
+        size="size-16"
         labels={{ empty: 'Add image', change: 'Change image' }}
       />
       {upload.error ? (
@@ -350,25 +351,23 @@ function LeagueNameHeading({
   });
 
   if (!editing) {
+    if (!canEdit) return <h1 className="text-2xl font-bold text-text-primary">{name}</h1>;
+    // The title itself is the edit affordance — click it to rename. A faint pencil
+    // appears on hover so it reads as editable, but there's no separate button.
     return (
-      <div className="flex items-center gap-1.5">
+      <button
+        type="button"
+        aria-label="Rename league"
+        title="Rename league"
+        className="group flex items-center gap-1.5 text-left"
+        onClick={() => {
+          setDraft(name);
+          setEditing(true);
+        }}
+      >
         <h1 className="text-2xl font-bold text-text-primary">{name}</h1>
-        {canEdit ? (
-          <Button
-            size="xs"
-            variant="ghost"
-            aria-label="Rename league"
-            title="Rename league"
-            className="px-1.5 text-text-secondary/60 hover:text-text-secondary"
-            onClick={() => {
-              setDraft(name);
-              setEditing(true);
-            }}
-          >
-            <NoteEditIcon className="size-4" />
-          </Button>
-        ) : null}
-      </div>
+        <NoteEditIcon className="size-4 text-text-secondary/50 opacity-0 transition-opacity group-hover:opacity-100" />
+      </button>
     );
   }
 
