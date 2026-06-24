@@ -847,16 +847,32 @@ function DraftBoard({
   currentUserId: string | null;
   captionCaps: Record<CaptionKey, number>;
 }) {
+  // Collapsible so it doesn't eat the screen on mobile while you're picking.
   const [open, setOpen] = useState(true);
   const corpsByKey = new Map(pool.map((c) => [c.corpsKey, c]));
-  const totalSlots = CAPTION_KEYS.reduce((s, c) => s + (captionCaps[c] ?? 0), 0);
 
-  const byUser = new Map<string, DraftState['snapshot']['picks']>();
+  // Every pick per (player, caption), in draft order — a caption can hold more
+  // than one corps (captionCaps), so each fills its own slot/row.
+  const cell = new Map<string, DraftState['snapshot']['picks']>();
   for (const p of [...picks].sort((a, b) => a.pickNo - b.pickNo)) {
-    const arr = byUser.get(p.userId);
+    const k = `${p.userId}|${p.caption}`;
+    const arr = cell.get(k);
     if (arr) arr.push(p);
-    else byUser.set(p.userId, [p]);
+    else cell.set(k, [p]);
   }
+  // One row per slot depth; the tallest caption sets how many rows a player spans.
+  const maxCap = Math.max(1, ...CAPTION_KEYS.map((c) => captionCaps[c] ?? 1));
+  const slots = Array.from({ length: maxCap }, (_, i) => i);
+
+  // Logo size scales with the pick's scoring weight, so heavier picks sit larger
+  // and their rows grow taller — the board reads as "how much each corps counts."
+  // Relative to the weights actually on the board (any min/max config; all-equal
+  // weights collapse to a single mid size).
+  const weights = picks.map((p) => p.weight);
+  const minW = weights.length ? Math.min(...weights) : 0;
+  const maxW = weights.length ? Math.max(...weights) : 0;
+  const logoSize = (w: number): number =>
+    maxW <= minW ? 34 : Math.round(24 + 26 * ((w - minW) / (maxW - minW))); // 24–50px
 
   return (
     <Card>
@@ -869,81 +885,83 @@ function DraftBoard({
       {open ? (
         <CardContent className="overflow-x-auto">
           <p className="mb-2 text-xs text-muted-foreground">
-            Every pick so far. <span className="font-medium">Weight</span> is how much that corps
-            counts toward the player&apos;s score — later picks weigh more.
+            Each corps shows its scoring weight (×) — bigger logos count for more. Captions
+            that hold more than one corps stack down the rows.
           </p>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Player</TableHead>
-                <TableHead>Corps</TableHead>
-                <TableHead className="text-center">Caption</TableHead>
-                <TableHead className="text-right">Weight</TableHead>
+                <TableHead className="sticky left-0 bg-background">Player</TableHead>
+                {CAPTION_KEYS.map((c) => (
+                  <TableHead key={c} className="px-2 text-center" title={KEY_TO_CAPTION_NAME[c]}>
+                    {c}
+                    {(captionCaps[c] ?? 1) > 1 ? (
+                      <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">
+                        ×{captionCaps[c]}
+                      </span>
+                    ) : null}
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {members.map((m) => {
-                const ps = byUser.get(m.user_id) ?? [];
-                const nameCell = (
-                  <TableCell
-                    rowSpan={Math.max(1, ps.length)}
-                    className="align-top font-medium whitespace-nowrap"
-                    style={m.corps_color ? { color: m.corps_color } : undefined}
+              {members.map((m) =>
+                slots.map((slot) => (
+                  <TableRow
+                    key={`${m.user_id}-${slot}`}
+                    className={cn(
+                      m.user_id === currentUserId && 'bg-muted/40',
+                      slot > 0 && 'border-t-0'
+                    )}
                   >
-                    {m.corps_name || m.user_name || 'Player'}
-                    <span className="block text-xs font-normal text-text-secondary">
-                      {ps.length}/{totalSlots} picks
-                    </span>
-                  </TableCell>
-                );
-                if (ps.length === 0) {
-                  return (
-                    <TableRow
-                      key={m.user_id}
-                      className={cn(m.user_id === currentUserId && 'bg-muted/40')}
-                    >
-                      {nameCell}
-                      <TableCell colSpan={3} className="text-sm text-muted-foreground">
-                        No picks yet
+                    {slot === 0 ? (
+                      <TableCell
+                        rowSpan={maxCap}
+                        className="sticky left-0 bg-background align-middle font-medium whitespace-nowrap"
+                        style={m.corps_color ? { color: m.corps_color } : undefined}
+                      >
+                        {m.corps_name || m.user_name || 'Player'}
                       </TableCell>
-                    </TableRow>
-                  );
-                }
-                return ps.map((pick, i) => {
-                  const corps = corpsByKey.get(pick.corpsKey);
-                  return (
-                    <TableRow
-                      key={pick.pickNo}
-                      className={cn(
-                        m.user_id === currentUserId && 'bg-muted/40',
-                        i > 0 && 'border-t-0'
-                      )}
-                    >
-                      {i === 0 ? nameCell : null}
-                      <TableCell>
-                        <span className="flex items-center gap-2">
-                          <CorpsLogo
-                            name={corps?.name ?? pick.corpsKey}
-                            logo={corps?.corpsLogo ?? ''}
-                            width={24}
-                            className="size-6 shrink-0"
-                          />
-                          <span className="whitespace-nowrap">{corps?.name ?? pick.corpsKey}</span>
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center" title={KEY_TO_CAPTION_NAME[pick.caption]}>
-                        {pick.caption}
-                      </TableCell>
-                      <TableCell className="text-right tabular-nums">
-                        ×{pick.weight.toFixed(2)}
-                        {pick.autoPicked ? (
-                          <span className="ml-1 text-[10px] text-muted-foreground">auto</span>
-                        ) : null}
-                      </TableCell>
-                    </TableRow>
-                  );
-                });
-              })}
+                    ) : null}
+                    {CAPTION_KEYS.map((c) => {
+                      const cap = captionCaps[c] ?? 1;
+                      // This caption holds fewer corps than the tallest column — no slot here.
+                      if (slot >= cap)
+                        return <TableCell key={c} className="bg-muted/15 p-1" aria-hidden />;
+                      const pick = cell.get(`${m.user_id}|${c}`)?.[slot];
+                      const corps = pick ? corpsByKey.get(pick.corpsKey) : undefined;
+                      const size = pick ? logoSize(pick.weight) : 0;
+                      return (
+                        <TableCell key={c} className="p-1 text-center align-middle">
+                          {pick ? (
+                            <span
+                              className="inline-flex flex-col items-center gap-0.5"
+                              title={`${corps?.name ?? pick.corpsKey} — ${KEY_TO_CAPTION_NAME[c]}${pick.autoPicked ? ' (auto-pick)' : ''}`}
+                            >
+                              <span
+                                className="grid shrink-0 place-items-center"
+                                style={{ width: size, height: size }}
+                              >
+                                <CorpsLogo
+                                  name={corps?.name ?? pick.corpsKey}
+                                  logo={corps?.corpsLogo ?? ''}
+                                  width={size}
+                                  className="h-full w-full"
+                                />
+                              </span>
+                              <span className="text-[10px] leading-none tabular-nums text-muted-foreground">
+                                ×{pick.weight.toFixed(1)}
+                              </span>
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">·</span>
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
