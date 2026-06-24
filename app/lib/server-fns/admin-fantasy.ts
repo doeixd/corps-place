@@ -13,6 +13,8 @@ import { requireCapability } from '@/lib/authz';
 import { writeAudit } from '@/lib/admin-audit';
 import { makeLeagueSlug } from '@/lib/fantasy/invites';
 import { resolveLeagueConfig, type LeagueConfig } from '@/lib/fantasy/config';
+import { sendEmail } from '@/lib/email';
+import { sendPushToUser } from '@/lib/fantasy/push';
 import { CAPTION_KEYS, CAPTION_CATEGORY, type CaptionKey } from '@/lib/fantasy/captions';
 import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { Effect } from 'effect';
@@ -311,17 +313,31 @@ export const adminListTestLeagues = createServerFn({ method: 'GET' }).handler(as
     await db.execute(
       `SELECT l.league_id, l.slug, l.name, l.status, l.season,
               (SELECT COUNT(*) FROM fantasy_members m WHERE m.league_id = l.league_id AND m.status='active') AS members,
+              d.status AS draft_status, d.current_pick_no, d.total_rounds, cu.name AS on_clock_name,
               l.created_at
-       FROM fantasy_leagues l WHERE l.is_test = 1 ORDER BY l.created_at DESC`
+       FROM fantasy_leagues l
+       LEFT JOIN fantasy_drafts d ON d.league_id = l.league_id
+       LEFT JOIN "user" cu ON cu.id = d.current_user_id
+       WHERE l.is_test = 1 ORDER BY l.created_at DESC`
     )
   ).rows as unknown as Array<{
     league_id: string; slug: string; name: string; status: string; season: string;
-    members: number; created_at: string;
+    members: number; draft_status: string | null; current_pick_no: number | null;
+    total_rounds: number | null; on_clock_name: string | null; created_at: string;
   }>;
   return {
     leagues: rows.map((r) => ({
       leagueId: r.league_id, slug: r.slug, name: r.name, status: r.status,
       season: r.season, members: Number(r.members), createdAt: r.created_at,
+      draftStatus: r.draft_status,
+      draftProgress:
+        r.draft_status === 'live' && r.total_rounds != null
+          ? {
+              pickNo: Number(r.current_pick_no ?? 0) + 1,
+              totalPicks: Number(r.total_rounds) * Number(r.members),
+              onClock: r.on_clock_name ?? null,
+            }
+          : null,
     })),
   };
 });
@@ -601,4 +617,83 @@ export const adminSeedSyntheticScores = createServerFn({ method: 'POST' })
       after: { members: rows.length, final: data.final } as unknown,
     });
     return { ok: true as const, members: rows.length };
+  });
+
+// --- Test Lab P6: notification preview (send a template to the admin only) ---
+
+const PREVIEW_LEAGUE = 'Test League';
+const TEST_NOTIF: Record<
+  string,
+  { label: string; email?: { subject: string; html: string }; push?: { title: string; body: string } }
+> = {
+  draft_scheduled: {
+    label: 'Draft scheduled (email)',
+    email: {
+      subject: `Draft scheduled — ${PREVIEW_LEAGUE}`,
+      html: `<p>The draft for <strong>${PREVIEW_LEAGUE}</strong> is set for <strong>${new Date().toUTCString()}</strong>. Open the app for a local countdown, and be in the draft room when it starts.</p>`,
+    },
+  },
+  draft_live: {
+    label: 'Draft live (email + push)',
+    email: {
+      subject: `Your ${PREVIEW_LEAGUE} draft is live`,
+      html: `<p>The draft room for <strong>${PREVIEW_LEAGUE}</strong> is open — come make your picks before your timer runs out.</p>`,
+    },
+    push: { title: 'Your draft is live', body: 'The draft room is open — come watch and make your picks.' },
+  },
+  draft_complete: {
+    label: 'Draft complete (email + push)',
+    email: {
+      subject: `Your ${PREVIEW_LEAGUE} draft is complete`,
+      html: `<p>Every pick is in for <strong>${PREVIEW_LEAGUE}</strong>. See the final rosters and follow the standings as the season scores.</p>`,
+    },
+    push: { title: 'Draft complete', body: 'Every pick is in — see the final rosters and the standings.' },
+  },
+  on_clock: {
+    label: 'On the clock (push)',
+    push: { title: "You're on the clock", body: 'Make your fantasy draft pick before the timer runs out.' },
+  },
+  on_deck: {
+    label: 'On deck (push)',
+    push: { title: "You're on deck", body: "You're up right after the current pick — get your corps ready." },
+  },
+  standings: {
+    label: 'Standings updated (email)',
+    email: {
+      subject: `Standings updated — ${PREVIEW_LEAGUE}`,
+      html: `<p>Standings just updated after the latest recap for <strong>${PREVIEW_LEAGUE}</strong>. Open the app to see where your corps landed.</p>`,
+    },
+  },
+};
+
+/** Send one notification template to the ADMIN only, to preview copy. Cap: manageFantasyLeagues. */
+export const adminSendTestNotification = createServerFn({ method: 'POST' })
+  .validator((d: unknown) =>
+    v.parse(v.object({ kind: v.picklist(Object.keys(TEST_NOTIF) as [string, ...string[]]) }), d)
+  )
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const db = await getContributionsDb();
+    const tpl = TEST_NOTIF[data.kind];
+    const me = (
+      await db.execute({ sql: `SELECT email FROM "user" WHERE id = ?`, args: [actor.userId] })
+    ).rows[0] as { email?: string } | undefined;
+
+    let emailedTo: string | null = null;
+    let pushed = false;
+    if (tpl.email && me?.email) {
+      await sendEmail({
+        to: me.email,
+        subject: `[TEST] ${tpl.email.subject}`,
+        html: tpl.email.html,
+        tag: 'fantasy_test_preview',
+      });
+      emailedTo = me.email;
+    }
+    if (tpl.push) {
+      await sendPushToUser(actor.userId, { ...tpl.push, url: '/admin/fantasy/test-lab' }).catch(() => {});
+      pushed = true;
+    }
+    await writeAudit(db, actor, { action: 'test_send_notification', target: data.kind });
+    return { ok: true as const, emailedTo, pushed };
   });

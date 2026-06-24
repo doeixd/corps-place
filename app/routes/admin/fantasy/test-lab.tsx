@@ -25,7 +25,17 @@ import {
   adminSeedQuizQuestions,
   adminResetQuizAttempt,
   adminSeedSyntheticScores,
+  adminSendTestNotification,
 } from '@/lib/server-fns/admin-fantasy';
+
+const NOTIF_KINDS: { kind: string; label: string }[] = [
+  { kind: 'draft_scheduled', label: 'Scheduled (email)' },
+  { kind: 'draft_live', label: 'Live (email+push)' },
+  { kind: 'draft_complete', label: 'Complete (email+push)' },
+  { kind: 'on_clock', label: 'On the clock (push)' },
+  { kind: 'on_deck', label: 'On deck (push)' },
+  { kind: 'standings', label: 'Standings (email)' },
+];
 
 type TestLeague = Awaited<ReturnType<typeof adminListTestLeagues>>['leagues'][number];
 
@@ -53,6 +63,14 @@ function TestLab({ leagues }: { leagues: TestLeague[] }) {
   const seedQuiz = useAsyncAction(async () => {
     const r = await adminSeedQuizQuestions();
     setSeedMsg(`Quiz bank seeded — ${r.added} added (${r.total} sample questions).`);
+  });
+
+  const [notifMsg, setNotifMsg] = useState<string | null>(null);
+  const sendNotif = useAsyncAction(async (kind: string) => {
+    const r = await adminSendTestNotification({ data: { kind } });
+    setNotifMsg(
+      `Sent — ${r.emailedTo ? `email → ${r.emailedTo}` : 'no email on file'}${r.pushed ? ' + push' : ''}.`
+    );
   });
 
   const create = useAsyncAction(async () => {
@@ -142,6 +160,31 @@ function TestLab({ leagues }: { leagues: TestLeague[] }) {
         </CardContent>
       </Card>
 
+      <Card className="mb-4">
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold text-text-secondary">
+            Notification preview (sends to you)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2">
+          <div className="flex flex-wrap gap-2">
+            {NOTIF_KINDS.map((n) => (
+              <Button
+                key={n.kind}
+                size="sm"
+                variant="outline"
+                disabled={sendNotif.busy}
+                onClick={() => void sendNotif.run(n.kind)}
+              >
+                {n.label}
+              </Button>
+            ))}
+          </div>
+          {notifMsg ? <p className="text-sm text-text-secondary">{notifMsg}</p> : null}
+          {sendNotif.error ? <p className="text-sm text-destructive">{sendNotif.error}</p> : null}
+        </CardContent>
+      </Card>
+
       <h2 className="mb-2 text-sm font-semibold text-text-secondary">Test leagues</h2>
       {leagues.length === 0 ? (
         <p className="text-sm text-text-secondary">None yet — create one above.</p>
@@ -173,6 +216,13 @@ function TestLeagueRow({ league, onChanged }: { league: TestLeague; onChanged: (
             </Badge>
             <span className="text-xs text-text-secondary">
               {league.status} · {league.members} members · {league.season}
+              {league.draftProgress
+                ? ` · draft pick ${league.draftProgress.pickNo}/${league.draftProgress.totalPicks}${
+                    league.draftProgress.onClock ? ` · on the clock: ${league.draftProgress.onClock}` : ''
+                  }`
+                : league.draftStatus
+                  ? ` · draft ${league.draftStatus}`
+                  : ''}
             </span>
           </div>
 
