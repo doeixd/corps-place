@@ -6,8 +6,7 @@ import {
   useRouterState,
 } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import type { CSSProperties, ReactNode } from 'react';
 import { registerServiceWorker } from '@/lib/register-sw';
 import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -108,31 +107,45 @@ function RootDocument({
 // (cached/preloaded) navigations don't flash it, then "trickles" toward 90% while
 // the next route's loader runs and snaps to 100% + fades when it lands. Gives
 // immediate feedback that a click registered and the page is loading.
+// Pure-CSS progress bar (no framer-motion, so the animation engine stays out of the
+// global chunk). Three phases driven by CSS transitions: idle (hidden) → loading
+// (trickles scaleX 0→0.9 over 10s) → done (snaps to 1 and fades) → idle.
 function NavigationProgressBar({ delayMs = 150 }: { delayMs?: number }) {
   const isPending = useRouterState({ select: (s) => s.status === 'pending' });
-  const [show, setShow] = useState(false);
+  const [phase, setPhase] = useState<'idle' | 'loading' | 'done'>('idle');
 
   useEffect(() => {
-    if (!isPending) {
-      setShow(false);
-      return;
+    if (isPending) {
+      const timer = setTimeout(() => setPhase('loading'), delayMs);
+      return () => clearTimeout(timer);
     }
-    const timer = setTimeout(() => setShow(true), delayMs);
-    return () => clearTimeout(timer);
+    // Navigation settled — snap to 100% + fade if we were showing, else stay idle.
+    setPhase((p) => (p === 'loading' ? 'done' : 'idle'));
   }, [isPending, delayMs]);
 
+  useEffect(() => {
+    if (phase !== 'done') return;
+    const timer = setTimeout(() => setPhase('idle'), 250);
+    return () => clearTimeout(timer);
+  }, [phase]);
+
+  const style: CSSProperties =
+    phase === 'loading'
+      ? { transform: 'scaleX(0.9)', opacity: 1, transition: 'transform 10s ease-out' }
+      : phase === 'done'
+        ? {
+            transform: 'scaleX(1)',
+            opacity: 0,
+            transition: 'transform 0.2s ease-out, opacity 0.2s ease-out',
+          }
+        : { transform: 'scaleX(0)', opacity: 0, transition: 'none' };
+
   return (
-    <AnimatePresence>
-      {show ? (
-        <motion.div
-          key="nav-progress"
-          className="fixed inset-x-0 top-0 z-[100] h-0.5 origin-left bg-primary"
-          initial={{ scaleX: 0, opacity: 1 }}
-          animate={{ scaleX: 0.9, transition: { duration: 10, ease: 'easeOut' } }}
-          exit={{ scaleX: 1, opacity: 0, transition: { duration: 0.2, ease: 'easeOut' } }}
-        />
-      ) : null}
-    </AnimatePresence>
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-x-0 top-0 z-[100] h-0.5 origin-left bg-primary"
+      style={style}
+    />
   );
 }
 
