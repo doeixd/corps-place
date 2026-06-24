@@ -28,6 +28,7 @@ export function PhotoUpload({
   labels,
   alt = '',
   variant = 'inline',
+  fill = false,
 }: {
   mediaId?: string | null;
   onFile: (file: File) => void | Promise<void>;
@@ -39,8 +40,12 @@ export function PhotoUpload({
   alt?: string;
   /** `inline` = preview + button; `overlay` = preview is the control + edit pill. */
   variant?: 'inline' | 'overlay';
+  /** overlay only — fill the parent's height (square) instead of the fixed `size`. */
+  fill?: boolean;
 }) {
   const radius = shape === 'round' ? 'rounded-full' : 'rounded';
+  // In fill mode the box stretches to the parent's height and stays square.
+  const box = fill ? 'h-full aspect-square' : size;
   const fileInput = (
     <input
       type="file"
@@ -56,7 +61,7 @@ export function PhotoUpload({
   if (variant === 'overlay') {
     return (
       <label
-        className="group relative inline-block cursor-pointer"
+        className={`group relative cursor-pointer ${fill ? 'flex h-full' : 'inline-block'}`}
         title={mediaId ? (labels?.change ?? 'Change image') : (labels?.empty ?? 'Add image')}
       >
         {mediaId ? (
@@ -64,7 +69,7 @@ export function PhotoUpload({
             <img
               src={`/api/fantasy-media/${mediaId}`}
               alt={alt}
-              className={`${size} ${radius} border border-border object-contain`}
+              className={`${box} ${radius} border border-border object-contain`}
             />
             {/* Edit affordance only on hover/focus — keeps the resting state clean. */}
             <span
@@ -76,7 +81,7 @@ export function PhotoUpload({
           </>
         ) : (
           <div
-            className={`${size} ${radius} grid place-items-center border border-dashed border-border text-muted-foreground transition-colors group-hover:border-text-secondary group-hover:text-text-secondary`}
+            className={`${box} ${radius} grid place-items-center border border-dashed border-border text-muted-foreground transition-colors group-hover:border-text-secondary group-hover:text-text-secondary`}
             aria-hidden
           >
             {busy ? <span className="text-xs">…</span> : <AddCircleIcon className="size-5" />}

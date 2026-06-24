@@ -98,7 +98,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
     <PageShell className="flex flex-col gap-8">
       <header className="mb-2 space-y-3">
         <BackLink to="/fantasy" label="My leagues" />
-        <div className="flex items-start gap-3">
+        <div className="flex items-stretch gap-3">
           {viewer.isOwner ? (
             <LeagueImageUpload
               leagueId={league.leagueId}
@@ -109,7 +109,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
             <img
               src={`/api/fantasy-media/${league.imageMediaId}`}
               alt=""
-              className="size-12 shrink-0 rounded border border-border object-contain"
+              className="aspect-square h-full shrink-0 self-stretch rounded border border-border object-contain"
             />
           ) : null}
           <div className="min-w-0 space-y-1">
@@ -308,16 +308,21 @@ function LeagueImageUpload({
     (err) => `Image upload failed: ${err.message}`
   );
   return (
-    <div className="flex flex-col gap-1">
+    <div className="relative self-stretch">
       <PhotoUpload
         mediaId={mediaId}
         busy={upload.busy}
         onFile={(file) => upload.run(file)}
         alt="League image"
         variant="overlay"
+        fill
         labels={{ empty: 'Add image', change: 'Change image' }}
       />
-      {upload.error ? <span className="text-xs text-destructive">{upload.error}</span> : null}
+      {upload.error ? (
+        <span className="absolute top-full left-0 mt-1 whitespace-nowrap text-xs text-destructive">
+          {upload.error}
+        </span>
+      ) : null}
     </div>
   );
 }
