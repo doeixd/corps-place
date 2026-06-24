@@ -69,6 +69,9 @@ export const auth = betterAuth({
       termsAcceptedAt: { type: 'string', required: false, input: false },
       termsVersion: { type: 'string', required: false, input: false },
       contactConsent: { type: 'boolean', required: false, defaultValue: false, input: false },
+      // IANA time zone (e.g. 'America/New_York') for formatting times in emails.
+      // Auto-detected client-side and set via the setTimeZone server-fn.
+      timeZone: { type: 'string', required: false, input: false },
     },
   },
   plugins: [

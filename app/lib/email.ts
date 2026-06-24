@@ -16,6 +16,8 @@ export type SendEmailInput = {
   tag?: string;
   /** Override the default sender; defaults to FANTASY_EMAIL_FROM ?? MAGIC_LINK_FROM. */
   from?: string;
+  /** Optional attachments (e.g. a calendar .ics); `content` is base64-encoded. */
+  attachments?: { filename: string; content: string }[];
 };
 
 const DEFAULT_FROM = 'corps.place <login@drumcorps.app>';
@@ -48,6 +50,7 @@ export const sendEmail = async ({
   html,
   tag,
   from,
+  attachments,
 }: SendEmailInput): Promise<void> => {
   const key = process.env.RESEND_API_KEY;
   const sender =
@@ -69,6 +72,7 @@ export const sendEmail = async ({
     subject,
     html,
     ...(tag ? { tags: [{ name: 'category', value: tag }] } : {}),
+    ...(attachments && attachments.length ? { attachments } : {}),
   });
   await logSend(to, subject, tag, error ? 'failed' : 'sent');
   if (error) throw new Error(`Resend send failed: ${JSON.stringify(error)}`);

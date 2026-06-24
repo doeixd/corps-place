@@ -18,6 +18,69 @@ const MIN = 60_000;
 const escapeHtml = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+const APP_URL = (process.env.BETTER_AUTH_URL ?? 'https://drumcorps.app').replace(/\/$/, '');
+
+// Format an instant in a recipient's IANA zone, e.g. "Sat, Aug 9, 8:00 PM EDT".
+// Falls back to UTC if the stored zone is missing or invalid.
+const formatWhen = (iso: string, timeZone: string | null): string => {
+  try {
+    return new Intl.DateTimeFormat('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZoneName: 'short',
+      timeZone: timeZone || 'UTC',
+    }).format(new Date(iso));
+  } catch {
+    return new Date(iso).toUTCString();
+  }
+};
+
+// UTC timestamp in iCalendar basic format: 20250809T200000Z.
+const icsStamp = (d: Date): string => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+
+// A draft-start calendar event: a downloadable .ics (Apple/Outlook) plus a Google
+// Calendar "add event" URL. The event is a 1-hour block at the scheduled start.
+const buildDraftCalendar = (leagueName: string, slug: string, startIso: string) => {
+  const start = new Date(startIso);
+  const end = new Date(start.getTime() + 60 * MIN);
+  const dtStart = icsStamp(start);
+  const dtEnd = icsStamp(end);
+  const url = `${APP_URL}/fantasy/${slug}/draft`;
+  const title = `Draft — ${leagueName}`;
+  const details = `Your fantasy drum corps draft. Be in the draft room: ${url}`;
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//drumcorps.app//fantasy//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:draft-${slug}-${dtStart}@drumcorps.app`,
+    `DTSTAMP:${icsStamp(new Date())}`,
+    `DTSTART:${dtStart}`,
+    `DTEND:${dtEnd}`,
+    `SUMMARY:${title}`,
+    `DESCRIPTION:${details}`,
+    `URL:${url}`,
+    'BEGIN:VALARM',
+    'TRIGGER:-PT10M',
+    'ACTION:DISPLAY',
+    `DESCRIPTION:${title}`,
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+  const gcal =
+    'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+    `&text=${encodeURIComponent(title)}` +
+    `&dates=${dtStart}/${dtEnd}` +
+    `&details=${encodeURIComponent(details)}`;
+  return { ics, gcal, url };
+};
+
 export type DispatchSummary = { jobs: number; digests: number };
 
 const makeNotificationService = Effect.gen(function* () {
@@ -27,20 +90,20 @@ const makeNotificationService = Effect.gen(function* () {
   // its notify.email gate — the shared shape behind every league email below.
   const leagueEmailTargets = (leagueId: string) =>
     Effect.gen(function* () {
-      const leagueRows = yield* sql<{ name: string; config_json: string }>`
-        SELECT name, config_json FROM fantasy_leagues WHERE league_id = ${leagueId}
+      const leagueRows = yield* sql<{ name: string; slug: string; config_json: string }>`
+        SELECT name, slug, config_json FROM fantasy_leagues WHERE league_id = ${leagueId}
       `.pipe(Effect.orDie);
       const league = leagueRows[0];
       if (!league) return null;
       const config = JSON.parse(league.config_json) as LeagueConfig;
       if (!config.notify?.email) return null;
-      const members = yield* sql<{ email: string }>`
-        SELECT u.email FROM fantasy_members m
+      const members = yield* sql<{ email: string; timeZone: string | null }>`
+        SELECT u.email, u.timeZone FROM fantasy_members m
         JOIN user u ON u.id = m.user_id
         WHERE m.league_id = ${leagueId} AND m.status = 'active' AND u.email IS NOT NULL
           AND m.notify_email = 1 AND u.contactConsent = 1
       `.pipe(Effect.orDie);
-      return { name: league.name, emails: members.map((m) => m.email) };
+      return { name: league.name, slug: league.slug, recipients: members };
     });
 
   // Immediate "your draft is set for X" confirmation when a draft is scheduled or
@@ -49,17 +112,25 @@ const makeNotificationService = Effect.gen(function* () {
   const sendDraftScheduledEmail = (leagueId: string, scheduledAtIso: string) =>
     Effect.gen(function* () {
       const target = yield* leagueEmailTargets(leagueId);
-      if (!target || target.emails.length === 0) return;
-      const when = new Date(scheduledAtIso).toUTCString();
+      if (!target || target.recipients.length === 0) return;
       const safeName = escapeHtml(target.name);
+      const cal = buildDraftCalendar(target.name, target.slug, scheduledAtIso);
+      const icsB64 = Buffer.from(cal.ics, 'utf8').toString('base64');
       yield* Effect.promise(() =>
         Promise.all(
-          target.emails.map((to) =>
+          target.recipients.map((r) =>
             sendEmail({
-              to,
+              to: r.email,
               subject: `Draft scheduled — ${target.name}`,
-              html: `<p>The draft for <strong>${safeName}</strong> is set for <strong>${when}</strong>. Open the app for a local countdown, and be in the draft room when it starts.</p>`,
+              // Time shown in the recipient's saved zone; calendar links cover the rest.
+              html:
+                `<p>The draft for <strong>${safeName}</strong> is set for ` +
+                `<strong>${formatWhen(scheduledAtIso, r.timeZone)}</strong>.</p>` +
+                `<p><a href="${cal.gcal}">Add to Google Calendar</a> — or open the attached ` +
+                `<code>draft.ics</code> for Apple Calendar / Outlook. ` +
+                `<a href="${cal.url}">Open the draft room</a> when it starts.</p>`,
               tag: 'fantasy_draft_scheduled',
+              attachments: [{ filename: 'draft.ics', content: icsB64 }],
             })
           )
         )

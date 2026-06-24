@@ -21,6 +21,7 @@ export const ADD_COLUMNS = [
   { table: 'user', column: 'termsAcceptedAt', ddl: 'ALTER TABLE "user" ADD COLUMN termsAcceptedAt TEXT' },
   { table: 'user', column: 'termsVersion', ddl: 'ALTER TABLE "user" ADD COLUMN termsVersion TEXT' },
   { table: 'user', column: 'contactConsent', ddl: 'ALTER TABLE "user" ADD COLUMN contactConsent INTEGER DEFAULT 0' },
+  { table: 'user', column: 'timeZone', ddl: 'ALTER TABLE "user" ADD COLUMN timeZone TEXT' },
   // Per-member notification opt-outs (default on).
   { table: 'fantasy_members', column: 'notify_email', ddl: 'ALTER TABLE fantasy_members ADD COLUMN notify_email INTEGER DEFAULT 1' },
   { table: 'fantasy_members', column: 'notify_push', ddl: 'ALTER TABLE fantasy_members ADD COLUMN notify_push INTEGER DEFAULT 1' },

@@ -32,3 +32,30 @@ export const acceptTerms = createServerFn({ method: 'POST' })
     });
     return { ok: true as const };
   });
+
+// Persist the user's IANA time zone (e.g. 'America/New_York'), used to format times
+// in emails. Auto-detected + saved client-side; also editable in notification prefs.
+export const setTimeZone = createServerFn({ method: 'POST' })
+  .validator((d: unknown) =>
+    v.parse(
+      v.object({
+        timeZone: v.pipe(
+          v.string(),
+          v.minLength(1),
+          v.maxLength(64),
+          v.regex(/^[A-Za-z0-9_+\-/]+$/, 'Invalid time zone')
+        ),
+      }),
+      d
+    )
+  )
+  .handler(async ({ data }) => {
+    const actor = await getActor(getWebRequest());
+    if (!actor) throw new Error('UNAUTHENTICATED');
+    const db = await getContributionsDb();
+    await db.execute({
+      sql: `UPDATE "user" SET timeZone = ? WHERE id = ?`,
+      args: [data.timeZone, actor.userId],
+    });
+    return { ok: true as const };
+  });
