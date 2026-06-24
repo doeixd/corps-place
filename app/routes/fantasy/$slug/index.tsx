@@ -352,14 +352,13 @@ function LeagueNameHeading({
             variant="ghost"
             aria-label="Rename league"
             title="Rename league"
-            className="gap-1 text-text-secondary"
+            className="px-1.5 text-text-secondary/60 hover:text-text-secondary"
             onClick={() => {
               setDraft(name);
               setEditing(true);
             }}
           >
             <NoteEditIcon className="size-4" />
-            <span className="hidden sm:inline">Rename</span>
           </Button>
         ) : null}
       </div>

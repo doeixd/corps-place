@@ -8,7 +8,7 @@
  * `overlay`, where the preview IS the upload control with a small edit pill in
  * the corner — one tidy area instead of an image plus a detached button.
  */
-import { NoteEditIcon } from '@/components/icons/generated';
+import { NoteEditIcon, AddCircleIcon } from '@/components/icons/generated';
 
 /** Read a File to bare base64 (no data: prefix) for the upload server-fns. */
 export const fileToBase64 = (file: File): Promise<string> =>
@@ -60,31 +60,28 @@ export function PhotoUpload({
         title={mediaId ? (labels?.change ?? 'Change image') : (labels?.empty ?? 'Add image')}
       >
         {mediaId ? (
-          <img
-            src={`/api/fantasy-media/${mediaId}`}
-            alt={alt}
-            className={`${size} ${radius} border border-border object-contain`}
-          />
+          <>
+            <img
+              src={`/api/fantasy-media/${mediaId}`}
+              alt={alt}
+              className={`${size} ${radius} border border-border object-contain`}
+            />
+            {/* Edit affordance only on hover/focus — keeps the resting state clean. */}
+            <span
+              className={`${radius} absolute inset-0 grid place-items-center bg-black/45 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100`}
+              aria-hidden
+            >
+              {busy ? '…' : <NoteEditIcon className="size-4" />}
+            </span>
+          </>
         ) : (
           <div
-            className={`${size} ${radius} grid place-items-center border border-dashed border-border bg-muted text-center text-[10px] leading-tight text-muted-foreground`}
+            className={`${size} ${radius} grid place-items-center border border-dashed border-border text-muted-foreground transition-colors group-hover:border-text-secondary group-hover:text-text-secondary`}
+            aria-hidden
           >
-            {labels?.empty ?? 'Add image'}
+            {busy ? <span className="text-xs">…</span> : <AddCircleIcon className="size-5" />}
           </div>
         )}
-        <span
-          className="absolute -bottom-1.5 -right-1.5 inline-flex items-center gap-0.5 rounded-full border border-border bg-background px-1.5 py-0.5 text-[10px] font-medium text-text-secondary shadow-sm group-hover:text-text-primary"
-          aria-hidden
-        >
-          {busy ? (
-            '…'
-          ) : (
-            <>
-              <NoteEditIcon className="size-3" />
-              {mediaId ? 'Edit' : 'Add'}
-            </>
-          )}
-        </span>
         {fileInput}
       </label>
     );
