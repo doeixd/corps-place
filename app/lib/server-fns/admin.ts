@@ -18,6 +18,7 @@ import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
 import { can, getActor, requireCapability, type Capability } from '@/lib/authz';
 import { writeAudit } from '@/lib/admin-audit';
+import { CURRENT_TERMS_VERSION } from '@/lib/consent';
 
 // Admin capabilities the loader gate may be asked to check (validated, never trusted).
 const ADMIN_CAPS = [
@@ -163,11 +164,53 @@ export const adminSystem = createServerFn({ method: 'GET' }).handler(async () =>
     }
   }
 
+  // Consent + notification adoption (operator visibility for the first-sign-in
+  // gate + the notification matrix). All cheap COUNT/SUM on contributions.db.
+  const num = (x: unknown) => Number(x ?? 0);
+  const consentRow = (
+    await db.execute({
+      sql: `SELECT COUNT(*) AS total,
+                   SUM(CASE WHEN termsAcceptedAt IS NOT NULL AND termsVersion = ? THEN 1 ELSE 0 END) AS accepted,
+                   SUM(CASE WHEN contactConsent = 1 THEN 1 ELSE 0 END) AS opted_in
+            FROM "user"`,
+      args: [CURRENT_TERMS_VERSION],
+    })
+  ).rows[0] as { total: unknown; accepted: unknown; opted_in: unknown };
+  const memberRow = (
+    await db.execute(
+      `SELECT COUNT(*) AS total, SUM(notify_email) AS email_on, SUM(notify_push) AS push_on
+       FROM fantasy_members WHERE status = 'active'`
+    )
+  ).rows[0] as { total: unknown; email_on: unknown; push_on: unknown };
+  const pendingEmails = num(
+    (await db.execute(`SELECT COUNT(*) AS c FROM fantasy_notifications WHERE email_sent_at IS NULL`))
+      .rows[0]?.c
+  );
+  const jobsDue = num(
+    (await db.execute(`SELECT COUNT(*) AS c FROM fantasy_scheduled_jobs WHERE done_at IS NULL`))
+      .rows[0]?.c
+  );
+  const pushSubs = await countRows(db, 'fantasy_push_subscriptions');
+
   return {
     generatedAt: new Date().toISOString(),
     contributionsDbBytes,
     readModel,
     durable: durableStorageStatus(),
+    consent: {
+      version: CURRENT_TERMS_VERSION,
+      totalUsers: num(consentRow?.total),
+      accepted: num(consentRow?.accepted),
+      optedIn: num(consentRow?.opted_in),
+    },
+    notifications: {
+      activeMembers: num(memberRow?.total),
+      emailOn: num(memberRow?.email_on),
+      pushOn: num(memberRow?.push_on),
+      pendingEmails,
+      jobsDue,
+      pushSubs,
+    },
   };
 });
 

@@ -43,6 +43,8 @@ export function LeagueSettings({
   const [music, setMusic] = useState(String(config.weights.music));
   const [quizEnabled, setQuizEnabled] = useState(config.quiz.enabled);
   const [questionCount, setQuestionCount] = useState(String(config.quiz.questionCount));
+  const [notifyEmail, setNotifyEmail] = useState(config.notify?.email ?? true);
+  const [notifyPush, setNotifyPush] = useState(config.notify?.push ?? false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -67,6 +69,7 @@ export function LeagueSettings({
           enabled: quizEnabled,
           questionCount: Number(questionCount) || config.quiz.questionCount,
         },
+        notify: { email: notifyEmail, push: notifyPush },
       };
       await updateLeagueConfig({ data: { leagueId, config: next } });
       setSaved(true);
@@ -185,6 +188,22 @@ export function LeagueSettings({
             points across the whole season.
           </p>
         </div>
+
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-1 text-sm font-medium">Notifications</legend>
+          <p className="text-xs text-muted-foreground">
+            League-wide defaults for draft alerts, reminders, and standings. Members can still mute
+            their own, and email also requires each member's account-wide email opt-in.
+          </p>
+          <label className="flex items-center gap-2">
+            <Checkbox checked={notifyEmail} onCheckedChange={(v) => setNotifyEmail(!!v)} />
+            <span className="text-sm">Send email notifications</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <Checkbox checked={notifyPush} onCheckedChange={(v) => setNotifyPush(!!v)} />
+            <span className="text-sm">Send push notifications</span>
+          </label>
+        </fieldset>
 
         <fieldset className="flex flex-col gap-2">
           <legend className="mb-1 text-sm font-medium">Caption weights</legend>

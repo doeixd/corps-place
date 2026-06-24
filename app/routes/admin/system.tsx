@@ -106,6 +106,35 @@ function System({ data }: { data: SystemData }) {
 
       <Card className="mt-4">
         <CardHeader>
+          <CardTitle className="text-sm font-semibold text-text-secondary">
+            Consent & notifications
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-2 gap-y-1 text-sm">
+          <span className="text-text-secondary">Terms version</span>
+          <span className="text-right">{sys.consent.version}</span>
+          <span className="text-text-secondary">Accepted current terms</span>
+          <span className="text-right tabular-nums">
+            {sys.consent.accepted} / {sys.consent.totalUsers}
+          </span>
+          <span className="text-text-secondary">Opted in to contact</span>
+          <span className="text-right tabular-nums">{sys.consent.optedIn}</span>
+          <span className="text-text-secondary">Members: email on / push on</span>
+          <span className="text-right tabular-nums">
+            {sys.notifications.emailOn} / {sys.notifications.pushOn} of{' '}
+            {sys.notifications.activeMembers}
+          </span>
+          <span className="text-text-secondary">Push subscriptions</span>
+          <span className="text-right tabular-nums">{sys.notifications.pushSubs}</span>
+          <span className="text-text-secondary">Pending emails / jobs due</span>
+          <span className="text-right tabular-nums">
+            {sys.notifications.pendingEmails} / {sys.notifications.jobsDue}
+          </span>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-4">
+        <CardHeader>
           <CardTitle className="text-sm font-semibold text-text-secondary">Data quality</CardTitle>
         </CardHeader>
         <CardContent className="text-sm">

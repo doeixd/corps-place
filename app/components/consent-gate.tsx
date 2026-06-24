@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import { Link, useLocation } from '@tanstack/react-router';
 import { useSession, authClient } from '@/lib/auth-client';
 import {
   Dialog,
@@ -25,6 +25,10 @@ import { needsConsent, type ConsentUser } from '@/lib/consent';
 export function ConsentGate() {
   const { data } = useSession();
   const user = data?.user as ConsentUser | undefined;
+  // Never cover the legal pages themselves — the gate links to them (in a new tab),
+  // so they must be readable without the modal on top.
+  const pathname = useLocation({ select: (l) => l.pathname });
+  const onLegalPage = pathname === '/terms-of-service' || pathname === '/privacy-policy';
 
   const [agreed, setAgreed] = useState(false);
   const [contact, setContact] = useState(true);
@@ -32,7 +36,7 @@ export function ConsentGate() {
   const [dismissed, setDismissed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const open = !dismissed && needsConsent(user);
+  const open = !dismissed && !onLegalPage && needsConsent(user);
   if (!open) return null;
 
   const submit = async () => {
