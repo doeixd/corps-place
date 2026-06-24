@@ -39,6 +39,19 @@ const isExcludedCorps = (corpsKey: string, name: string): boolean =>
   EXCLUDED_CORPS_KEYS.has(corpsKey) ||
   EXCLUDED_CORPS_NAMES.has(name.trim().toLowerCase());
 
+// Division overrides for the current season, where a corps has moved class since
+// the read-model's source season. Keyed by corps_key, with a name fallback.
+const DIVISION_OVERRIDES_BY_KEY: Record<string, string> = {
+  '001j000000iwxacaa1': 'World Class', // Spartans — World Class for 2026
+};
+const DIVISION_OVERRIDES_BY_NAME: Record<string, string> = {
+  spartans: 'World Class',
+};
+const overrideDivision = (corpsKey: string, name: string, division: string | null): string | null =>
+  DIVISION_OVERRIDES_BY_KEY[corpsKey] ??
+  DIVISION_OVERRIDES_BY_NAME[name.trim().toLowerCase()] ??
+  division;
+
 let _dbUrl: string | undefined;
 const dbUrl = (): string =>
   (_dbUrl ??=
@@ -110,14 +123,18 @@ export async function getDraftPool(): Promise<DraftableCorps[]> {
           args: DRAFT_DIVISIONS,
         });
     const value = res.rows
-      .map((r) => ({
-        corpsKey: r.corps_key as string,
-        slug: (r.slug as string | null) ?? null,
-        name: r.name as string,
-        divisionName: (r.division_name as string | null) ?? null,
-        displayCity: (r.display_city as string | null) ?? null,
-        corpsLogo: (r.corps_logo as string | null) ?? null,
-      }))
+      .map((r) => {
+        const corpsKey = r.corps_key as string;
+        const name = r.name as string;
+        return {
+          corpsKey,
+          slug: (r.slug as string | null) ?? null,
+          name,
+          divisionName: overrideDivision(corpsKey, name, (r.division_name as string | null) ?? null),
+          displayCity: (r.display_city as string | null) ?? null,
+          corpsLogo: (r.corps_logo as string | null) ?? null,
+        };
+      })
       .filter((c) => !isExcludedCorps(c.corpsKey, c.name));
     poolCache = { at: Date.now(), value };
     return value;
