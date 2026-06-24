@@ -65,6 +65,7 @@ import { Route as FantasySlugQuizRouteImport } from './routes/fantasy/$slug/quiz
 import { Route as FantasySlugDraftRouteImport } from './routes/fantasy/$slug/draft'
 import { Route as CorpsSlugChar123SeasonChar125RouteImport } from './routes/corps/$slug.{-$season}'
 import { Route as AdminUsersIdRouteImport } from './routes/admin/users.$id'
+import { Route as AdminFantasyTestLabRouteImport } from './routes/admin/fantasy/test-lab'
 import { Route as AdminFantasyQuizRouteImport } from './routes/admin/fantasy/quiz'
 import { Route as AdminFantasyLeaguesRouteImport } from './routes/admin/fantasy/leagues'
 import { Route as EventsYearSlugSlugPredictionRouteImport } from './routes/events/$yearSlug/$slug/prediction'
@@ -355,6 +356,11 @@ const AdminUsersIdRoute = AdminUsersIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminUsersRoute,
 } as any)
+const AdminFantasyTestLabRoute = AdminFantasyTestLabRouteImport.update({
+  id: '/admin/fantasy/test-lab',
+  path: '/admin/fantasy/test-lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminFantasyQuizRoute = AdminFantasyQuizRouteImport.update({
   id: '/admin/fantasy/quiz',
   path: '/admin/fantasy/quiz',
@@ -487,6 +493,7 @@ export interface FileRoutesByFullPath {
   '/staff': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
+  '/admin/fantasy/test-lab': typeof AdminFantasyTestLabRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
   '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
@@ -546,6 +553,7 @@ export interface FileRoutesByTo {
   '/staff': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
+  '/admin/fantasy/test-lab': typeof AdminFantasyTestLabRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
   '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
@@ -606,6 +614,7 @@ export interface FileRoutesById {
   '/staff/': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
+  '/admin/fantasy/test-lab': typeof AdminFantasyTestLabRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/corps/$slug/{-$season}': typeof CorpsSlugChar123SeasonChar125Route
   '/fantasy/$slug/draft': typeof FantasySlugDraftRoute
@@ -667,6 +676,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
+    | '/admin/fantasy/test-lab'
     | '/admin/users/$id'
     | '/corps/$slug/{-$season}'
     | '/fantasy/$slug/draft'
@@ -726,6 +736,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
+    | '/admin/fantasy/test-lab'
     | '/admin/users/$id'
     | '/corps/$slug/{-$season}'
     | '/fantasy/$slug/draft'
@@ -785,6 +796,7 @@ export interface FileRouteTypes {
     | '/staff/'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
+    | '/admin/fantasy/test-lab'
     | '/admin/users/$id'
     | '/corps/$slug/{-$season}'
     | '/fantasy/$slug/draft'
@@ -845,6 +857,7 @@ export interface RootRouteChildren {
   StaffIndexRoute: typeof StaffIndexRoute
   AdminFantasyLeaguesRoute: typeof AdminFantasyLeaguesRoute
   AdminFantasyQuizRoute: typeof AdminFantasyQuizRoute
+  AdminFantasyTestLabRoute: typeof AdminFantasyTestLabRoute
   CorpsSlugChar123SeasonChar125Route: typeof CorpsSlugChar123SeasonChar125Route
   FantasySlugDraftRoute: typeof FantasySlugDraftRoute
   FantasySlugQuizRoute: typeof FantasySlugQuizRoute
@@ -1348,6 +1361,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersIdRouteImport
       parentRoute: typeof AdminUsersRoute
     }
+    '/admin/fantasy/test-lab': {
+      id: '/admin/fantasy/test-lab'
+      path: '/admin/fantasy/test-lab'
+      fullPath: '/admin/fantasy/test-lab'
+      preLoaderRoute: typeof AdminFantasyTestLabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/fantasy/quiz': {
       id: '/admin/fantasy/quiz'
       path: '/admin/fantasy/quiz'
@@ -1524,6 +1544,7 @@ const rootRouteChildren: RootRouteChildren = {
   StaffIndexRoute: StaffIndexRoute,
   AdminFantasyLeaguesRoute: AdminFantasyLeaguesRoute,
   AdminFantasyQuizRoute: AdminFantasyQuizRoute,
+  AdminFantasyTestLabRoute: AdminFantasyTestLabRoute,
   CorpsSlugChar123SeasonChar125Route: CorpsSlugChar123SeasonChar125Route,
   FantasySlugDraftRoute: FantasySlugDraftRoute,
   FantasySlugQuizRoute: FantasySlugQuizRoute,

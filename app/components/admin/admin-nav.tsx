@@ -36,6 +36,12 @@ const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
           icon: RankingIcon,
           min: 'moderator',
         } as const,
+        {
+          to: '/admin/fantasy/test-lab',
+          label: 'Test Lab',
+          icon: RankingIcon,
+          min: 'admin',
+        } as const,
       ]
     : []),
   { to: '/admin/system', label: 'System', icon: Analytics01Icon, min: 'moderator' },

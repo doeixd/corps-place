@@ -661,6 +661,15 @@ const ADD_COLUMNS: { table: string; column: string; ddl: string }[] = [
     column: 'notify_push',
     ddl: 'ALTER TABLE fantasy_members ADD COLUMN notify_push INTEGER DEFAULT 1',
   },
+  // Fantasy Test Lab (docs/plans/FANTASY_TEST_LAB_PLAN.md): a sandbox league + bot
+  // users an admin drives to exercise the features. Flagged rows are excluded from
+  // the real standings cron, notification dispatch, and admin adoption stats.
+  {
+    table: 'fantasy_leagues',
+    column: 'is_test',
+    ddl: 'ALTER TABLE fantasy_leagues ADD COLUMN is_test INTEGER DEFAULT 0',
+  },
+  { table: 'user', column: 'isBot', ddl: 'ALTER TABLE "user" ADD COLUMN isBot INTEGER DEFAULT 0' },
 ];
 
 const ensureColumns = async (db: Client): Promise<void> => {

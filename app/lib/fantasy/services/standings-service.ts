@@ -143,7 +143,7 @@ const makeStandingsService = Effect.gen(function* () {
 
     const leagues = yield* sql<{ league_id: string; config_json: string }>`
       SELECT league_id, config_json FROM fantasy_leagues
-      WHERE season = ${season} AND status IN ('active', 'complete')
+      WHERE season = ${season} AND status IN ('active', 'complete') AND is_test = 0
     `.pipe(Effect.orDie);
 
     let memberTotal = 0;

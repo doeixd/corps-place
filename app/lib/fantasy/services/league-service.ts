@@ -44,6 +44,7 @@ interface LeagueRow {
   payment_status: string;
   owner_user_id: string;
   image_media_id: unknown;
+  is_test: unknown;
 }
 
 interface MemberRow {
@@ -197,6 +198,7 @@ const makeLeagueService = Effect.gen(function* () {
         config,
         paymentStatus: league.payment_status,
         imageMediaId: strOrNull(league.image_media_id),
+        isTest: Boolean(league.is_test),
       },
       members,
       draft,

@@ -5,6 +5,7 @@ import { BackLink } from '@/components/back-link';
 import { LeagueTabs } from '@/components/fantasy/league-tabs';
 import { NoteEditIcon } from '@/components/icons/generated';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { seoHead } from '@/lib/seo';
@@ -112,8 +113,13 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
             />
           ) : null}
           <div className="min-w-0 space-y-1">
-            <p className="text-xs uppercase tracking-wide text-text-secondary">
+            <p className="flex items-center gap-2 text-xs uppercase tracking-wide text-text-secondary">
               Fantasy Drum Corps · Season {league.season}
+              {league.isTest ? (
+                <Badge variant="warning-light" size="sm">
+                  TEST
+                </Badge>
+              ) : null}
             </p>
             <LeagueNameHeading
               leagueId={league.leagueId}

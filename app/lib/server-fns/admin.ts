@@ -172,14 +172,15 @@ export const adminSystem = createServerFn({ method: 'GET' }).handler(async () =>
       sql: `SELECT COUNT(*) AS total,
                    SUM(CASE WHEN termsAcceptedAt IS NOT NULL AND termsVersion = ? THEN 1 ELSE 0 END) AS accepted,
                    SUM(CASE WHEN contactConsent = 1 THEN 1 ELSE 0 END) AS opted_in
-            FROM "user"`,
+            FROM "user" WHERE (isBot = 0 OR isBot IS NULL)`,
       args: [CURRENT_TERMS_VERSION],
     })
   ).rows[0] as { total: unknown; accepted: unknown; opted_in: unknown };
   const memberRow = (
     await db.execute(
       `SELECT COUNT(*) AS total, SUM(notify_email) AS email_on, SUM(notify_push) AS push_on
-       FROM fantasy_members WHERE status = 'active'`
+       FROM fantasy_members WHERE status = 'active'
+         AND league_id NOT IN (SELECT league_id FROM fantasy_leagues WHERE is_test = 1)`
     )
   ).rows[0] as { total: unknown; email_on: unknown; push_on: unknown };
   const pendingEmails = num(
