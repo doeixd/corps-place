@@ -18,6 +18,7 @@ import { Context, Duration, Effect, Fiber, Layer, PubSub, Semaphore } from 'effe
 import { randomUUID } from 'node:crypto';
 import { getDraftPool, getPriorSeasonRanking, rankingKey } from '@/lib/fantasy/score-db';
 import { sendPushToUser } from '@/lib/fantasy/push';
+import { sendEmail } from '@/lib/email';
 import { isCaptionKey, CAPTION_KEYS, type CaptionKey } from '@/lib/fantasy/captions';
 import { resolveDraftOrder, type DraftMember } from '@/lib/fantasy/draft-order';
 import type { LeagueConfig } from '@/lib/fantasy/config';
@@ -40,6 +41,9 @@ import { leagueReducer, type LeagueStatus } from '../machines/league';
 import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from './sql';
 
 export type DraftEvent = { event: string; data: unknown };
+
+const escapeHtml = (s: string): string =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export type DraftSnapshot = {
   draft: {
@@ -264,6 +268,56 @@ const makeDraftService = Effect.gen(function* () {
       void sendPushToUser(id, { title, body, url: '/fantasy' }).catch(() => {});
   };
 
+  // Email parity for the *big* lifecycle moments (draft opens / completes) so a
+  // member without a push subscription still hears about it (§12.4 notification
+  // matrix). Per-pick events (on-the-clock, auto-pick) stay push-only — an email
+  // per pick would be spam. Gated by the league's `notify.email` pref. Returns an
+  // Effect so callers `forkDaemon` it — it must never block or fail the draft lock.
+  const LIFECYCLE_EMAIL = {
+    draft_live: {
+      subject: (n: string) => `Your ${n} draft is live`,
+      html: (n: string) =>
+        `<p>The draft room for <strong>${n}</strong> is open — come make your picks before your timer runs out.</p>`,
+    },
+    draft_complete: {
+      subject: (n: string) => `Your ${n} draft is complete`,
+      html: (n: string) =>
+        `<p>Every pick is in for <strong>${n}</strong>. See the final rosters and follow the standings as the season scores.</p>`,
+    },
+  } as const;
+
+  const emailMembers = (leagueId: string, kind: keyof typeof LIFECYCLE_EMAIL) =>
+    Effect.gen(function* () {
+      const rows = yield* sql<{ name: string; config_json: string }>`
+        SELECT name, config_json FROM fantasy_leagues WHERE league_id = ${leagueId}
+      `.pipe(Effect.orDie);
+      const league = rows[0];
+      if (!league) return;
+      const config = JSON.parse(league.config_json) as LeagueConfig;
+      if (!config.notify?.email) return;
+
+      const members = yield* sql<{ email: string }>`
+        SELECT u.email FROM fantasy_members m
+        JOIN user u ON u.id = m.user_id
+        WHERE m.league_id = ${leagueId} AND m.status = 'active' AND u.email IS NOT NULL
+      `.pipe(Effect.orDie);
+      if (members.length === 0) return;
+
+      const tpl = LIFECYCLE_EMAIL[kind];
+      yield* Effect.promise(() =>
+        Promise.all(
+          members.map((m) =>
+            sendEmail({
+              to: m.email,
+              subject: tpl.subject(league.name),
+              html: tpl.html(escapeHtml(league.name)),
+              tag: 'fantasy_draft_lifecycle',
+            })
+          )
+        )
+      );
+    }).pipe(Effect.catchCause(() => Effect.void));
+
   // --- self-heal: re-arm timers for drafts left live by a prior process -------
 
   const ensureSelfHeal = Effect.suspend(() => {
@@ -339,6 +393,7 @@ const makeDraftService = Effect.gen(function* () {
             'Every pick is in — see the final rosters and the standings.'
           )
         );
+        yield* Effect.sync(() => Effect.runFork(emailMembers(leagueId, 'draft_complete')));
         yield* broadcast(leagueId, { event: 'state', data: { status: 'complete' } });
         // The draft is over — drop the per-league lock/timer/bus so they don't
         // accumulate for the process lifetime (a league drafts once). The bus is
@@ -566,6 +621,7 @@ const makeDraftService = Effect.gen(function* () {
             'The draft room is open — come watch and make your picks.'
           )
         );
+        yield* Effect.sync(() => Effect.runFork(emailMembers(leagueId, 'draft_live')));
         yield* broadcast(leagueId, { event: 'snapshot', data: yield* snapshot(leagueId) });
         return { ok: true } as StartFeasibility;
       })

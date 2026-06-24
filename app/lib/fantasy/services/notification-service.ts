@@ -23,6 +23,48 @@ export type DispatchSummary = { jobs: number; digests: number };
 const makeNotificationService = Effect.gen(function* () {
   const sql = yield* ContributionsSql;
 
+  // Active members of a league with a deliverable email, plus the league name and
+  // its notify.email gate — the shared shape behind every league email below.
+  const leagueEmailTargets = (leagueId: string) =>
+    Effect.gen(function* () {
+      const leagueRows = yield* sql<{ name: string; config_json: string }>`
+        SELECT name, config_json FROM fantasy_leagues WHERE league_id = ${leagueId}
+      `.pipe(Effect.orDie);
+      const league = leagueRows[0];
+      if (!league) return null;
+      const config = JSON.parse(league.config_json) as LeagueConfig;
+      if (!config.notify?.email) return null;
+      const members = yield* sql<{ email: string }>`
+        SELECT u.email FROM fantasy_members m
+        JOIN user u ON u.id = m.user_id
+        WHERE m.league_id = ${leagueId} AND m.status = 'active' AND u.email IS NOT NULL
+      `.pipe(Effect.orDie);
+      return { name: league.name, emails: members.map((m) => m.email) };
+    });
+
+  // Immediate "your draft is set for X" confirmation when a draft is scheduled or
+  // rescheduled (email parity, §12.4). Best-effort — the caller swallows failures
+  // so a Resend hiccup never fails the scheduling mutation.
+  const sendDraftScheduledEmail = (leagueId: string, scheduledAtIso: string) =>
+    Effect.gen(function* () {
+      const target = yield* leagueEmailTargets(leagueId);
+      if (!target || target.emails.length === 0) return;
+      const when = new Date(scheduledAtIso).toUTCString();
+      const safeName = escapeHtml(target.name);
+      yield* Effect.promise(() =>
+        Promise.all(
+          target.emails.map((to) =>
+            sendEmail({
+              to,
+              subject: `Draft scheduled — ${target.name}`,
+              html: `<p>The draft for <strong>${safeName}</strong> is set for <strong>${when}</strong>. Open the app for a local countdown, and be in the draft room when it starts.</p>`,
+              tag: 'fantasy_draft_scheduled',
+            })
+          )
+        )
+      );
+    });
+
   const enqueueDraftReminders = Effect.fn('NotificationService.enqueueDraftReminders')(function* (
     leagueId: string,
     scheduledAtIso: string
@@ -50,6 +92,10 @@ const makeNotificationService = Effect.gen(function* () {
         `,
       { discard: true }
     ).pipe(Effect.orDie);
+
+    yield* sendDraftScheduledEmail(leagueId, scheduledAtIso).pipe(
+      Effect.catchCause((cause) => Effect.logError('fantasy draft-scheduled email failed', cause))
+    );
   });
 
   const handleJob = (job: { kind: string; league_id: string | null }) =>
