@@ -32,6 +32,16 @@ import { Route as ShopAllRouteImport } from './routes/shop/all'
 import { Route as ShopProductIdRouteImport } from './routes/shop/$productId'
 import { Route as MerchSplatRouteImport } from './routes/merch.$'
 import { Route as JudgesJudgeIdRouteImport } from './routes/judges/$judgeId'
+import { Route as JobsTermsRouteImport } from './routes/jobs/terms'
+import { Route as JobsTalentRouteImport } from './routes/jobs/talent'
+import { Route as JobsPrivacyRouteImport } from './routes/jobs/privacy'
+import { Route as JobsPostRouteImport } from './routes/jobs/post'
+import { Route as JobsOnboardRouteImport } from './routes/jobs/onboard'
+import { Route as JobsMeRouteImport } from './routes/jobs/me'
+import { Route as JobsGuidelinesRouteImport } from './routes/jobs/guidelines'
+import { Route as JobsBoardRouteImport } from './routes/jobs/board'
+import { Route as JobsAdminRouteImport } from './routes/jobs/admin'
+import { Route as JobsJobSlugRouteImport } from './routes/jobs/$jobSlug'
 import { Route as FantasyQuizAdminRouteImport } from './routes/fantasy/quiz-admin'
 import { Route as FantasyCreateRouteImport } from './routes/fantasy/create'
 import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spike'
@@ -48,6 +58,7 @@ import { Route as EventsYearSlugIndexRouteImport } from './routes/events/$yearSl
 import { Route as ShowsSlugSeasonRouteImport } from './routes/shows/$slug.$season'
 import { Route as ShopGroupStoreIdRouteImport } from './routes/shop/group/$storeId'
 import { Route as ShopCategoryCatRouteImport } from './routes/shop/category/$cat'
+import { Route as JobsProfileSlugRouteImport } from './routes/jobs/profile/$slug'
 import { Route as FantasyJoinTokenRouteImport } from './routes/fantasy/join/$token'
 import { Route as FantasySlugStandingsRouteImport } from './routes/fantasy/$slug/standings'
 import { Route as FantasySlugQuizRouteImport } from './routes/fantasy/$slug/quiz'
@@ -63,6 +74,7 @@ import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[
 import { ServerRoute as AppIconDotsvgServerRouteImport } from './routes/app-icon[.]svg'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
 import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
+import { ServerRoute as ApiJobsStripeWebhookServerRouteImport } from './routes/api/jobs/stripe-webhook'
 import { ServerRoute as ApiFantasyStripeWebhookServerRouteImport } from './routes/api/fantasy/stripe-webhook'
 import { ServerRoute as ApiFantasyMediaIdServerRouteImport } from './routes/api/fantasy-media/$id'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
@@ -177,6 +189,56 @@ const JudgesJudgeIdRoute = JudgesJudgeIdRouteImport.update({
   path: '/judges/$judgeId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsTermsRoute = JobsTermsRouteImport.update({
+  id: '/jobs/terms',
+  path: '/jobs/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsTalentRoute = JobsTalentRouteImport.update({
+  id: '/jobs/talent',
+  path: '/jobs/talent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsPrivacyRoute = JobsPrivacyRouteImport.update({
+  id: '/jobs/privacy',
+  path: '/jobs/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsPostRoute = JobsPostRouteImport.update({
+  id: '/jobs/post',
+  path: '/jobs/post',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsOnboardRoute = JobsOnboardRouteImport.update({
+  id: '/jobs/onboard',
+  path: '/jobs/onboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsMeRoute = JobsMeRouteImport.update({
+  id: '/jobs/me',
+  path: '/jobs/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsGuidelinesRoute = JobsGuidelinesRouteImport.update({
+  id: '/jobs/guidelines',
+  path: '/jobs/guidelines',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsBoardRoute = JobsBoardRouteImport.update({
+  id: '/jobs/board',
+  path: '/jobs/board',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsAdminRoute = JobsAdminRouteImport.update({
+  id: '/jobs/admin',
+  path: '/jobs/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsJobSlugRoute = JobsJobSlugRouteImport.update({
+  id: '/jobs/$jobSlug',
+  path: '/jobs/$jobSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FantasyQuizAdminRoute = FantasyQuizAdminRouteImport.update({
   id: '/fantasy/quiz-admin',
   path: '/fantasy/quiz-admin',
@@ -257,6 +319,11 @@ const ShopCategoryCatRoute = ShopCategoryCatRouteImport.update({
   path: '/shop/category/$cat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsProfileSlugRoute = JobsProfileSlugRouteImport.update({
+  id: '/jobs/profile/$slug',
+  path: '/jobs/profile/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FantasyJoinTokenRoute = FantasyJoinTokenRouteImport.update({
   id: '/fantasy/join/$token',
   path: '/fantasy/join/$token',
@@ -334,6 +401,12 @@ const ApiShowMediaIdServerRoute = ApiShowMediaIdServerRouteImport.update({
   path: '/api/show-media/$id',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiJobsStripeWebhookServerRoute =
+  ApiJobsStripeWebhookServerRouteImport.update({
+    id: '/api/jobs/stripe-webhook',
+    path: '/api/jobs/stripe-webhook',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
 const ApiFantasyStripeWebhookServerRoute =
   ApiFantasyStripeWebhookServerRouteImport.update({
     id: '/api/fantasy/stripe-webhook',
@@ -386,6 +459,16 @@ export interface FileRoutesByFullPath {
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
   '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
+  '/jobs/$jobSlug': typeof JobsJobSlugRoute
+  '/jobs/admin': typeof JobsAdminRoute
+  '/jobs/board': typeof JobsBoardRoute
+  '/jobs/guidelines': typeof JobsGuidelinesRoute
+  '/jobs/me': typeof JobsMeRoute
+  '/jobs/onboard': typeof JobsOnboardRoute
+  '/jobs/post': typeof JobsPostRoute
+  '/jobs/privacy': typeof JobsPrivacyRoute
+  '/jobs/talent': typeof JobsTalentRoute
+  '/jobs/terms': typeof JobsTermsRoute
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -410,6 +493,7 @@ export interface FileRoutesByFullPath {
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
   '/fantasy/$slug/standings': typeof FantasySlugStandingsRoute
   '/fantasy/join/$token': typeof FantasyJoinTokenRoute
+  '/jobs/profile/$slug': typeof JobsProfileSlugRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
@@ -434,6 +518,16 @@ export interface FileRoutesByTo {
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
   '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
+  '/jobs/$jobSlug': typeof JobsJobSlugRoute
+  '/jobs/admin': typeof JobsAdminRoute
+  '/jobs/board': typeof JobsBoardRoute
+  '/jobs/guidelines': typeof JobsGuidelinesRoute
+  '/jobs/me': typeof JobsMeRoute
+  '/jobs/onboard': typeof JobsOnboardRoute
+  '/jobs/post': typeof JobsPostRoute
+  '/jobs/privacy': typeof JobsPrivacyRoute
+  '/jobs/talent': typeof JobsTalentRoute
+  '/jobs/terms': typeof JobsTermsRoute
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -458,6 +552,7 @@ export interface FileRoutesByTo {
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
   '/fantasy/$slug/standings': typeof FantasySlugStandingsRoute
   '/fantasy/join/$token': typeof FantasyJoinTokenRoute
+  '/jobs/profile/$slug': typeof JobsProfileSlugRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
@@ -483,6 +578,16 @@ export interface FileRoutesById {
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
   '/fantasy/quiz-admin': typeof FantasyQuizAdminRoute
+  '/jobs/$jobSlug': typeof JobsJobSlugRoute
+  '/jobs/admin': typeof JobsAdminRoute
+  '/jobs/board': typeof JobsBoardRoute
+  '/jobs/guidelines': typeof JobsGuidelinesRoute
+  '/jobs/me': typeof JobsMeRoute
+  '/jobs/onboard': typeof JobsOnboardRoute
+  '/jobs/post': typeof JobsPostRoute
+  '/jobs/privacy': typeof JobsPrivacyRoute
+  '/jobs/talent': typeof JobsTalentRoute
+  '/jobs/terms': typeof JobsTermsRoute
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -507,6 +612,7 @@ export interface FileRoutesById {
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
   '/fantasy/$slug/standings': typeof FantasySlugStandingsRoute
   '/fantasy/join/$token': typeof FantasyJoinTokenRoute
+  '/jobs/profile/$slug': typeof JobsProfileSlugRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
@@ -533,6 +639,16 @@ export interface FileRouteTypes {
     | '/dev/free-form-spike'
     | '/fantasy/create'
     | '/fantasy/quiz-admin'
+    | '/jobs/$jobSlug'
+    | '/jobs/admin'
+    | '/jobs/board'
+    | '/jobs/guidelines'
+    | '/jobs/me'
+    | '/jobs/onboard'
+    | '/jobs/post'
+    | '/jobs/privacy'
+    | '/jobs/talent'
+    | '/jobs/terms'
     | '/judges/$judgeId'
     | '/merch/$'
     | '/shop/$productId'
@@ -557,6 +673,7 @@ export interface FileRouteTypes {
     | '/fantasy/$slug/quiz'
     | '/fantasy/$slug/standings'
     | '/fantasy/join/$token'
+    | '/jobs/profile/$slug'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
@@ -581,6 +698,16 @@ export interface FileRouteTypes {
     | '/dev/free-form-spike'
     | '/fantasy/create'
     | '/fantasy/quiz-admin'
+    | '/jobs/$jobSlug'
+    | '/jobs/admin'
+    | '/jobs/board'
+    | '/jobs/guidelines'
+    | '/jobs/me'
+    | '/jobs/onboard'
+    | '/jobs/post'
+    | '/jobs/privacy'
+    | '/jobs/talent'
+    | '/jobs/terms'
     | '/judges/$judgeId'
     | '/merch/$'
     | '/shop/$productId'
@@ -605,6 +732,7 @@ export interface FileRouteTypes {
     | '/fantasy/$slug/quiz'
     | '/fantasy/$slug/standings'
     | '/fantasy/join/$token'
+    | '/jobs/profile/$slug'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
@@ -629,6 +757,16 @@ export interface FileRouteTypes {
     | '/dev/free-form-spike'
     | '/fantasy/create'
     | '/fantasy/quiz-admin'
+    | '/jobs/$jobSlug'
+    | '/jobs/admin'
+    | '/jobs/board'
+    | '/jobs/guidelines'
+    | '/jobs/me'
+    | '/jobs/onboard'
+    | '/jobs/post'
+    | '/jobs/privacy'
+    | '/jobs/talent'
+    | '/jobs/terms'
     | '/judges/$judgeId'
     | '/merch/$'
     | '/shop/$productId'
@@ -653,6 +791,7 @@ export interface FileRouteTypes {
     | '/fantasy/$slug/quiz'
     | '/fantasy/$slug/standings'
     | '/fantasy/join/$token'
+    | '/jobs/profile/$slug'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
@@ -678,6 +817,16 @@ export interface RootRouteChildren {
   DevFreeFormSpikeRoute: typeof DevFreeFormSpikeRoute
   FantasyCreateRoute: typeof FantasyCreateRoute
   FantasyQuizAdminRoute: typeof FantasyQuizAdminRoute
+  JobsJobSlugRoute: typeof JobsJobSlugRoute
+  JobsAdminRoute: typeof JobsAdminRoute
+  JobsBoardRoute: typeof JobsBoardRoute
+  JobsGuidelinesRoute: typeof JobsGuidelinesRoute
+  JobsMeRoute: typeof JobsMeRoute
+  JobsOnboardRoute: typeof JobsOnboardRoute
+  JobsPostRoute: typeof JobsPostRoute
+  JobsPrivacyRoute: typeof JobsPrivacyRoute
+  JobsTalentRoute: typeof JobsTalentRoute
+  JobsTermsRoute: typeof JobsTermsRoute
   JudgesJudgeIdRoute: typeof JudgesJudgeIdRoute
   MerchSplatRoute: typeof MerchSplatRoute
   ShopProductIdRoute: typeof ShopProductIdRoute
@@ -701,6 +850,7 @@ export interface RootRouteChildren {
   FantasySlugQuizRoute: typeof FantasySlugQuizRoute
   FantasySlugStandingsRoute: typeof FantasySlugStandingsRoute
   FantasyJoinTokenRoute: typeof FantasyJoinTokenRoute
+  JobsProfileSlugRoute: typeof JobsProfileSlugRoute
   ShopCategoryCatRoute: typeof ShopCategoryCatRoute
   ShopGroupStoreIdRoute: typeof ShopGroupStoreIdRoute
   ShowsSlugSeasonRoute: typeof ShowsSlugSeasonRoute
@@ -717,6 +867,7 @@ export interface FileServerRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
+  '/api/jobs/stripe-webhook': typeof ApiJobsStripeWebhookServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
@@ -731,6 +882,7 @@ export interface FileServerRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
+  '/api/jobs/stripe-webhook': typeof ApiJobsStripeWebhookServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
@@ -746,6 +898,7 @@ export interface FileServerRoutesById {
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
+  '/api/jobs/stripe-webhook': typeof ApiJobsStripeWebhookServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
@@ -762,6 +915,7 @@ export interface FileServerRouteTypes {
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
+    | '/api/jobs/stripe-webhook'
     | '/api/show-media/$id'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
@@ -776,6 +930,7 @@ export interface FileServerRouteTypes {
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
+    | '/api/jobs/stripe-webhook'
     | '/api/show-media/$id'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
@@ -790,6 +945,7 @@ export interface FileServerRouteTypes {
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
+    | '/api/jobs/stripe-webhook'
     | '/api/show-media/$id'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
@@ -805,6 +961,7 @@ export interface RootServerRouteChildren {
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
   ApiFantasyMediaIdServerRoute: typeof ApiFantasyMediaIdServerRoute
   ApiFantasyStripeWebhookServerRoute: typeof ApiFantasyStripeWebhookServerRoute
+  ApiJobsStripeWebhookServerRoute: typeof ApiJobsStripeWebhookServerRoute
   ApiShowMediaIdServerRoute: typeof ApiShowMediaIdServerRoute
   ApiFantasyJobsDispatchServerRoute: typeof ApiFantasyJobsDispatchServerRoute
   ApiFantasyJobsRecomputeServerRoute: typeof ApiFantasyJobsRecomputeServerRoute
@@ -960,6 +1117,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JudgesJudgeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs/terms': {
+      id: '/jobs/terms'
+      path: '/jobs/terms'
+      fullPath: '/jobs/terms'
+      preLoaderRoute: typeof JobsTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/talent': {
+      id: '/jobs/talent'
+      path: '/jobs/talent'
+      fullPath: '/jobs/talent'
+      preLoaderRoute: typeof JobsTalentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/privacy': {
+      id: '/jobs/privacy'
+      path: '/jobs/privacy'
+      fullPath: '/jobs/privacy'
+      preLoaderRoute: typeof JobsPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/post': {
+      id: '/jobs/post'
+      path: '/jobs/post'
+      fullPath: '/jobs/post'
+      preLoaderRoute: typeof JobsPostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/onboard': {
+      id: '/jobs/onboard'
+      path: '/jobs/onboard'
+      fullPath: '/jobs/onboard'
+      preLoaderRoute: typeof JobsOnboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/me': {
+      id: '/jobs/me'
+      path: '/jobs/me'
+      fullPath: '/jobs/me'
+      preLoaderRoute: typeof JobsMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/guidelines': {
+      id: '/jobs/guidelines'
+      path: '/jobs/guidelines'
+      fullPath: '/jobs/guidelines'
+      preLoaderRoute: typeof JobsGuidelinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/board': {
+      id: '/jobs/board'
+      path: '/jobs/board'
+      fullPath: '/jobs/board'
+      preLoaderRoute: typeof JobsBoardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/admin': {
+      id: '/jobs/admin'
+      path: '/jobs/admin'
+      fullPath: '/jobs/admin'
+      preLoaderRoute: typeof JobsAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/$jobSlug': {
+      id: '/jobs/$jobSlug'
+      path: '/jobs/$jobSlug'
+      fullPath: '/jobs/$jobSlug'
+      preLoaderRoute: typeof JobsJobSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fantasy/quiz-admin': {
       id: '/fantasy/quiz-admin'
       path: '/fantasy/quiz-admin'
@@ -1072,6 +1299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopCategoryCatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs/profile/$slug': {
+      id: '/jobs/profile/$slug'
+      path: '/jobs/profile/$slug'
+      fullPath: '/jobs/profile/$slug'
+      preLoaderRoute: typeof JobsProfileSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fantasy/join/$token': {
       id: '/fantasy/join/$token'
       path: '/fantasy/join/$token'
@@ -1181,6 +1415,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiShowMediaIdServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/jobs/stripe-webhook': {
+      id: '/api/jobs/stripe-webhook'
+      path: '/api/jobs/stripe-webhook'
+      fullPath: '/api/jobs/stripe-webhook'
+      preLoaderRoute: typeof ApiJobsStripeWebhookServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/fantasy/stripe-webhook': {
       id: '/api/fantasy/stripe-webhook'
       path: '/api/fantasy/stripe-webhook'
@@ -1255,6 +1496,16 @@ const rootRouteChildren: RootRouteChildren = {
   DevFreeFormSpikeRoute: DevFreeFormSpikeRoute,
   FantasyCreateRoute: FantasyCreateRoute,
   FantasyQuizAdminRoute: FantasyQuizAdminRoute,
+  JobsJobSlugRoute: JobsJobSlugRoute,
+  JobsAdminRoute: JobsAdminRoute,
+  JobsBoardRoute: JobsBoardRoute,
+  JobsGuidelinesRoute: JobsGuidelinesRoute,
+  JobsMeRoute: JobsMeRoute,
+  JobsOnboardRoute: JobsOnboardRoute,
+  JobsPostRoute: JobsPostRoute,
+  JobsPrivacyRoute: JobsPrivacyRoute,
+  JobsTalentRoute: JobsTalentRoute,
+  JobsTermsRoute: JobsTermsRoute,
   JudgesJudgeIdRoute: JudgesJudgeIdRoute,
   MerchSplatRoute: MerchSplatRoute,
   ShopProductIdRoute: ShopProductIdRoute,
@@ -1278,6 +1529,7 @@ const rootRouteChildren: RootRouteChildren = {
   FantasySlugQuizRoute: FantasySlugQuizRoute,
   FantasySlugStandingsRoute: FantasySlugStandingsRoute,
   FantasyJoinTokenRoute: FantasyJoinTokenRoute,
+  JobsProfileSlugRoute: JobsProfileSlugRoute,
   ShopCategoryCatRoute: ShopCategoryCatRoute,
   ShopGroupStoreIdRoute: ShopGroupStoreIdRoute,
   ShowsSlugSeasonRoute: ShowsSlugSeasonRoute,
@@ -1297,6 +1549,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
   ApiFantasyMediaIdServerRoute: ApiFantasyMediaIdServerRoute,
   ApiFantasyStripeWebhookServerRoute: ApiFantasyStripeWebhookServerRoute,
+  ApiJobsStripeWebhookServerRoute: ApiJobsStripeWebhookServerRoute,
   ApiShowMediaIdServerRoute: ApiShowMediaIdServerRoute,
   ApiFantasyJobsDispatchServerRoute: ApiFantasyJobsDispatchServerRoute,
   ApiFantasyJobsRecomputeServerRoute: ApiFantasyJobsRecomputeServerRoute,

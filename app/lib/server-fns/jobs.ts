@@ -6,8 +6,12 @@ import { getActor, ForbiddenError } from '@/lib/authz';
 import { JobsService, JobsServiceLive } from '@/lib/jobs/jobs-service';
 import { JOBS_BLOCK_SCHEMAS, isJobsBlockKind } from '@/lib/jobs/schemas';
 
-const run = <A, E>(fn: () => Effect.Effect<A, E, never>) =>
-  Effect.runPromise(fn().pipe(Effect.provide(JobsServiceLive)));
+// NOTE: do NOT add a module-scope helper that closes over `JobsServiceLive` (or any
+// service Live / runtime). Each `.handler()` below inlines `Effect.provide(JobsServiceLive)`
+// so the server-fn code-split can strip the whole jobs server chain (node:crypto,
+// contributions-db/LibsqlClient, node:fs) from the CLIENT bundle. An unused module-scope
+// holder defeats that tree-shaking and blanks the site client-side. See memory
+// fantasy-jobs-deploy-bundle-leak.
 
 const getJobsCtx = async () => {
   const actor = await getActor(getWebRequest());
