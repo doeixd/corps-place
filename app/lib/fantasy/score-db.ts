@@ -20,6 +20,23 @@ import { CAPTION_NAME_TO_KEY, type CaptionKey } from './captions';
 
 const DRAFT_DIVISIONS = ['World Class', 'Open Class'];
 
+// Corps excluded from the draftable pool by request — feeder / non-competitive
+// entries that shouldn't be draft picks. Matched by corps_key (stable) with a
+// case-insensitive name fallback in case keys change.
+const EXCLUDED_CORPS_KEYS = new Set([
+  'high-school-affiliated-to-bit',
+  'calgary-round-up-band',
+  '001j000000i6kalaa3', // Blue Devils C
+]);
+const EXCLUDED_CORPS_NAMES = new Set([
+  'high school affiliated to bit',
+  'calgary round-up band',
+  'blue devils c',
+]);
+const isExcludedCorps = (corpsKey: string, name: string): boolean =>
+  EXCLUDED_CORPS_KEYS.has(corpsKey) ||
+  EXCLUDED_CORPS_NAMES.has(name.trim().toLowerCase());
+
 let _dbUrl: string | undefined;
 const dbUrl = (): string =>
   (_dbUrl ??=
@@ -90,14 +107,16 @@ export async function getDraftPool(): Promise<DraftableCorps[]> {
                 ORDER BY cs.division_name, co.name COLLATE NOCASE`,
           args: DRAFT_DIVISIONS,
         });
-    const value = res.rows.map((r) => ({
-      corpsKey: r.corps_key as string,
-      slug: (r.slug as string | null) ?? null,
-      name: r.name as string,
-      divisionName: (r.division_name as string | null) ?? null,
-      displayCity: (r.display_city as string | null) ?? null,
-      corpsLogo: (r.corps_logo as string | null) ?? null,
-    }));
+    const value = res.rows
+      .map((r) => ({
+        corpsKey: r.corps_key as string,
+        slug: (r.slug as string | null) ?? null,
+        name: r.name as string,
+        divisionName: (r.division_name as string | null) ?? null,
+        displayCity: (r.display_city as string | null) ?? null,
+        corpsLogo: (r.corps_logo as string | null) ?? null,
+      }))
+      .filter((c) => !isExcludedCorps(c.corpsKey, c.name));
     poolCache = { at: Date.now(), value };
     return value;
   } catch (err) {
