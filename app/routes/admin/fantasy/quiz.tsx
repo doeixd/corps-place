@@ -1,6 +1,6 @@
 // Fantasy quiz bank CRUD (ADMIN_PAGE_PLAN §9.1). Reuses the quiz server-fns; questions
 // fetched in the loader, refreshed via invalidate. correct_index shown only to admins.
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { Show, For } from 'jotai-solid-api';
 import { adminLoader } from '@/lib/admin-loader';
@@ -56,6 +56,17 @@ function Quiz({ questions }: { questions: Question[] }) {
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
   const [explanation, setExplanation] = useState('');
 
+  // Parsed once: drives the choice dropdown, the selected-label render, and save.
+  const choices = choicesText
+    .split('\n')
+    .map((c) => c.trim())
+    .filter(Boolean);
+
+  // Keep the correct-answer pointer valid as choices are added/removed.
+  useEffect(() => {
+    if (correctIndex > 0 && correctIndex >= choices.length) setCorrectIndex(0);
+  }, [choices.length, correctIndex]);
+
   const counts = (['easy', 'medium', 'hard'] as Difficulty[]).map(
     (d) => `${d}: ${questions.filter((q) => q.active && q.difficulty === d).length}`
   );
@@ -80,10 +91,6 @@ function Quiz({ questions }: { questions: Question[] }) {
 
   // One form, two modes: create (no editingId) or update (editingId set → UPDATE by id).
   const save = useAsyncAction(async () => {
-    const choices = choicesText
-      .split('\n')
-      .map((c) => c.trim())
-      .filter(Boolean);
     if (choices.length < 2) throw new Error('At least 2 choices (one per line).');
     if (correctIndex >= choices.length) throw new Error('Correct index out of range.');
     await adminUpsertQuestion({
@@ -135,21 +142,25 @@ function Quiz({ questions }: { questions: Question[] }) {
             <label className="text-text-secondary">Correct answer</label>
             <Select
               value={String(correctIndex)}
-              onValueChange={(v) => v && setCorrectIndex(Number(v))}
+              onValueChange={(v) => v != null && v !== '' && setCorrectIndex(Number(v))}
+              disabled={choices.length === 0}
             >
               <SelectTrigger size="sm" className="w-auto min-w-44 max-w-xs">
-                <SelectValue placeholder="Pick the correct choice" />
+                <SelectValue
+                  placeholder={choices.length ? 'Pick the correct choice' : 'Add choices first'}
+                >
+                  {(v) => {
+                    const idx = Number(v);
+                    return choices[idx] ? `${idx + 1}. ${choices[idx]}` : null;
+                  }}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                {choicesText
-                  .split('\n')
-                  .map((c) => c.trim())
-                  .filter(Boolean)
-                  .map((choice, i) => (
-                    <SelectItem key={i} value={String(i)}>
-                      {i + 1}. {choice}
-                    </SelectItem>
-                  ))}
+                {choices.map((choice, i) => (
+                  <SelectItem key={i} value={String(i)}>
+                    {i + 1}. {choice}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={difficulty} onValueChange={(v) => v && setDifficulty(v as Difficulty)}>
