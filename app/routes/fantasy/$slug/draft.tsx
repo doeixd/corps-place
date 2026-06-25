@@ -318,9 +318,20 @@ function SchedulePanel({
         <CardTitle>Schedule & start</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
+        <p className="text-sm text-muted-foreground">
+          The <strong>draft</strong> is where everyone takes turns picking real drum corps for their
+          lineup, one caption at a time. Set a time below and all members get reminders before it
+          begins.
+        </p>
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="draft-time">Draft time</Label>
+            <p className="max-w-xs text-xs text-muted-foreground">
+              When the draft should happen. With <strong>Start automatically</strong> on (below), the
+              room opens by itself at this time. Otherwise, you open it yourself — and{' '}
+              <strong>Start draft now</strong> begins the draft <em>immediately</em>, whenever you
+              click it (you can start early, or with no time set at all).
+            </p>
             <Input
               id="draft-time"
               type="datetime-local"
