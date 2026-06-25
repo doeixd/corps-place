@@ -19,7 +19,9 @@ import {
   setLeagueImage,
   leaveLeague,
   cancelLeague,
+  scheduleDraft,
 } from '@/lib/server-fns/fantasy';
+import { DraftScheduleFields } from '@/components/fantasy/draft-schedule-fields';
 import { uploadFantasyLogo } from '@/lib/server-fns/fantasy-media';
 import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo-upload';
 import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
@@ -151,6 +153,15 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
           config={league.config}
           draftStarted={data.draft ? data.draft.status !== 'scheduled' : false}
           onSaved={refresh}
+        />
+      ) : null}
+
+      {viewer.isOwner && (!data.draft || data.draft.status === 'scheduled') ? (
+        <DraftScheduleCard
+          leagueId={league.leagueId}
+          scheduledAt={data.draft?.scheduled_at ?? null}
+          autoStart={data.draft?.auto_start ?? true}
+          onChanged={refresh}
         />
       ) : null}
 
@@ -397,6 +408,47 @@ function LeagueNameHeading({
       </div>
       {save.error ? <span className="text-sm text-destructive">{save.error}</span> : null}
     </div>
+  );
+}
+
+// Synced copy of the draft-time setting (the draft room has the same control). Both
+// read the server's scheduled time + auto-start and persist via scheduleDraft, so they
+// stay in sync. Shown to the owner until the draft starts.
+function DraftScheduleCard({
+  leagueId,
+  scheduledAt,
+  autoStart,
+  onChanged,
+}: {
+  leagueId: string;
+  scheduledAt: string | null;
+  autoStart: boolean;
+  onChanged: () => Promise<void> | void;
+}) {
+  const schedule = useAsyncAction(
+    async (input: { scheduledAt: string; autoStart: boolean }) => {
+      await scheduleDraft({
+        data: { leagueId, scheduledAt: input.scheduledAt, autoStart: input.autoStart },
+      });
+      await onChanged();
+    }
+  );
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Draft schedule</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <DraftScheduleFields
+          scheduledAt={scheduledAt}
+          savedAutoStart={autoStart}
+          scheduling={schedule.busy}
+          onSchedule={(at, auto) => void schedule.run({ scheduledAt: at, autoStart: auto })}
+        />
+        {schedule.error ? <p className="mt-3 text-sm text-destructive">{schedule.error}</p> : null}
+      </CardContent>
+    </Card>
   );
 }
 

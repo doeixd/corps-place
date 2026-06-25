@@ -66,6 +66,7 @@ interface MemberRow {
 interface DraftRow {
   status: string;
   scheduled_at: unknown;
+  auto_start: unknown;
   draft_type: string;
   total_rounds: number;
   current_pick_no: number;
@@ -130,7 +131,7 @@ const makeLeagueService = Effect.gen(function* () {
     }));
 
     const draftRows = yield* sql<DraftRow>`
-      SELECT status, scheduled_at, draft_type, total_rounds, current_pick_no
+      SELECT status, scheduled_at, auto_start, draft_type, total_rounds, current_pick_no
       FROM fantasy_drafts WHERE league_id = ${league.league_id}
     `.pipe(Effect.orDie);
     const draftRow = draftRows[0];
@@ -138,6 +139,7 @@ const makeLeagueService = Effect.gen(function* () {
       ? {
           status: draftRow.status,
           scheduled_at: strOrNull(draftRow.scheduled_at),
+          auto_start: Number(draftRow.auto_start ?? 1) !== 0,
           draft_type: draftRow.draft_type,
           total_rounds: Number(draftRow.total_rounds),
           current_pick_no: Number(draftRow.current_pick_no),

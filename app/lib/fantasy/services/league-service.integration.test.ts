@@ -141,6 +141,7 @@ describe('LeagueService.get (Effect path)', () => {
     expect(res.draft).toEqual({
       status: 'scheduled',
       scheduled_at: '2026-07-01T00:00:00.000Z',
+      auto_start: true,
       draft_type: 'snake',
       total_rounds: 8,
       current_pick_no: 0,

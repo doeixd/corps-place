@@ -50,6 +50,7 @@ import {
 import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from '@/lib/fantasy/captions';
 import { pickWeight, type ReverseWeighting } from '@/lib/fantasy/draft';
 import { useDraftStream, useDraftPresence } from '@/lib/fantasy/use-draft-stream';
+import { DraftScheduleFields } from '@/components/fantasy/draft-schedule-fields';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { fantasyDraftMachine, type FantasyDraftEvent } from '@/machines/fantasy-draft-machine';
@@ -286,8 +287,6 @@ function SchedulePanel({
   scheduledAt: string | null;
   savedAutoStart: boolean;
 }) {
-  const [when, setWhen] = useState('');
-  const [autoStart, setAutoStart] = useState(savedAutoStart);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   // Starting the draft is a one-way door. Confirm when it would start a draft with no
@@ -318,59 +317,12 @@ function SchedulePanel({
         <CardTitle>Schedule & start</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <p className="text-sm text-muted-foreground">
-          The <strong>draft</strong> is where everyone takes turns picking real drum corps for their
-          lineup, one caption at a time. Set a time below and all members get reminders before it
-          begins.
-        </p>
-        <div className="flex flex-wrap items-end gap-3">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="draft-time">Draft time</Label>
-            <p className="max-w-xs text-xs text-muted-foreground">
-              When the draft should happen. With <strong>Start automatically</strong> on (below), the
-              room opens by itself at this time. Otherwise, you open it yourself — and{' '}
-              <strong>Start draft now</strong> begins the draft <em>immediately</em>, whenever you
-              click it (you can start early, or with no time set at all).
-            </p>
-            <Input
-              id="draft-time"
-              type="datetime-local"
-              value={when}
-              onChange={(e) => setWhen(e.target.value)}
-              className="w-auto"
-            />
-          </div>
-          <BusyButton
-            variant="outline"
-            busy={scheduling}
-            disabled={!when}
-            onClick={() =>
-              send({ type: 'SCHEDULE', scheduledAt: new Date(when).toISOString(), autoStart })
-            }
-          >
-            {scheduledAt ? 'Reschedule' : 'Schedule'}
-          </BusyButton>
-        </div>
-        <label className="flex items-start gap-2">
-          <Checkbox
-            checked={autoStart}
-            onCheckedChange={(v) => setAutoStart(!!v)}
-            className="mt-0.5"
-          />
-          <span className="text-sm">
-            Start the draft automatically at the scheduled time
-            <span className="mt-0.5 block text-xs text-muted-foreground">
-              Off — you&apos;ll start it yourself with “Start draft now”. Either way, everyone gets
-              reminders before it begins.
-            </span>
-          </span>
-        </label>
-        {scheduledAt ? (
-          <p className="text-sm text-muted-foreground">
-            Scheduled for {new Date(scheduledAt).toLocaleString()} —{' '}
-            {savedAutoStart ? 'starts automatically.' : 'you’ll start it manually.'}
-          </p>
-        ) : null}
+        <DraftScheduleFields
+          scheduledAt={scheduledAt}
+          savedAutoStart={savedAutoStart}
+          scheduling={scheduling}
+          onSchedule={(at, auto) => send({ type: 'SCHEDULE', scheduledAt: at, autoStart: auto })}
+        />
         <div className="flex items-center gap-3">
           <BusyButton busy={starting} onClick={handleStartClick}>
             Start draft now
