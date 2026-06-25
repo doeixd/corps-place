@@ -462,6 +462,15 @@ function LiveDraft({
   online,
 }: LiveDraftProps) {
   const isMyTurn = draft.status === 'live' && draft.currentUserId === viewerId;
+
+  // A cute little buzz the moment it becomes your turn (Web Vibration API — fires on
+  // Android browsers, a harmless no-op on iOS/desktop where it isn't supported).
+  useEffect(() => {
+    if (isMyTurn && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+      navigator.vibrate([55, 35, 55, 35, 90]);
+    }
+  }, [isMyTurn]);
+
   const onClock = draft.currentUserId ? membersById.get(draft.currentUserId) : undefined;
   const takenPairs = new Set(picks.map((p) => `${p.corpsKey}|${p.caption}`));
   const memberCount = membersById.size;
