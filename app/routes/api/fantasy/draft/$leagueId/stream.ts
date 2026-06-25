@@ -1,11 +1,12 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
-import { Effect, Fiber, Stream } from 'effect';
+import { Effect, Fiber, PubSub, Stream } from 'effect';
 import { getActor } from '@/lib/authz';
 import { getContributionsDb } from '@/lib/contributions-db';
-import { subscribe } from '@/lib/fantasy/bus';
+import { subscribe, broadcast } from '@/lib/fantasy/bus';
 import { getSnapshot } from '@/lib/fantasy/draft-engine';
 import { effectDraftEnabled } from '@/lib/fantasy/flag';
 import { DraftService, draftPubSub } from '@/lib/fantasy/services/draft-service';
+import { addPresence, removePresence, onlineUserIds } from '@/lib/fantasy/presence';
 import { fantasyRuntime } from '@/rpc';
 
 /**
@@ -30,10 +31,19 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/draft/$leagueId/s
     if (!member) return new Response('Forbidden', { status: 403 });
 
     const leagueId = params.leagueId;
+    const userId = actor.userId;
     const useEffect = effectDraftEnabled();
     const encoder = new TextEncoder();
     let unsubscribe = () => {};
     let heartbeat: ReturnType<typeof setInterval> | null = null;
+
+    // Fan a presence event (the league's online member ids) out to every client via the
+    // active bus, so each viewer can show who's connected.
+    const broadcastPresence = () => {
+      const msg = { event: 'presence', data: { online: onlineUserIds(leagueId) } };
+      if (useEffect) Effect.runFork(PubSub.publish(draftPubSub(leagueId), msg));
+      else broadcast(leagueId, msg);
+    };
 
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
@@ -54,6 +64,11 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/draft/$leagueId/s
             )
           : await getSnapshot(leagueId);
         write('snapshot', snapshot, snapshot.draft?.currentPickNo ?? 0);
+
+        // Mark this member online + tell everyone (incl. this client) who's connected.
+        addPresence(leagueId, userId);
+        write('presence', { online: onlineUserIds(leagueId) });
+        broadcastPresence();
 
         if (useEffect) {
           // Subscribe a Stream from the league PubSub; interrupt the fiber on cancel.
@@ -93,6 +108,8 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/draft/$leagueId/s
       cancel() {
         unsubscribe();
         if (heartbeat) clearInterval(heartbeat);
+        removePresence(leagueId, userId);
+        broadcastPresence();
       },
     });
 

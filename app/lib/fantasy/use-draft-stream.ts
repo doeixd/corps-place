@@ -10,6 +10,7 @@ import type { DraftSnapshot } from './draft-engine';
  */
 function makeDraftStore(leagueId: string, initial: DraftSnapshot | null) {
   let snapshot = initial;
+  let online: string[] = [];
   const listeners = new Set<() => void>();
   let source: EventSource | null = null;
   let refCount = 0;
@@ -20,6 +21,16 @@ function makeDraftStore(leagueId: string, initial: DraftSnapshot | null) {
   const replace = (e: MessageEvent) => {
     try {
       snapshot = JSON.parse(e.data) as DraftSnapshot;
+      emit();
+    } catch {
+      // ignore malformed frame
+    }
+  };
+  // Presence: the league's currently-connected member ids (new array ref each change so
+  // useSyncExternalStore re-renders).
+  const onPresence = (e: MessageEvent) => {
+    try {
+      online = ((JSON.parse(e.data) as { online?: string[] }).online ?? []).slice();
       emit();
     } catch {
       // ignore malformed frame
@@ -44,6 +55,7 @@ function makeDraftStore(leagueId: string, initial: DraftSnapshot | null) {
       source.addEventListener('snapshot', replace);
       source.addEventListener('pick', replace);
       source.addEventListener('state', patchState);
+      source.addEventListener('presence', onPresence);
     }
     return () => {
       listeners.delete(onChange);
@@ -54,8 +66,10 @@ function makeDraftStore(leagueId: string, initial: DraftSnapshot | null) {
     };
   };
 
-  return { subscribe, getSnapshot: () => snapshot };
+  return { subscribe, getSnapshot: () => snapshot, getOnline: () => online };
 }
+
+const EMPTY: string[] = [];
 
 // One store per league, kept in a module registry so its identity is stable
 // across renders without a manual useMemo (React Compiler is on — AGENTS.md).
@@ -76,4 +90,10 @@ export function useDraftStream(
 ): DraftSnapshot | null {
   const store = storeFor(leagueId, initial);
   return useSyncExternalStore(store.subscribe, store.getSnapshot, () => initial);
+}
+
+/** The league's currently-connected member ids, live over the same SSE channel. */
+export function useDraftPresence(leagueId: string): string[] {
+  const store = storeFor(leagueId, null);
+  return useSyncExternalStore(store.subscribe, store.getOnline, () => EMPTY);
 }

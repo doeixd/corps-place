@@ -42,7 +42,7 @@ import {
 } from '@/lib/server-fns/fantasy';
 import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from '@/lib/fantasy/captions';
 import { pickWeight, type ReverseWeighting } from '@/lib/fantasy/draft';
-import { useDraftStream } from '@/lib/fantasy/use-draft-stream';
+import { useDraftStream, useDraftPresence } from '@/lib/fantasy/use-draft-stream';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { fantasyDraftMachine, type FantasyDraftEvent } from '@/machines/fantasy-draft-machine';
@@ -104,6 +104,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
   const leagueId = league.league.leagueId;
   const router = useRouter();
   const snapshot = useDraftStream(leagueId, initial.snapshot) ?? initial.snapshot;
+  const online = new Set(useDraftPresence(leagueId));
   const draft = snapshot.draft;
   const [state, send] = useMachine(fantasyDraftMachine, {
     input: { leagueId, onChanged: () => void router.invalidate() },
@@ -143,18 +144,19 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
         </summary>
         <ul className="mt-2 flex list-disc flex-col gap-1.5 pl-5 text-muted-foreground">
           <li>
-            Players take turns. When you&apos;re <strong>on the clock</strong>, pick a corps for one
-            caption from the available list before your timer runs out.
+            Players take turns. When you&apos;re <strong>on the clock</strong>, you can draft a corps
+            for <strong>any caption you want — in any order</strong>. Switch caption tabs freely;
+            you&apos;re never forced to fill them top-to-bottom.
           </li>
           <li>
-            Each <strong>caption</strong> (GE1, VP, MB, …) holds a set number of corps for your
-            lineup. Fill them across your picks — the same corps + caption can only be taken once in
-            the league.
+            Each <strong>caption</strong> (GE1, VP, MB, …) has a set number of slots for your lineup.
+            Fill them across your turns in whatever order you like — the same corps + caption can
+            only be taken once in the league.
           </li>
           <li>
-            Picks are <strong>weighted</strong>: later picks count for more toward your score, so
-            save your strongest corps for later rounds. The weight is shown on the picker and the
-            board.
+            Picks are <strong>weighted by slot</strong>: within a caption, the <strong>later slots
+            count for more</strong> — your 2nd corps in a caption is worth more than your 1st, and so
+            on. The exact weight is shown on the picker (before you pick) and on the board.
           </li>
           <li>
             Set a <strong>draft queue</strong> (the button below) and if your timer runs out we
@@ -206,6 +208,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           viewerId={league.viewer.userId}
           isOwner={league.viewer.isOwner}
           membersById={membersById}
+          online={online}
           captionCaps={league.league.config.captionCaps}
           reverseWeighting={league.league.config.reverseWeighting}
         />
@@ -406,9 +409,24 @@ type LiveDraftProps = {
   viewerId: string | null;
   isOwner: boolean;
   membersById: Map<string, Member>;
+  online: Set<string>;
   captionCaps: Record<CaptionKey, number>;
   reverseWeighting: ReverseWeighting;
 };
+
+// Online/offline indicator for a player — driven by live SSE presence.
+function PresenceDot({ online }: { online: boolean }) {
+  return (
+    <span
+      title={online ? 'Online' : 'Offline'}
+      aria-label={online ? 'Online' : 'Offline'}
+      className={cn(
+        'inline-block size-2 shrink-0 rounded-full',
+        online ? 'bg-green-500' : 'bg-muted-foreground/30'
+      )}
+    />
+  );
+}
 
 function LiveDraft({
   send,
@@ -424,6 +442,7 @@ function LiveDraft({
   viewerId,
   isOwner,
   membersById,
+  online,
 }: LiveDraftProps) {
   const isMyTurn = draft.status === 'live' && draft.currentUserId === viewerId;
   const onClock = draft.currentUserId ? membersById.get(draft.currentUserId) : undefined;
@@ -484,10 +503,13 @@ function LiveDraft({
                 {isMyTurn ? "You're on the clock" : 'On the clock'}
               </span>
               <span
-                className="font-semibold"
+                className="flex items-center gap-1.5 font-semibold"
                 style={onClock?.corps_color ? { color: onClock.corps_color } : undefined}
               >
                 {onClock?.corps_name || onClock?.user_name || '—'}
+                {draft.currentUserId ? (
+                  <PresenceDot online={online.has(draft.currentUserId)} />
+                ) : null}
               </span>
             </div>
             {isMyTurn ? (
@@ -531,6 +553,7 @@ function LiveDraft({
         pool={pool}
         currentUserId={draft.currentUserId}
         captionCaps={captionCaps}
+        online={online}
       />
 
       {/* Picking is the primary, time-pressured action, so it's inline + always
@@ -802,11 +825,11 @@ function SectionPicker({
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm text-muted-foreground">
-        Pick a caption tab, then choose a corps for it.{' '}
+        Pick <strong>any caption</strong> — tap a tab in any order, then choose a corps.{' '}
         <span className="font-medium text-text-primary">
           This {caption} pick scores ×{nextWeight.toFixed(2)}
         </span>{' '}
-        toward your total — later slots in a caption are worth more, so save your best corps.
+        toward your total — later slots in a caption are worth more, so save your best corps for them.
       </p>
       <ToggleGroup
         value={[caption]}
@@ -888,12 +911,14 @@ function DraftBoard({
   pool,
   currentUserId,
   captionCaps,
+  online,
 }: {
   picks: DraftState['snapshot']['picks'];
   members: Member[];
   pool: DraftState['pool'];
   currentUserId: string | null;
   captionCaps: Record<CaptionKey, number>;
+  online?: Set<string>;
 }) {
   const corpsByKey = new Map(pool.map((c) => [c.corpsKey, c]));
 
@@ -962,7 +987,10 @@ function DraftBoard({
                         className="sticky left-0 z-20 bg-card align-middle font-medium whitespace-nowrap"
                         style={m.corps_color ? { color: m.corps_color } : undefined}
                       >
-                        {m.corps_name || m.user_name || 'Player'}
+                        <span className="flex items-center gap-1.5">
+                          {online ? <PresenceDot online={online.has(m.user_id)} /> : null}
+                          {m.corps_name || m.user_name || 'Player'}
+                        </span>
                       </TableCell>
                     ) : null}
                     {CAPTION_KEYS.map((c) => {
