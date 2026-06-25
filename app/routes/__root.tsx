@@ -60,10 +60,12 @@ function RootDocument({
   children,
   theme,
   brand,
+  iconHref,
 }: {
   children: ReactNode;
   theme: Theme | null;
   brand: Brand;
+  iconHref: string;
 }) {
   // suppressHydrationWarning on <html>: when there's no theme cookie the no-flash
   // script (below) resolves the OS preference and mutates the class + colorScheme
@@ -84,9 +86,15 @@ function RootDocument({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* Favicon, apple-touch-icon and theme-color are rendered by head() below
-            (HeadContent) from the favorite cookie, so SSR is correct and hydration
-            doesn't reset them. No static <title> here either — head() manages it. */}
+        {/* Favicon + apple-touch-icon live HERE (the persistent document <head>), not in
+            head()/HeadContent. Rendering them via HeadContent meant they were reconciled
+            on every route change AND on the fantasy pages' frequent live (SSE) re-renders,
+            which makes Chrome drop the SVG favicon. As static elements on the root document
+            they survive navigation; the per-corps `iconHref` (from the favorite cookie) is
+            still honored and only changes when the favorite does. theme-color stays in
+            head() below. No static <title> here either — head() manages it. */}
+        <link rel="icon" href={iconHref} type="image/svg+xml" />
+        <link rel="apple-touch-icon" href={iconHref} />
         <script dangerouslySetInnerHTML={{ __html: noFlashThemeScript }} />
         <HeadContent />
       </head>
@@ -192,8 +200,7 @@ export const Route = createRootRoute({
   // Default title + meta for any route without its own head() (error boundaries,
   // redirect routes). Child route head()s override the title via HeadContent.
   head: ({ loaderData }) => {
-    const { iconHref, themeColor } = loaderData?.favorite ?? {
-      iconHref: '/logo.svg',
+    const { themeColor } = loaderData?.favorite ?? {
       themeColor: DEFAULT_THEME_COLOR,
     };
     const brand = loaderData?.brand ?? 'corps';
@@ -205,20 +212,19 @@ export const Route = createRootRoute({
     return {
       ...seo,
       meta: [...seo.meta, { name: 'theme-color', content: themeColor }],
-      links: [
-        ...seo.links,
-        { rel: 'icon', href: iconHref, type: 'image/svg+xml' },
-        { rel: 'apple-touch-icon', href: iconHref },
-      ],
+      // Favicon links are rendered statically in RootDocument's <head> (see note there),
+      // not here — HeadContent reconciliation was dropping the SVG icon on the fantasy
+      // pages' frequent live re-renders.
+      links: [...seo.links],
     };
   },
   component: RootComponent,
 });
 
 function RootComponent() {
-  const { theme, brand } = Route.useLoaderData();
+  const { theme, brand, favorite } = Route.useLoaderData();
   return (
-    <RootDocument theme={theme} brand={brand}>
+    <RootDocument theme={theme} brand={brand} iconHref={favorite?.iconHref ?? '/logo.svg'}>
       <ServiceWorkerManager />
       <MotionConfig reducedMotion={REDUCED_MOTION}>
         <TooltipProvider delay={150}>
