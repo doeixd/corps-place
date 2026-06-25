@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowDown01Icon } from '@/components/icons/generated';
+import { cn } from '@/lib/utils';
 import {
   Select,
   SelectContent,
@@ -124,7 +126,12 @@ export function LeagueSettings({
         }}
       >
         <CardTitle className="cursor-pointer">League settings</CardTitle>
-        <span className="text-sm font-medium text-text-secondary">{open ? 'Hide' : 'Edit'}</span>
+        <span className="flex items-center gap-1.5 text-sm font-medium text-text-secondary">
+          {open ? 'Hide' : 'Edit'}
+          <ArrowDown01Icon
+            className={cn('size-4 transition-transform duration-200', open && 'rotate-180')}
+          />
+        </span>
       </CardHeader>
       {open ? (
       <CardContent className="flex flex-col gap-7">
