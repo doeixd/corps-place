@@ -113,7 +113,7 @@ export function LeagueSettings({
   return (
     <Card>
       <CardHeader
-        className="flex-row items-center justify-between gap-2"
+        className="flex flex-row items-center justify-between gap-2"
         role="button"
         tabIndex={0}
         aria-expanded={open}
