@@ -27,7 +27,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import { CorpsLogo } from '@/components/corps-logo';
+import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { cn } from '@/lib/utils';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { seoHead } from '@/lib/seo';
@@ -50,6 +50,16 @@ type LeagueData = Awaited<ReturnType<typeof getLeague>>;
 type DraftState = Awaited<ReturnType<typeof getDraftState>>;
 type Member = LeagueData['members'][number];
 type Send = (event: FantasyDraftEvent) => void;
+type PoolCorps = DraftState['pool'][number];
+
+// Theme-aware logo source for a pool corps — renders the dark-mode variant
+// (auto-invert or a dark asset) via CorpsLogo instead of one fixed image.
+const draftLogo = (c: PoolCorps | undefined) =>
+  corpsLogoSource({
+    corps_logo: c?.corpsLogo ?? null,
+    corps_logo_dark: c?.corpsLogoDark ?? null,
+    corps_logo_dark_url: c?.corpsLogoDarkUrl ?? null,
+  });
 
 export const Route = createFileRoute('/fantasy/$slug/draft')({
   beforeLoad: requireFantasyEnabled,
@@ -606,7 +616,7 @@ function DraftQueueEditor({
                   <span className="w-4 text-xs text-muted-foreground">{i + 1}</span>
                   <CorpsLogo
                     name={corpsByKey.get(e.corpsKey)?.name ?? e.corpsKey}
-                    logo={corpsByKey.get(e.corpsKey)?.corpsLogo ?? ''}
+                    logo={draftLogo(corpsByKey.get(e.corpsKey))}
                     width={24}
                     className="size-6"
                   />
@@ -675,7 +685,7 @@ function DraftQueueEditor({
                     >
                       <CorpsLogo
                         name={corps.name}
-                        logo={corps.corpsLogo ?? ''}
+                        logo={draftLogo(corps)}
                         width={24}
                         className="size-6"
                       />
@@ -823,7 +833,7 @@ function SectionPicker({
                 </span>
                 <CorpsLogo
                   name={corps.name}
-                  logo={corps.corpsLogo ?? ''}
+                  logo={draftLogo(corps)}
                   width={28}
                   className="size-7"
                 />
@@ -897,7 +907,7 @@ function DraftBoard({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="sticky left-0 z-20 bg-background">Player</TableHead>
+                <TableHead className="sticky left-0 z-20 bg-card">Player</TableHead>
                 {CAPTION_KEYS.map((c) => (
                   <TableHead key={c} className="px-2 text-center" title={KEY_TO_CAPTION_NAME[c]}>
                     {c}
@@ -923,7 +933,7 @@ function DraftBoard({
                     {slot === 0 ? (
                       <TableCell
                         rowSpan={maxCap}
-                        className="sticky left-0 z-20 bg-background align-middle font-medium whitespace-nowrap"
+                        className="sticky left-0 z-20 bg-card align-middle font-medium whitespace-nowrap"
                         style={m.corps_color ? { color: m.corps_color } : undefined}
                       >
                         {m.corps_name || m.user_name || 'Player'}
@@ -950,7 +960,7 @@ function DraftBoard({
                               >
                                 <CorpsLogo
                                   name={corps?.name ?? pick.corpsKey}
-                                  logo={corps?.corpsLogo ?? ''}
+                                  logo={draftLogo(corps)}
                                   width={size}
                                   className="h-full w-full"
                                 />

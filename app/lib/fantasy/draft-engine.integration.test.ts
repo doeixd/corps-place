@@ -66,13 +66,13 @@ beforeAll(async () => {
   const score = createClient({ url: process.env.DCI_RELATIONAL_DB_URL });
   await score.batch(
     [
-      `CREATE TABLE corps (corps_key TEXT PRIMARY KEY, name TEXT, slug TEXT, division_name TEXT, display_city TEXT, corps_logo TEXT)`,
+      `CREATE TABLE corps (corps_key TEXT PRIMARY KEY, name TEXT, slug TEXT, division_name TEXT, display_city TEXT, corps_logo TEXT, corps_logo_dark INTEGER, corps_logo_dark_url TEXT)`,
       `CREATE TABLE competitions (slug TEXT PRIMARY KEY, season TEXT, date TEXT)`,
       `CREATE TABLE corps_scores (competition_slug TEXT, corps_key TEXT, division_name TEXT)`,
       `CREATE TABLE caption_scores (competition_slug TEXT, corps_key TEXT, caption_name TEXT, score REAL)`,
       ...['c1', 'c2', 'c3', 'c4', 'c5', 'c6'].map(
         (k) =>
-          `INSERT INTO corps VALUES ('${k}', '${k.toUpperCase()}', '${k}', 'World Class', 'City', NULL)`
+          `INSERT INTO corps VALUES ('${k}', '${k.toUpperCase()}', '${k}', 'World Class', 'City', NULL, NULL, NULL)`
       ),
       `INSERT INTO competitions VALUES ('2025-world-championship-finals', '2025', '2025-08-09')`,
       // All six corps competed in 2025 → all eligible (getDraftPool now filters to

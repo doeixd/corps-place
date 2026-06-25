@@ -87,6 +87,11 @@ export type DraftableCorps = {
   divisionName: string | null;
   displayCity: string | null;
   corpsLogo: string | null;
+  // Dark-theme logo treatment (joined from rm_corps) so the draft renders the
+  // theme-appropriate variant via corpsLogoSource — `corps_logo_dark` flags the
+  // auto-invert case, `corps_logo_dark_url` is a hand-made dark asset.
+  corpsLogoDark: number | null;
+  corpsLogoDarkUrl: string | null;
 };
 
 // The corps directory changes rarely, but the pool is read on every draft pick
@@ -109,11 +114,15 @@ export async function getDraftPool(): Promise<DraftableCorps[]> {
   try {
     const res = readModelEnabled()
       ? await getReadModelClient().execute(
-          `SELECT corps_key, slug, name, division_name, display_city, corps_logo
-           FROM rm_fantasy_draft_pool ORDER BY sort_index`
+          `SELECT p.corps_key, p.slug, p.name, p.division_name, p.display_city, p.corps_logo,
+                  c.corps_logo_dark, c.corps_logo_dark_url
+           FROM rm_fantasy_draft_pool p
+           LEFT JOIN rm_corps c ON c.corps_key = p.corps_key
+           ORDER BY p.sort_index`
         )
       : await scoreDb().execute({
-          sql: `SELECT DISTINCT co.corps_key, co.slug, co.name, cs.division_name, co.display_city, co.corps_logo
+          sql: `SELECT DISTINCT co.corps_key, co.slug, co.name, cs.division_name, co.display_city,
+                       co.corps_logo, co.corps_logo_dark, co.corps_logo_dark_url
                 FROM corps co
                 JOIN corps_scores cs ON cs.corps_key = co.corps_key
                 JOIN competitions c ON c.slug = cs.competition_slug
@@ -133,6 +142,8 @@ export async function getDraftPool(): Promise<DraftableCorps[]> {
           divisionName: overrideDivision(corpsKey, name, (r.division_name as string | null) ?? null),
           displayCity: (r.display_city as string | null) ?? null,
           corpsLogo: (r.corps_logo as string | null) ?? null,
+          corpsLogoDark: (r.corps_logo_dark as number | null) ?? null,
+          corpsLogoDarkUrl: (r.corps_logo_dark_url as string | null) ?? null,
         };
       })
       .filter((c) => !isExcludedCorps(c.corpsKey, c.name));
