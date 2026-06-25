@@ -160,7 +160,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
         <DraftScheduleCard
           leagueId={league.leagueId}
           scheduledAt={data.draft?.scheduled_at ?? null}
-          autoStart={data.draft?.auto_start ?? true}
+          autoStart={data.draft?.auto_start ?? false}
           onChanged={refresh}
         />
       ) : null}

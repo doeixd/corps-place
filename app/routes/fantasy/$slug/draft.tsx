@@ -194,7 +194,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           feasibility={state.context.feasibility}
           isOwner={league.viewer.isOwner}
           scheduledAt={draft?.scheduledAt ?? null}
-          savedAutoStart={draft?.autoStart ?? true}
+          savedAutoStart={draft?.autoStart ?? false}
         />
       ) : draft.status === 'complete' ? (
         <CompletePanel

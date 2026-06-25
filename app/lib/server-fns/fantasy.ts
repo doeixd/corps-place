@@ -479,7 +479,7 @@ export const scheduleDraft = createServerFn({ method: 'POST' })
       v.object({
         leagueId: v.string(),
         scheduledAt: v.pipe(v.string(), v.isoTimestamp()),
-        autoStart: v.optional(v.boolean(), true),
+        autoStart: v.optional(v.boolean(), false),
       }),
       d
     )

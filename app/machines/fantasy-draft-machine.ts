@@ -87,7 +87,7 @@ export const fantasyDraftMachine = setup({
     error: null,
     feasibility: null,
     pendingScheduledAt: null,
-    pendingAutoStart: true,
+    pendingAutoStart: false,
     pendingPick: null,
     onChanged: input.onChanged,
   }),
