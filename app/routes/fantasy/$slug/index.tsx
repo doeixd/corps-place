@@ -108,7 +108,10 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
               onChanged={refresh}
             />
           ) : league.imageMediaId ? (
-            <div className="size-16 shrink-0 overflow-hidden rounded border border-border">
+            <div
+              className="shrink-0 overflow-hidden rounded border border-border"
+              style={{ width: 75, height: 75, marginRight: 4, transform: 'scale(0.95)' }}
+            >
               <img
                 src={`/api/fantasy-media/${league.imageMediaId}`}
                 alt=""
@@ -321,14 +324,17 @@ function LeagueImageUpload({
     (err) => `Image upload failed: ${err.message}`
   );
   return (
-    <div className="relative shrink-0">
+    <div
+      className="relative shrink-0"
+      style={{ width: 75, height: 75, marginRight: 4, transform: 'scale(0.95)' }}
+    >
       <PhotoUpload
         mediaId={mediaId}
         busy={upload.busy}
         onFile={(file) => upload.run(file)}
         alt="League image"
         variant="overlay"
-        size="size-16"
+        fill
         labels={{ empty: 'Add image', change: 'Change image' }}
       />
       {upload.error ? (
