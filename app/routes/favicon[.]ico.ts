@@ -1,10 +1,18 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
 
+/**
+ * Browsers request `/favicon.ico` implicitly whenever no usable `<link rel="icon">`
+ * is in the document — including the brief windows when client-side head management
+ * re-syncs on navigation. This used to return 204 (no content), so during those gaps
+ * the tab icon went blank. Redirect to the real (small) favicon so there is always
+ * something to show.
+ */
 export const ServerRoute = createServerFileRoute('/favicon.ico').methods({
   GET: async () =>
     new Response(null, {
-      status: 204,
+      status: 302,
       headers: {
+        location: '/favicon.svg',
         'cache-control': 'public, max-age=86400',
       },
     }),

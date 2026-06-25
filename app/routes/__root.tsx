@@ -44,7 +44,9 @@ function favoriteHead(): { iconHref: string; themeColor: string } {
   } catch {
     /* corrupt cookie — fall through to defaults */
   }
-  return { iconHref: '/logo.svg', themeColor: DEFAULT_THEME_COLOR };
+  // The small purpose-built favicon (749 B) — not the 63 KB logo.svg, which browsers
+  // rasterize unreliably at 16px and drop under load on busy pages.
+  return { iconHref: '/favicon.svg', themeColor: DEFAULT_THEME_COLOR };
 }
 
 // Runs before paint to set `.dark` from storage / system preference, avoiding a
@@ -297,7 +299,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   const { theme, brand, favorite } = Route.useLoaderData();
   return (
-    <RootDocument theme={theme} brand={brand} iconHref={favorite?.iconHref ?? '/logo.svg'}>
+    <RootDocument theme={theme} brand={brand} iconHref={favorite?.iconHref ?? '/favicon.svg'}>
       <ServiceWorkerManager />
       <AutoUpdater />
       <MotionConfig reducedMotion={REDUCED_MOTION}>
