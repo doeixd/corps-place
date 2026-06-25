@@ -73,6 +73,7 @@ import { ServerRoute as SitemapDotxmlServerRouteImport } from './routes/sitemap[
 import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]txt'
 import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[.]ico'
 import { ServerRoute as AppIconDotsvgServerRouteImport } from './routes/app-icon[.]svg'
+import { ServerRoute as ApiVersionServerRouteImport } from './routes/api/version'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
 import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
 import { ServerRoute as ApiJobsStripeWebhookServerRouteImport } from './routes/api/jobs/stripe-webhook'
@@ -395,6 +396,11 @@ const FaviconDoticoServerRoute = FaviconDoticoServerRouteImport.update({
 const AppIconDotsvgServerRoute = AppIconDotsvgServerRouteImport.update({
   id: '/app-icon.svg',
   path: '/app-icon.svg',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiVersionServerRoute = ApiVersionServerRouteImport.update({
+  id: '/api/version',
+  path: '/api/version',
   getParentRoute: () => rootServerRouteImport,
 } as any)
 const ApiMediaServerRoute = ApiMediaServerRouteImport.update({
@@ -877,6 +883,7 @@ export interface FileServerRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/media': typeof ApiMediaServerRoute
+  '/api/version': typeof ApiVersionServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
@@ -892,6 +899,7 @@ export interface FileServerRoutesByTo {
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/media': typeof ApiMediaServerRoute
+  '/api/version': typeof ApiVersionServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
@@ -908,6 +916,7 @@ export interface FileServerRoutesById {
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/media': typeof ApiMediaServerRoute
+  '/api/version': typeof ApiVersionServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
@@ -925,6 +934,7 @@ export interface FileServerRouteTypes {
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/media'
+    | '/api/version'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
@@ -940,6 +950,7 @@ export interface FileServerRouteTypes {
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/media'
+    | '/api/version'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
@@ -955,6 +966,7 @@ export interface FileServerRouteTypes {
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/media'
+    | '/api/version'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
@@ -971,6 +983,7 @@ export interface RootServerRouteChildren {
   RobotsDottxtServerRoute: typeof RobotsDottxtServerRoute
   SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
   ApiMediaServerRoute: typeof ApiMediaServerRoute
+  ApiVersionServerRoute: typeof ApiVersionServerRoute
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
   ApiFantasyMediaIdServerRoute: typeof ApiFantasyMediaIdServerRoute
   ApiFantasyStripeWebhookServerRoute: typeof ApiFantasyStripeWebhookServerRoute
@@ -1421,6 +1434,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof AppIconDotsvgServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/version': {
+      id: '/api/version'
+      path: '/api/version'
+      fullPath: '/api/version'
+      preLoaderRoute: typeof ApiVersionServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/media': {
       id: '/api/media'
       path: '/api/media'
@@ -1567,6 +1587,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   RobotsDottxtServerRoute: RobotsDottxtServerRoute,
   SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
   ApiMediaServerRoute: ApiMediaServerRoute,
+  ApiVersionServerRoute: ApiVersionServerRoute,
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
   ApiFantasyMediaIdServerRoute: ApiFantasyMediaIdServerRoute,
   ApiFantasyStripeWebhookServerRoute: ApiFantasyStripeWebhookServerRoute,

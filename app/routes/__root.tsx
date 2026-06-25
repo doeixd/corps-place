@@ -28,7 +28,7 @@ import {
 } from '@/stores/favorite-corps-store';
 import { themeStore } from '@/stores/theme-store';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
-import { getBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
+import { readBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
 import { buildSeo } from '@/lib/seo';
 import '@/app.css';
 
@@ -300,8 +300,8 @@ function AutoUpdater() {
 export const Route = createRootRoute({
   // Read the favorite cookie so head() can render the corps's favicon + theme-color
   // into the SSR HTML (correct first paint, no hydration reset).
-  loader: ({ request }) => {
-    const brand = getBrand(request ?? new Request('http://localhost:5173'));
+  loader: () => {
+    const brand = readBrand();
     const theme = readThemeCookie();
     return { brand, favorite: favoriteHead(theme), theme };
   },
@@ -335,7 +335,7 @@ function RootComponent() {
           <ThemeToggle className="fixed top-4 right-4 z-50" />
           <SiteNav />
           <ConsentGate />
-          <Toaster theme={theme} />
+          <Toaster theme={theme ?? 'system'} />
           {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
               (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
               (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}
