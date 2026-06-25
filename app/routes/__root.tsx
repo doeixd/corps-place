@@ -200,24 +200,29 @@ function ServiceWorkerManager() {
 function AutoUpdater() {
   const router = useRouter();
   useEffect(() => {
+    // Compare the server's build id now against the one observed at page load — both
+    // read from the same endpoint, so a client/server build-stamp skew can't trigger a
+    // false positive. A change means the server was redeployed under us.
+    let baseline: string | null = null;
     let stale = false;
-    let notified = false;
     const check = async () => {
       if (stale) return;
       try {
         const res = await fetch('/api/version', { cache: 'no-store' });
         if (!res.ok) return;
         const { id } = (await res.json()) as { id?: string };
-        if (id && id !== __APP_VERSION__) {
+        if (!id) return;
+        if (baseline === null) {
+          baseline = id;
+          return;
+        }
+        if (id !== baseline) {
           stale = true;
-          if (!notified) {
-            notified = true;
-            toast('A new version is available', {
-              description: 'It will apply on your next page change.',
-              action: { label: 'Refresh now', onClick: () => window.location.reload() },
-              duration: Infinity,
-            });
-          }
+          toast('A new version is available', {
+            description: 'It will apply on your next page change.',
+            action: { label: 'Refresh now', onClick: () => window.location.reload() },
+            duration: Infinity,
+          });
         }
       } catch {
         /* offline / transient — retry on the next tick */
