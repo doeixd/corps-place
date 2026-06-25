@@ -7,6 +7,13 @@ import { BackLink } from '@/components/back-link';
 import { LeagueTabs } from '@/components/fantasy/league-tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -281,6 +288,15 @@ function SchedulePanel({
 }) {
   const [when, setWhen] = useState('');
   const [autoStart, setAutoStart] = useState(savedAutoStart);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  // Starting the draft is a one-way door. Confirm when it would start a draft with no
+  // set time, or earlier than the scheduled time — to avoid catching players off guard.
+  const handleStartClick = () => {
+    const sched = scheduledAt ? new Date(scheduledAt).getTime() : null;
+    if (sched == null || Date.now() < sched) setConfirmOpen(true);
+    else send({ type: 'START' });
+  };
 
   if (!isOwner) {
     return (
@@ -345,11 +361,49 @@ function SchedulePanel({
           </p>
         ) : null}
         <div className="flex items-center gap-3">
-          <BusyButton busy={starting} onClick={() => send({ type: 'START' })}>
+          <BusyButton busy={starting} onClick={handleStartClick}>
             Start draft now
           </BusyButton>
           {feasibility ? <span className="text-sm text-destructive">{feasibility}</span> : null}
         </div>
+
+        <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+          <DialogContent className="max-w-md">
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription>
+              {scheduledAt ? (
+                <>
+                  The draft is scheduled for{' '}
+                  <strong>{new Date(scheduledAt).toLocaleString()}</strong>, which hasn&apos;t
+                  arrived yet. Starting now begins it <strong>early</strong> — anyone counting on
+                  the scheduled time may not be in the room yet. Make sure every player is here and
+                  ready, because the draft can&apos;t go back to setup once it starts.
+                </>
+              ) : (
+                <>
+                  You haven&apos;t set a draft time yet. Starting now opens the draft room{' '}
+                  <strong>immediately</strong> and puts the first player on the clock. Make sure
+                  everyone has joined, named their corps, and is ready — the draft can&apos;t go back
+                  to setup once it begins.
+                </>
+              )}
+            </DialogDescription>
+            <DialogFooter className="gap-2 sm:gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setConfirmOpen(false);
+                  send({ type: 'START' });
+                }}
+              >
+                Start draft now
+              </Button>
+              <Button autoFocus onClick={() => setConfirmOpen(false)}>
+                Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
