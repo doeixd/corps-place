@@ -115,7 +115,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
               <img
                 src={`/api/fantasy-media/${league.imageMediaId}`}
                 alt=""
-                className="h-full w-full object-contain"
+                className="h-full w-full object-cover"
               />
             </div>
           ) : null}
@@ -633,7 +633,7 @@ function MemberRow({
         <img
           src={`/api/fantasy-media/${member.corps_logo_media_id}`}
           alt=""
-          className="size-9 rounded object-contain"
+          className="size-9 rounded object-cover"
         />
       ) : (
         <div className="size-9 rounded bg-muted" />

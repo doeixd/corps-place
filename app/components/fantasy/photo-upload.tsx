@@ -105,7 +105,7 @@ export function PhotoUpload({
             <img
               src={`/api/fantasy-media/${mediaId}`}
               alt={alt}
-              className={`${box} ${radius} border border-border object-contain`}
+              className={`${box} ${radius} border border-border object-cover`}
             />
             {/* Edit affordance only on hover/focus — keeps the resting state clean. */}
             <span
@@ -138,7 +138,7 @@ export function PhotoUpload({
         <img
           src={`/api/fantasy-media/${mediaId}`}
           alt={alt}
-          className={`${size} ${radius} border border-border object-contain`}
+          className={`${size} ${radius} border border-border object-cover`}
         />
       ) : (
         <div className={`${size} ${radius} bg-muted`} />
