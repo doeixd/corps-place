@@ -51,6 +51,7 @@ import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from '@/lib/fantas
 import { pickWeight, type ReverseWeighting } from '@/lib/fantasy/draft';
 import { useDraftStream, useDraftPresence } from '@/lib/fantasy/use-draft-stream';
 import { DraftScheduleFields } from '@/components/fantasy/draft-schedule-fields';
+import { useWebHaptics } from 'web-haptics/react';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { fantasyDraftMachine, type FantasyDraftEvent } from '@/machines/fantasy-draft-machine';
@@ -463,12 +464,13 @@ function LiveDraft({
 }: LiveDraftProps) {
   const isMyTurn = draft.status === 'live' && draft.currentUserId === viewerId;
 
-  // A cute little buzz the moment it becomes your turn (Web Vibration API — fires on
-  // Android browsers, a harmless no-op on iOS/desktop where it isn't supported).
+  // A cute little buzz the moment it becomes your turn (web-haptics → Vibration API on
+  // Android; a harmless no-op on iOS/desktop where it isn't supported).
+  const { trigger: haptic } = useWebHaptics();
   useEffect(() => {
-    if (isMyTurn && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-      navigator.vibrate([55, 35, 55, 35, 90]);
-    }
+    if (isMyTurn) void haptic('success');
+    // haptic identity isn't depended on — we only want to fire on the turn transition.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMyTurn]);
 
   const onClock = draft.currentUserId ? membersById.get(draft.currentUserId) : undefined;
