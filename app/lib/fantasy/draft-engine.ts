@@ -44,6 +44,14 @@ function withLock<T>(leagueId: string, fn: () => Promise<T>): Promise<T> {
 
 const timers = new Map<string, ReturnType<typeof setTimeout>>();
 
+// Grace past the displayed deadline. A pick clicked at 0:00 still has to cross the
+// network and wait for the per-league lock, so a hard millisecond cutoff rejects timely
+// picks and hands the slot to the auto-picker (the rejected pick never advances, so the
+// clock keeps running and the auto-pick fires — the "doesn't move on / auto-picked me"
+// bug). The auto-pick fiber waits this long past the deadline and makePick accepts until
+// the same moment, so the two agree.
+const PICK_GRACE_MS = 2000;
+
 function clearTimer(leagueId: string): void {
   const t = timers.get(leagueId);
   if (t) {
@@ -54,7 +62,7 @@ function clearTimer(leagueId: string): void {
 
 function armTimer(leagueId: string, deadlineIso: string): void {
   clearTimer(leagueId);
-  const ms = Math.max(0, new Date(deadlineIso).getTime() - Date.now());
+  const ms = Math.max(0, new Date(deadlineIso).getTime() - Date.now()) + PICK_GRACE_MS;
   timers.set(
     leagueId,
     // Bind the callback to the exact deadline it was armed for, so a callback that
@@ -411,7 +419,10 @@ export async function makePick(
 
     if (draft.status !== 'live') throw new Error('CONFLICT:not-live');
     if (draft.currentUserId !== userId) throw new Error('FORBIDDEN');
-    if (draft.pickDeadlineAt && new Date(draft.pickDeadlineAt).getTime() < Date.now()) {
+    // Accept until deadline + the same grace the auto-pick timer waits; the turn check
+    // above + the per-league lock keep it correct (if the auto-pick already fired it's no
+    // longer your turn → FORBIDDEN above; otherwise this pick wins the lock).
+    if (draft.pickDeadlineAt && new Date(draft.pickDeadlineAt).getTime() + PICK_GRACE_MS < Date.now()) {
       throw new Error('CONFLICT:expired');
     }
     if (!isCaptionKey(caption)) throw new Error('CONFLICT:bad-caption');
