@@ -67,6 +67,7 @@ export function LeagueSettings({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [open, setOpen] = useState(false); // collapsed by default — settings are advanced
 
   const save = async () => {
     if (!weightsOk) {
@@ -109,9 +110,23 @@ export function LeagueSettings({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>League settings</CardTitle>
+      <CardHeader
+        className="flex-row items-center justify-between gap-2"
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setOpen((v) => !v);
+          }
+        }}
+      >
+        <CardTitle className="cursor-pointer">League settings</CardTitle>
+        <span className="text-sm font-medium text-text-secondary">{open ? 'Hide' : 'Edit'}</span>
       </CardHeader>
+      {open ? (
       <CardContent className="flex flex-col gap-7">
         <p className="text-sm text-muted-foreground">
           {draftStarted
@@ -316,6 +331,7 @@ export function LeagueSettings({
           {saved ? <span className="text-sm text-muted-foreground">Saved.</span> : null}
         </div>
       </CardContent>
+      ) : null}
     </Card>
   );
 }
