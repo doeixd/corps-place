@@ -10,6 +10,8 @@ import { UniformSection } from '@/components/contrib/uniform-section';
 import { CoverSection } from '@/components/contrib/cover-section';
 import { StaffSection } from '@/components/contrib/staff-section';
 import { MediaSection } from '@/components/contrib/media-section';
+import { RepertoireSection } from '@/components/contrib/repertoire-section';
+import { MovementSection } from '@/components/contrib/movement-section';
 import {
   PropsSection,
   LinksSection,
@@ -36,16 +38,7 @@ import { StatusCard } from '@/components/status-card';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon, type IconComponent } from '@/components/icon';
-import {
-  MusicNote03Icon,
-  KeyframeIcon,
-  RankingIcon,
-  BookOpen01Icon,
-  SpotifyIcon,
-  AppleMusicIcon,
-  YoutubeIcon,
-} from '@/components/icons/generated';
-import { musicSearchLinks, dcxRepYearUrl } from '@/lib/music-search';
+import { RankingIcon, BookOpen01Icon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/shows/$slug/$season')({
   loader: async ({ params }) => {
@@ -83,7 +76,8 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       cover: blockContent<CoverInput>('cover'),
       about: blockContent<FreeFormDoc>('about'),
     };
-    return { corps, show, season, authored, history, citations };
+    const overrides = contributions?.overrides ?? [];
+    return { corps, show, season, authored, history, citations, overrides };
   },
   head: ({ loaderData, params }) => {
     const d = loaderData;
@@ -134,7 +128,7 @@ export const Route = createFileRoute('/shows/$slug/$season')({
 });
 
 function ShowDetailPage() {
-  const { corps, show, season, authored, history, citations } = Route.useLoaderData();
+  const { corps, show, season, authored, history, citations, overrides } = Route.useLoaderData();
   const { slug } = Route.useParams();
 
   if (!corps || !show) {
@@ -200,81 +194,25 @@ function ShowDetailPage() {
             )}
           </Show>
 
-          {/* Repertoire (scraped) */}
-          <Show when={show.repertoire.length > 0} fallback={<RepertoirePlaceholder />}>
-            <Section icon={MusicNote03Icon} title="Repertoire">
-              <ul className="divide-y divide-foreground/10">
-                <For each={show.repertoire}>
-                  {(piece) => (
-                    <li className="flex items-start justify-between gap-3 py-2 first:pt-0 last:pb-0">
-                      <div className="min-w-0">
-                        <div className="font-medium text-text-primary">
-                          <Show when={piece.hyperlink} fallback={piece.workTitle}>
-                            {(href) => (
-                              <a
-                                href={href}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground"
-                              >
-                                {piece.workTitle}
-                              </a>
-                            )}
-                          </Show>
-                        </div>
-                        <Show when={creditLine(piece.composer, piece.arranger)}>
-                          {(credit) => <p className="text-sm text-text-secondary">{credit}</p>}
-                        </Show>
-                        <Show when={piece.notes}>
-                          {(n) => <p className="text-sm text-text-secondary">{n}</p>}
-                        </Show>
-                      </div>
-                      <ListenLinks workTitle={piece.workTitle} composer={piece.composer} />
-                    </li>
-                  )}
-                </For>
-              </ul>
-              <Show when={dcxRepYearUrl(corps.dcx_museum_url, show.season)}>
-                {(href) => (
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-5 inline-flex items-center gap-1.5 text-xs text-text-secondary underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground"
-                  >
-                    <Icon icon={BookOpen01Icon} size="xs" />
-                    View {corps.name}’s {show.season} repertoire in the DCX Museum
-                  </a>
-                )}
-              </Show>
-            </Section>
-          </Show>
+          {/* Repertoire (scraped seed + per-row override wiki) */}
+          <RepertoireSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            scraped={show.repertoire}
+            overrides={overrides}
+            citations={citations}
+            dcxMuseumUrl={corps.dcx_museum_url}
+            corpsName={corps.name}
+          />
 
-          {/* Movements (scraped) */}
-          <Show when={show.movements.length > 0}>
-            <Section icon={KeyframeIcon} title="Movements">
-              <ol className="space-y-2">
-                <For each={show.movements}>
-                  {(mv) => (
-                    <li className="flex gap-3">
-                      <span className="text-text-secondary tabular-nums">{mv.ordinal}.</span>
-                      <div className="min-w-0">
-                        <Show
-                          when={mv.title}
-                          fallback={<span className="text-text-secondary">Untitled movement</span>}
-                        >
-                          {(t) => <span className="font-medium text-text-primary">{t}</span>}
-                        </Show>
-                        <Show when={mv.description}>
-                          {(d) => <p className="text-sm text-text-secondary">{d}</p>}
-                        </Show>
-                      </div>
-                    </li>
-                  )}
-                </For>
-              </ol>
-            </Section>
-          </Show>
+          {/* Movements (scraped seed + per-row override wiki) */}
+          <MovementSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            scraped={show.movements}
+            overrides={overrides}
+            citations={citations}
+          />
 
           {/* Design & staff (scraped seed + authored overlay) */}
           <StaffSection
@@ -382,75 +320,6 @@ function Section({
     </Card>
   );
 }
-
-// An inviting empty state that "calls out" for a contribution (plan: "Empty is an
-// invitation"). Read-only in M1 — the editor + sign-in CTA arrive in M2/M3.
-function ContributePrompt({
-  icon,
-  title,
-  hint,
-}: {
-  icon: IconComponent;
-  title: string;
-  hint: string;
-}) {
-  return (
-    <Card className="border-2 border-dashed border-foreground/15 ring-0">
-      <CardContent className="flex items-center gap-3 py-5 text-text-secondary">
-        <Icon icon={icon} size="lg" className="opacity-60" />
-        <div>
-          <p className="font-medium text-text-primary">{title}</p>
-          <p className="text-sm">{hint}</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-const RepertoirePlaceholder = () => (
-  <ContributePrompt
-    icon={MusicNote03Icon}
-    title="Repertoire"
-    hint="No repertoire on file yet — add the works, composers and arrangers."
-  />
-);
-
-// Small row of "search this work on …" icon links (Spotify / Apple Music /
-// YouTube). Streaming services have no stable per-track deep link without an API
-// lookup, so these open a pre-filled search (see app/lib/music-search.ts).
-function ListenLinks({ workTitle, composer }: { workTitle: string; composer: string | null }) {
-  const links = musicSearchLinks(workTitle, composer);
-  const services: { label: string; href: string; icon: IconComponent }[] = [
-    { label: `Search “${workTitle}” on Spotify`, href: links.spotify, icon: SpotifyIcon },
-    { label: `Search “${workTitle}” on Apple Music`, href: links.appleMusic, icon: AppleMusicIcon },
-    { label: `Search “${workTitle}” on YouTube`, href: links.youtube, icon: YoutubeIcon },
-  ];
-  return (
-    <div className="flex shrink-0 items-center gap-1.5 pt-0.5">
-      <For each={services}>
-        {(s) => (
-          <a
-            href={s.href}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={s.label}
-            title={s.label}
-            className="text-text-secondary transition-colors hover:text-foreground"
-          >
-            <Icon icon={s.icon} size="sm" />
-          </a>
-        )}
-      </For>
-    </div>
-  );
-}
-
-const creditLine = (composer: string | null, arranger: string | null): string => {
-  const parts: string[] = [];
-  if (composer) parts.push(`by ${composer}`);
-  if (arranger) parts.push(`arr. ${arranger}`);
-  return parts.join(' · ');
-};
 
 const hostOf = (url: string): string => {
   try {

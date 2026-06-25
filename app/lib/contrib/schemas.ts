@@ -94,6 +94,31 @@ export const AboutInputSchema = v.object({
 });
 export type AboutInput = v.InferOutput<typeof AboutInputSchema>;
 
+// ── Seedable per-row overrides (repertoire + movements) ──────────────────────
+// The natural key + source hash live in the overlay row; this content is just the
+// human-authored row value. SAME schema validates the Formisch form + server.
+
+export const RepertoireRowInputSchema = v.object({
+  workTitle: v.pipe(v.string(), v.minLength(1, 'Title required')),
+  composer: v.optional(v.string(), ''),
+  arranger: v.optional(v.string(), ''),
+  description: v.optional(v.string(), ''),
+  hyperlink: v.optional(v.string(), ''),
+  relatedCorpsKey: v.optional(v.string(), ''),
+  notes: v.optional(v.string(), ''),
+  citationIds: v.optional(v.array(v.string()), []),
+});
+export type RepertoireRowInput = v.InferOutput<typeof RepertoireRowInputSchema>;
+
+export const MovementRowInputSchema = v.object({
+  ordinal: v.number(),
+  title: v.optional(v.string(), ''),
+  description: v.optional(v.string(), ''),
+  sourceUrl: v.optional(v.string(), ''),
+  citationIds: v.optional(v.array(v.string()), []),
+});
+export type MovementRowInput = v.InferOutput<typeof MovementRowInputSchema>;
+
 // Registry: which Valibot schema validates each authored pinned block's content.
 export const BLOCK_SCHEMAS = {
   uniform: UniformInputSchema,

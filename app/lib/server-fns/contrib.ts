@@ -6,11 +6,20 @@ import { getContributionsDb } from '@/lib/contributions-db';
 import {
   ensureShowPage,
   writeBlock,
+  writeOverride,
   readShowPageContributions,
   type PageContributions,
+  type OverrideState,
 } from '@/lib/contrib/store';
 import { requireCapability, type PageLock } from '@/lib/authz';
-import { BLOCK_SCHEMAS, isAuthoredPinnedKey } from '@/lib/contrib/schemas';
+import {
+  BLOCK_SCHEMAS,
+  RepertoireRowInputSchema,
+  MovementRowInputSchema,
+  isAuthoredPinnedKey,
+} from '@/lib/contrib/schemas';
+import { scrapedSeedableHashes } from '@/lib/contrib/seedable';
+import { getShowDetail } from '@/lib/server-fns/hybrid';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 
 /**
@@ -204,4 +213,78 @@ export const saveShowBlock = createServerFn({ method: 'POST' })
       data.expectedUpdatedAt
     );
     return { ok: true as const, blockId, updatedAt: now };
+  });
+
+// ── Write: save a seedable per-row override (repertoire / movements) ──────────
+// Designers/media are handled by master's existing authored block sections, so
+// the override path is restricted to the two seedable list sections here.
+type SaveOverrideData = {
+  corpsKey: string;
+  season: string;
+  pinnedKey: 'repertoire' | 'movements';
+  naturalKey: string;
+  state: OverrideState;
+  content: unknown;
+  position?: number | null;
+  expectedUpdatedAt?: string | null;
+};
+
+const OVERRIDE_SCHEMAS = {
+  repertoire: RepertoireRowInputSchema,
+  movements: MovementRowInputSchema,
+} as const;
+
+/** Read the scraped show-detail server-side (the divergence baseline source). */
+const readScrapedShowDetail = (corpsKey: string, season: string) =>
+  getShowDetail({ data: { corpsKey, season } });
+
+export const saveShowOverride = createServerFn({ method: 'POST' })
+  .validator((data: SaveOverrideData) => data)
+  .handler(async ({ data }) => {
+    const schema = OVERRIDE_SCHEMAS[data.pinnedKey];
+    if (!schema) throw new Error(`Unknown override section: ${data.pinnedKey}`);
+    // Layer 2 (§6.6): re-parse with the row's own Valibot schema (never trust the
+    // client). A hide carries no content.
+    const content = data.state === 'hidden' ? null : v.parse(schema, data.content);
+
+    // Divergence baseline is server-authoritative (never trust the client's
+    // sourceHash): recompute the hash of the scraped row this override is based
+    // on, by its natural key. 'added' rows have no scraped counterpart → null.
+    let serverSourceHash: string | null = null;
+    if (data.state !== 'added') {
+      const show = await readScrapedShowDetail(data.corpsKey, data.season);
+      if (show) {
+        serverSourceHash = scrapedSeedableHashes(show)[data.pinnedKey]?.[data.naturalKey] ?? null;
+      }
+    }
+
+    const db = await getContributionsDb();
+    const lockLevel = ((
+      await db.execute({
+        sql: 'SELECT lock_level FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
+        args: [data.corpsKey, data.season],
+      })
+    ).rows[0]?.lock_level ?? 'none') as PageLock;
+    const actor = await requireCapability(getWebRequest(), 'edit', { lockLevel });
+    // TODO(rate-limit): the reverted branch called enforceRateLimit(db, actor,
+    // 'edit') here; the rate-limit subsystem is not on master yet, so it's omitted.
+
+    const now = new Date().toISOString();
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now };
+    const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
+    const overrideId = await writeOverride(
+      db,
+      {
+        pageId,
+        pinnedKey: data.pinnedKey,
+        naturalKey: data.naturalKey,
+        state: data.state,
+        contentJson: content ? JSON.stringify(content) : null,
+        sourceHash: serverSourceHash,
+        position: data.position,
+      },
+      ctx,
+      data.expectedUpdatedAt
+    );
+    return { ok: true as const, overrideId, updatedAt: now };
   });
