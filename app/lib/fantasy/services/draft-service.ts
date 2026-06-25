@@ -100,6 +100,13 @@ export const draftPubSub = busFor;
 const timerFibers = new Map<string, Fiber.Fiber<void>>();
 let selfHealed = false;
 
+// Grace window past the displayed deadline. A pick clicked right at 0:00 still has to
+// travel the network and wait for the per-league lock, so a hard millisecond cutoff
+// rejects timely picks and hands the slot to the auto-picker. The auto-pick fiber waits
+// this long PAST the deadline before firing, and makePick accepts picks until the same
+// moment — so the two agree and near-deadline picks land instead of being short-circuited.
+const PICK_GRACE_MS = 2000;
+
 // --- mapping helpers ----------------------------------------------------------
 
 interface DraftRow {
@@ -242,7 +249,7 @@ const makeDraftService = Effect.gen(function* () {
 
   const armTimer = (leagueId: string, deadlineIso: string): void => {
     clearTimer(leagueId);
-    const ms = Math.max(0, new Date(deadlineIso).getTime() - Date.now());
+    const ms = Math.max(0, new Date(deadlineIso).getTime() - Date.now()) + PICK_GRACE_MS;
     const fiber = Effect.runFork(
       Effect.sleep(Duration.millis(ms)).pipe(
         Effect.andThen(runAutoPickIfDue(leagueId, deadlineIso)),
@@ -741,7 +748,14 @@ const makeDraftService = Effect.gen(function* () {
           userId: input.userId,
         });
         if (!move.ok) return yield* Effect.fail(reducerError(move.reason));
-        if (draft.pickDeadlineAt && new Date(draft.pickDeadlineAt).getTime() < Date.now())
+        // Accept until the deadline + the same grace the auto-pick fiber waits. The turn
+        // check above + the per-league lock keep this correct: if the auto-pick already
+        // fired, it's no longer this user's turn and `move.ok` is false; otherwise this
+        // pick wins the lock and the stale auto-pick fiber no-ops (deadline guard).
+        if (
+          draft.pickDeadlineAt &&
+          new Date(draft.pickDeadlineAt).getTime() + PICK_GRACE_MS < Date.now()
+        )
           return yield* Effect.fail(new DraftConflict({ reason: 'expired' }));
         if (!isCaptionKey(input.caption))
           return yield* Effect.fail(new DraftConflict({ reason: 'bad-caption' }));
