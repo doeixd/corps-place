@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useSyncExternalStore } from 'react';
 import { motion } from 'motion/react';
 import { corpsPalette } from '@sdk/src/corpsColors.js';
@@ -10,6 +10,14 @@ import { cn } from '@/lib/utils';
 import type { FavoriteCorpsInput } from '@/stores/favorite-corps-store';
 import { favoriteCorpsStore, useIsFavorite } from '@/stores/favorite-corps-store';
 import { themeStore } from '@/stores/theme-store';
+
+const subscribeTheme = (onChange: () => void) => {
+  const sub = themeStore.subscribe(onChange);
+  return () => sub.unsubscribe();
+};
+const subscribeNoop = () => () => {};
+const getThemeSnapshot = () => themeStore.getSnapshot().context.theme;
+const getLightTheme = () => 'light' as const;
 
 /**
  * Favorite (heart) button for a corps. When favorited, the button snaps
@@ -43,17 +51,14 @@ export function FavoriteCorpsButton({
 
   // React to theme toggles so the hover/fav color stays in sync with light/dark.
   const theme = useSyncExternalStore(
-    (onChange) => themeStore.subscribe(onChange).unsubscribe,
-    () => themeStore.getSnapshot().context.theme,
-    () => 'light'
+    needAccent ? subscribeTheme : subscribeNoop,
+    needAccent ? getThemeSnapshot : getLightTheme,
+    getLightTheme
   );
 
   // One single-mode palette (not the full light+dark+logo branding), computed
-  // lazily and memoized on the primitives that actually change it.
-  const palette = useMemo(
-    () => (needAccent ? computeButtonAccent(corps, theme) : null),
-    [needAccent, corps.corpsKey, corps.colorPrimary, corps.colorSecondary, theme]
-  );
+  // only for the favorite or cards the user has interacted with.
+  const palette = needAccent ? computeButtonAccent(corps, theme) : null;
 
   const inlineFav =
     isFav && palette

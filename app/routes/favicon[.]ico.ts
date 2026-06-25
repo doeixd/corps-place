@@ -1,4 +1,5 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
+import { DEFAULT_APP_ICON_HREF } from '@/lib/logo-recolor';
 
 /**
  * Browsers request `/favicon.ico` implicitly whenever no usable `<link rel="icon">`
@@ -12,7 +13,7 @@ export const ServerRoute = createServerFileRoute('/favicon.ico').methods({
     new Response(null, {
       status: 302,
       headers: {
-        location: '/favicon.svg',
+        location: DEFAULT_APP_ICON_HREF,
         'cache-control': 'public, max-age=86400',
       },
     }),

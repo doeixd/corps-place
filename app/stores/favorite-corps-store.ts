@@ -5,13 +5,32 @@
 // identically on the server and client and never resets on hydration.
 import { useSyncExternalStore } from 'react';
 import { createStore } from '@xstate/store';
-import { corpsPalette, hexToOklch } from '@sdk/src/corpsColors.js';
+import { corpsPalette, hexToOklch, normalizeHex } from '@sdk/src/corpsColors.js';
 import type { CorpsBrandColors } from '@sdk/src/corpsColors.js';
-import { buildAppIconHref } from '@/lib/logo-recolor';
+import { DEFAULT_APP_ICON_HREF, buildAppIconHref } from '@/lib/logo-recolor';
 import { readFavoriteCookie, writeFavoriteCookie } from '@/lib/favorite-cookie';
 import { themeStore } from './theme-store';
 
 const VERSION = 2;
+const LIGHT_THEME_COLOR = '#ffffff';
+const DARK_THEME_COLOR = '#0b0b0c';
+
+export function themeChromeColor(theme: 'light' | 'dark'): string {
+  return theme === 'dark' ? DARK_THEME_COLOR : LIGHT_THEME_COLOR;
+}
+
+let brandingTransitionFrame: number | null = null;
+
+function beginBrandingUpdate(): void {
+  if (typeof document === 'undefined') return;
+  const root = document.documentElement;
+  if (brandingTransitionFrame !== null) cancelAnimationFrame(brandingTransitionFrame);
+  root.classList.add('branding-switching');
+  brandingTransitionFrame = requestAnimationFrame(() => {
+    root.classList.remove('branding-switching');
+    brandingTransitionFrame = null;
+  });
+}
 
 // ── Input / persisted types ───────────────────────────────────────────────────
 
@@ -78,7 +97,7 @@ export function computeFavoriteBranding(input: FavoriteCorpsInput): FavoriteBran
     : {};
   const light = corpsPalette(colors, 'light');
   const dark = corpsPalette(colors, 'dark');
-  const logoDark = computeLogoDark(input.colorSecondary ?? null, light.accent);
+  const logoDark = computeLogoDark(input.colorSecondary ?? null);
   return {
     lightPrimary: light.accent,
     lightPrimaryForeground: light.accentFg,
@@ -97,7 +116,7 @@ const DARK_L = 0.17;
 const DARK_C_MIN = 0.02;
 const DARK_C_MAX = 0.06;
 
-function computeLogoDark(secondaryHex: string | null, primaryOklch: string): string | null {
+function computeLogoDark(secondaryHex: string | null): string | null {
   if (!secondaryHex) return null;
   const sec = hexToOklch(secondaryHex);
   if (!sec) return null;
@@ -120,10 +139,11 @@ export function setFavicon(href: string): void {
     ['icon', 'image/svg+xml'],
     ['apple-touch-icon', null],
   ] as const) {
-    let link = document.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`);
+    let link = document.querySelector<HTMLLinkElement>(`link[rel="${rel}"][data-app-icon="true"]`);
     if (!link) {
       link = document.createElement('link');
       link.rel = rel;
+      link.dataset.appIcon = 'true';
       if (type) link.type = type;
       document.head.appendChild(link);
     }
@@ -141,20 +161,25 @@ export function setThemeColor(color: string | null): void {
     meta.name = 'theme-color';
     document.head.appendChild(meta);
   }
-  meta.content = color ?? '#0b0b0c';
+  meta.content = color ?? themeChromeColor(themeStore.getSnapshot().context.theme);
 }
 
 // ── Persist / clean ───────────────────────────────────────────────────────────
 
 function toPersisted(input: FavoriteCorpsInput, previousAddedAt?: string): PersistedFavorite {
-  const branding = computeFavoriteBranding(input);
+  const normalized = {
+    ...input,
+    colorPrimary: input.colorPrimary ? normalizeHex(input.colorPrimary) : null,
+    colorSecondary: input.colorSecondary ? normalizeHex(input.colorSecondary) : null,
+  };
+  const branding = computeFavoriteBranding(normalized);
   return {
     version: VERSION,
     corpsKey: input.corpsKey,
     name: input.name,
     slug: input.slug,
-    colorPrimary: input.colorPrimary,
-    colorSecondary: input.colorSecondary,
+    colorPrimary: normalized.colorPrimary,
+    colorSecondary: normalized.colorSecondary,
     ...branding,
     addedAt: previousAddedAt ?? new Date().toISOString(),
   };
@@ -196,6 +221,7 @@ function persist(fav: PersistedFavorite | null): void {
 
 export function applyFavoriteBranding(fav: PersistedFavorite): void {
   if (typeof document === 'undefined') return;
+  beginBrandingUpdate();
   const root = document.documentElement;
   const dark = root.classList.contains('dark');
   root.style.setProperty('--primary', dark ? fav.darkPrimary : fav.lightPrimary);
@@ -211,20 +237,20 @@ export function applyFavoriteBranding(fav: PersistedFavorite): void {
   root.setAttribute('data-fav-active', '');
   setThemeColor(fav.colorPrimary ?? (dark ? fav.darkPrimary : fav.lightPrimary));
 
-  // Favicon = the site logo recolored to this corps, served by /app-icon.svg from
-  // a deterministic URL. Same href the server's head() renders, so updating it
-  // here (on a runtime favorite change) stays consistent with the next SSR.
-  setFavicon(buildAppIconHref(fav.colorPrimary, fav.logoDark));
+  // Compact favorite-colored favicon, served from a deterministic versioned URL.
+  // The root document renders the same href during SSR.
+  setFavicon(buildAppIconHref(fav.colorPrimary));
 }
 
 export function clearFavoriteBranding(): void {
   if (typeof document === 'undefined') return;
+  beginBrandingUpdate();
   const root = document.documentElement;
   root.style.removeProperty('--primary');
   root.style.removeProperty('--primary-foreground');
   root.style.removeProperty('--logo-dark');
   root.removeAttribute('data-fav-active');
-  setFavicon('/logo.svg');
+  setFavicon(DEFAULT_APP_ICON_HREF);
   setThemeColor(null);
 }
 
@@ -246,11 +272,28 @@ export const favoriteCorpsStore = createStore({
   },
 });
 
+let hydrating = false;
+let notifiedFavoriteKey: string | null = null;
+const favoriteKeyListeners = new Map<string, Set<() => void>>();
+
+function notifyFavoriteKey(corpsKey: string | null): void {
+  if (!corpsKey) return;
+  for (const listener of favoriteKeyListeners.get(corpsKey) ?? []) listener();
+}
+
 favoriteCorpsStore.subscribe((snapshot) => {
   const fav = snapshot.context.favorite;
-  persist(fav);
+  if (!hydrating) persist(fav);
   if (fav) applyFavoriteBranding(fav);
   else clearFavoriteBranding();
+
+  const nextFavoriteKey = fav?.corpsKey ?? null;
+  if (nextFavoriteKey !== notifiedFavoriteKey) {
+    const previousFavoriteKey = notifiedFavoriteKey;
+    notifiedFavoriteKey = nextFavoriteKey;
+    notifyFavoriteKey(previousFavoriteKey);
+    notifyFavoriteKey(nextFavoriteKey);
+  }
 });
 
 themeStore.subscribe(() => {
@@ -268,9 +311,12 @@ function hydrateFavorite(): void {
       // Corrupt favorite — clear so the server head() doesn't re-read stale data.
       writeFavoriteCookie(null);
     }
+    hydrating = true;
     favoriteCorpsStore.trigger.hydrate({ favorite: saved });
   } catch {
     /* ignore corrupt cookie */
+  } finally {
+    hydrating = false;
   }
 }
 
@@ -285,6 +331,41 @@ const subscribeFavorite = (onChange: () => void) => {
   return () => sub.unsubscribe();
 };
 
+const subscribeFavoriteKey = (corpsKey: string, onChange: () => void) => {
+  const listeners = favoriteKeyListeners.get(corpsKey) ?? new Set<() => void>();
+  listeners.add(onChange);
+  favoriteKeyListeners.set(corpsKey, listeners);
+  return () => {
+    listeners.delete(onChange);
+    if (listeners.size === 0) favoriteKeyListeners.delete(corpsKey);
+  };
+};
+
+const favoriteKeyStores = new Map<
+  string,
+  { subscribe: (onChange: () => void) => () => void; getSnapshot: () => boolean }
+>();
+
+function getFavoriteKeyStore(corpsKey: string) {
+  const existing = favoriteKeyStores.get(corpsKey);
+  if (existing) return existing;
+  const store = {
+    subscribe: (onChange: () => void) => subscribeFavoriteKey(corpsKey, onChange),
+    getSnapshot: () => favoriteCorpsStore.getSnapshot().context.favorite?.corpsKey === corpsKey,
+  };
+  favoriteKeyStores.set(corpsKey, store);
+  return store;
+}
+
+const subscribeFavoriteAndTheme = (onChange: () => void) => {
+  const favoriteSub = favoriteCorpsStore.subscribe(onChange);
+  const themeSub = themeStore.subscribe(onChange);
+  return () => {
+    favoriteSub.unsubscribe();
+    themeSub.unsubscribe();
+  };
+};
+
 export function useFavoriteCorps(): PersistedFavorite | null {
   return useSyncExternalStore(
     subscribeFavorite,
@@ -294,12 +375,33 @@ export function useFavoriteCorps(): PersistedFavorite | null {
 }
 
 export function useIsFavorite(corpsKey: string): boolean {
-  // Subscribe with a boolean snapshot rather than the whole favorite object, so
-  // toggling one favorite only re-renders the cards whose state actually flips —
-  // not every FavoriteCorpsButton on the grid.
+  // Each corps key has a tiny external store. A favorite switch notifies only the
+  // previous and next keys, so hundreds of unrelated card buttons do no work.
+  const store = getFavoriteKeyStore(corpsKey);
+  return useSyncExternalStore(store.subscribe, store.getSnapshot, () => false);
+}
+
+export function useFavoriteIconHref(initialHref = DEFAULT_APP_ICON_HREF): string {
   return useSyncExternalStore(
     subscribeFavorite,
-    () => favoriteCorpsStore.getSnapshot().context.favorite?.corpsKey === corpsKey,
-    () => false
+    () => {
+      const fav = favoriteCorpsStore.getSnapshot().context.favorite;
+      return fav ? buildAppIconHref(fav.colorPrimary) : DEFAULT_APP_ICON_HREF;
+    },
+    () => initialHref
+  );
+}
+
+export function useFavoriteThemeColor(initialColor = DARK_THEME_COLOR): string {
+  return useSyncExternalStore(
+    subscribeFavoriteAndTheme,
+    () => {
+      const fav = favoriteCorpsStore.getSnapshot().context.favorite;
+      const theme = themeStore.getSnapshot().context.theme;
+      if (!fav) return themeChromeColor(theme);
+      const dark = theme === 'dark';
+      return fav.colorPrimary ?? (dark ? fav.darkPrimary : fav.lightPrimary);
+    },
+    () => initialColor
   );
 }

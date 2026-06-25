@@ -234,11 +234,19 @@
   --color-primary: oklch(0.55 0.12 220);
   --color-primary-fg: oklch(0.98 0.005 220);
   --color-primary-muted: oklch(0.92 0.04 220);
+  --primary: oklch(0.55 0.12 220);
+  --primary-foreground: oklch(0.98 0.005 220);
+  --sidebar-primary: oklch(0.55 0.12 220);
+  --sidebar-primary-foreground: oklch(0.98 0.005 220);
 }
 .brand-jobs.dark {
   --color-primary: oklch(0.62 0.13 220);
   --color-primary-fg: oklch(0.98 0.005 220);
   --color-primary-muted: oklch(0.93 0.04 220);
+  --primary: oklch(0.62 0.13 220);
+  --primary-foreground: oklch(0.98 0.005 220);
+  --sidebar-primary: oklch(0.62 0.13 220);
+  --sidebar-primary-foreground: oklch(0.98 0.005 220);
 }
 
 .dark {
@@ -598,6 +606,18 @@
       transition: none !important;
     }
   }
+  body.theme-switching,
+  body.theme-switching *,
+  body.theme-switching *::before,
+  body.theme-switching *::after {
+    transition: none !important;
+  }
+  html.branding-switching,
+  html.branding-switching *,
+  html.branding-switching *::before,
+  html.branding-switching *::after {
+    transition: none !important;
+  }
   /* Tailwind v4 Preflight sets interactive elements to `cursor: default`.
      Restore the pointer cursor for enabled buttons / button-role controls
      (covers shadcn/reui Button, Toggle, Select/Dropdown triggers, etc.). */
@@ -731,6 +751,13 @@ tr:active .sticky-col {
    hover target, or a wrapping Link carries `group`). `card-hover-flat` is the
    no-lift variant for panels (latest results / featured prediction). */
 @layer components {
+  /* Bound grid-item style/layout invalidation without clipping child shadows.
+     Offscreen cards skip rendering until they approach the viewport. */
+  .collection-card {
+    contain: layout style;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 7rem;
+  }
   .card-hover,
   .card-hover-flat {
     @apply transition-all duration-200;

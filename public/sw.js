@@ -12,7 +12,7 @@
 // that drops caches not matching) to invalidate. The client registration keys
 // updates on /read-model/meta.json built_at.
 
-const CACHE_VERSION = 'rm-v1';
+const CACHE_VERSION = 'rm-v2';
 const DOC_CACHE = `${CACHE_VERSION}-docs`;
 const ASSET_CACHE = `${CACHE_VERSION}-assets`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
@@ -62,6 +62,9 @@ const pruneSupersededShards = async (cache, currentUrl) => {
 // Never touch these — dynamic, must always hit the network.
 const isBypassed = (url) =>
   url.pathname.startsWith('/api/') ||
+  url.pathname === '/app-icon.svg' ||
+  url.pathname === '/favicon.svg' ||
+  url.pathname === '/favicon.ico' ||
   url.pathname.startsWith('/_serverFn') ||
   url.pathname.includes('/_server') ||
   url.pathname.startsWith('/__');
