@@ -960,8 +960,8 @@ function DraftBoard({
               <TableRow>
                 <TableHead className="sticky left-0 z-20 bg-card">Player</TableHead>
                 {CAPTION_KEYS.map((c) => (
-                  <TableHead key={c} className="px-2 text-center" title={KEY_TO_CAPTION_NAME[c]}>
-                    {c}
+                  <TableHead key={c} className="px-2 text-center text-xs" title={c}>
+                    {KEY_TO_CAPTION_NAME[c]}
                     {(captionCaps[c] ?? 1) > 1 ? (
                       <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">
                         ×{captionCaps[c]}
