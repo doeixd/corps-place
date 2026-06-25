@@ -11,3 +11,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+// Injected at build time via Vite `define` (vite.config.ts) — a unique id per build.
+declare const __APP_VERSION__: string;

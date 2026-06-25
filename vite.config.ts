@@ -12,8 +12,26 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// A unique id per build, compiled into both the client and server bundles via
+// `define` (see below). The client polls /api/version and reloads when the server
+// reports a different id — i.e. after a deploy. Prefer the git SHA (deterministic
+// across the single config eval / both build environments); fall back to a build
+// timestamp when .git isn't present in the build context.
+const BUILD_ID = (() => {
+  try {
+    return execSync('git rev-parse --short HEAD', {
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .toString()
+      .trim();
+  } catch {
+    return String(Date.now());
+  }
+})();
 
 const basePath = process.env.SITE_BASE_PATH?.trim() || '/';
 const normalizedBase = basePath === '/' ? '/' : basePath.replace(/\/$/, '');
@@ -83,6 +101,11 @@ const plugins: PluginOption[] = [
 
 export default defineConfig({
   base: normalizedBase === '/' ? undefined : normalizedBase,
+  define: {
+    // Shared by the client (AutoUpdater) and the /api/version route — same value
+    // per build, so a mismatch reliably means "the server was redeployed".
+    __APP_VERSION__: JSON.stringify(BUILD_ID),
+  },
   plugins,
   resolve: {
     alias: {

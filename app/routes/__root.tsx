@@ -3,8 +3,10 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  useRouter,
   useRouterState,
 } from '@tanstack/react-router';
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { registerServiceWorker } from '@/lib/register-sw';
@@ -190,6 +192,72 @@ function ServiceWorkerManager() {
   return null;
 }
 
+// Auto-update: polls the server's build id (/api/version) and, when it differs from
+// this tab's compiled id (i.e. after a deploy), reloads to fresh code. To avoid
+// interrupting work, it applies on the next navigation — a state-safe moment — and
+// also surfaces a toast for an immediate refresh. Complements the reactive
+// vite:preloadError reload above (which only fires once a stale chunk 404s).
+function AutoUpdater() {
+  const router = useRouter();
+  useEffect(() => {
+    let stale = false;
+    let notified = false;
+    const check = async () => {
+      if (stale) return;
+      try {
+        const res = await fetch('/api/version', { cache: 'no-store' });
+        if (!res.ok) return;
+        const { id } = (await res.json()) as { id?: string };
+        if (id && id !== __APP_VERSION__) {
+          stale = true;
+          if (!notified) {
+            notified = true;
+            toast('A new version is available', {
+              description: 'It will apply on your next page change.',
+              action: { label: 'Refresh now', onClick: () => window.location.reload() },
+              duration: Infinity,
+            });
+          }
+        }
+      } catch {
+        /* offline / transient — retry on the next tick */
+      }
+    };
+    // Poll periodically, and whenever the tab is brought back to the foreground.
+    const interval = window.setInterval(check, 120_000);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void check();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    // Apply a pending update on the next resolved navigation — reloading there is safe
+    // (the page is changing anyway) and lands the user on the new code.
+    const unsub = router.subscribe('onResolved', () => {
+      if (!stale) return;
+      // Guard against a reload loop in the unlikely event ids never converge.
+      let last = 0;
+      try {
+        last = Number(sessionStorage.getItem('verReloadAt') || '0');
+      } catch {
+        /* storage unavailable */
+      }
+      if (Date.now() - last < 30_000) return;
+      try {
+        sessionStorage.setItem('verReloadAt', String(Date.now()));
+      } catch {
+        /* ignore */
+      }
+      window.location.reload();
+    });
+    void check();
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+      unsub();
+    };
+  }, [router]);
+  return null;
+}
+
 export const Route = createRootRoute({
   // Read the favorite cookie so head() can render the corps's favicon + theme-color
   // into the SSR HTML (correct first paint, no hydration reset).
@@ -226,6 +294,7 @@ function RootComponent() {
   return (
     <RootDocument theme={theme} brand={brand} iconHref={favorite?.iconHref ?? '/logo.svg'}>
       <ServiceWorkerManager />
+      <AutoUpdater />
       <MotionConfig reducedMotion={REDUCED_MOTION}>
         <TooltipProvider delay={150}>
           <NavigationProgressBar />
