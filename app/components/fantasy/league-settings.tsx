@@ -42,6 +42,8 @@ export function LeagueSettings({
   const [ge, setGe] = useState(String(config.weights.ge));
   const [visual, setVisual] = useState(String(config.weights.visual));
   const [music, setMusic] = useState(String(config.weights.music));
+  const weightTotal = (Number(ge) || 0) + (Number(visual) || 0) + (Number(music) || 0);
+  const weightsOk = Math.round(weightTotal) === 100;
   // Simplified to one value applied to EVERY caption (the draft is symmetric).
   // Seed it from the current config's most common per-caption value.
   const initialPerCaption = (() => {
@@ -67,6 +69,10 @@ export function LeagueSettings({
   const [saved, setSaved] = useState(false);
 
   const save = async () => {
+    if (!weightsOk) {
+      setError('Caption weights must total 100%.');
+      return;
+    }
     setBusy(true);
     setError(null);
     setSaved(false);
@@ -212,10 +218,20 @@ export function LeagueSettings({
           <Label htmlFor="s-mode">
             <Explain term="scoring-mode">Scoring mode</Explain>
           </Label>
-          <p className="text-xs text-muted-foreground">
-            Recap scores each show as a weighted average capped at 100. Sum piles up raw caption
-            points across the whole season.
-          </p>
+          <p className="text-xs text-muted-foreground">How a corps earns points each time it competes:</p>
+          <ul className="ml-4 flex list-disc flex-col gap-0.5 text-xs text-muted-foreground">
+            <li>
+              <span className="font-medium text-text-secondary">Recap</span> — each show gives the
+              corps one 0&ndash;100 score: the weighted average of its caption scores (using the
+              caption weights below). Standings reflect how strong the corps is right now, like a
+              recap sheet. Best score wins.
+            </li>
+            <li>
+              <span className="font-medium text-text-secondary">Sum</span> — each show adds the
+              corps&apos; caption points to a season-long running total. Competing more often and
+              scoring higher grows a bigger pile; the highest total at season&apos;s end wins.
+            </li>
+          </ul>
           <Select
             value={scoringMode}
             onValueChange={(v) => setScoringMode(v as LeagueConfig['scoringMode'])}
@@ -250,8 +266,8 @@ export function LeagueSettings({
         <fieldset className="flex flex-col gap-2">
           <legend className="mb-1 text-sm font-medium">Caption weights</legend>
           <p className="text-xs text-muted-foreground">
-            How much each caption counts toward a corps' score. GE / Visual / Music are
-            normalized to 100 when you save, so only their ratio matters.
+            How much each caption counts toward a corps&apos; score, as percentages. GE + Visual +
+            Music must total <span className="font-medium">100%</span>.
           </p>
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col gap-1">
@@ -277,6 +293,11 @@ export function LeagueSettings({
               />
             </div>
           </div>
+          <p
+            className={`text-xs ${weightsOk ? 'text-muted-foreground' : 'font-medium text-destructive'}`}
+          >
+            Total: {Math.round(weightTotal)}%{weightsOk ? '' : ' — must equal 100%'}
+          </p>
         </fieldset>
 
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
@@ -284,6 +305,7 @@ export function LeagueSettings({
           <BusyButton
             size="sm"
             busy={busy}
+            disabled={!weightsOk}
             onClick={() => {
               setSaved(false);
               void save();
