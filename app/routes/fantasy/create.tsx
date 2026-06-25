@@ -30,7 +30,8 @@ function CreateLeague() {
   const navigate = useNavigate();
   const { data: session } = useSession();
   const [name, setName] = useState('');
-  const [season, setSeason] = useState(CURRENT_SEASON);
+  // Leagues are always for the current drum corps season — no longer selectable.
+  const season = CURRENT_SEASON;
 
   const create = useAsyncAction(async () => {
     const res = await createLeague({ data: { name: name.trim(), season } });
@@ -78,16 +79,9 @@ function CreateLeague() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="season">Season</Label>
-              <Input
-                id="season"
-                value={season}
-                pattern="\d{4}"
-                required
-                onChange={(e) => setSeason(e.target.value)}
-              />
-              <p className="text-xs text-muted-foreground">
-                The drum corps season to score from — usually the current year.
+              <Label>Season</Label>
+              <p className="text-sm">
+                {season} <span className="text-muted-foreground">— the current drum corps season</span>
               </p>
             </div>
             {create.error ? <p className="text-sm text-destructive">{create.error}</p> : null}
