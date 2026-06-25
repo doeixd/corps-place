@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import { Show } from 'jotai-solid-api';
 import { getMerchFacets, getMerchCatalog } from '@/lib/server-fns/hybrid';
@@ -40,7 +40,7 @@ const SORTS: { value: MerchSort; label: string }[] = [
 ];
 
 export const Route = createFileRoute('/shop/all')({
-  validateSearch: (search: Record<string, unknown>): MerchSearch => {
+  validateSearch: (search: Record<string, unknown>): MerchSearch & { l?: number } => {
     const out: MerchSearch = {};
     const q = searchString(search.q);
     if (q) out.q = q;
@@ -53,7 +53,11 @@ export const Route = createFileRoute('/shop/all')({
     if (searchString(search.stock) === '1') out.stock = '1';
     const sort = searchString(search.sort);
     if (sort === 'price-asc' || sort === 'price-desc' || sort === 'name') out.sort = sort;
-    return out;
+    const rawL = search.l;
+    const l = typeof rawL === 'number' ? rawL : Number(rawL);
+    if (Number.isFinite(l) && l >= DISPLAY_CHUNK)
+      (out as Record<string, unknown>).l = Math.round(l);
+    return out as MerchSearch & { l?: number };
   },
   loader: async () => {
     const [facets, catalog] = await Promise.all([
@@ -90,14 +94,14 @@ function MerchCatalog() {
       navigate({ search: s, replace, resetScroll }),
   });
 
-  // Filter + sort over the COMPLETE index, then bound what we paint with a local
-  // "show more" limit. Filtering the full set (not just a loaded page) is what
-  // makes the store/price/category filters actually find their matches.
+  // Load-more limit persisted in the URL so it survives back-navigation
+  // (the router's scrollRestoration:true restores the viewport position,
+  // and the URL's l param ensures enough items are rendered to fill it).
+  const limit = search.l ?? DISPLAY_CHUNK;
   const matches = useMemo(
     () => selectProducts(catalog.items, filter, facets),
     [catalog.items, filter, facets]
   );
-  const [limit, setLimit] = useState(DISPLAY_CHUNK);
   const visible = matches.slice(0, limit);
   const hasMore = matches.length > limit;
 
@@ -218,7 +222,13 @@ function MerchCatalog() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => setLimit((l) => l + DISPLAY_CHUNK)}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, l: (prev.l ?? DISPLAY_CHUNK) + DISPLAY_CHUNK }),
+                replace: true,
+                resetScroll: false,
+              })
+            }
           >
             Load more products ({visible.length} of {matches.length})
           </Button>

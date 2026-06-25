@@ -37,6 +37,12 @@ const SORTS: { value: MerchSort; label: string }[] = [
 ];
 
 export const Route = createFileRoute('/shop/group/$storeId')({
+  validateSearch: (search: Record<string, unknown>): { l?: number } => {
+    const rawL = search.l;
+    const l = typeof rawL === 'number' ? rawL : Number(rawL);
+    if (Number.isFinite(l) && l >= DISPLAY_CHUNK) return { l: Math.round(l) };
+    return {};
+  },
   loader: async ({ params }): Promise<ShopGroup> => {
     const group = await getShopGroup({ data: params.storeId });
     if (!group) throw notFound();
@@ -58,10 +64,11 @@ export const Route = createFileRoute('/shop/group/$storeId')({
 
 function GroupStorefront() {
   const group = Route.useLoaderData();
+  const searchParams = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [sort, setSort] = useState<MerchSort>('featured');
-  const [limit, setLimit] = useState(DISPLAY_CHUNK);
 
   const filter: MerchFilterContext = {
     search,
@@ -71,6 +78,7 @@ function GroupStorefront() {
     inStock: false,
     sort,
   };
+  const limit = searchParams.l ?? DISPLAY_CHUNK;
   const matches = useMemo(
     () => selectProducts(group.products, filter, null),
     [group.products, filter]
@@ -182,7 +190,13 @@ function GroupStorefront() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => setLimit((l) => l + DISPLAY_CHUNK)}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, l: (prev.l ?? DISPLAY_CHUNK) + DISPLAY_CHUNK }),
+                replace: true,
+                resetScroll: false,
+              })
+            }
           >
             Load more products ({visible.length} of {matches.length})
           </Button>
