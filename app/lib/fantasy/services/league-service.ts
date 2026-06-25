@@ -124,6 +124,7 @@ const makeLeagueService = Effect.gen(function* () {
       corps_color: strOrNull(m.corps_color),
       draft_position: numOrNull(m.draft_position),
       quiz_taken: Boolean(m.quiz_taken),
+      quiz_score: numOrNull(m.quiz_score),
       notify_email: m.notify_email == null ? true : Boolean(m.notify_email),
       notify_push: m.notify_push == null ? true : Boolean(m.notify_push),
       user_name: strOrNull(m.user_name),

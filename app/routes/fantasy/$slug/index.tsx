@@ -222,7 +222,9 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
       <section className="flex flex-col gap-2">
         <h2 className="font-medium">Members</h2>
         <ul className="flex flex-col gap-2">
-          {members.map((m) => (
+          {[...members]
+            .sort((a, b) => (b.quiz_score ?? -1) - (a.quiz_score ?? -1))
+            .map((m) => (
             <li key={m.user_id}>
               <MemberRow
                 member={m}
@@ -638,11 +640,21 @@ function MemberRow({
           {member.show_title ? ` · ${member.show_title}` : ''}
         </span>
       </div>
-      {isViewer && canEdit ? (
-        <Button size="xs" variant="ghost" className="ml-auto" onClick={onToggleEdit}>
-          {editing ? 'Close' : 'Edit'}
-        </Button>
-      ) : null}
+      <div className="ml-auto flex items-center gap-2">
+        {member.quiz_score != null ? (
+          <span
+            className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-text-secondary"
+            title="Quiz score"
+          >
+            Quiz {Math.round(member.quiz_score * 100)}%
+          </span>
+        ) : null}
+        {isViewer && canEdit ? (
+          <Button size="xs" variant="ghost" onClick={onToggleEdit}>
+            {editing ? 'Close' : 'Edit'}
+          </Button>
+        ) : null}
+      </div>
     </div>
   );
 }

@@ -100,7 +100,7 @@ export function CorpsIdentityForm({
       </div>
 
       <div className="flex items-center gap-3">
-        <Label htmlFor="color">Accent color</Label>
+        <Label htmlFor="color">Corps color</Label>
         <input
           id="color"
           type="color"
