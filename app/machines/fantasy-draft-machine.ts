@@ -22,12 +22,13 @@ export interface FantasyDraftContext {
   error: string | null;
   feasibility: string | null;
   pendingScheduledAt: string | null;
+  pendingAutoStart: boolean;
   pendingPick: { corpsKey: string; caption: CaptionKey } | null;
   onChanged: () => void;
 }
 
 export type FantasyDraftEvent =
-  | { type: 'SCHEDULE'; scheduledAt: string }
+  | { type: 'SCHEDULE'; scheduledAt: string; autoStart: boolean }
   | { type: 'START' }
   | { type: 'PICK'; corpsKey: string; caption: CaptionKey }
   | { type: 'PAUSE' }
@@ -53,8 +54,15 @@ export const fantasyDraftMachine = setup({
     input: {} as FantasyDraftInput,
   },
   actors: {
-    schedule: fromPromise(({ input }: { input: { leagueId: string; scheduledAt: string } }) =>
-      scheduleDraft({ data: { leagueId: input.leagueId, scheduledAt: input.scheduledAt } })
+    schedule: fromPromise(
+      ({ input }: { input: { leagueId: string; scheduledAt: string; autoStart: boolean } }) =>
+        scheduleDraft({
+          data: {
+            leagueId: input.leagueId,
+            scheduledAt: input.scheduledAt,
+            autoStart: input.autoStart,
+          },
+        })
     ),
     start: fromPromise(({ input }: { input: { leagueId: string } }) =>
       startDraft({ data: { leagueId: input.leagueId } })
@@ -79,6 +87,7 @@ export const fantasyDraftMachine = setup({
     error: null,
     feasibility: null,
     pendingScheduledAt: null,
+    pendingAutoStart: true,
     pendingPick: null,
     onChanged: input.onChanged,
   }),
@@ -90,6 +99,7 @@ export const fantasyDraftMachine = setup({
           target: 'scheduling',
           actions: assign({
             pendingScheduledAt: ({ event }) => event.scheduledAt,
+            pendingAutoStart: ({ event }) => event.autoStart,
             error: () => null,
           }),
         },
@@ -114,6 +124,7 @@ export const fantasyDraftMachine = setup({
         input: ({ context }) => ({
           leagueId: context.leagueId,
           scheduledAt: context.pendingScheduledAt ?? '',
+          autoStart: context.pendingAutoStart,
         }),
         onDone: { target: 'ready', actions: ({ context }) => context.onChanged() },
         onError: {

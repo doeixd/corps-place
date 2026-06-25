@@ -101,6 +101,7 @@ export type DraftSnapshot = {
     currentUserId: string | null;
     pickDeadlineAt: string | null;
     scheduledAt: string | null;
+    autoStart: boolean;
     order: string[];
   } | null;
   picks: Array<{
@@ -127,6 +128,7 @@ const mapDraft = (d: Row): NonNullable<DraftSnapshot['draft']> => ({
   currentUserId: (d.current_user_id as string | null) ?? null,
   pickDeadlineAt: (d.pick_deadline_at as string | null) ?? null,
   scheduledAt: (d.scheduled_at as string | null) ?? null,
+  autoStart: Number(d.auto_start ?? 1) !== 0,
   order: d.order_json ? (JSON.parse(d.order_json as string) as string[]) : [],
 });
 

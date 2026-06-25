@@ -8,6 +8,7 @@ import { LeagueTabs } from '@/components/fantasy/league-tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import {
   Table,
@@ -183,6 +184,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           feasibility={state.context.feasibility}
           isOwner={league.viewer.isOwner}
           scheduledAt={draft?.scheduledAt ?? null}
+          savedAutoStart={draft?.autoStart ?? true}
         />
       ) : draft.status === 'complete' ? (
         <CompletePanel
@@ -263,6 +265,7 @@ function SchedulePanel({
   feasibility,
   isOwner,
   scheduledAt,
+  savedAutoStart,
 }: {
   send: Send;
   scheduling: boolean;
@@ -271,14 +274,20 @@ function SchedulePanel({
   feasibility: string | null;
   isOwner: boolean;
   scheduledAt: string | null;
+  savedAutoStart: boolean;
 }) {
   const [when, setWhen] = useState('');
+  const [autoStart, setAutoStart] = useState(savedAutoStart);
 
   if (!isOwner) {
     return (
       <p className="text-muted-foreground">
         {scheduledAt
-          ? `The draft is scheduled for ${new Date(scheduledAt).toLocaleString()}. Hang tight — the room opens when the owner starts it.`
+          ? `The draft is scheduled for ${new Date(scheduledAt).toLocaleString()}. ${
+              savedAutoStart
+                ? 'It will open automatically at that time.'
+                : 'The room opens when the owner starts it.'
+            }`
           : 'The owner has not scheduled the draft yet.'}
       </p>
     );
@@ -305,14 +314,31 @@ function SchedulePanel({
             variant="outline"
             busy={scheduling}
             disabled={!when}
-            onClick={() => send({ type: 'SCHEDULE', scheduledAt: new Date(when).toISOString() })}
+            onClick={() =>
+              send({ type: 'SCHEDULE', scheduledAt: new Date(when).toISOString(), autoStart })
+            }
           >
             {scheduledAt ? 'Reschedule' : 'Schedule'}
           </BusyButton>
         </div>
+        <label className="flex items-start gap-2">
+          <Checkbox
+            checked={autoStart}
+            onCheckedChange={(v) => setAutoStart(!!v)}
+            className="mt-0.5"
+          />
+          <span className="text-sm">
+            Start the draft automatically at the scheduled time
+            <span className="mt-0.5 block text-xs text-muted-foreground">
+              Off — you&apos;ll start it yourself with “Start draft now”. Either way, everyone gets
+              reminders before it begins.
+            </span>
+          </span>
+        </label>
         {scheduledAt ? (
           <p className="text-sm text-muted-foreground">
-            Scheduled for {new Date(scheduledAt).toLocaleString()}.
+            Scheduled for {new Date(scheduledAt).toLocaleString()} —{' '}
+            {savedAutoStart ? 'starts automatically.' : 'you’ll start it manually.'}
           </p>
         ) : null}
         <div className="flex items-center gap-3">

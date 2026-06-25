@@ -57,6 +57,7 @@ export type DraftSnapshot = {
     currentUserId: string | null;
     pickDeadlineAt: string | null;
     scheduledAt: string | null;
+    autoStart: boolean;
     order: string[];
   } | null;
   picks: Array<{
@@ -118,6 +119,7 @@ interface DraftRow {
   current_user_id: string | null;
   pick_deadline_at: string | null;
   scheduled_at: string | null;
+  auto_start: number | null;
   order_json: string | null;
 }
 
@@ -130,6 +132,7 @@ const mapDraft = (d: DraftRow): NonNullable<DraftSnapshot['draft']> => ({
   currentUserId: d.current_user_id ?? null,
   pickDeadlineAt: d.pick_deadline_at ?? null,
   scheduledAt: d.scheduled_at ?? null,
+  autoStart: Number(d.auto_start ?? 1) !== 0,
   order: d.order_json ? (JSON.parse(d.order_json) as string[]) : [],
 });
 
@@ -877,8 +880,29 @@ const makeDraftService = Effect.gen(function* () {
     return { ok: true as const };
   });
 
+  // Auto-start any scheduled draft whose time has arrived — the cron dispatcher calls
+  // this every minute. Per-draft `auto_start` opt-in. A draft that isn't feasible yet
+  // (e.g. <2 members) just stays scheduled for the owner; we never poison-loop on it.
+  const startDueScheduledDrafts = Effect.fn('DraftService.startDueScheduledDrafts')(function* () {
+    const now = new Date().toISOString();
+    const due = yield* sql<{ league_id: string }>`
+      SELECT league_id FROM fantasy_drafts
+      WHERE status = 'scheduled' AND auto_start = 1
+        AND scheduled_at IS NOT NULL AND scheduled_at <= ${now}
+    `.pipe(Effect.orDie);
+    let started = 0;
+    for (const r of due) {
+      const res = yield* start(r.league_id).pipe(
+        Effect.catchAll(() => Effect.succeed({ ok: false as const }))
+      );
+      if (res.ok) started++;
+    }
+    return { started };
+  });
+
   return {
     start,
+    startDueScheduledDrafts,
     makePick,
     pause,
     resume,

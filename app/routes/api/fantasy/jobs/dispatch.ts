@@ -1,6 +1,7 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
 import { Effect } from 'effect';
 import { NotificationService } from '@/lib/fantasy/services/notification-service';
+import { DraftService } from '@/lib/fantasy/services/draft-service';
 import { fantasyRuntime } from '@/rpc';
 
 /**
@@ -16,7 +17,12 @@ const authorized = (request: Request): boolean => {
 const run = async ({ request }: { request: Request }): Promise<Response> => {
   if (!authorized(request)) return new Response('Not found', { status: 404 });
   const summary = await fantasyRuntime.runPromise(
-    Effect.flatMap(NotificationService, (s) => s.dispatch())
+    Effect.gen(function* () {
+      // Auto-start scheduled drafts whose time has arrived, then run reminders/digests.
+      const drafts = yield* Effect.flatMap(DraftService, (s) => s.startDueScheduledDrafts());
+      const dispatch = yield* Effect.flatMap(NotificationService, (s) => s.dispatch());
+      return { ...dispatch, draftsStarted: drafts.started };
+    })
   );
   return Response.json({ ok: true, ...summary });
 };

@@ -28,6 +28,8 @@ export const ADD_COLUMNS = [
   // Fantasy Test Lab — sandbox league + bot users (docs/plans/FANTASY_TEST_LAB_PLAN.md).
   { table: 'fantasy_leagues', column: 'is_test', ddl: 'ALTER TABLE fantasy_leagues ADD COLUMN is_test INTEGER DEFAULT 0' },
   { table: 'user', column: 'isBot', ddl: 'ALTER TABLE "user" ADD COLUMN isBot INTEGER DEFAULT 0' },
+  // Auto-start a scheduled draft at its scheduled time (vs. owner starting manually).
+  { table: 'fantasy_drafts', column: 'auto_start', ddl: 'ALTER TABLE fantasy_drafts ADD COLUMN auto_start INTEGER DEFAULT 1' },
 ];
 
 /**

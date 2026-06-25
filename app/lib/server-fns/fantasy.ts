@@ -476,7 +476,11 @@ export const submitQuiz = createServerFn({ method: 'POST' })
 export const scheduleDraft = createServerFn({ method: 'POST' })
   .validator((d: unknown) =>
     v.parse(
-      v.object({ leagueId: v.string(), scheduledAt: v.pipe(v.string(), v.isoTimestamp()) }),
+      v.object({
+        leagueId: v.string(),
+        scheduledAt: v.pipe(v.string(), v.isoTimestamp()),
+        autoStart: v.optional(v.boolean(), true),
+      }),
       d
     )
   )
@@ -498,15 +502,17 @@ export const scheduleDraft = createServerFn({ method: 'POST' })
 
     await db.execute({
       sql: `INSERT INTO fantasy_drafts
-              (draft_id, league_id, status, scheduled_at, draft_type, pick_seconds, total_rounds, current_pick_no)
-            VALUES (?, ?, 'scheduled', ?, ?, ?, ?, 0)
+              (draft_id, league_id, status, scheduled_at, auto_start, draft_type, pick_seconds, total_rounds, current_pick_no)
+            VALUES (?, ?, 'scheduled', ?, ?, ?, ?, ?, 0)
             ON CONFLICT(league_id) DO UPDATE SET
-              scheduled_at = excluded.scheduled_at, draft_type = excluded.draft_type,
+              scheduled_at = excluded.scheduled_at, auto_start = excluded.auto_start,
+              draft_type = excluded.draft_type,
               pick_seconds = excluded.pick_seconds, total_rounds = excluded.total_rounds`,
       args: [
         crypto.randomUUID(),
         data.leagueId,
         data.scheduledAt,
+        data.autoStart ? 1 : 0,
         config.draftType,
         config.pickSeconds,
         totalRounds(config),
