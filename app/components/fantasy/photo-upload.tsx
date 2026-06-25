@@ -8,7 +8,11 @@
  * `overlay`, where the preview IS the upload control with a small edit pill in
  * the corner — one tidy area instead of an image plus a detached button.
  */
+import { useEffect } from 'react';
+import { useMachine } from '@xstate/react';
+import { toast } from 'sonner';
 import { NoteEditIcon, AddCircleIcon } from '@/components/icons/generated';
+import { imageUploadMachine } from '@/machines/image-upload-machine';
 
 /** Read a File to bare base64 (no data: prefix) for the upload server-fns. */
 export const fileToBase64 = (file: File): Promise<string> =>
@@ -57,7 +61,6 @@ export async function imageFileToUploadBase64(file: File): Promise<string> {
 export function PhotoUpload({
   mediaId,
   onFile,
-  busy = false,
   shape = 'square',
   size = 'size-12',
   labels,
@@ -66,8 +69,9 @@ export function PhotoUpload({
   fill = false,
 }: {
   mediaId?: string | null;
+  /** Persist the file. MUST reject on failure so the upload state machine can revert
+   *  the optimistic preview and toast the error. */
   onFile: (file: File) => void | Promise<void>;
-  busy?: boolean;
   shape?: 'square' | 'round';
   /** Tailwind size utility for the preview box (default size-12). */
   size?: string;
@@ -78,10 +82,23 @@ export function PhotoUpload({
   /** overlay only — fill the parent's height (square) instead of the fixed `size`. */
   fill?: boolean;
 }) {
+  // Upload lifecycle: optimistic local preview while it persists, sonner toast on error.
+  const [state, send] = useMachine(imageUploadMachine, {
+    input: { upload: (file: File) => Promise.resolve(onFile(file)) },
+  });
+  const uploading = state.matches('uploading');
+  const uploadError = state.context.error;
+  useEffect(() => {
+    if (uploadError) toast.error(uploadError);
+  }, [uploadError]);
+
   const radius = shape === 'round' ? 'rounded-full' : 'rounded';
-  // In fill mode the box stretches to the parent's height and stays square.
   // In fill mode the parent reserves the (square) footprint; the box just fills it.
   const box = fill ? 'h-full w-full' : size;
+  // The optimistic preview (local object URL) wins until the upload settles; then the
+  // persisted media takes over.
+  const src = state.context.previewUrl ?? (mediaId ? `/api/fantasy-media/${mediaId}` : null);
+
   const fileInput = (
     <input
       type="file"
@@ -89,10 +106,19 @@ export function PhotoUpload({
       className="hidden"
       onChange={(e) => {
         const file = e.target.files?.[0];
-        if (file) void onFile(file);
+        if (file) send({ type: 'PICK', file });
       }}
     />
   );
+
+  const spinner = uploading ? (
+    <span
+      className={`${radius} absolute inset-0 z-10 grid place-items-center bg-black/40`}
+      aria-label="Uploading"
+    >
+      <span className="size-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+    </span>
+  ) : null;
 
   if (variant === 'overlay') {
     return (
@@ -100,33 +126,32 @@ export function PhotoUpload({
         className={`group relative cursor-pointer ${fill ? 'flex h-full w-full' : 'inline-block'}`}
         title={mediaId ? (labels?.change ?? 'Change image') : (labels?.empty ?? 'Add image')}
       >
-        {mediaId ? (
+        {src ? (
           <>
             <img
-              src={`/api/fantasy-media/${mediaId}`}
+              src={src}
               alt={alt}
               className={`${box} ${radius} border border-border object-cover`}
             />
             {/* Edit affordance only on hover/focus — keeps the resting state clean. */}
-            <span
-              className={`${radius} absolute inset-0 grid place-items-center bg-black/45 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100`}
-              aria-hidden
-            >
-              {busy ? '…' : <NoteEditIcon className="size-4" />}
-            </span>
+            {!uploading ? (
+              <span
+                className={`${radius} absolute inset-0 grid place-items-center bg-black/45 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100`}
+                aria-hidden
+              >
+                <NoteEditIcon className="size-4" />
+              </span>
+            ) : null}
           </>
         ) : (
           <div
             className={`${box} ${radius} grid place-items-center border border-dashed border-border text-muted-foreground transition-colors group-hover:border-text-secondary group-hover:text-text-secondary`}
             aria-hidden
           >
-            {busy ? (
-              <span className="text-xs">…</span>
-            ) : (
-              <AddCircleIcon className="size-5 opacity-40" />
-            )}
+            <AddCircleIcon className="size-5 opacity-40" />
           </div>
         )}
+        {spinner}
         {fileInput}
       </label>
     );
@@ -134,18 +159,21 @@ export function PhotoUpload({
 
   return (
     <div className="flex items-center gap-3">
-      {mediaId ? (
-        <img
-          src={`/api/fantasy-media/${mediaId}`}
-          alt={alt}
-          className={`${size} ${radius} border border-border object-cover`}
-        />
-      ) : (
-        <div className={`${size} ${radius} bg-muted`} />
-      )}
+      <div className={`relative ${size} shrink-0`}>
+        {src ? (
+          <img
+            src={src}
+            alt={alt}
+            className={`${size} ${radius} border border-border object-cover`}
+          />
+        ) : (
+          <div className={`${size} ${radius} bg-muted`} />
+        )}
+        {spinner}
+      </div>
       <label className="cursor-pointer">
         <span className="inline-flex h-8 items-center rounded-lg border border-border bg-background px-2.5 text-sm hover:bg-muted">
-          {busy
+          {uploading
             ? 'Uploading…'
             : mediaId
               ? (labels?.change ?? 'Change image')

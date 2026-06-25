@@ -33,14 +33,12 @@ export function CorpsIdentityForm({
   const [color, setColor] = useState(initial?.color ?? '#cc0000');
   const [logoMediaId, setLogoMediaId] = useState<string | null>(initial?.logoMediaId ?? null);
 
-  const upload = useAsyncAction(
-    async (file: File) => {
-      const dataBase64 = await imageFileToUploadBase64(file);
-      const res = await uploadFantasyLogo({ data: { leagueId, dataBase64 } });
-      setLogoMediaId(res.mediaId);
-    },
-    (err) => `Logo upload failed: ${err.message}`
-  );
+  // Throws on failure so PhotoUpload's machine reverts the preview + toasts the error.
+  const uploadLogo = async (file: File) => {
+    const dataBase64 = await imageFileToUploadBase64(file);
+    const res = await uploadFantasyLogo({ data: { leagueId, dataBase64 } });
+    setLogoMediaId(res.mediaId);
+  };
 
   const save = useAsyncAction(
     async () => {
@@ -63,8 +61,8 @@ export function CorpsIdentityForm({
       )
   );
 
-  const busy = upload.busy || save.busy;
-  const error = save.error ?? upload.error;
+  const busy = save.busy;
+  const error = save.error;
 
   return (
     <form
@@ -115,8 +113,7 @@ export function CorpsIdentityForm({
 
       <PhotoUpload
         mediaId={logoMediaId}
-        busy={upload.busy}
-        onFile={(file) => upload.run(file)}
+        onFile={uploadLogo}
         alt="Corps logo"
         labels={{ empty: 'Upload logo', change: 'Change logo' }}
       />

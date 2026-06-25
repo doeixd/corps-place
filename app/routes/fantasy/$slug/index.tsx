@@ -314,15 +314,13 @@ function LeagueImageUpload({
   mediaId: string | null;
   onChanged: () => Promise<void> | void;
 }) {
-  const upload = useAsyncAction(
-    async (file: File) => {
-      const dataBase64 = await imageFileToUploadBase64(file);
-      const res = await uploadFantasyLogo({ data: { leagueId, dataBase64 } });
-      await setLeagueImage({ data: { leagueId, mediaId: res.mediaId } });
-      await onChanged();
-    },
-    (err) => `Image upload failed: ${err.message}`
-  );
+  // Throws on failure so PhotoUpload's machine reverts the preview + toasts the error.
+  const upload = async (file: File) => {
+    const dataBase64 = await imageFileToUploadBase64(file);
+    const res = await uploadFantasyLogo({ data: { leagueId, dataBase64 } });
+    await setLeagueImage({ data: { leagueId, mediaId: res.mediaId } });
+    await onChanged();
+  };
   return (
     <div
       className="relative shrink-0"
@@ -330,18 +328,12 @@ function LeagueImageUpload({
     >
       <PhotoUpload
         mediaId={mediaId}
-        busy={upload.busy}
-        onFile={(file) => upload.run(file)}
+        onFile={upload}
         alt="League image"
         variant="overlay"
         fill
         labels={{ empty: 'Add image', change: 'Change image' }}
       />
-      {upload.error ? (
-        <span className="absolute top-full left-0 mt-1 whitespace-nowrap text-xs text-destructive">
-          {upload.error}
-        </span>
-      ) : null}
     </div>
   );
 }
