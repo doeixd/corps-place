@@ -34,6 +34,9 @@ import {
 
 const str = (x: unknown) => (typeof x === 'string' ? x : '');
 
+type PropImage = PropsInput['items'][number]['images'][number];
+const asImages = (x: unknown): PropImage[] => (Array.isArray(x) ? (x as PropImage[]) : []);
+
 // A small inline row-remove button shared by the FieldArray editors.
 const RemoveRowButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
   <Button type="button" variant="ghost" size="icon-sm" onClick={onClick} aria-label={label}>
@@ -140,6 +143,26 @@ export function PropsSection({ corpsKey, season, initial }: BlockProps<PropsInpu
               {it.description ? (
                 <span className="text-sm text-text-secondary"> — {it.description}</span>
               ) : null}
+              {it.images.length ? (
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {it.images.map((img, k) => (
+                    <a
+                      key={k}
+                      href={img.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block size-16 overflow-hidden rounded-md ring-1 ring-foreground/10 hover:ring-primary/60"
+                    >
+                      <ProgressiveImage
+                        src={img.url}
+                        alt={img.alt || `${it.name} photo`}
+                        width={96}
+                        fit="cover"
+                      />
+                    </a>
+                  ))}
+                </div>
+              ) : null}
             </li>
           ))}
         </ul>
@@ -197,6 +220,53 @@ function PropsEditor({ corpsKey, season, value, onSaved }: EditorProps<PropsInpu
                       />
                     )}
                   </Field>
+                  <Field of={form} path={['items', i, 'images']}>
+                    {(f) => {
+                      const imgs = asImages(f.input);
+                      return (
+                        <div className="space-y-1.5">
+                          {imgs.length ? (
+                            <div className="flex flex-wrap gap-1.5">
+                              {imgs.map((img, k) => (
+                                <div
+                                  key={k}
+                                  className="group relative size-16 overflow-hidden rounded-md ring-1 ring-foreground/10"
+                                >
+                                  <ProgressiveImage
+                                    src={img.url}
+                                    alt={img.alt || ''}
+                                    width={96}
+                                    fit="cover"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      f.onChange(imgs.filter((_, j) => j !== k))
+                                    }
+                                    aria-label="Remove photo"
+                                    className="absolute right-0.5 top-0.5 flex size-5 items-center justify-center rounded bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 focus-visible:opacity-100 group-hover:opacity-100"
+                                  >
+                                    <Icon icon={Cancel01Icon} size="sm" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          ) : null}
+                          <ImageDrop
+                            corpsKey={corpsKey}
+                            season={season}
+                            kind="image"
+                            onUploaded={(r) =>
+                              f.onChange([
+                                ...imgs,
+                                { url: r.url, alt: '', width: r.width, height: r.height },
+                              ])
+                            }
+                          />
+                        </div>
+                      );
+                    }}
+                  </Field>
                 </div>
                 <RemoveRowButton
                   onClick={() => remove(form, { path: ['items'], at: i })}
@@ -206,7 +276,10 @@ function PropsEditor({ corpsKey, season, value, onSaved }: EditorProps<PropsInpu
             ))}
             <AddRowButton
               onClick={() =>
-                insert(form, { path: ['items'], initialInput: { name: '', description: '' } })
+                insert(form, {
+                  path: ['items'],
+                  initialInput: { name: '', description: '', images: [] },
+                })
               }
               label="Add prop"
             />

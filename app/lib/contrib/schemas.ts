@@ -36,6 +36,7 @@ export type UniformInput = v.InferOutput<typeof UniformInputSchema>;
 const PropItem = v.object({
   name: v.pipe(v.string(), v.minLength(1, 'Name required')),
   description: v.optional(v.string(), ''),
+  images: v.optional(v.array(MediaItem), []),
 });
 export const PropsInputSchema = v.object({ items: v.array(PropItem) });
 export type PropsInput = v.InferOutput<typeof PropsInputSchema>;
