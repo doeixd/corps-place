@@ -71,6 +71,52 @@ export const buildVsCorpsScores = async (
   return [...byPct.values()].sort((a, b) => a.pct - b.pct);
 };
 
+/** Emit-time variant: every season's actual points for a corps in ONE query
+ *  (the live path filters by season; the emitter freezes all seasons at once). */
+export const buildVsCorpsScoresAllSeasons = async (
+  db: Client,
+  slug: string
+): Promise<Array<VsCorpsScorePoint & { season: string }>> => {
+  const result = await db.execute({
+    sql: `WITH ${RELATED_CORPS_CTES}
+      SELECT c.season         AS season,
+             c.percent_through AS pct,
+             c.date           AS date,
+             c.event_name     AS label,
+             cs.total_score   AS total
+      FROM corps_scores cs
+      JOIN competitions c ON c.slug = cs.competition_slug
+      WHERE cs.corps_key IN (SELECT corps_key FROM related_corps)
+        AND cs.total_score IS NOT NULL
+        AND c.percent_through IS NOT NULL
+      ORDER BY c.season ASC, c.percent_through ASC`,
+    args: [slug.trim().toLowerCase()],
+  });
+
+  // Dedupe within each season by pct (last wins).
+  const bySeasonPct = new Map<string, VsCorpsScorePoint & { season: string }>();
+  for (const raw of result.rows as unknown as Array<{
+    season: string | null;
+    pct: number | null;
+    date: string | null;
+    label: string | null;
+    total: number | null;
+  }>) {
+    if (!raw.season || typeof raw.pct !== 'number' || typeof raw.total !== 'number') continue;
+    const pct = Math.min(100, Math.max(0, raw.pct));
+    bySeasonPct.set(`${raw.season}~${pct}`, {
+      season: raw.season,
+      pct,
+      total: Number(raw.total),
+      date: raw.date ?? '',
+      eventLabel: raw.label ?? '',
+    });
+  }
+  return [...bySeasonPct.values()].sort(
+    (a, b) => a.season.localeCompare(b.season) || a.pct - b.pct
+  );
+};
+
 // ── Baselines ────────────────────────────────────────────────────────────────
 
 /** The single OVERALL TOTAL formula (DCI weighting) — kept here so baseline,
