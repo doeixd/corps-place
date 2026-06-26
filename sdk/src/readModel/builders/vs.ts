@@ -14,7 +14,7 @@
 // Shared by the live VS service (fallback) and emitReadModel, like every builder.
 import type { Client } from '@libsql/client';
 import { RELATED_CORPS_CTES } from './corpsAliases.js';
-import { getV9CaptionBaseline, V9_CAPTIONS, type V9Caption } from '../../training/v9Baselines.js';
+import { getV9CaptionBaseline, type V9Caption } from '../../training/v9Baselines.js';
 
 /** One actual data point on a corps's season line. `pct` ∈ [0,100]. */
 export interface VsCorpsScorePoint {
@@ -155,9 +155,8 @@ export const buildVsBaselineCurve = (referenceCurvesPath?: string): VsBaselinePo
         seedRank: rank,
         referenceCurvesPath,
       });
-      // getV9CaptionBaseline returns all V9_CAPTIONS (with fallbacks).
+      // getV9CaptionBaseline returns all captions (missing ones filled, e.g. VA).
       const captions = r.captions as Record<V9Caption, number>;
-      void V9_CAPTIONS;
       out.push({ rank, bucket, total: Number(totalOf(captions).toFixed(3)) });
     }
   }
