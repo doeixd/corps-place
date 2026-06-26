@@ -401,7 +401,7 @@ const makeJobsService = Effect.gen(function* () {
 
     yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
                VALUES (${newId()}, 'posting', ${postingId}, ${ctx.authorId}, ${ctx.actorRole}, 'create', ${ctx.now})`;
-    return postingId;
+    return { postingId, slug };
   });
 
   const updatePosting = Effect.fn('JobsService.updatePosting')(function* (
@@ -871,28 +871,36 @@ const makeJobsService = Effect.gen(function* () {
     location: string | null,
     remoteOk: number
   ) {
+    // Only INSTANT alerts fire on a new posting; daily/weekly digests are a
+    // future cron. Resolve the owner's account email so the caller can send.
     const activeAlerts = yield* sql<{
       alert_id: string;
-      user_id: string;
       filters_json: string;
-      frequency: string;
-    }>`SELECT alert_id, user_id, filters_json, frequency FROM jobs_alert WHERE active = 1 AND kind = 'employee'`;
+      email: string | null;
+    }>`SELECT a.alert_id, a.filters_json, u.email
+       FROM jobs_alert a LEFT JOIN "user" u ON u.id = a.user_id
+       WHERE a.active = 1 AND a.kind = 'employee' AND a.frequency = 'instant'`;
 
-    // Simple matching: alert fires if no filters or keyword matches title
-    const matched: Array<{ alertId: string; userId: string }> = [];
+    // Simple matching: fires if the alert has no keyword, or `q` is in the title
+    // (or the location, when location-filtered). Remote filter: skip non-remote
+    // postings for remote-only alerts.
+    const matched: Array<{ alertId: string; email: string }> = [];
     for (const alert of activeAlerts) {
+      if (!alert.email) continue; // can't notify without an address
       try {
-        const filters = JSON.parse(alert.filters_json) as Record<string, string>;
-        const keyword = (filters.q ?? '').toLowerCase();
-        if (!keyword || title.toLowerCase().includes(keyword)) {
-          matched.push({ alertId: alert.alert_id, userId: alert.user_id });
+        const filters = JSON.parse(alert.filters_json) as Record<string, unknown>;
+        const keyword = String(filters.q ?? '').toLowerCase();
+        const hay = `${title} ${location ?? ''}`.toLowerCase();
+        const keywordOk = !keyword || hay.includes(keyword);
+        const remoteFilterOk = filters.remoteOnly !== true || remoteOk === 1;
+        if (keywordOk && remoteFilterOk) {
+          matched.push({ alertId: alert.alert_id, email: alert.email });
         }
       } catch {
         /* skip malformed alert */
       }
     }
 
-    // Update last_sent_at for matched alerts
     const now = new Date().toISOString();
     for (const m of matched) {
       yield* sql`UPDATE jobs_alert SET last_sent_at = ${now} WHERE alert_id = ${m.alertId}`;

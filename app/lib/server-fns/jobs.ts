@@ -192,11 +192,37 @@ export const createJobPosting = createServerFn({ method: 'POST' })
     );
     if (!profile || profile.profile.kind !== 'employer')
       throw new Error('Only employers can post jobs');
-    const postingId = await Effect.runPromise(
+    const { postingId, slug } = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) =>
         svc.createPosting(profile.profile.profile_id, data, ctx)
       ).pipe(Effect.provide(JobsServiceLive))
     );
+
+    // Fire INSTANT saved-search alerts (best-effort — never block the post).
+    const matched = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.fireAlertsForNewPosting(postingId, data.title, data.location ?? null, data.remoteOk ? 1 : 0)
+      ).pipe(Effect.provide(JobsServiceLive))
+    ).catch(() => [] as { alertId: string; email: string }[]);
+
+    if (matched.length) {
+      const titleHtml = escapeHtml(data.title);
+      const loc = data.location ? ` — ${escapeHtml(data.location)}` : '';
+      await Promise.all(
+        matched.map((m) =>
+          sendEmail({
+            to: m.email,
+            subject: `New job matching your alert: ${data.title}`,
+            tag: 'jobs-alert',
+            html: `<p>A new posting matches your saved job search:</p>
+<p><strong>${titleHtml}</strong>${loc}</p>
+<p><a href="https://drumcorps.app/jobs/${encodeURIComponent(slug)}">View the posting →</a></p>
+<p style="color:#888;font-size:12px">Manage your alerts in your <a href="https://drumcorps.app/jobs/me">profile</a>.</p>`,
+          }).catch((e) => console.warn('[jobs] alert email failed:', e))
+        )
+      );
+    }
+
     return { ok: true as const, postingId };
   });
 
