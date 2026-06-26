@@ -30,8 +30,10 @@ import {
   type RecapRow,
   type RecapGroupKey,
   type ScenarioWindow,
+  cycleSortGeneric,
+  type FullSortEntry,
 } from '@/lib/prediction-scenario';
-import type { SortMode } from '@/machines/prediction-machine';
+import type { SortMode, PredictionView } from '@/machines/prediction-machine';
 import { useSearchSync } from '@/lib/use-search-sync';
 import { searchString } from '@/lib/utils';
 
@@ -85,6 +87,8 @@ import { DicesIcon } from '@/components/icons/dices';
 import { EventSeasonTitle } from '@/components/prediction/event-season-title';
 import { SortableScoreHeader } from '@/components/prediction/score-header';
 import { PastSeasonScoresPage } from '@/components/prediction/past-season-scores';
+import { ScoreRecapTable } from '@/components/prediction/score-recap-table';
+import type { FullEventRecap } from '@/components/prediction/full-recap-table';
 import { LineupSchedule } from '@/components/prediction/lineup-schedule';
 import { RecapSectionRow } from '@/components/prediction/recap-section-row';
 import { motion, AnimatePresence } from 'motion/react';
@@ -95,6 +99,8 @@ import type { EventDirectoryRow, EventScheduleRow, EventSeasonOption } from '@/l
 import { dciLinks, type DciLinks } from '@/lib/dci-links';
 import {
   AiMagicIcon as PredictionIcon,
+  Analytics01Icon as ScoresTabIcon,
+  ArrowUp02Icon as DiffTabIcon,
   ChartCandlestickIcon as HugeiconsChartCandlestick,
   ChartScatterIcon as HugeiconsChartScatter,
   CheckmarkCircle02Icon as CheckmarkCircleIcon,
@@ -442,6 +448,9 @@ function PredictionPage() {
         // Actual scored recap rows (real scores), seeded from the loader. Null
         // when no scores exist yet (today's 2026 case) → Prediction view only.
         scoredRecap={hasScoreData ? (recap.scores as RecapRow[]) : null}
+        // Judge-level full recap for the Scores view's Full Recap toggle,
+        // preloaded by the loader whenever a recap exists (null otherwise).
+        seededFullRecap={(loaderData.fullRecap as FullEventRecap | null) ?? null}
       />
     </CorpsRegistryProvider>
   );
@@ -504,6 +513,7 @@ function CurrentPredictionPage({
   search,
   navigate,
   scoredRecap,
+  seededFullRecap,
 }: {
   params: { yearSlug: string; slug: string };
   slug: string;
@@ -519,6 +529,7 @@ function CurrentPredictionPage({
   search: PredictionSearch;
   navigate: ReturnType<typeof Route.useNavigate>;
   scoredRecap: RecapRow[] | null;
+  seededFullRecap: FullEventRecap | null;
 }) {
   // Name this entry so a back control on a page reached from here reads
   // "Back to <event>" instead of the generic section label.
@@ -551,6 +562,33 @@ function CurrentPredictionPage({
   const isLoading = status === 'loading';
   const ctx = snapshot.context;
   const prediction = ctx.prediction;
+
+  // --- Tri-modal view (Scores / Prediction / Diff) --------------------------
+  // The active view comes from the machine (URL-seeded). Tabs are shown only for
+  // the data sources that exist: Scores when real/fake scores landed, Prediction
+  // when a prediction exists, Diff only when BOTH are present. With no scores
+  // (today's normal 2026 case) only Prediction is available → no tab control,
+  // plain heading, and the page renders byte-for-byte as before.
+  const view = ctx.view;
+  const hasScores = (ctx.scoredRecap?.length ?? 0) > 0;
+  const hasPrediction = !!prediction;
+  const tabItems = useMemo(() => {
+    const items: { value: PredictionView; label: string; icon: IconComponent }[] = [];
+    if (hasScores) items.push({ value: 'scores', label: 'Scores', icon: ScoresTabIcon });
+    if (hasPrediction)
+      items.push({ value: 'prediction', label: 'Prediction', icon: PredictionIcon });
+    if (hasScores && hasPrediction)
+      items.push({ value: 'diff', label: 'Diff', icon: DiffTabIcon });
+    return items;
+  }, [hasScores, hasPrediction]);
+  const showTabs = tabItems.length > 1;
+
+  // Scores-view Full Recap toggle. The prediction machine carries no full-recap
+  // state (it's prediction-first), so the Scores view owns a small local toggle
+  // + per-leaf sort list, mirroring the score-table machine's behavior. The
+  // payload itself is loader-preloaded (`seededFullRecap`) — no client fetch.
+  const [scoresShowFullRecap, setScoresShowFullRecap] = useState(false);
+  const [scoresFullSorts, setScoresFullSorts] = useState<FullSortEntry[]>([]);
 
   // --- Shareable URL state --------------------------------------------------
   // Two-way sync of the view state (seed/window/ranges/class filter/sort) with
@@ -1101,7 +1139,86 @@ function CurrentPredictionPage({
           >
             <motion.div className="space-y-4" variants={fadeIn} initial={false} animate="visible">
               <section className="space-y-4">
-                <h2 className="text-lg font-medium text-text-primary pl-[1px]">Recap Prediction</h2>
+                {/* Tri-modal heading: a segmented control when more than one data
+                    source is available (Scores / Prediction / Diff), otherwise the
+                    plain section heading — today's behavior with no scores. */}
+                <Show
+                  when={showTabs}
+                  fallback={
+                    <h2 className="text-lg font-medium text-text-primary pl-[1px]">
+                      {hasScores && !hasPrediction ? 'Scores' : 'Recap Prediction'}
+                    </h2>
+                  }
+                >
+                  <ToggleGroup
+                    variant="outline"
+                    spacing={0}
+                    value={[view]}
+                    onValueChange={(v) => {
+                      const next = v[0] as PredictionView | undefined;
+                      if (next) send({ type: 'SET_VIEW', view: next });
+                    }}
+                  >
+                    <For each={tabItems}>
+                      {(item) => (
+                        <ToggleGroupItem value={item.value}>
+                          <Icon icon={item.icon} size="sm" className="size-3.5" />
+                          {item.label}
+                        </ToggleGroupItem>
+                      )}
+                    </For>
+                  </ToggleGroup>
+                </Show>
+
+                {/* ---- Scores view (P4): real scored recap, same table as past
+                    seasons, seeded from the machine's scoredRecap. ---- */}
+                <Show when={view === 'scores'}>
+                  <ScoreRecapTable
+                    rows={ctx.scoredRecap ?? []}
+                    corpsLookup={corpsLookup}
+                    title="Scores"
+                    classFilters={ctx.classFilters}
+                    onSetClassFilters={(filters) =>
+                      send({ type: 'SET_CLASS_FILTERS', classFilters: filters })
+                    }
+                    sorts={ctx.sorts}
+                    onCycleSort={(key) => send({ type: 'CYCLE_SORT', key })}
+                    onSetSorts={(sorts) => send({ type: 'SET_SORTS', sorts })}
+                    sortMode={ctx.sortMode}
+                    onSetSortMode={(mode) => send({ type: 'SET_SORT_MODE', mode })}
+                    // Real scores carry no prediction intervals → no Ranges toggle.
+                    showRanges={false}
+                    onSetShowRanges={() => {}}
+                    groupByClass={ctx.groupByClass}
+                    onSetGroupByClass={(groupByClass) =>
+                      send({ type: 'SET_GROUP_BY_CLASS', groupByClass })
+                    }
+                    showFullRecap={scoresShowFullRecap}
+                    onToggleFullRecap={setScoresShowFullRecap}
+                    fullRecap={seededFullRecap}
+                    fullStatus="ready"
+                    fullSorts={scoresFullSorts}
+                    onCycleFullSort={(key) =>
+                      setScoresFullSorts((prev) => cycleSortGeneric(prev, key, ctx.sortMode))
+                    }
+                    onSetFullSorts={setScoresFullSorts}
+                    yearSlug={params.yearSlug}
+                  />
+                </Show>
+
+                {/* ---- Diff view (P5 placeholder): the real diff table lands in
+                    P5; computeDiff stays unused here until then. ---- */}
+                <Show when={view === 'diff'}>
+                  <StatusCard
+                    tone="info"
+                    title="Diff coming soon"
+                    description="The scored-vs-predicted diff table is on its way."
+                  />
+                </Show>
+
+                {/* ---- Prediction view: the existing Monte Carlo recap toolbar +
+                    table, unchanged. Only renders in the prediction view. ---- */}
+                <Show when={view === 'prediction'}>
                 {/* Recap toolbar + table */}
                 <Show
                   when={predictionRowsAvailable}
@@ -1583,6 +1700,7 @@ function CurrentPredictionPage({
                     {(p) => <PredictionDetails prediction={p} />}
                   </Show>
                 </AnimatePresence>
+                </Show>
               </section>
 
               {/* Full event schedule — performing lineup + non-performance
