@@ -10,6 +10,7 @@ import {
   buildVsCorpsScores,
   buildVsBaselineCurve,
   buildVsCorps2026Predicted,
+  buildVsPredictionSnapshot,
 } from '@sdk/src/readModel/builders/vs.js';
 import { buildCorpsBySlug } from '@sdk/src/readModel/builders/corps.js';
 import {
@@ -113,7 +114,37 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
     };
   }
 
-  // kind: 'prediction' — 2026 snapshot resolver is M7 (live prediction path).
+  if (s.kind === 'prediction') {
+    // Dynamic in asOf → relational (live) path only; degrades to empty where the
+    // relational DB isn't on the host (the series then simply drops).
+    const [pts, corps] = await Promise.all([
+      buildVsPredictionSnapshot(getDb(), s.corpsSlug, s.asOf).catch(() => []),
+      readOrBuild(
+        (db) => readCorpsBySlug(db, s.corpsSlug),
+        (db) => buildCorpsBySlug(db, s.corpsSlug)
+      ).catch(() => null),
+    ]);
+    if (!pts.length) return null;
+    return {
+      id: `pred~${s.corpsSlug}~${s.asOf}`,
+      label: `${corps?.name ?? s.corpsSlug} · pred ${s.asOf}`,
+      kind: 'prediction',
+      brand: { primary: corps?.color_primary ?? null, secondary: corps?.color_secondary ?? null },
+      color: '',
+      lines: [
+        {
+          style: 'dashed',
+          points: pts.map((p) => ({
+            pct: p.pct,
+            value: p.predicted,
+            date: p.date || undefined,
+            eventLabel: p.eventLabel || undefined,
+          })),
+        },
+      ],
+    };
+  }
+
   return null;
 }
 

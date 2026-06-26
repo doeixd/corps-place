@@ -167,6 +167,65 @@ export const buildVsCorps2026Predicted = async (
   return [...byPct.values()].sort((a, b) => a.pct - b.pct);
 };
 
+/** A point on a prediction-as-of snapshot line. */
+export interface VsSnapshotPoint {
+  pct: number;
+  predicted: number;
+  date: string;
+  eventLabel: string;
+}
+
+/**
+ * A 2026 prediction snapshot as-of a date: for each event, the latest run with
+ * `predicted_at <= asOf`, plotting predicted_total by % through season. Dynamic
+ * in `asOf`, so this is a live (relational) read — never a frozen shard. 2026
+ * only (no historical prediction snapshots exist).
+ */
+export const buildVsPredictionSnapshot = async (
+  db: Client,
+  slug: string,
+  asOf: string
+): Promise<VsSnapshotPoint[]> => {
+  const result = await db.execute({
+    sql: `WITH ${RELATED_CORPS_CTES},
+      latest AS (
+        SELECT event_slug, MAX(predicted_at) AS pa
+        FROM model_event_prediction_runs
+        WHERE season = '2026' AND predicted_at <= ?
+        GROUP BY event_slug
+      )
+      SELECT run.percent_through AS pct,
+             r.predicted_total   AS predicted,
+             e.start_date        AS date,
+             COALESCE(e.event_name, e.name, run.event_slug) AS label
+      FROM model_event_prediction_rows r
+      JOIN model_event_prediction_runs run ON run.prediction_id = r.prediction_id
+      JOIN latest l ON l.event_slug = run.event_slug AND l.pa = run.predicted_at
+      LEFT JOIN events e ON e.slug = run.event_slug
+      WHERE run.season = '2026'
+        AND r.corps_key IN (SELECT corps_key FROM related_corps)
+        AND run.percent_through IS NOT NULL
+        AND r.predicted_total IS NOT NULL
+      ORDER BY run.percent_through ASC`,
+    args: [slug.trim().toLowerCase(), asOf],
+  });
+
+  const byPct = new Map<number, VsSnapshotPoint>();
+  for (const raw of result.rows as unknown as Array<{
+    pct: number | null;
+    predicted: number | null;
+    date: string | null;
+    label: string | null;
+  }>) {
+    if (typeof raw.pct !== 'number' || typeof raw.predicted !== 'number') continue;
+    const pct = Math.min(100, Math.max(0, raw.pct));
+    const prev = byPct.get(pct);
+    if (!prev || raw.predicted > prev.predicted)
+      byPct.set(pct, { pct, predicted: raw.predicted, date: raw.date ?? '', eventLabel: raw.label ?? '' });
+  }
+  return [...byPct.values()].sort((a, b) => a.pct - b.pct);
+};
+
 // ── Baselines ────────────────────────────────────────────────────────────────
 
 /** The single OVERALL TOTAL formula (DCI weighting) — kept here so baseline,
