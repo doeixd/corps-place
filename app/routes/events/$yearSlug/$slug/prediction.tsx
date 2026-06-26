@@ -212,7 +212,14 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
   // than blocking navigation on the heavy ML op.
   // Thread the fake-scores test hook into the loader. Only this search field
   // affects the loaded data; the rest are pure view state.
-  loaderDeps: ({ search }) => ({ fakeScores: search.fakeScores === true }),
+  // Robust to both the validated boolean and the raw `?fakeScores=1` string —
+  // loaderDeps can see the search before validateSearch normalization.
+  loaderDeps: ({ search }) => ({
+    fakeScores:
+      (search.fakeScores as unknown) === true ||
+      search.fakeScores === '1' ||
+      (search.fakeScores as unknown) === 'true',
+  }),
   loader: async ({ params, deps }) => {
     const { yearSlug, slug } = params;
     const fakeScores = deps?.fakeScores === true;
