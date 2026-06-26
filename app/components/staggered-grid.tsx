@@ -13,6 +13,16 @@ const GRID_VARIANTS = {
   'md-lg': { cols: 'md:grid-cols-2 lg:grid-cols-3', two: 'md', three: 'lg' },
 } as const;
 
+const DEFAULT_LAYOUT_ANIMATION_LIMIT = 40;
+
+export function shouldAnimateGridLayout(
+  animateLayout: boolean,
+  itemCount: number,
+  limit = DEFAULT_LAYOUT_ANIMATION_LIMIT
+): boolean {
+  return animateLayout && itemCount <= limit;
+}
+
 export type GridVariant = keyof typeof GRID_VARIANTS;
 
 type StaggeredGridProps<T> = {
@@ -31,6 +41,8 @@ type StaggeredGridProps<T> = {
    * fade of removed cards via `AnimatePresence`. Leave off for static lists.
    */
   animateLayout?: boolean;
+  /** Disable JS-driven FLIP above this item count (default 40). */
+  layoutAnimationLimit?: number;
   /** Change to remount the grid and replay the entrance (e.g. active filter/sort). */
   animationKey?: string;
   /**
@@ -63,6 +75,7 @@ export function StaggeredGrid<T>({
   gap = 'gap-4',
   step = 0.11,
   animateLayout = false,
+  layoutAnimationLimit = DEFAULT_LAYOUT_ANIMATION_LIMIT,
   animationKey,
   viewportRoot,
   className,
@@ -70,13 +83,14 @@ export function StaggeredGrid<T>({
   const v = GRID_VARIANTS[variant];
   const columns = useGridColumns(v.two, v.three);
   const wave = columns === 1 ? 5 : columns;
+  const layoutEnabled = shouldAnimateGridLayout(animateLayout, items.length, layoutAnimationLimit);
 
   const cards = items.map((item, i) => (
     <motion.div
       key={getKey(item)}
       data-grid-key={getKey(item)}
-      layout={animateLayout}
-      className="h-full min-w-0"
+      layout={layoutEnabled}
+      className="collection-card h-full min-w-0"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{
         opacity: 1,
@@ -88,7 +102,7 @@ export function StaggeredGrid<T>({
         },
       }}
       viewport={{ once: true, amount: 0.15, root: viewportRoot }}
-      exit={animateLayout ? { opacity: 0, scale: 0.92 } : undefined}
+      exit={layoutEnabled ? { opacity: 0, scale: 0.92 } : undefined}
       transition={{
         duration: 0.2,
         ease: 'easeOut',
@@ -101,7 +115,7 @@ export function StaggeredGrid<T>({
 
   return (
     <div key={animationKey} className={cn('grid', gap, v.cols, className)}>
-      {animateLayout ? <AnimatePresence mode="popLayout">{cards}</AnimatePresence> : cards}
+      {layoutEnabled ? <AnimatePresence mode="popLayout">{cards}</AnimatePresence> : cards}
     </div>
   );
 }

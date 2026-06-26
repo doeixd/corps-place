@@ -7,6 +7,7 @@ import { createIsomorphicFn } from '@tanstack/react-start';
 import { getCookie } from '@tanstack/react-start/server';
 
 export type Theme = 'light' | 'dark';
+export type ThemePreference = Theme | 'system';
 
 export const THEME_COOKIE = 'cp_theme';
 const MAX_AGE = 60 * 60 * 24 * 365; // 1 year
@@ -19,10 +20,13 @@ export const readThemeCookie = createIsomorphicFn()
     return m ? normalize(decodeURIComponent(m[1])) : null;
   });
 
-/** Persist the chosen theme. Client-only. */
-export function writeThemeCookie(theme: Theme): void {
+/** Persist an explicit theme, or clear the cookie to follow the system. */
+export function writeThemeCookie(preference: ThemePreference): void {
   if (typeof document === 'undefined') return;
-  document.cookie = `${THEME_COOKIE}=${theme}; path=/; max-age=${MAX_AGE}; SameSite=Lax`;
+  document.cookie =
+    preference === 'system'
+      ? `${THEME_COOKIE}=; path=/; max-age=0; SameSite=Lax`
+      : `${THEME_COOKIE}=${preference}; path=/; max-age=${MAX_AGE}; SameSite=Lax`;
 }
 
 function normalize(value: string | null | undefined): Theme | null {

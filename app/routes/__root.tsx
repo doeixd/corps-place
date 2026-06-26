@@ -7,7 +7,7 @@ import {
   useRouterState,
 } from '@tanstack/react-router';
 import { toast } from 'sonner';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { registerServiceWorker } from '@/lib/register-sw';
 import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
@@ -20,33 +20,62 @@ import { Toaster } from '@/components/ui/sonner';
 import { THEME_COOKIE, readThemeCookie } from '@/lib/theme-cookie';
 import type { Theme } from '@/lib/theme-cookie';
 import { FAVORITE_COOKIE, readFavoriteCookie } from '@/lib/favorite-cookie';
-import { buildAppIconHref } from '@/lib/logo-recolor';
-import { getBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
+import { DEFAULT_APP_ICON_HREF, buildAppIconHref } from '@/lib/logo-recolor';
+import {
+  themeChromeColor,
+  useFavoriteIconHref,
+  useFavoriteThemeColor,
+} from '@/stores/favorite-corps-store';
+import { themeStore } from '@/stores/theme-store';
+import { normalizeHex } from '@sdk/src/corpsColors.js';
+import { readBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
 import { buildSeo } from '@/lib/seo';
 import '@/app.css';
 
-const DEFAULT_THEME_COLOR = '#0b0b0c';
+const subscribeTheme = (onChange: () => void) => {
+  const sub = themeStore.subscribe(onChange);
+  return () => sub.unsubscribe();
+};
 
 // Favicon + browser-chrome color for the favorited corps, derived server-side
 // from the cookie so the initial HTML is already correct (no first-paint flash,
 // and the head() tags match on hydration instead of resetting to defaults).
-function favoriteHead(): { iconHref: string; themeColor: string } {
+function favoriteHead(theme: Theme | null): { iconHref: string; themeColor: string } {
   try {
     const raw = readFavoriteCookie();
     if (raw) {
-      const fav = JSON.parse(raw) as { colorPrimary?: unknown; logoDark?: unknown };
-      const colorPrimary = typeof fav.colorPrimary === 'string' ? fav.colorPrimary : null;
-      const logoDark = typeof fav.logoDark === 'string' ? fav.logoDark : null;
+      const fav = JSON.parse(raw) as { colorPrimary?: unknown };
+      const colorPrimary =
+        typeof fav.colorPrimary === 'string' ? normalizeHex(fav.colorPrimary) : null;
       if (colorPrimary) {
-        return { iconHref: buildAppIconHref(colorPrimary, logoDark), themeColor: colorPrimary };
+        return { iconHref: buildAppIconHref(colorPrimary), themeColor: colorPrimary };
       }
     }
   } catch {
     /* corrupt cookie — fall through to defaults */
   }
-  // The small purpose-built favicon (749 B) — not the 63 KB logo.svg, which browsers
-  // rasterize unreliably at 16px and drop under load on busy pages.
-  return { iconHref: '/favicon.svg', themeColor: DEFAULT_THEME_COLOR };
+  return {
+    iconHref: DEFAULT_APP_ICON_HREF,
+    themeColor: themeChromeColor(theme ?? 'light'),
+  };
+}
+
+function FavoriteHeadBranding({
+  initialIconHref,
+  initialThemeColor,
+}: {
+  initialIconHref: string;
+  initialThemeColor: string;
+}) {
+  const iconHref = useFavoriteIconHref(initialIconHref);
+  const themeColor = useFavoriteThemeColor(initialThemeColor);
+  return (
+    <>
+      <link rel="icon" href={iconHref} type="image/svg+xml" data-app-icon="true" />
+      <link rel="apple-touch-icon" href={iconHref} data-app-icon="true" />
+      <meta name="theme-color" content={themeColor} />
+    </>
+  );
 }
 
 // Runs before paint to set `.dark` from storage / system preference, avoiding a
@@ -64,13 +93,18 @@ function RootDocument({
   children,
   theme,
   brand,
-  iconHref,
+  favorite,
 }: {
   children: ReactNode;
   theme: Theme | null;
   brand: Brand;
-  iconHref: string;
+  favorite: { iconHref: string; themeColor: string };
 }) {
+  const resolvedTheme = useSyncExternalStore(
+    subscribeTheme,
+    () => themeStore.getSnapshot().context.theme,
+    () => theme ?? 'light'
+  );
   // suppressHydrationWarning on <html>: when there's no theme cookie the no-flash
   // script (below) resolves the OS preference and mutates the class + colorScheme
   // before hydration, and browser extensions inject data-* attrs here too — both
@@ -80,25 +114,23 @@ function RootDocument({
     <html
       lang="en"
       className={
-        [theme === 'dark' ? 'dark' : '', brand === 'jobs' ? 'brand-jobs' : '']
+        [resolvedTheme === 'dark' ? 'dark' : '', brand === 'jobs' ? 'brand-jobs' : '']
           .filter(Boolean)
           .join(' ') || undefined
       }
-      style={theme ? { colorScheme: theme } : undefined}
+      style={{ colorScheme: resolvedTheme }}
       suppressHydrationWarning
     >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* Favicon + apple-touch-icon live HERE (the persistent document <head>), not in
-            head()/HeadContent. Rendering them via HeadContent meant they were reconciled
-            on every route change AND on the fantasy pages' frequent live (SSE) re-renders,
-            which makes Chrome drop the SVG favicon. As static elements on the root document
-            they survive navigation; the per-corps `iconHref` (from the favorite cookie) is
-            still honored and only changes when the favorite does. theme-color stays in
-            head() below. No static <title> here either — head() manages it. */}
-        <link rel="icon" href={iconHref} type="image/svg+xml" />
-        <link rel="apple-touch-icon" href={iconHref} />
+        {/* Keep favorite branding in the persistent document head, outside
+            HeadContent. Route reconciliation and live updates can otherwise
+            restore stale loader values or briefly remove the favicon. */}
+        <FavoriteHeadBranding
+          initialIconHref={favorite.iconHref}
+          initialThemeColor={favorite.themeColor}
+        />
         <script dangerouslySetInnerHTML={{ __html: noFlashThemeScript }} />
         <HeadContent />
       </head>
@@ -268,16 +300,14 @@ function AutoUpdater() {
 export const Route = createRootRoute({
   // Read the favorite cookie so head() can render the corps's favicon + theme-color
   // into the SSR HTML (correct first paint, no hydration reset).
-  loader: ({ request }) => {
-    const brand = getBrand(request ?? new Request('http://localhost:5173'));
-    return { brand, favorite: favoriteHead(), theme: readThemeCookie() };
+  loader: () => {
+    const brand = readBrand();
+    const theme = readThemeCookie();
+    return { brand, favorite: favoriteHead(theme), theme };
   },
   // Default title + meta for any route without its own head() (error boundaries,
   // redirect routes). Child route head()s override the title via HeadContent.
   head: ({ loaderData }) => {
-    const { themeColor } = loaderData?.favorite ?? {
-      themeColor: DEFAULT_THEME_COLOR,
-    };
     const brand = loaderData?.brand ?? 'corps';
     const brandCfg = BRAND_CONFIG[brand];
     const seo = buildSeo({
@@ -286,10 +316,7 @@ export const Route = createRootRoute({
     });
     return {
       ...seo,
-      meta: [...seo.meta, { name: 'theme-color', content: themeColor }],
-      // Favicon links are rendered statically in RootDocument's <head> (see note there),
-      // not here — HeadContent reconciliation was dropping the SVG icon on the fantasy
-      // pages' frequent live re-renders.
+      meta: [...seo.meta],
       links: [...seo.links],
     };
   },
@@ -299,7 +326,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   const { theme, brand, favorite } = Route.useLoaderData();
   return (
-    <RootDocument theme={theme} brand={brand} iconHref={favorite?.iconHref ?? '/favicon.svg'}>
+    <RootDocument theme={theme} brand={brand} favorite={favorite}>
       <ServiceWorkerManager />
       <AutoUpdater />
       <MotionConfig reducedMotion={REDUCED_MOTION}>
@@ -308,7 +335,7 @@ function RootComponent() {
           <ThemeToggle className="fixed top-4 right-4 z-50" />
           <SiteNav />
           <ConsentGate />
-          <Toaster theme={theme} />
+          <Toaster theme={theme ?? 'system'} />
           {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
               (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
               (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}

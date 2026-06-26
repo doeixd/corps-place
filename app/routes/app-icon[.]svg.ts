@@ -1,28 +1,21 @@
-// Generates the favicon: the site logo recolored to a corps's brand palette,
-// baked into a static SVG. The favorited corps's colors arrive as query params
-// (`p` = primary hex, `d` = --logo-dark oklch), so the URL is deterministic and
-// CDN-cacheable per corps, and the same href can be rendered identically by the
-// server (root head()) and the client store — no hydration mismatch. With no `p`
-// it redirects to the default logo.
+// Generates a compact favorite-colored favicon. The URL includes the palette and
+// an artwork version, so it is safe to cache immutably without pinning old icons.
 import { createServerFileRoute } from '@tanstack/react-start/server';
-import { recolorLogoMarkup } from '@/lib/logo-recolor';
+import { APP_ICON_VERSION, DEFAULT_APP_ICON_HREF, favoriteIconMarkup } from '@/lib/logo-recolor';
 
 export const ServerRoute = createServerFileRoute('/app-icon.svg').methods({
   GET: async ({ request }) => {
     const url = new URL(request.url);
     const primary = url.searchParams.get('p');
-    const logoDark = url.searchParams.get('d');
+    const version = url.searchParams.get('v');
 
-    // No corps color → just serve the default logo.
-    if (!primary) {
-      return Response.redirect(new URL('/logo.svg', url.origin), 302);
+    if (!primary || version !== APP_ICON_VERSION) {
+      return Response.redirect(new URL(DEFAULT_APP_ICON_HREF, url.origin), 302);
     }
 
-    const res = await fetch(new URL('/logo.svg', url.origin));
-    const markup = res.ok ? await res.text() : null;
-    const recolored = markup ? recolorLogoMarkup(markup, primary, logoDark) : null;
+    const recolored = favoriteIconMarkup(primary);
     if (!recolored) {
-      return Response.redirect(new URL('/logo.svg', url.origin), 302);
+      return Response.redirect(new URL(DEFAULT_APP_ICON_HREF, url.origin), 302);
     }
 
     return new Response(recolored, {

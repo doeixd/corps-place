@@ -1,8 +1,23 @@
 import { createStore } from '@xstate/store';
-import { writeThemeCookie } from '@/lib/theme-cookie';
-import type { Theme } from '@/lib/theme-cookie';
+import { readThemeCookie, writeThemeCookie } from '@/lib/theme-cookie';
+import type { Theme, ThemePreference } from '@/lib/theme-cookie';
 
-export type { Theme };
+export type { Theme, ThemePreference };
+
+const DARK_QUERY = '(prefers-color-scheme: dark)';
+
+export function resolveTheme(preference: ThemePreference, systemDark: boolean): Theme {
+  return preference === 'system' ? (systemDark ? 'dark' : 'light') : preference;
+}
+
+function getSystemDark(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia(DARK_QUERY).matches;
+}
+
+function getInitialPreference(): ThemePreference {
+  if (typeof document === 'undefined') return 'system';
+  return readThemeCookie() ?? 'system';
+}
 
 /**
  * Read the theme the no-FOUC inline script (see `__root.tsx`) already committed
@@ -15,7 +30,7 @@ export function getInitialTheme(): Theme {
 }
 
 /**
- * Apply a theme to the document and persist it. No-op on the server.
+ * Apply a theme to the document. No-op on the server.
  *
  * Color swaps are applied instantly: without this, every element with a
  * `transition-colors` (buttons, cards, borders, links…) animates its color
@@ -23,35 +38,64 @@ export function getInitialTheme(): Theme {
  * We disable transitions for the duration of the class change, then restore
  * them on the next frame so genuine hover/focus transitions still work.
  */
+let removeTransitionGuardFrame: number | null = null;
+
 export function applyTheme(theme: Theme): void {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
+  const transitionRoot = document.body;
 
-  const style = document.createElement('style');
-  style.appendChild(document.createTextNode('*,*::before,*::after{transition:none !important}'));
-  document.head.appendChild(style);
+  if (removeTransitionGuardFrame !== null) cancelAnimationFrame(removeTransitionGuardFrame);
+  transitionRoot.classList.add('theme-switching');
+  void transitionRoot.offsetHeight;
 
   root.classList.toggle('dark', theme === 'dark');
   root.style.colorScheme = theme;
 
-  // Force a reflow so the "no transition" style is committed before we remove it,
-  // then drop it on the next frame to re-enable transitions.
-  void window.getComputedStyle(style).opacity;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => style.remove());
+  removeTransitionGuardFrame = requestAnimationFrame(() => {
+    transitionRoot.classList.remove('theme-switching');
+    removeTransitionGuardFrame = null;
   });
-
-  // Cookie (not localStorage) so the server can render the right theme during SSR.
-  writeThemeCookie(theme);
 }
 
+const initialPreference = getInitialPreference();
+
 export const themeStore = createStore({
-  context: { theme: getInitialTheme() },
+  context: {
+    theme: getInitialTheme(),
+    preference: initialPreference,
+  },
   on: {
-    set: (context, event: { theme: Theme }) => ({ ...context, theme: event.theme }),
-    toggle: (context) => ({ ...context, theme: context.theme === 'dark' ? 'light' : 'dark' }),
+    set: (context, event: { theme: Theme }) => ({
+      ...context,
+      theme: event.theme,
+      preference: event.theme,
+    }),
+    toggle: (context) => {
+      const theme = context.theme === 'dark' ? 'light' : 'dark';
+      return { ...context, theme, preference: theme };
+    },
+    followSystem: (context) => ({
+      ...context,
+      preference: 'system' as const,
+      theme: resolveTheme('system', getSystemDark()),
+    }),
+    systemChanged: (context, event: { dark: boolean }) =>
+      context.preference === 'system'
+        ? { ...context, theme: resolveTheme('system', event.dark) }
+        : context,
   },
 });
 
-// Reflect every change to the DOM + localStorage (client only).
-themeStore.subscribe((snapshot) => applyTheme(snapshot.context.theme));
+// Reflect every change to the DOM + cookie (client only).
+themeStore.subscribe((snapshot) => {
+  applyTheme(snapshot.context.theme);
+  writeThemeCookie(snapshot.context.preference);
+});
+
+if (typeof window !== 'undefined') {
+  const media = window.matchMedia(DARK_QUERY);
+  media.addEventListener('change', (event) => {
+    themeStore.trigger.systemChanged({ dark: event.matches });
+  });
+}

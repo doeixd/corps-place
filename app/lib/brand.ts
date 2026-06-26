@@ -1,3 +1,6 @@
+import { createIsomorphicFn } from '@tanstack/react-start';
+import { getRequestHost, getRequestURL } from '@tanstack/react-start/server';
+
 export type Brand = 'corps' | 'jobs';
 
 export interface BrandIdentity {
@@ -61,3 +64,19 @@ export const getBrand = (request: Request): Brand => {
   if (host.includes(jobsHost) || host.includes('pageantryjobs')) return 'jobs';
   return 'corps';
 };
+
+export const readBrand = createIsomorphicFn()
+  .server(() =>
+    getBrand(
+      new Request(getRequestURL(), {
+        headers: { host: getRequestHost() },
+      })
+    )
+  )
+  .client(() =>
+    getBrand(
+      new Request(window.location.href, {
+        headers: { host: window.location.host },
+      })
+    )
+  );

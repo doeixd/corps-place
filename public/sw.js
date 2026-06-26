@@ -12,13 +12,13 @@
 // that drops caches not matching) to invalidate. The client registration keys
 // updates on /read-model/meta.json built_at.
 
-const CACHE_VERSION = 'rm-v1';
+const CACHE_VERSION = 'rm-v2';
 const DOC_CACHE = `${CACHE_VERSION}-docs`;
 const ASSET_CACHE = `${CACHE_VERSION}-assets`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 const ALL_CACHES = [DOC_CACHE, ASSET_CACHE, DATA_CACHE];
 
-self.addEventListener('install', (event) => {
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
@@ -62,6 +62,9 @@ const pruneSupersededShards = async (cache, currentUrl) => {
 // Never touch these — dynamic, must always hit the network.
 const isBypassed = (url) =>
   url.pathname.startsWith('/api/') ||
+  url.pathname === '/app-icon.svg' ||
+  url.pathname === '/favicon.svg' ||
+  url.pathname === '/favicon.ico' ||
   url.pathname.startsWith('/_serverFn') ||
   url.pathname.includes('/_server') ||
   url.pathname.startsWith('/__');
@@ -81,7 +84,7 @@ self.addEventListener('fetch', (event) => {
         try {
           const fresh = await fetch(request);
           const cache = await caches.open(DOC_CACHE);
-          cache.put(request, fresh.clone());
+          await cache.put(request, fresh.clone());
           return fresh;
         } catch {
           const cache = await caches.open(DOC_CACHE);
@@ -100,7 +103,7 @@ self.addEventListener('fetch', (event) => {
         const hit = await cache.match(request);
         if (hit) return hit;
         const fresh = await fetch(request);
-        if (fresh.ok) cache.put(request, fresh.clone());
+        if (fresh.ok) await cache.put(request, fresh.clone());
         return fresh;
       })()
     );
@@ -146,7 +149,7 @@ self.addEventListener('push', (event) => {
   let payload = {};
   try {
     payload = event.data ? event.data.json() : {};
-  } catch (e) {
+  } catch {
     payload = {};
   }
   const title = payload.title || 'Fantasy DCI';
