@@ -11,6 +11,7 @@ import {
   type EventPredictionRequest,
 } from '@/lib/event-prediction-api';
 import { EventRecapService, EventRecapServiceLive } from '@/lib/event-recap';
+import type { EventRecap, RecapRowOut } from '@sdk/src/readModel/builders/recap.js';
 import {
   CorpsDirectoryService,
   CorpsDirectoryServiceLive,
@@ -398,48 +399,148 @@ export const getHybridEventFullRecap = createServerFn({ method: 'GET' })
     return Effect.runPromise(program);
   });
 
+// ── Fake-scores test hook ────────────────────────────────────────────────────
+// Synthesize an EventRecap from a 2026 prediction so the Scores/Diff views can
+// be exercised before real 2026 scores land. OFF by default — only reachable via
+// the explicit `fakeScores` flag on getHybridEventPredictionPageData. The
+// perturbation is a deterministic function of (corps_key, caption) so the diffs
+// are stable across reloads (no real randomness).
+const SUB_CAPTIONS = ['GE1', 'GE2', 'VP', 'VA', 'CG', 'MB', 'MA', 'MP'] as const;
+
+const hashString = (s: string): number => {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+};
+
+// Deterministic offset in [-0.8, 0.8] for a corps/caption pair.
+const fakeOffset = (corpsKey: string, caption: string): number => {
+  const h = hashString(`${corpsKey}|${caption}`);
+  const unit = (h % 1000) / 1000; // [0,1)
+  return Number(((unit - 0.5) * 1.6).toFixed(3));
+};
+
+const synthesizeRecapFromPrediction = (predictionRows: readonly any[]): EventRecap => {
+  const scores: RecapRowOut[] = predictionRows.map((row) => {
+    const out: Record<string, number | undefined> = {};
+    for (const cap of SUB_CAPTIONS) {
+      const base = typeof row?.[cap] === 'number' ? row[cap] : undefined;
+      out[cap] =
+        base == null ? undefined : Number(Math.max(0, base + fakeOffset(row.corps_key, cap)).toFixed(3));
+    }
+    const ge1 = out.GE1 ?? 0;
+    const ge2 = out.GE2 ?? 0;
+    const vp = out.VP ?? 0;
+    const va = out.VA ?? 0;
+    const cg = out.CG ?? 0;
+    const mb = out.MB ?? 0;
+    const ma = out.MA ?? 0;
+    const mp = out.MP ?? 0;
+    const GE = Number((ge1 + ge2).toFixed(3));
+    const Visual = Number(((vp + va + cg) / 2).toFixed(3));
+    const Music = Number(((mb + ma + mp) / 2).toFixed(3));
+    const total = Number((GE + Visual + Music).toFixed(3));
+    return {
+      rank: typeof row?.rank === 'number' ? row.rank : undefined,
+      corps_key: row.corps_key,
+      corps: typeof row?.corps === 'string' ? row.corps : row.corps_key,
+      division: typeof row?.division === 'string' ? row.division : undefined,
+      total,
+      GE,
+      Visual,
+      Music,
+      GE1: out.GE1,
+      GE2: out.GE2,
+      VP: out.VP,
+      VA: out.VA,
+      CG: out.CG,
+      MB: out.MB,
+      MA: out.MA,
+      MP: out.MP,
+    };
+  });
+  // Re-rank by synthesized total so the fake recap is internally consistent.
+  const ranked = [...scores].sort((a, b) => b.total - a.total);
+  ranked.forEach((r, i) => {
+    r.rank = i + 1;
+  });
+  return {
+    meta: {
+      slug: '__fake__',
+      event_name: 'Synthesized scores (fakeScores)',
+      date: '',
+      scores_released: 1,
+    },
+    scores,
+  };
+};
+
 // One compact page-data boundary for event prediction/recap routes. This avoids
 // issuing several server-fn requests from a route loader and keeps DB reads on
 // the shared service clients.
 export const getHybridEventPredictionPageData = createServerFn({
   method: 'POST',
 })
-  .validator((data: { yearSlug: string; slug: string }) => data)
+  .validator((data: { yearSlug: string; slug: string; fakeScores?: boolean }) => data)
   .handler(async ({ data }): Promise<EventPredictionPageData> => {
     const program = Effect.gen(function* () {
       if (data.yearSlug === '2026') {
         // `showTitles` takes a static season arg (no dependency on the corps
         // fetch below), so fan it out with the first batch instead of as a
         // serial hop after `getCorpsByKeys`.
-        const [prediction, event, schedule, seasonOptions, showInfo] = yield* Effect.all(
-          [
-            Effect.flatMap(EventPredictionService, (s) =>
-              s.getCached2026EventPrediction({
-                slug: data.slug,
-                mode: 'auto',
-                force: false,
-                refresh: false,
-              })
-            ),
-            Effect.flatMap(EventDirectoryService, (s) => s.getEventBasic(data.slug)),
-            Effect.flatMap(EventDirectoryService, (s) => s.eventSchedule(data.slug)),
-            cachedEventSeasonOptions(data.slug),
-            getShowInfoForSeason('2026'),
-          ],
-          { concurrency: 'unbounded' }
-        );
+        // Additive: also fetch the event recap in parallel. Today this is null
+        // for nearly every 2026 event (scores not released), so the prediction
+        // path is unaffected. `getEventRecap` resolves the competition slug from
+        // the event slug internally, so passing `data.slug` is fine.
+        const [prediction, event, schedule, seasonOptions, showInfo, recapResult] =
+          yield* Effect.all(
+            [
+              Effect.flatMap(EventPredictionService, (s) =>
+                s.getCached2026EventPrediction({
+                  slug: data.slug,
+                  mode: 'auto',
+                  force: false,
+                  refresh: false,
+                })
+              ),
+              Effect.flatMap(EventDirectoryService, (s) => s.getEventBasic(data.slug)),
+              Effect.flatMap(EventDirectoryService, (s) => s.eventSchedule(data.slug)),
+              cachedEventSeasonOptions(data.slug),
+              getShowInfoForSeason('2026'),
+              // Degrade to null on any recap error so a recap-builder hiccup can
+              // never break the (live) prediction page.
+              Effect.flatMap(EventRecapService, (s) => s.getEventRecap(data.slug)).pipe(
+                Effect.orElseSucceed(() => null as EventRecap | null)
+              ),
+            ],
+            { concurrency: 'unbounded' }
+          );
         const showTitles = Object.fromEntries(
           Object.entries(showInfo).map(([corpsKey, info]) => [corpsKey, info.title])
         );
 
+        // A recap with no scored rows is "no scores yet" — treat as null.
+        let recap: EventRecap | null =
+          recapResult && recapResult.scores.length > 0 ? recapResult : null;
+
+        // Fake-scores test hook: synthesize a recap from the prediction when the
+        // explicit flag is set, no real recap exists, and a prediction exists.
+        if (data.fakeScores && recap == null && (prediction?.recap?.length ?? 0) > 0) {
+          recap = synthesizeRecapFromPrediction(prediction.recap);
+        }
+
         const predictionKeys = uniqueStrings(
           (prediction?.recap ?? []).map((row: any) => row.corps_key)
         );
+        const recapKeys = uniqueStrings((recap?.scores ?? []).map((row: any) => row.corps_key));
         const scheduleKeys = uniqueStrings(schedule.map((row: any) => row.corps_key));
-        // Union prediction + schedule keys: corps the V9 model doesn't score
-        // (e.g. alumni units on a parade lineup) still appear in the table and
-        // need their directory row for the logo/link/class chip.
-        const corpsKeys = uniqueStrings([...predictionKeys, ...scheduleKeys]);
+        // Union prediction + recap + schedule keys: corps the V9 model doesn't
+        // score (e.g. alumni units on a parade lineup) still appear in the table
+        // and need their directory row for the logo/link/class chip.
+        const corpsKeys = uniqueStrings([...predictionKeys, ...recapKeys, ...scheduleKeys]);
         const corps =
           corpsKeys.length > 0
             ? yield* Effect.flatMap(CorpsDirectoryService, (s) => s.getCorpsByKeys(corpsKeys))
@@ -450,7 +551,7 @@ export const getHybridEventPredictionPageData = createServerFn({
           event,
           schedule,
           corps,
-          recap: null,
+          recap: recap ? { meta: recap.meta, scores: recap.scores as any[] } : null,
           seasonOptions,
           showTitles,
           showInfo,

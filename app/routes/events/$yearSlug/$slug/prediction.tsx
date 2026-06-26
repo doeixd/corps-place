@@ -161,6 +161,11 @@ interface PredictionSearch {
   fsort?: string;
   /** Roll count, so the "Scenario N" badge survives refresh / shared links. */
   n?: number;
+  /**
+   * Dev/test hook: synthesize 2026 scores from the prediction so the Scores/Diff
+   * views can be exercised before real scores land. OFF unless `?fakeScores=1`.
+   */
+  fakeScores?: boolean;
 }
 
 const isWindow = (v: unknown): v is ScenarioWindow =>
@@ -185,6 +190,8 @@ const validatePredictionSearch = (search: Record<string, unknown>): PredictionSe
   else if (search.group === 'true' || search.group === 'false') out.group = search.group === 'true';
   const n = typeof search.n === 'number' ? search.n : Number(search.n);
   if (Number.isFinite(n) && n > 1) out.n = Math.floor(n);
+  if (search.fakeScores === true || search.fakeScores === '1' || search.fakeScores === 'true')
+    out.fakeScores = true;
   return out;
 };
 
@@ -195,8 +202,12 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
   // returns null *immediately* so navigation is instant and the component shows
   // its loader while the machine generates the prediction client-side — rather
   // than blocking navigation on the heavy ML op.
-  loader: async ({ params }) => {
+  // Thread the fake-scores test hook into the loader. Only this search field
+  // affects the loaded data; the rest are pure view state.
+  loaderDeps: ({ search }) => ({ fakeScores: search.fakeScores === true }),
+  loader: async ({ params, deps }) => {
     const { yearSlug, slug } = params;
+    const fakeScores = deps?.fakeScores === true;
     const empty = {
       prediction: null,
       event: null,
@@ -209,32 +220,43 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
       fullRecap: null,
     };
 
-    // The composite (event + schedule + corps + recap + seasonOptions [+ full
-    // recap]) for the page. Always preload the judge-level full recap for past
-    // seasons so the "Full Recap" view never needs a client fetch. (2026 has no
-    // recap yet, so skip it there.)
-    const wantFull = yearSlug !== '2026';
-    const fromServer = async () => {
-      try {
-        const [data, fullRecap] = await Promise.all([
-          getHybridEventPredictionPageData({ data: { yearSlug, slug } }),
-          wantFull
-            ? getHybridEventFullRecap({ data: slug }).catch(() => null)
-            : Promise.resolve(null),
-        ]);
-        return { ...data, fullRecap };
-      } catch {
-        return empty;
-      }
-    };
+    const isPastSeason = yearSlug !== '2026';
 
-    // Past-season pages are fully static — on client nav, read the composite
-    // shard (CDN-cached, no server round-trip), falling back to the server fns
-    // on SSR / miss / error. 2026 stays on the server fn: its prediction is
-    // live-regenerable and must not be frozen into a shard.
-    return wantFull
-      ? loadDetailOrServer(`prediction-page/${yearSlug}/${slug}.json`, fromServer)
-      : fromServer();
+    // PAST-SEASON: unchanged. Static shard on client nav (CDN-cached), falling
+    // back to the server fns on SSR/miss/error. Full recap always preloaded.
+    if (isPastSeason) {
+      const fromServer = async () => {
+        try {
+          const [data, fullRecap] = await Promise.all([
+            getHybridEventPredictionPageData({ data: { yearSlug, slug } }),
+            getHybridEventFullRecap({ data: slug }).catch(() => null),
+          ]);
+          return { ...data, fullRecap };
+        } catch {
+          return empty;
+        }
+      };
+      return loadDetailOrServer(`prediction-page/${yearSlug}/${slug}.json`, fromServer);
+    }
+
+    // 2026: stays on the server fn (its prediction is live-regenerable and must
+    // not be frozen into a shard). Fetch page data first — it now also returns a
+    // recap (real, or synthesized when ?fakeScores=1). Preload the judge-level
+    // full recap whenever a recap exists so the Scores view's Full Recap toggle
+    // needs no client fetch. (Synthesized fake recaps have no DB full recap, so
+    // the preload simply degrades to null there.)
+    try {
+      const data = await getHybridEventPredictionPageData({
+        data: { yearSlug, slug, fakeScores },
+      });
+      const hasRecap = (data.recap?.scores?.length ?? 0) > 0;
+      const fullRecap = hasRecap
+        ? await getHybridEventFullRecap({ data: slug }).catch(() => null)
+        : null;
+      return { ...data, fullRecap };
+    } catch {
+      return empty;
+    }
   },
   head: ({ loaderData, params }) => {
     const d = loaderData as any;
