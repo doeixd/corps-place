@@ -135,43 +135,54 @@ function RankingsPage() {
     set({ div: next.length === 0 || isDefault ? undefined : next });
   };
 
+  if (!season) {
+    return (
+      <PageShell className="flex flex-col gap-5">
+        <h1 className="text-2xl font-bold text-text-primary">Rankings</h1>
+        <p className="text-sm text-muted-foreground">No ranking data is available yet.</p>
+      </PageShell>
+    );
+  }
+
   return (
     <PageShell className="flex flex-col gap-5">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-text-primary">Rankings</h1>
         <p className="text-sm text-muted-foreground">
-          Season standings + a rank bump chart. {agg === 'best' ? 'Highest score so far' : 'Average of last 3 shows'}
-          {result.asof ? ` · as of ${result.asof}` : ''}.
+          {season} season standings + a rank bump chart ·{' '}
+          {agg === 'best' ? 'highest score so far' : 'average of last 3 shows'}
+          {result.asof ? ` · as of ${result.asof}` : ''}
+          {agg === 'last3' ? ' · * = fewer than 3 shows' : ''}.
         </p>
       </div>
 
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <div className="flex flex-wrap gap-1">
+        <div role="group" aria-label="Season" className="flex flex-wrap gap-1">
           {seasons.slice(0, 10).map((y) => (
-            <button key={y} type="button" className={pill(y === season)} onClick={() => set({ season: y, asof: undefined })}>
+            <button key={y} type="button" aria-pressed={y === season} className={pill(y === season)} onClick={() => set({ season: y, asof: undefined })}>
               {y}
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap gap-1">
+        <div role="group" aria-label="Ranking metric" className="flex flex-wrap gap-1">
           {RANK_METRICS.map((m) => (
-            <button key={m} type="button" className={pill(m === metric)} onClick={() => set({ metric: m === 'total' ? undefined : m })}>
+            <button key={m} type="button" aria-pressed={m === metric} className={pill(m === metric)} onClick={() => set({ metric: m === 'total' ? undefined : m })}>
               {RANK_METRIC_LABELS[m]}
             </button>
           ))}
         </div>
-        <div className="flex gap-1">
-          <button type="button" className={pill(agg === 'best')} onClick={() => set({ agg: undefined })}>Best</button>
-          <button type="button" className={pill(agg === 'last3')} onClick={() => set({ agg: 'last3' })}>Last 3</button>
+        <div role="group" aria-label="Aggregation" className="flex gap-1">
+          <button type="button" aria-pressed={agg === 'best'} className={pill(agg === 'best')} onClick={() => set({ agg: undefined })}>Best</button>
+          <button type="button" aria-pressed={agg === 'last3'} className={pill(agg === 'last3')} onClick={() => set({ agg: 'last3' })}>Last 3</button>
         </div>
-        <div className="flex gap-1">
-          <button type="button" className={pill(group === 'overall')} onClick={() => set({ group: undefined })}>Overall</button>
-          <button type="button" className={pill(group === 'division')} onClick={() => set({ group: 'division' })}>By division</button>
+        <div role="group" aria-label="Grouping" className="flex gap-1">
+          <button type="button" aria-pressed={group === 'overall'} className={pill(group === 'overall')} onClick={() => set({ group: undefined })}>Overall</button>
+          <button type="button" aria-pressed={group === 'division'} className={pill(group === 'division')} onClick={() => set({ group: 'division' })}>By division</button>
         </div>
-        <div className="flex gap-1">
+        <div role="group" aria-label="Divisions" className="flex gap-1">
           {RANK_DIVISIONS.map((d) => (
-            <button key={d} type="button" className={pill(divs.includes(d))} onClick={() => toggleDiv(d)}>
+            <button key={d} type="button" aria-pressed={divs.includes(d)} className={pill(divs.includes(d))} onClick={() => toggleDiv(d)}>
               {DIVISION_LABELS[d]}
             </button>
           ))}
