@@ -34,6 +34,13 @@ export interface RankRow {
   /** Rank history for the bump chart: one point per competition day ≤ asof on
    *  which the corps had a standing. */
   history: { date: string; rank: number; score: number }[];
+  // Display enrichment, filled by the RPC from the corps directory (the resolver
+  // is pure and leaves these undefined).
+  corpsLogo?: string | null;
+  corpsLogoDark?: number | null;
+  corpsLogoDarkUrl?: string | null;
+  colorPrimary?: string | null;
+  colorSecondary?: string | null;
 }
 
 export interface RankingsResult {
