@@ -13,6 +13,7 @@ import { createServerRootRoute } from '@tanstack/react-start/server'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VsRouteImport } from './routes/vs'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -95,6 +96,11 @@ const VsRoute = VsRouteImport.update({
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingsRoute = RankingsRouteImport.update({
+  id: '/rankings',
+  path: '/rankings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
@@ -465,6 +471,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -526,6 +533,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -588,6 +596,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -651,6 +660,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/privacy-policy'
+    | '/rankings'
     | '/terms-of-service'
     | '/vs'
     | '/admin/audit'
@@ -712,6 +722,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/privacy-policy'
+    | '/rankings'
     | '/terms-of-service'
     | '/vs'
     | '/admin/audit'
@@ -773,6 +784,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/privacy-policy'
+    | '/rankings'
     | '/terms-of-service'
     | '/vs'
     | '/admin/audit'
@@ -835,6 +847,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RankingsRoute: typeof RankingsRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   VsRoute: typeof VsRoute
   AdminAuditRoute: typeof AdminAuditRoute
@@ -1021,6 +1034,13 @@ declare module '@tanstack/react-router' {
       path: '/terms-of-service'
       fullPath: '/terms-of-service'
       preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings': {
+      id: '/rankings'
+      path: '/rankings'
+      fullPath: '/rankings'
+      preLoaderRoute: typeof RankingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy-policy': {
@@ -1544,6 +1564,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RankingsRoute: RankingsRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   VsRoute: VsRoute,
   AdminAuditRoute: AdminAuditRoute,
