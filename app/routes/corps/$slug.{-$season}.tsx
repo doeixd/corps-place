@@ -367,6 +367,15 @@ function CorpsDetailPage() {
             <CardContent className="py-5">
               <div className="mb-4 flex items-baseline justify-between gap-2">
                 <h3 className="-mt-[4px] text-base font-semibold">2026 Season Scores</h3>
+                {/* Seed the VS comparison tool with this corps (plan M6). The rich
+                    single-corps chart above stays; VS is where you stack others. */}
+                <Link
+                  to="/vs"
+                  search={{ s: `corps~${slug}~2026` }}
+                  className="shrink-0 text-sm font-medium text-primary hover:underline"
+                >
+                  Add more to compare →
+                </Link>
               </div>
               <CorpsScoreChart
                 data={seasonScores}
