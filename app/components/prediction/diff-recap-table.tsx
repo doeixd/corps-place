@@ -260,9 +260,11 @@ export function DiffRecapTable({
                         : undefined
                     }
                     className={cn(
-                      'px-2 py-1.5 text-center align-bottom font-medium',
+                      'px-2 py-1.5 text-center align-bottom font-semibold text-text-primary',
                       si === 0 && 'border-l border-border',
-                      sub.kind === 'diff' && 'bg-muted/40'
+                      // The ±Diff sub-column is the emphasized one (it's what the view
+                      // ranks on) — matched to the Full Recap "TOT" column treatment.
+                      sub.kind === 'diff' && 'border-l border-l-foreground/30 bg-foreground/5'
                     )}
                   >
                     {sub.kind === 'diff' ? (
@@ -273,7 +275,11 @@ export function DiffRecapTable({
                         onSort={() => onCycleSort(cap)}
                       />
                     ) : (
-                      <span className="text-[11px] text-muted-foreground">{sub.label}</span>
+                      // Same h-5 flex box as SortButton so all three sub-labels share
+                      // one baseline (the ±Diff label was sitting higher otherwise).
+                      <span className="inline-flex h-5 items-center justify-center text-[11px] text-muted-foreground">
+                        {sub.label}
+                      </span>
                     )}
                   </th>
                 ))
@@ -388,7 +394,7 @@ function BandCells({
       </td>
       <td className="px-2 py-2.5 text-center align-middle">{sub(predicted, oneSided)}</td>
       <td
-        className="relative bg-muted/30 px-2 py-2.5 text-center align-middle"
+        className="relative border-l border-l-foreground/30 bg-foreground/5 px-2 py-2.5 text-center align-middle"
         style={
           color && alpha > 0
             ? { backgroundColor: `color-mix(in oklch, ${color} ${Math.round(alpha * 100)}%, transparent)` }
