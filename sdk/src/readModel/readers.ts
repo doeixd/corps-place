@@ -458,6 +458,14 @@ export const readVsCorpsScores = async (
   }));
 };
 
+export const readVsCorpsSeasons = async (db: Client, slug: string): Promise<string[]> => {
+  const r = await db.execute({
+    sql: `SELECT DISTINCT season FROM rm_vs_corps_scores WHERE corps_slug = ? ORDER BY season DESC`,
+    args: [slug.trim().toLowerCase()],
+  });
+  return (r.rows as any[]).map((row) => String(row.season)).filter(Boolean);
+};
+
 export const readVsCorps2026Predicted = async (
   db: Client,
   slug: string,

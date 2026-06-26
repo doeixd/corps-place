@@ -11,12 +11,15 @@ import {
   buildVsBaselineCurve,
   buildVsCorps2026Predicted,
   buildVsPredictionSnapshot,
+  buildVsCorpsSeasons,
+  buildVs2026SnapshotDates,
 } from '@sdk/src/readModel/builders/vs.js';
 import { buildCorpsBySlug } from '@sdk/src/readModel/builders/corps.js';
 import {
   readVsCorpsScores,
   readVsBaselines,
   readVsCorps2026Predicted,
+  readVsCorpsSeasons,
   readCorpsBySlug,
 } from '@sdk/src/readModel/readers.js';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
@@ -147,6 +150,26 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
 
   return null;
 }
+
+/** The seasons a corps actually competed (for the builder's season chips). */
+export const getVsCorpsSeasons = createServerFn({ method: 'GET' })
+  .validator((data: { slug: string }) => data)
+  .handler(async ({ data }): Promise<{ seasons: string[] }> => {
+    const seasons = await readOrBuild(
+      (db) => readVsCorpsSeasons(db, data.slug),
+      (db) => buildVsCorpsSeasons(db, data.slug)
+    ).catch(() => [] as string[]);
+    return { seasons };
+  });
+
+/** The 2026 prediction snapshot dates for a corps (relational-only; empty where
+ *  the relational DB isn't on the host). */
+export const getVs2026SnapshotDates = createServerFn({ method: 'GET' })
+  .validator((data: { slug: string }) => data)
+  .handler(async ({ data }): Promise<{ dates: string[] }> => {
+    const dates = await buildVs2026SnapshotDates(getDb(), data.slug).catch(() => [] as string[]);
+    return { dates };
+  });
 
 /** Resolve a list of series (capped) to plottable data. */
 export const resolveVsSeries = createServerFn({ method: 'GET' })

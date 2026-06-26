@@ -72,6 +72,43 @@ export const buildVsCorpsScores = async (
   return [...byPct.values()].sort((a, b) => a.pct - b.pct);
 };
 
+/** The seasons a corps actually competed (has scored points) — to constrain the
+ *  builder's season chips so it never offers a season with no data. */
+export const buildVsCorpsSeasons = async (db: Client, slug: string): Promise<string[]> => {
+  const r = await db.execute({
+    sql: `WITH ${RELATED_CORPS_CTES}
+      SELECT DISTINCT c.season AS season
+      FROM corps_scores cs
+      JOIN competitions c ON c.slug = cs.competition_slug
+      WHERE cs.corps_key IN (SELECT corps_key FROM related_corps)
+        AND cs.total_score IS NOT NULL AND c.percent_through IS NOT NULL
+      ORDER BY c.season DESC`,
+    args: [slug.trim().toLowerCase()],
+  });
+  return (r.rows as unknown as Array<{ season: string | null }>)
+    .map((x) => x.season)
+    .filter((s): s is string => !!s);
+};
+
+/** 2026 prediction snapshot dates (distinct `predicted_at` days) for a corps —
+ *  the valid as-of values the builder's date picker should offer. */
+export const buildVs2026SnapshotDates = async (db: Client, slug: string): Promise<string[]> => {
+  const r = await db.execute({
+    sql: `WITH ${RELATED_CORPS_CTES}
+      SELECT DISTINCT substr(run.predicted_at, 1, 10) AS d
+      FROM model_event_prediction_rows r
+      JOIN model_event_prediction_runs run ON run.prediction_id = r.prediction_id
+      WHERE run.season = '2026'
+        AND r.corps_key IN (SELECT corps_key FROM related_corps)
+        AND run.predicted_at IS NOT NULL
+      ORDER BY d DESC`,
+    args: [slug.trim().toLowerCase()],
+  });
+  return (r.rows as unknown as Array<{ d: string | null }>)
+    .map((x) => x.d)
+    .filter((d): d is string => !!d);
+};
+
 /** Emit-time variant: every season's actual points for a corps in ONE query
  *  (the live path filters by season; the emitter freezes all seasons at once). */
 export const buildVsCorpsScoresAllSeasons = async (
