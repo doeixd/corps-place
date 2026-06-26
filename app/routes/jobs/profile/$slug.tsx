@@ -1,21 +1,41 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/reui/badge';
 import { PageShell } from '@/components/page-shell';
-import { buildSeo, clampDescription } from '@/lib/seo';
+import { seoHead, breadcrumbLd, clampDescription } from '@/lib/seo';
 import { getJobsProfile } from '@/lib/server-fns/jobs';
-import { UserMultipleIcon, Briefcase01Icon } from '@/components/icons/generated';
+import { UserMultipleIcon, Briefcase01Icon, SentIcon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/jobs/profile/$slug')({
   loader: async ({ params }) => getJobsProfile({ slug: params.slug }),
   head: ({ loaderData }) => {
     const p = loaderData?.profile;
     const name = p?.display_name ?? 'Profile';
-    return buildSeo({
+    const path = `/jobs/profile/${p?.slug ?? ''}`;
+    const isEmployee = p?.kind === 'employee';
+    return seoHead({
       title: `${name} — PageantryJobs profile`,
       description: clampDescription(p?.headline, `View ${name}'s profile on PageantryJobs.`),
-      path: `/jobs/profile/${p?.slug ?? ''}`,
+      path,
+      jsonLd: [
+        breadcrumbLd([
+          { name: 'Talent Search', path: '/jobs/talent' },
+          { name, path },
+        ]),
+        (() => {
+          const base: Record<string, unknown> = {
+            '@context': 'https://schema.org',
+            '@type': isEmployee ? 'Person' : 'Organization',
+            name,
+          };
+          if (p?.location) {
+            const loc = { '@type': 'Place', address: { addressLocality: p.location } } as const;
+            base[isEmployee ? 'homeLocation' : 'location'] = loc;
+          }
+          return base;
+        })(),
+      ],
     });
   },
   component: PublicProfile,
@@ -73,6 +93,7 @@ function PublicProfile() {
               ) : null}
             </div>
           </div>
+          <ShareButton />
         </CardContent>
       </Card>
 
@@ -158,5 +179,30 @@ function PublicProfile() {
         </p>
       </footer>
     </PageShell>
+  );
+}
+
+function ShareButton() {
+  const onShare = async () => {
+    if (typeof navigator === 'undefined') return;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: document.title, url: window.location.href });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(window.location.href);
+      }
+    } catch {
+      /* user dismissed */
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={onShare}
+      aria-label="Share"
+      className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-border text-text-secondary transition-colors hover:border-primary/60 hover:text-primary"
+    >
+      <Icon icon={SentIcon} size="sm" className="-translate-x-px translate-y-px" />
+    </button>
   );
 }

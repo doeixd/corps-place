@@ -10,6 +10,7 @@ import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
 import { jobsOnboardMachine } from '@/machines/jobs-onboard-machine';
+import { ResumeUpload } from '@/components/jobs/resume-upload';
 import { CheckmarkCircle02Icon, AddCircleIcon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/jobs/onboard')({
@@ -114,61 +115,66 @@ function OnboardPage() {
 
         {/* Step 1: About */}
         {snapshot.matches('about') || snapshot.matches('savingStep1') ? (
-          <Card>
-            <CardContent className="space-y-4 py-5">
-              <h2 className="text-lg font-semibold text-text-primary">About You</h2>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-sm font-medium">Display Name *</label>
-                  <input
-                    value={ctx.displayName}
-                    onChange={(e) => send({ type: 'SET_DISPLAY_NAME', value: e.target.value })}
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
-                  />
+          <>
+            {ctx.profileId ? (
+              <ResumeUpload profileId={ctx.profileId} onComplete={() => {}} />
+            ) : null}
+            <Card>
+              <CardContent className="space-y-4 py-5">
+                <h2 className="text-lg font-semibold text-text-primary">About You</h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-sm font-medium">Display Name *</label>
+                    <input
+                      value={ctx.displayName}
+                      onChange={(e) => send({ type: 'SET_DISPLAY_NAME', value: e.target.value })}
+                      className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium">Profile Type</label>
+                    <select
+                      value={ctx.kind}
+                      onChange={(e) =>
+                        send({ type: 'SET_KIND', value: e.target.value as 'employee' | 'employer' })
+                      }
+                      className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                    >
+                      <option value="employee">Employee</option>
+                      <option value="employer">Employer</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium">Headline</label>
+                    <input
+                      value={ctx.headline}
+                      onChange={(e) => send({ type: 'SET_HEADLINE', value: e.target.value })}
+                      placeholder="e.g. Brass Caption Head"
+                      className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                    />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-sm font-medium">Location</label>
+                    <input
+                      value={ctx.location}
+                      onChange={(e) => send({ type: 'SET_LOCATION', value: e.target.value })}
+                      placeholder="City, State"
+                      className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                    />
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium">Profile Type</label>
-                  <select
-                    value={ctx.kind}
-                    onChange={(e) =>
-                      send({ type: 'SET_KIND', value: e.target.value as 'employee' | 'employer' })
-                    }
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                {ctx.error ? <p className="text-sm text-destructive">{ctx.error}</p> : null}
+                <div className="flex justify-end">
+                  <Button
+                    onClick={() => send({ type: 'NEXT' })}
+                    disabled={isSaving || !ctx.displayName.trim()}
                   >
-                    <option value="employee">Employee</option>
-                    <option value="employer">Employer</option>
-                  </select>
+                    {isSaving ? 'Saving…' : 'Continue'}
+                  </Button>
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium">Headline</label>
-                  <input
-                    value={ctx.headline}
-                    onChange={(e) => send({ type: 'SET_HEADLINE', value: e.target.value })}
-                    placeholder="e.g. Brass Caption Head"
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
-                  />
-                </div>
-                <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-sm font-medium">Location</label>
-                  <input
-                    value={ctx.location}
-                    onChange={(e) => send({ type: 'SET_LOCATION', value: e.target.value })}
-                    placeholder="City, State"
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
-                  />
-                </div>
-              </div>
-              {ctx.error ? <p className="text-sm text-destructive">{ctx.error}</p> : null}
-              <div className="flex justify-end">
-                <Button
-                  onClick={() => send({ type: 'NEXT' })}
-                  disabled={isSaving || !ctx.displayName.trim()}
-                >
-                  {isSaving ? 'Saving…' : 'Continue'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </>
         ) : null}
 
         {/* Step 2: Experience */}

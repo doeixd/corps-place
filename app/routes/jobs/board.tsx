@@ -1,21 +1,28 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState, useActionState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/reui/badge';
 import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
-import { buildSeo } from '@/lib/seo';
+import { seoHead, breadcrumbLd } from '@/lib/seo';
 import { listJobs } from '@/lib/server-fns/jobs';
 import { Search01Icon, Location01Icon, Briefcase01Icon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/jobs/board')({
   head: () =>
-    buildSeo({
+    seoHead({
       title: 'Job Board — PageantryJobs',
-      description: 'Browse pageantry industry jobs.',
+      description:
+        'Browse pageantry industry jobs — drum corps, marching band, winter guard, and indoor percussion.',
       path: '/jobs/board',
+      jsonLd: [
+        breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Job Board', path: '/jobs/board' },
+        ]),
+      ],
     }),
   loader: async () => listJobs({ offset: 0, limit: 20 }),
   component: BoardPage,
