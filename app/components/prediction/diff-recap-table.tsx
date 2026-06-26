@@ -247,7 +247,7 @@ export function DiffRecapTable({
                 sortable control (the diff is what the Diff view ranks on). */}
             <tr className="border-b border-border text-xs">
               {CAPTIONS.map((cap) =>
-                SUB_LABELS.map((sub, si) => (
+                SUB_LABELS.map((sub) => (
                   <th
                     key={`${cap}~${sub.kind}`}
                     aria-sort={
@@ -260,11 +260,12 @@ export function DiffRecapTable({
                         : undefined
                     }
                     className={cn(
-                      'px-2 py-1.5 text-center align-bottom font-semibold text-text-primary',
-                      si === 0 && 'border-l border-border',
+                      // Same leaf-header treatment as full-recap's leaves: muted
+                      // fill, band borders, bottom-aligned semibold label.
+                      'border-l border-r border-border bg-muted/50 px-2 py-1.5 text-center align-bottom font-semibold text-text-primary',
                       // The ±Diff sub-column is the emphasized one (it's what the view
                       // ranks on) — matched to the Full Recap "TOT" column treatment.
-                      sub.kind === 'diff' && 'border-l border-l-foreground/30 bg-foreground/5'
+                      sub.kind === 'diff' && 'bg-foreground/5 border-l-foreground/30'
                     )}
                   >
                     {sub.kind === 'diff' ? (
@@ -275,9 +276,9 @@ export function DiffRecapTable({
                         onSort={() => onCycleSort(cap)}
                       />
                     ) : (
-                      // Same h-5 flex box as SortButton so all three sub-labels share
-                      // one baseline (the ±Diff label was sitting higher otherwise).
-                      <span className="inline-flex h-5 items-center justify-center text-[11px] text-muted-foreground">
+                      // Same h-5 flex box + label sizing as full-recap's SortButton
+                      // (these aren't sortable, so they read as its inactive state).
+                      <span className="inline-flex h-5 items-center justify-center text-[11px] text-muted-foreground/50">
                         {sub.label}
                       </span>
                     )}

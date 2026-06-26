@@ -1,4 +1,5 @@
 import { useMemo, useState, useCallback } from 'react';
+import { motion } from 'motion/react';
 import { Show, For } from 'jotai-solid-api';
 import * as Match from 'effect/Match';
 import * as Predicate from 'effect/Predicate';
@@ -280,35 +281,34 @@ export function LineupSchedule({
                             row.name
                           )}
                         </TableCell>
-                        <TableCell className="min-w-[220px] text-sm">
+                        {/* Single-line title only — the repertoire / "+N more"
+                            now live in the expanded row (no per-row height
+                            variance → no layout shift). A trailing "…" hints
+                            there's more behind the expander. */}
+                        <TableCell className="min-w-[200px] text-sm">
                           {row.showTitle ? (
-                            <div className="space-y-1.5">
-                              <div className="font-medium text-text-secondary">{row.showTitle}</div>
-                              <Show when={(row.showInfo?.repertoire.length ?? 0) > 0}>
-                                <div className="space-y-0.5 text-xs leading-snug text-muted-foreground">
-                                  <For each={row.showInfo?.repertoire.slice(0, 3) ?? []}>
-                                    {(piece) => (
-                                      <div>
-                                        <span>{piece.workTitle}</span>
-                                        <Show when={piece.composer}>
-                                          {(composer) => (
-                                            <span className="text-muted-foreground/70">
-                                              {' '}
-                                              by {composer}
-                                            </span>
-                                          )}
-                                        </Show>
-                                      </div>
-                                    )}
-                                  </For>
-                                  <Show when={(row.showInfo?.repertoire.length ?? 0) > 3}>
-                                    <div className="text-muted-foreground/70">
-                                      +{(row.showInfo?.repertoire.length ?? 0) - 3} more
-                                    </div>
-                                  </Show>
-                                </div>
-                              </Show>
-                            </div>
+                            expandKey ? (
+                              <button
+                                type="button"
+                                onClick={() => toggleRow(expandKey)}
+                                aria-expanded={isExpanded}
+                                className="group inline-flex max-w-full items-baseline gap-1 text-left"
+                              >
+                                <span className="truncate font-medium text-text-secondary transition-colors group-hover:text-foreground">
+                                  {row.showTitle}
+                                </span>
+                                <span
+                                  aria-hidden
+                                  className="shrink-0 leading-none text-muted-foreground/50 transition-colors group-hover:text-foreground"
+                                >
+                                  …
+                                </span>
+                              </button>
+                            ) : (
+                              <span className="font-medium text-text-secondary">
+                                {row.showTitle}
+                              </span>
+                            )
                           ) : (
                             <span className="text-muted-foreground/60">—</span>
                           )}
@@ -319,15 +319,23 @@ export function LineupSchedule({
                       </TableRow>
                       <Show when={isExpanded}>
                         <TableRow className="border-b bg-muted/20 hover:bg-muted/20">
-                          <TableCell colSpan={4} className="px-3 py-0">
-                            <LineupRowExpanded
-                              preview={expandKey ? previews.get(expandKey) : undefined}
-                              loading={loading}
-                              corpsName={row.name}
-                              showTitle={row.showTitle}
-                              slug={info?.slug ?? null}
-                              season={season}
-                            />
+                          <TableCell colSpan={4} className="p-0">
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              transition={{ duration: 0.22, ease: 'easeOut' }}
+                              className="overflow-hidden px-3"
+                            >
+                              <LineupRowExpanded
+                                preview={expandKey ? previews.get(expandKey) : undefined}
+                                loading={loading}
+                                corpsName={row.name}
+                                showTitle={row.showTitle}
+                                repertoire={row.showInfo?.repertoire ?? null}
+                                slug={info?.slug ?? null}
+                                season={season}
+                              />
+                            </motion.div>
                           </TableCell>
                         </TableRow>
                       </Show>

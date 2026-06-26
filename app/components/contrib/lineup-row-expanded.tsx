@@ -3,6 +3,7 @@ import { Icon } from '@/components/icon';
 import { ArrowRight01Icon } from '@/components/icons/generated';
 import { cn } from '@/lib/utils';
 import type { ShowPreviewData } from '@/lib/server-fns/contrib';
+import type { ShowRepertoireSummary } from '@sdk/src/readModel/builders/shows.js';
 
 /**
  * The expanded mini show-page preview rendered under a lineup row (plan §3.10 /
@@ -20,6 +21,7 @@ export function LineupRowExpanded({
   loading,
   corpsName,
   showTitle,
+  repertoire,
   slug,
   season,
 }: {
@@ -27,6 +29,7 @@ export function LineupRowExpanded({
   loading: boolean;
   corpsName?: string;
   showTitle?: string;
+  repertoire?: ShowRepertoireSummary[] | null;
   slug: string | null;
   season: string;
 }) {
@@ -47,7 +50,8 @@ export function LineupRowExpanded({
 
   const uniformUrl = preview?.uniformImageUrl ?? null;
   const excerpt = preview?.conceptExcerpt ?? null;
-  const hasContent = Boolean(uniformUrl || excerpt);
+  const rep = repertoire ?? [];
+  const hasContent = Boolean(uniformUrl || excerpt || rep.length > 0);
 
   // Tasteful empty state — invite the first contribution.
   if (!hasContent) {
@@ -95,6 +99,18 @@ export function LineupRowExpanded({
           </div>
         )}
         {excerpt && <p className={cn('text-sm leading-snug text-muted-foreground')}>{excerpt}</p>}
+        {rep.length > 0 && (
+          <ul className="space-y-0.5 text-sm leading-snug text-muted-foreground">
+            {rep.map((piece, i) => (
+              <li key={i}>
+                <span className="text-text-secondary">{piece.workTitle}</span>
+                {piece.composer && (
+                  <span className="text-muted-foreground/70"> by {piece.composer}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
         {hasShowLink && (
           <Link
             to="/shows/$slug/$season"
