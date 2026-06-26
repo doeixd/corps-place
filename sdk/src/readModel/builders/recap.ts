@@ -12,7 +12,7 @@ export interface CompetitionMetaRow {
   scores_released: number;
 }
 
-interface CorpsScoreRow {
+export interface CorpsScoreRow {
   corps_key: string;
   corps_name: string | null;
   total_score: number | null;
@@ -20,13 +20,13 @@ interface CorpsScoreRow {
   division_name: string | null;
 }
 
-interface CaptionScoreRow {
+export interface CaptionScoreRow {
   corps_key: string;
   caption_name: string;
   score: number | null;
 }
 
-interface CategoryScoreRow {
+export interface CategoryScoreRow {
   corps_key: string;
   category_name: string;
   score: number | null;
@@ -138,7 +138,7 @@ const normalizeCategoryKey = (raw: string): 'GE' | 'Visual' | 'Music' | undefine
   return undefined;
 };
 
-const foldRecapRows = (
+export const foldRecapRows = (
   rawScoreRows: readonly CorpsScoreRow[],
   captionRows: readonly CaptionScoreRow[],
   categoryRows: readonly CategoryScoreRow[]

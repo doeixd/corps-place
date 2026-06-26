@@ -44,6 +44,8 @@ import {
   buildVsCorpsScoresAllSeasons,
   buildVsCorps2026Predicted,
   buildVsBaselineCurve,
+  buildRankings,
+  buildRankingSeasons,
   buildEventRecap,
   buildEventFullRecap,
   buildEventSchedule,
@@ -275,6 +277,12 @@ CREATE INDEX rm_vs_baselines_k ON rm_vs_baselines(rank, bucket);
 
 CREATE TABLE rm_vs_corps_predicted (corps_slug TEXT, pct REAL, predicted REAL);
 CREATE INDEX rm_vs_corps_predicted_k ON rm_vs_corps_predicted(corps_slug, pct);
+
+CREATE TABLE rm_rankings (
+  season TEXT, competition_slug TEXT, date TEXT, corps_slug TEXT, corps_name TEXT,
+  division TEXT, metric TEXT, score REAL
+);
+CREATE INDEX rm_rankings_k ON rm_rankings(season, metric, date);
 
 CREATE TABLE rm_corps_appearances (corps_slug TEXT, event_id TEXT, sort_index INTEGER);
 CREATE INDEX rm_corps_appearances_k ON rm_corps_appearances(corps_slug, sort_index);
@@ -863,6 +871,37 @@ export const runEmit = async (args: Args) => {
         "rm_corps_appearance_results",
         ["corps_slug", "event_id", "total_score", "place"],
         appearanceResultRows,
+      );
+    }
+  }
+
+  // ── Rankings (/rankings page) ──────────────────────────────────────────────
+  // Raw per-show, per-corps, per-metric score grid across every season — the
+  // resolver windows it for best/last3/as-of + the bump chart in prod.
+  if (args.only.includes("corps")) {
+    log("building rankings…");
+    const rankingRows: unknown[][] = [];
+    for (const season of await buildRankingSeasons(src)) {
+      for (const r of await buildRankings(src, season)) {
+        rankingRows.push([
+          r.season,
+          r.competitionSlug,
+          r.date,
+          r.corpsSlug,
+          r.corpsName,
+          r.division,
+          r.metric,
+          r.score,
+        ]);
+      }
+    }
+    rowCounts.rm_rankings = rankingRows.length;
+    if (dst) {
+      await insertRows(
+        dst,
+        "rm_rankings",
+        ["season", "competition_slug", "date", "corps_slug", "corps_name", "division", "metric", "score"],
+        rankingRows,
       );
     }
   }

@@ -26,6 +26,7 @@ import type { StaffProfile, StaffSummary } from "./builders/staff.js";
 import type { LatestPredictionRow } from "./builders/predictions.js";
 import type { ShowInfoSummary, ShowDetail } from "./builders/shows.js";
 import type { VsCorpsScorePoint, VsBaselinePoint, VsPredictedPoint } from "./builders/vs.js";
+import type { RankingScoreRow, RankMetric } from "./builders/rankings.js";
 import type {
   WeekendBucket,
   WeekendShow,
@@ -486,6 +487,30 @@ export const readVsBaselines = async (db: Client): Promise<VsBaselinePoint[]> =>
     bucket: Number(row.bucket),
     total: Number(row.total),
   }));
+};
+
+// ── Rankings (/rankings page) ──────────────────────────────────────────────
+export const readRankings = async (db: Client, season: string): Promise<RankingScoreRow[]> => {
+  const r = await db.execute({
+    sql: `SELECT season, competition_slug, date, corps_slug, corps_name, division, metric, score
+          FROM rm_rankings WHERE season = ? ORDER BY date`,
+    args: [season],
+  });
+  return (r.rows as any[]).map((row) => ({
+    season: String(row.season),
+    competitionSlug: String(row.competition_slug),
+    date: String(row.date),
+    corpsSlug: String(row.corps_slug),
+    corpsName: String(row.corps_name),
+    division: row.division ?? '',
+    metric: String(row.metric) as RankMetric,
+    score: Number(row.score),
+  }));
+};
+
+export const readRankingSeasons = async (db: Client): Promise<string[]> => {
+  const r = await db.execute({ sql: `SELECT DISTINCT season FROM rm_rankings ORDER BY season DESC` });
+  return (r.rows as any[]).map((x) => String(x.season)).filter(Boolean);
 };
 
 // ── Recaps ───────────────────────────────────────────────────────────────
