@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
 import { RankingsList } from '@/components/rankings/rankings-list';
 import { RankBumpChart } from '@/components/rankings/rank-bump-chart';
+import { AsofScrubber } from '@/components/rankings/asof-scrubber';
 import {
   RANK_METRICS,
   RANK_METRIC_LABELS,
@@ -122,6 +123,13 @@ function RankingsPage() {
           <button type="button" className={pill(group === 'division')} onClick={() => set({ group: 'division' })}>By division</button>
         </div>
       </div>
+
+      {/* As-of scrubber: time-travel through the season's competition dates. */}
+      <AsofScrubber
+        dates={result.allDates}
+        asof={result.asof}
+        onSelect={(date) => set({ asof: date ?? undefined })}
+      />
 
       <Card>
         <CardContent className="px-2 py-4">

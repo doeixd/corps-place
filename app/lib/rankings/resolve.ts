@@ -75,7 +75,8 @@ export function resolveRankings(
   const corps = [...byCorps.values()];
 
   const allDays = [...new Set(corps.flatMap((c) => c.days.map((d) => d.day)))].sort();
-  if (allDays.length === 0) return { season, asof: null, dates: [], rows: [] };
+  if (allDays.length === 0)
+    return { season, asof: null, dates: [], allDates: [], rows: [] };
   const asof = opts.asof && allDays.includes(opts.asof) ? opts.asof : allDays[allDays.length - 1];
   const dates = allDays.filter((d) => d <= asof);
 
@@ -106,5 +107,5 @@ export function resolveRankings(
     };
   });
 
-  return { season, asof, dates, rows: out };
+  return { season, asof, dates, allDates: allDays, rows: out };
 }

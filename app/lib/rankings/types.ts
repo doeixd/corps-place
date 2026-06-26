@@ -46,8 +46,10 @@ export interface RankRow {
 export interface RankingsResult {
   season: string;
   asof: string | null; // resolved as-of day (YYYY-MM-DD); null = no data
-  /** Competition days ≤ asof (bump-chart x-axis + the as-of scrubber). */
+  /** Competition days ≤ asof (the bump-chart x-axis). */
   dates: string[];
+  /** Every competition day in the season (the as-of scrubber, regardless of asof). */
+  allDates: string[];
   rows: RankRow[];
 }
 
