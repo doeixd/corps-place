@@ -23,8 +23,8 @@ import type { FreeFormDoc } from '@/lib/contrib/free-form';
 import { HistoryPanel } from '@/components/contrib/history-panel';
 import { ReferencesSection } from '@/components/contrib/references-section';
 import { listCitations } from '@/lib/server-fns/citations';
+import { adaptUniform } from '@/lib/contrib/schemas';
 import type {
-  UniformInput,
   PropsInput,
   LinksInput,
   GalleryInput,
@@ -75,7 +75,7 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       }
     };
     const authored = {
-      uniform: blockContent<UniformInput>('uniform'),
+      uniform: adaptUniform(blockContent<unknown>('uniform')),
       props: blockContent<PropsInput>('props'),
       links: blockContent<LinksInput>('links'),
       staff: blockContent<StaffInput>('staff'),

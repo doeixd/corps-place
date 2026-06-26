@@ -23,14 +23,51 @@ const UniformColor = v.object({
   label: v.optional(v.string(), ''),
 });
 
-export const UniformInputSchema = v.object({
+// A uniform varies by section (brass / percussion / guard); each section owns its
+// own colors, photos and design notes (plan §3.5). Brass first by convention.
+export const UniformSectionSchema = v.object({
+  label: v.picklist(['brass', 'percussion', 'guard']),
   colors: v.array(UniformColor),
   description: v.optional(v.string(), ''),
   announcementUrl: v.optional(v.string(), ''),
   // Uniform photos (wiki plan §7.1 field name `images`).
   images: v.optional(v.array(MediaItem), []),
 });
+export type UniformSection = v.InferOutput<typeof UniformSectionSchema>;
+
+export const UniformInputSchema = v.object({
+  sections: v.array(UniformSectionSchema),
+});
 export type UniformInput = v.InferOutput<typeof UniformInputSchema>;
+
+// Backward-compat adapter (plan §3.5, M3b). Persisted blocks predate sections and
+// are shaped `{ colors, description, announcementUrl, images }`. On read we wrap a
+// legacy flat block into a single `brass` section; the next write persists the new
+// shape. Null/empty → `{ sections: [] }`. Pure; deleted at M9d.
+type LegacyUniform = {
+  colors?: v.InferOutput<typeof UniformColor>[];
+  description?: string;
+  announcementUrl?: string;
+  images?: v.InferOutput<typeof MediaItem>[];
+};
+export function adaptUniform(raw: unknown): UniformInput {
+  if (raw == null || typeof raw !== 'object') return { sections: [] };
+  if (Array.isArray((raw as { sections?: unknown }).sections)) {
+    return raw as UniformInput;
+  }
+  const legacy = raw as LegacyUniform;
+  return {
+    sections: [
+      {
+        label: 'brass',
+        colors: legacy.colors ?? [],
+        description: legacy.description ?? '',
+        announcementUrl: legacy.announcementUrl ?? '',
+        images: legacy.images ?? [],
+      },
+    ],
+  };
+}
 
 // Props & staging: named items with a description (photos arrive with M5 uploads).
 const PropItem = v.object({

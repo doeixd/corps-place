@@ -23,6 +23,7 @@ import {
   RepertoireRowInputSchema,
   MovementRowInputSchema,
   isAuthoredPinnedKey,
+  adaptUniform,
 } from '@/lib/contrib/schemas';
 import { scrapedSeedableHashes } from '@/lib/contrib/seedable';
 import { getShowDetail } from '@/lib/server-fns/hybrid';
@@ -332,8 +333,9 @@ export const getShowPreviews = createServerFn({ method: 'GET' })
         continue;
       }
       if (r.pinned_key === 'uniform') {
-        const images = (parsed as { images?: { url?: string }[] }).images;
-        acc.uniform = images?.[0]?.url ?? null;
+        // New shape is `{ sections: [{ images }] }`; legacy is flat `{ images }`.
+        // adaptUniform bridges both, so read the first image across all sections.
+        acc.uniform = adaptUniform(parsed).sections.flatMap((s) => s.images ?? [])[0]?.url ?? null;
       } else if (r.pinned_key === 'about') {
         const plain = (parsed as { plain?: string }).plain;
         acc.about = typeof plain === 'string' && plain.trim() ? clip(plain) : null;
@@ -390,10 +392,15 @@ export const saveShowBlock = createServerFn({ method: 'POST' })
     const normalized =
       data.pinnedKey === 'uniform'
         ? {
-            ...(content as { colors: { hex: string; label?: string | null }[] }),
-            colors: (content as { colors: { hex: string; label?: string | null }[] }).colors.map(
-              (c) => ({ ...c, hex: normalizeHex(c.hex) ?? c.hex })
-            ),
+            ...(content as {
+              sections: { colors: { hex: string; label?: string | null }[] }[];
+            }),
+            sections: (
+              content as { sections: { colors: { hex: string; label?: string | null }[] }[] }
+            ).sections.map((s) => ({
+              ...s,
+              colors: s.colors.map((c) => ({ ...c, hex: normalizeHex(c.hex) ?? c.hex })),
+            })),
           }
         : content;
 
