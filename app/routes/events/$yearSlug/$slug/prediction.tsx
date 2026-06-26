@@ -88,6 +88,8 @@ import { EventSeasonTitle } from '@/components/prediction/event-season-title';
 import { SortableScoreHeader } from '@/components/prediction/score-header';
 import { PastSeasonScoresPage } from '@/components/prediction/past-season-scores';
 import { ScoreRecapTable } from '@/components/prediction/score-recap-table';
+import { DiffRecapTable } from '@/components/prediction/diff-recap-table';
+import { computeDiff } from '@/lib/diff';
 import type { FullEventRecap } from '@/components/prediction/full-recap-table';
 import { LineupSchedule } from '@/components/prediction/lineup-schedule';
 import { RecapSectionRow } from '@/components/prediction/recap-section-row';
@@ -582,6 +584,14 @@ function CurrentPredictionPage({
     return items;
   }, [hasScores, hasPrediction]);
   const showTabs = tabItems.length > 1;
+
+  // Diff view rows: full outer join of the real scored recap vs the predicted
+  // means (`baseRecap`, the rows the Prediction view's base table renders).
+  // Pure (no Effect / DB), memoized so it only recomputes when either side moves.
+  const diffRows = useMemo(
+    () => computeDiff(ctx.scoredRecap ?? [], ctx.baseRecap),
+    [ctx.scoredRecap, ctx.baseRecap]
+  );
 
   // Scores-view Full Recap toggle. The prediction machine carries no full-recap
   // state (it's prediction-first), so the Scores view owns a small local toggle
@@ -1206,13 +1216,23 @@ function CurrentPredictionPage({
                   />
                 </Show>
 
-                {/* ---- Diff view (P5 placeholder): the real diff table lands in
-                    P5; computeDiff stays unused here until then. ---- */}
+                {/* ---- Diff view (P5): scored-vs-predicted comparison table.
+                    Diff rows join scoredRecap against the predicted means
+                    (baseRecap). Sort cycling routes through the machine's
+                    view-aware CYCLE_SORT (keyed by caption → diffSorts). ---- */}
                 <Show when={view === 'diff'}>
-                  <StatusCard
-                    tone="info"
-                    title="Diff coming soon"
-                    description="The scored-vs-predicted diff table is on its way."
+                  <DiffRecapTable
+                    rows={diffRows}
+                    corpsLookup={corpsLookup}
+                    classFilters={ctx.classFilters}
+                    onSetClassFilters={(filters) =>
+                      send({ type: 'SET_CLASS_FILTERS', classFilters: filters })
+                    }
+                    groupByClass={ctx.groupByClass}
+                    diffSorts={ctx.diffSorts}
+                    sortMode={ctx.sortMode}
+                    onCycleSort={(key) => send({ type: 'CYCLE_SORT', key })}
+                    yearSlug={params.yearSlug}
                   />
                 </Show>
 

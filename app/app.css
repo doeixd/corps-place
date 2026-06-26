@@ -150,6 +150,11 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
+  /* Diff view: scored-vs-predicted direction colors (light). Green = scored
+     above prediction (overperformed), red = below. Used as both text color and,
+     at a magnitude-scaled alpha, a cell background tint. */
+  --diff-positive: oklch(0.55 0.18 145);
+  --diff-negative: oklch(0.55 0.22 27);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -273,6 +278,9 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
+  /* Diff view direction colors (dark): brighter so they read on dark cells. */
+  --diff-positive: oklch(0.72 0.18 145);
+  --diff-negative: oklch(0.68 0.2 27);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
