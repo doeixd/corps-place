@@ -20,6 +20,7 @@ import {
 } from '@/lib/contrib/schemas';
 import { scrapedSeedableHashes } from '@/lib/contrib/seedable';
 import { getShowDetail } from '@/lib/server-fns/hybrid';
+import { reconcileShowDivergenceForDetail } from '@/lib/contrib/reconcile';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 
 /**
@@ -287,4 +288,22 @@ export const saveShowOverride = createServerFn({ method: 'POST' })
       data.expectedUpdatedAt
     );
     return { ok: true as const, overrideId, updatedAt: now };
+  });
+
+// ── Reconcile: re-check overrides against the latest scrape (moderator action) ──
+// Flips each override's scrape_diverged flag so the "source changed" badges reflect
+// reality after a fresh scrape. Gated on the 'lock' capability (moderator/admin).
+export const reconcileShowDivergence = createServerFn({ method: 'POST' })
+  .validator((data: { corpsKey: string; season: string }) => data)
+  .handler(async ({ data }) => {
+    const db = await getContributionsDb();
+    const lockLevel = ((
+      await db.execute({
+        sql: 'SELECT lock_level FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
+        args: [data.corpsKey, data.season],
+      })
+    ).rows[0]?.lock_level ?? 'none') as PageLock;
+    await requireCapability(getWebRequest(), 'lock', { lockLevel });
+    const show = await readScrapedShowDetail(data.corpsKey, data.season);
+    return reconcileShowDivergenceForDetail(db, data.corpsKey, data.season, show);
   });

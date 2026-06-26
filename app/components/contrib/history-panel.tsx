@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useSession } from '@/lib/auth-client';
-import { getShowHistory, revertRevision, type HistoryEntry } from '@/lib/server-fns/contrib';
+import {
+  getShowHistory,
+  revertRevision,
+  reconcileShowDivergence,
+  type HistoryEntry,
+} from '@/lib/server-fns/contrib';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge, type BadgeProps } from '@/components/reui/badge';
@@ -25,9 +30,34 @@ export function HistoryPanel({
   const [entries, setEntries] = useState(initial);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [reconcileMsg, setReconcileMsg] = useState<string | null>(null);
   const signedIn = Boolean(session?.user);
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  const canReconcile = role === 'moderator' || role === 'admin';
 
   const refresh = async () => setEntries(await getShowHistory({ data: { corpsKey, season } }));
+  // Re-check overrides against the latest scrape; updates the "source changed" badges.
+  const reconcile = async () => {
+    setBusy('reconcile');
+    setError(null);
+    setReconcileMsg(null);
+    try {
+      const res = await reconcileShowDivergence({ data: { corpsKey, season } });
+      setReconcileMsg(
+        res.status === 'reconciled'
+          ? res.changed > 0
+            ? `Checked ${res.checked} rows — ${res.diverged} now differ from the source.`
+            : `Checked ${res.checked} rows — all still match the source.`
+          : res.status === 'missing-page'
+            ? 'No contributions to check yet.'
+            : 'No scraped data to compare against.'
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not check scraped changes');
+    } finally {
+      setBusy(null);
+    }
+  };
   const revert = async (revisionId: string) => {
     setBusy(revisionId);
     setError(null);
@@ -44,10 +74,25 @@ export function HistoryPanel({
   return (
     <Card>
       <CardContent className="py-5">
-        <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-text-secondary">
-          <Icon icon={Clock01Icon} size="sm" />
-          Edit history
-        </h2>
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-text-secondary">
+            <Icon icon={Clock01Icon} size="sm" />
+            Edit history
+          </h2>
+          {canReconcile ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={reconcile}
+              disabled={busy === 'reconcile'}
+              title="Re-check fan edits against the latest scraped data"
+            >
+              {busy === 'reconcile' ? 'Checking…' : 'Check scraped changes'}
+            </Button>
+          ) : null}
+        </div>
+        {reconcileMsg ? <p className="mb-3 text-sm text-text-secondary">{reconcileMsg}</p> : null}
         {error ? <p className="mb-3 text-sm text-destructive">{error}</p> : null}
         {entries.length === 0 ? (
           <p className="text-sm text-text-secondary">No edits yet — be the first to contribute.</p>

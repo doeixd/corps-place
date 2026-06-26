@@ -243,6 +243,59 @@ export const writeOverride = async (
   }
 };
 
+export interface DivergenceSummary {
+  checked: number;
+  changed: number;
+  diverged: number;
+  cleared: number;
+}
+
+/**
+ * Re-check every override on a page against the CURRENT scraped row hashes and flip
+ * each override's `scrape_diverged` flag accordingly (set when the scraped source has
+ * changed since the override was made; cleared when it matches again). Returns a small
+ * summary. Called by the reconcile server-fn (moderator-triggered, plan §scrape-sync).
+ */
+export const reconcileOverrideDivergence = async (
+  db: Client,
+  pageId: string,
+  currentHashes: Record<string, Record<string, string>>
+): Promise<DivergenceSummary> => {
+  assertWritable();
+  const rows = (
+    await db.execute({
+      sql: `SELECT override_id, pinned_key, natural_key, source_hash, scrape_diverged
+            FROM show_block_overrides WHERE page_id = ?`,
+      args: [pageId],
+    })
+  ).rows as unknown as Pick<
+    OverrideRow,
+    'override_id' | 'pinned_key' | 'natural_key' | 'source_hash' | 'scrape_diverged'
+  >[];
+
+  const tx = await db.transaction('write');
+  const summary: DivergenceSummary = { checked: rows.length, changed: 0, diverged: 0, cleared: 0 };
+  try {
+    for (const row of rows) {
+      const currentHash = currentHashes[row.pinned_key]?.[row.natural_key] ?? null;
+      const nextDiverged = row.source_hash != null && currentHash !== row.source_hash ? 1 : 0;
+      if (nextDiverged) summary.diverged += 1;
+      if (Number(row.scrape_diverged) === nextDiverged) continue;
+      await tx.execute({
+        sql: 'UPDATE show_block_overrides SET scrape_diverged = ? WHERE override_id = ?',
+        args: [nextDiverged, row.override_id],
+      });
+      summary.changed += 1;
+      if (!nextDiverged) summary.cleared += 1;
+    }
+    await tx.commit();
+    return summary;
+  } catch (e) {
+    await tx.rollback();
+    throw e;
+  }
+};
+
 export interface BlockInput {
   pageId: string;
   kind: 'pinned' | 'freeform';
