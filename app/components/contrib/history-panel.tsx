@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Badge, type BadgeProps } from '@/components/reui/badge';
 import { Icon } from '@/components/icon';
 import { Clock01Icon, RestoreBinIcon } from '@/components/icons/generated';
+import { StructuredDiff } from '@/components/contrib/structured-diff';
 
 /**
  * Edit-history sidebar (M6): the full, transparent revision log for a show page —
@@ -141,7 +142,7 @@ export function HistoryPanel({
                             </Button>
                           ) : null}
                         </div>
-                        <Diff before={e.beforeJson} after={e.afterJson} />
+                        <StructuredDiff before={e.beforeJson} after={e.afterJson} />
                       </li>
                     ))}
                   </ul>
@@ -154,36 +155,6 @@ export function HistoryPanel({
     </Card>
   );
 }
-
-// Compact before→after for the structured block JSON (v1: plain-ish text diff).
-function Diff({ before, after }: { before: string | null; after: string | null }) {
-  if (before == null && after == null) return null;
-  const b = summarize(before);
-  const a = summarize(after);
-  if (b === a) return null;
-  return (
-    <details className="mt-1 text-xs">
-      <summary className="cursor-pointer text-text-secondary/70 hover:text-text-secondary">
-        view changes
-      </summary>
-      <div className="mt-1 space-y-0.5 rounded-md bg-muted/50 p-2 font-mono">
-        {before != null ? <p className="break-words text-destructive">− {b}</p> : null}
-        {after != null ? <p className="break-words text-success-foreground">+ {a}</p> : null}
-      </div>
-    </details>
-  );
-}
-
-const summarize = (json: string | null): string => {
-  if (json == null) return '(empty)';
-  try {
-    const v = JSON.parse(json);
-    const s = JSON.stringify(v);
-    return s.length > 160 ? s.slice(0, 157) + '…' : s;
-  } catch {
-    return json.slice(0, 160);
-  }
-};
 
 const opLabel = (op: string): string =>
   ({
