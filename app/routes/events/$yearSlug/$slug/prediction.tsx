@@ -439,6 +439,9 @@ function PredictionPage() {
         dci={dci}
         search={search}
         navigate={navigate}
+        // Actual scored recap rows (real scores), seeded from the loader. Null
+        // when no scores exist yet (today's 2026 case) → Prediction view only.
+        scoredRecap={hasScoreData ? (recap.scores as RecapRow[]) : null}
       />
     </CorpsRegistryProvider>
   );
@@ -500,6 +503,7 @@ function CurrentPredictionPage({
   dci,
   search,
   navigate,
+  scoredRecap,
 }: {
   params: { yearSlug: string; slug: string };
   slug: string;
@@ -514,6 +518,7 @@ function CurrentPredictionPage({
   dci: DciLinks;
   search: PredictionSearch;
   navigate: ReturnType<typeof Route.useNavigate>;
+  scoredRecap: RecapRow[] | null;
 }) {
   // Name this entry so a back control on a page reached from here reads
   // "Back to <event>" instead of the generic section label.
@@ -526,6 +531,9 @@ function CurrentPredictionPage({
       ...predictionSearchCodec.decode(search),
       slug,
       prediction: seededPrediction,
+      // Provides both the data and the dynamic default view (scores-first) when
+      // the URL omits `view`; the decoded `view` (if present) overrides it.
+      scoredRecap,
     },
   });
 

@@ -20,14 +20,56 @@ import type { SearchCodec, SyncEvent } from '@/lib/use-search-sync';
 
 export type { SortDir, SortEntry, SortMode };
 
+/** Which of the three tri-modal recap views is active (see SCORES_PREDICTION_DIFF_TABS_PLAN). */
+export type PredictionView = 'scores' | 'prediction' | 'diff';
+
 /** Loaded prediction payload (same shape the route loader returns). */
 export type Prediction = NonNullable<Awaited<ReturnType<typeof getHybridPrediction>>>;
+
+// The compact recap columns (Total + each aggregate + the 8 subcaptions) are
+// shared across all three views, so a sort on one is mirrored onto the others'
+// sort lists. `sorts` keys both the Scores and Prediction views (they share the
+// same row shape); `diffSorts` keys the Diff view. The key space is identical
+// (`RangeKey`), so every key overlaps — direction mirrors 1:1. Follows the
+// compact↔full mirroring precedent in `score-table-machine.ts:24-59`.
+const dirOf = (arr: readonly SortEntry[], key: RangeKey): SortDir | null =>
+  arr.find((s) => s.key === key)?.dir ?? null;
+
+// Reflect a shared column's post-cycle direction onto the other view's sort
+// list, matching the same none→desc→asc + stack/exclusive placement so the two
+// stay consistent without disturbing that view's view-only sorts.
+const mirrorSort = (
+  target: readonly SortEntry[],
+  key: RangeKey,
+  newDir: SortDir | null,
+  mode: SortMode
+): SortEntry[] => {
+  const make = (dir: SortDir): SortEntry => ({ key, dir });
+  const without = target.filter((s) => s.key !== key);
+  if (mode === 'exclusive') return newDir ? [make(newDir)] : [];
+  if (newDir === null) return without;
+  // `desc` = freshly added in the source → becomes primary here too.
+  if (newDir === 'desc') return [make('desc'), ...without];
+  // `asc` = an existing sort flipped → update in place, or add if absent.
+  return target.some((s) => s.key === key)
+    ? target.map((s) => (s.key === key ? make('asc') : s))
+    : [make('asc'), ...target];
+};
 
 export interface PredictionContext {
   slug: string | null;
   request: Partial<EventPredictionRequest>;
   prediction: Prediction | null;
   error: string | null;
+  // Tri-modal view (Scores / Prediction / Diff). Additive: with no scores the
+  // page stays on the default `prediction` view and behaves exactly as before.
+  view: PredictionView;
+  // Actual scored recap (real scores), seeded from the route loader. `null` when
+  // no scores exist yet (today's normal 2026 case) → only the Prediction view.
+  scoredRecap: RecapRow[] | null;
+  // Sort list for the Diff view, parallel to `sorts` (which keys Scores +
+  // Prediction). Shared columns mirror direction between the two lists.
+  diffSorts: SortEntry[];
   // Scenario (Monte Carlo) state — owned by the machine, derived for display in the component.
   baseRecap: RecapRow[];
   currentRecap: RecapRow[];
@@ -65,6 +107,8 @@ export type PredictionEvent =
   | { type: 'SET_RANGES'; showRanges: boolean }
   | { type: 'SET_CLASS_FILTERS'; classFilters: string[] }
   | { type: 'SET_GROUP_BY_CLASS'; groupByClass: boolean }
+  // Switch the active tri-modal view (preserves shared sort/group/filter state).
+  | { type: 'SET_VIEW'; view: PredictionView }
   // Column sorting
   | { type: 'CYCLE_SORT'; key: RangeKey }
   | { type: 'SET_SORTS'; sorts: SortEntry[] }
@@ -82,6 +126,7 @@ const initialScenario = {
   classFilters: [] as string[],
   sortMode: 'exclusive' as SortMode,
   sorts: [] as SortEntry[],
+  diffSorts: [] as SortEntry[],
   groupByClass: false,
   groupTouched: false,
 };
@@ -106,8 +151,14 @@ export interface PredictionInput {
   classFilters?: string[];
   sortMode?: SortMode;
   sorts?: SortEntry[];
+  diffSorts?: SortEntry[];
   groupByClass?: boolean;
   scenarioCount?: number;
+  // Initial tri-modal view (from the URL codec). When omitted the context init
+  // picks the dynamic default: `scores` if scoredRecap exists, else `prediction`.
+  view?: PredictionView;
+  // Actual scored recap rows, seeded from the route loader's recap data.
+  scoredRecap?: RecapRow[] | null;
 }
 
 const recapOf = (prediction: Prediction | null | undefined): RecapRow[] =>
@@ -169,13 +220,36 @@ export const predictionMachine = setup({
         groupByClass: context.groupTouched ? context.groupByClass : multiClass(base),
       };
     }),
-    cycleSort: assign({
-      sorts: ({ context, event }) =>
-        cycleSort(
-          context.sorts,
-          (event as Extract<PredictionEvent, { type: 'CYCLE_SORT' }>).key,
+    // View-aware sort cycle: dispatch to the active view's sort list (`sorts`
+    // for Scores/Prediction, `diffSorts` for Diff) and mirror the resulting
+    // direction onto the other list, since every compact column is shared.
+    cycleSort: assign(({ context, event }) => {
+      if (event.type !== 'CYCLE_SORT') return {};
+      if (context.view === 'diff') {
+        const diffSorts = cycleSort(context.diffSorts, event.key, context.sortMode);
+        return {
+          diffSorts,
+          sorts: mirrorSort(context.sorts, event.key, dirOf(diffSorts, event.key), context.sortMode),
+        };
+      }
+      const sorts = cycleSort(context.sorts, event.key, context.sortMode);
+      return {
+        sorts,
+        diffSorts: mirrorSort(
+          context.diffSorts,
+          event.key,
+          dirOf(sorts, event.key),
           context.sortMode
         ),
+      };
+    }),
+    // Switch view. Shared sort/group/class-filter state is held in single
+    // context fields (sorts/diffSorts/groupByClass/classFilters) and is never
+    // cleared here, so it is preserved across views by construction. Sort
+    // direction is already kept mirrored between `sorts` and `diffSorts` by
+    // `cycleSort`, so no re-mirror is needed on switch.
+    setView: assign({
+      view: ({ event }) => (event as Extract<PredictionEvent, { type: 'SET_VIEW' }>).view,
     }),
     // Collapsing to single-column keeps only the highest-priority sort.
     setSortMode: assign(({ context, event }) => {
@@ -183,6 +257,7 @@ export const predictionMachine = setup({
       return {
         sortMode: mode,
         sorts: mode === 'exclusive' ? context.sorts.slice(0, 1) : context.sorts,
+        diffSorts: mode === 'exclusive' ? context.diffSorts.slice(0, 1) : context.diffSorts,
       };
     }),
     // Replace the whole sort list at once (used to hydrate from the URL).
@@ -246,12 +321,18 @@ export const predictionMachine = setup({
     // Seed-hydrated view: roll the scenario now if the recap is already present;
     // otherwise keep the seed and roll once it loads (seedScenarioFromPrediction).
     const rolled = seed && base.length > 0;
+    const scoredRecap = input?.scoredRecap ?? null;
     return {
       slug: input?.slug ?? null,
       request: { mode: 'auto' },
       prediction: input?.prediction ?? null,
       error: null,
       ...initialScenario,
+      // Tri-modal view. Explicit URL choice wins; otherwise the dynamic default
+      // shows real data first (`scores` when scored data exists, else `prediction`).
+      view: input?.view ?? (scoredRecap ? 'scores' : 'prediction'),
+      scoredRecap,
+      diffSorts: input?.diffSorts ?? initialScenario.diffSorts,
       window,
       showRanges: input?.showRanges ?? initialScenario.showRanges,
       classFilters: input?.classFilters ?? initialScenario.classFilters,
@@ -354,6 +435,7 @@ export const predictionMachine = setup({
             groupTouched: () => true,
           }),
         },
+        SET_VIEW: { actions: 'setView' },
         CYCLE_SORT: { actions: 'cycleSort' },
         SET_SORTS: { actions: 'setSorts' },
         SET_SORT_MODE: { actions: 'setSortMode' },
@@ -369,6 +451,8 @@ export const predictionMachine = setup({
             if (p.classFilters !== undefined) next.classFilters = p.classFilters;
             if (p.sortMode !== undefined) next.sortMode = p.sortMode;
             if (p.sorts !== undefined) next.sorts = p.sorts;
+            if (p.diffSorts !== undefined) next.diffSorts = p.diffSorts;
+            if (p.view !== undefined) next.view = p.view;
             if (p.groupByClass !== undefined) {
               next.groupByClass = p.groupByClass;
               next.groupTouched = true;
@@ -416,7 +500,12 @@ export interface PredictionSearchParams {
   group?: boolean;
   /** Roll count, so the "Scenario N" badge survives refresh / shared links. */
   n?: number;
+  /** Active tri-modal view; omitted when it equals the dynamic default. */
+  view?: PredictionView;
 }
+
+const isView = (v: unknown): v is PredictionView =>
+  v === 'scores' || v === 'prediction' || v === 'diff';
 
 const isWindow = (v: unknown): v is ScenarioWindow =>
   (SCENARIO_WINDOWS as readonly string[]).includes(v as string);
@@ -428,6 +517,9 @@ const isWindow = (v: unknown): v is ScenarioWindow =>
  */
 export const predictionSearchCodec: SearchCodec<PredictionContext, PredictionSearchParams> = {
   encode: (ctx) => ({
+    // Omit when it equals the dynamic default (`scores` if real scored data
+    // exists, else `prediction`), keeping a bare prediction link clean.
+    view: ctx.view !== (ctx.scoredRecap ? 'scores' : 'prediction') ? ctx.view : undefined,
     seed: ctx.seed ?? undefined,
     win: ctx.seed || ctx.window !== '0.8' ? ctx.window : undefined,
     ranges: ctx.showRanges ? true : undefined,
@@ -451,5 +543,9 @@ export const predictionSearchCodec: SearchCodec<PredictionContext, PredictionSea
     // data-driven default otherwise (see context init / seedScenarioFromPrediction).
     ...(typeof s.group === 'boolean' ? { groupByClass: s.group } : {}),
     ...(typeof s.n === 'number' && s.n > 1 ? { scenarioCount: s.n } : {}),
+    // Only include the view when explicitly present in the URL so the machine
+    // applies its dynamic default (scores-first) otherwise — decode has no
+    // scoredRecap to compute the default from (see context init).
+    ...(isView(s.view) ? { view: s.view } : {}),
   }),
 };
