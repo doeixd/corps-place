@@ -55,9 +55,9 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
         (db) => buildCorpsBySlug(db, s.corpsSlug)
       ),
     ]);
-    if (!pts.length) return null;
-    const lines: VsLine[] = [
-      {
+    const lines: VsLine[] = [];
+    if (pts.length) {
+      lines.push({
         style: 'solid',
         points: pts.map((p) => ({
           pct: p.pct,
@@ -65,10 +65,12 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
           date: p.date || undefined,
           eventLabel: p.eventLabel || undefined,
         })),
-      },
-    ];
+      });
+    }
     // Current season: overlay the model's predicted-to-finals line (dashed).
-    // Predictions exist only for 2026 (M7).
+    // Predictions exist only for 2026 (M7). Early season the actual line is empty
+    // — a corps with only a prediction must still render (its dashed line), not
+    // drop out, or the corps-page "Add more to compare" deep-link shows nothing.
     if (s.season === '2026') {
       const pred = await readOrBuild(
         (db) => readVsCorps2026Predicted(db, s.corpsSlug),
@@ -91,6 +93,7 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
         });
       }
     }
+    if (!lines.length) return null; // no actuals and no prediction → nothing to plot
     return {
       id: `corps~${s.corpsSlug}~${s.season}`,
       label: `${corps?.name ?? s.corpsSlug} ${s.season}`,
