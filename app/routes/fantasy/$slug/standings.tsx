@@ -142,7 +142,7 @@ function StandingRow({ row }: { row: Row }) {
             <img
               src={`/api/fantasy-media/${row.corpsLogoMediaId}`}
               alt=""
-              className="size-6 rounded object-cover"
+              className="size-6 rounded-md object-cover"
             />
           ) : null}
           <span className="font-medium">{row.corpsName || row.userName || 'Player'}</span>

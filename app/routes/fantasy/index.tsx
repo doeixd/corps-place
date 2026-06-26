@@ -51,7 +51,7 @@ function FantasyHomeContent({ signedIn, leagues }: { signedIn: boolean; leagues:
 
   return (
     <PageShell className="flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-3 pr-12">
+      <div className="flex items-center justify-between gap-3 pr-12 lg:pr-0">
         <h1 className="text-2xl font-bold text-text-primary">Fantasy Drum Corps</h1>
         {isSignedIn ? (
           <Button render={<Link to="/fantasy/create" />}>Create a league</Button>
@@ -94,10 +94,17 @@ function LeagueListItem({ league }: { league: LeagueRow }) {
     <Link
       to="/fantasy/$slug"
       params={{ slug: league.slug }}
-      className="flex items-center justify-between rounded-lg border border-border p-3 hover:bg-muted"
+      className="flex items-center gap-3 rounded-lg border border-border p-3 hover:bg-muted"
     >
+      {league.image_media_id ? (
+        <img
+          src={`/api/fantasy-media/${league.image_media_id}`}
+          alt=""
+          className="size-10 shrink-0 rounded-lg border border-border object-cover"
+        />
+      ) : null}
       <span className="font-medium">{league.name}</span>
-      <span className="text-sm text-muted-foreground">
+      <span className="ml-auto text-sm text-muted-foreground">
         {league.season} · {league.status}
         {league.role === 'owner' ? ' · owner' : ''}
       </span>

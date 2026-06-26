@@ -518,7 +518,7 @@ function LiveDraft({
               <img
                 src={`/api/fantasy-media/${onClock.corps_logo_media_id}`}
                 alt=""
-                className="size-9 rounded object-cover"
+                className="size-9 rounded-lg object-cover"
               />
             ) : (
               <div

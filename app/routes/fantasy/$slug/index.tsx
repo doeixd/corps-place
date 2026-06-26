@@ -109,7 +109,7 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
             />
           ) : league.imageMediaId ? (
             <div
-              className="shrink-0 overflow-hidden rounded border border-border"
+              className="shrink-0 overflow-hidden rounded-lg border border-border"
               style={{ width: 75, height: 75, marginRight: 4, transform: 'scale(0.95)' }}
             >
               <img
@@ -627,10 +627,10 @@ function MemberRow({
         <img
           src={`/api/fantasy-media/${member.corps_logo_media_id}`}
           alt=""
-          className="size-9 rounded object-cover"
+          className="size-9 rounded-lg object-cover"
         />
       ) : (
-        <div className="size-9 rounded bg-muted" />
+        <div className="size-9 rounded-lg bg-muted" />
       )}
       <div className="flex flex-col">
         <span className="font-medium">{member.corps_name || '(unnamed corps)'}</span>

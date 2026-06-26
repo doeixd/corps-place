@@ -85,6 +85,7 @@ interface LeagueSummaryRow {
   season: string;
   status: string;
   role: string;
+  image_media_id: unknown;
 }
 
 const makeLeagueService = Effect.gen(function* () {
@@ -342,7 +343,7 @@ const makeLeagueService = Effect.gen(function* () {
 
   const listMyLeagues = Effect.fn('LeagueService.listMyLeagues')(function* (userId: string) {
     const rows = yield* sql<LeagueSummaryRow>`
-      SELECT l.league_id, l.slug, l.name, l.season, l.status, m.role
+      SELECT l.league_id, l.slug, l.name, l.season, l.status, l.image_media_id, m.role
       FROM fantasy_members m
       JOIN fantasy_leagues l ON l.league_id = m.league_id
       WHERE m.user_id = ${userId} AND m.status = 'active'
@@ -356,6 +357,7 @@ const makeLeagueService = Effect.gen(function* () {
         season: l.season,
         status: l.status,
         role: l.role,
+        image_media_id: strOrNull(l.image_media_id),
       })),
     };
   });

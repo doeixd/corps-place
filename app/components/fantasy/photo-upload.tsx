@@ -92,7 +92,7 @@ export function PhotoUpload({
     if (uploadError) toast.error(uploadError);
   }, [uploadError]);
 
-  const radius = shape === 'round' ? 'rounded-full' : 'rounded';
+  const radius = shape === 'round' ? 'rounded-full' : 'rounded-lg';
   // In fill mode the parent reserves the (square) footprint; the box just fills it.
   const box = fill ? 'h-full w-full' : size;
   // The optimistic preview (local object URL) wins until the upload settles; then the
