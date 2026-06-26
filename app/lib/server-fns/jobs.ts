@@ -5,6 +5,11 @@ import { Effect } from 'effect';
 import { getActor, ForbiddenError } from '@/lib/authz';
 import { JobsService, JobsServiceLive } from '@/lib/jobs/jobs-service';
 import { JOBS_BLOCK_SCHEMAS, isJobsBlockKind } from '@/lib/jobs/schemas';
+import { sendEmail } from '@/lib/email';
+
+// Pure (no service closure) — safe at module scope; used only inside handlers.
+const escapeHtml = (s: string): string =>
+  s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
 // NOTE: do NOT add a module-scope helper that closes over `JobsServiceLive` (or any
 // service Live / runtime). Each `.handler()` below inlines `Effect.provide(JobsServiceLive)`
@@ -217,6 +222,21 @@ export const applyToJob = createServerFn({ method: 'POST' })
         svc.applyToPosting(data.postingId, actor.userId, data.message)
       ).pipe(Effect.provide(JobsServiceLive))
     );
+
+    // Notify the employer (best-effort — never fail the application on email).
+    if (result.notifyOnApply && result.employerEmail) {
+      const title = escapeHtml(result.jobTitle);
+      await sendEmail({
+        to: result.employerEmail,
+        subject: `New application for "${result.jobTitle}"`,
+        tag: 'jobs-application',
+        html: `<p>Hi ${escapeHtml(result.employerName || 'there')},</p>
+<p><strong>${escapeHtml(result.applicantName)}</strong> applied to your posting <strong>${title}</strong>.</p>
+${data.message ? `<blockquote style="border-left:3px solid #ddd;padding-left:12px;color:#555">${escapeHtml(data.message)}</blockquote>` : ''}
+<p><a href="https://drumcorps.app/jobs/me">View your applications →</a></p>`,
+      }).catch((e) => console.warn('[jobs] application email failed:', e));
+    }
+
     return { ok: true as const, applicationId: result.applicationId };
   });
 

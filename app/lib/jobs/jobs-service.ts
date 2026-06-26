@@ -510,11 +510,15 @@ const makeJobsService = Effect.gen(function* () {
       display_name: string;
       notify_on_apply: number;
     }>`SELECT contact_email, display_name, notify_on_apply FROM jobs_profile WHERE profile_id = ${posting[0]?.employer_profile_id} LIMIT 1`;
+    const applicant = yield* sql<{ display_name: string }>`SELECT display_name FROM jobs_profile WHERE user_id = ${applicantUserId} LIMIT 1`;
 
     return {
       applicationId,
       employerEmail: employer[0]?.contact_email ?? null,
+      employerName: employer[0]?.display_name ?? '',
+      notifyOnApply: (employer[0]?.notify_on_apply ?? 0) === 1,
       jobTitle: posting[0]?.title ?? '',
+      applicantName: applicant[0]?.display_name ?? 'A candidate',
     };
   });
 
