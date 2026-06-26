@@ -46,20 +46,35 @@ function corpsColor(
  */
 export function assignVsColors(series: VsResolvedSeries[], mode: ColorMode): VsResolvedSeries[] {
   const ramp = mode === 'dark' ? BASELINE_RAMP_DARK : BASELINE_RAMP_LIGHT;
-  const corpsSeen = new Map<string, number>(); // brand primary → occurrence count
+  const corpsSeen = new Map<string, number>(); // corps identity → occurrence count
+  const used = new Set<string>(); // every color already handed out (global)
   let rampIdx = 0;
+
+  // The next ramp color not already used (cycles; repeats only past the cap).
+  const nextRamp = (): string => {
+    for (let i = 0; i < ramp.length; i++) {
+      const c = ramp[rampIdx++ % ramp.length];
+      if (!used.has(c)) return c;
+    }
+    return ramp[rampIdx++ % ramp.length];
+  };
 
   return series.map((s) => {
     let color: string | null = null;
     if ((s.kind === 'corps' || s.kind === 'prediction') && s.brand?.primary) {
-      const key = s.brand.primary.toLowerCase();
+      // Key on the corps identity (the slug in the id, e.g. `corps~blue-devils~
+      // 2025`), NOT the brand hex — distinct corps that share a primary color
+      // must still get distinct lines.
+      const key = s.id.split('~')[1] ?? s.id;
       const occ = corpsSeen.get(key) ?? 0;
       corpsSeen.set(key, occ + 1);
-      color = corpsColor(s.brand, mode, occ);
-      // 3rd+ same-corps line: fall through to the ramp so they stay distinct.
-      if (occ >= 2) color = null;
+      // Use the brand hue only if it's still free; on ANY collision (3rd+ same
+      // corps, or two corps sharing a hex) fall through to a free ramp color.
+      const cand = occ < 2 ? corpsColor(s.brand, mode, occ) : null;
+      if (cand && !used.has(cand)) color = cand;
     }
-    if (!color) color = ramp[rampIdx++ % ramp.length];
+    if (!color) color = nextRamp();
+    used.add(color);
     return { ...s, color };
   });
 }

@@ -6,11 +6,8 @@
 import { createServerFn } from '@tanstack/react-start';
 import { createClient, type Client } from '@libsql/client';
 import * as path from 'node:path';
-import {
-  buildVsCorpsScores,
-  buildVsBaselineCurve,
-  buildCorpsBySlug,
-} from '@sdk/src/readModel/builders/index.js';
+import { buildVsCorpsScores, buildVsBaselineCurve } from '@sdk/src/readModel/builders/vs.js';
+import { buildCorpsBySlug } from '@sdk/src/readModel/builders/corps.js';
 import {
   readVsCorpsScores,
   readVsBaselines,

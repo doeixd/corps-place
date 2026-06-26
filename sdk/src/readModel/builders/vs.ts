@@ -15,6 +15,7 @@
 import type { Client } from '@libsql/client';
 import { RELATED_CORPS_CTES } from './corpsAliases.js';
 import { getV9CaptionBaseline, type V9Caption } from '../../training/v9Baselines.js';
+import referenceCurvesV4 from '../../training/referenceCurvesV4.json';
 
 /** One actual data point on a corps's season line. `pct` ∈ [0,100]. */
 export interface VsCorpsScorePoint {
@@ -146,6 +147,9 @@ export interface VsBaselinePoint {
  */
 export const buildVsBaselineCurve = (referenceCurvesPath?: string): VsBaselinePoint[] => {
   const out: VsBaselinePoint[] = [];
+  // Raw entries (legacy `rank-bucket` keys, division-agnostic) — used only to
+  // detect a genuinely-missing VA so we can impute it from VP below.
+  const curvesByKey = (referenceCurvesV4 as { curves?: Record<string, unknown> }).curves ?? {};
   for (const rank of VS_BASELINE_RANKS) {
     for (const bucket of VS_BASELINE_BUCKETS) {
       const r = getV9CaptionBaseline({
@@ -155,8 +159,14 @@ export const buildVsBaselineCurve = (referenceCurvesPath?: string): VsBaselinePo
         seedRank: rank,
         referenceCurvesPath,
       });
-      // getV9CaptionBaseline returns all captions (missing ones filled, e.g. VA).
-      const captions = r.captions as Record<V9Caption, number>;
+      const captions = { ...(r.captions as Record<V9Caption, number>) };
+      // VA is absent in ~170/551 curve entries. getV9CaptionBaseline blunt-fills
+      // those with 15; VA tracks VP closely, so impute VA from VP where the curve
+      // entry genuinely lacks it — a better total than the flat 15 (plan §data).
+      const raw = (curvesByKey as Record<string, Partial<Record<V9Caption, number>>>)[
+        `${rank}-${bucket}`
+      ];
+      if (raw && typeof raw.VA !== 'number') captions.VA = captions.VP;
       out.push({ rank, bucket, total: Number(totalOf(captions).toFixed(3)) });
     }
   }

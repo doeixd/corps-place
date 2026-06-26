@@ -11,6 +11,7 @@
 import { createServerRootRoute } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VsRouteImport } from './routes/vs'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -86,6 +87,11 @@ import { ServerRoute as ApiFantasyDraftLeagueIdStreamServerRouteImport } from '.
 
 const rootServerRouteImport = createServerRootRoute()
 
+const VsRoute = VsRouteImport.update({
+  id: '/vs',
+  path: '/vs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
@@ -460,6 +466,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/vs': typeof VsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
@@ -520,6 +527,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/vs': typeof VsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
@@ -581,6 +589,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/vs': typeof VsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
@@ -643,6 +652,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/vs'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
@@ -703,6 +713,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/vs'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
@@ -763,6 +774,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/vs'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
@@ -824,6 +836,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
+  VsRoute: typeof VsRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
@@ -996,6 +1009,13 @@ export interface RootServerRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vs': {
+      id: '/vs'
+      path: '/vs'
+      fullPath: '/vs'
+      preLoaderRoute: typeof VsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms-of-service': {
       id: '/terms-of-service'
       path: '/terms-of-service'
@@ -1525,6 +1545,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
+  VsRoute: VsRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminContentRoute: AdminContentRoute,
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
