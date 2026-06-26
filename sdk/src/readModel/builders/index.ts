@@ -18,3 +18,4 @@ export * from './predictions.js';
 export * from './shows.js';
 export * from './merch.js';
 export * from './fantasy.js';
+export * from './vs.js';

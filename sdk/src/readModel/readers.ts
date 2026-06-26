@@ -25,6 +25,7 @@ import type { JudgeProfile, JudgeSummary } from "./builders/judges.js";
 import type { StaffProfile, StaffSummary } from "./builders/staff.js";
 import type { LatestPredictionRow } from "./builders/predictions.js";
 import type { ShowInfoSummary, ShowDetail } from "./builders/shows.js";
+import type { VsCorpsScorePoint, VsBaselinePoint } from "./builders/vs.js";
 import type {
   WeekendBucket,
   WeekendShow,
@@ -435,6 +436,36 @@ export const readCorpsSeasonScores = async (
     actual: row.actual === null ? null : Number(row.actual),
     low: row.low === null ? null : Number(row.low),
     high: row.high === null ? null : Number(row.high),
+  }));
+};
+
+// ── VS comparison chart ────────────────────────────────────────────────────
+export const readVsCorpsScores = async (
+  db: Client,
+  slug: string,
+  season: string,
+): Promise<VsCorpsScorePoint[]> => {
+  const r = await db.execute({
+    sql: `SELECT pct, total, date, event_label
+          FROM rm_vs_corps_scores WHERE corps_slug = ? AND season = ? ORDER BY pct`,
+    args: [slug.trim().toLowerCase(), season],
+  });
+  return (r.rows as any[]).map((row) => ({
+    pct: Number(row.pct),
+    total: Number(row.total),
+    date: row.date ?? '',
+    eventLabel: row.event_label ?? '',
+  }));
+};
+
+export const readVsBaselines = async (db: Client): Promise<VsBaselinePoint[]> => {
+  const r = await db.execute({
+    sql: `SELECT rank, bucket, total FROM rm_vs_baselines ORDER BY rank, bucket`,
+  });
+  return (r.rows as any[]).map((row) => ({
+    rank: Number(row.rank),
+    bucket: Number(row.bucket),
+    total: Number(row.total),
   }));
 };
 
