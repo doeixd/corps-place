@@ -3,7 +3,7 @@ import { useSession } from '@/lib/auth-client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icon';
-import { Badge } from '@/components/reui/badge';
+import { Badge } from '@/components/ui/badge';
 import { PageShell } from '@/components/page-shell';
 import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 import {
@@ -26,7 +26,7 @@ import {
 import { useState } from 'react';
 
 export const Route = createFileRoute('/jobs/$jobSlug')({
-  loader: async ({ params }) => getJobPosting({ slug: params.jobSlug }),
+  loader: async ({ params }) => getJobPosting({ data: { slug: params.jobSlug } }),
   head: ({ loaderData }) => {
     if (!loaderData) return seoHead({ title: 'Job Not Found — PageantryJobs', description: '' });
     const title = `${loaderData.title} — PageantryJobs`;
@@ -97,7 +97,7 @@ function JobDetail() {
     if (!session) return;
     setApplying(true);
     try {
-      await applyToJob({ postingId: job.posting_id });
+      await applyToJob({ data: { postingId: job.posting_id } });
       setApplied(true);
     } catch {
       /* ignore */
@@ -162,7 +162,7 @@ function JobDetail() {
               <Button
                 onClick={async () => {
                   if (confirm('Report this job posting as inappropriate?')) {
-                    await reportContent({ targetKind: 'posting', targetId: job.posting_id }).catch(
+                    await reportContent({ data: { targetKind: 'posting', targetId: job.posting_id } }).catch(
                       () => {}
                     );
                     alert('Report submitted. A moderator will review it.');
@@ -179,8 +179,10 @@ function JobDetail() {
                   onClick={async () => {
                     try {
                       const result = await createBoostCheckout({
-                        postingId: job.posting_id,
-                        slug: job.slug,
+                        data: {
+                          postingId: job.posting_id,
+                          slug: job.slug,
+                        },
                       });
                       if (result.url) window.location.href = result.url;
                     } catch (e) {
@@ -247,10 +249,10 @@ function BookmarkButton({ postingId }: { postingId: string }) {
         setToggling(true);
         try {
           if (bookmarked) {
-            await removeBookmark({ postingId });
+            await removeBookmark({ data: { postingId } });
             setBookmarked(false);
           } else {
-            await bookmarkJob({ postingId });
+            await bookmarkJob({ data: { postingId } });
             setBookmarked(true);
           }
         } catch {
@@ -299,7 +301,7 @@ function SimilarJobsSection({ location, slug }: { location: string; slug: string
   if (!similar) {
     // Simple client-side fetch for similar jobs by location
     import('@/lib/server-fns/jobs')
-      .then((m) => m.listJobs({ location, offset: 0, limit: 3 }))
+      .then((m) => m.listJobs({ data: { location, offset: 0, limit: 3 } }))
       .then((r) => setSimilar(r.rows.filter((j: any) => j.slug !== slug).slice(0, 3)))
       .catch(() => setSimilar([]));
   }

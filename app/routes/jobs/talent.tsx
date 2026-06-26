@@ -18,7 +18,7 @@ export const Route = createFileRoute('/jobs/talent')({
       path: '/jobs/talent',
       noindex: true,
     }),
-  loader: async () => searchTalent({ offset: 0, limit: 20 }),
+  loader: async () => searchTalent({ data: { offset: 0, limit: 20 } }),
   component: TalentPage,
 });
 
@@ -28,7 +28,7 @@ function TalentPage() {
 
   const [state, fetchMore, isPending] = useActionState(
     async (prev: typeof initial) => {
-      const next = await searchTalent({ offset: prev.rows.length, limit: 20 });
+      const next = await searchTalent({ data: { offset: prev.rows.length, limit: 20 } });
       return { rows: [...prev.rows, ...next.rows], total: next.total };
     },
     initial ?? { rows: [], total: 0 }

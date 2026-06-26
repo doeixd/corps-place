@@ -42,7 +42,7 @@ export function ShareButton({ url, title }: { url: string; title: string }) {
             <Icon icon={copied ? CheckmarkCircle02Icon : CheckmarkCircle02Icon} size="xs" />
             {copied ? 'Copied!' : 'Copy link'}
           </Button>
-        ) : (
+        ) : platform.url ? (
           <a
             key={platform.name}
             href={platform.url(url, title)}
@@ -52,7 +52,7 @@ export function ShareButton({ url, title }: { url: string; title: string }) {
           >
             {platform.name}
           </a>
-        )
+        ) : null
       )}
     </div>
   );

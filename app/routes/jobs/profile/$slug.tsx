@@ -1,14 +1,14 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
-import { Badge } from '@/components/reui/badge';
+import { Badge } from '@/components/ui/badge';
 import { PageShell } from '@/components/page-shell';
 import { seoHead, breadcrumbLd, clampDescription } from '@/lib/seo';
 import { getJobsProfile } from '@/lib/server-fns/jobs';
 import { UserMultipleIcon, Briefcase01Icon, SentIcon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/jobs/profile/$slug')({
-  loader: async ({ params }) => getJobsProfile({ slug: params.slug }),
+  loader: async ({ params }) => getJobsProfile({ data: { slug: params.slug } }),
   head: ({ loaderData }) => {
     const p = loaderData?.profile;
     const name = p?.display_name ?? 'Profile';

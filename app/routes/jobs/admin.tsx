@@ -30,14 +30,14 @@ function AdminPage() {
 
   const handleDismiss = async (flagId: string) => {
     setLoading(flagId);
-    await dismissFlag({ flagId });
+    await dismissFlag({ data: { flagId } });
     setFlags((prev) => prev.filter((f) => f.flag_id !== flagId));
     setLoading(null);
   };
 
   const handleAction = async (flagId: string) => {
     setLoading(flagId);
-    await actionFlag({ flagId });
+    await actionFlag({ data: { flagId } });
     setFlags((prev) => prev.filter((f) => f.flag_id !== flagId));
     setLoading(null);
   };

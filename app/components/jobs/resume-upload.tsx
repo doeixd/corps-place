@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/reui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/icon';
 import { uploadAndParseResume, saveJobsProfileBlock } from '@/lib/server-fns/jobs';
 import { AddCircleIcon } from '@/components/icons/generated';
@@ -38,7 +38,7 @@ export function ResumeUpload({ profileId, onComplete }: ResumeUploadProps) {
         reader.onerror = () => reject(new Error('Failed to read file'));
         reader.readAsDataURL(file);
       });
-      const result = await uploadAndParseResume({ base64, fileName: file.name });
+      const result = await uploadAndParseResume({ data: { base64, fileName: file.name } });
       if (result.ok && result.parsed) {
         setParsed(result.parsed);
       } else {
@@ -66,53 +66,61 @@ export function ResumeUpload({ profileId, onComplete }: ResumeUploadProps) {
     try {
       if (selected.has('summary') && parsed.profile.summary) {
         await saveJobsProfileBlock({
-          profileId,
-          kind: 'summary',
-          content: {
-            format: 'lexical',
-            version: 1,
-            doc: parsed.profile.summary,
-            plain: parsed.profile.summary.slice(0, 500),
+          data: {
+            profileId,
+            kind: 'summary',
+            content: {
+              format: 'lexical',
+              version: 1,
+              doc: parsed.profile.summary,
+              plain: parsed.profile.summary.slice(0, 500),
+            },
           },
         });
       }
 
       if (selected.has('experience') && parsed.experience.length > 0) {
         await saveJobsProfileBlock({
-          profileId,
-          kind: 'experience',
-          content: {
-            items: parsed.experience.map((e) => ({
-              org: e.company ?? '',
-              role: e.jobTitle ?? '',
-              startYear: '',
-              endYear: '',
-              description: e.descriptions?.join('\n') ?? '',
-            })),
+          data: {
+            profileId,
+            kind: 'experience',
+            content: {
+              items: parsed.experience.map((e) => ({
+                org: e.company ?? '',
+                role: e.jobTitle ?? '',
+                startYear: '',
+                endYear: '',
+                description: e.descriptions?.join('\n') ?? '',
+              })),
+            },
           },
         });
       }
 
       if (selected.has('education') && parsed.education.length > 0) {
         await saveJobsProfileBlock({
-          profileId,
-          kind: 'education',
-          content: {
-            items: parsed.education.map((e) => ({
-              school: e.school ?? '',
-              degree: e.degree ?? '',
-              field: '',
-              year: e.date ?? '',
-            })),
+          data: {
+            profileId,
+            kind: 'education',
+            content: {
+              items: parsed.education.map((e) => ({
+                school: e.school ?? '',
+                degree: e.degree ?? '',
+                field: '',
+                year: e.date ?? '',
+              })),
+            },
           },
         });
       }
 
       if (selected.has('skills') && parsed.skills.length > 0) {
         await saveJobsProfileBlock({
-          profileId,
-          kind: 'skills',
-          content: { items: parsed.skills.flatMap((s) => s.descriptions) },
+          data: {
+            profileId,
+            kind: 'skills',
+            content: { items: parsed.skills.flatMap((s) => s.descriptions) },
+          },
         });
       }
 

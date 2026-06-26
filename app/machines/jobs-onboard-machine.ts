@@ -60,23 +60,27 @@ export const jobsOnboardMachine = setup({
       }: {
         input: { kind: string; displayName: string; headline: string; location: string };
       }) => {
-        return upsertJobsProfile(input);
+        return upsertJobsProfile({ data: input });
       }
     ),
     saveStep2: fromPromise(
       async ({ input }: { input: { profileId: string; items: OnboardContext['experience'] } }) => {
         await saveJobsProfileBlock({
-          profileId: input.profileId,
-          kind: 'experience',
-          content: { items: input.items },
+          data: {
+            profileId: input.profileId,
+            kind: 'experience',
+            content: { items: input.items },
+          },
         });
       }
     ),
     saveStep3: fromPromise(async ({ input }: { input: { profileId: string; items: string[] } }) => {
       await saveJobsProfileBlock({
-        profileId: input.profileId,
-        kind: 'skills',
-        content: { items: input.items },
+        data: {
+          profileId: input.profileId,
+          kind: 'skills',
+          content: { items: input.items },
+        },
       });
     }),
     saveStep4: fromPromise(
@@ -86,14 +90,16 @@ export const jobsOnboardMachine = setup({
         input: { profileId: string; availability: Record<string, unknown> };
       }) => {
         await saveJobsProfileBlock({
-          profileId: input.profileId,
-          kind: 'availability',
-          content: input.availability,
+          data: {
+            profileId: input.profileId,
+            kind: 'availability',
+            content: input.availability,
+          },
         });
       }
     ),
     publish: fromPromise(async ({ input }: { input: { profileId: string } }) => {
-      return publishJobsProfile(input);
+      return publishJobsProfile({ data: input });
     }),
   },
 }).createMachine({

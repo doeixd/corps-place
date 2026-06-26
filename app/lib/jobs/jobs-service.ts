@@ -185,7 +185,7 @@ const makeJobsService = Effect.gen(function* () {
     args.push(ctx.now);
     args.push(profileId);
 
-    yield* sql(`UPDATE jobs_profile SET ${fields.join(', ')} WHERE profile_id = ?`).pipe(
+    yield* sql.unsafe(`UPDATE jobs_profile SET ${fields.join(', ')} WHERE profile_id = ?`, args).pipe(
       Effect.orDie
     );
   });
@@ -306,7 +306,7 @@ const makeJobsService = Effect.gen(function* () {
     sqlStr += ' ORDER BY is_boosted DESC, published_at DESC';
     sqlStr += ` LIMIT ${filters.limit ?? 20} OFFSET ${filters.offset ?? 0}`;
 
-    const rows = yield* sql<{
+    const rows = yield* sql.unsafe<{
       posting_id: string;
       employer_profile_id: string;
       slug: string;
@@ -322,10 +322,11 @@ const makeJobsService = Effect.gen(function* () {
       published_at: string | null;
       is_boosted: number;
       created_at: string;
-    }>(sqlStr).pipe(Effect.orDie);
+    }>(sqlStr, args).pipe(Effect.orDie);
 
-    const countRows = yield* sql<{ c: number }>(
-      `SELECT COUNT(*) AS c FROM jobs_posting WHERE ${conditions.join(' AND ')}`
+    const countRows = yield* sql.unsafe<{ c: number }>(
+      `SELECT COUNT(*) AS c FROM jobs_posting WHERE ${conditions.join(' AND ')}`,
+      args
     ).pipe(Effect.orDie);
 
     return { rows, total: Number(countRows[0]?.c ?? 0) };
@@ -468,7 +469,7 @@ const makeJobsService = Effect.gen(function* () {
     fields.push('updated_at = ?');
     args.push(ctx.now);
     args.push(postingId);
-    yield* sql(`UPDATE jobs_posting SET ${fields.join(', ')} WHERE posting_id = ?`).pipe(
+    yield* sql.unsafe(`UPDATE jobs_posting SET ${fields.join(', ')} WHERE posting_id = ?`, args).pipe(
       Effect.orDie
     );
 
@@ -600,7 +601,7 @@ const makeJobsService = Effect.gen(function* () {
           yield* sql`UPDATE jobs_profile SET location = ${profile.bioFacts.hometown}, updated_at = ${ctx.now} WHERE profile_id = ${profileId}`;
         }
         // Seed skills from caption assignments
-        const captions = [...new Set(profile.assignments.map((a) => a.caption).filter(Boolean))];
+        const captions = [...new Set(profile.assignments.map((a) => a.title).filter(Boolean))];
         if (captions.length > 0) {
           yield* writeBlock(profileId, 'skills', JSON.stringify({ items: captions }), ctx);
         }
@@ -621,8 +622,8 @@ const makeJobsService = Effect.gen(function* () {
         if (profile.assignments.length > 0) {
           const exp = {
             items: profile.assignments.map((a) => ({
-              org: a.competition_name ?? '',
-              role: `Judge — ${a.caption ?? ''}`,
+              org: a.event_name ?? '',
+              role: `Judge — ${a.caption_name ?? ''}`,
               startYear: a.season ?? '',
               endYear: a.season ?? '',
             })),
@@ -727,7 +728,7 @@ const makeJobsService = Effect.gen(function* () {
     sqlStr += ' ORDER BY p.updated_at DESC';
     sqlStr += ` LIMIT ${filters.limit ?? 20} OFFSET ${filters.offset ?? 0}`;
 
-    const rows = yield* sql<{
+    const rows = yield* sql.unsafe<{
       profile_id: string;
       slug: string;
       display_name: string;
@@ -736,7 +737,7 @@ const makeJobsService = Effect.gen(function* () {
       created_at: string;
     }>(sqlStr).pipe(Effect.orDie);
 
-    const countRows = yield* sql<{ c: number }>(
+    const countRows = yield* sql.unsafe<{ c: number }>(
       `SELECT COUNT(*) AS c FROM jobs_profile p WHERE p.kind = 'employee' AND p.status = 'published'`
     ).pipe(Effect.orDie);
 
@@ -808,8 +809,9 @@ const makeJobsService = Effect.gen(function* () {
       profile_id: string;
       entity_type: string;
       entity_id: string;
+      status: string;
       claimed_at: string;
-    }>`SELECT c.claim_id, c.user_id, c.profile_id, c.entity_type, c.entity_id, c.claimed_at
+    }>`SELECT c.claim_id, c.user_id, c.profile_id, c.entity_type, c.entity_id, c.status, c.claimed_at
        FROM jobs_person_claim c
        WHERE c.status = 'active'
        ORDER BY c.claimed_at DESC LIMIT 50`;

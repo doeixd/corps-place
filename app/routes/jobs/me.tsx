@@ -5,7 +5,7 @@ import { Match } from 'effect';
 import { useSession } from '@/lib/auth-client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/reui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
@@ -207,7 +207,7 @@ function ProfileTab({ initial, snapshot, send }: { initial: any; snapshot: any; 
 // ── Applications tab ─────────────────────────────────────────────────────────
 
 function ApplicationsTab() {
-  const [apps, setApps] = useState<any[] | null>(null);
+  const [apps, setApps] = useState<Awaited<ReturnType<typeof getMyApplications>> | null>(null);
   if (!apps) {
     getMyApplications()
       .then(setApps)
@@ -256,7 +256,7 @@ function ApplicationsTab() {
 // ── Bookmarks tab ────────────────────────────────────────────────────────────
 
 function BookmarksTab() {
-  const [bms, setBms] = useState<any[] | null>(null);
+  const [bms, setBms] = useState<Awaited<ReturnType<typeof getMyBookmarks>> | null>(null);
   if (!bms) {
     getMyBookmarks()
       .then(setBms)
@@ -303,7 +303,7 @@ function BookmarksTab() {
 // ── Alerts tab ───────────────────────────────────────────────────────────────
 
 function AlertsTab() {
-  const [alerts, setAlerts] = useState<any[] | null>(null);
+  const [alerts, setAlerts] = useState<Awaited<ReturnType<typeof listMyAlerts>> | null>(null);
   const [saving, setSaving] = useState(false);
   const [newKeyword, setNewKeyword] = useState('');
 
@@ -319,8 +319,10 @@ function AlertsTab() {
     setSaving(true);
     try {
       await createJobAlert({
-        kind: 'employee',
-        filtersJson: JSON.stringify({ q: newKeyword.trim() }),
+        data: {
+          kind: 'employee',
+          filtersJson: JSON.stringify({ q: newKeyword.trim() }),
+        },
       });
       setNewKeyword('');
       setAlerts(await listMyAlerts());
@@ -332,7 +334,7 @@ function AlertsTab() {
   };
 
   const removeAlert = async (alertId: string) => {
-    await deleteJobAlert({ alertId });
+    await deleteJobAlert({ data: { alertId } });
     setAlerts((prev) => prev?.filter((a) => a.alert_id !== alertId) ?? []);
   };
 

@@ -59,20 +59,22 @@ function PostJobPage() {
     setError(null);
     try {
       const result = await createJobPosting({
-        title: title.trim(),
-        location,
-        remoteOk,
-        compText,
-        salaryMin: salaryMin ? Number(salaryMin) : null,
-        salaryMax: salaryMax ? Number(salaryMax) : null,
-        applyUrl,
-        applyEmail,
-        contentJson: JSON.stringify({
-          format: 'lexical',
-          version: 1,
-          doc: body,
-          plain: body.replace(/<[^>]*>/g, '').slice(0, 500),
-        }),
+        data: {
+          title: title.trim(),
+          location,
+          remoteOk,
+          compText,
+          salaryMin: salaryMin ? Number(salaryMin) : null,
+          salaryMax: salaryMax ? Number(salaryMax) : null,
+          applyUrl,
+          applyEmail,
+          contentJson: JSON.stringify({
+            format: 'lexical',
+            version: 1,
+            doc: body,
+            plain: body.replace(/<[^>]*>/g, '').slice(0, 500),
+          }),
+        },
       });
       if (result.ok) {
         setDone(true);

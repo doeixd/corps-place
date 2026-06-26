@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/reui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
@@ -24,7 +24,7 @@ export const Route = createFileRoute('/jobs/board')({
         ]),
       ],
     }),
-  loader: async () => listJobs({ offset: 0, limit: 20 }),
+  loader: async () => listJobs({ data: { offset: 0, limit: 20 } }),
   component: BoardPage,
 });
 
@@ -36,7 +36,7 @@ function BoardPage() {
 
   const doSearch = async () => {
     setLoading(true);
-    const results = await listJobs({ keyword: keyword || undefined, offset: 0, limit: 20 });
+    const results = await listJobs({ data: { keyword: keyword || undefined, offset: 0, limit: 20 } });
     setData(results);
     setLoading(false);
   };
@@ -44,9 +44,11 @@ function BoardPage() {
   const loadMore = async () => {
     setLoading(true);
     const next = await listJobs({
-      keyword: keyword || undefined,
-      offset: data.rows.length,
-      limit: 20,
+      data: {
+        keyword: keyword || undefined,
+        offset: data.rows.length,
+        limit: 20,
+      },
     });
     setData((prev) => ({ rows: [...prev.rows, ...next.rows], total: next.total }));
     setLoading(false);

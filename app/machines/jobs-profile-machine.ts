@@ -44,11 +44,11 @@ export const jobsProfileMachine = setup({
       }: {
         input: { kind: string; displayName: string; headline: string; location: string };
       }) => {
-        return upsertJobsProfile(input);
+        return upsertJobsProfile({ data: input });
       }
     ),
     publishProfile: fromPromise(async ({ input }: { input: { profileId: string } }) => {
-      return publishJobsProfile(input);
+      return publishJobsProfile({ data: input });
     }),
   },
 }).createMachine({

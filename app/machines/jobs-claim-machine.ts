@@ -20,6 +20,7 @@ export interface ClaimContext {
   candidates: ClaimCandidate[];
   claims: ClaimRow[];
   search: string;
+  userName: string;
   claimingId: string | null;
   error: string | null;
 }
@@ -42,27 +43,35 @@ export const jobsClaimMachine = setup({
   },
   actors: {
     fetchSuggestions: fromPromise(async ({ input }: { input: { userName: string } }) => {
-      return suggestClaimMatches({ userName: input.userName });
+      return suggestClaimMatches({ data: { userName: input.userName } });
     }),
     searchCandidates: fromPromise(async ({ input }: { input: { search: string } }) => {
-      return suggestClaimMatches({ userName: input.search });
+      return suggestClaimMatches({ data: { userName: input.search } });
     }),
     doClaim: fromPromise(async ({ input }: { input: { entityType: string; entityId: string } }) => {
-      return claimPerson(input);
+      return claimPerson({ data: input });
     }),
     fetchClaims: fromPromise(async () => getMyClaims()),
   },
 }).createMachine({
   id: 'jobsClaim',
-  initial: 'idle',
+  initial: 'init',
   context: ({ input }) => ({
     candidates: [],
     claims: input?.initialClaims ?? [],
     search: '',
+    userName: input?.userName ?? '',
     claimingId: null,
     error: null,
   }),
   states: {
+    // One-shot entry router: auto-suggest when a userName was provided.
+    init: {
+      always: [
+        { target: 'suggesting', guard: ({ context }) => context.userName.length > 0 },
+        { target: 'idle' },
+      ],
+    },
     idle: {
       on: {
         SEARCH: { target: 'searching', actions: assign({ search: ({ event }) => event.search }) },
@@ -71,13 +80,11 @@ export const jobsClaimMachine = setup({
           actions: assign({ claimingId: ({ event }) => `${event.entityType}:${event.entityId}` }),
         },
       },
-      ...(({ input }: { input: ClaimInput }) =>
-        input?.userName ? { initial: 'suggesting' } : {})(),
     },
     suggesting: {
       invoke: {
         src: 'fetchSuggestions',
-        input: ({ context, input }) => ({ userName: input?.userName ?? '' }),
+        input: ({ context }) => ({ userName: context.userName }),
         onDone: {
           target: 'idle',
           actions: assign({ candidates: ({ event }) => event.output }),
@@ -124,7 +131,7 @@ export const jobsClaimMachine = setup({
         src: 'fetchClaims',
         onDone: {
           target: 'idle',
-          actions: assign({ claims: ({ event }) => event.output }),
+          actions: assign({ claims: ({ event }) => [...event.output] }),
         },
         onError: { target: 'idle' },
       },

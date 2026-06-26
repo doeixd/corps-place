@@ -893,7 +893,7 @@ const makeDraftService = Effect.gen(function* () {
     let started = 0;
     for (const r of due) {
       const res = yield* start(r.league_id).pipe(
-        Effect.catchAll(() => Effect.succeed({ ok: false as const }))
+        Effect.catch(() => Effect.succeed({ ok: false as const }))
       );
       if (res.ok) started++;
     }
