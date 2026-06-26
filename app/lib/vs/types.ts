@@ -29,6 +29,10 @@ export interface VsLine {
 export interface VsPoint {
   pct: number;
   value: number;
+  /** Uncertainty band bounds, on predicted points only — render as a shaded
+   *  area. Both present or both absent. */
+  low?: number;
+  high?: number;
   /** Real calendar date of the underlying event, when the series is date-bearing
    *  (corps actuals, predictions). Absent for baselines. */
   date?: string;

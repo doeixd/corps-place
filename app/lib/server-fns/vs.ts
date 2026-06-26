@@ -71,7 +71,20 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
         (db) => buildVsCorps2026Predicted(db, s.corpsSlug)
       ).catch(() => []);
       if (pred.length) {
-        lines.push({ style: 'dashed', points: pred.map((p) => ({ pct: p.pct, value: p.predicted })) });
+        lines.push({
+          style: 'dashed',
+          points: pred.map((p) => {
+            // Band narrows from ~4pts early to ~1.5pts near finals (matches the
+            // single-corps chart's derived uncertainty).
+            const margin = 1.5 + 2.5 * (1 - Math.min(Math.max(p.pct, 0), 100) / 100);
+            return {
+              pct: p.pct,
+              value: p.predicted,
+              low: Number((p.predicted - margin).toFixed(2)),
+              high: Number((p.predicted + margin).toFixed(2)),
+            };
+          }),
+        });
       }
     }
     return {

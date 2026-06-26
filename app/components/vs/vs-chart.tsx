@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   ResponsiveContainer,
   ComposedChart,
+  Area,
   Line,
   XAxis,
   YAxis,
@@ -22,7 +23,7 @@ import { VsLegend, VsTooltip, type VsCellMeta, type VsLegendItem } from './chart
 interface MergedRow {
   pct: number;
   __meta: Record<string, VsCellMeta>;
-  [dataKey: string]: number | Record<string, VsCellMeta>;
+  [dataKey: string]: number | [number, number] | Record<string, VsCellMeta>;
 }
 
 const lineKey = (seriesId: string, lineIdx: number) => `${seriesId}@@${lineIdx}`;
@@ -46,6 +47,7 @@ function mergeRows(series: VsResolvedSeries[]): MergedRow[] {
       for (const p of line.points) {
         const row = rowFor(p.pct);
         row[key] = p.value;
+        if (p.low != null && p.high != null) row[`${key}__band`] = [p.low, p.high];
         row.__meta[key] = {
           seriesId: s.id,
           seriesLabel: s.label,
@@ -123,6 +125,26 @@ export function VsChart({
                 width={40}
               />
               <Tooltip content={<VsTooltip />} />
+              {/* Uncertainty bands first (behind the lines). */}
+              {colored.flatMap((s) =>
+                s.lines.flatMap((line, li) =>
+                  line.points.some((p) => p.low != null && p.high != null)
+                    ? [
+                        <Area
+                          key={`${lineKey(s.id, li)}__band`}
+                          dataKey={`${lineKey(s.id, li)}__band`}
+                          stroke="none"
+                          fill={s.color}
+                          fillOpacity={0.12}
+                          connectNulls
+                          legendType="none"
+                          activeDot={false}
+                          isAnimationActive={false}
+                        />,
+                      ]
+                    : []
+                )
+              )}
               {colored.flatMap((s) =>
                 s.lines.map((line, li) => (
                   <Line
