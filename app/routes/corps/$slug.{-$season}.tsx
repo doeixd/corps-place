@@ -371,7 +371,7 @@ function CorpsDetailPage() {
                     single-corps chart above stays; VS is where you stack others. */}
                 <Link
                   to="/vs"
-                  search={{ s: `corps~${slug}~2026` }}
+                  search={{ s: `corps~${slug}~2026,corps~${slug}~2025` }}
                   className="shrink-0 text-sm font-medium text-primary hover:underline"
                 >
                   Add more to compare →
