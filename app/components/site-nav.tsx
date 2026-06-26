@@ -65,7 +65,7 @@ export function SiteNav() {
       >
         <Link
           to="/"
-          className="mb-6 flex items-center gap-2.5 px-2 focus-visible:outline-none"
+          className="mb-6 flex items-center justify-center gap-2.5 px-2 focus-visible:outline-none xl:justify-start"
           aria-label="DrumCorps.app home"
         >
           <Logo aria-hidden="true" className="size-8 shrink-0" />
@@ -83,7 +83,7 @@ export function SiteNav() {
                 className: 'font-semibold text-text-primary bg-accent [&_svg]:text-primary',
               }}
               inactiveProps={{ className: 'text-text-secondary' }}
-              className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent hover:text-text-primary xl:px-3"
+              className="flex items-center justify-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent hover:text-text-primary xl:justify-start xl:px-3"
             >
               <NavIcon icon={item.icon} className="size-6 shrink-0" count={countFor(item.to)} />
               <span className="hidden text-[15px] xl:inline">{item.label}</span>
