@@ -179,6 +179,10 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
         />
       </div>
 
+      {/* Top of the list: the staff list is virtualized + very long, so a footer
+          disclaimer is never scrolled into view. */}
+      <DataDisclaimer className="mb-4" />
+
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,
@@ -213,8 +217,6 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
       {rows.length === 0 && (
         <p className="mt-8 text-center text-sm text-muted-foreground">No staff match "{query}".</p>
       )}
-
-      <DataDisclaimer />
     </PageShell>
   );
 }

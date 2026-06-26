@@ -117,6 +117,9 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
         </div>
       </div>
 
+      {/* At the top so it's actually seen on a long judge list. */}
+      <DataDisclaimer className="mb-4" />
+
       <SeasonChips
         seasons={seasons}
         value={filter.season}
@@ -225,8 +228,6 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
           )}
         />
       </Show>
-
-      <DataDisclaimer />
     </PageShell>
   );
 }
