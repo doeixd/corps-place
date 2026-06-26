@@ -11,7 +11,7 @@ import { hexToOklch, oklchToRgb, rgbToHex } from '@sdk/src/corpsColors.js';
 // Bump when the favicon artwork or generation rules change. Both the default
 // icon and generated corps icon include this token so browser/SW caches cannot
 // pin old artwork across deploys.
-export const APP_ICON_VERSION = '2';
+export const APP_ICON_VERSION = '3';
 export const DEFAULT_APP_ICON_HREF = `/favicon.svg?v=${APP_ICON_VERSION}`;
 
 const FAVORITE_ICON_PATH =
