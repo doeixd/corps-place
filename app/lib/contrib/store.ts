@@ -16,6 +16,7 @@ import { durableStorageStatus } from '@/lib/contributions-db';
  */
 
 export type OverrideState = 'edited' | 'added' | 'hidden';
+export type ShowPageLock = 'none' | 'trusted' | 'mod';
 
 export interface WriteContext {
   authorId: string;
@@ -121,6 +122,54 @@ export const listRevisions = async (db: Client, pageId: string, limit = 200) => 
     args: [pageId, limit],
   });
   return r.rows;
+};
+
+export interface StewardSummary {
+  stewardCount: number;
+  mySteward: boolean;
+  stewards: {
+    userId: string;
+    name: string | null;
+    createdAt: string;
+  }[];
+}
+
+/** Stewards (page watchers) for a page + whether the viewer is one (M9 governance). */
+export const readStewardSummary = async (
+  db: Client,
+  pageId: string | null,
+  userId: string | null
+): Promise<StewardSummary> => {
+  if (!pageId) return { stewardCount: 0, mySteward: false, stewards: [] };
+  const [count, mine, stewards] = await Promise.all([
+    db.execute({
+      sql: 'SELECT COUNT(*) AS n FROM show_stewards WHERE page_id = ?',
+      args: [pageId],
+    }),
+    userId
+      ? db.execute({
+          sql: 'SELECT 1 FROM show_stewards WHERE page_id = ? AND user_id = ? LIMIT 1',
+          args: [pageId, userId],
+        })
+      : Promise.resolve({ rows: [] }),
+    db.execute({
+      sql: `SELECT s.user_id, u.name, s.created_at
+            FROM show_stewards s LEFT JOIN "user" u ON u.id = s.user_id
+            WHERE s.page_id = ?
+            ORDER BY s.created_at ASC, s.user_id ASC
+            LIMIT 8`,
+      args: [pageId],
+    }),
+  ]);
+  return {
+    stewardCount: Number(count.rows[0]?.n ?? 0),
+    mySteward: mine.rows.length > 0,
+    stewards: (stewards.rows as unknown as Record<string, unknown>[]).map((row) => ({
+      userId: String(row.user_id),
+      name: (row.name as string) ?? null,
+      createdAt: String(row.created_at),
+    })),
+  };
 };
 
 // ── Writes ─────────────────────────────────────────────────────────────────
@@ -364,6 +413,83 @@ export const writeBlock = async (
     });
     await tx.commit();
     return blockId;
+  } catch (e) {
+    await tx.rollback();
+    throw e;
+  }
+};
+
+/** Add/remove the actor as a steward (page watcher) + record the revision (M9). */
+export const setPageSteward = async (
+  db: Client,
+  pageId: string,
+  steward: boolean,
+  ctx: WriteContext
+): Promise<void> => {
+  assertWritable();
+  const tx = await db.transaction('write');
+  try {
+    if (steward) {
+      await tx.execute({
+        sql: 'INSERT OR IGNORE INTO show_stewards (page_id, user_id, created_at) VALUES (?, ?, ?)',
+        args: [pageId, ctx.authorId, ctx.now],
+      });
+    } else {
+      await tx.execute({
+        sql: 'DELETE FROM show_stewards WHERE page_id = ? AND user_id = ?',
+        args: [pageId, ctx.authorId],
+      });
+    }
+    await touchPage(tx, pageId, ctx.now);
+    await insertRevision(tx, {
+      pageId,
+      targetKind: 'page',
+      targetId: pageId,
+      op: steward ? 'steward' : 'unsteward',
+      before: null,
+      after: JSON.stringify({ steward }),
+      summary: steward ? 'Started stewarding this page' : 'Stopped stewarding this page',
+      ctx,
+    });
+    await tx.commit();
+  } catch (e) {
+    await tx.rollback();
+    throw e;
+  }
+};
+
+/** Set a page's edit lock level (moderator) + record the revision (M9, §6.4). */
+export const setPageLockLevel = async (
+  db: Client,
+  pageId: string,
+  lockLevel: ShowPageLock,
+  ctx: WriteContext
+): Promise<void> => {
+  assertWritable();
+  const tx = await db.transaction('write');
+  try {
+    const prev = (
+      await tx.execute({
+        sql: 'SELECT lock_level FROM show_pages WHERE page_id = ? LIMIT 1',
+        args: [pageId],
+      })
+    ).rows[0] as unknown as { lock_level: string } | undefined;
+    const before = prev?.lock_level ?? 'none';
+    await tx.execute({
+      sql: 'UPDATE show_pages SET lock_level = ?, updated_at = ? WHERE page_id = ?',
+      args: [lockLevel, ctx.now, pageId],
+    });
+    await insertRevision(tx, {
+      pageId,
+      targetKind: 'page',
+      targetId: pageId,
+      op: 'lock',
+      before: JSON.stringify({ lockLevel: before }),
+      after: JSON.stringify({ lockLevel }),
+      summary: `Set page lock to ${lockLevel}`,
+      ctx,
+    });
+    await tx.commit();
   } catch (e) {
     await tx.rollback();
     throw e;

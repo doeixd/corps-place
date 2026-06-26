@@ -8,10 +8,16 @@ import {
   writeBlock,
   writeOverride,
   readShowPageContributions,
+  readStewardSummary,
+  setPageSteward,
+  setPageLockLevel,
   type PageContributions,
   type OverrideState,
+  type ShowPageLock,
+  type StewardSummary,
 } from '@/lib/contrib/store';
-import { requireCapability, type PageLock } from '@/lib/authz';
+import { can, getActor, requireCapability, type PageLock } from '@/lib/authz';
+import { enforceRateLimit } from '@/lib/contrib/rate-limit';
 import {
   BLOCK_SCHEMAS,
   RepertoireRowInputSchema,
@@ -36,6 +42,121 @@ export const getShowContributions = createServerFn({ method: 'GET' })
   .handler(async ({ data }): Promise<PageContributions> => {
     const db = await getContributionsDb();
     return readShowPageContributions(db, data.corpsKey, data.season);
+  });
+
+// ── Governance: page lock level + stewards (M9) ───────────────────────────────
+export interface ShowGovernance {
+  pageId: string | null;
+  lockLevel: ShowPageLock;
+  status: string;
+  stewardCount: number;
+  mySteward: boolean;
+  stewards: StewardSummary['stewards'];
+  signedIn: boolean;
+  canLock: boolean;
+  canModerate: boolean;
+}
+
+const SHOW_PAGE_LOCKS = ['none', 'trusted', 'mod'] as const satisfies readonly ShowPageLock[];
+
+const parseShowPageLock = (value: unknown): ShowPageLock => {
+  if (SHOW_PAGE_LOCKS.includes(value as ShowPageLock)) return value as ShowPageLock;
+  throw new Error('Invalid page lock level');
+};
+
+const pageGovernance = async (
+  db: Awaited<ReturnType<typeof getContributionsDb>>,
+  corpsKey: string,
+  season: string,
+  userId: string | null,
+  canLockPage: boolean,
+  canModerate: boolean
+): Promise<ShowGovernance> => {
+  const page = (
+    await db.execute({
+      sql: 'SELECT page_id, lock_level, status FROM show_pages WHERE corps_key = ? AND season = ? LIMIT 1',
+      args: [corpsKey, season],
+    })
+  ).rows[0] as unknown as { page_id: string; lock_level: ShowPageLock; status: string } | undefined;
+  const steward: StewardSummary = await readStewardSummary(db, page?.page_id ?? null, userId);
+  return {
+    pageId: page?.page_id ?? null,
+    lockLevel: page?.lock_level ?? 'none',
+    status: page?.status ?? 'active',
+    stewardCount: steward.stewardCount,
+    mySteward: steward.mySteward,
+    stewards: steward.stewards,
+    signedIn: userId != null,
+    canLock: canLockPage,
+    canModerate,
+  };
+};
+
+export const getShowGovernance = createServerFn({ method: 'GET' })
+  .validator((data: { corpsKey: string; season: string }) => data)
+  .handler(async ({ data }): Promise<ShowGovernance> => {
+    const db = await getContributionsDb();
+    const actor = await getActor(getWebRequest());
+    return pageGovernance(
+      db,
+      data.corpsKey,
+      data.season,
+      actor?.userId ?? null,
+      can(actor, 'lock'),
+      can(actor, 'orphan')
+    );
+  });
+
+/** Steward (watch) or unsteward a page — any signed-in editor. Returns fresh state. */
+export const setShowSteward = createServerFn({ method: 'POST' })
+  .validator((data: { corpsKey: string; season: string; steward: boolean }) => data)
+  .handler(async ({ data }): Promise<ShowGovernance> => {
+    const actor = await requireCapability(getWebRequest(), 'edit');
+    const now = new Date().toISOString();
+    const db = await getContributionsDb();
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now };
+    const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
+    await setPageSteward(db, pageId, data.steward, ctx);
+    return pageGovernance(
+      db,
+      data.corpsKey,
+      data.season,
+      actor.userId,
+      can(actor, 'lock'),
+      can(actor, 'orphan')
+    );
+  });
+
+/** Raise/clear a page's edit lock (moderator) — requires the `lock` capability. */
+export const setShowLockLevel = createServerFn({ method: 'POST' })
+  .validator((data: { corpsKey: string; season: string; lockLevel: unknown }) => ({
+    ...data,
+    lockLevel: parseShowPageLock(data.lockLevel),
+  }))
+  .handler(async ({ data }): Promise<ShowGovernance> => {
+    const actor = await requireCapability(getWebRequest(), 'lock');
+    const now = new Date().toISOString();
+    const db = await getContributionsDb();
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now };
+    const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
+    await setPageLockLevel(db, pageId, data.lockLevel, ctx);
+    return pageGovernance(db, data.corpsKey, data.season, actor.userId, true, can(actor, 'orphan'));
+  });
+
+/** Mark/unmark a page orphaned (moderator). Never deletes contributions (§12). */
+export const setShowOrphaned = createServerFn({ method: 'POST' })
+  .validator((data: { corpsKey: string; season: string; orphaned: boolean }) => data)
+  .handler(async ({ data }): Promise<ShowGovernance> => {
+    const actor = await requireCapability(getWebRequest(), 'orphan');
+    const now = new Date().toISOString();
+    const db = await getContributionsDb();
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now };
+    const pageId = await ensureShowPage(db, data.corpsKey, data.season, ctx);
+    await db.execute({
+      sql: 'UPDATE show_pages SET status = ?, updated_at = ? WHERE page_id = ?',
+      args: [data.orphaned ? 'orphaned' : 'active', now, pageId],
+    });
+    return pageGovernance(db, data.corpsKey, data.season, actor.userId, can(actor, 'lock'), true);
   });
 
 // ── Read: full edit history for a show (public — the wiki's transparency) ─────
@@ -186,6 +307,7 @@ export const saveShowBlock = createServerFn({ method: 'POST' })
 
     // The chokepoint: throws ForbiddenError if not allowed (I-12).
     const actor = await requireCapability(getWebRequest(), 'edit', { lockLevel });
+    await enforceRateLimit(db, actor, 'edit');
 
     // Domain normalization the schema can't express (e.g. hex colors).
     const normalized =
@@ -267,8 +389,7 @@ export const saveShowOverride = createServerFn({ method: 'POST' })
       })
     ).rows[0]?.lock_level ?? 'none') as PageLock;
     const actor = await requireCapability(getWebRequest(), 'edit', { lockLevel });
-    // TODO(rate-limit): the reverted branch called enforceRateLimit(db, actor,
-    // 'edit') here; the rate-limit subsystem is not on master yet, so it's omitted.
+    await enforceRateLimit(db, actor, 'edit');
 
     const now = new Date().toISOString();
     const ctx = { authorId: actor.userId, actorRole: actor.role, now };

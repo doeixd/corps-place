@@ -95,6 +95,14 @@ const SCHEMA = [
      created_at TEXT NOT NULL,
      PRIMARY KEY (page_id, user_id)
    )`,
+  // Sliding-window write ledger for base-`user` rate limiting (M9 spam-resistance).
+  `CREATE TABLE IF NOT EXISTS contrib_rate_events (
+     event_id   TEXT PRIMARY KEY,
+     user_id    TEXT NOT NULL,
+     action     TEXT NOT NULL,              -- edit | upload
+     created_at TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_rate_user_action ON contrib_rate_events (user_id, action, created_at)`,
   // Per-row overlay for SEEDABLE pinned sections (repertoire/staff/movements/media).
   `CREATE TABLE IF NOT EXISTS show_block_overrides (
      override_id     TEXT PRIMARY KEY,

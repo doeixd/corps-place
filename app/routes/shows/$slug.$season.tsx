@@ -5,7 +5,8 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { fadeIn } from '@/lib/motion-variants';
 import { getCorps, getShowDetail } from '@/lib/server-fns/hybrid';
-import { getShowContributions, getShowHistory } from '@/lib/server-fns/contrib';
+import { getShowContributions, getShowHistory, getShowGovernance } from '@/lib/server-fns/contrib';
+import { PageGovernancePanel } from '@/components/contrib/page-governance-panel';
 import { UniformSection } from '@/components/contrib/uniform-section';
 import { CoverSection } from '@/components/contrib/cover-section';
 import { StaffSection } from '@/components/contrib/staff-section';
@@ -48,14 +49,21 @@ export const Route = createFileRoute('/shows/$slug/$season')({
     // show / contributions / history / citations each depend only on the corps key —
     // NOT on one another — so fetch them in one parallel batch instead of a 4-deep
     // server-fn waterfall (one round-trip instead of four after the corps lookup).
-    const [show, contributions, history, citations] = key
+    const [show, contributions, history, citations, governance] = key
       ? await Promise.all([
           getShowDetail({ data: { corpsKey: key, season } }),
           getShowContributions({ data: { corpsKey: key, season } }),
           getShowHistory({ data: { corpsKey: key, season } }),
           listCitations({ data: { corpsKey: key, season } }),
+          getShowGovernance({ data: { corpsKey: key, season } }),
         ])
-      : [null, null, [] as Awaited<ReturnType<typeof getShowHistory>>, [] as Awaited<ReturnType<typeof listCitations>>];
+      : [
+          null,
+          null,
+          [] as Awaited<ReturnType<typeof getShowHistory>>,
+          [] as Awaited<ReturnType<typeof listCitations>>,
+          null as Awaited<ReturnType<typeof getShowGovernance>> | null,
+        ];
     // Authored contributions overlay (uniform/props/links, free-form concept).
     const blockContent = <T,>(key: string): T | null => {
       const block = contributions?.blocks.find((b) => b.pinned_key === key);
@@ -77,7 +85,7 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       about: blockContent<FreeFormDoc>('about'),
     };
     const overrides = contributions?.overrides ?? [];
-    return { corps, show, season, authored, history, citations, overrides };
+    return { corps, show, season, authored, history, citations, overrides, governance };
   },
   head: ({ loaderData, params }) => {
     const d = loaderData;
@@ -128,7 +136,8 @@ export const Route = createFileRoute('/shows/$slug/$season')({
 });
 
 function ShowDetailPage() {
-  const { corps, show, season, authored, history, citations, overrides } = Route.useLoaderData();
+  const { corps, show, season, authored, history, citations, overrides, governance } =
+    Route.useLoaderData();
   const { slug } = Route.useParams();
 
   if (!corps || !show) {
@@ -294,7 +303,14 @@ function ShowDetailPage() {
             )}
           </Show>
         </motion.div>
-        <aside className="lg:w-80 lg:shrink-0">
+        <aside className="space-y-4 lg:w-80 lg:shrink-0">
+          {governance && (governance.canLock || governance.canModerate) ? (
+            <PageGovernancePanel
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={governance}
+            />
+          ) : null}
           <HistoryPanel corpsKey={corps.corps_key} season={show.season} initial={history} />
         </aside>
       </div>
