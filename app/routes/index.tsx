@@ -201,6 +201,10 @@ function Home() {
           <Link to="/terms-of-service" className="hover:text-text-secondary transition-colors">
             Terms of Service
           </Link>
+          <span className="mx-2 text-border">·</span>
+          <Link to="/contact" className="hover:text-text-secondary transition-colors">
+            Contact
+          </Link>
         </p>
       </footer>
     </PageShell>

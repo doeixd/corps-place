@@ -87,9 +87,10 @@ export function ClassBadge({
       className={cn('leading-none', iconPill ? 'gap-0 px-1' : 'gap-1', className)}
     >
       {BadgeIcon ? <Icon icon={BadgeIcon} size="sm" className="size-3 shrink-0" /> : null}
-      <span className={cn('relative top-px', iconPill && 'sr-only')}>
-        {classShortName(division)}
-      </span>
+      {/* icon-only: pure `sr-only` (absolute, out of flow) so the icon truly
+          centers — NOT `relative` too, which would keep the 1px label in flow and
+          shove the icon left-of-center. Labeled: nudge the text baseline. */}
+      <span className={iconPill ? 'sr-only' : 'relative top-px'}>{classShortName(division)}</span>
     </Badge>
   );
 
