@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { Show, For } from 'jotai-solid-api';
 import * as Match from 'effect/Match';
 import * as Predicate from 'effect/Predicate';
@@ -17,8 +17,10 @@ import { ClassBadge } from '@/components/class-badge';
 import { CorpsNameCell } from '@/components/corps-name-cell';
 import { Icon, type IconComponent } from '@/components/icon';
 import type { EventDirectoryRow, EventScheduleRow } from '@/lib/event-directory';
-import { MapsLocation02Icon } from '@/components/icons/generated';
+import { MapsLocation02Icon, ArrowDown01Icon } from '@/components/icons/generated';
 import type { ShowInfoSummary } from '@sdk/src/readModel/builders/shows.js';
+import { getShowPreviews, type ShowPreviewData } from '@/lib/server-fns/contrib';
+import { LineupRowExpanded } from '@/components/contrib/lineup-row-expanded';
 
 interface ScheduleRow {
   order: number | null;
@@ -97,6 +99,7 @@ export function LineupSchedule({
   showTitles,
   showInfo,
   corpsLookup,
+  season: seasonProp,
 }: {
   event: EventDirectoryRow | null;
   schedule: EventScheduleRow[];
@@ -107,7 +110,21 @@ export function LineupSchedule({
         slug: string | null;
       }
     | undefined;
+  /** The season for the show-page links/preview fetch. Falls back to the
+   *  event's season / start-date year when not threaded by the caller. */
+  season?: string;
 }) {
+  // The lineup needs the season for /shows/<slug>/<season> + getShowPreviews.
+  // EventDirectoryRow.season is omitted on the single-season query, so fall
+  // back to the start_date year.
+  const season =
+    seasonProp ?? event?.season ?? (event?.start_date ? event.start_date.slice(0, 4) : '');
+
+  // Expanded rows (corpsKey:season) + a preview cache filled by the first batch.
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
+  const [previews, setPreviews] = useState<Map<string, ShowPreviewData>>(() => new Map());
+  const [loading, setLoading] = useState(false);
+
   const rows = useMemo<ScheduleRow[]>(
     () =>
       (schedule ?? []).map((r) => ({
@@ -126,6 +143,34 @@ export function LineupSchedule({
         showInfo: r.corps_key ? showInfo?.[r.corps_key] : undefined,
       })),
     [schedule, showInfo, showTitles]
+  );
+
+  // On first expand of any row, batch-fetch previews for ALL visible
+  // performance rows; cache the results so later expands are instant.
+  const toggleRow = useCallback(
+    (key: string) => {
+      setExpanded((prev) => {
+        const next = new Set(prev);
+        if (next.has(key)) next.delete(key);
+        else next.add(key);
+        return next;
+      });
+      if (previews.size > 0 || loading || !season) return;
+      const corpsSeasons = rows
+        .filter((r) => r.kind === 'performance' && r.corpsKey)
+        .map((r) => ({ corpsKey: r.corpsKey as string, season }));
+      if (corpsSeasons.length === 0) return;
+      setLoading(true);
+      getShowPreviews({ data: { corpsSeasons } })
+        .then((map) => {
+          setPreviews(new Map(Object.entries(map)));
+        })
+        .catch(() => {
+          /* swallow — rows fall back to the empty state */
+        })
+        .finally(() => setLoading(false));
+    },
+    [rows, season, previews.size, loading]
   );
 
   if (rows.length === 0) return null;
@@ -172,75 +217,123 @@ export function LineupSchedule({
             </TableHeader>
             <TableBody>
               <For each={rows}>
-                {(row, i) => (
-                  <TableRow
-                    key={i()}
-                    className={
-                      'border-b transition-colors hover:bg-muted/50' +
-                      (row.kind !== 'performance' ? ' text-muted-foreground' : '')
-                    }
-                  >
-                    {/*                     <TableCell className="px-2 text-center text-muted-foreground tabular-nums">
+                {(row, i) => {
+                  const expandable = row.kind === 'performance' && !!row.corpsKey && !!season;
+                  const expandKey = expandable ? `${row.corpsKey}:${season}` : null;
+                  const isExpanded = expandKey ? expanded.has(expandKey) : false;
+                  const info =
+                    row.kind === 'performance' && corpsLookup
+                      ? corpsLookup({
+                          corps_key: row.corpsKey ?? null,
+                          unit_name: row.name,
+                        })
+                      : undefined;
+                  return (
+                    <>
+                      <TableRow
+                        key={i()}
+                        className={
+                          'border-b transition-colors hover:bg-muted/50' +
+                          (row.kind !== 'performance' ? ' text-muted-foreground' : '')
+                        }
+                      >
+                        {/*                     <TableCell className="px-2 text-center text-muted-foreground tabular-nums">
                       {row.order ?? '—'}
                     </TableCell> */}
-                    <TableCell className="whitespace-nowrap font-mono text-text-secondary">
-                      {row.time ?? '—'}
-                    </TableCell>
-                    <TableCell className={row.kind === 'performance' ? 'font-medium' : 'italic'}>
-                      {row.kind === 'performance' && corpsLookup
-                        ? (() => {
-                            const info = corpsLookup({
-                              corps_key: row.corpsKey ?? null,
-                              unit_name: row.name,
-                            });
-                            return (
-                              <CorpsNameCell
-                                name={row.name}
-                                slug={info?.slug ?? null}
-                                corpsKey={row.corpsKey ?? null}
-                              />
-                            );
-                          })()
-                        : row.name}
-                    </TableCell>
-                    <TableCell className="min-w-[220px] text-sm">
-                      {row.showTitle ? (
-                        <div className="space-y-1.5">
-                          <div className="font-medium text-text-secondary">{row.showTitle}</div>
-                          <Show when={(row.showInfo?.repertoire.length ?? 0) > 0}>
-                            <div className="space-y-0.5 text-xs leading-snug text-muted-foreground">
-                              <For each={row.showInfo?.repertoire.slice(0, 3) ?? []}>
-                                {(piece) => (
-                                  <div>
-                                    <span>{piece.workTitle}</span>
-                                    <Show when={piece.composer}>
-                                      {(composer) => (
-                                        <span className="text-muted-foreground/70">
-                                          {' '}
-                                          by {composer}
-                                        </span>
-                                      )}
-                                    </Show>
-                                  </div>
-                                )}
-                              </For>
-                              <Show when={(row.showInfo?.repertoire.length ?? 0) > 3}>
-                                <div className="text-muted-foreground/70">
-                                  +{(row.showInfo?.repertoire.length ?? 0) - 3} more
+                        <TableCell className="whitespace-nowrap font-mono text-text-secondary">
+                          <span className="inline-flex items-center gap-1">
+                            {expandKey ? (
+                              <button
+                                type="button"
+                                aria-label={
+                                  isExpanded ? 'Collapse show preview' : 'Expand show preview'
+                                }
+                                aria-expanded={isExpanded}
+                                onClick={() => toggleRow(expandKey)}
+                                className="-ml-1 inline-flex size-5 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                              >
+                                <Icon
+                                  icon={ArrowDown01Icon}
+                                  size="sm"
+                                  className={
+                                    'size-3.5 transition-transform' +
+                                    (isExpanded ? ' rotate-180' : '')
+                                  }
+                                />
+                              </button>
+                            ) : (
+                              <span className="inline-block size-5" />
+                            )}
+                            <span>{row.time ?? '—'}</span>
+                          </span>
+                        </TableCell>
+                        <TableCell
+                          className={row.kind === 'performance' ? 'font-medium' : 'italic'}
+                        >
+                          {row.kind === 'performance' && corpsLookup ? (
+                            <CorpsNameCell
+                              name={row.name}
+                              slug={info?.slug ?? null}
+                              corpsKey={row.corpsKey ?? null}
+                            />
+                          ) : (
+                            row.name
+                          )}
+                        </TableCell>
+                        <TableCell className="min-w-[220px] text-sm">
+                          {row.showTitle ? (
+                            <div className="space-y-1.5">
+                              <div className="font-medium text-text-secondary">{row.showTitle}</div>
+                              <Show when={(row.showInfo?.repertoire.length ?? 0) > 0}>
+                                <div className="space-y-0.5 text-xs leading-snug text-muted-foreground">
+                                  <For each={row.showInfo?.repertoire.slice(0, 3) ?? []}>
+                                    {(piece) => (
+                                      <div>
+                                        <span>{piece.workTitle}</span>
+                                        <Show when={piece.composer}>
+                                          {(composer) => (
+                                            <span className="text-muted-foreground/70">
+                                              {' '}
+                                              by {composer}
+                                            </span>
+                                          )}
+                                        </Show>
+                                      </div>
+                                    )}
+                                  </For>
+                                  <Show when={(row.showInfo?.repertoire.length ?? 0) > 3}>
+                                    <div className="text-muted-foreground/70">
+                                      +{(row.showInfo?.repertoire.length ?? 0) - 3} more
+                                    </div>
+                                  </Show>
                                 </div>
                               </Show>
                             </div>
-                          </Show>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground/60">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <ScheduleClassCell row={row} />
-                    </TableCell>
-                  </TableRow>
-                )}
+                          ) : (
+                            <span className="text-muted-foreground/60">—</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <ScheduleClassCell row={row} />
+                        </TableCell>
+                      </TableRow>
+                      <Show when={isExpanded}>
+                        <TableRow className="border-b bg-muted/20 hover:bg-muted/20">
+                          <TableCell colSpan={4} className="px-3 py-0">
+                            <LineupRowExpanded
+                              preview={expandKey ? previews.get(expandKey) : undefined}
+                              loading={loading}
+                              corpsName={row.name}
+                              showTitle={row.showTitle}
+                              slug={info?.slug ?? null}
+                              season={season}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      </Show>
+                    </>
+                  );
+                }}
               </For>
             </TableBody>
           </Table>

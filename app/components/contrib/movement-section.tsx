@@ -28,6 +28,7 @@ export function MovementSection({
   season,
   scraped,
   overrides,
+  citations = [],
 }: {
   corpsKey: string;
   season: string;
@@ -150,7 +151,7 @@ function MovementRow({
   signedIn,
   corpsKey,
   season,
-  citations,
+  citations = [],
   onEdit,
   onHidden,
 }: {
@@ -247,7 +248,7 @@ function MovementEditor({
   row,
   corpsKey,
   season,
-  citations,
+  citations = [],
   onCancel,
   onSaved,
 }: {

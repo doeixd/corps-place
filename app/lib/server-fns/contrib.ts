@@ -274,6 +274,83 @@ export const revertRevision = createServerFn({ method: 'POST' })
     return { ok: true as const, blockId, restoredFrom: data.revisionId };
   });
 
+// ── Read: mini show previews for expandable lineup rows (plan §3.10 / M9k) ────
+// Batch-reads the `uniform` first image + a concept excerpt (`about`.plain, else
+// `symbolism`.text) for many (corps_key, season) pairs in one query. Server-only
+// (createServerFn strips the getContributionsDb import from the client bundle).
+export interface ShowPreviewData {
+  uniformImageUrl: string | null;
+  conceptExcerpt: string | null;
+}
+
+const CONCEPT_CLIP = 200;
+
+const clip = (s: string): string => {
+  const t = s.trim();
+  return t.length > CONCEPT_CLIP ? t.slice(0, CONCEPT_CLIP).trimEnd() + '…' : t;
+};
+
+export const getShowPreviews = createServerFn({ method: 'GET' })
+  .validator((data: { corpsSeasons: { corpsKey: string; season: string }[] }) => data)
+  .handler(async ({ data }): Promise<Record<string, ShowPreviewData>> => {
+    const pairs = (data.corpsSeasons ?? []).slice(0, 60);
+    const result: Record<string, ShowPreviewData> = {};
+    if (pairs.length === 0) return result;
+
+    const db = await getContributionsDb();
+    // One query: OR of (corps_key=? AND season=?) over the page join.
+    const conds = pairs.map(() => '(p.corps_key = ? AND p.season = ?)').join(' OR ');
+    const args: string[] = [];
+    for (const { corpsKey, season } of pairs) args.push(corpsKey, season);
+    const rows = (
+      await db.execute({
+        sql: `SELECT p.corps_key AS corps_key, p.season AS season,
+                     b.pinned_key AS pinned_key, b.content_json AS content_json
+              FROM show_blocks b JOIN show_pages p ON p.page_id = b.page_id
+              WHERE b.pinned_key IN ('uniform','about','symbolism') AND (${conds})`,
+        args,
+      })
+    ).rows as unknown as {
+      corps_key: string;
+      season: string;
+      pinned_key: string;
+      content_json: string | null;
+    }[];
+
+    // Group by key, then derive the two fields, preferring `about` over `symbolism`.
+    type Acc = { uniform?: string | null; about?: string | null; symbolism?: string | null };
+    const byKey = new Map<string, Acc>();
+    for (const r of rows) {
+      const key = `${r.corps_key}:${r.season}`;
+      const acc = byKey.get(key) ?? {};
+      byKey.set(key, acc);
+      if (!r.content_json) continue;
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(r.content_json);
+      } catch {
+        continue;
+      }
+      if (r.pinned_key === 'uniform') {
+        const images = (parsed as { images?: { url?: string }[] }).images;
+        acc.uniform = images?.[0]?.url ?? null;
+      } else if (r.pinned_key === 'about') {
+        const plain = (parsed as { plain?: string }).plain;
+        acc.about = typeof plain === 'string' && plain.trim() ? clip(plain) : null;
+      } else if (r.pinned_key === 'symbolism') {
+        const text = (parsed as { text?: string }).text;
+        acc.symbolism = typeof text === 'string' && text.trim() ? clip(text) : null;
+      }
+    }
+    for (const [key, acc] of byKey) {
+      result[key] = {
+        uniformImageUrl: acc.uniform ?? null,
+        conceptExcerpt: acc.about ?? acc.symbolism ?? null,
+      };
+    }
+    return result;
+  });
+
 // ── Write: save an authored pinned block (uniform/props/links/symbolism) ──────
 const SaveBlockInput = Schema.Struct({
   corpsKey: Schema.String,
