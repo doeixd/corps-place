@@ -667,6 +667,26 @@ export const readShowInfoForSeason = async (
   return info;
 };
 
+// Every (corps_key, season) pair the read-model has a show for — the sitemap maps
+// corps_key → slug and emits /shows/<slug>/<season>. rm_show_info is the complete
+// set (one row per show); rm_show_detail is a superset of *enriched* shows only.
+// Degrades to [] if the table predates this emit, matching the other readers.
+export const readAllShows = async (
+  db: Client,
+): Promise<{ corpsKey: string; season: string }[]> => {
+  try {
+    const r = await db.execute(
+      "SELECT DISTINCT corps_key, season FROM rm_show_info WHERE corps_key IS NOT NULL AND season IS NOT NULL",
+    );
+    return (r.rows as any[]).map((row) => ({
+      corpsKey: String(row.corps_key),
+      season: String(row.season),
+    }));
+  } catch {
+    return [];
+  }
+};
+
 // Full show detail for one show, by its stable (corps_key, season) key. Reads the
 // emitted rm_show_detail shard; degrades gracefully when the table predates this
 // emit (schema < v9) by upgrading the lightweight rm_show_info summary into a

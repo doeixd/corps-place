@@ -26,7 +26,8 @@ import {
   type ShowDetail,
 } from '@sdk/src/readModel/builders/shows.js';
 import { MerchDirectoryService, MerchDirectoryServiceLive } from '@/lib/merch-directory';
-import { readShowInfoForSeason, readShowDetail } from '@sdk/src/readModel/readers.js';
+import { readShowInfoForSeason, readShowDetail, readAllShows } from '@sdk/src/readModel/readers.js';
+import { buildAllShowTitles } from '@sdk/src/readModel/builders/shows.js';
 import { createClient } from '@libsql/client';
 import * as path from 'node:path';
 
@@ -160,6 +161,20 @@ export const getShowDetail = createServerFn({ method: 'GET' })
     showDetailCache.set(key, { expiresAt: Date.now() + SHOW_TITLES_CACHE_MS, value });
     return value;
   });
+
+// Every (corpsKey, season) pair that has a show — for the sitemap, which maps
+// corpsKey → slug via the corps directory. Hybrid read: rm_show_info in prod, the
+// relational corps_shows titles in dev. Degrades to [] so a missing read-model
+// table never breaks the sitemap.
+export const getAllShows = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ corpsKey: string; season: string }[]> => {
+    if (readModelEnabled()) {
+      return readAllShows(getReadModelClient());
+    }
+    const titles = await buildAllShowTitles(getShowTitlesBigDb());
+    return titles.map((t) => ({ corpsKey: t.corps_key, season: t.season }));
+  }
+);
 
 // List the corps directory (cards + logos)
 export const getCorpsDirectory = createServerFn({ method: 'GET' }).handler(async () => {

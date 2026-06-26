@@ -96,12 +96,16 @@ export const Route = createFileRoute('/shows/$slug/$season')({
     const corpsName = corps?.name ?? s.corpsName ?? '';
     const firstMedia = s.media.find((m) => m.thumbnailUrl || m.url);
     const image = firstMedia ? (firstMedia.thumbnailUrl ?? firstMedia.url) : undefined;
+    // Authored-first description: prefer a contributor's concept/about prose (its
+    // flattened `plain` text) over the generic scraped fallbacks when present.
+    const authoredPlain = d.authored?.about?.plain?.trim() || null;
+    const description = clampDescription(
+      authoredPlain ?? s.description ?? s.tagline ?? s.subtitle ?? s.designerNotes,
+      `${corpsName} ${d.season} drum corps production${s.title ? ` "${s.title}"` : ''} — program, repertoire, designers and media on DrumCorps.app.`
+    );
     return seoHead({
       title: `${corpsName ? corpsName + ' ' : ''}${d.season} — ${s.title} (Drum Corps Show)`,
-      description: clampDescription(
-        s.description ?? s.tagline ?? s.subtitle ?? s.designerNotes,
-        `${corpsName} ${d.season} drum corps production${s.title ? ` "${s.title}"` : ''} — program, repertoire, designers and media on DrumCorps.app.`
-      ),
+      description,
       path: `/shows/${params.slug}/${params.season}`,
       image,
       jsonLd: [
@@ -110,8 +114,8 @@ export const Route = createFileRoute('/shows/$slug/$season')({
           '@type': 'CreativeWork',
           name: s.title,
           ...(s.subtitle ? { alternateName: s.subtitle } : {}),
-          ...(s.description || s.tagline
-            ? { description: clampDescription(s.description ?? s.tagline, s.title) }
+          ...(authoredPlain || s.description || s.tagline
+            ? { description: clampDescription(authoredPlain ?? s.description ?? s.tagline, s.title) }
             : {}),
           ...(corpsName ? { creator: { '@type': 'MusicGroup', name: corpsName } } : {}),
           ...(s.premiereDate ? { datePublished: s.premiereDate } : {}),

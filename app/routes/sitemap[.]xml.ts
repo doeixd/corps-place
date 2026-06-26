@@ -5,6 +5,7 @@ import {
   getMerchStores,
   getMerchCatalogPage,
   getMerchFacets,
+  getAllShows,
 } from '@/lib/server-fns/hybrid';
 
 // Site-wide sitemap. Enumerates the directory + detail pages (corps, judges) and
@@ -29,6 +30,21 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
     ]);
 
     for (const c of corps) if (c.slug) paths.add(`/corps/${c.slug}`);
+
+    // Show detail pages: /shows/<corpsSlug>/<season>. The read-model keys shows by
+    // corps_key, so map each (corpsKey, season) onto the directory slug.
+    try {
+      const shows = await getAllShows();
+      const slugByKey = new Map<string, string>();
+      for (const c of corps) if (c.corps_key && c.slug) slugByKey.set(c.corps_key, c.slug);
+      for (const sh of shows) {
+        const slug = slugByKey.get(sh.corpsKey);
+        if (slug) paths.add(`/shows/${slug}/${sh.season}`);
+      }
+    } catch {
+      /* shows unavailable — sitemap still lists everything else */
+    }
+
     for (const j of judges) if (j.judge_id) paths.add(`/judges/${j.judge_id}`);
     for (const s of stores)
       if (s.productCount > 0) paths.add(`/shop/group/${encodeURIComponent(s.slug)}`);
