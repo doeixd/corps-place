@@ -255,7 +255,12 @@ function ShowDetailPage() {
           </Show>
 
           {/* ── Authored sections (live wiki editing) ── */}
-          <AboutSection corpsKey={corps.corps_key} season={show.season} initial={authored.about} />
+          <AboutSection
+            corpsKey={corps.corps_key}
+            season={show.season}
+            initial={authored.about}
+            citations={citations}
+          />
           <UniformSection
             corpsKey={corps.corps_key}
             season={show.season}

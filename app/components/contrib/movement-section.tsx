@@ -8,6 +8,7 @@ import { MovementRowInputSchema, type MovementRowInput } from '@/lib/contrib/sch
 import { mergeMovements, type MergedMovementRow } from '@/lib/contrib/seedable';
 import { SourceBadge, DivergenceBadge } from '@/components/contrib/provenance';
 import { useRowMutation } from '@/components/contrib/use-row-mutation';
+import { CitationMarks, CitationPicker } from '@/components/contrib/citation-controls';
 import type { ShowDetailMovement } from '@sdk/src/readModel/builders/shows.js';
 import type { Citation } from '@/lib/server-fns/citations';
 import { Card, CardContent } from '@/components/ui/card';
@@ -96,6 +97,7 @@ export function MovementSection({
                       row={row}
                       corpsKey={corpsKey}
                       season={season}
+                      citations={citations}
                       onCancel={() => setEditing(null)}
                       onSaved={(next) => {
                         replaceRow(row.naturalKey, next);
@@ -108,6 +110,7 @@ export function MovementSection({
                       signedIn={signedIn}
                       corpsKey={corpsKey}
                       season={season}
+                      citations={citations}
                       onEdit={() => setEditing(row.naturalKey)}
                       onHidden={() => removeRow(row.naturalKey)}
                     />
@@ -124,6 +127,7 @@ export function MovementSection({
               row={newDraft}
               corpsKey={corpsKey}
               season={season}
+              citations={citations}
               onCancel={() => {
                 setEditing(null);
                 setNewDraft(null);
@@ -146,6 +150,7 @@ function MovementRow({
   signedIn,
   corpsKey,
   season,
+  citations,
   onEdit,
   onHidden,
 }: {
@@ -153,6 +158,7 @@ function MovementRow({
   signedIn: boolean;
   corpsKey: string;
   season: string;
+  citations?: readonly Citation[];
   onEdit: () => void;
   onHidden: () => void;
 }) {
@@ -187,6 +193,7 @@ function MovementRow({
           <Show when={row.description}>
             {(description) => <p className="text-sm text-text-secondary">{description}</p>}
           </Show>
+          <CitationMarks citationIds={row.citationIds} citations={citations} />
           <div className="mt-1 flex flex-wrap gap-1.5 text-[11px] uppercase tracking-wide text-text-secondary">
             <SourceBadge
               source={row.source}
@@ -240,12 +247,14 @@ function MovementEditor({
   row,
   corpsKey,
   season,
+  citations,
   onCancel,
   onSaved,
 }: {
   row: MergedMovementRow;
   corpsKey: string;
   season: string;
+  citations?: readonly Citation[];
   onCancel: () => void;
   onSaved: (row: MergedMovementRow) => void;
 }) {
@@ -259,12 +268,14 @@ function MovementEditor({
       citationIds: row.citationIds ?? [],
     },
   });
+  const [citationIds, setCitationIds] = useState<string[]>(() => [...(row.citationIds ?? [])]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submit = async (content: MovementRowInput) => {
+  const submit = async (formContent: MovementRowInput) => {
     setSaving(true);
     setError(null);
+    const content = { ...formContent, citationIds };
     try {
       const state = row.added ? 'added' : 'edited';
       const res = await saveShowOverride({
@@ -336,6 +347,7 @@ function MovementEditor({
           />
         )}
       </Field>
+      <CitationPicker selected={citationIds} citations={citations} onChange={setCitationIds} />
       {error ? (
         <p role="alert" className="text-sm text-destructive">
           {error}

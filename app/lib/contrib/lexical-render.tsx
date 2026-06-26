@@ -23,7 +23,28 @@ interface LexNode {
   text?: string;
   format?: number;
   tag?: string;
+  citationId?: string;
 }
+
+/**
+ * Number citations 1..n in order of first appearance, deduping repeated ids and
+ * keeping the first number (stable across edits). Used to render inline
+ * `[n]` marks consistently with the references list.
+ */
+export const citationNumberMap = (ids: readonly string[]): Record<string, number> => {
+  const map: Record<string, number> = {};
+  let n = 0;
+  for (const id of ids) {
+    if (map[id] == null) map[id] = ++n;
+  }
+  return map;
+};
+
+// Collect citation ids in document order (depth-first) for numbering.
+const collectCitationIds = (node: LexNode, out: string[]): void => {
+  if (node.type === 'citation' && node.citationId) out.push(node.citationId);
+  for (const c of node.children ?? []) collectCitationIds(c, out);
+};
 
 const renderText = (node: LexNode, key: string): ReactNode => {
   let el: ReactNode = node.text ?? '';
@@ -36,20 +57,34 @@ const renderText = (node: LexNode, key: string): ReactNode => {
   return <span key={key}>{el}</span>;
 };
 
-const renderChildren = (node: LexNode): ReactNode =>
-  (node.children ?? []).map((c, i) => renderNode(c, String(i)));
+const renderChildren = (node: LexNode, numbers: Record<string, number>): ReactNode =>
+  (node.children ?? []).map((c, i) => renderNode(c, String(i), numbers));
 
 // The allowlist. Anything not matched here is dropped (returns null).
-function renderNode(node: LexNode, key: string): ReactNode {
+function renderNode(node: LexNode, key: string, numbers: Record<string, number>): ReactNode {
   switch (node.type) {
     case 'text':
       return renderText(node, key);
+    case 'citation': {
+      const id = node.citationId;
+      const n = id ? numbers[id] : undefined;
+      if (!n) return null; // unknown / dangling citation → dropped
+      return (
+        <sup
+          key={key}
+          data-citation-id={id}
+          className="mx-0.5 text-[0.7em] font-medium text-primary"
+        >
+          [{n}]
+        </sup>
+      );
+    }
     case 'linebreak':
       return <br key={key} />;
     case 'paragraph':
       return (
         <p key={key} className="mb-3 last:mb-0">
-          {renderChildren(node)}
+          {renderChildren(node, numbers)}
         </p>
       );
     case 'heading': {
@@ -58,7 +93,7 @@ function renderNode(node: LexNode, key: string): ReactNode {
       const Tag = tag as 'h1' | 'h2' | 'h3';
       return (
         <Tag key={key} className={`mb-2 mt-4 first:mt-0 ${cls}`}>
-          {renderChildren(node)}
+          {renderChildren(node, numbers)}
         </Tag>
       );
     }
@@ -68,7 +103,7 @@ function renderNode(node: LexNode, key: string): ReactNode {
           key={key}
           className="mb-3 border-l-2 border-foreground/20 pl-3 text-text-secondary"
         >
-          {renderChildren(node)}
+          {renderChildren(node, numbers)}
         </blockquote>
       );
     default:
@@ -82,8 +117,13 @@ export function renderLexicalDoc(doc: string | null | undefined): ReactNode {
   try {
     const parsed = JSON.parse(doc) as { root?: LexNode };
     if (!parsed.root) return null;
+    const ids: string[] = [];
+    collectCitationIds(parsed.root, ids);
+    const numbers = citationNumberMap(ids);
     return (
-      <div className="text-sm leading-relaxed text-text-primary">{renderChildren(parsed.root)}</div>
+      <div className="text-sm leading-relaxed text-text-primary">
+        {renderChildren(parsed.root, numbers)}
+      </div>
     );
   } catch {
     return null;

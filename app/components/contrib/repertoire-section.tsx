@@ -7,6 +7,7 @@ import type { OverrideRow } from '@/lib/contrib/store';
 import { RepertoireRowInputSchema, type RepertoireRowInput } from '@/lib/contrib/schemas';
 import { mergeRepertoire, type MergedRepertoireRow } from '@/lib/contrib/seedable';
 import { SourceBadge, DivergenceBadge } from '@/components/contrib/provenance';
+import { CitationMarks, CitationPicker } from '@/components/contrib/citation-controls';
 import { useRowMutation } from '@/components/contrib/use-row-mutation';
 import type { ShowDetailRepertoire } from '@sdk/src/readModel/builders/shows.js';
 import type { Citation } from '@/lib/server-fns/citations';
@@ -111,6 +112,7 @@ export function RepertoireSection({
                   {editing === piece.naturalKey ? (
                     <RepertoireEditor
                       row={piece}
+                      citations={citations}
                       onCancel={() => setEditing(null)}
                       onSaved={(next) => {
                         replaceRow(piece.naturalKey, next);
@@ -123,6 +125,7 @@ export function RepertoireSection({
                     <RepertoireRow
                       row={piece}
                       signedIn={signedIn}
+                      citations={citations}
                       onEdit={() => setEditing(piece.naturalKey)}
                       onHidden={() => removeRow(piece.naturalKey)}
                       corpsKey={corpsKey}
@@ -139,6 +142,7 @@ export function RepertoireSection({
           <div className="mt-4 border-t border-foreground/10 pt-4">
             <RepertoireEditor
               row={newDraft}
+              citations={citations}
               onCancel={() => {
                 setEditing(null);
                 setNewDraft(null);
@@ -174,6 +178,7 @@ export function RepertoireSection({
 function RepertoireRow({
   row,
   signedIn,
+  citations,
   corpsKey,
   season,
   onEdit,
@@ -181,6 +186,7 @@ function RepertoireRow({
 }: {
   row: MergedRepertoireRow;
   signedIn: boolean;
+  citations: readonly Citation[];
   corpsKey: string;
   season: string;
   onEdit: () => void;
@@ -220,6 +226,7 @@ function RepertoireRow({
                 </a>
               )}
             </Show>
+            <CitationMarks citationIds={row.citationIds} citations={citations} />
           </div>
           <Show when={creditLine(row.composer, row.arranger)}>
             {(credit) => <p className="text-sm text-text-secondary">{credit}</p>}
@@ -279,12 +286,14 @@ function RepertoireRow({
 
 function RepertoireEditor({
   row,
+  citations,
   corpsKey,
   season,
   onCancel,
   onSaved,
 }: {
   row: MergedRepertoireRow;
+  citations: readonly Citation[];
   corpsKey: string;
   season: string;
   onCancel: () => void;
@@ -293,8 +302,10 @@ function RepertoireEditor({
   const form = useForm({ schema: RepertoireRowInputSchema, initialInput: blankToEmpty(row) });
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [citationIds, setCitationIds] = useState<string[]>(() => [...(row.citationIds ?? [])]);
 
-  const submit = async (content: RepertoireRowInput) => {
+  const submit = async (formContent: RepertoireRowInput) => {
+    const content = { ...formContent, citationIds };
     setSaving(true);
     setError(null);
     try {
@@ -385,6 +396,7 @@ function RepertoireEditor({
           />
         )}
       </Field>
+      <CitationPicker selected={citationIds} citations={citations} onChange={setCitationIds} />
       {error ? (
         <p role="alert" className="text-sm text-destructive">
           {error}

@@ -16,6 +16,7 @@ import { ProgressiveImage } from '@/components/progressive-image';
 import { LexicalFreeForm } from '@/components/contrib/lexical-free-form';
 import { renderLexicalDoc } from '@/lib/contrib/lexical-render';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
+import type { CitationOption } from '@/components/contrib/citation-controls';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -471,7 +472,12 @@ function GalleryEditor({ corpsKey, season, value, onSaved }: EditorProps<Gallery
 }
 
 // ── The concept (free-form Lexical essay) ─────────────────────────────────────
-export function AboutSection({ corpsKey, season, initial }: BlockProps<FreeFormDoc>) {
+export function AboutSection({
+  corpsKey,
+  season,
+  initial,
+  citations = [],
+}: BlockProps<FreeFormDoc> & { citations?: readonly CitationOption[] }) {
   const [value, setValue] = useState<FreeFormDoc | null>(initial);
   return (
     <ContribBlock
@@ -485,6 +491,7 @@ export function AboutSection({ corpsKey, season, initial }: BlockProps<FreeFormD
           corpsKey={corpsKey}
           season={season}
           value={value}
+          citations={citations}
           onSaved={(v) => {
             setValue(v);
             close();
@@ -495,7 +502,13 @@ export function AboutSection({ corpsKey, season, initial }: BlockProps<FreeFormD
   );
 }
 
-function AboutEditor({ corpsKey, season, value, onSaved }: EditorProps<FreeFormDoc>) {
+function AboutEditor({
+  corpsKey,
+  season,
+  value,
+  onSaved,
+  citations = [],
+}: EditorProps<FreeFormDoc> & { citations?: readonly CitationOption[] }) {
   const [draft, setDraft] = useState<FreeFormDoc>(value ?? emptyFreeFormDoc('lexical'));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -513,7 +526,7 @@ function AboutEditor({ corpsKey, season, value, onSaved }: EditorProps<FreeFormD
   };
   return (
     <div className="space-y-3">
-      <LexicalFreeForm value={draft} onChange={setDraft} />
+      <LexicalFreeForm value={draft} onChange={setDraft} citations={citations} />
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <Button type="button" size="sm" onClick={save} disabled={saving}>
         {saving ? 'Saving…' : 'Save'}
