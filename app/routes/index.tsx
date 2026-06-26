@@ -14,7 +14,9 @@ import { getHomePageData } from '@/lib/server-fns/home';
 import { seoHead, SITE_URL } from '@/lib/seo';
 import {
   ArrowRight02Icon,
+  Analytics01Icon,
   Calendar01Icon,
+  RankingIcon,
   UserMultipleIcon,
   JusticeScale01Icon,
   UserGroupIcon,
@@ -150,6 +152,20 @@ function Home() {
               icon={Calendar01Icon}
               title="2026 Events"
               description="Browse the season — lineups, schedules, scores, and predictions."
+            />
+            <ExploreCard
+              to="/rankings"
+              preload="intent"
+              icon={RankingIcon}
+              title="Rankings"
+              description="Season standings + a rank bump chart — filter by metric, division, and as-of date."
+            />
+            <ExploreCard
+              to="/vs"
+              preload="intent"
+              icon={Analytics01Icon}
+              title="VS — Compare"
+              description="Plot any corps, seasons, and reference baselines on one curve to compare."
             />
             <ExploreCard
               to="/corps"
