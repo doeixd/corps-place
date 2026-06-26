@@ -3,6 +3,7 @@ import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
 import { seoHead } from '@/lib/seo';
 import { resolveVsSeries } from '@/lib/server-fns/vs';
+import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { VsChart } from '@/components/vs/vs-chart';
 import { decodeVsSeries, encodeVsSeries, vsSeriesToken } from '@/lib/vs/codec';
 import { AddSeries } from '@/components/vs/add-series';
@@ -26,7 +27,17 @@ export const Route = createFileRoute('/vs')({
     s: typeof search.s === 'string' && search.s ? search.s : undefined,
   }),
   loaderDeps: ({ search }) => ({ s: search.s }),
-  loader: async ({ deps }) => resolveVsSeries({ data: { series: seriesFor(deps.s) } }),
+  loader: async ({ deps }) => {
+    const [resolved, dir] = await Promise.all([
+      resolveVsSeries({ data: { series: seriesFor(deps.s) } }),
+      getCorpsDirectory(),
+    ]);
+    const corpsOptions = dir
+      .filter((c) => c.slug)
+      .map((c) => ({ slug: c.slug as string, name: c.name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    return { ...resolved, corpsOptions };
+  },
   head: () =>
     seoHead({
       title: 'VS — Compare drum corps scores',
@@ -38,7 +49,7 @@ export const Route = createFileRoute('/vs')({
 });
 
 function VsPage() {
-  const { series } = Route.useLoaderData();
+  const { series, corpsOptions } = Route.useLoaderData();
   const { s } = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -69,7 +80,7 @@ function VsPage() {
         <CardContent className="space-y-3 px-2 py-4">
           <VsChart series={series} onRemove={series.length > 1 ? onRemove : undefined} />
           <div className="flex items-center gap-3 px-1">
-            <AddSeries onAdd={onAdd} disabled={atCap} />
+            <AddSeries onAdd={onAdd} disabled={atCap} corpsOptions={corpsOptions} />
             {atCap ? (
               <span className="text-xs text-muted-foreground">
                 Showing the max of {VS_SERIES_CAP} series — remove one to add another.
