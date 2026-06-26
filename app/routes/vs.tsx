@@ -4,18 +4,28 @@ import { Card, CardContent } from '@/components/ui/card';
 import { seoHead } from '@/lib/seo';
 import { resolveVsSeries } from '@/lib/server-fns/vs';
 import { VsChart } from '@/components/vs/vs-chart';
+import { decodeVsSeries, encodeVsSeries, vsSeriesToken } from '@/lib/vs/codec';
 import type { VsSeries } from '@/lib/vs/types';
 
-// Default comparison until the URL `?s=` codec lands (plan M4). A clear demo:
-// two finalist corps' most-recent complete season + the 1st-place reference curve.
+// Default comparison when `?s=` is absent (plan M3): two finalist corps' most
+// recent complete season + the 1st-place reference curve.
 const DEFAULT_SERIES: VsSeries[] = [
   { kind: 'corps', corpsSlug: 'blue-devils', season: '2025' },
   { kind: 'corps', corpsSlug: 'bluecoats', season: '2025' },
   { kind: 'baseline', rank: 1 },
 ];
 
+const seriesFor = (s: string | undefined): VsSeries[] => {
+  const decoded = decodeVsSeries(s);
+  return decoded.length > 0 ? decoded : DEFAULT_SERIES;
+};
+
 export const Route = createFileRoute('/vs')({
-  loader: async () => resolveVsSeries({ data: { series: DEFAULT_SERIES } }),
+  validateSearch: (search: Record<string, unknown>): { s?: string } => ({
+    s: typeof search.s === 'string' && search.s ? search.s : undefined,
+  }),
+  loaderDeps: ({ search }) => ({ s: search.s }),
+  loader: async ({ deps }) => resolveVsSeries({ data: { series: seriesFor(deps.s) } }),
   head: () =>
     seoHead({
       title: 'VS — Compare drum corps scores',
@@ -28,6 +38,15 @@ export const Route = createFileRoute('/vs')({
 
 function VsPage() {
   const { series } = Route.useLoaderData();
+  const { s } = Route.useSearch();
+  const navigate = Route.useNavigate();
+
+  // Remove a series by its id (which equals its URL token) and push the new `?s=`.
+  const onRemove = (id: string) => {
+    const next = seriesFor(s).filter((spec) => vsSeriesToken(spec) !== id);
+    navigate({ search: { s: next.length ? encodeVsSeries(next) : undefined }, replace: true });
+  };
+
   return (
     <PageShell className="flex flex-col gap-6">
       <div className="space-y-1">
@@ -40,7 +59,7 @@ function VsPage() {
       </div>
       <Card>
         <CardContent className="px-2 py-4">
-          <VsChart series={series} />
+          <VsChart series={series} onRemove={series.length > 1 ? onRemove : undefined} />
         </CardContent>
       </Card>
     </PageShell>
