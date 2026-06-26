@@ -25,7 +25,7 @@ import type { JudgeProfile, JudgeSummary } from "./builders/judges.js";
 import type { StaffProfile, StaffSummary } from "./builders/staff.js";
 import type { LatestPredictionRow } from "./builders/predictions.js";
 import type { ShowInfoSummary, ShowDetail } from "./builders/shows.js";
-import type { VsCorpsScorePoint, VsBaselinePoint } from "./builders/vs.js";
+import type { VsCorpsScorePoint, VsBaselinePoint, VsPredictedPoint } from "./builders/vs.js";
 import type {
   WeekendBucket,
   WeekendShow,
@@ -456,6 +456,17 @@ export const readVsCorpsScores = async (
     date: row.date ?? '',
     eventLabel: row.event_label ?? '',
   }));
+};
+
+export const readVsCorps2026Predicted = async (
+  db: Client,
+  slug: string,
+): Promise<VsPredictedPoint[]> => {
+  const r = await db.execute({
+    sql: `SELECT pct, predicted FROM rm_vs_corps_predicted WHERE corps_slug = ? ORDER BY pct`,
+    args: [slug.trim().toLowerCase()],
+  });
+  return (r.rows as any[]).map((row) => ({ pct: Number(row.pct), predicted: Number(row.predicted) }));
 };
 
 export const readVsBaselines = async (db: Client): Promise<VsBaselinePoint[]> => {

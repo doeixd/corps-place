@@ -118,6 +118,55 @@ export const buildVsCorpsScoresAllSeasons = async (
   );
 };
 
+/** A point on the 2026 predicted-to-finals line. */
+export interface VsPredictedPoint {
+  pct: number;
+  predicted: number;
+}
+
+/**
+ * The 2026 model's predicted total per event by % through season (the dashed
+ * "predicted-to-finals" overlay for a current-season corps line). Predictions
+ * exist only for 2026, so this is current-season only. Latest run per event,
+ * mirroring buildCorpsSeasonScores.
+ */
+export const buildVsCorps2026Predicted = async (
+  db: Client,
+  slug: string
+): Promise<VsPredictedPoint[]> => {
+  const result = await db.execute({
+    sql: `WITH ${RELATED_CORPS_CTES},
+      latest AS (
+        SELECT event_slug, MAX(predicted_at) AS pa
+        FROM model_event_prediction_runs WHERE season = '2026' GROUP BY event_slug
+      )
+      SELECT run.percent_through AS pct, r.predicted_total AS predicted
+      FROM model_event_prediction_rows r
+      JOIN model_event_prediction_runs run ON run.prediction_id = r.prediction_id
+      JOIN latest l ON l.event_slug = run.event_slug AND l.pa = run.predicted_at
+      WHERE run.season = '2026'
+        AND r.corps_key IN (SELECT corps_key FROM related_corps)
+        AND run.percent_through IS NOT NULL
+        AND r.predicted_total IS NOT NULL
+      ORDER BY run.percent_through ASC`,
+    args: [slug.trim().toLowerCase()],
+  });
+
+  // One point per pct, keeping the highest predicted (guards a corps_key matching
+  // more than one prediction row — same rule as buildCorpsSeasonScores).
+  const byPct = new Map<number, VsPredictedPoint>();
+  for (const raw of result.rows as unknown as Array<{
+    pct: number | null;
+    predicted: number | null;
+  }>) {
+    if (typeof raw.pct !== 'number' || typeof raw.predicted !== 'number') continue;
+    const pct = Math.min(100, Math.max(0, raw.pct));
+    const prev = byPct.get(pct);
+    if (!prev || raw.predicted > prev.predicted) byPct.set(pct, { pct, predicted: raw.predicted });
+  }
+  return [...byPct.values()].sort((a, b) => a.pct - b.pct);
+};
+
 // ── Baselines ────────────────────────────────────────────────────────────────
 
 /** The single OVERALL TOTAL formula (DCI weighting) — kept here so baseline,

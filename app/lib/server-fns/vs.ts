@@ -6,15 +6,20 @@
 import { createServerFn } from '@tanstack/react-start';
 import { createClient, type Client } from '@libsql/client';
 import * as path from 'node:path';
-import { buildVsCorpsScores, buildVsBaselineCurve } from '@sdk/src/readModel/builders/vs.js';
+import {
+  buildVsCorpsScores,
+  buildVsBaselineCurve,
+  buildVsCorps2026Predicted,
+} from '@sdk/src/readModel/builders/vs.js';
 import { buildCorpsBySlug } from '@sdk/src/readModel/builders/corps.js';
 import {
   readVsCorpsScores,
   readVsBaselines,
+  readVsCorps2026Predicted,
   readCorpsBySlug,
 } from '@sdk/src/readModel/readers.js';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
-import { VS_SERIES_CAP, type VsSeries, type VsResolvedSeries } from '@/lib/vs/types';
+import { VS_SERIES_CAP, type VsSeries, type VsResolvedSeries, type VsLine } from '@/lib/vs/types';
 
 // Relational fallback client (dev / no read-model), lazily created server-side.
 let sharedDb: Client | null = null;
@@ -47,24 +52,35 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
       ),
     ]);
     if (!pts.length) return null;
+    const lines: VsLine[] = [
+      {
+        style: 'solid',
+        points: pts.map((p) => ({
+          pct: p.pct,
+          value: p.total,
+          date: p.date || undefined,
+          eventLabel: p.eventLabel || undefined,
+        })),
+      },
+    ];
+    // Current season: overlay the model's predicted-to-finals line (dashed).
+    // Predictions exist only for 2026 (M7).
+    if (s.season === '2026') {
+      const pred = await readOrBuild(
+        (db) => readVsCorps2026Predicted(db, s.corpsSlug),
+        (db) => buildVsCorps2026Predicted(db, s.corpsSlug)
+      ).catch(() => []);
+      if (pred.length) {
+        lines.push({ style: 'dashed', points: pred.map((p) => ({ pct: p.pct, value: p.predicted })) });
+      }
+    }
     return {
       id: `corps~${s.corpsSlug}~${s.season}`,
       label: `${corps?.name ?? s.corpsSlug} ${s.season}`,
       kind: 'corps',
       brand: { primary: corps?.color_primary ?? null, secondary: corps?.color_secondary ?? null },
       color: '',
-      // v1: actual line only. The 2026 predicted-to-finals dashed overlay is M7.
-      lines: [
-        {
-          style: 'solid',
-          points: pts.map((p) => ({
-            pct: p.pct,
-            value: p.total,
-            date: p.date || undefined,
-            eventLabel: p.eventLabel || undefined,
-          })),
-        },
-      ],
+      lines,
     };
   }
 

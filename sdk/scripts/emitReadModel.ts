@@ -42,6 +42,7 @@ import {
   buildCorpsDirectory,
   buildCorpsSeasonScores,
   buildVsCorpsScoresAllSeasons,
+  buildVsCorps2026Predicted,
   buildVsBaselineCurve,
   buildEventRecap,
   buildEventFullRecap,
@@ -271,6 +272,9 @@ CREATE INDEX rm_vs_corps_scores_k ON rm_vs_corps_scores(corps_slug, season, pct)
 
 CREATE TABLE rm_vs_baselines (rank INTEGER, bucket INTEGER, total REAL);
 CREATE INDEX rm_vs_baselines_k ON rm_vs_baselines(rank, bucket);
+
+CREATE TABLE rm_vs_corps_predicted (corps_slug TEXT, pct REAL, predicted REAL);
+CREATE INDEX rm_vs_corps_predicted_k ON rm_vs_corps_predicted(corps_slug, pct);
 
 CREATE TABLE rm_corps_appearances (corps_slug TEXT, event_id TEXT, sort_index INTEGER);
 CREATE INDEX rm_corps_appearances_k ON rm_corps_appearances(corps_slug, sort_index);
@@ -728,6 +732,7 @@ export const runEmit = async (args: Args) => {
     const detailRows: unknown[][] = [];
     const seasonPointRows: unknown[][] = [];
     const vsScoreRows: unknown[][] = [];
+    const vsPredictedRows: unknown[][] = [];
     const appearanceRows: unknown[][] = [];
     const appearanceResultRows: unknown[][] = [];
     const corpsWithSlug = corps.filter((c) => c.slug);
@@ -754,6 +759,9 @@ export const runEmit = async (args: Args) => {
       const vsPts = await buildVsCorpsScoresAllSeasons(src, slug);
       for (const v of vsPts)
         vsScoreRows.push([slug, v.season, v.pct, v.total, v.date, v.eventLabel]);
+      // 2026 predicted-to-finals overlay (current season only).
+      const vsPred = await buildVsCorps2026Predicted(src, slug);
+      for (const p of vsPred) vsPredictedRows.push([slug, p.pct, p.predicted]);
       const eventSlugs = await buildEventSlugsForCorps(
         src,
         slug.trim().toLowerCase(),
@@ -798,6 +806,7 @@ export const runEmit = async (args: Args) => {
     rowCounts.rm_corps_appearances = appearanceRows.length;
     rowCounts.rm_corps_appearance_results = appearanceResultRows.length;
     rowCounts.rm_vs_corps_scores = vsScoreRows.length;
+    rowCounts.rm_vs_corps_predicted = vsPredictedRows.length;
     // Generic Nth-place baseline curve — built once (sources the V9 curves file).
     const vsBaselineRows = buildVsBaselineCurve().map((b) => [b.rank, b.bucket, b.total]);
     rowCounts.rm_vs_baselines = vsBaselineRows.length;
@@ -836,6 +845,12 @@ export const runEmit = async (args: Args) => {
         "rm_vs_baselines",
         ["rank", "bucket", "total"],
         vsBaselineRows,
+      );
+      await insertRows(
+        dst,
+        "rm_vs_corps_predicted",
+        ["corps_slug", "pct", "predicted"],
+        vsPredictedRows,
       );
       await insertRows(
         dst,
