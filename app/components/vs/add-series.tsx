@@ -74,13 +74,13 @@ export function AddSeries({
 
         {kind === 'baseline' ? (
           <label className="block space-y-1">
-            <span className="text-sm text-text-secondary">Place (rank 1–25)</span>
+            <span className="text-sm text-text-secondary">Place (rank 1–24)</span>
             <input
               type="number"
               min={1}
-              max={25}
+              max={24}
               value={rank}
-              onChange={(e) => setRank(Math.max(1, Math.min(25, Number(e.target.value) || 1)))}
+              onChange={(e) => setRank(Math.max(1, Math.min(24, Number(e.target.value) || 1)))}
               className={fieldCls}
             />
             <span className="block text-xs text-muted-foreground">

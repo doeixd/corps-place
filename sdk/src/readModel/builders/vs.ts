@@ -127,8 +127,10 @@ export const buildVsCorpsScoresAllSeasons = async (
 const totalOf = (c: Record<V9Caption, number>) =>
   c.GE1 + c.GE2 + (c.VP + c.VA + c.CG) / 2 + (c.MB + c.MA + c.MP) / 2;
 
-/** Effective baseline ranks (curves are division-agnostic; see plan). */
-export const VS_BASELINE_RANKS = Array.from({ length: 25 }, (_, i) => i + 1);
+/** Effective baseline ranks (curves are division-agnostic; see plan). Capped at
+ *  24: rank 25's reference curve is degenerate (flat ~73 all season) in the
+ *  source data, so it would render a misleading horizontal line. */
+export const VS_BASELINE_RANKS = Array.from({ length: 24 }, (_, i) => i + 1);
 /** Percent buckets the reference curves are keyed on. */
 export const VS_BASELINE_BUCKETS = Array.from({ length: 21 }, (_, i) => i * 5); // 0,5,…,100
 
