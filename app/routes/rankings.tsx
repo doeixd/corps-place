@@ -18,10 +18,10 @@ import {
   type RankGroup,
   type RankMetric,
 } from '@/lib/rankings/types';
+import { parseMetric, parseDivs, parseRecency } from '@/lib/rankings/codec';
 
 const DEFAULT_RECENCY = [7, 14, 28];
 const DIVISION_LABELS: Record<string, string> = { world: 'World', open: 'Open', 'all-age': 'All-Age' };
-const isMetric = (v: unknown): v is RankMetric => RANK_METRICS.includes(v as RankMetric);
 
 function RecencySettings({
   recency,
@@ -71,27 +71,11 @@ interface RankSearch {
   recency?: number[];
 }
 
-const asList = (v: unknown): string[] =>
-  Array.isArray(v) ? v.map(String) : typeof v === 'string' && v ? v.split(',') : [];
-
-const parseDivs = (v: unknown): string[] | undefined => {
-  const valid = asList(v).filter((d) => (RANK_DIVISIONS as readonly string[]).includes(d));
-  return valid.length ? valid : undefined;
-};
-
-const parseRecency = (v: unknown): number[] | undefined => {
-  const nums = asList(v)
-    .map(Number)
-    .filter((n) => Number.isFinite(n) && n > 0)
-    .sort((a, b) => a - b);
-  return nums.length === 3 ? nums : undefined;
-};
-
 export const Route = createFileRoute('/rankings')({
   validateSearch: (s: Record<string, unknown>): RankSearch => ({
     season: typeof s.season === 'string' ? s.season : undefined,
     asof: typeof s.asof === 'string' ? s.asof : undefined,
-    metric: isMetric(s.metric) ? s.metric : undefined,
+    metric: parseMetric(s.metric),
     agg: s.agg === 'last3' ? 'last3' : undefined,
     group: s.group === 'division' ? 'division' : undefined,
     div: parseDivs(s.div),
