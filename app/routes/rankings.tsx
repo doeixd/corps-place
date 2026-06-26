@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { seoHead } from '@/lib/seo';
 import { cn } from '@/lib/utils';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
@@ -19,7 +20,46 @@ import {
 } from '@/lib/rankings/types';
 
 const DEFAULT_RECENCY = [7, 14, 28];
+const DIVISION_LABELS: Record<string, string> = { world: 'World', open: 'Open', 'all-age': 'All-Age' };
 const isMetric = (v: unknown): v is RankMetric => RANK_METRICS.includes(v as RankMetric);
+
+function RecencySettings({
+  recency,
+  onChange,
+}: {
+  recency: number[];
+  onChange: (r: number[]) => void;
+}) {
+  const labels = ['Fresh ≤', 'Recent ≤', 'Stale ≤'];
+  return (
+    <Popover>
+      <PopoverTrigger className="rounded-md border border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground">
+        Recency…
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-60 space-y-2 p-3">
+        <p className="text-xs text-muted-foreground">
+          Dim corps that haven&apos;t performed in this many days.
+        </p>
+        {recency.map((v, i) => (
+          <label key={i} className="flex items-center justify-between gap-2 text-sm">
+            <span className="text-text-secondary">{labels[i]}</span>
+            <input
+              type="number"
+              min={1}
+              value={v}
+              onChange={(e) => {
+                const next = [...recency];
+                next[i] = Math.max(1, Number(e.target.value) || 1);
+                onChange([...next].sort((a, b) => a - b));
+              }}
+              className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm outline-none focus:border-primary/60"
+            />
+          </label>
+        ))}
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 interface RankSearch {
   season?: string;
@@ -28,7 +68,24 @@ interface RankSearch {
   agg?: RankAgg;
   group?: RankGroup;
   div?: string[];
+  recency?: number[];
 }
+
+const asList = (v: unknown): string[] =>
+  Array.isArray(v) ? v.map(String) : typeof v === 'string' && v ? v.split(',') : [];
+
+const parseDivs = (v: unknown): string[] | undefined => {
+  const valid = asList(v).filter((d) => (RANK_DIVISIONS as readonly string[]).includes(d));
+  return valid.length ? valid : undefined;
+};
+
+const parseRecency = (v: unknown): number[] | undefined => {
+  const nums = asList(v)
+    .map(Number)
+    .filter((n) => Number.isFinite(n) && n > 0)
+    .sort((a, b) => a - b);
+  return nums.length === 3 ? nums : undefined;
+};
 
 export const Route = createFileRoute('/rankings')({
   validateSearch: (s: Record<string, unknown>): RankSearch => ({
@@ -37,10 +94,8 @@ export const Route = createFileRoute('/rankings')({
     metric: isMetric(s.metric) ? s.metric : undefined,
     agg: s.agg === 'last3' ? 'last3' : undefined,
     group: s.group === 'division' ? 'division' : undefined,
-    div:
-      typeof s.div === 'string' && s.div
-        ? s.div.split(',').filter((d) => (RANK_DIVISIONS as readonly string[]).includes(d))
-        : undefined,
+    div: parseDivs(s.div),
+    recency: parseRecency(s.recency),
   }),
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => {
@@ -84,9 +139,17 @@ function RankingsPage() {
   const metric: RankMetric = search.metric ?? 'total';
   const agg: RankAgg = search.agg ?? 'best';
   const group: RankGroup = search.group ?? 'overall';
+  const divs = search.div ?? DEFAULT_DIVISIONS;
+  const recency = search.recency ?? DEFAULT_RECENCY;
 
   const set = (patch: Partial<RankSearch>) =>
     navigate({ search: (prev) => ({ ...prev, ...patch }), replace: true });
+
+  const toggleDiv = (d: string) => {
+    const next = divs.includes(d) ? divs.filter((x) => x !== d) : [...divs, d];
+    const isDefault = next.length === 2 && next.includes('world') && next.includes('open');
+    set({ div: next.length === 0 || isDefault ? undefined : next });
+  };
 
   return (
     <PageShell className="flex flex-col gap-5">
@@ -122,6 +185,19 @@ function RankingsPage() {
           <button type="button" className={pill(group === 'overall')} onClick={() => set({ group: undefined })}>Overall</button>
           <button type="button" className={pill(group === 'division')} onClick={() => set({ group: 'division' })}>By division</button>
         </div>
+        <div className="flex gap-1">
+          {RANK_DIVISIONS.map((d) => (
+            <button key={d} type="button" className={pill(divs.includes(d))} onClick={() => toggleDiv(d)}>
+              {DIVISION_LABELS[d]}
+            </button>
+          ))}
+        </div>
+        <RecencySettings
+          recency={recency}
+          onChange={(r) =>
+            set({ recency: r.join(',') === DEFAULT_RECENCY.join(',') ? undefined : r })
+          }
+        />
       </div>
 
       {/* As-of scrubber: time-travel through the season's competition dates. */}
@@ -147,7 +223,7 @@ function RankingsPage() {
         season={season}
         metric={metric}
         group={group}
-        recency={DEFAULT_RECENCY}
+        recency={recency}
         hoveredSlug={hovered}
         onHover={setHovered}
       />
