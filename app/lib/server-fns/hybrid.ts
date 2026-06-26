@@ -528,6 +528,11 @@ export const getHybridEventPredictionPageData = createServerFn({
 
         // Fake-scores test hook: synthesize a recap from the prediction when the
         // explicit flag is set, no real recap exists, and a prediction exists.
+        const _fakeDbg = {
+          fk: data.fakeScores ?? false,
+          wasNull: recap == null,
+          predLen: (prediction as any)?.recap?.length ?? -1,
+        };
         if (data.fakeScores && recap == null && (prediction?.recap?.length ?? 0) > 0) {
           recap = synthesizeRecapFromPrediction(prediction.recap);
         }
@@ -552,6 +557,7 @@ export const getHybridEventPredictionPageData = createServerFn({
           schedule,
           corps,
           recap: recap ? { meta: recap.meta, scores: recap.scores as any[] } : null,
+          _fakeDbg: { ..._fakeDbg, finalLen: recap?.scores?.length ?? -1 },
           seasonOptions,
           showTitles,
           showInfo,

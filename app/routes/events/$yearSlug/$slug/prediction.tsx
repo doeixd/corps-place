@@ -439,6 +439,7 @@ function PredictionPage() {
 
   return (
     <CorpsRegistryProvider corps={corps ?? []}>
+      <span data-fakedbg={JSON.stringify((loaderData as any)._fakeDbg ?? 'no-dbg')} hidden />
       <CurrentPredictionPage
         key={`${params.yearSlug}:${slug}`}
         params={params}
