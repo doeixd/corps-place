@@ -4,7 +4,7 @@
 // import (pure helper). No DB access — the RPC feeds it rows.
 import { divisionCategory } from '@/lib/prediction-scenario';
 import type { RankingScoreRow } from '@sdk/src/readModel/builders/rankings.js';
-import type { RankAgg, RankMetric, RankRow, RankingsResult } from './types';
+import { RANK_SERIES_CAP, type RankAgg, type RankMetric, type RankRow, type RankingsResult } from './types';
 
 export interface ResolveRankingsOpts {
   metric: RankMetric;
@@ -80,18 +80,23 @@ export function resolveRankings(
   const asof = opts.asof && allDays.includes(opts.asof) ? opts.asof : allDays[allDays.length - 1];
   const dates = allDays.filter((d) => d <= asof);
 
-  // Per-day standings → each corps's rank history (for the bump chart).
+  // Final standings at asof.
+  const final = standingsAt(corps, opts.agg, asof);
+
+  // Per-day rank history — but only for the corps the bump chart can plot (top
+  // N by final rank), so the payload doesn't carry history for every corps. Ranks
+  // are still computed against the FULL field each day; we just don't store the
+  // tail's history.
+  const tracked = new Set(final.slice(0, RANK_SERIES_CAP).map((s) => s.slug));
   const history = new Map<string, { date: string; rank: number; score: number }[]>();
   for (const day of dates) {
     for (const s of standingsAt(corps, opts.agg, day)) {
+      if (!tracked.has(s.slug)) continue;
       const h = history.get(s.slug) ?? [];
       h.push({ date: day, rank: s.rank, score: Number(s.score.toFixed(3)) });
       history.set(s.slug, h);
     }
   }
-
-  // Final standings at asof.
-  const final = standingsAt(corps, opts.agg, asof);
   const out: RankRow[] = final.map((s) => {
     const c = byCorps.get(s.slug)!;
     return {
