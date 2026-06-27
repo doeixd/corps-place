@@ -1,4 +1,5 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
@@ -10,11 +11,21 @@ import {
 } from '@/components/icons/generated';
 
 export function JobsLanding() {
+  const navigate = useNavigate();
+  const [query, setQuery] = useState('');
+  const runSearch = () => {
+    const q = query.trim();
+    void navigate({ to: '/jobs/board', search: q ? { q } : {} });
+  };
+
   return (
     <PageShell>
       {/* Hero */}
       <section className="flex flex-col items-center gap-6 py-12 text-center sm:py-20">
-        <h1 className="text-3xl font-bold text-text-primary sm:text-4xl">
+        <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+          For the pageantry &amp; marching-arts community
+        </span>
+        <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-text-primary sm:text-5xl">
           Find your next gig in the pageantry world
         </h1>
         <p className="max-w-lg text-lg text-text-secondary">
@@ -23,20 +34,28 @@ export function JobsLanding() {
         </p>
 
         {/* Search bar */}
-        <div className="flex w-full max-w-xl gap-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            runSearch();
+          }}
+          className="flex w-full max-w-xl gap-2"
+        >
           <input
             type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Search jobs, skills, or keywords…"
             className="flex-1 rounded-lg border border-border bg-card px-4 py-2.5 text-sm text-text-primary outline-none ring-0 placeholder:text-text-muted focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
           />
-          <Link
-            to="/jobs/board"
+          <button
+            type="submit"
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
           >
             <Icon icon={Search01Icon} size="sm" />
             Search
-          </Link>
-        </div>
+          </button>
+        </form>
 
         <div className="flex gap-3">
           <Link

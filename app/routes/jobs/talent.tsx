@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
 import { searchTalent } from '@/lib/server-fns/jobs';
 import { Search01Icon, UserMultipleIcon, Location01Icon } from '@/components/icons/generated';
+import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
 
 export const Route = createFileRoute('/jobs/talent')({
   head: () =>
@@ -42,11 +43,7 @@ function TalentPage() {
     return (
       <PageShell>
         <PageHeader title="Talent Search" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
-        <Card>
-          <CardContent className="py-12 text-center text-text-secondary">
-            Sign in to search talent.
-          </CardContent>
-        </Card>
+        <JobsSignInGate icon={UserMultipleIcon} title="Search talent" path="/jobs/talent" />
       </PageShell>
     );
   }

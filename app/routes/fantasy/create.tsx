@@ -10,7 +10,7 @@ import { createLeague } from '@/lib/server-fns/fantasy';
 import { refetchMyLeagues } from '@/db/fantasy-collections';
 import { useSession } from '@/lib/auth-client';
 import { useAsyncAction } from '@/lib/use-async-action';
-import { SignInButton } from '@/components/fantasy/sign-in-button';
+import { SignInButton } from '@/components/sign-in-button';
 import { BusyButton } from '@/components/fantasy/busy-button';
 
 const CURRENT_SEASON = String(new Date().getFullYear());

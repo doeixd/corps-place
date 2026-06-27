@@ -20,7 +20,12 @@ import { Toaster } from '@/components/ui/sonner';
 import { THEME_COOKIE, readThemeCookie } from '@/lib/theme-cookie';
 import type { Theme } from '@/lib/theme-cookie';
 import { FAVORITE_COOKIE, readFavoriteCookie } from '@/lib/favorite-cookie';
-import { DEFAULT_APP_ICON_HREF, buildAppIconHref } from '@/lib/logo-recolor';
+import {
+  DEFAULT_APP_ICON_HREF,
+  JOBS_APP_ICON_HREF,
+  JOBS_THEME_COLOR,
+  buildAppIconHref,
+} from '@/lib/logo-recolor';
 import {
   themeChromeColor,
   useFavoriteIconHref,
@@ -40,7 +45,15 @@ const subscribeTheme = (onChange: () => void) => {
 // Favicon + browser-chrome color for the favorited corps, derived server-side
 // from the cookie so the initial HTML is already correct (no first-paint flash,
 // and the head() tags match on hydration instead of resetting to defaults).
-function favoriteHead(theme: Theme | null): { iconHref: string; themeColor: string } {
+function favoriteHead(
+  theme: Theme | null,
+  brand: Brand
+): { iconHref: string; themeColor: string } {
+  // PageantryJobs uses its own mark + chrome color and ignores the favorite-corps
+  // accent entirely — the corps favicon must never appear on the jobs site.
+  if (brand === 'jobs') {
+    return { iconHref: JOBS_APP_ICON_HREF, themeColor: JOBS_THEME_COLOR };
+  }
   try {
     const raw = readFavoriteCookie();
     if (raw) {
@@ -61,14 +74,20 @@ function favoriteHead(theme: Theme | null): { iconHref: string; themeColor: stri
 }
 
 function FavoriteHeadBranding({
+  brand,
   initialIconHref,
   initialThemeColor,
 }: {
+  brand: Brand;
   initialIconHref: string;
   initialThemeColor: string;
 }) {
-  const iconHref = useFavoriteIconHref(initialIconHref);
-  const themeColor = useFavoriteThemeColor(initialThemeColor);
+  // Hooks must run unconditionally; on the jobs brand we ignore the favorite-corps
+  // store so it can never repaint the corps favicon over the PageantryJobs mark.
+  const dynamicIconHref = useFavoriteIconHref(initialIconHref);
+  const dynamicThemeColor = useFavoriteThemeColor(initialThemeColor);
+  const iconHref = brand === 'jobs' ? initialIconHref : dynamicIconHref;
+  const themeColor = brand === 'jobs' ? initialThemeColor : dynamicThemeColor;
   return (
     <>
       <link rel="icon" href={iconHref} type="image/svg+xml" data-app-icon="true" />
@@ -128,6 +147,7 @@ function RootDocument({
             HeadContent. Route reconciliation and live updates can otherwise
             restore stale loader values or briefly remove the favicon. */}
         <FavoriteHeadBranding
+          brand={brand}
           initialIconHref={favorite.iconHref}
           initialThemeColor={favorite.themeColor}
         />
@@ -303,7 +323,7 @@ export const Route = createRootRoute({
   loader: () => {
     const brand = readBrand();
     const theme = readThemeCookie();
-    return { brand, favorite: favoriteHead(theme), theme };
+    return { brand, favorite: favoriteHead(theme, brand), theme };
   },
   // Default title + meta for any route without its own head() (error boundaries,
   // redirect routes). Child route head()s override the title via HeadContent.

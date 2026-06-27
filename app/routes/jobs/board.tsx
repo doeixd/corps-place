@@ -24,13 +24,18 @@ export const Route = createFileRoute('/jobs/board')({
         ]),
       ],
     }),
-  loader: async () => listJobs({ data: { offset: 0, limit: 20 } }),
+  validateSearch: (search): { q?: string } => ({
+    q: typeof search.q === 'string' && search.q.trim() ? search.q.trim() : undefined,
+  }),
+  loaderDeps: ({ search }) => ({ q: search.q }),
+  loader: async ({ deps }) => listJobs({ data: { keyword: deps.q, offset: 0, limit: 20 } }),
   component: BoardPage,
 });
 
 function BoardPage() {
   const initial = Route.useLoaderData();
-  const [keyword, setKeyword] = useState('');
+  const { q } = Route.useSearch();
+  const [keyword, setKeyword] = useState(q ?? '');
   const [data, setData] = useState(initial);
   const [loading, setLoading] = useState(false);
 

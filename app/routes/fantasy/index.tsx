@@ -7,7 +7,7 @@ import { listMyLeagues } from '@/lib/server-fns/fantasy';
 import { leaguesCollection } from '@/db/fantasy-collections';
 import { HybridCollection } from '@/components/hybrid-collection';
 import { useSession } from '@/lib/auth-client';
-import { SignInButton } from '@/components/fantasy/sign-in-button';
+import { SignInButton } from '@/components/sign-in-button';
 import { HowItWorks } from '@/components/fantasy/how-it-works';
 
 type LeagueRow = Awaited<ReturnType<typeof listMyLeagues>>['leagues'][number];

@@ -12,6 +12,7 @@ import { buildSeo } from '@/lib/seo';
 import { jobsOnboardMachine } from '@/machines/jobs-onboard-machine';
 import { ResumeUpload } from '@/components/jobs/resume-upload';
 import { CheckmarkCircle02Icon, AddCircleIcon } from '@/components/icons/generated';
+import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
 
 export const Route = createFileRoute('/jobs/onboard')({
   head: () =>
@@ -61,11 +62,7 @@ function OnboardPage() {
     return (
       <PageShell>
         <PageHeader title="Create Your Profile" backTo="/" backLabel="Home" />
-        <Card>
-          <CardContent className="py-12 text-center text-text-secondary">
-            Sign in to create a profile.
-          </CardContent>
-        </Card>
+        <JobsSignInGate icon={AddCircleIcon} title="Create your profile" path="/jobs/onboard" />
       </PageShell>
     );
   }

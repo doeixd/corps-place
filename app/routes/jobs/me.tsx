@@ -29,6 +29,7 @@ import {
   FireIcon,
   BookOpen01Icon,
 } from '@/components/icons/generated';
+import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
 
 export const Route = createFileRoute('/jobs/me')({
   head: () =>
@@ -66,12 +67,7 @@ function MePage() {
     return (
       <PageShell>
         <PageHeader title="My Profile" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
-        <Card>
-          <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
-            <Icon icon={UserMultipleIcon} size="xl" className="text-text-muted" />
-            <p className="text-text-secondary">Sign in to manage your profile.</p>
-          </CardContent>
-        </Card>
+        <JobsSignInGate icon={UserMultipleIcon} title="Manage your profile" path="/jobs/me" />
       </PageShell>
     );
   }

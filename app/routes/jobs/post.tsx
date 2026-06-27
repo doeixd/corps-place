@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
 import { createJobPosting } from '@/lib/server-fns/jobs';
 import { AddCircleIcon, CheckmarkCircle02Icon } from '@/components/icons/generated';
+import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
 
 export const Route = createFileRoute('/jobs/post')({
   head: () =>
@@ -41,11 +42,7 @@ function PostJobPage() {
     return (
       <PageShell>
         <PageHeader title="Post a Job" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
-        <Card>
-          <CardContent className="py-12 text-center text-text-secondary">
-            Sign in to post a job.
-          </CardContent>
-        </Card>
+        <JobsSignInGate icon={AddCircleIcon} title="Post a job" path="/jobs/post" />
       </PageShell>
     );
   }

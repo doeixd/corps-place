@@ -9,10 +9,15 @@ import {
   JusticeScale01Icon,
   GiftIcon,
   RankingIcon,
+  Briefcase01Icon,
+  Search01Icon,
+  AddCircleIcon,
+  DashboardSquare01Icon,
 } from '@/components/icons/generated';
 import { FANTASY_ENABLED } from '@/lib/fantasy/flag';
+import { readBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
 
-const NAV_ITEMS = [
+const CORPS_NAV_ITEMS = [
   { to: '/', label: 'Home', icon: Home01Icon, exact: true },
   { to: '/events', label: 'Events', icon: Calendar01Icon, exact: false },
   { to: '/corps', label: 'Corps', icon: UserMultipleIcon, exact: false },
@@ -23,6 +28,22 @@ const NAV_ITEMS = [
     ? [{ to: '/fantasy', label: 'Fantasy', icon: RankingIcon, exact: false } as const]
     : []),
 ] as const;
+
+// PageantryJobs gets its own sections — never the corps nav (different site).
+const JOBS_NAV_ITEMS = [
+  { to: '/', label: 'Home', icon: Home01Icon, exact: true },
+  { to: '/jobs/board', label: 'Jobs', icon: Search01Icon, exact: false },
+  { to: '/jobs/talent', label: 'Talent', icon: UserMultipleIcon, exact: false },
+  { to: '/jobs/post', label: 'Post', icon: AddCircleIcon, exact: false },
+  { to: '/jobs/me', label: 'Dashboard', icon: DashboardSquare01Icon, exact: false },
+] as const;
+
+type NavItem = { to: string; label: string; icon: IconComponent; exact: boolean };
+
+const NAV_ITEMS_BY_BRAND: Record<Brand, readonly NavItem[]> = {
+  corps: CORPS_NAV_ITEMS,
+  jobs: JOBS_NAV_ITEMS,
+};
 
 /** Icon with an optional bookmark-count badge overlaid (only on the Shop item). */
 function NavIcon({
@@ -52,6 +73,13 @@ function NavIcon({
  * The matching content offsets live in the root layout's <main>.
  */
 export function SiteNav() {
+  // Brand-aware: PageantryJobs and DrumCorps.app share the nav chrome but never
+  // each other's sections, logo, or name. readBrand() is isomorphic (host-based)
+  // so this resolves identically on SSR and hydration.
+  const brand = readBrand();
+  const navItems = NAV_ITEMS_BY_BRAND[brand];
+  const identity = BRAND_CONFIG[brand];
+
   // localStorage-backed bookmark count, SSR-safe (0 on the server, hydrates on mount).
   const bookmarkCount = useBookmarks().length;
   const countFor = (to: string) => (to === '/shop' ? bookmarkCount : 0);
@@ -66,15 +94,19 @@ export function SiteNav() {
         <Link
           to="/"
           className="mb-6 flex items-center justify-center gap-2.5 px-2 focus-visible:outline-none xl:justify-start"
-          aria-label="DrumCorps.app home"
+          aria-label={`${identity.name} home`}
         >
-          <Logo aria-hidden="true" className="size-8 shrink-0" />
+          {brand === 'jobs' ? (
+            <Icon icon={Briefcase01Icon} aria-hidden="true" className="size-8 shrink-0 text-primary" />
+          ) : (
+            <Logo aria-hidden="true" className="size-8 shrink-0" />
+          )}
           <span className="hidden text-base font-bold text-text-primary xl:inline">
-            DrumCorps.app
+            {identity.name}
           </span>
         </Link>
         <div className="flex flex-col gap-1">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.to}
               to={item.to}
@@ -96,9 +128,9 @@ export function SiteNav() {
       <nav
         aria-label="Primary"
         className="fixed inset-x-0 bottom-0 z-40 grid min-h-[var(--bottom-nav-bar)] border-t border-border bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
-        style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length}, minmax(0, 1fr))` }}
+        style={{ gridTemplateColumns: `repeat(${navItems.length}, minmax(0, 1fr))` }}
       >
-        {NAV_ITEMS.map((item) => (
+        {navItems.map((item) => (
           <Link
             key={item.to}
             to={item.to}
