@@ -204,6 +204,7 @@ const CreatePostingInput = v.object({
   applyUrl: v.optional(v.string(), ''),
   applyEmail: v.optional(v.string(), ''),
   contentJson: v.string(),
+  expiresDays: v.optional(v.number()),
 });
 
 export const createJobPosting = createServerFn({ method: 'POST' })
@@ -227,11 +228,14 @@ export const createJobPosting = createServerFn({ method: 'POST' })
     // Geocode the ZIP best-effort for distance sorting (never blocks the post).
     const z = normalizeZip(data.zip);
     const coords = await geocodeZip(z);
+    // Auto-hide the listing after N days (default 60). Stored as an absolute timestamp.
+    const expiresAt = new Date(Date.now() + (data.expiresDays ?? 60) * 86_400_000).toISOString();
     const postingData = {
       ...data,
       zip: z,
       locationLat: coords?.lat ?? null,
       locationLng: coords?.lng ?? null,
+      expiresAt,
     };
 
     const { postingId, slug } = await Effect.runPromise(
@@ -286,6 +290,29 @@ export const closeJobPosting = createServerFn({ method: 'POST' })
           return yield* Effect.fail(new ForbiddenError('edit'));
         }
         yield* svc.closePosting(data.postingId, ctx);
+      }).pipe(Effect.provide(JobsServiceLive))
+    );
+    return { ok: true as const };
+  });
+
+export const deleteJobPosting = createServerFn({ method: 'POST' })
+  .validator((d: { postingId: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const svc = yield* JobsService;
+        // Ownership guard: the actor's profile must own the posting.
+        const profile = yield* svc.getProfileByUser(ctx.authorId);
+        const posting = yield* svc.getPostingById(data.postingId);
+        if (
+          !profile ||
+          !posting ||
+          posting.employer_profile_id !== profile.profile.profile_id
+        ) {
+          return yield* Effect.fail(new ForbiddenError('edit'));
+        }
+        yield* svc.deletePosting(data.postingId, ctx);
       }).pipe(Effect.provide(JobsServiceLive))
     );
     return { ok: true as const };

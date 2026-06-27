@@ -183,7 +183,15 @@ function JobDetail() {
 
   const empName = employerName(job);
 
-  const applyCta = job.apply_url ? (
+  const expired =
+    job.status === 'closed' ||
+    (job.expires_at != null && new Date(job.expires_at).getTime() < Date.now());
+
+  const applyCta = expired ? (
+    <div className="rounded-lg border border-border bg-muted/30 px-5 py-3 text-sm text-text-muted sm:self-start">
+      This listing is no longer accepting applications.
+    </div>
+  ) : job.apply_url ? (
     <div className="flex flex-col gap-1">
       <a
         href={job.apply_url}

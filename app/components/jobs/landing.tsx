@@ -1,5 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
@@ -9,14 +9,27 @@ import {
   AddCircleIcon,
   BookOpen01Icon,
 } from '@/components/icons/generated';
+import { listJobs, searchTalent } from '@/lib/server-fns/jobs';
 
 export function JobsLanding() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
+  const [jobs, setJobs] = useState<any[] | null>(null);
+  const [people, setPeople] = useState<any[] | null>(null);
+  const [tab, setTab] = useState<'jobs' | 'people'>('jobs');
   const runSearch = () => {
     const q = query.trim();
     void navigate({ to: '/jobs/board', search: q ? { q } : {} });
   };
+
+  useEffect(() => {
+    listJobs({ data: { offset: 0, limit: 6 } })
+      .then((r) => setJobs(r.rows))
+      .catch(() => setJobs([]));
+    searchTalent({ data: { offset: 0, limit: 6 } })
+      .then((r) => setPeople(r.rows))
+      .catch(() => setPeople([]));
+  }, []);
 
   return (
     <PageShell>
@@ -78,8 +91,8 @@ export function JobsLanding() {
       {/* How it works */}
       <section className="space-y-6 py-8">
         <h2 className="text-center text-xl font-semibold text-text-primary">How it works</h2>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Card className="card-hover-flat">
+        <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-3 sm:overflow-visible">
+          <Card className="card-hover-flat snap-center shrink-0 w-[78%] sm:w-auto">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
                 <Icon icon={UserMultipleIcon} size="lg" className="text-primary" />
@@ -91,7 +104,7 @@ export function JobsLanding() {
               </p>
             </CardContent>
           </Card>
-          <Card className="card-hover-flat">
+          <Card className="card-hover-flat snap-center shrink-0 w-[78%] sm:w-auto">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
                 <Icon icon={Search01Icon} size="lg" className="text-primary" />
@@ -103,7 +116,7 @@ export function JobsLanding() {
               </p>
             </CardContent>
           </Card>
-          <Card className="card-hover-flat">
+          <Card className="card-hover-flat snap-center shrink-0 w-[78%] sm:w-auto">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
                 <Icon icon={BookOpen01Icon} size="lg" className="text-primary" />
@@ -116,6 +129,148 @@ export function JobsLanding() {
             </CardContent>
           </Card>
         </div>
+      </section>
+
+      {/* Browse */}
+      <section className="space-y-6 py-8">
+        <h2 className="text-center text-xl font-semibold text-text-primary">
+          Browse PageantryJobs
+        </h2>
+        <div className="flex justify-center">
+          <div className="flex gap-1 rounded-lg bg-muted/50 p-1">
+            <button
+              type="button"
+              onClick={() => setTab('jobs')}
+              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                tab === 'jobs'
+                  ? 'bg-card text-text-primary shadow-xs'
+                  : 'text-text-muted hover:text-text-secondary'
+              }`}
+            >
+              Jobs
+            </button>
+            <button
+              type="button"
+              onClick={() => setTab('people')}
+              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                tab === 'people'
+                  ? 'bg-card text-text-primary shadow-xs'
+                  : 'text-text-muted hover:text-text-secondary'
+              }`}
+            >
+              People
+            </button>
+          </div>
+        </div>
+
+        {tab === 'jobs' ? (
+          <div className="space-y-4">
+            {jobs === null ? (
+              <p className="text-center text-sm text-text-muted">Loading…</p>
+            ) : jobs.length === 0 ? (
+              <p className="text-center text-sm text-text-muted">
+                No jobs yet —{' '}
+                <Link to="/jobs/post" className="text-primary hover:underline">
+                  be the first to post.
+                </Link>
+              </p>
+            ) : (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {jobs.map((j) => (
+                    <Link key={j.slug} to="/jobs/$jobSlug" params={{ jobSlug: j.slug }}>
+                      <Card className="card-hover-flat h-full">
+                        <CardContent className="flex flex-col gap-1 py-4">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-semibold text-text-primary">{j.title}</span>
+                            {j.remote_ok ? (
+                              <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                                Remote
+                              </span>
+                            ) : null}
+                          </div>
+                          <span className="text-sm text-text-muted">
+                            {[
+                              j.employer_name && j.employer_name !== 'User'
+                                ? j.employer_name
+                                : null,
+                              j.location,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ')}
+                          </span>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+                <div className="text-center">
+                  <Link
+                    to="/jobs/board"
+                    className="text-sm font-medium text-primary hover:underline"
+                  >
+                    View all jobs →
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {people === null ? (
+              <p className="text-center text-sm text-text-muted">Loading…</p>
+            ) : people.length === 0 ? (
+              <p className="text-center text-sm text-text-muted">
+                No profiles yet —{' '}
+                <Link to="/jobs/me" className="text-primary hover:underline">
+                  create yours.
+                </Link>
+              </p>
+            ) : (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {people.map((p) => (
+                    <Link key={p.slug} to="/jobs/profile/$slug" params={{ slug: p.slug }}>
+                      <Card className="card-hover-flat h-full">
+                        <CardContent className="flex items-center gap-3 py-4">
+                          {p.image_media_id ? (
+                            <img
+                              src={`/api/fantasy-media/${p.image_media_id}`}
+                              alt={p.display_name}
+                              className="size-12 shrink-0 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg font-semibold text-primary">
+                              {(p.display_name || '?').charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div className="flex min-w-0 flex-col">
+                            <span className="truncate font-semibold text-text-primary">
+                              {p.display_name}
+                            </span>
+                            {p.headline ? (
+                              <span className="truncate text-sm text-text-muted">
+                                {p.headline}
+                              </span>
+                            ) : null}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+                <div className="text-center">
+                  <Link
+                    to="/jobs/talent"
+                    className="text-sm font-medium text-primary hover:underline"
+                  >
+                    Browse all talent →
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </section>
 
       {/* CTA footer */}

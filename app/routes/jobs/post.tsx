@@ -46,6 +46,7 @@ function PostJobPage() {
   const [salaryMax, setSalaryMax] = useState('');
   const [applyUrl, setApplyUrl] = useState('');
   const [applyEmail, setApplyEmail] = useState('');
+  const [expiresDays, setExpiresDays] = useState(60);
   const [description, setDescription] = useState<FreeFormDoc>(emptyJobDescription);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
@@ -89,6 +90,7 @@ function PostJobPage() {
           salaryMax: salaryMax ? Number(salaryMax) : null,
           applyUrl,
           applyEmail,
+          expiresDays,
           contentJson: JSON.stringify(description),
         },
       });
@@ -244,6 +246,24 @@ function PostJobPage() {
                 Describe the role, responsibilities, requirements…
               </div>
             )}
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-text-primary">
+              Auto-hide this listing after
+            </label>
+            <select
+              value={expiresDays}
+              onChange={(e) => setExpiresDays(Number(e.target.value))}
+              className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 sm:w-auto"
+            >
+              <option value={30}>30 days</option>
+              <option value={60}>60 days</option>
+              <option value={90}>90 days</option>
+            </select>
+            <p className="text-xs text-text-muted">
+              Expired listings stop showing on the board; you can repost anytime.
+            </p>
           </div>
 
           {error ? <p className="text-sm text-destructive">{error}</p> : null}

@@ -19,6 +19,7 @@ import {
   getMyPostings,
   getPostingApplicants,
   closeJobPosting,
+  deleteJobPosting,
   setApplicantStatus,
   getMyBookmarks,
   listMyAlerts,
@@ -627,6 +628,8 @@ function PostingsTab() {
   }
 
   const refresh = () => getMyPostings().then(setPostings).catch(() => {});
+  const removeLocal = (postingId: string) =>
+    setPostings((prev) => prev?.filter((p: any) => p.posting_id !== postingId) ?? null);
 
   if (postings.length === 0) {
     return (
@@ -649,19 +652,50 @@ function PostingsTab() {
   return (
     <div className="space-y-3">
       {postings.map((p: any) => (
-        <PostingRow key={p.posting_id} posting={p} onChanged={refresh} />
+        <PostingRow
+          key={p.posting_id}
+          posting={p}
+          onChanged={refresh}
+          onRemoved={() => removeLocal(p.posting_id)}
+        />
       ))}
     </div>
   );
 }
 
-function PostingRow({ posting, onChanged }: { posting: any; onChanged: () => void }) {
+function relativeFuture(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const then = new Date(value).getTime();
+  if (Number.isNaN(then)) return null;
+  const days = Math.round((then - Date.now()) / 86_400_000);
+  if (days <= 0) return null;
+  if (days === 1) return 'in 1 day';
+  if (days < 30) return `in ${days} days`;
+  if (days < 60) return 'in about a month';
+  return `in ${Math.round(days / 30)} months`;
+}
+
+function PostingRow({
+  posting,
+  onChanged,
+  onRemoved,
+}: {
+  posting: any;
+  onChanged: () => void;
+  onRemoved: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [applicants, setApplicants] =
     useState<Awaited<ReturnType<typeof getPostingApplicants>> | null>(null);
 
   const isClosed = posting.status === 'closed';
+  const isExpired =
+    !isClosed &&
+    posting.expires_at != null &&
+    new Date(posting.expires_at).getTime() < Date.now();
+  const expiresRelative = !isClosed && !isExpired ? relativeFuture(posting.expires_at) : null;
 
   const close = async () => {
     if (!confirm('Close this listing? It will stop accepting applicants.')) return;
@@ -673,6 +707,17 @@ function PostingRow({ posting, onChanged }: { posting: any; onChanged: () => voi
       /* ignore */
     } finally {
       setClosing(false);
+    }
+  };
+
+  const remove = async () => {
+    if (!confirm('Delete this listing permanently? This removes its applications too.')) return;
+    setDeleting(true);
+    try {
+      await deleteJobPosting({ data: { postingId: posting.posting_id } });
+      onRemoved();
+    } catch {
+      setDeleting(false);
     }
   };
 
@@ -707,6 +752,11 @@ function PostingRow({ posting, onChanged }: { posting: any; onChanged: () => voi
               ) : (
                 <> · {count} {count === 1 ? 'applicant' : 'applicants'}</>
               )}
+              {isClosed ? null : isExpired ? (
+                <span className="text-text-muted"> · Expired</span>
+              ) : expiresRelative ? (
+                <span className="text-text-muted"> · Expires {expiresRelative}</span>
+              ) : null}
             </p>
           </div>
           <Badge
@@ -735,6 +785,15 @@ function PostingRow({ posting, onChanged }: { posting: any; onChanged: () => voi
               {closing ? '…' : 'Close'}
             </Button>
           ) : null}
+          <Button
+            onClick={remove}
+            disabled={deleting}
+            variant="ghost"
+            size="xs"
+            className="text-destructive"
+          >
+            {deleting ? '…' : 'Delete'}
+          </Button>
         </div>
 
         {open ? (

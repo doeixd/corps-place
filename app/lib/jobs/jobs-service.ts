@@ -370,6 +370,10 @@ const makeJobsService = Effect.gen(function* () {
       conditions.push('jp.remote_ok = 1');
     }
 
+    // Hide expired postings from the board, landing, and similar-jobs.
+    conditions.push('(jp.expires_at IS NULL OR jp.expires_at > ?)');
+    args.push(new Date().toISOString());
+
     if (conditions.length) sqlStr += ' AND ' + conditions.join(' AND ');
     sqlStr += ' ORDER BY jp.is_boosted DESC, jp.published_at DESC';
     sqlStr += ` LIMIT ${filters.limit ?? 20} OFFSET ${filters.offset ?? 0}`;
@@ -416,11 +420,12 @@ const makeJobsService = Effect.gen(function* () {
       location: string | null;
       status: string;
       published_at: string | null;
+      expires_at: string | null;
       is_boosted: number;
       created_at: string;
       apply_url: string | null;
       applicant_count: number;
-    }>`SELECT posting_id, slug, title, location, status, published_at, is_boosted, created_at, apply_url,
+    }>`SELECT posting_id, slug, title, location, status, published_at, expires_at, is_boosted, created_at, apply_url,
               (SELECT COUNT(*) FROM jobs_application a WHERE a.posting_id = jobs_posting.posting_id) AS applicant_count
        FROM jobs_posting WHERE employer_profile_id = ${employerProfileId}
        ORDER BY created_at DESC`;
@@ -503,6 +508,7 @@ const makeJobsService = Effect.gen(function* () {
       applyUrl?: string;
       applyEmail?: string;
       contentJson: string;
+      expiresAt?: string | null;
     },
     ctx: WriteContext
   ) {
@@ -513,13 +519,13 @@ const makeJobsService = Effect.gen(function* () {
     yield* sql`INSERT INTO jobs_posting (posting_id, employer_profile_id, slug, title,
                  location, zip, location_lat, location_lng,
                  remote_ok, comp_text, salary_min, salary_max,
-                 apply_url, apply_email, content_json, status, created_at, updated_at)
+                 apply_url, apply_email, content_json, status, expires_at, created_at, updated_at)
                VALUES (${postingId}, ${employerProfileId}, ${slug}, ${data.title},
                  ${data.location ?? null}, ${data.zip ?? null}, ${data.locationLat ?? null}, ${data.locationLng ?? null},
                  ${data.remoteOk ? 1 : 0}, ${data.compText ?? null},
                  ${data.salaryMin ?? null}, ${data.salaryMax ?? null},
                  ${data.applyUrl ?? null}, ${data.applyEmail ?? null}, ${data.contentJson},
-                 'published', ${ctx.now}, ${ctx.now})`;
+                 'published', ${data.expiresAt ?? null}, ${ctx.now}, ${ctx.now})`;
 
     yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
                VALUES (${newId()}, 'posting', ${postingId}, ${ctx.authorId}, ${ctx.actorRole}, 'create', ${ctx.now})`;
@@ -622,6 +628,18 @@ const makeJobsService = Effect.gen(function* () {
     yield* sql`UPDATE jobs_posting SET status = 'closed', updated_at = ${ctx.now} WHERE posting_id = ${postingId}`;
     yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
                VALUES (${newId()}, 'posting', ${postingId}, ${ctx.authorId}, ${ctx.actorRole}, 'close', ${ctx.now})`;
+  });
+
+  const deletePosting = Effect.fn('JobsService.deletePosting')(function* (
+    postingId: string,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    yield* sql`DELETE FROM jobs_application WHERE posting_id = ${postingId}`;
+    yield* sql`DELETE FROM jobs_bookmark WHERE posting_id = ${postingId}`;
+    yield* sql`DELETE FROM jobs_posting WHERE posting_id = ${postingId}`;
+    yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
+               VALUES (${newId()}, 'posting', ${postingId}, ${ctx.authorId}, ${ctx.actorRole}, 'delete', ${ctx.now})`;
   });
 
   // ── Applications ─────────────────────────────────────────────────────────
@@ -1212,6 +1230,7 @@ const makeJobsService = Effect.gen(function* () {
     createPosting,
     updatePosting,
     closePosting,
+    deletePosting,
     applyToPosting,
     hasApplied,
     getClaimsForUser,
