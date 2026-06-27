@@ -20,7 +20,10 @@ import {
   listMyAlerts,
   deleteJobAlert,
   createJobAlert,
+  saveJobsProfileBlock,
 } from '@/lib/server-fns/jobs';
+import { TiptapFreeForm } from '@/components/contrib/tiptap-free-form';
+import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
 import {
   UserMultipleIcon,
   CheckmarkCircle02Icon,
@@ -59,6 +62,7 @@ function MePage() {
       location: initial?.profile.location ?? '',
       zip: initial?.profile.zip ?? '',
       kind: (initial?.profile.kind as 'employee' | 'employer') ?? 'employee',
+      directoryOptOut: (initial?.profile?.directory_opt_out ?? 0) === 1,
       profileId: initial?.profile.profile_id ?? null,
       slug: initial?.profile.slug ?? null,
       status: initial?.profile.status ?? 'draft',
@@ -259,6 +263,23 @@ function ProfileTab({ initial, snapshot, send }: { initial: any; snapshot: any; 
             </div>
           ) : null}
 
+          {ctx.kind === 'employee' ? (
+            <label className="flex items-start gap-3 rounded-lg border border-border px-3 py-2.5 text-sm cursor-pointer hover:bg-muted/30">
+              <input
+                type="checkbox"
+                checked={!ctx.directoryOptOut}
+                onChange={(e) =>
+                  send({ type: 'SET_DIRECTORY_OPT_OUT', value: !e.target.checked })
+                }
+                className="mt-0.5 size-4 shrink-0"
+              />
+              <span>
+                <span className="font-medium text-text-primary">Show my profile in the talent directory</span>
+                <span className="block text-xs text-text-muted">Uncheck to keep your profile link-only.</span>
+              </span>
+            </label>
+          ) : null}
+
           <div className="flex items-center gap-3 border-t border-border pt-4">
             <Button onClick={() => send({ type: 'SAVE' })} disabled={isSaving || !nameOk} size="sm">
               {isSaving ? 'Saving…' : 'Save changes'}
@@ -277,6 +298,14 @@ function ProfileTab({ initial, snapshot, send }: { initial: any; snapshot: any; 
       </Card>
 
       {ctx.profileId ? (
+        <>
+          <AboutSection profileId={ctx.profileId} blocks={initial?.blocks ?? []} />
+          <ExperienceSection profileId={ctx.profileId} blocks={initial?.blocks ?? []} />
+          <EducationSection profileId={ctx.profileId} blocks={initial?.blocks ?? []} />
+        </>
+      ) : null}
+
+      {ctx.profileId ? (
         <ClaimSection profileId={ctx.profileId} userId={initial?.profile.user_id ?? ''} />
       ) : null}
 
@@ -292,6 +321,294 @@ function ProfileTab({ initial, snapshot, send }: { initial: any; snapshot: any; 
         </Card>
       ) : null}
     </div>
+  );
+}
+
+// ── About / Experience / Education block editors ─────────────────────────────
+
+type Block = { kind: string; content_json: string };
+
+const parseBlock = (blocks: Block[], kind: string): Record<string, unknown> | null => {
+  const b = blocks.find((bl) => bl.kind === kind);
+  if (!b) return null;
+  try {
+    return JSON.parse(b.content_json) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+};
+
+function AboutSection({ profileId, blocks }: { profileId: string; blocks: Block[] }) {
+  const router = useRouter();
+  const seed = parseBlock(blocks, 'summary');
+  const [about, setAbout] = useState<FreeFormDoc>(() =>
+    seed && typeof seed.doc === 'string'
+      ? {
+          format: 'tiptap',
+          version: 1,
+          doc: seed.doc,
+          plain: typeof seed.plain === 'string' ? seed.plain : '',
+        }
+      : emptyFreeFormDoc('tiptap')
+  );
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const save = async () => {
+    setSaving(true);
+    setSaved(false);
+    try {
+      await saveJobsProfileBlock({
+        data: {
+          profileId,
+          kind: 'summary',
+          content: { format: 'tiptap', version: 1, doc: about.doc, plain: about.plain },
+        },
+      });
+      await router.invalidate();
+      setSaved(true);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardContent className="space-y-4 py-5">
+        <h2 className="text-base font-semibold text-text-primary">About</h2>
+        <TiptapFreeForm value={about} onChange={setAbout} />
+        <div className="flex items-center gap-3">
+          <Button onClick={save} disabled={saving} variant="outline" size="sm">
+            {saving ? 'Saving…' : 'Save About'}
+          </Button>
+          {saved ? (
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-success">
+              <Icon icon={CheckmarkCircle02Icon} size="xs" /> Saved
+            </span>
+          ) : null}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+type ExpItem = { org: string; role: string; startYear: string; endYear: string; description: string };
+
+function ExperienceSection({ profileId, blocks }: { profileId: string; blocks: Block[] }) {
+  const router = useRouter();
+  const seed = parseBlock(blocks, 'experience');
+  const [items, setItems] = useState<ExpItem[]>(() =>
+    Array.isArray(seed?.items)
+      ? (seed!.items as any[]).map((it) => ({
+          org: String(it.org ?? ''),
+          role: String(it.role ?? ''),
+          startYear: String(it.startYear ?? ''),
+          endYear: String(it.endYear ?? ''),
+          description: String(it.description ?? ''),
+        }))
+      : []
+  );
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const update = (i: number, patch: Partial<ExpItem>) =>
+    setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
+  const add = () =>
+    setItems((prev) => [...prev, { org: '', role: '', startYear: '', endYear: '', description: '' }]);
+  const remove = (i: number) => setItems((prev) => prev.filter((_, idx) => idx !== i));
+
+  const save = async () => {
+    setSaving(true);
+    setSaved(false);
+    try {
+      await saveJobsProfileBlock({
+        data: {
+          profileId,
+          kind: 'experience',
+          content: { items: items.filter((it) => it.org.trim()) },
+        },
+      });
+      await router.invalidate();
+      setSaved(true);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardContent className="space-y-4 py-5">
+        <h2 className="text-base font-semibold text-text-primary">Experience</h2>
+        {items.map((it, i) => (
+          <div key={i} className="space-y-3 rounded-lg border border-border p-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Organization" required className="sm:col-span-2">
+                <input
+                  value={it.org}
+                  onChange={(e) => update(i, { org: e.target.value })}
+                  placeholder="Organization"
+                  className={INPUT_CLASS}
+                />
+              </Field>
+              <Field label="Role">
+                <input
+                  value={it.role}
+                  onChange={(e) => update(i, { role: e.target.value })}
+                  placeholder="Role"
+                  className={INPUT_CLASS}
+                />
+              </Field>
+              <div className="grid grid-cols-2 gap-2">
+                <Field label="Start year">
+                  <input
+                    value={it.startYear}
+                    onChange={(e) => update(i, { startYear: e.target.value })}
+                    placeholder="2019"
+                    className={INPUT_CLASS}
+                  />
+                </Field>
+                <Field label="End year">
+                  <input
+                    value={it.endYear}
+                    onChange={(e) => update(i, { endYear: e.target.value })}
+                    placeholder="2022"
+                    className={INPUT_CLASS}
+                  />
+                </Field>
+              </div>
+              <Field label="Description" className="sm:col-span-2">
+                <textarea
+                  value={it.description}
+                  onChange={(e) => update(i, { description: e.target.value })}
+                  rows={2}
+                  className={INPUT_CLASS}
+                />
+              </Field>
+            </div>
+            <Button onClick={() => remove(i)} variant="ghost" size="xs" className="text-destructive">
+              Remove
+            </Button>
+          </div>
+        ))}
+        <Button onClick={add} variant="outline" size="sm">
+          <Icon icon={AddCircleIcon} size="sm" /> Add experience
+        </Button>
+        <div className="flex items-center gap-3 border-t border-border pt-4">
+          <Button onClick={save} disabled={saving} size="sm">
+            {saving ? 'Saving…' : 'Save Experience'}
+          </Button>
+          {saved ? (
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-success">
+              <Icon icon={CheckmarkCircle02Icon} size="xs" /> Saved
+            </span>
+          ) : null}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+type EduItem = { school: string; degree: string; field: string; year: string };
+
+function EducationSection({ profileId, blocks }: { profileId: string; blocks: Block[] }) {
+  const router = useRouter();
+  const seed = parseBlock(blocks, 'education');
+  const [items, setItems] = useState<EduItem[]>(() =>
+    Array.isArray(seed?.items)
+      ? (seed!.items as any[]).map((it) => ({
+          school: String(it.school ?? ''),
+          degree: String(it.degree ?? ''),
+          field: String(it.field ?? ''),
+          year: String(it.year ?? ''),
+        }))
+      : []
+  );
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const update = (i: number, patch: Partial<EduItem>) =>
+    setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
+  const add = () => setItems((prev) => [...prev, { school: '', degree: '', field: '', year: '' }]);
+  const remove = (i: number) => setItems((prev) => prev.filter((_, idx) => idx !== i));
+
+  const save = async () => {
+    setSaving(true);
+    setSaved(false);
+    try {
+      await saveJobsProfileBlock({
+        data: {
+          profileId,
+          kind: 'education',
+          content: { items: items.filter((it) => it.school.trim()) },
+        },
+      });
+      await router.invalidate();
+      setSaved(true);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardContent className="space-y-4 py-5">
+        <h2 className="text-base font-semibold text-text-primary">Education</h2>
+        {items.map((it, i) => (
+          <div key={i} className="space-y-3 rounded-lg border border-border p-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="School" required className="sm:col-span-2">
+                <input
+                  value={it.school}
+                  onChange={(e) => update(i, { school: e.target.value })}
+                  placeholder="School"
+                  className={INPUT_CLASS}
+                />
+              </Field>
+              <Field label="Degree">
+                <input
+                  value={it.degree}
+                  onChange={(e) => update(i, { degree: e.target.value })}
+                  placeholder="e.g. B.A."
+                  className={INPUT_CLASS}
+                />
+              </Field>
+              <Field label="Field">
+                <input
+                  value={it.field}
+                  onChange={(e) => update(i, { field: e.target.value })}
+                  placeholder="e.g. Music Education"
+                  className={INPUT_CLASS}
+                />
+              </Field>
+              <Field label="Year">
+                <input
+                  value={it.year}
+                  onChange={(e) => update(i, { year: e.target.value })}
+                  placeholder="2021"
+                  className={INPUT_CLASS}
+                />
+              </Field>
+            </div>
+            <Button onClick={() => remove(i)} variant="ghost" size="xs" className="text-destructive">
+              Remove
+            </Button>
+          </div>
+        ))}
+        <Button onClick={add} variant="outline" size="sm">
+          <Icon icon={AddCircleIcon} size="sm" /> Add education
+        </Button>
+        <div className="flex items-center gap-3 border-t border-border pt-4">
+          <Button onClick={save} disabled={saving} size="sm">
+            {saving ? 'Saving…' : 'Save Education'}
+          </Button>
+          {saved ? (
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-success">
+              <Icon icon={CheckmarkCircle02Icon} size="xs" /> Saved
+            </span>
+          ) : null}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 

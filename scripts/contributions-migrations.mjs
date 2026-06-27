@@ -37,6 +37,8 @@ export const ADD_COLUMNS = [
   { table: 'jobs_posting', column: 'location_lng', ddl: 'ALTER TABLE jobs_posting ADD COLUMN location_lng REAL' },
   // PageantryJobs — profile photo (reuses fantasy_media + /api/fantasy-media).
   { table: 'jobs_profile', column: 'image_media_id', ddl: 'ALTER TABLE jobs_profile ADD COLUMN image_media_id TEXT' },
+  // PageantryJobs — directory visibility (0 = visible in talent directory, 1 = hidden/link-only).
+  { table: 'jobs_profile', column: 'directory_opt_out', ddl: 'ALTER TABLE jobs_profile ADD COLUMN directory_opt_out INTEGER DEFAULT 0' },
 ];
 
 /**

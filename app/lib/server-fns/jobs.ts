@@ -65,6 +65,7 @@ const UpsertProfileInput = v.object({
   headline: v.optional(v.string(), ''),
   location: v.optional(v.string(), ''),
   zip: v.optional(v.string(), ''),
+  directoryOptOut: v.optional(v.boolean()),
 });
 
 export const upsertJobsProfile = createServerFn({ method: 'POST' })
@@ -82,6 +83,7 @@ export const upsertJobsProfile = createServerFn({ method: 'POST' })
       zip: z,
       locationLat: coords?.lat ?? null,
       locationLng: coords?.lng ?? null,
+      ...(data.directoryOptOut !== undefined ? { directoryOptOut: data.directoryOptOut } : {}),
     };
 
     const existing = await Effect.runPromise(

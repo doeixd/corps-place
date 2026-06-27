@@ -51,6 +51,7 @@ const makeJobsService = Effect.gen(function* () {
       notify_on_apply: number;
       accepted_terms_version: string | null;
       image_media_id: string | null;
+      directory_opt_out: number;
       created_at: string;
       updated_at: string;
     }>`SELECT * FROM jobs_profile WHERE slug = ${slug} AND status IN ('published', 'draft') LIMIT 1`;
@@ -86,6 +87,7 @@ const makeJobsService = Effect.gen(function* () {
       notify_on_apply: number;
       accepted_terms_version: string | null;
       image_media_id: string | null;
+      directory_opt_out: number;
       created_at: string;
       updated_at: string;
     }>`SELECT * FROM jobs_profile WHERE user_id = ${userId} LIMIT 1`;
@@ -163,6 +165,7 @@ const makeJobsService = Effect.gen(function* () {
       contactEmail?: string;
       contactVisibility?: string;
       slug?: string;
+      directoryOptOut?: boolean;
     },
     ctx: WriteContext
   ) {
@@ -206,6 +209,10 @@ const makeJobsService = Effect.gen(function* () {
     if (data.slug !== undefined) {
       fields.push('slug = ?');
       args.push(data.slug);
+    }
+    if (data.directoryOptOut !== undefined) {
+      fields.push('directory_opt_out = ?');
+      args.push(data.directoryOptOut ? 1 : 0);
     }
 
     if (fields.length === 0) return;
@@ -769,7 +776,8 @@ const makeJobsService = Effect.gen(function* () {
     let sqlStr = `SELECT p.profile_id, p.slug, p.display_name, p.headline, p.location,
                          p.zip, p.location_lat, p.location_lng, p.image_media_id, p.created_at
                   FROM jobs_profile p
-                  WHERE p.kind = 'employee' AND p.status = 'published'`;
+                  WHERE p.kind = 'employee' AND p.status = 'published'
+                        AND (p.directory_opt_out = 0 OR p.directory_opt_out IS NULL)`;
     const conditions: string[] = [];
 
     if (filters.keyword) {
@@ -808,7 +816,7 @@ const makeJobsService = Effect.gen(function* () {
     }>(sqlStr).pipe(Effect.orDie);
 
     const countRows = yield* sql.unsafe<{ c: number }>(
-      `SELECT COUNT(*) AS c FROM jobs_profile p WHERE p.kind = 'employee' AND p.status = 'published'`
+      `SELECT COUNT(*) AS c FROM jobs_profile p WHERE p.kind = 'employee' AND p.status = 'published' AND (p.directory_opt_out = 0 OR p.directory_opt_out IS NULL)`
     ).pipe(Effect.orDie);
 
     return { rows, total: Number(countRows[0]?.c ?? 0) };

@@ -66,6 +66,9 @@ function PublicProfile() {
   const experience = blockByKind('experience') as {
     items?: Array<{ org: string; role?: string; startYear?: string; endYear?: string }>;
   } | null;
+  const education = blockByKind('education') as {
+    items?: Array<{ school: string; degree?: string; field?: string; year?: string }>;
+  } | null;
   const skills = blockByKind('skills') as { items?: string[] } | null;
   const availability = blockByKind('availability') as Record<string, unknown> | null;
   const links = blockByKind('links') as {
@@ -141,6 +144,31 @@ function PublicProfile() {
                         {item.startYear || '?'} — {item.endYear || 'Present'}
                       </p>
                     ) : null}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
+
+        {/* Education */}
+        {education?.items && education.items.length > 0 ? (
+          <Card>
+            <CardContent className="py-5">
+              <h2 className="mb-3 flex items-center gap-2 text-base font-semibold text-text-primary">
+                <Icon icon={Briefcase01Icon} size="sm" />
+                Education
+              </h2>
+              <div className="space-y-4">
+                {education.items.map((item, i) => (
+                  <div key={i} className="border-b border-border pb-4 last:border-0 last:pb-0">
+                    <p className="font-medium text-text-primary">{item.school}</p>
+                    {item.degree || item.field ? (
+                      <p className="text-sm text-text-secondary">
+                        {[item.degree, item.field].filter(Boolean).join(' · ')}
+                      </p>
+                    ) : null}
+                    {item.year ? <p className="text-xs text-text-muted">{item.year}</p> : null}
                   </div>
                 ))}
               </div>

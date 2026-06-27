@@ -7,6 +7,7 @@ export interface ProfileContext {
   location: string;
   zip: string;
   kind: 'employee' | 'employer';
+  directoryOptOut: boolean;
   profileId: string | null;
   slug: string | null;
   status: string;
@@ -20,6 +21,7 @@ export type ProfileEvent =
   | { type: 'SET_LOCATION'; value: string }
   | { type: 'SET_ZIP'; value: string }
   | { type: 'SET_KIND'; value: 'employee' | 'employer' }
+  | { type: 'SET_DIRECTORY_OPT_OUT'; value: boolean }
   | { type: 'SAVE' }
   | { type: 'PUBLISH' };
 
@@ -29,6 +31,7 @@ export interface ProfileInput {
   location?: string;
   zip?: string;
   kind?: 'employee' | 'employer';
+  directoryOptOut?: boolean;
   profileId?: string | null;
   slug?: string | null;
   status?: string;
@@ -51,6 +54,7 @@ export const jobsProfileMachine = setup({
           headline: string;
           location: string;
           zip: string;
+          directoryOptOut: boolean;
         };
       }) => {
         return upsertJobsProfile({ data: input });
@@ -69,6 +73,7 @@ export const jobsProfileMachine = setup({
     location: input?.location ?? '',
     zip: input?.zip ?? '',
     kind: input?.kind ?? 'employee',
+    directoryOptOut: input?.directoryOptOut ?? false,
     profileId: input?.profileId ?? null,
     slug: input?.slug ?? null,
     status: input?.status ?? 'draft',
@@ -81,6 +86,7 @@ export const jobsProfileMachine = setup({
     SET_LOCATION: { actions: assign({ location: ({ event }) => event.value }) },
     SET_ZIP: { actions: assign({ zip: ({ event }) => event.value }) },
     SET_KIND: { actions: assign({ kind: ({ event }) => event.value }) },
+    SET_DIRECTORY_OPT_OUT: { actions: assign({ directoryOptOut: ({ event }) => event.value }) },
   },
   states: {
     idle: {
@@ -98,6 +104,7 @@ export const jobsProfileMachine = setup({
           headline: context.headline,
           location: context.location,
           zip: context.zip,
+          directoryOptOut: context.directoryOptOut,
         }),
         onDone: {
           target: 'saved',
