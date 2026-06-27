@@ -24,6 +24,7 @@ import {
   SentIcon,
 } from '@/components/icons/generated';
 import { useState } from 'react';
+import { LexicalView } from '@/components/jobs/lexical-view';
 
 export const Route = createFileRoute('/jobs/$jobSlug')({
   loader: async ({ params }) => getJobPosting({ data: { slug: params.jobSlug } }),
@@ -256,7 +257,12 @@ function JobDetail() {
       <Card>
         <CardContent className="py-5">
           <h2 className="mb-3 text-base font-semibold text-text-primary">Job Description</h2>
-          {content?.plain ? (
+          {content?.format === 'lexical' &&
+          typeof content.doc === 'string' &&
+          content.doc.trim().startsWith('{') &&
+          content.doc.includes('"root"') ? (
+            <LexicalView doc={content.doc} plain={content.plain ?? ''} />
+          ) : content?.plain ? (
             <p className="whitespace-pre-line text-sm leading-relaxed text-text-secondary">
               {content.plain}
             </p>

@@ -1,5 +1,10 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  JobDescriptionEditor,
+  emptyJobDescription,
+} from '@/components/jobs/job-description-editor';
+import type { FreeFormDoc } from '@/lib/contrib/free-form';
 import { useSession } from '@/lib/auth-client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,10 +39,14 @@ function PostJobPage() {
   const [salaryMax, setSalaryMax] = useState('');
   const [applyUrl, setApplyUrl] = useState('');
   const [applyEmail, setApplyEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [description, setDescription] = useState<FreeFormDoc>(emptyJobDescription);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Lexical is client-only; gate the editor mount so SSR stays stable.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   if (!session) {
     return (
@@ -67,12 +76,7 @@ function PostJobPage() {
           salaryMax: salaryMax ? Number(salaryMax) : null,
           applyUrl,
           applyEmail,
-          contentJson: JSON.stringify({
-            format: 'lexical',
-            version: 1,
-            doc: body,
-            plain: body.replace(/<[^>]*>/g, '').slice(0, 500),
-          }),
+          contentJson: JSON.stringify(description),
         },
       });
       if (result.ok) {
@@ -98,7 +102,7 @@ function PostJobPage() {
               onClick={() => {
                 setDone(false);
                 setTitle('');
-                setBody('');
+                setDescription(emptyJobDescription());
               }}
               size="sm"
             >
@@ -205,13 +209,13 @@ function PostJobPage() {
 
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-text-primary">Job Description</label>
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              rows={8}
-              placeholder="Describe the role, responsibilities, requirements…"
-              className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
-            />
+            {mounted ? (
+              <JobDescriptionEditor value={description} onChange={setDescription} />
+            ) : (
+              <div className="min-h-40 rounded-lg px-3 py-2 text-sm text-text-muted ring-1 ring-foreground/15">
+                Describe the role, responsibilities, requirements…
+              </div>
+            )}
           </div>
 
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
