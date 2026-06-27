@@ -70,6 +70,8 @@ COPY --from=builder /app/scripts/pullMediaCache.mjs scripts/pullMediaCache.mjs
 # Deterministic boot-time contributions.db migration + its shared column list.
 COPY --from=builder /app/scripts/migrate-contributions.mjs scripts/migrate-contributions.mjs
 COPY --from=builder /app/scripts/contributions-migrations.mjs scripts/contributions-migrations.mjs
+# ZIP centroid dataset seeded into contributions.db at boot (sort-by-closest).
+COPY --from=builder /app/scripts/zip-centroids.csv scripts/zip-centroids.csv
 
 RUN chmod +x /app/docker-entrypoint.sh
 
