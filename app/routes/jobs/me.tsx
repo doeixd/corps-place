@@ -29,6 +29,8 @@ import {
   saveJobsProfileBlock,
 } from '@/lib/server-fns/jobs';
 import { JobDescriptionEditor } from '@/components/jobs/job-description-editor';
+import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
+import { toast } from 'sonner';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
 import {
   UserMultipleIcon,
@@ -661,17 +663,50 @@ function PostingsTab() {
     );
   }
 
+  const active = postings.filter((p: any) => p.status === 'published').length;
+  const closed = postings.length - active;
+  const totalApplicants = postings.reduce((n: number, p: any) => n + (p.applicant_count ?? 0), 0);
+
   return (
-    <div className="space-y-3">
-      {postings.map((p: any) => (
-        <PostingRow
-          key={p.posting_id}
-          posting={p}
-          onChanged={refresh}
-          onRemoved={() => removeLocal(p.posting_id)}
-        />
-      ))}
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-3">
+        <StatTile label="Active" value={active} />
+        <StatTile label="Closed" value={closed} />
+        <StatTile label="Applicants" value={totalApplicants} />
+      </div>
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-text-secondary">Your listings</p>
+        <Link
+          to="/jobs/post"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-text-primary transition-colors hover:border-primary/60"
+        >
+          <Icon icon={AddCircleIcon} size="xs" /> Post a job
+        </Link>
+      </div>
+      <div className="space-y-3">
+        {postings.map((p: any) => (
+          <PostingRow
+            key={p.posting_id}
+            posting={p}
+            onChanged={refresh}
+            onRemoved={() => removeLocal(p.posting_id)}
+          />
+        ))}
+      </div>
     </div>
+  );
+}
+
+function StatTile({ label, value }: { label: string; value: number }) {
+  return (
+    <Card>
+      <CardContent className="flex flex-col items-center gap-0.5 py-3 text-center">
+        <span className="text-2xl font-semibold tabular-nums text-text-primary">{value}</span>
+        <span className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
+          {label}
+        </span>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -697,8 +732,6 @@ function PostingRow({
   onRemoved: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [closing, setClosing] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [applicants, setApplicants] =
     useState<Awaited<ReturnType<typeof getPostingApplicants>> | null>(null);
 
@@ -709,28 +742,16 @@ function PostingRow({
     new Date(posting.expires_at).getTime() < Date.now();
   const expiresRelative = !isClosed && !isExpired ? relativeFuture(posting.expires_at) : null;
 
-  const close = async () => {
-    if (!confirm('Close this listing? It will stop accepting applicants.')) return;
-    setClosing(true);
-    try {
-      await closeJobPosting({ data: { postingId: posting.posting_id } });
-      onChanged();
-    } catch {
-      /* ignore */
-    } finally {
-      setClosing(false);
-    }
+  const closeListing = async () => {
+    await closeJobPosting({ data: { postingId: posting.posting_id } });
+    toast.success('Listing closed');
+    onChanged();
   };
 
-  const remove = async () => {
-    if (!confirm('Delete this listing permanently? This removes its applications too.')) return;
-    setDeleting(true);
-    try {
-      await deleteJobPosting({ data: { postingId: posting.posting_id } });
-      onRemoved();
-    } catch {
-      setDeleting(false);
-    }
+  const removeListing = async () => {
+    await deleteJobPosting({ data: { postingId: posting.posting_id } });
+    toast.success('Listing deleted');
+    onRemoved();
   };
 
   const toggle = () => {
@@ -743,82 +764,87 @@ function PostingRow({
     }
   };
 
+  const setApplicantLocal = (applicationId: string, status: string) =>
+    setApplicants(
+      (prev) => prev?.map((a: any) => (a.application_id === applicationId ? { ...a, status } : a)) ?? prev
+    );
+
   const count = posting.applicant_count ?? 0;
+  const statusChip = isClosed
+    ? { label: 'Closed', variant: 'secondary-light' as const }
+    : isExpired
+      ? { label: 'Expired', variant: 'warning-light' as const }
+      : posting.status === 'published'
+        ? { label: 'Published', variant: 'success-light' as const }
+        : { label: String(posting.status), variant: 'secondary-light' as const };
 
   return (
     <Card>
-      <CardContent className="space-y-3 py-3">
-        <div className="flex items-center justify-between gap-4">
+      <CardContent className="space-y-3 py-4">
+        <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <Link
               to="/jobs/$jobSlug"
               params={{ jobSlug: posting.slug }}
-              className="truncate font-medium text-text-primary hover:underline"
+              className="block truncate font-medium text-text-primary hover:underline"
             >
               {posting.title}
             </Link>
-            <p className="text-sm text-text-secondary">
-              {new Date(posting.created_at).toLocaleDateString()}
-              {posting.apply_url ? (
-                <span className="text-text-muted"> · External apply — applicants tracked on your site</span>
-              ) : (
-                <> · {count} {count === 1 ? 'applicant' : 'applicants'}</>
-              )}
+            <p className="mt-0.5 text-xs text-text-muted">
+              Posted {new Date(posting.created_at).toLocaleDateString()}
               {isClosed ? null : isExpired ? (
-                <span className="text-text-muted"> · Expired</span>
+                <> · Expired</>
               ) : expiresRelative ? (
-                <span className="text-text-muted"> · Expires {expiresRelative}</span>
+                <> · Expires {expiresRelative}</>
               ) : null}
+              {posting.apply_url ? <> · External apply</> : null}
             </p>
           </div>
-          <Badge
-            variant={
-              isClosed
-                ? 'secondary-light'
-                : posting.status === 'published'
-                  ? 'success-light'
-                  : 'secondary-light'
-            }
-            size="sm"
-          >
-            {isClosed ? 'Closed' : posting.status === 'published' ? 'Published' : posting.status}
+          <Badge variant={statusChip.variant} size="sm">
+            {statusChip.label}
           </Badge>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
           <Button onClick={toggle} variant="outline" size="xs">
-            {open ? 'Hide' : 'View applicants'}
+            <Icon icon={UserMultipleIcon} size="xs" />{' '}
+            {open ? 'Hide applicants' : `${count} ${count === 1 ? 'applicant' : 'applicants'}`}
           </Button>
-          {!isClosed ? (
-            <Button
-              onClick={close}
-              disabled={closing}
-              variant="ghost"
-              size="xs"
-              className="text-destructive"
-            >
-              {closing ? '…' : 'Close'}
-            </Button>
-          ) : null}
-          <Button
-            onClick={remove}
-            disabled={deleting}
-            variant="ghost"
-            size="xs"
-            className="text-destructive"
-          >
-            {deleting ? '…' : 'Delete'}
-          </Button>
+          <div className="ml-auto flex items-center gap-1">
+            {!isClosed ? (
+              <ConfirmDialog
+                title="Close this listing?"
+                description="It stops accepting new applicants. Existing applicants stay visible to you."
+                confirmLabel="Close listing"
+                onConfirm={closeListing}
+                trigger={
+                  <Button variant="ghost" size="xs" className="text-text-muted hover:text-text-primary">
+                    Close
+                  </Button>
+                }
+              />
+            ) : null}
+            <ConfirmDialog
+              title="Delete this listing?"
+              description="This permanently removes the listing and all of its applications. This can't be undone."
+              confirmLabel="Delete"
+              onConfirm={removeListing}
+              trigger={
+                <Button variant="ghost" size="xs" className="text-destructive">
+                  Delete
+                </Button>
+              }
+            />
+          </div>
         </div>
 
         {open ? (
           applicants === null ? (
-            <p className="text-sm text-text-muted">Loading…</p>
+            <p className="border-t border-border pt-3 text-sm text-text-muted">Loading applicants…</p>
           ) : applicants.length === 0 ? (
-            <p className="border-t border-border pt-3 text-sm text-text-muted">No applicants yet</p>
+            <p className="border-t border-border pt-3 text-sm text-text-muted">No applicants yet.</p>
           ) : (
-            <div className="space-y-3 border-t border-border pt-3">
-              {applicants.map((ap: any) => (
-                <ApplicantRow key={ap.application_id} applicant={ap} />
-              ))}
-            </div>
+            <ApplicantsPanel applicants={applicants} onStatusChange={setApplicantLocal} />
           )
         ) : null}
       </CardContent>
@@ -827,6 +853,7 @@ function PostingRow({
 }
 
 const APPLICANT_STATUSES = ['new', 'reviewed', 'shortlisted', 'passed'] as const;
+const STATUS_ORDER: Record<string, number> = { new: 0, reviewed: 1, shortlisted: 2, passed: 3 };
 const STATUS_LABEL: Record<string, string> = {
   new: 'New',
   reviewed: 'Reviewed',
@@ -840,25 +867,70 @@ const STATUS_VARIANT: Record<string, 'secondary-light' | 'success-light' | 'warn
   passed: 'secondary-light',
 };
 
-function ApplicantRow({ applicant: ap }: { applicant: any }) {
-  const [status, setStatus] = useState<string>(ap.status ?? 'new');
+function ApplicantsPanel({
+  applicants,
+  onStatusChange,
+}: {
+  applicants: readonly any[];
+  onStatusChange: (applicationId: string, status: string) => void;
+}) {
+  // Live pipeline counts + a stable new→passed ordering so unreviewed applicants
+  // always surface at the top.
+  const counts = applicants.reduce<Record<string, number>>((acc, ap) => {
+    const s = ap.status ?? 'new';
+    acc[s] = (acc[s] ?? 0) + 1;
+    return acc;
+  }, {});
+  const sorted = [...applicants].sort(
+    (a, b) => (STATUS_ORDER[a.status ?? 'new'] ?? 0) - (STATUS_ORDER[b.status ?? 'new'] ?? 0)
+  );
+
+  return (
+    <div className="space-y-3 border-t border-border pt-3">
+      <div className="flex flex-wrap gap-1.5">
+        {APPLICANT_STATUSES.map((s) =>
+          counts[s] ? (
+            <Badge key={s} variant={STATUS_VARIANT[s]} size="sm">
+              {counts[s]} {STATUS_LABEL[s]}
+            </Badge>
+          ) : null
+        )}
+      </div>
+      <div className="space-y-2.5">
+        {sorted.map((ap) => (
+          <ApplicantRow key={ap.application_id} applicant={ap} onStatusChange={onStatusChange} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ApplicantRow({
+  applicant: ap,
+  onStatusChange,
+}: {
+  applicant: any;
+  onStatusChange: (applicationId: string, status: string) => void;
+}) {
   const [saving, setSaving] = useState(false);
+  const status = ap.status ?? 'new';
 
   const change = async (next: string) => {
-    const prev = status;
-    setStatus(next);
+    if (next === status || saving) return;
+    onStatusChange(ap.application_id, next); // optimistic — keeps panel counts/order live
     setSaving(true);
     try {
       await setApplicantStatus({ data: { applicationId: ap.application_id, status: next as any } });
     } catch {
-      setStatus(prev);
+      onStatusChange(ap.application_id, status);
+      toast.error('Could not update status');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 rounded-lg border border-border bg-card/50 p-3">
       {ap.image_media_id ? (
         <img
           src={`/api/fantasy-media/${ap.image_media_id}`}
@@ -871,7 +943,7 @@ function ApplicantRow({ applicant: ap }: { applicant: any }) {
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           {ap.slug ? (
             <Link
               to="/jobs/profile/$slug"
@@ -883,40 +955,41 @@ function ApplicantRow({ applicant: ap }: { applicant: any }) {
           ) : (
             <p className="font-medium text-text-primary">{ap.display_name ?? 'Applicant'}</p>
           )}
-          <Badge variant={STATUS_VARIANT[status] ?? 'secondary-light'} size="sm">
-            {STATUS_LABEL[status] ?? status}
-          </Badge>
+          <span className="text-xs text-text-muted">
+            Applied {new Date(ap.created_at).toLocaleDateString()}
+          </span>
         </div>
         {ap.headline || ap.location ? (
           <p className="text-xs text-text-muted">
             {[ap.headline, ap.location].filter(Boolean).join(' · ')}
           </p>
         ) : null}
-        <p className="text-xs text-text-muted">
-          Applied {new Date(ap.created_at).toLocaleDateString()}
-        </p>
         {ap.message ? (
           <p className="mt-2 rounded-lg bg-muted/50 px-3 py-2 text-sm text-text-secondary">
             {ap.message}
           </p>
         ) : null}
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          <select
-            value={status}
-            onChange={(e) => change(e.target.value)}
-            disabled={saving}
-            className="rounded-lg border border-border bg-card px-2 py-1 text-xs outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
-          >
-            {APPLICANT_STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {STATUS_LABEL[s]}
-              </option>
-            ))}
-          </select>
+        <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+          {APPLICANT_STATUSES.map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => change(s)}
+              aria-pressed={status === s}
+              className={cn(
+                'rounded-full px-2.5 py-1 text-xs font-medium transition-colors',
+                status === s
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-text-secondary hover:bg-muted/70'
+              )}
+            >
+              {STATUS_LABEL[s]}
+            </button>
+          ))}
           {ap.applicant_email ? (
             <a
               href={`mailto:${ap.applicant_email}`}
-              className="text-xs font-medium text-primary hover:underline"
+              className="ml-1 text-xs font-medium text-primary hover:underline"
             >
               Contact
             </a>
