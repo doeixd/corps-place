@@ -3,6 +3,7 @@ import { getWebRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { Effect } from 'effect';
 import { getActor, ForbiddenError } from '@/lib/authz';
+import { rateLimit } from '@/lib/rate-limit';
 import { JobsService, JobsServiceLive } from '@/lib/jobs/jobs-service';
 import { JOBS_BLOCK_SCHEMAS, isJobsBlockKind } from '@/lib/jobs/schemas';
 import { normalizeZip } from '@/lib/jobs/zip';
@@ -12,6 +13,13 @@ import { sendEmail } from '@/lib/email';
 // Pure (no service closure) — safe at module scope; used only inside handlers.
 const escapeHtml = (s: string): string =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+// Pure (no service closure) — anti-abuse throttle. Closes only over the pure
+// `rateLimit`, never JobsServiceLive, so client-bundle tree-shaking stays intact.
+const limit = (action: string, userId: string, max: number, windowMs: number): void => {
+  if (!rateLimit(`jobs:${action}:${userId}`, max, windowMs))
+    throw new Error('Too many requests — please slow down and try again in a bit.');
+};
 
 // NOTE: do NOT add a module-scope helper that closes over `JobsServiceLive` (or any
 // service Live / runtime). Each `.handler()` below inlines `Effect.provide(JobsServiceLive)`
@@ -61,10 +69,10 @@ export const getMyJobsProfile = createServerFn({ method: 'GET' }).handler(async 
 
 const UpsertProfileInput = v.object({
   kind: v.optional(v.picklist(['employee', 'employer']), 'employee'),
-  displayName: v.optional(v.string(), ''),
-  headline: v.optional(v.string(), ''),
-  location: v.optional(v.string(), ''),
-  zip: v.optional(v.string(), ''),
+  displayName: v.optional(v.pipe(v.string(), v.maxLength(120)), ''),
+  headline: v.optional(v.pipe(v.string(), v.maxLength(200)), ''),
+  location: v.optional(v.pipe(v.string(), v.maxLength(200)), ''),
+  zip: v.optional(v.pipe(v.string(), v.maxLength(10)), ''),
   directoryOptOut: v.optional(v.boolean()),
 });
 
@@ -72,6 +80,7 @@ export const upsertJobsProfile = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UpsertProfileInput, d))
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+    limit('edit', ctx.authorId, 40, 10 * 60_000);
 
     // Geocode the ZIP best-effort so we can sort/filter by distance later.
     const z = normalizeZip(data.zip);
@@ -128,6 +137,7 @@ export const saveJobsProfileBlock = createServerFn({ method: 'POST' })
     if (!isJobsBlockKind(data.kind)) throw new Error(`Unknown block kind: ${data.kind}`);
     const content = v.parse(JOBS_BLOCK_SCHEMAS[data.kind], data.content);
     const ctx = await getJobsCtx();
+    limit('edit', ctx.authorId, 40, 10 * 60_000);
 
     const blockId = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) =>
@@ -194,15 +204,15 @@ export const listJobs = createServerFn({ method: 'GET' })
   });
 
 const CreatePostingInput = v.object({
-  title: v.pipe(v.string(), v.minLength(1, 'Title required')),
-  location: v.optional(v.string(), ''),
+  title: v.pipe(v.string(), v.minLength(1, 'Title required'), v.maxLength(200)),
+  location: v.optional(v.pipe(v.string(), v.maxLength(200)), ''),
   zip: v.optional(v.string(), ''),
   remoteOk: v.optional(v.boolean(), false),
-  compText: v.optional(v.string(), ''),
+  compText: v.optional(v.pipe(v.string(), v.maxLength(500)), ''),
   salaryMin: v.optional(v.nullable(v.number())),
   salaryMax: v.optional(v.nullable(v.number())),
-  applyUrl: v.optional(v.string(), ''),
-  applyEmail: v.optional(v.string(), ''),
+  applyUrl: v.optional(v.pipe(v.string(), v.maxLength(500)), ''),
+  applyEmail: v.optional(v.pipe(v.string(), v.maxLength(200)), ''),
   contentJson: v.string(),
   expiresDays: v.optional(v.number()),
 });
@@ -211,11 +221,26 @@ export const createJobPosting = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(CreatePostingInput, d))
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+    limit('post', ctx.authorId, 6, 60_000);
+    limit('post-day', ctx.authorId, 40, 24 * 3600_000);
     const profile = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
         Effect.provide(JobsServiceLive)
       )
     );
+    // Anti-flood: cap the number of live (non-closed/expired) listings per employer.
+    if (profile) {
+      const existingPostings = await Effect.runPromise(
+        Effect.flatMap(JobsService, (svc) =>
+          svc.listPostingsByEmployer(profile.profile.profile_id)
+        ).pipe(Effect.provide(JobsServiceLive))
+      );
+      const active = existingPostings.filter((p) => p.status !== 'closed').length;
+      if (active >= 50)
+        throw new Error(
+          'You have too many active listings. Close or delete some before posting more.'
+        );
+    }
     // Posting a job IS acting as an employer — auto-provision a profile rather than
     // 500'ing with "Only employers can post jobs". Existing profiles can post too.
     const profileId =
@@ -276,6 +301,7 @@ export const closeJobPosting = createServerFn({ method: 'POST' })
   .validator((d: { postingId: string }) => d)
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+    limit('manage', ctx.authorId, 60, 10 * 60_000);
     await Effect.runPromise(
       Effect.gen(function* () {
         const svc = yield* JobsService;
@@ -299,6 +325,7 @@ export const deleteJobPosting = createServerFn({ method: 'POST' })
   .validator((d: { postingId: string }) => d)
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+    limit('manage', ctx.authorId, 60, 10 * 60_000);
     await Effect.runPromise(
       Effect.gen(function* () {
         const svc = yield* JobsService;
@@ -328,6 +355,7 @@ export const setApplicantStatus = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(SetApplicantStatusInput, d))
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+    limit('manage', ctx.authorId, 60, 10 * 60_000);
     const profile = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
         Effect.provide(JobsServiceLive)
@@ -342,11 +370,17 @@ export const setApplicantStatus = createServerFn({ method: 'POST' })
     return { ok: true as const };
   });
 
+const ApplyInput = v.object({
+  postingId: v.string(),
+  message: v.optional(v.pipe(v.string(), v.maxLength(5000))),
+});
+
 export const applyToJob = createServerFn({ method: 'POST' })
-  .validator((d: { postingId: string; message?: string }) => d)
+  .validator((d: unknown) => v.parse(ApplyInput, d))
   .handler(async ({ data }) => {
     const actor = await getActor(getWebRequest());
     if (!actor) throw new Error('Sign in to apply');
+    limit('apply', actor.userId, 12, 60_000);
     const result = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) =>
         svc.applyToPosting(data.postingId, actor.userId, data.message)
@@ -388,6 +422,7 @@ export const reportContent = createServerFn({ method: 'POST' })
   .validator((d: { targetKind: string; targetId: string; reason?: string }) => d)
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+    limit('report', ctx.authorId, 20, 10 * 60_000);
     const flagId = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) =>
         svc.reportBad(ctx.authorId, data.targetKind, data.targetId, data.reason)
@@ -492,6 +527,7 @@ export const claimPerson = createServerFn({ method: 'POST' })
   .validator((d: { entityType: string; entityId: string }) => d)
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+    limit('claim', ctx.authorId, 10, 10 * 60_000);
     const profile = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
         Effect.provide(JobsServiceLive)
@@ -534,10 +570,17 @@ export const checkClaimByEntity = createServerFn({ method: 'GET' })
 
 // ── Saved search alerts ──────────────────────────────────────────────────────
 
+const CreateAlertInput = v.object({
+  kind: v.string(),
+  filtersJson: v.pipe(v.string(), v.maxLength(4000)),
+  frequency: v.optional(v.string()),
+});
+
 export const createJobAlert = createServerFn({ method: 'POST' })
-  .validator((d: { kind: string; filtersJson: string; frequency?: string }) => d)
+  .validator((d: unknown) => v.parse(CreateAlertInput, d))
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+    limit('alert', ctx.authorId, 20, 10 * 60_000);
     const alertId = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) =>
         svc.createAlert(ctx.authorId, data.kind, data.filtersJson, data.frequency ?? 'daily')
@@ -576,18 +619,6 @@ export const createBoostCheckout = createServerFn({ method: 'POST' })
 
 // ── Resume parsing (M6) ─────────────────────────────────────────────────────
 
-export const parseResumeFile = createServerFn({ method: 'POST' })
-  .validator((d: unknown) => v.parse(v.object({ rawText: v.string() }), d))
-  .handler(async ({ data }) => {
-    try {
-      const { parseResume } = await import('resume-parser-ats');
-      const result = parseResume({ rawText: data.rawText });
-      return { ok: true as const, parsed: result.data };
-    } catch (e) {
-      return { ok: false as const, error: (e as Error).message };
-    }
-  });
-
 const UploadResumeInput = v.object({
   base64: v.string(),
   fileName: v.string(),
@@ -596,14 +627,20 @@ const UploadResumeInput = v.object({
 export const uploadAndParseResume = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UploadResumeInput, d))
   .handler(async ({ data }) => {
+    const actor = await getActor(getWebRequest());
+    if (!actor) throw new Error('Sign in to upload a résumé');
+    limit('resume', actor.userId, 10, 10 * 60_000);
+    // DoS guard: reject empty / oversized uploads before touching disk.
+    const buf = Buffer.from(data.base64, 'base64');
+    if (buf.length === 0 || buf.length > 8 * 1024 * 1024)
+      throw new Error('Résumé must be a non-empty file under 8 MB.');
     const fs = await import('node:fs');
     const path = await import('node:path');
     const os = await import('node:os');
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'resume-'));
     const filePath = path.join(tmpDir, data.fileName);
     try {
-      const buffer = Buffer.from(data.base64, 'base64');
-      fs.writeFileSync(filePath, buffer);
+      fs.writeFileSync(filePath, buf);
       const { parseResume } = await import('resume-parser-ats');
       const result = parseResume({ filePath });
       return { ok: true as const, parsed: result.data };
@@ -624,12 +661,25 @@ export const bookmarkJob = createServerFn({ method: 'POST' })
   .validator((d: { postingId: string }) => d)
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+    limit('bookmark', ctx.authorId, 60, 10 * 60_000);
     await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.bookmarkJob(ctx.authorId, data.postingId)).pipe(
         Effect.provide(JobsServiceLive)
       )
     );
     return { ok: true as const };
+  });
+
+export const isJobBookmarked = createServerFn({ method: 'GET' })
+  .validator((d: { postingId: string }) => d)
+  .handler(async ({ data }) => {
+    const actor = await getActor(getWebRequest());
+    if (!actor) return false;
+    return Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.isBookmarked(actor.userId, data.postingId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
   });
 
 export const removeBookmark = createServerFn({ method: 'POST' })
@@ -695,16 +745,6 @@ export const getPostingApplicants = createServerFn({ method: 'GET' })
       ).pipe(Effect.provide(JobsServiceLive))
     );
   });
-
-export const getPostingApplications = createServerFn({ method: 'GET' })
-  .validator((d: { postingId: string }) => d)
-  .handler(async ({ data }) =>
-    Effect.runPromise(
-      Effect.flatMap(JobsService, (svc) => svc.getPostingApplications(data.postingId)).pipe(
-        Effect.provide(JobsServiceLive)
-      )
-    )
-  );
 
 export const deleteJobAlert = createServerFn({ method: 'POST' })
   .validator((d: { alertId: string }) => d)

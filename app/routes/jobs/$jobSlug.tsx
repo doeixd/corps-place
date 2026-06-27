@@ -14,6 +14,7 @@ import {
   createBoostCheckout,
   bookmarkJob,
   removeBookmark,
+  isJobBookmarked,
 } from '@/lib/server-fns/jobs';
 import { SignInButton } from '@/components/sign-in-button';
 import {
@@ -384,6 +385,21 @@ function BookmarkButton({ postingId }: { postingId: string }) {
   const { data: session } = useSession();
   const [bookmarked, setBookmarked] = useState(false);
   const [toggling, setToggling] = useState(false);
+
+  // Reflect an existing bookmark so the button shows "Saved" on return visits
+  // (mirrors the Apply button's hasAppliedToJob check). Skipped when signed out.
+  useEffect(() => {
+    if (!session) return;
+    let cancelled = false;
+    void isJobBookmarked({ data: { postingId } })
+      .then((did) => {
+        if (!cancelled && did) setBookmarked(true);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [session, postingId]);
 
   if (!session) return null;
 

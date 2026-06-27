@@ -14,6 +14,7 @@ import { getWebRequest } from '@tanstack/react-start/server';
 import { Effect, Match } from 'effect';
 import * as v from 'valibot';
 import { getActor } from '@/lib/authz';
+import { rateLimit } from '@/lib/rate-limit';
 import { MediaService } from '@/lib/fantasy/services/media-service';
 import { JobsService, JobsServiceLive } from '@/lib/jobs/jobs-service';
 import { fantasyRuntime } from '@/rpc';
@@ -27,6 +28,8 @@ export const setJobsProfilePhoto = createServerFn({ method: 'POST' })
   .handler(async ({ data }): Promise<{ ok: true; mediaId: string | null }> => {
     const actor = await getActor(getWebRequest());
     if (!actor) throw new Error('UNAUTHENTICATED');
+    if (!rateLimit(`jobs:photo:${actor.userId}`, 12, 10 * 60_000))
+      throw new Error('Too many requests — please slow down and try again in a bit.');
     const ctx = {
       now: new Date().toISOString(),
       authorId: actor.userId,
