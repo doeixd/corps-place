@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -39,6 +40,20 @@ export function JobDescriptionEditor({
       });
     });
   };
+
+  // Lexical instantiates against the DOM, so it must never run during SSR. Self-guard
+  // with a mount check (renders a static placeholder first) so EVERY caller is safe —
+  // previously callers had to wrap this themselves and /jobs/me's About did not, 500ing.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) {
+    return (
+      <div className="rounded-lg ring-1 ring-foreground/15">
+        <div className="h-10 border-b border-border" />
+        <div className="min-h-40 p-3 text-sm text-text-muted">{placeholder}</div>
+      </div>
+    );
+  }
 
   return (
     <LexicalComposer
