@@ -39,18 +39,18 @@ export function JobsLanding() {
             e.preventDefault();
             runSearch();
           }}
-          className="flex w-full max-w-xl gap-2"
+          className="mt-4 flex w-full max-w-xl gap-2"
         >
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search jobs, skills, or keywords…"
-            className="flex-1 rounded-lg border border-border bg-card px-4 py-2.5 text-sm text-text-primary outline-none ring-0 placeholder:text-text-muted focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+            className="h-11 flex-1 rounded-lg border border-border bg-card px-4 text-sm text-text-primary outline-none ring-0 placeholder:text-text-muted focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
           />
           <button
             type="submit"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
+            className="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
           >
             <Icon icon={Search01Icon} size="sm" />
             Search

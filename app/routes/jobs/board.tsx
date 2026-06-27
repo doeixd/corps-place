@@ -67,15 +67,15 @@ function BoardPage() {
     <PageShell>
       <PageHeader title="Job Board" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
 
-      <div className="flex gap-2">
+      <div className="mt-4 flex gap-2">
         <input
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && doSearch()}
           placeholder="Search jobs by keyword…"
-          className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+          className="h-11 flex-1 rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
         />
-        <Button onClick={doSearch} disabled={loading} variant="outline" size="sm">
+        <Button onClick={doSearch} disabled={loading} variant="outline" className="h-11 px-4">
           <Icon icon={Search01Icon} size="sm" /> {loading ? '…' : 'Search'}
         </Button>
       </div>
