@@ -403,6 +403,28 @@ export const setApplicantStatus = createServerFn({ method: 'POST' })
         svc.setApplicationStatus(data.applicationId, data.status, profile.profile.profile_id)
       ).pipe(Effect.provide(JobsServiceLive))
     );
+
+    // Notify the applicant on positive movement only (shortlisted/reviewed) — never
+    // for new/passed, to avoid noise and harsh rejection pings. Best-effort: a mail
+    // failure must never fail the status mutation.
+    if (data.status === 'shortlisted' || data.status === 'reviewed') {
+      const info = await Effect.runPromise(
+        Effect.flatMap(JobsService, (svc) =>
+          svc.getApplicationNotifyInfo(data.applicationId, profile.profile.profile_id)
+        ).pipe(Effect.provide(JobsServiceLive))
+      ).catch(() => null);
+      if (info?.applicant_email) {
+        const title = escapeHtml(info.title);
+        await sendEmail({
+          to: info.applicant_email,
+          subject: `Update on your application to "${info.title}"`,
+          tag: 'jobs-application-status',
+          html: `<p>There's an update on your application to <strong>${title}</strong>.</p>
+<p><a href="https://pageantryjobs.com/jobs/me">View your applications →</a></p>`,
+        }).catch((e) => console.warn('[jobs] status email failed:', e));
+      }
+    }
+
     return { ok: true as const };
   });
 

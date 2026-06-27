@@ -1002,6 +1002,15 @@ function ApplicantRow({
 
 // ── Applications tab ─────────────────────────────────────────────────────────
 
+// Seeker-facing view of the employer's triage status. Deliberately gentle: a
+// "passed" application reads as "Closed", never "Rejected".
+const SEEKER_STATUS: Record<string, { label: string; variant: 'secondary-light' | 'warning-light' | 'success-light' }> = {
+  new: { label: 'Applied', variant: 'secondary-light' },
+  reviewed: { label: 'Under review', variant: 'warning-light' },
+  shortlisted: { label: 'Shortlisted', variant: 'success-light' },
+  passed: { label: 'Closed', variant: 'secondary-light' },
+};
+
 function ApplicationsTab() {
   const [apps, setApps] = useState<Awaited<ReturnType<typeof getMyApplications>> | null>(null);
   useEffect(() => {
@@ -1041,9 +1050,14 @@ function ApplicationsTab() {
                   {a.employer_name} · {new Date(a.created_at).toLocaleDateString()}
                 </p>
               </div>
-              <Badge variant="secondary-light" size="sm">
-                Applied
-              </Badge>
+              {(() => {
+                const s = SEEKER_STATUS[a.status ?? 'new'] ?? SEEKER_STATUS.new;
+                return (
+                  <Badge variant={s.variant} size="sm">
+                    {s.label}
+                  </Badge>
+                );
+              })()}
             </CardContent>
           </Card>
         </Link>

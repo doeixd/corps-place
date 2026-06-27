@@ -481,6 +481,25 @@ const makeJobsService = Effect.gen(function* () {
                  AND posting_id IN (SELECT posting_id FROM jobs_posting WHERE employer_profile_id = ${employerProfileId})`;
   });
 
+  // Owner-guarded read for the status-change notification: returns the applicant's
+  // email and the posting title only when the application's posting belongs to the
+  // given employer profile. Null when no match (wrong owner / missing email).
+  const getApplicationNotifyInfo = Effect.fn('JobsService.getApplicationNotifyInfo')(function* (
+    applicationId: string,
+    employerProfileId: string
+  ) {
+    const rows = yield* sql<{
+      applicant_email: string | null;
+      title: string;
+    }>`SELECT u.email AS applicant_email, p.title
+       FROM jobs_application a
+       JOIN jobs_posting p ON p.posting_id = a.posting_id
+       LEFT JOIN "user" u ON u.id = a.applicant_user_id
+       WHERE a.application_id = ${applicationId}
+         AND p.employer_profile_id = ${employerProfileId} LIMIT 1`;
+    return rows[0] ?? null;
+  });
+
   // ── Posting writes ──────────────────────────────────────────────────────
 
   const generatePostingSlug = Effect.fn('JobsService.generatePostingSlug')(function* (
@@ -1143,7 +1162,8 @@ const makeJobsService = Effect.gen(function* () {
       title: string;
       employer_name: string;
       created_at: string;
-    }>`SELECT a.application_id, a.posting_id, p.slug, p.title,
+      status: string | null;
+    }>`SELECT a.application_id, a.posting_id, p.slug, p.title, a.status,
               COALESCE(pr.display_name, '') AS employer_name, a.created_at
        FROM jobs_application a
        JOIN jobs_posting p ON p.posting_id = a.posting_id
@@ -1241,6 +1261,7 @@ const makeJobsService = Effect.gen(function* () {
     listPostingsByEmployer,
     getApplicantsForPosting,
     setApplicationStatus,
+    getApplicationNotifyInfo,
     createPosting,
     updatePosting,
     closePosting,
