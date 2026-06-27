@@ -458,13 +458,15 @@ function ShareButton() {
 
 function SimilarJobsSection({ location, slug }: { location: string; slug: string }) {
   const [similar, setSimilar] = useState<any[] | null>(null);
-  if (!similar) {
-    // Simple client-side fetch for similar jobs by location
+  // Simple client-side fetch for similar jobs by location
+  useEffect(() => {
+    let alive = true;
     import('@/lib/server-fns/jobs')
       .then((m) => m.listJobs({ data: { location, offset: 0, limit: 3 } }))
-      .then((r) => setSimilar(r.rows.filter((j: any) => j.slug !== slug).slice(0, 3)))
-      .catch(() => setSimilar([]));
-  }
+      .then((r) => { if (alive) setSimilar(r.rows.filter((j: any) => j.slug !== slug).slice(0, 3)); })
+      .catch(() => { if (alive) setSimilar([]); });
+    return () => { alive = false; };
+  }, [location, slug]);
   if (!similar || similar.length === 0) return null;
 
   return (

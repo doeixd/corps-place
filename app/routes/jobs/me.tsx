@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { Match } from 'effect';
@@ -626,16 +626,19 @@ function EducationSection({ profileId, blocks }: { profileId: string; blocks: Bl
 function PostingsTab() {
   const [postings, setPostings] =
     useState<Awaited<ReturnType<typeof getMyPostings>> | null>(null);
-  if (!postings) {
+  useEffect(() => {
+    let alive = true;
     getMyPostings()
-      .then(setPostings)
-      .catch(() => setPostings([]));
-    return <LoadingCard />;
-  }
+      .then((d) => { if (alive) setPostings(d); })
+      .catch(() => { if (alive) setPostings([]); });
+    return () => { alive = false; };
+  }, []);
 
   const refresh = () => getMyPostings().then(setPostings).catch(() => {});
   const removeLocal = (postingId: string) =>
     setPostings((prev) => prev?.filter((p: any) => p.posting_id !== postingId) ?? null);
+
+  if (!postings) return <LoadingCard />;
 
   if (postings.length === 0) {
     return (
@@ -925,12 +928,15 @@ function ApplicantRow({ applicant: ap }: { applicant: any }) {
 
 function ApplicationsTab() {
   const [apps, setApps] = useState<Awaited<ReturnType<typeof getMyApplications>> | null>(null);
-  if (!apps) {
+  useEffect(() => {
+    let alive = true;
     getMyApplications()
-      .then(setApps)
-      .catch(() => setApps([]));
-    return <LoadingCard />;
-  }
+      .then((d) => { if (alive) setApps(d); })
+      .catch(() => { if (alive) setApps([]); });
+    return () => { alive = false; };
+  }, []);
+
+  if (!apps) return <LoadingCard />;
 
   if (apps.length === 0) {
     return (
@@ -974,12 +980,15 @@ function ApplicationsTab() {
 
 function BookmarksTab() {
   const [bms, setBms] = useState<Awaited<ReturnType<typeof getMyBookmarks>> | null>(null);
-  if (!bms) {
+  useEffect(() => {
+    let alive = true;
     getMyBookmarks()
-      .then(setBms)
-      .catch(() => setBms([]));
-    return <LoadingCard />;
-  }
+      .then((d) => { if (alive) setBms(d); })
+      .catch(() => { if (alive) setBms([]); });
+    return () => { alive = false; };
+  }, []);
+
+  if (!bms) return <LoadingCard />;
 
   if (bms.length === 0) {
     return (
@@ -1024,12 +1033,15 @@ function AlertsTab() {
   const [saving, setSaving] = useState(false);
   const [newKeyword, setNewKeyword] = useState('');
 
-  if (!alerts) {
+  useEffect(() => {
+    let alive = true;
     listMyAlerts()
-      .then(setAlerts)
-      .catch(() => setAlerts([]));
-    return <LoadingCard />;
-  }
+      .then((d) => { if (alive) setAlerts(d); })
+      .catch(() => { if (alive) setAlerts([]); });
+    return () => { alive = false; };
+  }, []);
+
+  if (!alerts) return <LoadingCard />;
 
   const addAlert = async () => {
     if (!newKeyword.trim()) return;
