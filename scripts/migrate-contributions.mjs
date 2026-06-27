@@ -18,6 +18,18 @@ async function main() {
   await db.execute('PRAGMA busy_timeout=5000');
   const added = await applyAddColumns(db);
   console.log(`[migrate-contributions] ok — ${added} column(s) added (${url}).`);
+  // One application per (posting, applicant). Best-effort: a pre-existing duplicate
+  // row makes the unique index fail to build — log and continue rather than block boot.
+  await db
+    .execute(
+      'CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_application_unique ON jobs_application(posting_id, applicant_user_id)'
+    )
+    .then(() => console.log('[migrate-contributions] idx_jobs_application_unique ok.'))
+    .catch((err) =>
+      console.error(
+        `[migrate-contributions] idx_jobs_application_unique skipped: ${err?.message ?? err}`
+      )
+    );
   // Seed the ZIP → lat/lng centroid table (best-effort; never blocks boot).
   try {
     const seeded = await seedZipCentroids(db);

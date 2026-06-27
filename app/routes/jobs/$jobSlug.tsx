@@ -9,11 +9,13 @@ import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 import {
   getJobPosting,
   applyToJob,
+  hasAppliedToJob,
   reportContent,
   createBoostCheckout,
   bookmarkJob,
   removeBookmark,
 } from '@/lib/server-fns/jobs';
+import { SignInButton } from '@/components/sign-in-button';
 import {
   Briefcase01Icon,
   Location01Icon,
@@ -23,7 +25,7 @@ import {
   BookOpen01Icon,
   SentIcon,
 } from '@/components/icons/generated';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { celebrate } from '@/lib/confetti';
 import { LexicalView } from '@/components/jobs/lexical-view';
 
@@ -111,6 +113,22 @@ function JobDetail() {
   const [showApply, setShowApply] = useState(false);
   const [note, setNote] = useState('');
 
+  // Reflect a prior application so "Application sent ✓" persists across reloads/return
+  // visits (and the Apply button doesn't reappear). Skipped when signed out or no posting.
+  const postingId = job?.posting_id;
+  useEffect(() => {
+    if (!session || !postingId) return;
+    let cancelled = false;
+    void hasAppliedToJob({ data: { postingId } })
+      .then((did) => {
+        if (!cancelled && did) setApplied(true);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [session, postingId]);
+
   if (!job) {
     return (
       <PageShell>
@@ -166,14 +184,17 @@ function JobDetail() {
   const empName = employerName(job);
 
   const applyCta = job.apply_url ? (
-    <a
-      href={job.apply_url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80 sm:w-auto"
-    >
-      <Icon icon={Briefcase01Icon} size="sm" /> Apply Now
-    </a>
+    <div className="flex flex-col gap-1">
+      <a
+        href={job.apply_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80 sm:w-auto sm:self-start"
+      >
+        <Icon icon={Briefcase01Icon} size="sm" /> Apply on the employer&apos;s site
+      </a>
+      <span className="text-xs text-text-muted">You&apos;ll apply on the employer&apos;s own site.</span>
+    </div>
   ) : applied ? (
     <div className="flex flex-col gap-1">
       <span className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-success/10 px-5 py-2.5 text-sm font-medium text-success sm:self-start">
@@ -212,7 +233,12 @@ function JobDetail() {
         Apply
       </Button>
     )
-  ) : null;
+  ) : (
+    <div className="flex flex-col gap-1.5 sm:items-start">
+      <span className="text-sm text-text-muted">Sign in to apply</span>
+      <SignInButton callbackURL={`/jobs/${job.slug}`}>Sign in to apply</SignInButton>
+    </div>
+  );
 
   return (
     <PageShell>

@@ -701,8 +701,12 @@ function PostingRow({ posting, onChanged }: { posting: any; onChanged: () => voi
               {posting.title}
             </Link>
             <p className="text-sm text-text-secondary">
-              {new Date(posting.created_at).toLocaleDateString()} ·{' '}
-              {count} {count === 1 ? 'applicant' : 'applicants'}
+              {new Date(posting.created_at).toLocaleDateString()}
+              {posting.apply_url ? (
+                <span className="text-text-muted"> · External apply — applicants tracked on your site</span>
+              ) : (
+                <> · {count} {count === 1 ? 'applicant' : 'applicants'}</>
+              )}
             </p>
           </div>
           <Badge

@@ -418,8 +418,9 @@ const makeJobsService = Effect.gen(function* () {
       published_at: string | null;
       is_boosted: number;
       created_at: string;
+      apply_url: string | null;
       applicant_count: number;
-    }>`SELECT posting_id, slug, title, location, status, published_at, is_boosted, created_at,
+    }>`SELECT posting_id, slug, title, location, status, published_at, is_boosted, created_at, apply_url,
               (SELECT COUNT(*) FROM jobs_application a WHERE a.posting_id = jobs_posting.posting_id) AS applicant_count
        FROM jobs_posting WHERE employer_profile_id = ${employerProfileId}
        ORDER BY created_at DESC`;
@@ -633,7 +634,7 @@ const makeJobsService = Effect.gen(function* () {
     yield* requireDurableStorage;
     const applicationId = newId();
     const now = new Date().toISOString();
-    yield* sql`INSERT INTO jobs_application (application_id, posting_id, applicant_user_id, message, created_at)
+    yield* sql`INSERT OR IGNORE INTO jobs_application (application_id, posting_id, applicant_user_id, message, created_at)
                VALUES (${applicationId}, ${postingId}, ${applicantUserId}, ${message ?? null}, ${now})`;
 
     // Fetch employer contact info for notification
@@ -656,6 +657,16 @@ const makeJobsService = Effect.gen(function* () {
       jobTitle: posting[0]?.title ?? '',
       applicantName: applicant[0]?.display_name ?? 'A candidate',
     };
+  });
+
+  const hasApplied = Effect.fn('JobsService.hasApplied')(function* (
+    postingId: string,
+    applicantUserId: string
+  ) {
+    const rows = yield* sql<{
+      c: number;
+    }>`SELECT 1 AS c FROM jobs_application WHERE posting_id = ${postingId} AND applicant_user_id = ${applicantUserId} LIMIT 1`;
+    return rows[0]?.c === 1;
   });
 
   // ── Claims ────────────────────────────────────────────────────────────────
@@ -1202,6 +1213,7 @@ const makeJobsService = Effect.gen(function* () {
     updatePosting,
     closePosting,
     applyToPosting,
+    hasApplied,
     getClaimsForUser,
     getClaimByEntity,
     claimPerson,

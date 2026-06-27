@@ -220,6 +220,9 @@ function PostJobPage() {
                 placeholder="https://example.com/apply"
                 className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
               />
+              <p className="text-xs text-text-muted">
+                If set, applicants apply on your site and won’t appear in your PageantryJobs dashboard.
+              </p>
             </div>
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-text-primary">Apply Email</label>

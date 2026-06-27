@@ -343,6 +343,18 @@ ${data.message ? `<blockquote style="border-left:3px solid #ddd;padding-left:12p
     return { ok: true as const, applicationId: result.applicationId };
   });
 
+export const hasAppliedToJob = createServerFn({ method: 'GET' })
+  .validator((d: { postingId: string }) => d)
+  .handler(async ({ data }) => {
+    const actor = await getActor(getWebRequest());
+    if (!actor) return false;
+    return Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.hasApplied(data.postingId, actor.userId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+  });
+
 // ── Moderation ───────────────────────────────────────────────────────────────
 
 export const reportContent = createServerFn({ method: 'POST' })
