@@ -24,6 +24,7 @@ import {
   SentIcon,
 } from '@/components/icons/generated';
 import { useState } from 'react';
+import { celebrate } from '@/lib/confetti';
 import { LexicalView } from '@/components/jobs/lexical-view';
 
 export const Route = createFileRoute('/jobs/$jobSlug')({
@@ -130,6 +131,7 @@ function JobDetail() {
       await applyToJob({ data: { postingId: job.posting_id, message: note.trim() || undefined } });
       setApplied(true);
       setShowApply(false);
+      void celebrate();
     } catch {
       /* ignore */
     } finally {
