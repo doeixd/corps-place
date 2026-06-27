@@ -133,47 +133,49 @@ function BoardPage() {
                 className="block focus-visible:outline-none"
               >
                 <Card className="card-hover">
-                  <CardContent className="flex items-start justify-between gap-4 py-4">
+                  <CardContent className="flex items-start justify-between gap-4 py-5">
                     <div className="min-w-0 flex-1">
                       <h3 className="text-base font-semibold leading-snug text-text-primary">
                         {job.title}
                       </h3>
                       {job.location || job.distance_miles != null ? (
-                        <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-sm text-text-secondary">
+                        <p className="mt-1.5 flex flex-wrap items-center gap-x-1.5 text-sm text-text-muted">
                           {job.location ? (
                             <span className="flex items-center gap-1">
                               <Icon icon={Location01Icon} size="xs" /> {job.location}
                             </span>
                           ) : null}
-                          {job.location && job.distance_miles != null ? (
-                            <span className="text-text-muted">•</span>
-                          ) : null}
+                          {job.location && job.distance_miles != null ? <span>•</span> : null}
                           {job.distance_miles != null ? (
-                            <span className="text-text-muted">
-                              {formatDistance(job.distance_miles)}
-                            </span>
+                            <span>{formatDistance(job.distance_miles)}</span>
                           ) : null}
                         </p>
                       ) : null}
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {job.remote_ok ? (
-                          <Badge variant="secondary-light" size="sm">
-                            Remote
-                          </Badge>
-                        ) : null}
-                        {salary ? (
-                          <Badge variant="success-light" size="sm">
-                            {salary}
-                          </Badge>
-                        ) : null}
-                        {job.is_boosted ? (
-                          <Badge variant="warning-light" size="sm">
-                            Boosted
-                          </Badge>
-                        ) : null}
-                      </div>
+                      {job.remote_ok || salary || job.is_boosted ? (
+                        <div className="mt-2.5 flex flex-wrap gap-2">
+                          {job.remote_ok ? (
+                            <Badge variant="secondary-light" size="sm">
+                              Remote
+                            </Badge>
+                          ) : null}
+                          {salary ? (
+                            <Badge variant="success-light" size="sm">
+                              {salary}
+                            </Badge>
+                          ) : null}
+                          {job.is_boosted ? (
+                            <Badge variant="warning-light" size="sm">
+                              Boosted
+                            </Badge>
+                          ) : null}
+                        </div>
+                      ) : null}
                     </div>
-                    <Icon icon={Briefcase01Icon} size="sm" className="shrink-0 text-text-muted" />
+                    <Icon
+                      icon={Briefcase01Icon}
+                      size="sm"
+                      className="icon-shift mt-0.5 shrink-0 text-text-muted"
+                    />
                   </CardContent>
                 </Card>
               </Link>

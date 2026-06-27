@@ -67,14 +67,21 @@ function PublicProfile() {
     items?: Array<{ org: string; role?: string; startYear?: string; endYear?: string }>;
   } | null;
   const skills = blockByKind('skills') as { items?: string[] } | null;
+  const availability = blockByKind('availability') as Record<string, unknown> | null;
+  const links = blockByKind('links') as {
+    items?: Array<{ label?: string; url: string } | string>;
+  } | null;
+  const linkItems = (links?.items ?? [])
+    .map((it) => (typeof it === 'string' ? { url: it, label: it } : it))
+    .filter((it) => it && typeof it.url === 'string' && it.url);
 
   return (
     <PageShell>
       {/* Header */}
       <Card className="mb-6">
         <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-start">
-          <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 sm:size-20">
-            <Icon icon={UserMultipleIcon} size="xl" className="text-primary" />
+          <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary sm:size-20 sm:text-3xl">
+            {profile.display_name.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-bold text-text-primary">{profile.display_name}</h1>
@@ -149,21 +156,59 @@ function PublicProfile() {
           </Card>
         ) : null}
 
-        {/* Other blocks */}
-        {blocks
-          .filter((b) => !['summary', 'experience', 'skills'].includes(b.kind))
-          .map((block) => (
-            <Card key={block.kind}>
-              <CardContent className="py-5">
-                <h2 className="mb-3 text-base font-semibold capitalize text-text-primary">
-                  {block.kind}
-                </h2>
-                <pre className="max-h-48 overflow-auto rounded bg-muted/50 p-3 text-xs text-text-secondary">
-                  {JSON.stringify(JSON.parse(block.content_json), null, 2)}
-                </pre>
-              </CardContent>
-            </Card>
-          ))}
+        {/* Availability */}
+        {availability ? (
+          (() => {
+            const plain = typeof availability.plain === 'string' ? availability.plain : null;
+            const fields = Object.entries(availability).filter(
+              ([key, val]) => key !== 'plain' && typeof val === 'string' && val
+            ) as Array<[string, string]>;
+            if (!plain && fields.length === 0) return null;
+            return (
+              <Card>
+                <CardContent className="py-5">
+                  <h2 className="mb-3 text-base font-semibold text-text-primary">Availability</h2>
+                  {plain ? (
+                    <p className="whitespace-pre-line text-sm text-text-secondary">{plain}</p>
+                  ) : null}
+                  {fields.length > 0 ? (
+                    <dl className="space-y-1.5 text-sm">
+                      {fields.map(([key, val]) => (
+                        <div key={key} className="flex flex-wrap gap-x-2">
+                          <dt className="font-medium capitalize text-text-primary">{key}:</dt>
+                          <dd className="text-text-secondary">{val}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : null}
+                </CardContent>
+              </Card>
+            );
+          })()
+        ) : null}
+
+        {/* Links */}
+        {linkItems.length > 0 ? (
+          <Card>
+            <CardContent className="py-5">
+              <h2 className="mb-3 text-base font-semibold text-text-primary">Links</h2>
+              <ul className="space-y-2">
+                {linkItems.map((item, i) => (
+                  <li key={i}>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary underline-offset-2 hover:underline"
+                    >
+                      {item.label || item.url}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        ) : null}
       </div>
 
       {/* Footer */}
