@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +11,8 @@ import { StaggeredGrid } from '@/components/staggered-grid';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
 import { listJobs } from '@/lib/server-fns/jobs';
-import { formatDistance } from '@/lib/geo';
+import { formatDistance, haversineMiles } from '@/lib/geo';
+import { useGeolocation } from '@/hooks/use-geolocation';
 import { Search01Icon, Location01Icon, Briefcase01Icon } from '@/components/icons/generated';
 
 const PAGE_LIMIT = 50;
@@ -112,6 +113,20 @@ function BoardPage() {
   const hasMore = rows.length < total;
   const hasDistance = rows.some((j) => j.distance_miles != null);
 
+  // "Nearest" works two ways: a typed Near-ZIP (server distance_miles) or the
+  // browser's geolocation (distance computed client-side from each job's coords).
+  const geo = useGeolocation();
+  const geoCoords = geo.state.status === 'located' ? geo.state.coords : null;
+  const distOf = (j: (typeof rows)[number]): number | null =>
+    j.distance_miles ??
+    (geoCoords && j.location_lat != null && j.location_lng != null
+      ? haversineMiles(geoCoords, { lat: j.location_lat, lng: j.location_lng })
+      : null);
+  // Ask for location when the user picks Nearest and hasn't typed a ZIP.
+  useEffect(() => {
+    if (sort === 'nearest' && !hasDistance && geo.state.status === 'idle') geo.request();
+  }, [sort, hasDistance, geo]);
+
   const filteredSorted = useMemo(() => {
     const filtered = rows.filter((r) => {
       if (work === 'remote') return r.remote_ok;
@@ -122,11 +137,7 @@ function BoardPage() {
       new Date(r.published_at ?? r.created_at ?? 0).getTime();
     const sorted = [...filtered];
     if (sort === 'nearest') {
-      sorted.sort((a, b) => {
-        const da = a.distance_miles ?? Infinity;
-        const db = b.distance_miles ?? Infinity;
-        return da - db;
-      });
+      sorted.sort((a, b) => (distOf(a) ?? Infinity) - (distOf(b) ?? Infinity));
     } else if (sort === 'pay') {
       sorted.sort(
         (a, b) => (b.salary_max ?? b.salary_min ?? 0) - (a.salary_max ?? a.salary_min ?? 0)
@@ -139,11 +150,11 @@ function BoardPage() {
       });
     }
     return sorted;
-  }, [rows, work, sort]);
+  }, [rows, work, sort, geoCoords]);
 
   const sortItems = [
     { value: 'newest', label: 'Newest' },
-    ...(hasDistance ? [{ value: 'nearest', label: 'Nearest' }] : []),
+    { value: 'nearest', label: 'Nearest' },
     { value: 'pay', label: 'Pay' },
   ];
   const sortValue = sort ?? 'newest';
@@ -156,6 +167,7 @@ function BoardPage() {
             job.salary_min && job.salary_max ? '–' : ''
           }${job.salary_max ? `$${job.salary_max.toLocaleString()}` : ''}`
         : null);
+    const d = distOf(job);
     return (
       <Link
         to="/jobs/$jobSlug"
@@ -168,17 +180,15 @@ function BoardPage() {
               <h3 className="text-base font-semibold leading-snug text-text-primary">
                 {job.title}
               </h3>
-              {job.location || job.distance_miles != null ? (
+              {job.location || d != null ? (
                 <p className="mt-1.5 flex flex-wrap items-center gap-x-1.5 text-sm text-text-muted">
                   {job.location ? (
                     <span className="flex items-center gap-1">
                       <Icon icon={Location01Icon} size="xs" /> {job.location}
                     </span>
                   ) : null}
-                  {job.location && job.distance_miles != null ? <span>•</span> : null}
-                  {job.distance_miles != null ? (
-                    <span>{formatDistance(job.distance_miles)}</span>
-                  ) : null}
+                  {job.location && d != null ? <span>•</span> : null}
+                  {d != null ? <span>{formatDistance(d)}</span> : null}
                 </p>
               ) : null}
               {job.remote_ok || salary || job.is_boosted ? (
@@ -281,8 +291,18 @@ function BoardPage() {
 
           <p className="text-sm text-text-muted">
             {filteredSorted.length} job{filteredSorted.length !== 1 ? 's' : ''}
-            {sort === 'nearest' && hasDistance ? (
-              <span className="ml-1 text-text-secondary">· Nearest first</span>
+            {sort === 'nearest' ? (
+              hasDistance || geoCoords ? (
+                <span className="ml-1 text-text-secondary">· Nearest first</span>
+              ) : geo.state.status === 'locating' ? (
+                <span className="ml-1 text-text-secondary">· Locating…</span>
+              ) : geo.state.status === 'denied' ||
+                geo.state.status === 'unsupported' ||
+                geo.state.status === 'error' ? (
+                <span className="ml-1 text-text-secondary">
+                  · Enter a ZIP above to sort by distance
+                </span>
+              ) : null
             ) : null}
           </p>
 
