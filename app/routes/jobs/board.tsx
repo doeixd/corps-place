@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState, type ReactNode } from 'react';
+import { motion } from 'motion/react';
+import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,10 +13,13 @@ import { StaggeredGrid } from '@/components/staggered-grid';
 import { SectionErrorBoundary } from '@/components/error-boundary';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
-import { listJobs } from '@/lib/server-fns/jobs';
+import { listJobs, bookmarkJob, removeBookmark, getMyBookmarks } from '@/lib/server-fns/jobs';
 import { formatDistance } from '@/lib/geo';
 import { useGeolocation } from '@/hooks/use-geolocation';
-import { Search01Icon, Location01Icon, Briefcase01Icon } from '@/components/icons/generated';
+import { useSession } from '@/lib/auth-client';
+import { cn } from '@/lib/utils';
+import { Search01Icon, Location01Icon, HeartAddIcon, SentIcon } from '@/components/icons/generated';
+import { FavouriteIcon } from '@/components/icons/favourite-filled';
 
 const PAGE_LIMIT = 50;
 
@@ -58,7 +63,99 @@ export const Route = createFileRoute('/jobs/board')({
 
 type JobRow = Awaited<ReturnType<typeof listJobs>>['rows'][number];
 
-const JobCard = memo(function JobCard({ job }: { job: JobRow }) {
+/** Plain-text preview pulled from the stored Lexical {doc, plain} blob (already on the row). */
+function descriptionPreview(job: JobRow): string {
+  try {
+    const parsed = JSON.parse((job as { content_json?: string }).content_json ?? '');
+    const plain = typeof parsed?.plain === 'string' ? parsed.plain : '';
+    return plain.replace(/\s+/g, ' ').trim();
+  } catch {
+    return '';
+  }
+}
+
+/** One labeled meta row — a subtle uppercase label + its value. */
+function MetaField({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="flex items-baseline gap-2">
+      <dt className="w-[4.25rem] shrink-0 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+        {label}
+      </dt>
+      <dd className="min-w-0 flex-1 truncate text-text-primary">{children}</dd>
+    </div>
+  );
+}
+
+/** Small, borderless heart that toggles the saved state (animated like the detail page). */
+function CardFavoriteButton({ saved, onClick }: { saved: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={saved ? 'Remove bookmark' : 'Save job'}
+      aria-pressed={saved}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick();
+      }}
+      className={cn(
+        'inline-flex size-7 items-center justify-center rounded-md transition-colors',
+        saved ? 'text-primary' : 'text-text-muted hover:text-primary'
+      )}
+    >
+      <span className="relative inline-flex">
+        <motion.span
+          animate={{ opacity: saved ? 1 : 0, scale: saved ? 1 : 0.3 }}
+          transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
+          className="absolute inset-0 inline-flex items-center justify-center"
+        >
+          <Icon icon={FavouriteIcon} size="sm" />
+        </motion.span>
+        <motion.span
+          animate={{ opacity: saved ? 0 : 1, scale: saved ? 0.3 : 1 }}
+          transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
+          className="inline-flex"
+        >
+          <Icon icon={HeartAddIcon} size="sm" />
+        </motion.span>
+      </span>
+    </button>
+  );
+}
+
+/** Small, borderless share button — native share sheet, else copy link. */
+function CardShareButton({ slug, title }: { slug: string; title: string }) {
+  return (
+    <button
+      type="button"
+      aria-label="Share job"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const url = `${window.location.origin}/jobs/${slug}`;
+        if (typeof navigator !== 'undefined' && navigator.share) {
+          navigator.share({ title, url }).catch(() => {});
+        } else {
+          void navigator.clipboard?.writeText(url);
+          toast.success('Link copied');
+        }
+      }}
+      className="inline-flex size-7 items-center justify-center rounded-md text-text-muted transition-colors hover:text-primary"
+    >
+      <Icon icon={SentIcon} size="sm" />
+    </button>
+  );
+}
+
+const JobCard = memo(function JobCard({
+  job,
+  saved,
+  onToggleSave,
+}: {
+  job: JobRow;
+  saved: boolean;
+  onToggleSave: (postingId: string) => void;
+}) {
   const salary =
     job.comp_text ||
     (job.salary_min || job.salary_max
@@ -67,40 +164,41 @@ const JobCard = memo(function JobCard({ job }: { job: JobRow }) {
         }${job.salary_max ? `$${job.salary_max.toLocaleString()}` : ''}`
       : null);
   const d = job.distance_miles ?? null;
+  const employer = job.employer_name && job.employer_name !== 'User' ? job.employer_name : null;
+  const location = job.location
+    ? d != null
+      ? `${job.location} · ${formatDistance(d)}`
+      : job.location
+    : d != null
+      ? formatDistance(d)
+      : null;
+  const preview = descriptionPreview(job);
+
   return (
-    <Link
-      to="/jobs/$jobSlug"
-      params={{ jobSlug: job.slug }}
-      className="block h-full focus-visible:outline-none"
-    >
-      <Card className="card-hover h-full">
-        <CardContent className="flex h-full items-start justify-between gap-4 py-5">
-          <div className="min-w-0 flex-1">
-            <h3 className="text-base font-semibold leading-snug text-text-primary">{job.title}</h3>
-            {job.employer_name && job.employer_name !== 'User' ? (
-              <p className="mt-0.5 text-sm text-text-muted">{job.employer_name}</p>
+    <div className="relative h-full">
+      <Link
+        to="/jobs/$jobSlug"
+        params={{ jobSlug: job.slug }}
+        className="block h-full focus-visible:outline-none"
+      >
+        <Card className="card-hover h-full">
+          <CardContent className="flex h-full flex-col gap-3 py-5">
+            <h3 className="pr-16 text-base font-semibold leading-snug text-text-primary">
+              {job.title}
+            </h3>
+            <dl className="space-y-1.5 text-sm">
+              {employer ? <MetaField label="Employer">{employer}</MetaField> : null}
+              {location ? <MetaField label="Location">{location}</MetaField> : null}
+              {salary ? <MetaField label="Salary">{salary}</MetaField> : null}
+            </dl>
+            {preview ? (
+              <p className="line-clamp-2 text-sm leading-relaxed text-text-secondary">{preview}</p>
             ) : null}
-            {job.location || d != null ? (
-              <p className="mt-1.5 flex flex-wrap items-center gap-x-1.5 text-sm text-text-muted">
-                {job.location ? (
-                  <span className="flex items-center gap-1">
-                    <Icon icon={Location01Icon} size="xs" /> {job.location}
-                  </span>
-                ) : null}
-                {job.location && d != null ? <span>•</span> : null}
-                {d != null ? <span>{formatDistance(d)}</span> : null}
-              </p>
-            ) : null}
-            {job.remote_ok || salary || job.is_boosted ? (
-              <div className="mt-2.5 flex flex-wrap gap-2">
+            {job.remote_ok || job.is_boosted ? (
+              <div className="mt-auto flex flex-wrap gap-2 pt-1">
                 {job.remote_ok ? (
                   <Badge variant="secondary-light" size="sm">
                     Remote
-                  </Badge>
-                ) : null}
-                {salary ? (
-                  <Badge variant="success-light" size="sm">
-                    {salary}
                   </Badge>
                 ) : null}
                 {job.is_boosted ? (
@@ -110,15 +208,15 @@ const JobCard = memo(function JobCard({ job }: { job: JobRow }) {
                 ) : null}
               </div>
             ) : null}
-          </div>
-          <Icon
-            icon={Briefcase01Icon}
-            size="sm"
-            className="icon-shift mt-0.5 shrink-0 text-text-muted"
-          />
-        </CardContent>
-      </Card>
-    </Link>
+          </CardContent>
+        </Card>
+      </Link>
+      {/* Subtle, borderless actions — siblings of the Link so they don't nest interactives. */}
+      <div className="absolute right-3 top-3.5 flex gap-0.5">
+        <CardFavoriteButton saved={saved} onClick={() => onToggleSave(job.posting_id)} />
+        <CardShareButton slug={job.slug} title={job.title} />
+      </div>
+    </div>
   );
 });
 
@@ -130,6 +228,44 @@ function BoardPage() {
   const [nearZip, setNearZip] = useState('');
   const [data, setData] = useState(initial);
   const [loading, setLoading] = useState(false);
+
+  // Saved-jobs state: fetched once for the whole board (not per card) and toggled
+  // optimistically so the heart responds instantly.
+  const { data: session } = useSession();
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    if (!session) return;
+    let alive = true;
+    void getMyBookmarks()
+      .then((bm) => {
+        if (alive) setSavedIds(new Set(bm.map((b) => b.posting_id)));
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [session]);
+
+  const onToggleSave = useCallback(
+    (postingId: string) => {
+      if (!session) {
+        toast.error('Sign in to save jobs');
+        return;
+      }
+      setSavedIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(postingId)) {
+          next.delete(postingId);
+          void removeBookmark({ data: { postingId } }).catch(() => {});
+        } else {
+          next.add(postingId);
+          void bookmarkJob({ data: { postingId } }).catch(() => {});
+        }
+        return next;
+      });
+    },
+    [session]
+  );
 
   const work = search.work;
   const sort = search.sort;
@@ -219,7 +355,12 @@ function BoardPage() {
 
   // Stable identity + memoized cards: cards skip re-rendering on unrelated state
   // (e.g. typing in the search box) as long as their row object is unchanged.
-  const renderJobCard = useCallback((job: JobRow) => <JobCard job={job} />, []);
+  const renderJobCard = useCallback(
+    (job: JobRow) => (
+      <JobCard job={job} saved={savedIds.has(job.posting_id)} onToggleSave={onToggleSave} />
+    ),
+    [savedIds, onToggleSave]
+  );
 
   return (
     <PageShell>
