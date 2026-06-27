@@ -27,6 +27,7 @@ function PostJobPage() {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
+  const [zip, setZip] = useState('');
   const [remoteOk, setRemoteOk] = useState(false);
   const [compText, setCompText] = useState('');
   const [salaryMin, setSalaryMin] = useState('');
@@ -59,6 +60,7 @@ function PostJobPage() {
         data: {
           title: title.trim(),
           location,
+          zip,
           remoteOk,
           compText,
           salaryMin: salaryMin ? Number(salaryMin) : null,
@@ -129,6 +131,17 @@ function PostJobPage() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="City, State"
+                className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-text-primary">ZIP code</label>
+              <input
+                value={zip}
+                onChange={(e) => setZip(e.target.value)}
+                inputMode="numeric"
+                maxLength={5}
+                placeholder="e.g. 90210"
                 className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
               />
             </div>

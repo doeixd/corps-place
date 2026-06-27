@@ -8,6 +8,7 @@ import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
 import { listJobs } from '@/lib/server-fns/jobs';
+import { formatDistance } from '@/lib/geo';
 import { Search01Icon, Location01Icon, Briefcase01Icon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/jobs/board')({
@@ -36,12 +37,15 @@ function BoardPage() {
   const initial = Route.useLoaderData();
   const { q } = Route.useSearch();
   const [keyword, setKeyword] = useState(q ?? '');
+  const [nearZip, setNearZip] = useState('');
   const [data, setData] = useState(initial);
   const [loading, setLoading] = useState(false);
 
   const doSearch = async () => {
     setLoading(true);
-    const results = await listJobs({ data: { keyword: keyword || undefined, offset: 0, limit: 20 } });
+    const results = await listJobs({
+      data: { keyword: keyword || undefined, nearZip: nearZip || undefined, offset: 0, limit: 20 },
+    });
     setData(results);
     setLoading(false);
   };
@@ -51,6 +55,7 @@ function BoardPage() {
     const next = await listJobs({
       data: {
         keyword: keyword || undefined,
+        nearZip: nearZip || undefined,
         offset: data.rows.length,
         limit: 20,
       },
@@ -62,18 +67,28 @@ function BoardPage() {
   const rows = data.rows;
   const total = data.total;
   const hasMore = rows.length < total;
+  const nearest = rows.some((j) => j.distance_miles != null);
 
   return (
     <PageShell>
       <PageHeader title="Job Board" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
 
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
         <input
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && doSearch()}
           placeholder="Search jobs by keyword…"
           className="h-11 flex-1 rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+        />
+        <input
+          value={nearZip}
+          onChange={(e) => setNearZip(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && doSearch()}
+          inputMode="numeric"
+          maxLength={5}
+          placeholder="Near ZIP"
+          className="h-11 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 sm:w-32"
         />
         <Button onClick={doSearch} disabled={loading} variant="outline" className="h-11 px-4">
           <Icon icon={Search01Icon} size="sm" /> {loading ? '…' : 'Search'}
@@ -100,41 +115,70 @@ function BoardPage() {
         <div className="space-y-4">
           <p className="text-sm text-text-muted">
             {total} job{total !== 1 ? 's' : ''} found
+            {nearest ? <span className="ml-1 text-text-secondary">· Nearest first</span> : null}
           </p>
-          {rows.map((job) => (
-            <Link
-              key={job.posting_id}
-              to="/jobs/$jobSlug"
-              params={{ jobSlug: job.slug }}
-              className="block focus-visible:outline-none"
-            >
-              <Card className="card-hover">
-                <CardContent className="flex items-start justify-between gap-4 py-4">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-text-primary">{job.title}</h3>
-                    {job.location ? (
-                      <p className="mt-0.5 flex items-center gap-1 text-sm text-text-secondary">
-                        <Icon icon={Location01Icon} size="xs" /> {job.location}
-                      </p>
-                    ) : null}
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {job.remote_ok ? (
-                        <Badge variant="secondary-light" size="sm">
-                          Remote
-                        </Badge>
+          {rows.map((job) => {
+            const salary =
+              job.comp_text ||
+              (job.salary_min || job.salary_max
+                ? `${job.salary_min ? `$${job.salary_min.toLocaleString()}` : ''}${
+                    job.salary_min && job.salary_max ? '–' : ''
+                  }${job.salary_max ? `$${job.salary_max.toLocaleString()}` : ''}`
+                : null);
+            return (
+              <Link
+                key={job.posting_id}
+                to="/jobs/$jobSlug"
+                params={{ jobSlug: job.slug }}
+                className="block focus-visible:outline-none"
+              >
+                <Card className="card-hover">
+                  <CardContent className="flex items-start justify-between gap-4 py-4">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base font-semibold leading-snug text-text-primary">
+                        {job.title}
+                      </h3>
+                      {job.location || job.distance_miles != null ? (
+                        <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-sm text-text-secondary">
+                          {job.location ? (
+                            <span className="flex items-center gap-1">
+                              <Icon icon={Location01Icon} size="xs" /> {job.location}
+                            </span>
+                          ) : null}
+                          {job.location && job.distance_miles != null ? (
+                            <span className="text-text-muted">•</span>
+                          ) : null}
+                          {job.distance_miles != null ? (
+                            <span className="text-text-muted">
+                              {formatDistance(job.distance_miles)}
+                            </span>
+                          ) : null}
+                        </p>
                       ) : null}
-                      {job.is_boosted ? (
-                        <Badge variant="warning-light" size="sm">
-                          Boosted
-                        </Badge>
-                      ) : null}
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {job.remote_ok ? (
+                          <Badge variant="secondary-light" size="sm">
+                            Remote
+                          </Badge>
+                        ) : null}
+                        {salary ? (
+                          <Badge variant="success-light" size="sm">
+                            {salary}
+                          </Badge>
+                        ) : null}
+                        {job.is_boosted ? (
+                          <Badge variant="warning-light" size="sm">
+                            Boosted
+                          </Badge>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
-                  <Icon icon={Briefcase01Icon} size="sm" className="shrink-0 text-text-muted" />
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+                    <Icon icon={Briefcase01Icon} size="sm" className="shrink-0 text-text-muted" />
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
 
           {hasMore ? (
             <div className="flex justify-center pt-2">

@@ -5,6 +5,7 @@ export interface ProfileContext {
   displayName: string;
   headline: string;
   location: string;
+  zip: string;
   kind: 'employee' | 'employer';
   profileId: string | null;
   slug: string | null;
@@ -17,6 +18,7 @@ export type ProfileEvent =
   | { type: 'SET_DISPLAY_NAME'; value: string }
   | { type: 'SET_HEADLINE'; value: string }
   | { type: 'SET_LOCATION'; value: string }
+  | { type: 'SET_ZIP'; value: string }
   | { type: 'SET_KIND'; value: 'employee' | 'employer' }
   | { type: 'SAVE' }
   | { type: 'PUBLISH' };
@@ -25,6 +27,7 @@ export interface ProfileInput {
   displayName?: string;
   headline?: string;
   location?: string;
+  zip?: string;
   kind?: 'employee' | 'employer';
   profileId?: string | null;
   slug?: string | null;
@@ -42,7 +45,13 @@ export const jobsProfileMachine = setup({
       async ({
         input,
       }: {
-        input: { kind: string; displayName: string; headline: string; location: string };
+        input: {
+          kind: string;
+          displayName: string;
+          headline: string;
+          location: string;
+          zip: string;
+        };
       }) => {
         return upsertJobsProfile({ data: input });
       }
@@ -58,6 +67,7 @@ export const jobsProfileMachine = setup({
     displayName: input?.displayName ?? '',
     headline: input?.headline ?? '',
     location: input?.location ?? '',
+    zip: input?.zip ?? '',
     kind: input?.kind ?? 'employee',
     profileId: input?.profileId ?? null,
     slug: input?.slug ?? null,
@@ -69,6 +79,7 @@ export const jobsProfileMachine = setup({
     SET_DISPLAY_NAME: { actions: assign({ displayName: ({ event }) => event.value }) },
     SET_HEADLINE: { actions: assign({ headline: ({ event }) => event.value }) },
     SET_LOCATION: { actions: assign({ location: ({ event }) => event.value }) },
+    SET_ZIP: { actions: assign({ zip: ({ event }) => event.value }) },
     SET_KIND: { actions: assign({ kind: ({ event }) => event.value }) },
   },
   states: {
@@ -86,6 +97,7 @@ export const jobsProfileMachine = setup({
           displayName: context.displayName,
           headline: context.headline,
           location: context.location,
+          zip: context.zip,
         }),
         onDone: {
           target: 'saved',

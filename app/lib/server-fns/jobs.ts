@@ -5,6 +5,8 @@ import { Effect } from 'effect';
 import { getActor, ForbiddenError } from '@/lib/authz';
 import { JobsService, JobsServiceLive } from '@/lib/jobs/jobs-service';
 import { JOBS_BLOCK_SCHEMAS, isJobsBlockKind } from '@/lib/jobs/schemas';
+import { normalizeZip } from '@/lib/jobs/zip';
+import { sortByDistance, type LatLng } from '@/lib/geo';
 import { sendEmail } from '@/lib/email';
 
 // Pure (no service closure) — safe at module scope; used only inside handlers.
@@ -22,6 +24,15 @@ const getJobsCtx = async () => {
   const actor = await getActor(getWebRequest());
   if (!actor) throw new ForbiddenError('edit');
   return { authorId: actor.userId, actorRole: actor.role, now: new Date().toISOString() };
+};
+
+// Best-effort ZIP → {lat,lng}. Never throws: an unknown/invalid ZIP yields null so
+// callers can store the raw ZIP without coordinates rather than failing the write.
+const geocodeZip = async (zip: string | null): Promise<LatLng | null> => {
+  if (!zip) return null;
+  return Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) => svc.lookupZip(zip)).pipe(Effect.provide(JobsServiceLive))
+  ).catch(() => null);
 };
 
 // ── Reads (public) ──────────────────────────────────────────────────────────
@@ -53,12 +64,25 @@ const UpsertProfileInput = v.object({
   displayName: v.optional(v.string(), ''),
   headline: v.optional(v.string(), ''),
   location: v.optional(v.string(), ''),
+  zip: v.optional(v.string(), ''),
 });
 
 export const upsertJobsProfile = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UpsertProfileInput, d))
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
+
+    // Geocode the ZIP best-effort so we can sort/filter by distance later.
+    const z = normalizeZip(data.zip);
+    const coords = await geocodeZip(z);
+    const profileData = {
+      displayName: data.displayName,
+      headline: data.headline,
+      location: data.location,
+      zip: z,
+      locationLat: coords?.lat ?? null,
+      locationLng: coords?.lng ?? null,
+    };
 
     const existing = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
@@ -71,15 +95,7 @@ export const upsertJobsProfile = createServerFn({ method: 'POST' })
       profileId = existing.profile.profile_id;
       await Effect.runPromise(
         Effect.flatMap(JobsService, (svc) =>
-          svc.updateProfile(
-            profileId,
-            {
-              displayName: data.displayName,
-              headline: data.headline,
-              location: data.location,
-            },
-            ctx
-          )
+          svc.updateProfile(profileId, profileData, ctx)
         ).pipe(Effect.provide(JobsServiceLive))
       );
     } else {
@@ -90,15 +106,7 @@ export const upsertJobsProfile = createServerFn({ method: 'POST' })
       );
       await Effect.runPromise(
         Effect.flatMap(JobsService, (svc) =>
-          svc.updateProfile(
-            profileId,
-            {
-              displayName: data.displayName,
-              headline: data.headline,
-              location: data.location,
-            },
-            ctx
-          )
+          svc.updateProfile(profileId, profileData, ctx)
         ).pipe(Effect.provide(JobsServiceLive))
       );
     }
@@ -157,21 +165,36 @@ export const listJobs = createServerFn({ method: 'GET' })
       keyword?: string;
       location?: string;
       remote?: boolean;
+      nearZip?: string;
       offset?: number;
       limit?: number;
     }) => d
   )
-  .handler(async ({ data }) =>
-    Effect.runPromise(
+  .handler(async ({ data }) => {
+    const result = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.listPostings(data)).pipe(
         Effect.provide(JobsServiceLive)
       )
-    )
-  );
+    );
+
+    // Sort-by-closest: when a valid origin ZIP geocodes, order this page nearest-first
+    // and attach distance_miles to each row. Rows without coords sort last (null).
+    const origin = await geocodeZip(normalizeZip(data.nearZip));
+    if (!origin) {
+      return { ...result, rows: result.rows.map((r) => ({ ...r, distance_miles: null })) };
+    }
+    const sorted = sortByDistance(result.rows, origin, (r) =>
+      r.location_lat != null && r.location_lng != null
+        ? { lat: r.location_lat, lng: r.location_lng }
+        : null
+    ).map(({ item, distanceMiles }) => ({ ...item, distance_miles: distanceMiles }));
+    return { ...result, rows: sorted };
+  });
 
 const CreatePostingInput = v.object({
   title: v.pipe(v.string(), v.minLength(1, 'Title required')),
   location: v.optional(v.string(), ''),
+  zip: v.optional(v.string(), ''),
   remoteOk: v.optional(v.boolean(), false),
   compText: v.optional(v.string(), ''),
   salaryMin: v.optional(v.nullable(v.number())),
@@ -199,8 +222,18 @@ export const createJobPosting = createServerFn({ method: 'POST' })
           Effect.provide(JobsServiceLive)
         )
       ));
+    // Geocode the ZIP best-effort for distance sorting (never blocks the post).
+    const z = normalizeZip(data.zip);
+    const coords = await geocodeZip(z);
+    const postingData = {
+      ...data,
+      zip: z,
+      locationLat: coords?.lat ?? null,
+      locationLng: coords?.lng ?? null,
+    };
+
     const { postingId, slug } = await Effect.runPromise(
-      Effect.flatMap(JobsService, (svc) => svc.createPosting(profileId, data, ctx)).pipe(
+      Effect.flatMap(JobsService, (svc) => svc.createPosting(profileId, postingData, ctx)).pipe(
         Effect.provide(JobsServiceLive)
       )
     );
@@ -337,6 +370,7 @@ export const searchTalent = createServerFn({ method: 'GET' })
       keyword?: string;
       location?: string;
       skills?: string[];
+      nearZip?: string;
       offset?: number;
       limit?: number;
     }) => d
@@ -347,11 +381,23 @@ export const searchTalent = createServerFn({ method: 'GET' })
     // gate rather than a 500.
     const actor = await getActor(getWebRequest());
     if (!actor) return { rows: [], total: 0 };
-    return Effect.runPromise(
+    const result = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.searchTalent(data)).pipe(
         Effect.provide(JobsServiceLive)
       )
     );
+
+    // Sort-by-closest when a valid origin ZIP is supplied (see listJobs).
+    const origin = await geocodeZip(normalizeZip(data.nearZip));
+    if (!origin) {
+      return { ...result, rows: result.rows.map((r) => ({ ...r, distance_miles: null })) };
+    }
+    const sorted = sortByDistance(result.rows, origin, (r) =>
+      r.location_lat != null && r.location_lng != null
+        ? { lat: r.location_lat, lng: r.location_lng }
+        : null
+    ).map(({ item, distanceMiles }) => ({ ...item, distance_miles: distanceMiles }));
+    return { ...result, rows: sorted };
   });
 
 // ── Claims ───────────────────────────────────────────────────────────────────

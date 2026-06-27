@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import { useSession } from '@/lib/auth-client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
 import { searchTalent } from '@/lib/server-fns/jobs';
+import { formatDistance } from '@/lib/geo';
 import { Search01Icon, UserMultipleIcon, Location01Icon } from '@/components/icons/generated';
 import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
 
@@ -26,11 +27,15 @@ export const Route = createFileRoute('/jobs/talent')({
 function TalentPage() {
   const { data: session } = useSession();
   const initial = Route.useLoaderData();
+  const [nearZip, setNearZip] = useState('');
 
-  const [state, fetchMore, isPending] = useActionState(
-    async (prev: typeof initial) => {
-      const next = await searchTalent({ data: { offset: prev.rows.length, limit: 20 } });
-      return { rows: [...prev.rows, ...next.rows], total: next.total };
+  const [state, runSearch, isPending] = useActionState(
+    async (prev: typeof initial, action: 'search' | 'more') => {
+      const offset = action === 'more' ? prev.rows.length : 0;
+      const next = await searchTalent({ data: { nearZip: nearZip || undefined, offset, limit: 20 } });
+      return action === 'more'
+        ? { rows: [...prev.rows, ...next.rows], total: next.total }
+        : next;
     },
     initial ?? { rows: [], total: 0 }
   );
@@ -38,6 +43,7 @@ function TalentPage() {
   const rows = state?.rows ?? [];
   const total = state?.total ?? 0;
   const hasMore = rows.length < total;
+  const nearest = rows.some((p: any) => p.distance_miles != null);
 
   if (!session) {
     return (
@@ -51,6 +57,23 @@ function TalentPage() {
   return (
     <PageShell>
       <PageHeader title="Talent Search" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+
+      <form
+        action={() => runSearch('search')}
+        className="mb-4 mt-4 flex flex-col gap-2 sm:flex-row"
+      >
+        <input
+          value={nearZip}
+          onChange={(e) => setNearZip(e.target.value)}
+          inputMode="numeric"
+          maxLength={5}
+          placeholder="Near ZIP"
+          className="h-11 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 sm:w-40"
+        />
+        <Button type="submit" disabled={isPending} variant="outline" className="h-11 px-4">
+          <Icon icon={Search01Icon} size="sm" /> {isPending ? '…' : 'Search'}
+        </Button>
+      </form>
 
       {rows.length === 0 ? (
         <Card>
@@ -66,6 +89,7 @@ function TalentPage() {
         <div className="space-y-4">
           <p className="text-sm text-text-muted">
             {total} professional{total !== 1 ? 's' : ''} found
+            {nearest ? <span className="ml-1 text-text-secondary">· Nearest first</span> : null}
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {rows.map((p) => (
@@ -88,9 +112,17 @@ function TalentPage() {
                         ) : null}
                       </div>
                     </div>
-                    {p.location ? (
-                      <p className="flex items-center gap-1 text-xs text-text-muted">
-                        <Icon icon={Location01Icon} size="xs" /> {p.location}
+                    {p.location || p.distance_miles != null ? (
+                      <p className="flex flex-wrap items-center gap-x-1.5 text-xs text-text-muted">
+                        {p.location ? (
+                          <span className="flex items-center gap-1">
+                            <Icon icon={Location01Icon} size="xs" /> {p.location}
+                          </span>
+                        ) : null}
+                        {p.location && p.distance_miles != null ? <span>•</span> : null}
+                        {p.distance_miles != null ? (
+                          <span>{formatDistance(p.distance_miles)}</span>
+                        ) : null}
                       </p>
                     ) : null}
                   </CardContent>
@@ -101,7 +133,7 @@ function TalentPage() {
 
           {hasMore ? (
             <div className="flex justify-center pt-2">
-              <Button onClick={fetchMore} disabled={isPending} variant="outline" size="sm">
+              <Button onClick={() => runSearch('more')} disabled={isPending} variant="outline" size="sm">
                 {isPending ? 'Loading…' : `Load more (${rows.length} of ${total})`}
               </Button>
             </div>

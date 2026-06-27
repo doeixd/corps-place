@@ -150,12 +150,23 @@ function OnboardPage() {
                       className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
                     />
                   </div>
-                  <div className="space-y-1.5 sm:col-span-2">
+                  <div className="space-y-1.5">
                     <label className="text-sm font-medium">Location</label>
                     <input
                       value={ctx.location}
                       onChange={(e) => send({ type: 'SET_LOCATION', value: e.target.value })}
                       placeholder="City, State"
+                      className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium">ZIP code</label>
+                    <input
+                      value={ctx.zip}
+                      onChange={(e) => send({ type: 'SET_ZIP', value: e.target.value })}
+                      inputMode="numeric"
+                      maxLength={5}
+                      placeholder="e.g. 90210"
                       className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
                     />
                   </div>

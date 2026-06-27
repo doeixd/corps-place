@@ -55,6 +55,7 @@ function MePage() {
       displayName: initial?.profile.display_name ?? '',
       headline: initial?.profile.headline ?? '',
       location: initial?.profile.location ?? '',
+      zip: initial?.profile.zip ?? '',
       kind: (initial?.profile.kind as 'employee' | 'employer') ?? 'employee',
       profileId: initial?.profile.profile_id ?? null,
       slug: initial?.profile.slug ?? null,
@@ -208,11 +209,21 @@ function ProfileTab({ initial, snapshot, send }: { initial: any; snapshot: any; 
                 className={INPUT_CLASS}
               />
             </Field>
-            <Field label="Location" hint="City, State — helps employers find local talent." className="sm:col-span-2">
+            <Field label="Location" hint="City, State — helps employers find local talent.">
               <input
                 value={ctx.location}
                 onChange={(e) => send({ type: 'SET_LOCATION', value: e.target.value })}
                 placeholder="City, State"
+                className={INPUT_CLASS}
+              />
+            </Field>
+            <Field label="ZIP code" hint="Powers “nearest first” search.">
+              <input
+                value={ctx.zip}
+                onChange={(e) => send({ type: 'SET_ZIP', value: e.target.value })}
+                inputMode="numeric"
+                maxLength={5}
+                placeholder="e.g. 90210"
                 className={INPUT_CLASS}
               />
             </Field>

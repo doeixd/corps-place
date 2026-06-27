@@ -8,7 +8,7 @@
 // the shared column list), runnable under the pruned production node_modules.
 
 import { createClient } from '@libsql/client';
-import { applyAddColumns } from './contributions-migrations.mjs';
+import { applyAddColumns, seedZipCentroids } from './contributions-migrations.mjs';
 
 const url = process.env.CONTRIBUTIONS_DB_URL ?? 'file:/data/contributions.db';
 
@@ -18,6 +18,15 @@ async function main() {
   await db.execute('PRAGMA busy_timeout=5000');
   const added = await applyAddColumns(db);
   console.log(`[migrate-contributions] ok — ${added} column(s) added (${url}).`);
+  // Seed the ZIP → lat/lng centroid table (best-effort; never blocks boot).
+  try {
+    const seeded = await seedZipCentroids(db);
+    console.log(`[migrate-contributions] zip_centroid: ${seeded} row(s) seeded (${url}).`);
+  } catch (err) {
+    console.error(
+      `[migrate-contributions] zip_centroid seed skipped: ${err?.message ?? err}`
+    );
+  }
 }
 
 main()

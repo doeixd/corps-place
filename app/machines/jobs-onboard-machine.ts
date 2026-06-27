@@ -7,6 +7,7 @@ export interface OnboardContext {
   displayName: string;
   headline: string;
   location: string;
+  zip: string;
   // Step 2: Experience
   experience: Array<{
     org: string;
@@ -36,6 +37,7 @@ export type OnboardEvent =
   | { type: 'SET_DISPLAY_NAME'; value: string }
   | { type: 'SET_HEADLINE'; value: string }
   | { type: 'SET_LOCATION'; value: string }
+  | { type: 'SET_ZIP'; value: string }
   | { type: 'ADD_EXPERIENCE'; item: OnboardContext['experience'][0] }
   | { type: 'REMOVE_EXPERIENCE'; index: number }
   | { type: 'ADD_SKILL'; value: string }
@@ -58,7 +60,13 @@ export const jobsOnboardMachine = setup({
       async ({
         input,
       }: {
-        input: { kind: string; displayName: string; headline: string; location: string };
+        input: {
+          kind: string;
+          displayName: string;
+          headline: string;
+          location: string;
+          zip: string;
+        };
       }) => {
         return upsertJobsProfile({ data: input });
       }
@@ -110,6 +118,7 @@ export const jobsOnboardMachine = setup({
     displayName: '',
     headline: '',
     location: '',
+    zip: '',
     experience: [],
     skills: [],
     fullTime: false,
@@ -132,6 +141,7 @@ export const jobsOnboardMachine = setup({
         SET_DISPLAY_NAME: { actions: assign({ displayName: ({ event }) => event.value }) },
         SET_HEADLINE: { actions: assign({ headline: ({ event }) => event.value }) },
         SET_LOCATION: { actions: assign({ location: ({ event }) => event.value }) },
+        SET_ZIP: { actions: assign({ zip: ({ event }) => event.value }) },
       },
     },
     savingStep1: {
@@ -142,6 +152,7 @@ export const jobsOnboardMachine = setup({
           displayName: context.displayName,
           headline: context.headline,
           location: context.location,
+          zip: context.zip,
         }),
         onDone: {
           target: 'experience',

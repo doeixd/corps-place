@@ -22,6 +22,16 @@ export interface WriteContext {
 const makeJobsService = Effect.gen(function* () {
   const sql = yield* JobsSql;
 
+  // ── ZIP centroid lookup ───────────────────────────────────────────────────
+
+  const lookupZip = Effect.fn('JobsService.lookupZip')(function* (zip: string) {
+    const rows = yield* sql<{
+      lat: number;
+      lng: number;
+    }>`SELECT lat, lng FROM zip_centroid WHERE zip = ${zip} LIMIT 1`;
+    return rows[0] ? { lat: rows[0].lat, lng: rows[0].lng } : null;
+  });
+
   // ── Profile reads ───────────────────────────────────────────────────────
 
   const getProfileBySlug = Effect.fn('JobsService.getProfileBySlug')(function* (slug: string) {
@@ -33,6 +43,7 @@ const makeJobsService = Effect.gen(function* () {
       display_name: string;
       headline: string | null;
       location: string | null;
+      zip: string | null;
       status: string;
       contact_email: string | null;
       contact_visibility: string;
@@ -66,6 +77,7 @@ const makeJobsService = Effect.gen(function* () {
       display_name: string;
       headline: string | null;
       location: string | null;
+      zip: string | null;
       status: string;
       contact_email: string | null;
       contact_visibility: string;
@@ -143,6 +155,9 @@ const makeJobsService = Effect.gen(function* () {
       displayName?: string;
       headline?: string;
       location?: string;
+      zip?: string | null;
+      locationLat?: number | null;
+      locationLng?: number | null;
       contactEmail?: string;
       contactVisibility?: string;
       slug?: string;
@@ -165,6 +180,18 @@ const makeJobsService = Effect.gen(function* () {
     if (data.location !== undefined) {
       fields.push('location = ?');
       args.push(data.location);
+    }
+    if (data.zip !== undefined) {
+      fields.push('zip = ?');
+      args.push(data.zip);
+    }
+    if (data.locationLat !== undefined) {
+      fields.push('location_lat = ?');
+      args.push(data.locationLat);
+    }
+    if (data.locationLng !== undefined) {
+      fields.push('location_lng = ?');
+      args.push(data.locationLng);
     }
     if (data.contactEmail !== undefined) {
       fields.push('contact_email = ?');
@@ -312,6 +339,9 @@ const makeJobsService = Effect.gen(function* () {
       slug: string;
       title: string;
       location: string | null;
+      zip: string | null;
+      location_lat: number | null;
+      location_lng: number | null;
       remote_ok: number;
       comp_text: string | null;
       salary_min: number | null;
@@ -376,6 +406,9 @@ const makeJobsService = Effect.gen(function* () {
     data: {
       title: string;
       location?: string;
+      zip?: string | null;
+      locationLat?: number | null;
+      locationLng?: number | null;
       remoteOk?: boolean;
       compText?: string;
       salaryMin?: number | null;
@@ -391,10 +424,12 @@ const makeJobsService = Effect.gen(function* () {
     const slug = yield* generatePostingSlug(data.title);
 
     yield* sql`INSERT INTO jobs_posting (posting_id, employer_profile_id, slug, title,
-                 location, remote_ok, comp_text, salary_min, salary_max,
+                 location, zip, location_lat, location_lng,
+                 remote_ok, comp_text, salary_min, salary_max,
                  apply_url, apply_email, content_json, status, created_at, updated_at)
                VALUES (${postingId}, ${employerProfileId}, ${slug}, ${data.title},
-                 ${data.location ?? null}, ${data.remoteOk ? 1 : 0}, ${data.compText ?? null},
+                 ${data.location ?? null}, ${data.zip ?? null}, ${data.locationLat ?? null}, ${data.locationLng ?? null},
+                 ${data.remoteOk ? 1 : 0}, ${data.compText ?? null},
                  ${data.salaryMin ?? null}, ${data.salaryMax ?? null},
                  ${data.applyUrl ?? null}, ${data.applyEmail ?? null}, ${data.contentJson},
                  'published', ${ctx.now}, ${ctx.now})`;
@@ -409,6 +444,9 @@ const makeJobsService = Effect.gen(function* () {
     data: {
       title?: string;
       location?: string;
+      zip?: string | null;
+      locationLat?: number | null;
+      locationLng?: number | null;
       remoteOk?: boolean;
       compText?: string;
       salaryMin?: number | null;
@@ -431,6 +469,18 @@ const makeJobsService = Effect.gen(function* () {
     if (data.location !== undefined) {
       fields.push('location = ?');
       args.push(data.location);
+    }
+    if (data.zip !== undefined) {
+      fields.push('zip = ?');
+      args.push(data.zip);
+    }
+    if (data.locationLat !== undefined) {
+      fields.push('location_lat = ?');
+      args.push(data.locationLat);
+    }
+    if (data.locationLng !== undefined) {
+      fields.push('location_lng = ?');
+      args.push(data.locationLng);
     }
     if (data.remoteOk !== undefined) {
       fields.push('remote_ok = ?');
@@ -705,7 +755,8 @@ const makeJobsService = Effect.gen(function* () {
     offset?: number;
     limit?: number;
   }) {
-    let sqlStr = `SELECT p.profile_id, p.slug, p.display_name, p.headline, p.location, p.created_at
+    let sqlStr = `SELECT p.profile_id, p.slug, p.display_name, p.headline, p.location,
+                         p.zip, p.location_lat, p.location_lng, p.created_at
                   FROM jobs_profile p
                   WHERE p.kind = 'employee' AND p.status = 'published'`;
     const conditions: string[] = [];
@@ -738,6 +789,9 @@ const makeJobsService = Effect.gen(function* () {
       display_name: string;
       headline: string | null;
       location: string | null;
+      zip: string | null;
+      location_lat: number | null;
+      location_lng: number | null;
       created_at: string;
     }>(sqlStr).pipe(Effect.orDie);
 
@@ -1039,6 +1093,7 @@ const makeJobsService = Effect.gen(function* () {
   });
 
   return {
+    lookupZip,
     getProfileBySlug,
     getProfileByUser,
     createProfile,

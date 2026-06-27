@@ -30,6 +30,11 @@ export const ADD_COLUMNS = [
   { table: 'user', column: 'isBot', ddl: 'ALTER TABLE "user" ADD COLUMN isBot INTEGER DEFAULT 0' },
   // Auto-start a scheduled draft at its scheduled time (vs. owner starting manually).
   { table: 'fantasy_drafts', column: 'auto_start', ddl: 'ALTER TABLE fantasy_drafts ADD COLUMN auto_start INTEGER DEFAULT 1' },
+  // PageantryJobs — ZIP-based location + sort-by-closest.
+  { table: 'jobs_profile', column: 'zip', ddl: 'ALTER TABLE jobs_profile ADD COLUMN zip TEXT' },
+  { table: 'jobs_posting', column: 'zip', ddl: 'ALTER TABLE jobs_posting ADD COLUMN zip TEXT' },
+  { table: 'jobs_posting', column: 'location_lat', ddl: 'ALTER TABLE jobs_posting ADD COLUMN location_lat REAL' },
+  { table: 'jobs_posting', column: 'location_lng', ddl: 'ALTER TABLE jobs_posting ADD COLUMN location_lng REAL' },
 ];
 
 /**
@@ -54,4 +59,52 @@ export async function applyAddColumns(db) {
     }
   }
   return added;
+}
+
+/**
+ * Seed the `zip_centroid` lookup table (zip → lat/lng) from the bundled CSV.
+ * Idempotent: creates the table if missing and only bulk-loads when it's empty.
+ * Best-effort — any failure is thrown to the caller, which logs and continues boot.
+ * ZIPs in the CSV have leading zeros stripped, so we zero-pad to 5 chars.
+ * @param {{ execute: (q: string) => Promise<{ rows: any[] }>; batch: (stmts: any[]) => Promise<any> }} db
+ * @returns {Promise<number>} rows seeded this run (0 if already populated)
+ */
+export async function seedZipCentroids(db) {
+  await db.execute(
+    'CREATE TABLE IF NOT EXISTS zip_centroid (zip TEXT PRIMARY KEY, lat REAL, lng REAL)'
+  );
+
+  const countRows = (await db.execute('SELECT count(*) AS c FROM zip_centroid')).rows;
+  const existing = Number(countRows[0]?.c ?? 0);
+  if (existing > 0) return 0;
+
+  const { readFileSync } = await import('node:fs');
+  const csv = readFileSync(new URL('./zip-centroids.csv', import.meta.url), 'utf8');
+  const lines = csv.split(/\r?\n/);
+
+  /** @type {{ sql: string; args: any[] }[]} */
+  let chunk = [];
+  let seeded = 0;
+  const SQL = 'INSERT OR IGNORE INTO zip_centroid (zip, lat, lng) VALUES (?, ?, ?)';
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const [rawZip, latStr, lngStr] = line.split(',');
+    const zip = String(rawZip).padStart(5, '0');
+    const lat = Number(latStr);
+    const lng = Number(lngStr);
+    if (zip.length !== 5 || Number.isNaN(lat) || Number.isNaN(lng)) continue;
+    chunk.push({ sql: SQL, args: [zip, lat, lng] });
+    if (chunk.length >= 1000) {
+      await db.batch(chunk);
+      seeded += chunk.length;
+      chunk = [];
+    }
+  }
+  if (chunk.length) {
+    await db.batch(chunk);
+    seeded += chunk.length;
+  }
+  return seeded;
 }

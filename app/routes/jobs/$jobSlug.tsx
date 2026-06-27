@@ -132,6 +132,20 @@ function JobDetail() {
                     Remote OK
                   </Badge>
                 ) : null}
+                {(() => {
+                  const salary =
+                    job.comp_text ||
+                    (job.salary_min || job.salary_max
+                      ? `${job.salary_min ? `$${job.salary_min.toLocaleString()}` : ''}${
+                          job.salary_min && job.salary_max ? '–' : ''
+                        }${job.salary_max ? `$${job.salary_max.toLocaleString()}` : ''}`
+                      : null);
+                  return salary ? (
+                    <Badge variant="success-light" size="sm">
+                      {salary}
+                    </Badge>
+                  ) : null;
+                })()}
                 {job.is_boosted ? (
                   <Badge variant="warning-light" size="sm">
                     Boosted
