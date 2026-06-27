@@ -4,7 +4,6 @@
 // `staff_id`s (one per corps) when merged in identity resolution.
 
 import type { Client } from '@libsql/client';
-import type { CaptionCount } from './judges.js';
 
 export type StaffGroup = { corps_key: string; corps_name: string; corps_slug: string | null };
 
@@ -16,9 +15,9 @@ export type StaffSummary = {
   /** Distinct corps this person has taught. */
   corps_count: number;
   seasons: readonly string[];
-  /** Career assignment counts per normalized caption/section, for the card. */
-  captionBreakdown?: readonly CaptionCount[];
-  groups?: readonly StaffGroup[];
+  /** Distinct corps names this person taught — the only group data the directory
+   *  card/search needs. The full {corps_key, slug} groups stay on StaffProfile. */
+  corps_names?: readonly string[];
 };
 
 export type StaffAssignment = {
@@ -170,34 +169,30 @@ export const buildStaffDirectory = async (db: Client): Promise<StaffSummary[]> =
   }
 
   const seasonsByPerson = new Map<string, Set<string>>();
-  const captionsByPerson = new Map<string, Map<string, number>>();
-  const groupsByPerson = new Map<string, Map<string, StaffGroup>>();
+  // Distinct corps per person, keyed by corps_key (for corps_count) with the
+  // display name kept for the directory card/search.
+  const groupsByPerson = new Map<string, Map<string, string>>();
   for (const a of assignRes.rows as unknown as Array<{
     person_id: string; season: string | null; role_type: string | null;
     corps_key: string; corps_name: string; corps_slug: string | null;
   }>) {
     if (a.season) (seasonsByPerson.get(a.person_id) ?? seasonsByPerson.set(a.person_id, new Set()).get(a.person_id)!).add(a.season);
-    if (a.role_type) {
-      const m = captionsByPerson.get(a.person_id) ?? captionsByPerson.set(a.person_id, new Map()).get(a.person_id)!;
-      m.set(a.role_type, (m.get(a.role_type) ?? 0) + 1);
-    }
     const g = groupsByPerson.get(a.person_id) ?? groupsByPerson.set(a.person_id, new Map()).get(a.person_id)!;
-    g.set(a.corps_key, { corps_key: a.corps_key, corps_name: a.corps_name, corps_slug: a.corps_slug });
+    g.set(a.corps_key, a.corps_name);
   }
 
   const out: StaffSummary[] = [];
   for (const [personId, rows] of identityByPerson) {
     const rep = pickRepresentative(rows);
-    const groups = [...(groupsByPerson.get(personId)?.values() ?? [])];
+    const corpsByKey = groupsByPerson.get(personId);
     out.push({
       person_id: personId,
       display_name: rep.display_name ?? personId,
       default_title: rep.default_title,
       photo_url: rep.photo_url,
-      corps_count: groups.length,
+      corps_count: corpsByKey?.size ?? 0,
       seasons: sortSeasonsDesc(seasonsByPerson.get(personId) ?? []),
-      captionBreakdown: [...(captionsByPerson.get(personId)?.entries() ?? [])].map(([caption, count]) => ({ caption, count })),
-      groups,
+      corps_names: [...new Set(corpsByKey?.values() ?? [])],
     });
   }
   out.sort((a, b) => a.display_name.localeCompare(b.display_name, undefined, { sensitivity: 'base' }));

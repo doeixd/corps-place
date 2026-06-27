@@ -195,7 +195,10 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
           getKey={(j) => j.judge_id}
           step={0.06}
           gap="gap-3"
-          animationKey={`${filter.season}|${filter.search}|${filter.sortField}|${filter.sortDir}`}
+          // Replay the entrance stagger only on season/sort changes — NOT on every
+          // search keystroke, which would remount and re-animate all ~240 cards
+          // (each with an SVG avatar ring) on each character typed.
+          animationKey={`${filter.season}|${filter.sortField}|${filter.sortDir}`}
           renderItem={(j) => (
             <Link
               to="/judges/$judgeId"

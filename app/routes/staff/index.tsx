@@ -105,7 +105,7 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
       (s) =>
         s.display_name.toLowerCase().includes(q) ||
         (s.default_title ?? '').toLowerCase().includes(q) ||
-        (s.groups ?? []).some((g) => g.corps_name.toLowerCase().includes(q))
+        (s.corps_names ?? []).some((n) => n.toLowerCase().includes(q))
     );
   }, [staff, query]);
 

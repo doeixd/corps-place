@@ -103,7 +103,10 @@ import {
 // v13: + rm_fantasy_draft_pool / rm_fantasy_prior_finals / rm_fantasy_season_best /
 //      rm_fantasy_season_finals — the four score-DB reads the fantasy draft needs, so the
 //      serving container can run drafts without the 3.4 GB relational DB (UI/UX plan §2.1).
-const SCHEMA_VERSION = 13;
+// v14: rm_staff.summary_json slimmed — dropped unused captionBreakdown and replaced the
+//      full groups[] with corps_names[] (directory card/search only need names). ~40% smaller
+//      staff shard; staff is now advertised in the manifest as a preloaded index collection.
+const SCHEMA_VERSION = 14;
 
 type Section =
   | "events"
@@ -1433,9 +1436,14 @@ const emitJsonSnapshot = async (
   const staffSummaries = (
     await db.execute("SELECT summary_json FROM rm_staff")
   ).rows as any[];
-  if (staffSummaries.length > 0) {
-    writeJson("staff.json", staffSummaries.map((r) => JSON.parse(r.summary_json)));
-  }
+  // Staff is an eagerly-preloaded index collection like events/corps/judges, so
+  // emit it with a content hash and advertise it in the manifest (below) — that's
+  // what lets the client load the immutable cached shard instead of falling back
+  // to a server-fn round-trip on every visit.
+  const staffHash =
+    staffSummaries.length > 0
+      ? writeJson("staff.json", staffSummaries.map((r) => JSON.parse(r.summary_json)))
+      : null;
   const staffDetails = (
     await db.execute("SELECT person_id, detail_json FROM rm_staff_detail")
   ).rows as any[];
@@ -1569,6 +1577,7 @@ const emitJsonSnapshot = async (
       events: `events.json?v=${eventsHash}`,
       corps: `corps.json?v=${corpsHash}`,
       judges: `judges.json?v=${judgesHash}`,
+      ...(staffHash ? { staff: `staff.json?v=${staffHash}` } : {}),
       merchCatalog: `merch/catalog/index.json?v=${merchCatalogHash}`,
       merchFacets: `merch/facets.json?v=${merchFacetsHash}`,
       merchStores: `merch/stores.json?v=${merchStoresHash}`,
@@ -1577,7 +1586,7 @@ const emitJsonSnapshot = async (
   writeJson("manifest.json", manifest);
   writeJson("meta.json", meta);
   log(
-    `JSON snapshot done: 3 collections + ${detailCount} per-detail files + manifest.`,
+    `JSON snapshot done: ${staffHash ? 4 : 3} collections + ${detailCount} per-detail files + manifest.`,
   );
 };
 
