@@ -38,7 +38,7 @@ export function JobsLanding() {
       {/* Hero */}
       <section className="flex flex-col items-center gap-6 py-12 text-center sm:py-20">
         <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
-          For the pageantry &amp; marching-arts community
+          Free to post &middot; Free to apply
         </span>
         <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-text-primary sm:text-5xl">
           Find your next gig in the pageantry world
@@ -93,8 +93,8 @@ export function JobsLanding() {
       {/* How it works */}
       <section className="space-y-6 py-8">
         <h2 className="text-center text-xl font-semibold text-text-primary">How it works</h2>
-        <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[10%] pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
-          <Card className="card-hover-flat snap-center shrink-0 w-[80%] sm:w-auto">
+        <div className="-mx-3 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[10vw] pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
+          <Card className="card-hover-flat snap-center shrink-0 w-[80vw] sm:w-auto">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
                 <Icon icon={UserMultipleIcon} size="lg" className="text-primary" />
@@ -106,7 +106,7 @@ export function JobsLanding() {
               </p>
             </CardContent>
           </Card>
-          <Card className="card-hover-flat snap-center shrink-0 w-[80%] sm:w-auto">
+          <Card className="card-hover-flat snap-center shrink-0 w-[80vw] sm:w-auto">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
                 <Icon icon={Search01Icon} size="lg" className="text-primary" />
@@ -118,7 +118,7 @@ export function JobsLanding() {
               </p>
             </CardContent>
           </Card>
-          <Card className="card-hover-flat snap-center shrink-0 w-[80%] sm:w-auto">
+          <Card className="card-hover-flat snap-center shrink-0 w-[80vw] sm:w-auto">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
                 <Icon icon={BookOpen01Icon} size="lg" className="text-primary" />
