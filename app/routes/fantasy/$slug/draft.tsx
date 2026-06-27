@@ -55,6 +55,7 @@ import { useWebHaptics } from 'web-haptics/react';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { fantasyDraftMachine, type FantasyDraftEvent } from '@/machines/fantasy-draft-machine';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 
 type LeagueData = Awaited<ReturnType<typeof getLeague>>;
 type DraftState = Awaited<ReturnType<typeof getDraftState>>;
@@ -186,42 +187,44 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
 
       {draft?.status === 'scheduled' ? <ProjectedOrder league={league} /> : null}
 
-      {!draft || draft.status === 'scheduled' ? (
-        <SchedulePanel
-          send={send}
-          scheduling={state.matches('scheduling')}
-          starting={state.matches('starting')}
-          error={state.context.error}
-          feasibility={state.context.feasibility}
-          isOwner={league.viewer.isOwner}
-          scheduledAt={draft?.scheduledAt ?? null}
-          savedAutoStart={draft?.autoStart ?? false}
-        />
-      ) : draft.status === 'complete' ? (
-        <CompletePanel
-          league={league}
-          picks={snapshot.picks}
-          pool={initial.pool}
-          members={[...membersById.values()]}
-        />
-      ) : (
-        <LiveDraft
-          send={send}
-          picking={state.matches('picking')}
-          actionBusy={!state.matches('ready')}
-          actionError={state.context.error}
-          draft={draft}
-          picks={snapshot.picks}
-          pool={initial.pool}
-          rank={initial.rank}
-          viewerId={league.viewer.userId}
-          isOwner={league.viewer.isOwner}
-          membersById={membersById}
-          online={online}
-          captionCaps={league.league.config.captionCaps}
-          reverseWeighting={league.league.config.reverseWeighting}
-        />
-      )}
+      <SectionErrorBoundary label="the draft room">
+        {!draft || draft.status === 'scheduled' ? (
+          <SchedulePanel
+            send={send}
+            scheduling={state.matches('scheduling')}
+            starting={state.matches('starting')}
+            error={state.context.error}
+            feasibility={state.context.feasibility}
+            isOwner={league.viewer.isOwner}
+            scheduledAt={draft?.scheduledAt ?? null}
+            savedAutoStart={draft?.autoStart ?? false}
+          />
+        ) : draft.status === 'complete' ? (
+          <CompletePanel
+            league={league}
+            picks={snapshot.picks}
+            pool={initial.pool}
+            members={[...membersById.values()]}
+          />
+        ) : (
+          <LiveDraft
+            send={send}
+            picking={state.matches('picking')}
+            actionBusy={!state.matches('ready')}
+            actionError={state.context.error}
+            draft={draft}
+            picks={snapshot.picks}
+            pool={initial.pool}
+            rank={initial.rank}
+            viewerId={league.viewer.userId}
+            isOwner={league.viewer.isOwner}
+            membersById={membersById}
+            online={online}
+            captionCaps={league.league.config.captionCaps}
+            reverseWeighting={league.league.config.reverseWeighting}
+          />
+        )}
+      </SectionErrorBoundary>
     </PageShell>
   );
 }

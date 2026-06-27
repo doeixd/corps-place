@@ -8,6 +8,7 @@ import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { FilterChips } from '@/components/filter-chips';
 import { StaggeredGrid } from '@/components/staggered-grid';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
 import { listJobs } from '@/lib/server-fns/jobs';
@@ -318,13 +319,15 @@ function BoardPage() {
             ) : null}
           </p>
 
-          <StaggeredGrid
-            items={rows}
-            getKey={(j) => j.posting_id}
-            renderItem={renderJobCard}
-            gap="gap-4"
-            animationKey={`${search.q ?? ''}|${work ?? ''}|${sort ?? ''}|${nearZip}`}
-          />
+          <SectionErrorBoundary label="the job results">
+            <StaggeredGrid
+              items={rows}
+              getKey={(j) => j.posting_id}
+              renderItem={renderJobCard}
+              gap="gap-4"
+              animationKey={`${search.q ?? ''}|${work ?? ''}|${sort ?? ''}|${nearZip}`}
+            />
+          </SectionErrorBoundary>
 
           {hasMore ? (
             <div className="flex justify-center pt-2">

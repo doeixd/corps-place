@@ -33,6 +33,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { LexicalView } from '@/components/jobs/lexical-view';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 
 export const Route = createFileRoute('/jobs/$jobSlug')({
   loader: async ({ params }) => getJobPosting({ data: { slug: params.jobSlug } }),
@@ -315,7 +316,7 @@ function JobDetail() {
 
           {/* Actions */}
           <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
-            {applyCta}
+            <SectionErrorBoundary label="the apply panel">{applyCta}</SectionErrorBoundary>
             <div className="flex flex-wrap items-center gap-1">
               <BookmarkButton postingId={job.posting_id} />
               <ShareButton />
@@ -344,22 +345,28 @@ function JobDetail() {
       <Card>
         <CardContent className="py-5">
           <h2 className="mb-3 text-base font-semibold text-text-primary">Job Description</h2>
-          {content?.format === 'lexical' &&
-          typeof content.doc === 'string' &&
-          content.doc.trim().startsWith('{') &&
-          content.doc.includes('"root"') ? (
-            <LexicalView doc={content.doc} plain={content.plain ?? ''} />
-          ) : content?.plain ? (
-            <p className="whitespace-pre-line text-sm leading-relaxed text-text-secondary">
-              {content.plain}
-            </p>
-          ) : (
-            <p className="text-sm text-text-muted">No description provided.</p>
-          )}
+          <SectionErrorBoundary label="the job description">
+            {content?.format === 'lexical' &&
+            typeof content.doc === 'string' &&
+            content.doc.trim().startsWith('{') &&
+            content.doc.includes('"root"') ? (
+              <LexicalView doc={content.doc} plain={content.plain ?? ''} />
+            ) : content?.plain ? (
+              <p className="whitespace-pre-line text-sm leading-relaxed text-text-secondary">
+                {content.plain}
+              </p>
+            ) : (
+              <p className="text-sm text-text-muted">No description provided.</p>
+            )}
+          </SectionErrorBoundary>
         </CardContent>
       </Card>
       {/* Similar jobs — same location or remote */}
-      {job.location ? <SimilarJobsSection location={job.location} slug={job.slug} /> : null}
+      {job.location ? (
+        <SectionErrorBoundary label="similar jobs">
+          <SimilarJobsSection location={job.location} slug={job.slug} />
+        </SectionErrorBoundary>
+      ) : null}
     </PageShell>
   );
 }

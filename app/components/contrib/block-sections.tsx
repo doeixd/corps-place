@@ -14,6 +14,7 @@ import {
 import { ImageDrop } from '@/components/contrib/image-drop';
 import { ProgressiveImage } from '@/components/progressive-image';
 import { LexicalFreeForm } from '@/components/contrib/lexical-free-form';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 import { renderLexicalDoc } from '@/lib/contrib/lexical-render';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
 import type { CitationOption } from '@/components/contrib/citation-controls';
@@ -599,7 +600,9 @@ function AboutEditor({
   };
   return (
     <div className="space-y-3">
-      <LexicalFreeForm value={draft} onChange={setDraft} citations={citations} />
+      <SectionErrorBoundary label="the rich-text editor">
+        <LexicalFreeForm value={draft} onChange={setDraft} citations={citations} />
+      </SectionErrorBoundary>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <Button type="button" size="sm" onClick={save} disabled={saving}>
         {saving ? 'Saving…' : 'Save'}

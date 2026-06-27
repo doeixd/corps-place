@@ -11,6 +11,7 @@ import {
   Briefcase01Icon,
 } from '@/components/icons/generated';
 import { listJobs, searchTalent } from '@/lib/server-fns/jobs';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 
 export function JobsLanding() {
   const navigate = useNavigate();
@@ -164,6 +165,7 @@ export function JobsLanding() {
           </button>
         </div>
 
+        <SectionErrorBoundary key={tab} label="recent results">
         {tab === 'jobs' ? (
           <div className="space-y-4">
             {jobs === null ? (
@@ -272,6 +274,7 @@ export function JobsLanding() {
             )}
           </div>
         )}
+        </SectionErrorBoundary>
       </section>
 
       {/* CTA footer */}

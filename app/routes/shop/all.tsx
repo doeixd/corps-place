@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icon';
 import { Search01Icon } from '@/components/icons/generated';
 import { ProductGrid } from '@/components/merch/product-grid';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 import type { MerchProductSummary, MerchFacets } from '@/lib/merch-types';
 import { buildSeo } from '@/lib/seo';
 
@@ -214,7 +215,9 @@ function MerchCatalog() {
           />
         }
       >
-        <ProductGrid products={visible} />
+        <SectionErrorBoundary label="the product grid">
+          <ProductGrid products={visible} />
+        </SectionErrorBoundary>
       </Show>
 
       <Show when={hasMore}>

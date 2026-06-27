@@ -16,6 +16,7 @@ import { ProductCard } from '@/components/merch/product-card';
 import { useBookmarks } from '@/stores/bookmark-store';
 import type { ShopHome } from '@/lib/merch-types';
 import { buildSeo } from '@/lib/seo';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 
 export const Route = createFileRoute('/shop/')({
   loader: async (): Promise<ShopHome> => getShopHome(),
@@ -126,21 +127,23 @@ function ShopLanding() {
           </section>
         </Show>
 
-        <ShopSection
-          title="Shop by Group"
-          count={groups.length}
-          items={groups}
-          getKey={(g) => g.storeId}
-          renderCard={(g) => <GroupCard group={g} />}
-        />
+        <SectionErrorBoundary label="the shop grids">
+          <ShopSection
+            title="Shop by Group"
+            count={groups.length}
+            items={groups}
+            getKey={(g) => g.storeId}
+            renderCard={(g) => <GroupCard group={g} />}
+          />
 
-        <ShopSection
-          title="Shop by Category"
-          count={categories.length}
-          items={categories}
-          getKey={(c) => c.value}
-          renderCard={(c) => <CategoryCard category={c} />}
-        />
+          <ShopSection
+            title="Shop by Category"
+            count={categories.length}
+            items={categories}
+            getKey={(c) => c.value}
+            renderCard={(c) => <CategoryCard category={c} />}
+          />
+        </SectionErrorBoundary>
       </div>
     </PageShell>
   );

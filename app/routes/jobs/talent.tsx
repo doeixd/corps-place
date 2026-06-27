@@ -7,6 +7,7 @@ import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { StaggeredGrid } from '@/components/staggered-grid';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { buildSeo } from '@/lib/seo';
 import { searchTalent } from '@/lib/server-fns/jobs';
@@ -246,13 +247,15 @@ function TalentPage() {
             </ToggleGroup>
           </div>
 
-          <StaggeredGrid
-            items={rows}
-            getKey={(p) => p.profile_id}
-            renderItem={renderTalentCard}
-            gap="gap-4"
-            animationKey={`${keyword}|${nearZip}|${sort}`}
-          />
+          <SectionErrorBoundary label="the talent results">
+            <StaggeredGrid
+              items={rows}
+              getKey={(p) => p.profile_id}
+              renderItem={renderTalentCard}
+              gap="gap-4"
+              animationKey={`${keyword}|${nearZip}|${sort}`}
+            />
+          </SectionErrorBoundary>
 
           {hasMore ? (
             <div className="flex justify-center pt-2">

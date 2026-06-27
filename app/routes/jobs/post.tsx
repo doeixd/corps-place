@@ -15,6 +15,7 @@ import { buildSeo } from '@/lib/seo';
 import { createJobPosting, getMyJobsProfile, upsertJobsProfile } from '@/lib/server-fns/jobs';
 import { AddCircleIcon, CheckmarkCircle02Icon } from '@/components/icons/generated';
 import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 
 export const Route = createFileRoute('/jobs/post')({
   head: () =>
@@ -240,7 +241,9 @@ function PostJobPage() {
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-text-primary">Job Description</label>
             {mounted ? (
-              <JobDescriptionEditor value={description} onChange={setDescription} />
+              <SectionErrorBoundary label="the description editor">
+                <JobDescriptionEditor value={description} onChange={setDescription} />
+              </SectionErrorBoundary>
             ) : (
               <div className="min-h-40 rounded-lg px-3 py-2 text-sm text-text-muted ring-1 ring-foreground/15">
                 Describe the role, responsibilities, requirements…

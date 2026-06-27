@@ -16,6 +16,7 @@ import { Explain } from '@/components/fantasy/explain';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { cn } from '@/lib/utils';
 import { fantasyQuizMachine } from '@/machines/fantasy-quiz-machine';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 
 export const Route = createFileRoute('/fantasy/$slug/quiz')({
   beforeLoad: requireFantasyEnabled,
@@ -78,7 +79,7 @@ function QuizRoute() {
         </div>
         <LeagueTabs slug={slug} active="quiz" isMember={isMember} quizEnabled={quizEnabled} />
       </header>
-      {body}
+      <SectionErrorBoundary label="the quiz">{body}</SectionErrorBoundary>
     </PageShell>
   );
 }

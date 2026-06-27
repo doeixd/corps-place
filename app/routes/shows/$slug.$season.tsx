@@ -40,6 +40,7 @@ import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon, type IconComponent } from '@/components/icon';
 import { RankingIcon, BookOpen01Icon } from '@/components/icons/generated';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 
 export const Route = createFileRoute('/shows/$slug/$season')({
   loader: async ({ params }) => {
@@ -208,40 +209,48 @@ function ShowDetailPage() {
           </Show>
 
           {/* Repertoire (scraped seed + per-row override wiki) */}
-          <RepertoireSection
-            corpsKey={corps.corps_key}
-            season={show.season}
-            scraped={show.repertoire}
-            overrides={overrides}
-            citations={citations}
-            dcxMuseumUrl={corps.dcx_museum_url}
-            corpsName={corps.name}
-          />
+          <SectionErrorBoundary label="the repertoire section">
+            <RepertoireSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              scraped={show.repertoire}
+              overrides={overrides}
+              citations={citations}
+              dcxMuseumUrl={corps.dcx_museum_url}
+              corpsName={corps.name}
+            />
+          </SectionErrorBoundary>
 
           {/* Movements (scraped seed + per-row override wiki) */}
-          <MovementSection
-            corpsKey={corps.corps_key}
-            season={show.season}
-            scraped={show.movements}
-            overrides={overrides}
-            citations={citations}
-          />
+          <SectionErrorBoundary label="the movements section">
+            <MovementSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              scraped={show.movements}
+              overrides={overrides}
+              citations={citations}
+            />
+          </SectionErrorBoundary>
 
           {/* Design & staff (scraped seed + authored overlay) */}
-          <StaffSection
-            corpsKey={corps.corps_key}
-            season={show.season}
-            initial={authored.staff}
-            scraped={show.designers}
-          />
+          <SectionErrorBoundary label="the design & staff section">
+            <StaffSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={authored.staff}
+              scraped={show.designers}
+            />
+          </SectionErrorBoundary>
 
           {/* Media (scraped seed + authored overlay) */}
-          <MediaSection
-            corpsKey={corps.corps_key}
-            season={show.season}
-            initial={authored.media}
-            scraped={show.media}
-          />
+          <SectionErrorBoundary label="the media section">
+            <MediaSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={authored.media}
+              scraped={show.media}
+            />
+          </SectionErrorBoundary>
 
           {/* Reviews (scraped) */}
           <Show when={show.reviews.length > 0}>
@@ -268,27 +277,51 @@ function ShowDetailPage() {
           </Show>
 
           {/* ── Authored sections (live wiki editing) ── */}
-          <AboutSection
-            corpsKey={corps.corps_key}
-            season={show.season}
-            initial={authored.about}
-            citations={citations}
-          />
-          <UniformSection
-            corpsKey={corps.corps_key}
-            season={show.season}
-            initial={authored.uniform}
-          />
-          <PropsSection corpsKey={corps.corps_key} season={show.season} initial={authored.props} />
-          <GallerySection
-            corpsKey={corps.corps_key}
-            season={show.season}
-            initial={authored.gallery}
-          />
-          <LinksSection corpsKey={corps.corps_key} season={show.season} initial={authored.links} />
+          <SectionErrorBoundary label="the concept section">
+            <AboutSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={authored.about}
+              citations={citations}
+            />
+          </SectionErrorBoundary>
+          <SectionErrorBoundary label="the uniform section">
+            <UniformSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={authored.uniform}
+            />
+          </SectionErrorBoundary>
+          <SectionErrorBoundary label="the props section">
+            <PropsSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={authored.props}
+            />
+          </SectionErrorBoundary>
+          <SectionErrorBoundary label="the gallery section">
+            <GallerySection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={authored.gallery}
+            />
+          </SectionErrorBoundary>
+          <SectionErrorBoundary label="the links section">
+            <LinksSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={authored.links}
+            />
+          </SectionErrorBoundary>
 
           {/* References / citations (M11a) */}
-          <ReferencesSection corpsKey={corps.corps_key} season={show.season} initial={citations} />
+          <SectionErrorBoundary label="the references section">
+            <ReferencesSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={citations}
+            />
+          </SectionErrorBoundary>
 
           {/* Source attribution */}
           <Show when={show.sourceUrl}>
@@ -309,13 +342,17 @@ function ShowDetailPage() {
         </motion.div>
         <aside className="space-y-4 lg:w-80 lg:shrink-0">
           {governance && (governance.canLock || governance.canModerate) ? (
-            <PageGovernancePanel
-              corpsKey={corps.corps_key}
-              season={show.season}
-              initial={governance}
-            />
+            <SectionErrorBoundary label="the governance panel">
+              <PageGovernancePanel
+                corpsKey={corps.corps_key}
+                season={show.season}
+                initial={governance}
+              />
+            </SectionErrorBoundary>
           ) : null}
-          <HistoryPanel corpsKey={corps.corps_key} season={show.season} initial={history} />
+          <SectionErrorBoundary label="the edit history">
+            <HistoryPanel corpsKey={corps.corps_key} season={show.season} initial={history} />
+          </SectionErrorBoundary>
         </aside>
       </div>
     </PageShell>

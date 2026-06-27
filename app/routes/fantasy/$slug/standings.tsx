@@ -18,6 +18,7 @@ import { standingsCollection } from '@/db/fantasy-collections';
 import { HybridCollection } from '@/components/hybrid-collection';
 import { CAPTION_KEYS } from '@/lib/fantasy/captions';
 import { Explain } from '@/components/fantasy/explain';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 
 type Standings = Awaited<ReturnType<typeof getStandings>>;
 type Row = Standings['rows'][number];
@@ -95,7 +96,7 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
           </CardContent>
         </Card>
       ) : (
-        <>
+        <SectionErrorBoundary label="the standings table">
           <p className="text-sm text-muted-foreground">
             Each player&apos;s total is the sum of their drafted corps&apos; caption scores from
             real drum corps <Explain term="recap">recaps</Explain>. On a wider screen the total breaks down
@@ -126,7 +127,7 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
               ))}
             </TableBody>
           </Table>
-        </>
+        </SectionErrorBoundary>
       )}
     </PageShell>
   );
