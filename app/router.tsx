@@ -1,6 +1,7 @@
 import { createRouter as createTanStackRouter, stringifySearchWith } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import { NotFound } from './components/not-found';
+import { RouteErrorFallback } from './components/error-fallback';
 
 export function createRouter() {
   const router = createTanStackRouter({
@@ -22,6 +23,10 @@ export function createRouter() {
     // (Phase 5) + Fate live-updates (Phase 6).
     defaultStaleTime: 60_000,
     defaultNotFoundComponent: NotFound,
+    // Branded, recoverable screen for any uncaught route render/loader error
+    // instead of TanStack's raw error dump (a single component crash used to
+    // blank the whole page).
+    defaultErrorComponent: RouteErrorFallback,
     // Don't JSON-quote plain string params (the default wraps JSON-parseable
     // strings like "2026" in quotes). Omitting the parser arg keeps strings raw,
     // so URLs read `?season=2026` instead of `?season="2026"`. Numeric/boolean-

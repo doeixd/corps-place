@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
+import { SectionErrorBoundary } from '@/components/error-boundary';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
 import { cn } from '@/lib/utils';
@@ -114,16 +115,18 @@ function MePage() {
         ))}
       </div>
 
-      {Match.value(tab).pipe(
-        Match.when('profile', () => (
-          <ProfileTab initial={initial} snapshot={snapshot} send={send} />
-        )),
-        Match.when('postings', () => <PostingsTab />),
-        Match.when('applications', () => <ApplicationsTab />),
-        Match.when('bookmarks', () => <BookmarksTab />),
-        Match.when('alerts', () => <AlertsTab />),
-        Match.exhaustive
-      )}
+      <SectionErrorBoundary key={tab} label="this tab">
+        {Match.value(tab).pipe(
+          Match.when('profile', () => (
+            <ProfileTab initial={initial} snapshot={snapshot} send={send} />
+          )),
+          Match.when('postings', () => <PostingsTab />),
+          Match.when('applications', () => <ApplicationsTab />),
+          Match.when('bookmarks', () => <BookmarksTab />),
+          Match.when('alerts', () => <AlertsTab />),
+          Match.exhaustive
+        )}
+      </SectionErrorBoundary>
     </PageShell>
   );
 }
