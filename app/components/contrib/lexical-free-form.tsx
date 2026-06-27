@@ -4,10 +4,13 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import { ListNode, ListItemNode } from '@lexical/list';
 import { $getRoot, $insertNodes, type EditorState } from 'lexical';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
+import { LexicalFormatToolbar } from '@/components/contrib/lexical-format-toolbar';
 import { CitationNode, $createCitationNode } from '@/components/contrib/citation-node';
 import type { CitationOption } from '@/components/contrib/citation-controls';
 
@@ -45,27 +48,33 @@ export function LexicalFreeForm({
     <LexicalComposer
       initialConfig={{
         namespace: 'free-form-spike',
-        nodes: [HeadingNode, QuoteNode, CitationNode],
+        nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, CitationNode],
         onError: (e) => {
           throw e;
         },
         editorState: value.doc || undefined,
       }}
     >
-      {citations.length > 0 ? <CitationToolbar citations={citations} /> : null}
-      <div className="relative rounded-lg ring-1 ring-foreground/15">
-        <RichTextPlugin
-          contentEditable={
-            <ContentEditable className="min-h-32 p-3 text-sm outline-none [&_h1]:text-lg [&_h1]:font-bold [&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:text-text-secondary" />
-          }
-          placeholder={
-            <div className="pointer-events-none absolute left-3 top-3 text-sm text-text-secondary">
-              Describe the concept…
-            </div>
-          }
-          ErrorBoundary={LexicalErrorBoundary}
-        />
+      <div className="rounded-lg ring-1 ring-foreground/15">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-border p-1">
+          <LexicalFormatToolbar />
+          {citations.length > 0 ? <CitationToolbar citations={citations} /> : null}
+        </div>
+        <div className="relative">
+          <RichTextPlugin
+            contentEditable={
+              <ContentEditable className="min-h-32 p-3 text-sm outline-none [&_h1]:text-lg [&_h1]:font-bold [&_h2]:text-base [&_h2]:font-semibold [&_h3]:font-medium [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:text-text-secondary" />
+            }
+            placeholder={
+              <div className="pointer-events-none absolute left-3 top-3 text-sm text-text-secondary">
+                Describe the concept…
+              </div>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+        </div>
         <HistoryPlugin />
+        <ListPlugin />
         <OnChangePlugin onChange={handleChange} />
       </div>
     </LexicalComposer>
@@ -84,7 +93,7 @@ function CitationToolbar({ citations }: { citations: readonly CitationOption[] }
   };
 
   return (
-    <div className="mb-2 flex items-center gap-2">
+    <div className="flex items-center gap-2">
       <select
         value=""
         onChange={(e) => insert(e.target.value)}

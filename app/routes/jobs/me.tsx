@@ -27,7 +27,7 @@ import {
   createJobAlert,
   saveJobsProfileBlock,
 } from '@/lib/server-fns/jobs';
-import { TiptapFreeForm } from '@/components/contrib/tiptap-free-form';
+import { JobDescriptionEditor } from '@/components/jobs/job-description-editor';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
 import {
   UserMultipleIcon,
@@ -344,15 +344,17 @@ const parseBlock = (blocks: Block[], kind: string): Record<string, unknown> | nu
 function AboutSection({ profileId, blocks }: { profileId: string; blocks: Block[] }) {
   const router = useRouter();
   const seed = parseBlock(blocks, 'summary');
+  // Existing tiptap-format About docs won't render in Lexical (About is new) —
+  // only seed when the stored doc is already lexical; otherwise start empty.
   const [about, setAbout] = useState<FreeFormDoc>(() =>
-    seed && typeof seed.doc === 'string'
+    seed && seed.format === 'lexical' && typeof seed.doc === 'string'
       ? {
-          format: 'tiptap',
+          format: 'lexical',
           version: 1,
           doc: seed.doc,
           plain: typeof seed.plain === 'string' ? seed.plain : '',
         }
-      : emptyFreeFormDoc('tiptap')
+      : emptyFreeFormDoc('lexical')
   );
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -365,7 +367,7 @@ function AboutSection({ profileId, blocks }: { profileId: string; blocks: Block[
         data: {
           profileId,
           kind: 'summary',
-          content: { format: 'tiptap', version: 1, doc: about.doc, plain: about.plain },
+          content: { format: 'lexical', version: 1, doc: about.doc, plain: about.plain },
         },
       });
       await router.invalidate();
@@ -379,7 +381,11 @@ function AboutSection({ profileId, blocks }: { profileId: string; blocks: Block[
     <Card>
       <CardContent className="space-y-4 py-5">
         <h2 className="text-base font-semibold text-text-primary">About</h2>
-        <TiptapFreeForm value={about} onChange={setAbout} />
+        <JobDescriptionEditor
+          value={about}
+          onChange={setAbout}
+          placeholder="Write a short professional summary…"
+        />
         <div className="flex items-center gap-3">
           <Button onClick={save} disabled={saving} variant="outline" size="sm">
             {saving ? 'Saving…' : 'Save About'}
