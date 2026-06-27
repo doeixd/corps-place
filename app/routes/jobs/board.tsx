@@ -227,22 +227,36 @@ function BoardPage() {
       <PageHeader title="Job Board" subtitle="Pageantry & marching-arts job listings" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
 
       <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-        <input
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && doSearch()}
-          placeholder="Search jobs by keyword…"
-          className="h-11 flex-1 rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
-        />
-        <input
-          value={nearZip}
-          onChange={(e) => setNearZip(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && doSearch()}
-          inputMode="numeric"
-          maxLength={5}
-          placeholder="Near ZIP"
-          className="h-11 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 sm:w-32"
-        />
+        <div className="relative w-full sm:flex-1">
+          <Icon
+            icon={Search01Icon}
+            size="sm"
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+          />
+          <input
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && doSearch()}
+            placeholder="Search jobs by keyword…"
+            className="h-11 w-full rounded-lg border border-border bg-card pl-9 pr-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+          />
+        </div>
+        <div className="relative w-full sm:w-44">
+          <Icon
+            icon={Location01Icon}
+            size="sm"
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+          />
+          <input
+            value={nearZip}
+            onChange={(e) => setNearZip(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && doSearch()}
+            inputMode="numeric"
+            maxLength={5}
+            placeholder="Near ZIP"
+            className="h-11 w-full rounded-lg border border-border bg-card pl-9 pr-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+          />
+        </div>
         <Button onClick={doSearch} disabled={loading} variant="outline" className="h-11 px-4">
           <Icon icon={Search01Icon} size="sm" /> {loading ? '…' : 'Search'}
         </Button>
