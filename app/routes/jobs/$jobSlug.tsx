@@ -11,7 +11,6 @@ import {
   applyToJob,
   hasAppliedToJob,
   reportContent,
-  createBoostCheckout,
   bookmarkJob,
   removeBookmark,
   isJobBookmarked,
@@ -21,13 +20,18 @@ import {
   Briefcase01Icon,
   Location01Icon,
   CheckmarkCircle02Icon,
-  Alert02Icon,
   FireIcon,
-  BookOpen01Icon,
+  HeartAddIcon,
   SentIcon,
 } from '@/components/icons/generated';
+import { FavouriteIcon } from '@/components/icons/favourite-filled';
 import { useEffect, useState } from 'react';
 import { celebrate } from '@/lib/confetti';
+import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { motion } from 'motion/react';
+import { toast } from 'sonner';
 import { LexicalView } from '@/components/jobs/lexical-view';
 
 export const Route = createFileRoute('/jobs/$jobSlug')({
@@ -315,43 +319,22 @@ function JobDetail() {
             <div className="flex flex-wrap items-center gap-1">
               <BookmarkButton postingId={job.posting_id} />
               <ShareButton />
-              {!job.is_boosted ? (
-                <Button
-                  onClick={async () => {
-                    try {
-                      const result = await createBoostCheckout({
-                        data: {
-                          postingId: job.posting_id,
-                          slug: job.slug,
-                        },
-                      });
-                      if (result.url) window.location.href = result.url;
-                    } catch (e) {
-                      alert((e as Error).message);
-                    }
-                  }}
-                  variant="ghost"
-                  size="xs"
-                  className="text-text-muted hover:text-primary"
-                >
-                  <Icon icon={FireIcon} size="xs" /> Boost
-                </Button>
-              ) : null}
-              <Button
-                onClick={async () => {
-                  if (confirm('Report this job posting as inappropriate?')) {
-                    await reportContent({ data: { targetKind: 'posting', targetId: job.posting_id } }).catch(
-                      () => {}
-                    );
-                    alert('Report submitted. A moderator will review it.');
-                  }
+              <ConfirmDialog
+                title="Report this job posting?"
+                description="Flag this listing as inappropriate. A moderator will review it."
+                confirmLabel="Report"
+                onConfirm={async () => {
+                  await reportContent({
+                    data: { targetKind: 'posting', targetId: job.posting_id },
+                  }).catch(() => {});
+                  toast.success('Report submitted. A moderator will review it.');
                 }}
-                variant="ghost"
-                size="xs"
-                className="text-text-muted hover:text-destructive"
-              >
-                <Icon icon={Alert02Icon} size="xs" /> Report
-              </Button>
+                trigger={
+                  <Button variant="ghost" size="xs" className="text-text-muted hover:text-destructive">
+                    Report
+                  </Button>
+                }
+              />
             </div>
           </div>
         </CardContent>
@@ -403,31 +386,60 @@ function BookmarkButton({ postingId }: { postingId: string }) {
 
   if (!session) return null;
 
+  const label = bookmarked ? 'Remove bookmark' : 'Save job';
   return (
-    <Button
-      onClick={async () => {
-        setToggling(true);
-        try {
-          if (bookmarked) {
-            await removeBookmark({ data: { postingId } });
-            setBookmarked(false);
-          } else {
-            await bookmarkJob({ data: { postingId } });
-            setBookmarked(true);
-          }
-        } catch {
-          /* ignore */
-        } finally {
-          setToggling(false);
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <button
+            type="button"
+            aria-label={label}
+            aria-pressed={bookmarked}
+            disabled={toggling}
+            onClick={async () => {
+              setToggling(true);
+              try {
+                if (bookmarked) {
+                  await removeBookmark({ data: { postingId } });
+                  setBookmarked(false);
+                } else {
+                  await bookmarkJob({ data: { postingId } });
+                  setBookmarked(true);
+                }
+              } catch {
+                /* ignore */
+              } finally {
+                setToggling(false);
+              }
+            }}
+            className={cn(
+              'inline-flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors disabled:opacity-50',
+              bookmarked
+                ? 'border-primary/60 bg-primary/10 text-primary'
+                : 'border-border text-text-secondary hover:border-primary/60 hover:text-primary'
+            )}
+          />
         }
-      }}
-      disabled={toggling}
-      variant="ghost"
-      size="xs"
-      className={bookmarked ? 'text-primary' : 'text-text-muted hover:text-primary'}
-    >
-      <Icon icon={BookOpen01Icon} size="xs" /> {bookmarked ? 'Saved' : 'Save'}
-    </Button>
+      >
+        <span className="relative inline-flex">
+          <motion.span
+            animate={{ opacity: bookmarked ? 1 : 0, scale: bookmarked ? 1 : 0.3 }}
+            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
+            className="absolute inset-0 inline-flex items-center justify-center"
+          >
+            <Icon icon={FavouriteIcon} size="sm" />
+          </motion.span>
+          <motion.span
+            animate={{ opacity: bookmarked ? 0 : 1, scale: bookmarked ? 0.3 : 1 }}
+            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
+            className="inline-flex"
+          >
+            <Icon icon={HeartAddIcon} size="sm" />
+          </motion.span>
+        </span>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
   );
 }
 
