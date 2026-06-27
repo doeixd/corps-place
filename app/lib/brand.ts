@@ -59,7 +59,11 @@ export const BRAND_CONFIG: Record<Brand, BrandIdentity> = {
 export const getBrand = (request: Request): Brand => {
   const url = new URL(request.url);
   if (url.searchParams.get('brand') === 'jobs') return 'jobs';
-  const host = (request.headers.get('host') ?? '').toLowerCase();
+  // `Host` is a forbidden request header in browsers, so on the CLIENT
+  // `headers.get('host')` is null — fall back to the URL's host (which is
+  // readable from window.location.href). Without this the client resolved
+  // 'corps' on pageantryjobs.com and the SSR'd jobs page flipped on hydration.
+  const host = (request.headers.get('host') || url.host || '').toLowerCase();
   const jobsHost = (process.env.JOBS_HOST ?? 'pageantryjobs.com').toLowerCase();
   if (host.includes(jobsHost) || host.includes('pageantryjobs')) return 'jobs';
   return 'corps';
