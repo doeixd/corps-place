@@ -169,21 +169,17 @@ function ProfileTab({ initial, snapshot, send }: { initial: any; snapshot: any; 
     <div className="space-y-6">
       {/* Identity header — a quick read on how the profile presents */}
       <div className="flex items-center gap-4">
-        {ctx.profileId ? (
-          <PhotoUpload
-            variant="overlay"
-            shape="round"
-            size="size-16 sm:size-20"
-            mediaId={initial?.profile?.image_media_id ?? null}
-            alt={ctx.displayName}
-            labels={{ empty: 'Add photo', change: 'Change photo' }}
-            onFile={handlePhoto}
-          />
-        ) : (
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xl font-semibold text-primary">
-            {(ctx.displayName.trim()[0] ?? '?').toUpperCase()}
-          </div>
-        )}
+        {/* Always available — the upload server-fn auto-creates the profile on first
+            upload, so new users can add a photo before saving the rest. */}
+        <PhotoUpload
+          variant="overlay"
+          shape="round"
+          size="size-16 sm:size-20"
+          mediaId={initial?.profile?.image_media_id ?? null}
+          alt={ctx.displayName}
+          labels={{ empty: 'Add photo', change: 'Change photo' }}
+          onFile={handlePhoto}
+        />
         <div className="min-w-0">
           <p className="truncate text-lg font-semibold text-text-primary">
             {ctx.displayName.trim() || 'Your name'}

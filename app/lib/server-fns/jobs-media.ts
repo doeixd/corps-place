@@ -53,6 +53,22 @@ export const setJobsProfilePhoto = createServerFn({ method: 'POST' })
         )
       );
       mediaId = res.mediaId;
+
+      // A photo needs a profile row to attach to — auto-provision one (employee) on
+      // first upload so brand-new users can add a photo before filling out the rest.
+      // Mirrors the auto-provision in createJobPosting.
+      const existing = await Effect.runPromise(
+        Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(actor.userId)).pipe(
+          Effect.provide(JobsServiceLive)
+        )
+      );
+      if (!existing) {
+        await Effect.runPromise(
+          Effect.flatMap(JobsService, (svc) => svc.createProfile(actor.userId, 'employee', ctx)).pipe(
+            Effect.provide(JobsServiceLive)
+          )
+        );
+      }
     }
 
     await Effect.runPromise(
