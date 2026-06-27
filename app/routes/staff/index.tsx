@@ -121,11 +121,12 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
     if (didRestoreScrollRef.current) return;
     didRestoreScrollRef.current = true;
 
+    // Always set the viewport: a saved offset (`?s=`) restores the prior place;
+    // no offset means a fresh entry (e.g. from the home directory) → scroll to
+    // top. Skipping the 0 case left the window at the previous page's scroll.
     const scrollY = typeof search.s === 'number' ? search.s : 0;
-    if (scrollY > 0) {
-      const frame = requestAnimationFrame(() => window.scrollTo(0, scrollY));
-      return () => cancelAnimationFrame(frame);
-    }
+    const frame = requestAnimationFrame(() => window.scrollTo(0, scrollY));
+    return () => cancelAnimationFrame(frame);
   }, [search.s]);
 
   // Save scroll position to URL on scroll end without letting the router reset the viewport.
