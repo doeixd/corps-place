@@ -19,6 +19,20 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
+interface PostingData {
+  title: string;
+  contentJson: string;
+  remoteOk?: boolean;
+  salaryMax?: number | null;
+  expiresAt?: string | null;
+}
+interface ListFilters {
+  status?: string;
+  keyword?: string;
+  work?: 'remote' | 'onsite';
+  sort?: 'newest' | 'pay';
+}
+
 let JobsService: typeof import('./jobs-service').JobsService;
 let JobsServiceLive: typeof import('./jobs-service').JobsServiceLive;
 let db: Client;
@@ -45,6 +59,21 @@ const createPosting = (employerProfileId: string, userId: string, title: string)
       s.createPosting(employerProfileId, { title, contentJson: '{}' }, ctx(userId))
     )
   );
+
+const createPostingData = (
+  employerProfileId: string,
+  userId: string,
+  data: PostingData
+) => run(Effect.flatMap(JobsService, (s) => s.createPosting(employerProfileId, data, ctx(userId))));
+
+const listPostings = (filters: ListFilters = {}) =>
+  run(Effect.flatMap(JobsService, (s) => s.listPostings(filters)));
+
+const deletePosting = (postingId: string, userId: string) =>
+  run(Effect.flatMap(JobsService, (s) => s.deletePosting(postingId, ctx(userId))));
+
+const bookmarkJob = (userId: string, postingId: string) =>
+  run(Effect.flatMap(JobsService, (s) => s.bookmarkJob(userId, postingId)));
 
 const applyToPosting = (postingId: string, applicantUserId: string, message?: string) =>
   run(Effect.flatMap(JobsService, (s) => s.applyToPosting(postingId, applicantUserId, message)));
@@ -134,6 +163,12 @@ beforeAll(async () => {
        )`,
       `CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_application_unique
          ON jobs_application (posting_id, applicant_user_id)`,
+      `CREATE TABLE IF NOT EXISTS jobs_bookmark (
+         user_id TEXT NOT NULL,
+         posting_id TEXT NOT NULL,
+         created_at TEXT NOT NULL,
+         PRIMARY KEY (user_id, posting_id)
+       )`,
       `CREATE TABLE IF NOT EXISTS jobs_revision (
          revision_id TEXT PRIMARY KEY,
          target_kind TEXT NOT NULL,
@@ -204,5 +239,87 @@ describe('JobsService apply → applicants → status flow', () => {
     await setStatus(application_id, 'passed', otherEmployerProfileId);
     row = (await getApplicants(postingId, employerProfileId))[0];
     expect(row.status).toBe('shortlisted');
+  });
+});
+
+describe('JobsService listPostings expiry + filter + sort', () => {
+  it('hides expired postings from the board', async () => {
+    const past = new Date(Date.now() - 86_400_000).toISOString();
+    const future = new Date(Date.now() + 86_400_000).toISOString();
+    const expired = await createPostingData(employerProfileId, EMPLOYER, {
+      title: 'Expired Gig',
+      contentJson: '{}',
+      expiresAt: past,
+    });
+    const live = await createPostingData(employerProfileId, EMPLOYER, {
+      title: 'Live Gig',
+      contentJson: '{}',
+      expiresAt: future,
+    });
+
+    const { rows, total } = await listPostings({ keyword: 'Gig' });
+    const ids = rows.map((r) => r.posting_id);
+    expect(ids).toContain(live.postingId);
+    expect(ids).not.toContain(expired.postingId);
+    expect(total).toBe(1);
+  });
+
+  it('filters by work=remote and sorts by pay descending', async () => {
+    const remote = await createPostingData(employerProfileId, EMPLOYER, {
+      title: 'Sortable Remote Role',
+      contentJson: '{}',
+      remoteOk: true,
+      salaryMax: 90_000,
+    });
+    const onsite = await createPostingData(employerProfileId, EMPLOYER, {
+      title: 'Sortable Onsite Role',
+      contentJson: '{}',
+      remoteOk: false,
+      salaryMax: 120_000,
+    });
+
+    const remoteOnly = await listPostings({ work: 'remote', keyword: 'Sortable' });
+    expect(remoteOnly.rows.map((r) => r.posting_id)).toEqual([remote.postingId]);
+
+    const byPay = await listPostings({ sort: 'pay', keyword: 'Sortable Role'.split(' ')[0] });
+    // Neither is boosted, so order is purely salary_max DESC: onsite (120k) then remote (90k).
+    const payIds = byPay.rows.map((r) => r.posting_id);
+    expect(payIds.indexOf(onsite.postingId)).toBeLessThan(payIds.indexOf(remote.postingId));
+  });
+});
+
+describe('JobsService deletePosting cascade', () => {
+  it('removes the posting plus its applications and bookmarks', async () => {
+    const posting = await createPostingData(employerProfileId, EMPLOYER, {
+      title: 'Doomed Posting',
+      contentJson: '{}',
+    });
+
+    await applyToPosting(posting.postingId, APPLICANT, 'pick me');
+    await bookmarkJob(APPLICANT, posting.postingId);
+
+    // Sanity: rows exist before delete.
+    const appsBefore = await db.execute({
+      sql: 'SELECT count(*) AS c FROM jobs_application WHERE posting_id = ?',
+      args: [posting.postingId],
+    });
+    expect(Number(appsBefore.rows[0].c)).toBe(1);
+
+    await deletePosting(posting.postingId, EMPLOYER);
+
+    const { rows } = await listPostings({ keyword: 'Doomed' });
+    expect(rows.map((r) => r.posting_id)).not.toContain(posting.postingId);
+
+    const apps = await db.execute({
+      sql: 'SELECT count(*) AS c FROM jobs_application WHERE posting_id = ?',
+      args: [posting.postingId],
+    });
+    expect(Number(apps.rows[0].c)).toBe(0);
+
+    const bookmarks = await db.execute({
+      sql: 'SELECT count(*) AS c FROM jobs_bookmark WHERE posting_id = ?',
+      args: [posting.postingId],
+    });
+    expect(Number(bookmarks.rows[0].c)).toBe(0);
   });
 });

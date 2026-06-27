@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useSession } from '@/lib/auth-client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,55 @@ export const Route = createFileRoute('/jobs/talent')({
     }),
   loader: async () => searchTalent({ data: { offset: 0, limit: PAGE_LIMIT } }),
   component: TalentPage,
+});
+
+type TalentRow = Awaited<ReturnType<typeof searchTalent>>['rows'][number];
+
+// Memoized so cards skip re-rendering on unrelated state (search input, etc.).
+const TalentCard = memo(function TalentCard({ p }: { p: TalentRow }) {
+  const d = p.distance_miles ?? null;
+  return (
+    <Link
+      to="/jobs/profile/$slug"
+      params={{ slug: p.slug }}
+      className="block h-full focus-visible:outline-none"
+    >
+      <Card className="card-hover h-full">
+        <CardContent className="flex h-full flex-col gap-3 py-4">
+          <div className="flex items-center gap-3">
+            {p.image_media_id ? (
+              <img
+                src={`/api/fantasy-media/${p.image_media_id}`}
+                className="size-10 shrink-0 rounded-full border border-border object-cover"
+                alt={p.display_name}
+              />
+            ) : (
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                {p.display_name.charAt(0)}
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-semibold text-text-primary">{p.display_name}</p>
+              {p.headline ? (
+                <p className="truncate text-sm text-text-secondary">{p.headline}</p>
+              ) : null}
+            </div>
+          </div>
+          {p.location || d != null ? (
+            <p className="flex flex-wrap items-center gap-x-1.5 text-xs text-text-muted">
+              {p.location ? (
+                <span className="flex items-center gap-1">
+                  <Icon icon={Location01Icon} size="xs" /> {p.location}
+                </span>
+              ) : null}
+              {p.location && d != null ? <span>•</span> : null}
+              {d != null ? <span>{formatDistance(d)}</span> : null}
+            </p>
+          ) : null}
+        </CardContent>
+      </Card>
+    </Link>
+  );
 });
 
 function TalentPage() {
@@ -92,58 +141,13 @@ function TalentPage() {
   const total = data.total;
   const hasMore = rows.length < total;
   const hasDistance = rows.some((p) => p.distance_miles != null);
-  const distOf = (p: (typeof rows)[number]): number | null => p.distance_miles ?? null;
 
   const sortItems = [
     { value: 'newest', label: 'Newest' },
     { value: 'nearest', label: 'Nearest' },
   ];
 
-  const renderTalentCard = (p: (typeof rows)[number]) => {
-    const d = distOf(p);
-    return (
-      <Link
-        to="/jobs/profile/$slug"
-        params={{ slug: p.slug }}
-        className="block h-full focus-visible:outline-none"
-      >
-        <Card className="card-hover h-full">
-          <CardContent className="flex h-full flex-col gap-3 py-4">
-            <div className="flex items-center gap-3">
-              {p.image_media_id ? (
-                <img
-                  src={`/api/fantasy-media/${p.image_media_id}`}
-                  className="size-10 shrink-0 rounded-full border border-border object-cover"
-                  alt={p.display_name}
-                />
-              ) : (
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                  {p.display_name.charAt(0)}
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-semibold text-text-primary">{p.display_name}</p>
-                {p.headline ? (
-                  <p className="truncate text-sm text-text-secondary">{p.headline}</p>
-                ) : null}
-              </div>
-            </div>
-            {p.location || d != null ? (
-              <p className="flex flex-wrap items-center gap-x-1.5 text-xs text-text-muted">
-                {p.location ? (
-                  <span className="flex items-center gap-1">
-                    <Icon icon={Location01Icon} size="xs" /> {p.location}
-                  </span>
-                ) : null}
-                {p.location && d != null ? <span>•</span> : null}
-                {d != null ? <span>{formatDistance(d)}</span> : null}
-              </p>
-            ) : null}
-          </CardContent>
-        </Card>
-      </Link>
-    );
-  };
+  const renderTalentCard = useCallback((p: TalentRow) => <TalentCard p={p} />, []);
 
   if (!session) {
     return (

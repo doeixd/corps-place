@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -53,6 +53,72 @@ export const Route = createFileRoute('/jobs/board')({
   loaderDeps: ({ search }) => ({ q: search.q }),
   loader: async ({ deps }) => listJobs({ data: { keyword: deps.q, offset: 0, limit: PAGE_LIMIT } }),
   component: BoardPage,
+});
+
+type JobRow = Awaited<ReturnType<typeof listJobs>>['rows'][number];
+
+const JobCard = memo(function JobCard({ job }: { job: JobRow }) {
+  const salary =
+    job.comp_text ||
+    (job.salary_min || job.salary_max
+      ? `${job.salary_min ? `$${job.salary_min.toLocaleString()}` : ''}${
+          job.salary_min && job.salary_max ? '–' : ''
+        }${job.salary_max ? `$${job.salary_max.toLocaleString()}` : ''}`
+      : null);
+  const d = job.distance_miles ?? null;
+  return (
+    <Link
+      to="/jobs/$jobSlug"
+      params={{ jobSlug: job.slug }}
+      className="block h-full focus-visible:outline-none"
+    >
+      <Card className="card-hover h-full">
+        <CardContent className="flex h-full items-start justify-between gap-4 py-5">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-base font-semibold leading-snug text-text-primary">{job.title}</h3>
+            {job.employer_name && job.employer_name !== 'User' ? (
+              <p className="mt-0.5 text-sm text-text-muted">{job.employer_name}</p>
+            ) : null}
+            {job.location || d != null ? (
+              <p className="mt-1.5 flex flex-wrap items-center gap-x-1.5 text-sm text-text-muted">
+                {job.location ? (
+                  <span className="flex items-center gap-1">
+                    <Icon icon={Location01Icon} size="xs" /> {job.location}
+                  </span>
+                ) : null}
+                {job.location && d != null ? <span>•</span> : null}
+                {d != null ? <span>{formatDistance(d)}</span> : null}
+              </p>
+            ) : null}
+            {job.remote_ok || salary || job.is_boosted ? (
+              <div className="mt-2.5 flex flex-wrap gap-2">
+                {job.remote_ok ? (
+                  <Badge variant="secondary-light" size="sm">
+                    Remote
+                  </Badge>
+                ) : null}
+                {salary ? (
+                  <Badge variant="success-light" size="sm">
+                    {salary}
+                  </Badge>
+                ) : null}
+                {job.is_boosted ? (
+                  <Badge variant="warning-light" size="sm">
+                    Boosted
+                  </Badge>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+          <Icon
+            icon={Briefcase01Icon}
+            size="sm"
+            className="icon-shift mt-0.5 shrink-0 text-text-muted"
+          />
+        </CardContent>
+      </Card>
+    </Link>
+  );
 });
 
 function BoardPage() {
@@ -143,9 +209,6 @@ function BoardPage() {
   const hasMore = rows.length < total;
   const hasDistance = rows.some((j) => j.distance_miles != null);
 
-  // Distance is computed server-side now; cards just read distance_miles.
-  const distOf = (j: (typeof rows)[number]): number | null => j.distance_miles ?? null;
-
   const sortItems = [
     { value: 'newest', label: 'Newest' },
     { value: 'nearest', label: 'Nearest' },
@@ -153,71 +216,9 @@ function BoardPage() {
   ];
   const sortValue = sort ?? 'newest';
 
-  const renderJobCard = (job: (typeof rows)[number]) => {
-    const salary =
-      job.comp_text ||
-      (job.salary_min || job.salary_max
-        ? `${job.salary_min ? `$${job.salary_min.toLocaleString()}` : ''}${
-            job.salary_min && job.salary_max ? '–' : ''
-          }${job.salary_max ? `$${job.salary_max.toLocaleString()}` : ''}`
-        : null);
-    const d = distOf(job);
-    return (
-      <Link
-        to="/jobs/$jobSlug"
-        params={{ jobSlug: job.slug }}
-        className="block h-full focus-visible:outline-none"
-      >
-        <Card className="card-hover h-full">
-          <CardContent className="flex h-full items-start justify-between gap-4 py-5">
-            <div className="min-w-0 flex-1">
-              <h3 className="text-base font-semibold leading-snug text-text-primary">
-                {job.title}
-              </h3>
-              {job.employer_name && job.employer_name !== 'User' ? (
-                <p className="mt-0.5 text-sm text-text-muted">{job.employer_name}</p>
-              ) : null}
-              {job.location || d != null ? (
-                <p className="mt-1.5 flex flex-wrap items-center gap-x-1.5 text-sm text-text-muted">
-                  {job.location ? (
-                    <span className="flex items-center gap-1">
-                      <Icon icon={Location01Icon} size="xs" /> {job.location}
-                    </span>
-                  ) : null}
-                  {job.location && d != null ? <span>•</span> : null}
-                  {d != null ? <span>{formatDistance(d)}</span> : null}
-                </p>
-              ) : null}
-              {job.remote_ok || salary || job.is_boosted ? (
-                <div className="mt-2.5 flex flex-wrap gap-2">
-                  {job.remote_ok ? (
-                    <Badge variant="secondary-light" size="sm">
-                      Remote
-                    </Badge>
-                  ) : null}
-                  {salary ? (
-                    <Badge variant="success-light" size="sm">
-                      {salary}
-                    </Badge>
-                  ) : null}
-                  {job.is_boosted ? (
-                    <Badge variant="warning-light" size="sm">
-                      Boosted
-                    </Badge>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-            <Icon
-              icon={Briefcase01Icon}
-              size="sm"
-              className="icon-shift mt-0.5 shrink-0 text-text-muted"
-            />
-          </CardContent>
-        </Card>
-      </Link>
-    );
-  };
+  // Stable identity + memoized cards: cards skip re-rendering on unrelated state
+  // (e.g. typing in the search box) as long as their row object is unchanged.
+  const renderJobCard = useCallback((job: JobRow) => <JobCard job={job} />, []);
 
   return (
     <PageShell>
