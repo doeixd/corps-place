@@ -39,7 +39,10 @@ export const Route = createFileRoute('/jobs/$jobSlug')({
       title: loaderData.title,
       description: loaderData.comp_text ?? '',
       datePosted: loaderData.published_at ?? loaderData.created_at,
-      hiringOrganization: { '@type': 'Organization', name: 'PageantryJobs' },
+      hiringOrganization: {
+        '@type': 'Organization',
+        name: employerName(loaderData) ?? 'PageantryJobs',
+      },
     };
     if (loaderData.location) {
       jobPostingLd.jobLocation = {
@@ -75,6 +78,15 @@ export const Route = createFileRoute('/jobs/$jobSlug')({
   component: JobDetail,
 });
 
+// A posting's auto-provisioned employer profile defaults its name to 'User' until
+// the employer fills it in — treat that (and empty) as "no real name to show".
+function employerName(job: {
+  employer_name?: string | null;
+}): string | null {
+  const n = job.employer_name?.trim();
+  return n && n !== 'User' ? n : null;
+}
+
 function relativeTime(value: string | null | undefined): string | null {
   if (!value) return null;
   const then = new Date(value).getTime();
@@ -95,6 +107,8 @@ function JobDetail() {
   const job = Route.useLoaderData();
   const [applied, setApplied] = useState(false);
   const [applying, setApplying] = useState(false);
+  const [showApply, setShowApply] = useState(false);
+  const [note, setNote] = useState('');
 
   if (!job) {
     return (
@@ -113,8 +127,9 @@ function JobDetail() {
     if (!session) return;
     setApplying(true);
     try {
-      await applyToJob({ data: { postingId: job.posting_id } });
+      await applyToJob({ data: { postingId: job.posting_id, message: note.trim() || undefined } });
       setApplied(true);
+      setShowApply(false);
     } catch {
       /* ignore */
     } finally {
@@ -146,6 +161,8 @@ function JobDetail() {
   keyFacts.push({ label: 'Work type', value: job.remote_ok ? 'Remote' : 'On-site' });
   if (postedAt) keyFacts.push({ label: 'Posted', value: postedAt });
 
+  const empName = employerName(job);
+
   const applyCta = job.apply_url ? (
     <a
       href={job.apply_url}
@@ -155,14 +172,44 @@ function JobDetail() {
     >
       <Icon icon={Briefcase01Icon} size="sm" /> Apply Now
     </a>
-  ) : session && !applied ? (
-    <Button onClick={handleApply} disabled={applying} className="w-full sm:w-auto">
-      {applying ? 'Applying…' : 'Apply'}
-    </Button>
   ) : applied ? (
-    <span className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-success/10 px-5 py-2.5 text-sm font-medium text-success">
-      <Icon icon={CheckmarkCircle02Icon} size="sm" /> Applied
-    </span>
+    <div className="flex flex-col gap-1">
+      <span className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-success/10 px-5 py-2.5 text-sm font-medium text-success sm:self-start">
+        <Icon icon={CheckmarkCircle02Icon} size="sm" /> Application sent — the employer can now see your
+        profile
+      </span>
+      <span className="text-xs text-text-muted">Their reply, if any, will come by email.</span>
+    </div>
+  ) : session ? (
+    showApply ? (
+      <div className="w-full space-y-2 rounded-lg border border-border bg-muted/30 p-3 sm:max-w-md">
+        <label className="text-sm font-medium text-text-primary">
+          Add a note to the employer (optional)
+        </label>
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          rows={4}
+          placeholder="Why you're a great fit…"
+          className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+        />
+        <p className="text-xs text-text-muted">
+          Your PageantryJobs profile and this note will be shared with the employer.
+        </p>
+        <div className="flex gap-2">
+          <Button onClick={handleApply} disabled={applying} size="sm">
+            {applying ? 'Sending…' : 'Send application'}
+          </Button>
+          <Button onClick={() => setShowApply(false)} variant="ghost" size="sm" disabled={applying}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    ) : (
+      <Button onClick={() => setShowApply(true)} className="w-full sm:w-auto">
+        Apply
+      </Button>
+    )
   ) : null;
 
   return (
@@ -171,6 +218,26 @@ function JobDetail() {
         <CardContent className="space-y-5 py-6">
           <div>
             <h1 className="text-2xl font-bold text-text-primary sm:text-3xl">{job.title}</h1>
+            {empName ? (
+              <Link
+                to="/jobs/profile/$slug"
+                params={{ slug: job.employer_slug ?? '' }}
+                className="mt-2 inline-flex items-center gap-2 text-sm text-text-secondary hover:text-primary"
+              >
+                {job.employer_image_media_id ? (
+                  <img
+                    src={`/api/fantasy-media/${job.employer_image_media_id}`}
+                    alt={empName}
+                    className="size-6 shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+                    {empName.charAt(0)}
+                  </span>
+                )}
+                <span>Posted by {empName}</span>
+              </Link>
+            ) : null}
             <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-text-muted">
               {job.location ? (
                 <span className="flex items-center gap-1">

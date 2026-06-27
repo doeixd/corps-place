@@ -180,6 +180,9 @@ function BoardPage() {
               <h3 className="text-base font-semibold leading-snug text-text-primary">
                 {job.title}
               </h3>
+              {job.employer_name && job.employer_name !== 'User' ? (
+                <p className="mt-0.5 text-sm text-text-muted">{job.employer_name}</p>
+              ) : null}
               {job.location || d != null ? (
                 <p className="mt-1.5 flex flex-wrap items-center gap-x-1.5 text-sm text-text-muted">
                   {job.location ? (

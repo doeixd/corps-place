@@ -310,7 +310,25 @@ const makeJobsService = Effect.gen(function* () {
       boosted_until: string | null;
       created_at: string;
       updated_at: string;
-    }>`SELECT * FROM jobs_posting WHERE slug = ${slug} LIMIT 1`;
+      employer_name: string | null;
+      employer_slug: string | null;
+      employer_image_media_id: string | null;
+    }>`SELECT jp.*,
+              ep.display_name AS employer_name,
+              ep.slug AS employer_slug,
+              ep.image_media_id AS employer_image_media_id
+       FROM jobs_posting jp
+       LEFT JOIN jobs_profile ep ON ep.profile_id = jp.employer_profile_id
+       WHERE jp.slug = ${slug} LIMIT 1`;
+    return rows[0] ?? null;
+  });
+
+  const getPostingById = Effect.fn('JobsService.getPostingById')(function* (postingId: string) {
+    const rows = yield* sql<{
+      posting_id: string;
+      employer_profile_id: string;
+      status: string;
+    }>`SELECT posting_id, employer_profile_id, status FROM jobs_posting WHERE posting_id = ${postingId} LIMIT 1`;
     return rows[0] ?? null;
   });
 
@@ -326,29 +344,34 @@ const makeJobsService = Effect.gen(function* () {
   ) {
     const conditions: string[] = [];
     const args: unknown[] = [];
-    let sqlStr = 'SELECT * FROM jobs_posting WHERE 1=1';
+    let sqlStr =
+      `SELECT jp.*, ep.display_name AS employer_name, ep.slug AS employer_slug,
+              ep.image_media_id AS employer_image_media_id
+       FROM jobs_posting jp
+       LEFT JOIN jobs_profile ep ON ep.profile_id = jp.employer_profile_id
+       WHERE 1=1`;
 
     if (filters.status) {
-      conditions.push('status = ?');
+      conditions.push('jp.status = ?');
       args.push(filters.status);
     } else {
-      conditions.push("status = 'published'");
+      conditions.push("jp.status = 'published'");
     }
 
     if (filters.keyword) {
-      conditions.push('title LIKE ?');
+      conditions.push('jp.title LIKE ?');
       args.push(`%${filters.keyword}%`);
     }
     if (filters.location) {
-      conditions.push('location LIKE ?');
+      conditions.push('jp.location LIKE ?');
       args.push(`%${filters.location}%`);
     }
     if (filters.remote) {
-      conditions.push('remote_ok = 1');
+      conditions.push('jp.remote_ok = 1');
     }
 
     if (conditions.length) sqlStr += ' AND ' + conditions.join(' AND ');
-    sqlStr += ' ORDER BY is_boosted DESC, published_at DESC';
+    sqlStr += ' ORDER BY jp.is_boosted DESC, jp.published_at DESC';
     sqlStr += ` LIMIT ${filters.limit ?? 20} OFFSET ${filters.offset ?? 0}`;
 
     const rows = yield* sql.unsafe<{
@@ -370,10 +393,13 @@ const makeJobsService = Effect.gen(function* () {
       published_at: string | null;
       is_boosted: number;
       created_at: string;
+      employer_name: string | null;
+      employer_slug: string | null;
+      employer_image_media_id: string | null;
     }>(sqlStr, args).pipe(Effect.orDie);
 
     const countRows = yield* sql.unsafe<{ c: number }>(
-      `SELECT COUNT(*) AS c FROM jobs_posting WHERE ${conditions.join(' AND ')}`,
+      `SELECT COUNT(*) AS c FROM jobs_posting jp WHERE ${conditions.join(' AND ')}`,
       args
     ).pipe(Effect.orDie);
 
@@ -414,7 +440,8 @@ const makeJobsService = Effect.gen(function* () {
       location: string | null;
       image_media_id: string | null;
       applicant_email: string | null;
-    }>`SELECT a.application_id, a.message, a.created_at, a.applicant_user_id,
+      status: string | null;
+    }>`SELECT a.application_id, a.message, a.created_at, a.applicant_user_id, a.status,
               pr.display_name, pr.slug, pr.headline, pr.location, pr.image_media_id,
               u.email AS applicant_email
        FROM jobs_application a
@@ -423,6 +450,19 @@ const makeJobsService = Effect.gen(function* () {
        LEFT JOIN "user" u ON u.id = a.applicant_user_id
        WHERE a.posting_id = ${postingId} AND p.employer_profile_id = ${employerProfileId}
        ORDER BY a.created_at DESC`;
+  });
+
+  // Ownership-guarded: only updates when the application's posting belongs to the
+  // employer's profile.
+  const setApplicationStatus = Effect.fn('JobsService.setApplicationStatus')(function* (
+    applicationId: string,
+    status: string,
+    employerProfileId: string
+  ) {
+    yield* requireDurableStorage;
+    yield* sql`UPDATE jobs_application SET status = ${status}
+               WHERE application_id = ${applicationId}
+                 AND posting_id IN (SELECT posting_id FROM jobs_posting WHERE employer_profile_id = ${employerProfileId})`;
   });
 
   // ── Posting writes ──────────────────────────────────────────────────────
@@ -1153,9 +1193,11 @@ const makeJobsService = Effect.gen(function* () {
     requireOwner,
     // Postings
     getPostingBySlug,
+    getPostingById,
     listPostings,
     listPostingsByEmployer,
     getApplicantsForPosting,
+    setApplicationStatus,
     createPosting,
     updatePosting,
     closePosting,

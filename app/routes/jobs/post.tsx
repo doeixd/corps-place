@@ -12,7 +12,7 @@ import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
-import { createJobPosting } from '@/lib/server-fns/jobs';
+import { createJobPosting, getMyJobsProfile, upsertJobsProfile } from '@/lib/server-fns/jobs';
 import { AddCircleIcon, CheckmarkCircle02Icon } from '@/components/icons/generated';
 import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
 
@@ -24,12 +24,19 @@ export const Route = createFileRoute('/jobs/post')({
       path: '/jobs/post',
       noindex: true,
     }),
+  loader: async () => getMyJobsProfile(),
   component: PostJobPage,
 });
 
 function PostJobPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const profile = Route.useLoaderData();
+  const prefillName =
+    profile?.profile.display_name && profile.profile.display_name !== 'User'
+      ? profile.profile.display_name
+      : '';
+  const [orgName, setOrgName] = useState(prefillName);
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [zip, setZip] = useState('');
@@ -58,6 +65,10 @@ function PostJobPage() {
   }
 
   const handleSubmit = async () => {
+    if (!orgName.trim()) {
+      setError('Organization / display name is required');
+      return;
+    }
     if (!title.trim()) {
       setError('Title is required');
       return;
@@ -65,6 +76,8 @@ function PostJobPage() {
     setSaving(true);
     setError(null);
     try {
+      // Persist the employer's display name so it shows on the posting ("Posted by …").
+      await upsertJobsProfile({ data: { kind: 'employer', displayName: orgName.trim() } });
       const result = await createJobPosting({
         data: {
           title: title.trim(),
@@ -120,6 +133,18 @@ function PostJobPage() {
       <Card>
         <CardContent className="space-y-4 py-5">
           <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5 sm:col-span-2">
+              <label className="text-sm font-medium text-text-primary">
+                Organization / Display name *
+              </label>
+              <input
+                value={orgName}
+                onChange={(e) => setOrgName(e.target.value)}
+                placeholder="e.g. Blue Devils Performing Arts"
+                className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+              />
+              <p className="text-xs text-text-muted">Shown on your posting as “Posted by”.</p>
+            </div>
             <div className="space-y-1.5 sm:col-span-2">
               <label className="text-sm font-medium text-text-primary">Job Title *</label>
               <input

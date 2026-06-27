@@ -18,6 +18,8 @@ import {
   getMyApplications,
   getMyPostings,
   getPostingApplicants,
+  closeJobPosting,
+  setApplicantStatus,
   getMyBookmarks,
   listMyAlerts,
   deleteJobAlert,
@@ -624,6 +626,8 @@ function PostingsTab() {
     return <LoadingCard />;
   }
 
+  const refresh = () => getMyPostings().then(setPostings).catch(() => {});
+
   if (postings.length === 0) {
     return (
       <Card>
@@ -645,16 +649,32 @@ function PostingsTab() {
   return (
     <div className="space-y-3">
       {postings.map((p: any) => (
-        <PostingRow key={p.posting_id} posting={p} />
+        <PostingRow key={p.posting_id} posting={p} onChanged={refresh} />
       ))}
     </div>
   );
 }
 
-function PostingRow({ posting }: { posting: any }) {
+function PostingRow({ posting, onChanged }: { posting: any; onChanged: () => void }) {
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [applicants, setApplicants] =
     useState<Awaited<ReturnType<typeof getPostingApplicants>> | null>(null);
+
+  const isClosed = posting.status === 'closed';
+
+  const close = async () => {
+    if (!confirm('Close this listing? It will stop accepting applicants.')) return;
+    setClosing(true);
+    try {
+      await closeJobPosting({ data: { postingId: posting.posting_id } });
+      onChanged();
+    } catch {
+      /* ignore */
+    } finally {
+      setClosing(false);
+    }
+  };
 
   const toggle = () => {
     const next = !open;
@@ -686,14 +706,31 @@ function PostingRow({ posting }: { posting: any }) {
             </p>
           </div>
           <Badge
-            variant={posting.status === 'published' ? 'success-light' : 'secondary-light'}
+            variant={
+              isClosed
+                ? 'secondary-light'
+                : posting.status === 'published'
+                  ? 'success-light'
+                  : 'secondary-light'
+            }
             size="sm"
           >
-            {posting.status === 'published' ? 'Published' : posting.status}
+            {isClosed ? 'Closed' : posting.status === 'published' ? 'Published' : posting.status}
           </Badge>
           <Button onClick={toggle} variant="outline" size="xs">
             {open ? 'Hide' : 'View applicants'}
           </Button>
+          {!isClosed ? (
+            <Button
+              onClick={close}
+              disabled={closing}
+              variant="ghost"
+              size="xs"
+              className="text-destructive"
+            >
+              {closing ? '…' : 'Close'}
+            </Button>
+          ) : null}
         </div>
 
         {open ? (
@@ -704,61 +741,114 @@ function PostingRow({ posting }: { posting: any }) {
           ) : (
             <div className="space-y-3 border-t border-border pt-3">
               {applicants.map((ap: any) => (
-                <div key={ap.application_id} className="flex gap-3">
-                  {ap.image_media_id ? (
-                    <img
-                      src={`/api/fantasy-media/${ap.image_media_id}`}
-                      alt={ap.display_name ?? ''}
-                      className="size-10 shrink-0 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                      {(ap.display_name ?? '?').charAt(0)}
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    {ap.slug ? (
-                      <Link
-                        to="/jobs/profile/$slug"
-                        params={{ slug: ap.slug }}
-                        className="font-medium text-text-primary hover:underline"
-                      >
-                        {ap.display_name ?? 'Applicant'}
-                      </Link>
-                    ) : (
-                      <p className="font-medium text-text-primary">
-                        {ap.display_name ?? 'Applicant'}
-                      </p>
-                    )}
-                    {ap.headline || ap.location ? (
-                      <p className="text-xs text-text-muted">
-                        {[ap.headline, ap.location].filter(Boolean).join(' · ')}
-                      </p>
-                    ) : null}
-                    <p className="text-xs text-text-muted">
-                      Applied {new Date(ap.created_at).toLocaleDateString()}
-                    </p>
-                    {ap.message ? (
-                      <p className="mt-2 rounded-lg bg-muted/50 px-3 py-2 text-sm text-text-secondary">
-                        {ap.message}
-                      </p>
-                    ) : null}
-                    {ap.applicant_email ? (
-                      <a
-                        href={`mailto:${ap.applicant_email}`}
-                        className="mt-1 inline-block text-xs font-medium text-primary hover:underline"
-                      >
-                        Contact
-                      </a>
-                    ) : null}
-                  </div>
-                </div>
+                <ApplicantRow key={ap.application_id} applicant={ap} />
               ))}
             </div>
           )
         ) : null}
       </CardContent>
     </Card>
+  );
+}
+
+const APPLICANT_STATUSES = ['new', 'reviewed', 'shortlisted', 'passed'] as const;
+const STATUS_LABEL: Record<string, string> = {
+  new: 'New',
+  reviewed: 'Reviewed',
+  shortlisted: 'Shortlisted',
+  passed: 'Passed',
+};
+const STATUS_VARIANT: Record<string, 'secondary-light' | 'success-light' | 'warning-light'> = {
+  new: 'secondary-light',
+  reviewed: 'warning-light',
+  shortlisted: 'success-light',
+  passed: 'secondary-light',
+};
+
+function ApplicantRow({ applicant: ap }: { applicant: any }) {
+  const [status, setStatus] = useState<string>(ap.status ?? 'new');
+  const [saving, setSaving] = useState(false);
+
+  const change = async (next: string) => {
+    const prev = status;
+    setStatus(next);
+    setSaving(true);
+    try {
+      await setApplicantStatus({ data: { applicationId: ap.application_id, status: next as any } });
+    } catch {
+      setStatus(prev);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex gap-3">
+      {ap.image_media_id ? (
+        <img
+          src={`/api/fantasy-media/${ap.image_media_id}`}
+          alt={ap.display_name ?? ''}
+          className="size-10 shrink-0 rounded-full object-cover"
+        />
+      ) : (
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+          {(ap.display_name ?? '?').charAt(0)}
+        </div>
+      )}
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          {ap.slug ? (
+            <Link
+              to="/jobs/profile/$slug"
+              params={{ slug: ap.slug }}
+              className="font-medium text-text-primary hover:underline"
+            >
+              {ap.display_name ?? 'Applicant'}
+            </Link>
+          ) : (
+            <p className="font-medium text-text-primary">{ap.display_name ?? 'Applicant'}</p>
+          )}
+          <Badge variant={STATUS_VARIANT[status] ?? 'secondary-light'} size="sm">
+            {STATUS_LABEL[status] ?? status}
+          </Badge>
+        </div>
+        {ap.headline || ap.location ? (
+          <p className="text-xs text-text-muted">
+            {[ap.headline, ap.location].filter(Boolean).join(' · ')}
+          </p>
+        ) : null}
+        <p className="text-xs text-text-muted">
+          Applied {new Date(ap.created_at).toLocaleDateString()}
+        </p>
+        {ap.message ? (
+          <p className="mt-2 rounded-lg bg-muted/50 px-3 py-2 text-sm text-text-secondary">
+            {ap.message}
+          </p>
+        ) : null}
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <select
+            value={status}
+            onChange={(e) => change(e.target.value)}
+            disabled={saving}
+            className="rounded-lg border border-border bg-card px-2 py-1 text-xs outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+          >
+            {APPLICANT_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {STATUS_LABEL[s]}
+              </option>
+            ))}
+          </select>
+          {ap.applicant_email ? (
+            <a
+              href={`mailto:${ap.applicant_email}`}
+              className="text-xs font-medium text-primary hover:underline"
+            >
+              Contact
+            </a>
+          ) : null}
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -273,9 +273,44 @@ export const closeJobPosting = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
     await Effect.runPromise(
-      Effect.flatMap(JobsService, (svc) => svc.closePosting(data.postingId, ctx)).pipe(
+      Effect.gen(function* () {
+        const svc = yield* JobsService;
+        // Ownership guard: the actor's profile must own the posting.
+        const profile = yield* svc.getProfileByUser(ctx.authorId);
+        const posting = yield* svc.getPostingById(data.postingId);
+        if (
+          !profile ||
+          !posting ||
+          posting.employer_profile_id !== profile.profile.profile_id
+        ) {
+          return yield* Effect.fail(new ForbiddenError('edit'));
+        }
+        yield* svc.closePosting(data.postingId, ctx);
+      }).pipe(Effect.provide(JobsServiceLive))
+    );
+    return { ok: true as const };
+  });
+
+const APPLICANT_STATUSES = ['new', 'reviewed', 'shortlisted', 'passed'] as const;
+const SetApplicantStatusInput = v.object({
+  applicationId: v.string(),
+  status: v.picklist(APPLICANT_STATUSES),
+});
+
+export const setApplicantStatus = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(SetApplicantStatusInput, d))
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    const profile = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
         Effect.provide(JobsServiceLive)
       )
+    );
+    if (!profile) throw new ForbiddenError('edit');
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.setApplicationStatus(data.applicationId, data.status, profile.profile.profile_id)
+      ).pipe(Effect.provide(JobsServiceLive))
     );
     return { ok: true as const };
   });

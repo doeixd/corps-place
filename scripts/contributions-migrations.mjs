@@ -39,6 +39,8 @@ export const ADD_COLUMNS = [
   { table: 'jobs_profile', column: 'image_media_id', ddl: 'ALTER TABLE jobs_profile ADD COLUMN image_media_id TEXT' },
   // PageantryJobs — directory visibility (0 = visible in talent directory, 1 = hidden/link-only).
   { table: 'jobs_profile', column: 'directory_opt_out', ddl: 'ALTER TABLE jobs_profile ADD COLUMN directory_opt_out INTEGER DEFAULT 0' },
+  // PageantryJobs — applicant pipeline status (new | reviewed | shortlisted | passed).
+  { table: 'jobs_application', column: 'status', ddl: "ALTER TABLE jobs_application ADD COLUMN status TEXT DEFAULT 'new'" },
 ];
 
 /**
