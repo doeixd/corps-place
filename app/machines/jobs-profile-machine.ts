@@ -152,8 +152,13 @@ export const jobsProfileMachine = setup({
         },
       },
     },
+    // NOT a final state: a published profile must stay editable + re-savable
+    // (a `type: 'final'` state stops processing the root SET_*/SAVE events,
+    // which froze the whole Profile tab after Publish).
     published: {
-      type: 'final',
+      on: {
+        SAVE: 'saving',
+      },
     },
   },
 });

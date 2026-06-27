@@ -69,6 +69,8 @@ function PostJobPage() {
   const [applyUrl, setApplyUrl] = useState('');
   const [applyEmail, setApplyEmail] = useState('');
   const [expiresDays, setExpiresDays] = useState(60);
+  // Prefilled expiry in edit mode — used to avoid resetting the countdown unless changed.
+  const [initialExpiresDays, setInitialExpiresDays] = useState<number | null>(null);
   const [description, setDescription] = useState<FreeFormDoc>(emptyJobDescription);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
@@ -85,7 +87,27 @@ function PostJobPage() {
     isEdit ? 'loading' : 'ready'
   );
   useEffect(() => {
-    if (!editId || !session) return;
+    if (!editId) {
+      // Create mode (incl. navigating here from an edit) — clear any prefilled
+      // state so a prior listing's data can't leak into a brand-new posting.
+      setEditState('ready');
+      setTitle('');
+      setLocation('');
+      setZip('');
+      setDiscipline('');
+      setRemoteOk(false);
+      setCompText('');
+      setSalaryMin('');
+      setSalaryMax('');
+      setApplyUrl('');
+      setApplyEmail('');
+      setExpiresDays(60);
+      setInitialExpiresDays(null);
+      setDescription(emptyJobDescription);
+      return;
+    }
+    if (!session) return;
+    setEditState('loading');
     let alive = true;
     getJobForEdit({ data: { postingId: editId } })
       .then((row) => {
@@ -104,7 +126,9 @@ function PostJobPage() {
         setSalaryMax(row.salary_max != null ? String(row.salary_max) : '');
         setApplyUrl(row.apply_url ?? '');
         setApplyEmail(row.apply_email ?? '');
-        setExpiresDays(daysUntil(row.expires_at));
+        const days = daysUntil(row.expires_at);
+        setExpiresDays(days);
+        setInitialExpiresDays(days);
         try {
           setDescription(JSON.parse(row.content_json) as FreeFormDoc);
         } catch {
@@ -154,18 +178,22 @@ function PostJobPage() {
         salaryMax: salaryMax ? Number(salaryMax) : null,
         applyUrl,
         applyEmail,
-        expiresDays,
         contentJson: JSON.stringify(description),
       };
       if (editId) {
-        const result = await updateJobPosting({ data: { postingId: editId, ...fields } });
+        // Only send expiresDays when the employer changed it, so editing a listing
+        // doesn't silently reset its expiry countdown.
+        const expiryChanged = initialExpiresDays == null || expiresDays !== initialExpiresDays;
+        const result = await updateJobPosting({
+          data: { postingId: editId, ...fields, ...(expiryChanged ? { expiresDays } : {}) },
+        });
         if (result.ok) {
           toast.success('Listing updated');
           router.invalidate();
           navigate({ to: '/jobs/me' });
         }
       } else {
-        const result = await createJobPosting({ data: fields });
+        const result = await createJobPosting({ data: { ...fields, expiresDays } });
         if (result.ok) {
           setDone(true);
           router.invalidate();

@@ -263,14 +263,22 @@ function BoardPage() {
         return;
       }
       setSavedIds((prev) => {
+        const wasSaved = prev.has(postingId);
         const next = new Set(prev);
-        if (next.has(postingId)) {
-          next.delete(postingId);
-          void removeBookmark({ data: { postingId } }).catch(() => {});
-        } else {
-          next.add(postingId);
-          void bookmarkJob({ data: { postingId } }).catch(() => {});
-        }
+        if (wasSaved) next.delete(postingId);
+        else next.add(postingId);
+        // Revert the optimistic toggle if the server write fails, so the heart
+        // can't silently diverge from the persisted state.
+        const op = wasSaved ? removeBookmark : bookmarkJob;
+        void op({ data: { postingId } }).catch(() => {
+          setSavedIds((p) => {
+            const reverted = new Set(p);
+            if (wasSaved) reverted.add(postingId);
+            else reverted.delete(postingId);
+            return reverted;
+          });
+          toast.error('Could not update saved jobs');
+        });
         return next;
       });
     },

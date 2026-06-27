@@ -738,6 +738,12 @@ const makeJobsService = Effect.gen(function* () {
     yield* requireDurableStorage;
     const applicationId = newId();
     const now = new Date().toISOString();
+    // Detect a genuinely new application vs. a re-click on an existing one, so we
+    // don't email the employer again on a duplicate (INSERT OR IGNORE dedups).
+    const prior = yield* sql<{
+      c: number;
+    }>`SELECT 1 AS c FROM jobs_application WHERE posting_id = ${postingId} AND applicant_user_id = ${applicantUserId} LIMIT 1`;
+    const isNew = prior[0]?.c !== 1;
     yield* sql`INSERT OR IGNORE INTO jobs_application (application_id, posting_id, applicant_user_id, message, created_at)
                VALUES (${applicationId}, ${postingId}, ${applicantUserId}, ${message ?? null}, ${now})`;
 
@@ -755,6 +761,7 @@ const makeJobsService = Effect.gen(function* () {
 
     return {
       applicationId,
+      isNew,
       employerEmail: employer[0]?.contact_email ?? null,
       employerName: employer[0]?.display_name ?? '',
       notifyOnApply: (employer[0]?.notify_on_apply ?? 0) === 1,
@@ -964,31 +971,40 @@ const makeJobsService = Effect.gen(function* () {
                   WHERE p.kind = 'employee' AND p.status = 'published'
                         AND (p.directory_opt_out = 0 OR p.directory_opt_out IS NULL)`;
     const conditions: string[] = [];
+    // Bind every user value as a `?` parameter (never interpolate) — the previous
+    // version concatenated raw input into the SQL string (injection + broken LIKE).
+    const args: unknown[] = [];
 
     if (filters.keyword) {
-      conditions.push(
-        `(p.display_name LIKE ${filters.keyword} OR p.headline LIKE ${filters.keyword})`
-      );
+      conditions.push('(p.display_name LIKE ? OR p.headline LIKE ?)');
+      args.push(`%${filters.keyword}%`, `%${filters.keyword}%`);
     }
     if (filters.location) {
-      conditions.push(`p.location LIKE ${filters.location}`);
+      conditions.push('p.location LIKE ?');
+      args.push(`%${filters.location}%`);
     }
     if (filters.discipline) {
-      conditions.push(`p.discipline = '${filters.discipline.replace(/'/g, "''")}'`);
+      conditions.push('p.discipline = ?');
+      args.push(filters.discipline);
     }
 
     // For skills filtering, join against profile blocks
     if (filters.skills && filters.skills.length > 0) {
-      const skillConditions = filters.skills.map(
-        (s) =>
-          `EXISTS (SELECT 1 FROM jobs_profile_block b WHERE b.profile_id = p.profile_id AND b.kind = 'skills' AND b.content_json LIKE ${s})`
+      conditions.push(
+        `(${filters.skills
+          .map(
+            () =>
+              "EXISTS (SELECT 1 FROM jobs_profile_block b WHERE b.profile_id = p.profile_id AND b.kind = 'skills' AND b.content_json LIKE ?)"
+          )
+          .join(' OR ')})`
       );
-      conditions.push(`(${skillConditions.join(' OR ')})`);
+      for (const s of filters.skills) args.push(`%${s}%`);
     }
 
     if (conditions.length > 0) sqlStr += ' AND ' + conditions.join(' AND ');
     sqlStr += ' ORDER BY p.created_at DESC';
-    sqlStr += ` LIMIT ${filters.limit ?? 20} OFFSET ${filters.offset ?? 0}`;
+    // LIMIT/OFFSET are coerced to Number, so interpolation here is injection-safe.
+    sqlStr += ` LIMIT ${Number(filters.limit ?? 20)} OFFSET ${Number(filters.offset ?? 0)}`;
 
     const rows = yield* sql.unsafe<{
       profile_id: string;
@@ -1002,14 +1018,14 @@ const makeJobsService = Effect.gen(function* () {
       image_media_id: string | null;
       discipline: string | null;
       created_at: string;
-    }>(sqlStr).pipe(Effect.orDie);
+    }>(sqlStr, args).pipe(Effect.orDie);
 
     let countStr =
       `SELECT COUNT(*) AS c FROM jobs_profile p
        WHERE p.kind = 'employee' AND p.status = 'published'
              AND (p.directory_opt_out = 0 OR p.directory_opt_out IS NULL)`;
     if (conditions.length > 0) countStr += ' AND ' + conditions.join(' AND ');
-    const countRows = yield* sql.unsafe<{ c: number }>(countStr).pipe(Effect.orDie);
+    const countRows = yield* sql.unsafe<{ c: number }>(countStr, args).pipe(Effect.orDie);
 
     return { rows, total: Number(countRows[0]?.c ?? 0) };
   });

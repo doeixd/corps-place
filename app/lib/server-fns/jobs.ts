@@ -380,7 +380,13 @@ export const updateJobPosting = createServerFn({ method: 'POST' })
     // Geocode the (possibly changed) ZIP best-effort, mirroring createJobPosting.
     const z = normalizeZip(data.zip);
     const coords = await geocodeZip(z);
-    const expiresAt = new Date(Date.now() + (data.expiresDays ?? 60) * 86_400_000).toISOString();
+    // Only recompute the expiry when the employer actually changed it (the edit
+    // form omits expiresDays otherwise). updatePosting leaves expires_at untouched
+    // when it's absent, so re-saving a listing never silently resets the countdown.
+    const expiresAt =
+      data.expiresDays != null
+        ? new Date(Date.now() + data.expiresDays * 86_400_000).toISOString()
+        : undefined;
     const postingData = {
       title: data.title,
       location: data.location,
@@ -519,7 +525,7 @@ export const applyToJob = createServerFn({ method: 'POST' })
     );
 
     // Notify the employer (best-effort — never fail the application on email).
-    if (result.notifyOnApply && result.employerEmail) {
+    if (result.isNew && result.notifyOnApply && result.employerEmail) {
       const title = escapeHtml(result.jobTitle);
       await sendEmail({
         to: result.employerEmail,
