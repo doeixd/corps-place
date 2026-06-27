@@ -413,7 +413,7 @@ function BookmarkButton({ postingId }: { postingId: string }) {
               }
             }}
             className={cn(
-              'inline-flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors disabled:opacity-50',
+              'inline-flex size-9 shrink-0 items-center justify-center rounded-md border transition-colors disabled:opacity-50',
               bookmarked
                 ? 'border-primary/60 bg-primary/10 text-primary'
                 : 'border-border text-text-secondary hover:border-primary/60 hover:text-primary'
