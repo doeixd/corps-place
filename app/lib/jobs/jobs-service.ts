@@ -339,6 +339,35 @@ const makeJobsService = Effect.gen(function* () {
     return rows[0] ?? null;
   });
 
+  // Owner-guarded read of every editable field, for prefilling the edit form.
+  // Returns null when the posting is missing or not owned by the given profile.
+  const getPostingForEdit = Effect.fn('JobsService.getPostingForEdit')(function* (
+    postingId: string,
+    employerProfileId: string
+  ) {
+    const rows = yield* sql<{
+      posting_id: string;
+      employer_profile_id: string;
+      title: string;
+      location: string | null;
+      zip: string | null;
+      remote_ok: number;
+      comp_text: string | null;
+      salary_min: number | null;
+      salary_max: number | null;
+      apply_url: string | null;
+      apply_email: string | null;
+      content_json: string;
+      discipline: string | null;
+      status: string;
+      expires_at: string | null;
+    }>`SELECT posting_id, employer_profile_id, title, location, zip, remote_ok, comp_text,
+              salary_min, salary_max, apply_url, apply_email, content_json, discipline, status, expires_at
+       FROM jobs_posting
+       WHERE posting_id = ${postingId} AND employer_profile_id = ${employerProfileId} LIMIT 1`;
+    return rows[0] ?? null;
+  });
+
   const listPostings = Effect.fn('JobsService.listPostings')(function* (
     filters: {
       status?: string;
@@ -578,6 +607,7 @@ const makeJobsService = Effect.gen(function* () {
 
   const updatePosting = Effect.fn('JobsService.updatePosting')(function* (
     postingId: string,
+    employerProfileId: string,
     data: {
       title?: string;
       location?: string;
@@ -591,6 +621,8 @@ const makeJobsService = Effect.gen(function* () {
       applyUrl?: string;
       applyEmail?: string;
       contentJson?: string;
+      discipline?: string | null;
+      expiresAt?: string | null;
       status?: string;
     },
     ctx: WriteContext
@@ -647,6 +679,14 @@ const makeJobsService = Effect.gen(function* () {
       fields.push('content_json = ?');
       args.push(data.contentJson);
     }
+    if (data.discipline !== undefined) {
+      fields.push('discipline = ?');
+      args.push(data.discipline);
+    }
+    if (data.expiresAt !== undefined) {
+      fields.push('expires_at = ?');
+      args.push(data.expiresAt);
+    }
     if (data.status !== undefined) {
       fields.push('status = ?');
       args.push(data.status);
@@ -656,9 +696,11 @@ const makeJobsService = Effect.gen(function* () {
     fields.push('updated_at = ?');
     args.push(ctx.now);
     args.push(postingId);
-    yield* sql.unsafe(`UPDATE jobs_posting SET ${fields.join(', ')} WHERE posting_id = ?`, args).pipe(
-      Effect.orDie
-    );
+    args.push(employerProfileId);
+    yield* sql.unsafe(
+      `UPDATE jobs_posting SET ${fields.join(', ')} WHERE posting_id = ? AND employer_profile_id = ?`,
+      args
+    ).pipe(Effect.orDie);
 
     yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
                VALUES (${newId()}, 'posting', ${postingId}, ${ctx.authorId}, ${ctx.actorRole}, 'edit', ${ctx.now})`;
@@ -1277,6 +1319,7 @@ const makeJobsService = Effect.gen(function* () {
     // Postings
     getPostingBySlug,
     getPostingById,
+    getPostingForEdit,
     listPostings,
     listPostingsByEmployer,
     getApplicantsForPosting,

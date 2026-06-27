@@ -12,13 +12,23 @@ import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
-import { createJobPosting, getMyJobsProfile, upsertJobsProfile } from '@/lib/server-fns/jobs';
+import {
+  createJobPosting,
+  getJobForEdit,
+  getMyJobsProfile,
+  updateJobPosting,
+  upsertJobsProfile,
+} from '@/lib/server-fns/jobs';
+import { toast } from 'sonner';
 import { DISCIPLINES } from '@/lib/jobs/disciplines';
 import { AddCircleIcon, CheckmarkCircle02Icon } from '@/components/icons/generated';
 import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
 import { SectionErrorBoundary } from '@/components/error-boundary';
 
 export const Route = createFileRoute('/jobs/post')({
+  validateSearch: (search: Record<string, unknown>): { edit?: string } => ({
+    edit: typeof search.edit === 'string' && search.edit ? search.edit : undefined,
+  }),
   head: () =>
     buildSeo({
       title: 'Post a Job — PageantryJobs',
@@ -30,9 +40,18 @@ export const Route = createFileRoute('/jobs/post')({
   component: PostJobPage,
 });
 
+// Map a stored expires_at timestamp back to the nearest auto-hide option (30/60/90).
+const daysUntil = (expiresAt: string | null): number => {
+  if (!expiresAt) return 60;
+  const days = Math.round((new Date(expiresAt).getTime() - Date.now()) / 86_400_000);
+  return [30, 60, 90].reduce((best, opt) => (Math.abs(opt - days) < Math.abs(best - days) ? opt : best), 60);
+};
+
 function PostJobPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const navigate = Route.useNavigate();
+  const { edit: editId } = Route.useSearch();
   const profile = Route.useLoaderData();
   const prefillName =
     profile?.profile.display_name && profile.profile.display_name !== 'User'
@@ -59,6 +78,48 @@ function PostJobPage() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Edit mode: load the existing posting (owner-guarded) and prefill the form.
+  // 'loading' until the fetch resolves; 'denied' when not found / not owned.
+  const isEdit = Boolean(editId);
+  const [editState, setEditState] = useState<'loading' | 'ready' | 'denied'>(
+    isEdit ? 'loading' : 'ready'
+  );
+  useEffect(() => {
+    if (!editId || !session) return;
+    let alive = true;
+    getJobForEdit({ data: { postingId: editId } })
+      .then((row) => {
+        if (!alive) return;
+        if (!row) {
+          setEditState('denied');
+          return;
+        }
+        setTitle(row.title ?? '');
+        setLocation(row.location ?? '');
+        setZip(row.zip ?? '');
+        setDiscipline(row.discipline ?? '');
+        setRemoteOk(row.remote_ok === 1);
+        setCompText(row.comp_text ?? '');
+        setSalaryMin(row.salary_min != null ? String(row.salary_min) : '');
+        setSalaryMax(row.salary_max != null ? String(row.salary_max) : '');
+        setApplyUrl(row.apply_url ?? '');
+        setApplyEmail(row.apply_email ?? '');
+        setExpiresDays(daysUntil(row.expires_at));
+        try {
+          setDescription(JSON.parse(row.content_json) as FreeFormDoc);
+        } catch {
+          /* leave the empty doc on a malformed content_json */
+        }
+        setEditState('ready');
+      })
+      .catch(() => {
+        if (alive) setEditState('denied');
+      });
+    return () => {
+      alive = false;
+    };
+  }, [editId, session]);
+
   if (!session) {
     return (
       <PageShell>
@@ -82,28 +143,36 @@ function PostJobPage() {
     try {
       // Persist the employer's display name so it shows on the posting ("Posted by …").
       await upsertJobsProfile({ data: { kind: 'employer', displayName: orgName.trim() } });
-      const result = await createJobPosting({
-        data: {
-          title: title.trim(),
-          location,
-          zip,
-          discipline,
-          remoteOk,
-          compText,
-          salaryMin: salaryMin ? Number(salaryMin) : null,
-          salaryMax: salaryMax ? Number(salaryMax) : null,
-          applyUrl,
-          applyEmail,
-          expiresDays,
-          contentJson: JSON.stringify(description),
-        },
-      });
-      if (result.ok) {
-        setDone(true);
-        router.invalidate();
+      const fields = {
+        title: title.trim(),
+        location,
+        zip,
+        discipline,
+        remoteOk,
+        compText,
+        salaryMin: salaryMin ? Number(salaryMin) : null,
+        salaryMax: salaryMax ? Number(salaryMax) : null,
+        applyUrl,
+        applyEmail,
+        expiresDays,
+        contentJson: JSON.stringify(description),
+      };
+      if (editId) {
+        const result = await updateJobPosting({ data: { postingId: editId, ...fields } });
+        if (result.ok) {
+          toast.success('Listing updated');
+          router.invalidate();
+          navigate({ to: '/jobs/me' });
+        }
+      } else {
+        const result = await createJobPosting({ data: fields });
+        if (result.ok) {
+          setDone(true);
+          router.invalidate();
+        }
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to post');
+      setError(e instanceof Error ? e.message : editId ? 'Failed to save' : 'Failed to post');
     } finally {
       setSaving(false);
     }
@@ -133,9 +202,39 @@ function PostJobPage() {
     );
   }
 
+  if (isEdit && editState === 'loading') {
+    return (
+      <PageShell>
+        <PageHeader title="Edit listing" subtitle="Reach the pageantry community" subtitleClassName="text-sm" backTo="/jobs/me" backLabel="My listings" />
+        <Card>
+          <CardContent className="py-12 text-center text-sm text-text-muted">Loading listing…</CardContent>
+        </Card>
+      </PageShell>
+    );
+  }
+
+  if (isEdit && editState === 'denied') {
+    return (
+      <PageShell>
+        <PageHeader title="Edit listing" subtitle="Reach the pageantry community" subtitleClassName="text-sm" backTo="/jobs/me" backLabel="My listings" />
+        <Card>
+          <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
+            <p className="font-medium text-text-primary">Listing not found</p>
+            <p className="text-sm text-text-secondary">
+              This listing doesn’t exist, or you don’t have access to edit it.
+            </p>
+            <Button onClick={() => navigate({ to: '/jobs/me' })} size="sm">
+              Back to my listings
+            </Button>
+          </CardContent>
+        </Card>
+      </PageShell>
+    );
+  }
+
   return (
     <PageShell>
-      <PageHeader title="Post a Job" subtitle="Reach the pageantry community" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
+      <PageHeader title={isEdit ? 'Edit listing' : 'Post a Job'} subtitle="Reach the pageantry community" subtitleClassName="text-sm" backTo={isEdit ? '/jobs/me' : '/'} backLabel={isEdit ? 'My listings' : 'Home'} />
       <Card>
         <CardContent className="space-y-4 py-5">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -291,7 +390,13 @@ function PostJobPage() {
 
           <div className="flex gap-3">
             <Button onClick={handleSubmit} disabled={saving} size="sm">
-              {saving ? 'Posting…' : 'Post Job'}
+              {isEdit
+                ? saving
+                  ? 'Saving…'
+                  : 'Save changes'
+                : saving
+                  ? 'Posting…'
+                  : 'Post Job'}
             </Button>
           </div>
         </CardContent>

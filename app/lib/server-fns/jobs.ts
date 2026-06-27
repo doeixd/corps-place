@@ -339,6 +339,73 @@ export const createJobPosting = createServerFn({ method: 'POST' })
     return { ok: true as const, postingId };
   });
 
+// Owner-guarded load of a posting's editable fields for prefilling the edit form.
+// Returns null when the actor isn't the owner (or has no profile) so only the owner
+// can read it.
+export const getJobForEdit = createServerFn({ method: 'GET' })
+  .validator((d: { postingId: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    const profile = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    if (!profile) return null;
+    return Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.getPostingForEdit(data.postingId, profile.profile.profile_id)
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+  });
+
+// Mirrors CreatePostingInput (same caps/maxLengths) plus the target posting id.
+const UpdatePostingInput = v.object({
+  postingId: v.string(),
+  ...CreatePostingInput.entries,
+});
+
+export const updateJobPosting = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(UpdatePostingInput, d))
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    limit('manage', ctx.authorId, 60, 10 * 60_000);
+    const profile = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    if (!profile) throw new ForbiddenError('edit');
+
+    // Geocode the (possibly changed) ZIP best-effort, mirroring createJobPosting.
+    const z = normalizeZip(data.zip);
+    const coords = await geocodeZip(z);
+    const expiresAt = new Date(Date.now() + (data.expiresDays ?? 60) * 86_400_000).toISOString();
+    const postingData = {
+      title: data.title,
+      location: data.location,
+      zip: z,
+      discipline: data.discipline || null,
+      remoteOk: data.remoteOk,
+      compText: data.compText,
+      salaryMin: data.salaryMin ?? null,
+      salaryMax: data.salaryMax ?? null,
+      applyUrl: data.applyUrl,
+      applyEmail: data.applyEmail,
+      contentJson: data.contentJson,
+      locationLat: coords?.lat ?? null,
+      locationLng: coords?.lng ?? null,
+      expiresAt,
+    };
+
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.updatePosting(data.postingId, profile.profile.profile_id, postingData, ctx)
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+    return { ok: true as const };
+  });
+
 export const closeJobPosting = createServerFn({ method: 'POST' })
   .validator((d: { postingId: string }) => d)
   .handler(async ({ data }) => {

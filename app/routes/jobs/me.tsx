@@ -828,6 +828,15 @@ function PostingRow({
           </Button>
           <div className="ml-auto flex items-center gap-1">
             {!isClosed ? (
+              <Link
+                to="/jobs/post"
+                search={{ edit: posting.posting_id }}
+                className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-text-muted transition-colors hover:text-text-primary"
+              >
+                Edit
+              </Link>
+            ) : null}
+            {!isClosed ? (
               <ConfirmDialog
                 title="Close this listing?"
                 description="It stops accepting new applicants. Existing applicants stay visible to you."
