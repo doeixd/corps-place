@@ -20,10 +20,24 @@ const dbUrl =
   process.env.CONTRIBUTIONS_DB_URL ??
   `file:${path.resolve(process.cwd(), 'sdk', 'contributions.db')}`;
 
-const baseURL = process.env.BETTER_AUTH_URL ?? 'http://localhost:5173';
+// Per-host auth: the OAuth callback + session cookie follow the request host, so
+// pageantryjobs.com and drumcorps.app each get their OWN session (a cookie can't
+// span two registrable domains). better-auth resolves baseURL dynamically from
+// `x-forwarded-host` (set by Cloudflare/Traefik; `trustedProxyHeaders` defaults
+// on), gated by the allowlist below; `fallback` covers server calls with no
+// request and any unrecognized host — so the main site can never break.
+const primaryOrigin = process.env.BETTER_AUTH_URL ?? 'http://localhost:5173';
+const AUTH_ALLOWED_HOSTS = [
+  'drumcorps.app',
+  'www.drumcorps.app',
+  'pageantryjobs.com',
+  'www.pageantryjobs.com',
+  'localhost:5173',
+];
+// Passkeys are bound to one relying-party domain — keep them on the primary site.
 const rpID = (() => {
   try {
-    return new URL(baseURL).hostname;
+    return new URL(primaryOrigin).hostname;
   } catch {
     return 'localhost';
   }
@@ -46,7 +60,7 @@ const sendMagicLink = async ({ email, url }: { email: string; url: string }) => 
 export const auth = betterAuth({
   database: { dialect: new LibsqlDialect({ url: dbUrl }), type: 'sqlite' },
   secret: process.env.BETTER_AUTH_SECRET,
-  baseURL,
+  baseURL: { allowedHosts: AUTH_ALLOWED_HOSTS, fallback: primaryOrigin },
   trustedOrigins: [
     'https://drumcorps.app',
     'https://www.drumcorps.app',
@@ -76,7 +90,7 @@ export const auth = betterAuth({
   },
   plugins: [
     magicLink({ sendMagicLink }),
-    passkey({ rpID, rpName: 'corps.place', origin: baseURL }),
+    passkey({ rpID, rpName: 'corps.place', origin: primaryOrigin }),
     // Admin plugin (ADMIN_PAGE_PLAN §7): adds banned/banReason/banExpires to `user`
     // + list-users/set-role/ban/impersonate/session endpoints. `adminRoles` aligns the
     // plugin's own guard with our top tier; our authz.can() remains the brain (we wrap
