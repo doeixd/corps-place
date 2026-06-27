@@ -10,6 +10,7 @@ import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
+import { cn } from '@/lib/utils';
 import { jobsProfileMachine } from '@/machines/jobs-profile-machine';
 import { jobsClaimMachine } from '@/machines/jobs-claim-machine';
 import {
@@ -115,68 +116,129 @@ function MePage() {
 
 // ── Profile tab ──────────────────────────────────────────────────────────────
 
+const INPUT_CLASS =
+  'w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-primary/60 focus:ring-1 focus:ring-primary/30';
+
+function Field({
+  label,
+  required,
+  hint,
+  className,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  hint?: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={cn('space-y-1.5', className)}>
+      <label className="text-sm font-medium text-text-primary">
+        {label}
+        {required ? <span className="text-destructive"> *</span> : null}
+      </label>
+      {children}
+      {hint ? <p className="text-xs text-text-muted">{hint}</p> : null}
+    </div>
+  );
+}
+
 function ProfileTab({ initial, snapshot, send }: { initial: any; snapshot: any; send: any }) {
   const ctx = snapshot.context;
   const isSaving = snapshot.matches('saving');
   const isSaved = snapshot.matches('saved');
+  const nameOk = ctx.displayName.trim().length > 0;
 
   return (
     <div className="space-y-6">
+      {/* Identity header — a quick read on how the profile presents */}
+      <div className="flex items-center gap-4">
+        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xl font-semibold text-primary">
+          {(ctx.displayName.trim()[0] ?? '?').toUpperCase()}
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-lg font-semibold text-text-primary">
+            {ctx.displayName.trim() || 'Your name'}
+          </p>
+          <div className="mt-1 flex items-center gap-2">
+            <Badge variant={ctx.status === 'published' ? 'success-light' : 'secondary-light'} size="sm">
+              {ctx.status === 'published' ? 'Published' : 'Draft'}
+            </Badge>
+            <span className="text-xs capitalize text-text-muted">
+              {ctx.kind === 'employer' ? 'Hiring' : 'Looking for work'}
+            </span>
+          </div>
+        </div>
+      </div>
+
       <Card>
-        <CardContent className="space-y-4 py-5">
+        <CardContent className="space-y-5 py-5">
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-sm font-medium text-text-primary">Display Name</label>
+            <Field
+              label="Display name"
+              required
+              hint="How employers see you across the job board."
+              className="sm:col-span-2"
+            >
               <input
                 value={ctx.displayName}
                 onChange={(e) => send({ type: 'SET_DISPLAY_NAME', value: e.target.value })}
-                className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                placeholder="e.g. Jordan Rivera"
+                className={INPUT_CLASS}
               />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-text-primary">Profile Type</label>
+            </Field>
+            <Field label="Profile type" hint="Looking for work, or hiring?">
               <select
                 value={ctx.kind}
                 onChange={(e) =>
                   send({ type: 'SET_KIND', value: e.target.value as 'employee' | 'employer' })
                 }
-                className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                className={INPUT_CLASS}
               >
-                <option value="employee">Employee</option>
-                <option value="employer">Employer</option>
+                <option value="employee">Looking for work</option>
+                <option value="employer">Hiring</option>
               </select>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-text-primary">Headline</label>
+            </Field>
+            <Field label="Headline" hint="Your role or specialty.">
               <input
                 value={ctx.headline}
                 onChange={(e) => send({ type: 'SET_HEADLINE', value: e.target.value })}
                 placeholder="e.g. Brass Caption Head"
-                className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                className={INPUT_CLASS}
               />
-            </div>
-            <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-sm font-medium text-text-primary">Location</label>
+            </Field>
+            <Field label="Location" hint="City, State — helps employers find local talent." className="sm:col-span-2">
               <input
                 value={ctx.location}
                 onChange={(e) => send({ type: 'SET_LOCATION', value: e.target.value })}
                 placeholder="City, State"
-                className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+                className={INPUT_CLASS}
               />
-            </div>
+            </Field>
           </div>
-          <div className="flex items-center gap-3">
-            <Button onClick={() => send({ type: 'SAVE' })} disabled={isSaving} size="sm">
-              {isSaving ? 'Saving…' : 'Save'}
+
+          {snapshot.matches('idle') && ctx.error ? (
+            <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+              {ctx.error.toLowerCase().includes('forbidden') || ctx.error.toLowerCase().includes('sign')
+                ? 'Your session expired. Please sign in again, then save.'
+                : ctx.error}
+            </div>
+          ) : null}
+
+          <div className="flex items-center gap-3 border-t border-border pt-4">
+            <Button onClick={() => send({ type: 'SAVE' })} disabled={isSaving || !nameOk} size="sm">
+              {isSaving ? 'Saving…' : 'Save changes'}
             </Button>
             {isSaved ? (
-              <Badge variant="success-light" size="sm">
+              <span className="inline-flex items-center gap-1 text-sm font-medium text-success">
                 <Icon icon={CheckmarkCircle02Icon} size="xs" /> Saved
-              </Badge>
-            ) : null}
-            {snapshot.matches('idle') && ctx.error ? (
-              <p className="text-sm text-destructive">{ctx.error}</p>
-            ) : null}
+              </span>
+            ) : (
+              <span className="text-xs text-text-muted">
+                {nameOk ? 'Changes aren’t saved until you click Save.' : 'Add a display name to save.'}
+              </span>
+            )}
           </div>
         </CardContent>
       </Card>

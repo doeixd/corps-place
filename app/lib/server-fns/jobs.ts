@@ -335,8 +335,11 @@ export const searchTalent = createServerFn({ method: 'GET' })
     }) => d
   )
   .handler(async ({ data }) => {
+    // Runs in the route loader, which executes for signed-out visitors too — return
+    // empty (no data leak) instead of throwing, so the page can render its sign-in
+    // gate rather than a 500.
     const actor = await getActor(getWebRequest());
-    if (!actor) throw new Error('Employer access required');
+    if (!actor) return { rows: [], total: 0 };
     return Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.searchTalent(data)).pipe(
         Effect.provide(JobsServiceLive)
