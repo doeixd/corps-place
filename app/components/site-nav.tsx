@@ -15,7 +15,8 @@ import {
   DashboardSquare01Icon,
 } from '@/components/icons/generated';
 import { FANTASY_ENABLED } from '@/lib/fantasy/flag';
-import { readBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
+import { BRAND_CONFIG, type Brand } from '@/lib/brand';
+import { useBrand } from '@/lib/brand-context';
 
 const CORPS_NAV_ITEMS = [
   { to: '/', label: 'Home', icon: Home01Icon, exact: true },
@@ -76,7 +77,7 @@ export function SiteNav() {
   // Brand-aware: PageantryJobs and DrumCorps.app share the nav chrome but never
   // each other's sections, logo, or name. readBrand() is isomorphic (host-based)
   // so this resolves identically on SSR and hydration.
-  const brand = readBrand();
+  const brand = useBrand();
   const navItems = NAV_ITEMS_BY_BRAND[brand];
   const identity = BRAND_CONFIG[brand];
 

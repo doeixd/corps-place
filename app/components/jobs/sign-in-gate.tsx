@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon, type IconComponent } from '@/components/icon';
 import { SignInButton } from '@/components/sign-in-button';
-import { readBrand } from '@/lib/brand';
+import { useBrand } from '@/lib/brand-context';
 
 const MAIN_ORIGIN = 'https://drumcorps.app';
 
@@ -21,7 +21,7 @@ export function JobsSignInGate({
   /** App path to return to / continue at, e.g. "/jobs/post". */
   path: string;
 }) {
-  const brand = readBrand();
+  const brand = useBrand();
   return (
     <Card>
       <CardContent className="flex flex-col items-center gap-4 py-12 text-center">

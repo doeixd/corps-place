@@ -34,6 +34,7 @@ import {
 import { themeStore } from '@/stores/theme-store';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 import { readBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
+import { BrandProvider } from '@/lib/brand-context';
 import { buildSeo } from '@/lib/seo';
 import '@/app.css';
 
@@ -347,24 +348,26 @@ function RootComponent() {
   const { theme, brand, favorite } = Route.useLoaderData();
   return (
     <RootDocument theme={theme} brand={brand} favorite={favorite}>
-      <ServiceWorkerManager />
-      <AutoUpdater />
-      <MotionConfig reducedMotion={REDUCED_MOTION}>
-        <TooltipProvider delay={150}>
-          <NavigationProgressBar />
-          <ThemeToggle className="fixed top-4 right-4 z-50" />
-          <SiteNav />
-          <ConsentGate />
-          <Toaster theme={theme ?? 'system'} />
-          {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
-              (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
-              (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}
-          <main className="pb-bottom-nav pl-side-nav">
-            <AnnouncementBanner />
-            <Outlet />
-          </main>
-        </TooltipProvider>
-      </MotionConfig>
+      <BrandProvider brand={brand}>
+        <ServiceWorkerManager />
+        <AutoUpdater />
+        <MotionConfig reducedMotion={REDUCED_MOTION}>
+          <TooltipProvider delay={150}>
+            <NavigationProgressBar />
+            <ThemeToggle className="fixed top-4 right-4 z-50" />
+            <SiteNav />
+            <ConsentGate />
+            <Toaster theme={theme ?? 'system'} />
+            {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
+                (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
+                (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}
+            <main className="pb-bottom-nav pl-side-nav">
+              <AnnouncementBanner />
+              <Outlet />
+            </main>
+          </TooltipProvider>
+        </MotionConfig>
+      </BrandProvider>
     </RootDocument>
   );
 }

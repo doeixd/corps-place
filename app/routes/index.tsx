@@ -22,7 +22,7 @@ import {
   UserGroupIcon,
 } from '@/components/icons/generated';
 import { JobsLanding } from '@/components/jobs/landing';
-import { readBrand } from '@/lib/brand';
+import { useBrand } from '@/lib/brand-context';
 
 export const Route = createFileRoute('/')({
   loader: async () => getHomePageData(),
@@ -105,10 +105,9 @@ function Home() {
   const { weekend, latestResults, standings, featuredPrediction, lineupCorps } =
     Route.useLoaderData();
 
-  // Brand from the host (or ?brand=jobs) — isomorphic so it resolves on SSR too,
-  // matching __root. Host-based (pageantryjobs.com) is the real case; the old
-  // client-only, search-param-only check never branded the jobs domain.
-  if (readBrand() === 'jobs') return <JobsLanding />;
+  // Single source of truth from the root loader — same value SSR + client, so the
+  // jobs landing never flips to the corps home on hydration.
+  if (useBrand() === 'jobs') return <JobsLanding />;
 
   return (
     <PageShell>

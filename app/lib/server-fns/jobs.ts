@@ -190,12 +190,19 @@ export const createJobPosting = createServerFn({ method: 'POST' })
         Effect.provide(JobsServiceLive)
       )
     );
-    if (!profile || profile.profile.kind !== 'employer')
-      throw new Error('Only employers can post jobs');
+    // Posting a job IS acting as an employer — auto-provision a profile rather than
+    // 500'ing with "Only employers can post jobs". Existing profiles can post too.
+    const profileId =
+      profile?.profile.profile_id ??
+      (await Effect.runPromise(
+        Effect.flatMap(JobsService, (svc) => svc.createProfile(ctx.authorId, 'employer', ctx)).pipe(
+          Effect.provide(JobsServiceLive)
+        )
+      ));
     const { postingId, slug } = await Effect.runPromise(
-      Effect.flatMap(JobsService, (svc) =>
-        svc.createPosting(profile.profile.profile_id, data, ctx)
-      ).pipe(Effect.provide(JobsServiceLive))
+      Effect.flatMap(JobsService, (svc) => svc.createPosting(profileId, data, ctx)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
     );
 
     // Fire INSTANT saved-search alerts (best-effort — never block the post).
