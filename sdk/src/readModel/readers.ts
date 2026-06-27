@@ -707,7 +707,18 @@ export const readJudgeProfile = async (
 // ── Staff ──────────────────────────────────────────────────────────────────
 export const readStaffDirectory = async (db: Client): Promise<StaffSummary[]> => {
   const r = await db.execute("SELECT summary_json FROM rm_staff");
-  return (r.rows as any[]).map((row) => JSON.parse(row.summary_json) as StaffSummary);
+  return (r.rows as any[]).map((row) => {
+    const s = JSON.parse(row.summary_json) as StaffSummary & {
+      // Pre-v14 rows carried full groups[] instead of corps_names[]; normalize so
+      // the slimmed directory code works against a not-yet-re-emitted read-model.
+      groups?: ReadonlyArray<{ corps_name: string }>;
+    };
+    if (!s.corps_names && s.groups) {
+      s.corps_names = [...new Set(s.groups.map((g) => g.corps_name))];
+    }
+    delete s.groups;
+    return s as StaffSummary;
+  });
 };
 
 export const readStaffProfile = async (
