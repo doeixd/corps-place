@@ -8,6 +8,7 @@ import {
   UserMultipleIcon,
   AddCircleIcon,
   BookOpen01Icon,
+  Briefcase01Icon,
 } from '@/components/icons/generated';
 import { listJobs, searchTalent } from '@/lib/server-fns/jobs';
 
@@ -91,8 +92,8 @@ export function JobsLanding() {
       {/* How it works */}
       <section className="space-y-6 py-8">
         <h2 className="text-center text-xl font-semibold text-text-primary">How it works</h2>
-        <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-3 sm:overflow-visible">
-          <Card className="card-hover-flat snap-center shrink-0 w-[78%] sm:w-auto">
+        <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[10%] pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
+          <Card className="card-hover-flat snap-center shrink-0 w-[80%] sm:w-auto">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
                 <Icon icon={UserMultipleIcon} size="lg" className="text-primary" />
@@ -104,7 +105,7 @@ export function JobsLanding() {
               </p>
             </CardContent>
           </Card>
-          <Card className="card-hover-flat snap-center shrink-0 w-[78%] sm:w-auto">
+          <Card className="card-hover-flat snap-center shrink-0 w-[80%] sm:w-auto">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
                 <Icon icon={Search01Icon} size="lg" className="text-primary" />
@@ -116,7 +117,7 @@ export function JobsLanding() {
               </p>
             </CardContent>
           </Card>
-          <Card className="card-hover-flat snap-center shrink-0 w-[78%] sm:w-auto">
+          <Card className="card-hover-flat snap-center shrink-0 w-[80%] sm:w-auto">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
                 <Icon icon={BookOpen01Icon} size="lg" className="text-primary" />
@@ -136,31 +137,31 @@ export function JobsLanding() {
         <h2 className="text-center text-xl font-semibold text-text-primary">
           Browse PageantryJobs
         </h2>
-        <div className="flex justify-center">
-          <div className="flex gap-1 rounded-lg bg-muted/50 p-1">
-            <button
-              type="button"
-              onClick={() => setTab('jobs')}
-              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                tab === 'jobs'
-                  ? 'bg-card text-text-primary shadow-xs'
-                  : 'text-text-muted hover:text-text-secondary'
-              }`}
-            >
-              Jobs
-            </button>
-            <button
-              type="button"
-              onClick={() => setTab('people')}
-              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                tab === 'people'
-                  ? 'bg-card text-text-primary shadow-xs'
-                  : 'text-text-muted hover:text-text-secondary'
-              }`}
-            >
-              People
-            </button>
-          </div>
+        <div className="flex justify-center gap-1 border-b border-border">
+          <button
+            type="button"
+            onClick={() => setTab('jobs')}
+            aria-selected={tab === 'jobs'}
+            className={`-mb-px flex items-center gap-2 border-b-2 px-5 py-2.5 text-sm font-semibold transition-colors ${
+              tab === 'jobs'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-text-muted hover:text-text-secondary'
+            }`}
+          >
+            <Icon icon={Briefcase01Icon} size="sm" /> Jobs
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab('people')}
+            aria-selected={tab === 'people'}
+            className={`-mb-px flex items-center gap-2 border-b-2 px-5 py-2.5 text-sm font-semibold transition-colors ${
+              tab === 'people'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-text-muted hover:text-text-secondary'
+            }`}
+          >
+            <Icon icon={UserMultipleIcon} size="sm" /> People
+          </button>
         </div>
 
         {tab === 'jobs' ? (
