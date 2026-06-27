@@ -22,6 +22,7 @@ import {
   UserGroupIcon,
 } from '@/components/icons/generated';
 import { JobsLanding } from '@/components/jobs/landing';
+import { readBrand } from '@/lib/brand';
 
 export const Route = createFileRoute('/')({
   loader: async () => getHomePageData(),
@@ -104,18 +105,10 @@ function Home() {
   const { weekend, latestResults, standings, featuredPrediction, lineupCorps } =
     Route.useLoaderData();
 
-  // Detect brand from URL params or host (client-side).
-  // The root route sets brand on SSR; we re-check here for client navigations.
-  const brand = (() => {
-    try {
-      return new URL(window.location.href).searchParams.get('brand') === 'jobs'
-        ? ('jobs' as const)
-        : ('corps' as const);
-    } catch {
-      return 'corps' as const;
-    }
-  })();
-  if (brand === 'jobs') return <JobsLanding />;
+  // Brand from the host (or ?brand=jobs) — isomorphic so it resolves on SSR too,
+  // matching __root. Host-based (pageantryjobs.com) is the real case; the old
+  // client-only, search-param-only check never branded the jobs domain.
+  if (readBrand() === 'jobs') return <JobsLanding />;
 
   return (
     <PageShell>
