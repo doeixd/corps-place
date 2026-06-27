@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { Match } from 'effect';
 import { useSession } from '@/lib/auth-client';
@@ -31,6 +31,8 @@ import {
   BookOpen01Icon,
 } from '@/components/icons/generated';
 import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
+import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo-upload';
+import { setJobsProfilePhoto } from '@/lib/server-fns/jobs-media';
 
 export const Route = createFileRoute('/jobs/me')({
   head: () =>
@@ -85,13 +87,13 @@ function MePage() {
     <PageShell>
       <PageHeader title="My Dashboard" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
 
-      {/* Tabs */}
-      <div className="mb-6 flex gap-1 rounded-lg bg-muted/50 p-1">
+      {/* Tabs — scroll horizontally on narrow screens instead of overflowing/wrapping */}
+      <div className="mb-6 flex gap-1 overflow-x-auto rounded-lg bg-muted/50 p-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-all ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-all ${
               tab === t.key
                 ? 'bg-card text-text-primary shadow-xs'
                 : 'text-text-muted hover:text-text-secondary'
@@ -147,17 +149,37 @@ function Field({
 
 function ProfileTab({ initial, snapshot, send }: { initial: any; snapshot: any; send: any }) {
   const ctx = snapshot.context;
+  const router = useRouter();
   const isSaving = snapshot.matches('saving');
   const isSaved = snapshot.matches('saved');
   const nameOk = ctx.displayName.trim().length > 0;
+
+  // Throws on failure so PhotoUpload's machine reverts the preview + toasts the error.
+  const handlePhoto = async (file: File) => {
+    const dataBase64 = await imageFileToUploadBase64(file);
+    await setJobsProfilePhoto({ data: { dataBase64 } });
+    await router.invalidate();
+  };
 
   return (
     <div className="space-y-6">
       {/* Identity header — a quick read on how the profile presents */}
       <div className="flex items-center gap-4">
-        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xl font-semibold text-primary">
-          {(ctx.displayName.trim()[0] ?? '?').toUpperCase()}
-        </div>
+        {ctx.profileId ? (
+          <PhotoUpload
+            variant="overlay"
+            shape="round"
+            size="size-16 sm:size-20"
+            mediaId={initial?.profile?.image_media_id ?? null}
+            alt={ctx.displayName}
+            labels={{ empty: 'Add photo', change: 'Change photo' }}
+            onFile={handlePhoto}
+          />
+        ) : (
+          <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xl font-semibold text-primary">
+            {(ctx.displayName.trim()[0] ?? '?').toUpperCase()}
+          </div>
+        )}
         <div className="min-w-0">
           <p className="truncate text-lg font-semibold text-text-primary">
             {ctx.displayName.trim() || 'Your name'}

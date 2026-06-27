@@ -98,7 +98,62 @@ const makeMediaService = Effect.gen(function* () {
     };
   });
 
-  return { uploadLogo };
+  // Profile photo upload (PageantryJobs) — same pipeline as uploadLogo but WITHOUT
+  // the league-membership gate: any authenticated actor uploads their own photo.
+  // The row lands in `fantasy_media` with a sentinel empty league_id (the column is
+  // NOT NULL and the /api/fantasy-media serving path ignores it).
+  const uploadProfilePhoto = Effect.fn('MediaService.uploadProfilePhoto')(function* (input: {
+    actor: Actor;
+    dataBase64: string;
+  }) {
+    yield* requireDurableStorage;
+
+    const raw = Buffer.from(input.dataBase64, 'base64');
+    if (raw.length === 0) return yield* Effect.fail(new MediaInvalid({ message: 'Empty upload' }));
+    if (raw.length > MAX_BYTES)
+      return yield* Effect.fail(new MediaInvalid({ message: 'Image too large (max 16 MB)' }));
+
+    const encoded = yield* Effect.promise(async () => {
+      try {
+        const out = await getSharp()(raw)
+          .rotate()
+          .resize({ width: MAX_DIM, height: MAX_DIM, fit: 'inside', withoutEnlargement: true })
+          .webp({ quality: 85 })
+          .toBuffer({ resolveWithObject: true });
+        return { ok: true as const, webp: out.data, info: out.info };
+      } catch {
+        return { ok: false as const };
+      }
+    });
+    if (!encoded.ok)
+      return yield* Effect.fail(
+        new MediaInvalid({
+          message: "Couldn't read that image — please try a JPG, PNG, or a screenshot.",
+        })
+      );
+    const { webp, info } = encoded;
+
+    const mediaId = randomUUID();
+    const key = uploadKey(`jobs-profiles/${input.actor.userId}/${mediaId}.webp`);
+    yield* Effect.promise(() => putUpload(key, new Uint8Array(webp), 'image/webp'));
+
+    const now = new Date().toISOString();
+    yield* sql`
+      INSERT INTO fantasy_media
+        (media_id, league_id, user_id, r2_key, width, height, uploaded_by, uploaded_at)
+      VALUES (${mediaId}, ${''}, ${input.actor.userId}, ${key}, ${info.width},
+              ${info.height}, ${input.actor.userId}, ${now})
+    `.pipe(Effect.orDie);
+
+    return {
+      mediaId,
+      url: `/api/fantasy-media/${mediaId}`,
+      width: info.width,
+      height: info.height,
+    };
+  });
+
+  return { uploadLogo, uploadProfilePhoto };
 });
 
 export class MediaService extends Context.Service<

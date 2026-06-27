@@ -50,6 +50,7 @@ const makeJobsService = Effect.gen(function* () {
       links_json: string | null;
       notify_on_apply: number;
       accepted_terms_version: string | null;
+      image_media_id: string | null;
       created_at: string;
       updated_at: string;
     }>`SELECT * FROM jobs_profile WHERE slug = ${slug} AND status IN ('published', 'draft') LIMIT 1`;
@@ -84,6 +85,7 @@ const makeJobsService = Effect.gen(function* () {
       links_json: string | null;
       notify_on_apply: number;
       accepted_terms_version: string | null;
+      image_media_id: string | null;
       created_at: string;
       updated_at: string;
     }>`SELECT * FROM jobs_profile WHERE user_id = ${userId} LIMIT 1`;
@@ -215,6 +217,15 @@ const makeJobsService = Effect.gen(function* () {
     yield* sql.unsafe(`UPDATE jobs_profile SET ${fields.join(', ')} WHERE profile_id = ?`, args).pipe(
       Effect.orDie
     );
+  });
+
+  const setProfileImage = Effect.fn('JobsService.setProfileImage')(function* (
+    userId: string,
+    mediaId: string | null,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    yield* sql`UPDATE jobs_profile SET image_media_id = ${mediaId}, updated_at = ${ctx.now} WHERE user_id = ${userId}`;
   });
 
   // ── Block writes ────────────────────────────────────────────────────────
@@ -756,7 +767,7 @@ const makeJobsService = Effect.gen(function* () {
     limit?: number;
   }) {
     let sqlStr = `SELECT p.profile_id, p.slug, p.display_name, p.headline, p.location,
-                         p.zip, p.location_lat, p.location_lng, p.created_at
+                         p.zip, p.location_lat, p.location_lng, p.image_media_id, p.created_at
                   FROM jobs_profile p
                   WHERE p.kind = 'employee' AND p.status = 'published'`;
     const conditions: string[] = [];
@@ -792,6 +803,7 @@ const makeJobsService = Effect.gen(function* () {
       zip: string | null;
       location_lat: number | null;
       location_lng: number | null;
+      image_media_id: string | null;
       created_at: string;
     }>(sqlStr).pipe(Effect.orDie);
 
@@ -1098,6 +1110,7 @@ const makeJobsService = Effect.gen(function* () {
     getProfileByUser,
     createProfile,
     updateProfile,
+    setProfileImage,
     writeBlock,
     publishProfile,
     generateSlug,

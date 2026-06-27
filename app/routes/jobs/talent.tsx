@@ -102,9 +102,17 @@ function TalentPage() {
                 <Card className="card-hover h-full">
                   <CardContent className="flex flex-col gap-3 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                        {p.display_name.charAt(0)}
-                      </div>
+                      {p.image_media_id ? (
+                        <img
+                          src={`/api/fantasy-media/${p.image_media_id}`}
+                          className="size-10 shrink-0 rounded-full border border-border object-cover"
+                          alt={p.display_name}
+                        />
+                      ) : (
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                          {p.display_name.charAt(0)}
+                        </div>
+                      )}
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-semibold text-text-primary">{p.display_name}</p>
                         {p.headline ? (

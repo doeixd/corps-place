@@ -80,9 +80,17 @@ function PublicProfile() {
       {/* Header */}
       <Card className="mb-6">
         <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-start">
-          <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary sm:size-20 sm:text-3xl">
-            {profile.display_name.charAt(0).toUpperCase()}
-          </div>
+          {profile.image_media_id ? (
+            <img
+              src={`/api/fantasy-media/${profile.image_media_id}`}
+              className="size-16 shrink-0 rounded-full border border-border object-cover sm:size-20"
+              alt={profile.display_name}
+            />
+          ) : (
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary sm:size-20 sm:text-3xl">
+              {profile.display_name.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-bold text-text-primary">{profile.display_name}</h1>
             {profile.headline ? <p className="text-text-secondary">{profile.headline}</p> : null}
