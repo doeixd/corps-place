@@ -47,6 +47,7 @@ const makeJobsService = Effect.gen(function* () {
       status: string;
       contact_email: string | null;
       contact_visibility: string;
+      discipline: string | null;
       links_json: string | null;
       notify_on_apply: number;
       accepted_terms_version: string | null;
@@ -83,6 +84,7 @@ const makeJobsService = Effect.gen(function* () {
       status: string;
       contact_email: string | null;
       contact_visibility: string;
+      discipline: string | null;
       links_json: string | null;
       notify_on_apply: number;
       accepted_terms_version: string | null;
@@ -166,6 +168,7 @@ const makeJobsService = Effect.gen(function* () {
       contactVisibility?: string;
       slug?: string;
       directoryOptOut?: boolean;
+      discipline?: string | null;
     },
     ctx: WriteContext
   ) {
@@ -213,6 +216,10 @@ const makeJobsService = Effect.gen(function* () {
     if (data.directoryOptOut !== undefined) {
       fields.push('directory_opt_out = ?');
       args.push(data.directoryOptOut ? 1 : 0);
+    }
+    if (data.discipline !== undefined) {
+      fields.push('discipline = ?');
+      args.push(data.discipline);
     }
 
     if (fields.length === 0) return;
@@ -339,6 +346,7 @@ const makeJobsService = Effect.gen(function* () {
       location?: string;
       remote?: boolean;
       work?: 'remote' | 'onsite';
+      discipline?: string;
       sort?: 'newest' | 'pay';
       offset?: number;
       limit?: number;
@@ -376,6 +384,10 @@ const makeJobsService = Effect.gen(function* () {
     } else if (filters.work === 'onsite') {
       conditions.push('jp.remote_ok = 0');
     }
+    if (filters.discipline) {
+      conditions.push('jp.discipline = ?');
+      args.push(filters.discipline);
+    }
 
     // Hide expired postings from the board, landing, and similar-jobs.
     conditions.push('(jp.expires_at IS NULL OR jp.expires_at > ?)');
@@ -403,6 +415,7 @@ const makeJobsService = Effect.gen(function* () {
       salary_max: number | null;
       apply_url: string | null;
       content_json: string;
+      discipline: string | null;
       status: string;
       published_at: string | null;
       is_boosted: number;
@@ -537,6 +550,7 @@ const makeJobsService = Effect.gen(function* () {
       applyUrl?: string;
       applyEmail?: string;
       contentJson: string;
+      discipline?: string | null;
       expiresAt?: string | null;
     },
     ctx: WriteContext
@@ -548,12 +562,13 @@ const makeJobsService = Effect.gen(function* () {
     yield* sql`INSERT INTO jobs_posting (posting_id, employer_profile_id, slug, title,
                  location, zip, location_lat, location_lng,
                  remote_ok, comp_text, salary_min, salary_max,
-                 apply_url, apply_email, content_json, status, expires_at, created_at, updated_at)
+                 apply_url, apply_email, content_json, discipline, status, expires_at, created_at, updated_at)
                VALUES (${postingId}, ${employerProfileId}, ${slug}, ${data.title},
                  ${data.location ?? null}, ${data.zip ?? null}, ${data.locationLat ?? null}, ${data.locationLng ?? null},
                  ${data.remoteOk ? 1 : 0}, ${data.compText ?? null},
                  ${data.salaryMin ?? null}, ${data.salaryMax ?? null},
                  ${data.applyUrl ?? null}, ${data.applyEmail ?? null}, ${data.contentJson},
+                 ${data.discipline ?? null},
                  'published', ${data.expiresAt ?? null}, ${ctx.now}, ${ctx.now})`;
 
     yield* sql`INSERT INTO jobs_revision (revision_id, target_kind, target_id, actor_user_id, actor_role, op, created_at)
@@ -896,12 +911,13 @@ const makeJobsService = Effect.gen(function* () {
     keyword?: string;
     location?: string;
     skills?: string[];
+    discipline?: string;
     sort?: 'newest' | 'nearest';
     offset?: number;
     limit?: number;
   }) {
     let sqlStr = `SELECT p.profile_id, p.slug, p.display_name, p.headline, p.location,
-                         p.zip, p.location_lat, p.location_lng, p.image_media_id, p.created_at
+                         p.zip, p.location_lat, p.location_lng, p.image_media_id, p.discipline, p.created_at
                   FROM jobs_profile p
                   WHERE p.kind = 'employee' AND p.status = 'published'
                         AND (p.directory_opt_out = 0 OR p.directory_opt_out IS NULL)`;
@@ -914,6 +930,9 @@ const makeJobsService = Effect.gen(function* () {
     }
     if (filters.location) {
       conditions.push(`p.location LIKE ${filters.location}`);
+    }
+    if (filters.discipline) {
+      conditions.push(`p.discipline = '${filters.discipline.replace(/'/g, "''")}'`);
     }
 
     // For skills filtering, join against profile blocks
@@ -939,6 +958,7 @@ const makeJobsService = Effect.gen(function* () {
       location_lat: number | null;
       location_lng: number | null;
       image_media_id: string | null;
+      discipline: string | null;
       created_at: string;
     }>(sqlStr).pipe(Effect.orDie);
 

@@ -11,6 +11,7 @@ import { SectionErrorBoundary } from '@/components/error-boundary';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { buildSeo } from '@/lib/seo';
 import { searchTalent } from '@/lib/server-fns/jobs';
+import { DISCIPLINES, DISCIPLINE_LABEL } from '@/lib/jobs/disciplines';
 import { formatDistance } from '@/lib/geo';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { Search01Icon, UserMultipleIcon, Location01Icon } from '@/components/icons/generated';
@@ -75,6 +76,11 @@ const TalentCard = memo(function TalentCard({ p }: { p: TalentRow }) {
               {d != null ? <span>{formatDistance(d)}</span> : null}
             </p>
           ) : null}
+          {p.discipline ? (
+            <span className="inline-flex w-fit items-center rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+              {DISCIPLINE_LABEL[p.discipline] ?? p.discipline}
+            </span>
+          ) : null}
         </CardContent>
       </Card>
     </Link>
@@ -86,6 +92,7 @@ function TalentPage() {
   const initial = Route.useLoaderData();
   const [keyword, setKeyword] = useState('');
   const [nearZip, setNearZip] = useState('');
+  const [discipline, setDiscipline] = useState('');
   const [sort, setSort] = useState<SortKey>('newest');
   const [data, setData] = useState(initial ?? { rows: [], total: 0 });
   const [isPending, setIsPending] = useState(false);
@@ -102,6 +109,7 @@ function TalentPage() {
 
   const queryData = {
     keyword: keyword || undefined,
+    discipline: discipline || undefined,
     sort,
     nearZip: nearZip || undefined,
     ...(sort === 'nearest' && !nearZip && geoCoords
@@ -136,7 +144,7 @@ function TalentPage() {
       alive = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, nearZip, geoLat, geoLng, session]);
+  }, [sort, discipline, nearZip, geoLat, geoLng, session]);
 
   const rows = data.rows;
   const total = data.total;
@@ -197,6 +205,19 @@ function TalentPage() {
             className="h-11 w-full rounded-lg border border-border bg-card pl-9 pr-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
           />
         </div>
+        <select
+          value={discipline}
+          onChange={(e) => setDiscipline(e.target.value)}
+          aria-label="Filter by discipline"
+          className="h-11 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 sm:w-48"
+        >
+          <option value="">All disciplines</option>
+          {DISCIPLINES.map((d) => (
+            <option key={d.value} value={d.value}>
+              {d.label}
+            </option>
+          ))}
+        </select>
         <Button type="submit" disabled={isPending} variant="outline" className="h-11 px-4">
           <Icon icon={Search01Icon} size="sm" /> {isPending ? '…' : 'Search'}
         </Button>
@@ -253,7 +274,7 @@ function TalentPage() {
               getKey={(p) => p.profile_id}
               renderItem={renderTalentCard}
               gap="gap-4"
-              animationKey={`${keyword}|${nearZip}|${sort}`}
+              animationKey={`${keyword}|${nearZip}|${discipline}|${sort}`}
             />
           </SectionErrorBoundary>
 

@@ -44,6 +44,7 @@ import {
 import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
 import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo-upload';
 import { setJobsProfilePhoto } from '@/lib/server-fns/jobs-media';
+import { DISCIPLINES } from '@/lib/jobs/disciplines';
 
 export const Route = createFileRoute('/jobs/me')({
   head: () =>
@@ -69,6 +70,7 @@ function MePage() {
       headline: initial?.profile.headline ?? '',
       location: initial?.profile.location ?? '',
       zip: initial?.profile.zip ?? '',
+      discipline: initial?.profile.discipline ?? '',
       kind: (initial?.profile.kind as 'employee' | 'employer') ?? 'employee',
       directoryOptOut: (initial?.profile?.directory_opt_out ?? 0) === 1,
       profileId: initial?.profile.profile_id ?? null,
@@ -260,6 +262,20 @@ function ProfileTab({ initial, snapshot, send }: { initial: any; snapshot: any; 
                 placeholder="e.g. 90210"
                 className={INPUT_CLASS}
               />
+            </Field>
+            <Field label="Discipline" hint="Your primary marching-arts discipline.">
+              <select
+                value={ctx.discipline}
+                onChange={(e) => send({ type: 'SET_DISCIPLINE', value: e.target.value })}
+                className={INPUT_CLASS}
+              >
+                <option value="">Select discipline…</option>
+                {DISCIPLINES.map((d) => (
+                  <option key={d.value} value={d.value}>
+                    {d.label}
+                  </option>
+                ))}
+              </select>
             </Field>
           </div>
 

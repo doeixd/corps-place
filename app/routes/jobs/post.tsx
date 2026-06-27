@@ -13,6 +13,7 @@ import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
 import { createJobPosting, getMyJobsProfile, upsertJobsProfile } from '@/lib/server-fns/jobs';
+import { DISCIPLINES } from '@/lib/jobs/disciplines';
 import { AddCircleIcon, CheckmarkCircle02Icon } from '@/components/icons/generated';
 import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
 import { SectionErrorBoundary } from '@/components/error-boundary';
@@ -41,6 +42,7 @@ function PostJobPage() {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [zip, setZip] = useState('');
+  const [discipline, setDiscipline] = useState('');
   const [remoteOk, setRemoteOk] = useState(false);
   const [compText, setCompText] = useState('');
   const [salaryMin, setSalaryMin] = useState('');
@@ -85,6 +87,7 @@ function PostJobPage() {
           title: title.trim(),
           location,
           zip,
+          discipline,
           remoteOk,
           compText,
           salaryMin: salaryMin ? Number(salaryMin) : null,
@@ -176,6 +179,21 @@ function PostJobPage() {
                 placeholder="e.g. 90210"
                 className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
               />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-text-primary">Discipline</label>
+              <select
+                value={discipline}
+                onChange={(e) => setDiscipline(e.target.value)}
+                className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+              >
+                <option value="">Select discipline…</option>
+                {DISCIPLINES.map((d) => (
+                  <option key={d.value} value={d.value}>
+                    {d.label}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="flex items-end gap-2">
               <label className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">

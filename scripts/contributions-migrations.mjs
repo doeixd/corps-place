@@ -41,6 +41,9 @@ export const ADD_COLUMNS = [
   { table: 'jobs_profile', column: 'directory_opt_out', ddl: 'ALTER TABLE jobs_profile ADD COLUMN directory_opt_out INTEGER DEFAULT 0' },
   // PageantryJobs — applicant pipeline status (new | reviewed | shortlisted | passed).
   { table: 'jobs_application', column: 'status', ddl: "ALTER TABLE jobs_application ADD COLUMN status TEXT DEFAULT 'new'" },
+  // PageantryJobs — single-select discipline dimension on postings + profiles.
+  { table: 'jobs_posting', column: 'discipline', ddl: 'ALTER TABLE jobs_posting ADD COLUMN discipline TEXT' },
+  { table: 'jobs_profile', column: 'discipline', ddl: 'ALTER TABLE jobs_profile ADD COLUMN discipline TEXT' },
 ];
 
 /**

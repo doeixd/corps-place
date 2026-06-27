@@ -14,6 +14,7 @@ import { SectionErrorBoundary } from '@/components/error-boundary';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
 import { listJobs, bookmarkJob, removeBookmark, getMyBookmarks } from '@/lib/server-fns/jobs';
+import { DISCIPLINES, DISCIPLINE_LABEL } from '@/lib/jobs/disciplines';
 import { formatDistance } from '@/lib/geo';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useSession } from '@/lib/auth-client';
@@ -26,7 +27,9 @@ const PAGE_LIMIT = 50;
 type WorkType = 'remote' | 'onsite';
 type SortKey = 'nearest' | 'pay';
 
-type JobsSearch = { q?: string; work?: WorkType; sort?: SortKey };
+type JobsSearch = { q?: string; work?: WorkType; sort?: SortKey; discipline?: string };
+
+const DISCIPLINE_VALUES = DISCIPLINES.map((d) => d.value) as readonly string[];
 
 const WORK_FILTERS = [
   { value: '', label: 'All' },
@@ -54,6 +57,8 @@ export const Route = createFileRoute('/jobs/board')({
     if (typeof search.q === 'string' && search.q.trim()) out.q = search.q.trim();
     if (search.work === 'remote' || search.work === 'onsite') out.work = search.work;
     if (search.sort === 'nearest' || search.sort === 'pay') out.sort = search.sort;
+    if (typeof search.discipline === 'string' && DISCIPLINE_VALUES.includes(search.discipline))
+      out.discipline = search.discipline;
     return out;
   },
   loaderDeps: ({ search }) => ({ q: search.q }),
@@ -189,6 +194,11 @@ const JobCard = memo(function JobCard({
             <dl className="space-y-1.5 text-sm">
               {employer ? <MetaField label="Employer">{employer}</MetaField> : null}
               {location ? <MetaField label="Location">{location}</MetaField> : null}
+              {job.discipline ? (
+                <MetaField label="Discipline">
+                  {DISCIPLINE_LABEL[job.discipline] ?? job.discipline}
+                </MetaField>
+              ) : null}
               {salary ? <MetaField label="Salary">{salary}</MetaField> : null}
             </dl>
             {preview ? (
@@ -269,6 +279,7 @@ function BoardPage() {
 
   const work = search.work;
   const sort = search.sort;
+  const discipline = search.discipline;
 
   // "Nearest" works two ways: a typed Near-ZIP (geocoded server-side) or the
   // browser's geolocation (coords passed to the server). Either way the server
@@ -285,6 +296,7 @@ function BoardPage() {
   const queryData = {
     keyword: keyword || undefined,
     work,
+    discipline,
     sort: (sort ?? 'newest') as 'newest' | 'nearest' | 'pay',
     nearZip: nearZip || undefined,
     ...(sort === 'nearest' && !nearZip && geoCoords
@@ -326,7 +338,7 @@ function BoardPage() {
       alive = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [work, sort, nearZip, geoLat, geoLng]);
+  }, [work, sort, discipline, nearZip, geoLat, geoLng]);
 
   const setWork = (value: string) =>
     void navigate({
@@ -337,6 +349,12 @@ function BoardPage() {
   const setSort = (value: string | null) =>
     void navigate({
       search: (prev) => ({ ...prev, sort: value === 'nearest' || value === 'pay' ? value : undefined }),
+      replace: true,
+      resetScroll: false,
+    });
+  const setDiscipline = (value: string) =>
+    void navigate({
+      search: (prev) => ({ ...prev, discipline: DISCIPLINE_VALUES.includes(value) ? value : undefined }),
       replace: true,
       resetScroll: false,
     });
@@ -421,12 +439,27 @@ function BoardPage() {
       ) : (
         <div className="space-y-4">
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <FilterChips
-              items={WORK_FILTERS}
-              value={work ?? ''}
-              onSelect={setWork}
-              ariaLabel="Filter by work type"
-            />
+            <div className="flex flex-wrap items-center gap-3">
+              <FilterChips
+                items={WORK_FILTERS}
+                value={work ?? ''}
+                onSelect={setWork}
+                ariaLabel="Filter by work type"
+              />
+              <select
+                value={discipline ?? ''}
+                onChange={(e) => setDiscipline(e.target.value)}
+                aria-label="Filter by discipline"
+                className="h-8 rounded-md border border-border bg-card px-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30"
+              >
+                <option value="">All disciplines</option>
+                {DISCIPLINES.map((d) => (
+                  <option key={d.value} value={d.value}>
+                    {d.label}
+                  </option>
+                ))}
+              </select>
+            </div>
             <ToggleGroup
               value={[sortValue]}
               onValueChange={(v) => setSort((v[0] as string | undefined) ?? null)}
@@ -466,7 +499,7 @@ function BoardPage() {
               getKey={(j) => j.posting_id}
               renderItem={renderJobCard}
               gap="gap-4"
-              animationKey={`${search.q ?? ''}|${work ?? ''}|${sort ?? ''}|${nearZip}`}
+              animationKey={`${search.q ?? ''}|${work ?? ''}|${discipline ?? ''}|${sort ?? ''}|${nearZip}`}
             />
           </SectionErrorBoundary>
 

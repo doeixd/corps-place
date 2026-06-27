@@ -74,6 +74,7 @@ const UpsertProfileInput = v.object({
   location: v.optional(v.pipe(v.string(), v.maxLength(200)), ''),
   zip: v.optional(v.pipe(v.string(), v.maxLength(10)), ''),
   directoryOptOut: v.optional(v.boolean()),
+  discipline: v.optional(v.pipe(v.string(), v.maxLength(40))),
 });
 
 export const upsertJobsProfile = createServerFn({ method: 'POST' })
@@ -93,6 +94,7 @@ export const upsertJobsProfile = createServerFn({ method: 'POST' })
       locationLat: coords?.lat ?? null,
       locationLng: coords?.lng ?? null,
       ...(data.directoryOptOut !== undefined ? { directoryOptOut: data.directoryOptOut } : {}),
+      ...(data.discipline !== undefined ? { discipline: data.discipline || null } : {}),
     };
 
     const existing = await Effect.runPromise(
@@ -178,6 +180,7 @@ export const listJobs = createServerFn({ method: 'GET' })
       location?: string;
       remote?: boolean;
       work?: 'remote' | 'onsite';
+      discipline?: string;
       sort?: 'newest' | 'nearest' | 'pay';
       nearZip?: string;
       nearLat?: number;
@@ -194,6 +197,7 @@ export const listJobs = createServerFn({ method: 'GET' })
       location: data.location,
       remote: data.remote,
       work: data.work,
+      discipline: data.discipline,
       sort: data.sort === 'pay' ? ('pay' as const) : ('newest' as const),
     };
 
@@ -250,6 +254,7 @@ const CreatePostingInput = v.object({
   applyUrl: v.optional(v.pipe(v.string(), v.maxLength(500)), ''),
   applyEmail: v.optional(v.pipe(v.string(), v.maxLength(200)), ''),
   contentJson: v.string(),
+  discipline: v.optional(v.pipe(v.string(), v.maxLength(40)), ''),
   expiresDays: v.optional(v.number()),
 });
 
@@ -294,6 +299,7 @@ export const createJobPosting = createServerFn({ method: 'POST' })
     const postingData = {
       ...data,
       zip: z,
+      discipline: data.discipline || null,
       locationLat: coords?.lat ?? null,
       locationLng: coords?.lng ?? null,
       expiresAt,
@@ -539,6 +545,7 @@ export const searchTalent = createServerFn({ method: 'GET' })
       keyword?: string;
       location?: string;
       skills?: string[];
+      discipline?: string;
       sort?: 'newest' | 'nearest';
       nearZip?: string;
       nearLat?: number;
@@ -558,6 +565,7 @@ export const searchTalent = createServerFn({ method: 'GET' })
       keyword: data.keyword,
       location: data.location,
       skills: data.skills,
+      discipline: data.discipline,
       sort: 'newest' as const,
     };
 

@@ -6,6 +6,7 @@ export interface ProfileContext {
   headline: string;
   location: string;
   zip: string;
+  discipline: string;
   kind: 'employee' | 'employer';
   directoryOptOut: boolean;
   profileId: string | null;
@@ -20,6 +21,7 @@ export type ProfileEvent =
   | { type: 'SET_HEADLINE'; value: string }
   | { type: 'SET_LOCATION'; value: string }
   | { type: 'SET_ZIP'; value: string }
+  | { type: 'SET_DISCIPLINE'; value: string }
   | { type: 'SET_KIND'; value: 'employee' | 'employer' }
   | { type: 'SET_DIRECTORY_OPT_OUT'; value: boolean }
   | { type: 'SAVE' }
@@ -30,6 +32,7 @@ export interface ProfileInput {
   headline?: string;
   location?: string;
   zip?: string;
+  discipline?: string;
   kind?: 'employee' | 'employer';
   directoryOptOut?: boolean;
   profileId?: string | null;
@@ -54,6 +57,7 @@ export const jobsProfileMachine = setup({
           headline: string;
           location: string;
           zip: string;
+          discipline: string;
           directoryOptOut: boolean;
         };
       }) => {
@@ -72,6 +76,7 @@ export const jobsProfileMachine = setup({
     headline: input?.headline ?? '',
     location: input?.location ?? '',
     zip: input?.zip ?? '',
+    discipline: input?.discipline ?? '',
     kind: input?.kind ?? 'employee',
     directoryOptOut: input?.directoryOptOut ?? false,
     profileId: input?.profileId ?? null,
@@ -85,6 +90,7 @@ export const jobsProfileMachine = setup({
     SET_HEADLINE: { actions: assign({ headline: ({ event }) => event.value }) },
     SET_LOCATION: { actions: assign({ location: ({ event }) => event.value }) },
     SET_ZIP: { actions: assign({ zip: ({ event }) => event.value }) },
+    SET_DISCIPLINE: { actions: assign({ discipline: ({ event }) => event.value }) },
     SET_KIND: { actions: assign({ kind: ({ event }) => event.value }) },
     SET_DIRECTORY_OPT_OUT: { actions: assign({ directoryOptOut: ({ event }) => event.value }) },
   },
@@ -104,6 +110,7 @@ export const jobsProfileMachine = setup({
           headline: context.headline,
           location: context.location,
           zip: context.zip,
+          discipline: context.discipline,
           directoryOptOut: context.directoryOptOut,
         }),
         onDone: {
