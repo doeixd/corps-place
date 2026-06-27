@@ -392,9 +392,37 @@ const makeJobsService = Effect.gen(function* () {
       published_at: string | null;
       is_boosted: number;
       created_at: string;
-    }>`SELECT posting_id, slug, title, location, status, published_at, is_boosted, created_at
+      applicant_count: number;
+    }>`SELECT posting_id, slug, title, location, status, published_at, is_boosted, created_at,
+              (SELECT COUNT(*) FROM jobs_application a WHERE a.posting_id = jobs_posting.posting_id) AS applicant_count
        FROM jobs_posting WHERE employer_profile_id = ${employerProfileId}
        ORDER BY created_at DESC`;
+  });
+
+  const getApplicantsForPosting = Effect.fn('JobsService.getApplicantsForPosting')(function* (
+    postingId: string,
+    employerProfileId: string
+  ) {
+    return yield* sql<{
+      application_id: string;
+      message: string | null;
+      created_at: string;
+      applicant_user_id: string;
+      display_name: string | null;
+      slug: string | null;
+      headline: string | null;
+      location: string | null;
+      image_media_id: string | null;
+      applicant_email: string | null;
+    }>`SELECT a.application_id, a.message, a.created_at, a.applicant_user_id,
+              pr.display_name, pr.slug, pr.headline, pr.location, pr.image_media_id,
+              u.email AS applicant_email
+       FROM jobs_application a
+       JOIN jobs_posting p ON p.posting_id = a.posting_id
+       LEFT JOIN jobs_profile pr ON pr.user_id = a.applicant_user_id
+       LEFT JOIN "user" u ON u.id = a.applicant_user_id
+       WHERE a.posting_id = ${postingId} AND p.employer_profile_id = ${employerProfileId}
+       ORDER BY a.created_at DESC`;
   });
 
   // ── Posting writes ──────────────────────────────────────────────────────
@@ -1127,6 +1155,7 @@ const makeJobsService = Effect.gen(function* () {
     getPostingBySlug,
     listPostings,
     listPostingsByEmployer,
+    getApplicantsForPosting,
     createPosting,
     updatePosting,
     closePosting,

@@ -16,6 +16,8 @@ import { jobsClaimMachine } from '@/machines/jobs-claim-machine';
 import {
   getMyJobsProfile,
   getMyApplications,
+  getMyPostings,
+  getPostingApplicants,
   getMyBookmarks,
   listMyAlerts,
   deleteJobAlert,
@@ -49,7 +51,7 @@ export const Route = createFileRoute('/jobs/me')({
   component: MePage,
 });
 
-type Tab = 'profile' | 'applications' | 'bookmarks' | 'alerts';
+type Tab = 'profile' | 'postings' | 'applications' | 'bookmarks' | 'alerts';
 
 function MePage() {
   const { data: session } = useSession();
@@ -82,6 +84,7 @@ function MePage() {
 
   const tabs: { key: Tab; label: string; icon: typeof Briefcase01Icon }[] = [
     { key: 'profile', label: 'Profile', icon: UserMultipleIcon },
+    { key: 'postings', label: 'My Listings', icon: Briefcase01Icon },
     { key: 'applications', label: 'Applications', icon: Briefcase01Icon },
     { key: 'bookmarks', label: 'Saved Jobs', icon: BookOpen01Icon },
     { key: 'alerts', label: 'Alerts', icon: FireIcon },
@@ -112,6 +115,7 @@ function MePage() {
         Match.when('profile', () => (
           <ProfileTab initial={initial} snapshot={snapshot} send={send} />
         )),
+        Match.when('postings', () => <PostingsTab />),
         Match.when('applications', () => <ApplicationsTab />),
         Match.when('bookmarks', () => <BookmarksTab />),
         Match.when('alerts', () => <AlertsTab />),
@@ -603,6 +607,156 @@ function EducationSection({ profileId, blocks }: { profileId: string; blocks: Bl
             </span>
           ) : null}
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ── Postings tab (employer-facing) ───────────────────────────────────────────
+
+function PostingsTab() {
+  const [postings, setPostings] =
+    useState<Awaited<ReturnType<typeof getMyPostings>> | null>(null);
+  if (!postings) {
+    getMyPostings()
+      .then(setPostings)
+      .catch(() => setPostings([]));
+    return <LoadingCard />;
+  }
+
+  if (postings.length === 0) {
+    return (
+      <Card>
+        <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
+          <Icon icon={Briefcase01Icon} size="xl" className="text-text-muted" />
+          <p className="font-medium text-text-primary">No job postings yet</p>
+          <p className="text-sm text-text-secondary">Post a job to start receiving applicants.</p>
+          <Link
+            to="/jobs/post"
+            className="mt-1 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Post a job
+          </Link>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {postings.map((p: any) => (
+        <PostingRow key={p.posting_id} posting={p} />
+      ))}
+    </div>
+  );
+}
+
+function PostingRow({ posting }: { posting: any }) {
+  const [open, setOpen] = useState(false);
+  const [applicants, setApplicants] =
+    useState<Awaited<ReturnType<typeof getPostingApplicants>> | null>(null);
+
+  const toggle = () => {
+    const next = !open;
+    setOpen(next);
+    if (next && applicants === null) {
+      getPostingApplicants({ data: { postingId: posting.posting_id } })
+        .then(setApplicants)
+        .catch(() => setApplicants([]));
+    }
+  };
+
+  const count = posting.applicant_count ?? 0;
+
+  return (
+    <Card>
+      <CardContent className="space-y-3 py-3">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <Link
+              to="/jobs/$jobSlug"
+              params={{ jobSlug: posting.slug }}
+              className="truncate font-medium text-text-primary hover:underline"
+            >
+              {posting.title}
+            </Link>
+            <p className="text-sm text-text-secondary">
+              {new Date(posting.created_at).toLocaleDateString()} ·{' '}
+              {count} {count === 1 ? 'applicant' : 'applicants'}
+            </p>
+          </div>
+          <Badge
+            variant={posting.status === 'published' ? 'success-light' : 'secondary-light'}
+            size="sm"
+          >
+            {posting.status === 'published' ? 'Published' : posting.status}
+          </Badge>
+          <Button onClick={toggle} variant="outline" size="xs">
+            {open ? 'Hide' : 'View applicants'}
+          </Button>
+        </div>
+
+        {open ? (
+          applicants === null ? (
+            <p className="text-sm text-text-muted">Loading…</p>
+          ) : applicants.length === 0 ? (
+            <p className="border-t border-border pt-3 text-sm text-text-muted">No applicants yet</p>
+          ) : (
+            <div className="space-y-3 border-t border-border pt-3">
+              {applicants.map((ap: any) => (
+                <div key={ap.application_id} className="flex gap-3">
+                  {ap.image_media_id ? (
+                    <img
+                      src={`/api/fantasy-media/${ap.image_media_id}`}
+                      alt={ap.display_name ?? ''}
+                      className="size-10 shrink-0 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                      {(ap.display_name ?? '?').charAt(0)}
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    {ap.slug ? (
+                      <Link
+                        to="/jobs/profile/$slug"
+                        params={{ slug: ap.slug }}
+                        className="font-medium text-text-primary hover:underline"
+                      >
+                        {ap.display_name ?? 'Applicant'}
+                      </Link>
+                    ) : (
+                      <p className="font-medium text-text-primary">
+                        {ap.display_name ?? 'Applicant'}
+                      </p>
+                    )}
+                    {ap.headline || ap.location ? (
+                      <p className="text-xs text-text-muted">
+                        {[ap.headline, ap.location].filter(Boolean).join(' · ')}
+                      </p>
+                    ) : null}
+                    <p className="text-xs text-text-muted">
+                      Applied {new Date(ap.created_at).toLocaleDateString()}
+                    </p>
+                    {ap.message ? (
+                      <p className="mt-2 rounded-lg bg-muted/50 px-3 py-2 text-sm text-text-secondary">
+                        {ap.message}
+                      </p>
+                    ) : null}
+                    {ap.applicant_email ? (
+                      <a
+                        href={`mailto:${ap.applicant_email}`}
+                        className="mt-1 inline-block text-xs font-medium text-primary hover:underline"
+                      >
+                        Contact
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        ) : null}
       </CardContent>
     </Card>
   );

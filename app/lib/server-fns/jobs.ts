@@ -590,6 +590,38 @@ export const getMyApplications = createServerFn({ method: 'GET' }).handler(async
   );
 });
 
+export const getMyPostings = createServerFn({ method: 'GET' }).handler(async () => {
+  const ctx = await getJobsCtx();
+  const profile = await Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
+      Effect.provide(JobsServiceLive)
+    )
+  );
+  if (!profile) return [];
+  return Effect.runPromise(
+    Effect.flatMap(JobsService, (svc) =>
+      svc.listPostingsByEmployer(profile.profile.profile_id)
+    ).pipe(Effect.provide(JobsServiceLive))
+  );
+});
+
+export const getPostingApplicants = createServerFn({ method: 'GET' })
+  .validator((d: { postingId: string }) => d)
+  .handler(async ({ data }) => {
+    const ctx = await getJobsCtx();
+    const profile = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    if (!profile) return [];
+    return Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.getApplicantsForPosting(data.postingId, profile.profile.profile_id)
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+  });
+
 export const getPostingApplications = createServerFn({ method: 'GET' })
   .validator((d: { postingId: string }) => d)
   .handler(async ({ data }) =>
