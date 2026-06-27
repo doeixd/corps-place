@@ -1192,59 +1192,52 @@ function ClaimSection({ profileId, userId }: { profileId: string; userId: string
             Search
           </Button>
         </div>
-        {Match.value(snapshot).pipe(
-          Match.when(
-            { matches: (s: typeof snapshot) => s.matches('searching') || s.matches('suggesting') },
-            () => <p className="text-sm text-text-muted">Searching…</p>
-          ),
-          Match.when({ matches: (_s: typeof snapshot) => candidates.length > 0 }, () => (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {candidates.map((c: any) => (
-                <Card key={`${c.entityType}:${c.entityId}`} className="card-hover-flat">
-                  <CardContent className="flex items-center gap-3 py-3">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                      {c.displayName.charAt(0)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-text-primary">
-                        {c.displayName}
-                      </p>
-                      <p className="truncate text-xs text-text-muted capitalize">
-                        {c.entityType} — {c.description}
-                      </p>
-                    </div>
-                    {claims.some(
-                      (cl: any) =>
-                        cl.entity_type === c.entityType &&
-                        cl.entity_id === c.entityId &&
-                        cl.status === 'active'
-                    ) ? (
-                      <Badge variant="success-light" size="sm">
-                        Claimed
-                      </Badge>
-                    ) : (
-                      <Button
-                        onClick={() =>
-                          send({ type: 'CLAIM', entityType: c.entityType, entityId: c.entityId })
-                        }
-                        disabled={snapshot.matches('claiming')}
-                        variant="outline"
-                        size="xs"
-                      >
-                        {claimingId === `${c.entityType}:${c.entityId}` ? '…' : 'Claim'}
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )),
-          Match.when(
-            { matches: (s: typeof snapshot) => search.trim().length >= 2 && s.matches('idle') },
-            () => <p className="text-sm text-text-muted">No matches found.</p>
-          ),
-          Match.orElse(() => null)
-        )}
+        {snapshot.matches('searching') || snapshot.matches('suggesting') ? (
+          <p className="text-sm text-text-muted">Searching…</p>
+        ) : candidates.length > 0 ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {candidates.map((c: any) => (
+              <Card key={`${c.entityType}:${c.entityId}`} className="card-hover-flat">
+                <CardContent className="flex items-center gap-3 py-3">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                    {c.displayName.charAt(0)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-text-primary">
+                      {c.displayName}
+                    </p>
+                    <p className="truncate text-xs text-text-muted capitalize">
+                      {c.entityType} — {c.description}
+                    </p>
+                  </div>
+                  {claims.some(
+                    (cl: any) =>
+                      cl.entity_type === c.entityType &&
+                      cl.entity_id === c.entityId &&
+                      cl.status === 'active'
+                  ) ? (
+                    <Badge variant="success-light" size="sm">
+                      Claimed
+                    </Badge>
+                  ) : (
+                    <Button
+                      onClick={() =>
+                        send({ type: 'CLAIM', entityType: c.entityType, entityId: c.entityId })
+                      }
+                      disabled={snapshot.matches('claiming')}
+                      variant="outline"
+                      size="xs"
+                    >
+                      {claimingId === `${c.entityType}:${c.entityId}` ? '…' : 'Claim'}
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : search.trim().length >= 2 && snapshot.matches('idle') ? (
+          <p className="text-sm text-text-muted">No matches found.</p>
+        ) : null}
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
       </CardContent>
     </Card>
