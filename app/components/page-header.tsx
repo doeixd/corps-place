@@ -18,6 +18,7 @@ export function PageHeader({
   actions,
   extras,
   titleClassName,
+  subtitleClassName,
   className,
 }: {
   title: ReactNode;
@@ -36,6 +37,8 @@ export function PageHeader({
   extras?: ReactNode;
   /** Extra classes for the `<h1>` (e.g. `text-2.5xl` to bump the heading size). */
   titleClassName?: string;
+  /** Extra classes for the subtitle `<p>` (e.g. `text-sm` to shrink it). */
+  subtitleClassName?: string;
   className?: string;
 }) {
   return (
@@ -49,7 +52,9 @@ export function PageHeader({
             {(e) => <p className="text-xs uppercase tracking-wide text-text-secondary">{e}</p>}
           </Show>
           <h1 className={cn('text-2xl font-bold text-text-primary', titleClassName)}>{title}</h1>
-          <Show when={subtitle}>{(s) => <p className="text-text-secondary">{s}</p>}</Show>
+          <Show when={subtitle}>
+            {(s) => <p className={cn('text-text-secondary', subtitleClassName)}>{s}</p>}
+          </Show>
         </div>
         <Show when={actions}>
           <div className="flex items-center gap-2">{actions}</div>

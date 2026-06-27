@@ -102,7 +102,7 @@ function OnboardPage() {
     <PageShell>
       <PageHeader
         title="Create Your Profile"
-        subtitle="PageantryJobs"
+        subtitle="Set up your PageantryJobs profile" subtitleClassName="text-sm"
         backTo="/"
         backLabel="Home"
       />

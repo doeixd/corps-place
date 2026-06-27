@@ -42,7 +42,7 @@ function PostJobPage() {
   if (!session) {
     return (
       <PageShell>
-        <PageHeader title="Post a Job" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+        <PageHeader title="Post a Job" subtitle="Reach the pageantry community" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
         <JobsSignInGate icon={AddCircleIcon} title="Post a job" path="/jobs/post" />
       </PageShell>
     );
@@ -89,7 +89,7 @@ function PostJobPage() {
   if (done) {
     return (
       <PageShell>
-        <PageHeader title="Post a Job" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+        <PageHeader title="Post a Job" subtitle="Reach the pageantry community" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
             <Icon icon={CheckmarkCircle02Icon} size="xl" className="text-success" />
@@ -112,7 +112,7 @@ function PostJobPage() {
 
   return (
     <PageShell>
-      <PageHeader title="Post a Job" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+      <PageHeader title="Post a Job" subtitle="Reach the pageantry community" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
       <Card>
         <CardContent className="space-y-4 py-5">
           <div className="grid gap-4 sm:grid-cols-2">

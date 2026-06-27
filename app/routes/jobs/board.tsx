@@ -71,7 +71,7 @@ function BoardPage() {
 
   return (
     <PageShell>
-      <PageHeader title="Job Board" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+      <PageHeader title="Job Board" subtitle="Pageantry & marching-arts job listings" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
 
       <div className="mt-4 flex flex-col gap-2 sm:flex-row">
         <input

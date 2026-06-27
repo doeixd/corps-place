@@ -48,7 +48,7 @@ function TalentPage() {
   if (!session) {
     return (
       <PageShell>
-        <PageHeader title="Talent Search" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+        <PageHeader title="Talent Search" subtitle="Find pros across the marching arts" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
         <JobsSignInGate icon={UserMultipleIcon} title="Search talent" path="/jobs/talent" />
       </PageShell>
     );
@@ -56,7 +56,7 @@ function TalentPage() {
 
   return (
     <PageShell>
-      <PageHeader title="Talent Search" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+      <PageHeader title="Talent Search" subtitle="Find pros across the marching arts" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
 
       <form
         action={() => runSearch('search')}

@@ -70,7 +70,7 @@ function MePage() {
   if (!session) {
     return (
       <PageShell>
-        <PageHeader title="My Profile" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+        <PageHeader title="My Profile" subtitle="Your profile, applications, and alerts" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
         <JobsSignInGate icon={UserMultipleIcon} title="Manage your profile" path="/jobs/me" />
       </PageShell>
     );
@@ -85,7 +85,7 @@ function MePage() {
 
   return (
     <PageShell>
-      <PageHeader title="My Dashboard" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+      <PageHeader title="My Dashboard" subtitle="Your profile, applications, and alerts" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
 
       {/* Tabs — scroll horizontally on narrow screens instead of overflowing/wrapping */}
       <div className="mb-6 flex gap-1 overflow-x-auto rounded-lg bg-muted/50 p-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

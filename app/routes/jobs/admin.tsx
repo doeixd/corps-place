@@ -44,7 +44,7 @@ function AdminPage() {
 
   return (
     <PageShell>
-      <PageHeader title="Admin" subtitle="PageantryJobs" backTo="/" backLabel="Home" />
+      <PageHeader title="Admin" subtitle="Moderation and oversight" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
 
       <div className="space-y-8">
         {/* Flagged content */}
