@@ -38,6 +38,8 @@ RUN --mount=type=cache,target=/root/.pnpm-store \
 # App source (sdk/src is included for @sdk/* imports; heavy sdk dirs are .dockerignored)
 COPY . .
 RUN npm run build
+# Fail the build if server-only code leaked into the client bundle (blank-site class).
+RUN node scripts/check-client-bundle.mjs
 
 # ============================================================
 # Production: slim image with only runtime deps + build output

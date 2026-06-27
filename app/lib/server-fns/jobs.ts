@@ -177,21 +177,57 @@ export const listJobs = createServerFn({ method: 'GET' })
       keyword?: string;
       location?: string;
       remote?: boolean;
+      work?: 'remote' | 'onsite';
+      sort?: 'newest' | 'nearest' | 'pay';
       nearZip?: string;
+      nearLat?: number;
+      nearLng?: number;
       offset?: number;
       limit?: number;
     }) => d
   )
   .handler(async ({ data }) => {
+    // Filters + non-distance ordering are SQL-side. `work` filters remote/onsite;
+    // 'newest'/'pay' sorts map straight to ORDER BY. 'nearest' is resolved here.
+    const baseFilters = {
+      keyword: data.keyword,
+      location: data.location,
+      remote: data.remote,
+      work: data.work,
+      sort: data.sort === 'pay' ? ('pay' as const) : ('newest' as const),
+    };
+
+    // Resolve a distance origin: explicit geolocation coords win, else the typed ZIP.
+    const origin =
+      data.nearLat != null && data.nearLng != null
+        ? { lat: data.nearLat, lng: data.nearLng }
+        : await geocodeZip(normalizeZip(data.nearZip));
+
+    // Nearest with an origin must sort the WHOLE matching set, not just a page.
+    // Fetch the full set (capped), distance-sort, then slice to the requested page.
+    if (data.sort === 'nearest' && origin) {
+      const full = await Effect.runPromise(
+        Effect.flatMap(JobsService, (svc) =>
+          svc.listPostings({ ...baseFilters, offset: 0, limit: 1000 })
+        ).pipe(Effect.provide(JobsServiceLive))
+      );
+      const sorted = sortByDistance(full.rows, origin, (r) =>
+        r.location_lat != null && r.location_lng != null
+          ? { lat: r.location_lat, lng: r.location_lng }
+          : null
+      ).map(({ item, distanceMiles }) => ({ ...item, distance_miles: distanceMiles }));
+      const offset = data.offset ?? 0;
+      const limit = data.limit ?? 20;
+      return { rows: sorted.slice(offset, offset + limit), total: full.total };
+    }
+
     const result = await Effect.runPromise(
-      Effect.flatMap(JobsService, (svc) => svc.listPostings(data)).pipe(
-        Effect.provide(JobsServiceLive)
-      )
+      Effect.flatMap(JobsService, (svc) =>
+        svc.listPostings({ ...baseFilters, offset: data.offset, limit: data.limit })
+      ).pipe(Effect.provide(JobsServiceLive))
     );
 
-    // Sort-by-closest: when a valid origin ZIP geocodes, order this page nearest-first
-    // and attach distance_miles to each row. Rows without coords sort last (null).
-    const origin = await geocodeZip(normalizeZip(data.nearZip));
+    // Attach distance_miles to the page when an origin exists; otherwise null.
     if (!origin) {
       return { ...result, rows: result.rows.map((r) => ({ ...r, distance_miles: null })) };
     }
@@ -481,7 +517,10 @@ export const searchTalent = createServerFn({ method: 'GET' })
       keyword?: string;
       location?: string;
       skills?: string[];
+      sort?: 'newest' | 'nearest';
       nearZip?: string;
+      nearLat?: number;
+      nearLng?: number;
       offset?: number;
       limit?: number;
     }) => d
@@ -492,14 +531,43 @@ export const searchTalent = createServerFn({ method: 'GET' })
     // gate rather than a 500.
     const actor = await getActor(getWebRequest());
     if (!actor) return { rows: [], total: 0 };
+
+    const baseFilters = {
+      keyword: data.keyword,
+      location: data.location,
+      skills: data.skills,
+      sort: 'newest' as const,
+    };
+
+    // Resolve a distance origin: explicit geolocation coords win, else the typed ZIP.
+    const origin =
+      data.nearLat != null && data.nearLng != null
+        ? { lat: data.nearLat, lng: data.nearLng }
+        : await geocodeZip(normalizeZip(data.nearZip));
+
+    // Nearest with an origin sorts the WHOLE matching set, then slices the page.
+    if (data.sort === 'nearest' && origin) {
+      const full = await Effect.runPromise(
+        Effect.flatMap(JobsService, (svc) =>
+          svc.searchTalent({ ...baseFilters, offset: 0, limit: 1000 })
+        ).pipe(Effect.provide(JobsServiceLive))
+      );
+      const sorted = sortByDistance(full.rows, origin, (r) =>
+        r.location_lat != null && r.location_lng != null
+          ? { lat: r.location_lat, lng: r.location_lng }
+          : null
+      ).map(({ item, distanceMiles }) => ({ ...item, distance_miles: distanceMiles }));
+      const offset = data.offset ?? 0;
+      const limit = data.limit ?? 20;
+      return { rows: sorted.slice(offset, offset + limit), total: full.total };
+    }
+
     const result = await Effect.runPromise(
-      Effect.flatMap(JobsService, (svc) => svc.searchTalent(data)).pipe(
-        Effect.provide(JobsServiceLive)
-      )
+      Effect.flatMap(JobsService, (svc) =>
+        svc.searchTalent({ ...baseFilters, offset: data.offset, limit: data.limit })
+      ).pipe(Effect.provide(JobsServiceLive))
     );
 
-    // Sort-by-closest when a valid origin ZIP is supplied (see listJobs).
-    const origin = await geocodeZip(normalizeZip(data.nearZip));
     if (!origin) {
       return { ...result, rows: result.rows.map((r) => ({ ...r, distance_miles: null })) };
     }

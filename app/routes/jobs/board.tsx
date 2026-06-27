@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +11,7 @@ import { StaggeredGrid } from '@/components/staggered-grid';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
 import { listJobs } from '@/lib/server-fns/jobs';
-import { formatDistance, haversineMiles } from '@/lib/geo';
+import { formatDistance } from '@/lib/geo';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { Search01Icon, Location01Icon, Briefcase01Icon } from '@/components/icons/generated';
 
@@ -64,16 +64,34 @@ function BoardPage() {
   const [data, setData] = useState(initial);
   const [loading, setLoading] = useState(false);
 
+  const work = search.work;
+  const sort = search.sort;
+
+  // "Nearest" works two ways: a typed Near-ZIP (geocoded server-side) or the
+  // browser's geolocation (coords passed to the server). Either way the server
+  // filters + sorts + slices the FULL matching set, so paging stays correct.
+  const geo = useGeolocation();
+  const geoCoords = geo.state.status === 'located' ? geo.state.coords : null;
+  // Ask for location when the user picks Nearest and hasn't typed a ZIP.
+  useEffect(() => {
+    if (sort === 'nearest' && !nearZip && geo.state.status === 'idle') geo.request();
+  }, [sort, nearZip, geo]);
+
+  // The server query params derived from the current keyword/filter/sort/origin.
+  // `nearLat`/`nearLng` ride along only for geolocation-driven nearest (no ZIP).
+  const queryData = {
+    keyword: keyword || undefined,
+    work,
+    sort: (sort ?? 'newest') as 'newest' | 'nearest' | 'pay',
+    nearZip: nearZip || undefined,
+    ...(sort === 'nearest' && !nearZip && geoCoords
+      ? { nearLat: geoCoords.lat, nearLng: geoCoords.lng }
+      : {}),
+  };
+
   const doSearch = async () => {
     setLoading(true);
-    const results = await listJobs({
-      data: {
-        keyword: keyword || undefined,
-        nearZip: nearZip || undefined,
-        offset: 0,
-        limit: PAGE_LIMIT,
-      },
-    });
+    const results = await listJobs({ data: { ...queryData, offset: 0, limit: PAGE_LIMIT } });
     setData(results);
     setLoading(false);
   };
@@ -81,19 +99,31 @@ function BoardPage() {
   const loadMore = async () => {
     setLoading(true);
     const next = await listJobs({
-      data: {
-        keyword: keyword || undefined,
-        nearZip: nearZip || undefined,
-        offset: data.rows.length,
-        limit: PAGE_LIMIT,
-      },
+      data: { ...queryData, offset: data.rows.length, limit: PAGE_LIMIT },
     });
     setData((prev) => ({ rows: [...prev.rows, ...next.rows], total: next.total }));
     setLoading(false);
   };
 
-  const work = search.work;
-  const sort = search.sort;
+  // Re-fetch (offset 0) whenever a server-affecting input changes: the work
+  // filter, the sort, the typed ZIP, or geolocation resolving while Nearest is
+  // selected. The keyword box drives its own explicit Search/Enter, so it is not
+  // a dependency here. An `alive` guard drops stale responses.
+  const geoLat = sort === 'nearest' && !nearZip ? (geoCoords?.lat ?? null) : null;
+  const geoLng = sort === 'nearest' && !nearZip ? (geoCoords?.lng ?? null) : null;
+  useEffect(() => {
+    let alive = true;
+    setLoading(true);
+    listJobs({ data: { ...queryData, offset: 0, limit: PAGE_LIMIT } }).then((results) => {
+      if (!alive) return;
+      setData(results);
+      setLoading(false);
+    });
+    return () => {
+      alive = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [work, sort, nearZip, geoLat, geoLng]);
 
   const setWork = (value: string) =>
     void navigate({
@@ -113,44 +143,8 @@ function BoardPage() {
   const hasMore = rows.length < total;
   const hasDistance = rows.some((j) => j.distance_miles != null);
 
-  // "Nearest" works two ways: a typed Near-ZIP (server distance_miles) or the
-  // browser's geolocation (distance computed client-side from each job's coords).
-  const geo = useGeolocation();
-  const geoCoords = geo.state.status === 'located' ? geo.state.coords : null;
-  const distOf = (j: (typeof rows)[number]): number | null =>
-    j.distance_miles ??
-    (geoCoords && j.location_lat != null && j.location_lng != null
-      ? haversineMiles(geoCoords, { lat: j.location_lat, lng: j.location_lng })
-      : null);
-  // Ask for location when the user picks Nearest and hasn't typed a ZIP.
-  useEffect(() => {
-    if (sort === 'nearest' && !hasDistance && geo.state.status === 'idle') geo.request();
-  }, [sort, hasDistance, geo]);
-
-  const filteredSorted = useMemo(() => {
-    const filtered = rows.filter((r) => {
-      if (work === 'remote') return r.remote_ok;
-      if (work === 'onsite') return !r.remote_ok;
-      return true;
-    });
-    const dateVal = (r: (typeof rows)[number]) =>
-      new Date(r.published_at ?? r.created_at ?? 0).getTime();
-    const sorted = [...filtered];
-    if (sort === 'nearest') {
-      sorted.sort((a, b) => (distOf(a) ?? Infinity) - (distOf(b) ?? Infinity));
-    } else if (sort === 'pay') {
-      sorted.sort(
-        (a, b) => (b.salary_max ?? b.salary_min ?? 0) - (a.salary_max ?? a.salary_min ?? 0)
-      );
-    } else {
-      // Newest: boosted first, then by date desc.
-      sorted.sort((a, b) => {
-        if (a.is_boosted !== b.is_boosted) return a.is_boosted ? -1 : 1;
-        return dateVal(b) - dateVal(a);
-      });
-    }
-    return sorted;
-  }, [rows, work, sort, geoCoords]);
+  // Distance is computed server-side now; cards just read distance_miles.
+  const distOf = (j: (typeof rows)[number]): number | null => j.distance_miles ?? null;
 
   const sortItems = [
     { value: 'newest', label: 'Newest' },
@@ -307,7 +301,7 @@ function BoardPage() {
           </div>
 
           <p className="text-sm text-text-muted">
-            {filteredSorted.length} job{filteredSorted.length !== 1 ? 's' : ''}
+            {total} job{total !== 1 ? 's' : ''}
             {sort === 'nearest' ? (
               hasDistance || geoCoords ? (
                 <span className="ml-1 text-text-secondary">· Nearest first</span>
@@ -324,7 +318,7 @@ function BoardPage() {
           </p>
 
           <StaggeredGrid
-            items={filteredSorted}
+            items={rows}
             getKey={(j) => j.posting_id}
             renderItem={renderJobCard}
             gap="gap-4"

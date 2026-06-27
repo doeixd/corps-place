@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useActionState, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from '@/lib/auth-client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { StaggeredGrid } from '@/components/staggered-grid';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { buildSeo } from '@/lib/seo';
 import { searchTalent } from '@/lib/server-fns/jobs';
-import { formatDistance, haversineMiles } from '@/lib/geo';
+import { formatDistance } from '@/lib/geo';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { Search01Icon, UserMultipleIcon, Location01Icon } from '@/components/icons/generated';
 import { JobsSignInGate } from '@/components/jobs/sign-in-gate';
@@ -37,54 +37,62 @@ function TalentPage() {
   const [keyword, setKeyword] = useState('');
   const [nearZip, setNearZip] = useState('');
   const [sort, setSort] = useState<SortKey>('newest');
+  const [data, setData] = useState(initial ?? { rows: [], total: 0 });
+  const [isPending, setIsPending] = useState(false);
 
-  const [state, runSearch, isPending] = useActionState(
-    async (prev: typeof initial, action: 'search' | 'more') => {
-      const offset = action === 'more' ? prev.rows.length : 0;
-      const next = await searchTalent({
-        data: {
-          keyword: keyword || undefined,
-          nearZip: nearZip || undefined,
-          offset,
-          limit: PAGE_LIMIT,
-        },
-      });
-      return action === 'more'
-        ? { rows: [...prev.rows, ...next.rows], total: next.total }
-        : next;
-    },
-    initial ?? { rows: [], total: 0 }
-  );
-
-  const rows = state?.rows ?? [];
-  const total = state?.total ?? 0;
-  const hasMore = rows.length < total;
-  const hasDistance = rows.some((p) => p.distance_miles != null);
-
-  // "Nearest" works two ways: a typed Near-ZIP (server distance_miles) or the
-  // browser's geolocation (distance computed client-side from each row's coords).
+  // "Nearest" works two ways: a typed Near-ZIP (geocoded server-side) or the
+  // browser's geolocation (coords passed to the server). The server filters +
+  // sorts + slices the FULL matching set, so paging stays correct.
   const geo = useGeolocation();
   const geoCoords = geo.state.status === 'located' ? geo.state.coords : null;
-  const distOf = (p: (typeof rows)[number]): number | null =>
-    p.distance_miles ??
-    (geoCoords && p.location_lat != null && p.location_lng != null
-      ? haversineMiles(geoCoords, { lat: p.location_lat, lng: p.location_lng })
-      : null);
   // Ask for location when the user picks Nearest and hasn't typed a ZIP.
   useEffect(() => {
-    if (sort === 'nearest' && !hasDistance && geo.state.status === 'idle') geo.request();
-  }, [sort, hasDistance, geo]);
+    if (sort === 'nearest' && !nearZip && geo.state.status === 'idle') geo.request();
+  }, [sort, nearZip, geo]);
 
-  const sortedRows = useMemo(() => {
-    const sorted = [...rows];
-    if (sort === 'nearest') {
-      sorted.sort((a, b) => (distOf(a) ?? Infinity) - (distOf(b) ?? Infinity));
-    } else {
-      const dateVal = (p: (typeof rows)[number]) => new Date(p.created_at ?? 0).getTime();
-      sorted.sort((a, b) => dateVal(b) - dateVal(a));
-    }
-    return sorted;
-  }, [rows, sort, geoCoords]);
+  const queryData = {
+    keyword: keyword || undefined,
+    sort,
+    nearZip: nearZip || undefined,
+    ...(sort === 'nearest' && !nearZip && geoCoords
+      ? { nearLat: geoCoords.lat, nearLng: geoCoords.lng }
+      : {}),
+  };
+
+  const runSearch = async (action: 'search' | 'more') => {
+    setIsPending(true);
+    const offset = action === 'more' ? data.rows.length : 0;
+    const next = await searchTalent({ data: { ...queryData, offset, limit: PAGE_LIMIT } });
+    setData((prev) =>
+      action === 'more' ? { rows: [...prev.rows, ...next.rows], total: next.total } : next
+    );
+    setIsPending(false);
+  };
+
+  // Re-fetch (offset 0) when sort, ZIP, or geolocation (for Nearest) changes. The
+  // keyword box drives its own explicit Search/Enter. `alive` drops stale responses.
+  const geoLat = sort === 'nearest' && !nearZip ? (geoCoords?.lat ?? null) : null;
+  const geoLng = sort === 'nearest' && !nearZip ? (geoCoords?.lng ?? null) : null;
+  useEffect(() => {
+    if (!session) return;
+    let alive = true;
+    setIsPending(true);
+    searchTalent({ data: { ...queryData, offset: 0, limit: PAGE_LIMIT } }).then((next) => {
+      if (!alive) return;
+      setData(next);
+      setIsPending(false);
+    });
+    return () => {
+      alive = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort, nearZip, geoLat, geoLng, session]);
+
+  const rows = data.rows;
+  const total = data.total;
+  const hasMore = rows.length < total;
+  const hasDistance = rows.some((p) => p.distance_miles != null);
+  const distOf = (p: (typeof rows)[number]): number | null => p.distance_miles ?? null;
 
   const sortItems = [
     { value: 'newest', label: 'Newest' },
@@ -203,7 +211,7 @@ function TalentPage() {
         <div className="space-y-4">
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-text-muted">
-              {sortedRows.length} professional{sortedRows.length !== 1 ? 's' : ''} found
+              {total} professional{total !== 1 ? 's' : ''} found
               {sort === 'nearest' ? (
                 hasDistance || geoCoords ? (
                   <span className="ml-1 text-text-secondary">· Nearest first</span>
@@ -235,7 +243,7 @@ function TalentPage() {
           </div>
 
           <StaggeredGrid
-            items={sortedRows}
+            items={rows}
             getKey={(p) => p.profile_id}
             renderItem={renderTalentCard}
             gap="gap-4"

@@ -338,6 +338,8 @@ const makeJobsService = Effect.gen(function* () {
       keyword?: string;
       location?: string;
       remote?: boolean;
+      work?: 'remote' | 'onsite';
+      sort?: 'newest' | 'pay';
       offset?: number;
       limit?: number;
     } = {}
@@ -369,13 +371,21 @@ const makeJobsService = Effect.gen(function* () {
     if (filters.remote) {
       conditions.push('jp.remote_ok = 1');
     }
+    if (filters.work === 'remote') {
+      conditions.push('jp.remote_ok = 1');
+    } else if (filters.work === 'onsite') {
+      conditions.push('jp.remote_ok = 0');
+    }
 
     // Hide expired postings from the board, landing, and similar-jobs.
     conditions.push('(jp.expires_at IS NULL OR jp.expires_at > ?)');
     args.push(new Date().toISOString());
 
     if (conditions.length) sqlStr += ' AND ' + conditions.join(' AND ');
-    sqlStr += ' ORDER BY jp.is_boosted DESC, jp.published_at DESC';
+    sqlStr +=
+      filters.sort === 'pay'
+        ? ' ORDER BY jp.is_boosted DESC, COALESCE(jp.salary_max, jp.salary_min, 0) DESC, jp.published_at DESC'
+        : ' ORDER BY jp.is_boosted DESC, jp.published_at DESC';
     sqlStr += ` LIMIT ${filters.limit ?? 20} OFFSET ${filters.offset ?? 0}`;
 
     const rows = yield* sql.unsafe<{
@@ -867,6 +877,7 @@ const makeJobsService = Effect.gen(function* () {
     keyword?: string;
     location?: string;
     skills?: string[];
+    sort?: 'newest' | 'nearest';
     offset?: number;
     limit?: number;
   }) {
@@ -896,7 +907,7 @@ const makeJobsService = Effect.gen(function* () {
     }
 
     if (conditions.length > 0) sqlStr += ' AND ' + conditions.join(' AND ');
-    sqlStr += ' ORDER BY p.updated_at DESC';
+    sqlStr += ' ORDER BY p.created_at DESC';
     sqlStr += ` LIMIT ${filters.limit ?? 20} OFFSET ${filters.offset ?? 0}`;
 
     const rows = yield* sql.unsafe<{
@@ -912,9 +923,12 @@ const makeJobsService = Effect.gen(function* () {
       created_at: string;
     }>(sqlStr).pipe(Effect.orDie);
 
-    const countRows = yield* sql.unsafe<{ c: number }>(
-      `SELECT COUNT(*) AS c FROM jobs_profile p WHERE p.kind = 'employee' AND p.status = 'published' AND (p.directory_opt_out = 0 OR p.directory_opt_out IS NULL)`
-    ).pipe(Effect.orDie);
+    let countStr =
+      `SELECT COUNT(*) AS c FROM jobs_profile p
+       WHERE p.kind = 'employee' AND p.status = 'published'
+             AND (p.directory_opt_out = 0 OR p.directory_opt_out IS NULL)`;
+    if (conditions.length > 0) countStr += ' AND ' + conditions.join(' AND ');
+    const countRows = yield* sql.unsafe<{ c: number }>(countStr).pipe(Effect.orDie);
 
     return { rows, total: Number(countRows[0]?.c ?? 0) };
   });
