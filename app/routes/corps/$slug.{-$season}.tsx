@@ -404,7 +404,12 @@ function CorpsDetailPage() {
                 Shop all
               </Link>
             </div>
-            <ProductGrid products={corpsMerch.products} />
+            {/* Cap to 2 rows (4 cards) on mobile; show the rest at sm+. The
+                "Shop all" link covers the overflow. */}
+            <ProductGrid
+              products={corpsMerch.products}
+              className="[&>*:nth-child(n+5)]:hidden sm:[&>*:nth-child(n+5)]:block"
+            />
           </section>
         ) : null}
 
