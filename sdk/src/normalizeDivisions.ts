@@ -32,3 +32,29 @@ export const normalizeAllAgeDivisions = Effect.gen(function* () {
           AND s2.division_name LIKE 'All-Age - %Class')
   `);
 });
+
+// Canonicalize lineup unit names via corps_aliases. The website scrape records a
+// lineup unit under whatever name the page used (e.g. the alias "Hurricanes"),
+// which then flows into prediction generation as a name-slug corps_key
+// ("hurricanes") that won't merge with the scored corps in the diff view — and
+// shows the wrong name on the lineup. Map exact alias matches to the canonical
+// corps name. Idempotent; only touches exact alias_name matches (so compound
+// units like "Encore - Hurricanes & Alumni" are untouched).
+export const normalizeLineupAliases = Effect.gen(function* () {
+  const sql = yield* SqlClient.SqlClient;
+  yield* sql.unsafe(`
+    UPDATE event_lineup_entries
+    SET unit_name = (
+      SELECT a.canonical_name FROM corps_aliases a
+      WHERE a.alias_name = event_lineup_entries.unit_name LIMIT 1)
+    WHERE unit_name IN (SELECT alias_name FROM corps_aliases)
+  `);
+});
+
+// Run all source-data canonicalizations. Call after any scrape and before any
+// read-model emit so the relational DB (and the read-model it produces) stays
+// free of alias/label splits.
+export const normalizeIngestedData = Effect.gen(function* () {
+  yield* normalizeAllAgeDivisions;
+  yield* normalizeLineupAliases;
+});

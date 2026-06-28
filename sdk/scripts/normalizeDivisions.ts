@@ -5,13 +5,13 @@
 
 import { Effect } from "effect";
 import { LibsqlClient } from "@effect/sql-libsql";
-import { normalizeAllAgeDivisions } from "../src/normalizeDivisions.js";
+import { normalizeIngestedData } from "../src/normalizeDivisions.js";
 
 const SqlLayer = LibsqlClient.layer({ url: "file:./dci-relational.db" });
 
-Effect.runPromise(normalizeAllAgeDivisions.pipe(Effect.provide(SqlLayer)))
+Effect.runPromise(normalizeIngestedData.pipe(Effect.provide(SqlLayer)))
   .then(() => {
-    console.log("[normalize-divisions] all-age division labels normalized.");
+    console.log("[normalize-divisions] all-age division labels + lineup aliases normalized.");
   })
   .catch((err) => {
     console.error("[normalize-divisions] failed:", err);

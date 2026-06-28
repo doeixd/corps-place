@@ -47,6 +47,47 @@ const summarizePayload = (payload: any, prediction_id: string): PredictionSummar
   recap: payload?.predictions ?? [],
 });
 
+// Canonical corps identity (alias name + canonical name → corps_key/slug), so a
+// prediction generated off an aliased lineup unit (e.g. "Hurricanes" → key
+// "hurricanes") gets remapped to the real corps ("Connecticut Hurricanes" → key
+// "0015b00002eebx5aaf"). Without this the diff view's outer-join on corps_key
+// can't merge the predicted row with the scored row → the corps shows twice (one
+// without a logo). Loaded once per process.
+let corpsCanonCache: Map<string, { name: string; corps_key: string | null }> | null = null;
+const loadCorpsCanon = async (db: Client) => {
+  if (corpsCanonCache) return corpsCanonCache;
+  const map = new Map<string, { name: string; corps_key: string | null }>();
+  // Resolve corps_key from corps_scores (corps_name → corps_key); the `corps`
+  // table is intentionally NOT used here (libsql rejects its `name` column in this
+  // emit context). Two layers: alias_name → canonical, and canonical name → key.
+  const res = await db.execute(`
+    SELECT a.alias_name AS lookup, a.canonical_name AS name,
+           (SELECT cs.corps_key FROM corps_scores cs
+            WHERE cs.corps_name = a.canonical_name AND cs.corps_key IS NOT NULL LIMIT 1) AS corps_key
+    FROM corps_aliases a
+    UNION ALL
+    SELECT corps_name AS lookup, corps_name AS name, corps_key
+    FROM (SELECT corps_name, corps_key FROM corps_scores
+          WHERE corps_name IS NOT NULL AND corps_key IS NOT NULL GROUP BY corps_name)
+  `);
+  for (const r of res.rows as any[]) {
+    const lookup = typeof r.lookup === 'string' ? r.lookup.trim().toLowerCase() : '';
+    if (lookup && !map.has(lookup))
+      map.set(lookup, { name: String(r.name), corps_key: r.corps_key ?? null });
+  }
+  corpsCanonCache = map;
+  return map;
+};
+
+const canonicalizePredictions = (payload: any, canon: Map<string, { name: string; corps_key: string | null }>) => {
+  if (!Array.isArray(payload?.predictions)) return;
+  payload.predictions = payload.predictions.map((p: any) => {
+    const hit = typeof p?.corps === 'string' ? canon.get(p.corps.trim().toLowerCase()) : undefined;
+    if (!hit) return p;
+    return { ...p, corps: hit.name, corps_key: hit.corps_key ?? p.corps_key };
+  });
+};
+
 // The latest saved prediction summary for one event (unhydrated). Returns null
 // when no saved run exists.
 export const buildLatestPredictionSummary = async (
@@ -68,6 +109,9 @@ export const buildLatestPredictionSummary = async (
   const run = result.rows[0] as any;
   if (!run) return null;
   const payload = JSON.parse(String(run.payload_json));
+  // Remap aliased corps identities to canonical so the diff view merges the
+  // predicted + scored rows for the same corps.
+  canonicalizePredictions(payload, await loadCorpsCanon(db));
   const predictionId =
     run.prediction_id ??
     `${payload?.event?.slug ?? 'unknown'}:${payload?.generated_at ?? 'unknown'}`;
