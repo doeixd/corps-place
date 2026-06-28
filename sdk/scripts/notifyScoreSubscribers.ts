@@ -9,6 +9,7 @@
 //
 // Usage: vp exec tsx scripts/notifyScoreSubscribers.ts --event <event-slug> [--event ...] [--dry-run]
 import Database from "better-sqlite3";
+import webpush from "web-push";
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
@@ -24,8 +25,49 @@ const KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.MAGIC_LINK_FROM ?? "DrumCorps.app <noreply@drumcorps.app>";
 const SITE = "https://drumcorps.app";
 
+const VAPID_PUBLIC = process.env.VAPID_PUBLIC_KEY;
+const VAPID_PRIVATE = process.env.VAPID_PRIVATE_KEY;
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT ?? "mailto:login@drumcorps.app";
+const pushReady = Boolean(VAPID_PUBLIC && VAPID_PRIVATE);
+if (pushReady) webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC!, VAPID_PRIVATE!);
+
 const cdb = new Database(CONTRIB);
 const rdb = new Database(RELATIONAL, { readonly: true });
+
+// Push to every device an email subscribed; prune gone (404/410) subscriptions.
+// Returns true if at least one push was accepted.
+const sendPushToEmail = async (
+  email: string,
+  payload: { title: string; body: string; url: string }
+): Promise<boolean> => {
+  if (!pushReady) {
+    console.log(`[notify] VAPID keys unset — would push ${email}: ${payload.title}`);
+    return false;
+  }
+  const devices = cdb
+    .prepare("SELECT endpoint, p256dh, auth FROM score_push_subscriptions WHERE email = ?")
+    .all(email) as { endpoint: string; p256dh: string; auth: string }[];
+  if (devices.length === 0) return false;
+  const data = JSON.stringify(payload);
+  let ok = false;
+  for (const d of devices) {
+    try {
+      await webpush.sendNotification(
+        { endpoint: d.endpoint, keys: { p256dh: d.p256dh, auth: d.auth } },
+        data
+      );
+      ok = true;
+    } catch (e) {
+      const code = (e as { statusCode?: number }).statusCode;
+      if (code === 404 || code === 410) {
+        cdb.prepare("DELETE FROM score_push_subscriptions WHERE endpoint = ?").run(d.endpoint);
+      } else {
+        console.warn(`[notify] push failed for ${email}:`, code ?? e);
+      }
+    }
+  }
+  return ok;
+};
 
 const eventLabel = (slug: string): string => {
   const r = rdb.prepare("SELECT name FROM events WHERE slug=? LIMIT 1").get(slug) as
@@ -88,7 +130,7 @@ const main = async () => {
     const ph = targets.map(() => "?").join(",");
     const subs = cdb
       .prepare(
-        `SELECT id, email, target_kind, target_slug, unsubscribe_token, notified_json
+        `SELECT id, email, target_kind, target_slug, unsubscribe_token, notified_json, methods_json
          FROM score_notify_subscriptions WHERE target_slug IN (${ph})`
       )
       .all(...targets) as {
@@ -98,7 +140,18 @@ const main = async () => {
       target_slug: string;
       unsubscribe_token: string;
       notified_json: string | null;
+      methods_json: string | null;
     }[];
+
+    const wantsPush = (email: string): boolean =>
+      subs.some((x) => {
+        if (x.email !== email) return false;
+        try {
+          return (JSON.parse(x.methods_json ?? "{}") as { push?: boolean }).push === true;
+        } catch {
+          return false;
+        }
+      });
 
     // one email per address even if subscribed via both the event and a corps in it
     const byEmail = new Map<string, (typeof subs)[number]>();
@@ -125,8 +178,19 @@ const main = async () => {
         `<p style="color:#888;font-size:12px">You're getting this because you asked to be notified about ` +
         `${s.target_kind === "corps" ? "a corps in this show" : "this show"}. ` +
         `<a href="${unsub}">Unsubscribe</a>.</p>`;
-      const ok = dryRun ? true : await sendEmail(email, subject, html);
-      if (ok && !dryRun) {
+      let delivered = dryRun;
+      if (!dryRun) {
+        const emailOk = await sendEmail(email, subject, html);
+        const pushOk = wantsPush(email)
+          ? await sendPushToEmail(email, {
+              title: subject,
+              body: `Tap to view the recap on DrumCorps.app`,
+              url,
+            })
+          : false;
+        delivered = emailOk || pushOk;
+      }
+      if (delivered && !dryRun) {
         // mark this event notified for EVERY row of this email (event + corps subs)
         const rows = subs.filter((x) => x.email === email);
         for (const r of rows) {
@@ -144,11 +208,12 @@ const main = async () => {
         }
         sent++;
       } else if (dryRun) {
-        console.log(`  [dry-run] would email ${email} (${s.target_kind}:${s.target_slug})`);
+        const via = wantsPush(email) ? "email+push" : "email";
+        console.log(`  [dry-run] would ${via} ${email} (${s.target_kind}:${s.target_slug})`);
       }
     }
   }
-  console.log(`[notify] ${dryRun ? "DRY RUN — " : ""}sent ${sent} email(s).`);
+  console.log(`[notify] ${dryRun ? "DRY RUN — " : ""}notified ${sent} subscriber(s) (email/push).`);
   cdb.close();
   rdb.close();
 };

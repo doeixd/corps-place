@@ -37,6 +37,7 @@
     "pdf-to-img": "^6.2.0",
     "puppeteer-core": "^24.15.0",
     "unpdf": "^1.6.2",
+    "web-push": "^3.6.7",
     "zod": "^4.3.5"
   },
   "devDependencies": {
