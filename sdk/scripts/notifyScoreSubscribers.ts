@@ -34,6 +34,17 @@ if (pushReady) webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC!, VAPID_PRIVA
 const cdb = new Database(CONTRIB);
 const rdb = new Database(RELATIONAL, { readonly: true });
 
+// Defensive: the app creates this table lazily (first contributions-db access).
+// Ensure it exists so a push query can never throw "no such table" and abort the
+// whole notify run (which would also drop the email path). Mirrors the app schema.
+cdb.exec(
+  `CREATE TABLE IF NOT EXISTS score_push_subscriptions (
+     id TEXT PRIMARY KEY, email TEXT, user_id TEXT,
+     endpoint TEXT NOT NULL, p256dh TEXT NOT NULL, auth TEXT NOT NULL, created_at TEXT NOT NULL
+   );
+   CREATE UNIQUE INDEX IF NOT EXISTS idx_score_push_endpoint ON score_push_subscriptions (endpoint);`
+);
+
 // Push to every device an email subscribed; prune gone (404/410) subscriptions.
 // Returns true if at least one push was accepted.
 const sendPushToEmail = async (
@@ -184,7 +195,7 @@ const main = async () => {
         const pushOk = wantsPush(email)
           ? await sendPushToEmail(email, {
               title: subject,
-              body: `Tap to view the recap on DrumCorps.app`,
+              body: "Tap to view the recap on DrumCorps.app",
               url,
             })
           : false;

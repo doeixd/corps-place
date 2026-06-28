@@ -18,6 +18,17 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$repo_root/sdk"
 export PATH="$HOME/.vite-plus/bin:$PATH"
+
+# Load .env for child `vp exec` scripts (cron's env is bare; vp does NOT auto-load
+# it). Parse line-by-line WITHOUT `source` so unquoted values containing spaces or
+# shell metacharacters (e.g. MAGIC_LINK_FROM="DrumCorps.app <noreply@...>") can't
+# break parsing or be evaluated. Without this, notifyScoreSubscribers had no
+# RESEND_API_KEY / VAPID_* and silently sent nothing.
+if [ -f "$repo_root/.env" ]; then
+  while IFS='=' read -r _k _v; do
+    case "$_k" in [A-Za-z_]*) export "$_k=$_v" ;; esac
+  done < <(grep -vE '^[[:space:]]*#|^[[:space:]]*$' "$repo_root/.env")
+fi
 SEASON="${SEASON:-2026}"
 DB='file:dci-relational.db?mode=ro'
 
