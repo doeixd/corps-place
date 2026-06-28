@@ -150,15 +150,20 @@ export function ScoreNotifyButton({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger
         render={
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            type="button"
             aria-label="Notify me of scores"
-            className={cn('gap-1.5', className)}
+            // Match FavoriteCorpsButton's labelled variant so the pair reads as
+            // a matched set (same border, padding, type scale, hover).
+            className={cn(
+              'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium transition-colors',
+              'border-border text-text-secondary hover:border-text-secondary/40 hover:text-text-primary',
+              className
+            )}
           />
         }
       >
-        <Icon icon={Megaphone01Icon} size="sm" />
+        <Icon icon={Megaphone01Icon} size="md" />
         Notify me
       </DialogTrigger>
       <DialogContent className="max-w-sm">
