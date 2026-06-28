@@ -27,7 +27,12 @@ import {
   type ShowDetail,
 } from '@sdk/src/readModel/builders/shows.js';
 import { MerchDirectoryService, MerchDirectoryServiceLive } from '@/lib/merch-directory';
-import { readShowInfoForSeason, readShowDetail, readAllShows } from '@sdk/src/readModel/readers.js';
+import {
+  readShowInfoForSeason,
+  readShowDetail,
+  readAllShows,
+  listPredictedEvents as readPredictedEvents,
+} from '@sdk/src/readModel/readers.js';
 import { buildAllShowTitles } from '@sdk/src/readModel/builders/shows.js';
 import { createClient } from '@libsql/client';
 import * as path from 'node:path';
@@ -174,6 +179,14 @@ export const getAllShows = createServerFn({ method: 'GET' }).handler(
     }
     const titles = await buildAllShowTitles(getShowTitlesBigDb());
     return titles.map((t) => ({ corpsKey: t.corps_key, season: t.season }));
+  }
+);
+
+// Events that have a stored prediction — powers the Prediction Palette picker.
+export const listPredictedEvents = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ slug: string; eventName: string; startDate: string | null; season: string }[]> => {
+    if (!readModelEnabled()) return [];
+    return readPredictedEvents(getReadModelClient());
   }
 );
 

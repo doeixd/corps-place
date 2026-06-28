@@ -311,6 +311,34 @@ export const readFeaturedPrediction = async (
   };
 };
 
+// All events that have a stored prediction — for the Prediction Palette event
+// picker. Ordered soonest-first (nulls last) so upcoming shows lead.
+export interface PredictedEventOption {
+  slug: string;
+  eventName: string;
+  startDate: string | null;
+  season: string;
+}
+export const listPredictedEvents = async (db: Client): Promise<PredictedEventOption[]> => {
+  const r = await db.execute({
+    sql: `
+      SELECT p.event_slug AS slug,
+             COALESCE(NULLIF(e.event_name, ''), e.name, p.event_slug) AS event_name,
+             e.start_date AS start_date,
+             p.season AS season
+      FROM rm_event_prediction p
+      JOIN rm_events e ON e.slug = p.event_slug
+      ORDER BY (e.start_date IS NULL), e.start_date ASC, event_name ASC
+    `,
+  });
+  return (r.rows as unknown as Array<Record<string, any>>).map((row) => ({
+    slug: String(row.slug),
+    eventName: String(row.event_name ?? row.slug),
+    startDate: row.start_date ?? null,
+    season: String(row.season ?? ""),
+  }));
+};
+
 // rm_home_standings → SeasonStandings | null (verbatim JSON).
 export const readSeasonStandings = async (
   db: Client,
