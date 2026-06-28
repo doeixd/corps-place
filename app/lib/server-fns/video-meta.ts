@@ -19,10 +19,18 @@ export const fetchVideoMeta = createServerFn({ method: 'GET' })
   .handler(async ({ data }): Promise<{ title: string; thumbnailUrl: string | null } | null> => {
     const v = parseVideo(data);
     if (!v) return null;
+    const enc = encodeURIComponent(data);
+    // Instagram oEmbed requires a Meta access token, so we skip title auto-fill
+    // for it (the embed itself still works). YouTube/Vimeo/TikTok are tokenless.
     const endpoint =
       v.provider === 'youtube'
-        ? `https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(data)}`
-        : `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(data)}`;
+        ? `https://www.youtube.com/oembed?format=json&url=${enc}`
+        : v.provider === 'vimeo'
+          ? `https://vimeo.com/api/oembed.json?url=${enc}`
+          : v.provider === 'tiktok'
+            ? `https://www.tiktok.com/oembed?url=${enc}`
+            : null;
+    if (!endpoint) return null;
     try {
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), 5000);

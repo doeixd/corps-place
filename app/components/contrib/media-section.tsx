@@ -8,7 +8,13 @@ import { ProgressiveImage } from '@/components/progressive-image';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icon';
-import { ViewIcon, YoutubeIcon, AddCircleIcon, Cancel01Icon } from '@/components/icons/generated';
+import {
+  ViewIcon,
+  YoutubeIcon,
+  AddCircleIcon,
+  Cancel01Icon,
+  InstagramIcon,
+} from '@/components/icons/generated';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { parseVideo, type VideoEmbed } from '@/lib/video-embed';
 import { fetchVideoMeta } from '@/lib/server-fns/video-meta';
@@ -90,7 +96,11 @@ export function MediaSection({
     .map((m) => ({ m, v: parseVideo(m.url) }))
     .filter((x): x is { m: MediaLink; v: VideoEmbed } => x.v !== null);
   const links = rest.filter((m) => !parseVideo(m.url));
-  const [active, setActive] = useState<{ embedUrl: string; title: string } | null>(null);
+  const [active, setActive] = useState<{
+    embedUrl: string;
+    title: string;
+    portrait: boolean;
+  } | null>(null);
   const [photoIdx, setPhotoIdx] = useState<number | null>(null);
   const photo = photoIdx !== null ? photos[photoIdx] : null;
   const stepPhoto = (d: number) =>
@@ -134,7 +144,13 @@ export function MediaSection({
                   <button
                     key={i}
                     type="button"
-                    onClick={() => setActive({ embedUrl: v.embedUrl, title: m.title || 'Video' })}
+                    onClick={() =>
+                      setActive({
+                        embedUrl: v.embedUrl,
+                        title: m.title || 'Video',
+                        portrait: !!v.portrait,
+                      })
+                    }
                     aria-label={`Play ${m.title || 'video'}`}
                     className="group relative block aspect-video overflow-hidden rounded-lg ring-1 ring-foreground/10"
                   >
@@ -149,7 +165,11 @@ export function MediaSection({
                       />
                     ) : (
                       <span className="flex size-full items-center justify-center bg-muted">
-                        <Icon icon={YoutubeIcon} size="lg" className="text-text-secondary" />
+                        <Icon
+                          icon={v.provider === 'instagram' ? InstagramIcon : YoutubeIcon}
+                          size="lg"
+                          className="text-text-secondary"
+                        />
                       </span>
                     )}
                     <span className="absolute inset-0 flex items-center justify-center bg-black/15 transition-colors group-hover:bg-black/30">
@@ -230,12 +250,15 @@ export function MediaSection({
           if (!o) setActive(null);
         }}
       >
-        <DialogContent className="max-w-3xl overflow-hidden p-0">
+        <DialogContent
+          className={`overflow-hidden p-0 ${active?.portrait ? 'max-w-sm' : 'max-w-3xl'}`}
+        >
           <DialogTitle className="sr-only">{active?.title ?? 'Video'}</DialogTitle>
           {active ? (
-            <div className="aspect-video w-full bg-black">
+            <div className={`w-full bg-black ${active.portrait ? 'aspect-[9/16]' : 'aspect-video'}`}>
               <iframe
-                src={`${active.embedUrl}?autoplay=1&rel=0`}
+                // youtube/vimeo accept autoplay params; tiktok/instagram embeds don't.
+                src={active.portrait ? active.embedUrl : `${active.embedUrl}?autoplay=1&rel=0`}
                 title={active.title}
                 allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                 allowFullScreen

@@ -7,12 +7,14 @@
  * an <iframe>.
  */
 export interface VideoEmbed {
-  provider: 'youtube' | 'vimeo';
+  provider: 'youtube' | 'vimeo' | 'tiktok' | 'instagram';
   id: string;
-  /** A static poster, or null when the provider needs an API call (Vimeo). */
+  /** A static poster, or null when the provider needs an API call (Vimeo/TikTok/IG). */
   thumbnailUrl: string | null;
-  /** Allow-listed embed origin (youtube-nocookie / player.vimeo). */
+  /** Allow-listed embed origin (youtube-nocookie / player.vimeo / tiktok / instagram). */
   embedUrl: string;
+  /** Vertical 9:16 content (TikTok / Instagram) — the lightbox uses a portrait frame. */
+  portrait?: boolean;
 }
 
 const youtube = (id: string): VideoEmbed => ({
@@ -46,6 +48,34 @@ export function parseVideo(url: string): VideoEmbed | null {
     return id
       ? { provider: 'vimeo', id, thumbnailUrl: null, embedUrl: `https://player.vimeo.com/video/${id}` }
       : null;
+  }
+  if (host === 'tiktok.com' || host === 'm.tiktok.com') {
+    // Long URLs only (/@user/video/<id>). Short vm.tiktok.com links can't be
+    // resolved client-side, so they fall through to a plain link card.
+    const id = u.pathname.match(/\/video\/(\d{6,})/)?.[1] ?? '';
+    return id
+      ? {
+          provider: 'tiktok',
+          id,
+          thumbnailUrl: null,
+          embedUrl: `https://www.tiktok.com/embed/v2/${id}`,
+          portrait: true,
+        }
+      : null;
+  }
+  if (host === 'instagram.com') {
+    const m = u.pathname.match(/\/(p|reel|reels|tv)\/([\w-]+)/);
+    if (m) {
+      const type = m[1] === 'reels' ? 'reel' : m[1];
+      return {
+        provider: 'instagram',
+        id: m[2],
+        thumbnailUrl: null,
+        embedUrl: `https://www.instagram.com/${type}/${m[2]}/embed`,
+        portrait: true,
+      };
+    }
+    return null;
   }
   return null;
 }
