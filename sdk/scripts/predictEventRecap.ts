@@ -217,7 +217,10 @@ const quoteCommand = (cmd: string, args: string[]) =>
 const runCommand = (cmd: string, args: string[]) =>
   new Promise<void>((resolve, reject) => {
     console.log(`\n>>> ${quoteCommand(cmd, args)}`);
-    const child = spawn(cmd, args, {
+    // Run child tsx scripts under the SDK's pinned Node 20 via `vp exec`,
+    // NOT system `npx` (Node 24 — crashes on the Node-20-built better-sqlite3).
+    const useVp = cmd === 'npx' && args[0] === 'tsx';
+    const child = spawn(useVp ? 'vp' : cmd, useVp ? ['exec', ...args] : args, {
       cwd: process.cwd(),
       stdio: 'inherit',
       shell: process.platform === 'win32',
@@ -1206,6 +1209,10 @@ async function main() {
       new Date().toISOString().slice(0, 10),
       '--skip-recaps',
       '--skip-ml',
+      // Predictions don't need the corps/logo refresh (scrapeCorps + flagDarkLogos,
+      // the latter needs `sharp`). Skip it so prediction generation doesn't depend
+      // on image tooling.
+      '--skip-corps',
     ];
     if (cli.forceRefresh) args.push('--force');
     await runCommand('npx', args);

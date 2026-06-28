@@ -157,7 +157,10 @@ const runCommand = (cmd: string, args: string[], dryRun: boolean) =>
           resolve();
           return;
         }
-        const child = spawn(cmd, args, {
+        // Run child tsx scripts under the SDK's pinned Node 20 via `vp exec`,
+        // NOT system `npx` (Node 24 — crashes on the Node-20-built better-sqlite3).
+        const useVp = cmd === 'npx' && args[0] === 'tsx';
+        const child = spawn(useVp ? 'vp' : cmd, useVp ? ['exec', ...args] : args, {
           cwd: process.cwd(),
           stdio: 'inherit',
           shell: process.platform === 'win32',

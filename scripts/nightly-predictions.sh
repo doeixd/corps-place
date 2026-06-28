@@ -29,7 +29,11 @@ rows = db.execute("""
   FROM events e
   JOIN event_lineup_entries l ON l.event_slug = e.slug
   LEFT JOIN model_event_prediction_runs p ON p.event_slug = e.slug
-  WHERE e.season = '2026' AND l.is_non_performance = 0 AND p.event_slug IS NULL
+  -- Regenerate predictions for events that have a lineup and are either MISSING a
+  -- prediction OR still UPCOMING (start_date >= today) — upcoming shows' forecasts
+  -- improve as each night's scores come in. Already-finished events keep their run.
+  WHERE e.season = '2026' AND l.is_non_performance = 0
+    AND (p.event_slug IS NULL OR e.start_date >= date('now'))
   ORDER BY e.slug
 """).fetchall()
 print('\n'.join(r[0] for r in rows))
@@ -37,11 +41,11 @@ EOF
 )
 
 if [ -z "$missing" ]; then
-  echo "[nightly-predictions] no events missing predictions — nothing to do."
+  echo "[nightly-predictions] no events to (re)generate — nothing to do."
   exit 0
 fi
 
-echo "[nightly-predictions] generating predictions for:"
+echo "[nightly-predictions] (re)generating predictions for (missing + upcoming):"
 echo "$missing" | sed 's/^/  - /'
 
 failures=0
