@@ -11,6 +11,7 @@ import { Icon } from '@/components/icon';
 import { ViewIcon, YoutubeIcon, AddCircleIcon, Cancel01Icon } from '@/components/icons/generated';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { parseVideo, type VideoEmbed } from '@/lib/video-embed';
+import { fetchVideoMeta } from '@/lib/server-fns/video-meta';
 
 type MediaLink = MediaLinksInput['items'][number];
 
@@ -312,6 +313,15 @@ function MediaEditor({
     setItems((xs) => xs.map((it, j) => (j === i ? { ...it, ...patch } : it)));
   const removeAt = (i: number) => setItems((xs) => xs.filter((_, j) => j !== i));
 
+  // When a video link is pasted and has no title yet, auto-fill it from the
+  // provider's oEmbed (YouTube/Vimeo). Best-effort; failures are ignored.
+  const enrichVideo = (i: number, it: MediaLink) => {
+    if (!it.url || it.title?.trim() || !parseVideo(it.url)) return;
+    void fetchVideoMeta({ data: it.url }).then((meta) => {
+      if (meta?.title) update(i, { title: meta.title, thumbnailUrl: meta.thumbnailUrl ?? '' });
+    });
+  };
+
   const save = async () => {
     setSaving(true);
     setError(null);
@@ -384,6 +394,7 @@ function MediaEditor({
                   type="url"
                   inputMode="url"
                   onChange={(e) => update(i, { url: e.target.value })}
+                  onBlur={() => enrichVideo(i, it)}
                 />
               </div>
               <Button
