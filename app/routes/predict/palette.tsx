@@ -3,7 +3,11 @@ import { listPredictedEvents } from '@/lib/server-fns/hybrid';
 import { getEventPrediction } from '@/lib/server-fns/event-prediction';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
-import { PalettePredictionTable, type PaletteRowInput } from '@/components/predict/palette-table';
+import {
+  PalettePredictionTable,
+  type PaletteRowInput,
+  type PaletteEdits,
+} from '@/components/predict/palette-table';
 import { CAPTIONS, type Caption } from '@/lib/prediction-scenario';
 import { seoHead } from '@/lib/seo';
 
@@ -22,12 +26,16 @@ export const Route = createFileRoute('/predict/palette')({
     }),
   validateSearch: (s: Record<string, unknown>) => ({
     event: typeof s.event === 'string' && s.event ? s.event : undefined,
+    edits: typeof s.edits === 'string' && s.edits ? s.edits : undefined,
   }),
+  // Only `event` drives the loader — changing `edits` (a shared scenario) must
+  // not re-fetch the prediction.
   loaderDeps: ({ search }) => ({ event: search.event }),
   loader: async ({ deps }) => {
     const events = await listPredictedEvents();
     const selected = deps.event ?? events[0]?.slug ?? null;
     let rows: PaletteRowInput[] = [];
+    let error = false;
     if (selected) {
       try {
         const payload = (await getEventPrediction({ data: { slug: selected } })) as {
@@ -50,25 +58,46 @@ export const Route = createFileRoute('/predict/palette')({
           })
           .filter((r) => r.corpsKey);
       } catch {
-        rows = [];
+        error = true;
       }
     }
-    return { events, selected, rows };
+    return { events, selected, rows, error };
   },
   component: PalettePage,
 });
 
+function parseEdits(raw: string | undefined): PaletteEdits | null {
+  if (!raw) return null;
+  try {
+    const v = JSON.parse(raw);
+    return v && typeof v === 'object' ? (v as PaletteEdits) : null;
+  } catch {
+    return null;
+  }
+}
+
 function PalettePage() {
-  const { events, selected, rows } = Route.useLoaderData();
+  const { events, selected, rows, error } = Route.useLoaderData();
+  const { edits } = Route.useSearch();
   const navigate = useNavigate();
+  const initialEdits = parseEdits(edits);
 
   return (
     <PageShell>
       <div className="space-y-6 p-4 sm:p-6">
         <PageHeader
           title="Prediction Palette"
-          subtitle="Edit a predicted recap and watch the ranking change. Your edits stay on this device."
+          subtitle="A what-if sandbox for DCI predictions."
         />
+
+        <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-text-secondary">
+          Start from the model&apos;s forecast for any event, then edit caption scores to ask
+          &ldquo;what if?&rdquo; — e.g. <em>if a corps finds half a point in General Effect, do they
+          win?</em> Totals and the ranking update as you go, ▲/▼ shows how each corps moved versus
+          the forecast, and your edits are saved on this device. Use{' '}
+          <span className="font-medium text-text-primary">Copy share link</span> to send a scenario
+          to someone.
+        </div>
 
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex min-w-[16rem] flex-col gap-1 text-sm">
@@ -91,13 +120,20 @@ function PalettePage() {
           </label>
         </div>
 
-        {rows.length > 0 ? (
-          <PalettePredictionTable key={selected ?? 'none'} initial={rows} />
+        {rows.length > 0 && selected ? (
+          <PalettePredictionTable
+            key={`${selected}:${edits ?? ''}`}
+            initial={rows}
+            eventSlug={selected}
+            initialEdits={initialEdits as PaletteEdits | null}
+          />
         ) : (
           <p className="rounded-lg border border-dashed border-border p-6 text-sm text-text-secondary">
-            {selected
-              ? 'No prediction rows for this event yet — try another event.'
-              : 'Pick an event above to start editing its predicted recap.'}
+            {!selected
+              ? 'Pick an event above to start editing its predicted recap.'
+              : error
+                ? "Couldn't load this event's prediction — please try again or pick another event."
+                : 'No prediction rows for this event yet — try another event.'}
           </p>
         )}
       </div>
