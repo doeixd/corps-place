@@ -6,13 +6,23 @@ import {
   getMerchCatalogPage,
   getMerchFacets,
   getAllShows,
+  getHybridAllEvents,
 } from '@/lib/server-fns/hybrid';
 
 // Site-wide sitemap. Enumerates the directory + detail pages (corps, judges) and
 // the full merch catalog (products, group storefronts, category pages) so the
 // shop is crawlable (MERCH_PLAN §17). Cached a day; regenerated on demand.
 
-const STATIC_PATHS = ['/', '/events', '/corps', '/judges', '/shop', '/shop/all', '/shop/stores'];
+const STATIC_PATHS = [
+  '/',
+  '/events',
+  '/scores',
+  '/corps',
+  '/judges',
+  '/shop',
+  '/shop/all',
+  '/shop/stores',
+];
 
 const xmlEscape = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -43,6 +53,14 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
       }
     } catch {
       /* shows unavailable — sitemap still lists everything else */
+    }
+
+    // Scored events → /scores/<slug> (the canonical results pages).
+    try {
+      const events = await getHybridAllEvents();
+      for (const e of events) if (e.scores_released && e.slug) paths.add(`/scores/${e.slug}`);
+    } catch {
+      /* events unavailable — sitemap still lists everything else */
     }
 
     for (const j of judges) if (j.judge_id) paths.add(`/judges/${j.judge_id}`);
