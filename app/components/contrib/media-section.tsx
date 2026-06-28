@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/icon';
 import { ViewIcon, YoutubeIcon, AddCircleIcon, Cancel01Icon } from '@/components/icons/generated';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { parseVideo, type VideoEmbed } from '@/lib/video-embed';
 
 type MediaLink = MediaLinksInput['items'][number];
 
@@ -75,9 +77,15 @@ export function MediaSection({
     }));
   const items = dedupe([...base, ...galleryAsMedia(gallery)]);
   const photos = items.filter(isPhoto);
-  const links = items.filter((m) => !isPhoto(m));
+  const rest = items.filter((m) => !isPhoto(m));
+  const videos = rest
+    .map((m) => ({ m, v: parseVideo(m.url) }))
+    .filter((x): x is { m: MediaLink; v: VideoEmbed } => x.v !== null);
+  const links = rest.filter((m) => !parseVideo(m.url));
+  const [active, setActive] = useState<{ embedUrl: string; title: string } | null>(null);
 
   return (
+    <>
     <ContribBlock
       icon={ViewIcon}
       title="Photos & video"
@@ -97,6 +105,49 @@ export function MediaSection({
                   className="aspect-[4/3] overflow-hidden rounded-lg ring-1 ring-foreground/10"
                 />
               ))}
+            </div>
+          ) : null}
+          {videos.length > 0 ? (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {videos.map(({ m, v }, i) => {
+                const thumb = v.thumbnailUrl ?? (m.thumbnailUrl || null);
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setActive({ embedUrl: v.embedUrl, title: m.title || 'Video' })}
+                    aria-label={`Play ${m.title || 'video'}`}
+                    className="group relative block aspect-video overflow-hidden rounded-lg ring-1 ring-foreground/10"
+                  >
+                    {thumb ? (
+                      <ProgressiveImage
+                        src={thumb}
+                        alt={m.title || ''}
+                        width={480}
+                        fit="cover"
+                        lazy
+                        className="size-full"
+                      />
+                    ) : (
+                      <span className="flex size-full items-center justify-center bg-muted">
+                        <Icon icon={YoutubeIcon} size="lg" className="text-text-secondary" />
+                      </span>
+                    )}
+                    <span className="absolute inset-0 flex items-center justify-center bg-black/15 transition-colors group-hover:bg-black/30">
+                      <span className="flex size-12 items-center justify-center rounded-full bg-black/60 text-white shadow-lg">
+                        <svg viewBox="0 0 24 24" className="ml-0.5 size-6" fill="currentColor" aria-hidden>
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </span>
+                    </span>
+                    {m.title ? (
+                      <span className="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-black/70 to-transparent px-2 py-1 text-left text-xs text-white">
+                        {m.title}
+                      </span>
+                    ) : null}
+                  </button>
+                );
+              })}
             </div>
           ) : null}
           {links.length > 0 ? (
@@ -154,6 +205,28 @@ export function MediaSection({
         />
       )}
     />
+      <Dialog
+        open={!!active}
+        onOpenChange={(o) => {
+          if (!o) setActive(null);
+        }}
+      >
+        <DialogContent className="max-w-3xl overflow-hidden p-0">
+          <DialogTitle className="sr-only">{active?.title ?? 'Video'}</DialogTitle>
+          {active ? (
+            <div className="aspect-video w-full bg-black">
+              <iframe
+                src={`${active.embedUrl}?autoplay=1&rel=0`}
+                title={active.title}
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowFullScreen
+                className="size-full border-0"
+              />
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
