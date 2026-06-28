@@ -635,6 +635,22 @@ const SCHEMA = [
      created_at TEXT NOT NULL
    )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_score_notify_uniq ON score_notify_subscriptions (target_kind, target_slug, email)`,
+
+  // Per-device Web Push subscriptions for "notify me of scores". Push is
+  // device-based, so unlike fantasy_push_subscriptions (keyed by user_id) these
+  // are keyed by endpoint and tie back to score_notify_subscriptions by email
+  // (email is optional so a device-only subscription is still valid). A gone
+  // subscription (404/410) is pruned on send by the delivery script.
+  `CREATE TABLE IF NOT EXISTS score_push_subscriptions (
+     id TEXT PRIMARY KEY,
+     email TEXT,
+     user_id TEXT,
+     endpoint TEXT NOT NULL,
+     p256dh TEXT NOT NULL,
+     auth TEXT NOT NULL,
+     created_at TEXT NOT NULL
+   )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_score_push_endpoint ON score_push_subscriptions (endpoint)`,
 ];
 
 /**

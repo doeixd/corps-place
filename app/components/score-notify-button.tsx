@@ -18,13 +18,54 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useSession } from '@/lib/auth-client';
-import { subscribeScores } from '@/lib/server-fns/score-notify';
+import {
+  subscribeScores,
+  getScoreVapidPublicKey,
+  saveScorePushSubscription,
+} from '@/lib/server-fns/score-notify';
 import { cn } from '@/lib/utils';
+
+/** Does this browser support Web Push at all? */
+const pushSupported = (): boolean =>
+  typeof window !== 'undefined' &&
+  'serviceWorker' in navigator &&
+  'PushManager' in window &&
+  'Notification' in window;
+
+/** Decode a base64url VAPID key into the Uint8Array the Push API wants. */
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(base64);
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  return out;
+}
+
+/** Subscribe this device to push; returns the subscription JSON or throws. */
+async function subscribeDevice(publicKey: string) {
+  if ((await Notification.requestPermission()) !== 'granted') {
+    throw new Error('Notifications permission was denied.');
+  }
+  const reg = await navigator.serviceWorker.getRegistration();
+  if (!reg) throw new Error('Notifications need the offline app worker, which is not active here.');
+  const sub = await reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(publicKey) as BufferSource,
+  });
+  const json = sub.toJSON();
+  return {
+    endpoint: json.endpoint ?? '',
+    keys: { p256dh: json.keys?.p256dh ?? '', auth: json.keys?.auth ?? '' },
+  };
+}
 
 /**
  * "Notify me of scores" — a small megaphone button that opens a dialog where
- * anyone (signed in or not) can subscribe by email to be emailed when scores
- * post for an event or corps. SSR-safe (no window at module scope).
+ * anyone (signed in or not) can subscribe to be notified when scores post for an
+ * event or corps, by email and/or native push. SSR-safe (no window at module
+ * scope); the Push option only appears when the browser supports it and VAPID
+ * keys are configured server-side.
  */
 export function ScoreNotifyButton({
   targetKind,
@@ -41,10 +82,20 @@ export function ScoreNotifyButton({
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
+  const [wantPush, setWantPush] = useState(false);
+  // null = unknown/not loaded, '' = not configured, string = usable key.
+  const [vapidKey, setVapidKey] = useState<string | null>(null);
 
-  // Prefill from the signed-in user when the dialog opens.
+  const canPush = pushSupported() && !!vapidKey;
+
+  // Prefill email + probe push config when the dialog opens.
   const onOpenChange = (next: boolean) => {
-    if (next) setEmail((cur) => cur || session?.user?.email || '');
+    if (next) {
+      setEmail((cur) => cur || session?.user?.email || '');
+      if (vapidKey === null && pushSupported()) {
+        void getScoreVapidPublicKey().then((r) => setVapidKey(r.publicKey ?? ''));
+      }
+    }
     setOpen(next);
   };
 
@@ -55,17 +106,38 @@ export function ScoreNotifyButton({
       return;
     }
     setBusy(true);
+    let pushOn = false;
     try {
+      // Try push first (if requested) so we can record the right method, but
+      // never let a push failure block the email subscription.
+      if (wantPush && canPush) {
+        try {
+          const device = await subscribeDevice(vapidKey as string);
+          await saveScorePushSubscription({ data: { ...device, email: value } });
+          pushOn = true;
+        } catch (err) {
+          toast.warning(
+            err instanceof Error && err.message.includes('denied')
+              ? 'Push was blocked — you can enable it in your browser settings. Subscribing by email.'
+              : 'Could not enable push on this device — subscribing by email.'
+          );
+        }
+      }
+
       await subscribeScores({
         data: {
           targetKind,
           targetSlug,
           targetLabel,
           email: value,
-          methods: { email: true, push: false },
+          methods: { email: true, push: pushOn },
         },
       });
-      toast.success("You're subscribed — we'll email you when scores post.");
+      toast.success(
+        pushOn
+          ? "You're subscribed — we'll email and push you when scores post."
+          : "You're subscribed — we'll email you when scores post."
+      );
       setOpen(false);
     } catch {
       toast.error('Something went wrong. Please try again.');
@@ -93,7 +165,7 @@ export function ScoreNotifyButton({
         <DialogHeader>
           <DialogTitle>Notify me of scores</DialogTitle>
           <DialogDescription>
-            We&apos;ll email you as soon as scores are posted for {targetLabel}.
+            We&apos;ll let you know as soon as scores are posted for {targetLabel}.
           </DialogDescription>
         </DialogHeader>
 
@@ -116,12 +188,23 @@ export function ScoreNotifyButton({
               <Checkbox checked disabled aria-label="Email" />
               Email
             </label>
-            <label className="flex items-center gap-2 text-sm text-text-secondary opacity-60">
-              <Checkbox checked={false} disabled aria-label="Push notifications" />
-              Push notifications
-              <span className="text-xs italic text-text-secondary">Coming soon</span>
-            </label>
+            {canPush ? (
+              <label className="flex items-center gap-2 text-sm text-text-secondary">
+                <Checkbox
+                  checked={wantPush}
+                  onCheckedChange={(c) => setWantPush(c === true)}
+                  aria-label="Push notifications"
+                />
+                Push notifications on this device
+              </label>
+            ) : null}
           </fieldset>
+
+          {wantPush ? (
+            <p className="text-xs text-text-secondary">
+              On iPhone, add DrumCorps.app to your Home Screen first to receive push.
+            </p>
+          ) : null}
         </div>
 
         <DialogFooter>

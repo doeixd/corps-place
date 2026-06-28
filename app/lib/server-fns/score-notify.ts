@@ -4,6 +4,7 @@ import * as v from 'valibot';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { getActor } from '@/lib/authz';
 import { rateLimit } from '@/lib/rate-limit';
+import { vapidPublicKey } from '@/lib/fantasy/push';
 
 /**
  * "Notify me of scores" subscriptions. Anyone — signed in or not — can subscribe
@@ -31,6 +32,12 @@ const SubscribeInput = v.object({
 
 const UnsubscribeInput = v.object({
   token: v.pipe(v.string(), v.minLength(1)),
+});
+
+const PushSubInput = v.object({
+  endpoint: v.pipe(v.string(), v.url()),
+  keys: v.object({ p256dh: v.string(), auth: v.string() }),
+  email: v.optional(v.string()),
 });
 
 export const subscribeScores = createServerFn({ method: 'POST' })
@@ -78,6 +85,56 @@ export const unsubscribeScores = createServerFn({ method: 'POST' })
     await db.execute({
       sql: 'DELETE FROM score_notify_subscriptions WHERE unsubscribe_token = ?',
       args: [data.token],
+    });
+    return { ok: true };
+  });
+
+/**
+ * The VAPID public key for the client subscribe flow. `null` when push isn't
+ * configured (no VAPID env) — the dialog uses that to keep the Push option off.
+ */
+export const getScoreVapidPublicKey = createServerFn({ method: 'GET' }).handler(async () => ({
+  publicKey: vapidPublicKey(),
+}));
+
+/**
+ * Store a device's Web Push subscription for score notifications. Anonymous-safe
+ * (no auth required) — push is device-based; `email` ties it back to the email
+ * subscription rows so the delivery script can fan out to the right devices.
+ * Endpoint is unique, so re-subscribing the same device refreshes its keys.
+ */
+export const saveScorePushSubscription = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(PushSubInput, d))
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    const email = data.email?.trim().toLowerCase() || null;
+    const actor = await getActor(getWebRequest());
+    const db = await getContributionsDb();
+    await db.execute({
+      sql: `INSERT INTO score_push_subscriptions (id, email, user_id, endpoint, p256dh, auth, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(endpoint) DO UPDATE SET
+              p256dh = excluded.p256dh, auth = excluded.auth,
+              email = COALESCE(excluded.email, score_push_subscriptions.email)`,
+      args: [
+        crypto.randomUUID(),
+        email,
+        actor?.userId ?? null,
+        data.endpoint,
+        data.keys.p256dh,
+        data.keys.auth,
+        new Date().toISOString(),
+      ],
+    });
+    return { ok: true };
+  });
+
+export const deleteScorePushSubscription = createServerFn({ method: 'POST' })
+  .validator((d: unknown) => v.parse(v.object({ endpoint: v.string() }), d))
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    const db = await getContributionsDb();
+    await db.execute({
+      sql: 'DELETE FROM score_push_subscriptions WHERE endpoint = ?',
+      args: [data.endpoint],
     });
     return { ok: true };
   });
