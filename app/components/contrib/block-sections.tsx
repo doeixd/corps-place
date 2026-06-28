@@ -545,7 +545,7 @@ function GalleryEditor({ corpsKey, season, value, onSaved }: EditorProps<Gallery
   );
 }
 
-// ── The concept (free-form Lexical essay) ─────────────────────────────────────
+// ── Synopsis (free-form Lexical essay) ────────────────────────────────────────
 export function AboutSection({
   corpsKey,
   season,
@@ -556,7 +556,7 @@ export function AboutSection({
   return (
     <ContribBlock
       icon={BookOpen01Icon}
-      title="The concept"
+      title="Synopsis"
       emptyHint="Tell the story of this show — the concept, the journey, what it all means."
       hasContent={Boolean(value?.plain?.trim())}
       view={renderLexicalDoc(value?.doc)}

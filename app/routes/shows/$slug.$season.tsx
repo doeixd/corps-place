@@ -285,7 +285,7 @@ function ShowDetailPage() {
           </Show>
 
           {/* ── Authored sections (live wiki editing) ── */}
-          <SectionErrorBoundary label="the concept section">
+          <SectionErrorBoundary label="the synopsis section">
             <AboutSection
               corpsKey={corps.corps_key}
               season={show.season}

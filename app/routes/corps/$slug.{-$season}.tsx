@@ -395,7 +395,7 @@ function CorpsDetailPage() {
         {showForSeason ? (
           <section className="space-y-4 pt-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold">{activeSeason} Show</h3>
+              <h3 className="text-xl font-semibold">Synopsis</h3>
               <Link
                 to="/shows/$slug/$season"
                 params={{ slug, season: activeSeason }}
