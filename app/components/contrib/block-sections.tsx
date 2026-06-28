@@ -31,6 +31,8 @@ import {
   BookOpen01Icon,
   AddCircleIcon,
   Cancel01Icon,
+  HelpCircleIcon,
+  ArrowDown01Icon,
 } from '@/components/icons/generated';
 
 const str = (x: unknown) => (typeof x === 'string' ? x : '');
@@ -557,7 +559,7 @@ export function AboutSection({
     <ContribBlock
       icon={BookOpen01Icon}
       title="Synopsis"
-      emptyHint="Tell the story of this show — the concept, the journey, what it all means."
+      emptyHint="Write a full guide to this show — its movements, story, symbolism, and what to watch for. Editing opens guided starting points to help."
       hasContent={Boolean(value?.plain?.trim())}
       view={renderLexicalDoc(value?.doc)}
       edit={(close) => (
@@ -573,6 +575,68 @@ export function AboutSection({
         />
       )}
     />
+  );
+}
+
+// Guided prompts shown above the Synopsis editor so contributors cover the key
+// topics instead of facing a blank composer (SHOW_WIKI plan §3.8). Guidance only —
+// they're plain text, not form fields; the writer answers free-form below.
+const STARTING_POINTS = [
+  'How many movements does this show have, and what are they called?',
+  'What should the audience look out for?',
+  'What is the symbolism or story behind the show?',
+  'Are there any notable design, prop, or uniform elements?',
+  "How does this show compare to the corps' previous years?",
+  'Anything else worth mentioning?',
+] as const;
+
+/** Collapsible "Starting points" prompt panel above the Synopsis editor. */
+function StartingPointsPanel() {
+  const [open, setOpen] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('wiki-starting-points-collapsed') !== '1';
+  });
+  const toggle = () =>
+    setOpen((o) => {
+      const next = !o;
+      try {
+        localStorage.setItem('wiki-starting-points-collapsed', next ? '0' : '1');
+      } catch {
+        /* ignore storage failures */
+      }
+      return next;
+    });
+  return (
+    <div className="rounded-lg border border-border bg-muted/40 p-3">
+      <button
+        type="button"
+        onClick={toggle}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between text-sm font-medium text-text-secondary"
+      >
+        <span className="flex items-center gap-2">
+          <Icon icon={HelpCircleIcon} size="sm" />
+          Starting points
+        </span>
+        <Icon
+          icon={ArrowDown01Icon}
+          size="sm"
+          className={open ? 'rotate-180 transition-transform' : 'transition-transform'}
+        />
+      </button>
+      {open ? (
+        <ul className="mt-2.5 space-y-1.5 text-sm text-text-secondary">
+          {STARTING_POINTS.map((q) => (
+            <li key={q} className="flex gap-2">
+              <span aria-hidden className="text-primary">
+                •
+              </span>
+              <span>{q}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
   );
 }
 
@@ -600,6 +664,7 @@ function AboutEditor({
   };
   return (
     <div className="space-y-3">
+      <StartingPointsPanel />
       <SectionErrorBoundary label="the rich-text editor">
         <LexicalFreeForm value={draft} onChange={setDraft} citations={citations} />
       </SectionErrorBoundary>
