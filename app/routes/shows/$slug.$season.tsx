@@ -34,6 +34,7 @@ import type {
 } from '@/lib/contrib/schemas';
 import type { ShowDetail } from '@sdk/src/readModel/builders/shows.js';
 import { PageShell } from '@/components/page-shell';
+import { ScoreNotifyButton } from '@/components/score-notify-button';
 import { BackLink } from '@/components/back-link';
 import { StatusCard } from '@/components/status-card';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
@@ -191,6 +192,13 @@ function ShowDetailPage() {
               <p className="text-xs uppercase tracking-wide text-text-secondary">
                 {corps.name} · {show.season}
               </p>
+              <div className="pt-1">
+                <ScoreNotifyButton
+                  targetKind="event"
+                  targetSlug={`${corps.slug}/${show.season}`}
+                  targetLabel={`${corps.name} ${show.season}${show.title ? ` — ${show.title}` : ''}`}
+                />
+              </div>
             </div>
           </div>
 

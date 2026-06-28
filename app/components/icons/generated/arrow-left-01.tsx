@@ -16,14 +16,7 @@ export const ArrowLeft01Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' |
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-        d="M15 6s-6 4.419-6 6s6 6 6 6"
-      />
+      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 6s-6 4.419-6 6s6 6 6 6"/>
     </svg>
   );
 };

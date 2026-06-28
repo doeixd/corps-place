@@ -32,6 +32,7 @@ import { Route as ShopCartRouteImport } from './routes/shop/cart'
 import { Route as ShopBookmarksRouteImport } from './routes/shop/bookmarks'
 import { Route as ShopAllRouteImport } from './routes/shop/all'
 import { Route as ShopProductIdRouteImport } from './routes/shop/$productId'
+import { Route as NotifyUnsubscribeRouteImport } from './routes/notify/unsubscribe'
 import { Route as MerchSplatRouteImport } from './routes/merch.$'
 import { Route as JudgesJudgeIdRouteImport } from './routes/judges/$judgeId'
 import { Route as JobsTermsRouteImport } from './routes/jobs/terms'
@@ -191,6 +192,11 @@ const ShopAllRoute = ShopAllRouteImport.update({
 const ShopProductIdRoute = ShopProductIdRouteImport.update({
   id: '/shop/$productId',
   path: '/shop/$productId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotifyUnsubscribeRoute = NotifyUnsubscribeRouteImport.update({
+  id: '/notify/unsubscribe',
+  path: '/notify/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerchSplatRoute = MerchSplatRouteImport.update({
@@ -497,6 +503,7 @@ export interface FileRoutesByFullPath {
   '/jobs/terms': typeof JobsTermsRoute
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
+  '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
   '/shop/bookmarks': typeof ShopBookmarksRoute
@@ -559,6 +566,7 @@ export interface FileRoutesByTo {
   '/jobs/terms': typeof JobsTermsRoute
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
+  '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
   '/shop/bookmarks': typeof ShopBookmarksRoute
@@ -622,6 +630,7 @@ export interface FileRoutesById {
   '/jobs/terms': typeof JobsTermsRoute
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
+  '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
   '/shop/bookmarks': typeof ShopBookmarksRoute
@@ -686,6 +695,7 @@ export interface FileRouteTypes {
     | '/jobs/terms'
     | '/judges/$judgeId'
     | '/merch/$'
+    | '/notify/unsubscribe'
     | '/shop/$productId'
     | '/shop/all'
     | '/shop/bookmarks'
@@ -748,6 +758,7 @@ export interface FileRouteTypes {
     | '/jobs/terms'
     | '/judges/$judgeId'
     | '/merch/$'
+    | '/notify/unsubscribe'
     | '/shop/$productId'
     | '/shop/all'
     | '/shop/bookmarks'
@@ -810,6 +821,7 @@ export interface FileRouteTypes {
     | '/jobs/terms'
     | '/judges/$judgeId'
     | '/merch/$'
+    | '/notify/unsubscribe'
     | '/shop/$productId'
     | '/shop/all'
     | '/shop/bookmarks'
@@ -873,6 +885,7 @@ export interface RootRouteChildren {
   JobsTermsRoute: typeof JobsTermsRoute
   JudgesJudgeIdRoute: typeof JudgesJudgeIdRoute
   MerchSplatRoute: typeof MerchSplatRoute
+  NotifyUnsubscribeRoute: typeof NotifyUnsubscribeRoute
   ShopProductIdRoute: typeof ShopProductIdRoute
   ShopAllRoute: typeof ShopAllRoute
   ShopBookmarksRoute: typeof ShopBookmarksRoute
@@ -1167,6 +1180,13 @@ declare module '@tanstack/react-router' {
       path: '/shop/$productId'
       fullPath: '/shop/$productId'
       preLoaderRoute: typeof ShopProductIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notify/unsubscribe': {
+      id: '/notify/unsubscribe'
+      path: '/notify/unsubscribe'
+      fullPath: '/notify/unsubscribe'
+      preLoaderRoute: typeof NotifyUnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merch/$': {
@@ -1590,6 +1610,7 @@ const rootRouteChildren: RootRouteChildren = {
   JobsTermsRoute: JobsTermsRoute,
   JudgesJudgeIdRoute: JudgesJudgeIdRoute,
   MerchSplatRoute: MerchSplatRoute,
+  NotifyUnsubscribeRoute: NotifyUnsubscribeRoute,
   ShopProductIdRoute: ShopProductIdRoute,
   ShopAllRoute: ShopAllRoute,
   ShopBookmarksRoute: ShopBookmarksRoute,

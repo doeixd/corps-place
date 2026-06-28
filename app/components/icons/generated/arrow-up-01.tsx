@@ -16,14 +16,7 @@ export const ArrowUp01Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | '
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-        d="M18 15s-4.42-6-6-6s-6 6-6 6"
-      />
+      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18 15s-4.42-6-6-6s-6 6-6 6"/>
     </svg>
   );
 };

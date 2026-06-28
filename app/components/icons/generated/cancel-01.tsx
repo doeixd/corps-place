@@ -16,14 +16,7 @@ export const Cancel01Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'm
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-        d="M18 6L6 18m12 0L6 6"
-      />
+      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18 6L6 18m12 0L6 6"/>
     </svg>
   );
 };

@@ -53,6 +53,7 @@ export { Linkedin01Icon } from './linkedin-01';
 export { Loading03Icon } from './loading-03';
 export { Location01Icon } from './location-01';
 export { MapsLocation02Icon } from './maps-location-02';
+export { Megaphone01Icon } from './megaphone-01';
 export { MenuTwoLineIcon } from './menu-two-line';
 export { Moon02Icon } from './moon-02';
 export { MusicNote03Icon } from './music-note-03';

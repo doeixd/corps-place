@@ -16,14 +16,7 @@ export const MenuTwoLineIcon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' |
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-        d="M4 9h16M4 15h10"
-      />
+      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 9h16M4 15h10"/>
     </svg>
   );
 };

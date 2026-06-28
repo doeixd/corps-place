@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils';
 import { CorpsScoreChart } from '@/components/corps-score-chart';
 import { EventCardGrid } from '@/components/event-card';
 import { PageHeader } from '@/components/page-header';
+import { ScoreNotifyButton } from '@/components/score-notify-button';
 import { BackLink } from '@/components/back-link';
 import { SeasonChips } from '@/components/filter-chips';
 import { useRegisterBackName } from '@/lib/use-register-back-name';
@@ -289,6 +290,12 @@ function CorpsDetailPage() {
                   corps={toFavoriteInput(corps)}
                   size="md"
                   showLabel
+                  className="h-9"
+                />
+                <ScoreNotifyButton
+                  targetKind="corps"
+                  targetSlug={slug}
+                  targetLabel={corps.name}
                   className="h-9"
                 />
                 <Show when={showForSeason}>

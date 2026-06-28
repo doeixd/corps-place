@@ -16,14 +16,7 @@ export const UnfoldMoreIcon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-        d="M18 14s-4.419 5-6 5s-6-5-6-5m12-4s-4.419-5-6-5s-6 5-6 5"
-      />
+      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18 14s-4.419 5-6 5s-6-5-6-5m12-4s-4.419-5-6-5s-6 5-6 5"/>
     </svg>
   );
 };

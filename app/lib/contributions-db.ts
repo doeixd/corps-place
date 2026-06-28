@@ -617,6 +617,24 @@ const SCHEMA = [
      PRIMARY KEY (user_id, posting_id)
    )`,
   `CREATE INDEX IF NOT EXISTS idx_jobs_bookmark_user ON jobs_bookmark (user_id)`,
+
+  // ---------------------------------------------------------------------------
+  // "Notify me of scores" — anyone (signed-in or not) subscribes by email to be
+  // notified when scores post for an event or a corps. Additive + idempotent.
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS score_notify_subscriptions (
+     id TEXT PRIMARY KEY,
+     target_kind TEXT NOT NULL,            -- 'event' | 'corps'
+     target_slug TEXT NOT NULL,
+     target_label TEXT,
+     email TEXT NOT NULL,
+     user_id TEXT,
+     methods_json TEXT NOT NULL DEFAULT '{"email":true,"push":false}',
+     unsubscribe_token TEXT NOT NULL,
+     notified_json TEXT,                   -- competitions already emailed (JSON array), for the delivery side
+     created_at TEXT NOT NULL
+   )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_score_notify_uniq ON score_notify_subscriptions (target_kind, target_slug, email)`,
 ];
 
 /**

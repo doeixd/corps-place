@@ -16,15 +16,7 @@ export const CircleIcon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md'
       strokeLinejoin="round"
       {...svgProps}
     >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        fill="none"
-        stroke="currentColor"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
+      <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5"/>
     </svg>
   );
 };
