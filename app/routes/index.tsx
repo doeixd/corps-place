@@ -20,6 +20,7 @@ import {
   UserMultipleIcon,
   JusticeScale01Icon,
   UserGroupIcon,
+  SlidersHorizontalIcon,
 } from '@/components/icons/generated';
 import { JobsLanding } from '@/components/jobs/landing';
 import { useBrand } from '@/lib/brand-context';
@@ -179,6 +180,13 @@ function Home() {
               icon={JusticeScale01Icon}
               title="Judge Directory"
               description="DCI judges and their assignments across seasons and captions."
+            />
+            <ExploreCard
+              to="/predict/palette"
+              preload="intent"
+              icon={SlidersHorizontalIcon}
+              title="Prediction Palette"
+              description="A what-if sandbox: edit a predicted recap and watch the ranking change."
             />
           </div>
         </section>
