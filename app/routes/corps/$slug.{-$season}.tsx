@@ -392,6 +392,68 @@ function CorpsDetailPage() {
           </Card>
         </Show>
 
+        {showForSeason ? (
+          <section className="space-y-4 pt-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-semibold">{activeSeason} Show</h3>
+              <Link
+                to="/shows/$slug/$season"
+                params={{ slug, season: activeSeason }}
+                className="text-sm text-primary hover:underline"
+              >
+                Full show entry
+              </Link>
+            </div>
+            <Card>
+              <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:gap-5">
+                <div className="w-full shrink-0 overflow-hidden rounded-lg sm:w-44">
+                  {(() => {
+                    const thumb = showForSeason.media.find((m) => m.thumbnailUrl)?.thumbnailUrl;
+                    return thumb ? (
+                      <ProgressiveImage
+                        src={thumb}
+                        alt={`${corps.name} — ${showForSeason.title}`}
+                        width={352}
+                        widths={[256, 352, 448]}
+                        sizes="(min-width: 640px) 11rem, 100vw"
+                        className="aspect-video w-full"
+                      />
+                    ) : (
+                      <div className="flex aspect-video w-full items-center justify-center rounded-lg bg-muted text-text-muted">
+                        <Icon icon={BookOpen01Icon} size="lg" />
+                      </div>
+                    );
+                  })()}
+                </div>
+                <div className="min-w-0 flex-1 space-y-2">
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                      {activeSeason} Production
+                    </p>
+                    <h4 className="text-lg font-semibold leading-tight">{showForSeason.title}</h4>
+                    {showForSeason.subtitle ? (
+                      <p className="text-sm text-text-secondary">{showForSeason.subtitle}</p>
+                    ) : null}
+                  </div>
+                  <p className="text-sm leading-relaxed text-text-secondary line-clamp-4">
+                    {showForSeason.description ??
+                      showForSeason.tagline ??
+                      `A synopsis for ${corps.name}'s ${activeSeason} production hasn't been added yet — open the full show entry for the repertoire, designers and movements.`}
+                  </p>
+                  <Link
+                    to="/shows/$slug/$season"
+                    params={{ slug, season: activeSeason }}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                  >
+                    <Icon icon={BookOpen01Icon} size="sm" />
+                    See the full show entry →
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        ) : null}
+
         {corpsMerch && corpsMerch.products.length > 0 ? (
           <section className="space-y-4 pt-4">
             <div className="flex items-center justify-between">
