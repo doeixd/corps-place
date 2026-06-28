@@ -92,6 +92,17 @@ if [ "$after" -gt "$before" ]; then
   echo "[auto-ingest $(ts)] new scores landed — republishing prod read-model…"
   SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2560" bash "$repo_root/scripts/refresh-prod-read-model.sh"
   echo "[auto-ingest $(ts)] published — drumcorps.app updates in ~5s."
+  # Email score-notify subscribers for each pending show that now has scores.
+  if [ "$pending" != "__GATE_ERR__" ]; then
+    for slug in $pending; do
+      [ -z "$slug" ] && continue
+      if [ "$(sqlite3 "$DB" "SELECT COUNT(*) FROM corps_scores WHERE competition_slug='$slug';" 2>/dev/null || echo 0)" -gt 0 ]; then
+        echo "[auto-ingest $(ts)] notifying subscribers for $slug…"
+        vp exec tsx scripts/notifyScoreSubscribers.ts --event "$slug" 2>&1 | sed 's/^/    /' \
+          || echo "[auto-ingest $(ts)] notify failed for $slug (non-fatal)"
+      fi
+    done
+  fi
 else
   echo "[auto-ingest $(ts)] no new scores; nothing to publish."
 fi
