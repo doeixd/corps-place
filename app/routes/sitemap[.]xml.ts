@@ -55,10 +55,14 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
       /* shows unavailable — sitemap still lists everything else */
     }
 
-    // Scored events → /scores/<slug> (the canonical results pages).
+    // Scored events → /scores/<slug> (the canonical results pages). Carry a
+    // <lastmod> (the show date) so search engines know when to (re)crawl results.
+    const dated: { loc: string; lastmod?: string }[] = [];
     try {
       const events = await getHybridAllEvents();
-      for (const e of events) if (e.scores_released && e.slug) paths.add(`/scores/${e.slug}`);
+      for (const e of events)
+        if (e.scores_released && e.slug)
+          dated.push({ loc: `/scores/${e.slug}`, lastmod: e.start_date ?? undefined });
     } catch {
       /* events unavailable — sitemap still lists everything else */
     }
@@ -83,9 +87,15 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
       /* merch catalog unavailable — sitemap still lists everything else */
     }
 
-    const urls = [...paths]
-      .map((p) => `  <url><loc>${xmlEscape(origin + p)}</loc></url>`)
-      .join('\n');
+    const urls = [
+      ...[...paths].map((p) => `  <url><loc>${xmlEscape(origin + p)}</loc></url>`),
+      ...dated.map(
+        (d) =>
+          `  <url><loc>${xmlEscape(origin + d.loc)}</loc>${
+            d.lastmod ? `<lastmod>${xmlEscape(d.lastmod)}</lastmod>` : ''
+          }</url>`
+      ),
+    ].join('\n');
     const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 
     return new Response(xml, {

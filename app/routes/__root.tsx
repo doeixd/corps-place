@@ -35,7 +35,7 @@ import { themeStore } from '@/stores/theme-store';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 import { readBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
 import { BrandProvider } from '@/lib/brand-context';
-import { buildSeo } from '@/lib/seo';
+import { buildSeo, jsonLdScript } from '@/lib/seo';
 import '@/app.css';
 
 const subscribeTheme = (onChange: () => void) => {
@@ -335,10 +335,28 @@ export const Route = createRootRoute({
       title: brandCfg.seo.title,
       description: brandCfg.seo.description,
     });
+    // Site-wide structured data (every page): Organization (knowledge panel /
+    // logo) + WebSite (site name in results). Brand-aware so each host describes
+    // itself. No SearchAction yet — there's no /search results route to target.
+    const siteUrl = brand === 'jobs' ? 'https://pageantryjobs.com' : 'https://drumcorps.app';
+    const orgLd = {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: brandCfg.name,
+      url: siteUrl,
+      logo: `${siteUrl}/app-icon.svg`,
+    };
+    const webSiteLd = {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: brandCfg.name,
+      url: siteUrl,
+    };
     return {
       ...seo,
       meta: [...seo.meta],
       links: [...seo.links],
+      scripts: [jsonLdScript(orgLd), jsonLdScript(webSiteLd)],
     };
   },
   component: RootComponent,
