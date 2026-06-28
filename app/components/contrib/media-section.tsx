@@ -83,6 +83,10 @@ export function MediaSection({
     .filter((x): x is { m: MediaLink; v: VideoEmbed } => x.v !== null);
   const links = rest.filter((m) => !parseVideo(m.url));
   const [active, setActive] = useState<{ embedUrl: string; title: string } | null>(null);
+  const [photoIdx, setPhotoIdx] = useState<number | null>(null);
+  const photo = photoIdx !== null ? photos[photoIdx] : null;
+  const stepPhoto = (d: number) =>
+    setPhotoIdx((i) => (i === null ? i : (i + d + photos.length) % photos.length));
 
   return (
     <>
@@ -96,14 +100,21 @@ export function MediaSection({
           {photos.length > 0 ? (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {photos.map((m, i) => (
-                <ProgressiveImage
+                <button
                   key={i}
-                  src={m.url}
-                  alt={m.title || 'Show photo'}
-                  width={240}
-                  fit="cover"
-                  className="aspect-[4/3] overflow-hidden rounded-lg ring-1 ring-foreground/10"
-                />
+                  type="button"
+                  onClick={() => setPhotoIdx(i)}
+                  aria-label={`View ${m.title || 'photo'}`}
+                  className="group block aspect-[4/3] overflow-hidden rounded-lg ring-1 ring-foreground/10"
+                >
+                  <ProgressiveImage
+                    src={m.url}
+                    alt={m.title || 'Show photo'}
+                    width={240}
+                    fit="cover"
+                    className="size-full transition-transform duration-200 group-hover:scale-105"
+                  />
+                </button>
               ))}
             </div>
           ) : null}
@@ -222,6 +233,51 @@ export function MediaSection({
                 allowFullScreen
                 className="size-full border-0"
               />
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={photo !== null}
+        onOpenChange={(o) => {
+          if (!o) setPhotoIdx(null);
+        }}
+      >
+        <DialogContent className="max-w-4xl overflow-hidden p-0">
+          <DialogTitle className="sr-only">{photo?.title || 'Photo'}</DialogTitle>
+          {photo ? (
+            <div className="relative bg-black">
+              <img
+                src={photo.url}
+                alt={photo.title || 'Show photo'}
+                className="mx-auto max-h-[80vh] w-full object-contain"
+              />
+              {photo.title ? (
+                <p className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-2 text-sm text-white">
+                  {photo.title}
+                </p>
+              ) : null}
+              {photos.length > 1 ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => stepPhoto(-1)}
+                    aria-label="Previous photo"
+                    className="absolute left-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-xl text-white hover:bg-black/70"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => stepPhoto(1)}
+                    aria-label="Next photo"
+                    className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-xl text-white hover:bg-black/70"
+                  >
+                    ›
+                  </button>
+                </>
+              ) : null}
             </div>
           ) : null}
         </DialogContent>
