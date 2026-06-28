@@ -16,7 +16,6 @@ import { MovementSection } from '@/components/contrib/movement-section';
 import {
   PropsSection,
   LinksSection,
-  GallerySection,
   AboutSection,
 } from '@/components/contrib/block-sections';
 import type { FreeFormDoc } from '@/lib/contrib/free-form';
@@ -257,6 +256,7 @@ function ShowDetailPage() {
               season={show.season}
               initial={authored.media}
               scraped={show.media}
+              gallery={authored.gallery}
             />
           </SectionErrorBoundary>
 
@@ -305,13 +305,6 @@ function ShowDetailPage() {
               corpsKey={corps.corps_key}
               season={show.season}
               initial={authored.props}
-            />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary label="the gallery section">
-            <GallerySection
-              corpsKey={corps.corps_key}
-              season={show.season}
-              initial={authored.gallery}
             />
           </SectionErrorBoundary>
           <SectionErrorBoundary label="the links section">

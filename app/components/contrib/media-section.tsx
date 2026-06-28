@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { saveShowBlock } from '@/lib/server-fns/contrib';
-import type { MediaLinksInput } from '@/lib/contrib/schemas';
+import type { MediaLinksInput, GalleryInput } from '@/lib/contrib/schemas';
 import type { ShowDetailMedia } from '@sdk/src/readModel/builders/shows.js';
 import { ContribBlock } from '@/components/contrib/block-sections';
+import { ImageDrop } from '@/components/contrib/image-drop';
 import { ProgressiveImage } from '@/components/progressive-image';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -22,24 +23,49 @@ const hostOf = (url: string): string => {
 const isVideo = (m: MediaLink): boolean =>
   /youtube|youtu\.be|vimeo/i.test(m.url) || /video/i.test(m.mediaType ?? '');
 
+/** A photo (uploaded image) vs. an external link/clip — drives grid vs. card layout. */
+const isPhoto = (m: MediaLink): boolean =>
+  /^image/i.test(m.mediaType ?? '') || /\.(jpe?g|png|webp|gif|avif)(\?|#|$)/i.test(m.url);
+
+/** Legacy `gallery` photos as media items (mediaType=image), so the merged Media
+ *  section still surfaces anything authored before gallery folded into media. */
+const galleryAsMedia = (gallery: GalleryInput | null): MediaLink[] =>
+  (gallery?.items ?? []).map((g) => ({
+    url: g.url,
+    title: g.alt ?? '',
+    mediaType: 'image',
+    thumbnailUrl: g.url,
+  }));
+
+/** Dedupe by URL, preserving first occurrence. */
+const dedupe = (items: MediaLink[]): MediaLink[] => {
+  const seen = new Set<string>();
+  return items.filter((m) => (m.url && !seen.has(m.url) ? (seen.add(m.url), true) : false));
+};
+
 /**
- * Media wall (seedable authored block). Shows the scraped media until a
- * contributor edits; the editor pre-fills from the scrape (keeping thumbnails)
- * so people add clips/photos rather than retype.
+ * Photos & video (seedable authored block). Merges the former Gallery (uploaded
+ * photos) and Media (clips/links): shows the scraped media + any legacy gallery
+ * photos until a contributor edits; the editor seeds from that so people add to
+ * it rather than retype. Uploaded photos are stored as media items (mediaType
+ * "image") — no schema change. The `gallery` photos migrate into the media block
+ * on the next save.
  */
 export function MediaSection({
   corpsKey,
   season,
   initial,
   scraped,
+  gallery,
 }: {
   corpsKey: string;
   season: string;
   initial: MediaLinksInput | null;
   scraped: ShowDetailMedia[];
+  gallery: GalleryInput | null;
 }) {
   const [value, setValue] = useState<MediaLinksInput | null>(initial);
-  const items: MediaLink[] =
+  const base: MediaLink[] =
     value?.items ??
     scraped.map((m) => ({
       url: m.url,
@@ -47,53 +73,74 @@ export function MediaSection({
       mediaType: m.mediaType ?? '',
       thumbnailUrl: m.thumbnailUrl ?? '',
     }));
+  const items = dedupe([...base, ...galleryAsMedia(gallery)]);
+  const photos = items.filter(isPhoto);
+  const links = items.filter((m) => !isPhoto(m));
 
   return (
     <ContribBlock
       icon={ViewIcon}
-      title="Media"
-      emptyHint="Cover images, clips and photos are waiting to be contributed."
+      title="Photos & video"
+      emptyHint="Cover images, photos, and clips (YouTube, Vimeo) are waiting to be contributed."
       hasContent={items.length > 0}
       view={
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {items.map((m, i) => (
-            <li key={i}>
-              <a
-                href={m.url}
-                target="_blank"
-                rel="noreferrer"
-                className="flex gap-3 rounded-lg p-2 ring-1 ring-foreground/10 hover:bg-foreground/5"
-              >
-                <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded bg-muted">
-                  {m.thumbnailUrl ? (
-                    <ProgressiveImage
-                      src={m.thumbnailUrl}
-                      alt=""
-                      width={112}
-                      fit="cover"
-                      lazy
-                      className="size-14"
-                    />
-                  ) : (
-                    <Icon
-                      icon={isVideo(m) ? YoutubeIcon : ViewIcon}
-                      size="md"
-                      className="text-text-secondary"
-                    />
-                  )}
-                </span>
-                <span className="min-w-0 self-center">
-                  <span className="block truncate font-medium text-text-primary">
-                    {m.title || m.mediaType || 'Media'}
-                  </span>
-                  <span className="block truncate text-xs text-text-secondary">
-                    {hostOf(m.url)}
-                  </span>
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div className="space-y-3">
+          {photos.length > 0 ? (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {photos.map((m, i) => (
+                <ProgressiveImage
+                  key={i}
+                  src={m.url}
+                  alt={m.title || 'Show photo'}
+                  width={240}
+                  fit="cover"
+                  className="aspect-[4/3] overflow-hidden rounded-lg ring-1 ring-foreground/10"
+                />
+              ))}
+            </div>
+          ) : null}
+          {links.length > 0 ? (
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {links.map((m, i) => (
+                <li key={i}>
+                  <a
+                    href={m.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex gap-3 rounded-lg p-2 ring-1 ring-foreground/10 hover:bg-foreground/5"
+                  >
+                    <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded bg-muted">
+                      {m.thumbnailUrl ? (
+                        <ProgressiveImage
+                          src={m.thumbnailUrl}
+                          alt=""
+                          width={112}
+                          fit="cover"
+                          lazy
+                          className="size-14"
+                        />
+                      ) : (
+                        <Icon
+                          icon={isVideo(m) ? YoutubeIcon : ViewIcon}
+                          size="md"
+                          className="text-text-secondary"
+                        />
+                      )}
+                    </span>
+                    <span className="min-w-0 self-center">
+                      <span className="block truncate font-medium text-text-primary">
+                        {m.title || m.mediaType || 'Media'}
+                      </span>
+                      <span className="block truncate text-xs text-text-secondary">
+                        {hostOf(m.url)}
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
       }
       edit={(close) => (
         <MediaEditor
@@ -121,14 +168,13 @@ function MediaEditor({
   seed: MediaLink[];
   onSaved: (v: MediaLinksInput) => void;
 }) {
-  const [items, setItems] = useState<MediaLink[]>(
-    seed.length ? seed : [{ url: '', title: '', mediaType: '', thumbnailUrl: '' }]
-  );
+  const [items, setItems] = useState<MediaLink[]>(seed);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const update = (i: number, patch: Partial<MediaLink>) =>
     setItems((xs) => xs.map((it, j) => (j === i ? { ...it, ...patch } : it)));
+  const removeAt = (i: number) => setItems((xs) => xs.filter((_, j) => j !== i));
 
   const save = async () => {
     setSaving(true);
@@ -145,49 +191,94 @@ function MediaEditor({
   };
 
   return (
-    <div className="space-y-2">
-      {items.map((it, i) => (
-        <div key={i} className="flex items-start gap-2">
-          <div className="flex-1 space-y-1.5">
-            <Input
-              placeholder="Title (e.g. Finals performance)"
-              value={it.title ?? ''}
-              onChange={(e) => update(i, { title: e.target.value })}
-            />
-            <Input
-              placeholder="https://youtube.com/…"
-              value={it.url}
-              type="url"
-              inputMode="url"
-              onChange={(e) => update(i, { url: e.target.value })}
-            />
+    <div className="space-y-4">
+      {/* Uploaded photos */}
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-text-secondary">Photos</p>
+        {items.some(isPhoto) ? (
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+            {items.map((it, i) =>
+              isPhoto(it) ? (
+                <div
+                  key={i}
+                  className="group relative aspect-[4/3] overflow-hidden rounded-lg ring-1 ring-foreground/10"
+                >
+                  <ProgressiveImage src={it.url} alt={it.title || ''} width={160} fit="cover" />
+                  <button
+                    type="button"
+                    onClick={() => removeAt(i)}
+                    aria-label="Remove photo"
+                    className="absolute right-1 top-1 flex size-6 items-center justify-center rounded-md bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 focus-visible:opacity-100 group-hover:opacity-100"
+                  >
+                    <Icon icon={Cancel01Icon} size="sm" />
+                  </button>
+                </div>
+              ) : null
+            )}
           </div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => setItems((xs) => xs.filter((_, j) => j !== i))}
-            aria-label="Remove media link"
-          >
-            <Icon icon={Cancel01Icon} size="sm" />
-          </Button>
-        </div>
-      ))}
-      <Button
-        type="button"
-        variant="ghost"
-        size="xs"
-        onClick={() =>
-          setItems((xs) => [...xs, { url: '', title: '', mediaType: '', thumbnailUrl: '' }])
-        }
-      >
-        <Icon icon={AddCircleIcon} size="sm" />
-        Add media link
-      </Button>
+        ) : null}
+        <ImageDrop
+          corpsKey={corpsKey}
+          season={season}
+          kind="image"
+          onUploaded={(r) =>
+            setItems((xs) => [
+              ...xs,
+              { url: r.url, title: '', mediaType: 'image', thumbnailUrl: r.url },
+            ])
+          }
+        />
+      </div>
+
+      {/* External clips / links */}
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-text-secondary">Video &amp; links</p>
+        {items.map((it, i) =>
+          isPhoto(it) ? null : (
+            <div key={i} className="flex items-start gap-2">
+              <div className="flex-1 space-y-1.5">
+                <Input
+                  placeholder="Title (e.g. Finals performance)"
+                  value={it.title ?? ''}
+                  onChange={(e) => update(i, { title: e.target.value })}
+                />
+                <Input
+                  placeholder="https://youtube.com/…"
+                  value={it.url}
+                  type="url"
+                  inputMode="url"
+                  onChange={(e) => update(i, { url: e.target.value })}
+                />
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => removeAt(i)}
+                aria-label="Remove media link"
+              >
+                <Icon icon={Cancel01Icon} size="sm" />
+              </Button>
+            </div>
+          )
+        )}
+        <Button
+          type="button"
+          variant="ghost"
+          size="xs"
+          onClick={() =>
+            setItems((xs) => [...xs, { url: '', title: '', mediaType: '', thumbnailUrl: '' }])
+          }
+        >
+          <Icon icon={AddCircleIcon} size="sm" />
+          Add video / link
+        </Button>
+      </div>
+
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <div>
         <Button type="button" size="sm" onClick={save} disabled={saving}>
-          {saving ? 'Saving…' : 'Save media'}
+          {saving ? 'Saving…' : 'Save'}
         </Button>
       </div>
     </div>
