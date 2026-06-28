@@ -21,6 +21,7 @@ import { useBrand } from '@/lib/brand-context';
 const CORPS_NAV_ITEMS = [
   { to: '/', label: 'Home', icon: Home01Icon, exact: true },
   { to: '/events', label: 'Events', icon: Calendar01Icon, exact: false },
+  { to: '/scores', label: 'Scores', icon: RankingIcon, exact: false },
   { to: '/corps', label: 'Corps', icon: UserMultipleIcon, exact: false },
   { to: '/judges', label: 'Judges', icon: JusticeScale01Icon, exact: false },
   { to: '/shop', label: 'Shop', icon: GiftIcon, exact: false },

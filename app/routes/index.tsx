@@ -147,6 +147,13 @@ function Home() {
               description="Browse the season — lineups, schedules, scores, and predictions."
             />
             <ExploreCard
+              to="/scores"
+              preload="intent"
+              icon={RankingIcon}
+              title="Scores"
+              description="Final scores and complete caption-by-caption recaps from every scored show."
+            />
+            <ExploreCard
               to="/rankings"
               preload="intent"
               icon={RankingIcon}
