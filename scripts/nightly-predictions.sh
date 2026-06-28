@@ -52,14 +52,17 @@ failures=0
 while IFS= read -r slug; do
   [ -z "$slug" ] && continue
   echo "[nightly-predictions] === $slug"
-  if ! vp exec tsx scripts/predictEventRecap.ts --event "$slug" --save-db; then
+  # Cap each prediction's heap so a single tfjs run can't balloon the 4GB box;
+  # processes run one at a time and exit, so memory doesn't accumulate.
+  if ! NODE_OPTIONS="--max-old-space-size=1536" vp exec tsx scripts/predictEventRecap.ts --event "$slug" --save-db; then
     echo "[nightly-predictions] FAILED: $slug (continuing)"
     failures=$((failures + 1))
   fi
 done <<<"$missing"
 
 echo "[nightly-predictions] republishing prod read-model…"
-bash "$repo_root/scripts/refresh-prod-read-model.sh"
+# Cap the emit heap and skip the media-cache sync (predictions don't change media).
+SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2048" bash "$repo_root/scripts/refresh-prod-read-model.sh"
 
 if [ "$failures" -gt 0 ]; then
   echo "[nightly-predictions] done with $failures failure(s)."
