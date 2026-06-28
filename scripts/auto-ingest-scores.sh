@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 # Auto-ingest newly-released DCI scores and publish them to drumcorps.app — no
-# manual step. Reacts to shows finishing: when a show has happened in the last day
-# and new recaps appear on dci.org, scrape them into sdk/dci-relational.db and
-# republish the prod read-model (local A/B hot-swap, ~5s, no restart).
+# manual step. Scores post right after a show ends, and we know show start times,
+# so this only scrapes in the window AFTER a recent show's estimated end (start +
+# 3.5h), polling every few minutes until the recap appears, then idling.
 #
-# Trigger model: there is no exact "show end time" feed, so we (a) only do work
-# when an event is dated within the last day (avoids pointless scrapes on off
-# days), and (b) only republish when the scrape actually ADDED score rows
-# (count delta) — re-running over already-cached recaps is a cheap no-op.
+# Trigger model: (1) the end-time gate below proceeds only when NOW is in a recent
+# show's post-show scoring window AND that show isn't ingested yet; (2) republish
+# only when the scrape actually ADDED score rows (count delta) — re-running over
+# already-cached recaps is a cheap no-op.
 #
 # Runs Node 20 via `vp exec tsx` (system Node 24 crashes on the Node-20 better-sqlite3).
 #
-# Cron (every 20 min; the gate + cached no-op keep it light):
-#   */20 * * * * /root/corps-place/scripts/auto-ingest-scores.sh >> /home/patrick/auto-ingest-scores.log 2>&1
+# Cron (every 5 min; the end-time gate keeps it idle except just after shows end):
+#   */5 * * * * /root/corps-place/scripts/auto-ingest-scores.sh >> /home/patrick/auto-ingest-scores.log 2>&1
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
@@ -28,12 +28,52 @@ flock -n 9 || { echo "[auto-ingest $(date -u +%FT%TZ)] another run holds the loc
 ts() { date -u +%FT%TZ; }
 count_scores() { sqlite3 "$DB" "SELECT COUNT(*) FROM corps_scores;" 2>/dev/null || echo 0; }
 
-# Gate: only proceed if a show is dated within ±1 day (shows post scores within a
-# few hours of finishing). Skips quietly on off-days.
-recent="$(sqlite3 "$DB" "SELECT COUNT(*) FROM events WHERE season='$SEASON' AND start_date IS NOT NULL AND start_date >= date('now','-1 day') AND start_date <= date('now','+1 day');" 2>/dev/null || echo 0)"
-if [ "${recent:-0}" -eq 0 ]; then
-  echo "[auto-ingest $(ts)] no show dated within a day — skipping."
+# Gate: scrape only when a show's scores should be posting — i.e. NOW is in the
+# window after a recent show's estimated end time AND that show isn't ingested yet.
+# We know each show's start (events.web_start_time, e.g. "6:00 PM ET") + date;
+# estimate end = start + 3.5h and poll from 30 min before that to 6h after. So a
+# tight cron only does work right after shows finish. Fail-open on parse errors.
+pending="$(python3 - "$SEASON" <<'PY'
+import sqlite3, re, sys, datetime
+season = sys.argv[1]
+OFF = {'ET':-4,'EDT':-4,'EST':-5,'CT':-5,'CDT':-5,'CST':-6,'MT':-6,'MDT':-6,'MST':-7,
+       'PT':-7,'PDT':-7,'PST':-8,'AT':-3,'ADT':-3}
+db = sqlite3.connect('file:dci-relational.db?mode=ro', uri=True)
+now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+out = []
+for slug, sd, wst in db.execute(
+    "SELECT slug, start_date, web_start_time FROM events "
+    "WHERE season=? AND web_start_time IS NOT NULL AND web_start_time!=''", (season,)):
+    if not sd:
+        continue
+    m = re.match(r'\s*(\d{1,2}):(\d{2})\s*([AaPp][Mm])\s*([A-Za-z]{2,3})', wst or '')
+    if not m:
+        continue
+    hh, mm, ap, tz = int(m.group(1)), int(m.group(2)), m.group(3).upper(), m.group(4).upper()
+    if ap == 'PM' and hh != 12: hh += 12
+    if ap == 'AM' and hh == 12: hh = 0
+    off = OFF.get(tz)
+    if off is None:
+        continue
+    try:
+        local = datetime.datetime.strptime(sd[:10], '%Y-%m-%d').replace(hour=hh, minute=mm)
+    except Exception:
+        continue
+    start_utc = local - datetime.timedelta(hours=off)        # local time -> UTC
+    est_end = start_utc + datetime.timedelta(hours=3.5)
+    if est_end - datetime.timedelta(minutes=30) <= now <= est_end + datetime.timedelta(hours=6):
+        if db.execute("SELECT COUNT(*) FROM corps_scores WHERE competition_slug=?", (slug,)).fetchone()[0] == 0:
+            out.append(slug)
+print('\n'.join(out))
+PY
+)" || pending="__GATE_ERR__"
+if [ "$pending" = "__GATE_ERR__" ]; then
+  echo "[auto-ingest $(ts)] gate error — scraping anyway (fail-open)."
+elif [ -z "$pending" ]; then
+  echo "[auto-ingest $(ts)] no show in its post-show scoring window — skipping."
   exit 0
+else
+  echo "[auto-ingest $(ts)] scoring window open for: $(echo "$pending" | tr '\n' ' ')"
 fi
 
 before="$(count_scores)"
