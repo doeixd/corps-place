@@ -32,6 +32,7 @@ import {
   readShowDetail,
   readAllShows,
   listPredictedEvents as readPredictedEvents,
+  listAllShowTitles as readAllShowTitles,
 } from '@sdk/src/readModel/readers.js';
 import { buildAllShowTitles } from '@sdk/src/readModel/builders/shows.js';
 import { createClient } from '@libsql/client';
@@ -187,6 +188,14 @@ export const listPredictedEvents = createServerFn({ method: 'GET' }).handler(
   async (): Promise<{ slug: string; eventName: string; startDate: string | null; season: string }[]> => {
     if (!readModelEnabled()) return [];
     return readPredictedEvents(getReadModelClient());
+  }
+);
+
+// All show titles across seasons — powers the /shows program directory.
+export const getAllShowTitles = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ season: string; corpsKey: string; title: string }[]> => {
+    if (!readModelEnabled()) return [];
+    return readAllShowTitles(getReadModelClient());
   }
 );
 

@@ -21,6 +21,7 @@ import {
   JusticeScale01Icon,
   UserGroupIcon,
   SlidersHorizontalIcon,
+  BookOpen01Icon,
 } from '@/components/icons/generated';
 import { JobsLanding } from '@/components/jobs/landing';
 import { useBrand } from '@/lib/brand-context';
@@ -152,6 +153,13 @@ function Home() {
               icon={RankingIcon}
               title="Scores"
               description="Final scores and complete caption-by-caption recaps from every scored show."
+            />
+            <ExploreCard
+              to="/shows"
+              preload="intent"
+              icon={BookOpen01Icon}
+              title="Shows"
+              description="Show programs across the archive — titles, repertoire, designers, and media."
             />
             <ExploreCard
               to="/rankings"

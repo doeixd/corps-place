@@ -339,6 +339,21 @@ export const listPredictedEvents = async (db: Client): Promise<PredictedEventOpt
   }));
 };
 
+// All show titles across seasons (rm_show_titles) — for the /shows program
+// directory. Newest season first; the route joins corpsKey → slug/name.
+export const listAllShowTitles = async (
+  db: Client
+): Promise<{ season: string; corpsKey: string; title: string }[]> => {
+  const r = await db.execute({
+    sql: 'SELECT season, corps_key, title FROM rm_show_titles ORDER BY season DESC, title ASC',
+  });
+  return (r.rows as unknown as Array<Record<string, any>>).map((row) => ({
+    season: String(row.season),
+    corpsKey: String(row.corps_key),
+    title: String(row.title),
+  }));
+};
+
 // rm_home_standings → SeasonStandings | null (verbatim JSON).
 export const readSeasonStandings = async (
   db: Client,
