@@ -115,8 +115,15 @@ export function PalettePredictionTable({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventSlug]);
 
-  // Persist edits for this device.
+  // Persist edits for this device. Skip the first run (mount / event change) so
+  // it can't `removeItem` the saved scenario before the hydrate effect's
+  // setEdits lands. The table remounts per event (keyed), so this resets cleanly.
+  const skipPersist = useRef(true);
   useEffect(() => {
+    if (skipPersist.current) {
+      skipPersist.current = false;
+      return;
+    }
     try {
       const k = storageKey(eventSlug);
       if (Object.keys(edits).length === 0) localStorage.removeItem(k);

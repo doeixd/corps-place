@@ -42,7 +42,14 @@ const galleryAsMedia = (gallery: GalleryInput | null): MediaLink[] =>
 /** Dedupe by URL, preserving first occurrence. */
 const dedupe = (items: MediaLink[]): MediaLink[] => {
   const seen = new Set<string>();
-  return items.filter((m) => (m.url && !seen.has(m.url) ? (seen.add(m.url), true) : false));
+  const out: MediaLink[] = [];
+  for (const m of items) {
+    if (m.url && !seen.has(m.url)) {
+      seen.add(m.url);
+      out.push(m);
+    }
+  }
+  return out;
 };
 
 /**

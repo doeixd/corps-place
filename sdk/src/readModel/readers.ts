@@ -312,7 +312,7 @@ export const readFeaturedPrediction = async (
 };
 
 // All events that have a stored prediction — for the Prediction Palette event
-// picker. Ordered soonest-first (nulls last) so upcoming shows lead.
+// picker. Ordered by show date ascending (earliest first; undated last).
 export interface PredictedEventOption {
   slug: string;
   eventName: string;
