@@ -18,6 +18,9 @@ set -euo pipefail
 DB="${ADMIN_JOBS_DB:-/data/corps-place/contributions.db}"
 REPO_DIR="${REPO_DIR:-/root/corps-place}"
 SDK_DIR="$REPO_DIR/sdk"
+# Expose `vp` (vite-plus) so cmd_for's `vp exec tsx` runs under the SDK's pinned
+# Node 20 — NOT the system Node 24, which crashes on the Node-20-built better-sqlite3.
+export PATH="$HOME/.vite-plus/bin:$PATH"
 WORKER_ID="$(hostname)-$$"
 LOCK="/tmp/admin-job-worker.lock"
 
@@ -36,18 +39,18 @@ safe_arg() { printf '%s' "$1" | grep -Eq '^[A-Za-z0-9_.-]+$'; }
 cmd_for() {
   local kind="$1" args="$2"
   case "$kind" in
-    season_update)        echo "npx tsx scripts/seasonUpdateWorkflow.ts --season 2026" ;;
-    scrape_corps)         echo "npx tsx scripts/scrapeCorps.ts --apply" ;;
-    scrape_event_pages)   echo "npx tsx scripts/scrapeEventPages.ts" ;;
-    scrape_recaps)        echo "npx tsx scripts/scrapeWebsiteRecaps.ts" ;;
-    ingest_lineups)       echo "npx tsx scripts/ingestLineupsFromScrapes.ts" ;;
+    season_update)        echo "vp exec tsx scripts/seasonUpdateWorkflow.ts --season 2026" ;;
+    scrape_corps)         echo "vp exec tsx scripts/scrapeCorps.ts --apply" ;;
+    scrape_event_pages)   echo "vp exec tsx scripts/scrapeEventPages.ts" ;;
+    scrape_recaps)        echo "vp exec tsx scripts/scrapeWebsiteRecaps.ts" ;;
+    ingest_lineups)       echo "vp exec tsx scripts/ingestLineupsFromScrapes.ts" ;;
     generate_predictions) echo "$REPO_DIR/scripts/nightly-predictions.sh" ;;
     regenerate_event)
       local slug; slug="$(printf '%s' "$args" | sed -n 's/.*"event"[: ]*"\([^"]*\)".*/\1/p')"
       safe_arg "$slug" || { echo "__ERR__ regenerate_event needs a valid args.event"; return; }
-      echo "npx tsx scripts/predictEventRecap.ts --event $slug --season 2026 --save-db --force-refresh" ;;
-    fine_tune)            echo "npx tsx src/training/trainModelV9Subcaption-fixed.ts --load-model latest --trial-id cron_$(date +%s)" ;;
-    merge_staff_by_name)  echo "npx tsx scripts/mergeByNameDefault.ts --apply" ;;
+      echo "vp exec tsx scripts/predictEventRecap.ts --event $slug --season 2026 --save-db --force-refresh" ;;
+    fine_tune)            echo "vp exec tsx src/training/trainModelV9Subcaption-fixed.ts --load-model latest --trial-id cron_$(date +%s)" ;;
+    merge_staff_by_name)  echo "vp exec tsx scripts/mergeByNameDefault.ts --apply" ;;
     resolve_staff_identity)
       local op a b
       op="$(printf '%s' "$args" | sed -n 's/.*"op"[: ]*"\([^"]*\)".*/\1/p')"
@@ -55,7 +58,7 @@ cmd_for() {
       b="$(printf '%s' "$args" | sed -n 's/.*"b"[: ]*"\([^"]*\)".*/\1/p')"
       { [ "$op" = merge ] || [ "$op" = split ]; } && safe_arg "$a" && safe_arg "$b" \
         || { echo "__ERR__ resolve_staff_identity needs op=merge|split + valid a, b"; return; }
-      echo "npx tsx scripts/resolveStaffIdentity.ts --$op $a $b --apply" ;;
+      echo "vp exec tsx scripts/resolveStaffIdentity.ts --$op $a $b --apply" ;;
     save_corps_colors)
       local corps primary secondary
       corps="$(printf '%s' "$args" | sed -n 's/.*"corps"[: ]*"\([^"]*\)".*/\1/p')"
@@ -63,7 +66,7 @@ cmd_for() {
       secondary="$(printf '%s' "$args" | sed -n 's/.*"secondary"[: ]*"\([^"]*\)".*/\1/p')"
       safe_arg "$corps" && safe_arg "$primary" && safe_arg "${secondary:-none}" \
         || { echo "__ERR__ save_corps_colors needs valid corps, primary, secondary"; return; }
-      echo "npx tsx scripts/setCorpsColors.ts --corps $corps --primary $primary --secondary ${secondary:-none}" ;;
+      echo "vp exec tsx scripts/setCorpsColors.ts --corps $corps --primary $primary --secondary ${secondary:-none}" ;;
     *)                    echo "__ERR__ unknown kind: $kind" ;;
   esac
 }

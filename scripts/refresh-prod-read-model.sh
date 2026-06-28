@@ -1,16 +1,11 @@
 #!/usr/bin/env bash
-# BREAK-GLASS fallback: refresh the PROD read-model via the LOCAL A/B slot (no Turso).
+# CANONICAL prod read-model update: emit into the LOCAL A/B slot + flip the pointer.
 #
-# CORRECTED 2026-06-13 — the old header here was wrong. Prod now serves from the
-# Turso embedded replica (READ_MODEL_REPLICA_ENABLED=1 on the prod container), so
-# the CANONICAL prod-data update path is `scripts/publish-read-model.sh prod`
-# (emit + push to Turso). See docs/INFRASTRUCTURE.md §4.
-#
-# This script writes the LOCAL A/B files in /data/corps-place instead — which the
-# server reads ONLY when the replica is DISABLED. Use it only as a fallback when
-# Turso is unreachable: first set READ_MODEL_REPLICA_ENABLED=0 on the prod app
-# (otherwise this emit will NOT change what the site shows), run this, then
-# re-enable the replica once Turso is back.
+# CORRECTED 2026-06-28 — Turso was RETIRED 2026-06-15. Prod serves from the LOCAL
+# A/B files in /data/corps-place (READ_MODEL_REPLICA_ENABLED=0, .skip-r2-pull), so
+# THIS script is the live-update path (publish-read-model.sh / Turso are dead). A
+# 2026-06-28 score ingest confirmed: emit here + pointer flip = live on the site
+# in ~5s, no restart. (The earlier 2026-06-13 "Turso is canonical" note is void.)
 #
 # It emits a fresh read-model from sdk/dci-relational.db into the *inactive* slot
 # and flips the pointer; a server reading A/B polls the pointer (~5s) and hot-swaps.
@@ -24,11 +19,15 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$repo_root/sdk"
 
-# Use the vite-plus managed Node (pinned 20.x) — the SDK scripts need Node 20+.
+# Run under the vite-plus managed Node (pinned 20.x via sdk/.node-version). NOTE:
+# putting ~/.vite-plus/bin on PATH only exposes `vp`, NOT node/npx — so `npx tsx`
+# would run the system Node (v24) and crash on the Node-20-built better-sqlite3
+# (ABI mismatch). `vp exec tsx` runs tsx under the correct Node 20. Requires a
+# one-time `vp install` in sdk (installs tsx + native deps).
 export PATH="$HOME/.vite-plus/bin:$PATH"
 
 echo "[refresh-prod-read-model] emitting into /data/corps-place/read-model.db (A/B hot-swap)…"
-npx tsx scripts/emitReadModel.ts --out /data/corps-place/read-model.db "$@"
+vp exec tsx scripts/emitReadModel.ts --out /data/corps-place/read-model.db "$@"
 echo "[refresh-prod-read-model] done — server hot-swaps within ~5s."
 
 # Always travel the product-image bytes WITH the read-model — otherwise newly

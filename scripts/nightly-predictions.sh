@@ -48,7 +48,7 @@ failures=0
 while IFS= read -r slug; do
   [ -z "$slug" ] && continue
   echo "[nightly-predictions] === $slug"
-  if ! npx tsx scripts/predictEventRecap.ts --event "$slug" --save-db; then
+  if ! vp exec tsx scripts/predictEventRecap.ts --event "$slug" --save-db; then
     echo "[nightly-predictions] FAILED: $slug (continuing)"
     failures=$((failures + 1))
   fi
