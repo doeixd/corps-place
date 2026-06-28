@@ -6,13 +6,23 @@ import { Table } from '@/components/ui/table';
 import { ClassBadge } from '@/components/class-badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { CAPTIONS, fmt, type Caption } from '@/lib/prediction-scenario';
+import {
+  CAPTIONS,
+  fmt,
+  rollScenario,
+  type Caption,
+  type CaptionInterval,
+  type RecapRow,
+} from '@/lib/prediction-scenario';
+import { createRng } from '@/lib/seeded-rng';
 
 export interface PaletteRowInput {
   corpsKey: string;
   corps: string;
   division: string | null;
   caps: Record<Caption, number>;
+  /** Model confidence bands per caption — drives the Monte-Carlo "Roll". */
+  intervals?: Partial<Record<Caption, CaptionInterval>>;
 }
 /** Sparse overrides: corpsKey → caption → edited value. The URL/share unit. */
 export type PaletteEdits = Record<string, Partial<Record<Caption, number>>>;
@@ -120,6 +130,38 @@ export function PalettePredictionTable({
     setEdits((e) => ({ ...e, [corpsKey]: { ...e[corpsKey], [cap]: val } }));
   const reset = () => setEdits({});
 
+  // Roll a plausible alternate finish: sample every caption from the model's
+  // confidence band, fill the editable grid, and re-rank. Each press is a fresh
+  // draw (seeded by event + counter so it's reproducible); then you can tweak it.
+  const [rollN, setRollN] = useState(0);
+  const hasIntervals = useMemo(
+    () => initial.some((r) => r.intervals && Object.keys(r.intervals).length > 0),
+    [initial]
+  );
+  const roll = () => {
+    const n = rollN + 1;
+    setRollN(n);
+    const rng = createRng(`${eventSlug}:${n}`);
+    const base: RecapRow[] = initial.map((r) => ({
+      corps_key: r.corpsKey,
+      corps: r.corps,
+      division: r.division ?? undefined,
+      ...r.caps,
+      caption_intervals: r.intervals,
+    }));
+    const next: EditStrings = {};
+    for (const row of rollScenario(base, '0.8', rng)) {
+      const ck = typeof row.corps_key === 'string' ? row.corps_key : '';
+      if (!ck) continue;
+      next[ck] = {};
+      for (const c of CAPTIONS) {
+        const v = row[c];
+        if (typeof v === 'number') next[ck]![c] = String(Number(v.toFixed(3)));
+      }
+    }
+    setEdits(next);
+  };
+
   // The model's forecast ranking (baseline) for the Δ column.
   const predictedRank = useMemo(() => {
     const withTotal = initial.map((r) => ({ ck: r.corpsKey, total: computeTotals(r.caps).total }));
@@ -205,6 +247,11 @@ export function PalettePredictionTable({
           )}
         </p>
         <div className="flex items-center gap-2">
+          {hasIntervals ? (
+            <Button type="button" variant="outline" size="sm" onClick={roll} title="Sample a plausible alternate finish from the model's confidence bands">
+              Roll scenario
+            </Button>
+          ) : null}
           <Button type="button" variant="outline" size="sm" disabled={!dirty} onClick={share}>
             Copy share link
           </Button>

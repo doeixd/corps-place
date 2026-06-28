@@ -8,7 +8,7 @@ import {
   type PaletteRowInput,
   type PaletteEdits,
 } from '@/components/predict/palette-table';
-import { CAPTIONS, type Caption } from '@/lib/prediction-scenario';
+import { CAPTIONS, type Caption, type CaptionInterval } from '@/lib/prediction-scenario';
 import { seoHead } from '@/lib/seo';
 
 /**
@@ -54,6 +54,9 @@ export const Route = createFileRoute('/predict/palette')({
               caps: Object.fromEntries(
                 CAPTIONS.map((c) => [c, Number(r[c]) || 0])
               ) as Record<Caption, number>,
+              intervals: (r.caption_intervals ?? undefined) as
+                | Partial<Record<Caption, CaptionInterval>>
+                | undefined,
             };
           })
           .filter((r) => r.corpsKey);
@@ -94,7 +97,9 @@ function PalettePage() {
           Start from the model&apos;s forecast for any event, then edit caption scores to ask
           &ldquo;what if?&rdquo; — e.g. <em>if a corps finds half a point in General Effect, do they
           win?</em> Totals and the ranking update as you go, ▲/▼ shows how each corps moved versus
-          the forecast, and your edits are saved on this device. Use{' '}
+          the forecast, and your edits are saved on this device. Hit{' '}
+          <span className="font-medium text-text-primary">Roll scenario</span> for a plausible
+          alternate finish sampled from the model&apos;s confidence bands, or{' '}
           <span className="font-medium text-text-primary">Copy share link</span> to send a scenario
           to someone.
         </div>
