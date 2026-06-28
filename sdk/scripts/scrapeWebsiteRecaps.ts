@@ -9,6 +9,7 @@ import {
   scrapeWebsiteRecaps,
   verifyWebsiteRecaps
 } from "../src/websiteScraper.js";
+import { normalizeAllAgeDivisions } from "../src/normalizeDivisions.js";
 
 const parseNumberFlag = (args: string[], flag: string) => {
   const prefix = `${flag}=`;
@@ -52,6 +53,11 @@ const main = Effect.gen(function* () {
   console.log(`Score list pages: ${result.scoreLists}`);
   console.log(`Recaps scraped: ${result.recaps}`);
   console.log(`Corps scores ingested: ${result.corpsScores}`);
+
+  // Keep the source clean: collapse any generic "All Age Class" rows onto the
+  // corps's specific all-age class so DCA corps don't double in rankings.
+  yield* normalizeAllAgeDivisions;
+  console.log("Normalized all-age division labels.");
 
   if (verify) {
     const checks = yield* (verifyWebsiteRecaps(verifySlugs));

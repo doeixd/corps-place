@@ -26,20 +26,11 @@ cd "$repo_root/sdk"
 # one-time `vp install` in sdk (installs tsx + native deps).
 export PATH="$HOME/.vite-plus/bin:$PATH"
 
-# Normalize all-age division labels before emitting: the score-list scrape labels
-# DCA corps with a generic "All Age Class", while recap pages give the specific
-# "All-Age - World/Open/A Class". A corps split across both labels shows up TWICE
-# in division-grouped rankings (e.g. Connecticut Hurricanes). Collapse a corps's
-# generic rows onto the specific all-age class it uses elsewhere. Idempotent; only
-# touches corps that have BOTH labels (corps with only the generic label are left
-# alone). Unambiguous: no corps has >1 distinct specific all-age label.
-sqlite3 dci-relational.db "
-UPDATE corps_scores
-SET division_name = (SELECT s.division_name FROM corps_scores s
-                     WHERE s.corps_key = corps_scores.corps_key AND s.division_name LIKE 'All-Age - %Class' LIMIT 1)
-WHERE division_name = 'All Age Class'
-  AND EXISTS (SELECT 1 FROM corps_scores s2 WHERE s2.corps_key = corps_scores.corps_key AND s2.division_name LIKE 'All-Age - %Class');
-" 2>/dev/null && echo "[refresh-prod-read-model] normalized all-age division labels."
+# Belt-and-suspenders: the recap scrape already normalizes all-age division labels
+# at the source (src/normalizeDivisions.ts — DCA corps like Connecticut Hurricanes
+# otherwise double in division-grouped rankings). Re-run the canonical normalizer
+# here so ANY emit path leaves a clean read-model. Idempotent; non-fatal on error.
+vp exec tsx scripts/normalizeDivisions.ts || echo "[refresh-prod-read-model] division normalize skipped (non-fatal)"
 
 echo "[refresh-prod-read-model] emitting into /data/corps-place/read-model.db (A/B hot-swap)…"
 vp exec tsx scripts/emitReadModel.ts --out /data/corps-place/read-model.db "$@"
