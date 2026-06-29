@@ -700,7 +700,28 @@ const emitReadModelStep = async () => {
   }
 };
 
+// After ingest, before emit: re-heal manual staff curation that a fresh scrape may
+// have re-split or re-created (idempotent). Keeps merges/consolidations durable.
+// Best-effort — a failure here must not abort the workflow or block the emit.
+const reapplyCurationStep = async () => {
+  if (cli.dryRun) {
+    console.log('\n[curation] dry-run — skipping reapply.');
+    return;
+  }
+  console.log('\n[curation] re-applying staff curation (durability pass)…');
+  try {
+    const { execFileSync } = await import('node:child_process');
+    execFileSync('npx', ['tsx', 'scripts/reapplyStaffCuration.ts', '--apply'], {
+      cwd: process.cwd(),
+      stdio: 'inherit',
+    });
+  } catch (err) {
+    console.warn('[curation] reapply skipped:', (err as Error)?.message ?? err);
+  }
+};
+
 Effect.runPromise(program.pipe(Effect.provide(CombinedLayer)))
+  .then(reapplyCurationStep)
   .then(emitReadModelStep)
   .catch((error) => {
   console.error(error);
