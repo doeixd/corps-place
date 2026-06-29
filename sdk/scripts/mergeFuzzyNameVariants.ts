@@ -45,7 +45,7 @@ const lev = (a: string, b: string): number => {
   return prev[b.length];
 };
 
-type Pid = { pid: string; name: string; staffIds: string[]; first: string; last: string; assigns: number };
+type Pid = { pid: string; name: string; staffIds: string[]; first: string; last: string; assigns: number; collapsed: string };
 
 const main = async () => {
   if (!DRY) await db.execute('PRAGMA busy_timeout=15000');
@@ -63,7 +63,7 @@ const main = async () => {
     const t = toks(String(r.display_name));
     if (t.length < 2) continue;
     const e = byPid.get(pid);
-    if (!e) byPid.set(pid, { pid, name: String(r.display_name), staffIds: [String(r.staff_id)], first: t[0], last: t[t.length - 1], assigns: 0 });
+    if (!e) byPid.set(pid, { pid, name: String(r.display_name), staffIds: [String(r.staff_id)], first: t[0], last: t[t.length - 1], assigns: 0, collapsed: '' });
     else {
       e.staffIds.push(String(r.staff_id));
       if (String(r.display_name).length > e.name.length) e.name = String(r.display_name);
@@ -72,15 +72,51 @@ const main = async () => {
   for (const p of byPid.values()) {
     const c = (await db.execute({ sql: 'SELECT COUNT(*) n FROM corps_staff_assignments WHERE staff_id IN (SELECT staff_id FROM corps_staff WHERE person_id=?)', args: [p.pid] })).rows[0] as any;
     p.assigns = Number(c.n ?? 0);
+    p.collapsed = toks(p.name).join(''); // letters only — spaces/dashes removed
   }
 
   const list = [...byPid.values()];
+
+  // ── Tier 0: collapsed full-name equality (OCR dash/space splits) ──────────
+  // The strongest signal: two person_ids whose FULL names are identical once all
+  // spaces/dashes/punctuation are removed ("Jonathan Vanderkol ff" === "Jonathan
+  // Vanderkolff", "jon-athan ..." etc.). This is the dash/space-split class that
+  // slips every token-based matcher (the OCR break invents a fake token). Auto-merge
+  // — canonical = most rows, then fewest tokens (least-split), then shortest pid.
+  const handled = new Set<string>();
+  const collapseMerges: { canon: Pid; dup: Pid }[] = [];
+  const byCollapsed = new Map<string, Pid[]>();
+  for (const p of list) {
+    if (p.collapsed.length < 6) continue; // avoid short-name coincidences
+    (byCollapsed.get(p.collapsed) ?? byCollapsed.set(p.collapsed, []).get(p.collapsed)!).push(p);
+  }
+  for (const group of byCollapsed.values()) {
+    if (group.length < 2) continue;
+    const blocked = group.some((x, i) =>
+      group.some((y, j) => i < j && x.staffIds.some((sa) => y.staffIds.some((sb) => keepSep.has(`${sa}|${sb}`))))
+    );
+    if (blocked) continue;
+    const sorted = [...group].sort(
+      (a, b) =>
+        b.staffIds.length - a.staffIds.length ||
+        toks(a.name).length - toks(b.name).length ||
+        a.pid.length - b.pid.length ||
+        a.pid.localeCompare(b.pid)
+    );
+    const canon = sorted[0];
+    for (const dup of sorted.slice(1)) {
+      collapseMerges.push({ canon, dup });
+      handled.add(dup.pid);
+      handled.add(canon.pid);
+    }
+  }
   const anagram: { canon: Pid; dup: Pid }[] = [];
   const review: { a: Pid; b: Pid; dist: number }[] = [];
   const seen = new Set<string>();
   for (let i = 0; i < list.length; i++)
     for (let j = i + 1; j < list.length; j++) {
       const a = list[i], b = list[j];
+      if (handled.has(a.pid) || handled.has(b.pid)) continue; // already merged by tier 0
       if (a.first !== b.first || a.last === b.last || a.last.length < 4 || b.last.length < 4) continue;
       const key = [a.pid, b.pid].sort().join('|');
       if (seen.has(key)) continue;
@@ -102,9 +138,13 @@ const main = async () => {
       }
     }
 
-  console.log(`${DRY ? '(dry-run)' : 'APPLIED'} — ${anagram.length} anagram-surname auto-merges, ${review.length} near-miss pairs for review\n`);
-  console.log('AUTO-MERGE (anagram surname):');
-  for (const m of anagram) console.log(`  "${m.dup.name}" (${m.dup.pid}, ${m.dup.staffIds.length} rows) → "${m.canon.name}" (${m.canon.pid}, ${m.canon.staffIds.length} rows)`);
+  const merges = [
+    ...collapseMerges.map((m) => ({ ...m, reason: 'ocr-split / spacing' })),
+    ...anagram.map((m) => ({ ...m, reason: 'anagram surname typo' })),
+  ];
+  console.log(`${DRY ? '(dry-run)' : 'APPLIED'} — ${collapseMerges.length} collapsed-name merges, ${anagram.length} anagram-surname merges, ${review.length} near-miss for review\n`);
+  console.log('AUTO-MERGE:');
+  for (const m of merges) console.log(`  [${m.reason}] "${m.dup.name}" (${m.dup.pid}, ${m.dup.staffIds.length} rows) → "${m.canon.name}" (${m.canon.pid}, ${m.canon.staffIds.length} rows)`);
   console.log('\nREVIEW (near-miss, NOT merged):');
   for (const r of review.slice(0, 25)) console.log(`  "${r.a.name}" ~ "${r.b.name}" (surname dist ${r.dist})`);
   if (review.length > 25) console.log(`  …and ${review.length - 25} more`);
@@ -112,12 +152,12 @@ const main = async () => {
   if (!DRY) {
     const now = new Date().toISOString();
     let repointed = 0;
-    for (const m of anagram) {
+    for (const m of merges) {
       await db.execute({ sql: 'UPDATE corps_staff SET person_id=?, display_name=? WHERE person_id=?', args: [m.canon.pid, m.canon.name, m.dup.pid] });
       repointed++;
       await db.execute({
         sql: 'INSERT INTO corps_staff_review (review_id,left_staff_id,right_staff_id,same_person,confidence,action,rationale,resolved,decided_by,created_at,updated_at) VALUES (?,?,?,1,?,?,?,1,?,?,?)',
-        args: [randomUUID(), m.canon.staffIds[0], m.dup.staffIds[0], 'HIGH', 'merge', `anagram surname typo: "${m.dup.name}" → "${m.canon.name}"`, 'fuzzy-merge', now, now],
+        args: [randomUUID(), m.canon.staffIds[0], m.dup.staffIds[0], 'HIGH', 'merge', `${m.reason}: "${m.dup.name}" → "${m.canon.name}"`, 'fuzzy-merge', now, now],
       });
     }
     // Re-sync mined facts to the new canonical person_id.
