@@ -38,6 +38,13 @@ const send = (payload: Record<string, unknown>): void => {
 let enteredAt = 0;
 let maxScroll = 0;
 let lastLeavePath = '';
+// The path of the page currently being viewed. Tracked explicitly because by the
+// time a navigation resolves, location.pathname is already the NEXT page — so a
+// 'leave' flush must use this, not location, or it mislabels the page being left.
+let currentPath = '';
+// document.referrer doesn't change across SPA navigations, so only the FIRST
+// pageview of a visit carries the referrer; later ones would over-count it.
+let firstView = true;
 
 const scrollPct = (): number => {
   const doc = document.documentElement;
@@ -53,14 +60,13 @@ const onScroll = (): void => {
 
 /** Flush a 'leave' event (time on page + max scroll depth) for the current path. */
 const flushLeave = (): void => {
-  if (!enteredAt) return;
-  const path = location.pathname;
-  if (path === lastLeavePath) return; // avoid duplicate flush (pagehide + visibilitychange)
-  lastLeavePath = path;
+  if (!enteredAt || !currentPath) return;
+  if (currentPath === lastLeavePath) return; // dedupe pagehide + visibilitychange
+  lastLeavePath = currentPath;
   send({
     type: 'event',
     name: 'leave',
-    path,
+    path: currentPath, // the page being LEFT, not location (already the next page)
     device: device(),
     props: { seconds: Math.round((Date.now() - enteredAt) / 1000), scroll: maxScroll },
   });
@@ -68,12 +74,14 @@ const flushLeave = (): void => {
 
 /** Record a pageview + reset engagement counters for the new path. */
 export function trackPageview(path: string): void {
-  // Flush the previous page's engagement before starting the next.
+  // Flush the previous page's engagement (keyed to currentPath) before switching.
   flushLeave();
+  currentPath = path;
   enteredAt = Date.now();
   maxScroll = 0;
   lastLeavePath = '';
-  send({ type: 'pageview', path, ref: document.referrer, device: device() });
+  send({ type: 'pageview', path, ref: firstView ? document.referrer : '', device: device() });
+  firstView = false;
 }
 
 /** Record an arbitrary client domain event. */
@@ -89,13 +97,14 @@ let searchTimer: ReturnType<typeof setTimeout> | undefined;
 let lastSearchKey = '';
 export function maybeTrackSearch(): void {
   if (typeof window === 'undefined') return;
+  const scope = location.pathname;
   const q = (new URLSearchParams(location.search).get('q') ?? '').trim();
-  const key = `${location.pathname}|${q.toLowerCase()}`;
+  const key = `${scope}|${q.toLowerCase()}`;
   if (!q || key === lastSearchKey) return;
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
     lastSearchKey = key;
-    track('search', { scope: location.pathname, len: q.length });
+    track('search', { scope, len: q.length }); // scope/len captured at schedule time
   }, 800);
 }
 
