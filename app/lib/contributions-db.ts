@@ -651,6 +651,70 @@ const SCHEMA = [
      created_at TEXT NOT NULL
    )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_score_push_endpoint ON score_push_subscriptions (endpoint)`,
+
+  // ---------------------------------------------------------------------------
+  // Staff/Judge profile ownership (docs/plans/STAFF_PROFILE_OWNERSHIP_PLAN.md).
+  // A real person claims & manages their own /staff or /judges profile. Keyed by
+  // the read-model (entity_type, entity_id) — same shape as jobs_person_claim, but
+  // standalone (drumcorps.app has no jobs_profile). Owner edits live here as an
+  // overlay merged at read time (displayed = override ?? scraped), so they survive
+  // the nightly read-model emit. Mirrors the show-wiki overlay/revision model.
+  // ---------------------------------------------------------------------------
+  `CREATE TABLE IF NOT EXISTS profile_claims (
+     claim_id            TEXT PRIMARY KEY,
+     entity_type         TEXT NOT NULL,          -- 'staff' | 'judge'
+     entity_id           TEXT NOT NULL,          -- read-model person_id / judge_id
+     user_id             TEXT NOT NULL,
+     status              TEXT NOT NULL DEFAULT 'active',  -- active | pending | revoked
+     google_name         TEXT,                   -- session.user.name at claim time ("for our records")
+     matched_name        TEXT,                   -- profile display_name at claim time
+     name_match          TEXT,                   -- 'exact' | 'close' | 'weak'
+     name_score          REAL,                   -- 0..1 similarity
+     attested_at         TEXT NOT NULL,
+     attestation_version TEXT NOT NULL,          -- bump when the binding-attestation copy changes
+     attest_ip           TEXT,
+     attest_user_agent   TEXT,
+     claimed_at          TEXT NOT NULL,
+     revoked_at          TEXT,
+     revoked_by          TEXT,
+     revoke_reason       TEXT
+   )`,
+  // One ACTIVE owner per entity; revoked rows don't block a future re-claim.
+  `CREATE UNIQUE INDEX IF NOT EXISTS uq_profile_claims_active ON profile_claims (entity_type, entity_id) WHERE status != 'revoked'`,
+  `CREATE INDEX IF NOT EXISTS idx_profile_claims_user ON profile_claims (user_id)`,
+
+  // Per-field editable overlay. displayed = override ?? scraped. source_hash +
+  // scrape_diverged power the "the source record changed since you edited" notice
+  // (nightly reconcile), per the wiki reconciler.
+  `CREATE TABLE IF NOT EXISTS profile_overrides (
+     entity_type     TEXT NOT NULL,
+     entity_id       TEXT NOT NULL,
+     field_key       TEXT NOT NULL,        -- biography | photo | hometown | current_position | links | ...
+     content_json    TEXT NOT NULL,        -- Lexical envelope for prose; structured JSON for blocks; {removed:true} clears
+     source_hash     TEXT,                 -- hash of the scraped value at edit time
+     scrape_diverged INTEGER NOT NULL DEFAULT 0,
+     updated_at      TEXT NOT NULL,
+     updated_by      TEXT NOT NULL,
+     PRIMARY KEY (entity_type, entity_id, field_key)
+   )`,
+
+  // Append-only history — written in the SAME transaction as every claim/override
+  // mutation (invariant I-6). Same shape as show_revisions / jobs_revision.
+  `CREATE TABLE IF NOT EXISTS profile_revisions (
+     revision_id   TEXT PRIMARY KEY,
+     entity_type   TEXT NOT NULL,
+     entity_id     TEXT NOT NULL,
+     target_kind   TEXT NOT NULL,          -- 'claim' | 'override'
+     field_key     TEXT,                   -- null for claim ops
+     actor_user_id TEXT NOT NULL,
+     actor_role    TEXT NOT NULL,          -- frozen at write time
+     op            TEXT NOT NULL,          -- claim | revoke | edit | revert | remove
+     before_json   TEXT,
+     after_json    TEXT,
+     summary       TEXT,
+     created_at    TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_profile_revisions_entity ON profile_revisions (entity_type, entity_id, created_at)`,
 ];
 
 /**
