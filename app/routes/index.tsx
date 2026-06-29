@@ -22,7 +22,6 @@ import {
   UserMultipleIcon,
   JusticeScale01Icon,
   UserGroupIcon,
-  SlidersHorizontalIcon,
   BookOpen01Icon,
   Briefcase01Icon,
 } from '@/components/icons/generated';
@@ -147,6 +146,39 @@ function Home() {
           <StandingsSnapshot standings={standings} />
         </div>
 
+        {/* Cross-promo for the sibling site (corps brand only — Home() doesn't
+            render on pageantryjobs.com). External link to the other host. */}
+        <section>
+          <a
+            href="https://pageantryjobs.com"
+            className="group flex flex-col gap-4 rounded-xl border border-border bg-gradient-to-br from-primary/5 via-transparent to-transparent p-6 transition-colors hover:border-primary/40 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="flex items-start gap-4">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Icon icon={Briefcase01Icon} size="lg" />
+              </span>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                  Careers in the marching arts
+                </p>
+                <h2 className="text-lg font-semibold text-text-primary">
+                  Hiring or looking for a gig? Try PageantryJobs.com
+                </h2>
+                <p className="mt-1 max-w-xl text-sm text-text-secondary">
+                  The job board for drum corps, marching band, color guard &amp; winter percussion —
+                  post openings or find your next role.
+                </p>
+              </div>
+            </div>
+            {/* On stacked layouts the button sits below the text; indent it by the
+                icon width (size-12 + gap-4 = 4rem) so its left edge lines up with
+                the heading, then reset on sm+ where it's right-aligned. */}
+            <span className="ml-16 inline-flex shrink-0 items-center gap-1.5 self-start rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform group-hover:translate-x-0.5 sm:ml-0 sm:self-auto">
+              Visit PageantryJobs.com →
+            </span>
+          </a>
+        </section>
+
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">Explore</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -207,47 +239,7 @@ function Home() {
               title="Judge Directory"
               description="Drum corps judges and their assignments across seasons and captions."
             />
-            <ExploreCard
-              to="/predict/palette"
-              preload="intent"
-              icon={SlidersHorizontalIcon}
-              title="Prediction Palette"
-              description="A what-if sandbox: edit a predicted recap and watch the ranking change."
-            />
           </div>
-        </section>
-
-        {/* Cross-promo for the sibling site (corps brand only — Home() doesn't
-            render on pageantryjobs.com). External link to the other host. */}
-        <section className="mt-10">
-          <a
-            href="https://pageantryjobs.com"
-            className="group flex flex-col gap-4 rounded-xl border border-border bg-gradient-to-br from-primary/5 via-transparent to-transparent p-6 transition-colors hover:border-primary/40 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="flex items-start gap-4">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Icon icon={Briefcase01Icon} size="lg" />
-              </span>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                  Careers in the marching arts
-                </p>
-                <h2 className="text-lg font-semibold text-text-primary">
-                  Hiring or looking for a gig? Try PageantryJobs.com
-                </h2>
-                <p className="mt-1 max-w-xl text-sm text-text-secondary">
-                  The job board for drum corps, marching band, color guard &amp; winter percussion —
-                  post openings or find your next role.
-                </p>
-              </div>
-            </div>
-            {/* On stacked layouts the button sits below the text; indent it by the
-                icon width (size-12 + gap-4 = 4rem) so its left edge lines up with
-                the heading, then reset on sm+ where it's right-aligned. */}
-            <span className="ml-16 inline-flex shrink-0 items-center gap-1.5 self-start rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform group-hover:translate-x-0.5 sm:ml-0 sm:self-auto">
-              Visit PageantryJobs.com →
-            </span>
-          </a>
         </section>
       </div>
 
