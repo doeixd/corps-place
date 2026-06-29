@@ -141,7 +141,21 @@ const fetchBioFactsByPerson = async (
 
 const sortSeasonsDesc = (s: Iterable<string>) => [...new Set(s)].sort((a, b) => b.localeCompare(a));
 
+/** Person_ids removed by a takedown / owner-delete (durable removal — "don't come
+ *  back"). The read-model EXCLUDES these, so even if a later yearbook re-scrape
+ *  re-creates the relational row, the person never reappears on the site. Tolerates
+ *  a missing `staff_suppressions` table (older DBs) by returning an empty set. */
+export const loadSuppressedPersonIds = async (db: Client): Promise<Set<string>> => {
+  try {
+    const r = await db.execute({ sql: 'SELECT person_id FROM staff_suppressions', args: [] });
+    return new Set((r.rows as unknown as { person_id: string }[]).map((x) => x.person_id));
+  } catch {
+    return new Set();
+  }
+};
+
 export const buildStaffDirectory = async (db: Client): Promise<StaffSummary[]> => {
+  const suppressed = await loadSuppressedPersonIds(db);
   const [identityRes, assignRes] = await Promise.all([
     db.execute({
       sql: `SELECT person_id, display_name, default_title, photo_url, biography
@@ -165,6 +179,7 @@ export const buildStaffDirectory = async (db: Client): Promise<StaffSummary[]> =
 
   const identityByPerson = new Map<string, StaffRow[]>();
   for (const r of identityRes.rows as unknown as StaffRow[]) {
+    if (suppressed.has(r.person_id)) continue;
     (identityByPerson.get(r.person_id) ?? identityByPerson.set(r.person_id, []).get(r.person_id)!).push(r);
   }
 
@@ -203,6 +218,7 @@ export const buildStaffDirectory = async (db: Client): Promise<StaffSummary[]> =
  *  For each person_id, fetches identity + all assignments (grouped in JS),
  *  which replaces the per-person loop in the emit script. */
 export const buildAllStaffProfiles = async (db: Client): Promise<StaffProfile[]> => {
+  const suppressed = await loadSuppressedPersonIds(db);
   const [identityRes, assignRes] = await Promise.all([
     db.execute({
       sql: `SELECT person_id, display_name, default_title, photo_url, biography
@@ -227,6 +243,7 @@ export const buildAllStaffProfiles = async (db: Client): Promise<StaffProfile[]>
   // Group identities by person_id (same as buildStaffDirectory).
   const identityByPerson = new Map<string, StaffRow[]>();
   for (const r of identityRes.rows as unknown as StaffRow[]) {
+    if (suppressed.has(r.person_id)) continue;
     (identityByPerson.get(r.person_id) ?? identityByPerson.set(r.person_id, []).get(r.person_id)!).push(r);
   }
 
@@ -266,6 +283,7 @@ export const buildAllStaffProfiles = async (db: Client): Promise<StaffProfile[]>
 };
 
 export const buildStaffProfile = async (db: Client, personId: string): Promise<StaffProfile | null> => {
+  if ((await loadSuppressedPersonIds(db)).has(personId)) return null; // durable removal
   const identityRes = await db.execute({
     sql: `SELECT person_id, display_name, default_title, photo_url, biography
           FROM corps_staff WHERE person_id = ?`,

@@ -322,6 +322,48 @@ I-3/I-11). Also flag orphaned claims/overrides (risk §10.1) in this pass.
 
 ---
 
+## 11a. Claim & merge two pages (one person split across `entity_id`s)
+
+A real person is often split across multiple read-model ids — two staff `person_id`s, or a
+staff **and** a judge entity (they instructed *and* adjudicated). They should be able to **own
+both and merge them into one profile**.
+
+- **Model.** Keep the existing per-entity claims, plus a `profile_merges` table recording the
+  merge: `(merge_id, canonical_type, canonical_id, merged_type, merged_id, merged_by, created_at)`.
+  The merged entity is **aliased** to the canonical one for display + routing.
+- **Gate.** A user may merge two entities only when they **hold the active claim on BOTH** (or is a
+  moderator) — `requireProfileOwner` on each. This prevents merging unrelated people.
+- **Read path.** `getProfileOverlay`/the loader resolves an alias: a request for a merged
+  `entity_id` returns the canonical's overlay + a redirect hint (like `STAFF_REDIRECTS`). The
+  read-merge stays the same; only id-resolution gains an alias lookup.
+- **Cross-type nuance.** staff↔judge merge means the *page* shows both histories. Simplest v1:
+  the canonical profile renders both the staff assignments and the judge assignments (read both
+  read-model sources when a cross-type merge alias exists); defer a unified card design.
+- **Durability.** The merge is recorded in `profile_merges` (contributions.db, survives emit) and,
+  for the relational staff↔staff case, also via `resolveStaffIdentity`/`corps_staff_review` so the
+  read-model itself collapses them. Unmerge = mark the merge row inactive.
+
+## 11b. Delete a profile durably ("don't let it come back")
+
+An owner (or a moderator on a takedown/privacy request) can **remove a profile so a future
+yearbook/corps re-scrape can't resurrect it**.
+
+- **Mechanism (BUILT for staff):** a `staff_suppressions(person_id, reason, created_at)` table in
+  `dci-relational.db`; the **read-model staff builders exclude suppressed person_ids**
+  (`builders/staff.ts` `loadSuppressedPersonIds` — tolerant of a missing table). So even if the
+  scraper re-creates the relational row, the person never reappears on the site. `scripts/
+  suppressStaff.ts --person <id> [--apply]` records the suppression **and** deletes current rows
+  (dry-run first); then publish via `refresh-prod-read-model.sh`. This is the data layer for both
+  **takedown requests** and **owner self-delete**.
+- **TODO to finish the feature:** (1) a judge-side suppression (mirror for `rm_judges`); (2) a
+  contributions-side `delete` capability + server-fn so an **owner** (active claim) can trigger
+  suppression of their own page, and a moderator can via `manageProfileClaims`; (3) record the
+  delete in `profile_revisions` (op='delete') / an admin audit row; (4) deleting also revokes any
+  claim + clears overrides (reuse the revoke path).
+- **Precedent:** Dane Holmes was removed this way (`suppressStaff.ts --person dane-holmes`).
+
+---
+
 ## 12. Build order (incremental, commit per step)
 
 1. **Migrations** — add the three `profile_*` tables to `scripts/contributions-migrations.mjs` +
