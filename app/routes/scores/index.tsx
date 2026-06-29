@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { getHybridAllEvents } from '@/lib/server-fns/hybrid';
 import { availableSeasons } from '@/lib/event-filtering';
@@ -158,7 +158,9 @@ function ScoresIndex() {
           {groups.map((g) => (
             <section key={g.season} id={`season-${g.season}`} className="scroll-mt-20">
               <h2 className="mb-6 text-xl font-semibold text-text-primary">
-                {g.season} Scores{' '}
+                <Link to="/scores/$slug" params={{ slug: g.season }} className="hover:text-primary">
+                  {g.season} Scores
+                </Link>{' '}
                 <span className="text-sm font-normal text-text-secondary">
                   · {g.items.length} {g.items.length === 1 ? 'show' : 'shows'}
                 </span>

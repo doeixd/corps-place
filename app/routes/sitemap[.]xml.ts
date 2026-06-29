@@ -137,12 +137,21 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
     try {
       const events = await getHybridAllEvents();
       let latestScored: string | undefined;
+      // Per-season archive pages (/scores/<year>) get a <lastmod> = that season's
+      // most recent scored show.
+      const seasonLastmod = new Map<string, string>();
       for (const e of events)
         if (e.scores_released && e.slug) {
           dated.push({ loc: `/scores/${e.slug}`, lastmod: e.start_date ?? undefined });
           if (e.start_date && (!latestScored || e.start_date > latestScored))
             latestScored = e.start_date;
+          if (e.season && e.start_date) {
+            const prev = seasonLastmod.get(e.season);
+            if (!prev || e.start_date > prev) seasonLastmod.set(e.season, e.start_date);
+          }
         }
+      for (const [season, lastmod] of seasonLastmod)
+        dated.push({ loc: `/scores/${season}`, lastmod });
       // Give the /scores index a real freshness signal: the most recent scored
       // show. It changes whenever a new event posts scores, so Google re-crawls
       // the index then (a static path would carry no <lastmod> at all). Drop it
