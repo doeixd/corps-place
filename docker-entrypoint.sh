@@ -30,4 +30,11 @@ fi
 echo "[entrypoint] applying contributions.db migrations…"
 node /app/scripts/migrate-contributions.mjs || echo "[entrypoint] migration step failed — continuing"
 
+# Cap the SSR server's V8 heap so a leak/runaway can't OOM the ~3.8 GB box
+# (earlyoom is the backstop, not the first line). Steady-state is ~272 MB, so 1 GB
+# is generous headroom. Tune without a code change via APP_MAX_OLD_SPACE_MB; any
+# pre-set NODE_OPTIONS is preserved.
+export NODE_OPTIONS="${NODE_OPTIONS:-} --max-old-space-size=${APP_MAX_OLD_SPACE_MB:-1024}"
+echo "[entrypoint] NODE_OPTIONS=$NODE_OPTIONS"
+
 exec node .output/server/index.mjs
