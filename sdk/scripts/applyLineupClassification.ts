@@ -85,7 +85,9 @@ const main = async () => {
   const candidates = await exec(`
     SELECT c.corps_key, c.name,
       (SELECT COUNT(*) FROM corps_scores s WHERE s.corps_key = c.corps_key) AS scores,
-      (SELECT COUNT(*) FROM model_event_prediction_rows r WHERE r.corps_key = c.corps_key) AS pred_rows
+      (SELECT COUNT(*) FROM model_event_prediction_rows r WHERE r.corps_key = c.corps_key) AS pred_rows,
+      (CASE WHEN c.corps_logo IS NOT NULL AND c.corps_logo != '' THEN 1 ELSE 0 END) AS has_logo,
+      (SELECT COUNT(*) FROM corps_curated_fields cf WHERE cf.corps_key = c.corps_key) AS curated
     FROM corps c
   `);
   const bogus = (candidates.rows as unknown as Array<{
@@ -93,7 +95,19 @@ const main = async () => {
     name: string;
     scores: number;
     pred_rows: number;
-  }>).filter((r) => isNonCorpsName(r.name) && r.scores === 0 && r.pred_rows === 0);
+    has_logo: number;
+    curated: number;
+  }>).filter(
+    (r) =>
+      isNonCorpsName(r.name) &&
+      r.scores === 0 &&
+      r.pred_rows === 0 &&
+      // Never delete a curated corps: a logo or any corps_curated_fields entry means
+      // a human deliberately enriched it (e.g. defunct/alumni corps with no scores).
+      // This is what wiped curated corps in the 2026-06-14 cleanup; guard against it.
+      r.has_logo === 0 &&
+      r.curated === 0
+  );
 
   console.log(`\nBogus non-corps rows to delete (${bogus.length}):`);
   for (const b of bogus) console.log(`  - ${b.corps_key}  «${b.name}»`);
