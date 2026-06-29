@@ -1,8 +1,7 @@
 // Site analytics (first-party, cookieless). Pageviews/uniques, top paths &
 // referrers, domain events, brand/device splits, engagement. Read-only; gated by
 // viewAdmin. Data comes from analytics.db via getAnalyticsSummary.
-import { useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useRouterState } from '@tanstack/react-router';
 import { adminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
@@ -10,15 +9,26 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { getAnalyticsSummary, type AnalyticsSummary } from '@/lib/server-fns/analytics';
 import { seoHead } from '@/lib/seo';
 
+type AnalyticsSearch = { range?: string; metric?: Metric };
+
 export const Route = createFileRoute('/admin/analytics')({
-  loader: adminLoader('viewAdmin', async () => ({
-    summary: await getAnalyticsSummary({ data: { range: '30d' } }),
+  // Filters live in the URL (same pattern as the rest of the site) so they survive
+  // refresh and are shareable. `range` drives the server load; `metric` is UI-only.
+  validateSearch: (s: Record<string, unknown>): AnalyticsSearch => {
+    const out: AnalyticsSearch = {};
+    if (typeof s.range === 'string' && RANGES.some((r) => r.key === s.range)) out.range = s.range;
+    if (s.metric === 'views' || s.metric === 'visitors') out.metric = s.metric;
+    return out;
+  },
+  loaderDeps: ({ search }) => ({ range: search.range ?? '30d' }),
+  loader: adminLoader('viewAdmin', async ({ deps }) => ({
+    summary: await getAnalyticsSummary({ data: { range: (deps as { range: string }).range } }),
   })),
   head: () =>
     seoHead({ title: 'Admin — Analytics', description: 'Site analytics', path: '/admin/analytics' }),
   component: () => {
     const { gate, data } = Route.useLoaderData();
-    return <AdminPage gate={gate}>{() => (data ? <Analytics initial={data.summary} /> : null)}</AdminPage>;
+    return <AdminPage gate={gate}>{() => (data ? <Analytics summary={data.summary} /> : null)}</AdminPage>;
   },
 });
 
@@ -33,21 +43,18 @@ const RANGES = [
 ] as const;
 type Metric = 'views' | 'visitors';
 
-function Analytics({ initial }: { initial: AnalyticsSummary }) {
-  const [summary, setSummary] = useState(initial);
-  const [range, setRange] = useState(initial.range);
-  const [metric, setMetric] = useState<Metric>('views');
-  const [busy, setBusy] = useState(false);
+function Analytics({ summary }: { summary: AnalyticsSummary }) {
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const range = search.range ?? '30d';
+  const metric: Metric = search.metric ?? 'views';
+  // Pending while the loader refetches a new range → disables the pills.
+  const busy = useRouterState({ select: (s) => s.status === 'pending' });
 
-  const load = async (r: string) => {
-    setBusy(true);
-    setRange(r);
-    try {
-      setSummary(await getAnalyticsSummary({ data: { range: r } }));
-    } finally {
-      setBusy(false);
-    }
-  };
+  // Write filters to the URL. `range` changes loaderDeps → server refetch; `metric`
+  // leaves loaderDeps untouched → instant, no refetch.
+  const load = (r: string) => navigate({ search: (p) => ({ ...p, range: r }) });
+  const setMetric = (m: Metric) => navigate({ search: (p) => ({ ...p, metric: m }) });
 
   return (
     <>

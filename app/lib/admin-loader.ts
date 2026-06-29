@@ -44,8 +44,10 @@ export const requireAdminLoader = (cap: AdminCap) => async (): Promise<AdminGate
  * `Route.useLoaderData()` and refresh after mutations with `router.invalidate()`.
  */
 export const adminLoader =
-  <T>(cap: AdminCap, fetch: () => Promise<T>) =>
-  async (): Promise<{ gate: AdminGate; data: T | null }> => {
+  <T>(cap: AdminCap, fetch: (ctx: { deps: unknown }) => Promise<T>) =>
+  async (ctx?: { deps?: unknown }): Promise<{ gate: AdminGate; data: T | null }> => {
     const gate = await requireAdminLoader(cap)();
-    return { gate, data: gate.signedIn ? await fetch() : null };
+    // Forward the loader context (carries `deps` from the route's `loaderDeps`, e.g.
+    // URL search params) so pages can fetch URL-driven data. 0-arg callers ignore it.
+    return { gate, data: gate.signedIn ? await fetch({ deps: ctx?.deps ?? {} }) : null };
   };
