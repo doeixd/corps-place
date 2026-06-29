@@ -93,7 +93,20 @@ const fetchJudgeBioFacts = async (db: Client, judgeId: string): Promise<JudgeBio
   return f;
 };
 
+/** Judge_ids removed by a takedown / owner-delete (durable removal — mirrors the
+ *  staff suppression). Read-model excludes them so a re-scrape can't resurrect them.
+ *  Tolerates a missing `judge_suppressions` table (older DBs) → empty set. */
+export const loadSuppressedJudgeIds = async (db: Client): Promise<Set<string>> => {
+  try {
+    const r = await db.execute({ sql: 'SELECT judge_id FROM judge_suppressions', args: [] });
+    return new Set((r.rows as unknown as { judge_id: string }[]).map((x) => x.judge_id));
+  } catch {
+    return new Set();
+  }
+};
+
 export const buildJudgeDirectory = async (db: Client): Promise<JudgeSummary[]> => {
+  const suppressed = await loadSuppressedJudgeIds(db);
   const [result, breakdownResult] = await Promise.all([
     db.execute({
       sql: `
@@ -144,7 +157,7 @@ export const buildJudgeDirectory = async (db: Client): Promise<JudgeSummary[]> =
     assignment_count: number;
     seasons_csv: string | null;
   }>;
-  return rows.map((r) => {
+  return rows.filter((r) => !suppressed.has(r.judge_id)).map((r) => {
     const csv = r.seasons_csv;
     const seasons =
       typeof csv === 'string' && csv
@@ -170,6 +183,7 @@ export const buildJudgeProfile = async (
   db: Client,
   judgeId: string
 ): Promise<JudgeProfile | null> => {
+  if ((await loadSuppressedJudgeIds(db)).has(judgeId)) return null; // durable removal
   const judgeResult = await db.execute({
     sql: `SELECT judge_id, display_name, first_name, last_name, biography, photo_url
           FROM judges WHERE judge_id = ? LIMIT 1`,

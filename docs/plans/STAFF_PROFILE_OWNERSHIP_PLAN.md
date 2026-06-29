@@ -352,15 +352,16 @@ yearbook/corps re-scrape can't resurrect it**.
   `dci-relational.db`; the **read-model staff builders exclude suppressed person_ids**
   (`builders/staff.ts` `loadSuppressedPersonIds` — tolerant of a missing table). So even if the
   scraper re-creates the relational row, the person never reappears on the site. `scripts/
-  suppressStaff.ts --person <id> [--apply]` records the suppression **and** deletes current rows
+  suppressProfile.ts --person <id> [--apply]` records the suppression **and** deletes current rows
   (dry-run first); then publish via `refresh-prod-read-model.sh`. This is the data layer for both
   **takedown requests** and **owner self-delete**.
-- **TODO to finish the feature:** (1) a judge-side suppression (mirror for `rm_judges`); (2) a
+- **Judge side: BUILT** — `judge_suppressions(judge_id)` + `builders/judges.ts` `loadSuppressedJudgeIds` exclusion (directory + detail); `suppressProfile.ts --type judge --id <judge_id>`.
+- **TODO to finish the feature:** (2) a
   contributions-side `delete` capability + server-fn so an **owner** (active claim) can trigger
   suppression of their own page, and a moderator can via `manageProfileClaims`; (3) record the
   delete in `profile_revisions` (op='delete') / an admin audit row; (4) deleting also revokes any
   claim + clears overrides (reuse the revoke path).
-- **Precedent:** Dane Holmes was removed this way (`suppressStaff.ts --person dane-holmes`).
+- **Precedent:** Dane Holmes was removed this way (`suppressProfile.ts --person dane-holmes`).
 
 ---
 
