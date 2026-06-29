@@ -96,8 +96,8 @@ function ScoresEventPage() {
   return (
     <PageShell>
       <PageHeader
-        title={name}
-        subtitle={[year ? `${year} Scores` : 'Scores', formatEventDate(event.start_date), loc]
+        title={`${name}${year ? ` ${year}` : ''}`}
+        subtitle={['Scores & full recap', formatEventDate(event.start_date), loc]
           .filter(Boolean)
           .join(' · ')}
         backTo="/scores"

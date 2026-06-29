@@ -108,6 +108,7 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       description,
       path: `/shows/${params.slug}/${params.season}`,
       image,
+      type: 'article',
       jsonLd: [
         {
           '@context': 'https://schema.org',
@@ -117,8 +118,10 @@ export const Route = createFileRoute('/shows/$slug/$season')({
           ...(authoredPlain || s.description || s.tagline
             ? { description: clampDescription(authoredPlain ?? s.description ?? s.tagline, s.title) }
             : {}),
+          ...(image ? { image } : {}),
           ...(corpsName ? { creator: { '@type': 'MusicGroup', name: corpsName } } : {}),
           ...(s.premiereDate ? { datePublished: s.premiereDate } : {}),
+          genre: 'Drum Corps',
           url: `${SITE_URL}/shows/${params.slug}/${params.season}`,
         },
         breadcrumbLd([
@@ -197,14 +200,16 @@ function ShowDetailPage() {
               className="size-12 sm:size-[72px]"
             />
             <div className="min-w-0 space-y-1">
-              <h1 className="text-2xl font-bold text-text-primary">{show.title}</h1>
+              <h1 className="text-2xl font-bold text-text-primary">
+                {show.title}
+                <span className="mt-1 block text-xs font-medium uppercase tracking-wide text-text-secondary">
+                  {corps.name} · {show.season}
+                </span>
+              </h1>
               <Show when={show.subtitle}>{(s) => <p className="text-text-secondary">{s}</p>}</Show>
               <Show when={show.tagline}>
                 {(t) => <p className="text-sm italic text-text-secondary">“{t}”</p>}
               </Show>
-              <p className="text-xs uppercase tracking-wide text-text-secondary">
-                {corps.name} · {show.season}
-              </p>
               <div className="pt-1">
                 <ScoreNotifyButton
                   targetKind="event"

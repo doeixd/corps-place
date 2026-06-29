@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { getHybridAllEvents } from '@/lib/server-fns/hybrid';
-import { availableSeasons, selectEvents } from '@/lib/event-filtering';
+import { availableSeasons } from '@/lib/event-filtering';
 import { eventFilterMachine, eventFilterSearchCodec } from '@/machines/event-filter-machine';
 import { useSearchSync } from '@/lib/use-search-sync';
 import { searchString } from '@/lib/utils';
@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Icon } from '@/components/icon';
 import { Search01Icon } from '@/components/icons/generated';
 import { ScoreEventSection } from '@/components/scores/score-event-section';
-import { seoHead, breadcrumbLd } from '@/lib/seo';
+import { seoHead, breadcrumbLd, SITE_URL } from '@/lib/seo';
 
 type ScoresSearch = { season?: string; q?: string };
 
@@ -39,7 +39,7 @@ export const Route = createFileRoute('/scores/')({
   head: ({ loaderData }) => {
     const n = loaderData?.events.filter((e) => e.scores_released).length ?? 0;
     return seoHead({
-      title: 'DCI Scores & Full Recaps',
+      title: 'DCI Scores & Full Recaps by Season',
       description: `Final scores and complete caption-by-caption recaps from ${n} scored DCI shows — browse results by season on DrumCorps.app.`,
       path: '/scores',
       jsonLd: [
@@ -47,6 +47,19 @@ export const Route = createFileRoute('/scores/')({
           { name: 'Home', path: '/' },
           { name: 'Scores', path: '/scores' },
         ]),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: (loaderData?.events ?? [])
+            .filter((e) => e.scores_released)
+            .slice(0, 100)
+            .map((e, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              url: `${SITE_URL}/scores/${e.slug}`,
+              name: `${e.event_name || e.name || e.slug} — Scores`,
+            })),
+        },
       ],
     });
   },
@@ -74,20 +87,33 @@ function ScoresIndex() {
     navigate: ({ search: s, replace, resetScroll }) => navigate({ search: s, replace, resetScroll }),
   });
 
-  // Results read newest-first regardless of the events' default chronological order.
-  const ordered = useMemo(
-    () =>
-      [...selectEvents(scored, filter)].sort((a, b) =>
-        (b.start_date ?? '').localeCompare(a.start_date ?? '')
-      ),
-    [scored, filter]
-  );
+  // Group ALL scored events by season so every event heading is a server-rendered,
+  // crawlable link (not just the selected season). The search box filters across all
+  // seasons; the season chips jump to each section. Newest-first within a season.
+  const groups = useMemo(() => {
+    const needle = filter.search.trim().toLowerCase();
+    return seasons
+      .map((season) => ({
+        season,
+        items: scored
+          .filter((e) => e.season === season)
+          .filter(
+            (e) =>
+              !needle ||
+              (e.event_name || e.name || e.slug).toLowerCase().includes(needle) ||
+              (place(e.location_city, e.location_state) ?? '').toLowerCase().includes(needle)
+          )
+          .sort((a, b) => (b.start_date ?? '').localeCompare(a.start_date ?? '')),
+      }))
+      .filter((g) => g.items.length > 0);
+  }, [scored, seasons, filter.search]);
+  const total = groups.reduce((n, g) => n + g.items.length, 0);
 
   return (
     <PageShell>
       <PageHeader
-        title="Scores"
-        subtitle="DCI results & full recaps"
+        title="DCI Scores & Recaps"
+        subtitle="Final results & full caption recaps by season"
         backTo="/"
         backLabel="Home"
       />
@@ -112,29 +138,43 @@ function ScoresIndex() {
       <SeasonChips
         seasons={seasons}
         value={filter.season}
-        onSelect={(season) => send({ type: 'SET_SEASON', season })}
+        onSelect={(season) => {
+          send({ type: 'SET_SEASON', season });
+          if (typeof document !== 'undefined')
+            document
+              .getElementById(`season-${season}`)
+              ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }}
         wrap={false}
         className="mb-6"
       />
 
-      <h2 className="mb-6 text-xl font-semibold">
-        {ordered.length} scored {ordered.length === 1 ? 'show' : 'shows'}
-      </h2>
-
-      {ordered.length === 0 ? (
+      {total === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-6 text-sm text-text-secondary">
-          No scored shows match — try another season or clear the search.
+          No scored shows match — try another search.
         </p>
       ) : (
         <div className="space-y-12">
-          {ordered.map((e) => (
-            <ScoreEventSection
-              key={e.slug}
-              slug={e.slug}
-              name={e.event_name || e.name || e.slug}
-              date={e.start_date}
-              place={place(e.location_city, e.location_state)}
-            />
+          {groups.map((g) => (
+            <section key={g.season} id={`season-${g.season}`} className="scroll-mt-20">
+              <h2 className="mb-6 text-xl font-semibold text-text-primary">
+                {g.season} Scores{' '}
+                <span className="text-sm font-normal text-text-secondary">
+                  · {g.items.length} {g.items.length === 1 ? 'show' : 'shows'}
+                </span>
+              </h2>
+              <div className="space-y-12">
+                {g.items.map((e) => (
+                  <ScoreEventSection
+                    key={e.slug}
+                    slug={e.slug}
+                    name={e.event_name || e.name || e.slug}
+                    date={e.start_date}
+                    place={place(e.location_city, e.location_state)}
+                  />
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       )}
