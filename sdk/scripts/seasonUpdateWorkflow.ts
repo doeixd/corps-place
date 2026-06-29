@@ -720,9 +720,26 @@ const reapplyCurationStep = async () => {
   }
 };
 
+// After emit: reconcile profile-ownership overrides against the fresh read-model
+// (set scrape_diverged + flag orphaned claims). Best-effort; no-op until the feature
+// ships. Runs last because it reads the just-emitted read-model.
+const reconcileOverridesStep = async () => {
+  if (cli.dryRun || cli.skipReadModel) return;
+  try {
+    const { execFileSync } = await import('node:child_process');
+    execFileSync('npx', ['tsx', 'scripts/reconcileProfileOverrides.ts', '--apply'], {
+      cwd: process.cwd(),
+      stdio: 'inherit',
+    });
+  } catch (err) {
+    console.warn('[reconcile] profile-override reconcile skipped:', (err as Error)?.message ?? err);
+  }
+};
+
 Effect.runPromise(program.pipe(Effect.provide(CombinedLayer)))
   .then(reapplyCurationStep)
   .then(emitReadModelStep)
+  .then(reconcileOverridesStep)
   .catch((error) => {
   console.error(error);
   process.exitCode = 1;

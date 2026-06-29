@@ -320,6 +320,13 @@ for each `profile_overrides` row recompute the scraped field's `source_hash`; if
 and the owner can re-confirm. Per-field precision. Server-authoritative (client hash never trusted,
 I-3/I-11). Also flag orphaned claims/overrides (risk §10.1) in this pass.
 
+**BUILT:** `sdk/scripts/reconcileProfileOverrides.ts` (idempotent; reads contributions.db +
+the active read-model). Baselines a null `source_hash` on first run, then sets
+`scrape_diverged` per field on later runs; flags active claims whose `entity_id` no longer
+resolves in the read-model. Wired into `seasonUpdateWorkflow` AFTER emit. Verified on
+synthetic data (baseline / diverge / orphan-claim all correct). Tolerant of the feature's
+tables not existing yet (no-op).
+
 ---
 
 ## 11a. Claim & merge two pages (one person split across `entity_id`s)
