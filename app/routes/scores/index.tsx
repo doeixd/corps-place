@@ -17,6 +17,8 @@ import { seoHead, breadcrumbLd, SITE_URL } from '@/lib/seo';
 
 type ScoresSearch = { season?: string; q?: string };
 
+const CURRENT_SCORES_SEASON = '2026';
+
 const place = (city?: string | null, state?: string | null) =>
   [city, state].filter(Boolean).join(', ') || null;
 
@@ -73,8 +75,11 @@ function ScoresIndex() {
   const navigate = Route.useNavigate();
 
   const scored = useMemo(() => events.filter((e) => e.scores_released), [events]);
-  const seasons = availableSeasons(scored);
-  const defaultSeason = seasons[0] ?? 'all';
+  const scoredSeasons = availableSeasons(scored);
+  const seasons = scoredSeasons.includes(CURRENT_SCORES_SEASON)
+    ? scoredSeasons
+    : [CURRENT_SCORES_SEASON, ...scoredSeasons];
+  const defaultSeason = CURRENT_SCORES_SEASON;
   const codec = useMemo(() => eventFilterSearchCodec(defaultSeason), [defaultSeason]);
 
   const [state, send] = useMachine(eventFilterMachine, { input: codec.decode(search) });
@@ -87,12 +92,12 @@ function ScoresIndex() {
     navigate: ({ search: s, replace, resetScroll }) => navigate({ search: s, replace, resetScroll }),
   });
 
-  // Group ALL scored events by season so every event heading is a server-rendered,
-  // crawlable link (not just the selected season). The search box filters across all
-  // seasons; the season chips jump to each section. Newest-first within a season.
+  // Group scored events by the active season filter. The default view is the
+  // current season; the All pill is the archive view.
   const groups = useMemo(() => {
     const needle = filter.search.trim().toLowerCase();
-    return seasons
+    const visibleSeasons = filter.season === 'all' ? scoredSeasons : [filter.season];
+    return visibleSeasons
       .map((season) => ({
         season,
         items: scored
@@ -106,7 +111,7 @@ function ScoresIndex() {
           .sort((a, b) => (b.start_date ?? '').localeCompare(a.start_date ?? '')),
       }))
       .filter((g) => g.items.length > 0);
-  }, [scored, seasons, filter.search]);
+  }, [scored, scoredSeasons, filter.season, filter.search]);
   const total = groups.reduce((n, g) => n + g.items.length, 0);
 
   return (
@@ -138,20 +143,14 @@ function ScoresIndex() {
       <SeasonChips
         seasons={seasons}
         value={filter.season}
-        onSelect={(season) => {
-          send({ type: 'SET_SEASON', season });
-          if (typeof document !== 'undefined')
-            document
-              .getElementById(`season-${season}`)
-              ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }}
+        onSelect={(season) => send({ type: 'SET_SEASON', season })}
         wrap={false}
         className="mb-6"
       />
 
       {total === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-6 text-sm text-text-secondary">
-          No scored shows match — try another search.
+          No scored shows match — try another season or clear the search.
         </p>
       ) : (
         <div className="space-y-12">
