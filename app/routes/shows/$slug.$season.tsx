@@ -315,14 +315,17 @@ function ShowDetailPage() {
             />
           </SectionErrorBoundary>
 
-          {/* References / citations (M11a) */}
-          <SectionErrorBoundary label="the references section">
-            <ReferencesSection
-              corpsKey={corps.corps_key}
-              season={show.season}
-              initial={citations}
-            />
-          </SectionErrorBoundary>
+          {/* References / citations (M11a) — off-screen on load; skip its render
+              until scrolled near (content-visibility) to cut initial paint cost. */}
+          <div className="[contain-intrinsic-size:auto_300px] [content-visibility:auto]">
+            <SectionErrorBoundary label="the references section">
+              <ReferencesSection
+                corpsKey={corps.corps_key}
+                season={show.season}
+                initial={citations}
+              />
+            </SectionErrorBoundary>
+          </div>
 
           {/* Source attribution */}
           <Show when={show.sourceUrl}>
@@ -341,7 +344,7 @@ function ShowDetailPage() {
             )}
           </Show>
         </motion.div>
-        <aside className="space-y-4 lg:w-80 lg:shrink-0">
+        <aside className="space-y-4 [contain-intrinsic-size:auto_400px] [content-visibility:auto] lg:w-80 lg:shrink-0">
           {governance && (governance.canLock || governance.canModerate) ? (
             <SectionErrorBoundary label="the governance panel">
               <PageGovernancePanel
