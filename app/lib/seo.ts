@@ -51,6 +51,10 @@ export function buildSeo(input: SeoInput): {
   const { title, description, path, image, type = 'website', noindex } = input;
   const { url: siteUrl, name: siteName } = siteBase();
   const url = path ? `${siteUrl}${path}` : undefined;
+  // Brand-aware default social card for pages that don't set their own image, so
+  // every drumcorps.app share unfurls with a branded card (favicon + name).
+  // (Jobs has no default asset yet, so it stays image-less unless one is passed.)
+  const ogImage = image ?? (siteUrl === SITE_URL ? `${SITE_URL}/api/og/home` : undefined);
 
   const meta: HeadMeta[] = [
     { title },
@@ -62,12 +66,12 @@ export function buildSeo(input: SeoInput): {
     { property: 'og:title', content: title },
     { property: 'og:description', content: description },
     ...(url ? [{ property: 'og:url', content: url } as HeadMeta] : []),
-    ...(image ? [{ property: 'og:image', content: image } as HeadMeta] : []),
+    ...(ogImage ? [{ property: 'og:image', content: ogImage } as HeadMeta] : []),
     // Twitter
-    { name: 'twitter:card', content: image ? 'summary_large_image' : 'summary' },
+    { name: 'twitter:card', content: ogImage ? 'summary_large_image' : 'summary' },
     { name: 'twitter:title', content: title },
     { name: 'twitter:description', content: description },
-    ...(image ? [{ name: 'twitter:image', content: image } as HeadMeta] : []),
+    ...(ogImage ? [{ name: 'twitter:image', content: ogImage } as HeadMeta] : []),
   ];
 
   return { meta, links: url ? [{ rel: 'canonical', href: url }] : [] };

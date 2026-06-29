@@ -2,6 +2,7 @@
 // Satori consumes directly (not React-rendered), so every multi-child box sets an
 // explicit display:flex per Satori's layout rules.
 import type { ReactNode } from 'react';
+import { faviconPngDataUri } from './favicon.generated';
 
 const BG = '#0a0e1a';
 const GOLD = '#f5c518';
@@ -47,6 +48,33 @@ function Footer() {
 }
 
 const medalColor = (i: number) => (i === 0 ? GOLD : i === 1 ? SILVER : BRONZE);
+
+/** Default site card: favicon + DrumCorps.app + a one-line explainer. */
+export function HomeCard({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        width: '1200px',
+        height: '630px',
+        backgroundColor: BG,
+        fontFamily: 'Inter',
+        alignItems: 'center',
+        padding: '0 96px',
+        // Warm wash in the site's primary orange (#fd5007 — the favicon hue).
+        backgroundImage: 'radial-gradient(circle at 18% 28%, rgba(253,80,7,0.22), transparent 55%)',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 56 }}>
+        <img src={faviconPngDataUri} width={224} height={224} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18, maxWidth: 660 }}>
+          <div style={{ display: 'flex', color: TEXT, fontSize: 92, fontWeight: 700 }}>{title}</div>
+          <div style={{ display: 'flex', color: MUTED, fontSize: 36, lineHeight: 1.3 }}>{subtitle}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /** Scored-event card: title + date/place + gold/silver/bronze podium. */
 export function ScoreCard({
