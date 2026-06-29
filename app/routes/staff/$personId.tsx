@@ -1,6 +1,8 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { getStaffProfile } from '@/lib/server-fns/hybrid';
+import { getProfileOverlay } from '@/lib/server-fns/profile-owner';
+import { mergeProfileOverlay } from '@/lib/profile-owner/merge';
 import { checkClaimByEntity } from '@/lib/server-fns/jobs';
 import { loadDetailOrServer } from '@/db/detail-shard';
 import type { StaffAssignment, StaffProfile } from '@/lib/staff-directory';
@@ -29,10 +31,19 @@ export const Route = createFileRoute('/staff/$personId')({
     if (dest && dest !== params.personId) {
       throw redirect({ to: '/staff/$personId', params: { personId: dest }, replace: true });
     }
-    return {
-      profile: await loadDetailOrServer<StaffProfile | null>(`staff/${params.personId}.json`, () =>
+    // Option A read-merge: fetch the cached static shard (scraped base) and the
+    // tiny contributions overlay in parallel, then apply displayed = override ??
+    // scraped. The overlay fetch is best-effort — a failure must not break the page.
+    const [scraped, overlay] = await Promise.all([
+      loadDetailOrServer<StaffProfile | null>(`staff/${params.personId}.json`, () =>
         getStaffProfile({ data: params.personId })
       ),
+      getProfileOverlay({ data: { entityType: 'staff', entityId: params.personId } }).catch(
+        () => null
+      ),
+    ]);
+    return {
+      profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped,
       claimProfileId: null as string | null, // M2.5.4: resolve slug from checkClaimByEntity
     };
   },

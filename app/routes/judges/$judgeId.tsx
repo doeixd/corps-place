@@ -4,6 +4,9 @@ import { useMachine } from '@xstate/react';
 import { For, Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
 import { getJudgeProfile } from '@/lib/server-fns/hybrid';
+import { getProfileOverlay } from '@/lib/server-fns/profile-owner';
+import { mergeProfileOverlay } from '@/lib/profile-owner/merge';
+import type { JudgeProfile } from '@/lib/judge-directory';
 import { loadDetailOrServer } from '@/db/detail-shard';
 import { cn, searchString } from '@/lib/utils';
 import { useSearchSync } from '@/lib/use-search-sync';
@@ -61,11 +64,19 @@ export const Route = createFileRoute('/judges/$judgeId')({
   },
   // On client navigation, read the static judges/<id>.json shard (CDN-cached, no
   // server round-trip); SSR and any fallback use the server fn.
-  loader: async ({ params }) => ({
-    profile: await loadDetailOrServer(`judges/${params.judgeId}.json`, () =>
-      getJudgeProfile({ data: params.judgeId })
-    ),
-  }),
+  loader: async ({ params }) => {
+    // Option A read-merge (see staff/$personId.tsx): scraped shard + overlay in
+    // parallel, then displayed = override ?? scraped. Overlay fetch is best-effort.
+    const [scraped, overlay] = await Promise.all([
+      loadDetailOrServer<JudgeProfile | null>(`judges/${params.judgeId}.json`, () =>
+        getJudgeProfile({ data: params.judgeId })
+      ),
+      getProfileOverlay({ data: { entityType: 'judge', entityId: params.judgeId } }).catch(
+        () => null
+      ),
+    ]);
+    return { profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped };
+  },
   head: ({ loaderData }) => {
     const d = loaderData;
     if (!d) return {};
