@@ -88,7 +88,6 @@ export const Route = createFileRoute('/jobs/$jobSlug')({
       title,
       description: desc,
       path: url,
-      image: 'https://pageantryjobs.com/og-jobs.png',
       jsonLd: [
         breadcrumbLd([
           { name: 'Job Board', path: '/jobs/board' },

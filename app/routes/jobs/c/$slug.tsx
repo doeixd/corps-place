@@ -43,7 +43,6 @@ export const Route = createFileRoute('/jobs/c/$slug')({
       title: def.title,
       description: def.metaDescription,
       path: `/jobs/c/${def.slug}`,
-      image: 'https://pageantryjobs.com/og-jobs.png',
       // Always indexable: each page carries a unique intro + FAQ + related links,
       // and surfaces matching jobs as they're posted.
       jsonLd: [

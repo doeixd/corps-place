@@ -52,9 +52,9 @@ export function buildSeo(input: SeoInput): {
   const { url: siteUrl, name: siteName } = siteBase();
   const url = path ? `${siteUrl}${path}` : undefined;
   // Brand-aware default social card for pages that don't set their own image, so
-  // every drumcorps.app share unfurls with a branded card (favicon + name).
-  // (Jobs has no default asset yet, so it stays image-less unless one is passed.)
-  const ogImage = image ?? (siteUrl === SITE_URL ? `${SITE_URL}/api/og/home` : undefined);
+  // every share unfurls with a branded card (favicon + name).
+  const ogImage =
+    image ?? (siteUrl === SITE_URL ? `${SITE_URL}/api/og/home` : `${JOBS_URL}/api/og/jobs-home`);
 
   const meta: HeadMeta[] = [
     { title },

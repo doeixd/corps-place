@@ -15,7 +15,6 @@ export const Route = createFileRoute('/jobs/categories')({
       description:
         'Find jobs across the pageantry & performing-arts world — drum corps, marching band, color guard, dance, pageants, fitness, equestrian, and more. Browse by discipline and role.',
       path: '/jobs/categories',
-      image: 'https://pageantryjobs.com/og-jobs.png',
     }),
   component: CategoriesPage,
 });
