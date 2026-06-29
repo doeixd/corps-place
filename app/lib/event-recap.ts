@@ -31,10 +31,14 @@ const makeEventRecapService = Effect.gen(function* () {
   const getEventRecap = Effect.fn('EventRecapService.getEventRecap')(function* (slug: string) {
     return yield* Effect.suspend(() =>
       Effect.tryPromise({
-        try: () =>
-          readModelEnabled()
-            ? readEventRecap(getReadModelClient(), slug)
-            : buildEventRecap(getDb(), slug),
+        try: async () => {
+          if (!readModelEnabled()) return buildEventRecap(getDb(), slug);
+          try {
+            return await readEventRecap(getReadModelClient(), slug);
+          } catch {
+            return buildEventRecap(getDb(), slug);
+          }
+        },
         catch: (cause) =>
           new EventRecapDataError({
             message: 'Could not load the event recap.',
@@ -50,10 +54,14 @@ const makeEventRecapService = Effect.gen(function* () {
   ) {
     return yield* Effect.suspend(() =>
       Effect.tryPromise({
-        try: () =>
-          readModelEnabled()
-            ? readEventFullRecap(getReadModelClient(), slug)
-            : buildEventFullRecap(getDb(), slug),
+        try: async () => {
+          if (!readModelEnabled()) return buildEventFullRecap(getDb(), slug);
+          try {
+            return await readEventFullRecap(getReadModelClient(), slug);
+          } catch {
+            return buildEventFullRecap(getDb(), slug);
+          }
+        },
         catch: (cause) =>
           new EventRecapDataError({
             message: 'Could not load the full event recap.',
