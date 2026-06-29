@@ -42,6 +42,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Icon, type IconComponent } from '@/components/icon';
 import { RankingIcon, BookOpen01Icon } from '@/components/icons/generated';
 import { SectionErrorBoundary } from '@/components/error-boundary';
+import { LazyMount } from '@/components/lazy-mount';
 
 export const Route = createFileRoute('/shows/$slug/$season')({
   loader: async ({ params }) => {
@@ -259,15 +260,18 @@ function ShowDetailPage() {
             />
           </SectionErrorBoundary>
 
-          {/* Media (scraped seed + authored overlay) */}
+          {/* Media (scraped seed + authored overlay) — below the fold; defer its
+              mount (video facades) until scrolled near to cut initial render cost. */}
           <SectionErrorBoundary label="the media section">
-            <MediaSection
-              corpsKey={corps.corps_key}
-              season={show.season}
-              initial={authored.media}
-              scraped={show.media}
-              gallery={authored.gallery}
-            />
+            <LazyMount minHeight={240}>
+              <MediaSection
+                corpsKey={corps.corps_key}
+                season={show.season}
+                initial={authored.media}
+                scraped={show.media}
+                gallery={authored.gallery}
+              />
+            </LazyMount>
           </SectionErrorBoundary>
 
           {/* Reviews (scraped) */}

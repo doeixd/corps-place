@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { lazy, Suspense, useState, type ReactNode } from 'react';
 import { useForm, Form, Field, FieldArray, insert, remove } from '@formisch/react';
 import { useSession, signIn } from '@/lib/auth-client';
 import { saveShowBlock } from '@/lib/server-fns/contrib';
@@ -13,7 +13,11 @@ import {
 } from '@/lib/contrib/schemas';
 import { ImageDrop } from '@/components/contrib/image-drop';
 import { ProgressiveImage } from '@/components/progressive-image';
-import { LexicalFreeForm } from '@/components/contrib/lexical-free-form';
+// Lazy: the Lexical editor is a large chunk (~208 kB) only needed in edit mode, so
+// keep it out of the show page's initial JS and load it when the editor mounts.
+const LexicalFreeForm = lazy(() =>
+  import('@/components/contrib/lexical-free-form').then((m) => ({ default: m.LexicalFreeForm }))
+);
 import { SectionErrorBoundary } from '@/components/error-boundary';
 import { renderLexicalDoc } from '@/lib/contrib/lexical-render';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
@@ -666,7 +670,9 @@ function AboutEditor({
     <div className="space-y-3">
       <StartingPointsPanel />
       <SectionErrorBoundary label="the rich-text editor">
-        <LexicalFreeForm value={draft} onChange={setDraft} citations={citations} />
+        <Suspense fallback={<div className="h-40 animate-pulse rounded-lg bg-muted/40" />}>
+          <LexicalFreeForm value={draft} onChange={setDraft} citations={citations} />
+        </Suspense>
       </SectionErrorBoundary>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <Button type="button" size="sm" onClick={save} disabled={saving}>
