@@ -5,6 +5,7 @@ import { getContributionsDb } from '@/lib/contributions-db';
 import { getActor } from '@/lib/authz';
 import { rateLimit } from '@/lib/rate-limit';
 import { vapidPublicKey } from '@/lib/fantasy/push';
+import { recordServerEvent } from '@/lib/analytics/record';
 
 /**
  * "Notify me of scores" subscriptions. Anyone — signed in or not — can subscribe
@@ -75,6 +76,12 @@ export const subscribeScores = createServerFn({ method: 'POST' })
         new Date().toISOString(),
       ],
     });
+    // Domain analytics (best-effort): which targets drive score-notify signups.
+    void recordServerEvent(
+      'score_subscribe',
+      { kind: data.targetKind, push: methods.push, email: methods.email },
+      getWebRequest()
+    );
     return { ok: true };
   });
 

@@ -45,6 +45,7 @@ const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
       ]
     : []),
   { to: '/admin/system', label: 'System', icon: Analytics01Icon, min: 'moderator' },
+  { to: '/admin/analytics', label: 'Analytics', icon: Analytics01Icon, min: 'moderator' },
   { to: '/admin/users', label: 'Users', icon: UserMultipleIcon, min: 'admin' },
   { to: '/admin/support', label: 'Support', icon: CustomerSupportIcon, min: 'moderator' },
   { to: '/admin/audit', label: 'Audit', icon: LicenseIcon, min: 'moderator' },

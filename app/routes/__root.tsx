@@ -16,6 +16,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { SiteNav } from '@/components/site-nav';
 import { AnnouncementBanner } from '@/components/announcement-banner';
 import { ConsentGate } from '@/components/consent-gate';
+import { AnalyticsTracker } from '@/components/analytics-tracker';
 import { Toaster } from '@/components/ui/sonner';
 import { THEME_COOKIE, readThemeCookie } from '@/lib/theme-cookie';
 import type { Theme } from '@/lib/theme-cookie';
@@ -369,6 +370,7 @@ function RootComponent() {
       <BrandProvider brand={brand}>
         <ServiceWorkerManager />
         <AutoUpdater />
+        <AnalyticsTracker />
         <MotionConfig reducedMotion={REDUCED_MOTION}>
           <TooltipProvider delay={150}>
             <NavigationProgressBar />
