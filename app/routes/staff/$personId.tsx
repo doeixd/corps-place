@@ -4,6 +4,7 @@ import { getStaffProfile } from '@/lib/server-fns/hybrid';
 import { getProfileOverlay } from '@/lib/server-fns/profile-owner';
 import { mergeProfileOverlay } from '@/lib/profile-owner/merge';
 import { ClaimPanel } from '@/components/profile-owner/claim-panel';
+import { ProfileEditor } from '@/components/profile-owner/profile-editor';
 import { checkClaimByEntity } from '@/lib/server-fns/jobs';
 import { loadDetailOrServer } from '@/db/detail-shard';
 import type { StaffAssignment, StaffProfile } from '@/lib/staff-directory';
@@ -142,6 +143,18 @@ function StaffProfilePage() {
             displayName={profile.display_name}
             ownership={profile.ownership}
           />
+          {profile.ownership?.mine && profile.ownership.claimed && (
+            <ProfileEditor
+              entityType="staff"
+              entityId={profile.person_id}
+              initial={{
+                biography: profile.biography,
+                photoUrl: profile.photo_url,
+                hometown: profile.bioFacts?.hometown ?? null,
+                currentPosition: profile.bioFacts?.currentPosition ?? null,
+              }}
+            />
+          )}
         </div>
       </div>
 

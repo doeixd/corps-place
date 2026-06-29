@@ -13,6 +13,7 @@ import { useSearchSync } from '@/lib/use-search-sync';
 import { judgeProfileMachine, judgeProfileSearchCodec } from '@/machines/judge-profile-machine';
 import { PageHeader } from '@/components/page-header';
 import { ClaimPanel } from '@/components/profile-owner/claim-panel';
+import { ProfileEditor } from '@/components/profile-owner/profile-editor';
 import { BackLink } from '@/components/back-link';
 import { SeasonChips } from '@/components/filter-chips';
 import { useRegisterBackName } from '@/lib/use-register-back-name';
@@ -241,6 +242,18 @@ function JudgeProfilePage() {
           displayName={profile.display_name}
           ownership={profile.ownership}
         />
+        {profile.ownership?.mine && profile.ownership.claimed && (
+          <ProfileEditor
+            entityType="judge"
+            entityId={profile.judge_id}
+            initial={{
+              biography: profile.biography,
+              photoUrl: profile.photo_url,
+              hometown: profile.bioFacts?.hometown ?? null,
+              currentPosition: profile.bioFacts?.currentPosition ?? null,
+            }}
+          />
+        )}
 
         <Show
           when={

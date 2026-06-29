@@ -11,12 +11,14 @@ export type OverlayField = { content: unknown; diverged: boolean };
 export type ProfileOverlay = {
   claim: { status: string; name_match: string | null } | null;
   overrides: Record<string, OverlayField>;
+  amOwner?: boolean; // is the requesting session the holder of this claim?
 } | null;
 
 export type OwnershipInfo = {
   claimed: boolean; // an active claim exists
   pending: boolean; // a claim exists but awaits moderator approval
   verified: boolean; // name match was exact/close
+  mine: boolean; // the current viewer holds this claim (drives the edit affordance)
   edited: string[]; // override field_keys applied
   diverged: string[]; // fields whose scraped source changed under the override
 };
@@ -58,6 +60,7 @@ const ownershipInfo = (
   verified:
     !!overlay.claim &&
     (overlay.claim.name_match === 'exact' || overlay.claim.name_match === 'close'),
+  mine: overlay.amOwner === true,
   edited: live ? Object.keys(overrides) : [],
   diverged: live
     ? Object.entries(overrides)

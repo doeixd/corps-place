@@ -11,6 +11,8 @@ import { ATTESTATION_VERSION, ALLOWED_PROFILE_FIELDS } from '@/lib/profile-owner
 import { requireCapability, requireProfileOwner, ForbiddenError } from '@/lib/authz';
 import { auth } from '@/lib/auth';
 import { getContributionsDb } from '@/lib/contributions-db';
+import { MediaService } from '@/lib/fantasy/services/media-service';
+import { fantasyRuntime } from '@/rpc';
 
 // Server-fn boundary for staff/judge profile ownership. Effect/ProfileOwnerService
 // stay behind these handlers (code-split server-side) so the client bundle imports
@@ -31,11 +33,19 @@ export const getProfileOverlay = createServerFn({ method: 'GET' })
         s.readOverlay(data.entityType, data.entityId)
       ).pipe(Effect.provide(ProfileOwnerServiceLive))
     );
+    // Is the requester the claim holder? Resolved server-side; the owner's user_id
+    // is never sent to the client (only the boolean).
+    let amOwner = false;
+    if (overlay.claim) {
+      const session = await auth.api.getSession({ headers: getWebRequest().headers });
+      amOwner = !!session?.user && session.user.id === overlay.claim.user_id;
+    }
     return {
       claim: overlay.claim
         ? { status: overlay.claim.status, name_match: overlay.claim.name_match }
         : null,
       overrides: overlay.overrides,
+      amOwner,
     };
   });
 
@@ -143,4 +153,48 @@ export const saveProfileField = createServerFn({ method: 'POST' })
       ).pipe(Effect.provide(ProfileOwnerServiceLive))
     );
     return { ok: true };
+  });
+
+/** Upload (or clear, when dataBase64 is null) the owner's profile photo. Reuses the
+ *  shared MediaService.uploadProfilePhoto (sharp→WebP/EXIF-strip→R2, served via
+ *  /api/fantasy-media/$id) then stores the result as the `photo` override. */
+export const setProfilePhoto = createServerFn({ method: 'POST' })
+  .validator(
+    (data: { entityType: EntityType; entityId: string; dataBase64?: string | null }) => data
+  )
+  .handler(async ({ data }): Promise<{ ok: true; url: string | null }> => {
+    const db = await getContributionsDb();
+    const actor = await requireProfileOwner(db, data.entityType, data.entityId);
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now: new Date().toISOString() };
+
+    if (data.dataBase64) {
+      const dataBase64 = data.dataBase64;
+      const res = await fantasyRuntime.runPromise(
+        Effect.flatMap(MediaService, (s) => s.uploadProfilePhoto({ actor, dataBase64 }))
+      );
+      await Effect.runPromise(
+        Effect.flatMap(ProfileOwnerService, (s) =>
+          s.saveOverride(
+            {
+              entityType: data.entityType,
+              entityId: data.entityId,
+              fieldKey: 'photo',
+              content: { url: res.url, mediaId: res.mediaId },
+            },
+            ctx
+          )
+        ).pipe(Effect.provide(ProfileOwnerServiceLive))
+      );
+      return { ok: true, url: res.url };
+    }
+
+    await Effect.runPromise(
+      Effect.flatMap(ProfileOwnerService, (s) =>
+        s.saveOverride(
+          { entityType: data.entityType, entityId: data.entityId, fieldKey: 'photo', content: null, removed: true },
+          ctx
+        )
+      ).pipe(Effect.provide(ProfileOwnerServiceLive))
+    );
+    return { ok: true, url: null };
   });

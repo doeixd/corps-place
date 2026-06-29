@@ -56,7 +56,13 @@ export function ClaimPanel({
       </div>
     );
   }
-  if (ownership?.pending) return null;
+  if (ownership?.pending) {
+    return ownership.mine ? (
+      <div className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+        Your claim is pending review.
+      </div>
+    ) : null;
+  }
 
   const signedIn = !!session?.user;
 

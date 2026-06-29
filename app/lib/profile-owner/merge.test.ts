@@ -32,6 +32,7 @@ describe('mergeProfileOverlay', () => {
       claimed: true,
       pending: false,
       verified: true,
+      mine: false,
       edited: ['biography', 'photo', 'hometown'],
       diverged: ['photo'],
     });
@@ -55,6 +56,7 @@ describe('mergeProfileOverlay', () => {
       claimed: false,
       pending: true,
       verified: false,
+      mine: false,
       edited: [],
       diverged: [],
     });
