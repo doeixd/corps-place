@@ -1,10 +1,12 @@
 // Site analytics (first-party, cookieless). Pageviews/uniques, top paths &
 // referrers, domain events, brand/device splits, engagement. Read-only; gated by
 // viewAdmin. Data comes from analytics.db via getAnalyticsSummary.
-import { createFileRoute, useRouterState } from '@tanstack/react-router';
+import { createFileRoute, useRouterState, useRouter } from '@tanstack/react-router';
 import { adminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
+import { Icon } from '@/components/icon';
+import { RefreshIcon } from '@/components/icons/generated';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { getAnalyticsSummary, type AnalyticsSummary } from '@/lib/server-fns/analytics';
 import { seoHead } from '@/lib/seo';
@@ -46,6 +48,7 @@ type Metric = 'views' | 'visitors';
 function Analytics({ summary }: { summary: AnalyticsSummary }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+  const router = useRouter();
   const range = search.range ?? '30d';
   const metric: Metric = search.metric ?? 'views';
   // Pending while the loader refetches a new range → disables the pills.
@@ -82,6 +85,16 @@ function Analytics({ summary }: { summary: AnalyticsSummary }) {
         {!summary.available ? (
           <span className="text-xs text-text-secondary">No analytics data yet.</span>
         ) : null}
+        <button
+          type="button"
+          onClick={() => void router.invalidate()}
+          disabled={busy}
+          title="Refresh"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
+        >
+          <Icon icon={RefreshIcon} size="sm" className={busy ? 'animate-spin' : undefined} />
+          Refresh
+        </button>
       </div>
 
       {/* Totals */}
