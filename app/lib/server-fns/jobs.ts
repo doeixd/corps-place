@@ -9,6 +9,7 @@ import { JOBS_BLOCK_SCHEMAS, isJobsBlockKind } from '@/lib/jobs/schemas';
 import { normalizeZip } from '@/lib/jobs/zip';
 import { sortByDistance, type LatLng } from '@/lib/geo';
 import { sendEmail } from '@/lib/email';
+import { recordServerEvent } from '@/lib/analytics/record';
 
 // Pure (no service closure) — safe at module scope; used only inside handlers.
 const escapeHtml = (s: string): string =>
@@ -336,6 +337,12 @@ export const createJobPosting = createServerFn({ method: 'POST' })
       );
     }
 
+    // Domain analytics (best-effort): new job postings (supply side).
+    void recordServerEvent(
+      'job_post',
+      { discipline: data.discipline ?? null, remote: data.remoteOk ?? null },
+      getWebRequest()
+    );
     return { ok: true as const, postingId };
   });
 
@@ -538,6 +545,11 @@ ${data.message ? `<blockquote style="border-left:3px solid #ddd;padding-left:12p
       }).catch((e) => console.warn('[jobs] application email failed:', e));
     }
 
+    // Domain analytics (best-effort): job-application conversions. Only the first
+    // application per user+posting (isNew), not re-submits.
+    if (result.isNew) {
+      void recordServerEvent('job_apply', { postingId: data.postingId }, getWebRequest());
+    }
     return { ok: true as const, applicationId: result.applicationId };
   });
 

@@ -81,6 +81,24 @@ export function track(name: string, props?: Record<string, unknown>): void {
   send({ type: 'event', name, path: location.pathname, device: device(), props: props ?? null });
 }
 
+// ── search detection ──
+// Directory searches across the site live in the `?q=` param. We track them
+// centrally + debounced (so per-keystroke param updates collapse to one event) and
+// record only the QUERY LENGTH + page scope — never the term itself (privacy).
+let searchTimer: ReturnType<typeof setTimeout> | undefined;
+let lastSearchKey = '';
+export function maybeTrackSearch(): void {
+  if (typeof window === 'undefined') return;
+  const q = (new URLSearchParams(location.search).get('q') ?? '').trim();
+  const key = `${location.pathname}|${q.toLowerCase()}`;
+  if (!q || key === lastSearchKey) return;
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    lastSearchKey = key;
+    track('search', { scope: location.pathname, len: q.length });
+  }, 800);
+}
+
 let wired = false;
 /** Attach outbound-link + engagement listeners once. Safe to call repeatedly. */
 export function initEngagement(): void {
