@@ -139,6 +139,13 @@ const fieldsFor = (
 
 export const ingestCorps = (options: {
   readonly dryRun: boolean;
+  /**
+   * Fill-only by default: when false (the default), the ingest never overwrites a
+   * field that already has a value — every such overwrite is recorded as `held`
+   * for review instead of written. Set true (CLI `--allow-overwrite`) to apply
+   * overwrites. Guards curated data from being clobbered (2026-06-28 incident).
+   */
+  readonly allowOverwrite?: boolean;
 }): Effect.Effect<CorpsIngestSummary, SqlError, SqlClient.SqlClient> =>
   Effect.gen(function* () {
     const sql = yield* (SqlClient.SqlClient);
@@ -197,12 +204,16 @@ export const ingestCorps = (options: {
         }
         const kind: 'fill' | 'overwrite' = cur == null || cur === '' ? 'fill' : 'overwrite';
         const change = { slug: corps.slug, corpsKey, field: key, from: cur, to: next, kind };
-        if (decideWrite(key, next, cur) === 'write') {
+        // Fill-only by default: an overwrite of an existing value is held unless
+        // explicitly allowed. Fills (empty → value) always go through the
+        // garbage/enrichment guardrails in decideWrite.
+        const allowed = kind === 'fill' || options.allowOverwrite === true;
+        if (allowed && decideWrite(key, next, cur) === 'write') {
           write[key] = next;
           changes.push(change);
           if (key === 'division_name') classChanges.push(change);
         } else {
-          write[key] = cur; // keep existing — protected by guardrails
+          write[key] = cur; // keep existing — held for review (fill-only / guardrail)
           held.push(change);
         }
       }

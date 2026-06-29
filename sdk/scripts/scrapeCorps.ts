@@ -25,6 +25,7 @@ if (fs.existsSync(envPath)) {
 
 import { Effect } from 'effect';
 import { LibsqlClient } from '@effect/sql-libsql';
+import { SqlClient } from '@effect/sql';
 import { BrowserbaseServiceLive, BrowserbaseService } from '../src/browserbaseService.js';
 import { scrapeCorpsDirectory, scrapeCorpsProfile } from '../src/corpsScraper.js';
 import { ensureRelationalSchema } from '../src/relational.js';
@@ -37,6 +38,9 @@ const getArg = (flag: string) => {
   return i >= 0 && i + 1 < args.length ? args[i + 1] : undefined;
 };
 const apply = has('--apply');
+// Fill-only unless explicitly opted in: existing values are never overwritten
+// without --allow-overwrite (they're reported as `held` for review instead).
+const allowOverwrite = has('--allow-overwrite');
 const refresh = has('--refresh');
 const onlySlug = getArg('--slug');
 
@@ -64,10 +68,22 @@ const program = Effect.gen(function* () {
   }
   yield* (Effect.logInfo(`[scrapeCorps] profiles done (cache hits=${cached})`));
 
-  // 3) Ingest (coalescing + guardrailed). dry-run unless --apply.
-  const s = yield* (ingestCorps({ dryRun: !apply }));
+  // 3) Safety snapshot: before any write, dump the full corps table to results/
+  // for an instant local rollback point (in addition to nightly restic backups).
+  fs.mkdirSync('results', { recursive: true });
+  if (apply) {
+    const sql = yield* (SqlClient.SqlClient);
+    const rows = yield* (sql`SELECT * FROM corps`);
+    const snap = `results/corps-snapshot-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+    fs.writeFileSync(snap, JSON.stringify(rows));
+    console.log(`[scrapeCorps] pre-apply corps snapshot → ${snap} (${rows.length} rows)`);
+  }
+
+  // 4) Ingest (coalescing + guardrailed). dry-run unless --apply; fill-only unless
+  // --allow-overwrite (overwrites of existing values are otherwise held).
+  const s = yield* (ingestCorps({ dryRun: !apply, allowOverwrite }));
   console.log(
-    `[scrapeCorps] ${apply ? 'APPLIED' : 'DRY-RUN'} — matched ${s.matched}/${s.rosterCount}, unresolved ${s.unresolved.length}`
+    `[scrapeCorps] ${apply ? 'APPLIED' : 'DRY-RUN'}${allowOverwrite ? ' (overwrite ON)' : ' (fill-only)'} — matched ${s.matched}/${s.rosterCount}, unresolved ${s.unresolved.length}`
   );
   console.log(
     `  writes=${s.changes.length} (class changes=${s.classChanges.length}); held=${s.held.length}`
