@@ -10,6 +10,7 @@ import {
 } from '@/lib/server-fns/hybrid';
 import { listJobs } from '@/lib/server-fns/jobs';
 import { getBrand } from '@/lib/brand';
+import { LANDING_DEFS } from '@/lib/jobs/landing-taxonomy';
 
 // Brand-aware sitemap. drumcorps.app enumerates the corps content (directories,
 // shows, scores, merch); pageantryjobs.com enumerates the job board + every job
@@ -75,6 +76,28 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
         for (const j of rows)
           if (j.slug)
             jobDated.push({ loc: `/jobs/${j.slug}`, lastmod: j.published_at ?? undefined });
+        // pSEO landing pages: include only those with ≥1 matching posting (the rest
+        // are noindex). Match the same way the page filters: discipline exact +
+        // title keyword. One pass over the postings we already fetched.
+        const matches = (def: (typeof LANDING_DEFS)[number]) =>
+          rows.filter(
+            (j) =>
+              (!def.filter.discipline || j.discipline === def.filter.discipline) &&
+              (!def.filter.keyword ||
+                (j.title ?? '').toLowerCase().includes(def.filter.keyword.toLowerCase()))
+          );
+        for (const def of LANDING_DEFS) {
+          const m = matches(def);
+          if (m.length) {
+            const lastmod = m
+              .map((x) => x.published_at)
+              .filter((x): x is string => Boolean(x))
+              .sort()
+              .pop();
+            jobDated.push({ loc: `/jobs/c/${def.slug}`, lastmod });
+          }
+        }
+        if (rows.length) jobPaths.add('/jobs/categories');
       } catch {
         /* postings unavailable — still list the static job pages */
       }
