@@ -58,11 +58,18 @@ let ready: Promise<Client | null> | null = null;
 // Open the client and run pragmas + DDL to completion BEFORE anyone inserts, so the
 // first event after a cold start can't race the CREATE TABLE and get dropped. The
 // promise is memoized, so the schema work happens exactly once per process.
+// Keep the event log bounded: drop rows older than this on each cold start. Two
+// years is generous for usage trends; the day index makes the delete a cheap range
+// scan, and it runs only once per process (deploy/restart), off the hot path.
+const RETENTION_DAYS = 730;
+
 const init = async (): Promise<Client | null> => {
   try {
     const c = createClient({ url: resolveUrl() });
     for (const p of PRAGMAS) await c.execute(p);
     for (const d of DDL) await c.execute(d);
+    const cutoff = new Date(Date.now() - RETENTION_DAYS * 86_400_000).toISOString().slice(0, 10);
+    await c.execute({ sql: `DELETE FROM events WHERE day < ?`, args: [cutoff] }).catch(() => {});
     return c;
   } catch {
     return null; // store unavailable — callers treat analytics as best-effort

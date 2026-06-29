@@ -73,15 +73,19 @@ function PrivacyPolicy() {
               (e.g., maintaining your session or remembering your preferences).
             </li>
             <li>
-              <strong>Analytics cookies</strong> — help us understand how visitors use the Service
-              so we can improve it.
-            </li>
-            <li>
               <strong>Third-party cookies</strong> — scripts or embedded content from third-party
               providers may set their own cookies on your device. These are governed by the
               respective third party's privacy policy and are not under our control.
             </li>
           </ul>
+          <p className="mt-2">
+            <strong>Analytics.</strong> We use our own privacy-friendly, first-party analytics to
+            understand aggregate usage (such as page views and referrers). It is{' '}
+            <strong>cookieless</strong>, sets no tracking cookie, and is never shared with third
+            parties. Visitors are counted using a rotating, anonymized identifier derived on our
+            servers that cannot identify you and resets daily. We also honor your browser's “Do Not
+            Track” signal.
+          </p>
           <p className="mt-2">
             You can configure your browser to refuse cookies or alert you when cookies are being
             sent. However, some parts of the Service may not function properly without them.

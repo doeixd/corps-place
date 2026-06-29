@@ -55,7 +55,7 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
         `SELECT
            SUM(CASE WHEN type='pageview' THEN 1 ELSE 0 END) AS views,
            COUNT(DISTINCT CASE WHEN type='pageview' THEN visitor END) AS visitors,
-           SUM(CASE WHEN type='event' THEN 1 ELSE 0 END) AS events
+           SUM(CASE WHEN type='event' AND name != 'leave' THEN 1 ELSE 0 END) AS events
          FROM events WHERE day >= ?`
       );
       const perDay = await q(
