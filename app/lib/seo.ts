@@ -3,8 +3,26 @@
 // every route stays consistent. Product-specific tags / JSON-LD are layered on
 // top by the caller.
 
+import { readBrand, BRAND_CONFIG } from './brand';
+
 export const SITE_URL = 'https://drumcorps.app';
 export const SITE_NAME = 'Drum Corps';
+export const JOBS_URL = 'https://pageantryjobs.com';
+
+// Canonical/OG URLs + site name must match the brand of the host being served, or
+// pageantryjobs.com pages emit drumcorps.app canonicals (Google treats them as
+// duplicates of the corps site). readBrand() is isomorphic (host on the server,
+// window on the client) and only runs inside head(); fall back to corps if it
+// can't resolve (no request context).
+export const siteBase = (): { url: string; name: string } => {
+  try {
+    return readBrand() === 'jobs'
+      ? { url: JOBS_URL, name: BRAND_CONFIG.jobs.name }
+      : { url: SITE_URL, name: SITE_NAME };
+  } catch {
+    return { url: SITE_URL, name: SITE_NAME };
+  }
+};
 
 export interface SeoInput {
   title: string;
@@ -31,7 +49,8 @@ export function buildSeo(input: SeoInput): {
   links: { rel: string; href: string }[];
 } {
   const { title, description, path, image, type = 'website', noindex } = input;
-  const url = path ? `${SITE_URL}${path}` : undefined;
+  const { url: siteUrl, name: siteName } = siteBase();
+  const url = path ? `${siteUrl}${path}` : undefined;
 
   const meta: HeadMeta[] = [
     { title },
@@ -39,7 +58,7 @@ export function buildSeo(input: SeoInput): {
     ...(noindex ? [{ name: 'robots', content: 'noindex' } as HeadMeta] : []),
     // Open Graph
     { property: 'og:type', content: type },
-    { property: 'og:site_name', content: SITE_NAME },
+    { property: 'og:site_name', content: siteName },
     { property: 'og:title', content: title },
     { property: 'og:description', content: description },
     ...(url ? [{ property: 'og:url', content: url } as HeadMeta] : []),
@@ -68,6 +87,7 @@ export function jsonLdScript(obj: object): { type: string; children: string } {
 
 /** schema.org BreadcrumbList from a list of {name, path} (path is site-relative). */
 export function breadcrumbLd(items: { name: string; path: string }[]): object {
+  const { url: siteUrl } = siteBase();
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -75,7 +95,7 @@ export function breadcrumbLd(items: { name: string; path: string }[]): object {
       '@type': 'ListItem',
       position: i + 1,
       name: it.name,
-      item: `${SITE_URL}${it.path}`,
+      item: `${siteUrl}${it.path}`,
     })),
   };
 }

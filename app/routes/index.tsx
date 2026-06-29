@@ -11,7 +11,8 @@ import { LatestResultsPanel } from '@/components/latest-results';
 import { StandingsSnapshot } from '@/components/standings-snapshot';
 import { FeaturedPredictionPanel } from '@/components/featured-prediction';
 import { getHomePageData } from '@/lib/server-fns/home';
-import { seoHead, SITE_URL } from '@/lib/seo';
+import { seoHead, siteBase } from '@/lib/seo';
+import { readBrand, BRAND_CONFIG } from '@/lib/brand';
 import {
   ArrowRight02Icon,
   Analytics01Icon,
@@ -29,23 +30,29 @@ import { useBrand } from '@/lib/brand-context';
 
 export const Route = createFileRoute('/')({
   loader: async () => getHomePageData(),
-  head: () =>
-    seoHead({
-      title: 'DrumCorps.app — DCI Drum Corps Scores, Schedules & Predictions',
-      description:
-        'Live DCI drum corps scores, competition schedules, AI score predictions, judge & staff profiles, show programs, and official corps merch — all in one place.',
+  // Brand-aware: the home is shared by both hosts, so its title/description +
+  // WebSite/Organization JSON-LD must match the brand being served (otherwise
+  // pageantryjobs.com's home advertises "DrumCorps.app").
+  head: () => {
+    const brand = readBrand();
+    const cfg = BRAND_CONFIG[brand];
+    const { url: siteUrl } = siteBase();
+    const searchPath = brand === 'jobs' ? '/jobs/board?q=' : '/corps?q=';
+    return seoHead({
+      title: cfg.seo.title,
+      description: cfg.seo.description,
       path: '/',
       jsonLd: [
         {
           '@context': 'https://schema.org',
           '@type': 'WebSite',
-          name: 'DrumCorps.app',
-          url: SITE_URL,
+          name: cfg.name,
+          url: siteUrl,
           potentialAction: {
             '@type': 'SearchAction',
             target: {
               '@type': 'EntryPoint',
-              urlTemplate: `${SITE_URL}/corps?q={search_term_string}`,
+              urlTemplate: `${siteUrl}${searchPath}{search_term_string}`,
             },
             'query-input': 'required name=search_term_string',
           },
@@ -53,12 +60,13 @@ export const Route = createFileRoute('/')({
         {
           '@context': 'https://schema.org',
           '@type': 'Organization',
-          name: 'DrumCorps.app',
-          url: SITE_URL,
-          logo: `${SITE_URL}/logo.svg`,
+          name: cfg.name,
+          url: siteUrl,
+          logo: `${siteUrl}/logo.svg`,
         },
       ],
-    }),
+    });
+  },
   staleTime: 5 * 60_000,
   component: Home,
 });
