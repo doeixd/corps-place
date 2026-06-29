@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { JobCard } from '@/components/jobs/job-card';
 import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
 import {
@@ -181,30 +182,7 @@ export function JobsLanding() {
               <>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {jobs.map((j) => (
-                    <Link key={j.slug} to="/jobs/$jobSlug" params={{ jobSlug: j.slug }}>
-                      <Card className="card-hover-flat h-full">
-                        <CardContent className="flex flex-col gap-1 py-4">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="font-semibold text-text-primary">{j.title}</span>
-                            {j.remote_ok ? (
-                              <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                                Remote
-                              </span>
-                            ) : null}
-                          </div>
-                          <span className="text-sm text-text-muted">
-                            {[
-                              j.employer_name && j.employer_name !== 'User'
-                                ? j.employer_name
-                                : null,
-                              j.location,
-                            ]
-                              .filter(Boolean)
-                              .join(' · ')}
-                          </span>
-                        </CardContent>
-                      </Card>
-                    </Link>
+                    <JobCard key={j.slug} job={j} />
                   ))}
                 </div>
                 <div className="text-center">
