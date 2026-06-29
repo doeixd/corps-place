@@ -72,6 +72,7 @@ import {
 import { Badge } from '@/components/reui/badge';
 import { Alert, AlertTitle, AlertDescription } from '@/components/reui/alert';
 import { PageHeader } from '@/components/page-header';
+import { PredictionExplainer } from '@/components/prediction/prediction-explainer';
 import { useRegisterBackName } from '@/lib/use-register-back-name';
 import { useStickyScroll, useSuppressLayoutOnce } from '@/lib/table-interactions';
 import { useCopyToClipboard } from '@/lib/use-copy-to-clipboard';
@@ -151,11 +152,6 @@ const WINDOW_DESCRIPTIONS: Record<ScenarioWindow, string> = {
   '0.8': 'Wider range — where scores land roughly 80% of the time',
   '0.95': 'Widest range — covers ~95% of outcomes, including unlikely ones',
 };
-
-// Subtle explainer + disclaimer shown under the prediction heading.
-const PREDICTION_DISCLAIMER =
-  "AI-generated forecast from each corps' scores so far this season — an estimate for fun, " +
-  'not affiliated with or endorsed by Drum Corps International, and not a guarantee of how the show will place.';
 
 // Shareable view state carried in the query string. `seed` deterministically
 // reproduces a rolled scenario (see prediction-machine `applyScenario`); the rest
@@ -1194,9 +1190,7 @@ function CurrentPredictionPage({
 
                 {/* Explainer + disclaimer — hidden on the pure real-scores view. */}
                 <Show when={view !== 'scores'}>
-                  <p className="-mt-1 max-w-2xl pl-[1px] text-xs leading-relaxed text-text-muted">
-                    {PREDICTION_DISCLAIMER}
-                  </p>
+                  <PredictionExplainer className="-mt-1 pl-[1px]" />
                 </Show>
 
                 {/* ---- Scores view (P4): real scored recap, same table as past
