@@ -56,6 +56,11 @@ export function FeaturedPredictionPanel({ prediction }: { prediction: FeaturedPr
               </For>
             </ol>
 
+            <p className="text-[11px] leading-snug text-text-muted">
+              AI estimate from this season&apos;s scores — not affiliated with Drum Corps
+              International or a guarantee of results.
+            </p>
+
             <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
               See full prediction
               <Icon icon={ArrowRight02Icon} size="sm" className="icon-shift" />

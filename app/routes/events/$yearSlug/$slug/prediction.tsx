@@ -152,6 +152,11 @@ const WINDOW_DESCRIPTIONS: Record<ScenarioWindow, string> = {
   '0.95': 'Widest range — covers ~95% of outcomes, including unlikely ones',
 };
 
+// Subtle explainer + disclaimer shown under the prediction heading.
+const PREDICTION_DISCLAIMER =
+  "AI-generated forecast from each corps' scores so far this season — an estimate for fun, " +
+  'not affiliated with or endorsed by Drum Corps International, and not a guarantee of how the show will place.';
+
 // Shareable view state carried in the query string. `seed` deterministically
 // reproduces a rolled scenario (see prediction-machine `applyScenario`); the rest
 // restore the table view. All optional so a bare URL is valid.
@@ -1185,6 +1190,13 @@ function CurrentPredictionPage({
                       )}
                     </For>
                   </ToggleGroup>
+                </Show>
+
+                {/* Explainer + disclaimer — hidden on the pure real-scores view. */}
+                <Show when={view !== 'scores'}>
+                  <p className="-mt-1 max-w-2xl pl-[1px] text-xs leading-relaxed text-text-muted">
+                    {PREDICTION_DISCLAIMER}
+                  </p>
                 </Show>
 
                 {/* ---- Scores view (P4): real scored recap, same table as past
