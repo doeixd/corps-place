@@ -48,26 +48,40 @@ export const Route = createFileRoute('/jobs/$jobSlug')({
       title: loaderData.title,
       description: loaderData.comp_text ?? '',
       datePosted: loaderData.published_at ?? loaderData.created_at,
+      // Marching-arts staff roles are overwhelmingly seasonal contract work.
+      employmentType: 'SEASONAL',
+      identifier: { '@type': 'PropertyValue', name: 'PageantryJobs', value: loaderData.slug },
       hiringOrganization: {
         '@type': 'Organization',
         name: employerName(loaderData) ?? 'PageantryJobs',
+        sameAs: 'https://pageantryjobs.com',
       },
+      // Applicants apply on-site (PageantryJobs), which Google for Jobs rewards.
+      directApply: true,
     };
+    // validThrough keeps the posting from being flagged stale / dropped by Google.
+    if (loaderData.expires_at) jobPostingLd.validThrough = loaderData.expires_at;
     if (loaderData.location) {
       jobPostingLd.jobLocation = {
         '@type': 'Place',
-        address: { addressLocality: loaderData.location },
+        address: { '@type': 'PostalAddress', addressLocality: loaderData.location },
       };
     }
     if (loaderData.remote_ok) {
-      jobPostingLd.employmentType = 'SEASONAL';
-      jobPostingLd.remote = true;
+      jobPostingLd.jobLocationType = 'TELECOMMUTE';
+      jobPostingLd.applicantLocationRequirements = { '@type': 'Country', name: 'USA' };
     }
     if (loaderData.salary_min || loaderData.salary_max) {
-      const value: Record<string, unknown> = { '@type': 'QuantitativeValue' };
+      // Google needs currency + a period (unitText) for baseSalary to be valid;
+      // the data captures min/max + currency, so default the period to YEAR.
+      const value: Record<string, unknown> = { '@type': 'QuantitativeValue', unitText: 'YEAR' };
       if (loaderData.salary_min) value.minValue = loaderData.salary_min;
       if (loaderData.salary_max) value.maxValue = loaderData.salary_max;
-      jobPostingLd.baseSalary = { '@type': 'MonetaryAmount', value };
+      jobPostingLd.baseSalary = {
+        '@type': 'MonetaryAmount',
+        currency: loaderData.salary_currency ?? 'USD',
+        value,
+      };
     }
 
     return seoHead({

@@ -8,29 +8,80 @@ import {
   getAllShows,
   getHybridAllEvents,
 } from '@/lib/server-fns/hybrid';
+import { listJobs } from '@/lib/server-fns/jobs';
+import { getBrand } from '@/lib/brand';
 
-// Site-wide sitemap. Enumerates the directory + detail pages (corps, judges) and
-// the full merch catalog (products, group storefronts, category pages) so the
-// shop is crawlable (MERCH_PLAN §17). Cached a day; regenerated on demand.
+// Brand-aware sitemap. drumcorps.app enumerates the corps content (directories,
+// shows, scores, merch); pageantryjobs.com enumerates the job board + every job
+// posting — so each host's sitemap only lists its own pages. Cached a day.
 
-const STATIC_PATHS = [
+const CORPS_STATIC = [
   '/',
   '/events',
   '/scores',
+  '/shows',
   '/corps',
   '/judges',
   '/shop',
   '/shop/all',
   '/shop/stores',
 ];
+const JOBS_STATIC = [
+  '/',
+  '/jobs/board',
+  '/jobs/talent',
+  '/jobs/post',
+  '/jobs/guidelines',
+  '/jobs/terms',
+  '/jobs/privacy',
+];
 
 const xmlEscape = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+function buildSitemap(
+  origin: string,
+  paths: Set<string>,
+  dated: { loc: string; lastmod?: string }[]
+): Response {
+  const urls = [
+    ...[...paths].map((p) => `  <url><loc>${xmlEscape(origin + p)}</loc></url>`),
+    ...dated.map(
+      (d) =>
+        `  <url><loc>${xmlEscape(origin + d.loc)}</loc>${
+          d.lastmod ? `<lastmod>${xmlEscape(d.lastmod)}</lastmod>` : ''
+        }</url>`
+    ),
+  ].join('\n');
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+  return new Response(xml, {
+    headers: {
+      'content-type': 'application/xml; charset=utf-8',
+      'cache-control': 'public, max-age=86400, stale-while-revalidate=604800',
+    },
+  });
+}
+
 export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
   GET: async ({ request }) => {
     const origin = new URL(request.url).origin;
-    const paths = new Set<string>(STATIC_PATHS);
+
+    // pageantryjobs.com → job board + every posting (no corps content).
+    if (getBrand(request) === 'jobs') {
+      const jobPaths = new Set<string>(JOBS_STATIC);
+      const jobDated: { loc: string; lastmod?: string }[] = [];
+      try {
+        const { rows } = await listJobs({ data: { limit: 1000, offset: 0 } });
+        for (const j of rows)
+          if (j.slug)
+            jobDated.push({ loc: `/jobs/${j.slug}`, lastmod: j.published_at ?? undefined });
+      } catch {
+        /* postings unavailable — still list the static job pages */
+      }
+      return buildSitemap(origin, jobPaths, jobDated);
+    }
+
+    const paths = new Set<string>(CORPS_STATIC);
 
     const [corps, judges, stores, facets] = await Promise.all([
       getCorpsDirectory().catch(() => []),
@@ -87,22 +138,6 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
       /* merch catalog unavailable — sitemap still lists everything else */
     }
 
-    const urls = [
-      ...[...paths].map((p) => `  <url><loc>${xmlEscape(origin + p)}</loc></url>`),
-      ...dated.map(
-        (d) =>
-          `  <url><loc>${xmlEscape(origin + d.loc)}</loc>${
-            d.lastmod ? `<lastmod>${xmlEscape(d.lastmod)}</lastmod>` : ''
-          }</url>`
-      ),
-    ].join('\n');
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
-
-    return new Response(xml, {
-      headers: {
-        'content-type': 'application/xml; charset=utf-8',
-        'cache-control': 'public, max-age=86400, stale-while-revalidate=604800',
-      },
-    });
+    return buildSitemap(origin, paths, dated);
   },
 });
