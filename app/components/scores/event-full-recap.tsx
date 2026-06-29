@@ -7,12 +7,18 @@ import {
   type RecapRow,
 } from '@/lib/prediction-scenario';
 import { useStickyScroll } from '@/lib/table-interactions';
+import { CorpsRegistryProvider } from '@/components/corps-registry';
 
 export interface RecapCorpsRef {
   corps_key: string | null;
   slug: string | null;
   name: string | null;
   division_name?: string | null;
+  // Logo fields — consumed by CorpsRegistryProvider so CorpsNameCell can resolve
+  // each corps's logo inside the recap table.
+  corps_logo?: string | null;
+  corps_logo_dark?: number | null;
+  corps_logo_dark_url?: string | null;
 }
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '');
@@ -53,17 +59,19 @@ export function EventFullRecap({
   }, [corps]);
 
   return (
-    <FullRecapTable
-      recap={recap}
-      corpsLookup={corpsLookup}
-      classFilters={classFilters}
-      onSetClassFilters={setClassFilters}
-      groupByClass={false}
-      sorts={sorts}
-      sortMode={sortMode}
-      onCycleSort={(key) => setSorts((s) => cycleSortGeneric(s, key, sortMode))}
-      yearSlug={yearSlug}
-      onStickyScroll={onStickyScroll}
-    />
+    <CorpsRegistryProvider corps={corps}>
+      <FullRecapTable
+        recap={recap}
+        corpsLookup={corpsLookup}
+        classFilters={classFilters}
+        onSetClassFilters={setClassFilters}
+        groupByClass={false}
+        sorts={sorts}
+        sortMode={sortMode}
+        onCycleSort={(key) => setSorts((s) => cycleSortGeneric(s, key, sortMode))}
+        yearSlug={yearSlug}
+        onStickyScroll={onStickyScroll}
+      />
+    </CorpsRegistryProvider>
   );
 }

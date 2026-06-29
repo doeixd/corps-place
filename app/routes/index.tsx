@@ -231,7 +231,10 @@ function Home() {
                 </p>
               </div>
             </div>
-            <span className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform group-hover:translate-x-0.5 sm:self-auto">
+            {/* On stacked layouts the button sits below the text; indent it by the
+                icon width (size-12 + gap-4 = 4rem) so its left edge lines up with
+                the heading, then reset on sm+ where it's right-aligned. */}
+            <span className="ml-16 inline-flex shrink-0 items-center gap-1.5 self-start rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform group-hover:translate-x-0.5 sm:ml-0 sm:self-auto">
               Visit PageantryJobs.com →
             </span>
           </a>
