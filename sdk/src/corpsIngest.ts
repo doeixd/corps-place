@@ -328,6 +328,9 @@ const DISCOVERED_PROFILE_KEYS = FIELD_KEYS.filter(
 export const ingestDiscoveredCorps = (options: {
   readonly discovered: readonly DiscoveredCorpsInput[];
   readonly dryRun: boolean;
+  /** Fill-only by default (mirrors ingestCorps): existing values are held, not
+   * overwritten, unless explicitly allowed. Guards curated data (2026-06-28). */
+  readonly allowOverwrite?: boolean;
 }): Effect.Effect<DiscoveredIngestSummary, SqlError, SqlClient.SqlClient> =>
   Effect.gen(function* () {
     const sql = yield* (SqlClient.SqlClient);
@@ -377,15 +380,21 @@ export const ingestDiscoveredCorps = (options: {
       let writeLogo = curLogo;
       const realLogo = profile?.logo ?? null;
       if (realLogo && realLogo !== curLogo && !isGarbage(realLogo)) {
-        changes.push({
+        const logoChange: CorpsFieldChange = {
           slug: d.slug,
           corpsKey: d.corpsKey,
           field: 'corps_logo',
           from: curLogo,
           to: realLogo,
           kind: curLogo ? 'overwrite' : 'fill',
-        });
-        writeLogo = realLogo;
+        };
+        // Fill-only: never replace a curated logo unless explicitly allowed.
+        if (!curLogo || options.allowOverwrite === true) {
+          changes.push(logoChange);
+          writeLogo = realLogo;
+        } else {
+          held.push(logoChange);
+        }
       } else if (!realLogo && d.favicon && !curLogo) {
         changes.push({
           slug: d.slug,
@@ -435,7 +444,8 @@ export const ingestDiscoveredCorps = (options: {
           to: next,
           kind: cur == null || cur === '' ? 'fill' : 'overwrite',
         };
-        if (decideWrite(key, next, cur) === 'write') {
+        const allowed = change.kind === 'fill' || options.allowOverwrite === true;
+        if (allowed && decideWrite(key, next, cur) === 'write') {
           write[key] = next;
           changes.push(change);
         } else {

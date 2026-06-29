@@ -41,6 +41,9 @@ const getArg = (f: string) => {
   return i >= 0 && i + 1 < args.length ? args[i + 1] : undefined;
 };
 const apply = has('--apply');
+// Fill-only unless opted in: existing values are held, not overwritten (mirrors
+// scrapeCorps.ts) so discovery can't clobber curated logos/data.
+const allowOverwrite = has('--allow-overwrite');
 const refresh = has('--refresh');
 const season = Number(getArg('--season') ?? 2026);
 const limit = getArg('--limit') ? Number(getArg('--limit')) : undefined;
@@ -90,7 +93,9 @@ const program = Effect.gen(function* () {
     textDivision: d.textDivision ?? null,
     favicon: d.favicon ?? null,
   }));
-  const summary = yield* (ingestDiscoveredCorps({ discovered: inputs, dryRun: !apply }));
+  const summary = yield* (
+    ingestDiscoveredCorps({ discovered: inputs, dryRun: !apply, allowOverwrite })
+  );
   console.log(
     `[discoverCorps] ${apply ? 'APPLIED' : 'DRY-RUN'} — found ${found.length}, ` +
       `writes=${summary.changes.length}, held=${summary.held.length}`
