@@ -43,7 +43,7 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
       available: false,
     };
 
-    const db = analyticsDb();
+    const db = await analyticsDb();
     if (!db) return empty;
 
     // Inclusive lower bound: midnight UTC `days-1` ago (so days=1 means today).

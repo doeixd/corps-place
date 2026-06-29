@@ -53,30 +53,24 @@ const DDL = [
   `CREATE INDEX IF NOT EXISTS idx_events_path_day ON events(type, path, day)`,
 ];
 
-let client: Client | null = null;
-let initFailed = false;
+let ready: Promise<Client | null> | null = null;
 
-/**
- * The shared analytics client (schema ensured once per process). Returns null when
- * the store can't be opened — callers must treat analytics as best-effort.
- */
-export const analyticsDb = (): Client | null => {
-  if (client || initFailed) return client;
+// Open the client and run pragmas + DDL to completion BEFORE anyone inserts, so the
+// first event after a cold start can't race the CREATE TABLE and get dropped. The
+// promise is memoized, so the schema work happens exactly once per process.
+const init = async (): Promise<Client | null> => {
   try {
     const c = createClient({ url: resolveUrl() });
-    // Fire-and-forget pragmas + DDL; safe to run on every cold start (idempotent).
-    void (async () => {
-      try {
-        for (const p of PRAGMAS) await c.execute(p);
-        for (const d of DDL) await c.execute(d);
-      } catch {
-        /* schema will be retried lazily on a later cold start */
-      }
-    })();
-    client = c;
-    return client;
+    for (const p of PRAGMAS) await c.execute(p);
+    for (const d of DDL) await c.execute(d);
+    return c;
   } catch {
-    initFailed = true;
-    return null;
+    return null; // store unavailable — callers treat analytics as best-effort
   }
 };
+
+/**
+ * The shared analytics client, resolved only once its schema exists. Returns null
+ * when the store can't be opened (analytics is always best-effort).
+ */
+export const analyticsDb = (): Promise<Client | null> => (ready ??= init());

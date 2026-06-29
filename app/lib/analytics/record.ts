@@ -57,7 +57,7 @@ export async function recordEvent(input: RecordInput, req: Request): Promise<voi
     const ua = req.headers.get('user-agent') ?? '';
     if (!ua || BOT_RE.test(ua)) return; // ignore bots / empty UA
 
-    const db = analyticsDb();
+    const db = await analyticsDb();
     if (!db) return;
 
     const ts = Date.now();
