@@ -149,12 +149,15 @@ function ShowDetailPage() {
   const [governance, setGovernance] = useState<Awaited<
     ReturnType<typeof getShowGovernance>
   > | null>(null);
+  const userId = session?.user?.id;
   useEffect(() => {
-    if (session?.user && corps && show)
+    // Depend on the stable user id (not the session object, whose reference can
+    // change each render) so this fetches once per sign-in, not on every render.
+    if (userId && corps && show)
       void getShowGovernance({ data: { corpsKey: corps.corps_key, season: show.season } })
         .then(setGovernance)
         .catch(() => {});
-  }, [session, corps, show]);
+  }, [userId, corps, show]);
 
   if (!corps || !show) {
     return (
