@@ -93,9 +93,33 @@ const main = async () => {
     }
   }
 
+  // ── 3. Re-apply field locks LAST (so curated display_name/bio/photo/title win
+  //     over both the scrape AND the merge chain's normalization). ───────────────
+  const LOCKABLE = new Set(['display_name', 'biography', 'photo_url', 'default_title', 'given_name', 'family_name']);
+  let relocked = 0;
+  try {
+    const locks = (await db.execute('SELECT staff_id, field, value FROM staff_field_locks')).rows as {
+      staff_id: string;
+      field: string;
+      value: string | null;
+    }[];
+    for (const l of locks) {
+      if (!LOCKABLE.has(l.field)) continue; // defend the interpolated identifier
+      const row = (await db.execute({ sql: `SELECT ${l.field} AS v FROM corps_staff WHERE staff_id = ?`, args: [l.staff_id] })).rows[0] as { v: string | null } | undefined;
+      if (!row || row.v === l.value) continue; // gone or already correct
+      console.log(`  [field-lock] restore ${l.staff_id}.${l.field}`);
+      if (APPLY) {
+        await db.execute({ sql: `UPDATE corps_staff SET ${l.field} = ? WHERE staff_id = ?`, args: [l.value, l.staff_id] });
+        relocked++;
+      }
+    }
+  } catch {
+    /* no staff_field_locks table yet — nothing to restore */
+  }
+
   console.log(
     APPLY
-      ? `\nApplied: ${reassigned} assignment(s) reassigned via corps_aliases; merge/cleanup chain re-run.`
+      ? `\nApplied: ${reassigned} assignment(s) reassigned via corps_aliases; merge/cleanup chain re-run; ${relocked} field-lock(s) restored.`
       : '\nDRY-RUN — no changes. Re-run with --apply.'
   );
   process.exit(0);
