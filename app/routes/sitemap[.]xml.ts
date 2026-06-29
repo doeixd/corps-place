@@ -7,6 +7,7 @@ import {
   getMerchFacets,
   getAllShows,
   getHybridAllEvents,
+  getStaffDirectory,
 } from '@/lib/server-fns/hybrid';
 import { listJobs } from '@/lib/server-fns/jobs';
 import { getBrand } from '@/lib/brand';
@@ -23,6 +24,7 @@ const CORPS_STATIC = [
   '/shows',
   '/corps',
   '/judges',
+  '/staff',
   '/shop',
   '/shop/all',
   '/shop/stores',
@@ -108,9 +110,10 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
 
     const paths = new Set<string>(CORPS_STATIC);
 
-    const [corps, judges, stores, facets] = await Promise.all([
+    const [corps, judges, staff, stores, facets] = await Promise.all([
       getCorpsDirectory().catch(() => []),
       getJudgeDirectory().catch(() => []),
+      getStaffDirectory().catch(() => []),
       getMerchStores().catch(() => []),
       getMerchFacets().catch(() => null),
     ]);
@@ -140,7 +143,14 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
       // Per-season archive pages (/scores/<year>) get a <lastmod> = that season's
       // most recent scored show.
       const seasonLastmod = new Map<string, string>();
-      for (const e of events)
+      for (const e of events) {
+        // Every event has an indexable hub page at /events/<year>/<slug>/prediction
+        // (schedule, lineup, predictions, and scores once posted).
+        if (e.season && e.slug)
+          dated.push({
+            loc: `/events/${e.season}/${e.slug}/prediction`,
+            lastmod: e.start_date ?? undefined,
+          });
         if (e.scores_released && e.slug) {
           dated.push({ loc: `/scores/${e.slug}`, lastmod: e.start_date ?? undefined });
           if (e.start_date && (!latestScored || e.start_date > latestScored))
@@ -150,6 +160,7 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
             if (!prev || e.start_date > prev) seasonLastmod.set(e.season, e.start_date);
           }
         }
+      }
       for (const [season, lastmod] of seasonLastmod)
         dated.push({ loc: `/scores/${season}`, lastmod });
       // Give the /scores index a real freshness signal: the most recent scored
@@ -165,6 +176,9 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
     }
 
     for (const j of judges) if (j.judge_id) paths.add(`/judges/${j.judge_id}`);
+    // Staff profiles — the /staff index doesn't server-render its links, so the
+    // sitemap is how these get discovered at all.
+    for (const s of staff) if (s.person_id) paths.add(`/staff/${s.person_id}`);
     for (const s of stores)
       if (s.productCount > 0) paths.add(`/shop/group/${encodeURIComponent(s.slug)}`);
     if (facets)
