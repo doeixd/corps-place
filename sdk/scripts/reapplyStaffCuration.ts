@@ -84,6 +84,30 @@ const main = async () => {
     }
   }
 
+  // ── 1b. Enforce assignment suppressions (remove re-scraped misattributions /
+  //     hiatus rows, e.g. Gaines' Vanguard-Cadets rows + SCV 2023). ───────────────
+  let suppressed = 0;
+  try {
+    const sups = (await db.execute('SELECT person_id, corps_key, season FROM staff_assignment_suppressions')).rows as {
+      person_id: string;
+      corps_key: string;
+      season: string;
+    }[];
+    for (const s of sups) {
+      const withSeason = s.season !== '';
+      const sql = `DELETE FROM corps_staff_assignments WHERE corps_key = ? AND staff_id IN (SELECT staff_id FROM corps_staff WHERE person_id = ?)${withSeason ? ' AND season = ?' : ''}`;
+      const args = withSeason ? [s.corps_key, s.person_id, s.season] : [s.corps_key, s.person_id];
+      if (APPLY) {
+        const res = await db.execute({ sql, args });
+        const n = Number((res as { rowsAffected?: number }).rowsAffected ?? 0);
+        if (n > 0) console.log(`  [assignment-suppress] ${s.person_id} × ${s.corps_key} × ${s.season || 'ALL'}: removed ${n}`);
+        suppressed += n;
+      }
+    }
+  } catch {
+    /* no staff_assignment_suppressions table yet */
+  }
+
   // ── 2. Re-run the idempotent cleanup/merge chain (re-collapses re-split people). ─
   console.log(`\n${APPLY ? 'Running' : '(dry-run) would run'} cleanup/merge chain: ${CHAIN.join(', ')}`);
   if (APPLY) {
@@ -119,7 +143,7 @@ const main = async () => {
 
   console.log(
     APPLY
-      ? `\nApplied: ${reassigned} assignment(s) reassigned via corps_aliases; merge/cleanup chain re-run; ${relocked} field-lock(s) restored.`
+      ? `\nApplied: ${reassigned} reassigned via corps_aliases; ${suppressed} assignment(s) suppressed; merge/cleanup chain re-run; ${relocked} field-lock(s) restored.`
       : '\nDRY-RUN — no changes. Re-run with --apply.'
   );
   process.exit(0);
