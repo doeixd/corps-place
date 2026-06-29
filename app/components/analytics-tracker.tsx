@@ -1,6 +1,11 @@
 import { useEffect } from 'react';
 import { useRouter } from '@tanstack/react-router';
-import { trackPageview, initEngagement, maybeTrackSearch } from '@/lib/analytics/client';
+import {
+  trackPageview,
+  initEngagement,
+  maybeTrackSearch,
+  initWebVitals,
+} from '@/lib/analytics/client';
 
 /**
  * Mounts once in the root layout. Fires a pageview on the initial load and on every
@@ -12,6 +17,7 @@ export function AnalyticsTracker(): null {
   const router = useRouter();
   useEffect(() => {
     initEngagement();
+    initWebVitals();
     let last = '';
     const fire = () => {
       maybeTrackSearch(); // every resolve — debounced; covers ?q= param updates

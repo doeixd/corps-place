@@ -19,11 +19,18 @@ export type AnalyticsSummary = {
   byBrand: { brand: string; views: number }[];
   byDevice: { device: string; views: number }[];
   engagement: { avgSeconds: number; avgScroll: number; samples: number };
+  // Core Web Vitals (field): p75 per metric (ms; CLS is ×1000), + INP by page.
+  webVitals: { metric: string; samples: number; p75: number; avg: number }[];
+  inpByPath: { path: string; samples: number; p75: number }[];
   available: boolean;
 };
 
 const num = (v: unknown): number => (typeof v === 'number' ? v : Number(v ?? 0)) || 0;
-const str = (v: unknown): string => (v == null ? '' : String(v));
+// SQL text columns come back as string|null; narrow explicitly so we never
+// stringify an object (avoids the no-base-to-string lint + an accidental
+// '[object Object]').
+const str = (v: unknown): string =>
+  typeof v === 'string' ? v : typeof v === 'number' || typeof v === 'bigint' ? String(v) : '';
 
 export const getAnalyticsSummary = createServerFn({ method: 'GET' })
   .validator((d: { days?: number } | undefined) => ({ days: Math.min(365, Math.max(1, d?.days ?? 30)) }))
@@ -40,6 +47,8 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
       byBrand: [],
       byDevice: [],
       engagement: { avgSeconds: 0, avgScroll: 0, samples: 0 },
+      webVitals: [],
+      inpByPath: [],
       available: false,
     };
 
@@ -92,6 +101,33 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
            COUNT(*) AS n
          FROM events WHERE day >= ? AND name='leave'`
       );
+      // Core Web Vitals: p75 per metric (PERCENT_RANK window) — the canonical CWV stat.
+      const webVitals = await q(
+        `WITH v AS (
+           SELECT json_extract(props,'$.metric') AS metric,
+                  CAST(json_extract(props,'$.value') AS REAL) AS value
+           FROM events WHERE day >= ? AND name='webvital' AND props IS NOT NULL
+         ),
+         ranked AS (
+           SELECT metric, value, PERCENT_RANK() OVER (PARTITION BY metric ORDER BY value) AS pr FROM v
+         )
+         SELECT metric, COUNT(*) AS samples, ROUND(AVG(value)) AS avg,
+                ROUND(MIN(CASE WHEN pr >= 0.75 THEN value END)) AS p75
+         FROM ranked GROUP BY metric ORDER BY metric`
+      );
+      // INP p75 by page — where the slow interactions actually are.
+      const inpByPath = await q(
+        `WITH v AS (
+           SELECT path, CAST(json_extract(props,'$.value') AS REAL) AS value
+           FROM events WHERE day >= ? AND name='webvital'
+             AND json_extract(props,'$.metric')='INP' AND path IS NOT NULL
+         ),
+         ranked AS (
+           SELECT path, value, PERCENT_RANK() OVER (PARTITION BY path ORDER BY value) AS pr FROM v
+         )
+         SELECT path, COUNT(*) AS samples, ROUND(MIN(CASE WHEN pr >= 0.75 THEN value END)) AS p75
+         FROM ranked GROUP BY path HAVING samples >= 3 ORDER BY p75 DESC LIMIT 15`
+      );
 
       return {
         rangeDays: days,
@@ -103,6 +139,13 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
         byBrand: byBrand.map((r) => ({ brand: str(r.brand), views: num(r.views) })),
         byDevice: byDevice.map((r) => ({ device: str(r.device), views: num(r.views) })),
         engagement: { avgSeconds: Math.round(num(eng?.s)), avgScroll: Math.round(num(eng?.sc)), samples: num(eng?.n) },
+        webVitals: webVitals.map((r) => ({
+          metric: str(r.metric),
+          samples: num(r.samples),
+          p75: num(r.p75),
+          avg: num(r.avg),
+        })),
+        inpByPath: inpByPath.map((r) => ({ path: str(r.path), samples: num(r.samples), p75: num(r.p75) })),
         available: true,
       };
     } catch {

@@ -108,6 +108,36 @@ export function maybeTrackSearch(): void {
   }, 800);
 }
 
+// ── Core Web Vitals ──
+// Report field INP/LCP/CLS/TTFB/FCP so we can measure real-user performance (and
+// prove perf work). web-vitals is dynamically imported so it stays off the initial
+// critical path. Each metric finalizes at its own time (LCP on load, INP/CLS on
+// hide); we send via the same beacon, tagged with the path it was measured on.
+let vitalsWired = false;
+export function initWebVitals(): void {
+  if (vitalsWired || typeof window === 'undefined' || dnt()) return;
+  vitalsWired = true;
+  void import('web-vitals')
+    .then(({ onINP, onLCP, onCLS, onTTFB, onFCP }) => {
+      const report = (m: { name: string; value: number; rating: string }) =>
+        track('webvital', {
+          // CLS is a unitless score; store ×1000 so it sits alongside the ms
+          // metrics as an integer. All others are milliseconds.
+          metric: m.name,
+          value: m.name === 'CLS' ? Math.round(m.value * 1000) : Math.round(m.value),
+          rating: m.rating,
+        });
+      onINP(report);
+      onLCP(report);
+      onCLS(report);
+      onTTFB(report);
+      onFCP(report);
+    })
+    .catch(() => {
+      /* web-vitals unavailable — non-fatal */
+    });
+}
+
 let wired = false;
 /** Attach outbound-link + engagement listeners once. Safe to call repeatedly. */
 export function initEngagement(): void {

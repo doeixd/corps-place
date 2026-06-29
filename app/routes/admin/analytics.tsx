@@ -130,8 +130,59 @@ function Analytics({ initial }: { initial: AnalyticsSummary }) {
           empty="—"
         />
       </div>
+
+      {/* Core Web Vitals (field) — p75 is the score Google grades on. */}
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold text-text-secondary">
+            Core Web Vitals · p75 (field)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm">
+          {summary.webVitals.length ? (
+            <div className="flex flex-wrap gap-4">
+              {summary.webVitals.map((v) => (
+                <div key={v.metric} className="min-w-24">
+                  <div className="text-xs text-text-secondary">{v.metric}</div>
+                  <div className={`text-xl font-bold tabular-nums ${vitalColor(v.metric, v.p75)}`}>
+                    {formatVital(v.metric, v.p75)}
+                  </div>
+                  <div className="text-[10px] text-text-muted">{v.samples} samples</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-text-secondary">No web-vitals data yet (collecting on real visits).</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="mt-4">
+        <TableCard
+          title="Slowest pages · INP p75 (ms)"
+          rows={summary.inpByPath.map((r) => [r.path, `${r.p75}ms · ${r.samples}`])}
+          empty="No INP data yet"
+        />
+      </div>
     </>
   );
+}
+
+// CWV "good / needs-improvement / poor" thresholds (stored units: ms; CLS is ×1000).
+const VITAL_THRESHOLDS: Record<string, [good: number, poor: number]> = {
+  INP: [200, 500],
+  LCP: [2500, 4000],
+  CLS: [100, 250],
+  FCP: [1800, 3000],
+  TTFB: [800, 1800],
+};
+function vitalColor(metric: string, v: number): string {
+  const t = VITAL_THRESHOLDS[metric];
+  if (!t) return 'text-text-primary';
+  return v <= t[0] ? 'text-green-600' : v <= t[1] ? 'text-amber-600' : 'text-destructive';
+}
+function formatVital(metric: string, v: number): string {
+  return metric === 'CLS' ? (v / 1000).toFixed(3) : `${v}ms`;
 }
 
 function Stat({ label, value }: { label: string; value: number | string }) {
