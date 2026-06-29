@@ -398,8 +398,12 @@ const makeJobsService = Effect.gen(function* () {
     }
 
     if (filters.keyword) {
-      conditions.push('jp.title LIKE ?');
-      args.push(`%${filters.keyword}%`);
+      // Match the title OR the description body (content_json holds the flattened
+      // {doc, plain} text), so role/skill keywords surface relevant postings even
+      // when the term isn't in the title — board search + pSEO landing pages rely
+      // on this. Both bound as ? params (no interpolation).
+      conditions.push('(jp.title LIKE ? OR jp.content_json LIKE ?)');
+      args.push(`%${filters.keyword}%`, `%${filters.keyword}%`);
     }
     if (filters.location) {
       conditions.push('jp.location LIKE ?');

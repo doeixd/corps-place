@@ -206,6 +206,17 @@ const CROSS_ROLES: RoleKey[] = ['instructor', 'coach', 'director', 'judge', 'cho
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 const dLabel = (d: string) => DISCIPLINE_LABEL[d] ?? d;
+// Clean primary term for titles/H1 — strips compound suffixes so "Bodybuilding &
+// physique" → "Bodybuilding", "Equestrian / horse showing" → "Equestrian".
+const shortLabel = (label: string) => label.split(/\s*[&/(]/)[0].trim();
+// The secondary term(s) of a compound label, as extra alias keywords
+// ("horse showing", "physique", "wind ensemble").
+const labelExtras = (label: string) =>
+  label
+    .split(/\s*[&/(]\s*/)
+    .slice(1)
+    .map((s) => s.replace(/[)]/g, '').trim())
+    .filter(Boolean);
 const titleCase = (s: string) =>
   s
     .split('-')
@@ -244,7 +255,8 @@ function commonFaq(thing: string): { q: string; a: string }[] {
 
 // ── builders ──────────────────────────────────────────────────────────────────
 function disciplinePage(d: string): LandingDef {
-  const label = dLabel(d);
+  const label = shortLabel(dLabel(d)); // clean primary term for SEO ("Bodybuilding")
+  const extras = labelExtras(dLabel(d)); // compound terms → extra keywords
   const roles = ROLE_MAP[d] ?? [];
   return {
     slug: d,
@@ -256,13 +268,18 @@ function disciplinePage(d: string): LandingDef {
     intro: discIntro(label),
     faq: commonFaq(`${lc(label)}`),
     filter: { discipline: d },
-    aliases: [`${label} Careers`, `${label} Staff Jobs`, `${label} Positions`],
+    aliases: [
+      `${label} Careers`,
+      `${label} Staff Jobs`,
+      `${label} Positions`,
+      ...extras.map((e) => `${titleCase(e.replace(/ /g, '-'))} Jobs`),
+    ],
     related: roles.map((r) => `${d}-${r}`),
   };
 }
 
 function disciplineRolePage(d: string, roleKey: RoleKey): LandingDef {
-  const label = dLabel(d);
+  const label = shortLabel(dLabel(d));
   const role = ROLES[roleKey];
   const phrase = `${label} ${role.noun}`;
   return {

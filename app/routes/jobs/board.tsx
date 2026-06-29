@@ -224,6 +224,13 @@ function BoardPage() {
     <PageShell>
       <PageHeader title="Job Board" subtitle="Pageantry & marching-arts job listings" subtitleClassName="text-sm" backTo="/" backLabel="Home" />
 
+      <Link
+        to="/jobs/categories"
+        className="mt-1 inline-block text-sm font-medium text-primary hover:underline"
+      >
+        Browse jobs by discipline &amp; role →
+      </Link>
+
       <div className="mt-4 flex flex-col gap-2 sm:flex-row">
         <div className="relative w-full sm:flex-1">
           <Icon

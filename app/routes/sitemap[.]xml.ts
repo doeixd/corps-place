@@ -80,12 +80,14 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
         // are noindex). Match the same way the page filters: discipline exact +
         // title keyword. One pass over the postings we already fetched.
         const matches = (def: (typeof LANDING_DEFS)[number]) =>
-          rows.filter(
-            (j) =>
-              (!def.filter.discipline || j.discipline === def.filter.discipline) &&
-              (!def.filter.keyword ||
-                (j.title ?? '').toLowerCase().includes(def.filter.keyword.toLowerCase()))
-          );
+          rows.filter((j) => {
+            if (def.filter.discipline && j.discipline !== def.filter.discipline) return false;
+            if (def.filter.keyword) {
+              const hay = `${j.title ?? ''} ${(j as { content_json?: string }).content_json ?? ''}`.toLowerCase();
+              if (!hay.includes(def.filter.keyword.toLowerCase())) return false;
+            }
+            return true;
+          });
         for (const def of LANDING_DEFS) {
           const m = matches(def);
           if (m.length) {
