@@ -59,6 +59,7 @@ export const Route = createFileRoute('/scores/$slug')({
             ? `Final scores and full recaps from all ${n} ${d.season} DCI drum corps shows — placements and caption breakdowns by competition.`
             : `${d.season} DCI scores will appear here as shows are scored.`,
         path: `/scores/${d.season}`,
+        image: `${SITE_URL}/api/og/score/${d.season}`,
         noindex: n === 0,
         jsonLd: [
           breadcrumbLd([
@@ -114,6 +115,7 @@ export const Route = createFileRoute('/scores/$slug')({
       title,
       description,
       path: `/scores/${slug}`,
+      image: `${SITE_URL}/api/og/score/${slug}`,
       noindex: !hasScores,
       jsonLd: [
         sportsEvent,

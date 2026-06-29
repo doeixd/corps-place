@@ -91,8 +91,10 @@ import { ServerRoute as ApiJobsStripeWebhookServerRouteImport } from './routes/a
 import { ServerRoute as ApiFantasyStripeWebhookServerRouteImport } from './routes/api/fantasy/stripe-webhook'
 import { ServerRoute as ApiFantasyMediaIdServerRouteImport } from './routes/api/fantasy-media/$id'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
+import { ServerRoute as ApiOgScoreSlugServerRouteImport } from './routes/api/og/score/$slug'
 import { ServerRoute as ApiFantasyJobsRecomputeServerRouteImport } from './routes/api/fantasy/jobs/recompute'
 import { ServerRoute as ApiFantasyJobsDispatchServerRouteImport } from './routes/api/fantasy/jobs/dispatch'
+import { ServerRoute as ApiOgShowSlugSeasonServerRouteImport } from './routes/api/og/show/$slug.$season'
 import { ServerRoute as ApiFantasyDraftLeagueIdStreamServerRouteImport } from './routes/api/fantasy/draft/$leagueId/stream'
 
 const rootServerRouteImport = createServerRootRoute()
@@ -501,6 +503,11 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiOgScoreSlugServerRoute = ApiOgScoreSlugServerRouteImport.update({
+  id: '/api/og/score/$slug',
+  path: '/api/og/score/$slug',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 const ApiFantasyJobsRecomputeServerRoute =
   ApiFantasyJobsRecomputeServerRouteImport.update({
     id: '/api/fantasy/jobs/recompute',
@@ -511,6 +518,12 @@ const ApiFantasyJobsDispatchServerRoute =
   ApiFantasyJobsDispatchServerRouteImport.update({
     id: '/api/fantasy/jobs/dispatch',
     path: '/api/fantasy/jobs/dispatch',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiOgShowSlugSeasonServerRoute =
+  ApiOgShowSlugSeasonServerRouteImport.update({
+    id: '/api/og/show/$slug/$season',
+    path: '/api/og/show/$slug/$season',
     getParentRoute: () => rootServerRouteImport,
   } as any)
 const ApiFantasyDraftLeagueIdStreamServerRoute =
@@ -1028,7 +1041,9 @@ export interface FileServerRoutesByFullPath {
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
   '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
+  '/api/og/show/$slug/$season': typeof ApiOgShowSlugSeasonServerRoute
 }
 export interface FileServerRoutesByTo {
   '/app-icon.svg': typeof AppIconDotsvgServerRoute
@@ -1045,7 +1060,9 @@ export interface FileServerRoutesByTo {
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
   '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
+  '/api/og/show/$slug/$season': typeof ApiOgShowSlugSeasonServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
@@ -1063,7 +1080,9 @@ export interface FileServerRoutesById {
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
   '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
+  '/api/og/show/$slug/$season': typeof ApiOgShowSlugSeasonServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
@@ -1082,7 +1101,9 @@ export interface FileServerRouteTypes {
     | '/api/show-media/$id'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
+    | '/api/og/score/$slug'
     | '/api/fantasy/draft/$leagueId/stream'
+    | '/api/og/show/$slug/$season'
   fileServerRoutesByTo: FileServerRoutesByTo
   to:
     | '/app-icon.svg'
@@ -1099,7 +1120,9 @@ export interface FileServerRouteTypes {
     | '/api/show-media/$id'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
+    | '/api/og/score/$slug'
     | '/api/fantasy/draft/$leagueId/stream'
+    | '/api/og/show/$slug/$season'
   id:
     | '__root__'
     | '/app-icon.svg'
@@ -1116,7 +1139,9 @@ export interface FileServerRouteTypes {
     | '/api/show-media/$id'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
+    | '/api/og/score/$slug'
     | '/api/fantasy/draft/$leagueId/stream'
+    | '/api/og/show/$slug/$season'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
@@ -1134,7 +1159,9 @@ export interface RootServerRouteChildren {
   ApiShowMediaIdServerRoute: typeof ApiShowMediaIdServerRoute
   ApiFantasyJobsDispatchServerRoute: typeof ApiFantasyJobsDispatchServerRoute
   ApiFantasyJobsRecomputeServerRoute: typeof ApiFantasyJobsRecomputeServerRoute
+  ApiOgScoreSlugServerRoute: typeof ApiOgScoreSlugServerRoute
   ApiFantasyDraftLeagueIdStreamServerRoute: typeof ApiFantasyDraftLeagueIdStreamServerRoute
+  ApiOgShowSlugSeasonServerRoute: typeof ApiOgShowSlugSeasonServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1703,6 +1730,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiAuthSplatServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/og/score/$slug': {
+      id: '/api/og/score/$slug'
+      path: '/api/og/score/$slug'
+      fullPath: '/api/og/score/$slug'
+      preLoaderRoute: typeof ApiOgScoreSlugServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/fantasy/jobs/recompute': {
       id: '/api/fantasy/jobs/recompute'
       path: '/api/fantasy/jobs/recompute'
@@ -1715,6 +1749,13 @@ declare module '@tanstack/react-start/server' {
       path: '/api/fantasy/jobs/dispatch'
       fullPath: '/api/fantasy/jobs/dispatch'
       preLoaderRoute: typeof ApiFantasyJobsDispatchServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/og/show/$slug/$season': {
+      id: '/api/og/show/$slug/$season'
+      path: '/api/og/show/$slug/$season'
+      fullPath: '/api/og/show/$slug/$season'
+      preLoaderRoute: typeof ApiOgShowSlugSeasonServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
     '/api/fantasy/draft/$leagueId/stream': {
@@ -1826,8 +1867,10 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ApiShowMediaIdServerRoute: ApiShowMediaIdServerRoute,
   ApiFantasyJobsDispatchServerRoute: ApiFantasyJobsDispatchServerRoute,
   ApiFantasyJobsRecomputeServerRoute: ApiFantasyJobsRecomputeServerRoute,
+  ApiOgScoreSlugServerRoute: ApiOgScoreSlugServerRoute,
   ApiFantasyDraftLeagueIdStreamServerRoute:
     ApiFantasyDraftLeagueIdStreamServerRoute,
+  ApiOgShowSlugSeasonServerRoute: ApiOgShowSlugSeasonServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)

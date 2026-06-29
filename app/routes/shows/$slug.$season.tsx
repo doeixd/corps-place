@@ -107,7 +107,9 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       title: `${corpsName ? corpsName + ' ' : ''}${d.season} — ${s.title} (Drum Corps Show)`,
       description,
       path: `/shows/${params.slug}/${params.season}`,
-      image,
+      // Generated Satori OG card (show title + corps + season); the real media
+      // thumbnail still appears in the CreativeWork JSON-LD image below.
+      image: `${SITE_URL}/api/og/show/${params.slug}/${params.season}`,
       type: 'article',
       jsonLd: [
         {
