@@ -64,6 +64,8 @@ export const SCHEDULE_ITEM_PATTERNS: readonly ExclusionPattern[] = [
   { pattern: '%concludes%', category: 'schedule_item', reason: 'Agenda item' },
   { pattern: '%event ends%', category: 'schedule_item', reason: 'Agenda item' },
   { pattern: '%end of event%', category: 'schedule_item', reason: 'Agenda item' },
+  { pattern: '%hall of fame%', category: 'schedule_item', reason: 'Agenda item (induction ceremony)' },
+  { pattern: '%induction%', category: 'schedule_item', reason: 'Agenda item (induction ceremony)' },
   { pattern: '%finals begins%', category: 'schedule_item', reason: 'Agenda item' },
   { pattern: '%semifinals begins%', category: 'schedule_item', reason: 'Agenda item' },
   { pattern: '%prelims begins%', category: 'schedule_item', reason: 'Agenda item' },
