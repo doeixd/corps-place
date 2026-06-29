@@ -19,7 +19,9 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StaffIndexRouteImport } from './routes/staff/index'
+import { Route as ShowsIndexRouteImport } from './routes/shows/index'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
+import { Route as ScoresIndexRouteImport } from './routes/scores/index'
 import { Route as MerchIndexRouteImport } from './routes/merch.index'
 import { Route as JudgesIndexRouteImport } from './routes/judges/index'
 import { Route as FantasyIndexRouteImport } from './routes/fantasy/index'
@@ -32,6 +34,8 @@ import { Route as ShopCartRouteImport } from './routes/shop/cart'
 import { Route as ShopBookmarksRouteImport } from './routes/shop/bookmarks'
 import { Route as ShopAllRouteImport } from './routes/shop/all'
 import { Route as ShopProductIdRouteImport } from './routes/shop/$productId'
+import { Route as ScoresSlugRouteImport } from './routes/scores/$slug'
+import { Route as PredictPaletteRouteImport } from './routes/predict/palette'
 import { Route as NotifyUnsubscribeRouteImport } from './routes/notify/unsubscribe'
 import { Route as MerchSplatRouteImport } from './routes/merch.$'
 import { Route as JudgesJudgeIdRouteImport } from './routes/judges/$judgeId'
@@ -42,6 +46,7 @@ import { Route as JobsPostRouteImport } from './routes/jobs/post'
 import { Route as JobsOnboardRouteImport } from './routes/jobs/onboard'
 import { Route as JobsMeRouteImport } from './routes/jobs/me'
 import { Route as JobsGuidelinesRouteImport } from './routes/jobs/guidelines'
+import { Route as JobsCategoriesRouteImport } from './routes/jobs/categories'
 import { Route as JobsBoardRouteImport } from './routes/jobs/board'
 import { Route as JobsAdminRouteImport } from './routes/jobs/admin'
 import { Route as JobsJobSlugRouteImport } from './routes/jobs/$jobSlug'
@@ -56,12 +61,14 @@ import { Route as AdminIdentityRouteImport } from './routes/admin/identity'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
 import { Route as FantasySlugIndexRouteImport } from './routes/fantasy/$slug/index'
 import { Route as EventsYearSlugIndexRouteImport } from './routes/events/$yearSlug/index'
 import { Route as ShowsSlugSeasonRouteImport } from './routes/shows/$slug.$season'
 import { Route as ShopGroupStoreIdRouteImport } from './routes/shop/group/$storeId'
 import { Route as ShopCategoryCatRouteImport } from './routes/shop/category/$cat'
 import { Route as JobsProfileSlugRouteImport } from './routes/jobs/profile/$slug'
+import { Route as JobsCSlugRouteImport } from './routes/jobs/c/$slug'
 import { Route as FantasyJoinTokenRouteImport } from './routes/fantasy/join/$token'
 import { Route as FantasySlugStandingsRouteImport } from './routes/fantasy/$slug/standings'
 import { Route as FantasySlugQuizRouteImport } from './routes/fantasy/$slug/quiz'
@@ -78,6 +85,7 @@ import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[
 import { ServerRoute as AppIconDotsvgServerRouteImport } from './routes/app-icon[.]svg'
 import { ServerRoute as ApiVersionServerRouteImport } from './routes/api/version'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
+import { ServerRoute as ApiCollectServerRouteImport } from './routes/api/collect'
 import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
 import { ServerRoute as ApiJobsStripeWebhookServerRouteImport } from './routes/api/jobs/stripe-webhook'
 import { ServerRoute as ApiFantasyStripeWebhookServerRouteImport } from './routes/api/fantasy/stripe-webhook'
@@ -129,9 +137,19 @@ const StaffIndexRoute = StaffIndexRouteImport.update({
   path: '/staff/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShowsIndexRoute = ShowsIndexRouteImport.update({
+  id: '/shows/',
+  path: '/shows/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopIndexRoute = ShopIndexRouteImport.update({
   id: '/shop/',
   path: '/shop/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScoresIndexRoute = ScoresIndexRouteImport.update({
+  id: '/scores/',
+  path: '/scores/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerchIndexRoute = MerchIndexRouteImport.update({
@@ -194,6 +212,16 @@ const ShopProductIdRoute = ShopProductIdRouteImport.update({
   path: '/shop/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScoresSlugRoute = ScoresSlugRouteImport.update({
+  id: '/scores/$slug',
+  path: '/scores/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictPaletteRoute = PredictPaletteRouteImport.update({
+  id: '/predict/palette',
+  path: '/predict/palette',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NotifyUnsubscribeRoute = NotifyUnsubscribeRouteImport.update({
   id: '/notify/unsubscribe',
   path: '/notify/unsubscribe',
@@ -242,6 +270,11 @@ const JobsMeRoute = JobsMeRouteImport.update({
 const JobsGuidelinesRoute = JobsGuidelinesRouteImport.update({
   id: '/jobs/guidelines',
   path: '/jobs/guidelines',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsCategoriesRoute = JobsCategoriesRouteImport.update({
+  id: '/jobs/categories',
+  path: '/jobs/categories',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JobsBoardRoute = JobsBoardRouteImport.update({
@@ -314,6 +347,11 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
   path: '/admin/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/admin/analytics',
+  path: '/admin/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FantasySlugIndexRoute = FantasySlugIndexRouteImport.update({
   id: '/fantasy/$slug/',
   path: '/fantasy/$slug/',
@@ -342,6 +380,11 @@ const ShopCategoryCatRoute = ShopCategoryCatRouteImport.update({
 const JobsProfileSlugRoute = JobsProfileSlugRouteImport.update({
   id: '/jobs/profile/$slug',
   path: '/jobs/profile/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsCSlugRoute = JobsCSlugRouteImport.update({
+  id: '/jobs/c/$slug',
+  path: '/jobs/c/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FantasyJoinTokenRoute = FantasyJoinTokenRouteImport.update({
@@ -426,6 +469,11 @@ const ApiMediaServerRoute = ApiMediaServerRouteImport.update({
   path: '/api/media',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiCollectServerRoute = ApiCollectServerRouteImport.update({
+  id: '/api/collect',
+  path: '/api/collect',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 const ApiShowMediaIdServerRoute = ApiShowMediaIdServerRouteImport.update({
   id: '/api/show-media/$id',
   path: '/api/show-media/$id',
@@ -480,6 +528,7 @@ export interface FileRoutesByFullPath {
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
@@ -494,6 +543,7 @@ export interface FileRoutesByFullPath {
   '/jobs/$jobSlug': typeof JobsJobSlugRoute
   '/jobs/admin': typeof JobsAdminRoute
   '/jobs/board': typeof JobsBoardRoute
+  '/jobs/categories': typeof JobsCategoriesRoute
   '/jobs/guidelines': typeof JobsGuidelinesRoute
   '/jobs/me': typeof JobsMeRoute
   '/jobs/onboard': typeof JobsOnboardRoute
@@ -504,6 +554,8 @@ export interface FileRoutesByFullPath {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
+  '/predict/palette': typeof PredictPaletteRoute
+  '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
   '/shop/bookmarks': typeof ShopBookmarksRoute
@@ -516,7 +568,9 @@ export interface FileRoutesByFullPath {
   '/fantasy': typeof FantasyIndexRoute
   '/judges': typeof JudgesIndexRoute
   '/merch': typeof MerchIndexRoute
+  '/scores': typeof ScoresIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/shows': typeof ShowsIndexRoute
   '/staff': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
@@ -527,6 +581,7 @@ export interface FileRoutesByFullPath {
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
   '/fantasy/$slug/standings': typeof FantasySlugStandingsRoute
   '/fantasy/join/$token': typeof FantasyJoinTokenRoute
+  '/jobs/c/$slug': typeof JobsCSlugRoute
   '/jobs/profile/$slug': typeof JobsProfileSlugRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
@@ -543,6 +598,7 @@ export interface FileRoutesByTo {
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
@@ -557,6 +613,7 @@ export interface FileRoutesByTo {
   '/jobs/$jobSlug': typeof JobsJobSlugRoute
   '/jobs/admin': typeof JobsAdminRoute
   '/jobs/board': typeof JobsBoardRoute
+  '/jobs/categories': typeof JobsCategoriesRoute
   '/jobs/guidelines': typeof JobsGuidelinesRoute
   '/jobs/me': typeof JobsMeRoute
   '/jobs/onboard': typeof JobsOnboardRoute
@@ -567,6 +624,8 @@ export interface FileRoutesByTo {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
+  '/predict/palette': typeof PredictPaletteRoute
+  '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
   '/shop/bookmarks': typeof ShopBookmarksRoute
@@ -579,7 +638,9 @@ export interface FileRoutesByTo {
   '/fantasy': typeof FantasyIndexRoute
   '/judges': typeof JudgesIndexRoute
   '/merch': typeof MerchIndexRoute
+  '/scores': typeof ScoresIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/shows': typeof ShowsIndexRoute
   '/staff': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
@@ -590,6 +651,7 @@ export interface FileRoutesByTo {
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
   '/fantasy/$slug/standings': typeof FantasySlugStandingsRoute
   '/fantasy/join/$token': typeof FantasyJoinTokenRoute
+  '/jobs/c/$slug': typeof JobsCSlugRoute
   '/jobs/profile/$slug': typeof JobsProfileSlugRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
@@ -607,6 +669,7 @@ export interface FileRoutesById {
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
@@ -621,6 +684,7 @@ export interface FileRoutesById {
   '/jobs/$jobSlug': typeof JobsJobSlugRoute
   '/jobs/admin': typeof JobsAdminRoute
   '/jobs/board': typeof JobsBoardRoute
+  '/jobs/categories': typeof JobsCategoriesRoute
   '/jobs/guidelines': typeof JobsGuidelinesRoute
   '/jobs/me': typeof JobsMeRoute
   '/jobs/onboard': typeof JobsOnboardRoute
@@ -631,6 +695,8 @@ export interface FileRoutesById {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
+  '/predict/palette': typeof PredictPaletteRoute
+  '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
   '/shop/bookmarks': typeof ShopBookmarksRoute
@@ -643,7 +709,9 @@ export interface FileRoutesById {
   '/fantasy/': typeof FantasyIndexRoute
   '/judges/': typeof JudgesIndexRoute
   '/merch/': typeof MerchIndexRoute
+  '/scores/': typeof ScoresIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/shows/': typeof ShowsIndexRoute
   '/staff/': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
@@ -654,6 +722,7 @@ export interface FileRoutesById {
   '/fantasy/$slug/quiz': typeof FantasySlugQuizRoute
   '/fantasy/$slug/standings': typeof FantasySlugStandingsRoute
   '/fantasy/join/$token': typeof FantasyJoinTokenRoute
+  '/jobs/c/$slug': typeof JobsCSlugRoute
   '/jobs/profile/$slug': typeof JobsProfileSlugRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
@@ -672,6 +741,7 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/terms-of-service'
     | '/vs'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
@@ -686,6 +756,7 @@ export interface FileRouteTypes {
     | '/jobs/$jobSlug'
     | '/jobs/admin'
     | '/jobs/board'
+    | '/jobs/categories'
     | '/jobs/guidelines'
     | '/jobs/me'
     | '/jobs/onboard'
@@ -696,6 +767,8 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
+    | '/predict/palette'
+    | '/scores/$slug'
     | '/shop/$productId'
     | '/shop/all'
     | '/shop/bookmarks'
@@ -708,7 +781,9 @@ export interface FileRouteTypes {
     | '/fantasy'
     | '/judges'
     | '/merch'
+    | '/scores'
     | '/shop'
+    | '/shows'
     | '/staff'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
@@ -719,6 +794,7 @@ export interface FileRouteTypes {
     | '/fantasy/$slug/quiz'
     | '/fantasy/$slug/standings'
     | '/fantasy/join/$token'
+    | '/jobs/c/$slug'
     | '/jobs/profile/$slug'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
@@ -735,6 +811,7 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/terms-of-service'
     | '/vs'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
@@ -749,6 +826,7 @@ export interface FileRouteTypes {
     | '/jobs/$jobSlug'
     | '/jobs/admin'
     | '/jobs/board'
+    | '/jobs/categories'
     | '/jobs/guidelines'
     | '/jobs/me'
     | '/jobs/onboard'
@@ -759,6 +837,8 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
+    | '/predict/palette'
+    | '/scores/$slug'
     | '/shop/$productId'
     | '/shop/all'
     | '/shop/bookmarks'
@@ -771,7 +851,9 @@ export interface FileRouteTypes {
     | '/fantasy'
     | '/judges'
     | '/merch'
+    | '/scores'
     | '/shop'
+    | '/shows'
     | '/staff'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
@@ -782,6 +864,7 @@ export interface FileRouteTypes {
     | '/fantasy/$slug/quiz'
     | '/fantasy/$slug/standings'
     | '/fantasy/join/$token'
+    | '/jobs/c/$slug'
     | '/jobs/profile/$slug'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
@@ -798,6 +881,7 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/terms-of-service'
     | '/vs'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
@@ -812,6 +896,7 @@ export interface FileRouteTypes {
     | '/jobs/$jobSlug'
     | '/jobs/admin'
     | '/jobs/board'
+    | '/jobs/categories'
     | '/jobs/guidelines'
     | '/jobs/me'
     | '/jobs/onboard'
@@ -822,6 +907,8 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
+    | '/predict/palette'
+    | '/scores/$slug'
     | '/shop/$productId'
     | '/shop/all'
     | '/shop/bookmarks'
@@ -834,7 +921,9 @@ export interface FileRouteTypes {
     | '/fantasy/'
     | '/judges/'
     | '/merch/'
+    | '/scores/'
     | '/shop/'
+    | '/shows/'
     | '/staff/'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
@@ -845,6 +934,7 @@ export interface FileRouteTypes {
     | '/fantasy/$slug/quiz'
     | '/fantasy/$slug/standings'
     | '/fantasy/join/$token'
+    | '/jobs/c/$slug'
     | '/jobs/profile/$slug'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
@@ -862,6 +952,7 @@ export interface RootRouteChildren {
   RankingsRoute: typeof RankingsRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   VsRoute: typeof VsRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
@@ -876,6 +967,7 @@ export interface RootRouteChildren {
   JobsJobSlugRoute: typeof JobsJobSlugRoute
   JobsAdminRoute: typeof JobsAdminRoute
   JobsBoardRoute: typeof JobsBoardRoute
+  JobsCategoriesRoute: typeof JobsCategoriesRoute
   JobsGuidelinesRoute: typeof JobsGuidelinesRoute
   JobsMeRoute: typeof JobsMeRoute
   JobsOnboardRoute: typeof JobsOnboardRoute
@@ -886,6 +978,8 @@ export interface RootRouteChildren {
   JudgesJudgeIdRoute: typeof JudgesJudgeIdRoute
   MerchSplatRoute: typeof MerchSplatRoute
   NotifyUnsubscribeRoute: typeof NotifyUnsubscribeRoute
+  PredictPaletteRoute: typeof PredictPaletteRoute
+  ScoresSlugRoute: typeof ScoresSlugRoute
   ShopProductIdRoute: typeof ShopProductIdRoute
   ShopAllRoute: typeof ShopAllRoute
   ShopBookmarksRoute: typeof ShopBookmarksRoute
@@ -898,7 +992,9 @@ export interface RootRouteChildren {
   FantasyIndexRoute: typeof FantasyIndexRoute
   JudgesIndexRoute: typeof JudgesIndexRoute
   MerchIndexRoute: typeof MerchIndexRoute
+  ScoresIndexRoute: typeof ScoresIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
+  ShowsIndexRoute: typeof ShowsIndexRoute
   StaffIndexRoute: typeof StaffIndexRoute
   AdminFantasyLeaguesRoute: typeof AdminFantasyLeaguesRoute
   AdminFantasyQuizRoute: typeof AdminFantasyQuizRoute
@@ -908,6 +1004,7 @@ export interface RootRouteChildren {
   FantasySlugQuizRoute: typeof FantasySlugQuizRoute
   FantasySlugStandingsRoute: typeof FantasySlugStandingsRoute
   FantasyJoinTokenRoute: typeof FantasyJoinTokenRoute
+  JobsCSlugRoute: typeof JobsCSlugRoute
   JobsProfileSlugRoute: typeof JobsProfileSlugRoute
   ShopCategoryCatRoute: typeof ShopCategoryCatRoute
   ShopGroupStoreIdRoute: typeof ShopGroupStoreIdRoute
@@ -921,6 +1018,7 @@ export interface FileServerRoutesByFullPath {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
+  '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
@@ -937,6 +1035,7 @@ export interface FileServerRoutesByTo {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
+  '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
@@ -954,6 +1053,7 @@ export interface FileServerRoutesById {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
+  '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
@@ -972,6 +1072,7 @@ export interface FileServerRouteTypes {
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/api/collect'
     | '/api/media'
     | '/api/version'
     | '/api/auth/$'
@@ -988,6 +1089,7 @@ export interface FileServerRouteTypes {
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/api/collect'
     | '/api/media'
     | '/api/version'
     | '/api/auth/$'
@@ -1004,6 +1106,7 @@ export interface FileServerRouteTypes {
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/api/collect'
     | '/api/media'
     | '/api/version'
     | '/api/auth/$'
@@ -1021,6 +1124,7 @@ export interface RootServerRouteChildren {
   FaviconDoticoServerRoute: typeof FaviconDoticoServerRoute
   RobotsDottxtServerRoute: typeof RobotsDottxtServerRoute
   SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
+  ApiCollectServerRoute: typeof ApiCollectServerRoute
   ApiMediaServerRoute: typeof ApiMediaServerRoute
   ApiVersionServerRoute: typeof ApiVersionServerRoute
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
@@ -1091,11 +1195,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shows/': {
+      id: '/shows/'
+      path: '/shows'
+      fullPath: '/shows'
+      preLoaderRoute: typeof ShowsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop/': {
       id: '/shop/'
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scores/': {
+      id: '/scores/'
+      path: '/scores'
+      fullPath: '/scores'
+      preLoaderRoute: typeof ScoresIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merch/': {
@@ -1182,6 +1300,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scores/$slug': {
+      id: '/scores/$slug'
+      path: '/scores/$slug'
+      fullPath: '/scores/$slug'
+      preLoaderRoute: typeof ScoresSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predict/palette': {
+      id: '/predict/palette'
+      path: '/predict/palette'
+      fullPath: '/predict/palette'
+      preLoaderRoute: typeof PredictPaletteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/notify/unsubscribe': {
       id: '/notify/unsubscribe'
       path: '/notify/unsubscribe'
@@ -1250,6 +1382,13 @@ declare module '@tanstack/react-router' {
       path: '/jobs/guidelines'
       fullPath: '/jobs/guidelines'
       preLoaderRoute: typeof JobsGuidelinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/categories': {
+      id: '/jobs/categories'
+      path: '/jobs/categories'
+      fullPath: '/jobs/categories'
+      preLoaderRoute: typeof JobsCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jobs/board': {
@@ -1350,6 +1489,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fantasy/$slug/': {
       id: '/fantasy/$slug/'
       path: '/fantasy/$slug'
@@ -1390,6 +1536,13 @@ declare module '@tanstack/react-router' {
       path: '/jobs/profile/$slug'
       fullPath: '/jobs/profile/$slug'
       preLoaderRoute: typeof JobsProfileSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/c/$slug': {
+      id: '/jobs/c/$slug'
+      path: '/jobs/c/$slug'
+      fullPath: '/jobs/c/$slug'
+      preLoaderRoute: typeof JobsCSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fantasy/join/$token': {
@@ -1508,6 +1661,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiMediaServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/collect': {
+      id: '/api/collect'
+      path: '/api/collect'
+      fullPath: '/api/collect'
+      preLoaderRoute: typeof ApiCollectServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/show-media/$id': {
       id: '/api/show-media/$id'
       path: '/api/show-media/$id'
@@ -1587,6 +1747,7 @@ const rootRouteChildren: RootRouteChildren = {
   RankingsRoute: RankingsRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   VsRoute: VsRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminContentRoute: AdminContentRoute,
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
@@ -1601,6 +1762,7 @@ const rootRouteChildren: RootRouteChildren = {
   JobsJobSlugRoute: JobsJobSlugRoute,
   JobsAdminRoute: JobsAdminRoute,
   JobsBoardRoute: JobsBoardRoute,
+  JobsCategoriesRoute: JobsCategoriesRoute,
   JobsGuidelinesRoute: JobsGuidelinesRoute,
   JobsMeRoute: JobsMeRoute,
   JobsOnboardRoute: JobsOnboardRoute,
@@ -1611,6 +1773,8 @@ const rootRouteChildren: RootRouteChildren = {
   JudgesJudgeIdRoute: JudgesJudgeIdRoute,
   MerchSplatRoute: MerchSplatRoute,
   NotifyUnsubscribeRoute: NotifyUnsubscribeRoute,
+  PredictPaletteRoute: PredictPaletteRoute,
+  ScoresSlugRoute: ScoresSlugRoute,
   ShopProductIdRoute: ShopProductIdRoute,
   ShopAllRoute: ShopAllRoute,
   ShopBookmarksRoute: ShopBookmarksRoute,
@@ -1623,7 +1787,9 @@ const rootRouteChildren: RootRouteChildren = {
   FantasyIndexRoute: FantasyIndexRoute,
   JudgesIndexRoute: JudgesIndexRoute,
   MerchIndexRoute: MerchIndexRoute,
+  ScoresIndexRoute: ScoresIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
+  ShowsIndexRoute: ShowsIndexRoute,
   StaffIndexRoute: StaffIndexRoute,
   AdminFantasyLeaguesRoute: AdminFantasyLeaguesRoute,
   AdminFantasyQuizRoute: AdminFantasyQuizRoute,
@@ -1633,6 +1799,7 @@ const rootRouteChildren: RootRouteChildren = {
   FantasySlugQuizRoute: FantasySlugQuizRoute,
   FantasySlugStandingsRoute: FantasySlugStandingsRoute,
   FantasyJoinTokenRoute: FantasyJoinTokenRoute,
+  JobsCSlugRoute: JobsCSlugRoute,
   JobsProfileSlugRoute: JobsProfileSlugRoute,
   ShopCategoryCatRoute: ShopCategoryCatRoute,
   ShopGroupStoreIdRoute: ShopGroupStoreIdRoute,
@@ -1649,6 +1816,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   FaviconDoticoServerRoute: FaviconDoticoServerRoute,
   RobotsDottxtServerRoute: RobotsDottxtServerRoute,
   SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
+  ApiCollectServerRoute: ApiCollectServerRoute,
   ApiMediaServerRoute: ApiMediaServerRoute,
   ApiVersionServerRoute: ApiVersionServerRoute,
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,

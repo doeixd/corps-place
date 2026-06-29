@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { listJobs } from '@/lib/server-fns/jobs';
+import { getLandingIntro } from '@/lib/server-fns/landing';
 import { LANDING_BY_SLUG, type LandingDef } from '@/lib/jobs/landing-taxonomy';
 import { JobCard } from '@/components/jobs/job-card';
 import { PageShell } from '@/components/page-shell';
@@ -16,10 +17,12 @@ export const Route = createFileRoute('/jobs/c/$slug')({
   loader: async ({ params }) => {
     const def = LANDING_BY_SLUG[params.slug];
     if (!def) throw notFound();
-    const { rows } = await listJobs({ data: { ...def.filter, limit: 50, offset: 0 } }).catch(() => ({
-      rows: [],
-    }));
-    return { def, jobs: rows };
+    const [jobsRes, intro] = await Promise.all([
+      listJobs({ data: { ...def.filter, limit: 50, offset: 0 } }).catch(() => ({ rows: [] })),
+      getLandingIntro({ data: { slug: def.slug } }).catch(() => null),
+    ]);
+    // Prefer the AI-written intro (server-only); fall back to the templated one.
+    return { def: { ...def, intro: intro ?? def.intro }, jobs: jobsRes.rows };
   },
   head: ({ loaderData }) => {
     const d = loaderData;

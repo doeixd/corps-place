@@ -280,6 +280,11 @@ export function JobsLanding() {
 
       {/* Legal footer */}
       <footer className="border-t border-border pt-6 text-center">
+        <p className="mb-2 text-xs text-text-muted">
+          <Link to="/jobs/categories" className="transition-colors hover:text-text-secondary">
+            Browse jobs by discipline &amp; role
+          </Link>
+        </p>
         <p className="text-xs text-text-muted">
           <Link to="/jobs/terms" className="transition-colors hover:text-text-secondary">
             Terms of Service
