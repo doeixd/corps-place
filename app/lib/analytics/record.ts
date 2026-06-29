@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { analyticsDb } from './db';
 import { getBrand } from '@/lib/brand';
+import { rateLimit } from '@/lib/rate-limit';
 
 /**
  * Server-side event recording. Best-effort: every path swallows errors so a
@@ -57,13 +58,20 @@ export async function recordEvent(input: RecordInput, req: Request): Promise<voi
     const ua = req.headers.get('user-agent') ?? '';
     if (!ua || BOT_RE.test(ua)) return; // ignore bots / empty UA
 
+    // Abuse guard: /api/collect is an open POST, so cap events per IP to keep a
+    // flood from bloating analytics.db (disk) or polluting the data. Generous for
+    // real use (a busy visit fires pageview+outbound+leave+search); silently drops
+    // past the cap. In-memory fixed window — bounded by the active-IP set.
+    const ip = clientIp(req);
+    if (!rateLimit(`analytics:${ip}`, 120, 60_000)) return;
+
     const db = await analyticsDb();
     if (!db) return;
 
     const ts = Date.now();
     const day = dayUTC(ts);
     const brand = input.brand ?? getBrand(req);
-    const visitor = visitorHash(day, clientIp(req), ua);
+    const visitor = visitorHash(day, ip, ua);
     const propsJson =
       input.props && Object.keys(input.props).length ? JSON.stringify(input.props).slice(0, 1024) : null;
 
