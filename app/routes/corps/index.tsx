@@ -54,7 +54,7 @@ export const Route = createFileRoute('/corps/')({
     if (!d) return {};
     const n = d.corps.length;
     return seoHead({
-      title: 'Drum Corps Directory — DCI Corps, Scores & Shows',
+      title: 'Drum Corps Directory — Corps, Scores & Shows',
       description: `Browse ${n} drum corps — World Class, Open Class and all-age units — with scores, schedules, show programs, staff and merch on DrumCorps.app.`,
       path: '/corps',
       jsonLd: [

@@ -78,10 +78,10 @@ export const Route = createFileRoute('/judges/$judgeId')({
         : seasons[0]
       : '';
     return seoHead({
-      title: `${p.display_name} — DCI Judge`,
+      title: `${p.display_name} — Drum Corps Judge`,
       description: clampDescription(
         p.biography,
-        `${p.display_name} is a DCI drum corps judge with ${p.assignments.length} adjudication assignment${p.assignments.length === 1 ? '' : 's'}${span ? ` (${span})` : ''}. Captions, scores and event history on DrumCorps.app.`
+        `${p.display_name} is a drum corps judge with ${p.assignments.length} adjudication assignment${p.assignments.length === 1 ? '' : 's'}${span ? ` (${span})` : ''}. Captions, scores and event history on DrumCorps.app.`
       ),
       path: `/judges/${p.judge_id}`,
       image: p.photo_url ?? undefined,

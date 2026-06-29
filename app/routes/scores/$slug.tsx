@@ -53,11 +53,11 @@ export const Route = createFileRoute('/scores/$slug')({
     if (d.kind === 'season') {
       const n = d.events.length;
       return seoHead({
-        title: `${d.season} DCI Scores & Results`,
+        title: `${d.season} Drum Corps Scores & Results`,
         description:
           n > 0
-            ? `Final scores and full recaps from all ${n} ${d.season} DCI drum corps shows — placements and caption breakdowns by competition.`
-            : `${d.season} DCI scores will appear here as shows are scored.`,
+            ? `Final scores and full recaps from all ${n} ${d.season} drum corps shows — placements and caption breakdowns by competition.`
+            : `${d.season} drum corps scores will appear here as shows are scored.`,
         path: `/scores/${d.season}`,
         image: `${SITE_URL}/api/og/score/${d.season}`,
         noindex: n === 0,
@@ -70,7 +70,7 @@ export const Route = createFileRoute('/scores/$slug')({
           {
             '@context': 'https://schema.org',
             '@type': 'ItemList',
-            name: `${d.season} DCI Scores`,
+            name: `${d.season} Drum Corps Scores`,
             itemListElement: d.events.slice(0, 100).map((e, i) => ({
               '@type': 'ListItem',
               position: i + 1,
@@ -139,7 +139,7 @@ function ScoresEventPage() {
     return (
       <PageShell>
         <PageHeader
-          title={`${season} DCI Scores`}
+          title={`${season} Drum Corps Scores`}
           subtitle={`Final results & full recaps from the ${season} season`}
           backTo="/scores"
           backLabel="All seasons"

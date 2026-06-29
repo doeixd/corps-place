@@ -29,7 +29,7 @@ export const Route = createFileRoute('/staff/')({
     const n = d.staff.length;
     return seoHead({
       title: 'Drum Corps Staff & Instructors Directory',
-      description: `Browse ${n} drum corps instructors, designers and directors — the people who teach DCI corps, with roles, corps history and bios on DrumCorps.app.`,
+      description: `Browse ${n} drum corps instructors, designers and directors — the people who teach drum corps, with roles, corps history and bios on DrumCorps.app.`,
       path: '/staff',
       jsonLd: [
         breadcrumbLd([

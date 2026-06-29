@@ -37,7 +37,7 @@ export const Route = createFileRoute('/shows/')({
   },
   head: ({ loaderData }) =>
     seoHead({
-      title: 'DCI Show Programs & Repertoire by Season',
+      title: 'Drum Corps Show Programs & Repertoire by Season',
       description: `Browse ${loaderData?.shows.length ?? 0} drum corps show programs — titles, repertoire, designers and media by season on DrumCorps.app.`,
       path: '/shows',
       jsonLd: [
@@ -102,7 +102,7 @@ function ShowsIndex() {
     <PageShell>
       <PageHeader
         title="Drum Corps Shows & Programs"
-        subtitle="Every DCI show by season — titles, repertoire & media"
+        subtitle="Every drum corps show by season — titles, repertoire & media"
         backTo="/"
         backLabel="Home"
       />

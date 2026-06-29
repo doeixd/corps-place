@@ -39,8 +39,8 @@ export const Route = createFileRoute('/scores/')({
   head: ({ loaderData }) => {
     const n = loaderData?.events.filter((e) => e.scores_released).length ?? 0;
     return seoHead({
-      title: 'DCI Scores & Full Recaps by Season',
-      description: `Final scores and complete caption-by-caption recaps from ${n} scored DCI shows — browse results by season on DrumCorps.app.`,
+      title: 'Drum Corps Scores & Full Recaps by Season',
+      description: `Final scores and complete caption-by-caption recaps from ${n} scored drum corps shows — browse results by season on DrumCorps.app.`,
       path: '/scores',
       jsonLd: [
         breadcrumbLd([
@@ -112,7 +112,7 @@ function ScoresIndex() {
   return (
     <PageShell>
       <PageHeader
-        title="DCI Scores & Recaps"
+        title="Drum Corps Scores & Recaps"
         subtitle="Final results & full caption recaps by season"
         backTo="/"
         backLabel="Home"

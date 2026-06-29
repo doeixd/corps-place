@@ -47,7 +47,7 @@ export const Route = createFileRoute('/events/')({
     const n = d.events.length;
     return seoHead({
       title: 'Drum Corps Competitions, Schedules & Scores',
-      description: `Browse ${n} DCI drum corps competitions — schedules, lineups, scores and AI predictions by season on DrumCorps.app.`,
+      description: `Browse ${n} drum corps competitions — schedules, lineups, scores and AI predictions by season on DrumCorps.app.`,
       path: '/events',
       jsonLd: [
         breadcrumbLd([
@@ -117,7 +117,7 @@ function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
     <PageShell>
       <PageHeader
         title="Event Directory"
-        subtitle="Browse DCI events by season"
+        subtitle="Browse drum corps events by season"
         backTo="/"
         backLabel="Home"
       />

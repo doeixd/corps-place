@@ -203,7 +203,7 @@ function Home() {
               preload="intent"
               icon={JusticeScale01Icon}
               title="Judge Directory"
-              description="DCI judges and their assignments across seasons and captions."
+              description="Drum corps judges and their assignments across seasons and captions."
             />
             <ExploreCard
               to="/predict/palette"

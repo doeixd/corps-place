@@ -21,7 +21,7 @@ export const Route = createFileRoute('/predict/palette')({
   head: () =>
     seoHead({
       title: 'Prediction Palette — DrumCorps.app',
-      description: 'Edit a predicted DCI recap and watch the ranking change.',
+      description: 'Edit a predicted drum corps recap and watch the ranking change.',
       path: '/predict/palette',
     }),
   validateSearch: (s: Record<string, unknown>) => ({
@@ -90,7 +90,7 @@ function PalettePage() {
       <div className="space-y-6 p-4 sm:p-6">
         <PageHeader
           title="Prediction Palette"
-          subtitle="A what-if sandbox for DCI predictions."
+          subtitle="A what-if sandbox for drum corps predictions."
         />
 
         <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-text-secondary">

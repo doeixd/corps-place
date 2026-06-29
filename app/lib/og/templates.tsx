@@ -61,7 +61,7 @@ export function ScoreCard({
   return (
     <Frame>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <Eyebrow text="DCI SCORES" />
+        <Eyebrow text="DRUM CORPS SCORES" />
         <div style={{ display: 'flex', color: TEXT, fontSize: 62, fontWeight: 700, lineHeight: 1.05 }}>
           {title}
         </div>
@@ -102,7 +102,7 @@ export function ScoreCard({
 export function SeasonCard({ season, count }: { season: string; count: number }) {
   return (
     <Frame>
-      <Eyebrow text="DCI SCORES" />
+      <Eyebrow text="DRUM CORPS SCORES" />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div style={{ display: 'flex', color: TEXT, fontSize: 110, fontWeight: 700 }}>
           {season} Scores
@@ -130,7 +130,7 @@ export function ShowCard({
 }) {
   return (
     <Frame>
-      <Eyebrow text={`DCI SHOW · ${season}`} />
+      <Eyebrow text={`DRUM CORPS SHOW · ${season}`} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div style={{ display: 'flex', color: GOLD, fontSize: 38, fontWeight: 700 }}>{corps}</div>
         <div style={{ display: 'flex', color: TEXT, fontSize: 84, fontWeight: 700, lineHeight: 1.05 }}>

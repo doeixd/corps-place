@@ -44,8 +44,8 @@ export const Route = createFileRoute('/judges/')({
     if (!d) return {};
     const n = d.judges.length;
     return seoHead({
-      title: 'DCI Judges Directory — Adjudicators & Caption Assignments',
-      description: `Browse ${n} DCI drum corps judges and adjudicators — caption assignments, scores given, and event history by season on DrumCorps.app.`,
+      title: 'Drum Corps Judges Directory — Adjudicators & Caption Assignments',
+      description: `Browse ${n} drum corps judges and adjudicators — caption assignments, scores given, and event history by season on DrumCorps.app.`,
       path: '/judges',
       jsonLd: [
         breadcrumbLd([
@@ -95,7 +95,7 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
     <PageShell>
       <PageHeader
         title="Judge Directory"
-        subtitle="DCI judges and their assignments"
+        subtitle="Drum corps judges and their assignments"
         backTo="/"
         backLabel="Home"
       />

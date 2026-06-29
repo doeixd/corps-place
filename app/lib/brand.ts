@@ -24,9 +24,9 @@ export const BRAND_CONFIG: Record<Brand, BrandIdentity> = {
     primaryLight: 'oklch(0.553 0.195 38.402)',
     primaryDark: 'oklch(0.64 0.17 38.402)',
     seo: {
-      title: 'DrumCorps.app — DCI Drum Corps Scores, Schedules & Predictions',
+      title: 'DrumCorps.app — Drum Corps Scores, Schedules & Predictions',
       description:
-        'Live DCI drum corps scores, competition schedules, AI score predictions, judge & staff profiles, show programs, and official corps merch.',
+        'Live drum corps scores, competition schedules, AI score predictions, judge & staff profiles, show programs, and official corps merch.',
     },
     email: {
       fromName: 'DrumCorps.app',
