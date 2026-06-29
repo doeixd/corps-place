@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { getStaffProfile } from '@/lib/server-fns/hybrid';
 import { getProfileOverlay } from '@/lib/server-fns/profile-owner';
 import { mergeProfileOverlay } from '@/lib/profile-owner/merge';
+import { ClaimPanel } from '@/components/profile-owner/claim-panel';
 import { checkClaimByEntity } from '@/lib/server-fns/jobs';
 import { loadDetailOrServer } from '@/db/detail-shard';
 import type { StaffAssignment, StaffProfile } from '@/lib/staff-directory';
@@ -129,11 +130,19 @@ function StaffProfilePage() {
           fallback={null}
           className="size-40 shrink-0 self-start rounded-xl"
         />
-        {profile.biography && (
-          <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
-            {profile.biography}
-          </p>
-        )}
+        <div className="flex flex-col gap-3">
+          {profile.biography && (
+            <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
+              {profile.biography}
+            </p>
+          )}
+          <ClaimPanel
+            entityType="staff"
+            entityId={profile.person_id}
+            displayName={profile.display_name}
+            ownership={profile.ownership}
+          />
+        </div>
       </div>
 
       <h2 className="mt-8 mb-3 text-lg font-semibold">Where they’ve taught</h2>

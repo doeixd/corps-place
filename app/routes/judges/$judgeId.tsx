@@ -12,6 +12,7 @@ import { cn, searchString } from '@/lib/utils';
 import { useSearchSync } from '@/lib/use-search-sync';
 import { judgeProfileMachine, judgeProfileSearchCodec } from '@/machines/judge-profile-machine';
 import { PageHeader } from '@/components/page-header';
+import { ClaimPanel } from '@/components/profile-owner/claim-panel';
 import { BackLink } from '@/components/back-link';
 import { SeasonChips } from '@/components/filter-chips';
 import { useRegisterBackName } from '@/lib/use-register-back-name';
@@ -233,6 +234,13 @@ function JudgeProfilePage() {
             </CardContent>
           </Card>
         </Show>
+
+        <ClaimPanel
+          entityType="judge"
+          entityId={profile.judge_id}
+          displayName={profile.display_name}
+          ownership={profile.ownership}
+        />
 
         <Show
           when={
