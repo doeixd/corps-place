@@ -109,6 +109,28 @@ const main = async () => {
     /* no staff_assignment_suppressions table yet */
   }
 
+  // ── 1c. Enforce role overrides (fix parser mis-sectioned assignments, e.g.
+  //     Stephanie Broadbelt tagged Percussion/Sound but only taught Color Guard). ──
+  let roleFixed = 0;
+  try {
+    const ovs = (await db.execute('SELECT person_id, corps_key, season, role_type, title FROM staff_role_overrides')).rows as {
+      person_id: string; corps_key: string; season: string; role_type: string; title: string;
+    }[];
+    for (const o of ovs) {
+      const withSeason = o.season !== '';
+      const sql = `UPDATE corps_staff_assignments SET role_type = ?, title = ? WHERE corps_key = ? AND staff_id IN (SELECT staff_id FROM corps_staff WHERE person_id = ?)${withSeason ? ' AND season = ?' : ''}`;
+      const a = withSeason ? [o.role_type, o.title, o.corps_key, o.person_id, o.season] : [o.role_type, o.title, o.corps_key, o.person_id];
+      if (APPLY) {
+        const res = await db.execute({ sql, args: a });
+        const n = Number((res as { rowsAffected?: number }).rowsAffected ?? 0);
+        if (n > 0) console.log(`  [role-override] ${o.person_id} × ${o.corps_key} × ${o.season || 'ALL'} → ${o.role_type}: fixed ${n}`);
+        roleFixed += n;
+      }
+    }
+  } catch {
+    /* no staff_role_overrides table yet */
+  }
+
   // ── 2. Re-run the idempotent cleanup/merge chain (re-collapses re-split people). ─
   console.log(`\n${APPLY ? 'Running' : '(dry-run) would run'} cleanup/merge chain: ${CHAIN.join(', ')}`);
   if (APPLY) {
@@ -144,7 +166,7 @@ const main = async () => {
 
   console.log(
     APPLY
-      ? `\nApplied: ${reassigned} reassigned via corps_aliases; ${suppressed} assignment(s) suppressed; merge/cleanup chain re-run; ${relocked} field-lock(s) restored.`
+      ? `\nApplied: ${reassigned} reassigned via corps_aliases; ${suppressed} assignment(s) suppressed; ${roleFixed} role(s) corrected; merge/cleanup chain re-run; ${relocked} field-lock(s) restored.`
       : '\nDRY-RUN — no changes. Re-run with --apply.'
   );
   process.exit(0);
