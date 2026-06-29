@@ -72,38 +72,35 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
     // pageantryjobs.com → job board + every posting (no corps content).
     if (getBrand(request) === 'jobs') {
       const jobPaths = new Set<string>(JOBS_STATIC);
+      jobPaths.add('/jobs/categories');
       const jobDated: { loc: string; lastmod?: string }[] = [];
+      let rows: Awaited<ReturnType<typeof listJobs>>['rows'] = [];
       try {
-        const { rows } = await listJobs({ data: { limit: 1000, offset: 0 } });
+        rows = (await listJobs({ data: { limit: 1000, offset: 0 } })).rows;
         for (const j of rows)
           if (j.slug)
             jobDated.push({ loc: `/jobs/${j.slug}`, lastmod: j.published_at ?? undefined });
-        // pSEO landing pages: include only those with ≥1 matching posting (the rest
-        // are noindex). Match the same way the page filters: discipline exact +
-        // title keyword. One pass over the postings we already fetched.
-        const matches = (def: (typeof LANDING_DEFS)[number]) =>
-          rows.filter((j) => {
+      } catch {
+        /* postings unavailable — still list the static + landing pages */
+      }
+      // pSEO landing pages: list ALL of them (each has a unique intro + FAQ), with a
+      // <lastmod> from the most recent matching posting when one exists. Match the
+      // same way the page filters: discipline exact + title/description keyword.
+      for (const def of LANDING_DEFS) {
+        const lastmod = rows
+          .filter((j) => {
             if (def.filter.discipline && j.discipline !== def.filter.discipline) return false;
             if (def.filter.keyword) {
               const hay = `${j.title ?? ''} ${(j as { content_json?: string }).content_json ?? ''}`.toLowerCase();
               if (!hay.includes(def.filter.keyword.toLowerCase())) return false;
             }
             return true;
-          });
-        for (const def of LANDING_DEFS) {
-          const m = matches(def);
-          if (m.length) {
-            const lastmod = m
-              .map((x) => x.published_at)
-              .filter((x): x is string => Boolean(x))
-              .sort()
-              .pop();
-            jobDated.push({ loc: `/jobs/c/${def.slug}`, lastmod });
-          }
-        }
-        if (rows.length) jobPaths.add('/jobs/categories');
-      } catch {
-        /* postings unavailable — still list the static job pages */
+          })
+          .map((x) => x.published_at)
+          .filter((x): x is string => Boolean(x))
+          .sort()
+          .pop();
+        jobDated.push({ loc: `/jobs/c/${def.slug}`, lastmod });
       }
       return buildSitemap(origin, jobPaths, jobDated);
     }
