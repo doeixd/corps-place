@@ -132,7 +132,9 @@ export const JobCard = memo(function JobCard({
   const preview = descriptionPreview(job);
 
   return (
-    <div className="relative h-full">
+    // `group` so hovering anywhere (incl. the action buttons) lifts the card, and
+    // the buttons lift with it via group-hover below.
+    <div className="group relative h-full">
       <Link
         to="/jobs/$jobSlug"
         params={{ jobSlug: job.slug }}
@@ -173,8 +175,9 @@ export const JobCard = memo(function JobCard({
           </CardContent>
         </Card>
       </Link>
-      {/* Subtle, borderless actions — siblings of the Link so they don't nest interactives. */}
-      <div className="absolute right-3 top-3.5 flex gap-0.5">
+      {/* Subtle, borderless actions — siblings of the Link so they don't nest
+          interactives. Lift in sync with the card's hover (-translate-y-1). */}
+      <div className="absolute right-3 top-3.5 flex gap-0.5 transition-transform duration-200 group-hover:-translate-y-1">
         {onToggleSave ? (
           <CardFavoriteButton saved={saved} onClick={() => onToggleSave(job.posting_id)} />
         ) : null}

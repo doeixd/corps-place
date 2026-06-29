@@ -12,7 +12,7 @@ import { seoHead } from '@/lib/seo';
 
 export const Route = createFileRoute('/admin/analytics')({
   loader: adminLoader('viewAdmin', async () => ({
-    summary: await getAnalyticsSummary({ data: { days: 30 } }),
+    summary: await getAnalyticsSummary({ data: { range: '30d' } }),
   })),
   head: () =>
     seoHead({ title: 'Admin — Analytics', description: 'Site analytics', path: '/admin/analytics' }),
@@ -22,24 +22,32 @@ export const Route = createFileRoute('/admin/analytics')({
   },
 });
 
-const RANGES = [7, 30, 90] as const;
+const RANGES = [
+  { key: '1h', label: '1h' },
+  { key: '24h', label: '24h' },
+  { key: '7d', label: '7d' },
+  { key: '30d', label: '30d' },
+  { key: '90d', label: '90d' },
+  { key: '1y', label: '1y' },
+  { key: 'all', label: 'All' },
+] as const;
+type Metric = 'views' | 'visitors';
 
 function Analytics({ initial }: { initial: AnalyticsSummary }) {
   const [summary, setSummary] = useState(initial);
-  const [days, setDays] = useState(initial.rangeDays);
+  const [range, setRange] = useState(initial.range);
+  const [metric, setMetric] = useState<Metric>('views');
   const [busy, setBusy] = useState(false);
 
-  const load = async (d: number) => {
+  const load = async (r: string) => {
     setBusy(true);
-    setDays(d);
+    setRange(r);
     try {
-      setSummary(await getAnalyticsSummary({ data: { days: d } }));
+      setSummary(await getAnalyticsSummary({ data: { range: r } }));
     } finally {
       setBusy(false);
     }
   };
-
-  const peakDay = Math.max(1, ...summary.perDay.map((d) => d.views));
 
   return (
     <>
@@ -48,20 +56,20 @@ function Analytics({ initial }: { initial: AnalyticsSummary }) {
         subtitle="First-party · cookieless · no third parties"
       />
 
-      <div className="mb-4 flex items-center gap-2">
-        {RANGES.map((d) => (
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        {RANGES.map((r) => (
           <button
-            key={d}
+            key={r.key}
             type="button"
-            onClick={() => void load(d)}
+            onClick={() => void load(r.key)}
             disabled={busy}
             className={`rounded-md border px-2.5 py-1 text-xs transition-colors disabled:opacity-50 ${
-              d === days
+              r.key === range
                 ? 'border-primary/60 bg-accent text-foreground'
                 : 'border-border text-muted-foreground hover:text-foreground'
             }`}
           >
-            {d}d
+            {r.label}
           </button>
         ))}
         {!summary.available ? (
@@ -80,27 +88,34 @@ function Analytics({ initial }: { initial: AnalyticsSummary }) {
         />
       </div>
 
-      {/* Per-day pageviews */}
+      {/* Time series — toggle pageviews vs unique visitors */}
       <Card className="mt-4">
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between gap-2">
           <CardTitle className="text-sm font-semibold text-text-secondary">
-            Pageviews / day
+            {metric === 'views' ? 'Pageviews' : 'Unique visitors'} over time
           </CardTitle>
+          <div className="flex gap-1">
+            {(['views', 'visitors'] as Metric[]).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setMetric(m)}
+                className={`rounded-md border px-2 py-0.5 text-xs transition-colors ${
+                  m === metric
+                    ? 'border-primary/60 bg-accent text-foreground'
+                    : 'border-border text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {m === 'views' ? 'Views' : 'Visitors'}
+              </button>
+            ))}
+          </div>
         </CardHeader>
         <CardContent>
-          {summary.perDay.length ? (
-            <div className="flex items-end gap-1" style={{ height: 120 }}>
-              {summary.perDay.map((d) => (
-                <div
-                  key={d.day}
-                  title={`${d.day}: ${d.views} views, ${d.visitors} visitors`}
-                  className="flex-1 rounded-t bg-primary/70 hover:bg-primary"
-                  style={{ height: `${Math.max(2, (d.views / peakDay) * 100)}%` }}
-                />
-              ))}
-            </div>
+          {summary.series.length ? (
+            <LineChart series={summary.series} metric={metric} bucketMs={summary.bucketMs} />
           ) : (
-            <p className="text-sm text-text-secondary">—</p>
+            <p className="text-sm text-text-secondary">No data in this range yet.</p>
           )}
         </CardContent>
       </Card>
@@ -165,6 +180,62 @@ function Analytics({ initial }: { initial: AnalyticsSummary }) {
         />
       </div>
     </>
+  );
+}
+
+/** Format a bucket start time for the chart axis, granularity-aware. */
+function formatBucket(t: number, bucketMs: number): string {
+  const d = new Date(t);
+  if (bucketMs < 86_400_000) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (bucketMs >= 28 * 86_400_000)
+    return d.toLocaleDateString([], { month: 'short', year: '2-digit' });
+  return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
+/** Lightweight inline SVG line chart (area + line) over the bucketed series. */
+function LineChart({
+  series,
+  metric,
+  bucketMs,
+}: {
+  series: { t: number; views: number; visitors: number }[];
+  metric: Metric;
+  bucketMs: number;
+}) {
+  const W = 720;
+  const H = 160;
+  const P = 8;
+  const max = Math.max(1, ...series.map((d) => d[metric]));
+  const x = (i: number) => (series.length <= 1 ? W / 2 : P + (i / (series.length - 1)) * (W - 2 * P));
+  const y = (v: number) => H - P - (v / max) * (H - 2 * P);
+  const line = series.map((d, i) => `${x(i)},${y(d[metric])}`).join(' ');
+  const area = `${x(0)},${H - P} ${line} ${x(series.length - 1)},${H - P}`;
+  return (
+    <div>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full text-primary"
+        style={{ height: H }}
+        preserveAspectRatio="none"
+        role="img"
+        aria-label={`${metric} over time`}
+      >
+        <polygon points={area} className="fill-primary/10" />
+        <polyline
+          points={line}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+      <div className="mt-1 flex justify-between text-[10px] text-text-muted">
+        <span>{formatBucket(series[0].t, bucketMs)}</span>
+        <span>peak {max.toLocaleString()}</span>
+        <span>{formatBucket(series[series.length - 1].t, bucketMs)}</span>
+      </div>
+    </div>
   );
 }
 

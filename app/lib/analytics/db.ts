@@ -48,6 +48,8 @@ const DDL = [
      props   TEXT                     -- JSON extras (outbound url, scroll %, …)
    )`,
   `CREATE INDEX IF NOT EXISTS idx_events_day ON events(day)`,
+  `CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts)`,
+  `CREATE INDEX IF NOT EXISTS idx_events_ts_type ON events(ts, type)`,
   `CREATE INDEX IF NOT EXISTS idx_events_type_day ON events(type, day)`,
   `CREATE INDEX IF NOT EXISTS idx_events_name_day ON events(name, day)`,
   `CREATE INDEX IF NOT EXISTS idx_events_path_day ON events(type, path, day)`,
