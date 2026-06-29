@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { getHybridEventFullRecap, getCorpsByKeys } from '@/lib/server-fns/hybrid';
+import { formatEventDate } from '@/lib/format';
 import { EventFullRecap, type RecapCorpsRef } from '@/components/scores/event-full-recap';
 import type { FullEventRecap } from '@/components/prediction/full-recap-table';
 
@@ -64,7 +65,7 @@ export function ScoreEventSection({
   }, [inView, data, slug]);
 
   const year = yearOf(slug);
-  const sub = [date, place].filter(Boolean).join(' · ');
+  const sub = [formatEventDate(date), place].filter(Boolean).join(' · ');
 
   return (
     <section ref={ref} className="space-y-3 scroll-mt-20">

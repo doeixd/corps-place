@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/page-header';
 import { EventFullRecap, type RecapCorpsRef } from '@/components/scores/event-full-recap';
 import { StatusCard } from '@/components/status-card';
 import { seoHead, breadcrumbLd, SITE_URL } from '@/lib/seo';
+import { formatEventDate } from '@/lib/format';
 
 const yearOf = (slug: string) => slug.match(/^(\d{4})/)?.[1] ?? '';
 const place = (city?: string | null, state?: string | null) =>
@@ -48,7 +49,7 @@ export const Route = createFileRoute('/scores/$slug')({
     const title = `${name}${year ? ` ${year}` : ''} — Scores & Full Recap`;
     const description = hasScores
       ? `Final scores and the complete caption-by-caption recap from ${name}` +
-        `${event.start_date ? ` on ${event.start_date}` : ''}${loc ? ` in ${loc}` : ''}.` +
+        `${event.start_date ? ` on ${formatEventDate(event.start_date)}` : ''}${loc ? ` in ${loc}` : ''}.` +
         `${winner ? ` ${winner} placed first.` : ''}`
       : `Results for ${name} haven't been posted yet — scores and the full recap will appear here.`;
 
@@ -96,7 +97,7 @@ function ScoresEventPage() {
     <PageShell>
       <PageHeader
         title={name}
-        subtitle={[year ? `${year} Scores` : 'Scores', event.start_date, loc]
+        subtitle={[year ? `${year} Scores` : 'Scores', formatEventDate(event.start_date), loc]
           .filter(Boolean)
           .join(' · ')}
         backTo="/scores"
