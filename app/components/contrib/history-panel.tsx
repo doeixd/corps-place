@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from '@/lib/auth-client';
 import {
   getShowHistory,
@@ -25,10 +25,12 @@ export function HistoryPanel({
 }: {
   corpsKey: string;
   season: string;
-  initial: HistoryEntry[];
+  /** Optional: when omitted (deferred from the route loader to speed first paint),
+   *  the panel fetches its own history on mount. */
+  initial?: HistoryEntry[];
 }) {
   const { data: session } = useSession();
-  const [entries, setEntries] = useState(initial);
+  const [entries, setEntries] = useState<HistoryEntry[]>(initial ?? []);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reconcileMsg, setReconcileMsg] = useState<string | null>(null);
@@ -37,6 +39,12 @@ export function HistoryPanel({
   const canReconcile = role === 'moderator' || role === 'admin';
 
   const refresh = async () => setEntries(await getShowHistory({ data: { corpsKey, season } }));
+  // Deferred-load: the show route no longer fetches history in its blocking loader
+  // (keeps the initial paint fast). Pull it in after mount when not pre-provided.
+  useEffect(() => {
+    if (initial == null) void refresh().catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [corpsKey, season]);
   // Re-check overrides against the latest scrape; updates the "source changed" badges.
   const reconcile = async () => {
     setBusy('reconcile');

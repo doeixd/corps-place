@@ -2,10 +2,11 @@ import { createFileRoute } from '@tanstack/react-router';
 import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 import { For, Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { fadeIn } from '@/lib/motion-variants';
 import { getCorps, getShowDetail } from '@/lib/server-fns/hybrid';
-import { getShowContributions, getShowHistory, getShowGovernance } from '@/lib/server-fns/contrib';
+import { getShowContributions, getShowGovernance } from '@/lib/server-fns/contrib';
+import { useSession } from '@/lib/auth-client';
 import { PageGovernancePanel } from '@/components/contrib/page-governance-panel';
 import { UniformSection } from '@/components/contrib/uniform-section';
 import { CoverSection } from '@/components/contrib/cover-section';
@@ -50,21 +51,18 @@ export const Route = createFileRoute('/shows/$slug/$season')({
     // show / contributions / history / citations each depend only on the corps key —
     // NOT on one another — so fetch them in one parallel batch instead of a 4-deep
     // server-fn waterfall (one round-trip instead of four after the corps lookup).
-    const [show, contributions, history, citations, governance] = key
+    // Core, above-the-fold data only. history + governance are DEFERRED off this
+    // blocking loader (Phase 1, INP): they feed below-the-fold panels, so the page
+    // paints on core data and those panels fetch on mount (HistoryPanel self-fetches;
+    // governance is fetched in the component for the moderator gate). citations stays
+    // — repertoire/movements render inline citations above the fold.
+    const [show, contributions, citations] = key
       ? await Promise.all([
           getShowDetail({ data: { corpsKey: key, season } }),
           getShowContributions({ data: { corpsKey: key, season } }),
-          getShowHistory({ data: { corpsKey: key, season } }),
           listCitations({ data: { corpsKey: key, season } }),
-          getShowGovernance({ data: { corpsKey: key, season } }),
         ])
-      : [
-          null,
-          null,
-          [] as Awaited<ReturnType<typeof getShowHistory>>,
-          [] as Awaited<ReturnType<typeof listCitations>>,
-          null as Awaited<ReturnType<typeof getShowGovernance>> | null,
-        ];
+      : [null, null, [] as Awaited<ReturnType<typeof listCitations>>];
     // Authored contributions overlay (uniform/props/links, free-form concept).
     const blockContent = <T,>(key: string): T | null => {
       const block = contributions?.blocks.find((b) => b.pinned_key === key);
@@ -86,7 +84,7 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       about: blockContent<FreeFormDoc>('about'),
     };
     const overrides = contributions?.overrides ?? [];
-    return { corps, show, season, authored, history, citations, overrides, governance };
+    return { corps, show, season, authored, citations, overrides };
   },
   head: ({ loaderData, params }) => {
     const d = loaderData;
@@ -141,9 +139,21 @@ export const Route = createFileRoute('/shows/$slug/$season')({
 });
 
 function ShowDetailPage() {
-  const { corps, show, season, authored, history, citations, overrides, governance } =
-    Route.useLoaderData();
+  const { corps, show, season, authored, citations, overrides } = Route.useLoaderData();
   const { slug } = Route.useParams();
+  // Governance is deferred off the blocking loader (Phase 1). Only signed-in users
+  // can moderate, so anonymous visitors (the majority) skip the fetch entirely; the
+  // panel self-hides until canLock/canModerate resolve.
+  const { data: session } = useSession();
+  const [governance, setGovernance] = useState<Awaited<
+    ReturnType<typeof getShowGovernance>
+  > | null>(null);
+  useEffect(() => {
+    if (session?.user && corps && show)
+      void getShowGovernance({ data: { corpsKey: corps.corps_key, season: show.season } })
+        .then(setGovernance)
+        .catch(() => {});
+  }, [session, corps, show]);
 
   if (!corps || !show) {
     return (
@@ -355,7 +365,7 @@ function ShowDetailPage() {
             </SectionErrorBoundary>
           ) : null}
           <SectionErrorBoundary label="the edit history">
-            <HistoryPanel corpsKey={corps.corps_key} season={show.season} initial={history} />
+            <HistoryPanel corpsKey={corps.corps_key} season={show.season} />
           </SectionErrorBoundary>
         </aside>
       </div>
