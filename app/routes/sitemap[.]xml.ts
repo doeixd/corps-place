@@ -111,9 +111,21 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
     const dated: { loc: string; lastmod?: string }[] = [];
     try {
       const events = await getHybridAllEvents();
+      let latestScored: string | undefined;
       for (const e of events)
-        if (e.scores_released && e.slug)
+        if (e.scores_released && e.slug) {
           dated.push({ loc: `/scores/${e.slug}`, lastmod: e.start_date ?? undefined });
+          if (e.start_date && (!latestScored || e.start_date > latestScored))
+            latestScored = e.start_date;
+        }
+      // Give the /scores index a real freshness signal: the most recent scored
+      // show. It changes whenever a new event posts scores, so Google re-crawls
+      // the index then (a static path would carry no <lastmod> at all). Drop it
+      // from the plain static set so it isn't emitted twice.
+      if (latestScored) {
+        paths.delete('/scores');
+        dated.push({ loc: '/scores', lastmod: latestScored });
+      }
     } catch {
       /* events unavailable — sitemap still lists everything else */
     }
