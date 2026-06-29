@@ -13,12 +13,15 @@ export function LazyMount({
   rootMargin = '600px 0px',
   minHeight = 200,
   className,
+  placeholder,
 }: {
   children: ReactNode;
   rootMargin?: string;
   /** Reserved space (px) before mount, so layout doesn't jump. */
   minHeight?: number;
   className?: string;
+  /** Shown before mount; defaults to a subtle skeleton filling the reserved space. */
+  placeholder?: ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
@@ -41,7 +44,15 @@ export function LazyMount({
 
   return (
     <div ref={ref} className={className} style={inView ? undefined : { minHeight }}>
-      {inView ? children : null}
+      {inView
+        ? children
+        : (placeholder ?? (
+            <div
+              className="h-full animate-pulse rounded-xl bg-muted/30"
+              style={{ minHeight }}
+              aria-hidden
+            />
+          ))}
     </div>
   );
 }

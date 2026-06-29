@@ -31,6 +31,7 @@ export function HistoryPanel({
 }) {
   const { data: session } = useSession();
   const [entries, setEntries] = useState<HistoryEntry[]>(initial ?? []);
+  const [loading, setLoading] = useState(initial == null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reconcileMsg, setReconcileMsg] = useState<string | null>(null);
@@ -42,7 +43,10 @@ export function HistoryPanel({
   // Deferred-load: the show route no longer fetches history in its blocking loader
   // (keeps the initial paint fast). Pull it in after mount when not pre-provided.
   useEffect(() => {
-    if (initial == null) void refresh().catch(() => {});
+    if (initial == null)
+      void refresh()
+        .catch(() => {})
+        .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [corpsKey, season]);
   // Re-check overrides against the latest scrape; updates the "source changed" badges.
@@ -103,7 +107,16 @@ export function HistoryPanel({
         </div>
         {reconcileMsg ? <p className="mb-3 text-sm text-text-secondary">{reconcileMsg}</p> : null}
         {error ? <p className="mb-3 text-sm text-destructive">{error}</p> : null}
-        {entries.length === 0 ? (
+        {loading && entries.length === 0 ? (
+          <div className="space-y-3" aria-hidden>
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex items-center gap-2">
+                <div className="size-6 shrink-0 animate-pulse rounded-full bg-muted" />
+                <div className="h-4 flex-1 animate-pulse rounded bg-muted/60" />
+              </div>
+            ))}
+          </div>
+        ) : entries.length === 0 ? (
           <p className="text-sm text-text-secondary">No edits yet — be the first to contribute.</p>
         ) : (
           <ol className="space-y-4">
