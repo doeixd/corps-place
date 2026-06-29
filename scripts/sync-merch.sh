@@ -13,6 +13,17 @@
 #         bash scripts/sync-merch.sh --no-restart   # publish only, skip redeploy
 set -euo pipefail
 
+# Prevent overlapping runs (a long merch ingest must not stack on a later cron
+# tick or collide with another invocation — that's an OOM trigger on this small
+# box). Mirrors auto-ingest-scores.sh / admin-job-worker.sh.
+exec 9>/tmp/sync-merch.lock
+flock -n 9 || { echo "[sync-merch $(date -u +%FT%TZ)] another run holds the lock; exiting"; exit 0; }
+
+# Bound Node's heap so a single merch run can't balloon unbounded and OOM the box
+# (Chromium runs as its own process; this caps the tsx/Node side). Mirrors the
+# caps in nightly-predictions.sh / auto-ingest-scores.sh.
+export NODE_OPTIONS="${NODE_OPTIONS:-} --max-old-space-size=1536"
+
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$repo_root/sdk"
 
