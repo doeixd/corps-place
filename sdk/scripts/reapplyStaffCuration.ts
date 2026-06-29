@@ -41,6 +41,7 @@ const CHAIN = [
   'fixPollutedPersonIds.ts',
   'mergeFuzzyNameVariants.ts',
   'mergeNicknames.ts',
+  'fillOtherFromDominant.ts', // last — needs merges done so dominant caption is accurate
 ];
 
 const main = async () => {
