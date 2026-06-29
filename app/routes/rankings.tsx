@@ -108,11 +108,15 @@ export const Route = createFileRoute('/rankings')({
 
 const pill = (active: boolean) =>
   cn(
-    'rounded-md border px-2.5 py-1 text-xs transition-colors',
+    'shrink-0 whitespace-nowrap rounded-md border px-2.5 py-1 text-xs transition-colors',
     active
       ? 'border-primary/60 bg-accent text-foreground'
       : 'border-border text-muted-foreground hover:text-foreground'
   );
+
+// Each filter row scrolls horizontally on mobile (no wrap) and relaxes to a
+// wrapping cluster on sm+ — matching the site's SeasonChips pattern.
+const chipRow = 'flex gap-1 overflow-x-auto scrollbar-none sm:flex-wrap sm:overflow-x-visible';
 
 function RankingsPage() {
   const { seasons, season, result } = Route.useLoaderData();
@@ -157,30 +161,30 @@ function RankingsPage() {
       </div>
 
       {/* Controls */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <div role="group" aria-label="Season" className="flex flex-wrap gap-1">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2">
+        <div role="group" aria-label="Season" className={chipRow}>
           {seasons.slice(0, 10).map((y) => (
             <button key={y} type="button" aria-pressed={y === season} className={pill(y === season)} onClick={() => set({ season: y, asof: undefined })}>
               {y}
             </button>
           ))}
         </div>
-        <div role="group" aria-label="Ranking metric" className="flex flex-wrap gap-1">
+        <div role="group" aria-label="Ranking metric" className={chipRow}>
           {RANK_METRICS.map((m) => (
             <button key={m} type="button" aria-pressed={m === metric} className={pill(m === metric)} onClick={() => set({ metric: m === 'total' ? undefined : m })}>
               {RANK_METRIC_LABELS[m]}
             </button>
           ))}
         </div>
-        <div role="group" aria-label="Aggregation" className="flex gap-1">
+        <div role="group" aria-label="Aggregation" className={chipRow}>
           <button type="button" aria-pressed={agg === 'best'} className={pill(agg === 'best')} onClick={() => set({ agg: undefined })}>Best</button>
           <button type="button" aria-pressed={agg === 'last3'} className={pill(agg === 'last3')} onClick={() => set({ agg: 'last3' })}>Last 3</button>
         </div>
-        <div role="group" aria-label="Grouping" className="flex gap-1">
+        <div role="group" aria-label="Grouping" className={chipRow}>
           <button type="button" aria-pressed={group === 'overall'} className={pill(group === 'overall')} onClick={() => set({ group: undefined })}>Overall</button>
           <button type="button" aria-pressed={group === 'division'} className={pill(group === 'division')} onClick={() => set({ group: 'division' })}>By division</button>
         </div>
-        <div role="group" aria-label="Divisions" className="flex gap-1">
+        <div role="group" aria-label="Divisions" className={chipRow}>
           {RANK_DIVISIONS.map((d) => (
             <button key={d} type="button" aria-pressed={divs.includes(d)} className={pill(divs.includes(d))} onClick={() => toggleDiv(d)}>
               {DIVISION_LABELS[d]}
