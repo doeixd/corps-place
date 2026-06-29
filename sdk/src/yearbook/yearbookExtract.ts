@@ -389,6 +389,11 @@ export const parseProfileDeterministic = (pageText: string): YearbookProfile | n
       if (insideParens(m.index)) continue;
       const after = rosterText.slice(m.index + m[0].length).replace(/^[\s:]+/, "");
       if (!/^[A-ZÀ-Þ]/.test(after)) continue; // a name must follow the heading
+      // A real roster heading is followed by a PERSON NAME, not a role/title word.
+      // "Color Guard Captain Kimmy Kinden" (in a show description) is NOT the roster's
+      // Color Guard heading — taking it (then break) drops the real heading later and
+      // dumps that whole section into the previous one. Skip and keep scanning.
+      if (/^(Captain|Caption|Tech|Technician|Staff|Team|Section|Coordinator|Director|Instructor|Manager|Supervisor|Consultant|Arranger|Composer|Designer|Lead|Head|Assistant|Associate|Specialist|Advisor|Of|And|The|Coach)\b/i.test(after)) continue;
       const start = m.index + m[0].length;
       if (!sections.some(s => s.start === start)) sections.push({ heading: rawHeading, start });
       break;
