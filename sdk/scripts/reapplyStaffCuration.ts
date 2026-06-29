@@ -38,6 +38,7 @@ const db = createClient({ url: DB_URL });
 const CHAIN = [
   'dedupeAssignments.ts',
   'cleanYearbookStaff.ts',
+  'fixPollutedPersonIds.ts',
   'mergeFuzzyNameVariants.ts',
   'mergeNicknames.ts',
 ];
