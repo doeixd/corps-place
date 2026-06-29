@@ -191,6 +191,9 @@ importers:
       web-push:
         specifier: ^3.6.7
         version: 3.6.7
+      web-vitals:
+        specifier: ^5.3.0
+        version: 5.3.0
       xstate:
         specifier: ^5.32.0
         version: 5.32.1
@@ -8033,6 +8036,9 @@ packages:
   web-streams-polyfill@4.0.0-beta.3:
     resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
     engines: {node: '>= 14'}
+
+  web-vitals@5.3.0:
+    resolution: {integrity: sha512-q6LWsLatGYZp5VGBIOvbTj6JBV2nOmC8KvWztXBmwJcfFAzhwKwbOxhUH306XY3CcaZDUlSmSuNPBsCn0bFu+g==}
 
   webdriver-bidi-protocol@0.4.1:
     resolution: {integrity: sha512-ARrjNjtWRRs2w4Tk7nqrf2gBI0QXWuOmMCx2hU+1jUt6d00MjMxURrhxhGbrsoiZKJrhTSTzbIrc554iKI10qw==}
@@ -16469,6 +16475,8 @@ snapshots:
   web-streams-polyfill@3.3.3: {}
 
   web-streams-polyfill@4.0.0-beta.3: {}
+
+  web-vitals@5.3.0: {}
 
   webdriver-bidi-protocol@0.4.1: {}
 
