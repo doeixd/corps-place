@@ -158,11 +158,19 @@ const makeProfileOwnerService = Effect.gen(function* () {
         yield* sql`
           UPDATE profile_claims SET status = 'revoked', revoked_at = ${ctx.now},
             revoked_by = ${ctx.authorId}, revoke_reason = ${reason ?? null} WHERE claim_id = ${claimId}`;
+        // Clear this entity's overrides on revoke. Overrides are keyed by
+        // (entity_type, entity_id), not by claim — leaving them would let a later
+        // claimant (e.g. the real person, after a bad actor is revoked) silently
+        // inherit the prior owner's edits. The full edit history is preserved in
+        // profile_revisions, so this only resets the live overlay to scraped.
+        yield* sql`
+          DELETE FROM profile_overrides
+          WHERE entity_type = ${c.entity_type} AND entity_id = ${c.entity_id}`;
         yield* sql`
           INSERT INTO profile_revisions
             (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, before_json, created_at)
           VALUES (${newId()}, ${c.entity_type}, ${c.entity_id}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
-                  'revoke', ${JSON.stringify({ status: c.status })}, ${ctx.now})`;
+                  'revoke', ${JSON.stringify({ status: c.status, clearedOverrides: true })}, ${ctx.now})`;
       })
     );
   });
