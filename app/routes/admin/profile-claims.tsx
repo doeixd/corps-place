@@ -80,15 +80,59 @@ function RepointControl({ claim, onDone }: { claim: ClaimRow; onDone: () => Prom
   );
 }
 
+// Per-row actions own their busy/error state so one claim's action doesn't spin every
+// other row's buttons (a single shared flag would).
+function ClaimActions({ claim, onDone }: { claim: ClaimRow; onDone: () => Promise<void> }) {
+  const act = useAsyncAction(async (fn: () => Promise<unknown>) => {
+    await fn();
+    await onDone();
+  });
+  const label = claim.currentName ?? claim.matched_name ?? claim.entity_id;
+  return (
+    <span className="ml-auto flex items-center gap-2">
+      <Show when={act.error}>
+        <span className="text-xs text-destructive">{act.error}</span>
+      </Show>
+      <Show when={claim.orphaned}>
+        <RepointControl claim={claim} onDone={onDone} />
+      </Show>
+      <Show when={claim.status === 'pending'}>
+        <BusyButton
+          size="sm"
+          busy={act.busy}
+          onClick={() => void act.run(() => approveProfileClaim({ data: { claimId: claim.claim_id } }))}
+        >
+          Approve
+        </BusyButton>
+      </Show>
+      <BusyButton
+        size="sm"
+        variant="destructive"
+        busy={act.busy}
+        onClick={() => {
+          if (!confirm(`Revoke the claim on “${label}”? This removes the owner's edits.`)) return;
+          void act.run(() =>
+            revokeProfileClaim({
+              data: {
+                claimId: claim.claim_id,
+                entityType: claim.entity_type as 'staff' | 'judge',
+                entityId: claim.entity_id,
+              },
+            })
+          );
+        }}
+      >
+        Revoke
+      </BusyButton>
+    </span>
+  );
+}
+
 const matchBadge = (m: string | null) =>
   m === 'exact' || m === 'close' ? 'success-light' : m === 'weak' ? 'warning-light' : 'secondary';
 
 function ProfileClaims({ all }: { all: ClaimRow[] }) {
   const router = useRouter();
-  const act = useAsyncAction(async (fn: () => Promise<unknown>) => {
-    await fn();
-    await router.invalidate();
-  });
 
   const reconcile = useAsyncAction(async () => {
     const res = await reconcileProfileOverrides();
@@ -122,34 +166,7 @@ function ProfileClaims({ all }: { all: ClaimRow[] }) {
         <span className="text-text-secondary">
           claimed as “{c.google_name ?? '—'}” · {new Date(c.claimed_at).toLocaleDateString()}
         </span>
-        <span className="ml-auto flex items-center gap-2">
-          <Show when={c.orphaned}>
-            <RepointControl claim={c} onDone={() => router.invalidate()} />
-          </Show>
-          <Show when={c.status === 'pending'}>
-            <BusyButton
-              size="sm"
-              busy={act.busy}
-              onClick={() => void act.run(() => approveProfileClaim({ data: { claimId: c.claim_id } }))}
-            >
-              Approve
-            </BusyButton>
-          </Show>
-          <BusyButton
-            size="sm"
-            variant="destructive"
-            busy={act.busy}
-            onClick={() =>
-              void act.run(() =>
-                revokeProfileClaim({
-                  data: { claimId: c.claim_id, entityType: c.entity_type as 'staff' | 'judge', entityId: c.entity_id },
-                })
-              )
-            }
-          >
-            Revoke
-          </BusyButton>
-        </span>
+        <ClaimActions claim={c} onDone={() => router.invalidate()} />
       </div>
     );
   };
@@ -162,8 +179,8 @@ function ProfileClaims({ all }: { all: ClaimRow[] }) {
           Recheck source divergence
         </BusyButton>
       </div>
-      <Show when={act.error || reconcile.error}>
-        <p className="mb-4 text-sm text-destructive">{act.error ?? reconcile.error}</p>
+      <Show when={reconcile.error}>
+        <p className="mb-4 text-sm text-destructive">{reconcile.error}</p>
       </Show>
 
       <h3 className="mb-2 mt-2 text-sm font-semibold text-text-secondary">

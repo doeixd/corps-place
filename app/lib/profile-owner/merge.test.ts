@@ -72,6 +72,18 @@ describe('mergeProfileOverlay', () => {
   });
 });
 
+describe('removal is honored for every field (incl current_position)', () => {
+  it('clears current_position when the override is {removed:true}', () => {
+    const p = base();
+    p.bioFacts.currentPosition = { title: 'Brass Caption Head', org: 'Bluecoats' };
+    const merged = mergeProfileOverlay(p, {
+      claim: { status: 'active', name_match: 'exact' },
+      overrides: { current_position: { content: { removed: true }, diverged: false } },
+    });
+    expect(merged.bioFacts.currentPosition).toBeNull();
+  });
+});
+
 describe('source divergence primitives', () => {
   it('hashSource is stable and order-independent for equal values', () => {
     expect(hashSource('a')).toBe(hashSource('a'));

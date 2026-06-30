@@ -67,6 +67,10 @@ export function ProfileEditor({
       toast.error('Please choose an image file.');
       return;
     }
+    if (file.size > 16 * 1024 * 1024) {
+      toast.error('Image is too large — please choose one under 16 MB.');
+      return;
+    }
     setBusy('photo');
     try {
       const dataBase64 = await fileToBase64(file);
@@ -114,13 +118,25 @@ export function ProfileEditor({
       <div className="flex flex-col gap-1.5">
         <Label>Photo</Label>
         <div className="flex items-center gap-3">
+          {initial.photoUrl && (
+            <img
+              src={initial.photoUrl}
+              alt=""
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          )}
           <input
             type="file"
             accept="image/*"
             disabled={busy === 'photo'}
-            onChange={(e) => void onPhoto(e.target.files)}
+            // Reset value so re-selecting the SAME file still fires onChange.
+            onChange={(e) => {
+              void onPhoto(e.target.files);
+              e.target.value = '';
+            }}
             className="text-sm"
           />
+          {busy === 'photo' && <span className="text-xs text-muted-foreground">Uploading…</span>}
           {initial.photoUrl && (
             <Button
               variant="ghost"

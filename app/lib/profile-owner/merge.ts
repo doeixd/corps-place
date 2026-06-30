@@ -111,10 +111,14 @@ export const mergeProfileOverlay = <T extends CommonProfile>(
         ? null
         : asText(ov.hometown.content) ?? bf.hometown;
     }
-    if (ov.current_position && !isRemoved(ov.current_position.content)) {
-      const c = ov.current_position.content as { title?: unknown; org?: unknown };
-      if (typeof c?.title === 'string' && typeof c?.org === 'string') {
-        bf.currentPosition = { title: c.title, org: c.org };
+    if (ov.current_position) {
+      if (isRemoved(ov.current_position.content)) {
+        bf.currentPosition = null; // honor an explicit removal, like the other fields
+      } else {
+        const c = ov.current_position.content as { title?: unknown; org?: unknown };
+        if (typeof c?.title === 'string' && typeof c?.org === 'string') {
+          bf.currentPosition = { title: c.title, org: c.org };
+        }
       }
     }
     patch.bioFacts = bf;

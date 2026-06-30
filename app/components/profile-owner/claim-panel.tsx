@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useSession, signIn } from '@/lib/auth-client';
-import { claimProfile } from '@/lib/server-fns/profile-owner';
+import { claimProfile, evaluateProfileNameMatch } from '@/lib/server-fns/profile-owner';
 import { ATTESTATION_COPY } from '@/lib/profile-owner/attestation';
 import type { OwnershipInfo } from '@/lib/profile-owner/merge';
 
@@ -45,6 +45,20 @@ export function ClaimPanel({
   const [open, setOpen] = useState(false);
   const [attested, setAttested] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [preview, setPreview] = useState<{ match: string; matchedName: string | null } | null>(null);
+
+  // Name-match preview (plan §4) — tells the user, BEFORE they attest, whether their
+  // Google name matches (→ activates now) or not (→ a moderator will review). Best-effort.
+  const openDialog = async () => {
+    setOpen(true);
+    setPreview(null);
+    try {
+      const r = await evaluateProfileNameMatch({ data: { entityType, entityId } });
+      setPreview({ match: r.match, matchedName: r.matchedName });
+    } catch {
+      /* preview is non-blocking; the dialog still works without it */
+    }
+  };
 
   // Already claimed (active): show a "managed by the artist" chip — verified when
   // the name matched. Pending claims are NOT surfaced publicly.
@@ -95,7 +109,7 @@ export function ClaimPanel({
             void signIn.social({ provider: 'google', callbackURL: window.location.pathname });
             return;
           }
-          setOpen(true);
+          void openDialog();
         }}
       >
         {signedIn ? 'Is this you? Claim this profile' : 'Sign in to claim this profile'}
@@ -112,6 +126,22 @@ export function ClaimPanel({
               You’re about to claim the profile for <strong>{displayName}</strong>. {ATTESTATION_COPY}
             </DialogDescription>
           </DialogHeader>
+          {preview && (
+            <p className="rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
+              Signed in as <strong>{session?.user?.name ?? 'your account'}</strong>.{' '}
+              {preview.match === 'exact' || preview.match === 'close' ? (
+                <>
+                  This matches <strong>{preview.matchedName ?? displayName}</strong> — your claim
+                  will activate immediately.
+                </>
+              ) : (
+                <>
+                  This doesn’t closely match <strong>{preview.matchedName ?? displayName}</strong>,
+                  so a moderator will review your claim before it goes live.
+                </>
+              )}
+            </p>
+          )}
           <label className="flex items-start gap-2 text-sm">
             <Checkbox
               checked={attested}

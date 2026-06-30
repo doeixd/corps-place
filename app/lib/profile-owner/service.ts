@@ -146,8 +146,15 @@ const makeProfileOwnerService = Effect.gen(function* () {
 
     const matchedName = yield* resolveDisplayName(entityType, entityId);
     const nm = nameMatch(input.googleName ?? '', matchedName ?? '');
-    // Tiered gate (plan §4): exact/close → live immediately; weak → moderator review.
-    const status = nm.match === 'weak' ? 'pending' : 'active';
+    // A user previously REVOKED on this entity must not silently re-activate by
+    // re-claiming (an impersonator could otherwise just claim again) — force review.
+    const priorRevoked = yield* sql<{ claim_id: string }>`
+      SELECT claim_id FROM profile_claims
+      WHERE entity_type = ${entityType} AND entity_id = ${entityId}
+        AND user_id = ${ctx.authorId} AND status = 'revoked' LIMIT 1`;
+    // Tiered gate (plan §4): exact/close → live immediately; weak (or a prior revoke
+    // on this entity) → moderator review.
+    const status = nm.match === 'weak' || priorRevoked[0] ? 'pending' : 'active';
     const claimId = newId();
 
     yield* sql
@@ -236,7 +243,9 @@ const makeProfileOwnerService = Effect.gen(function* () {
     // Record the hash of the scraped value this override now shadows, so the
     // reconciler can later detect when the source is re-scraped to something new.
     const scraped = yield* resolveScraped(entityType, entityId);
-    const sourceHash = scraped ? hashSource(scrapedFieldValue(scraped, fieldKey)) : input.sourceHash ?? null;
+    // Hash the LIVE scraped value (never the client-supplied one). null when the
+    // source is unavailable → reconcile skips it rather than diffing a bogus baseline.
+    const sourceHash = scraped ? hashSource(scrapedFieldValue(scraped, fieldKey)) : null;
 
     const prev = yield* sql<{ content_json: string }>`
       SELECT content_json FROM profile_overrides
@@ -280,8 +289,12 @@ const makeProfileOwnerService = Effect.gen(function* () {
     // merge can't carry them). Resolve each against the read-model and flag orphans
     // so a moderator can re-point or revoke.
     const out: ((typeof rows)[number] & { orphaned: boolean; currentName: string | null })[] = [];
+    const nameCache = new Map<string, string | null>();
     for (const r of rows) {
-      const name = yield* resolveDisplayName(r.entity_type as EntityType, r.entity_id);
+      const key = `${r.entity_type}:${r.entity_id}`;
+      if (!nameCache.has(key))
+        nameCache.set(key, yield* resolveDisplayName(r.entity_type as EntityType, r.entity_id));
+      const name = nameCache.get(key) ?? null;
       out.push({ ...r, orphaned: name == null, currentName: name });
     }
     return out;
@@ -324,18 +337,37 @@ const makeProfileOwnerService = Effect.gen(function* () {
       SELECT entity_type, entity_id, status FROM profile_claims WHERE claim_id = ${claimId} LIMIT 1`;
     const c = rows[0];
     if (!c) return yield* Effect.fail(new NotFound({ message: 'claim not found' }));
+    if (c.status === 'revoked')
+      return yield* Effect.fail(new NotFound({ message: 'cannot re-point a revoked claim' }));
     if (c.entity_id === newEntityId) return; // no-op
-    const exists = yield* resolveDisplayName(c.entity_type as EntityType, newEntityId);
-    if (exists == null)
+    const scraped = yield* resolveScraped(c.entity_type as EntityType, newEntityId);
+    if (scraped == null)
       return yield* Effect.fail(new NotFound({ message: `target entity '${newEntityId}' not found` }));
+
+    // Re-hash each moved override against the NEW entity's scraped value so divergence
+    // detection isn't comparing against the old entity's source.
+    const moving = yield* sql<{ field_key: string }>`
+      SELECT field_key FROM profile_overrides
+      WHERE entity_type = ${c.entity_type} AND entity_id = ${c.entity_id}`;
 
     yield* sql
       .withTransaction(
         Effect.gen(function* () {
           yield* sql`UPDATE profile_claims SET entity_id = ${newEntityId} WHERE claim_id = ${claimId}`;
+          // The target is unclaimed (guard below), so any overrides there are stale
+          // orphans — clear them before moving so the PK (type,id,field) can't collide.
+          yield* sql`
+            DELETE FROM profile_overrides
+            WHERE entity_type = ${c.entity_type} AND entity_id = ${newEntityId}`;
           yield* sql`
             UPDATE profile_overrides SET entity_id = ${newEntityId}
             WHERE entity_type = ${c.entity_type} AND entity_id = ${c.entity_id}`;
+          for (const m of moving) {
+            const h = hashSource(scrapedFieldValue(scraped, m.field_key));
+            yield* sql`
+              UPDATE profile_overrides SET source_hash = ${h}, scrape_diverged = 0
+              WHERE entity_type = ${c.entity_type} AND entity_id = ${newEntityId} AND field_key = ${m.field_key}`;
+          }
           yield* sql`
             INSERT INTO profile_revisions
               (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, before_json, after_json, created_at)
@@ -343,7 +375,7 @@ const makeProfileOwnerService = Effect.gen(function* () {
                     'repoint', ${JSON.stringify({ from: c.entity_id })}, ${JSON.stringify({ to: newEntityId })}, ${ctx.now})`;
         })
       )
-      // Target already actively claimed → uq_profile_claims_active trips.
+      // Only the claims unique index (target already actively claimed) maps to ClaimExists.
       .pipe(
         Effect.mapError((e) =>
           /UNIQUE|constraint/i.test(String((e as { message?: string })?.message ?? e))
