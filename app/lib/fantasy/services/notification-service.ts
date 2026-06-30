@@ -281,7 +281,7 @@ const makeNotificationService = Effect.gen(function* () {
         })
       ).pipe(
         Effect.as(true),
-        Effect.catchAll((cause) =>
+        Effect.catchCause((cause) =>
           Effect.logError(`fantasy standings email failed for ${entry.email}`, cause).pipe(
             Effect.as(false)
           )
@@ -345,7 +345,7 @@ const makeNotificationService = Effect.gen(function* () {
         })
       ).pipe(
         Effect.as(true),
-        Effect.catchAll((cause) =>
+        Effect.catchCause((cause) =>
           Effect.logError(`fantasy standings push failed for ${userId}`, cause).pipe(
             Effect.as(false)
           )
