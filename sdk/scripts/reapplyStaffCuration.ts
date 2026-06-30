@@ -133,6 +133,21 @@ const main = async () => {
     /* no staff_role_overrides table yet */
   }
 
+  // ── 1d. Hygiene: delete orphaned child rows (affiliations / bio_facts whose
+  //     corps_staff parent was removed by a cleaner with FK cascade off). They're
+  //     invisible (read-model joins via corps_staff) but shouldn't linger. ─────────
+  if (APPLY) {
+    for (const t of ['corps_staff_affiliations', 'staff_bio_facts']) {
+      try {
+        const res = await db.execute(`DELETE FROM ${t} WHERE staff_id NOT IN (SELECT staff_id FROM corps_staff)`);
+        const n = Number((res as { rowsAffected?: number }).rowsAffected ?? 0);
+        if (n > 0) console.log(`  [orphan-cleanup] ${t}: removed ${n}`);
+      } catch {
+        /* table absent */
+      }
+    }
+  }
+
   // ── 2. Re-run the idempotent cleanup/merge chain (re-collapses re-split people). ─
   console.log(`\n${APPLY ? 'Running' : '(dry-run) would run'} cleanup/merge chain: ${CHAIN.join(', ')}`);
   if (APPLY) {
