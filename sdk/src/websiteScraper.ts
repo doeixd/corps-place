@@ -154,8 +154,13 @@ const fetchScoreEventsPage = async (
 const fetchScoresListPage = (season: string, page: number, config: ScoreEventsConfig) =>
   Effect.tryPromise(() => fetchScoreEventsPage(config, season, page));
 
-const fetchRecapPage = (slug: string) =>
-  Effect.tryPromise(() => fetchHtmlWithRetry(recapUrl(slug)));
+// Fetch a recap page by its exact URL (the href the scores-list row carried),
+// rather than a slug-reconstructed `/scores/recap/<id>` URL. DCI sometimes
+// serves recaps under a different path shape (e.g. `/scores/final-scores/...`),
+// so following the row's own link is the reliable path; slug reconstruction is
+// a fallback only (review Medium #7).
+const fetchRecapPageByUrl = (url: string) =>
+  Effect.tryPromise(() => fetchHtmlWithRetry(url));
 
 const parseScoresList = (html: string, season: string) =>
   parseScoresListHtml(html, season).pipe(
@@ -347,11 +352,17 @@ const scrapeWebsiteRecapByEntry = (
   corpsDivisionMap?: CorpsDivisionMap
 ) =>
   Effect.gen(function* () {
-    const recapPageUrl = recapUrl(entry.id);
+    // Follow the exact href the list row carried; only reconstruct the slug URL
+    // when the row lacked a usable absolute link (review Medium #7).
+    const followedFromList = typeof entry.url === 'string' && entry.url.startsWith('http');
+    const recapPageUrl = followedFromList ? entry.url : recapUrl(entry.id);
     yield* (
-      Effect.logInfo(`[website] Fetching recap ${season}:${entry.id} ${recapPageUrl}`)
+      Effect.logInfo(
+        `[website] Fetching recap ${season}:${entry.id} ${recapPageUrl}` +
+          (followedFromList ? ' (followed list href)' : ' (reconstructed slug url)')
+      )
     );
-    const html = yield* (fetchRecapPage(entry.id));
+    const html = yield* (fetchRecapPageByUrl(recapPageUrl));
     const recap = yield* (parseRecap(html));
 
     yield* (
