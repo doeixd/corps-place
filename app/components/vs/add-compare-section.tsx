@@ -4,10 +4,12 @@
 // single column switched by a segmented tab bar on mobile. Each leaf option adds
 // on click and previews on the chart on hover (the parent owns the ghost line).
 // Pure client UI — the parent owns the series list / URL.
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Icon } from '@/components/icon';
 import { AddCircleIcon } from '@/components/icons/generated';
+import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { cn } from '@/lib/utils';
 import { getVsCorpsSeasons, getVs2026SnapshotDates } from '@/lib/server-fns/vs';
 import type { VsSeries } from '@/lib/vs/types';
@@ -16,7 +18,14 @@ type Kind = 'corps' | 'prediction' | 'baseline';
 export interface CorpsOption {
   slug: string;
   name: string;
+  // Logo source fields (from the corps directory) for the theme-aware logo.
+  corps_logo?: string | null;
+  corps_logo_dark?: number | null;
+  corps_logo_dark_url?: string | null;
 }
+
+// Virtualized result-row height (px) — keep in sync with the row's rendered size.
+const RESULT_ROW_H = 40;
 
 const TABS: { value: Kind; label: string }[] = [
   { value: 'corps', label: 'Corps' },
@@ -89,11 +98,20 @@ function CorpsSearchColumn({
   const [seasons, setSeasons] = useState<string[] | null>(null);
   const [dates, setDates] = useState<string[] | null>(null);
 
+  // All matches (no cap) — the list is virtualized, so the full directory is
+  // cheap to render.
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const base = q ? corpsOptions.filter((c) => c.name.toLowerCase().includes(q)) : corpsOptions;
-    return base.slice(0, 8);
+    return q ? corpsOptions.filter((c) => c.name.toLowerCase().includes(q)) : corpsOptions;
   }, [query, corpsOptions]);
+
+  const listRef = useRef<HTMLDivElement>(null);
+  const rowVirtualizer = useVirtualizer({
+    count: matches.length,
+    getScrollElement: () => listRef.current,
+    estimateSize: () => RESULT_ROW_H,
+    overscan: 10,
+  });
 
   const pick = (c: CorpsOption) => {
     setPicked(c);
@@ -136,27 +154,46 @@ function CorpsSearchColumn({
             placeholder="Search corps…"
             className={fieldCls}
           />
-          <div className="themed-scrollbar max-h-44 space-y-0.5 overflow-y-auto">
-            {matches.length === 0 ? (
-              <p className="px-1 py-2 text-xs text-muted-foreground">No matches.</p>
-            ) : (
-              matches.map((c) => (
-                <button
-                  key={c.slug}
-                  type="button"
-                  onClick={() => pick(c)}
-                  className="block w-full truncate rounded-md px-2 py-1.5 text-left text-sm transition-colors hover:bg-accent hover:text-foreground"
-                >
-                  {c.name}
-                </button>
-              ))
-            )}
-          </div>
+          {matches.length === 0 ? (
+            <p className="px-1 py-2 text-xs text-muted-foreground">No matches.</p>
+          ) : (
+            <div ref={listRef} className="themed-scrollbar h-72 overflow-y-auto">
+              <div
+                style={{ height: rowVirtualizer.getTotalSize(), width: '100%', position: 'relative' }}
+              >
+                {rowVirtualizer.getVirtualItems().map((vi) => {
+                  const c = matches[vi.index];
+                  return (
+                    <button
+                      key={c.slug}
+                      type="button"
+                      onClick={() => pick(c)}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: vi.size,
+                        transform: `translateY(${vi.start}px)`,
+                      }}
+                      className="flex items-center gap-2 rounded-md px-2 text-left text-sm transition-colors hover:bg-accent hover:text-foreground"
+                    >
+                      <CorpsLogo name={c.name} logo={corpsLogoSource(c)} width={24} className="size-6 shrink-0" />
+                      <span className="truncate">{c.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2 rounded-lg border border-border px-2.5 py-1.5 text-sm">
-            <span className="truncate font-medium text-text-primary">{picked.name}</span>
+            <span className="flex min-w-0 items-center gap-2">
+              <CorpsLogo name={picked.name} logo={corpsLogoSource(picked)} width={24} className="size-6 shrink-0" />
+              <span className="truncate font-medium text-text-primary">{picked.name}</span>
+            </span>
             <button
               type="button"
               onClick={change}
@@ -193,7 +230,7 @@ function CorpsSearchColumn({
               ) : dates.length === 0 ? (
                 <p className="text-xs text-muted-foreground">No 2026 snapshots available.</p>
               ) : (
-                <div className="themed-scrollbar flex max-h-40 flex-col gap-1 overflow-y-auto">
+                <div className="themed-scrollbar flex max-h-72 flex-col gap-1 overflow-y-auto">
                   {dates.map((d) => (
                     <OptionChip
                       key={d}
