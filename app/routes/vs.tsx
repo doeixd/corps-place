@@ -38,7 +38,14 @@ export const Route = createFileRoute('/vs')({
     ]);
     const corpsOptions = dir
       .filter((c) => c.slug)
-      .map((c) => ({ slug: c.slug as string, name: c.name }))
+      .map((c) => ({
+        slug: c.slug as string,
+        name: c.name,
+        // Logo sources for the theme-aware <CorpsLogo> in the search results.
+        corps_logo: c.corps_logo,
+        corps_logo_dark: c.corps_logo_dark,
+        corps_logo_dark_url: c.corps_logo_dark_url,
+      }))
       .sort((a, b) => a.name.localeCompare(b.name));
     return { ...resolved, corpsOptions };
   },
