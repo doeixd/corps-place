@@ -24,6 +24,8 @@ export function vsSeriesToken(s: VsSeries): string | null {
       return SLUG_RE.test(s.corpsSlug) && DATE_RE.test(s.asOf)
         ? `pred~${s.corpsSlug}~${s.asOf}`
         : null;
+    case 'predicted':
+      return SLUG_RE.test(s.corpsSlug) ? `forecast~${s.corpsSlug}` : null;
     default:
       return null;
   }
@@ -53,6 +55,9 @@ function decodeToken(token: string): VsSeries | null {
     return a && SLUG_RE.test(a) && b && DATE_RE.test(b)
       ? { kind: 'prediction', corpsSlug: a, asOf: b }
       : null;
+  }
+  if (kind === 'forecast') {
+    return a && SLUG_RE.test(a) ? { kind: 'predicted', corpsSlug: a } : null;
   }
   return null;
 }

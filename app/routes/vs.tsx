@@ -67,6 +67,11 @@ function VsPage() {
 
   const current = seriesFor(s);
   const atCap = current.length >= VS_SERIES_CAP;
+  // Tokens already in the comparison — so the picker can mark options "added"
+  // instead of silently de-duping to a no-op (e.g. the default 1st-place line).
+  const addedTokens = new Set(
+    current.map((c) => vsSeriesToken(c)).filter((t): t is string => !!t)
+  );
 
   // Normalize (dedupe + cap) through the codec so the URL stays canonical.
   const pushSeries = (next: VsSeries[]) => {
@@ -146,6 +151,7 @@ function VsPage() {
             onPreview={onPreview}
             corpsOptions={corpsOptions}
             availabilityBySeason={availabilityBySeason}
+            addedTokens={addedTokens}
             atCap={atCap}
             capMessage={`Showing the max of ${VS_SERIES_CAP} series — remove one to add another.`}
           />

@@ -57,17 +57,29 @@ function Swatch({ color, hasDashed }: { color: string; hasDashed?: boolean }) {
 export function VsLegend({
   items,
   onRemove,
+  onHover,
 }: {
   items: VsLegendItem[];
   onRemove?: (id: string) => void;
+  /** Hovering/focusing a legend entry → highlight that series (dim the rest). */
+  onHover?: (id: string | null) => void;
 }) {
   if (items.length === 0) return null;
   return (
     <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs">
       {items.map((item) => (
         <div key={item.id} className="flex items-center gap-1.5">
-          <Swatch color={item.color} hasDashed={item.hasDashed} />
-          <span className="text-text-secondary">{item.label}</span>
+          <button
+            type="button"
+            onMouseEnter={() => onHover?.(item.id)}
+            onMouseLeave={() => onHover?.(null)}
+            onFocus={() => onHover?.(item.id)}
+            onBlur={() => onHover?.(null)}
+            className="flex items-center gap-1.5 rounded"
+          >
+            <Swatch color={item.color} hasDashed={item.hasDashed} />
+            <span className="text-text-secondary">{item.label}</span>
+          </button>
           {onRemove ? (
             <button
               type="button"
