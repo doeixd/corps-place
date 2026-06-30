@@ -76,6 +76,7 @@ export function VsChart({
   series,
   onRemove,
   preview = null,
+  yLabel,
   height = 'h-80',
 }: {
   series: VsResolvedSeries[];
@@ -84,6 +85,8 @@ export function VsChart({
   /** A resolved series to render as a low-opacity hover preview (the "ghost"
    *  line). Null clears it. Fades in/out with an ease-out transition. */
   preview?: VsResolvedSeries | null;
+  /** Optional Y-axis caption label (e.g. "General Effect"); omitted for Total. */
+  yLabel?: string;
   /** Tailwind height class for the plot box (kept identical SSR + client). */
   height?: string;
 }) {
@@ -168,7 +171,19 @@ export function VsChart({
                 tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
                 tickLine={false}
                 axisLine={false}
-                width={40}
+                width={yLabel ? 52 : 40}
+                label={
+                  yLabel
+                    ? {
+                        value: yLabel,
+                        angle: -90,
+                        position: 'insideLeft',
+                        fontSize: 11,
+                        fill: 'var(--color-muted-foreground)',
+                        style: { textAnchor: 'middle' },
+                      }
+                    : undefined
+                }
               />
               <Tooltip content={<VsTooltip />} />
               {/* Uncertainty bands first (behind the lines). */}

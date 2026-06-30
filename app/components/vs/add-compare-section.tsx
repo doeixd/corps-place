@@ -10,8 +10,10 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Icon } from '@/components/icon';
 import { AddCircleIcon, Cancel01Icon } from '@/components/icons/generated';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
+import { FilterChips } from '@/components/filter-chips';
 import { cn } from '@/lib/utils';
 import { VS_SERIES_CAP, type VsSeries } from '@/lib/vs/types';
+import { VS_CAPTIONS, VS_CAPTION_LABELS, type VsCaption } from '@/lib/vs/captions';
 
 type Kind = 'corps' | 'prediction' | 'baseline';
 export interface CorpsOption {
@@ -199,6 +201,7 @@ function CorpsResultList({
 function CorpsSeasonColumn({
   corpsOptions,
   availabilityBySeason,
+  roster2026,
   addedTokens,
   disabled,
   onAdd,
@@ -206,6 +209,7 @@ function CorpsSeasonColumn({
 }: {
   corpsOptions: CorpsOption[];
   availabilityBySeason: Record<string, string[]>;
+  roster2026: string[];
   addedTokens: Set<string>;
   disabled?: boolean;
   onAdd: (s: VsSeries) => void;
@@ -215,18 +219,30 @@ function CorpsSeasonColumn({
   const [season, setSeason] = useState('2026');
   const matches = useCorpsMatches(corpsOptions, query);
 
-  // Slugs that actually have plottable scores in the selected season; the rest
-  // are greyed out (e.g. early in 2026 only a handful of corps have performed).
+  // Slugs with plottable scores in the selected season (used for the 2026 grey-out).
   const available = useMemo(
     () => new Set(availabilityBySeason[season] ?? []),
     [availabilityBySeason, season]
+  );
+  // The season's competitors: 2026 → the predicted roster (incl. not-yet-scored);
+  // a completed season → exactly who scored. The list is restricted to this set
+  // (no historical/defunct corps); empty set → no filter (off-season fallback).
+  const roster = useMemo(
+    () => (season === '2026' ? new Set(roster2026) : available),
+    [season, roster2026, available]
+  );
+  const visible = useMemo(
+    () => (roster.size ? matches.filter((c) => roster.has(c.slug)) : matches),
+    [matches, roster]
   );
 
   return (
     <div className="space-y-2">
       <ColumnHeader title="Corps season" hint="Pick a season, then click a corps to add it." />
       <p className="text-xs text-muted-foreground">
-        Corps that haven’t performed a show in the selected season yet are greyed out.
+        {season === '2026'
+          ? 'Showing the 2026 field; corps that haven’t performed a show yet are greyed out.'
+          : `Showing corps that competed in ${season}.`}
       </p>
       <div className="flex gap-2">
         <select
@@ -249,11 +265,11 @@ function CorpsSeasonColumn({
         />
       </div>
       <CorpsResultList
-        matches={matches}
+        matches={visible}
         heightClass="h-96"
         atCap={disabled}
-        isUnavailable={(c) => available.size > 0 && !available.has(c.slug)}
-        unavailableTitle={(c) => `${c.name} hasn’t performed a show in ${season}`}
+        isUnavailable={(c) => season === '2026' && available.size > 0 && !available.has(c.slug)}
+        unavailableTitle={(c) => `${c.name} hasn’t performed a show in ${season} yet`}
         isAdded={(c) => addedTokens.has(`corps~${c.slug}~${season}`)}
         onSelect={(c) => onAdd({ kind: 'corps', corpsSlug: c.slug, season })}
         onHover={(c) => onPreview(c ? { kind: 'corps', corpsSlug: c.slug, season } : null)}
@@ -267,12 +283,14 @@ function CorpsSeasonColumn({
  *  Corps-season column; hovering previews. */
 function PredictionColumn({
   corpsOptions,
+  roster2026,
   addedTokens,
   disabled,
   onAdd,
   onPreview,
 }: {
   corpsOptions: CorpsOption[];
+  roster2026: string[];
   addedTokens: Set<string>;
   disabled?: boolean;
   onAdd: (s: VsSeries) => void;
@@ -280,6 +298,12 @@ function PredictionColumn({
 }) {
   const [query, setQuery] = useState('');
   const matches = useCorpsMatches(corpsOptions, query);
+  // Only corps with a 2026 prediction (the roster) — others have no curve to add.
+  const roster = useMemo(() => new Set(roster2026), [roster2026]);
+  const visible = useMemo(
+    () => (roster.size ? matches.filter((c) => roster.has(c.slug)) : matches),
+    [matches, roster]
+  );
 
   return (
     <div className="space-y-2">
@@ -294,7 +318,7 @@ function PredictionColumn({
         className={fieldCls}
       />
       <CorpsResultList
-        matches={matches}
+        matches={visible}
         heightClass="h-96"
         atCap={disabled}
         isAdded={(c) => addedTokens.has(`forecast~${c.slug}`)}
@@ -384,20 +408,29 @@ function BaselineColumn({
 }
 
 export function AddCompareSection({
+  caption,
+  onCaption,
   onAdd,
   onPreview,
   corpsOptions = [],
   availabilityBySeason = {},
+  roster2026 = [],
   addedTokens = new Set(),
   atCap = false,
   capMessage,
 }: {
+  /** The caption the whole comparison is scoped to. */
+  caption: VsCaption;
+  /** Switch the active caption. */
+  onCaption: (c: VsCaption) => void;
   onAdd: (s: VsSeries) => void;
   /** Hover/focus an option → preview it on the chart; null clears the preview. */
   onPreview: (s: VsSeries | null) => void;
   corpsOptions?: CorpsOption[];
   /** `{ [season]: slug[] }` — which corps have data per season (for grey-out). */
   availabilityBySeason?: Record<string, string[]>;
+  /** The 2026 field (slugs with a predicted curve) — corps lists restrict to it. */
+  roster2026?: string[];
   /** URL tokens already in the comparison — options for these show as "added". */
   addedTokens?: Set<string>;
   atCap?: boolean;
@@ -425,6 +458,19 @@ export function AddCompareSection({
           option to preview it; click to add, click an active one to remove. Up to{' '}
           {VS_SERIES_CAP} at once.
         </p>
+      </div>
+
+      {/* Caption pills — re-scope the whole chart (Total + categories + captions). */}
+      <div className="space-y-1">
+        <span className="text-xs font-medium uppercase tracking-wide text-text-secondary">
+          Caption
+        </span>
+        <FilterChips
+          ariaLabel="Caption"
+          value={caption}
+          items={VS_CAPTIONS.map((c) => ({ value: c, label: VS_CAPTION_LABELS[c] }))}
+          onSelect={(v) => onCaption(v as VsCaption)}
+        />
       </div>
 
       {atCap ? (
@@ -463,6 +509,7 @@ export function AddCompareSection({
           <CorpsSeasonColumn
             corpsOptions={corpsOptions}
             availabilityBySeason={availabilityBySeason}
+            roster2026={roster2026}
             addedTokens={addedTokens}
             disabled={atCap}
             onAdd={add}
@@ -472,6 +519,7 @@ export function AddCompareSection({
         <div className={cn('rounded-lg border border-border p-3', tab === 'prediction' ? 'block' : 'hidden', 'sm:block')}>
           <PredictionColumn
             corpsOptions={corpsOptions}
+            roster2026={roster2026}
             addedTokens={addedTokens}
             disabled={atCap}
             onAdd={add}

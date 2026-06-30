@@ -271,14 +271,25 @@ CREATE TABLE rm_corps_season_points (
 CREATE INDEX rm_corps_season_pts ON rm_corps_season_points(corps_slug, season, sort_index);
 
 CREATE TABLE rm_vs_corps_scores (
-  corps_slug TEXT, season TEXT, pct REAL, total REAL, date TEXT, event_label TEXT
+  corps_slug TEXT, season TEXT, pct REAL, date TEXT, event_label TEXT,
+  total REAL, ge REAL, visual REAL, music REAL,
+  ge1 REAL, ge2 REAL, vp REAL, va REAL, cg REAL, mb REAL, ma REAL, mp REAL
 );
 CREATE INDEX rm_vs_corps_scores_k ON rm_vs_corps_scores(corps_slug, season, pct);
 
-CREATE TABLE rm_vs_baselines (rank INTEGER, bucket INTEGER, total REAL);
+CREATE TABLE rm_vs_baselines (
+  rank INTEGER, bucket INTEGER,
+  total REAL, ge REAL, visual REAL, music REAL,
+  ge1 REAL, ge2 REAL, vp REAL, va REAL, cg REAL, mb REAL, ma REAL, mp REAL
+);
 CREATE INDEX rm_vs_baselines_k ON rm_vs_baselines(rank, bucket);
 
-CREATE TABLE rm_vs_corps_predicted (corps_slug TEXT, pct REAL, predicted REAL);
+CREATE TABLE rm_vs_corps_predicted (
+  corps_slug TEXT, pct REAL,
+  total REAL, ge REAL, visual REAL, music REAL,
+  ge1 REAL, ge2 REAL, vp REAL, va REAL, cg REAL, mb REAL, ma REAL, mp REAL,
+  predicted REAL
+);
 CREATE INDEX rm_vs_corps_predicted_k ON rm_vs_corps_predicted(corps_slug, pct);
 
 CREATE TABLE rm_rankings (
@@ -742,6 +753,9 @@ export const runEmit = async (args: Args) => {
     );
     const detailRows: unknown[][] = [];
     const seasonPointRows: unknown[][] = [];
+    // VS caption columns (order shared by the 3 rm_vs_* tables + their readers).
+    const vsCapCols = ["total", "ge", "visual", "music", "ge1", "ge2", "vp", "va", "cg", "mb", "ma", "mp"];
+    const vsCapTuple = (p: Record<string, unknown>) => vsCapCols.map((k) => p[k] ?? null);
     const vsScoreRows: unknown[][] = [];
     const vsPredictedRows: unknown[][] = [];
     const appearanceRows: unknown[][] = [];
@@ -766,13 +780,14 @@ export const runEmit = async (args: Args) => {
           idx,
         ]),
       );
-      // VS chart: every season's actual totals by % through season (one query).
+      // VS chart: every season's actual scores (all captions) by % through season.
       const vsPts = await buildVsCorpsScoresAllSeasons(src, slug);
       for (const v of vsPts)
-        vsScoreRows.push([slug, v.season, v.pct, v.total, v.date, v.eventLabel]);
-      // 2026 predicted-to-finals overlay (current season only).
+        vsScoreRows.push([slug, v.season, v.pct, v.date, v.eventLabel, ...vsCapTuple(v)]);
+      // 2026 predicted-to-finals overlay (current season only, all captions).
+      // Trailing p.total = the back-compat `predicted` column.
       const vsPred = await buildVsCorps2026Predicted(src, slug);
-      for (const p of vsPred) vsPredictedRows.push([slug, p.pct, p.predicted]);
+      for (const p of vsPred) vsPredictedRows.push([slug, p.pct, ...vsCapTuple(p), p.total]);
       const eventSlugs = await buildEventSlugsForCorps(
         src,
         slug.trim().toLowerCase(),
@@ -819,7 +834,7 @@ export const runEmit = async (args: Args) => {
     rowCounts.rm_vs_corps_scores = vsScoreRows.length;
     rowCounts.rm_vs_corps_predicted = vsPredictedRows.length;
     // Generic Nth-place baseline curve — built once (sources the V9 curves file).
-    const vsBaselineRows = buildVsBaselineCurve().map((b) => [b.rank, b.bucket, b.total]);
+    const vsBaselineRows = buildVsBaselineCurve().map((b) => [b.rank, b.bucket, ...vsCapTuple(b)]);
     rowCounts.rm_vs_baselines = vsBaselineRows.length;
     if (dst) {
       await insertRows(
@@ -848,19 +863,19 @@ export const runEmit = async (args: Args) => {
       await insertRows(
         dst,
         "rm_vs_corps_scores",
-        ["corps_slug", "season", "pct", "total", "date", "event_label"],
+        ["corps_slug", "season", "pct", "date", "event_label", ...vsCapCols],
         vsScoreRows,
       );
       await insertRows(
         dst,
         "rm_vs_baselines",
-        ["rank", "bucket", "total"],
+        ["rank", "bucket", ...vsCapCols],
         vsBaselineRows,
       );
       await insertRows(
         dst,
         "rm_vs_corps_predicted",
-        ["corps_slug", "pct", "predicted"],
+        ["corps_slug", "pct", ...vsCapCols, "predicted"],
         vsPredictedRows,
       );
       await insertRows(

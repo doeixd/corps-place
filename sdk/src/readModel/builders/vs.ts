@@ -14,13 +14,64 @@
 // Shared by the live VS service (fallback) and emitReadModel, like every builder.
 import type { Client } from '@libsql/client';
 import { RELATED_CORPS_CTES } from './corpsAliases.js';
+import {
+  foldRecapRows,
+  type RecapRowOut,
+  type CaptionScoreRow,
+  type CategoryScoreRow,
+  type CorpsScoreRow,
+} from './recap.js';
 import { getV9CaptionBaseline, type V9Caption } from '../../training/v9Baselines.js';
 import referenceCurvesV4 from '../../training/referenceCurvesV4.json';
 
-/** One actual data point on a corps's season line. `pct` ∈ [0,100]. */
-export interface VsCorpsScorePoint {
-  pct: number;
+/** The full caption tree carried on every VS point (Total + 3 categories + 8
+ *  sub-captions). `total` is always present; the rest are null when that caption
+ *  has no data for the show (older seasons / missing panels) — the resolver
+ *  drops null points, never plots 0. Keys match the app's VS_CAPTIONS. */
+export interface VsCaptionValues {
   total: number;
+  ge: number | null;
+  visual: number | null;
+  music: number | null;
+  ge1: number | null;
+  ge2: number | null;
+  vp: number | null;
+  va: number | null;
+  cg: number | null;
+  mb: number | null;
+  ma: number | null;
+  mp: number | null;
+}
+
+/** The ordered caption keys (also the read-model column names). */
+export const VS_CAPTION_KEYS = [
+  'total', 'ge', 'visual', 'music',
+  'ge1', 'ge2', 'vp', 'va', 'cg', 'mb', 'ma', 'mp',
+] as const;
+
+/** Fold a recap row to the wide caption values (0/absent → null, except total). */
+const captionsFromRecap = (r: RecapRowOut): VsCaptionValues => ({
+  total: r.total,
+  ge: r.GE || null,
+  visual: r.Visual || null,
+  music: r.Music || null,
+  ge1: r.GE1 ?? null,
+  ge2: r.GE2 ?? null,
+  vp: r.VP ?? null,
+  va: r.VA ?? null,
+  cg: r.CG ?? null,
+  mb: r.MB ?? null,
+  ma: r.MA ?? null,
+  mp: r.MP ?? null,
+});
+
+const nz = (v: unknown): number | null =>
+  typeof v === 'number' && Number.isFinite(v) ? v : v == null ? null : Number(v);
+
+/** One actual data point on a corps's season line. `pct` ∈ [0,100]. Carries all
+ *  captions (Total + categories + sub-captions). */
+export interface VsCorpsScorePoint extends VsCaptionValues {
+  pct: number;
   date: string;
   eventLabel: string;
 }
@@ -66,54 +117,130 @@ const seasonPct = (span: SeasonSpan | undefined, date: string, storedPct: number
     ? Math.min(100, Math.max(0, (daysBetween(span.lo, date) / REF_SEASON_DAYS) * 100))
     : Math.min(100, Math.max(0, storedPct));
 
+interface CompMeta {
+  season: string;
+  rawPct: number;
+  date: string;
+  label: string;
+}
+
 /**
- * A corps's actual total per competition for a season, ordered by % through the
- * season. Works for any season — historical actuals need no prediction run. The
- * alias-merge (RELATED_CORPS_CTES) unions every corps_key that maps to this org.
+ * Core: a corps's actual per-competition points WITH the full caption tree, for
+ * one season or every season. Fetches the org's scores + caption + category rows
+ * (alias-merged via RELATED_CORPS_CTES) and runs them through `foldRecapRows` —
+ * the SAME canonical caption math as the recap table and rankings — so caption
+ * values can't drift. One point per (season, corrected pct).
+ */
+async function foldVsCorpsPoints(
+  db: Client,
+  slug: string,
+  season?: string
+): Promise<Array<VsCorpsScorePoint & { season: string }>> {
+  const lc = slug.trim().toLowerCase();
+  const seasonClause = season ? 'AND c.season = ?' : '';
+  const extra = season ? [season] : [];
+  const [scoreRes, capRes, catRes] = await Promise.all([
+    db.execute({
+      sql: `WITH ${RELATED_CORPS_CTES}
+        SELECT cs.competition_slug AS comp, cs.corps_key, cs.corps_name, cs.total_score,
+               cs.rank, cs.division_name,
+               c.season AS season, c.percent_through AS pct, c.date AS date, c.event_name AS label
+        FROM corps_scores cs JOIN competitions c ON c.slug = cs.competition_slug
+        WHERE cs.corps_key IN (SELECT corps_key FROM related_corps)
+          AND cs.total_score IS NOT NULL AND c.percent_through IS NOT NULL ${seasonClause}`,
+      args: [lc, ...extra],
+    }),
+    db.execute({
+      sql: `WITH ${RELATED_CORPS_CTES}
+        SELECT cap.competition_slug AS comp, cap.corps_key, cap.caption_name, cap.score
+        FROM caption_scores cap JOIN competitions c ON c.slug = cap.competition_slug
+        WHERE cap.corps_key IN (SELECT corps_key FROM related_corps) ${seasonClause}`,
+      args: [lc, ...extra],
+    }),
+    db.execute({
+      sql: `WITH ${RELATED_CORPS_CTES}
+        SELECT cat.competition_slug AS comp, cat.corps_key, cat.category_name, cat.score
+        FROM category_scores cat JOIN competitions c ON c.slug = cat.competition_slug
+        WHERE cat.corps_key IN (SELECT corps_key FROM related_corps) ${seasonClause}`,
+      args: [lc, ...extra],
+    }),
+  ]);
+
+  const push = <T>(m: Map<string, T[]>, k: string, v: T) => {
+    const a = m.get(k);
+    if (a) a.push(v);
+    else m.set(k, [v]);
+  };
+  const scoresByComp = new Map<string, CorpsScoreRow[]>();
+  const capsByComp = new Map<string, CaptionScoreRow[]>();
+  const catsByComp = new Map<string, CategoryScoreRow[]>();
+  const metaByComp = new Map<string, CompMeta>();
+  for (const r of scoreRes.rows as any[]) {
+    const comp = String(r.comp);
+    push(scoresByComp, comp, {
+      corps_key: String(r.corps_key),
+      corps_name: r.corps_name ?? null,
+      total_score: nz(r.total_score),
+      rank: r.rank == null ? null : Number(r.rank),
+      division_name: r.division_name ?? null,
+    });
+    if (!metaByComp.has(comp))
+      metaByComp.set(comp, {
+        season: String(r.season),
+        rawPct: Number(r.pct),
+        date: r.date ?? '',
+        label: r.label ?? '',
+      });
+  }
+  for (const r of capRes.rows as any[])
+    push(capsByComp, String(r.comp), {
+      corps_key: String(r.corps_key),
+      caption_name: String(r.caption_name),
+      score: nz(r.score),
+    });
+  for (const r of catRes.rows as any[])
+    push(catsByComp, String(r.comp), {
+      corps_key: String(r.corps_key),
+      category_name: String(r.category_name),
+      score: nz(r.score),
+    });
+
+  const spans = await buildSeasonSpans(db);
+  // One point per (season, corrected pct); last wins on a same-pct collision.
+  const byKey = new Map<string, VsCorpsScorePoint & { season: string }>();
+  for (const [comp, meta] of metaByComp) {
+    const folded = foldRecapRows(
+      scoresByComp.get(comp) ?? [],
+      capsByComp.get(comp) ?? [],
+      catsByComp.get(comp) ?? []
+    );
+    for (const r of folded) {
+      if (typeof r.total !== 'number' || r.total <= 0) continue;
+      const pct = seasonPct(spans.get(meta.season), meta.date, meta.rawPct);
+      byKey.set(`${meta.season}~${pct}`, {
+        season: meta.season,
+        pct,
+        date: meta.date,
+        eventLabel: meta.label,
+        ...captionsFromRecap(r),
+      });
+    }
+  }
+  return [...byKey.values()].sort(
+    (a, b) => a.season.localeCompare(b.season) || a.pct - b.pct
+  );
+}
+
+/**
+ * A corps's actual per-competition points (all captions) for a season, ordered by
+ * % through the season. The alias-merge unions every corps_key for the org.
  */
 export const buildVsCorpsScores = async (
   db: Client,
   slug: string,
   season: string
-): Promise<VsCorpsScorePoint[]> => {
-  const result = await db.execute({
-    sql: `WITH ${RELATED_CORPS_CTES}
-      SELECT c.percent_through AS pct,
-             c.date           AS date,
-             c.event_name     AS label,
-             cs.total_score   AS total
-      FROM corps_scores cs
-      JOIN competitions c ON c.slug = cs.competition_slug
-      WHERE cs.corps_key IN (SELECT corps_key FROM related_corps)
-        AND c.season = ?
-        AND cs.total_score IS NOT NULL
-        AND c.percent_through IS NOT NULL
-      ORDER BY c.percent_through ASC`,
-    args: [slug.trim().toLowerCase(), season],
-  });
-
-  const span = (await buildSeasonSpans(db)).get(season);
-
-  // One point per pct (a corps can't score twice at the same % point); last wins
-  // on the rare same-day collision, matching the single-corps chart's dedupe.
-  const byPct = new Map<number, VsCorpsScorePoint>();
-  for (const raw of result.rows as unknown as Array<{
-    pct: number | null;
-    date: string | null;
-    label: string | null;
-    total: number | null;
-  }>) {
-    if (typeof raw.pct !== 'number' || typeof raw.total !== 'number') continue;
-    const pct = seasonPct(span, raw.date ?? '', raw.pct);
-    byPct.set(pct, {
-      pct,
-      total: Number(raw.total),
-      date: raw.date ?? '',
-      eventLabel: raw.label ?? '',
-    });
-  }
-  return [...byPct.values()].sort((a, b) => a.pct - b.pct);
-};
+): Promise<VsCorpsScorePoint[]> =>
+  (await foldVsCorpsPoints(db, slug, season)).map(({ season: _s, ...p }) => p);
 
 /** Every (corps_slug, season) pair with plottable data — the dev/relational
  *  counterpart of `readVsCorpsSeasonAvailability`. */
@@ -130,6 +257,21 @@ export const buildVsSeasonAvailability = async (
   return (r.rows as unknown as Array<{ corps_slug: string | null; season: string | null }>)
     .filter((x) => x.corps_slug && x.season)
     .map((x) => ({ corps_slug: String(x.corps_slug), season: String(x.season) }));
+};
+
+/** The 2026 field (roster) — corps the model predicts for 2026 = competing this
+ *  season. Dev/relational counterpart of `readVsActiveCorps`. */
+export const buildVsActiveCorps = async (db: Client): Promise<string[]> => {
+  const r = await db.execute({
+    sql: `SELECT DISTINCT co.slug AS slug
+      FROM model_event_prediction_rows pr
+      JOIN model_event_prediction_runs run ON run.prediction_id = pr.prediction_id
+      JOIN corps co ON co.corps_key = pr.corps_key
+      WHERE run.season = '2026' AND co.slug IS NOT NULL`,
+  });
+  return (r.rows as unknown as Array<{ slug: string | null }>)
+    .map((x) => x.slug)
+    .filter((s): s is string => !!s);
 };
 
 /** The seasons a corps actually competed (has scored points) — to constrain the
@@ -169,58 +311,16 @@ export const buildVs2026SnapshotDates = async (db: Client, slug: string): Promis
     .filter((d): d is string => !!d);
 };
 
-/** Emit-time variant: every season's actual points for a corps in ONE query
- *  (the live path filters by season; the emitter freezes all seasons at once). */
-export const buildVsCorpsScoresAllSeasons = async (
+/** Emit-time variant: every season's actual points (all captions) for a corps in
+ *  ONE pass (the live path filters by season; the emitter freezes all at once). */
+export const buildVsCorpsScoresAllSeasons = (
   db: Client,
   slug: string
-): Promise<Array<VsCorpsScorePoint & { season: string }>> => {
-  const result = await db.execute({
-    sql: `WITH ${RELATED_CORPS_CTES}
-      SELECT c.season         AS season,
-             c.percent_through AS pct,
-             c.date           AS date,
-             c.event_name     AS label,
-             cs.total_score   AS total
-      FROM corps_scores cs
-      JOIN competitions c ON c.slug = cs.competition_slug
-      WHERE cs.corps_key IN (SELECT corps_key FROM related_corps)
-        AND cs.total_score IS NOT NULL
-        AND c.percent_through IS NOT NULL
-      ORDER BY c.season ASC, c.percent_through ASC`,
-    args: [slug.trim().toLowerCase()],
-  });
+): Promise<Array<VsCorpsScorePoint & { season: string }>> => foldVsCorpsPoints(db, slug);
 
-  const spans = await buildSeasonSpans(db);
-
-  // Dedupe within each season by pct (last wins).
-  const bySeasonPct = new Map<string, VsCorpsScorePoint & { season: string }>();
-  for (const raw of result.rows as unknown as Array<{
-    season: string | null;
-    pct: number | null;
-    date: string | null;
-    label: string | null;
-    total: number | null;
-  }>) {
-    if (!raw.season || typeof raw.pct !== 'number' || typeof raw.total !== 'number') continue;
-    const pct = seasonPct(spans.get(raw.season), raw.date ?? '', raw.pct);
-    bySeasonPct.set(`${raw.season}~${pct}`, {
-      season: raw.season,
-      pct,
-      total: Number(raw.total),
-      date: raw.date ?? '',
-      eventLabel: raw.label ?? '',
-    });
-  }
-  return [...bySeasonPct.values()].sort(
-    (a, b) => a.season.localeCompare(b.season) || a.pct - b.pct
-  );
-};
-
-/** A point on the 2026 predicted-to-finals line. */
-export interface VsPredictedPoint {
+/** A point on the 2026 predicted-to-finals line, with all captions. */
+export interface VsPredictedPoint extends VsCaptionValues {
   pct: number;
-  predicted: number;
 }
 
 /**
@@ -239,7 +339,9 @@ export const buildVsCorps2026Predicted = async (
         SELECT event_slug, MAX(predicted_at) AS pa
         FROM model_event_prediction_runs WHERE season = '2026' GROUP BY event_slug
       )
-      SELECT run.percent_through AS pct, r.predicted_total AS predicted
+      SELECT run.percent_through AS pct, r.predicted_total AS predicted,
+             r.predicted_ge AS ge, r.predicted_visual AS visual, r.predicted_music AS music,
+             r.predicted_captions_json AS caps
       FROM model_event_prediction_rows r
       JOIN model_event_prediction_runs run ON run.prediction_id = r.prediction_id
       JOIN latest l ON l.event_slug = run.event_slug AND l.pa = run.predicted_at
@@ -251,17 +353,43 @@ export const buildVsCorps2026Predicted = async (
     args: [slug.trim().toLowerCase()],
   });
 
-  // One point per pct, keeping the highest predicted (guards a corps_key matching
-  // more than one prediction row — same rule as buildCorpsSeasonScores).
+  // One point per pct, keeping the highest predicted total (guards a corps_key
+  // matching more than one prediction row — same rule as buildCorpsSeasonScores).
   const byPct = new Map<number, VsPredictedPoint>();
   for (const raw of result.rows as unknown as Array<{
     pct: number | null;
     predicted: number | null;
+    ge: number | null;
+    visual: number | null;
+    music: number | null;
+    caps: string | null;
   }>) {
     if (typeof raw.pct !== 'number' || typeof raw.predicted !== 'number') continue;
     const pct = Math.min(100, Math.max(0, raw.pct));
     const prev = byPct.get(pct);
-    if (!prev || raw.predicted > prev.predicted) byPct.set(pct, { pct, predicted: raw.predicted });
+    if (prev && prev.total >= raw.predicted) continue;
+    // predicted_captions_json = {"GE1","GE2","VP","VA","CG","MB","MA","MP"}.
+    let c: Record<string, number> = {};
+    try {
+      c = raw.caps ? JSON.parse(raw.caps) : {};
+    } catch {
+      c = {};
+    }
+    byPct.set(pct, {
+      pct,
+      total: raw.predicted,
+      ge: nz(raw.ge),
+      visual: nz(raw.visual),
+      music: nz(raw.music),
+      ge1: nz(c.GE1),
+      ge2: nz(c.GE2),
+      vp: nz(c.VP),
+      va: nz(c.VA),
+      cg: nz(c.CG),
+      mb: nz(c.MB),
+      ma: nz(c.MA),
+      mp: nz(c.MP),
+    });
   }
   return [...byPct.values()].sort((a, b) => a.pct - b.pct);
 };
@@ -341,23 +469,41 @@ export const VS_BASELINE_RANKS = Array.from({ length: 24 }, (_, i) => i + 1);
 /** Percent buckets the reference curves are keyed on. */
 export const VS_BASELINE_BUCKETS = Array.from({ length: 21 }, (_, i) => i * 5); // 0,5,…,100
 
-export interface VsBaselinePoint {
+export interface VsBaselinePoint extends VsCaptionValues {
   rank: number;
   bucket: number;
-  total: number;
 }
 
+const r3 = (n: number) => Number(n.toFixed(3));
+
+/** A V9 caption record → the wide caption values. Category scores use the SAME
+ *  DCI weighting as `totalOf` (GE = GE1+GE2; Visual/Music are half-summed) so a
+ *  baseline category line sits on the same scale as the actual category_scores. */
+const baselineCaptions = (c: Record<V9Caption, number>): VsCaptionValues => ({
+  total: r3(totalOf(c)),
+  ge: r3(c.GE1 + c.GE2),
+  visual: r3((c.VP + c.VA + c.CG) / 2),
+  music: r3((c.MB + c.MA + c.MP) / 2),
+  ge1: r3(c.GE1),
+  ge2: r3(c.GE2),
+  vp: r3(c.VP),
+  va: r3(c.VA),
+  cg: r3(c.CG),
+  mb: r3(c.MB),
+  ma: r3(c.MA),
+  mp: r3(c.MP),
+});
+
 /**
- * Precompute the generic Nth-place total curve for every (rank, bucket). Pure —
- * sources only the V9 reference curves file (read once by getV9CaptionBaseline),
- * so the emitted shard removes both the file and the formula from the request
- * path. `getV9CaptionBaseline` fills any missing caption (e.g. VA) with its own
- * fallback, so every total is complete.
+ * Precompute the generic Nth-place curve (all captions) for every (rank, bucket).
+ * Pure — sources only the V9 reference curves file, so the emitted shard removes
+ * both the file and the formula from the request path. `getV9CaptionBaseline`
+ * fills any missing caption (e.g. VA) with its own fallback.
  */
 export const buildVsBaselineCurve = (referenceCurvesPath?: string): VsBaselinePoint[] => {
   const out: VsBaselinePoint[] = [];
-  // Raw entries (legacy `rank-bucket` keys, division-agnostic) — used only to
-  // detect a genuinely-missing VA so we can impute it from VP below.
+  // Raw entries (legacy `rank-bucket` keys) — used only to detect a genuinely-
+  // missing VA so we can impute it from VP below.
   const curvesByKey = (referenceCurvesV4 as { curves?: Record<string, unknown> }).curves ?? {};
   for (const rank of VS_BASELINE_RANKS) {
     for (const bucket of VS_BASELINE_BUCKETS) {
@@ -369,14 +515,12 @@ export const buildVsBaselineCurve = (referenceCurvesPath?: string): VsBaselinePo
         referenceCurvesPath,
       });
       const captions = { ...(r.captions as Record<V9Caption, number>) };
-      // VA is absent in ~170/551 curve entries. getV9CaptionBaseline blunt-fills
-      // those with 15; VA tracks VP closely, so impute VA from VP where the curve
-      // entry genuinely lacks it — a better total than the flat 15 (plan §data).
+      // VA is absent in ~170/551 curve entries; impute from VP (tracks closely).
       const raw = (curvesByKey as Record<string, Partial<Record<V9Caption, number>>>)[
         `${rank}-${bucket}`
       ];
       if (raw && typeof raw.VA !== 'number') captions.VA = captions.VP;
-      out.push({ rank, bucket, total: Number(totalOf(captions).toFixed(3)) });
+      out.push({ rank, bucket, ...baselineCaptions(captions) });
     }
   }
   return out;
