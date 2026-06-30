@@ -192,5 +192,14 @@ describe('recomputeFantasyStandingsForSeason', () => {
     const { rows } = await getStandings('lg-a', null);
     expect(rows.map((r) => r.userId)).toContain('uA');
     expect(rows.map((r) => r.userId)).not.toContain('uRemoved');
+
+    // Recompute should physically purge the removed member's stale standing row,
+    // not just hide it at read time.
+    await recompute('2026');
+    const remaining = await contribDb.execute({
+      sql: "SELECT user_id FROM fantasy_standings WHERE league_id = 'LG-A'",
+    });
+    expect(remaining.rows.map((r) => r.user_id)).not.toContain('uRemoved');
+    expect(remaining.rows.map((r) => r.user_id)).toContain('uA');
   });
 });

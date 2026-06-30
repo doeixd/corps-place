@@ -26,12 +26,21 @@ export const vapidPublicKey = (): string | null => vapid()?.publicKey ?? null;
 
 export type PushPayload = { title: string; body: string; url?: string };
 
+/**
+ * Result of a push attempt. `subscriptions` is how many devices the user had;
+ * `delivered` is how many accepted the push. Callers that need at-least-once
+ * semantics (the standings digest) treat `subscriptions > 0 && delivered === 0`
+ * as a transient failure worth retrying, and anything else as settled (nothing to
+ * deliver, or delivered). `vapidDisabled` means push isn't configured at all.
+ */
+export type PushResult = { subscriptions: number; delivered: number; vapidDisabled?: boolean };
+
 /** Send a push to every device a user has subscribed; prune dead subscriptions. */
-export async function sendPushToUser(userId: string, payload: PushPayload): Promise<void> {
+export async function sendPushToUser(userId: string, payload: PushPayload): Promise<PushResult> {
   const keys = vapid();
   if (!keys) {
     console.warn(`[push] VAPID keys not set — push to ${userId} skipped: ${payload.title}`);
-    return;
+    return { subscriptions: 0, delivered: 0, vapidDisabled: true };
   }
   const db = await getContributionsDb();
   const subs = (
@@ -40,14 +49,14 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
       args: [userId],
     })
   ).rows;
-  if (subs.length === 0) return;
+  if (subs.length === 0) return { subscriptions: 0, delivered: 0 };
 
   const mod = await import('web-push');
   const webpush = mod.default;
   webpush.setVapidDetails(keys.subject, keys.publicKey, keys.privateKey);
   const data = JSON.stringify(payload);
 
-  await Promise.all(
+  const results = await Promise.all(
     subs.map(async (s) => {
       const endpoint = s.endpoint as string;
       try {
@@ -55,6 +64,7 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
           { endpoint, keys: { p256dh: s.p256dh as string, auth: s.auth as string } },
           data
         );
+        return true;
       } catch (err) {
         const code = (err as { statusCode?: number }).statusCode;
         if (code === 404 || code === 410) {
@@ -63,7 +73,9 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
             args: [userId, endpoint],
           });
         }
+        return false;
       }
     })
   );
+  return { subscriptions: subs.length, delivered: results.filter(Boolean).length };
 }
