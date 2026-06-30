@@ -138,7 +138,7 @@ const main = async () => {
   //     corps_staff parent was removed by a cleaner with FK cascade off). They're
   //     invisible (read-model joins via corps_staff) but shouldn't linger. ─────────
   if (APPLY) {
-    for (const t of ['corps_staff_affiliations', 'staff_bio_facts']) {
+    for (const t of ['corps_staff_assignments', 'corps_staff_affiliations', 'staff_bio_facts']) {
       try {
         const res = await db.execute(`DELETE FROM ${t} WHERE staff_id NOT IN (SELECT staff_id FROM corps_staff)`);
         const n = Number((res as { rowsAffected?: number }).rowsAffected ?? 0);

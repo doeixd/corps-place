@@ -57,6 +57,40 @@ const main = async () => {
     fixes.push({ pid, clean, name, prefix });
   }
 
+  // SUFFIX pollution: a title/role phrase or a fused website tacked onto the END of
+  // an otherwise clean person_id. Two detectors, both conservative:
+  //  (i)  a maximal TRAILING run of admin/title words (display-independent → also
+  //       catches nickname display names like "Ben Poethke"/benjamin-poethke-administrative);
+  //  (ii) a fused website (an org/com/net token) after slug(display_name).
+  // EXCLUDES numeric disambiguators (-2/-3 = genuinely different people) and suffixes
+  // that are themselves a person_id (two-people concatenation → splitConcatenatedNames).
+  const SUFFIX_ROLE = new Set(
+    ('administrative administration operations operation historian svp sales donor relations lead chef ' +
+      'merchandise hospitality emeritus advisor security logistics transportation volunteer events production ' +
+      'sponsorship development marketing finance treasurer secretary president ' +
+      'costuming costume props prop uniform uniforms color electronics ensemble drumline')
+      .split(' ')
+  );
+  const allPids = new Set(repName.keys());
+  for (const [pid, name] of repName) {
+    if (fixes.some((f) => f.pid === pid)) continue;
+    const toks = pid.split('-');
+    if (toks.length < 3) continue;
+    let clean: string | null = null, suffix = '';
+    let end = toks.length;
+    while (end > 2 && SUFFIX_ROLE.has(toks[end - 1])) end--;
+    if (end < toks.length) { clean = toks.slice(0, end).join('-'); suffix = toks.slice(end).join('-'); }
+    else {
+      // Fused website: "<first>-<last>-<orgname>-org-<city>". Anchor on the org/com/net
+      // token (not slug(display_name), which nickname-expands "Bill"→william and misses).
+      // Names are ~always 2 tokens, so the first two are the person and the rest is junk.
+      const idx = toks.findIndex((t) => /^(org|com|net)$/.test(t));
+      if (idx >= 2 && toks.length >= 4) { clean = toks.slice(0, 2).join('-'); suffix = toks.slice(2).join('-'); }
+    }
+    if (!clean || clean === pid || allPids.has(suffix)) continue;
+    fixes.push({ pid, clean, name, prefix: suffix });
+  }
+
   console.log(`${DRY ? '(dry-run)' : 'APPLIED'} — ${fixes.length} polluted person_id(s)\n`);
   for (const f of fixes) console.log(`  ${f.pid}  →  ${f.clean}   ("${f.name}", stray prefix "${f.prefix}")`);
 
