@@ -29,6 +29,7 @@ const ADMIN_CAPS = [
   'manageFantasyLeagues',
   'customerSupport',
   'impersonate',
+  'manageProfileClaims', // moderator gate for /admin/profile-claims
 ] as const satisfies readonly Capability[];
 
 const CapInput = v.object({ cap: v.picklist(ADMIN_CAPS) });
