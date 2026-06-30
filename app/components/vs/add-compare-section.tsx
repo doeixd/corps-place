@@ -11,7 +11,7 @@ import { Icon } from '@/components/icon';
 import { AddCircleIcon } from '@/components/icons/generated';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { cn } from '@/lib/utils';
-import { getVsCorpsSeasons, getVs2026SnapshotDates } from '@/lib/server-fns/vs';
+import { getVs2026SnapshotDates } from '@/lib/server-fns/vs';
 import type { VsSeries } from '@/lib/vs/types';
 
 type Kind = 'corps' | 'prediction' | 'baseline';
@@ -33,8 +33,9 @@ const TABS: { value: Kind; label: string }[] = [
   { value: 'baseline', label: 'Baseline' },
 ];
 
-// Fallback season chips while a corps's real seasons load (or if none come back).
-const FALLBACK_SEASONS = Array.from({ length: 11 }, (_, i) => String(2026 - i));
+// Seasons offered in the Corps-season dropdown (newest first), spanning the
+// range the score data covers.
+const SEASONS = Array.from({ length: 14 }, (_, i) => String(2026 - i));
 // Common reference places offered as quick chips (any 1–24 via the input).
 const BASELINE_QUICK = [1, 3, 5, 8, 12];
 
@@ -79,32 +80,34 @@ function ColumnHeader({ title, hint }: { title: string; hint: string }) {
   );
 }
 
-/** Corps + season, or a 2026 prediction snapshot, both start by searching a corps. */
-function CorpsSearchColumn({
-  mode,
-  corpsOptions,
-  disabled,
-  onAdd,
-  onPreview,
-}: {
-  mode: 'corps' | 'prediction';
-  corpsOptions: CorpsOption[];
-  disabled?: boolean;
-  onAdd: (s: VsSeries) => void;
-  onPreview: (s: VsSeries | null) => void;
-}) {
-  const [query, setQuery] = useState('');
-  const [picked, setPicked] = useState<CorpsOption | null>(null);
-  const [seasons, setSeasons] = useState<string[] | null>(null);
-  const [dates, setDates] = useState<string[] | null>(null);
-
-  // All matches (no cap) — the list is virtualized, so the full directory is
-  // cheap to render.
-  const matches = useMemo(() => {
+// All matches (no cap) — the list is virtualized, so the full directory is cheap.
+const useCorpsMatches = (corpsOptions: CorpsOption[], query: string) =>
+  useMemo(() => {
     const q = query.trim().toLowerCase();
     return q ? corpsOptions.filter((c) => c.name.toLowerCase().includes(q)) : corpsOptions;
   }, [query, corpsOptions]);
 
+/** Virtualized corps result list with theme-aware logos. Renders the full
+ *  directory cheaply; each row selects on click and (optionally) previews on
+ *  hover. */
+function CorpsResultList({
+  matches,
+  onSelect,
+  onHover,
+  heightClass = 'h-72',
+  isUnavailable,
+  unavailableTitle,
+}: {
+  matches: CorpsOption[];
+  onSelect: (c: CorpsOption) => void;
+  onHover?: (c: CorpsOption | null) => void;
+  /** Tailwind height for the scroll viewport — taller shows more rows. */
+  heightClass?: string;
+  /** When true for a corps, the row is greyed out + non-interactive. */
+  isUnavailable?: (c: CorpsOption) => boolean;
+  /** Tooltip (title) explaining why an unavailable row is greyed. */
+  unavailableTitle?: (c: CorpsOption) => string;
+}) {
   const listRef = useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
     count: matches.length,
@@ -112,40 +115,151 @@ function CorpsSearchColumn({
     estimateSize: () => RESULT_ROW_H,
     overscan: 10,
   });
+  if (matches.length === 0)
+    return <p className="px-1 py-2 text-xs text-muted-foreground">No matches.</p>;
+  return (
+    <div ref={listRef} className={cn('themed-scrollbar overflow-y-auto', heightClass)}>
+      <div style={{ height: rowVirtualizer.getTotalSize(), width: '100%', position: 'relative' }}>
+        {rowVirtualizer.getVirtualItems().map((vi) => {
+          const c = matches[vi.index];
+          const unavailable = isUnavailable?.(c) ?? false;
+          return (
+            <button
+              key={c.slug}
+              type="button"
+              title={unavailable ? unavailableTitle?.(c) : undefined}
+              aria-disabled={unavailable || undefined}
+              onClick={() => {
+                if (!unavailable) onSelect(c);
+              }}
+              onMouseEnter={() => {
+                if (!unavailable) onHover?.(c);
+              }}
+              onMouseLeave={() => onHover?.(null)}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: vi.size,
+                transform: `translateY(${vi.start}px)`,
+              }}
+              className={cn(
+                'flex items-center gap-2 rounded-md px-2 text-left text-sm transition-colors',
+                unavailable
+                  ? 'cursor-not-allowed opacity-40'
+                  : 'hover:bg-accent hover:text-foreground'
+              )}
+            >
+              <CorpsLogo name={c.name} logo={corpsLogoSource(c)} width={24} className="size-6 shrink-0" />
+              <span className="truncate">{c.name}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** Corps + season: pick a season (default 2026) on the left of the search box,
+ *  then click a corps in the results to add it in one click. Hover previews it. */
+function CorpsSeasonColumn({
+  corpsOptions,
+  availabilityBySeason,
+  disabled,
+  onAdd,
+  onPreview,
+}: {
+  corpsOptions: CorpsOption[];
+  availabilityBySeason: Record<string, string[]>;
+  disabled?: boolean;
+  onAdd: (s: VsSeries) => void;
+  onPreview: (s: VsSeries | null) => void;
+}) {
+  const [query, setQuery] = useState('');
+  const [season, setSeason] = useState('2026');
+  const matches = useCorpsMatches(corpsOptions, query);
+
+  // Slugs that actually have plottable scores in the selected season; the rest
+  // are greyed out (e.g. early in 2026 only a handful of corps have performed).
+  const available = useMemo(
+    () => new Set(availabilityBySeason[season] ?? []),
+    [availabilityBySeason, season]
+  );
+
+  return (
+    <div className="space-y-2">
+      <ColumnHeader title="Corps season" hint="Pick a season, then click a corps to add it." />
+      <p className="text-xs text-muted-foreground">
+        Corps that haven’t performed a show in the selected season yet are greyed out.
+      </p>
+      <div className="flex gap-2">
+        <select
+          value={season}
+          onChange={(e) => setSeason(e.target.value)}
+          aria-label="Season"
+          className="shrink-0 rounded-lg border border-border bg-background px-2 py-1.5 text-sm outline-none focus:border-primary/60"
+        >
+          {SEASONS.map((y) => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search corps…"
+          className={fieldCls}
+        />
+      </div>
+      <CorpsResultList
+        matches={matches}
+        heightClass="h-96"
+        isUnavailable={(c) => available.size > 0 && !available.has(c.slug)}
+        unavailableTitle={(c) => `${c.name} hasn’t performed a show in ${season}`}
+        onSelect={(c) => {
+          if (!disabled) onAdd({ kind: 'corps', corpsSlug: c.slug, season });
+        }}
+        onHover={(c) => onPreview(c ? { kind: 'corps', corpsSlug: c.slug, season } : null)}
+      />
+    </div>
+  );
+}
+
+/** 2026 prediction: search a corps, pick it, then click an as-of snapshot date. */
+function PredictionColumn({
+  corpsOptions,
+  disabled,
+  onAdd,
+  onPreview,
+}: {
+  corpsOptions: CorpsOption[];
+  disabled?: boolean;
+  onAdd: (s: VsSeries) => void;
+  onPreview: (s: VsSeries | null) => void;
+}) {
+  const [query, setQuery] = useState('');
+  const [picked, setPicked] = useState<CorpsOption | null>(null);
+  const [dates, setDates] = useState<string[] | null>(null);
+  const matches = useCorpsMatches(corpsOptions, query);
 
   const pick = (c: CorpsOption) => {
     setPicked(c);
-    onPreview(null);
-    if (mode === 'prediction') {
-      setDates(null);
-      getVs2026SnapshotDates({ data: { slug: c.slug } })
-        .then((r) => setDates(r.dates))
-        .catch(() => setDates([]));
-    } else {
-      setSeasons(null);
-      getVsCorpsSeasons({ data: { slug: c.slug } })
-        .then((r) => setSeasons(r.seasons))
-        .catch(() => setSeasons([]));
-    }
+    setDates(null);
+    getVs2026SnapshotDates({ data: { slug: c.slug } })
+      .then((r) => setDates(r.dates))
+      .catch(() => setDates([]));
   };
-
   const change = () => {
     setPicked(null);
-    setSeasons(null);
     setDates(null);
     onPreview(null);
   };
 
   return (
     <div className="space-y-2">
-      <ColumnHeader
-        title={mode === 'corps' ? 'Corps season' : '2026 prediction'}
-        hint={
-          mode === 'corps'
-            ? 'A corps’ scores for one season.'
-            : 'A model snapshot of 2026, as of a date.'
-        }
-      />
+      <ColumnHeader title="2026 prediction" hint="A model snapshot of 2026, as of a date." />
       {!picked ? (
         <div className="space-y-1">
           <input
@@ -154,38 +268,7 @@ function CorpsSearchColumn({
             placeholder="Search corps…"
             className={fieldCls}
           />
-          {matches.length === 0 ? (
-            <p className="px-1 py-2 text-xs text-muted-foreground">No matches.</p>
-          ) : (
-            <div ref={listRef} className="themed-scrollbar h-72 overflow-y-auto">
-              <div
-                style={{ height: rowVirtualizer.getTotalSize(), width: '100%', position: 'relative' }}
-              >
-                {rowVirtualizer.getVirtualItems().map((vi) => {
-                  const c = matches[vi.index];
-                  return (
-                    <button
-                      key={c.slug}
-                      type="button"
-                      onClick={() => pick(c)}
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: vi.size,
-                        transform: `translateY(${vi.start}px)`,
-                      }}
-                      className="flex items-center gap-2 rounded-md px-2 text-left text-sm transition-colors hover:bg-accent hover:text-foreground"
-                    >
-                      <CorpsLogo name={c.name} logo={corpsLogoSource(c)} width={24} className="size-6 shrink-0" />
-                      <span className="truncate">{c.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <CorpsResultList matches={matches} onSelect={pick} />
         </div>
       ) : (
         <div className="space-y-2">
@@ -202,50 +285,28 @@ function CorpsSearchColumn({
               change
             </button>
           </div>
-
-          {mode === 'corps' ? (
-            <div className="space-y-1">
-              <span className="text-xs text-text-secondary">
-                Season{seasons === null ? ' …' : ''} — click to add
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {(seasons?.length ? seasons : FALLBACK_SEASONS).map((y) => (
+          <div className="space-y-1">
+            <span className="text-xs text-text-secondary">As of — click to add</span>
+            {dates === null ? (
+              <p className="text-xs text-muted-foreground">Loading dates…</p>
+            ) : dates.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No 2026 snapshots available.</p>
+            ) : (
+              <div className="themed-scrollbar flex max-h-72 flex-col gap-1 overflow-y-auto">
+                {dates.map((d) => (
                   <OptionChip
-                    key={y}
-                    label={y}
+                    key={d}
+                    label={d}
                     disabled={disabled}
-                    onAdd={() => onAdd({ kind: 'corps', corpsSlug: picked.slug, season: y })}
+                    onAdd={() => onAdd({ kind: 'prediction', corpsSlug: picked.slug, asOf: d })}
                     onHover={(on) =>
-                      onPreview(on ? { kind: 'corps', corpsSlug: picked.slug, season: y } : null)
+                      onPreview(on ? { kind: 'prediction', corpsSlug: picked.slug, asOf: d } : null)
                     }
                   />
                 ))}
               </div>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              <span className="text-xs text-text-secondary">As of — click to add</span>
-              {dates === null ? (
-                <p className="text-xs text-muted-foreground">Loading dates…</p>
-              ) : dates.length === 0 ? (
-                <p className="text-xs text-muted-foreground">No 2026 snapshots available.</p>
-              ) : (
-                <div className="themed-scrollbar flex max-h-72 flex-col gap-1 overflow-y-auto">
-                  {dates.map((d) => (
-                    <OptionChip
-                      key={d}
-                      label={d}
-                      disabled={disabled}
-                      onAdd={() => onAdd({ kind: 'prediction', corpsSlug: picked.slug, asOf: d })}
-                      onHover={(on) =>
-                        onPreview(on ? { kind: 'prediction', corpsSlug: picked.slug, asOf: d } : null)
-                      }
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -324,6 +385,7 @@ export function AddCompareSection({
   onAdd,
   onPreview,
   corpsOptions = [],
+  availabilityBySeason = {},
   atCap = false,
   capMessage,
 }: {
@@ -331,6 +393,8 @@ export function AddCompareSection({
   /** Hover/focus an option → preview it on the chart; null clears the preview. */
   onPreview: (s: VsSeries | null) => void;
   corpsOptions?: CorpsOption[];
+  /** `{ [season]: slug[] }` — which corps have data per season (for grey-out). */
+  availabilityBySeason?: Record<string, string[]>;
   atCap?: boolean;
   capMessage?: string;
 }) {
@@ -390,17 +454,16 @@ export function AddCompareSection({
       {/* Desktop: three columns; mobile: only the active tab's column. */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div className={cn('rounded-lg border border-border p-3', tab === 'corps' ? 'block' : 'hidden', 'sm:block')}>
-          <CorpsSearchColumn
-            mode="corps"
+          <CorpsSeasonColumn
             corpsOptions={corpsOptions}
+            availabilityBySeason={availabilityBySeason}
             disabled={atCap}
             onAdd={add}
             onPreview={onPreview}
           />
         </div>
         <div className={cn('rounded-lg border border-border p-3', tab === 'prediction' ? 'block' : 'hidden', 'sm:block')}>
-          <CorpsSearchColumn
-            mode="prediction"
+          <PredictionColumn
             corpsOptions={corpsOptions}
             disabled={atCap}
             onAdd={add}

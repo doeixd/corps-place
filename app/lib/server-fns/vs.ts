@@ -9,17 +9,17 @@ import * as path from 'node:path';
 import {
   buildVsCorpsScores,
   buildVsBaselineCurve,
-  buildVsCorps2026Predicted,
   buildVsPredictionSnapshot,
   buildVsCorpsSeasons,
+  buildVsSeasonAvailability,
   buildVs2026SnapshotDates,
 } from '@sdk/src/readModel/builders/vs.js';
 import { buildCorpsBySlug } from '@sdk/src/readModel/builders/corps.js';
 import {
   readVsCorpsScores,
   readVsBaselines,
-  readVsCorps2026Predicted,
   readVsCorpsSeasons,
+  readVsCorpsSeasonAvailability,
   readCorpsBySlug,
 } from '@sdk/src/readModel/readers.js';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
@@ -67,33 +67,11 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
         })),
       });
     }
-    // Current season: overlay the model's predicted-to-finals line (dashed).
-    // Predictions exist only for 2026 (M7). Early season the actual line is empty
-    // — a corps with only a prediction must still render (its dashed line), not
-    // drop out, or the corps-page "Add more to compare" deep-link shows nothing.
-    if (s.season === '2026') {
-      const pred = await readOrBuild(
-        (db) => readVsCorps2026Predicted(db, s.corpsSlug),
-        (db) => buildVsCorps2026Predicted(db, s.corpsSlug)
-      ).catch(() => []);
-      if (pred.length) {
-        lines.push({
-          style: 'dashed',
-          points: pred.map((p) => {
-            // Band narrows from ~4pts early to ~1.5pts near finals (matches the
-            // single-corps chart's derived uncertainty).
-            const margin = 1.5 + 2.5 * (1 - Math.min(Math.max(p.pct, 0), 100) / 100);
-            return {
-              pct: p.pct,
-              value: p.predicted,
-              low: Number((p.predicted - margin).toFixed(2)),
-              high: Number((p.predicted + margin).toFixed(2)),
-            };
-          }),
-        });
-      }
-    }
-    if (!lines.length) return null; // no actuals and no prediction → nothing to plot
+    // A corps season plots ONLY its actual scored shows — for the current (2026)
+    // season that's just the handful released so far (a short line segment), not
+    // a predicted-to-finals overlay. The model's predicted curve is its own
+    // series kind ('prediction'), added from the VS builder's Prediction column.
+    if (!lines.length) return null; // no scored shows → nothing to plot
     return {
       id: `corps~${s.corpsSlug}~${s.season}`,
       label: `${corps?.name ?? s.corpsSlug} ${s.season}`,
@@ -164,6 +142,24 @@ export const getVsCorpsSeasons = createServerFn({ method: 'GET' })
     ).catch(() => [] as string[]);
     return { seasons };
   });
+
+/** Which corps have plottable data per season → `{ [season]: slug[] }`. Lets the
+ *  Corps-season picker grey out corps that didn't compete the selected season. */
+export const getVsSeasonAvailability = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ bySeason: Record<string, string[]> }> => {
+    const pairs = await readOrBuild(
+      (db) => readVsCorpsSeasonAvailability(db),
+      (db) => buildVsSeasonAvailability(db)
+    ).catch(() => [] as Array<{ corps_slug: string; season: string }>);
+    const bySeason: Record<string, string[]> = {};
+    for (const { corps_slug, season } of pairs) {
+      const list = bySeason[season];
+      if (list) list.push(corps_slug);
+      else bySeason[season] = [corps_slug];
+    }
+    return { bySeason };
+  }
+);
 
 /** The 2026 prediction snapshot dates for a corps (relational-only; empty where
  *  the relational DB isn't on the host). */
