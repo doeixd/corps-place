@@ -38,6 +38,18 @@ flock -n 9 || { echo "[auto-ingest $(date -u +%FT%TZ)] another run holds the loc
 
 ts() { date -u +%FT%TZ; }
 count_scores() { sqlite3 "$DB" "SELECT COUNT(*) FROM corps_scores;" 2>/dev/null || echo 0; }
+# Does this event have ingested scores? Resolve the competition slug the way the
+# read-model does — bare slug, season-prefixed slug, OR the event_to_competition
+# bridge — so season-prefixed/renamed competitions still register (review #10).
+event_has_scores() {
+  local slug="$1"
+  sqlite3 "$DB" "SELECT EXISTS(
+    SELECT 1 FROM corps_scores WHERE competition_slug='$slug'
+    UNION ALL SELECT 1 FROM corps_scores WHERE competition_slug='${SEASON}-$slug'
+    UNION ALL SELECT 1 FROM corps_scores cs JOIN event_to_competition etc
+      ON etc.competition_slug=cs.competition_slug WHERE etc.event_slug='$slug'
+  );" 2>/dev/null || echo 0
+}
 
 # Gate: scrape only when a show's scores should be posting — i.e. NOW is in the
 # window after a recent show's estimated end time AND that show isn't ingested yet.
@@ -73,7 +85,19 @@ for slug, sd, wst in db.execute(
     start_utc = local - datetime.timedelta(hours=off)        # local time -> UTC
     est_end = start_utc + datetime.timedelta(hours=3.5)
     if est_end - datetime.timedelta(minutes=30) <= now <= est_end + datetime.timedelta(hours=6):
-        if db.execute("SELECT COUNT(*) FROM corps_scores WHERE competition_slug=?", (slug,)).fetchone()[0] == 0:
+        # "Already ingested?" must resolve the competition slug the way the rest of
+        # the system does: 2026 score rows land under a season-prefixed or
+        # event_to_competition-bridged competition slug, not the bare event slug.
+        # Checking only `competition_slug = events.slug` left scored shows looking
+        # pending all post-show window (review Medium #10).
+        scored = db.execute(
+            "SELECT EXISTS("
+            " SELECT 1 FROM corps_scores WHERE competition_slug=?"
+            " UNION ALL SELECT 1 FROM corps_scores WHERE competition_slug=?"
+            " UNION ALL SELECT 1 FROM corps_scores cs JOIN event_to_competition etc"
+            "  ON etc.competition_slug=cs.competition_slug WHERE etc.event_slug=?)",
+            (slug, season + '-' + slug, slug)).fetchone()[0]
+        if not scored:
             out.append(slug)
 print('\n'.join(out))
 PY
@@ -107,7 +131,7 @@ if [ "$after" -gt "$before" ]; then
   if [ "$pending" != "__GATE_ERR__" ]; then
     for slug in $pending; do
       [ -z "$slug" ] && continue
-      if [ "$(sqlite3 "$DB" "SELECT COUNT(*) FROM corps_scores WHERE competition_slug='$slug';" 2>/dev/null || echo 0)" -gt 0 ]; then
+      if [ "$(event_has_scores "$slug")" -gt 0 ]; then
         echo "[auto-ingest $(ts)] notifying subscribers for $slug…"
         vp exec tsx scripts/notifyScoreSubscribers.ts --event "$slug" 2>&1 | sed 's/^/    /' \
           || echo "[auto-ingest $(ts)] notify failed for $slug (non-fatal)"
