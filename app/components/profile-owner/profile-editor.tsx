@@ -143,6 +143,19 @@ export function ProfileEditor({
     }
   };
 
+  // Per-field dirty detection: disable a Save until its value changes, and warn on
+  // close if anything is unsaved.
+  const bioDirty = bio !== (initial.biography ?? '');
+  const homeDirty = hometown !== (initial.hometown ?? '');
+  const posDirty =
+    posTitle !== (initial.currentPosition?.title ?? '') ||
+    posOrg !== (initial.currentPosition?.org ?? '');
+  const anyDirty = bioDirty || homeDirty || posDirty;
+  const closeEditor = () => {
+    if (anyDirty && !confirm('You have unsaved changes. Close without saving them?')) return;
+    setOpen(false);
+  };
+
   if (!open) {
     return (
       <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
@@ -156,7 +169,7 @@ export function ProfileEditor({
     <div className="flex flex-col gap-4 rounded-xl border border-border p-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold">Edit your profile</h3>
-        <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
+        <Button variant="ghost" size="sm" onClick={closeEditor}>
           Done
         </Button>
       </div>
@@ -209,6 +222,7 @@ export function ProfileEditor({
           busy={busy === 'bio'}
           size="sm"
           className="self-start"
+          disabled={!bioDirty}
           onClick={() => void save('bio', 'biography', { plain: bio })}
         >
           Save bio
@@ -222,6 +236,7 @@ export function ProfileEditor({
           busy={busy === 'home'}
           size="sm"
           className="self-start"
+          disabled={!homeDirty}
           onClick={() => void save('home', 'hometown', hometown)}
         >
           Save hometown
@@ -238,7 +253,7 @@ export function ProfileEditor({
           busy={busy === 'pos'}
           size="sm"
           className="self-start"
-          disabled={!posTitle.trim() || !posOrg.trim()}
+          disabled={!posDirty || !posTitle.trim() || !posOrg.trim()}
           onClick={() => void save('pos', 'current_position', { title: posTitle.trim(), org: posOrg.trim() })}
         >
           Save position
