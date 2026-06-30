@@ -29,11 +29,29 @@ rows = db.execute("""
   FROM events e
   JOIN event_lineup_entries l ON l.event_slug = e.slug
   LEFT JOIN model_event_prediction_runs p ON p.event_slug = e.slug
-  -- Regenerate predictions for events that have a lineup and are either MISSING a
-  -- prediction OR still UPCOMING (start_date >= today) — upcoming shows' forecasts
-  -- improve as each night's scores come in. Already-finished events keep their run.
+  -- (Re)generate predictions for events with a lineup that are either MISSING a
+  -- prediction entirely, OR still genuinely upcoming. "Upcoming" is defined by
+  -- SCORE STATE, not calendar date: a show that started today but already has
+  -- released scores is COMPLETE and must keep its run untouched (regenerating it
+  -- after actuals are known would overwrite the latest visible run and break the
+  -- as-of history). So a same-season event counts as still-future only when it
+  -- has no ingested corps_scores yet — checked via the event_to_competition
+  -- bridge AND the raw/season-prefixed slug fallback.
   WHERE e.season = '2026' AND l.is_non_performance = 0
-    AND (p.event_slug IS NULL OR e.start_date >= date('now'))
+    AND (
+      p.event_slug IS NULL
+      OR (
+        e.start_date >= date('now')
+        AND NOT EXISTS (
+          SELECT 1 FROM corps_scores cs
+          JOIN event_to_competition etc ON etc.competition_slug = cs.competition_slug
+          WHERE etc.event_slug = e.slug
+        )
+        AND NOT EXISTS (
+          SELECT 1 FROM corps_scores cs2 WHERE cs2.competition_slug = e.slug
+        )
+      )
+    )
   ORDER BY e.slug
 """).fetchall()
 print('\n'.join(r[0] for r in rows))
