@@ -16,6 +16,7 @@ import {
   buildCorpsBySlug,
   buildCorpsDirectory,
   buildCorpsSeasonScores,
+  buildCorpsSeasonSnapshots,
   buildEventRecap,
   buildEventSchedule,
   buildEventsForSeason,
@@ -34,6 +35,7 @@ import {
   readCorpsBySlug,
   readCorpsDirectory,
   readCorpsSeasonScores,
+  readCorpsSeasonSnapshots,
   readEventRecap,
   readEventSchedule,
   readEventsForSeason,
@@ -252,6 +254,8 @@ const main = async () => {
     check(`readCorpsBySlug ${slug}`, await buildCorpsBySlug(src, slug), await readCorpsBySlug(rm, slug));
     check(`readCorpsSeasonScores ${slug}`, await buildCorpsSeasonScores(src, slug),
       await readCorpsSeasonScores(rm, slug));
+    check(`readCorpsSeasonSnapshots ${slug}`, await buildCorpsSeasonSnapshots(src, slug),
+      await readCorpsSeasonSnapshots(rm, slug));
   }
   check('readCorpsDirectory', await buildCorpsDirectory(src), await readCorpsDirectory(rm));
   check('readJudgeDirectory', await buildJudgeDirectory(src), await readJudgeDirectory(rm));

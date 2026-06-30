@@ -12,6 +12,7 @@ import type { Client } from "@libsql/client";
 import type {
   CorpsDetail,
   CorpsSeasonPoint,
+  CorpsSeasonSnapshotRow,
   CorpsSummary,
 } from "./builders/corps.js";
 import type {
@@ -473,6 +474,29 @@ export const readCorpsSeasonScores = async (
     args: [slug.trim().toLowerCase()],
   });
   return (r.rows as any[]).map((row) => ({
+    date: row.date,
+    label: row.label,
+    slug: row.slug,
+    predicted: row.predicted === null ? null : Number(row.predicted),
+    actual: row.actual === null ? null : Number(row.actual),
+    low: row.low === null ? null : Number(row.low),
+    high: row.high === null ? null : Number(row.high),
+  }));
+};
+
+/** The "prediction as of ___" history matrix (parity with buildCorpsSeasonSnapshots). */
+export const readCorpsSeasonSnapshots = async (
+  db: Client,
+  slug: string,
+): Promise<CorpsSeasonSnapshotRow[]> => {
+  const r = await db.execute({
+    sql: `SELECT snapshot_at, date, label, slug, predicted, actual, low, high
+          FROM rm_corps_prediction_snapshots WHERE corps_slug = ?
+          ORDER BY snapshot_at, sort_index`,
+    args: [slug.trim().toLowerCase()],
+  });
+  return (r.rows as any[]).map((row) => ({
+    snapshot_at: row.snapshot_at,
     date: row.date,
     label: row.label,
     slug: row.slug,

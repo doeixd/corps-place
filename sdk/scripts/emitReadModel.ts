@@ -41,6 +41,7 @@ import {
   buildCorpsBySlug,
   buildCorpsDirectory,
   buildCorpsSeasonScores,
+  buildCorpsSeasonSnapshots,
   buildVsCorpsScoresAllSeasons,
   buildVsCorps2026Predicted,
   buildVsBaselineCurve,
@@ -112,7 +113,9 @@ import {
 // v16: rm_fantasy_draft_pool is now the corps PERFORMING each season (from event_participants /
 //      the season's lineups), not the corps that have scored — a league drafts its OWN season's
 //      full scheduled field. Same columns; the `season` is now the performing season.
-const SCHEMA_VERSION = 16;
+// v17: + rm_corps_prediction_snapshots — the "prediction as of ___" history matrix (corps season
+//      timeline per snapshot date); the newest snapshot matches rm_corps_season_points (review #3).
+const SCHEMA_VERSION = 17;
 
 type Section =
   | "events"
@@ -275,6 +278,14 @@ CREATE TABLE rm_corps_season_points (
   predicted REAL, actual REAL, low REAL, high REAL, sort_index INTEGER
 );
 CREATE INDEX rm_corps_season_pts ON rm_corps_season_points(corps_slug, season, sort_index);
+-- "Prediction as of ___" history: the corps season timeline replicated per
+-- snapshot date (distinct prediction-run days). The newest snapshot equals
+-- rm_corps_season_points (parity-checked); older snapshots replay past forecasts.
+CREATE TABLE rm_corps_prediction_snapshots (
+  corps_slug TEXT, season TEXT, snapshot_at TEXT, date TEXT, label TEXT, slug TEXT,
+  predicted REAL, actual REAL, low REAL, high REAL, sort_index INTEGER
+);
+CREATE INDEX rm_corps_pred_snap ON rm_corps_prediction_snapshots(corps_slug, season, snapshot_at, sort_index);
 
 CREATE TABLE rm_vs_corps_scores (
   corps_slug TEXT, season TEXT, pct REAL, date TEXT, event_label TEXT,
@@ -760,6 +771,7 @@ export const runEmit = async (args: Args) => {
     );
     const detailRows: unknown[][] = [];
     const seasonPointRows: unknown[][] = [];
+    const predictionSnapshotRows: unknown[][] = [];
     // VS caption columns (order shared by the 3 rm_vs_* tables + their readers).
     const vsCapCols = ["total", "ge", "visual", "music", "ge1", "ge2", "vp", "va", "cg", "mb", "ma", "mp"];
     const vsCapTuple = (p: Record<string, unknown>) => vsCapCols.map((k) => p[k] ?? null);
@@ -787,6 +799,30 @@ export const runEmit = async (args: Args) => {
           idx,
         ]),
       );
+      // "Prediction as of ___" history matrix (review #3). sort_index resets per
+      // snapshot so each snapshot's points stay date-ordered.
+      const snapshots = await buildCorpsSeasonSnapshots(src, slug);
+      let snapIdx = 0;
+      let lastSnap = "";
+      for (const s of snapshots) {
+        if (s.snapshot_at !== lastSnap) {
+          snapIdx = 0;
+          lastSnap = s.snapshot_at;
+        }
+        predictionSnapshotRows.push([
+          slug,
+          "2026",
+          s.snapshot_at,
+          s.date,
+          s.label,
+          s.slug,
+          s.predicted,
+          s.actual,
+          s.low,
+          s.high,
+          snapIdx++,
+        ]);
+      }
       // VS chart: every season's actual scores (all captions) by % through season.
       const vsPts = await buildVsCorpsScoresAllSeasons(src, slug);
       for (const v of vsPts)
@@ -836,6 +872,7 @@ export const runEmit = async (args: Args) => {
     }
     rowCounts.rm_corps_detail = detailRows.length;
     rowCounts.rm_corps_season_points = seasonPointRows.length;
+    rowCounts.rm_corps_prediction_snapshots = predictionSnapshotRows.length;
     rowCounts.rm_corps_appearances = appearanceRows.length;
     rowCounts.rm_corps_appearance_results = appearanceResultRows.length;
     rowCounts.rm_vs_corps_scores = vsScoreRows.length;
@@ -866,6 +903,24 @@ export const runEmit = async (args: Args) => {
           "sort_index",
         ],
         seasonPointRows,
+      );
+      await insertRows(
+        dst,
+        "rm_corps_prediction_snapshots",
+        [
+          "corps_slug",
+          "season",
+          "snapshot_at",
+          "date",
+          "label",
+          "slug",
+          "predicted",
+          "actual",
+          "low",
+          "high",
+          "sort_index",
+        ],
+        predictionSnapshotRows,
       );
       await insertRows(
         dst,

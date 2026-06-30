@@ -320,6 +320,100 @@ export const buildCorpsSeasonScores = async (
   return Array.from(byEvent.values()).sort((a, b) => a.date.localeCompare(b.date));
 };
 
+/** One season point as-of a specific snapshot date. */
+export type CorpsSeasonSnapshotRow = CorpsSeasonPoint & { snapshot_at: string };
+
+/**
+ * The "prediction as of ___" matrix: buildCorpsSeasonScores generalized across
+ * every snapshot date. For each distinct prediction date `d` (the discrete
+ * recalc snapshots) and each event, picks the latest run with predicted_at ≤ end
+ * of `d` and joins this corps's predicted/actual totals — so a chart can replay
+ * what the forecast looked like at any past date. The LATEST snapshot's rows are
+ * byte-equal to buildCorpsSeasonScores (same latest-per-event selection), which
+ * is the back-compat / parity invariant the verifier checks (review High #3 /
+ * SEASON_INGEST_AND_PREDICTION_HISTORY_PLAN M3).
+ */
+export const buildCorpsSeasonSnapshots = async (
+  db: Client,
+  slug: string,
+  season = '2026'
+): Promise<CorpsSeasonSnapshotRow[]> => {
+  const result = await db.execute({
+    sql: `
+      WITH ${RELATED_CORPS_CTES},
+      snaps AS (
+        SELECT DISTINCT substr(run.predicted_at, 1, 10) AS snap
+        FROM model_event_prediction_rows r
+        JOIN model_event_prediction_runs run ON run.prediction_id = r.prediction_id
+        WHERE run.season = ? AND r.corps_key IN (SELECT corps_key FROM related_corps)
+          AND run.predicted_at IS NOT NULL
+      ),
+      asof AS (
+        SELECT s.snap AS snap, run.event_slug AS event_slug, MAX(run.predicted_at) AS pa
+        FROM snaps s
+        JOIN model_event_prediction_runs run
+          ON run.season = ? AND run.predicted_at <= s.snap || 'T23:59:59.999Z'
+        GROUP BY s.snap, run.event_slug
+      )
+      SELECT
+        a.snap AS snapshot_at,
+        e.start_date AS date,
+        COALESCE(e.event_name, e.name, run.event_slug) AS label,
+        run.event_slug AS slug,
+        r.predicted_total AS predicted,
+        r.actual_total AS actual,
+        run.percent_through AS percent_through
+      FROM asof a
+      JOIN model_event_prediction_runs run
+        ON run.event_slug = a.event_slug AND run.predicted_at = a.pa AND run.season = ?
+      JOIN model_event_prediction_rows r ON r.prediction_id = run.prediction_id
+      LEFT JOIN events e ON e.slug = run.event_slug
+      WHERE r.corps_key IN (SELECT corps_key FROM related_corps)
+        AND EXISTS (
+          SELECT 1 FROM scored_event_lineup sel
+          JOIN events ev ON ev.slug = sel.event_slug
+          WHERE ev.season = ? AND sel.corps_key IN (SELECT corps_key FROM related_corps)
+        )
+      ORDER BY a.snap ASC, e.start_date ASC
+    `,
+    args: [slug.trim().toLowerCase(), season, season, season, season],
+  });
+
+  // Dedupe to one point per (snapshot, event), highest predicted — the same rule
+  // and shrinking low/high margin buildCorpsSeasonScores uses.
+  const byKey = new Map<string, CorpsSeasonSnapshotRow>();
+  for (const raw of result.rows as unknown as Array<{
+    snapshot_at: string;
+    date: string | null;
+    label: string;
+    slug: string;
+    predicted: number | null;
+    actual: number | null;
+    percent_through: number | null;
+  }>) {
+    const predicted = typeof raw.predicted === 'number' ? raw.predicted : null;
+    const pt = typeof raw.percent_through === 'number' ? raw.percent_through : 0;
+    const margin = 1.5 + 2.5 * (1 - Math.min(Math.max(pt, 0), 100) / 100);
+    const row: CorpsSeasonSnapshotRow = {
+      snapshot_at: raw.snapshot_at,
+      date: raw.date ?? '',
+      label: raw.label,
+      slug: raw.slug,
+      predicted,
+      actual: typeof raw.actual === 'number' ? raw.actual : null,
+      low: predicted != null ? Number((predicted - margin).toFixed(2)) : null,
+      high: predicted != null ? Number((predicted + margin).toFixed(2)) : null,
+    };
+    const key = `${raw.snapshot_at}|${raw.slug}`;
+    const existing = byKey.get(key);
+    if (!existing || (row.predicted ?? -Infinity) > (existing.predicted ?? -Infinity))
+      byKey.set(key, row);
+  }
+  return Array.from(byKey.values()).sort(
+    (a, b) => a.snapshot_at.localeCompare(b.snapshot_at) || a.date.localeCompare(b.date)
+  );
+};
+
 export type CorpsAppearanceResult = {
   /** The event slug this result belongs to (mapped from competition_slug). */
   event_slug: string;
