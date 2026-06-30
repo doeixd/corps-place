@@ -51,6 +51,44 @@ event_has_scores() {
   );" 2>/dev/null || echo 0
 }
 
+# Structured per-run report so a score-release run is auditable/alertable instead
+# of log-spelunking — distinguishes idle / scrape-failed / published / no-change,
+# and records counts + what was regenerated/notified (review Low #12). Written to
+# the gitignored sdk/results/ tree; best-effort (never fails the run).
+REPORT_DIR="$repo_root/sdk/results/score-ingest-runs"
+published=false
+regenerated=false
+notified=""
+write_report() {
+  local status="$1"
+  mkdir -p "$REPORT_DIR" 2>/dev/null || return 0
+  python3 - "$REPORT_DIR/$(date -u +%Y%m%dT%H%M%SZ).json" "$status" "$SEASON" \
+    "${before:-}" "${after:-}" "${pending:-}" "$published" "$regenerated" "$notified" <<'PY' || true
+import sys, json, datetime
+path, status, season, before, after, pending, published, regenerated, notified = sys.argv[1:10]
+def num(x):
+    try: return int(x)
+    except Exception: return None
+gate_error = pending == '__GATE_ERR__'
+pend = [] if gate_error else [s for s in pending.replace('\n', ' ').split() if s]
+b, a = num(before), num(after)
+json.dump({
+    "ts": datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z'),
+    "season": season,
+    "status": status,            # idle | scrape_failed | published | no_new_scores
+    "gate_error": gate_error,
+    "pending_events": pend,
+    "scores_before": b,
+    "scores_after": a,
+    "scores_delta": (a - b) if (a is not None and b is not None) else None,
+    "published": published == "true",
+    "forecasts_regenerated": regenerated == "true",
+    "notified_events": [s for s in notified.split() if s],
+}, open(path, 'w'), indent=2)
+print(f"[auto-ingest] run report -> {path}")
+PY
+}
+
 # Gate: scrape only when a show's scores should be posting — i.e. NOW is in the
 # window after a recent show's estimated end time AND that show isn't ingested yet.
 # We know each show's start (events.web_start_time, e.g. "6:00 PM ET") + date;
@@ -106,6 +144,7 @@ if [ "$pending" = "__GATE_ERR__" ]; then
   echo "[auto-ingest $(ts)] gate error — scraping anyway (fail-open)."
 elif [ -z "$pending" ]; then
   echo "[auto-ingest $(ts)] no show in its post-show scoring window — skipping."
+  write_report idle
   exit 0
 else
   echo "[auto-ingest $(ts)] scoring window open for: $(echo "$pending" | tr '\n' ' ')"
@@ -116,6 +155,8 @@ echo "[auto-ingest $(ts)] recent show(s) present; scraping $SEASON recaps (score
 if ! out="$(vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 2>&1)"; then
   printf '%s\n' "$out" | tail -20
   echo "[auto-ingest $(ts)] scrape FAILED"
+  after="$(count_scores)"
+  write_report scrape_failed
   exit 1
 fi
 printf '%s\n' "$out" | tail -6
@@ -146,9 +187,11 @@ if [ "$after" -gt "$before" ]; then
   echo "[auto-ingest $(ts)] regenerating future forecasts (no publish)…"
   SKIP_PUBLISH=1 bash "$repo_root/scripts/nightly-predictions.sh" 2>&1 | sed 's/^/    /' \
     || echo "[auto-ingest $(ts)] future-forecast regen had failures (non-fatal)"
+  regenerated=true
   # (3) Single publish: scores + refreshed forecasts together.
   echo "[auto-ingest $(ts)] publishing prod read-model…"
   SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2560" bash "$repo_root/scripts/refresh-prod-read-model.sh"
+  published=true
   echo "[auto-ingest $(ts)] published — drumcorps.app updates in ~5s."
   # Email score-notify subscribers for each pending show that now has scores.
   if [ "$pending" != "__GATE_ERR__" ]; then
@@ -156,8 +199,11 @@ if [ "$after" -gt "$before" ]; then
       [ -z "$slug" ] && continue
       if [ "$(event_has_scores "$slug")" -gt 0 ]; then
         echo "[auto-ingest $(ts)] notifying subscribers for $slug…"
-        vp exec tsx scripts/notifyScoreSubscribers.ts --event "$slug" 2>&1 | sed 's/^/    /' \
-          || echo "[auto-ingest $(ts)] notify failed for $slug (non-fatal)"
+        if vp exec tsx scripts/notifyScoreSubscribers.ts --event "$slug" 2>&1 | sed 's/^/    /'; then
+          notified="$notified $slug"
+        else
+          echo "[auto-ingest $(ts)] notify failed for $slug (non-fatal)"
+        fi
       fi
     done
   fi
@@ -185,4 +231,11 @@ if [ "$after" -gt "$before" ]; then
   fi
 else
   echo "[auto-ingest $(ts)] no new scores; nothing to publish."
+fi
+
+# Structured per-run report (review Low #12).
+if [ "${after:-0}" -gt "${before:-0}" ]; then
+  write_report published
+else
+  write_report no_new_scores
 fi
