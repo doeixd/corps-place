@@ -12,6 +12,7 @@ import { listJobs } from '@/lib/server-fns/jobs';
 import { getRankingSeasons } from '@/lib/server-fns/rankings';
 import { rankingsCanonicalPath } from '@/lib/rankings/codec';
 import { RANK_METRICS } from '@/lib/rankings/types';
+import { getVsActiveCorps, getVsSeasonAvailability } from '@/lib/server-fns/vs';
 import { getBrand } from '@/lib/brand';
 
 // Brand-aware sitemap. drumcorps.app enumerates the corps content (directories,
@@ -156,6 +157,20 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
             paths.add(rankingsCanonicalPath(season, metric, newest));
     } catch {
       /* rankings unavailable — sitemap still lists everything else */
+    }
+
+    // VS per-corps pSEO (/vs/<slug>): one page per 2026-field corps that also
+    // competed in 2025 (the page requires both seasons — others 404, so they're
+    // excluded here too).
+    try {
+      const [{ slugs: roster }, { bySeason }] = await Promise.all([
+        getVsActiveCorps(),
+        getVsSeasonAvailability(),
+      ]);
+      const had2025 = new Set(bySeason['2025'] ?? []);
+      for (const slug of roster) if (had2025.has(slug)) paths.add(`/vs/${slug}`);
+    } catch {
+      /* VS data unavailable — sitemap still lists everything else */
     }
 
     return buildSitemap(origin, paths, dated);
