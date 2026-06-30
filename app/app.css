@@ -788,4 +788,12 @@ tr:active .sticky-col {
   .icon-shift {
     @apply transition-transform duration-200;
   }
+  /* VS chart hover-preview ("ghost") line — ease-out fade on stroke-opacity.
+     recharts may apply the className to the <g> wrapper or the curve path, so
+     target both to be safe. */
+  .vs-ghost-line,
+  .vs-ghost-line path,
+  path.vs-ghost-line {
+    transition: stroke-opacity 240ms ease-out;
+  }
 }
