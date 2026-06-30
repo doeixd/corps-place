@@ -55,11 +55,25 @@ const main = async () => {
     return rt !== '' && rt !== 'other' && t !== '' && !GENERIC_TITLE.has(t) && !ARTIFACT_TITLE.has(t);
   };
 
+  const emptyOrGeneric = (r: Record<string, unknown>) => { const t = norm(r.title); return t === '' || GENERIC_TITLE.has(t) || ARTIFACT_TITLE.has(t); };
+  const hasRealTitle = (r: Record<string, unknown>) => { const t = norm(r.title); return t !== '' && !GENERIC_TITLE.has(t) && !ARTIFACT_TITLE.has(t); };
+
   const prune: Record<string, unknown>[] = [];
+  const prunedIds = new Set<string>();
   for (const [, g] of groups) {
     if (g.length < 2) continue;
-    if (!g.some(isStrong)) continue; // no real anchor → leave the group alone
-    for (const r of g) if (isWeak(r)) prune.push(r);
+    const hasStrong = g.some(isStrong);
+    for (const r of g) {
+      if (prunedIds.has(String(r.assignment_id))) continue;
+      // Rule 1: a weak row (empty/generic 'other' or section-artifact title) when the
+      // group has any strong real-role anchor.
+      if (hasStrong && isWeak(r)) { prune.push(r); prunedIds.add(String(r.assignment_id)); continue; }
+      // Rule 2: an empty/generic-title row when a SAME role_type sibling carries a real
+      // title (e.g. brass/"" alongside brass/"Brass") — same caption, just losing a blank.
+      if (emptyOrGeneric(r) && g.some((s) => s !== r && norm(s.role_type) === norm(r.role_type) && hasRealTitle(s))) {
+        prune.push(r); prunedIds.add(String(r.assignment_id));
+      }
+    }
   }
 
   console.log(`${DRY ? '(dry-run)' : 'APPLIED'} — ${prune.length} redundant weak row(s) to prune\n`);

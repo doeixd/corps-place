@@ -154,7 +154,14 @@ const program = Effect.gen(function* () {
         const name = (m.name ?? "").trim();
         const pid = makeStaffPersonId(name);
         if (!pid || name.length < 3) continue;
-        const title = (m.roles && m.roles.length ? m.roles.join(" / ") : m.section) ?? null;
+        // Generic GROUPING words ("Education", "Instructional", "Volunteer", "Staff") are
+        // section labels, not a person's job title. When they'd become the title (no
+        // specific role), null it out — otherwise a person listed under both their caption
+        // section AND a grouping gets a junk duplicate like brass/"Education". roleType
+        // still derives from the real section below.
+        const GENERIC_GROUPING = new Set(["education", "instructional", "leadership", "administration", "administrative", "additional staff", "volunteer", "volunteers", "staff", "team", "general", "member", "members", "section"]);
+        const rawTitle = (m.roles && m.roles.length ? m.roles.join(" / ") : m.section) ?? null;
+        const title = rawTitle && GENERIC_GROUPING.has(rawTitle.trim().toLowerCase()) ? null : rawTitle;
         // Caption comes from the SECTION first (Brass→brass, Percussion→percussion); the role
         // ("Consultant", "Tech") is usually caption-agnostic and collapses to 'other'. Falling
         // back to the role only when the section yields nothing meaningful.
