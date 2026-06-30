@@ -393,7 +393,7 @@ export const parseProfileDeterministic = (pageText: string): YearbookProfile | n
       // "Color Guard Captain Kimmy Kinden" (in a show description) is NOT the roster's
       // Color Guard heading — taking it (then break) drops the real heading later and
       // dumps that whole section into the previous one. Skip and keep scanning.
-      if (/^(Captain|Caption|Tech|Technician|Staff|Team|Section|Coordinator|Director|Instructor|Manager|Supervisor|Consultant|Arranger|Composer|Designer|Lead|Head|Assistant|Associate|Specialist|Advisor|Of|And|The|Coach)\b/i.test(after)) continue;
+      if (/^(Captain|Captains|Caption|Tech|Technician|Staff|Team|Section|Coordinator|Director|Instructor|Manager|Supervisor|Consultant|Arranger|Composer|Designer|Lead|Head|Assistant|Associate|Specialist|Advisor|Of|And|The|Coach|Sergeants?|Sgt|Lieutenants?|Corporals?|Quartermaster)\b/i.test(after)) continue;
       const start = m.index + m[0].length;
       if (!sections.some(s => s.start === start)) sections.push({ heading: rawHeading, start });
       break;
