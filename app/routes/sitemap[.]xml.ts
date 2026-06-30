@@ -10,6 +10,9 @@ import {
   getStaffDirectory,
 } from '@/lib/server-fns/hybrid';
 import { listJobs } from '@/lib/server-fns/jobs';
+import { getRankingSeasons } from '@/lib/server-fns/rankings';
+import { rankingsCanonicalPath } from '@/lib/rankings/codec';
+import { RANK_METRICS } from '@/lib/rankings/types';
 import { getBrand } from '@/lib/brand';
 import { LANDING_DEFS } from '@/lib/jobs/landing-taxonomy';
 
@@ -25,6 +28,7 @@ const CORPS_STATIC = [
   '/corps',
   '/judges',
   '/staff',
+  '/rankings',
   '/shop',
   '/shop/all',
   '/shop/stores',
@@ -193,6 +197,22 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
       } while (page <= pages);
     } catch {
       /* merch catalog unavailable — sitemap still lists everything else */
+    }
+
+    // Rankings (pSEO): one indexable URL per season × metric, canonical-collapsed
+    // the SAME way the page emits <link rel="canonical"> (shared helper), so the
+    // sitemap and the canonical tags agree. Other filters (as-of, division,
+    // aggregation, recency) are intentionally excluded — they collapse onto these
+    // bases rather than spawning their own thin/duplicate URLs.
+    try {
+      const { seasons } = await getRankingSeasons();
+      const newest = seasons[0];
+      if (newest)
+        for (const season of seasons)
+          for (const metric of RANK_METRICS)
+            paths.add(rankingsCanonicalPath(season, metric, newest));
+    } catch {
+      /* rankings unavailable — sitemap still lists everything else */
     }
 
     return buildSitemap(origin, paths, dated);

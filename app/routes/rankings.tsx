@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { FilterChips, type FilterChipItem } from '@/components/filter-chips';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead } from '@/lib/seo';
-import { cn } from '@/lib/utils';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
 import { RankingsList } from '@/components/rankings/rankings-list';
 import { RankBumpChart } from '@/components/rankings/rank-bump-chart';
@@ -18,7 +19,12 @@ import {
   type RankGroup,
   type RankMetric,
 } from '@/lib/rankings/types';
-import { parseMetric, parseDivs, parseRecency } from '@/lib/rankings/codec';
+import {
+  parseMetric,
+  parseDivs,
+  parseRecency,
+  rankingsCanonicalPath,
+} from '@/lib/rankings/codec';
 
 const DEFAULT_RECENCY = [7, 14, 28];
 const DIVISION_LABELS: Record<string, string> = { world: 'World', open: 'Open', 'all-age': 'All-Age' };
@@ -33,8 +39,8 @@ function RecencySettings({
   const labels = ['Fresh ≤', 'Recent ≤', 'Stale ≤'];
   return (
     <Popover>
-      <PopoverTrigger className="rounded-md border border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground">
-        Recency…
+      <PopoverTrigger className="inline-flex h-7 items-center rounded-[min(var(--radius-md),12px)] border border-input px-2.5 text-[0.8rem] font-medium text-text-secondary transition-colors hover:bg-muted hover:text-foreground">
+        Recency settings
       </PopoverTrigger>
       <PopoverContent align="end" className="w-60 space-y-2 p-3">
         <p className="text-xs text-muted-foreground">
@@ -73,7 +79,16 @@ interface RankSearch {
 
 export const Route = createFileRoute('/rankings')({
   validateSearch: (s: Record<string, unknown>): RankSearch => ({
-    season: typeof s.season === 'string' ? s.season : undefined,
+    // Years are bare integers, so the router's JSON parseSearch decodes
+    // `?season=2025` back as the NUMBER 2025 (see router.tsx) — coerce to string
+    // rather than rejecting it, otherwise every season chip silently resets to
+    // the default season.
+    season:
+      typeof s.season === 'string'
+        ? s.season
+        : typeof s.season === 'number'
+          ? String(s.season)
+          : undefined,
     asof: typeof s.asof === 'string' ? s.asof : undefined,
     metric: parseMetric(s.metric),
     agg: s.agg === 'last3' ? 'last3' : undefined,
@@ -85,38 +100,51 @@ export const Route = createFileRoute('/rankings')({
   loader: async ({ deps }) => {
     const { seasons } = await getRankingSeasons();
     const season = deps.season && seasons.includes(deps.season) ? deps.season : seasons[0] ?? '';
+    const metric: RankMetric = deps.metric ?? 'total';
     const result = await getRankings({
       data: {
         season,
         asof: deps.asof,
-        metric: deps.metric ?? 'total',
+        metric,
         agg: deps.agg ?? 'best',
         div: deps.div ?? DEFAULT_DIVISIONS,
       },
     });
-    return { seasons, season, result };
+    // pSEO canonical: collapse all non-major filters onto the season×metric base
+    // (newest season → bare /rankings). Same helper feeds the sitemap.
+    const canonical = rankingsCanonicalPath(season, metric, seasons[0] ?? season);
+    return { seasons, season, metric, canonical, result };
   },
-  head: () =>
-    seoHead({
-      title: 'Rankings — Drum corps season standings',
-      description:
-        'Season standings and a rank bump chart — filter by metric, division, and as-of date.',
-      path: '/rankings',
-    }),
+  head: ({ loaderData }) => {
+    const season = loaderData?.season;
+    const metric = loaderData?.metric ?? 'total';
+    const metricLabel = RANK_METRIC_LABELS[metric];
+    const isTotal = metric === 'total';
+    const title = season
+      ? `${season} ${isTotal ? '' : `${metricLabel} `}Drum Corps Rankings`
+      : 'Drum Corps Rankings — season standings';
+    const description = season
+      ? `${season} drum corps ${isTotal ? 'overall' : metricLabel.toLowerCase()} season standings` +
+        ' — filter by metric, division, and as-of date, with a rank bump chart.'
+      : 'Season standings and a rank bump chart — filter by metric, division, and as-of date.';
+    return seoHead({ title, description, path: loaderData?.canonical ?? '/rankings' });
+  },
   component: RankingsPage,
 });
 
-const pill = (active: boolean) =>
-  cn(
-    'shrink-0 whitespace-nowrap rounded-md border px-2.5 py-1 text-xs transition-colors',
-    active
-      ? 'border-primary/60 bg-accent text-foreground'
-      : 'border-border text-muted-foreground hover:text-foreground'
+// A labeled filter group: a short caption + its control, so the wall of pills
+// reads as discrete, named filters. Inline on a single row (label can sit left
+// of a horizontally-scrolling chip set thanks to `min-w-0` on the control).
+function LabeledField({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <span className="shrink-0 text-xs font-medium uppercase tracking-wide text-text-secondary">
+        {label}
+      </span>
+      {children}
+    </div>
   );
-
-// Each filter row scrolls horizontally on mobile (no wrap) and relaxes to a
-// wrapping cluster on sm+ — matching the site's SeasonChips pattern.
-const chipRow = 'flex gap-1 overflow-x-auto scrollbar-none sm:flex-wrap sm:overflow-x-visible';
+}
 
 function RankingsPage() {
   const { seasons, season, result } = Route.useLoaderData();
@@ -133,10 +161,18 @@ function RankingsPage() {
   const set = (patch: Partial<RankSearch>) =>
     navigate({ search: (prev) => ({ ...prev, ...patch }), replace: true });
 
-  const toggleDiv = (d: string) => {
-    const next = divs.includes(d) ? divs.filter((x) => x !== d) : [...divs, d];
-    const isDefault = next.length === 2 && next.includes('world') && next.includes('open');
-    set({ div: next.length === 0 || isDefault ? undefined : next });
+  const seasonItems: FilterChipItem[] = seasons.slice(0, 10).map((y) => ({ value: y, label: y }));
+  const metricItems: FilterChipItem[] = RANK_METRICS.map((m) => ({
+    value: m,
+    label: RANK_METRIC_LABELS[m],
+  }));
+
+  // Apply a new division multi-selection. Empty or the default (world+open)
+  // clears the param so the URL stays clean and the resolver falls back.
+  const setDivs = (next: string[]) => {
+    const valid = next.filter((d) => (RANK_DIVISIONS as readonly string[]).includes(d));
+    const isDefault = valid.length === 2 && valid.includes('world') && valid.includes('open');
+    set({ div: valid.length === 0 || isDefault ? undefined : valid });
   };
 
   if (!season) {
@@ -160,43 +196,90 @@ function RankingsPage() {
         </p>
       </div>
 
-      {/* Controls */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2">
-        <div role="group" aria-label="Season" className={chipRow}>
-          {seasons.slice(0, 10).map((y) => (
-            <button key={y} type="button" aria-pressed={y === season} className={pill(y === season)} onClick={() => set({ season: y, asof: undefined })}>
-              {y}
-            </button>
-          ))}
+      {/* Controls — single-select chips reuse the site-wide FilterChips; the
+          two-option filters are segmented ToggleGroups; divisions is a
+          multi-select ToggleGroup. */}
+      <div className="flex flex-col gap-3">
+        <LabeledField label="Season">
+          <FilterChips
+            ariaLabel="Season"
+            className="min-w-0"
+            value={season}
+            items={seasonItems}
+            onSelect={(y) => set({ season: y, asof: undefined })}
+          />
+        </LabeledField>
+
+        <LabeledField label="Metric">
+          <FilterChips
+            ariaLabel="Ranking metric"
+            className="min-w-0"
+            value={metric}
+            items={metricItems}
+            onSelect={(m) => set({ metric: m === 'total' ? undefined : (m as RankMetric) })}
+          />
+        </LabeledField>
+
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+          <LabeledField label="Aggregation">
+            <ToggleGroup
+              variant="outline"
+              size="sm"
+              spacing={0}
+              aria-label="Aggregation"
+              value={[agg]}
+              onValueChange={(v) => {
+                const next = v[0] as RankAgg | undefined;
+                if (next) set({ agg: next === 'best' ? undefined : 'last3' });
+              }}
+            >
+              <ToggleGroupItem value="best">Best</ToggleGroupItem>
+              <ToggleGroupItem value="last3">Last 3</ToggleGroupItem>
+            </ToggleGroup>
+          </LabeledField>
+
+          <LabeledField label="View">
+            <ToggleGroup
+              variant="outline"
+              size="sm"
+              spacing={0}
+              aria-label="Grouping"
+              value={[group]}
+              onValueChange={(v) => {
+                const next = v[0] as RankGroup | undefined;
+                if (next) set({ group: next === 'overall' ? undefined : 'division' });
+              }}
+            >
+              <ToggleGroupItem value="overall">Overall</ToggleGroupItem>
+              <ToggleGroupItem value="division">By division</ToggleGroupItem>
+            </ToggleGroup>
+          </LabeledField>
+
+          <LabeledField label="Divisions">
+            <ToggleGroup
+              multiple
+              variant="outline"
+              size="sm"
+              spacing={0}
+              aria-label="Divisions"
+              value={divs}
+              onValueChange={(v) => setDivs(v as string[])}
+            >
+              {RANK_DIVISIONS.map((d) => (
+                <ToggleGroupItem key={d} value={d}>
+                  {DIVISION_LABELS[d]}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </LabeledField>
+
+          <RecencySettings
+            recency={recency}
+            onChange={(r) =>
+              set({ recency: r.join(',') === DEFAULT_RECENCY.join(',') ? undefined : r })
+            }
+          />
         </div>
-        <div role="group" aria-label="Ranking metric" className={chipRow}>
-          {RANK_METRICS.map((m) => (
-            <button key={m} type="button" aria-pressed={m === metric} className={pill(m === metric)} onClick={() => set({ metric: m === 'total' ? undefined : m })}>
-              {RANK_METRIC_LABELS[m]}
-            </button>
-          ))}
-        </div>
-        <div role="group" aria-label="Aggregation" className={chipRow}>
-          <button type="button" aria-pressed={agg === 'best'} className={pill(agg === 'best')} onClick={() => set({ agg: undefined })}>Best</button>
-          <button type="button" aria-pressed={agg === 'last3'} className={pill(agg === 'last3')} onClick={() => set({ agg: 'last3' })}>Last 3</button>
-        </div>
-        <div role="group" aria-label="Grouping" className={chipRow}>
-          <button type="button" aria-pressed={group === 'overall'} className={pill(group === 'overall')} onClick={() => set({ group: undefined })}>Overall</button>
-          <button type="button" aria-pressed={group === 'division'} className={pill(group === 'division')} onClick={() => set({ group: 'division' })}>By division</button>
-        </div>
-        <div role="group" aria-label="Divisions" className={chipRow}>
-          {RANK_DIVISIONS.map((d) => (
-            <button key={d} type="button" aria-pressed={divs.includes(d)} className={pill(divs.includes(d))} onClick={() => toggleDiv(d)}>
-              {DIVISION_LABELS[d]}
-            </button>
-          ))}
-        </div>
-        <RecencySettings
-          recency={recency}
-          onChange={(r) =>
-            set({ recency: r.join(',') === DEFAULT_RECENCY.join(',') ? undefined : r })
-          }
-        />
       </div>
 
       {/* As-of scrubber: time-travel through the season's competition dates. */}
