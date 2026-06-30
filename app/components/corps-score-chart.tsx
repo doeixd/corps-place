@@ -13,7 +13,9 @@ import {
 import { useSelector } from '@xstate/react';
 import { corpsPalette } from '@sdk/src/corpsColors.js';
 import { themeStore } from '@/stores/theme-store';
-import type { CorpsSeasonPoint } from '@/lib/corps-directory';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Slider } from '@/components/ui/slider';
+import type { CorpsSeasonPoint, CorpsSeasonSnapshotRow } from '@/lib/corps-directory';
 
 /**
  * Current-season score chart for a corps:
@@ -36,6 +38,14 @@ type Row = {
   actual: number | null;
   band: [number, number] | null;
 };
+
+const toRow = (p: CorpsSeasonPoint | CorpsSeasonSnapshotRow): Row => ({
+  label: p.label,
+  date: p.date,
+  predicted: p.predicted,
+  actual: p.actual,
+  band: p.low != null && p.high != null ? [p.low, p.high] : null,
+});
 
 type DotProps = {
   cx?: number;
@@ -142,9 +152,13 @@ function ScoreTooltip({ active, payload }: { active?: boolean; payload?: any[] }
 
 export function CorpsScoreChart({
   data,
+  snapshots,
   colors,
 }: {
   data: readonly CorpsSeasonPoint[];
+  /** "Prediction as of ___" history — the season timeline per snapshot date.
+   *  When ≥2 dates exist, a popover slider lets you replay past forecasts. */
+  snapshots?: readonly CorpsSeasonSnapshotRow[];
   /** Corps brand colors ('#rrggbb'); the "Actual" series takes the corps's hue. */
   colors?: { primary: string | null; secondary?: string | null };
 }) {
@@ -155,16 +169,37 @@ export function CorpsScoreChart({
     ? corpsPalette({ primary: colors.primary, secondary: colors.secondary ?? undefined }, theme)
         .chart
     : 'var(--color-foreground)';
+
+  // The distinct snapshot dates (ascending) and the timeline rows for each.
+  const snapshotDates = useMemo(() => {
+    const set = new Set<string>();
+    for (const s of snapshots ?? []) set.add(s.snapshot_at);
+    return Array.from(set).sort();
+  }, [snapshots]);
+  const rowsByDate = useMemo(() => {
+    const m = new Map<string, Row[]>();
+    for (const s of snapshots ?? []) {
+      const arr = m.get(s.snapshot_at);
+      if (arr) arr.push(toRow(s));
+      else m.set(s.snapshot_at, [toRow(s)]);
+    }
+    return m;
+  }, [snapshots]);
+  const hasHistory = snapshotDates.length >= 2;
+
+  // `null` = follow the latest snapshot (default, and stays latest across nav);
+  // an explicit pick from the slider overrides until reset.
+  const [pickedIdx, setPickedIdx] = useState<number | null>(null);
+  const latestIdx = Math.max(0, snapshotDates.length - 1);
+  const idx = pickedIdx == null ? latestIdx : Math.min(pickedIdx, latestIdx);
+  const isLatest = idx >= latestIdx;
+  const activeDate = snapshotDates[idx];
+
+  // The line the chart draws: the selected snapshot's timeline when history is
+  // available (its latest is parity-equal to `data`), else the loader's points.
   const rows = useMemo<Row[]>(
-    () =>
-      data.map((p) => ({
-        label: p.label,
-        date: p.date,
-        predicted: p.predicted,
-        actual: p.actual,
-        band: p.low != null && p.high != null ? [p.low, p.high] : null,
-      })),
-    [data]
+    () => (hasHistory ? (rowsByDate.get(activeDate) ?? []) : data.map(toRow)),
+    [hasHistory, rowsByDate, activeDate, data]
   );
 
   // ResponsiveContainer can't measure during SSR (warns about width/height -1),
@@ -172,12 +207,56 @@ export function CorpsScoreChart({
   // to avoid layout shift on hydration.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (!mounted) return <div className="h-72 w-full" />;
 
   return (
-    <div className="h-72 w-full">
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={rows} margin={{ top: 8, right: 12, bottom: 4, left: -8 }}>
+    <div className="w-full">
+      {hasHistory && (
+        <div className="mb-1 flex justify-end">
+          <Popover>
+            <PopoverTrigger className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-primary/60 hover:text-foreground">
+              <span className="text-text-muted">Forecast</span>
+              <span className="font-medium">
+                {isLatest ? 'latest' : `as of ${fmtDate(activeDate)}`}
+              </span>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-64 gap-3">
+              <div className="flex items-baseline justify-between">
+                <span className="text-xs font-medium text-foreground">Prediction as of</span>
+                <span className="text-xs text-text-secondary">
+                  {fmtDate(activeDate)}
+                  {isLatest ? ' · latest' : ''}
+                </span>
+              </div>
+              <Slider
+                min={0}
+                max={latestIdx}
+                value={[idx]}
+                onValueChange={(v) => {
+                  const next = Array.isArray(v) ? v[0] : v;
+                  setPickedIdx(typeof next === 'number' ? next : null);
+                }}
+              />
+              <div className="flex justify-between text-[10px] text-text-muted">
+                <span>{fmtDate(snapshotDates[0])}</span>
+                <span>{fmtDate(snapshotDates[latestIdx])}</span>
+              </div>
+              {!isLatest && (
+                <button
+                  type="button"
+                  onClick={() => setPickedIdx(null)}
+                  className="self-end text-xs text-primary hover:underline"
+                >
+                  Reset to latest
+                </button>
+              )}
+            </PopoverContent>
+          </Popover>
+        </div>
+      )}
+      <div className="h-72 w-full">
+        {mounted ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart data={rows} margin={{ top: 8, right: 12, bottom: 4, left: -8 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
           <XAxis
             dataKey="date"
@@ -235,8 +314,10 @@ export function CorpsScoreChart({
             connectNulls
             isAnimationActive={false}
           />
-        </ComposedChart>
-      </ResponsiveContainer>
+            </ComposedChart>
+          </ResponsiveContainer>
+        ) : null}
+      </div>
     </div>
   );
 }

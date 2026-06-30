@@ -8,6 +8,7 @@ import {
   getCorpsAppearances,
   getCorpsAppearanceResults,
   getCorpsSeasonScores,
+  getCorpsSeasonSnapshots,
   getCorpsMerch,
   getShowDetail,
 } from '@/lib/server-fns/hybrid';
@@ -52,19 +53,23 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
   // server round-trip); SSR and any fallback use the server fns.
   loader: async ({ params }) => {
     const { slug, season } = params;
-    const [corps, seasonScores, appearances, appearanceResults, corpsMerch] = await Promise.all([
-      loadDetailOrServer(`corps/${slug}.json`, () => getCorps({ data: slug })),
-      loadDetailOrServer(`corps-scores/${slug}.json`, () => getCorpsSeasonScores({ data: slug })),
-      loadDetailOrServer(`corps-appearances/${slug}.json`, () =>
-        getCorpsAppearances({ data: slug })
-      ),
-      loadDetailOrServer(`corps-appearance-results/${slug}.json`, () =>
-        getCorpsAppearanceResults({ data: slug })
-      ),
-      loadDetailOrServer<CorpsMerchTeaser | null>(`corps-merch/${slug}.json`, () =>
-        getCorpsMerch({ data: slug })
-      ),
-    ]);
+    const [corps, seasonScores, appearances, appearanceResults, corpsMerch, seasonSnapshots] =
+      await Promise.all([
+        loadDetailOrServer(`corps/${slug}.json`, () => getCorps({ data: slug })),
+        loadDetailOrServer(`corps-scores/${slug}.json`, () => getCorpsSeasonScores({ data: slug })),
+        loadDetailOrServer(`corps-appearances/${slug}.json`, () =>
+          getCorpsAppearances({ data: slug })
+        ),
+        loadDetailOrServer(`corps-appearance-results/${slug}.json`, () =>
+          getCorpsAppearanceResults({ data: slug })
+        ),
+        loadDetailOrServer<CorpsMerchTeaser | null>(`corps-merch/${slug}.json`, () =>
+          getCorpsMerch({ data: slug })
+        ),
+        // No static shard for the prediction-history matrix — fetch via server fn
+        // (degrades to [] when unavailable). Powers the chart's "as of" slider.
+        getCorpsSeasonSnapshots({ data: slug }),
+      ]);
 
     // `season` is a path-level view filter over the already-loaded appearances —
     // it doesn't change the data fetched above. Canonicalize the URL so there's
@@ -108,6 +113,7 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
     return {
       corps,
       seasonScores,
+      seasonSnapshots,
       appearances,
       appearanceResults,
       corpsMerch,
@@ -179,6 +185,7 @@ function CorpsDetailPage() {
   const {
     corps,
     seasonScores,
+    seasonSnapshots,
     appearances,
     appearanceResults,
     corpsMerch,
@@ -386,6 +393,7 @@ function CorpsDetailPage() {
               </div>
               <CorpsScoreChart
                 data={seasonScores}
+                snapshots={seasonSnapshots}
                 colors={{ primary: corps.color_primary, secondary: corps.color_secondary }}
               />
             </CardContent>

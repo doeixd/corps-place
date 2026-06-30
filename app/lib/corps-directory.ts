@@ -119,7 +119,12 @@ const makeCorpsDirectoryService = Effect.gen(function* () {
   const getSeasonSnapshots = Effect.fn('CorpsDirectoryService.getSeasonSnapshots')(function* (
     slug: string
   ) {
-    return yield* seasonSnapshotsForSlug(slug);
+    // Optional/secondary data (the chart's "as of" history): degrade to empty
+    // rather than failing the corps page if the snapshot table isn't present yet
+    // (e.g. a read-model emitted before SCHEMA_VERSION 17) or the read errors.
+    return yield* seasonSnapshotsForSlug(slug).pipe(
+      Effect.catch(() => Effect.succeed([] as CorpsSeasonSnapshotRow[]))
+    );
   });
 
   const getCorpsByKeys = Effect.fn('CorpsDirectoryService.getCorpsByKeys')(function* (

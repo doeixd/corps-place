@@ -231,6 +231,17 @@ export const getCorpsSeasonScores = createServerFn({ method: 'GET' })
     return Effect.runPromise(program);
   });
 
+// The "prediction as of ___" history matrix for the chart's date slider (the
+// season timeline replayed per snapshot date). Degrades to [] when unavailable.
+export const getCorpsSeasonSnapshots = createServerFn({ method: 'GET' })
+  .validator((slug: string) => slug)
+  .handler(async ({ data }) => {
+    const program = Effect.flatMap(CorpsDirectoryService, (s) => s.getSeasonSnapshots(data)).pipe(
+      provideServices
+    );
+    return Effect.runPromise(program);
+  });
+
 // List 2026 events
 export const getHybridEventDirectory = createServerFn({
   method: 'GET',
