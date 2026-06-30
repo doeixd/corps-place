@@ -16,6 +16,7 @@ export const JOB_KINDS = [
   'merge_staff_by_name',
   'resolve_staff_identity',
   'save_corps_colors',
+  'suppress_profile',
 ] as const;
 
 export type JobKind = (typeof JOB_KINDS)[number];
@@ -88,6 +89,13 @@ export const JOB_KIND_META: Record<JobKind, JobKindMeta> = {
     kind: 'save_corps_colors',
     label: 'Save corps colors',
     description: 'Durable write of a corps’ brand colors (enqueued by the colors editor).',
+    needsArgs: true,
+  },
+  suppress_profile: {
+    kind: 'suppress_profile',
+    label: 'Suppress (delete) profile',
+    description: 'Durably remove a staff/judge profile so re-scrapes can’t resurrect it (owner self-delete or takedown).',
+    danger: true,
     needsArgs: true,
   },
 };

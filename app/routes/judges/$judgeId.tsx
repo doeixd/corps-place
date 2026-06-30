@@ -1,14 +1,19 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import { useMachine } from '@xstate/react';
 import { For, Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
 import { getJudgeProfile } from '@/lib/server-fns/hybrid';
+import { getProfileOverlay } from '@/lib/server-fns/profile-owner';
+import { mergeProfileOverlay } from '@/lib/profile-owner/merge';
+import type { JudgeProfile } from '@/lib/judge-directory';
 import { loadDetailOrServer } from '@/db/detail-shard';
 import { cn, searchString } from '@/lib/utils';
 import { useSearchSync } from '@/lib/use-search-sync';
 import { judgeProfileMachine, judgeProfileSearchCodec } from '@/machines/judge-profile-machine';
 import { PageHeader } from '@/components/page-header';
+import { ClaimPanel } from '@/components/profile-owner/claim-panel';
+import { ProfileEditor } from '@/components/profile-owner/profile-editor';
 import { BackLink } from '@/components/back-link';
 import { SeasonChips } from '@/components/filter-chips';
 import { useRegisterBackName } from '@/lib/use-register-back-name';
@@ -61,11 +66,23 @@ export const Route = createFileRoute('/judges/$judgeId')({
   },
   // On client navigation, read the static judges/<id>.json shard (CDN-cached, no
   // server round-trip); SSR and any fallback use the server fn.
-  loader: async ({ params }) => ({
-    profile: await loadDetailOrServer(`judges/${params.judgeId}.json`, () =>
-      getJudgeProfile({ data: params.judgeId })
-    ),
-  }),
+  loader: async ({ params }) => {
+    // Option A read-merge (see staff/$personId.tsx): scraped shard + overlay in
+    // parallel, then displayed = override ?? scraped. Overlay fetch is best-effort.
+    const [scraped, overlay] = await Promise.all([
+      loadDetailOrServer<JudgeProfile | null>(`judges/${params.judgeId}.json`, () =>
+        getJudgeProfile({ data: params.judgeId })
+      ),
+      getProfileOverlay({ data: { entityType: 'judge', entityId: params.judgeId } }).catch(
+        () => null
+      ),
+    ]);
+    // §11a: this page was merged into another judge profile → redirect to canonical.
+    if (overlay?.aliasOf && overlay.aliasOf.type === 'judge' && overlay.aliasOf.id !== params.judgeId) {
+      throw redirect({ to: '/judges/$judgeId', params: { judgeId: overlay.aliasOf.id }, replace: true });
+    }
+    return { profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped };
+  },
   head: ({ loaderData }) => {
     const d = loaderData;
     if (!d) return {};
@@ -222,6 +239,25 @@ function JudgeProfilePage() {
             </CardContent>
           </Card>
         </Show>
+
+        <ClaimPanel
+          entityType="judge"
+          entityId={profile.judge_id}
+          displayName={profile.display_name}
+          ownership={profile.ownership}
+        />
+        {profile.ownership?.mine && profile.ownership.claimed && (
+          <ProfileEditor
+            entityType="judge"
+            entityId={profile.judge_id}
+            initial={{
+              biography: profile.biography,
+              photoUrl: profile.photo_url,
+              hometown: profile.bioFacts?.hometown ?? null,
+              currentPosition: profile.bioFacts?.currentPosition ?? null,
+            }}
+          />
+        )}
 
         <Show
           when={

@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { loadRepoEnv } from "./scriptEnv.js";
 import { looksLikePersonName } from "../src/staffScraper.js";
+import { archiveStaffDeletion } from "./deletionArchive.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SDK_DIR = resolve(__dirname, "..");
@@ -52,6 +53,7 @@ const main = async () => {
   console.log("\nDELETE:"); [...new Set(dels.map((d) => d.name))].slice(0, 15).forEach((n) => console.log(`  "${n}"`));
   if (!DRY) {
     for (const r of renames) await db.execute({ sql: "UPDATE corps_staff SET display_name=? WHERE staff_id=?", args: [r.to, r.staff_id] });
+    await archiveStaffDeletion(db, dels.map((d) => String(d.staff_id)), { script: "stripCorpsSuffixNames", reason: "org/accolade non-person row" });
     for (const d of dels) await db.execute({ sql: "DELETE FROM corps_staff WHERE staff_id=?", args: [d.staff_id] });
     console.log(`\nApplied ${renames.length} renames, ${dels.length} deletes.`);
   }

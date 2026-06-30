@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { loadRepoEnv } from "./scriptEnv.js";
 import { looksLikePersonName } from "../src/staffScraper.js";
+import { archiveStaffDeletion } from "./deletionArchive.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SDK_DIR = resolve(__dirname, "..");
@@ -80,6 +81,7 @@ const main = async () => {
 
   if (!DRY) {
     for (const c of cleaned) await db.execute({ sql: "UPDATE corps_staff SET display_name=? WHERE staff_id=?", args: [c.to, c.staff_id] });
+    await archiveStaffDeletion(db, junk.map((j) => String(j.staff_id)), { script: "cleanStaffNames", reason: "pure role-label non-person name" });
     for (const j of junk) await db.execute({ sql: "DELETE FROM corps_staff WHERE staff_id=?", args: [j.staff_id] }); // FK cascade clears assignments/links
     console.log(`\nApplied: cleaned ${cleaned.length}, deleted ${junk.length}. Re-run mergeByNameDefault.ts --apply to collapse de-suffixed twins.`);
   }

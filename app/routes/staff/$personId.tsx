@@ -1,6 +1,10 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { getStaffProfile } from '@/lib/server-fns/hybrid';
+import { getProfileOverlay } from '@/lib/server-fns/profile-owner';
+import { mergeProfileOverlay } from '@/lib/profile-owner/merge';
+import { ClaimPanel } from '@/components/profile-owner/claim-panel';
+import { ProfileEditor } from '@/components/profile-owner/profile-editor';
 import { checkClaimByEntity } from '@/lib/server-fns/jobs';
 import { loadDetailOrServer } from '@/db/detail-shard';
 import type { StaffAssignment, StaffProfile } from '@/lib/staff-directory';
@@ -21,6 +25,7 @@ import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 const STAFF_REDIRECTS: Record<string, string> = {
   'richard-valentin': 'ricardo-valentin',
   'richard-valentin-tyler-wiernusz': 'ricardo-valentin',
+  'andrew-montinero': 'andrew-monteiro', // surname typo, merged into the canonical
 };
 
 export const Route = createFileRoute('/staff/$personId')({
@@ -29,10 +34,23 @@ export const Route = createFileRoute('/staff/$personId')({
     if (dest && dest !== params.personId) {
       throw redirect({ to: '/staff/$personId', params: { personId: dest }, replace: true });
     }
-    return {
-      profile: await loadDetailOrServer<StaffProfile | null>(`staff/${params.personId}.json`, () =>
+    // Option A read-merge: fetch the cached static shard (scraped base) and the
+    // tiny contributions overlay in parallel, then apply displayed = override ??
+    // scraped. The overlay fetch is best-effort — a failure must not break the page.
+    const [scraped, overlay] = await Promise.all([
+      loadDetailOrServer<StaffProfile | null>(`staff/${params.personId}.json`, () =>
         getStaffProfile({ data: params.personId })
       ),
+      getProfileOverlay({ data: { entityType: 'staff', entityId: params.personId } }).catch(
+        () => null
+      ),
+    ]);
+    // §11a: this page was merged into another staff profile → redirect to canonical.
+    if (overlay?.aliasOf && overlay.aliasOf.type === 'staff' && overlay.aliasOf.id !== params.personId) {
+      throw redirect({ to: '/staff/$personId', params: { personId: overlay.aliasOf.id }, replace: true });
+    }
+    return {
+      profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped,
       claimProfileId: null as string | null, // M2.5.4: resolve slug from checkClaimByEntity
     };
   },
@@ -118,11 +136,31 @@ function StaffProfilePage() {
           fallback={null}
           className="size-40 shrink-0 self-start rounded-xl"
         />
-        {profile.biography && (
-          <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
-            {profile.biography}
-          </p>
-        )}
+        <div className="flex flex-col gap-3">
+          {profile.biography && (
+            <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
+              {profile.biography}
+            </p>
+          )}
+          <ClaimPanel
+            entityType="staff"
+            entityId={profile.person_id}
+            displayName={profile.display_name}
+            ownership={profile.ownership}
+          />
+          {profile.ownership?.mine && profile.ownership.claimed && (
+            <ProfileEditor
+              entityType="staff"
+              entityId={profile.person_id}
+              initial={{
+                biography: profile.biography,
+                photoUrl: profile.photo_url,
+                hometown: profile.bioFacts?.hometown ?? null,
+                currentPosition: profile.bioFacts?.currentPosition ?? null,
+              }}
+            />
+          )}
+        </div>
       </div>
 
       <h2 className="mt-8 mb-3 text-lg font-semibold">Where they’ve taught</h2>

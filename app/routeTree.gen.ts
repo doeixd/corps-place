@@ -57,6 +57,7 @@ import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spi
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSystemRouteImport } from './routes/admin/system'
 import { Route as AdminSupportRouteImport } from './routes/admin/support'
+import { Route as AdminProfileClaimsRouteImport } from './routes/admin/profile-claims'
 import { Route as AdminJobsRouteImport } from './routes/admin/jobs'
 import { Route as AdminIdentityRouteImport } from './routes/admin/identity'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
@@ -332,6 +333,11 @@ const AdminSupportRoute = AdminSupportRouteImport.update({
   path: '/admin/support',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProfileClaimsRoute = AdminProfileClaimsRouteImport.update({
+  id: '/admin/profile-claims',
+  path: '/admin/profile-claims',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminJobsRoute = AdminJobsRouteImport.update({
   id: '/admin/jobs',
   path: '/admin/jobs',
@@ -565,6 +571,7 @@ export interface FileRoutesByFullPath {
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/identity': typeof AdminIdentityRoute
   '/admin/jobs': typeof AdminJobsRoute
+  '/admin/profile-claims': typeof AdminProfileClaimsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
@@ -636,6 +643,7 @@ export interface FileRoutesByTo {
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/identity': typeof AdminIdentityRoute
   '/admin/jobs': typeof AdminJobsRoute
+  '/admin/profile-claims': typeof AdminProfileClaimsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
@@ -708,6 +716,7 @@ export interface FileRoutesById {
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/identity': typeof AdminIdentityRoute
   '/admin/jobs': typeof AdminJobsRoute
+  '/admin/profile-claims': typeof AdminProfileClaimsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
@@ -781,6 +790,7 @@ export interface FileRouteTypes {
     | '/admin/corps-colors'
     | '/admin/identity'
     | '/admin/jobs'
+    | '/admin/profile-claims'
     | '/admin/support'
     | '/admin/system'
     | '/admin/users'
@@ -852,6 +862,7 @@ export interface FileRouteTypes {
     | '/admin/corps-colors'
     | '/admin/identity'
     | '/admin/jobs'
+    | '/admin/profile-claims'
     | '/admin/support'
     | '/admin/system'
     | '/admin/users'
@@ -923,6 +934,7 @@ export interface FileRouteTypes {
     | '/admin/corps-colors'
     | '/admin/identity'
     | '/admin/jobs'
+    | '/admin/profile-claims'
     | '/admin/support'
     | '/admin/system'
     | '/admin/users'
@@ -995,6 +1007,7 @@ export interface RootRouteChildren {
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
   AdminIdentityRoute: typeof AdminIdentityRoute
   AdminJobsRoute: typeof AdminJobsRoute
+  AdminProfileClaimsRoute: typeof AdminProfileClaimsRoute
   AdminSupportRoute: typeof AdminSupportRoute
   AdminSystemRoute: typeof AdminSystemRoute
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
@@ -1526,6 +1539,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/profile-claims': {
+      id: '/admin/profile-claims'
+      path: '/admin/profile-claims'
+      fullPath: '/admin/profile-claims'
+      preLoaderRoute: typeof AdminProfileClaimsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/jobs': {
       id: '/admin/jobs'
       path: '/admin/jobs'
@@ -1863,6 +1883,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
   AdminIdentityRoute: AdminIdentityRoute,
   AdminJobsRoute: AdminJobsRoute,
+  AdminProfileClaimsRoute: AdminProfileClaimsRoute,
   AdminSupportRoute: AdminSupportRoute,
   AdminSystemRoute: AdminSystemRoute,
   AdminUsersRoute: AdminUsersRouteWithChildren,

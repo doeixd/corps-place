@@ -28,6 +28,7 @@ const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
   { to: '/admin/jobs', label: 'Jobs & scripts', icon: WorkflowSquare01Icon, min: 'admin' },
   { to: '/admin/content', label: 'Content', icon: NoteEditIcon, min: 'moderator' },
   { to: '/admin/identity', label: 'Identity', icon: UserGroupIcon, min: 'moderator' },
+  { to: '/admin/profile-claims', label: 'Profile claims', icon: UserGroupIcon, min: 'moderator' },
   ...(FANTASY_ENABLED
     ? [
         {

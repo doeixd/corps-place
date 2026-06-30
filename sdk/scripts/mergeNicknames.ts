@@ -14,7 +14,7 @@ loadRepoEnv(SDK_DIR);
 const DRY = !process.argv.includes("--apply");
 const db = createClient({ url: process.env.DCI_RELATIONAL_DB_URL ?? `file:${resolve(SDK_DIR, "dci-relational.db")}` });
 
-const NICK: Record<string, string> = { mike: "michael", mikey: "michael", rob: "robert", bob: "robert", bobby: "robert", jim: "james", jimmy: "james", tom: "thomas", tommy: "thomas", dan: "daniel", danny: "daniel", chris: "christopher", matt: "matthew", joe: "joseph", joey: "joseph", tony: "anthony", steve: "steven", dave: "david", nick: "nicholas", andy: "andrew", drew: "andrew", ben: "benjamin", benny: "benjamin", sam: "samuel", will: "william", bill: "william", billy: "william", greg: "gregory", jeff: "jeffrey", rick: "richard", rich: "richard", ken: "kenneth", ron: "ronald", ed: "edward", eddie: "edward", pat: "patrick", alex: "alexander", nate: "nathan", nathaniel: "nathan", zach: "zachary", zack: "zachary", josh: "joshua", jake: "jacob", tim: "timothy", phil: "philip", gabe: "gabriel", dom: "dominic", vinny: "vincent", vince: "vincent", charlie: "charles", chuck: "charles", cathy: "catherine", kate: "katherine", katie: "katherine", liz: "elizabeth", beth: "elizabeth", abby: "abigail", maddie: "madison", sammy: "samuel" };
+const NICK: Record<string, string> = { mike: "michael", mikey: "michael", rob: "robert", bob: "robert", bobby: "robert", jim: "james", jimmy: "james", tom: "thomas", tommy: "thomas", dan: "daniel", danny: "daniel", chris: "christopher", matt: "matthew", matty: "matthew", joe: "joseph", joey: "joseph", jon: "jonathan", jonny: "jonathan", tony: "anthony", steve: "steven", dave: "david", nick: "nicholas", andy: "andrew", drew: "andrew", ben: "benjamin", benny: "benjamin", sam: "samuel", will: "william", bill: "william", billy: "william", greg: "gregory", jeff: "jeffrey", rick: "richard", rich: "richard", ken: "kenneth", ron: "ronald", ed: "edward", eddie: "edward", pat: "patrick", alex: "alexander", nate: "nathan", nathaniel: "nathan", zach: "zachary", zack: "zachary", josh: "joshua", jake: "jacob", tim: "timothy", phil: "philip", gabe: "gabriel", dom: "dominic", vinny: "vincent", vince: "vincent", charlie: "charles", chuck: "charles", cathy: "catherine", kate: "katherine", katie: "katherine", liz: "elizabeth", beth: "elizabeth", abby: "abigail", maddie: "madison", sammy: "samuel" };
 const COMMON = new Set("smith johnson williams jones brown davis miller wilson moore taylor anderson thomas jackson white harris martin garcia martinez rodriguez lewis lee walker hall allen young king wright lopez hill scott green adams baker gonzalez nelson carter mitchell perez roberts turner phillips campbell parker evans edwards collins reyes morales ortiz gomez".split(" "));
 const canon = (f: string) => NICK[f.toLowerCase()] ?? f.toLowerCase();
 // Strip apostrophes (JOIN, don't space) so "D'Antoine"→"dantoine" stays one token — otherwise the
@@ -50,7 +50,14 @@ const main = async () => {
       const overlap = sets.some((s, i) => sets.some((t, j) => i !== j && [...s].some((c) => t.has(c))));
       if (!overlap) { held.push(names.join(" | ")); continue; }
     }
-    const canonical = [...pids].sort()[0]!;
+    // Canonical = the FORMAL name (first token === the canonical first, e.g.
+    // "jonathan" over the nickname "jon"), then alphabetical. (Was alphabetical
+    // only, which wrongly made the nickname canonical — "jon" < "jonathan".)
+    const canonFirst = key.split("|")[0]!;
+    const firstOf = (p: string) => norm(nameByPid.get(p) ?? "").split(" ")[0] ?? "";
+    const canonical = [...pids].sort(
+      (a, b) => (firstOf(b) === canonFirst ? 1 : 0) - (firstOf(a) === canonFirst ? 1 : 0) || a.localeCompare(b)
+    )[0]!;
     merges.push({ canonical, from: pids.filter((p) => p !== canonical), names });
   }
 
@@ -59,7 +66,7 @@ const main = async () => {
   console.log("\nHELD (common surname — review):"); held.slice(0, 12).forEach((h) => console.log(`  ${h}`));
   if (!DRY) {
     let rp = 0;
-    for (const m of merges) for (const p of m.from) { const res = await db.execute({ sql: "UPDATE corps_staff SET person_id=? WHERE person_id=?", args: [m.canonical, p] }); rp += Number(res.rowsAffected ?? 0); }
+    for (const m of merges) { const cname = nameByPid.get(m.canonical)!; for (const p of m.from) { const res = await db.execute({ sql: "UPDATE corps_staff SET person_id=?, display_name=? WHERE person_id=?", args: [m.canonical, cname, p] }); rp += Number(res.rowsAffected ?? 0); } }
     await db.execute("UPDATE staff_bio_facts SET person_id=(SELECT person_id FROM corps_staff WHERE corps_staff.staff_id=staff_bio_facts.staff_id) WHERE staff_id IN (SELECT staff_id FROM corps_staff)");
     console.log(`\nApplied: ${merges.length} merged (${rp} rows re-pointed).`);
   }

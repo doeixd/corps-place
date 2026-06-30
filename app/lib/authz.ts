@@ -30,7 +30,10 @@ export type Capability =
   | 'runJobs' // enqueue SDK jobs (scrape/ingest/predict/fine-tune) for the VM worker
   | 'manageUsers' // list users, grant/revoke role, ban, GDPR delete/export
   | 'customerSupport' // user lookup, support inbox, account recovery
-  | 'impersonate'; // "view as user" — high-trust debugging
+  | 'impersonate' // "view as user" — high-trust debugging
+  // Staff/Judge profile ownership (STAFF_PROFILE_OWNERSHIP_PLAN.md §8).
+  | 'claimProfile' // claim & edit your own /staff or /judges profile
+  | 'manageProfileClaims'; // moderator: approve pending / revoke / resolve disputes
 
 // Minimum role per capability (the §6.2 matrix). Editing/upload/revert = any user.
 const MIN_ROLE: Record<Capability, Role> = {
@@ -49,6 +52,8 @@ const MIN_ROLE: Record<Capability, Role> = {
   manageUsers: 'admin',
   customerSupport: 'moderator',
   impersonate: 'admin',
+  claimProfile: 'user',
+  manageProfileClaims: 'moderator',
 };
 
 export type PageLock = 'none' | 'trusted' | 'mod';
@@ -123,5 +128,28 @@ export const requireJobsProfileOwner = async (db: Client, profileId: string): Pr
   if (!row) throw new Error('Profile not found');
   const isModerator = can(actor, 'hideRevision');
   if (row.user_id !== actor.userId && !isModerator) throw new ForbiddenError('edit');
+  return actor;
+};
+
+/**
+ * Throws unless the session user holds the ACTIVE claim on this (entityType,
+ * entityId) staff/judge profile (moderators may override). Gate for every owner
+ * edit in the profile-ownership flow (STAFF_PROFILE_OWNERSHIP_PLAN.md §8).
+ */
+export const requireProfileOwner = async (
+  db: Client,
+  entityType: string,
+  entityId: string
+): Promise<Actor> => {
+  const actor = await getActor(getWebRequest());
+  if (!actor) throw new ForbiddenError('claimProfile');
+  if (can(actor, 'manageProfileClaims')) return actor; // moderators+ override
+  const row = (
+    await db.execute({
+      sql: "SELECT user_id FROM profile_claims WHERE entity_type = ? AND entity_id = ? AND status = 'active' LIMIT 1",
+      args: [entityType, entityId],
+    })
+  ).rows[0] as { user_id: string } | undefined;
+  if (!row || row.user_id !== actor.userId) throw new ForbiddenError('claimProfile');
   return actor;
 };

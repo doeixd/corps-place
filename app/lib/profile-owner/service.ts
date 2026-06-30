@@ -1,0 +1,528 @@
+import { Context, Effect, Layer } from 'effect';
+import { randomUUID } from 'node:crypto';
+import { ProfileSql, ProfileSqlLive, requireDurableStorage } from './sql';
+import { ClaimExists, NotFound } from './errors';
+import { nameMatch, type NameMatchTier } from './name-match';
+import { hashSource, scrapedFieldValue, type OverlayField, type OverrideContent, type CommonProfile } from './merge';
+import { getReadModelClient } from '@/lib/read-model-db';
+import { readStaffProfile, readJudgeProfile } from '@sdk/src/readModel/readers';
+
+// ProfileOwnerService (plan §7): the server-side owner of staff/judge profile
+// claims + the editable overlay. Reads/writes contributions.db; every claim or
+// override write records a profile_revisions row in the SAME transaction (I-6).
+// SERVER-ONLY — kept behind createServerFn boundaries so Effect never ships to
+// the client bundle.
+
+export type EntityType = 'staff' | 'judge';
+const newId = () => randomUUID();
+
+export interface WriteContext {
+  authorId: string;
+  actorRole: string;
+  now: string;
+}
+
+export interface ClaimRow {
+  claim_id: string;
+  user_id: string;
+  status: string; // active | pending | revoked
+  name_match: string | null;
+  name_score: number | null;
+  attested_at: string;
+  claimed_at: string;
+}
+
+const makeProfileOwnerService = Effect.gen(function* () {
+  const sql = yield* ProfileSql;
+
+  // Scraped display_name for the entity (read-model). Best-effort: null when the
+  // read-model is unavailable (local dev) or the entity is unknown — the name
+  // match then degrades to 'weak', which the gate routes to moderator review.
+  const resolveDisplayName = Effect.fn('ProfileOwnerService.resolveDisplayName')(function* (
+    entityType: EntityType,
+    entityId: string
+  ) {
+    return yield* Effect.promise(async () => {
+      try {
+        const db = getReadModelClient();
+        const p =
+          entityType === 'staff'
+            ? await readStaffProfile(db, entityId)
+            : await readJudgeProfile(db, entityId);
+        return p?.display_name ?? null;
+      } catch {
+        return null;
+      }
+    });
+  });
+
+  // The scraped CommonProfile surface (bio / photo / bioFacts) used to compute and
+  // re-check override source_hashes for divergence detection.
+  const resolveScraped = Effect.fn('ProfileOwnerService.resolveScraped')(function* (
+    entityType: EntityType,
+    entityId: string
+  ) {
+    return yield* Effect.promise(async (): Promise<CommonProfile | null> => {
+      try {
+        const db = getReadModelClient();
+        const p =
+          entityType === 'staff'
+            ? await readStaffProfile(db, entityId)
+            : await readJudgeProfile(db, entityId);
+        if (!p) return null;
+        const pp = p as unknown as Partial<CommonProfile>;
+        return {
+          biography: pp.biography ?? null,
+          photo_url: pp.photo_url ?? null,
+          bioFacts: {
+            hometown: pp.bioFacts?.hometown ?? null,
+            currentPosition: pp.bioFacts?.currentPosition ?? null,
+          },
+        } satisfies CommonProfile;
+      } catch {
+        return null;
+      }
+    });
+  });
+
+  // Read the active claim + the editable overlay for an entity. Powers the
+  // read-merge (step 3) and the owner/admin UI. Empty for the ~99% unclaimed.
+  const readOverlay = Effect.fn('ProfileOwnerService.readOverlay')(function* (
+    entityType: EntityType,
+    entityId: string
+  ) {
+    const claims = yield* sql<ClaimRow>`
+      SELECT claim_id, user_id, status, name_match, name_score, attested_at, claimed_at
+      FROM profile_claims
+      WHERE entity_type = ${entityType} AND entity_id = ${entityId} AND status != 'revoked'
+      LIMIT 1`;
+    const overrides = yield* sql<{ field_key: string; content_json: string; scrape_diverged: number }>`
+      SELECT field_key, content_json, scrape_diverged
+      FROM profile_overrides
+      WHERE entity_type = ${entityType} AND entity_id = ${entityId}`;
+    const fields: Record<string, OverlayField> = {};
+    for (const o of overrides) {
+      let content: OverrideContent = null;
+      try {
+        content = JSON.parse(o.content_json) as OverrideContent;
+      } catch {
+        content = o.content_json;
+      }
+      fields[o.field_key] = { content, diverged: o.scrape_diverged === 1 };
+    }
+    // §11a alias: if this page was merged into another, surface the canonical so the
+    // loader can redirect. (One round-trip — folded into the existing overlay read.)
+    const alias = yield* sql<{ canonical_type: string; canonical_id: string }>`
+      SELECT canonical_type, canonical_id FROM profile_merges
+      WHERE merged_type = ${entityType} AND merged_id = ${entityId} AND active = 1 LIMIT 1`;
+    return {
+      claim: claims[0] ?? null,
+      overrides: fields,
+      aliasOf: alias[0] ? { type: alias[0].canonical_type, id: alias[0].canonical_id } : null,
+    };
+  });
+
+  // Evaluate the Google-name ↔ profile-name match without writing (for the UI
+  // preview before the attestation step).
+  const evaluateNameMatch = Effect.fn('ProfileOwnerService.evaluateNameMatch')(function* (
+    entityType: EntityType,
+    entityId: string,
+    googleName: string
+  ) {
+    const matchedName = yield* resolveDisplayName(entityType, entityId);
+    const nm = nameMatch(googleName, matchedName ?? '');
+    return { ...nm, matchedName };
+  });
+
+  const claimProfile = Effect.fn('ProfileOwnerService.claimProfile')(function* (
+    input: {
+      entityType: EntityType;
+      entityId: string;
+      googleName: string | null;
+      attestationVersion: string;
+      ip?: string | null;
+      userAgent?: string | null;
+    },
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    const { entityType, entityId } = input;
+
+    const existing = yield* sql<{ claim_id: string }>`
+      SELECT claim_id FROM profile_claims
+      WHERE entity_type = ${entityType} AND entity_id = ${entityId} AND status != 'revoked' LIMIT 1`;
+    if (existing[0]) return yield* Effect.fail(new ClaimExists({ entityType, entityId }));
+
+    const matchedName = yield* resolveDisplayName(entityType, entityId);
+    const nm = nameMatch(input.googleName ?? '', matchedName ?? '');
+    // A user previously REVOKED on this entity must not silently re-activate by
+    // re-claiming (an impersonator could otherwise just claim again) — force review.
+    const priorRevoked = yield* sql<{ claim_id: string }>`
+      SELECT claim_id FROM profile_claims
+      WHERE entity_type = ${entityType} AND entity_id = ${entityId}
+        AND user_id = ${ctx.authorId} AND status = 'revoked' LIMIT 1`;
+    // Tiered gate (plan §4): exact/close → live immediately; weak (or a prior revoke
+    // on this entity) → moderator review.
+    const status = nm.match === 'weak' || priorRevoked[0] ? 'pending' : 'active';
+    const claimId = newId();
+
+    yield* sql
+      .withTransaction(
+        Effect.gen(function* () {
+          yield* sql`
+          INSERT INTO profile_claims
+            (claim_id, entity_type, entity_id, user_id, status, google_name, matched_name,
+             name_match, name_score, attested_at, attestation_version, attest_ip,
+             attest_user_agent, claimed_at)
+          VALUES (${claimId}, ${entityType}, ${entityId}, ${ctx.authorId}, ${status},
+                  ${input.googleName ?? null}, ${matchedName}, ${nm.match}, ${nm.score},
+                  ${ctx.now}, ${input.attestationVersion}, ${input.ip ?? null},
+                  ${input.userAgent ?? null}, ${ctx.now})`;
+          yield* sql`
+          INSERT INTO profile_revisions
+            (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, after_json, created_at)
+          VALUES (${newId()}, ${entityType}, ${entityId}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                  'claim', ${JSON.stringify({ status, name_match: nm.match, name_score: nm.score })}, ${ctx.now})`;
+        })
+      )
+      // Close the SELECT-then-INSERT race: a concurrent claim trips the partial
+      // unique index uq_profile_claims_active → map that to ClaimExists, not a 500.
+      .pipe(
+        Effect.mapError((e) =>
+          /UNIQUE|constraint/i.test(String((e as { message?: string })?.message ?? e))
+            ? new ClaimExists({ entityType, entityId })
+            : e
+        )
+      );
+
+    return { claimId, status, nameMatch: nm.match as NameMatchTier, nameScore: nm.score, matchedName };
+  });
+
+  const revokeClaim = Effect.fn('ProfileOwnerService.revokeClaim')(function* (
+    claimId: string,
+    ctx: WriteContext,
+    reason?: string | null
+  ) {
+    yield* requireDurableStorage;
+    const rows = yield* sql<{ entity_type: string; entity_id: string; status: string }>`
+      SELECT entity_type, entity_id, status FROM profile_claims WHERE claim_id = ${claimId} LIMIT 1`;
+    const c = rows[0];
+    if (!c) return yield* Effect.fail(new NotFound({ message: 'claim not found' }));
+
+    yield* sql.withTransaction(
+      Effect.gen(function* () {
+        yield* sql`
+          UPDATE profile_claims SET status = 'revoked', revoked_at = ${ctx.now},
+            revoked_by = ${ctx.authorId}, revoke_reason = ${reason ?? null} WHERE claim_id = ${claimId}`;
+        // Clear this entity's overrides on revoke. Overrides are keyed by
+        // (entity_type, entity_id), not by claim — leaving them would let a later
+        // claimant (e.g. the real person, after a bad actor is revoked) silently
+        // inherit the prior owner's edits. The full edit history is preserved in
+        // profile_revisions, so this only resets the live overlay to scraped.
+        yield* sql`
+          DELETE FROM profile_overrides
+          WHERE entity_type = ${c.entity_type} AND entity_id = ${c.entity_id}`;
+        yield* sql`
+          INSERT INTO profile_revisions
+            (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, before_json, created_at)
+          VALUES (${newId()}, ${c.entity_type}, ${c.entity_id}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                  'revoke', ${JSON.stringify({ status: c.status, clearedOverrides: true })}, ${ctx.now})`;
+      })
+    );
+  });
+
+  // Upsert one field's override + record a revision, atomically. `removed` writes
+  // a {removed:true} payload (op='remove') so a re-scrape can't resurrect the
+  // scraped value the owner intentionally cleared (e.g. a photo).
+  const saveOverride = Effect.fn('ProfileOwnerService.saveOverride')(function* (
+    input: {
+      entityType: EntityType;
+      entityId: string;
+      fieldKey: string;
+      content: unknown;
+      sourceHash?: string | null;
+      removed?: boolean;
+    },
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    const { entityType, entityId, fieldKey } = input;
+    const payload = input.removed ? { removed: true } : input.content;
+    const contentJson = JSON.stringify(payload);
+    // Record the hash of the scraped value this override now shadows, so the
+    // reconciler can later detect when the source is re-scraped to something new.
+    const scraped = yield* resolveScraped(entityType, entityId);
+    // Hash the LIVE scraped value (never the client-supplied one). null when the
+    // source is unavailable → reconcile skips it rather than diffing a bogus baseline.
+    const sourceHash = scraped ? hashSource(scrapedFieldValue(scraped, fieldKey)) : null;
+
+    const prev = yield* sql<{ content_json: string }>`
+      SELECT content_json FROM profile_overrides
+      WHERE entity_type = ${entityType} AND entity_id = ${entityId} AND field_key = ${fieldKey} LIMIT 1`;
+
+    yield* sql.withTransaction(
+      Effect.gen(function* () {
+        yield* sql`
+          INSERT INTO profile_overrides
+            (entity_type, entity_id, field_key, content_json, source_hash, scrape_diverged, updated_at, updated_by)
+          VALUES (${entityType}, ${entityId}, ${fieldKey}, ${contentJson}, ${sourceHash}, 0,
+                  ${ctx.now}, ${ctx.authorId})
+          ON CONFLICT(entity_type, entity_id, field_key) DO UPDATE SET
+            content_json = excluded.content_json, source_hash = excluded.source_hash,
+            scrape_diverged = 0, updated_at = excluded.updated_at, updated_by = excluded.updated_by`;
+        yield* sql`
+          INSERT INTO profile_revisions
+            (revision_id, entity_type, entity_id, target_kind, field_key, actor_user_id, actor_role, op, before_json, after_json, created_at)
+          VALUES (${newId()}, ${entityType}, ${entityId}, 'override', ${fieldKey}, ${ctx.authorId}, ${ctx.actorRole},
+                  ${input.removed ? 'remove' : 'edit'}, ${prev[0]?.content_json ?? null}, ${contentJson}, ${ctx.now})`;
+      })
+    );
+  });
+
+  // Moderation queue (plan §9): list claims for the admin console. Default to the
+  // ones needing attention (pending), or pass a status to filter.
+  const listClaims = Effect.fn('ProfileOwnerService.listClaims')(function* (status?: string) {
+    const rows = yield* sql<{
+      claim_id: string; entity_type: string; entity_id: string; user_id: string; status: string;
+      google_name: string | null; matched_name: string | null; name_match: string | null;
+      name_score: number | null; claimed_at: string; attested_at: string;
+    }>`
+      SELECT claim_id, entity_type, entity_id, user_id, status, google_name, matched_name,
+             name_match, name_score, claimed_at, attested_at
+      FROM profile_claims
+      WHERE ${status ? sql`status = ${status}` : sql`status != 'revoked'`}
+      ORDER BY (status = 'pending') DESC, claimed_at DESC
+      LIMIT 500`;
+    // Reconcile (plan §8/§11): a claimed entity_id can vanish when staff person_ids
+    // are merged/removed by the ingest pipeline (claims live in a separate DB, so the
+    // merge can't carry them). Resolve each against the read-model and flag orphans
+    // so a moderator can re-point or revoke.
+    const out: ((typeof rows)[number] & { orphaned: boolean; currentName: string | null })[] = [];
+    const nameCache = new Map<string, string | null>();
+    for (const r of rows) {
+      const key = `${r.entity_type}:${r.entity_id}`;
+      if (!nameCache.has(key))
+        nameCache.set(key, yield* resolveDisplayName(r.entity_type as EntityType, r.entity_id));
+      const name = nameCache.get(key) ?? null;
+      out.push({ ...r, orphaned: name == null, currentName: name });
+    }
+    return out;
+  });
+
+  // Approve a pending (weak-match) claim → active. Audit-tracked in profile_revisions.
+  const approveClaim = Effect.fn('ProfileOwnerService.approveClaim')(function* (
+    claimId: string,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    const rows = yield* sql<{ entity_type: string; entity_id: string; status: string }>`
+      SELECT entity_type, entity_id, status FROM profile_claims WHERE claim_id = ${claimId} LIMIT 1`;
+    const c = rows[0];
+    if (!c) return yield* Effect.fail(new NotFound({ message: 'claim not found' }));
+    if (c.status !== 'pending')
+      return yield* Effect.fail(new NotFound({ message: `claim not pending (is '${c.status}')` }));
+    yield* sql.withTransaction(
+      Effect.gen(function* () {
+        yield* sql`UPDATE profile_claims SET status = 'active' WHERE claim_id = ${claimId}`;
+        yield* sql`
+          INSERT INTO profile_revisions
+            (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, after_json, created_at)
+          VALUES (${newId()}, ${c.entity_type}, ${c.entity_id}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                  'approve', ${JSON.stringify({ status: 'active', from: 'pending' })}, ${ctx.now})`;
+      })
+    );
+  });
+
+  // Re-point a claim (+ its overrides) to a new entity_id — for orphaned claims whose
+  // original person_id was merged away by the ingest pipeline (plan §11/§11a). Target
+  // must resolve in the read-model and not already be actively claimed.
+  const repointClaim = Effect.fn('ProfileOwnerService.repointClaim')(function* (
+    claimId: string,
+    newEntityId: string,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    const rows = yield* sql<{ entity_type: string; entity_id: string; status: string }>`
+      SELECT entity_type, entity_id, status FROM profile_claims WHERE claim_id = ${claimId} LIMIT 1`;
+    const c = rows[0];
+    if (!c) return yield* Effect.fail(new NotFound({ message: 'claim not found' }));
+    if (c.status === 'revoked')
+      return yield* Effect.fail(new NotFound({ message: 'cannot re-point a revoked claim' }));
+    if (c.entity_id === newEntityId) return; // no-op
+    const scraped = yield* resolveScraped(c.entity_type as EntityType, newEntityId);
+    if (scraped == null)
+      return yield* Effect.fail(new NotFound({ message: `target entity '${newEntityId}' not found` }));
+
+    // Re-hash each moved override against the NEW entity's scraped value so divergence
+    // detection isn't comparing against the old entity's source.
+    const moving = yield* sql<{ field_key: string }>`
+      SELECT field_key FROM profile_overrides
+      WHERE entity_type = ${c.entity_type} AND entity_id = ${c.entity_id}`;
+
+    yield* sql
+      .withTransaction(
+        Effect.gen(function* () {
+          yield* sql`UPDATE profile_claims SET entity_id = ${newEntityId} WHERE claim_id = ${claimId}`;
+          // The target is unclaimed (guard below), so any overrides there are stale
+          // orphans — clear them before moving so the PK (type,id,field) can't collide.
+          yield* sql`
+            DELETE FROM profile_overrides
+            WHERE entity_type = ${c.entity_type} AND entity_id = ${newEntityId}`;
+          yield* sql`
+            UPDATE profile_overrides SET entity_id = ${newEntityId}
+            WHERE entity_type = ${c.entity_type} AND entity_id = ${c.entity_id}`;
+          for (const m of moving) {
+            const h = hashSource(scrapedFieldValue(scraped, m.field_key));
+            yield* sql`
+              UPDATE profile_overrides SET source_hash = ${h}, scrape_diverged = 0
+              WHERE entity_type = ${c.entity_type} AND entity_id = ${newEntityId} AND field_key = ${m.field_key}`;
+          }
+          yield* sql`
+            INSERT INTO profile_revisions
+              (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, before_json, after_json, created_at)
+            VALUES (${newId()}, ${c.entity_type}, ${newEntityId}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                    'repoint', ${JSON.stringify({ from: c.entity_id })}, ${JSON.stringify({ to: newEntityId })}, ${ctx.now})`;
+        })
+      )
+      // Only the claims unique index (target already actively claimed) maps to ClaimExists.
+      .pipe(
+        Effect.mapError((e) =>
+          /UNIQUE|constraint/i.test(String((e as { message?: string })?.message ?? e))
+            ? new ClaimExists({ entityType: c.entity_type as EntityType, entityId: newEntityId })
+            : e
+        )
+      );
+  });
+
+  // Merge two profile pages that are the same person (plan §11a): alias the MERGED
+  // entity to the CANONICAL so id-resolution redirects it. v1 is SAME-TYPE only
+  // (staff↔staff / judge↔judge); cross-type (staff↔judge) needs combined rendering and
+  // is deferred. Caller (server-fn) gates on the user owning BOTH (or moderator).
+  const mergeProfiles = Effect.fn('ProfileOwnerService.mergeProfiles')(function* (
+    canonical: { type: EntityType; id: string },
+    merged: { type: EntityType; id: string },
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    if (canonical.type !== merged.type)
+      return yield* Effect.fail(new NotFound({ message: 'cross-type merge not supported yet' }));
+    if (canonical.id === merged.id) return; // no-op
+    // Don't let a canonical be merged away (would orphan its aliases), and don't merge
+    // into a page that is itself merged elsewhere.
+    const canonAlias = yield* sql<{ merge_id: string }>`
+      SELECT merge_id FROM profile_merges WHERE merged_type = ${canonical.type} AND merged_id = ${canonical.id} AND active = 1 LIMIT 1`;
+    if (canonAlias[0])
+      return yield* Effect.fail(new NotFound({ message: 'canonical is itself merged into another profile' }));
+
+    yield* sql
+      .withTransaction(
+        Effect.gen(function* () {
+          yield* sql`
+            INSERT INTO profile_merges (merge_id, canonical_type, canonical_id, merged_type, merged_id, merged_by, active, created_at)
+            VALUES (${newId()}, ${canonical.type}, ${canonical.id}, ${merged.type}, ${merged.id}, ${ctx.authorId}, 1, ${ctx.now})`;
+          yield* sql`
+            INSERT INTO profile_revisions
+              (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, after_json, created_at)
+            VALUES (${newId()}, ${canonical.type}, ${canonical.id}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                    'merge', ${JSON.stringify({ merged: merged.id })}, ${ctx.now})`;
+        })
+      )
+      // Merged page already aliased elsewhere → uq_profile_merge_active trips.
+      .pipe(
+        Effect.mapError((e) =>
+          /UNIQUE|constraint/i.test(String((e as { message?: string })?.message ?? e))
+            ? new ClaimExists({ entityType: merged.type, entityId: merged.id })
+            : e
+        )
+      );
+  });
+
+  const unmergeProfiles = Effect.fn('ProfileOwnerService.unmergeProfiles')(function* (
+    merged: { type: EntityType; id: string },
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    yield* sql`
+      UPDATE profile_merges SET active = 0
+      WHERE merged_type = ${merged.type} AND merged_id = ${merged.id} AND active = 1`;
+    yield* sql`
+      INSERT INTO profile_revisions
+        (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, after_json, created_at)
+      VALUES (${newId()}, ${merged.type}, ${merged.id}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+              'unmerge', ${JSON.stringify({ merged: merged.id })}, ${ctx.now})`;
+  });
+
+  // Contributions-side of an owner/moderator profile delete (plan §11b): revoke any
+  // claim, clear overrides, and audit op='delete'. The durable read-model suppression
+  // (so a re-scrape can't resurrect it) is enqueued to the VM worker by the server-fn.
+  const deleteProfile = Effect.fn('ProfileOwnerService.deleteProfile')(function* (
+    entityType: EntityType,
+    entityId: string,
+    ctx: WriteContext,
+    reason?: string | null
+  ) {
+    yield* requireDurableStorage;
+    yield* sql.withTransaction(
+      Effect.gen(function* () {
+        yield* sql`
+          UPDATE profile_claims SET status = 'revoked', revoked_at = ${ctx.now},
+            revoked_by = ${ctx.authorId}, revoke_reason = ${reason ?? 'profile deleted'}
+          WHERE entity_type = ${entityType} AND entity_id = ${entityId} AND status != 'revoked'`;
+        yield* sql`
+          DELETE FROM profile_overrides WHERE entity_type = ${entityType} AND entity_id = ${entityId}`;
+        yield* sql`
+          INSERT INTO profile_revisions
+            (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, before_json, created_at)
+          VALUES (${newId()}, ${entityType}, ${entityId}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                  'delete', ${JSON.stringify({ reason: reason ?? null })}, ${ctx.now})`;
+      })
+    );
+  });
+
+  // Reconcile source divergence (plan §11): re-read each override's scraped source,
+  // re-hash it, and flip scrape_diverged when it no longer matches the hash captured
+  // at edit time — so the owner is told "the source changed under your edit". Runnable
+  // on a schedule or on demand from the admin queue. Idempotent.
+  const reconcile = Effect.fn('ProfileOwnerService.reconcile')(function* (ctx: WriteContext) {
+    yield* requireDurableStorage;
+    const rows = yield* sql<{ entity_type: string; entity_id: string; field_key: string; source_hash: string | null; scrape_diverged: number }>`
+      SELECT entity_type, entity_id, field_key, source_hash, scrape_diverged FROM profile_overrides`;
+    const cache = new Map<string, CommonProfile | null>();
+    let checked = 0;
+    let changed = 0;
+    for (const r of rows) {
+      if (!r.source_hash) continue; // nothing captured to diff against
+      checked++;
+      const key = `${r.entity_type}:${r.entity_id}`;
+      if (!cache.has(key)) cache.set(key, yield* resolveScraped(r.entity_type as EntityType, r.entity_id));
+      const scraped = cache.get(key) ?? null;
+      // If the entity vanished, leave the override flag alone (orphan handling covers it).
+      if (!scraped) continue;
+      const now = hashSource(scrapedFieldValue(scraped, r.field_key));
+      const diverged = now !== r.source_hash ? 1 : 0;
+      if (diverged === r.scrape_diverged) continue;
+      changed++;
+      yield* sql`
+        UPDATE profile_overrides SET scrape_diverged = ${diverged}
+        WHERE entity_type = ${r.entity_type} AND entity_id = ${r.entity_id} AND field_key = ${r.field_key}`;
+      yield* sql`
+        INSERT INTO profile_revisions
+          (revision_id, entity_type, entity_id, target_kind, field_key, actor_user_id, actor_role, op, after_json, created_at)
+        VALUES (${newId()}, ${r.entity_type}, ${r.entity_id}, 'override', ${r.field_key}, ${ctx.authorId}, ${ctx.actorRole},
+                ${diverged ? 'diverge' : 'converge'}, ${JSON.stringify({ scrape_diverged: diverged })}, ${ctx.now})`;
+    }
+    return { checked, changed };
+  });
+
+  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim, reconcile, repointClaim, deleteProfile, mergeProfiles, unmergeProfiles };
+});
+
+export class ProfileOwnerService extends Context.Service<
+  ProfileOwnerService,
+  Effect.Success<typeof makeProfileOwnerService>
+>()('ProfileOwnerService') {}
+
+export const ProfileOwnerServiceLive = Layer.effect(
+  ProfileOwnerService,
+  makeProfileOwnerService
+).pipe(Layer.provide(ProfileSqlLive));

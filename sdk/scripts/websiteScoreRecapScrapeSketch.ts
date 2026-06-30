@@ -19,7 +19,7 @@ const recapPageSelectors = {
   recapDate: '.core-date-location p:nth-child(1)',
   recapLocationCityState: '.core-date-location p:nth-child(2)',
   recapTitle: '.elementor-widget-theme-post-title h1',
-  infoAndChiefJudge: 'body > div.elementor div.elementor-element > div > div.elementor-element > div.elementor-element.elementor-element-498cf4b.e-con-full.e-flex.e-con.e-child > div.elementor-element > div.elementor-element.elementor-widget.elementor-widget-post-info > div > ul > li > span'
+  infoAndChiefJudge: 'body > div.elementor div.elementor-element > div > div.elementor-element > div.elementor-element.elementor-element-498cf4b.e-con-full.e-flex.e-con.e-child > div.elementor-element > div.elementor-element.elementor-widget.elementor-widget-post-info > div > ul > li > span',
   recapTable: ".score-tbl",
   recapTableRows: ".score-tbl .tbl-row",
   recapTableCells: ".score-tbl .tbl-row > div",

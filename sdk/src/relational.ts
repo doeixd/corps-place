@@ -5013,7 +5013,7 @@ export const normalizeCaption = (
   // NOTE: stems use \w* so inflected forms match — a bare \b after a stem (e.g. "choreograph\b")
   // silently fails on "choreographer"/"administration"/"Designs", dumping them into 'other'.
   if (/\bdrum\s*majors?\b|\bdm\b/.test(t)) return "drum-major";
-  if (/\b(brass|horns?|hornline|trumpets?|mellophones?|baritones?|euphoniums?|tubas?|contras?)\b/.test(t)) return "brass";
+  if (/\b(brass|winds?|horns?|hornline|trumpets?|mellophones?|baritones?|euphoniums?|tubas?|sousaphones?|contras?)\b/.test(t)) return "brass";
   if (/\b(percussion|batter\w*|drumline|front\s*ensemble|pit|mallets?|snares?|tenors?|cymbals?|timpani)\b/.test(t)) return "percussion";
   if (/\b(colou?r\s*guard|guard|weapons?|sab[er]+|rifles?|flags?|winter\s*guard)\b/.test(t)) return "guard";
   if (/\b(visual|drill|marching|movement|choreograph\w*|bodywork)\b/.test(t)) return "visual";
