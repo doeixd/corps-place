@@ -9,6 +9,7 @@ import {
 import type { ProfileOverlay } from '@/lib/profile-owner/merge';
 import { ATTESTATION_VERSION, ALLOWED_PROFILE_FIELDS } from '@/lib/profile-owner/attestation';
 import { requireCapability, requireProfileOwner, ForbiddenError } from '@/lib/authz';
+import { rateLimit } from '@/lib/rate-limit';
 import { auth } from '@/lib/auth';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { MediaService } from '@/lib/fantasy/services/media-service';
@@ -74,6 +75,10 @@ export const claimProfile = createServerFn({ method: 'POST' })
     if (data.attested !== true) throw new ForbiddenError('claimProfile');
     const req = getWebRequest();
     const actor = await requireCapability(req, 'claimProfile');
+    // Guardrail (plan §14, Tiered+): cap claims per user so a spoofed-name sweep
+    // can't mass-claim profiles. 5 / hour is well above any honest use.
+    if (!rateLimit(`profile-claim:${actor.userId}`, 5, 3_600_000))
+      throw new Error('Too many claim attempts — please try again later.');
     const session = await auth.api.getSession({ headers: req.headers });
     const googleName = session?.user?.name ?? null;
     const ip = req.headers.get('x-forwarded-for') ?? null;

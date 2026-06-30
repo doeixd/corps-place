@@ -196,7 +196,9 @@ function ProfileClaims({ all }: { all: ClaimRow[] }) {
         </CardContent>
       </Card>
 
-      <h3 className="mb-2 text-sm font-semibold text-text-secondary">Active ({active.length})</h3>
+      <h3 className="mb-2 text-sm font-semibold text-text-secondary">
+        Active ({active.length}) — auto-activated on name match; spot-check the tier/name
+      </h3>
       <Card>
         <CardContent className="text-sm">
           <Show when={active.length > 0} fallback={<p className="text-text-secondary">No active claims.</p>}>
