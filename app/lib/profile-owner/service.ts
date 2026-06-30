@@ -311,6 +311,48 @@ const makeProfileOwnerService = Effect.gen(function* () {
     );
   });
 
+  // Re-point a claim (+ its overrides) to a new entity_id — for orphaned claims whose
+  // original person_id was merged away by the ingest pipeline (plan §11/§11a). Target
+  // must resolve in the read-model and not already be actively claimed.
+  const repointClaim = Effect.fn('ProfileOwnerService.repointClaim')(function* (
+    claimId: string,
+    newEntityId: string,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    const rows = yield* sql<{ entity_type: string; entity_id: string; status: string }>`
+      SELECT entity_type, entity_id, status FROM profile_claims WHERE claim_id = ${claimId} LIMIT 1`;
+    const c = rows[0];
+    if (!c) return yield* Effect.fail(new NotFound({ message: 'claim not found' }));
+    if (c.entity_id === newEntityId) return; // no-op
+    const exists = yield* resolveDisplayName(c.entity_type as EntityType, newEntityId);
+    if (exists == null)
+      return yield* Effect.fail(new NotFound({ message: `target entity '${newEntityId}' not found` }));
+
+    yield* sql
+      .withTransaction(
+        Effect.gen(function* () {
+          yield* sql`UPDATE profile_claims SET entity_id = ${newEntityId} WHERE claim_id = ${claimId}`;
+          yield* sql`
+            UPDATE profile_overrides SET entity_id = ${newEntityId}
+            WHERE entity_type = ${c.entity_type} AND entity_id = ${c.entity_id}`;
+          yield* sql`
+            INSERT INTO profile_revisions
+              (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, before_json, after_json, created_at)
+            VALUES (${newId()}, ${c.entity_type}, ${newEntityId}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                    'repoint', ${JSON.stringify({ from: c.entity_id })}, ${JSON.stringify({ to: newEntityId })}, ${ctx.now})`;
+        })
+      )
+      // Target already actively claimed → uq_profile_claims_active trips.
+      .pipe(
+        Effect.mapError((e) =>
+          /UNIQUE|constraint/i.test(String((e as { message?: string })?.message ?? e))
+            ? new ClaimExists({ entityType: c.entity_type as EntityType, entityId: newEntityId })
+            : e
+        )
+      );
+  });
+
   // Reconcile source divergence (plan §11): re-read each override's scraped source,
   // re-hash it, and flip scrape_diverged when it no longer matches the hash captured
   // at edit time — so the owner is told "the source changed under your edit". Runnable
@@ -346,7 +388,7 @@ const makeProfileOwnerService = Effect.gen(function* () {
     return { checked, changed };
   });
 
-  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim, reconcile };
+  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim, reconcile, repointClaim };
 });
 
 export class ProfileOwnerService extends Context.Service<

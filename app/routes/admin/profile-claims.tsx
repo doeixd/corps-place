@@ -2,8 +2,10 @@
 // Pending (weak name-match) claims await a moderator; active claims can be revoked.
 // Claims live in contributions.db (on the serving container), so this reads/writes
 // directly via server-fns — no VM worker hop. Gated to `manageProfileClaims`.
+import { useState } from 'react';
 import { createFileRoute, useRouter, Link } from '@tanstack/react-router';
 import { Show, For } from 'jotai-solid-api';
+import { Input } from '@/components/ui/input';
 import { adminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
 import { PageHeader } from '@/components/page-header';
@@ -16,6 +18,7 @@ import {
   approveProfileClaim,
   revokeProfileClaim,
   reconcileProfileOverrides,
+  repointProfileClaim,
 } from '@/lib/server-fns/profile-owner';
 import { toast } from 'sonner';
 import { seoHead } from '@/lib/seo';
@@ -49,6 +52,33 @@ export const Route = createFileRoute('/admin/profile-claims')({
     return <AdminPage gate={gate}>{() => <ProfileClaims all={(data ?? []) as ClaimRow[]} />}</AdminPage>;
   },
 });
+
+function RepointControl({ claim, onDone }: { claim: ClaimRow; onDone: () => Promise<void> }) {
+  const [val, setVal] = useState('');
+  const act = useAsyncAction(async () => {
+    await repointProfileClaim({ data: { claimId: claim.claim_id, newEntityId: val.trim() } });
+    await onDone();
+  });
+  return (
+    <span className="flex items-center gap-1">
+      <Input
+        className="h-7 w-48"
+        placeholder="new entity id"
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+      />
+      <BusyButton
+        size="sm"
+        variant="outline"
+        busy={act.busy}
+        disabled={!val.trim()}
+        onClick={() => void act.run()}
+      >
+        Re-point
+      </BusyButton>
+    </span>
+  );
+}
 
 const matchBadge = (m: string | null) =>
   m === 'exact' || m === 'close' ? 'success-light' : m === 'weak' ? 'warning-light' : 'secondary';
@@ -92,7 +122,10 @@ function ProfileClaims({ all }: { all: ClaimRow[] }) {
         <span className="text-text-secondary">
           claimed as “{c.google_name ?? '—'}” · {new Date(c.claimed_at).toLocaleDateString()}
         </span>
-        <span className="ml-auto flex gap-2">
+        <span className="ml-auto flex items-center gap-2">
+          <Show when={c.orphaned}>
+            <RepointControl claim={c} onDone={() => router.invalidate()} />
+          </Show>
           <Show when={c.status === 'pending'}>
             <BusyButton
               size="sm"

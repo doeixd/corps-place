@@ -239,3 +239,20 @@ export const reconcileProfileOverrides = createServerFn({ method: 'POST' })
       ).pipe(Effect.provide(ProfileOwnerServiceLive))
     );
   });
+
+/** Re-point an orphaned claim (+ its overrides) to a new entity_id; `manageProfileClaims`. */
+export const repointProfileClaim = createServerFn({ method: 'POST' })
+  .validator((data: { claimId: string; newEntityId: string }) => data)
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'manageProfileClaims');
+    await Effect.runPromise(
+      Effect.flatMap(ProfileOwnerService, (s) =>
+        s.repointClaim(data.claimId, data.newEntityId, {
+          authorId: actor.userId,
+          actorRole: actor.role,
+          now: new Date().toISOString(),
+        })
+      ).pipe(Effect.provide(ProfileOwnerServiceLive))
+    );
+    return { ok: true };
+  });
