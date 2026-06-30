@@ -490,7 +490,7 @@ export const readCorpsSeasonSnapshots = async (
   slug: string,
 ): Promise<CorpsSeasonSnapshotRow[]> => {
   const r = await db.execute({
-    sql: `SELECT snapshot_at, date, label, slug, predicted, actual, low, high
+    sql: `SELECT snapshot_at, date, label, slug, pct, predicted, actual, low, high
           FROM rm_corps_prediction_snapshots WHERE corps_slug = ?
           ORDER BY snapshot_at, sort_index`,
     args: [slug.trim().toLowerCase()],
@@ -500,10 +500,45 @@ export const readCorpsSeasonSnapshots = async (
     date: row.date,
     label: row.label,
     slug: row.slug,
+    pct: Number(row.pct),
     predicted: row.predicted === null ? null : Number(row.predicted),
     actual: row.actual === null ? null : Number(row.actual),
     low: row.low === null ? null : Number(row.low),
     high: row.high === null ? null : Number(row.high),
+  }));
+};
+
+/** The /vs as-of prediction read path: distinct snapshot dates for a corps,
+ *  from the same matrix (read-model — so it works in prod, where the relational
+ *  builder path doesn't). */
+export const readVs2026SnapshotDates = async (db: Client, slug: string): Promise<string[]> => {
+  const r = await db.execute({
+    sql: `SELECT DISTINCT snapshot_at FROM rm_corps_prediction_snapshots
+          WHERE corps_slug = ? AND season = '2026' ORDER BY snapshot_at DESC`,
+    args: [slug.trim().toLowerCase()],
+  });
+  return (r.rows as any[]).map((row) => String(row.snapshot_at)).filter(Boolean);
+};
+
+/** A corps's predicted-to-finals curve AS OF a snapshot date (x = %-through),
+ *  reconstructed from the corps snapshot matrix. Mirrors buildVsPredictionSnapshot's
+ *  shape so the /vs loader can swap builder → reader with no behavior change. */
+export const readVsCorps2026PredictedAsOf = async (
+  db: Client,
+  slug: string,
+  asOf: string,
+): Promise<Array<{ pct: number; predicted: number; date: string; eventLabel: string }>> => {
+  const r = await db.execute({
+    sql: `SELECT pct, predicted, date, label FROM rm_corps_prediction_snapshots
+          WHERE corps_slug = ? AND season = '2026' AND snapshot_at = ? AND predicted IS NOT NULL
+          ORDER BY pct ASC`,
+    args: [slug.trim().toLowerCase(), asOf],
+  });
+  return (r.rows as any[]).map((row) => ({
+    pct: Number(row.pct),
+    predicted: Number(row.predicted),
+    date: row.date ?? '',
+    eventLabel: row.label ?? '',
   }));
 };
 

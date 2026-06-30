@@ -25,6 +25,8 @@ import {
   readVsCorpsSeasonAvailability,
   readVsActiveCorps,
   readCorpsBySlug,
+  readVs2026SnapshotDates,
+  readVsCorps2026PredictedAsOf,
 } from '@sdk/src/readModel/readers.js';
 import { parseCaption, type VsCaption } from '@/lib/vs/captions';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
@@ -150,12 +152,16 @@ async function resolveOne(s: VsSeries, caption: VsCaption): Promise<VsResolvedSe
   }
 
   if (s.kind === 'prediction') {
-    // As-of snapshot (relational-only, UI-dead): Total only — drop on a caption.
+    // As-of snapshot: Total only — drop on a caption.
     if (caption !== 'total') return null;
-    // Dynamic in asOf → relational (live) path only; degrades to empty where the
-    // relational DB isn't on the host (the series then simply drops).
+    // Reads the corps prediction-snapshot matrix from the read-model in prod
+    // (rm_corps_prediction_snapshots, x = %-through), falling back to the live
+    // relational builder in dev. Previously relational-only → empty in prod.
     const [pts, corps] = await Promise.all([
-      buildVsPredictionSnapshot(getDb(), s.corpsSlug, s.asOf).catch(() => []),
+      readOrBuild(
+        (db) => readVsCorps2026PredictedAsOf(db, s.corpsSlug, s.asOf),
+        (db) => buildVsPredictionSnapshot(db, s.corpsSlug, s.asOf)
+      ).catch(() => []),
       readOrBuild(
         (db) => readCorpsBySlug(db, s.corpsSlug),
         (db) => buildCorpsBySlug(db, s.corpsSlug)
@@ -214,12 +220,15 @@ export const getVsSeasonAvailability = createServerFn({ method: 'GET' }).handler
   }
 );
 
-/** The 2026 prediction snapshot dates for a corps (relational-only; empty where
- *  the relational DB isn't on the host). */
+/** The 2026 prediction snapshot dates for a corps — from the read-model in prod
+ *  (rm_corps_prediction_snapshots), the relational builder in dev. */
 export const getVs2026SnapshotDates = createServerFn({ method: 'GET' })
   .validator((data: { slug: string }) => data)
   .handler(async ({ data }): Promise<{ dates: string[] }> => {
-    const dates = await buildVs2026SnapshotDates(getDb(), data.slug).catch(() => [] as string[]);
+    const dates = await readOrBuild(
+      (db) => readVs2026SnapshotDates(db, data.slug),
+      (db) => buildVs2026SnapshotDates(db, data.slug)
+    ).catch(() => [] as string[]);
     return { dates };
   });
 

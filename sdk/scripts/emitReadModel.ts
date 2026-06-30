@@ -115,7 +115,9 @@ import {
 //      full scheduled field. Same columns; the `season` is now the performing season.
 // v17: + rm_corps_prediction_snapshots — the "prediction as of ___" history matrix (corps season
 //      timeline per snapshot date); the newest snapshot matches rm_corps_season_points (review #3).
-const SCHEMA_VERSION = 17;
+// v18: rm_corps_prediction_snapshots gains `pct` (run percent-through-season) so the same matrix
+//      drives the /vs chart's as-of prediction (x = %-through), making it work in prod (was relational-only).
+const SCHEMA_VERSION = 18;
 
 type Section =
   | "events"
@@ -282,7 +284,7 @@ CREATE INDEX rm_corps_season_pts ON rm_corps_season_points(corps_slug, season, s
 -- snapshot date (distinct prediction-run days). The newest snapshot equals
 -- rm_corps_season_points (parity-checked); older snapshots replay past forecasts.
 CREATE TABLE rm_corps_prediction_snapshots (
-  corps_slug TEXT, season TEXT, snapshot_at TEXT, date TEXT, label TEXT, slug TEXT,
+  corps_slug TEXT, season TEXT, snapshot_at TEXT, date TEXT, label TEXT, slug TEXT, pct REAL,
   predicted REAL, actual REAL, low REAL, high REAL, sort_index INTEGER
 );
 CREATE INDEX rm_corps_pred_snap ON rm_corps_prediction_snapshots(corps_slug, season, snapshot_at, sort_index);
@@ -816,6 +818,7 @@ export const runEmit = async (args: Args) => {
           s.date,
           s.label,
           s.slug,
+          s.pct,
           s.predicted,
           s.actual,
           s.low,
@@ -914,6 +917,7 @@ export const runEmit = async (args: Args) => {
           "date",
           "label",
           "slug",
+          "pct",
           "predicted",
           "actual",
           "low",

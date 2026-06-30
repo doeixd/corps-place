@@ -320,8 +320,10 @@ export const buildCorpsSeasonScores = async (
   return Array.from(byEvent.values()).sort((a, b) => a.date.localeCompare(b.date));
 };
 
-/** One season point as-of a specific snapshot date. */
-export type CorpsSeasonSnapshotRow = CorpsSeasonPoint & { snapshot_at: string };
+/** One season point as-of a specific snapshot date. `pct` = the run's
+ *  percent-through-season (clamped 0–100), so the same matrix can drive the /vs
+ *  chart (x = %-through) as well as the corps chart (x = date). */
+export type CorpsSeasonSnapshotRow = CorpsSeasonPoint & { snapshot_at: string; pct: number };
 
 /**
  * The "prediction as of ___" matrix: buildCorpsSeasonScores generalized across
@@ -399,6 +401,7 @@ export const buildCorpsSeasonSnapshots = async (
       date: raw.date ?? '',
       label: raw.label,
       slug: raw.slug,
+      pct: Math.min(100, Math.max(0, pt)),
       predicted,
       actual: typeof raw.actual === 'number' ? raw.actual : null,
       low: predicted != null ? Number((predicted - margin).toFixed(2)) : null,
