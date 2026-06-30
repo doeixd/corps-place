@@ -65,4 +65,4 @@ export interface VsResolvedSeries {
 
 /** Hard cap on concurrent series (plan edge-case: visible message, no silent
  *  truncation). */
-export const VS_SERIES_CAP = 6;
+export const VS_SERIES_CAP = 12;

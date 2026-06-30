@@ -15,6 +15,12 @@ const BASELINE_RAMP_LIGHT = [
   'oklch(0.55 0.10 320)',
   'oklch(0.58 0.10 90)',
   'oklch(0.55 0.09 200)',
+  'oklch(0.57 0.11 0)',
+  'oklch(0.58 0.10 60)',
+  'oklch(0.55 0.10 120)',
+  'oklch(0.55 0.09 175)',
+  'oklch(0.55 0.10 225)',
+  'oklch(0.55 0.10 285)',
 ];
 const BASELINE_RAMP_DARK = [
   'oklch(0.74 0.11 250)',
@@ -23,6 +29,12 @@ const BASELINE_RAMP_DARK = [
   'oklch(0.74 0.11 320)',
   'oklch(0.78 0.11 90)',
   'oklch(0.74 0.10 200)',
+  'oklch(0.76 0.12 0)',
+  'oklch(0.78 0.11 60)',
+  'oklch(0.74 0.11 120)',
+  'oklch(0.74 0.10 175)',
+  'oklch(0.74 0.11 225)',
+  'oklch(0.74 0.11 285)',
 ];
 
 /** Nudge a corps's chart hue so the 2nd+ same-corps series is distinguishable

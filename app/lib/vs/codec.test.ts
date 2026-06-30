@@ -34,9 +34,9 @@ describe('vs codec', () => {
     ]);
   });
 
-  it('caps at VS_SERIES_CAP (6)', () => {
-    const many = Array.from({ length: 10 }, (_, i) => `baseline~${i + 1}`).join(',');
-    expect(decodeVsSeries(many)).toHaveLength(6);
+  it('caps at VS_SERIES_CAP (12)', () => {
+    const many = Array.from({ length: 18 }, (_, i) => `baseline~${i + 1}`).join(',');
+    expect(decodeVsSeries(many)).toHaveLength(12);
   });
 
   it('empty / nullish → []', () => {
