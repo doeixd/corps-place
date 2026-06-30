@@ -78,9 +78,16 @@ while IFS= read -r slug; do
   fi
 done <<<"$missing"
 
-echo "[nightly-predictions] republishing prod read-model…"
-# Cap the emit heap and skip the media-cache sync (predictions don't change media).
-SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2048" bash "$repo_root/scripts/refresh-prod-read-model.sh"
+# Publish, unless the caller will emit once itself (SKIP_PUBLISH=1) — e.g.
+# auto-ingest-scores.sh runs this for future-only regen, then does the single
+# read-model publish so scores + refreshed forecasts ship together (review #1).
+if [ "${SKIP_PUBLISH:-0}" = "1" ]; then
+  echo "[nightly-predictions] SKIP_PUBLISH=1 — leaving the read-model publish to the caller."
+else
+  echo "[nightly-predictions] republishing prod read-model…"
+  # Cap the emit heap and skip the media-cache sync (predictions don't change media).
+  SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2048" bash "$repo_root/scripts/refresh-prod-read-model.sh"
+fi
 
 if [ "$failures" -gt 0 ]; then
   echo "[nightly-predictions] done with $failures failure(s)."

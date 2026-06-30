@@ -124,7 +124,30 @@ after="$(count_scores)"
 echo "[auto-ingest $(ts)] scores after=$after (delta=$((after - before)))"
 
 if [ "$after" -gt "$before" ]; then
-  echo "[auto-ingest $(ts)] new scores landed — republishing prod read-model…"
+  echo "[auto-ingest $(ts)] new scores landed — backfilling actuals, regenerating future forecasts, then publishing once…"
+  # (1) Backfill actuals/errors into saved prediction runs for each newly-scored
+  # show (review High #1). Reads the just-ingested DB scores (no extra scrape);
+  # #9 makes this fill ALL snapshots for the event. Best-effort per show.
+  if [ "$pending" != "__GATE_ERR__" ]; then
+    for slug in $pending; do
+      [ -z "$slug" ] && continue
+      if [ "$(event_has_scores "$slug")" -gt 0 ]; then
+        echo "[auto-ingest $(ts)] backfilling actuals for $slug…"
+        NODE_OPTIONS="--max-old-space-size=1536" vp exec tsx scripts/updateEventPredictionStatus.ts \
+          --event "$slug" --season "$SEASON" 2>&1 | sed 's/^/    /' \
+          || echo "[auto-ingest $(ts)] backfill failed for $slug (non-fatal)"
+      fi
+    done
+  fi
+  # (2) Regenerate FUTURE-only forecasts (score-state aware after #2) WITHOUT its
+  # own publish, so the released scores and the updated forecasts ship together in
+  # (3) one read-model emit below — closing the "scores live but forecasts stale"
+  # gap the review flagged. Best-effort: a regen hiccup must not block publishing.
+  echo "[auto-ingest $(ts)] regenerating future forecasts (no publish)…"
+  SKIP_PUBLISH=1 bash "$repo_root/scripts/nightly-predictions.sh" 2>&1 | sed 's/^/    /' \
+    || echo "[auto-ingest $(ts)] future-forecast regen had failures (non-fatal)"
+  # (3) Single publish: scores + refreshed forecasts together.
+  echo "[auto-ingest $(ts)] publishing prod read-model…"
   SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2560" bash "$repo_root/scripts/refresh-prod-read-model.sh"
   echo "[auto-ingest $(ts)] published — drumcorps.app updates in ~5s."
   # Email score-notify subscribers for each pending show that now has scores.
