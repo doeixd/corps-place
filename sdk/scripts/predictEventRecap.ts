@@ -14,7 +14,10 @@ import {
   buildV9PredictionFeatures,
   totalFromV9Captions,
 } from '../src/training/v9PredictionFeatures.js';
-import { saveEventPredictionRun } from '../src/training/v9EventPredictionDb.js';
+import {
+  saveEventPredictionRun,
+  eventPredictionInputSignature,
+} from '../src/training/v9EventPredictionDb.js';
 import { findLatestV9SubcaptionModelDir } from '../src/training/v9ModelPaths.js';
 import { V9_RAW_STATIC_DIM, type PredictionContextMode } from '../src/training/v9FeatureModes.js';
 import {
@@ -656,6 +659,8 @@ async function loadLineupAudit(db: Client, eventSlug: string) {
   };
 }
 
+// Stamps the canonical signature on a saved run; the app recomputes the same
+// shape via eventPredictionInputSignature to decide freshness (review Medium #5).
 const predictionInputSignature = (input: {
   event: EventRow;
   lineup: LineupRow[];
@@ -671,32 +676,28 @@ const predictionInputSignature = (input: {
   sameSeasonBreakdownPrior: boolean;
   builderVersion: string;
 }) =>
-  createHash('sha256')
-    .update(
-      JSON.stringify({
-        event_slug: input.event.slug,
-        start_date: input.event.start_date,
-        lineup: input.lineup.map((row) => ({
-          corps_key: row.corps_key,
-          unit_name: row.unit_name,
-          order: row.performance_order,
-          time: row.time,
-          division: row.division_name,
-        })),
-        model_dir: input.modelDir,
-        model_fingerprint: input.modelFingerprint,
-        model_static_dim: input.modelStaticDim,
-        feature_static_dim: input.featureStaticDim,
-        mode: input.mode,
-        division: input.division,
-        percent_through: Number(input.percentThrough.toFixed(3)),
-        same_season_history: input.sameSeasonHistory,
-        judge_assignments: input.judgeAssignments,
-        same_season_breakdown_prior: input.sameSeasonBreakdownPrior,
-        builder_version: input.builderVersion,
-      })
-    )
-    .digest('hex');
+  eventPredictionInputSignature({
+    eventSlug: input.event.slug,
+    startDate: input.event.start_date,
+    lineup: input.lineup.map((row) => ({
+      corps_key: row.corps_key,
+      unit_name: row.unit_name,
+      order: row.performance_order,
+      time: row.time,
+      division: row.division_name,
+    })),
+    modelDir: input.modelDir,
+    modelFingerprint: input.modelFingerprint,
+    modelStaticDim: input.modelStaticDim,
+    featureStaticDim: input.featureStaticDim,
+    mode: input.mode,
+    division: input.division,
+    percentThrough: input.percentThrough,
+    sameSeasonHistory: input.sameSeasonHistory,
+    judgeAssignments: input.judgeAssignments,
+    sameSeasonBreakdownPrior: input.sameSeasonBreakdownPrior,
+    builderVersion: input.builderVersion,
+  });
 
 const modelFileFingerprint = (modelDir: string) => {
   const modelPath = path.join(modelDir, 'model.json');

@@ -1,5 +1,69 @@
+import { createHash } from 'node:crypto';
 import type { Client } from '@libsql/client';
 import { V9_CAPTIONS } from './v9Baselines.js';
+
+/**
+ * Canonical event-prediction input signature — the SINGLE source of the hashed
+ * shape, shared by the predictor (which stamps it on a saved run) and the app's
+ * freshness check (which recomputes it from current DB state). Keeping one
+ * builder prevents the two from drifting: previously the app omitted
+ * `same_season_breakdown_prior`, so an otherwise-identical cached prediction
+ * always looked stale (review Medium #5). Field order/spelling here is the
+ * contract — change it and both sides change together (bump the builder version).
+ */
+export interface EventPredictionSignatureInput {
+  eventSlug: string;
+  startDate: string;
+  lineup: ReadonlyArray<{
+    corps_key: unknown;
+    unit_name: unknown;
+    order: unknown;
+    time: unknown;
+    division: unknown;
+  }>;
+  // modelDir/modelStaticDim may be undefined on the app's freshness path (model
+  // manifest not resolvable); JSON.stringify drops undefined keys, matching the
+  // predictor side which always passes concrete values.
+  modelDir: string | undefined;
+  modelFingerprint: string | undefined;
+  modelStaticDim: number | undefined;
+  featureStaticDim: number;
+  mode: string;
+  division: string;
+  percentThrough: number;
+  sameSeasonHistory: number;
+  judgeAssignments: number;
+  sameSeasonBreakdownPrior: boolean;
+  builderVersion: string;
+}
+
+export const eventPredictionInputSignature = (input: EventPredictionSignatureInput): string =>
+  createHash('sha256')
+    .update(
+      JSON.stringify({
+        event_slug: input.eventSlug,
+        start_date: input.startDate,
+        lineup: input.lineup.map((row) => ({
+          corps_key: row.corps_key,
+          unit_name: row.unit_name,
+          order: row.order,
+          time: row.time,
+          division: row.division,
+        })),
+        model_dir: input.modelDir,
+        model_fingerprint: input.modelFingerprint,
+        model_static_dim: input.modelStaticDim,
+        feature_static_dim: input.featureStaticDim,
+        mode: input.mode,
+        division: input.division,
+        percent_through: Number(input.percentThrough.toFixed(3)),
+        same_season_history: input.sameSeasonHistory,
+        judge_assignments: input.judgeAssignments,
+        same_season_breakdown_prior: input.sameSeasonBreakdownPrior,
+        builder_version: input.builderVersion,
+      })
+    )
+    .digest('hex');
 
 export type ModelEventPredictionRun = {
   prediction_id: string;

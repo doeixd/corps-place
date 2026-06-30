@@ -7,6 +7,7 @@ import * as path from 'node:path';
 import { sdkChildEnv } from '@/lib/sdk-process';
 import {
   ensureEventPredictionTables,
+  eventPredictionInputSignature,
   type ModelEventPredictionRun,
 } from '@sdk/src/training/v9EventPredictionDb.js';
 import { V9_RAW_STATIC_DIM } from '@sdk/src/training/v9FeatureModes.js';
@@ -433,31 +434,33 @@ const currentPredictionInputSignature = (
         })
         .catch(() => ({ rows: [] as any[] }));
       if (lineup.rows.length === 0) return undefined;
-      return createHash('sha256')
-        .update(
-          JSON.stringify({
-            event_slug: event.slug,
-            start_date: event.start_date,
-            lineup: lineup.rows.map((row: any) => ({
-              corps_key: row.corps_key,
-              unit_name: row.unit_name,
-              order: row.performance_order,
-              time: row.time,
-              division: row.division_name,
-            })),
-            model_dir: modelDir,
-            model_fingerprint: modelFileFingerprint(modelDir),
-            model_static_dim: modelStaticDimFromManifest(modelDir),
-            feature_static_dim: V9_RAW_STATIC_DIM,
-            mode,
-            division,
-            percent_through: Number(percentThrough.toFixed(3)),
-            same_season_history: sameSeasonHistory,
-            judge_assignments: judgeAssignments,
-            builder_version: CURRENT_EVENT_PREDICTION_BUILDER_VERSION,
-          })
-        )
-        .digest('hex');
+      // Use the SAME canonical signature builder the predictor stamps, so the
+      // shape can't drift (review Medium #5). same_season_breakdown_prior is
+      // false here because the app's regeneration path never passes
+      // --same-season-breakdown-prior; previously this field was omitted entirely,
+      // which made every otherwise-identical cached prediction look stale.
+      return eventPredictionInputSignature({
+        eventSlug: event.slug,
+        startDate: event.start_date,
+        lineup: lineup.rows.map((row: any) => ({
+          corps_key: row.corps_key,
+          unit_name: row.unit_name,
+          order: row.performance_order,
+          time: row.time,
+          division: row.division_name,
+        })),
+        modelDir,
+        modelFingerprint: modelFileFingerprint(modelDir),
+        modelStaticDim: modelStaticDimFromManifest(modelDir),
+        featureStaticDim: V9_RAW_STATIC_DIM,
+        mode,
+        division,
+        percentThrough,
+        sameSeasonHistory,
+        judgeAssignments,
+        sameSeasonBreakdownPrior: false,
+        builderVersion: CURRENT_EVENT_PREDICTION_BUILDER_VERSION,
+      });
     },
     catch: (cause) =>
       new EventPredictionDataError({
