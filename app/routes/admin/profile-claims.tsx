@@ -11,7 +11,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/reui/badge';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { useAsyncAction } from '@/lib/use-async-action';
-import { listProfileClaims, approveProfileClaim, revokeProfileClaim } from '@/lib/server-fns/profile-owner';
+import {
+  listProfileClaims,
+  approveProfileClaim,
+  revokeProfileClaim,
+  reconcileProfileOverrides,
+} from '@/lib/server-fns/profile-owner';
+import { toast } from 'sonner';
 import { seoHead } from '@/lib/seo';
 
 type ClaimRow = {
@@ -51,6 +57,12 @@ function ProfileClaims({ all }: { all: ClaimRow[] }) {
   const router = useRouter();
   const act = useAsyncAction(async (fn: () => Promise<unknown>) => {
     await fn();
+    await router.invalidate();
+  });
+
+  const reconcile = useAsyncAction(async () => {
+    const res = await reconcileProfileOverrides();
+    toast.success(`Reconciled — checked ${res.checked}, updated ${res.changed}.`);
     await router.invalidate();
   });
 
@@ -112,8 +124,13 @@ function ProfileClaims({ all }: { all: ClaimRow[] }) {
   return (
     <>
       <PageHeader title="Profile Claims" subtitle="Approve pending ownership claims · revoke disputes" />
-      <Show when={act.error}>
-        <p className="mb-4 text-sm text-destructive">{act.error}</p>
+      <div className="mb-4 flex items-center gap-3">
+        <BusyButton size="sm" variant="outline" busy={reconcile.busy} onClick={() => void reconcile.run()}>
+          Recheck source divergence
+        </BusyButton>
+      </div>
+      <Show when={act.error || reconcile.error}>
+        <p className="mb-4 text-sm text-destructive">{act.error ?? reconcile.error}</p>
       </Show>
 
       <h3 className="mb-2 mt-2 text-sm font-semibold text-text-secondary">

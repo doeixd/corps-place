@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mergeProfileOverlay, type ProfileOverlay } from './merge';
+import { mergeProfileOverlay, hashSource, scrapedFieldValue, type ProfileOverlay } from './merge';
 
 const base = () => ({
   display_name: 'Michael Gaines',
@@ -69,5 +69,27 @@ describe('mergeProfileOverlay', () => {
       overrides: { biography: { content: 'x', diverged: false } },
     });
     expect(p.biography).toBe('Scraped bio.');
+  });
+});
+
+describe('source divergence primitives', () => {
+  it('hashSource is stable and order-independent for equal values', () => {
+    expect(hashSource('a')).toBe(hashSource('a'));
+    expect(hashSource({ title: 't', org: 'o' })).toBe(hashSource({ title: 't', org: 'o' }));
+    expect(hashSource(null)).toBe(hashSource(undefined)); // both normalize to null
+  });
+
+  it('hashSource changes when the value changes (divergence signal)', () => {
+    expect(hashSource('Scraped bio.')).not.toBe(hashSource('Scraped bio (updated).'));
+    expect(hashSource(null)).not.toBe(hashSource('now has a value'));
+  });
+
+  it('scrapedFieldValue maps each field key to the scraped value', () => {
+    const p = base();
+    expect(scrapedFieldValue(p, 'biography')).toBe('Scraped bio.');
+    expect(scrapedFieldValue(p, 'photo')).toBe('https://scraped/p.png');
+    expect(scrapedFieldValue(p, 'hometown')).toBe('Old Town');
+    expect(scrapedFieldValue(p, 'current_position')).toBeNull();
+    expect(scrapedFieldValue(p, 'unknown_field')).toBeNull();
   });
 });

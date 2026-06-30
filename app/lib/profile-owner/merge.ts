@@ -28,7 +28,7 @@ export type OwnershipInfo = {
 };
 
 /** Common profile surface both StaffProfile and JudgeProfile expose. */
-type CommonProfile = {
+export type CommonProfile = {
   biography: string | null;
   photo_url: string | null;
   bioFacts: {
@@ -121,4 +121,30 @@ export const mergeProfileOverlay = <T extends CommonProfile>(
   }
 
   return { ...profile, ...patch, ownership: ownershipInfo(overlay, true, ov) };
+};
+
+/** Stable, dependency-free hash of a scraped value (djb2 → base36). Same on client
+ *  and server so save-time and reconcile-time hashes are comparable. */
+export const hashSource = (v: unknown): string => {
+  const s = JSON.stringify(v ?? null);
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = (Math.imul(h, 33) + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
+};
+
+/** The SCRAPED value an override of `fieldKey` shadows — used to record source_hash
+ *  at save time and to detect later divergence when the source is re-scraped. */
+export const scrapedFieldValue = (profile: CommonProfile, fieldKey: string): unknown => {
+  switch (fieldKey) {
+    case 'biography':
+      return profile.biography;
+    case 'photo':
+      return profile.photo_url;
+    case 'hometown':
+      return profile.bioFacts.hometown;
+    case 'current_position':
+      return profile.bioFacts.currentPosition;
+    default:
+      return null;
+  }
 };

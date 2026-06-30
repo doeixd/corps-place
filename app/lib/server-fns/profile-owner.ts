@@ -227,3 +227,15 @@ export const approveProfileClaim = createServerFn({ method: 'POST' })
     );
     return { ok: true };
   });
+
+/** Reconcile source divergence across all overrides (plan §11). `manageProfileClaims`.
+ *  Safe to run on a schedule or on demand. Returns how many were checked/changed. */
+export const reconcileProfileOverrides = createServerFn({ method: 'POST' })
+  .handler(async (): Promise<{ checked: number; changed: number }> => {
+    const actor = await requireCapability(getWebRequest(), 'manageProfileClaims');
+    return Effect.runPromise(
+      Effect.flatMap(ProfileOwnerService, (s) =>
+        s.reconcile({ authorId: actor.userId, actorRole: actor.role, now: new Date().toISOString() })
+      ).pipe(Effect.provide(ProfileOwnerServiceLive))
+    );
+  });

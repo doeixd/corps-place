@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { ProfileSql, ProfileSqlLive, requireDurableStorage } from './sql';
 import { ClaimExists, NotFound } from './errors';
 import { nameMatch, type NameMatchTier } from './name-match';
-import type { OverlayField, OverrideContent } from './merge';
+import { hashSource, scrapedFieldValue, type OverlayField, type OverrideContent, type CommonProfile } from './merge';
 import { getReadModelClient } from '@/lib/read-model-db';
 import { readStaffProfile, readJudgeProfile } from '@sdk/src/readModel/readers';
 
@@ -50,6 +50,35 @@ const makeProfileOwnerService = Effect.gen(function* () {
             ? await readStaffProfile(db, entityId)
             : await readJudgeProfile(db, entityId);
         return p?.display_name ?? null;
+      } catch {
+        return null;
+      }
+    });
+  });
+
+  // The scraped CommonProfile surface (bio / photo / bioFacts) used to compute and
+  // re-check override source_hashes for divergence detection.
+  const resolveScraped = Effect.fn('ProfileOwnerService.resolveScraped')(function* (
+    entityType: EntityType,
+    entityId: string
+  ) {
+    return yield* Effect.promise(async (): Promise<CommonProfile | null> => {
+      try {
+        const db = getReadModelClient();
+        const p =
+          entityType === 'staff'
+            ? await readStaffProfile(db, entityId)
+            : await readJudgeProfile(db, entityId);
+        if (!p) return null;
+        const pp = p as unknown as Partial<CommonProfile>;
+        return {
+          biography: pp.biography ?? null,
+          photo_url: pp.photo_url ?? null,
+          bioFacts: {
+            hometown: pp.bioFacts?.hometown ?? null,
+            currentPosition: pp.bioFacts?.currentPosition ?? null,
+          },
+        } satisfies CommonProfile;
       } catch {
         return null;
       }
@@ -204,6 +233,10 @@ const makeProfileOwnerService = Effect.gen(function* () {
     const { entityType, entityId, fieldKey } = input;
     const payload = input.removed ? { removed: true } : input.content;
     const contentJson = JSON.stringify(payload);
+    // Record the hash of the scraped value this override now shadows, so the
+    // reconciler can later detect when the source is re-scraped to something new.
+    const scraped = yield* resolveScraped(entityType, entityId);
+    const sourceHash = scraped ? hashSource(scrapedFieldValue(scraped, fieldKey)) : input.sourceHash ?? null;
 
     const prev = yield* sql<{ content_json: string }>`
       SELECT content_json FROM profile_overrides
@@ -214,7 +247,7 @@ const makeProfileOwnerService = Effect.gen(function* () {
         yield* sql`
           INSERT INTO profile_overrides
             (entity_type, entity_id, field_key, content_json, source_hash, scrape_diverged, updated_at, updated_by)
-          VALUES (${entityType}, ${entityId}, ${fieldKey}, ${contentJson}, ${input.sourceHash ?? null}, 0,
+          VALUES (${entityType}, ${entityId}, ${fieldKey}, ${contentJson}, ${sourceHash}, 0,
                   ${ctx.now}, ${ctx.authorId})
           ON CONFLICT(entity_type, entity_id, field_key) DO UPDATE SET
             content_json = excluded.content_json, source_hash = excluded.source_hash,
@@ -278,7 +311,42 @@ const makeProfileOwnerService = Effect.gen(function* () {
     );
   });
 
-  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim };
+  // Reconcile source divergence (plan §11): re-read each override's scraped source,
+  // re-hash it, and flip scrape_diverged when it no longer matches the hash captured
+  // at edit time — so the owner is told "the source changed under your edit". Runnable
+  // on a schedule or on demand from the admin queue. Idempotent.
+  const reconcile = Effect.fn('ProfileOwnerService.reconcile')(function* (ctx: WriteContext) {
+    yield* requireDurableStorage;
+    const rows = yield* sql<{ entity_type: string; entity_id: string; field_key: string; source_hash: string | null; scrape_diverged: number }>`
+      SELECT entity_type, entity_id, field_key, source_hash, scrape_diverged FROM profile_overrides`;
+    const cache = new Map<string, CommonProfile | null>();
+    let checked = 0;
+    let changed = 0;
+    for (const r of rows) {
+      if (!r.source_hash) continue; // nothing captured to diff against
+      checked++;
+      const key = `${r.entity_type}:${r.entity_id}`;
+      if (!cache.has(key)) cache.set(key, yield* resolveScraped(r.entity_type as EntityType, r.entity_id));
+      const scraped = cache.get(key) ?? null;
+      // If the entity vanished, leave the override flag alone (orphan handling covers it).
+      if (!scraped) continue;
+      const now = hashSource(scrapedFieldValue(scraped, r.field_key));
+      const diverged = now !== r.source_hash ? 1 : 0;
+      if (diverged === r.scrape_diverged) continue;
+      changed++;
+      yield* sql`
+        UPDATE profile_overrides SET scrape_diverged = ${diverged}
+        WHERE entity_type = ${r.entity_type} AND entity_id = ${r.entity_id} AND field_key = ${r.field_key}`;
+      yield* sql`
+        INSERT INTO profile_revisions
+          (revision_id, entity_type, entity_id, target_kind, field_key, actor_user_id, actor_role, op, after_json, created_at)
+        VALUES (${newId()}, ${r.entity_type}, ${r.entity_id}, 'override', ${r.field_key}, ${ctx.authorId}, ${ctx.actorRole},
+                ${diverged ? 'diverge' : 'converge'}, ${JSON.stringify({ scrape_diverged: diverged })}, ${ctx.now})`;
+    }
+    return { checked, changed };
+  });
+
+  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim, reconcile };
 });
 
 export class ProfileOwnerService extends Context.Service<
