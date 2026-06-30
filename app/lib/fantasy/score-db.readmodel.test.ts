@@ -23,13 +23,17 @@ beforeAll(async () => {
   const db = createClient({ url: `file:${rmPath}` });
   await db.batch(
     [
-      `CREATE TABLE rm_fantasy_draft_pool (corps_key TEXT, slug TEXT, name TEXT, division_name TEXT, display_city TEXT, corps_logo TEXT, sort_index INTEGER)`,
+      `CREATE TABLE rm_fantasy_draft_pool (season TEXT, corps_key TEXT, slug TEXT, name TEXT, division_name TEXT, display_city TEXT, corps_logo TEXT, sort_index INTEGER)`,
       `CREATE TABLE rm_fantasy_prior_finals (season TEXT, corps_key TEXT, caption_name TEXT, score REAL)`,
       `CREATE TABLE rm_fantasy_season_best (season TEXT, corps_key TEXT, caption_name TEXT, best REAL)`,
       `CREATE TABLE rm_fantasy_season_finals (season TEXT, slug TEXT, date TEXT, recap_present INTEGER)`,
       `CREATE TABLE rm_corps (corps_key TEXT, corps_logo TEXT, corps_logo_dark INTEGER, corps_logo_dark_url TEXT)`,
-      `INSERT INTO rm_fantasy_draft_pool VALUES ('bd','blue-devils','Blue Devils','World Class','Concord',NULL,0)`,
-      `INSERT INTO rm_fantasy_draft_pool VALUES ('bk','bluecoats','Bluecoats','World Class','Canton',NULL,1)`,
+      // 2025 pool (a 2026 league drafts from it). Includes Mandarins (must be
+      // excluded) and Spartans seeded as Open Class (must be overridden to World).
+      `INSERT INTO rm_fantasy_draft_pool VALUES ('2025','bd','blue-devils','Blue Devils','World Class','Concord',NULL,0)`,
+      `INSERT INTO rm_fantasy_draft_pool VALUES ('2025','bk','bluecoats','Bluecoats','World Class','Canton',NULL,1)`,
+      `INSERT INTO rm_fantasy_draft_pool VALUES ('2025','001j000000iwxacaa1','spartans','Spartans','Open Class','Nashua',NULL,2)`,
+      `INSERT INTO rm_fantasy_draft_pool VALUES ('2025','001j000000iwxa3aal','mandarins','Mandarins','World Class','Sacramento',NULL,3)`,
       `INSERT INTO rm_corps VALUES ('bd',NULL,1,NULL)`,
       `INSERT INTO rm_corps VALUES ('bk',NULL,NULL,NULL)`,
       `INSERT INTO rm_fantasy_prior_finals VALUES ('2025','bd','General Effect 1',19.5)`,
@@ -49,11 +53,19 @@ afterAll(() => {
 });
 
 describe('score-db reads the read-model when READ_MODEL_DB_URL is set', () => {
-  it('getDraftPool comes from rm_fantasy_draft_pool, ordered by sort_index', async () => {
-    const pool = await scoreDb.getDraftPool();
-    expect(pool.map((c) => c.corpsKey)).toEqual(['bd', 'bk']);
+  it('getDraftPool reads the requested season, ordered by sort_index, with rules applied', async () => {
+    const pool = await scoreDb.getDraftPool('2025');
+    // Mandarins excluded; the rest kept in sort_index order.
+    expect(pool.map((c) => c.corpsKey)).toEqual(['bd', 'bk', '001j000000iwxacaa1']);
     expect(pool[0].name).toBe('Blue Devils');
     expect(pool[0].divisionName).toBe('World Class');
+    // Spartans seeded as Open Class are overridden to World Class.
+    const spartans = pool.find((c) => c.corpsKey === '001j000000iwxacaa1');
+    expect(spartans?.divisionName).toBe('World Class');
+  });
+
+  it('getDraftPool is empty for a season with no emitted pool', async () => {
+    expect(await scoreDb.getDraftPool('2099')).toEqual([]);
   });
 
   it('getPriorSeasonRanking maps caption_name → CaptionKey', async () => {

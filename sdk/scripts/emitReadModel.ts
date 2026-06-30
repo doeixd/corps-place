@@ -106,7 +106,10 @@ import {
 // v14: rm_staff.summary_json slimmed — dropped unused captionBreakdown and replaced the
 //      full groups[] with corps_names[] (directory card/search only need names). ~40% smaller
 //      staff shard; staff is now advertised in the manifest as a preloaded index collection.
-const SCHEMA_VERSION = 14;
+// v15: rm_fantasy_draft_pool is now per-season (gains a `season` column + index) — a league
+//      drafts from its PRIOR completed season instead of MAX(season), so the pool no longer
+//      collapses to the few corps that have scored so far in the current season.
+const SCHEMA_VERSION = 15;
 
 type Section =
   | "events"
@@ -360,9 +363,10 @@ CREATE TABLE rm_merch_corps_teaser (slug TEXT PRIMARY KEY, teaser_json TEXT);
 -- pre-ordered (sort_index). prior_finals / season_best are caption scores keyed by
 -- season (caption_name mapped to a CaptionKey in score-db, matching the live path).
 CREATE TABLE rm_fantasy_draft_pool (
-  corps_key TEXT, slug TEXT, name TEXT, division_name TEXT, display_city TEXT,
+  season TEXT, corps_key TEXT, slug TEXT, name TEXT, division_name TEXT, display_city TEXT,
   corps_logo TEXT, sort_index INTEGER
 );
+CREATE INDEX rm_fantasy_draft_pool_season ON rm_fantasy_draft_pool(season);
 CREATE TABLE rm_fantasy_prior_finals (
   season TEXT, corps_key TEXT, caption_name TEXT, score REAL
 );
@@ -1182,19 +1186,36 @@ export const runEmit = async (args: Args) => {
     rowCounts.rm_fantasy_season_best = seasonBest.length;
     rowCounts.rm_fantasy_season_finals = seasonFinals.length;
     if (dst) {
+      // sort_index is per-season (rows are ordered by season, division, name) so
+      // a single-season read (WHERE season = ?) ORDER BY sort_index is stable.
+      const seasonSeq = new Map<string, number>();
       await insertRows(
         dst,
         "rm_fantasy_draft_pool",
-        ["corps_key", "slug", "name", "division_name", "display_city", "corps_logo", "sort_index"],
-        pool.map((p, idx) => [
-          p.corps_key,
-          p.slug,
-          p.name,
-          p.division_name,
-          p.display_city,
-          p.corps_logo,
-          idx,
-        ]),
+        [
+          "season",
+          "corps_key",
+          "slug",
+          "name",
+          "division_name",
+          "display_city",
+          "corps_logo",
+          "sort_index",
+        ],
+        pool.map((p) => {
+          const idx = seasonSeq.get(p.season) ?? 0;
+          seasonSeq.set(p.season, idx + 1);
+          return [
+            p.season,
+            p.corps_key,
+            p.slug,
+            p.name,
+            p.division_name,
+            p.display_city,
+            p.corps_logo,
+            idx,
+          ];
+        }),
       );
       await insertRows(
         dst,

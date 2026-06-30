@@ -16,41 +16,13 @@
 import { createClient, type Client } from '@libsql/client';
 import * as path from 'node:path';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
+// Draft-pool eligibility rules live with the read-model builder so the emit, the
+// prod read, and the dev/relational read share ONE definition (no drift between
+// the emitted table and the app-visible pool). See sdk/.../builders/fantasy.ts.
+import { isExcludedCorps, overrideDivision } from '@sdk/src/readModel/builders/fantasy.js';
 import { CAPTION_NAME_TO_KEY, type CaptionKey } from './captions';
 
 const DRAFT_DIVISIONS = ['World Class', 'Open Class'];
-
-// Corps excluded from the draftable pool by request — feeder / non-competitive
-// entries that shouldn't be draft picks. Matched by corps_key (stable) with a
-// case-insensitive name fallback in case keys change.
-const EXCLUDED_CORPS_KEYS = new Set([
-  'high-school-affiliated-to-bit',
-  'calgary-round-up-band',
-  '001j000000i6kalaa3', // Blue Devils C
-  '001j000000iwxa3aal', // Mandarins — not performing the 2026 season
-]);
-const EXCLUDED_CORPS_NAMES = new Set([
-  'high school affiliated to bit',
-  'calgary round-up band',
-  'blue devils c',
-  'mandarins',
-]);
-const isExcludedCorps = (corpsKey: string, name: string): boolean =>
-  EXCLUDED_CORPS_KEYS.has(corpsKey) ||
-  EXCLUDED_CORPS_NAMES.has(name.trim().toLowerCase());
-
-// Division overrides for the current season, where a corps has moved class since
-// the read-model's source season. Keyed by corps_key, with a name fallback.
-const DIVISION_OVERRIDES_BY_KEY: Record<string, string> = {
-  '001j000000iwxacaa1': 'World Class', // Spartans — World Class for 2026
-};
-const DIVISION_OVERRIDES_BY_NAME: Record<string, string> = {
-  spartans: 'World Class',
-};
-const overrideDivision = (corpsKey: string, name: string, division: string | null): string | null =>
-  DIVISION_OVERRIDES_BY_KEY[corpsKey] ??
-  DIVISION_OVERRIDES_BY_NAME[name.trim().toLowerCase()] ??
-  division;
 
 let _dbUrl: string | undefined;
 const dbUrl = (): string =>
@@ -95,41 +67,47 @@ export type DraftableCorps = {
 };
 
 // The corps directory changes rarely, but the pool is read on every draft pick
-// (twice — legality + the UI snapshot) and on every auto-pick. Memoize it for a
-// short window so a fast-paced draft doesn't hammer the score DB.
+// (twice — legality + the UI snapshot) and on every auto-pick. Memoize per season
+// for a short window so a fast-paced draft doesn't hammer the score DB.
 const POOL_TTL_MS = 60_000;
-let poolCache: { at: number; value: DraftableCorps[] } | null = null;
+const poolCache = new Map<string, { at: number; value: DraftableCorps[] }>();
 
 /**
- * Eligible draftable corps (Appendix C.4): World + Open class corps that actually
- * COMPETED in the latest season with results — not the whole all-time corps table
- * (which includes folded/hiatus corps), and not the stale `corps.active` flag. The
- * division is taken from that season's participation (`corps_scores.division_name`,
- * which can differ from the corps' static division). Pre-season this resolves to
- * the prior completed season — the same season the auto-pick ranking uses — and it
- * auto-advances once the new season's shows land. Cached ~60s.
+ * Eligible draftable corps (Appendix C.4) for `season`: World + Open class corps
+ * that actually COMPETED in that season with results — not the whole all-time
+ * corps table (which includes folded/hiatus corps), and not the stale
+ * `corps.active` flag. The division is taken from that season's participation
+ * (`corps_scores.division_name`), then the current-truth override is applied.
+ *
+ * Callers pass the league's PRIOR completed season (e.g. a 2026 league → 2025):
+ * the prior season is a full, stable field, so the pool never collapses to the
+ * handful of corps that have scored so far in the current season (which made
+ * default leagues fail the draft-start feasibility check). Cached ~60s per season.
  */
-export async function getDraftPool(): Promise<DraftableCorps[]> {
-  if (poolCache && Date.now() - poolCache.at < POOL_TTL_MS) return poolCache.value;
+export async function getDraftPool(season: string): Promise<DraftableCorps[]> {
+  const cached = poolCache.get(season);
+  if (cached && Date.now() - cached.at < POOL_TTL_MS) return cached.value;
   try {
     const res = readModelEnabled()
-      ? await getReadModelClient().execute(
-          `SELECT p.corps_key, p.slug, p.name, p.division_name, p.display_city, p.corps_logo,
-                  c.corps_logo_dark, c.corps_logo_dark_url
-           FROM rm_fantasy_draft_pool p
-           LEFT JOIN rm_corps c ON c.corps_key = p.corps_key
-           ORDER BY p.sort_index`
-        )
+      ? await getReadModelClient().execute({
+          sql: `SELECT p.corps_key, p.slug, p.name, p.division_name, p.display_city, p.corps_logo,
+                       c.corps_logo_dark, c.corps_logo_dark_url
+                FROM rm_fantasy_draft_pool p
+                LEFT JOIN rm_corps c ON c.corps_key = p.corps_key
+                WHERE p.season = ?
+                ORDER BY p.sort_index`,
+          args: [season],
+        })
       : await scoreDb().execute({
           sql: `SELECT DISTINCT co.corps_key, co.slug, co.name, cs.division_name, co.display_city,
                        co.corps_logo, co.corps_logo_dark, co.corps_logo_dark_url
                 FROM corps co
                 JOIN corps_scores cs ON cs.corps_key = co.corps_key
                 JOIN competitions c ON c.slug = cs.competition_slug
-                WHERE c.season = (SELECT MAX(season) FROM competitions)
+                WHERE c.season = ?
                   AND cs.division_name IN (?, ?)
                 ORDER BY cs.division_name, co.name COLLATE NOCASE`,
-          args: DRAFT_DIVISIONS,
+          args: [season, ...DRAFT_DIVISIONS],
         });
     const value = res.rows
       .map((r) => {
@@ -147,7 +125,7 @@ export async function getDraftPool(): Promise<DraftableCorps[]> {
         };
       })
       .filter((c) => !isExcludedCorps(c.corpsKey, c.name));
-    poolCache = { at: Date.now(), value };
+    poolCache.set(season, { at: Date.now(), value });
     return value;
   } catch (err) {
     return scoreDbFallback('getDraftPool', [] as DraftableCorps[], err);

@@ -206,8 +206,10 @@ const makeDraftService = Effect.gen(function* () {
       return { draft: rows[0] ? mapDraft(rows[0]) : null, picks };
     });
 
-  const poolKeysForLeague = (config: LeagueConfig) =>
-    Effect.promise(() => getDraftPool()).pipe(
+  // `season` is the draft-pool season (the league's PRIOR completed season, e.g.
+  // a 2026 league drafts from 2025) — see getDraftPool.
+  const poolKeysForLeague = (config: LeagueConfig, season: string) =>
+    Effect.promise(() => getDraftPool(season)).pipe(
       Effect.map((pool) => {
         const allowed = new Set<string>(config.allowedDivisions);
         return new Set(
@@ -546,7 +548,7 @@ const makeDraftService = Effect.gen(function* () {
 
         const config = yield* loadConfig(leagueId);
         const prevSeason = String(Number(yield* leagueSeason(leagueId)) - 1);
-        const pool = yield* poolKeysForLeague(config);
+        const pool = yield* poolKeysForLeague(config, prevSeason);
         const { takenPairs, myCorps, myCaptionCount } = yield* legalityState(
           leagueId,
           draft.currentUserId
@@ -665,7 +667,8 @@ const makeDraftService = Effect.gen(function* () {
           return yield* Effect.fail(new DraftConflict({ reason: 'identities-incomplete' }));
 
         const totalRounds = Number(rows[0].total_rounds);
-        const poolSize = (yield* poolKeysForLeague(config)).size;
+        const prevSeason = String(Number(yield* leagueSeason(leagueId)) - 1);
+        const poolSize = (yield* poolKeysForLeague(config, prevSeason)).size;
         const feasible = checkFeasibility(memberRows.length, totalRounds, poolSize, config);
         if (!feasible.ok) return feasible;
 
@@ -764,7 +767,8 @@ const makeDraftService = Effect.gen(function* () {
           return yield* Effect.fail(new DraftConflict({ reason: 'bad-caption' }));
 
         const config = yield* loadConfig(input.leagueId);
-        const pool = yield* poolKeysForLeague(config);
+        const prevSeason = String(Number(yield* leagueSeason(input.leagueId)) - 1);
+        const pool = yield* poolKeysForLeague(config, prevSeason);
         const { takenPairs, myCorps, myCaptionCount } = yield* legalityState(
           input.leagueId,
           input.userId

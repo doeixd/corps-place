@@ -46,6 +46,12 @@ describe('LeagueConfig', () => {
   it('rejects all-zero weights (cannot normalize)', () => {
     expect(() => resolveLeagueConfig({ weights: { ge: 0, visual: 0, music: 0 } })).toThrow();
   });
+
+  it("rejects missingCaptionPolicy 'prorate' (unimplemented — would silently score as zero)", () => {
+    expect(() =>
+      parseLeagueConfig({ ...DEFAULT_CONFIG, missingCaptionPolicy: 'prorate' })
+    ).toThrow();
+  });
 });
 
 describe('draftShapeChanged', () => {

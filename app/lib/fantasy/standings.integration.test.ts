@@ -16,6 +16,7 @@ import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from './captions';
 
 // P4: the recompute orchestrator now lives in StandingsService; drive it via runPromise.
 let recompute: (season: string) => Promise<{ leagues: number; members: number; finalized: number }>;
+let getStandings: (slug: string, viewerId: string | null) => Promise<{ rows: { userId: string }[] }>;
 let contribDb: Client;
 
 const CONFIG = resolveLeagueConfig({}); // default weights 40/30/30, recap mode
@@ -78,6 +79,12 @@ beforeAll(async () => {
   recompute = (season: string) =>
     Effect.runPromise(
       Effect.flatMap(StandingsService, (s) => s.recompute(season)).pipe(
+        Effect.provide(StandingsServiceLive)
+      )
+    );
+  getStandings = (slug: string, viewerId: string | null) =>
+    Effect.runPromise(
+      Effect.flatMap(StandingsService, (s) => s.getStandings(slug, viewerId)).pipe(
         Effect.provide(StandingsServiceLive)
       )
     );
@@ -160,5 +167,30 @@ describe('recomputeFantasyStandingsForSeason', () => {
       })
     ).rows[0];
     expect(league.status).toBe('complete');
+  });
+
+  it('excludes removed members from getStandings even with a stale standing row', async () => {
+    const now = new Date().toISOString();
+    // A member who was removed but still carries a standings row must not surface.
+    await contribDb.batch(
+      [
+        {
+          sql: `INSERT INTO fantasy_members (league_id, user_id, role, corps_name, status, joined_at)
+                VALUES ('LG-A', 'uRemoved', 'member', 'Gone', 'removed', ?)`,
+          args: [now],
+        },
+        {
+          sql: `INSERT INTO fantasy_standings
+                  (league_id, user_id, through_competition_slug, total_score, ge_score, visual_score,
+                   music_score, breakdown_json, rank, computed_at, is_final)
+                VALUES ('LG-A', 'uRemoved', NULL, 50, 20, 15, 15, '{}', 2, ?, 0)`,
+          args: [now],
+        },
+      ],
+      'write'
+    );
+    const { rows } = await getStandings('lg-a', null);
+    expect(rows.map((r) => r.userId)).toContain('uA');
+    expect(rows.map((r) => r.userId)).not.toContain('uRemoved');
   });
 });

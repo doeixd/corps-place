@@ -10,6 +10,7 @@
 import { Context, Effect, Layer } from 'effect';
 import { randomUUID } from 'node:crypto';
 import { sendEmail } from '@/lib/email';
+import { sendPushToUser } from '@/lib/fantasy/push';
 import type { LeagueConfig } from '@/lib/fantasy/config';
 import { ContributionsSql, ContributionsSqlLive, requireDurableStorage } from './sql';
 
@@ -81,7 +82,17 @@ const buildDraftCalendar = (leagueName: string, slug: string, startIso: string) 
   return { ics, gcal, url };
 };
 
-export type DispatchSummary = { jobs: number; digests: number };
+export type DispatchSummary = { jobs: number; digests: number; pushes: number };
+
+// A league's email/push notify gate from its config_json. Default-closed on a
+// parse error so a corrupt blob never opens a muted channel.
+const leagueChannelEnabled = (configJson: string | null, channel: 'email' | 'push'): boolean => {
+  try {
+    return Boolean((JSON.parse(configJson ?? '{}') as LeagueConfig).notify?.[channel]);
+  } catch {
+    return false;
+  }
+};
 
 const makeNotificationService = Effect.gen(function* () {
   const sql = yield* ContributionsSql;
@@ -206,6 +217,11 @@ const makeNotificationService = Effect.gen(function* () {
     });
 
   const flushNotificationEmails = Effect.gen(function* () {
+    // Gate on the recipient's per-league email pref AND the league's email
+    // setting — `contactConsent` alone isn't enough, or a member who muted
+    // Fantasy email (notify_email = 0) still gets standings digests. standings /
+    // season_complete notifications always carry a league_id, so the member +
+    // league joins are inner.
     const rows = yield* sql<{
       notif_id: string;
       user_id: string;
@@ -213,22 +229,27 @@ const makeNotificationService = Effect.gen(function* () {
       kind: string;
       email: string;
       league_name: string | null;
+      config_json: string | null;
     }>`
-      SELECT n.notif_id, n.user_id, n.league_id, n.kind, u.email, l.name AS league_name
+      SELECT n.notif_id, n.user_id, n.league_id, n.kind, u.email,
+             l.name AS league_name, l.config_json
       FROM fantasy_notifications n
       JOIN user u ON u.id = n.user_id
-      LEFT JOIN fantasy_leagues l ON l.league_id = n.league_id
+      JOIN fantasy_leagues l ON l.league_id = n.league_id
+      JOIN fantasy_members m ON m.league_id = n.league_id AND m.user_id = n.user_id
       WHERE n.email_sent_at IS NULL AND n.kind IN ('standings', 'season_complete')
         AND u.contactConsent = 1
+        AND m.status = 'active' AND m.notify_email = 1
       ORDER BY n.user_id
     `.pipe(Effect.orDie);
-    if (rows.length === 0) return 0;
+    const emailable = rows.filter((r) => leagueChannelEnabled(r.config_json, 'email'));
+    if (emailable.length === 0) return 0;
 
     const byUser = new Map<
       string,
       { email: string; ids: string[]; leagues: Set<string>; final: boolean }
     >();
-    for (const r of rows) {
+    for (const r of emailable) {
       const entry = byUser.get(r.user_id) ?? {
         email: r.email,
         ids: [],
@@ -246,7 +267,10 @@ const makeNotificationService = Effect.gen(function* () {
     for (const entry of byUser.values()) {
       const leagues = [...entry.leagues].join(', ') || 'your league';
       const safeLeagues = escapeHtml(leagues);
-      yield* Effect.promise(() =>
+      // Per-recipient isolation: a single Resend failure must not abort the whole
+      // digest run (it would strand every later recipient AND re-fail here next
+      // dispatch). Only mark this user's notifications sent when the send succeeds.
+      const ok = yield* Effect.tryPromise(() =>
         sendEmail({
           to: entry.email,
           subject: entry.final
@@ -255,10 +279,82 @@ const makeNotificationService = Effect.gen(function* () {
           html: `<p>${entry.final ? 'The season is complete and final standings are locked' : 'Standings just updated after the latest recap'} for <strong>${safeLeagues}</strong>. Open the app to see where your corps landed.</p>`,
           tag: 'fantasy_standings',
         })
+      ).pipe(
+        Effect.as(true),
+        Effect.catchCause((cause) =>
+          Effect.logError(`fantasy standings email failed for ${entry.email}`, cause).pipe(
+            Effect.as(false)
+          )
+        )
       );
+      if (!ok) continue;
       yield* Effect.forEach(
         entry.ids,
         (id) => sql`UPDATE fantasy_notifications SET email_sent_at = ${now} WHERE notif_id = ${id}`,
+        { discard: true }
+      ).pipe(Effect.orDie);
+      sent++;
+    }
+    return sent;
+  });
+
+  // Push counterpart of the email digest (the schema stores notify_push +
+  // fantasy_push_subscriptions and draft lifecycle already pushes, but standings /
+  // season_complete only ever emailed). Independent of the email path so one
+  // channel failing never blocks the other; idempotent via push_sent_at.
+  const flushNotificationPushes = Effect.gen(function* () {
+    const rows = yield* sql<{
+      notif_id: string;
+      user_id: string;
+      league_id: string | null;
+      kind: string;
+      league_name: string | null;
+      config_json: string | null;
+    }>`
+      SELECT n.notif_id, n.user_id, n.league_id, n.kind, l.name AS league_name, l.config_json
+      FROM fantasy_notifications n
+      JOIN fantasy_leagues l ON l.league_id = n.league_id
+      JOIN fantasy_members m ON m.league_id = n.league_id AND m.user_id = n.user_id
+      WHERE n.push_sent_at IS NULL AND n.kind IN ('standings', 'season_complete')
+        AND m.status = 'active' AND m.notify_push = 1
+      ORDER BY n.user_id
+    `.pipe(Effect.orDie);
+    const pushable = rows.filter((r) => leagueChannelEnabled(r.config_json, 'push'));
+    if (pushable.length === 0) return 0;
+
+    const byUser = new Map<string, { ids: string[]; leagues: Set<string>; final: boolean }>();
+    for (const r of pushable) {
+      const entry = byUser.get(r.user_id) ?? { ids: [], leagues: new Set<string>(), final: false };
+      entry.ids.push(r.notif_id);
+      if (r.league_name) entry.leagues.add(r.league_name);
+      if (r.kind === 'season_complete') entry.final = true;
+      byUser.set(r.user_id, entry);
+    }
+
+    const now = new Date().toISOString();
+    let sent = 0;
+    for (const [userId, entry] of byUser) {
+      const leagues = [...entry.leagues].join(', ') || 'your league';
+      const ok = yield* Effect.tryPromise(() =>
+        sendPushToUser(userId, {
+          title: entry.final ? `Final standings — ${leagues}` : `Standings updated — ${leagues}`,
+          body: entry.final
+            ? 'The season is complete — see where your corps landed.'
+            : 'Standings just updated after the latest recap.',
+          url: `${APP_URL}/fantasy`,
+        })
+      ).pipe(
+        Effect.as(true),
+        Effect.catchCause((cause) =>
+          Effect.logError(`fantasy standings push failed for ${userId}`, cause).pipe(
+            Effect.as(false)
+          )
+        )
+      );
+      if (!ok) continue;
+      yield* Effect.forEach(
+        entry.ids,
+        (id) => sql`UPDATE fantasy_notifications SET push_sent_at = ${now} WHERE notif_id = ${id}`,
         { discard: true }
       ).pipe(Effect.orDie);
       sent++;
@@ -286,7 +382,8 @@ const makeNotificationService = Effect.gen(function* () {
     }
 
     const digests = yield* flushNotificationEmails;
-    return { jobs: due.length, digests } as DispatchSummary;
+    const pushes = yield* flushNotificationPushes;
+    return { jobs: due.length, digests, pushes } as DispatchSummary;
   });
 
   return { enqueueDraftReminders, dispatch };

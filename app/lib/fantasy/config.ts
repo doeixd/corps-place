@@ -48,7 +48,11 @@ export const LeagueConfigSchema = v.strictObject({
     music: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
   }),
   weightsLockedAt: v.picklist(['never', 'finals_week']),
-  missingCaptionPolicy: v.picklist(['zero', 'prorate']),
+  // Only 'zero' is implemented (computeRosterScore hard-codes missing captions to
+  // 0). 'prorate' is undefined per FANTASY_DCI_PLAN §19.3 D1, so it is rejected at
+  // validation rather than silently behaving as 'zero' — reinstate the option here
+  // once buildStandings is policy-aware.
+  missingCaptionPolicy: v.picklist(['zero']),
 
   // Draft timing / ranking (v1 fixed values, but validated)
   draftPhase: v.picklist(['preseason']),

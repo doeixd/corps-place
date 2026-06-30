@@ -178,10 +178,14 @@ const divisionKey = (name: string | null): 'world' | 'open' | null => {
   return null;
 };
 
-/** Draftable corps keys restricted to the league's allowed divisions (config). */
-async function poolKeysForLeague(config: LeagueConfig): Promise<Set<string>> {
+/**
+ * Draftable corps keys restricted to the league's allowed divisions (config).
+ * `season` is the league's PRIOR completed season (a 2026 league drafts from
+ * 2025) — see getDraftPool.
+ */
+async function poolKeysForLeague(config: LeagueConfig, season: string): Promise<Set<string>> {
   const allowed = new Set<string>(config.allowedDivisions);
-  const pool = await getDraftPool();
+  const pool = await getDraftPool(season);
   return new Set(
     pool
       .filter((c) => {
@@ -339,7 +343,8 @@ export async function startDraft(leagueId: string): Promise<StartFeasibility> {
     if (memberRows.some((m) => !m.corps_name)) throw new Error('CONFLICT:identities-incomplete');
 
     const totalRounds = Number(draftRow.total_rounds);
-    const poolSize = (await poolKeysForLeague(config)).size;
+    const prevSeason = String(Number(await leagueSeason(db, leagueId)) - 1);
+    const poolSize = (await poolKeysForLeague(config, prevSeason)).size;
     const feasible = checkFeasibility(memberRows.length, totalRounds, poolSize, config);
     if (!feasible.ok) return feasible;
 
@@ -430,7 +435,8 @@ export async function makePick(
     if (!isCaptionKey(caption)) throw new Error('CONFLICT:bad-caption');
 
     const config = await loadConfig(db, leagueId);
-    const pool = await poolKeysForLeague(config);
+    const prevSeason = String(Number(await leagueSeason(db, leagueId)) - 1);
+    const pool = await poolKeysForLeague(config, prevSeason);
     const { takenPairs, myCorps, myCaptionCount } = await legalityState(db, leagueId, userId);
 
     const reason = legalityError({
@@ -491,7 +497,7 @@ export async function runAutoPickIfDue(leagueId: string, expectedDeadline?: stri
 
     const config = await loadConfig(db, leagueId);
     const prevSeason = String(Number(await leagueSeason(db, leagueId)) - 1);
-    const pool = await poolKeysForLeague(config);
+    const pool = await poolKeysForLeague(config, prevSeason);
     const { takenPairs, myCorps, myCaptionCount } = await legalityState(
       db,
       leagueId,
