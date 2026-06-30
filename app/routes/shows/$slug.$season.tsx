@@ -216,7 +216,10 @@ function ShowDetailPage() {
                 <ScoreNotifyButton
                   targetKind="event"
                   targetSlug={`${corps.slug}/${show.season}`}
-                  targetLabel={`${corps.name} ${show.season}${show.title ? ` — ${show.title}` : ''}`}
+                  // This subscription is keyed by corps+season, so it fires for
+                  // EVERY scored show this corps performs this season — the label
+                  // must say so rather than imply this single show.
+                  targetLabel={`every ${corps.name} show in ${show.season}`}
                 />
               </div>
             </div>

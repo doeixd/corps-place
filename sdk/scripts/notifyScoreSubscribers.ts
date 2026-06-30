@@ -180,14 +180,14 @@ const main = async () => {
 
     console.log(`[notify] ${ev} (“${label}”): ${byEmail.size} to notify (${corps.length} corps in event).`);
     for (const [email, s] of byEmail) {
-      const url = `${SITE}/events/${ev}`;
+      const url = `${SITE}/scores/${ev}`;
       const unsub = `${SITE}/notify/unsubscribe?token=${s.unsubscribe_token}`;
       const subject = `Scores are in — ${label}`;
       const html =
         `<p>Scores for <strong>${label}</strong> have been posted.</p>` +
         `<p><a href="${url}">View the recap on DrumCorps.app →</a></p>` +
         `<p style="color:#888;font-size:12px">You're getting this because you asked to be notified about ` +
-        `${s.target_kind === "corps" ? "a corps in this show" : "this show"}. ` +
+        `${s.target_kind === "corps" ? "a corps in this show" : "this corps this season"}. ` +
         `<a href="${unsub}">Unsubscribe</a>.</p>`;
       let delivered = dryRun;
       if (!dryRun) {
