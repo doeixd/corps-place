@@ -44,6 +44,10 @@ export const Route = createFileRoute('/staff/$personId')({
         () => null
       ),
     ]);
+    // §11a: this page was merged into another staff profile → redirect to canonical.
+    if (overlay?.aliasOf && overlay.aliasOf.type === 'staff' && overlay.aliasOf.id !== params.personId) {
+      throw redirect({ to: '/staff/$personId', params: { personId: overlay.aliasOf.id }, replace: true });
+    }
     return {
       profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped,
       claimProfileId: null as string | null, // M2.5.4: resolve slug from checkClaimByEntity

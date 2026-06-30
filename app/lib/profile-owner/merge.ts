@@ -16,6 +16,7 @@ export type ProfileOverlay = {
   claim: { status: string; name_match: string | null } | null;
   overrides: Record<string, OverlayField>;
   amOwner?: boolean; // is the requesting session the holder of this claim?
+  aliasOf?: { type: string; id: string } | null; // §11a: this page is merged into another
 } | null;
 
 export type OwnershipInfo = {

@@ -110,7 +110,16 @@ const makeProfileOwnerService = Effect.gen(function* () {
       }
       fields[o.field_key] = { content, diverged: o.scrape_diverged === 1 };
     }
-    return { claim: claims[0] ?? null, overrides: fields };
+    // §11a alias: if this page was merged into another, surface the canonical so the
+    // loader can redirect. (One round-trip — folded into the existing overlay read.)
+    const alias = yield* sql<{ canonical_type: string; canonical_id: string }>`
+      SELECT canonical_type, canonical_id FROM profile_merges
+      WHERE merged_type = ${entityType} AND merged_id = ${entityId} AND active = 1 LIMIT 1`;
+    return {
+      claim: claims[0] ?? null,
+      overrides: fields,
+      aliasOf: alias[0] ? { type: alias[0].canonical_type, id: alias[0].canonical_id } : null,
+    };
   });
 
   // Evaluate the Google-name ↔ profile-name match without writing (for the UI
@@ -385,6 +394,64 @@ const makeProfileOwnerService = Effect.gen(function* () {
       );
   });
 
+  // Merge two profile pages that are the same person (plan §11a): alias the MERGED
+  // entity to the CANONICAL so id-resolution redirects it. v1 is SAME-TYPE only
+  // (staff↔staff / judge↔judge); cross-type (staff↔judge) needs combined rendering and
+  // is deferred. Caller (server-fn) gates on the user owning BOTH (or moderator).
+  const mergeProfiles = Effect.fn('ProfileOwnerService.mergeProfiles')(function* (
+    canonical: { type: EntityType; id: string },
+    merged: { type: EntityType; id: string },
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    if (canonical.type !== merged.type)
+      return yield* Effect.fail(new NotFound({ message: 'cross-type merge not supported yet' }));
+    if (canonical.id === merged.id) return; // no-op
+    // Don't let a canonical be merged away (would orphan its aliases), and don't merge
+    // into a page that is itself merged elsewhere.
+    const canonAlias = yield* sql<{ merge_id: string }>`
+      SELECT merge_id FROM profile_merges WHERE merged_type = ${canonical.type} AND merged_id = ${canonical.id} AND active = 1 LIMIT 1`;
+    if (canonAlias[0])
+      return yield* Effect.fail(new NotFound({ message: 'canonical is itself merged into another profile' }));
+
+    yield* sql
+      .withTransaction(
+        Effect.gen(function* () {
+          yield* sql`
+            INSERT INTO profile_merges (merge_id, canonical_type, canonical_id, merged_type, merged_id, merged_by, active, created_at)
+            VALUES (${newId()}, ${canonical.type}, ${canonical.id}, ${merged.type}, ${merged.id}, ${ctx.authorId}, 1, ${ctx.now})`;
+          yield* sql`
+            INSERT INTO profile_revisions
+              (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, after_json, created_at)
+            VALUES (${newId()}, ${canonical.type}, ${canonical.id}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                    'merge', ${JSON.stringify({ merged: merged.id })}, ${ctx.now})`;
+        })
+      )
+      // Merged page already aliased elsewhere → uq_profile_merge_active trips.
+      .pipe(
+        Effect.mapError((e) =>
+          /UNIQUE|constraint/i.test(String((e as { message?: string })?.message ?? e))
+            ? new ClaimExists({ entityType: merged.type, entityId: merged.id })
+            : e
+        )
+      );
+  });
+
+  const unmergeProfiles = Effect.fn('ProfileOwnerService.unmergeProfiles')(function* (
+    merged: { type: EntityType; id: string },
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    yield* sql`
+      UPDATE profile_merges SET active = 0
+      WHERE merged_type = ${merged.type} AND merged_id = ${merged.id} AND active = 1`;
+    yield* sql`
+      INSERT INTO profile_revisions
+        (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, after_json, created_at)
+      VALUES (${newId()}, ${merged.type}, ${merged.id}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+              'unmerge', ${JSON.stringify({ merged: merged.id })}, ${ctx.now})`;
+  });
+
   // Contributions-side of an owner/moderator profile delete (plan §11b): revoke any
   // claim, clear overrides, and audit op='delete'. The durable read-model suppression
   // (so a re-scrape can't resurrect it) is enqueued to the VM worker by the server-fn.
@@ -447,7 +514,7 @@ const makeProfileOwnerService = Effect.gen(function* () {
     return { checked, changed };
   });
 
-  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim, reconcile, repointClaim, deleteProfile };
+  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim, reconcile, repointClaim, deleteProfile, mergeProfiles, unmergeProfiles };
 });
 
 export class ProfileOwnerService extends Context.Service<

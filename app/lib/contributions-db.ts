@@ -715,6 +715,21 @@ const SCHEMA = [
      created_at    TEXT NOT NULL
    )`,
   `CREATE INDEX IF NOT EXISTS idx_profile_revisions_entity ON profile_revisions (entity_type, entity_id, created_at)`,
+  // Two profile pages that are the same person, merged into one (plan §11a). The
+  // MERGED (type,id) is aliased to the CANONICAL — id-resolution redirects it.
+  `CREATE TABLE IF NOT EXISTS profile_merges (
+     merge_id        TEXT PRIMARY KEY,
+     canonical_type  TEXT NOT NULL,
+     canonical_id    TEXT NOT NULL,
+     merged_type     TEXT NOT NULL,
+     merged_id       TEXT NOT NULL,
+     merged_by       TEXT NOT NULL,
+     active          INTEGER NOT NULL DEFAULT 1,  -- unmerge = set 0
+     created_at      TEXT NOT NULL
+   )`,
+  // One active alias per merged entity (a page can't be merged into two canonicals).
+  `CREATE UNIQUE INDEX IF NOT EXISTS uq_profile_merge_active ON profile_merges (merged_type, merged_id) WHERE active = 1`,
+  `CREATE INDEX IF NOT EXISTS idx_profile_merge_canonical ON profile_merges (canonical_type, canonical_id, active)`,
 ];
 
 /**

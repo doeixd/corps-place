@@ -7,7 +7,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Icon } from '@/components/icon';
 import { NoteEditIcon } from '@/components/icons/generated';
-import { saveProfileField, setProfilePhoto, deleteProfile } from '@/lib/server-fns/profile-owner';
+import {
+  saveProfileField,
+  setProfilePhoto,
+  deleteProfile,
+  mergeProfiles,
+} from '@/lib/server-fns/profile-owner';
 
 /** File → base64 (strip the data: prefix), same as contrib/image-drop. */
 const fileToBase64 = (file: File): Promise<string> =>
@@ -46,6 +51,27 @@ export function ProfileEditor({
   const [posTitle, setPosTitle] = useState(initial.currentPosition?.title ?? '');
   const [posOrg, setPosOrg] = useState(initial.currentPosition?.org ?? '');
   const [busy, setBusy] = useState<string | null>(null);
+  const [mergeId, setMergeId] = useState('');
+
+  const onMerge = async () => {
+    const other = mergeId.trim();
+    if (!other) return;
+    if (!confirm(`Merge profile "${other}" into this one? Its page will redirect here. You must own both.`))
+      return;
+    setBusy('merge');
+    try {
+      await mergeProfiles({
+        data: { canonicalType: entityType, canonicalId: entityId, mergedType: entityType, mergedId: other },
+      });
+      toast.success('Profiles merged — the other page now redirects here.');
+      setMergeId('');
+      await router.invalidate();
+    } catch {
+      toast.error('Could not merge — make sure you own both profiles and the id is correct.');
+    } finally {
+      setBusy(null);
+    }
+  };
 
   const save = async (label: string, fieldKey: string, content: unknown) => {
     setBusy(label);
@@ -217,6 +243,31 @@ export function ProfileEditor({
         >
           Save position
         </BusyButton>
+      </div>
+
+      <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
+        <Label>Merge another profile into this one</Label>
+        <span className="text-xs text-muted-foreground">
+          If you’re split across two pages, enter the other profile’s id (you must own both). It will
+          redirect here.
+        </span>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Input
+            placeholder="other profile id"
+            value={mergeId}
+            onChange={(e) => setMergeId(e.target.value)}
+          />
+          <BusyButton
+            busy={busy === 'merge'}
+            size="sm"
+            variant="outline"
+            className="self-start"
+            disabled={!mergeId.trim()}
+            onClick={() => void onMerge()}
+          >
+            Merge into this
+          </BusyButton>
+        </div>
       </div>
 
       <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">

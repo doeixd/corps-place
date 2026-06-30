@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import { useMachine } from '@xstate/react';
 import { For, Show } from 'jotai-solid-api';
@@ -77,6 +77,10 @@ export const Route = createFileRoute('/judges/$judgeId')({
         () => null
       ),
     ]);
+    // §11a: this page was merged into another judge profile → redirect to canonical.
+    if (overlay?.aliasOf && overlay.aliasOf.type === 'judge' && overlay.aliasOf.id !== params.judgeId) {
+      throw redirect({ to: '/judges/$judgeId', params: { judgeId: overlay.aliasOf.id }, replace: true });
+    }
     return { profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped };
   },
   head: ({ loaderData }) => {

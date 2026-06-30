@@ -47,6 +47,7 @@ export const getProfileOverlay = createServerFn({ method: 'GET' })
         : null,
       overrides: overlay.overrides,
       amOwner,
+      aliasOf: overlay.aliasOf,
     };
   });
 
@@ -291,5 +292,44 @@ export const deleteProfile = createServerFn({ method: 'POST' })
         ctx.now,
       ],
     });
+    return { ok: true as const };
+  });
+
+/** Merge two profile pages that are the same person (plan §11a). The user must own
+ *  BOTH (active claim) or be a moderator — requireProfileOwner on each. v1 same-type. */
+export const mergeProfiles = createServerFn({ method: 'POST' })
+  .validator(
+    (data: { canonicalType: EntityType; canonicalId: string; mergedType: EntityType; mergedId: string }) => data
+  )
+  .handler(async ({ data }) => {
+    const db = await getContributionsDb();
+    await requireProfileOwner(db, data.canonicalType, data.canonicalId);
+    const actor = await requireProfileOwner(db, data.mergedType, data.mergedId);
+    await Effect.runPromise(
+      Effect.flatMap(ProfileOwnerService, (s) =>
+        s.mergeProfiles(
+          { type: data.canonicalType, id: data.canonicalId },
+          { type: data.mergedType, id: data.mergedId },
+          { authorId: actor.userId, actorRole: actor.role, now: new Date().toISOString() }
+        )
+      ).pipe(Effect.provide(ProfileOwnerServiceLive))
+    );
+    return { ok: true as const };
+  });
+
+/** Undo a merge (plan §11a). Owner of the canonical (or moderator). */
+export const unmergeProfile = createServerFn({ method: 'POST' })
+  .validator((data: { canonicalType: EntityType; canonicalId: string; mergedType: EntityType; mergedId: string }) => data)
+  .handler(async ({ data }) => {
+    const db = await getContributionsDb();
+    const actor = await requireProfileOwner(db, data.canonicalType, data.canonicalId);
+    await Effect.runPromise(
+      Effect.flatMap(ProfileOwnerService, (s) =>
+        s.unmergeProfiles(
+          { type: data.mergedType, id: data.mergedId },
+          { authorId: actor.userId, actorRole: actor.role, now: new Date().toISOString() }
+        )
+      ).pipe(Effect.provide(ProfileOwnerServiceLive))
+    );
     return { ok: true as const };
   });
