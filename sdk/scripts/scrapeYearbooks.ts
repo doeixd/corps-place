@@ -30,7 +30,9 @@ import { ensureStaffSchema, makeStaffPersonId, normalizeCaption, upsertStaffMemb
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SDK_DIR = resolve(__dirname, "..");
 loadRepoEnv(SDK_DIR);
-const YB_DIR = resolve(SDK_DIR, "..", "public", "yearbook");
+// Yearbook PDFs live under repo-root data/yearbook (matches yearbookText.YEARBOOK_DIR and this
+// file's header). The old "public/yearbook" path was stale → "no yearbook PDF — skip".
+const YB_DIR = process.env.YEARBOOK_DIR ?? resolve(SDK_DIR, "..", "data", "yearbook");
 
 const args = process.argv.slice(2);
 const hasFlag = (f: string) => args.includes(f);
@@ -40,6 +42,10 @@ const force = hasFlag("--force");
 // Backfill ONLY the show/repertoire tables (skip the staff path entirely, preserving the
 // consolidated person_ids). Re-extracts empty shows (those left 0-rep by the claude outage).
 const showsOnly = hasFlag("--shows-only");
+// Re-ingest ONLY the staff roster (skip the AI show/repertoire extraction) — used for the
+// 2014 off-by-one staff re-ingest, where shows are a separate concern and the AI path is the
+// memory/credit hog that should not run on the 4GB box alongside the cron emit.
+const staffOnly = hasFlag("--staff-only");
 const limitPages = getOpt("--limit") ? Number(getOpt("--limit")) : undefined;
 const CURRENT_SEASON = new Date().getFullYear();
 const parseSeasons = (): number[] => {
@@ -99,11 +105,16 @@ const program = Effect.gen(function* () {
     for (const page of profiles) {
       const { profile } = yield* Effect.promise(() => extractProfile(page.text));
       if (!profile || profile.staff.length === 0) continue;
-      // Split-layout books (2013/2014): the roster page has no domain — it's on the facing
-      // show page. Pull the website from the adjacent page (N-1 = show page, then N+1).
+      // Split-layout books (2013/2014): the roster page has no domain — the corps identity
+      // ("City, ST | domain") sits on the OTHER page of the physical spread. That is NOT always
+      // N-1: 2013 rosters are odd pages (identity at N-1); 2014 rosters are even pages (identity
+      // at N+1). The old fixed [-1,1] order grabbed the PREVIOUS corps's domain for every 2014
+      // roster — an off-by-one that mis-filed ~960 staff (Harloff→Cadets, Hopkins→Boston
+      // Crusaders). Pair by spread parity (even→N+1, odd→N-1), then fall back to the other side.
       let website = profile.website;
       if (!website) {
-        for (const off of [-1, 1]) {
+        const mate = page.pageNumber % 2 === 0 ? 1 : -1;
+        for (const off of [mate, -mate]) {
           const adj = extract.pages.find((pp) => pp.pageNumber === page.pageNumber + off);
           const d = adj?.text.match(/\b([a-z0-9][a-z0-9-]*\.(org|com|net))\b/i)?.[1]?.toLowerCase();
           if (d && !d.startsWith("dci.")) { website = d; break; }
@@ -119,7 +130,7 @@ const program = Effect.gen(function* () {
       // page, with source='dci-yearbook', source_authority=100. Distinct from the
       // corps_staff person directory written below.
       const showPage = extract.pages.find((pp) => pp.pageNumber === page.pageNumber - 1);
-      if (showPage && apply) {
+      if (showPage && apply && !staffOnly) {
         // Shows-only backfill: skip spreads whose show already has repertoire (don't waste AI).
         const already = showsOnly
           ? Number((yield* sql<{ c: number }>`SELECT count(*) c FROM corps_show_repertoire r JOIN corps_shows s ON s.show_id=r.show_id WHERE s.corps_key=${corpsKey} AND s.season=${String(season)}`)[0]?.c ?? 0)
@@ -147,8 +158,16 @@ const program = Effect.gen(function* () {
         // Caption comes from the SECTION first (Brass→brass, Percussion→percussion); the role
         // ("Consultant", "Tech") is usually caption-agnostic and collapses to 'other'. Falling
         // back to the role only when the section yields nothing meaningful.
+        // Title-first for SPECIFIC captions (a "Brass Arranger" in a Design section
+        // is brass, not design); section is the fallback for generic/agnostic titles.
         const capFromSection = normalizeCaption(m.section);
-        const roleType = capFromSection !== "other" ? capFromSection : normalizeCaption(m.roles?.[0] ?? title);
+        const capFromTitle = normalizeCaption(m.roles?.[0] ?? title);
+        const SPECIFIC = new Set(["brass", "percussion", "visual", "guard", "audio", "drum-major"]);
+        const roleType = SPECIFIC.has(capFromTitle)
+          ? capFromTitle
+          : capFromSection !== "other"
+            ? capFromSection
+            : capFromTitle;
         const member: CorpsStaffMember = {
           staffId: `${corpsKey}:${pid}`, givenName: null, familyName: null, displayName: name,
           defaultTitle: title, biography: null, photoUrl: null, externalLinks: [], affiliations: [],

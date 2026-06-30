@@ -41,6 +41,7 @@ const CHAIN = [
   'fixPollutedPersonIds.ts',
   'mergeFuzzyNameVariants.ts',
   'mergeNicknames.ts',
+  'reclassifyFromTitle.ts', // title-first for specific captions (before the dominant fill)
   'fillOtherFromDominant.ts', // last — needs merges done so dominant caption is accurate
 ];
 
