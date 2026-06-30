@@ -6,7 +6,6 @@
 import { useMemo, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
 import { Icon } from '@/components/icon';
 import { AddCircleIcon } from '@/components/icons/generated';
 import { cn } from '@/lib/utils';
@@ -24,15 +23,6 @@ const FALLBACK_SEASONS = Array.from({ length: 11 }, (_, i) => String(2026 - i));
 
 const fieldCls =
   'w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm outline-none focus:border-primary/60';
-
-// Snapshot dates are 'YYYY-MM-DD'; render them compactly (UTC, so no day-shift).
-const fmtDate = (d: string) => {
-  if (!d) return '';
-  const dt = new Date(`${d}T00:00:00Z`);
-  return Number.isNaN(dt.getTime())
-    ? d
-    : dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
-};
 
 export function AddSeries({
   onAdd,
@@ -58,12 +48,6 @@ export function AddSeries({
     const base = q ? corpsOptions.filter((c) => c.name.toLowerCase().includes(q)) : corpsOptions;
     return base.slice(0, 8);
   }, [query, corpsOptions]);
-
-  // Snapshot dates come newest-first; the slider runs oldest → newest (left →
-  // right), so a fresh pick (newest) lands at the right edge ("latest").
-  const ascDates = dates ? [...dates].sort() : [];
-  const asOfIdx = Math.max(0, ascDates.indexOf(asOf));
-  const asOfLatest = asOfIdx >= ascDates.length - 1;
 
   const reset = () => {
     setQuery('');
@@ -218,43 +202,22 @@ export function AddSeries({
                 </div>
               </div>
             ) : (
-              <div className="space-y-1.5">
-                <span className="text-sm text-text-secondary">Forecast as of</span>
+              <label className="block space-y-1">
+                <span className="text-sm text-text-secondary">As of (2026 prediction)</span>
                 {dates === null ? (
                   <p className="text-xs text-muted-foreground">Loading dates…</p>
                 ) : dates.length === 0 ? (
                   <p className="text-xs text-muted-foreground">No 2026 snapshots available.</p>
                 ) : (
-                  <>
-                    {/* Explanation so the control reads clearly. */}
-                    <p className="text-xs leading-snug text-muted-foreground">
-                      Replay the model’s projected finish as it stood on a past date. Earlier
-                      snapshots knew fewer of the season’s real scores, so the line sits further from
-                      the eventual result; later snapshots fold in more scores and tighten toward it.
-                    </p>
-                    <div className="flex items-baseline justify-between text-xs">
-                      <span className="text-muted-foreground">as of</span>
-                      <span className="font-medium text-text-primary">
-                        {fmtDate(asOf)}
-                        {asOfLatest ? ' · latest' : ''}
-                      </span>
-                    </div>
-                    <Slider
-                      min={0}
-                      max={Math.max(0, ascDates.length - 1)}
-                      value={[asOfIdx]}
-                      onValueChange={(v) => {
-                        const n = Array.isArray(v) ? v[0] : v;
-                        if (typeof n === 'number' && ascDates[n]) setAsOf(ascDates[n]);
-                      }}
-                    />
-                    <div className="flex justify-between text-[10px] text-text-muted">
-                      <span>{fmtDate(ascDates[0])}</span>
-                      <span>{fmtDate(ascDates[ascDates.length - 1])}</span>
-                    </div>
-                  </>
+                  <select value={asOf} onChange={(e) => setAsOf(e.target.value)} className={fieldCls}>
+                    {dates.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
                 )}
-              </div>
+              </label>
             )}
           </div>
         )}

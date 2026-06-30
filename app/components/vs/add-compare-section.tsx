@@ -14,6 +14,8 @@ import { FilterChips } from '@/components/filter-chips';
 import { cn } from '@/lib/utils';
 import { VS_SERIES_CAP, type VsSeries } from '@/lib/vs/types';
 import { VS_CAPTIONS, VS_CAPTION_LABELS, type VsCaption } from '@/lib/vs/captions';
+import { Slider } from '@/components/ui/slider';
+import { getVs2026SnapshotDates } from '@/lib/server-fns/vs';
 
 type Kind = 'corps' | 'prediction' | 'baseline';
 export interface CorpsOption {
@@ -42,6 +44,15 @@ const BASELINE_QUICK = [1, 3, 5, 8, 12];
 
 const fieldCls =
   'w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm outline-none focus:border-primary/60';
+
+// Snapshot dates are 'YYYY-MM-DD'; render compactly (UTC, so no day-shift).
+const fmtSnapDate = (d: string) => {
+  if (!d) return '';
+  const dt = new Date(`${d}T00:00:00Z`);
+  return Number.isNaN(dt.getTime())
+    ? d
+    : dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+};
 
 // A pill option that adds on click and previews on hover. Styled to match the
 // site's filter chips (rounded-full, primary hover). When `added`, it shows the
@@ -305,26 +316,125 @@ function PredictionColumn({
     [matches, roster]
   );
 
+  // "Forecast as of": clicking a corps opens its own snapshot dates (fetched on
+  // click — an event handler, not a mount effect) so you can replay the model's
+  // projection as it stood on a past date. Each added line keeps its own date.
+  const [picked, setPicked] = useState<CorpsOption | null>(null);
+  const [dates, setDates] = useState<string[] | null>(null);
+  const [asOf, setAsOf] = useState('');
+
+  const pick = (c: CorpsOption) => {
+    setPicked(c);
+    setDates(null);
+    onPreview(null);
+    getVs2026SnapshotDates({ data: { slug: c.slug } })
+      .then((r) => {
+        setDates(r.dates);
+        if (r.dates[0]) setAsOf(r.dates[0]); // dates are newest-first → default latest
+      })
+      .catch(() => setDates([]));
+  };
+  const back = () => {
+    setPicked(null);
+    setDates(null);
+  };
+
+  const ascDates = dates ? [...dates].sort() : [];
+  const asOfIdx = Math.max(0, ascDates.indexOf(asOf));
+  const asOfLatest = asOfIdx >= ascDates.length - 1;
+
+  const addPicked = () => {
+    if (!picked) return;
+    // "Latest" reuses the well-tested predicted-to-finals path; a past date adds
+    // the as-of snapshot series (read-model-backed, works in prod).
+    onAdd(
+      asOfLatest
+        ? { kind: 'predicted', corpsSlug: picked.slug }
+        : { kind: 'prediction', corpsSlug: picked.slug, asOf }
+    );
+    back();
+  };
+
   return (
     <div className="space-y-2">
       <ColumnHeader title="2026 prediction" hint="The model’s projected finish for the 2026 season." />
-      <p className="text-xs text-muted-foreground">
-        Click a corps to add its predicted-to-finals curve (a dashed line with an uncertainty band).
-      </p>
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search corps…"
-        className={fieldCls}
-      />
-      <CorpsResultList
-        matches={visible}
-        heightClass="h-96"
-        atCap={disabled}
-        isAdded={(c) => addedTokens.has(`forecast~${c.slug}`)}
-        onSelect={(c) => onAdd({ kind: 'predicted', corpsSlug: c.slug })}
-        onHover={(c) => onPreview(c ? { kind: 'predicted', corpsSlug: c.slug } : null)}
-      />
+      {!picked ? (
+        <>
+          <p className="text-xs text-muted-foreground">
+            Click a corps to add its predicted-to-finals curve (a dashed line with an uncertainty
+            band) — then optionally replay it “as of” an earlier date.
+          </p>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search corps…"
+            className={fieldCls}
+          />
+          <CorpsResultList
+            matches={visible}
+            heightClass="h-96"
+            atCap={disabled}
+            isAdded={(c) => addedTokens.has(`forecast~${c.slug}`)}
+            onSelect={pick}
+            onHover={(c) => onPreview(c ? { kind: 'predicted', corpsSlug: c.slug } : null)}
+          />
+        </>
+      ) : (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-2 rounded-lg border border-border px-2.5 py-1.5 text-sm">
+            <span className="truncate font-medium text-text-primary">{picked.name}</span>
+            <button
+              type="button"
+              onClick={back}
+              className="shrink-0 text-xs text-muted-foreground hover:text-foreground"
+            >
+              change
+            </button>
+          </div>
+          <span className="text-sm text-text-secondary">Forecast as of</span>
+          {dates === null ? (
+            <p className="text-xs text-muted-foreground">Loading dates…</p>
+          ) : dates.length === 0 ? (
+            <p className="text-xs text-muted-foreground">No 2026 snapshots available.</p>
+          ) : (
+            <>
+              <p className="text-xs leading-snug text-muted-foreground">
+                Replay the model’s projected finish as it stood on a past date. Earlier snapshots
+                knew fewer of the season’s real scores, so the line sits further from the eventual
+                result; later snapshots fold in more scores and tighten toward it.
+              </p>
+              <div className="flex items-baseline justify-between text-xs">
+                <span className="text-muted-foreground">as of</span>
+                <span className="font-medium text-text-primary">
+                  {fmtSnapDate(asOf)}
+                  {asOfLatest ? ' · latest' : ''}
+                </span>
+              </div>
+              <Slider
+                min={0}
+                max={Math.max(0, ascDates.length - 1)}
+                value={[asOfIdx]}
+                onValueChange={(v) => {
+                  const n = Array.isArray(v) ? v[0] : v;
+                  if (typeof n === 'number' && ascDates[n]) setAsOf(ascDates[n]);
+                }}
+              />
+              <div className="flex justify-between text-[10px] text-text-muted">
+                <span>{fmtSnapDate(ascDates[0])}</span>
+                <span>{fmtSnapDate(ascDates[ascDates.length - 1])}</span>
+              </div>
+              <button
+                type="button"
+                onClick={addPicked}
+                disabled={disabled}
+                className="w-full rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Add {asOfLatest ? 'forecast' : `forecast · as of ${fmtSnapDate(asOf)}`}
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
