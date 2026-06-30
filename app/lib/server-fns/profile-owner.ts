@@ -198,3 +198,32 @@ export const setProfilePhoto = createServerFn({ method: 'POST' })
     );
     return { ok: true, url: null };
   });
+
+/** Moderation queue (plan §9). Lists claims for the admin console; `manageProfileClaims`. */
+export const listProfileClaims = createServerFn({ method: 'GET' })
+  .validator((data?: { status?: string }) => data ?? {})
+  .handler(async ({ data }) => {
+    await requireCapability(getWebRequest(), 'manageProfileClaims');
+    return Effect.runPromise(
+      Effect.flatMap(ProfileOwnerService, (s) => s.listClaims(data.status)).pipe(
+        Effect.provide(ProfileOwnerServiceLive)
+      )
+    );
+  });
+
+/** Approve a pending (weak-match) claim → active; `manageProfileClaims`. */
+export const approveProfileClaim = createServerFn({ method: 'POST' })
+  .validator((data: { claimId: string }) => data)
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'manageProfileClaims');
+    await Effect.runPromise(
+      Effect.flatMap(ProfileOwnerService, (s) =>
+        s.approveClaim(data.claimId, {
+          authorId: actor.userId,
+          actorRole: actor.role,
+          now: new Date().toISOString(),
+        })
+      ).pipe(Effect.provide(ProfileOwnerServiceLive))
+    );
+    return { ok: true };
+  });

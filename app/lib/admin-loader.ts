@@ -26,6 +26,7 @@ type AdminCap = Extract<
   | 'manageFantasyLeagues'
   | 'customerSupport'
   | 'impersonate'
+  | 'manageProfileClaims'
 >;
 
 export const requireAdminLoader = (cap: AdminCap) => async (): Promise<AdminGate> => {

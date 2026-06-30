@@ -121,9 +121,10 @@ const makeProfileOwnerService = Effect.gen(function* () {
     const status = nm.match === 'weak' ? 'pending' : 'active';
     const claimId = newId();
 
-    yield* sql.withTransaction(
-      Effect.gen(function* () {
-        yield* sql`
+    yield* sql
+      .withTransaction(
+        Effect.gen(function* () {
+          yield* sql`
           INSERT INTO profile_claims
             (claim_id, entity_type, entity_id, user_id, status, google_name, matched_name,
              name_match, name_score, attested_at, attestation_version, attest_ip,
@@ -132,13 +133,22 @@ const makeProfileOwnerService = Effect.gen(function* () {
                   ${input.googleName ?? null}, ${matchedName}, ${nm.match}, ${nm.score},
                   ${ctx.now}, ${input.attestationVersion}, ${input.ip ?? null},
                   ${input.userAgent ?? null}, ${ctx.now})`;
-        yield* sql`
+          yield* sql`
           INSERT INTO profile_revisions
             (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, after_json, created_at)
           VALUES (${newId()}, ${entityType}, ${entityId}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
                   'claim', ${JSON.stringify({ status, name_match: nm.match, name_score: nm.score })}, ${ctx.now})`;
-      })
-    );
+        })
+      )
+      // Close the SELECT-then-INSERT race: a concurrent claim trips the partial
+      // unique index uq_profile_claims_active → map that to ClaimExists, not a 500.
+      .pipe(
+        Effect.mapError((e) =>
+          /UNIQUE|constraint/i.test(String((e as { message?: string })?.message ?? e))
+            ? new ClaimExists({ entityType, entityId })
+            : e
+        )
+      );
 
     return { claimId, status, nameMatch: nm.match as NameMatchTier, nameScore: nm.score, matchedName };
   });
@@ -218,7 +228,47 @@ const makeProfileOwnerService = Effect.gen(function* () {
     );
   });
 
-  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride };
+  // Moderation queue (plan §9): list claims for the admin console. Default to the
+  // ones needing attention (pending), or pass a status to filter.
+  const listClaims = Effect.fn('ProfileOwnerService.listClaims')(function* (status?: string) {
+    return yield* sql<{
+      claim_id: string; entity_type: string; entity_id: string; user_id: string; status: string;
+      google_name: string | null; matched_name: string | null; name_match: string | null;
+      name_score: number | null; claimed_at: string; attested_at: string;
+    }>`
+      SELECT claim_id, entity_type, entity_id, user_id, status, google_name, matched_name,
+             name_match, name_score, claimed_at, attested_at
+      FROM profile_claims
+      WHERE ${status ? sql`status = ${status}` : sql`status != 'revoked'`}
+      ORDER BY (status = 'pending') DESC, claimed_at DESC
+      LIMIT 500`;
+  });
+
+  // Approve a pending (weak-match) claim → active. Audit-tracked in profile_revisions.
+  const approveClaim = Effect.fn('ProfileOwnerService.approveClaim')(function* (
+    claimId: string,
+    ctx: WriteContext
+  ) {
+    yield* requireDurableStorage;
+    const rows = yield* sql<{ entity_type: string; entity_id: string; status: string }>`
+      SELECT entity_type, entity_id, status FROM profile_claims WHERE claim_id = ${claimId} LIMIT 1`;
+    const c = rows[0];
+    if (!c) return yield* Effect.fail(new NotFound({ message: 'claim not found' }));
+    if (c.status !== 'pending')
+      return yield* Effect.fail(new NotFound({ message: `claim not pending (is '${c.status}')` }));
+    yield* sql.withTransaction(
+      Effect.gen(function* () {
+        yield* sql`UPDATE profile_claims SET status = 'active' WHERE claim_id = ${claimId}`;
+        yield* sql`
+          INSERT INTO profile_revisions
+            (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, after_json, created_at)
+          VALUES (${newId()}, ${c.entity_type}, ${c.entity_id}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                  'approve', ${JSON.stringify({ status: 'active', from: 'pending' })}, ${ctx.now})`;
+      })
+    );
+  });
+
+  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim };
 });
 
 export class ProfileOwnerService extends Context.Service<

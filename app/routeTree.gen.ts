@@ -19,7 +19,9 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StaffIndexRouteImport } from './routes/staff/index'
+import { Route as ShowsIndexRouteImport } from './routes/shows/index'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
+import { Route as ScoresIndexRouteImport } from './routes/scores/index'
 import { Route as MerchIndexRouteImport } from './routes/merch.index'
 import { Route as JudgesIndexRouteImport } from './routes/judges/index'
 import { Route as FantasyIndexRouteImport } from './routes/fantasy/index'
@@ -32,6 +34,8 @@ import { Route as ShopCartRouteImport } from './routes/shop/cart'
 import { Route as ShopBookmarksRouteImport } from './routes/shop/bookmarks'
 import { Route as ShopAllRouteImport } from './routes/shop/all'
 import { Route as ShopProductIdRouteImport } from './routes/shop/$productId'
+import { Route as ScoresSlugRouteImport } from './routes/scores/$slug'
+import { Route as PredictPaletteRouteImport } from './routes/predict/palette'
 import { Route as NotifyUnsubscribeRouteImport } from './routes/notify/unsubscribe'
 import { Route as MerchSplatRouteImport } from './routes/merch.$'
 import { Route as JudgesJudgeIdRouteImport } from './routes/judges/$judgeId'
@@ -51,11 +55,13 @@ import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spi
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSystemRouteImport } from './routes/admin/system'
 import { Route as AdminSupportRouteImport } from './routes/admin/support'
+import { Route as AdminProfileClaimsRouteImport } from './routes/admin/profile-claims'
 import { Route as AdminJobsRouteImport } from './routes/admin/jobs'
 import { Route as AdminIdentityRouteImport } from './routes/admin/identity'
 import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-colors'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
 import { Route as FantasySlugIndexRouteImport } from './routes/fantasy/$slug/index'
 import { Route as EventsYearSlugIndexRouteImport } from './routes/events/$yearSlug/index'
 import { Route as ShowsSlugSeasonRouteImport } from './routes/shows/$slug.$season'
@@ -78,6 +84,7 @@ import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[
 import { ServerRoute as AppIconDotsvgServerRouteImport } from './routes/app-icon[.]svg'
 import { ServerRoute as ApiVersionServerRouteImport } from './routes/api/version'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
+import { ServerRoute as ApiCollectServerRouteImport } from './routes/api/collect'
 import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
 import { ServerRoute as ApiJobsStripeWebhookServerRouteImport } from './routes/api/jobs/stripe-webhook'
 import { ServerRoute as ApiFantasyStripeWebhookServerRouteImport } from './routes/api/fantasy/stripe-webhook'
@@ -129,9 +136,19 @@ const StaffIndexRoute = StaffIndexRouteImport.update({
   path: '/staff/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShowsIndexRoute = ShowsIndexRouteImport.update({
+  id: '/shows/',
+  path: '/shows/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopIndexRoute = ShopIndexRouteImport.update({
   id: '/shop/',
   path: '/shop/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScoresIndexRoute = ScoresIndexRouteImport.update({
+  id: '/scores/',
+  path: '/scores/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerchIndexRoute = MerchIndexRouteImport.update({
@@ -192,6 +209,16 @@ const ShopAllRoute = ShopAllRouteImport.update({
 const ShopProductIdRoute = ShopProductIdRouteImport.update({
   id: '/shop/$productId',
   path: '/shop/$productId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScoresSlugRoute = ScoresSlugRouteImport.update({
+  id: '/scores/$slug',
+  path: '/scores/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictPaletteRoute = PredictPaletteRouteImport.update({
+  id: '/predict/palette',
+  path: '/predict/palette',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotifyUnsubscribeRoute = NotifyUnsubscribeRouteImport.update({
@@ -289,6 +316,11 @@ const AdminSupportRoute = AdminSupportRouteImport.update({
   path: '/admin/support',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProfileClaimsRoute = AdminProfileClaimsRouteImport.update({
+  id: '/admin/profile-claims',
+  path: '/admin/profile-claims',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminJobsRoute = AdminJobsRouteImport.update({
   id: '/admin/jobs',
   path: '/admin/jobs',
@@ -312,6 +344,11 @@ const AdminContentRoute = AdminContentRouteImport.update({
 const AdminAuditRoute = AdminAuditRouteImport.update({
   id: '/admin/audit',
   path: '/admin/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/admin/analytics',
+  path: '/admin/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FantasySlugIndexRoute = FantasySlugIndexRouteImport.update({
@@ -426,6 +463,11 @@ const ApiMediaServerRoute = ApiMediaServerRouteImport.update({
   path: '/api/media',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiCollectServerRoute = ApiCollectServerRouteImport.update({
+  id: '/api/collect',
+  path: '/api/collect',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 const ApiShowMediaIdServerRoute = ApiShowMediaIdServerRouteImport.update({
   id: '/api/show-media/$id',
   path: '/api/show-media/$id',
@@ -480,11 +522,13 @@ export interface FileRoutesByFullPath {
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/identity': typeof AdminIdentityRoute
   '/admin/jobs': typeof AdminJobsRoute
+  '/admin/profile-claims': typeof AdminProfileClaimsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
@@ -504,6 +548,8 @@ export interface FileRoutesByFullPath {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
+  '/predict/palette': typeof PredictPaletteRoute
+  '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
   '/shop/bookmarks': typeof ShopBookmarksRoute
@@ -516,7 +562,9 @@ export interface FileRoutesByFullPath {
   '/fantasy': typeof FantasyIndexRoute
   '/judges': typeof JudgesIndexRoute
   '/merch': typeof MerchIndexRoute
+  '/scores': typeof ScoresIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/shows': typeof ShowsIndexRoute
   '/staff': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
@@ -543,11 +591,13 @@ export interface FileRoutesByTo {
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/identity': typeof AdminIdentityRoute
   '/admin/jobs': typeof AdminJobsRoute
+  '/admin/profile-claims': typeof AdminProfileClaimsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
@@ -567,6 +617,8 @@ export interface FileRoutesByTo {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
+  '/predict/palette': typeof PredictPaletteRoute
+  '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
   '/shop/bookmarks': typeof ShopBookmarksRoute
@@ -579,7 +631,9 @@ export interface FileRoutesByTo {
   '/fantasy': typeof FantasyIndexRoute
   '/judges': typeof JudgesIndexRoute
   '/merch': typeof MerchIndexRoute
+  '/scores': typeof ScoresIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/shows': typeof ShowsIndexRoute
   '/staff': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
@@ -607,11 +661,13 @@ export interface FileRoutesById {
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/corps-colors': typeof AdminCorpsColorsRoute
   '/admin/identity': typeof AdminIdentityRoute
   '/admin/jobs': typeof AdminJobsRoute
+  '/admin/profile-claims': typeof AdminProfileClaimsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
@@ -631,6 +687,8 @@ export interface FileRoutesById {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
+  '/predict/palette': typeof PredictPaletteRoute
+  '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
   '/shop/bookmarks': typeof ShopBookmarksRoute
@@ -643,7 +701,9 @@ export interface FileRoutesById {
   '/fantasy/': typeof FantasyIndexRoute
   '/judges/': typeof JudgesIndexRoute
   '/merch/': typeof MerchIndexRoute
+  '/scores/': typeof ScoresIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/shows/': typeof ShowsIndexRoute
   '/staff/': typeof StaffIndexRoute
   '/admin/fantasy/leagues': typeof AdminFantasyLeaguesRoute
   '/admin/fantasy/quiz': typeof AdminFantasyQuizRoute
@@ -672,11 +732,13 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/terms-of-service'
     | '/vs'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
     | '/admin/identity'
     | '/admin/jobs'
+    | '/admin/profile-claims'
     | '/admin/support'
     | '/admin/system'
     | '/admin/users'
@@ -696,6 +758,8 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
+    | '/predict/palette'
+    | '/scores/$slug'
     | '/shop/$productId'
     | '/shop/all'
     | '/shop/bookmarks'
@@ -708,7 +772,9 @@ export interface FileRouteTypes {
     | '/fantasy'
     | '/judges'
     | '/merch'
+    | '/scores'
     | '/shop'
+    | '/shows'
     | '/staff'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
@@ -735,11 +801,13 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/terms-of-service'
     | '/vs'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
     | '/admin/identity'
     | '/admin/jobs'
+    | '/admin/profile-claims'
     | '/admin/support'
     | '/admin/system'
     | '/admin/users'
@@ -759,6 +827,8 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
+    | '/predict/palette'
+    | '/scores/$slug'
     | '/shop/$productId'
     | '/shop/all'
     | '/shop/bookmarks'
@@ -771,7 +841,9 @@ export interface FileRouteTypes {
     | '/fantasy'
     | '/judges'
     | '/merch'
+    | '/scores'
     | '/shop'
+    | '/shows'
     | '/staff'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
@@ -798,11 +870,13 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/terms-of-service'
     | '/vs'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/content'
     | '/admin/corps-colors'
     | '/admin/identity'
     | '/admin/jobs'
+    | '/admin/profile-claims'
     | '/admin/support'
     | '/admin/system'
     | '/admin/users'
@@ -822,6 +896,8 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
+    | '/predict/palette'
+    | '/scores/$slug'
     | '/shop/$productId'
     | '/shop/all'
     | '/shop/bookmarks'
@@ -834,7 +910,9 @@ export interface FileRouteTypes {
     | '/fantasy/'
     | '/judges/'
     | '/merch/'
+    | '/scores/'
     | '/shop/'
+    | '/shows/'
     | '/staff/'
     | '/admin/fantasy/leagues'
     | '/admin/fantasy/quiz'
@@ -862,11 +940,13 @@ export interface RootRouteChildren {
   RankingsRoute: typeof RankingsRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   VsRoute: typeof VsRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminCorpsColorsRoute: typeof AdminCorpsColorsRoute
   AdminIdentityRoute: typeof AdminIdentityRoute
   AdminJobsRoute: typeof AdminJobsRoute
+  AdminProfileClaimsRoute: typeof AdminProfileClaimsRoute
   AdminSupportRoute: typeof AdminSupportRoute
   AdminSystemRoute: typeof AdminSystemRoute
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
@@ -886,6 +966,8 @@ export interface RootRouteChildren {
   JudgesJudgeIdRoute: typeof JudgesJudgeIdRoute
   MerchSplatRoute: typeof MerchSplatRoute
   NotifyUnsubscribeRoute: typeof NotifyUnsubscribeRoute
+  PredictPaletteRoute: typeof PredictPaletteRoute
+  ScoresSlugRoute: typeof ScoresSlugRoute
   ShopProductIdRoute: typeof ShopProductIdRoute
   ShopAllRoute: typeof ShopAllRoute
   ShopBookmarksRoute: typeof ShopBookmarksRoute
@@ -898,7 +980,9 @@ export interface RootRouteChildren {
   FantasyIndexRoute: typeof FantasyIndexRoute
   JudgesIndexRoute: typeof JudgesIndexRoute
   MerchIndexRoute: typeof MerchIndexRoute
+  ScoresIndexRoute: typeof ScoresIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
+  ShowsIndexRoute: typeof ShowsIndexRoute
   StaffIndexRoute: typeof StaffIndexRoute
   AdminFantasyLeaguesRoute: typeof AdminFantasyLeaguesRoute
   AdminFantasyQuizRoute: typeof AdminFantasyQuizRoute
@@ -921,6 +1005,7 @@ export interface FileServerRoutesByFullPath {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
+  '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
@@ -937,6 +1022,7 @@ export interface FileServerRoutesByTo {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
+  '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
@@ -954,6 +1040,7 @@ export interface FileServerRoutesById {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
+  '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
@@ -972,6 +1059,7 @@ export interface FileServerRouteTypes {
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/api/collect'
     | '/api/media'
     | '/api/version'
     | '/api/auth/$'
@@ -988,6 +1076,7 @@ export interface FileServerRouteTypes {
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/api/collect'
     | '/api/media'
     | '/api/version'
     | '/api/auth/$'
@@ -1004,6 +1093,7 @@ export interface FileServerRouteTypes {
     | '/favicon.ico'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/api/collect'
     | '/api/media'
     | '/api/version'
     | '/api/auth/$'
@@ -1021,6 +1111,7 @@ export interface RootServerRouteChildren {
   FaviconDoticoServerRoute: typeof FaviconDoticoServerRoute
   RobotsDottxtServerRoute: typeof RobotsDottxtServerRoute
   SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
+  ApiCollectServerRoute: typeof ApiCollectServerRoute
   ApiMediaServerRoute: typeof ApiMediaServerRoute
   ApiVersionServerRoute: typeof ApiVersionServerRoute
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
@@ -1091,11 +1182,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shows/': {
+      id: '/shows/'
+      path: '/shows'
+      fullPath: '/shows'
+      preLoaderRoute: typeof ShowsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop/': {
       id: '/shop/'
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scores/': {
+      id: '/scores/'
+      path: '/scores'
+      fullPath: '/scores'
+      preLoaderRoute: typeof ScoresIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merch/': {
@@ -1180,6 +1285,20 @@ declare module '@tanstack/react-router' {
       path: '/shop/$productId'
       fullPath: '/shop/$productId'
       preLoaderRoute: typeof ShopProductIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scores/$slug': {
+      id: '/scores/$slug'
+      path: '/scores/$slug'
+      fullPath: '/scores/$slug'
+      preLoaderRoute: typeof ScoresSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predict/palette': {
+      id: '/predict/palette'
+      path: '/predict/palette'
+      fullPath: '/predict/palette'
+      preLoaderRoute: typeof PredictPaletteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notify/unsubscribe': {
@@ -1315,6 +1434,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/profile-claims': {
+      id: '/admin/profile-claims'
+      path: '/admin/profile-claims'
+      fullPath: '/admin/profile-claims'
+      preLoaderRoute: typeof AdminProfileClaimsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/jobs': {
       id: '/admin/jobs'
       path: '/admin/jobs'
@@ -1348,6 +1474,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/audit'
       fullPath: '/admin/audit'
       preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fantasy/$slug/': {
@@ -1508,6 +1641,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiMediaServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/collect': {
+      id: '/api/collect'
+      path: '/api/collect'
+      fullPath: '/api/collect'
+      preLoaderRoute: typeof ApiCollectServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/show-media/$id': {
       id: '/api/show-media/$id'
       path: '/api/show-media/$id'
@@ -1587,11 +1727,13 @@ const rootRouteChildren: RootRouteChildren = {
   RankingsRoute: RankingsRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   VsRoute: VsRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminContentRoute: AdminContentRoute,
   AdminCorpsColorsRoute: AdminCorpsColorsRoute,
   AdminIdentityRoute: AdminIdentityRoute,
   AdminJobsRoute: AdminJobsRoute,
+  AdminProfileClaimsRoute: AdminProfileClaimsRoute,
   AdminSupportRoute: AdminSupportRoute,
   AdminSystemRoute: AdminSystemRoute,
   AdminUsersRoute: AdminUsersRouteWithChildren,
@@ -1611,6 +1753,8 @@ const rootRouteChildren: RootRouteChildren = {
   JudgesJudgeIdRoute: JudgesJudgeIdRoute,
   MerchSplatRoute: MerchSplatRoute,
   NotifyUnsubscribeRoute: NotifyUnsubscribeRoute,
+  PredictPaletteRoute: PredictPaletteRoute,
+  ScoresSlugRoute: ScoresSlugRoute,
   ShopProductIdRoute: ShopProductIdRoute,
   ShopAllRoute: ShopAllRoute,
   ShopBookmarksRoute: ShopBookmarksRoute,
@@ -1623,7 +1767,9 @@ const rootRouteChildren: RootRouteChildren = {
   FantasyIndexRoute: FantasyIndexRoute,
   JudgesIndexRoute: JudgesIndexRoute,
   MerchIndexRoute: MerchIndexRoute,
+  ScoresIndexRoute: ScoresIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
+  ShowsIndexRoute: ShowsIndexRoute,
   StaffIndexRoute: StaffIndexRoute,
   AdminFantasyLeaguesRoute: AdminFantasyLeaguesRoute,
   AdminFantasyQuizRoute: AdminFantasyQuizRoute,
@@ -1649,6 +1795,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   FaviconDoticoServerRoute: FaviconDoticoServerRoute,
   RobotsDottxtServerRoute: RobotsDottxtServerRoute,
   SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
+  ApiCollectServerRoute: ApiCollectServerRoute,
   ApiMediaServerRoute: ApiMediaServerRoute,
   ApiVersionServerRoute: ApiVersionServerRoute,
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
