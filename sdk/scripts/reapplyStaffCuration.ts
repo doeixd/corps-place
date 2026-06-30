@@ -38,6 +38,7 @@ const db = createClient({ url: DB_URL });
 const CHAIN = [
   'dedupeAssignments.ts',
   'cleanYearbookStaff.ts',
+  'splitConcatenatedNames.ts', // two-people-as-one parser misses (re-home then drop the bogus entry)
   'fixPollutedPersonIds.ts',
   'mergeFuzzyNameVariants.ts',
   'mergeNicknames.ts',
