@@ -385,6 +385,33 @@ const makeProfileOwnerService = Effect.gen(function* () {
       );
   });
 
+  // Contributions-side of an owner/moderator profile delete (plan §11b): revoke any
+  // claim, clear overrides, and audit op='delete'. The durable read-model suppression
+  // (so a re-scrape can't resurrect it) is enqueued to the VM worker by the server-fn.
+  const deleteProfile = Effect.fn('ProfileOwnerService.deleteProfile')(function* (
+    entityType: EntityType,
+    entityId: string,
+    ctx: WriteContext,
+    reason?: string | null
+  ) {
+    yield* requireDurableStorage;
+    yield* sql.withTransaction(
+      Effect.gen(function* () {
+        yield* sql`
+          UPDATE profile_claims SET status = 'revoked', revoked_at = ${ctx.now},
+            revoked_by = ${ctx.authorId}, revoke_reason = ${reason ?? 'profile deleted'}
+          WHERE entity_type = ${entityType} AND entity_id = ${entityId} AND status != 'revoked'`;
+        yield* sql`
+          DELETE FROM profile_overrides WHERE entity_type = ${entityType} AND entity_id = ${entityId}`;
+        yield* sql`
+          INSERT INTO profile_revisions
+            (revision_id, entity_type, entity_id, target_kind, actor_user_id, actor_role, op, before_json, created_at)
+          VALUES (${newId()}, ${entityType}, ${entityId}, 'claim', ${ctx.authorId}, ${ctx.actorRole},
+                  'delete', ${JSON.stringify({ reason: reason ?? null })}, ${ctx.now})`;
+      })
+    );
+  });
+
   // Reconcile source divergence (plan §11): re-read each override's scraped source,
   // re-hash it, and flip scrape_diverged when it no longer matches the hash captured
   // at edit time — so the owner is told "the source changed under your edit". Runnable
@@ -420,7 +447,7 @@ const makeProfileOwnerService = Effect.gen(function* () {
     return { checked, changed };
   });
 
-  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim, reconcile, repointClaim };
+  return { readOverlay, evaluateNameMatch, claimProfile, revokeClaim, saveOverride, listClaims, approveClaim, reconcile, repointClaim, deleteProfile };
 });
 
 export class ProfileOwnerService extends Context.Service<

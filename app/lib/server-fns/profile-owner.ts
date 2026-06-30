@@ -261,3 +261,35 @@ export const repointProfileClaim = createServerFn({ method: 'POST' })
     );
     return { ok: true };
   });
+
+/** Owner self-delete / moderator takedown (plan §11b). Revokes the claim + clears
+ *  overrides (contributions-side) AND enqueues a VM-worker `suppress_profile` job so
+ *  the entity is durably removed from the read-model (a re-scrape can't resurrect it).
+ *  Owner-or-moderator via requireProfileOwner. */
+export const deleteProfile = createServerFn({ method: 'POST' })
+  .validator((data: { entityType: EntityType; entityId: string; reason?: string }) => data)
+  .handler(async ({ data }) => {
+    // The worker interpolates the id into a shell command, so it must fit the safe
+    // whitelist (mirrors admin-jobs SafeArg) before we enqueue.
+    if (!/^[A-Za-z0-9_.-]{1,128}$/.test(data.entityId)) throw new ForbiddenError('claimProfile');
+    const db = await getContributionsDb();
+    const actor = await requireProfileOwner(db, data.entityType, data.entityId);
+    const ctx = { authorId: actor.userId, actorRole: actor.role, now: new Date().toISOString() };
+    await Effect.runPromise(
+      Effect.flatMap(ProfileOwnerService, (s) =>
+        s.deleteProfile(data.entityType, data.entityId, ctx, data.reason ?? null)
+      ).pipe(Effect.provide(ProfileOwnerServiceLive))
+    );
+    // Durable read-model suppression runs off the serving container → VM worker job.
+    await db.execute({
+      sql: `INSERT INTO admin_jobs (job_id, kind, args_json, status, requested_by, queued_at)
+            VALUES (?, 'suppress_profile', ?, 'queued', ?, ?)`,
+      args: [
+        crypto.randomUUID(),
+        JSON.stringify({ type: data.entityType, id: data.entityId }),
+        actor.userId,
+        ctx.now,
+      ],
+    });
+    return { ok: true as const };
+  });

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Icon } from '@/components/icon';
 import { NoteEditIcon } from '@/components/icons/generated';
-import { saveProfileField, setProfilePhoto } from '@/lib/server-fns/profile-owner';
+import { saveProfileField, setProfilePhoto, deleteProfile } from '@/lib/server-fns/profile-owner';
 
 /** File → base64 (strip the data: prefix), same as contrib/image-drop. */
 const fileToBase64 = (file: File): Promise<string> =>
@@ -79,6 +79,26 @@ export function ProfileEditor({
       await router.invalidate();
     } catch {
       toast.error('Photo upload failed — try a JPG or PNG under 16 MB.');
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const onDelete = async () => {
+    if (
+      !confirm(
+        'Permanently remove this profile from the site? This revokes your claim and removes the page, and future data updates will not bring it back. This cannot be easily undone.'
+      )
+    )
+      return;
+    setBusy('delete');
+    try {
+      await deleteProfile({ data: { entityType, entityId } });
+      toast.success('Profile removal requested — it will disappear from the site shortly.');
+      setOpen(false);
+      await router.invalidate();
+    } catch {
+      toast.error('Could not remove the profile.');
     } finally {
       setBusy(null);
     }
@@ -196,6 +216,21 @@ export function ProfileEditor({
           onClick={() => void save('pos', 'current_position', { title: posTitle.trim(), org: posOrg.trim() })}
         >
           Save position
+        </BusyButton>
+      </div>
+
+      <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
+        <span className="text-xs text-muted-foreground">
+          Remove this profile from the site (revokes your claim; won’t be recreated by future updates).
+        </span>
+        <BusyButton
+          busy={busy === 'delete'}
+          size="sm"
+          variant="destructive"
+          className="self-start"
+          onClick={() => void onDelete()}
+        >
+          Delete this profile
         </BusyButton>
       </div>
     </div>

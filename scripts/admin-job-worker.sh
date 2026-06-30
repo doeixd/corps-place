@@ -67,6 +67,14 @@ cmd_for() {
       safe_arg "$corps" && safe_arg "$primary" && safe_arg "${secondary:-none}" \
         || { echo "__ERR__ save_corps_colors needs valid corps, primary, secondary"; return; }
       echo "vp exec tsx scripts/setCorpsColors.ts --corps $corps --primary $primary --secondary ${secondary:-none}" ;;
+    suppress_profile)
+      local type id
+      type="$(printf '%s' "$args" | sed -n 's/.*"type"[: ]*"\([^"]*\)".*/\1/p')"
+      id="$(printf '%s' "$args" | sed -n 's/.*"id"[: ]*"\([^"]*\)".*/\1/p')"
+      { [ "$type" = staff ] || [ "$type" = judge ]; } && safe_arg "$id" \
+        || { echo "__ERR__ suppress_profile needs type=staff|judge + valid id"; return; }
+      # Suppress (durable) then republish so the entity drops from the live read-model.
+      echo "vp exec tsx scripts/suppressProfile.ts --type $type --id $id --apply && bash $REPO_DIR/scripts/refresh-prod-read-model.sh" ;;
     *)                    echo "__ERR__ unknown kind: $kind" ;;
   esac
 }
