@@ -26,6 +26,8 @@ type ClaimRow = {
   name_score: number | null;
   claimed_at: string;
   attested_at: string;
+  orphaned: boolean; // entity_id no longer resolves in the read-model (merged/removed)
+  currentName: string | null;
 };
 
 export const Route = createFileRoute('/admin/profile-claims')({
@@ -70,6 +72,11 @@ function ProfileClaims({ all }: { all: ClaimRow[] }) {
           {c.name_match ?? '—'}
           {typeof c.name_score === 'number' ? ` ${Math.round(c.name_score * 100)}%` : ''}
         </Badge>
+        <Show when={c.orphaned}>
+          <Badge variant="destructive-light" size="sm">
+            orphaned — entity merged/removed
+          </Badge>
+        </Show>
         <span className="text-text-secondary">
           claimed as “{c.google_name ?? '—'}” · {new Date(c.claimed_at).toLocaleDateString()}
         </span>

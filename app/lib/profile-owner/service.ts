@@ -231,7 +231,7 @@ const makeProfileOwnerService = Effect.gen(function* () {
   // Moderation queue (plan §9): list claims for the admin console. Default to the
   // ones needing attention (pending), or pass a status to filter.
   const listClaims = Effect.fn('ProfileOwnerService.listClaims')(function* (status?: string) {
-    return yield* sql<{
+    const rows = yield* sql<{
       claim_id: string; entity_type: string; entity_id: string; user_id: string; status: string;
       google_name: string | null; matched_name: string | null; name_match: string | null;
       name_score: number | null; claimed_at: string; attested_at: string;
@@ -242,6 +242,16 @@ const makeProfileOwnerService = Effect.gen(function* () {
       WHERE ${status ? sql`status = ${status}` : sql`status != 'revoked'`}
       ORDER BY (status = 'pending') DESC, claimed_at DESC
       LIMIT 500`;
+    // Reconcile (plan §8/§11): a claimed entity_id can vanish when staff person_ids
+    // are merged/removed by the ingest pipeline (claims live in a separate DB, so the
+    // merge can't carry them). Resolve each against the read-model and flag orphans
+    // so a moderator can re-point or revoke.
+    const out: ((typeof rows)[number] & { orphaned: boolean; currentName: string | null })[] = [];
+    for (const r of rows) {
+      const name = yield* resolveDisplayName(r.entity_type as EntityType, r.entity_id);
+      out.push({ ...r, orphaned: name == null, currentName: name });
+    }
+    return out;
   });
 
   // Approve a pending (weak-match) claim → active. Audit-tracked in profile_revisions.
