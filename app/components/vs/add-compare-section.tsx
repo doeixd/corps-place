@@ -8,10 +8,10 @@ import { useMemo, useRef, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Icon } from '@/components/icon';
-import { AddCircleIcon } from '@/components/icons/generated';
+import { AddCircleIcon, Cancel01Icon } from '@/components/icons/generated';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { cn } from '@/lib/utils';
-import type { VsSeries } from '@/lib/vs/types';
+import { VS_SERIES_CAP, type VsSeries } from '@/lib/vs/types';
 
 type Kind = 'corps' | 'prediction' | 'baseline';
 export interface CorpsOption {
@@ -61,8 +61,8 @@ function OptionChip({
   return (
     <button
       type="button"
-      disabled={disabled || added}
-      title={added ? 'Already in the comparison' : undefined}
+      disabled={disabled && !added}
+      title={added ? 'In the comparison — click to remove' : undefined}
       onClick={onAdd}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
@@ -71,11 +71,12 @@ function OptionChip({
       className={cn(
         'shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-sm transition-colors disabled:cursor-not-allowed',
         added
-          ? 'border-primary bg-primary/10 text-primary'
+          ? 'border-primary/40 text-text-secondary'
           : 'border-border text-text-secondary hover:border-primary/60 hover:text-foreground disabled:opacity-50'
       )}
     >
-      {added ? `${label} ✓` : label}
+      {label}
+      {added ? <span className="ml-1 text-muted-foreground">✓</span> : null}
     </button>
   );
 }
@@ -107,6 +108,7 @@ function CorpsResultList({
   isUnavailable,
   unavailableTitle,
   isAdded,
+  atCap = false,
 }: {
   matches: CorpsOption[];
   onSelect: (c: CorpsOption) => void;
@@ -117,8 +119,10 @@ function CorpsResultList({
   isUnavailable?: (c: CorpsOption) => boolean;
   /** Tooltip (title) explaining why an unavailable row is greyed. */
   unavailableTitle?: (c: CorpsOption) => string;
-  /** When true, the row is already in the comparison — mark it, don't re-add. */
+  /** When true, the row is already in the comparison (click toggles it off). */
   isAdded?: (c: CorpsOption) => boolean;
+  /** At the series cap: non-added rows can't add (blocked), added stay removable. */
+  atCap?: boolean;
 }) {
   const listRef = useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
@@ -136,20 +140,28 @@ function CorpsResultList({
           const c = matches[vi.index];
           const unavailable = isUnavailable?.(c) ?? false;
           const added = !unavailable && (isAdded?.(c) ?? false);
-          const inert = unavailable || added;
+          // At the cap you can still remove an active row, but not add a new one.
+          const blocked = !unavailable && !added && atCap;
+          const inert = unavailable || blocked;
           return (
             <button
               key={c.slug}
               type="button"
               title={
-                unavailable ? unavailableTitle?.(c) : added ? 'Already in the comparison' : undefined
+                unavailable
+                  ? unavailableTitle?.(c)
+                  : blocked
+                    ? `Remove a series to add another (max ${VS_SERIES_CAP})`
+                    : added
+                      ? 'In the comparison — click to remove'
+                      : undefined
               }
               aria-disabled={inert || undefined}
               onClick={() => {
                 if (!inert) onSelect(c);
               }}
               onMouseEnter={() => {
-                if (!inert) onHover?.(c);
+                if (!inert && !added) onHover?.(c);
               }}
               onMouseLeave={() => onHover?.(null)}
               style={{
@@ -161,17 +173,19 @@ function CorpsResultList({
                 transform: `translateY(${vi.start}px)`,
               }}
               className={cn(
-                'flex items-center gap-2 rounded-md px-2 text-left text-sm transition-colors',
-                unavailable
+                'flex items-center gap-2 rounded-md border border-transparent px-2 text-left text-sm transition-colors',
+                unavailable || blocked
                   ? 'cursor-not-allowed opacity-40'
                   : added
-                    ? 'cursor-default text-primary'
+                    ? 'border-primary/40 hover:bg-accent'
                     : 'hover:bg-accent hover:text-foreground'
               )}
             >
               <CorpsLogo name={c.name} logo={corpsLogoSource(c)} width={24} className="size-6 shrink-0" />
               <span className="truncate">{c.name}</span>
-              {added ? <span className="ml-auto shrink-0 text-xs text-primary">✓ added</span> : null}
+              {added ? (
+                <span className="ml-auto shrink-0 text-xs text-muted-foreground">✓ added</span>
+              ) : null}
             </button>
           );
         })}
@@ -237,12 +251,11 @@ function CorpsSeasonColumn({
       <CorpsResultList
         matches={matches}
         heightClass="h-96"
+        atCap={disabled}
         isUnavailable={(c) => available.size > 0 && !available.has(c.slug)}
         unavailableTitle={(c) => `${c.name} hasn’t performed a show in ${season}`}
         isAdded={(c) => addedTokens.has(`corps~${c.slug}~${season}`)}
-        onSelect={(c) => {
-          if (!disabled) onAdd({ kind: 'corps', corpsSlug: c.slug, season });
-        }}
+        onSelect={(c) => onAdd({ kind: 'corps', corpsSlug: c.slug, season })}
         onHover={(c) => onPreview(c ? { kind: 'corps', corpsSlug: c.slug, season } : null)}
       />
     </div>
@@ -283,10 +296,9 @@ function PredictionColumn({
       <CorpsResultList
         matches={matches}
         heightClass="h-96"
+        atCap={disabled}
         isAdded={(c) => addedTokens.has(`forecast~${c.slug}`)}
-        onSelect={(c) => {
-          if (!disabled) onAdd({ kind: 'predicted', corpsSlug: c.slug });
-        }}
+        onSelect={(c) => onAdd({ kind: 'predicted', corpsSlug: c.slug })}
         onHover={(c) => onPreview(c ? { kind: 'predicted', corpsSlug: c.slug } : null)}
       />
     </div>
@@ -314,6 +326,7 @@ function BaselineColumn({
   })();
 
   const add = (n: number) => onAdd({ kind: 'baseline', rank: n });
+  const customAdded = parsed !== null && addedTokens.has(`baseline~${parsed}`);
 
   return (
     <div className="space-y-2">
@@ -347,21 +360,22 @@ function BaselineColumn({
           />
           <button
             type="button"
-            disabled={disabled || parsed === null || addedTokens.has(`baseline~${parsed}`)}
-            title={
-              parsed !== null && addedTokens.has(`baseline~${parsed}`)
-                ? 'Already in the comparison'
-                : undefined
-            }
+            disabled={(disabled && !customAdded) || parsed === null}
+            title={customAdded ? 'In the comparison — click to remove' : undefined}
             onClick={() => parsed !== null && add(parsed)}
-            onMouseEnter={() => parsed !== null && onPreview({ kind: 'baseline', rank: parsed })}
+            onMouseEnter={() => parsed !== null && !customAdded && onPreview({ kind: 'baseline', rank: parsed })}
             onMouseLeave={() => onPreview(null)}
-            onFocus={() => parsed !== null && onPreview({ kind: 'baseline', rank: parsed })}
+            onFocus={() => parsed !== null && !customAdded && onPreview({ kind: 'baseline', rank: parsed })}
             onBlur={() => onPreview(null)}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-sm text-text-secondary transition-colors hover:border-primary/60 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            className={cn(
+              'inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+              customAdded
+                ? 'border-primary/40 text-text-secondary'
+                : 'border-border text-text-secondary hover:border-primary/60 hover:text-foreground'
+            )}
           >
-            <Icon icon={AddCircleIcon} size="sm" className="size-4" />
-            Add
+            <Icon icon={customAdded ? Cancel01Icon : AddCircleIcon} size="sm" className="size-4" />
+            {customAdded ? 'Remove' : 'Add'}
           </button>
         </div>
       </label>
@@ -405,10 +419,11 @@ export function AddCompareSection({
           Add to compare
         </h2>
         <p className="text-sm text-muted-foreground">
-          Layer more lines onto the chart: a corps’ season, a 2026 prediction snapshot, or a
-          reference baseline (a generic Nth-place corps). Everything aligns by{' '}
+          Layer more lines onto the chart: a corps’ season, a 2026 prediction, or a reference
+          baseline (a generic Nth-place corps). Everything aligns by{' '}
           <span className="font-medium text-text-secondary">% through the season</span>. Hover an
-          option to preview it on the chart, click to add.
+          option to preview it; click to add, click an active one to remove. Up to{' '}
+          {VS_SERIES_CAP} at once.
         </p>
       </div>
 

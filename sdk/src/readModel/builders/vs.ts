@@ -25,6 +25,47 @@ export interface VsCorpsScorePoint {
   eventLabel: string;
 }
 
+// Typical DCI first-show→finals span (≈6 weeks). A season whose released shows
+// span fewer days than this is treated as IN PROGRESS: its stored
+// percent_through normalizes to shows-so-far (so the latest released show reads
+// 100%), which would make a corps with a couple of June shows span the whole
+// axis. For those, position by date against this reference length instead, so
+// early-season shows sit near 0% — a short segment, not a full line.
+const REF_SEASON_DAYS = 40;
+
+const daysBetween = (a: string, b: string) =>
+  Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000);
+
+type SeasonSpan = { lo: string; inProgress: boolean };
+
+/** Per-season released-show date range + in-progress flag. */
+async function buildSeasonSpans(db: Client): Promise<Map<string, SeasonSpan>> {
+  const r = await db.execute({
+    sql: `SELECT season, MIN(date) AS lo, MAX(date) AS hi FROM competitions
+          WHERE scores_released = 1 AND date IS NOT NULL GROUP BY season`,
+  });
+  const out = new Map<string, SeasonSpan>();
+  for (const row of r.rows as unknown as Array<{
+    season: string | null;
+    lo: string | null;
+    hi: string | null;
+  }>) {
+    if (!row.season || !row.lo || !row.hi) continue;
+    out.set(String(row.season), {
+      lo: row.lo,
+      inProgress: daysBetween(row.lo, row.hi) < REF_SEASON_DAYS,
+    });
+  }
+  return out;
+}
+
+/** Corrected % through season: the stored percent_through for a complete season,
+ *  or date-vs-reference-length for an in-progress one. */
+const seasonPct = (span: SeasonSpan | undefined, date: string, storedPct: number): number =>
+  span?.inProgress && date
+    ? Math.min(100, Math.max(0, (daysBetween(span.lo, date) / REF_SEASON_DAYS) * 100))
+    : Math.min(100, Math.max(0, storedPct));
+
 /**
  * A corps's actual total per competition for a season, ordered by % through the
  * season. Works for any season — historical actuals need no prediction run. The
@@ -51,6 +92,8 @@ export const buildVsCorpsScores = async (
     args: [slug.trim().toLowerCase(), season],
   });
 
+  const span = (await buildSeasonSpans(db)).get(season);
+
   // One point per pct (a corps can't score twice at the same % point); last wins
   // on the rare same-day collision, matching the single-corps chart's dedupe.
   const byPct = new Map<number, VsCorpsScorePoint>();
@@ -61,7 +104,7 @@ export const buildVsCorpsScores = async (
     total: number | null;
   }>) {
     if (typeof raw.pct !== 'number' || typeof raw.total !== 'number') continue;
-    const pct = Math.min(100, Math.max(0, raw.pct));
+    const pct = seasonPct(span, raw.date ?? '', raw.pct);
     byPct.set(pct, {
       pct,
       total: Number(raw.total),
@@ -148,6 +191,8 @@ export const buildVsCorpsScoresAllSeasons = async (
     args: [slug.trim().toLowerCase()],
   });
 
+  const spans = await buildSeasonSpans(db);
+
   // Dedupe within each season by pct (last wins).
   const bySeasonPct = new Map<string, VsCorpsScorePoint & { season: string }>();
   for (const raw of result.rows as unknown as Array<{
@@ -158,7 +203,7 @@ export const buildVsCorpsScoresAllSeasons = async (
     total: number | null;
   }>) {
     if (!raw.season || typeof raw.pct !== 'number' || typeof raw.total !== 'number') continue;
-    const pct = Math.min(100, Math.max(0, raw.pct));
+    const pct = seasonPct(spans.get(raw.season), raw.date ?? '', raw.pct);
     bySeasonPct.set(`${raw.season}~${pct}`, {
       season: raw.season,
       pct,

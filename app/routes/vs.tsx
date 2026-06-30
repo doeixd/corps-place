@@ -81,7 +81,13 @@ function VsPage() {
 
   // Remove a series by its id (which equals its URL token).
   const onRemove = (id: string) => pushSeries(current.filter((spec) => vsSeriesToken(spec) !== id));
-  const onAdd = (spec: VsSeries) => pushSeries([...current, spec]);
+  // Toggle a series: clicking an option that's already in the comparison removes
+  // it; otherwise it's added. (The picker drives this for every option.)
+  const onToggle = (spec: VsSeries) => {
+    const token = vsSeriesToken(spec);
+    if (token && current.some((c) => vsSeriesToken(c) === token)) onRemove(token);
+    else pushSeries([...current, spec]);
+  };
 
   // Hover-preview: resolve the hovered spec to a ghost line on the chart. Cached
   // per token; `wantedRef` guards against a stale resolve landing after the
@@ -147,7 +153,7 @@ function VsPage() {
       <Card>
         <CardContent className="px-4 py-4">
           <AddCompareSection
-            onAdd={onAdd}
+            onAdd={onToggle}
             onPreview={onPreview}
             corpsOptions={corpsOptions}
             availabilityBySeason={availabilityBySeason}
