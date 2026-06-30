@@ -484,21 +484,39 @@ export const readCorpsSeasonScores = async (
 };
 
 // ── VS comparison chart ────────────────────────────────────────────────────
+// Shared caption columns (match the builders' VsCaptionValues / emit schema).
+const VS_CAPTION_COLS = 'total, ge, visual, music, ge1, ge2, vp, va, cg, mb, ma, mp';
+const vsNum = (v: any): number | null => (v == null ? null : Number(v));
+const vsCaptionsFromRow = (row: any) => ({
+  total: Number(row.total),
+  ge: vsNum(row.ge),
+  visual: vsNum(row.visual),
+  music: vsNum(row.music),
+  ge1: vsNum(row.ge1),
+  ge2: vsNum(row.ge2),
+  vp: vsNum(row.vp),
+  va: vsNum(row.va),
+  cg: vsNum(row.cg),
+  mb: vsNum(row.mb),
+  ma: vsNum(row.ma),
+  mp: vsNum(row.mp),
+});
+
 export const readVsCorpsScores = async (
   db: Client,
   slug: string,
   season: string,
 ): Promise<VsCorpsScorePoint[]> => {
   const r = await db.execute({
-    sql: `SELECT pct, total, date, event_label
+    sql: `SELECT pct, date, event_label, ${VS_CAPTION_COLS}
           FROM rm_vs_corps_scores WHERE corps_slug = ? AND season = ? ORDER BY pct`,
     args: [slug.trim().toLowerCase(), season],
   });
   return (r.rows as any[]).map((row) => ({
     pct: Number(row.pct),
-    total: Number(row.total),
     date: row.date ?? '',
     eventLabel: row.event_label ?? '',
+    ...vsCaptionsFromRow(row),
   }));
 };
 
@@ -529,21 +547,28 @@ export const readVsCorps2026Predicted = async (
   slug: string,
 ): Promise<VsPredictedPoint[]> => {
   const r = await db.execute({
-    sql: `SELECT pct, predicted FROM rm_vs_corps_predicted WHERE corps_slug = ? ORDER BY pct`,
+    sql: `SELECT pct, ${VS_CAPTION_COLS} FROM rm_vs_corps_predicted WHERE corps_slug = ? ORDER BY pct`,
     args: [slug.trim().toLowerCase()],
   });
-  return (r.rows as any[]).map((row) => ({ pct: Number(row.pct), predicted: Number(row.predicted) }));
+  return (r.rows as any[]).map((row) => ({ pct: Number(row.pct), ...vsCaptionsFromRow(row) }));
 };
 
 export const readVsBaselines = async (db: Client): Promise<VsBaselinePoint[]> => {
   const r = await db.execute({
-    sql: `SELECT rank, bucket, total FROM rm_vs_baselines ORDER BY rank, bucket`,
+    sql: `SELECT rank, bucket, ${VS_CAPTION_COLS} FROM rm_vs_baselines ORDER BY rank, bucket`,
   });
   return (r.rows as any[]).map((row) => ({
     rank: Number(row.rank),
     bucket: Number(row.bucket),
-    total: Number(row.total),
+    ...vsCaptionsFromRow(row),
   }));
+};
+
+/** The corps with a 2026 predicted curve = the active 2026 field (roster). Lets
+ *  the VS corps lists restrict to who's actually competing in 2026. */
+export const readVsActiveCorps = async (db: Client): Promise<string[]> => {
+  const r = await db.execute({ sql: `SELECT DISTINCT corps_slug FROM rm_vs_corps_predicted` });
+  return (r.rows as any[]).map((x) => String(x.corps_slug)).filter(Boolean);
 };
 
 // ── Rankings (/rankings page) ──────────────────────────────────────────────

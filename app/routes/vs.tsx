@@ -3,10 +3,11 @@ import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
 import { seoHead } from '@/lib/seo';
-import { resolveVsSeries, getVsSeasonAvailability } from '@/lib/server-fns/vs';
+import { resolveVsSeries, getVsSeasonAvailability, getVsActiveCorps } from '@/lib/server-fns/vs';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { VsChart } from '@/components/vs/vs-chart';
 import { decodeVsSeries, encodeVsSeries, vsSeriesToken } from '@/lib/vs/codec';
+import { parseCaption, VS_CAPTION_LABELS, type VsCaption } from '@/lib/vs/captions';
 // Old popover-based builder — replaced by <AddCompareSection> below, kept (not
 // deleted) for reference / quick rollback.
 // import { AddSeries } from '@/components/vs/add-series';
@@ -27,15 +28,18 @@ const seriesFor = (s: string | undefined): VsSeries[] => {
 };
 
 export const Route = createFileRoute('/vs')({
-  validateSearch: (search: Record<string, unknown>): { s?: string } => ({
+  validateSearch: (search: Record<string, unknown>): { s?: string; cap?: VsCaption } => ({
     s: typeof search.s === 'string' && search.s ? search.s : undefined,
+    cap: parseCaption(search.cap),
   }),
-  loaderDeps: ({ search }) => ({ s: search.s }),
+  loaderDeps: ({ search }) => ({ s: search.s, cap: search.cap }),
   loader: async ({ deps }) => {
-    const [resolved, dir, availability] = await Promise.all([
-      resolveVsSeries({ data: { series: seriesFor(deps.s) } }),
+    const caption = parseCaption(deps.cap) ?? 'total';
+    const [resolved, dir, availability, active] = await Promise.all([
+      resolveVsSeries({ data: { series: seriesFor(deps.s), caption } }),
       getCorpsDirectory(),
       getVsSeasonAvailability().catch(() => ({ bySeason: {} as Record<string, string[]> })),
+      getVsActiveCorps().catch(() => ({ slugs: [] as string[] })),
     ]);
     const corpsOptions = dir
       .filter((c) => c.slug)
@@ -48,7 +52,13 @@ export const Route = createFileRoute('/vs')({
         corps_logo_dark_url: c.corps_logo_dark_url,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
-    return { ...resolved, corpsOptions, availabilityBySeason: availability.bySeason };
+    return {
+      ...resolved,
+      caption,
+      corpsOptions,
+      availabilityBySeason: availability.bySeason,
+      roster2026: active.slugs,
+    };
   },
   head: () =>
     seoHead({
@@ -61,9 +71,18 @@ export const Route = createFileRoute('/vs')({
 });
 
 function VsPage() {
-  const { series, corpsOptions, availabilityBySeason } = Route.useLoaderData();
+  const { series, caption, corpsOptions, availabilityBySeason, roster2026 } =
+    Route.useLoaderData();
   const { s } = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  // Switch the caption the whole chart is scoped to (in-place; keep scroll).
+  const setCaption = (next: VsCaption) =>
+    navigate({
+      search: (prev) => ({ ...prev, cap: next === 'total' ? undefined : next }),
+      replace: true,
+      resetScroll: false,
+    });
 
   const current = seriesFor(s);
   const atCap = current.length >= VS_SERIES_CAP;
@@ -74,9 +93,11 @@ function VsPage() {
   );
 
   // Normalize (dedupe + cap) through the codec so the URL stays canonical.
+  // resetScroll:false — adding/removing a series is an in-place update; don't
+  // jump the page (or the picker's scroll) back to the top.
   const pushSeries = (next: VsSeries[]) => {
     const canon = encodeVsSeries(decodeVsSeries(encodeVsSeries(next)));
-    navigate({ search: { s: canon || undefined }, replace: true });
+    navigate({ search: { s: canon || undefined }, replace: true, resetScroll: false });
   };
 
   // Remove a series by its id (which equals its URL token).
@@ -104,17 +125,19 @@ function VsPage() {
       setPreview(null);
       return;
     }
-    wantedToken.current = token;
-    const cached = previewCache.current.get(token);
+    // Cache key includes the caption — the ghost is resolved at the active one.
+    const key = `${caption}:${token}`;
+    wantedToken.current = key;
+    const cached = previewCache.current.get(key);
     if (cached !== undefined) {
       setPreview(cached);
       return;
     }
-    resolveVsSeries({ data: { series: [spec] } })
+    resolveVsSeries({ data: { series: [spec], caption } })
       .then((r) => {
         const resolved = r.series[0] ?? null;
-        previewCache.current.set(token, resolved);
-        if (wantedToken.current === token) setPreview(resolved);
+        previewCache.current.set(key, resolved);
+        if (wantedToken.current === key) setPreview(resolved);
       })
       .catch(() => {});
   };
@@ -124,9 +147,10 @@ function VsPage() {
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-text-primary">VS — Score Comparison</h1>
         <p className="text-sm text-muted-foreground">
-          Compare corps, seasons, and reference baselines on one curve. The x-axis is{' '}
+          Comparing{' '}
+          <span className="font-medium text-text-secondary">{VS_CAPTION_LABELS[caption]}</span> by{' '}
           <span className="font-medium text-text-secondary">% through the season</span> — 0% = first
-          show, 100% = finals — so different seasons line up.
+          show, 100% = finals — so different seasons line up. Pick a caption below.
         </p>
       </div>
       <Card>
@@ -135,6 +159,7 @@ function VsPage() {
             series={series}
             onRemove={series.length > 1 ? onRemove : undefined}
             preview={preview}
+            yLabel={caption === 'total' ? undefined : VS_CAPTION_LABELS[caption]}
           />
           {/* Old inline popover trigger — replaced by the <AddCompareSection>
               below; kept commented out (not deleted) for reference / rollback.
@@ -153,10 +178,13 @@ function VsPage() {
       <Card>
         <CardContent className="px-4 py-4">
           <AddCompareSection
+            caption={caption}
+            onCaption={setCaption}
             onAdd={onToggle}
             onPreview={onPreview}
             corpsOptions={corpsOptions}
             availabilityBySeason={availabilityBySeason}
+            roster2026={roster2026}
             addedTokens={addedTokens}
             atCap={atCap}
             capMessage={`Showing the max of ${VS_SERIES_CAP} series — remove one to add another.`}

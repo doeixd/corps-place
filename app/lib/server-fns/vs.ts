@@ -13,6 +13,7 @@ import {
   buildVsPredictionSnapshot,
   buildVsCorpsSeasons,
   buildVsSeasonAvailability,
+  buildVsActiveCorps,
   buildVs2026SnapshotDates,
 } from '@sdk/src/readModel/builders/vs.js';
 import { buildCorpsBySlug } from '@sdk/src/readModel/builders/corps.js';
@@ -22,10 +23,13 @@ import {
   readVsCorps2026Predicted,
   readVsCorpsSeasons,
   readVsCorpsSeasonAvailability,
+  readVsActiveCorps,
   readCorpsBySlug,
 } from '@sdk/src/readModel/readers.js';
+import { parseCaption, type VsCaption } from '@/lib/vs/captions';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
-import { VS_SERIES_CAP, type VsSeries, type VsResolvedSeries, type VsLine } from '@/lib/vs/types';
+import { VS_SERIES_CAP, type VsSeries, type VsResolvedSeries } from '@/lib/vs/types';
+import type { VsCaptionValues } from '@sdk/src/readModel/builders/vs.js';
 
 // Relational fallback client (dev / no read-model), lazily created server-side.
 let sharedDb: Client | null = null;
@@ -45,7 +49,14 @@ const ordinal = (n: number) => {
   return `${n}${s[(v - 20) % 10] ?? s[v] ?? s[0]}`;
 };
 
-async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
+/** Pull the active caption's value off a wide VS point; null if absent (older
+ *  seasons / missing panels) → the point is dropped, never plotted as 0. */
+const capVal = (p: VsCaptionValues, caption: VsCaption): number | null => {
+  const v = p[caption];
+  return typeof v === 'number' && Number.isFinite(v) ? v : null;
+};
+
+async function resolveOne(s: VsSeries, caption: VsCaption): Promise<VsResolvedSeries | null> {
   if (s.kind === 'corps') {
     const [pts, corps] = await Promise.all([
       readOrBuild(
@@ -57,36 +68,27 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
         (db) => buildCorpsBySlug(db, s.corpsSlug)
       ),
     ]);
-    const lines: VsLine[] = [];
-    if (pts.length) {
-      lines.push({
-        style: 'solid',
-        points: pts.map((p) => ({
-          pct: p.pct,
-          value: p.total,
-          date: p.date || undefined,
-          eventLabel: p.eventLabel || undefined,
-        })),
-      });
-    }
-    // A corps season plots ONLY its actual scored shows — for the current (2026)
-    // season that's just the handful released so far (a short line segment), not
-    // a predicted-to-finals overlay. The model's predicted curve is its own
-    // series kind ('prediction'), added from the VS builder's Prediction column.
-    if (!lines.length) return null; // no scored shows → nothing to plot
+    // A corps season plots ONLY its actual scored shows (a short segment for the
+    // current season) — the model's curve is the separate 'predicted' kind.
+    const points = pts.flatMap((p) => {
+      const value = capVal(p, caption);
+      return value == null
+        ? []
+        : [{ pct: p.pct, value, date: p.date || undefined, eventLabel: p.eventLabel || undefined }];
+    });
+    if (!points.length) return null; // no scored shows for this caption → nothing
     return {
       id: `corps~${s.corpsSlug}~${s.season}`,
       label: `${corps?.name ?? s.corpsSlug} ${s.season}`,
       kind: 'corps',
       brand: { primary: corps?.color_primary ?? null, secondary: corps?.color_secondary ?? null },
       color: '',
-      lines,
+      lines: [{ style: 'solid', points }],
     };
   }
 
   if (s.kind === 'predicted') {
-    // Read-model-backed predicted-to-finals curve for 2026 (works on prod, unlike
-    // the relational as-of snapshot). Dashed line + uncertainty band.
+    // Read-model-backed predicted-to-finals curve for 2026 (works on prod).
     const [pred, corps] = await Promise.all([
       readOrBuild(
         (db) => readVsCorps2026Predicted(db, s.corpsSlug),
@@ -97,28 +99,33 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
         (db) => buildCorpsBySlug(db, s.corpsSlug)
       ).catch(() => null),
     ]);
-    if (!pred.length) return null;
+    // Uncertainty band only on Total (its margin is calibrated to the 0–100
+    // scale); for a caption the dashed line shows without a band.
+    const isTotal = caption === 'total';
+    const points = pred.flatMap((p) => {
+      const value = capVal(p, caption);
+      if (value == null) return [];
+      if (isTotal) {
+        const margin = 1.5 + 2.5 * (1 - Math.min(Math.max(p.pct, 0), 100) / 100);
+        return [
+          {
+            pct: p.pct,
+            value,
+            low: Number((value - margin).toFixed(2)),
+            high: Number((value + margin).toFixed(2)),
+          },
+        ];
+      }
+      return [{ pct: p.pct, value }];
+    });
+    if (!points.length) return null;
     return {
       id: `predicted~${s.corpsSlug}`,
       label: `${corps?.name ?? s.corpsSlug} 2026 prediction`,
       kind: 'predicted',
       brand: { primary: corps?.color_primary ?? null, secondary: corps?.color_secondary ?? null },
       color: '',
-      lines: [
-        {
-          style: 'dashed',
-          points: pred.map((p) => {
-            // Band narrows from ~4pts early to ~1.5pts near finals.
-            const margin = 1.5 + 2.5 * (1 - Math.min(Math.max(p.pct, 0), 100) / 100);
-            return {
-              pct: p.pct,
-              value: p.predicted,
-              low: Number((p.predicted - margin).toFixed(2)),
-              high: Number((p.predicted + margin).toFixed(2)),
-            };
-          }),
-        },
-      ],
+      lines: [{ style: 'dashed', points }],
     };
   }
 
@@ -127,18 +134,24 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
       ? await readVsBaselines(getReadModelClient())
       : buildVsBaselineCurve();
     const rows = all.filter((b) => b.rank === s.rank).sort((a, b) => a.bucket - b.bucket);
-    if (!rows.length) return null;
+    const points = rows.flatMap((b) => {
+      const value = capVal(b, caption);
+      return value == null ? [] : [{ pct: b.bucket, value }];
+    });
+    if (!points.length) return null;
     return {
       id: `baseline~${s.rank}`,
       label: `${ordinal(s.rank)} place`,
       kind: 'baseline',
       brand: null,
       color: '',
-      lines: [{ style: 'solid', points: rows.map((b) => ({ pct: b.bucket, value: b.total })) }],
+      lines: [{ style: 'solid', points }],
     };
   }
 
   if (s.kind === 'prediction') {
+    // As-of snapshot (relational-only, UI-dead): Total only — drop on a caption.
+    if (caption !== 'total') return null;
     // Dynamic in asOf → relational (live) path only; degrades to empty where the
     // relational DB isn't on the host (the series then simply drops).
     const [pts, corps] = await Promise.all([
@@ -210,11 +223,24 @@ export const getVs2026SnapshotDates = createServerFn({ method: 'GET' })
     return { dates };
   });
 
-/** Resolve a list of series (capped) to plottable data. */
+/** Resolve a list of series (capped) to plottable data at the given caption. */
 export const resolveVsSeries = createServerFn({ method: 'GET' })
-  .validator((data: { series: VsSeries[] }) => data)
+  .validator((data: { series: VsSeries[]; caption?: VsCaption }) => data)
   .handler(async ({ data }): Promise<{ series: VsResolvedSeries[] }> => {
+    const caption = parseCaption(data.caption) ?? 'total';
     const wanted = (data.series ?? []).slice(0, VS_SERIES_CAP);
-    const resolved = await Promise.all(wanted.map((s) => resolveOne(s).catch(() => null)));
+    const resolved = await Promise.all(wanted.map((s) => resolveOne(s, caption).catch(() => null)));
     return { series: resolved.filter((r): r is VsResolvedSeries => r != null) };
   });
+
+/** The active 2026 field (roster) — corps with a predicted curve. Lets the corps
+ *  pickers restrict to who's actually competing in 2026. */
+export const getVsActiveCorps = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ slugs: string[] }> => {
+    const slugs = await readOrBuild(
+      (db) => readVsActiveCorps(db),
+      (db) => buildVsActiveCorps(db)
+    ).catch(() => [] as string[]);
+    return { slugs };
+  }
+);

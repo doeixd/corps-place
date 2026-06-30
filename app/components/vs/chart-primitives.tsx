@@ -68,7 +68,7 @@ export function VsLegend({
   return (
     <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs">
       {items.map((item) => (
-        <div key={item.id} className="flex items-center gap-1.5">
+        <div key={item.id} className="flex items-center gap-1">
           <button
             type="button"
             onMouseEnter={() => onHover?.(item.id)}
@@ -85,7 +85,7 @@ export function VsLegend({
               type="button"
               onClick={() => onRemove(item.id)}
               aria-label={`Remove ${item.label}`}
-              className="ml-0.5 inline-flex size-4 items-center justify-center rounded text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+              className="inline-flex size-4 items-center justify-center rounded text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
             >
               <Icon icon={Cancel01Icon} className="size-3" />
             </button>
