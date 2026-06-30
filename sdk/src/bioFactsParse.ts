@@ -55,10 +55,23 @@ const yearSpan = (s: string): { start: number | null; end: number | null } => {
 const GROUP_TAIL = /(Drum (?:and|&) Bugle Corps|Drum Corps|Winter ?guard|Percussion|Cadets|Vanguard|Devils|Crusaders|Scouts|Regiment|Brass)\b/;
 /** A capitalized multi-word group name, optionally "The ...". Greedy up to a corps tail. */
 const GROUP =
-  "(The\\s+)?(?:[A-Z][A-Za-z&'.-]+\\s+){0,4}(?:Drum (?:and|&) Bugle Corps|Drum Corps|Winter ?guard|Percussion|Cadets|Vanguard|Devils|Crusaders|Scouts|Regiment|Crown|Knights|Academy|Genesis|Cascades|Spartans|Crest|Surf|Raiders|Brigade|Pioneer|Stars|Bluecoats|Mandarins|Troopers|Crossmen|Colts|Cavaliers)";
+  "(The\\s+)?(?:[A-Z][A-Za-z&'.-]+\\s+){0,4}(?:Drum (?:and|&) Bugle Corps|Drum Corps|Winter ?guard|Percussion|Cadets|Vanguard|Devils|Crusaders|Scouts|Regiment|Crown|Knights|Academy|Genesis|Cascades|Spartans|Crest|Surf|Raiders|Brigade|Pioneer|Stars|Bluecoats|Mandarins|Troopers|Crossmen|Colts|Cavaliers)\\b";
 
 const PERFORMED_VERB =
   /\b(?:marched(?: with| in| at)?|performed with|toured with|was a (?:member|colorgu?ard member|brass member|visual member|performing member)(?: of)?|been a (?:member|performing member)(?: of)?|member of|ag(?:ed|ing)\s+out(?: of| with)?|alumn\w+\s+of|joined)\b/gi;
+
+// A TEACHING verb means the person WORKED/TAUGHT at the group that follows — they did NOT
+// march/perform there. We bind it to the NEAREST verb before a group name (below), so a
+// teaching verb closer to the group than any performing verb suppresses the false link.
+// ("...later TAUGHT on The Cadets' brass staff" → Cadets is a teaching role, not marching.)
+const TAUGHT_VERB =
+  /\b(?:taught|teaches|teaching|instruct\w*|coach\w*|served? as|serves? as|work\w*\s+(?:with|for|at)|on (?:the )?staff|staff of|director of|coordinator of|consultant\b)/gi;
+// A STAFF-role construction IMMEDIATELY AFTER the group name ("X as Brass Caption Head",
+// "X's percussion staff", "X staff") — catches "joined Carolina Crown AS Brass Caption Head"
+// where the governing verb ("joined") looks like performing but the role gives it away.
+// Deliberately does NOT fire on performing roles ("as drum major", "as a soloist/member").
+const STAFF_ROLE_AFTER =
+  /^(?:['’]?s?\s*)?(?:(?:brass|percussion|visual|guard|color\s?guard|front ensemble|battery|music)\s+)?staff\b|^['’]?s?\s*as\s+(?:a |an |the )?(?:[a-z]+\s+){0,2}(?:director|coordinator|instructor|tech|technician|caption|consultant|advisor|adviser|staff|manager|designer|arranger|supervisor|coach)\b/i;
 
 /** Split a bio into sentence-ish clauses for local matching. */
 const clauses = (bio: string): string[] =>
@@ -75,15 +88,37 @@ const extractPerformed = (bio: string): PerformedFact[] => {
   for (const clause of clauses(bio)) {
     PERFORMED_VERB.lastIndex = 0;
     if (!PERFORMED_VERB.test(clause)) continue;
+    // Index every performing- and teaching-verb position so each group can be bound to the
+    // verb that governs it (nearest one before the group wins).
+    const perfAt: number[] = [];
+    const taughtAt: number[] = [];
+    PERFORMED_VERB.lastIndex = 0;
+    for (let v: RegExpExecArray | null; (v = PERFORMED_VERB.exec(clause)); ) perfAt.push(v.index);
+    TAUGHT_VERB.lastIndex = 0;
+    for (let v: RegExpExecArray | null; (v = TAUGHT_VERB.exec(clause)); ) taughtAt.push(v.index);
+    const nearestBefore = (arr: number[], pos: number) => arr.filter((i) => i < pos).at(-1) ?? -1;
     // Pull every group-name span in the clause (handles comma lists after one verb).
     const groupRe = new RegExp(GROUP, "g");
     let m: RegExpExecArray | null;
     while ((m = groupRe.exec(clause)) !== null) {
       const group = cleanGroup(m[0]);
       if (group.length < 4) continue;
-      // Year nearest this group: look in a window after the match, else the whole clause.
-      const after = clause.slice(m.index, m.index + m[0].length + 24);
-      const span = yearSpan(after).start ? yearSpan(after) : yearSpan(clause);
+      // TEACHING-CONTEXT GUARD. The person did NOT march here if either:
+      //  (a) the nearest verb BEFORE this group is a teaching verb, not a performing one
+      //      ("...performed with Star... and later TAUGHT on The Cadets" → Cadets bound to "taught"); or
+      //  (b) a STAFF role construction immediately FOLLOWS the name ("joined Crown AS Brass Caption Head").
+      // Both are already captured as assignments, so dropping them loses nothing.
+      const perfBefore = nearestBefore(perfAt, m.index);
+      const taughtBefore = nearestBefore(taughtAt, m.index);
+      if (perfBefore < 0) continue; // no performing verb governs this group
+      if (taughtBefore > perfBefore) continue; // a teaching verb is closer → worked, didn't march
+      const afterText = clause.slice(m.index + m[0].length, m.index + m[0].length + 34);
+      if (STAFF_ROLE_AFTER.test(afterText)) continue;
+      // Year must be LOCAL to this group (just before or just after) — never a clause-wide
+      // fallback, which used to steal an unrelated corps's years (e.g. attaching Star of
+      // Indiana's "1989–1995" to The Cadets two clauses later).
+      const win = clause.slice(Math.max(0, m.index - 14), m.index + m[0].length + 30);
+      const span = yearSpan(win);
       const key = `${group.toLowerCase()}|${span.start ?? ""}`;
       if (seen.has(key)) continue;
       seen.add(key);

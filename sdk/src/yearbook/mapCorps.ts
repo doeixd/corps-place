@@ -84,6 +84,7 @@ export const buildCorpsResolver = async (db: Client) => {
       'yea.org': '001j000000i6kfgaan', // YEA → The Cadets
       'cadets.org': '001j000000i6kfgaan',
       'crown.org': '001j000000iwx91aad',  // Carolina Crown alias
+      'bknights.org': '001j000000iwwsoaal', // Blue Knights (DB stores ascendperformingarts.org)
     };
     if (dom && KNOWN_ALIASES[dom]) return { corpsKey: KNOWN_ALIASES[dom]!, method: 'domain' };
 
