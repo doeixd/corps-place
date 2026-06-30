@@ -2,7 +2,7 @@ import { createClient, type Client } from '@libsql/client';
 import { spawn } from 'node:child_process';
 import {
   ensureEventPredictionTables,
-  latestEventPredictionRun,
+  listEventPredictionRuns,
   summarizeEventPredictionErrors,
   updateEventPredictionErrors,
   type ModelEventPredictionActualRow,
@@ -221,19 +221,30 @@ async function main() {
   try {
     await ensureEventPredictionTables(db);
     const eventSlug = await resolveEventSlug(db, cli.season, cli.event);
-    const run = await latestEventPredictionRun(db, eventSlug, cli.predictionId);
+    // All saved runs for this event (or the one pinned via --prediction-id). The
+    // latest is used for display/fine-tune; actuals are backfilled into ALL of
+    // them so historical snapshots learn their real error too (review Medium #9).
+    const runs = await listEventPredictionRuns(db, eventSlug, cli.predictionId);
+    const run = runs[0];
     const competitionSlug = await findCompetitionSlug(db, cli.season, eventSlug, run);
     const actuals = competitionSlug ? await actualRows(db, competitionSlug) : [];
 
     console.log(`Event: ${eventSlug}`);
     console.log(`Competition: ${competitionSlug ?? 'not found'}`);
     console.log(`Saved prediction: ${run?.prediction_id ?? 'not found'}`);
+    console.log(`Saved runs for event: ${runs.length}`);
     console.log(`Actual score rows: ${actuals.length}`);
 
     if (run && actuals.length > 0) {
-      const update = await updateEventPredictionErrors(db, run, actuals, normalize);
+      // Backfill every snapshot, newest first; show the comparison for the latest.
+      let latestUpdate: Awaited<ReturnType<typeof updateEventPredictionErrors>> | undefined;
+      for (const r of runs) {
+        const update = await updateEventPredictionErrors(db, r, actuals, normalize);
+        if (r.prediction_id === run.prediction_id) latestUpdate = update;
+        if (runs.length > 1) console.log(`  backfilled ${r.prediction_id}:`, update);
+      }
       const summary = await summarizeEventPredictionErrors(db, run.prediction_id);
-      console.log('Prediction comparison:', update);
+      console.log('Prediction comparison (latest run):', latestUpdate);
       console.table([summary]);
     } else if (!run) {
       console.log(

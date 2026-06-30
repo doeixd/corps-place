@@ -233,6 +233,25 @@ export async function latestEventPredictionRun(
   return result.rows[0] as unknown as ModelEventPredictionRun | undefined;
 }
 
+/**
+ * All saved prediction runs for an event (newest first). Post-show actuals/error
+ * backfill should fill EVERY snapshot, not just the latest — otherwise older
+ * snapshots never learn how they actually did, undercutting prediction-history /
+ * as-of analysis (review Medium #9). Pass a `predictionId` to scope to one run.
+ */
+export async function listEventPredictionRuns(
+  db: Client,
+  eventSlug: string,
+  predictionId?: string
+): Promise<ModelEventPredictionRun[]> {
+  await ensureEventPredictionTables(db);
+  const sql = predictionId
+    ? 'SELECT * FROM model_event_prediction_runs WHERE prediction_id = ?'
+    : 'SELECT * FROM model_event_prediction_runs WHERE event_slug = ? ORDER BY predicted_at DESC';
+  const result = await db.execute({ sql, args: [predictionId ?? eventSlug] });
+  return result.rows as unknown as ModelEventPredictionRun[];
+}
+
 const withAll = (values: Array<number | null>, fn: (values: number[]) => number) =>
   values.every((value) => typeof value === 'number') ? fn(values as number[]) : null;
 
