@@ -28,6 +28,7 @@ import { Route as FantasyIndexRouteImport } from './routes/fantasy/index'
 import { Route as EventsIndexRouteImport } from './routes/events/index'
 import { Route as CorpsIndexRouteImport } from './routes/corps/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as VsSlugRouteImport } from './routes/vs.$slug'
 import { Route as StaffPersonIdRouteImport } from './routes/staff/$personId'
 import { Route as ShopStoresRouteImport } from './routes/shop/stores'
 import { Route as ShopCartRouteImport } from './routes/shop/cart'
@@ -185,6 +186,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const VsSlugRoute = VsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => VsRoute,
 } as any)
 const StaffPersonIdRoute = StaffPersonIdRouteImport.update({
   id: '/staff/$personId',
@@ -552,7 +558,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
-  '/vs': typeof VsRoute
+  '/vs': typeof VsRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
@@ -587,6 +593,7 @@ export interface FileRoutesByFullPath {
   '/shop/cart': typeof ShopCartRoute
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
+  '/vs/$slug': typeof VsSlugRoute
   '/admin': typeof AdminIndexRoute
   '/corps': typeof CorpsIndexRoute
   '/events': typeof EventsIndexRoute
@@ -622,7 +629,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
-  '/vs': typeof VsRoute
+  '/vs': typeof VsRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
@@ -657,6 +664,7 @@ export interface FileRoutesByTo {
   '/shop/cart': typeof ShopCartRoute
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
+  '/vs/$slug': typeof VsSlugRoute
   '/admin': typeof AdminIndexRoute
   '/corps': typeof CorpsIndexRoute
   '/events': typeof EventsIndexRoute
@@ -693,7 +701,7 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
-  '/vs': typeof VsRoute
+  '/vs': typeof VsRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
@@ -728,6 +736,7 @@ export interface FileRoutesById {
   '/shop/cart': typeof ShopCartRoute
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
+  '/vs/$slug': typeof VsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/corps/': typeof CorpsIndexRoute
   '/events/': typeof EventsIndexRoute
@@ -800,6 +809,7 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/stores'
     | '/staff/$personId'
+    | '/vs/$slug'
     | '/admin'
     | '/corps'
     | '/events'
@@ -870,6 +880,7 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/stores'
     | '/staff/$personId'
+    | '/vs/$slug'
     | '/admin'
     | '/corps'
     | '/events'
@@ -940,6 +951,7 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/stores'
     | '/staff/$personId'
+    | '/vs/$slug'
     | '/admin/'
     | '/corps/'
     | '/events/'
@@ -976,7 +988,7 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RankingsRoute: typeof RankingsRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
-  VsRoute: typeof VsRoute
+  VsRoute: typeof VsRouteWithChildren
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminContentRoute: typeof AdminContentRoute
@@ -1310,6 +1322,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/vs/$slug': {
+      id: '/vs/$slug'
+      path: '/$slug'
+      fullPath: '/vs/$slug'
+      preLoaderRoute: typeof VsSlugRouteImport
+      parentRoute: typeof VsRoute
     }
     '/staff/$personId': {
       id: '/staff/$personId'
@@ -1808,6 +1827,16 @@ declare module '@tanstack/react-start/server' {
   }
 }
 
+interface VsRouteChildren {
+  VsSlugRoute: typeof VsSlugRoute
+}
+
+const VsRouteChildren: VsRouteChildren = {
+  VsSlugRoute: VsSlugRoute,
+}
+
+const VsRouteWithChildren = VsRoute._addFileChildren(VsRouteChildren)
+
 interface AdminUsersRouteChildren {
   AdminUsersIdRoute: typeof AdminUsersIdRoute
 }
@@ -1827,7 +1856,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RankingsRoute: RankingsRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
-  VsRoute: VsRoute,
+  VsRoute: VsRouteWithChildren,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminContentRoute: AdminContentRoute,

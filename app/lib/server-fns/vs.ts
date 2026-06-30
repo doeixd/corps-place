@@ -244,3 +244,89 @@ export const getVsActiveCorps = createServerFn({ method: 'GET' }).handler(
     return { slugs };
   }
 );
+
+export interface VsCorpsComparison {
+  corps: {
+    slug: string;
+    name: string;
+    logo: { corps_logo?: string | null; corps_logo_dark?: number | null; corps_logo_dark_url?: string | null };
+    colorPrimary: string | null;
+  };
+  series: VsResolvedSeries[];
+  summary: {
+    final2025: number | null;
+    latest2026: number | null;
+    latest2026Date: string | null;
+    latest2026Event: string | null;
+    projected2026: number | null;
+    /** projected 2026 finals − 2025 finals (positive = improving). */
+    delta: number | null;
+  };
+}
+
+const lastPoint = (series: VsResolvedSeries[], id: string) => {
+  const s = series.find((x) => x.id === id);
+  const pts = s?.lines.flatMap((l) => l.points) ?? [];
+  return pts.length ? pts[pts.length - 1] : null;
+};
+
+/** Everything a `/vs/<slug>` page needs: the seeded 2025 vs 2026 (+ predicted-to-
+ *  finals) comparison and a numeric summary for the headings/SEO. Returns null
+ *  unless the corps is in the 2026 field AND has 2025 scores (the page requires
+ *  both seasons). */
+export const getVsCorpsComparison = createServerFn({ method: 'GET' })
+  .validator((data: { slug: string }) => data)
+  .handler(async ({ data }): Promise<VsCorpsComparison | null> => {
+    const slug = data.slug.trim().toLowerCase();
+    const [roster, corps] = await Promise.all([
+      readOrBuild((db) => readVsActiveCorps(db), (db) => buildVsActiveCorps(db)).catch(
+        () => [] as string[]
+      ),
+      readOrBuild((db) => readCorpsBySlug(db, slug), (db) => buildCorpsBySlug(db, slug)).catch(
+        () => null
+      ),
+    ]);
+    if (!corps || !roster.includes(slug)) return null;
+
+    const seed: VsSeries[] = [
+      { kind: 'corps', corpsSlug: slug, season: '2025' },
+      { kind: 'corps', corpsSlug: slug, season: '2026' },
+      { kind: 'predicted', corpsSlug: slug },
+    ];
+    const series = (await Promise.all(seed.map((s) => resolveOne(s, 'total').catch(() => null)))).filter(
+      (r): r is VsResolvedSeries => r != null
+    );
+    // Requires a real 2025 line — otherwise it's not a 2026-vs-2025 page.
+    if (!series.some((s) => s.id === `corps~${slug}~2025`)) return null;
+
+    const p2025 = lastPoint(series, `corps~${slug}~2025`);
+    const p2026 = lastPoint(series, `corps~${slug}~2026`);
+    const pPred = lastPoint(series, `predicted~${slug}`);
+    const final2025 = p2025?.value ?? null;
+    const projected2026 = pPred?.value ?? null;
+
+    return {
+      corps: {
+        slug,
+        name: corps.name ?? slug,
+        logo: {
+          corps_logo: corps.corps_logo,
+          corps_logo_dark: corps.corps_logo_dark,
+          corps_logo_dark_url: corps.corps_logo_dark_url,
+        },
+        colorPrimary: corps.color_primary ?? null,
+      },
+      series,
+      summary: {
+        final2025,
+        latest2026: p2026?.value ?? null,
+        latest2026Date: p2026?.date ?? null,
+        latest2026Event: p2026?.eventLabel ?? null,
+        projected2026,
+        delta:
+          final2025 != null && projected2026 != null
+            ? Number((projected2026 - final2025).toFixed(3))
+            : null,
+      },
+    };
+  });
