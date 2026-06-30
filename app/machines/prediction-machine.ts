@@ -358,9 +358,12 @@ export const predictionMachine = setup({
       initial: 'idle',
       states: {
         idle: {
-          // If the loader seeded a prediction, skip the client fetch and render it.
+          // If the loader seeded renderable page data, skip the client fetch and
+          // render it. "Ready" means we have *either* a prediction or scored recap —
+          // a 2026 event with released scores but no saved prediction must still
+          // render the Scores view instead of the prediction-missing shell.
           always: {
-            guard: ({ context }) => context.prediction != null,
+            guard: ({ context }) => context.prediction != null || context.scoredRecap != null,
             target: 'ready',
           },
           on: {

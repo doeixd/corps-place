@@ -1142,7 +1142,10 @@ function CurrentPredictionPage({
         )),
         Match.when('ready', () => (
           <Show
-            when={!!prediction}
+            // Render the page when there's *either* a prediction or released
+            // scores — a 2026 scores-only event (no saved prediction) must still
+            // show its Scores view, not the "No prediction" shell.
+            when={!!prediction || hasScores}
             fallback={
               <PredictionStatusShell
                 event={event}
