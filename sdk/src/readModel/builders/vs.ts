@@ -72,6 +72,23 @@ export const buildVsCorpsScores = async (
   return [...byPct.values()].sort((a, b) => a.pct - b.pct);
 };
 
+/** Every (corps_slug, season) pair with plottable data — the dev/relational
+ *  counterpart of `readVsCorpsSeasonAvailability`. */
+export const buildVsSeasonAvailability = async (
+  db: Client,
+): Promise<Array<{ corps_slug: string; season: string }>> => {
+  const r = await db.execute({
+    sql: `SELECT DISTINCT co.slug AS corps_slug, c.season AS season
+      FROM corps_scores cs
+      JOIN competitions c ON c.slug = cs.competition_slug
+      JOIN corps co ON co.corps_key = cs.corps_key
+      WHERE cs.total_score IS NOT NULL AND c.percent_through IS NOT NULL AND co.slug IS NOT NULL`,
+  });
+  return (r.rows as unknown as Array<{ corps_slug: string | null; season: string | null }>)
+    .filter((x) => x.corps_slug && x.season)
+    .map((x) => ({ corps_slug: String(x.corps_slug), season: String(x.season) }));
+};
+
 /** The seasons a corps actually competed (has scored points) — to constrain the
  *  builder's season chips so it never offers a season with no data. */
 export const buildVsCorpsSeasons = async (db: Client, slug: string): Promise<string[]> => {

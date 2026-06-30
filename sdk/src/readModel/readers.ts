@@ -510,6 +510,20 @@ export const readVsCorpsSeasons = async (db: Client, slug: string): Promise<stri
   return (r.rows as any[]).map((row) => String(row.season)).filter(Boolean);
 };
 
+/** Every (corps_slug, season) pair that has VS-plottable data — drives the VS
+ *  builder's "greyed out when the corps didn't compete that season" affordance. */
+export const readVsCorpsSeasonAvailability = async (
+  db: Client,
+): Promise<Array<{ corps_slug: string; season: string }>> => {
+  const r = await db.execute({
+    sql: `SELECT DISTINCT corps_slug, season FROM rm_vs_corps_scores`,
+  });
+  return (r.rows as any[]).map((x) => ({
+    corps_slug: String(x.corps_slug),
+    season: String(x.season),
+  }));
+};
+
 export const readVsCorps2026Predicted = async (
   db: Client,
   slug: string,

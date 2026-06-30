@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
 import { seoHead } from '@/lib/seo';
-import { resolveVsSeries } from '@/lib/server-fns/vs';
+import { resolveVsSeries, getVsSeasonAvailability } from '@/lib/server-fns/vs';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { VsChart } from '@/components/vs/vs-chart';
 import { decodeVsSeries, encodeVsSeries, vsSeriesToken } from '@/lib/vs/codec';
@@ -32,9 +32,10 @@ export const Route = createFileRoute('/vs')({
   }),
   loaderDeps: ({ search }) => ({ s: search.s }),
   loader: async ({ deps }) => {
-    const [resolved, dir] = await Promise.all([
+    const [resolved, dir, availability] = await Promise.all([
       resolveVsSeries({ data: { series: seriesFor(deps.s) } }),
       getCorpsDirectory(),
+      getVsSeasonAvailability().catch(() => ({ bySeason: {} as Record<string, string[]> })),
     ]);
     const corpsOptions = dir
       .filter((c) => c.slug)
@@ -47,7 +48,7 @@ export const Route = createFileRoute('/vs')({
         corps_logo_dark_url: c.corps_logo_dark_url,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
-    return { ...resolved, corpsOptions };
+    return { ...resolved, corpsOptions, availabilityBySeason: availability.bySeason };
   },
   head: () =>
     seoHead({
@@ -60,7 +61,7 @@ export const Route = createFileRoute('/vs')({
 });
 
 function VsPage() {
-  const { series, corpsOptions } = Route.useLoaderData();
+  const { series, corpsOptions, availabilityBySeason } = Route.useLoaderData();
   const { s } = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -144,6 +145,7 @@ function VsPage() {
             onAdd={onAdd}
             onPreview={onPreview}
             corpsOptions={corpsOptions}
+            availabilityBySeason={availabilityBySeason}
             atCap={atCap}
             capMessage={`Showing the max of ${VS_SERIES_CAP} series — remove one to add another.`}
           />
