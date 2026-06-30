@@ -61,7 +61,10 @@ export function assignVsColors(series: VsResolvedSeries[], mode: ColorMode): VsR
 
   return series.map((s) => {
     let color: string | null = null;
-    if ((s.kind === 'corps' || s.kind === 'prediction') && s.brand?.primary) {
+    if (
+      (s.kind === 'corps' || s.kind === 'prediction' || s.kind === 'predicted') &&
+      s.brand?.primary
+    ) {
       // Key on the corps identity (the slug in the id, e.g. `corps~blue-devils~
       // 2025`), NOT the brand hex — distinct corps that share a primary color
       // must still get distinct lines.

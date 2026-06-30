@@ -11,8 +11,13 @@ export type VsSeries =
   // actual-so-far (solid) + predicted-to-finals (dashed).
   | { kind: 'corps'; corpsSlug: string; season: string }
   // A prediction snapshot as-of a date. Current season only (no historical
-  // snapshots exist); season is implicit = the current season.
+  // snapshots exist); season is implicit = the current season. NOTE: resolves
+  // from the relational DB, so it's empty where that DB isn't on the host (prod).
   | { kind: 'prediction'; corpsSlug: string; asOf: string }
+  // A corps's model predicted-to-finals curve for the current (2026) season —
+  // the read-model-backed forecast (works on prod). Dashed line + uncertainty
+  // band; the corps's actual-so-far is a separate `kind:'corps'` series.
+  | { kind: 'predicted'; corpsSlug: string }
   // The generic reference curve for an Nth-place corps (rank 1..25), averaged
   // across seasons. Division-agnostic.
   | { kind: 'baseline'; rank: number };

@@ -15,6 +15,7 @@ import {
   Tooltip,
 } from 'recharts';
 import { useSelector } from '@xstate/react';
+import { cn } from '@/lib/utils';
 import { themeStore } from '@/stores/theme-store';
 import { assignVsColors } from '@/lib/vs/colors';
 import type { VsResolvedSeries } from '@/lib/vs/types';
@@ -132,6 +133,10 @@ export function VsChart({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Legend hover: highlight one series by dimming every other line/band.
+  const [highlighted, setHighlighted] = useState<string | null>(null);
+  const dimmed = (id: string) => highlighted != null && id !== highlighted;
+
   return (
     <div className="space-y-3">
       {!mounted ? (
@@ -180,6 +185,7 @@ export function VsChart({
                           connectNulls
                           legendType="none"
                           activeDot={false}
+                          className={cn('vs-series', dimmed(s.id) && 'vs-series--dim')}
                           isAnimationActive={false}
                         />,
                       ]
@@ -199,6 +205,7 @@ export function VsChart({
                     dot={{ r: 2, fill: s.color }}
                     activeDot={{ r: 4 }}
                     connectNulls
+                    className={cn('vs-series', dimmed(s.id) && 'vs-series--dim')}
                     isAnimationActive={false}
                   />
                 ))
@@ -225,7 +232,7 @@ export function VsChart({
           </ResponsiveContainer>
         </div>
       )}
-      <VsLegend items={legendItems} onRemove={onRemove} />
+      <VsLegend items={legendItems} onRemove={onRemove} onHover={setHighlighted} />
     </div>
   );
 }

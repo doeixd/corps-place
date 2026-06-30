@@ -9,6 +9,7 @@ import * as path from 'node:path';
 import {
   buildVsCorpsScores,
   buildVsBaselineCurve,
+  buildVsCorps2026Predicted,
   buildVsPredictionSnapshot,
   buildVsCorpsSeasons,
   buildVsSeasonAvailability,
@@ -18,6 +19,7 @@ import { buildCorpsBySlug } from '@sdk/src/readModel/builders/corps.js';
 import {
   readVsCorpsScores,
   readVsBaselines,
+  readVsCorps2026Predicted,
   readVsCorpsSeasons,
   readVsCorpsSeasonAvailability,
   readCorpsBySlug,
@@ -79,6 +81,44 @@ async function resolveOne(s: VsSeries): Promise<VsResolvedSeries | null> {
       brand: { primary: corps?.color_primary ?? null, secondary: corps?.color_secondary ?? null },
       color: '',
       lines,
+    };
+  }
+
+  if (s.kind === 'predicted') {
+    // Read-model-backed predicted-to-finals curve for 2026 (works on prod, unlike
+    // the relational as-of snapshot). Dashed line + uncertainty band.
+    const [pred, corps] = await Promise.all([
+      readOrBuild(
+        (db) => readVsCorps2026Predicted(db, s.corpsSlug),
+        (db) => buildVsCorps2026Predicted(db, s.corpsSlug)
+      ).catch(() => []),
+      readOrBuild(
+        (db) => readCorpsBySlug(db, s.corpsSlug),
+        (db) => buildCorpsBySlug(db, s.corpsSlug)
+      ).catch(() => null),
+    ]);
+    if (!pred.length) return null;
+    return {
+      id: `predicted~${s.corpsSlug}`,
+      label: `${corps?.name ?? s.corpsSlug} 2026 prediction`,
+      kind: 'predicted',
+      brand: { primary: corps?.color_primary ?? null, secondary: corps?.color_secondary ?? null },
+      color: '',
+      lines: [
+        {
+          style: 'dashed',
+          points: pred.map((p) => {
+            // Band narrows from ~4pts early to ~1.5pts near finals.
+            const margin = 1.5 + 2.5 * (1 - Math.min(Math.max(p.pct, 0), 100) / 100);
+            return {
+              pct: p.pct,
+              value: p.predicted,
+              low: Number((p.predicted - margin).toFixed(2)),
+              high: Number((p.predicted + margin).toFixed(2)),
+            };
+          }),
+        },
+      ],
     };
   }
 

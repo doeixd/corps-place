@@ -11,7 +11,6 @@ import { Icon } from '@/components/icon';
 import { AddCircleIcon } from '@/components/icons/generated';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { cn } from '@/lib/utils';
-import { getVs2026SnapshotDates } from '@/lib/server-fns/vs';
 import type { VsSeries } from '@/lib/vs/types';
 
 type Kind = 'corps' | 'prediction' | 'baseline';
@@ -43,30 +42,40 @@ const fieldCls =
   'w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm outline-none focus:border-primary/60';
 
 // A pill option that adds on click and previews on hover. Styled to match the
-// site's filter chips (rounded-full, primary hover).
+// site's filter chips (rounded-full, primary hover). When `added`, it shows the
+// active/selected look and is inert — so it reads as "already in the chart"
+// rather than silently doing nothing on click.
 function OptionChip({
   label,
   onAdd,
   onHover,
   disabled,
+  added,
 }: {
   label: string;
   onAdd: () => void;
   onHover: (on: boolean) => void;
   disabled?: boolean;
+  added?: boolean;
 }) {
   return (
     <button
       type="button"
-      disabled={disabled}
+      disabled={disabled || added}
+      title={added ? 'Already in the comparison' : undefined}
       onClick={onAdd}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
       onFocus={() => onHover(true)}
       onBlur={() => onHover(false)}
-      className="shrink-0 whitespace-nowrap rounded-full border border-border px-3 py-1 text-sm text-text-secondary transition-colors hover:border-primary/60 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+      className={cn(
+        'shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-sm transition-colors disabled:cursor-not-allowed',
+        added
+          ? 'border-primary bg-primary/10 text-primary'
+          : 'border-border text-text-secondary hover:border-primary/60 hover:text-foreground disabled:opacity-50'
+      )}
     >
-      {label}
+      {added ? `${label} ✓` : label}
     </button>
   );
 }
@@ -97,6 +106,7 @@ function CorpsResultList({
   heightClass = 'h-72',
   isUnavailable,
   unavailableTitle,
+  isAdded,
 }: {
   matches: CorpsOption[];
   onSelect: (c: CorpsOption) => void;
@@ -107,6 +117,8 @@ function CorpsResultList({
   isUnavailable?: (c: CorpsOption) => boolean;
   /** Tooltip (title) explaining why an unavailable row is greyed. */
   unavailableTitle?: (c: CorpsOption) => string;
+  /** When true, the row is already in the comparison — mark it, don't re-add. */
+  isAdded?: (c: CorpsOption) => boolean;
 }) {
   const listRef = useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
@@ -123,17 +135,21 @@ function CorpsResultList({
         {rowVirtualizer.getVirtualItems().map((vi) => {
           const c = matches[vi.index];
           const unavailable = isUnavailable?.(c) ?? false;
+          const added = !unavailable && (isAdded?.(c) ?? false);
+          const inert = unavailable || added;
           return (
             <button
               key={c.slug}
               type="button"
-              title={unavailable ? unavailableTitle?.(c) : undefined}
-              aria-disabled={unavailable || undefined}
+              title={
+                unavailable ? unavailableTitle?.(c) : added ? 'Already in the comparison' : undefined
+              }
+              aria-disabled={inert || undefined}
               onClick={() => {
-                if (!unavailable) onSelect(c);
+                if (!inert) onSelect(c);
               }}
               onMouseEnter={() => {
-                if (!unavailable) onHover?.(c);
+                if (!inert) onHover?.(c);
               }}
               onMouseLeave={() => onHover?.(null)}
               style={{
@@ -148,11 +164,14 @@ function CorpsResultList({
                 'flex items-center gap-2 rounded-md px-2 text-left text-sm transition-colors',
                 unavailable
                   ? 'cursor-not-allowed opacity-40'
-                  : 'hover:bg-accent hover:text-foreground'
+                  : added
+                    ? 'cursor-default text-primary'
+                    : 'hover:bg-accent hover:text-foreground'
               )}
             >
               <CorpsLogo name={c.name} logo={corpsLogoSource(c)} width={24} className="size-6 shrink-0" />
               <span className="truncate">{c.name}</span>
+              {added ? <span className="ml-auto shrink-0 text-xs text-primary">✓ added</span> : null}
             </button>
           );
         })}
@@ -166,12 +185,14 @@ function CorpsResultList({
 function CorpsSeasonColumn({
   corpsOptions,
   availabilityBySeason,
+  addedTokens,
   disabled,
   onAdd,
   onPreview,
 }: {
   corpsOptions: CorpsOption[];
   availabilityBySeason: Record<string, string[]>;
+  addedTokens: Set<string>;
   disabled?: boolean;
   onAdd: (s: VsSeries) => void;
   onPreview: (s: VsSeries | null) => void;
@@ -218,6 +239,7 @@ function CorpsSeasonColumn({
         heightClass="h-96"
         isUnavailable={(c) => available.size > 0 && !available.has(c.slug)}
         unavailableTitle={(c) => `${c.name} hasn’t performed a show in ${season}`}
+        isAdded={(c) => addedTokens.has(`corps~${c.slug}~${season}`)}
         onSelect={(c) => {
           if (!disabled) onAdd({ kind: 'corps', corpsSlug: c.slug, season });
         }}
@@ -227,97 +249,57 @@ function CorpsSeasonColumn({
   );
 }
 
-/** 2026 prediction: search a corps, pick it, then click an as-of snapshot date. */
+/** 2026 prediction: search a corps, click it to add the model's predicted-to-
+ *  finals curve (read-model-backed, so it works on prod). One click, like the
+ *  Corps-season column; hovering previews. */
 function PredictionColumn({
   corpsOptions,
+  addedTokens,
   disabled,
   onAdd,
   onPreview,
 }: {
   corpsOptions: CorpsOption[];
+  addedTokens: Set<string>;
   disabled?: boolean;
   onAdd: (s: VsSeries) => void;
   onPreview: (s: VsSeries | null) => void;
 }) {
   const [query, setQuery] = useState('');
-  const [picked, setPicked] = useState<CorpsOption | null>(null);
-  const [dates, setDates] = useState<string[] | null>(null);
   const matches = useCorpsMatches(corpsOptions, query);
-
-  const pick = (c: CorpsOption) => {
-    setPicked(c);
-    setDates(null);
-    getVs2026SnapshotDates({ data: { slug: c.slug } })
-      .then((r) => setDates(r.dates))
-      .catch(() => setDates([]));
-  };
-  const change = () => {
-    setPicked(null);
-    setDates(null);
-    onPreview(null);
-  };
 
   return (
     <div className="space-y-2">
-      <ColumnHeader title="2026 prediction" hint="A model snapshot of 2026, as of a date." />
-      {!picked ? (
-        <div className="space-y-1">
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search corps…"
-            className={fieldCls}
-          />
-          <CorpsResultList matches={matches} onSelect={pick} />
-        </div>
-      ) : (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between gap-2 rounded-lg border border-border px-2.5 py-1.5 text-sm">
-            <span className="flex min-w-0 items-center gap-2">
-              <CorpsLogo name={picked.name} logo={corpsLogoSource(picked)} width={24} className="size-6 shrink-0" />
-              <span className="truncate font-medium text-text-primary">{picked.name}</span>
-            </span>
-            <button
-              type="button"
-              onClick={change}
-              className="shrink-0 text-xs text-muted-foreground hover:text-foreground"
-            >
-              change
-            </button>
-          </div>
-          <div className="space-y-1">
-            <span className="text-xs text-text-secondary">As of — click to add</span>
-            {dates === null ? (
-              <p className="text-xs text-muted-foreground">Loading dates…</p>
-            ) : dates.length === 0 ? (
-              <p className="text-xs text-muted-foreground">No 2026 snapshots available.</p>
-            ) : (
-              <div className="themed-scrollbar flex max-h-72 flex-col gap-1 overflow-y-auto">
-                {dates.map((d) => (
-                  <OptionChip
-                    key={d}
-                    label={d}
-                    disabled={disabled}
-                    onAdd={() => onAdd({ kind: 'prediction', corpsSlug: picked.slug, asOf: d })}
-                    onHover={(on) =>
-                      onPreview(on ? { kind: 'prediction', corpsSlug: picked.slug, asOf: d } : null)
-                    }
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <ColumnHeader title="2026 prediction" hint="The model’s projected finish for the 2026 season." />
+      <p className="text-xs text-muted-foreground">
+        Click a corps to add its predicted-to-finals curve (a dashed line with an uncertainty band).
+      </p>
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search corps…"
+        className={fieldCls}
+      />
+      <CorpsResultList
+        matches={matches}
+        heightClass="h-96"
+        isAdded={(c) => addedTokens.has(`forecast~${c.slug}`)}
+        onSelect={(c) => {
+          if (!disabled) onAdd({ kind: 'predicted', corpsSlug: c.slug });
+        }}
+        onHover={(c) => onPreview(c ? { kind: 'predicted', corpsSlug: c.slug } : null)}
+      />
     </div>
   );
 }
 
 function BaselineColumn({
+  addedTokens,
   disabled,
   onAdd,
   onPreview,
 }: {
+  addedTokens: Set<string>;
   disabled?: boolean;
   onAdd: (s: VsSeries) => void;
   onPreview: (s: VsSeries | null) => void;
@@ -342,6 +324,7 @@ function BaselineColumn({
             key={n}
             label={`${n}${n === 1 ? 'st' : n === 3 ? 'rd' : 'th'}`}
             disabled={disabled}
+            added={addedTokens.has(`baseline~${n}`)}
             onAdd={() => add(n)}
             onHover={(on) => onPreview(on ? { kind: 'baseline', rank: n } : null)}
           />
@@ -364,7 +347,12 @@ function BaselineColumn({
           />
           <button
             type="button"
-            disabled={disabled || parsed === null}
+            disabled={disabled || parsed === null || addedTokens.has(`baseline~${parsed}`)}
+            title={
+              parsed !== null && addedTokens.has(`baseline~${parsed}`)
+                ? 'Already in the comparison'
+                : undefined
+            }
             onClick={() => parsed !== null && add(parsed)}
             onMouseEnter={() => parsed !== null && onPreview({ kind: 'baseline', rank: parsed })}
             onMouseLeave={() => onPreview(null)}
@@ -386,6 +374,7 @@ export function AddCompareSection({
   onPreview,
   corpsOptions = [],
   availabilityBySeason = {},
+  addedTokens = new Set(),
   atCap = false,
   capMessage,
 }: {
@@ -395,6 +384,8 @@ export function AddCompareSection({
   corpsOptions?: CorpsOption[];
   /** `{ [season]: slug[] }` — which corps have data per season (for grey-out). */
   availabilityBySeason?: Record<string, string[]>;
+  /** URL tokens already in the comparison — options for these show as "added". */
+  addedTokens?: Set<string>;
   atCap?: boolean;
   capMessage?: string;
 }) {
@@ -457,6 +448,7 @@ export function AddCompareSection({
           <CorpsSeasonColumn
             corpsOptions={corpsOptions}
             availabilityBySeason={availabilityBySeason}
+            addedTokens={addedTokens}
             disabled={atCap}
             onAdd={add}
             onPreview={onPreview}
@@ -465,13 +457,14 @@ export function AddCompareSection({
         <div className={cn('rounded-lg border border-border p-3', tab === 'prediction' ? 'block' : 'hidden', 'sm:block')}>
           <PredictionColumn
             corpsOptions={corpsOptions}
+            addedTokens={addedTokens}
             disabled={atCap}
             onAdd={add}
             onPreview={onPreview}
           />
         </div>
         <div className={cn('rounded-lg border border-border p-3', tab === 'baseline' ? 'block' : 'hidden', 'sm:block')}>
-          <BaselineColumn disabled={atCap} onAdd={add} onPreview={onPreview} />
+          <BaselineColumn addedTokens={addedTokens} disabled={atCap} onAdd={add} onPreview={onPreview} />
         </div>
       </div>
     </section>

@@ -796,4 +796,12 @@ tr:active .sticky-col {
   path.vs-ghost-line {
     transition: stroke-opacity 240ms ease-out;
   }
+  /* Legend-hover series highlight: dim every non-hovered line/band (the class is
+     applied to the recharts line/area group, so dots dim with the stroke). */
+  .vs-series {
+    transition: opacity 200ms ease-out;
+  }
+  .vs-series--dim {
+    opacity: 0.18;
+  }
 }

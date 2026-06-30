@@ -8,6 +8,7 @@ describe('vs codec', () => {
     { kind: 'corps', corpsSlug: 'blue-devils', season: '2025' },
     { kind: 'baseline', rank: 13 },
     { kind: 'prediction', corpsSlug: 'bluecoats', asOf: '2026-06-01' },
+    { kind: 'predicted', corpsSlug: 'cavaliers' },
   ];
 
   it('round-trips decode(encode(x)) === x', () => {
@@ -16,7 +17,7 @@ describe('vs codec', () => {
 
   it('encodes the documented shape', () => {
     expect(encodeVsSeries(sample)).toBe(
-      'corps~blue-devils~2026,corps~blue-devils~2025,baseline~13,pred~bluecoats~2026-06-01'
+      'corps~blue-devils~2026,corps~blue-devils~2025,baseline~13,pred~bluecoats~2026-06-01,forecast~cavaliers'
     );
   });
 
