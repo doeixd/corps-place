@@ -84,14 +84,17 @@ const main = async () => {
   }[];
   const fixes: { row: (typeof rows)[number]; to: { roleType: string; title: string | null } }[] = [];
   const byTransition = new Map<string, number>();
-  // Conservative: only the caption-section-absorption class — both the stored and
-  // corrected roles are specific captions. Excludes cross-category tail
-  // (director/audio/medical/admin → X) which needs individual judgment.
-  const CAP4 = new Set(['brass', 'percussion', 'visual', 'guard']);
+  // Roll-out scope: correct to a specific caption when the fix re-sectioned the
+  // person AND their stored role is a CAPTION (the absorption shuffle) OR a GENERIC
+  // bucket (design/music/other — i.e. unclassified, now correctly a caption). Still
+  // EXCLUDES real distinct categories (audio/medical/admin/media/director/drum-major)
+  // which need individual judgment, not a bulk rule.
+  const TO_OK = new Set(['brass', 'percussion', 'visual', 'guard']);
+  const FROM_OK = new Set(['brass', 'percussion', 'visual', 'guard', 'design', 'music', 'other']);
   for (const r of rows) {
     const c = affected.get(`${r.staff_id}|${r.season}`);
     if (!c || c.roleType === r.role_type) continue;
-    if (!CAP4.has(r.role_type ?? '') || !CAP4.has(c.roleType)) continue;
+    if (!FROM_OK.has(r.role_type ?? '') || !TO_OK.has(c.roleType)) continue;
     fixes.push({ row: r, to: c });
     byTransition.set(`${r.role_type} → ${c.roleType}`, (byTransition.get(`${r.role_type} → ${c.roleType}`) ?? 0) + 1);
   }
