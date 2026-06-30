@@ -6,10 +6,12 @@ import {
   buildCorpsByKeys,
   buildCorpsDirectory,
   buildCorpsSeasonScores,
+  buildCorpsSeasonSnapshots,
   CORPS_DIVISIONS,
   type CorpsDetail,
   type CorpsDivision,
   type CorpsSeasonPoint,
+  type CorpsSeasonSnapshotRow,
   type CorpsSummary,
 } from '@sdk/src/readModel/builders/corps.js';
 import {
@@ -17,11 +19,12 @@ import {
   readCorpsBySlug,
   readCorpsDirectory,
   readCorpsSeasonScores,
+  readCorpsSeasonSnapshots,
 } from '@sdk/src/readModel/readers.js';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
 
 export { CORPS_DIVISIONS };
-export type { CorpsDetail, CorpsDivision, CorpsSeasonPoint, CorpsSummary };
+export type { CorpsDetail, CorpsDivision, CorpsSeasonPoint, CorpsSeasonSnapshotRow, CorpsSummary };
 
 export class CorpsDirectoryDataError extends Schema.TaggedErrorClass<CorpsDirectoryDataError>()(
   'CorpsDirectoryDataError',
@@ -72,6 +75,14 @@ const seasonScoresForSlug = (slug: string, season = '2026') =>
     (db) => buildCorpsSeasonScores(db, slug, season)
   );
 
+// The "prediction as of ___" history matrix for the corps chart slider (#3).
+const seasonSnapshotsForSlug = (slug: string, season = '2026') =>
+  readOrBuild(
+    'Could not load the corps prediction history.',
+    (db) => readCorpsSeasonSnapshots(db, slug),
+    (db) => buildCorpsSeasonSnapshots(db, slug, season)
+  );
+
 // corpsByKeys looks up specific corps_keys (prediction/schedule corps) for their
 // directory row (logo/link/class chip). In production the big DB isn't present, so
 // read from rm_corps (covers every directory corps); fall back to the builder
@@ -105,13 +116,19 @@ const makeCorpsDirectoryService = Effect.gen(function* () {
     return yield* seasonScoresForSlug(slug);
   });
 
+  const getSeasonSnapshots = Effect.fn('CorpsDirectoryService.getSeasonSnapshots')(function* (
+    slug: string
+  ) {
+    return yield* seasonSnapshotsForSlug(slug);
+  });
+
   const getCorpsByKeys = Effect.fn('CorpsDirectoryService.getCorpsByKeys')(function* (
     corpsKeys: readonly string[]
   ) {
     return yield* corpsByKeys(corpsKeys);
   });
 
-  return { listCorps, getCorps, getSeasonScores, getCorpsByKeys };
+  return { listCorps, getCorps, getSeasonScores, getSeasonSnapshots, getCorpsByKeys };
 });
 
 export class CorpsDirectoryService extends Context.Service<
