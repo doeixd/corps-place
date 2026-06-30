@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
@@ -6,8 +7,11 @@ import { resolveVsSeries } from '@/lib/server-fns/vs';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { VsChart } from '@/components/vs/vs-chart';
 import { decodeVsSeries, encodeVsSeries, vsSeriesToken } from '@/lib/vs/codec';
-import { AddSeries } from '@/components/vs/add-series';
-import { VS_SERIES_CAP, type VsSeries } from '@/lib/vs/types';
+// Old popover-based builder — replaced by <AddCompareSection> below, kept (not
+// deleted) for reference / quick rollback.
+// import { AddSeries } from '@/components/vs/add-series';
+import { AddCompareSection } from '@/components/vs/add-compare-section';
+import { VS_SERIES_CAP, type VsResolvedSeries, type VsSeries } from '@/lib/vs/types';
 
 // Default comparison when `?s=` is absent (plan M3): two finalist corps' most
 // recent complete season + the 1st-place reference curve.
@@ -66,6 +70,36 @@ function VsPage() {
   const onRemove = (id: string) => pushSeries(current.filter((spec) => vsSeriesToken(spec) !== id));
   const onAdd = (spec: VsSeries) => pushSeries([...current, spec]);
 
+  // Hover-preview: resolve the hovered spec to a ghost line on the chart. Cached
+  // per token; `wantedRef` guards against a stale resolve landing after the
+  // pointer has already moved on (or been cleared).
+  const [preview, setPreview] = useState<VsResolvedSeries | null>(null);
+  const previewCache = useRef(new Map<string, VsResolvedSeries | null>());
+  const wantedToken = useRef<string | null>(null);
+
+  const onPreview = (spec: VsSeries | null) => {
+    const token = spec ? vsSeriesToken(spec) : null;
+    // Nothing to preview, or it's already a committed line → no ghost.
+    if (!spec || !token || current.some((c) => vsSeriesToken(c) === token)) {
+      wantedToken.current = null;
+      setPreview(null);
+      return;
+    }
+    wantedToken.current = token;
+    const cached = previewCache.current.get(token);
+    if (cached !== undefined) {
+      setPreview(cached);
+      return;
+    }
+    resolveVsSeries({ data: { series: [spec] } })
+      .then((r) => {
+        const resolved = r.series[0] ?? null;
+        previewCache.current.set(token, resolved);
+        if (wantedToken.current === token) setPreview(resolved);
+      })
+      .catch(() => {});
+  };
+
   return (
     <PageShell className="flex flex-col gap-6">
       <div className="space-y-1">
@@ -78,7 +112,13 @@ function VsPage() {
       </div>
       <Card>
         <CardContent className="space-y-3 px-2 py-4">
-          <VsChart series={series} onRemove={series.length > 1 ? onRemove : undefined} />
+          <VsChart
+            series={series}
+            onRemove={series.length > 1 ? onRemove : undefined}
+            preview={preview}
+          />
+          {/* Old inline popover trigger — replaced by the <AddCompareSection>
+              below; kept commented out (not deleted) for reference / rollback.
           <div className="flex items-center gap-3 px-1">
             <AddSeries onAdd={onAdd} disabled={atCap} corpsOptions={corpsOptions} />
             {atCap ? (
@@ -87,6 +127,19 @@ function VsPage() {
               </span>
             ) : null}
           </div>
+          */}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="px-4 py-4">
+          <AddCompareSection
+            onAdd={onAdd}
+            onPreview={onPreview}
+            corpsOptions={corpsOptions}
+            atCap={atCap}
+            capMessage={`Showing the max of ${VS_SERIES_CAP} series — remove one to add another.`}
+          />
         </CardContent>
       </Card>
     </PageShell>

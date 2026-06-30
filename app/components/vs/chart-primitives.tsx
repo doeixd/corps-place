@@ -19,6 +19,8 @@ export interface VsCellMeta {
   dashed: boolean;
   date?: string;
   eventLabel?: string;
+  /** The transient hover-preview line — excluded from the tooltip. */
+  ghost?: boolean;
 }
 
 export interface VsLegendItem {
@@ -100,7 +102,7 @@ export function VsTooltip({ active, payload }: { active?: boolean; payload?: Too
   const lines = payload
     .filter((e) => e.value != null && e.dataKey != null)
     .map((e) => ({ entry: e, m: meta[String(e.dataKey)] }))
-    .filter(({ m }) => m && !seen.has(m.seriesId) && seen.add(m.seriesId));
+    .filter(({ m }) => m && !m.ghost && !seen.has(m.seriesId) && seen.add(m.seriesId));
 
   if (lines.length === 0) return null;
   const pct = row?.pct;
