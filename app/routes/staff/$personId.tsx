@@ -25,6 +25,7 @@ import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 const STAFF_REDIRECTS: Record<string, string> = {
   'richard-valentin': 'ricardo-valentin',
   'richard-valentin-tyler-wiernusz': 'ricardo-valentin',
+  'andrew-montinero': 'andrew-monteiro', // surname typo, merged into the canonical
 };
 
 export const Route = createFileRoute('/staff/$personId')({
