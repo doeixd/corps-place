@@ -375,8 +375,13 @@ export const parseProfileDeterministic = (pageText: string): YearbookProfile | n
   const lowerRoster = rosterText.toLowerCase();
 
   const insideParens = (idx: number): boolean => {
-    const before = rosterText.slice(0, idx);
-    return (before.split("(").length - 1) > (before.split(")").length - 1);
+    // A real role parenthetical ("(Caption Head)") is short. A "(" far back with no
+    // ")" is an OCR missing-close artifact (e.g. "(Color Guard Design," with no
+    // close) — counting it globally would mark the WHOLE rest of the page "inside
+    // parens" and hide every later section heading. So only an unclosed "(" within a
+    // bounded window counts as enclosing.
+    const window = rosterText.slice(Math.max(0, idx - 80), idx);
+    return window.lastIndexOf("(") > window.lastIndexOf(")");
   };
   for (const rawHeading of STAFF_SECTION_HEADINGS) {
     // Find the first VALID occurrence: a real section header is NOT inside a role
