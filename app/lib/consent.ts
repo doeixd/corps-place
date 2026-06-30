@@ -8,7 +8,7 @@
  * Bump when the Terms of Service / Privacy Policy change materially — every user
  * is then re-gated until they accept the new version. Keep it human-readable.
  */
-export const CURRENT_TERMS_VERSION = '2026-06-24';
+export const CURRENT_TERMS_VERSION = '2026-06-29';
 
 /** The minimal shape of the consent fields better-auth adds to the session user. */
 export interface ConsentUser {

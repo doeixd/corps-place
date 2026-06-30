@@ -6,7 +6,11 @@
 // Overrides apply ONLY when there is an ACTIVE claim. A 'pending' claim (weak
 // name match, awaiting moderator approval) does not publish edits.
 
-export type OverlayField = { content: unknown; diverged: boolean };
+/** Override content shapes the editor writes (text / photo url / removal). A concrete
+ *  union — `unknown` breaks TanStack's serializable ServerFn return constraint and a
+ *  recursive JSON type trips its deep-instantiation guard (TS2589). */
+export type OverrideContent = string | { plain: string } | { url: string } | { removed: true } | null;
+export type OverlayField = { content: OverrideContent; diverged: boolean };
 
 export type ProfileOverlay = {
   claim: { status: string; name_match: string | null } | null;

@@ -27,7 +27,7 @@ const MAX_FIELD_BYTES = 200_000; // bound an override payload (Lexical envelope 
 /** Overlay for the read-merge (plan §7). Tiny + usually empty. */
 export const getProfileOverlay = createServerFn({ method: 'GET' })
   .validator((data: { entityType: EntityType; entityId: string }) => data)
-  .handler(async ({ data }): Promise<ProfileOverlay> => {
+  .handler(async ({ data }): Promise<NonNullable<ProfileOverlay>> => {
     const overlay = await Effect.runPromise(
       Effect.flatMap(ProfileOwnerService, (s) =>
         s.readOverlay(data.entityType, data.entityId)

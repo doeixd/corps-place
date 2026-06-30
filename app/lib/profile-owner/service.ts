@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { ProfileSql, ProfileSqlLive, requireDurableStorage } from './sql';
 import { ClaimExists, NotFound } from './errors';
 import { nameMatch, type NameMatchTier } from './name-match';
+import type { OverlayField, OverrideContent } from './merge';
 import { getReadModelClient } from '@/lib/read-model-db';
 import { readStaffProfile, readJudgeProfile } from '@sdk/src/readModel/readers';
 
@@ -70,11 +71,11 @@ const makeProfileOwnerService = Effect.gen(function* () {
       SELECT field_key, content_json, scrape_diverged
       FROM profile_overrides
       WHERE entity_type = ${entityType} AND entity_id = ${entityId}`;
-    const fields: Record<string, { content: unknown; diverged: boolean }> = {};
+    const fields: Record<string, OverlayField> = {};
     for (const o of overrides) {
-      let content: unknown = null;
+      let content: OverrideContent = null;
       try {
-        content = JSON.parse(o.content_json);
+        content = JSON.parse(o.content_json) as OverrideContent;
       } catch {
         content = o.content_json;
       }
