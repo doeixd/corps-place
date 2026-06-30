@@ -85,7 +85,7 @@ const makeStandingsService = Effect.gen(function* () {
       FROM fantasy_standings s
       JOIN fantasy_members m ON m.league_id = s.league_id AND m.user_id = s.user_id
       LEFT JOIN user u ON u.id = s.user_id
-      WHERE s.league_id = ${league.league_id}
+      WHERE s.league_id = ${league.league_id} AND m.status = 'active'
       ORDER BY s.rank
     `.pipe(Effect.orDie);
 
@@ -160,8 +160,10 @@ const makeStandingsService = Effect.gen(function* () {
         caption_slot_index: number;
         weight: number;
       }>`
-        SELECT user_id, corps_key, caption, caption_slot_index, weight
-        FROM fantasy_picks WHERE league_id = ${leagueId}
+        SELECT p.user_id, p.corps_key, p.caption, p.caption_slot_index, p.weight
+        FROM fantasy_picks p
+        JOIN fantasy_members m ON m.league_id = p.league_id AND m.user_id = p.user_id
+        WHERE p.league_id = ${leagueId} AND m.status = 'active'
       `.pipe(Effect.orDie);
 
       const priorRows = yield* sql<{ user_id: string; total_score: number; is_final: number }>`
