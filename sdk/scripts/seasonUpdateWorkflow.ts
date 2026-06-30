@@ -17,6 +17,7 @@ import * as path from 'node:path';
 import { runEmit, parseArgs as parseEmitArgs } from './emitReadModel.js';
 import { DATASETS, uploadDataset } from '../src/dataSync.js';
 import { loadEnv } from './loadEnv.js';
+import { findLatestV9SubcaptionModelDir } from '../src/training/v9ModelPaths.js';
 import { makeDbBackedDciApiLayer } from '../src/dbBackedApi.js';
 import { makeWebsiteScraperDciApiLayer, makeWebsiteScraperDciApi } from '../src/websiteApi.js';
 import { BrowserbaseService, BrowserbaseServiceLive } from '../src/browserbaseService.js';
@@ -299,17 +300,6 @@ const queryFutureReleasedCompetitions = (season: string, asOfDate: string) =>
     `);
   });
 
-const findLatestModelDir = (root = 'models/v9_subcaption_fixed') => {
-  if (!fs.existsSync(root)) return undefined;
-  const candidates = fs
-    .readdirSync(root)
-    .map((name) => path.join(root, name))
-    .filter((dir) => fs.statSync(dir).isDirectory() && fs.existsSync(path.join(dir, 'model.json')))
-    .map((dir) => ({ dir, mtime: fs.statSync(path.join(dir, 'model.json')).mtimeMs }))
-    .sort((a, b) => b.mtime - a.mtime);
-  return candidates[0]?.dir;
-};
-
 const writeJson = (filePath: string, value: unknown) => {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, JSON.stringify(value, null, 2));
@@ -565,7 +555,7 @@ const program = Effect.gen(function* () {
       );
     }
     fineTuneModelDir =
-      cli.modelDir === 'latest' || !cli.modelDir ? findLatestModelDir() : cli.modelDir;
+      cli.modelDir === 'latest' || !cli.modelDir ? findLatestV9SubcaptionModelDir() : cli.modelDir;
     if (!fineTuneModelDir) {
       throw new Error(
         '--fine-tune requested but no --model-dir was provided and no latest model was found.'
@@ -597,7 +587,7 @@ const program = Effect.gen(function* () {
         cli.dryRun
       )
     );
-    fineTuneCandidateDir = cli.dryRun ? undefined : findLatestModelDir();
+    fineTuneCandidateDir = cli.dryRun ? undefined : findLatestV9SubcaptionModelDir();
   }
 
   const after = yield* (querySnapshot(cli.season));
