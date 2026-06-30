@@ -73,16 +73,17 @@ const POOL_TTL_MS = 60_000;
 const poolCache = new Map<string, { at: number; value: DraftableCorps[] }>();
 
 /**
- * Eligible draftable corps (Appendix C.4) for `season`: World + Open class corps
- * that actually COMPETED in that season with results — not the whole all-time
- * corps table (which includes folded/hiatus corps), and not the stale
- * `corps.active` flag. The division is taken from that season's participation
- * (`corps_scores.division_name`), then the current-truth override is applied.
+ * Eligible draftable corps (Appendix C.4) for `season`: the World + Open class
+ * corps actually PERFORMING that season, taken from the season's event lineups
+ * (`event_participants`) — not `corps_scores` (which only fills in after a corps
+ * competes, so a scores-based pool collapses early-season to the few that have
+ * scored) and not the whole all-time corps table. Division is the corps' current
+ * class (`corps.division_name`), then the current-truth override is applied.
  *
- * Callers pass the league's PRIOR completed season (e.g. a 2026 league → 2025):
- * the prior season is a full, stable field, so the pool never collapses to the
- * handful of corps that have scored so far in the current season (which made
- * default leagues fail the draft-start feasibility check). Cached ~60s per season.
+ * Callers pass the LEAGUE's own season (a 2026 league drafts the 2026 performing
+ * field). The full scheduled tour is available preseason, so the pool stays large
+ * enough for draft-start feasibility. Prior-season scores are used only for
+ * auto-pick ranking, never pool membership. Cached ~60s per season.
  */
 export async function getDraftPool(season: string): Promise<DraftableCorps[]> {
   const cached = poolCache.get(season);
@@ -99,14 +100,14 @@ export async function getDraftPool(season: string): Promise<DraftableCorps[]> {
           args: [season],
         })
       : await scoreDb().execute({
-          sql: `SELECT DISTINCT co.corps_key, co.slug, co.name, cs.division_name, co.display_city,
+          sql: `SELECT DISTINCT co.corps_key, co.slug, co.name, co.division_name, co.display_city,
                        co.corps_logo, co.corps_logo_dark, co.corps_logo_dark_url
-                FROM corps co
-                JOIN corps_scores cs ON cs.corps_key = co.corps_key
-                JOIN competitions c ON c.slug = cs.competition_slug
-                WHERE c.season = ?
-                  AND cs.division_name IN (?, ?)
-                ORDER BY cs.division_name, co.name COLLATE NOCASE`,
+                FROM event_participants ep
+                JOIN events e ON e.slug = ep.event_slug
+                JOIN corps co ON co.corps_key = ep.corps_key
+                WHERE e.season = ?
+                  AND co.division_name IN (?, ?)
+                ORDER BY co.division_name, co.name COLLATE NOCASE`,
           args: [season, ...DRAFT_DIVISIONS],
         });
     const value = res.rows
