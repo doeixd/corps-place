@@ -52,6 +52,7 @@ const CHAIN = [
   // ── structural identity fixes ────────────────────────────────────────────────────
   'splitConcatenatedNames.ts', // two-people-as-one parser misses (re-home then drop the bogus entry)
   'fixPollutedPersonIds.ts',
+  'mergeSuffixedNames.ts', // collapse -2/-3 disambiguation collisions into their base ONLY when captions match (else keep separate)
   'mergeFuzzyNameVariants.ts',
   'mergeNicknames.ts',
   'reclassifyFromTitle.ts', // title-first for specific captions (before the dominant fill)
