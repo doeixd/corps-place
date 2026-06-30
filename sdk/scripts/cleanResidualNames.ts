@@ -2,15 +2,19 @@
 // sweep — but that function FALSE-rejects real surnames it treats as stopwords: "Hall" (Hall of
 // Fame), "Emmy", "Post" — so we do NOT delete on that signal; we hand-pick the real junk).
 //   • STRIP "Team " prefix → "Team Joe Roach" → "Joe Roach"
+//   • STRIP a leaked byline/credit prefix → "By George Fennell" → "George Fennell"
+//     (rename if the remainder is a real person; DELETE if not, e.g. "At Vanguard").
 //   • STRIP trailing " The" (leaked "The <Corps>") → "Bear The" → "Bear"
 //   • STRIP trailing !/? → "Andrew Duss!" → "Andrew Duss"
-//   • DELETE non-person labels: "AZ The Academy", "Follow on Instagram", "Advocacy Connector", …
+//   • DELETE non-person labels: "AZ The Academy", "Follow on Instagram", CTA/locative
+//     leads ("At Vanguard", "Visit …"), "Advocacy Connector", …
 // Dry-run default; --apply writes.
 import { createClient } from "@libsql/client";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { loadRepoEnv } from "./scriptEnv.js";
 import { archiveStaffDeletion } from "./deletionArchive.js";
+import { looksLikePersonName } from "../src/staffScraper.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SDK_DIR = resolve(__dirname, "..");
@@ -18,7 +22,9 @@ loadRepoEnv(SDK_DIR);
 const DRY = !process.argv.includes("--apply");
 const db = createClient({ url: process.env.DCI_RELATIONAL_DB_URL ?? `file:${resolve(SDK_DIR, "dci-relational.db")}` });
 
-const DELETE_RE = /^([A-Z]{2}\s+The\s+|Recent News$|Follow on\b|Advocacy Connector$|.*\bClick$|Hit Counter$|.* Feature$)/;
+const DELETE_RE = /^([A-Z]{2}\s+The\s+|Recent News$|Follow on\b|Advocacy Connector$|.*\bClick$|Hit Counter$|.* Feature$|(At|In|On|From|Visit|Join|Meet|Watch|Learn|Read|Shop|Donate|Support|See)\s+\S)/;
+// A leaked byline/credit prefix ("By …", "Photos by …", "Courtesy of …").
+const CREDIT_RE = /^(Words by|Story by|Text by|Photos? by|Video by|Interview (?:by|with)|Presented by|Hosted by|Courtesy of|Written by|Edited by|Produced by|Directed by|Featuring|Feat\.?|By)\s+/i;
 const rename = (raw: string): string => {
   let s = raw.trim();
   s = s.replace(/^Team\s+/i, "");           // "Team Joe Roach" → "Joe Roach"
@@ -34,6 +40,12 @@ const main = async () => {
   for (const r of rows) {
     const name = String(r.display_name);
     if (DELETE_RE.test(name.trim())) { dels.push(r.staff_id); continue; }
+    if (CREDIT_RE.test(name.trim())) {
+      const rest = name.trim().replace(CREDIT_RE, "").trim();
+      if (rest.length >= 3 && looksLikePersonName(rest)) renames.push({ staff_id: r.staff_id, from: name, to: rest });
+      else dels.push(r.staff_id); // credit prefix but remainder isn't a person → junk
+      continue;
+    }
     const to = rename(name);
     if (to !== name && to.length >= 3) renames.push({ staff_id: r.staff_id, from: name, to });
   }

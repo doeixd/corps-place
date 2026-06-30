@@ -27,7 +27,8 @@ const SECTION = new Set(
   ('electronics brass percussion visual guard color front ensemble battery pit drum major drumline ' +
     'music program design designer staff tour admin administration administrative operations sound audio ' +
     'synth ge general effect movement choreography tech instructor consultant director coordinator ' +
-    'supervisor manager caption head asst assistant winds woodwinds horn drumming')
+    'supervisor manager caption head asst assistant winds woodwinds horn drumming ' +
+    'by with photo photos words story text video presented hosted courtesy featuring feat written edited produced directed interview')
     .split(' ')
 );
 
