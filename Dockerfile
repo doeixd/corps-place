@@ -19,7 +19,11 @@ WORKDIR /app
 
 # Cap Node.js heap so the build doesn't OOM the Docker container (Vite/Rolldown +
 # TypeScript compilation is memory-hungry). Tune to your Coolify VM's RAM.
-ENV NODE_OPTIONS="--max-old-space-size=3072"
+# NOTE: the VM is only ~3.8 GiB and runs the OLD app container (≈1 GiB) during the
+# zero-downtime rollout, so a 3072 build heap pushed total RSS past physical RAM
+# and the build started OOM-failing under load. `vite build` fits comfortably in
+# 2048 (verified), so cap there to leave headroom for the running container.
+ENV NODE_OPTIONS="--max-old-space-size=2048"
 
 # Native toolchain for sharp and any native gyp fallback
 RUN apt-get update \
