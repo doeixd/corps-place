@@ -85,7 +85,11 @@ interface ScoreEventsResponse {
   readonly totalPages: number;
 }
 
-const fetchScoreEventsConfig = async (season: string): Promise<ScoreEventsConfig> => {
+// Returns the AJAX config when the scores page exposes it, or null when it
+// doesn't (page shape changed, or a Cloudflare/bot challenge replaced the real
+// page). Returning null instead of throwing lets the caller fall back to parsing
+// the server-rendered scores-list HTML directly (review Medium #6).
+const fetchScoreEventsConfig = async (season: string): Promise<ScoreEventsConfig | null> => {
   const pageUrl = scoresListUrl(season, 1);
   const html = await fetchHtmlWithRetry(pageUrl);
   const ajaxMatch = html.match(
@@ -96,7 +100,7 @@ const fetchScoreEventsConfig = async (season: string): Promise<ScoreEventsConfig
   );
 
   if (!ajaxMatch || !wrapperMatch) {
-    throw new WebsiteRecapParseError("Failed to locate scoreEventAjax config on scores page");
+    return null;
   }
 
   const [, ajaxUrl, nonce] = ajaxMatch;
@@ -342,7 +346,33 @@ const scrapeScoresListPage = (
       )
     );
 
-    return { entries: parsed.entries, totalPages: response.totalPages };
+    return { entries: parsed.entries, totalPages: response.totalPages as number | undefined };
+  });
+
+// HTML fallback for one scores-list page: fetch the server-rendered page and
+// parse its rows directly. Used when AJAX config is missing or an AJAX POST is
+// blocked (review Medium #6). The page paginates via the same `page` query param
+// as the AJAX endpoint; it exposes no reliable total-page count, so the caller
+// stops once a page yields no new entries.
+const scrapeScoresListPageHtml = (sql: SqlClient.SqlClient, season: string, page: number) =>
+  Effect.gen(function* () {
+    const pageUrl = scoresListUrl(season, page);
+    const html = yield* (Effect.tryPromise(() => fetchHtmlWithRetry(pageUrl)));
+    const parsed = yield* (parseScoresList(html, season));
+    yield* (
+      retryDb(
+        `score list page (html) ${season}#${page}`,
+        upsertWebsiteScoreList(sql, {
+          season,
+          page,
+          sourceUrl: pageUrl,
+          rawHtml: html,
+          parsed,
+          scrapedAt: new Date().toISOString()
+        })
+      )
+    );
+    return { entries: parsed.entries, totalPages: undefined as number | undefined };
   });
 
 const scrapeWebsiteRecapByEntry = (
@@ -404,6 +434,13 @@ const collectScoreListEntries = (
     const entries: Domain.WebsiteScoreListEntry[] = [];
     const seen = new Set<string>();
     const config = yield* (Effect.tryPromise(() => fetchScoreEventsConfig(season)));
+    if (!config) {
+      yield* (
+        Effect.logInfo(
+          `[website] ${season}: scoreEventAjax config not found — using server-rendered HTML fallback for all pages`
+        )
+      );
+    }
     let pagesScraped = 0;
     let page = 1;
     let totalPages: number | undefined;
@@ -415,10 +452,29 @@ const collectScoreListEntries = (
       const pageUrl = scoresListUrl(season, page);
       yield* (
         Effect.logInfo(
-          `[website] Fetching scores page ${season}#${page} ${pageUrl} (ajax)`
+          `[website] Fetching scores page ${season}#${page} ${pageUrl} (${config ? 'ajax' : 'html'})`
         )
       );
-      const pageResult = yield* (scrapeScoresListPage(sql, season, page, config));
+      // AJAX when config is available, with a server-rendered-HTML fallback if the
+      // AJAX POST is blocked/fails; pure HTML when there was no AJAX config at all
+      // (review Medium #6).
+      const ajaxConfig = config;
+      const pageResult = ajaxConfig
+        ? yield* (
+            scrapeScoresListPage(sql, season, page, ajaxConfig).pipe(
+              Effect.catch((error) =>
+                Effect.gen(function* () {
+                  yield* (
+                    Effect.logInfo(
+                      `[website] AJAX scores page ${season}#${page} failed (${error}); falling back to server-rendered HTML`
+                    )
+                  );
+                  return yield* (scrapeScoresListPageHtml(sql, season, page));
+                })
+              )
+            )
+          )
+        : yield* (scrapeScoresListPageHtml(sql, season, page));
       if (totalPages === undefined) {
         totalPages = pageResult.totalPages;
         yield* (
