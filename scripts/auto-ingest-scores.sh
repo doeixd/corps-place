@@ -114,6 +114,28 @@ if [ "$after" -gt "$before" ]; then
       fi
     done
   fi
+
+  # Fantasy standings are a function of the fresh scores, so recompute them right
+  # after the read-model swap, then dispatch queued notifications (standings
+  # emails/push + any due draft reminders). Without this, standings + their
+  # emails lag behind posted scores until a separate cron runs. The endpoints are
+  # guarded by FANTASY_CRON_SECRET and hit the live app; best-effort, never fail
+  # the ingest over a fantasy hiccup. Short settle so the server has picked up the
+  # flipped A/B pointer (~5s poll) before recompute reads the read-model.
+  if [ -n "${FANTASY_CRON_SECRET:-}" ]; then
+    fantasy_site="${FANTASY_SITE:-https://drumcorps.app}"
+    sleep 10
+    echo "[auto-ingest $(ts)] recomputing fantasy standings ($SEASON)…"
+    curl -fsS -m 120 -X POST "$fantasy_site/api/fantasy/jobs/recompute?season=$SEASON" \
+      -H "x-fantasy-cron: $FANTASY_CRON_SECRET" 2>&1 | sed 's/^/    /' \
+      || echo "[auto-ingest $(ts)] fantasy recompute failed (non-fatal)"
+    echo "[auto-ingest $(ts)] dispatching fantasy notifications…"
+    curl -fsS -m 120 -X POST "$fantasy_site/api/fantasy/jobs/dispatch" \
+      -H "x-fantasy-cron: $FANTASY_CRON_SECRET" 2>&1 | sed 's/^/    /' \
+      || echo "[auto-ingest $(ts)] fantasy dispatch failed (non-fatal)"
+  else
+    echo "[auto-ingest $(ts)] FANTASY_CRON_SECRET unset — skipping fantasy recompute/dispatch."
+  fi
 else
   echo "[auto-ingest $(ts)] no new scores; nothing to publish."
 fi
