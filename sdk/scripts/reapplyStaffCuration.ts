@@ -38,6 +38,17 @@ const db = createClient({ url: DB_URL });
 const CHAIN = [
   'dedupeAssignments.ts',
   'cleanYearbookStaff.ts',
+  // ── display_name cleaners (idempotent; delete-capable ones archive to the deletion
+  //    log for reversal via restoreStaffDeletion.ts). Run before merges so de-suffixed
+  //    names collapse into their clean twins. ──────────────────────────────────────
+  'fixOcrSplitNames.ts',
+  'cleanStaffNames.ts',
+  'stripCorpsSuffixNames.ts',
+  'deleteJunkNames.ts',
+  'cleanResidualNames.ts',
+  'fixNameTypos.ts',
+  'normalizeStaffNames.ts',
+  // ── structural identity fixes ────────────────────────────────────────────────────
   'splitConcatenatedNames.ts', // two-people-as-one parser misses (re-home then drop the bogus entry)
   'fixPollutedPersonIds.ts',
   'mergeFuzzyNameVariants.ts',

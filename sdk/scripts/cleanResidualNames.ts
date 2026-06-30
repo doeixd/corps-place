@@ -10,6 +10,7 @@ import { createClient } from "@libsql/client";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { loadRepoEnv } from "./scriptEnv.js";
+import { archiveStaffDeletion } from "./deletionArchive.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SDK_DIR = resolve(__dirname, "..");
@@ -41,6 +42,7 @@ const main = async () => {
   console.log("\nDELETE:"); for (const id of dels.slice(0, 15)) { const n = rows.find((r) => r.staff_id === id)?.display_name; console.log(`  "${n}"`); }
   if (!DRY) {
     for (const r of renames) await db.execute({ sql: "UPDATE corps_staff SET display_name=? WHERE staff_id=?", args: [r.to, r.staff_id] });
+    await archiveStaffDeletion(db, dels.map((d) => String(d)), { script: "cleanResidualNames", reason: "residual non-person label" });
     for (let i = 0; i < dels.length; i += 200) { const b = dels.slice(i, i + 200); await db.execute({ sql: `DELETE FROM corps_staff WHERE staff_id IN (${b.map(() => "?").join(",")})`, args: b }); }
     console.log(`\nApplied ${renames.length} renames, ${dels.length} deletes.`);
   }

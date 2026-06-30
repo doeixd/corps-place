@@ -9,6 +9,7 @@ import { createClient } from "@libsql/client";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { loadRepoEnv } from "./scriptEnv.js";
+import { archiveStaffDeletion } from "./deletionArchive.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SDK_DIR = resolve(__dirname, "..");
@@ -41,7 +42,7 @@ const main = async () => {
   const dels = rows.filter((r) => isMultiName(String(r.display_name)) || isSentence(String(r.display_name)));
   console.log(`${DRY ? "(dry-run)" : "APPLIED"} — ${dels.length} junk-name rows to delete\n`);
   [...new Set(dels.map((d) => String(d.display_name)))].slice(0, 35).forEach((n) => console.log(`  "${n}"`));
-  if (!DRY) { for (let i = 0; i < dels.length; i += 200) { const b = dels.slice(i, i + 200).map((d) => d.staff_id); await db.execute({ sql: `DELETE FROM corps_staff WHERE staff_id IN (${b.map(() => "?").join(",")})`, args: b }); } console.log(`\nDeleted ${dels.length}.`); }
+  if (!DRY) { await archiveStaffDeletion(db, dels.map((d) => String(d.staff_id)), { script: "deleteJunkNames", reason: "junk/non-person display_name" }); for (let i = 0; i < dels.length; i += 200) { const b = dels.slice(i, i + 200).map((d) => d.staff_id); await db.execute({ sql: `DELETE FROM corps_staff WHERE staff_id IN (${b.map(() => "?").join(",")})`, args: b }); } console.log(`\nDeleted ${dels.length} (archived to deletion log).`); }
   process.exit(0);
 };
 main();

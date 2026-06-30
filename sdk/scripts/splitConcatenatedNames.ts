@@ -15,6 +15,7 @@ import { createClient } from '@libsql/client';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { loadRepoEnv } from './scriptEnv.js';
+import { archiveStaffDeletion } from './deletionArchive.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SDK_DIR = resolve(__dirname, '..');
@@ -82,7 +83,7 @@ const main = async () => {
     const pidToks = s.person_id.split('-').filter(Boolean);
     if (pidToks.length >= 1 && pidToks.every((t) => ROLE_WORDS.has(t))) {
       console.log(`  ${DRY ? 'would' : ''} delete junk role-phrase entry ${s.staff_id} ("${s.display_name}")`);
-      if (!DRY) await db.execute({ sql: 'DELETE FROM corps_staff WHERE staff_id = ?', args: [s.staff_id] });
+      if (!DRY) { await archiveStaffDeletion(db, [s.staff_id], { script: 'splitConcatenatedNames', reason: 'pure role-phrase entry' }); await db.execute({ sql: 'DELETE FROM corps_staff WHERE staff_id = ?', args: [s.staff_id] }); }
       junked++;
       continue;
     }
@@ -124,7 +125,7 @@ const main = async () => {
       repointed++; cloned += targets.length - 1;
     }
     console.log(`  ${DRY ? 'would' : ''} remove bogus staff ${s.staff_id}`);
-    if (!DRY) await db.execute({ sql: 'DELETE FROM corps_staff WHERE staff_id = ?', args: [s.staff_id] });
+    if (!DRY) { await archiveStaffDeletion(db, [s.staff_id], { script: 'splitConcatenatedNames', reason: 'two-people concatenation (re-homed)' }); await db.execute({ sql: 'DELETE FROM corps_staff WHERE staff_id = ?', args: [s.staff_id] }); }
     removed++;
   }
   console.log(`\n${DRY ? '(dry-run)' : 'APPLIED'} — re-pointed ${repointed} rows (+${cloned} clones), removed ${removed} bogus staff, deleted ${junked} junk role-phrase entries`);
