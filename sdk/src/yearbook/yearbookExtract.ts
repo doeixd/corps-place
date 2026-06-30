@@ -375,6 +375,10 @@ export const parseProfileDeterministic = (pageText: string): YearbookProfile | n
   const lowerRoster = rosterText.toLowerCase();
 
   const insideParens = (idx: number): boolean => {
+    if (process.env.YB_PARSER_LEGACY === "1") {
+      const before = rosterText.slice(0, idx);
+      return (before.split("(").length - 1) > (before.split(")").length - 1);
+    }
     // A real role parenthetical ("(Caption Head)") is short. A "(" far back with no
     // ")" is an OCR missing-close artifact (e.g. "(Color Guard Design," with no
     // close) — counting it globally would mark the WHOLE rest of the page "inside
@@ -398,7 +402,13 @@ export const parseProfileDeterministic = (pageText: string): YearbookProfile | n
       // "Color Guard Captain Kimmy Kinden" (in a show description) is NOT the roster's
       // Color Guard heading — taking it (then break) drops the real heading later and
       // dumps that whole section into the previous one. Skip and keep scanning.
-      if (/^(Captain|Captains|Caption|Tech|Technician|Staff|Team|Section|Coordinator|Director|Instructor|Manager|Supervisor|Consultant|Arranger|Composer|Designer|Lead|Head|Assistant|Associate|Specialist|Advisor|Of|And|The|Coach|Sergeants?|Sgt|Lieutenants?|Corporals?|Quartermaster)\b/i.test(after)) continue;
+      // Skip ONLY when the section word is followed by a MEMBER RANK ("Color Guard
+      // Captain Kimmy…", "Color Guard Sergeant Ally…") — those are member positions
+      // in the leadership listing, not the staff roster heading. Do NOT list role/
+      // heading-continuation words here (Team/Staff/Director/Head/Coordinator/…): they
+      // are parts of real compound headings ("Administrative Team", "Design Team",
+      // "Brass Staff") and skipping them drops the section → the prior one absorbs it.
+      if (process.env.YB_PARSER_LEGACY !== "1" && /^(Captains?|Sergeants?|Sgt|Lieutenants?|Corporals?|Quartermasters?)\b/i.test(after)) continue;
       const start = m.index + m[0].length;
       if (!sections.some(s => s.start === start)) sections.push({ heading: rawHeading, start });
       break;
