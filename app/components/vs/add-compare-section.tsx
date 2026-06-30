@@ -462,9 +462,7 @@ export function AddCompareSection({
 
       {/* Caption pills — re-scope the whole chart (Total + categories + captions). */}
       <div className="space-y-1">
-        <span className="text-xs font-medium uppercase tracking-wide text-text-secondary">
-          Caption
-        </span>
+        <span className="block pb-px text-xs font-medium text-text-secondary">Caption</span>
         <FilterChips
           ariaLabel="Caption"
           value={caption}
