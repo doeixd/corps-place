@@ -37,6 +37,7 @@ const db = createClient({ url: DB_URL });
 // dedup exact → OCR/subsumption dedup → collapsed/anagram person merges → nicknames.
 const CHAIN = [
   'dedupeAssignments.ts',
+  'pruneRedundantAssignments.ts', // drop weak same-season siblings (empty 'other', "Education" artifacts)
   'cleanYearbookStaff.ts',
   // ── display_name cleaners (idempotent; delete-capable ones archive to the deletion
   //    log for reversal via restoreStaffDeletion.ts). Run before merges so de-suffixed
