@@ -62,21 +62,25 @@ export interface FantasyPoolRow {
 }
 
 /**
- * Eligible draftable corps per season: World/Open corps that competed in that
- * season (excl. feeder/non-competitive entries). Emitted for EVERY season so a
- * league drafts from its PRIOR completed season (a 2026 league reads 2025) — the
- * prior season is full and stable, instead of collapsing to the handful of corps
- * that have scored so far in the current season.
+ * Eligible draftable corps per season: the World/Open corps actually PERFORMING
+ * that season — derived from the season's event lineups (`event_participants`),
+ * NOT from `corps_scores`. Scores only exist after a corps competes, so a
+ * scores-based pool collapses early in a season to the handful that have scored;
+ * the lineup field is the full intended tour (scheduled shows included). Division
+ * comes from the corps' current class (`corps.division_name`); feeder /
+ * non-competitive entries are excluded. Emitted per season; a league reads its OWN
+ * season (a 2026 league drafts the 2026 performing field). Prior-season scores are
+ * used only for auto-pick ranking, not pool membership.
  */
 export async function buildFantasyDraftPool(src: Client): Promise<FantasyPoolRow[]> {
   const res = await src.execute({
-    sql: `SELECT DISTINCT c.season, co.corps_key, co.slug, co.name, cs.division_name,
+    sql: `SELECT DISTINCT e.season, co.corps_key, co.slug, co.name, co.division_name,
                  co.display_city, co.corps_logo
-          FROM corps co
-          JOIN corps_scores cs ON cs.corps_key = co.corps_key
-          JOIN competitions c ON c.slug = cs.competition_slug
-          WHERE cs.division_name IN (?, ?)
-          ORDER BY c.season, cs.division_name, co.name COLLATE NOCASE`,
+          FROM event_participants ep
+          JOIN events e ON e.slug = ep.event_slug
+          JOIN corps co ON co.corps_key = ep.corps_key
+          WHERE co.division_name IN (?, ?)
+          ORDER BY e.season, co.division_name, co.name COLLATE NOCASE`,
     args: DRAFT_DIVISIONS,
   });
   return res.rows

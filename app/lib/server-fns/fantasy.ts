@@ -618,7 +618,7 @@ async function loadDraftStateData(
     : draftEngine.getSnapshot(leagueId);
   const [snapshot, pool, ranking] = await Promise.all([
     snapshotP,
-    getDraftPool(prevSeason),
+    getDraftPool(str(league.season)),
     getPriorSeasonRanking(prevSeason),
   ]);
   // `${corpsKey}|${caption}` → prior-season finals score, for ordering the pool

@@ -109,7 +109,10 @@ import {
 // v15: rm_fantasy_draft_pool is now per-season (gains a `season` column + index) — a league
 //      drafts from its PRIOR completed season instead of MAX(season), so the pool no longer
 //      collapses to the few corps that have scored so far in the current season.
-const SCHEMA_VERSION = 15;
+// v16: rm_fantasy_draft_pool is now the corps PERFORMING each season (from event_participants /
+//      the season's lineups), not the corps that have scored — a league drafts its OWN season's
+//      full scheduled field. Same columns; the `season` is now the performing season.
+const SCHEMA_VERSION = 16;
 
 type Section =
   | "events"

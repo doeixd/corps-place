@@ -93,13 +93,20 @@ beforeAll(async () => {
       `CREATE TABLE competitions (slug TEXT PRIMARY KEY, season TEXT, date TEXT)`,
       `CREATE TABLE corps_scores (competition_slug TEXT, corps_key TEXT, division_name TEXT)`,
       `CREATE TABLE caption_scores (competition_slug TEXT, corps_key TEXT, caption_name TEXT, score REAL)`,
+      `CREATE TABLE events (slug TEXT PRIMARY KEY, season TEXT)`,
+      `CREATE TABLE event_participants (event_slug TEXT, participant_id TEXT, corps_key TEXT)`,
       ...['c1', 'c2', 'c3', 'c4', 'c5', 'c6'].map(
         (k) =>
           `INSERT INTO corps VALUES ('${k}', '${k.toUpperCase()}', '${k}', 'World Class', 'City', NULL, NULL, NULL)`
       ),
+      // Pool = corps PERFORMING the league's season (2026), from the season's event
+      // lineups — all six corps are in a 2026 show.
+      `INSERT INTO events VALUES ('2026-show', '2026')`,
+      ...['c1', 'c2', 'c3', 'c4', 'c5', 'c6'].map(
+        (k) => `INSERT INTO event_participants VALUES ('2026-show', 'p${k}', '${k}')`
+      ),
+      // Prior-season (2025) finals scores feed auto-pick ranking only, not the pool.
       `INSERT INTO competitions VALUES ('2025-world-championship-finals', '2025', '2025-08-09')`,
-      // All six corps competed in 2025 → all eligible for the pool (getDraftPool now
-      // filters to latest-season World/Open participants, not the whole corps table).
       ...['c1', 'c2', 'c3', 'c4', 'c5', 'c6'].map(
         (k) =>
           `INSERT INTO corps_scores VALUES ('2025-world-championship-finals', '${k}', 'World Class')`
