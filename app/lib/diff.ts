@@ -52,23 +52,27 @@ const makeCaption = (scored: number | null, predicted: number | null): DiffCapti
 
 // Aggregate one side (scored or predicted) from its subcaption values, mirroring
 // the recap builder's fold (ge = ge1+ge2; visual = (vp+va+cg)/2; music =
-// (mb+ma+mp)/2; total = ge+visual+music). Returns null when ALL contributing
-// subcaptions are missing on that side, so a one-sided corps stays one-sided.
+// (mb+ma+mp)/2; total = ge+visual+music). An aggregate requires ALL of its
+// contributing subcaptions to be present on that side — otherwise it's null.
+// Folding partial data (e.g. GE1 with GE2 missing) would compare different
+// denominators across the two sides and surface a missing-data gap as a real
+// scoring miss, so a partial aggregate is treated as unavailable instead.
 const aggregateSide = (
   caps: Record<Caption, DiffCaption>,
   side: 'scored' | 'predicted'
 ): { ge: number | null; visual: number | null; music: number | null; total: number | null } => {
   const v = (c: Caption) => caps[c][side];
-  const present = (...cs: Caption[]) => cs.some((c) => v(c) != null);
+  const complete = (...cs: Caption[]) => cs.every((c) => v(c) != null);
   const sum = (...cs: Caption[]) => cs.reduce((a, c) => a + (v(c) ?? 0), 0);
 
-  const ge = present('GE1', 'GE2') ? Number(sum('GE1', 'GE2').toFixed(3)) : null;
-  const visual = present('VP', 'VA', 'CG') ? Number((sum('VP', 'VA', 'CG') / 2).toFixed(3)) : null;
-  const music = present('MB', 'MA', 'MP') ? Number((sum('MB', 'MA', 'MP') / 2).toFixed(3)) : null;
+  const ge = complete('GE1', 'GE2') ? Number(sum('GE1', 'GE2').toFixed(3)) : null;
+  const visual = complete('VP', 'VA', 'CG') ? Number((sum('VP', 'VA', 'CG') / 2).toFixed(3)) : null;
+  const music = complete('MB', 'MA', 'MP') ? Number((sum('MB', 'MA', 'MP') / 2).toFixed(3)) : null;
+  // Total needs all three sub-aggregates — a partial total is meaningless.
   const total =
-    ge == null && visual == null && music == null
+    ge == null || visual == null || music == null
       ? null
-      : Number(((ge ?? 0) + (visual ?? 0) + (music ?? 0)).toFixed(3));
+      : Number((ge + visual + music).toFixed(3));
   return { ge, visual, music, total };
 };
 

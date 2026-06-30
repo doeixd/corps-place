@@ -71,9 +71,12 @@ describe('computeDiff', () => {
     // VP only scored -> diff null
     expect(d.captions.VP.predicted).toBe(null);
     expect(d.captions.VP.diff).toBe(null);
-    // ge present both sides (scored via GE1 only, predicted via GE1+GE2)
-    expect(d.ge.scored).toBe(19);
+    // ge requires ALL contributing subcaptions: scored has GE1 only (GE2 missing)
+    // -> null; predicted has GE1+GE2 -> 36.5. A partial aggregate is unavailable,
+    // so the diff is null rather than a misleading 19-vs-36.5 "miss".
+    expect(d.ge.scored).toBe(null);
     expect(d.ge.predicted).toBe(36.5);
+    expect(d.ge.diff).toBe(null);
   });
 
   it('full outer join preserves scored order then predicted-only', () => {
