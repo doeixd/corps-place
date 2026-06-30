@@ -190,6 +190,7 @@ function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
           events={ordered}
           animationKey={`${filter.season}|${filter.search}|${filter.dir}`}
           scrollToKey={scrollToKey}
+          scrollTopKey={filter.dir}
         />
       </Show>
     </PageShell>

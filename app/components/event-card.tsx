@@ -55,7 +55,9 @@ const EVENT_CHIPS: {
   },
 ];
 
-const SCROLLABLE_GRID_INSET = 16;
+// Headroom reserved above the auto-scrolled target row so the card's hover
+// lift + shadow isn't clipped against the scrollport's top edge.
+const SCROLLABLE_GRID_INSET = 28;
 
 /**
  * An event card: whole card links to the event's prediction page, with date +
@@ -170,12 +172,17 @@ export function ScrollableEventCardGrid({
   events,
   animationKey,
   scrollToKey,
+  scrollTopKey,
 }: {
   events: readonly EventDirectoryRow[];
   animationKey?: string;
   scrollToKey?: string | null;
+  // When this value changes (e.g. the sort direction toggles), reset the
+  // scrollport to the top instead of re-aligning to `scrollToKey`.
+  scrollTopKey?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const prevScrollTopKey = useRef(scrollTopKey);
   // Mirror the StaggeredGrid `md-lg` breakpoints: the column count settles from 1
   // → 2/3 after mount (useGridColumns reads matchMedia in an effect), which moves
   // card positions, so re-run the align once it changes (see plan: "column settle").
@@ -183,7 +190,15 @@ export function ScrollableEventCardGrid({
 
   useIsomorphicLayoutEffect(() => {
     const container = containerRef.current;
-    if (!container || !scrollToKey) return;
+    if (!container) return;
+    // A `scrollTopKey` change (sort toggle) wins over the next-show alignment:
+    // the user reordered the list, so show it from the top.
+    if (prevScrollTopKey.current !== scrollTopKey) {
+      prevScrollTopKey.current = scrollTopKey;
+      container.scrollTop = 0;
+      return;
+    }
+    if (!scrollToKey) return;
     const card = container.querySelector<HTMLElement>(
       `[data-grid-key="${CSS.escape(scrollToKey)}"]`
     );
@@ -193,7 +208,7 @@ export function ScrollableEventCardGrid({
     // scroll the page/ancestors.
     const delta = card.getBoundingClientRect().top - container.getBoundingClientRect().top;
     container.scrollTop += delta - SCROLLABLE_GRID_INSET;
-  }, [scrollToKey, animationKey, columns]);
+  }, [scrollToKey, scrollTopKey, animationKey, columns]);
 
   return (
     <div
