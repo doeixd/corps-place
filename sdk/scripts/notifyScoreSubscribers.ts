@@ -179,8 +179,13 @@ const main = async () => {
     }
 
     console.log(`[notify] ${ev} (“${label}”): ${byEmail.size} to notify (${corps.length} corps in event).`);
+    // /scores/$slug needs a real (events-table) slug. ~12 competition slugs have no
+    // matching event row (the events-vs-competitions namespace split); for those,
+    // link to the scores index rather than a 404. `season` is null exactly when the
+    // event slug doesn't resolve.
+    const eventUrl = season ? `${SITE}/scores/${ev}` : `${SITE}/scores`;
     for (const [email, s] of byEmail) {
-      const url = `${SITE}/scores/${ev}`;
+      const url = eventUrl;
       const unsub = `${SITE}/notify/unsubscribe?token=${s.unsubscribe_token}`;
       const subject = `Scores are in — ${label}`;
       const html =

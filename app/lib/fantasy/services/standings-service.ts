@@ -195,6 +195,17 @@ const makeStandingsService = Effect.gen(function* () {
       }));
       const rows = buildStandings(members, best, config.weights, config.scoringMode);
 
+      // Purge standings rows for users who are no longer active members (removed /
+      // left) so a stale row can't linger — getStandings filters them at read, but
+      // they shouldn't persist in the table either, and they must not be re-ranked.
+      yield* sql`
+        DELETE FROM fantasy_standings
+        WHERE league_id = ${leagueId}
+          AND user_id NOT IN (
+            SELECT user_id FROM fantasy_members WHERE league_id = ${leagueId} AND status = 'active'
+          )
+      `.pipe(Effect.orDie);
+
       yield* sql
         .withTransaction(
           Effect.forEach(

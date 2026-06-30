@@ -335,23 +335,25 @@ const makeNotificationService = Effect.gen(function* () {
     let sent = 0;
     for (const [userId, entry] of byUser) {
       const leagues = [...entry.leagues].join(', ') || 'your league';
-      const ok = yield* Effect.tryPromise(() =>
+      // Settled = nothing to deliver (no devices / push disabled) OR at least one
+      // device accepted. A user who HAS devices but none accepted (transient) is
+      // left unsent so the next dispatch retries — rather than marking sent blindly.
+      const settled = yield* Effect.tryPromise(() =>
         sendPushToUser(userId, {
           title: entry.final ? `Final standings — ${leagues}` : `Standings updated — ${leagues}`,
           body: entry.final
             ? 'The season is complete — see where your corps landed.'
             : 'Standings just updated after the latest recap.',
           url: `${APP_URL}/fantasy`,
-        })
+        }).then((r) => r.subscriptions === 0 || r.delivered > 0)
       ).pipe(
-        Effect.as(true),
         Effect.catchCause((cause) =>
           Effect.logError(`fantasy standings push failed for ${userId}`, cause).pipe(
             Effect.as(false)
           )
         )
       );
-      if (!ok) continue;
+      if (!settled) continue;
       yield* Effect.forEach(
         entry.ids,
         (id) => sql`UPDATE fantasy_notifications SET push_sent_at = ${now} WHERE notif_id = ${id}`,
