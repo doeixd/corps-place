@@ -213,14 +213,14 @@ Emit + verify locally → publish read-model to R2 → deploy. The
   emitted `rm_event_previous_recap` section (`SCHEMA_VERSION` 17) + reader +
   `verifyReadModel` parity. Builder and emit→reader round-trips smoke-tested
   against in-memory fixtures.
-- **Phase 3 deviation — prefetch/deep-link is machine-native, not loader-based.**
-  The loader is NOT coupled to `?diffbase` (that would re-run the expensive
-  prediction/recap loader on every basis toggle and double-fetch). Instead: the
-  machine prefetches the moment the Diff tab opens (`SET_VIEW→loading`), and an
-  `always`-guard auto-loads when `diffBase` is codec-seeded to `'previous'` from
-  a deep link. Trade-off: a deep-linked `?diffbase=previous` shows a brief
-  loading card during SSR/first paint instead of SSR-rendered rows — acceptable
-  for a rare shared-link case, and the prefetch makes the card rare in normal use.
+- **Phase 3 — prefetch + SSR-correct deep link.** The machine prefetches the
+  moment the Diff tab opens (`SET_VIEW→loading`) so an in-session switch to "vs
+  Previous" is instant. For a deep-linked `?diffbase=previous`, the loader fetches
+  the previous-show recap (gated on a `diffbasePrevious` loaderDep) and seeds the
+  machine, so SSR/first paint renders the table — no spinner. Accepted trade-off:
+  toggling basis in-session re-runs the loader (a cheap read-model read) and the
+  machine's own actor also loads it, a small redundancy on the rare toggle for
+  SSR-correct shared links.
 - **Availability:** the Diff tab gate is unchanged (`hasScores && hasPrediction`);
   the basis toggle always offers both options, and "vs Previous" degrades to a
   loading / empty / error card when there's no prior-show data.

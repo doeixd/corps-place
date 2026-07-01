@@ -9,6 +9,7 @@ import { predictionMachine, predictionSearchCodec } from '@/machines/prediction-
 import {
   getHybridEventFullRecap,
   getHybridEventPredictionPageData,
+  getHybridEventPreviousRecap,
   getHybridPrediction,
 } from '@/lib/server-fns/hybrid';
 import { loadDetailOrServer } from '@/db/detail-shard';
@@ -225,10 +226,25 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
       (search.fakeScores as unknown) === true ||
       search.fakeScores === '1' ||
       (search.fakeScores as unknown) === 'true',
+    // Deep-linked ?diffbase=previous: fetch the previous-show recap in the loader
+    // so SSR/first paint renders the "vs Previous" table instead of a spinner.
+    // (Toggling basis in-session re-runs the loader; the machine's own actor also
+    // covers that path — an accepted redundancy for SSR-correct shared links.)
+    diffbasePrevious: search.diffbase === 'previous',
   }),
   loader: async ({ params, deps }) => {
     const { yearSlug, slug } = params;
     const fakeScores = deps?.fakeScores === true;
+    const wantPrevious = deps?.diffbasePrevious === true;
+    // Fetch the previous-show recap only when deep-linked to it (decoupled from
+    // the page data so a normal load never pays for it). null ⇒ not fetched here
+    // (the machine actor loads it on demand); a value ⇒ seed the machine so SSR
+    // renders the table with no client round trip.
+    const loadPrevious = () =>
+      wantPrevious
+        ? getHybridEventPreviousRecap({ data: slug }).catch(() => ({ rows: [], sources: {} }))
+        : Promise.resolve(null);
+
     const empty = {
       prediction: null,
       event: null,
@@ -239,6 +255,8 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
       showTitles: {},
       showInfo: {},
       fullRecap: null,
+      previousRecap: null,
+      previousSources: {},
     };
 
     const isPastSeason = yearSlug !== '2026';
@@ -257,7 +275,15 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
           return empty;
         }
       };
-      return loadDetailOrServer(`prediction-page/${yearSlug}/${slug}.json`, fromServer);
+      const [base, previous] = await Promise.all([
+        loadDetailOrServer(`prediction-page/${yearSlug}/${slug}.json`, fromServer),
+        loadPrevious(),
+      ]);
+      return {
+        ...(base as object),
+        previousRecap: previous?.rows ?? null,
+        previousSources: previous?.sources ?? {},
+      };
     }
 
     // 2026: stays on the server fn (its prediction is live-regenerable and must
@@ -271,10 +297,16 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
         data: { yearSlug, slug, fakeScores },
       });
       const hasRecap = (data.recap?.scores?.length ?? 0) > 0;
-      const fullRecap = hasRecap
-        ? await getHybridEventFullRecap({ data: slug }).catch(() => null)
-        : null;
-      return { ...data, fullRecap };
+      const [fullRecap, previous] = await Promise.all([
+        hasRecap ? getHybridEventFullRecap({ data: slug }).catch(() => null) : Promise.resolve(null),
+        loadPrevious(),
+      ]);
+      return {
+        ...data,
+        fullRecap,
+        previousRecap: previous?.rows ?? null,
+        previousSources: previous?.sources ?? {},
+      };
     } catch {
       return empty;
     }
@@ -466,6 +498,10 @@ function PredictionPage() {
         // Judge-level full recap for the Scores view's Full Recap toggle,
         // preloaded by the loader whenever a recap exists (null otherwise).
         seededFullRecap={(loaderData.fullRecap as FullEventRecap | null) ?? null}
+        // Previous-show recap, present only on a deep-linked ?diffbase=previous
+        // (SSR-seeded); null otherwise → the machine loads it on demand.
+        seededPreviousRecap={(loaderData.previousRecap as RecapRow[] | null) ?? null}
+        seededPreviousSources={loaderData.previousSources ?? {}}
       />
     </CorpsRegistryProvider>
   );
@@ -529,6 +565,8 @@ function CurrentPredictionPage({
   navigate,
   scoredRecap,
   seededFullRecap,
+  seededPreviousRecap,
+  seededPreviousSources,
 }: {
   params: { yearSlug: string; slug: string };
   slug: string;
@@ -545,6 +583,8 @@ function CurrentPredictionPage({
   navigate: ReturnType<typeof Route.useNavigate>;
   scoredRecap: RecapRow[] | null;
   seededFullRecap: FullEventRecap | null;
+  seededPreviousRecap: RecapRow[] | null;
+  seededPreviousSources: Record<string, { slug: string; name: string; date: string }>;
 }) {
   // Name this entry so a back control on a page reached from here reads
   // "Back to <event>" instead of the generic section label.
@@ -560,6 +600,10 @@ function CurrentPredictionPage({
       // Provides both the data and the dynamic default view (scores-first) when
       // the URL omits `view`; the decoded `view` (if present) overrides it.
       scoredRecap,
+      // Present only on a deep-linked ?diffbase=previous — seeds the machine so
+      // the `previous` region starts `ready` (no client fetch, SSR renders rows).
+      previousRecap: seededPreviousRecap,
+      previousSources: seededPreviousSources,
     },
   });
 
