@@ -175,7 +175,12 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
       ],
     });
   },
-  staleTime: 60_000,
+  // Corps detail is static read-model data (per-emit; the client hard-reloads on a
+  // new deploy). Keep it fresh for the session so revisiting a corps — or paging
+  // between its season tabs — is instant from the router cache rather than
+  // re-running five shard loads + getShowDetail every minute.
+  staleTime: Infinity,
+  gcTime: Infinity,
   component: CorpsDetailPage,
 });
 

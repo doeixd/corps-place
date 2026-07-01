@@ -12,5 +12,17 @@ export default {
     '/assets/**': {
       headers: { 'cache-control': 'public, max-age=31536000, immutable' },
     },
+    // Read-model shards are content-addressed by a `?v=` token (a new emit = a new
+    // URL), so the bytes for a given URL never change — cache them immutably for a
+    // year. Without this, prod (`node .output/server`, not `proxy.mjs`) serves them
+    // with no Cache-Control, so every client navigation re-fetches every detail
+    // shard over the network instead of reading the browser cache. The manifest is
+    // the one revalidated entry point (it changes each emit), so keep it short.
+    '/read-model/manifest.json': {
+      headers: { 'cache-control': 'public, max-age=60, stale-while-revalidate=86400' },
+    },
+    '/read-model/**': {
+      headers: { 'cache-control': 'public, max-age=31536000, immutable' },
+    },
   },
 };

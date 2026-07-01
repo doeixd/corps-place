@@ -65,7 +65,12 @@ export const Route = createFileRoute('/corps/')({
       ],
     });
   },
-  staleTime: 60_000,
+  // The corps directory is static read-model data (changes only on a re-emit, and
+  // the client hard-reloads on a new deploy), so keep the loader result fresh for
+  // the whole session — repeat navigations render instantly from the router cache
+  // instead of re-running getCorpsDirectory every minute.
+  staleTime: Infinity,
+  gcTime: Infinity,
   component: CorpsDirectory,
 });
 
