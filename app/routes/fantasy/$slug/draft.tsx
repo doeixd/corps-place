@@ -179,26 +179,32 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
         </ul>
       </details>
 
-      {draft && draft.status !== 'complete' && league.viewer.isMember ? (
+      {/* The draft queue only matters once picking is live (it auto-picks when
+          your timer runs out), so it's hidden until the draft has started. */}
+      {draft && (draft.status === 'live' || draft.status === 'paused') && league.viewer.isMember ? (
         <div className="flex justify-end">
           <DraftQueueEditor leagueId={leagueId} pool={initial.pool} rank={initial.rank} />
         </div>
       ) : null}
 
-      {draft?.status === 'scheduled' ? <ProjectedOrder league={league} /> : null}
-
       <SectionErrorBoundary label="the draft room">
         {!draft || draft.status === 'scheduled' ? (
-          <SchedulePanel
-            send={send}
-            scheduling={state.matches('scheduling')}
-            starting={state.matches('starting')}
-            error={state.context.error}
-            feasibility={state.context.feasibility}
-            isOwner={league.viewer.isOwner}
-            scheduledAt={draft?.scheduledAt ?? null}
-            savedAutoStart={draft?.autoStart ?? false}
-          />
+          // Schedule/status message first, then the projected order below it.
+          <div className="flex flex-col gap-6">
+            <SchedulePanel
+              send={send}
+              scheduling={state.matches('scheduling')}
+              starting={state.matches('starting')}
+              error={state.context.error}
+              feasibility={state.context.feasibility}
+              isOwner={league.viewer.isOwner}
+              scheduledAt={draft?.scheduledAt ?? null}
+              savedAutoStart={draft?.autoStart ?? false}
+            />
+            {draft?.status === 'scheduled' ? (
+              <ProjectedOrder league={league} online={online} />
+            ) : null}
+          </div>
         ) : draft.status === 'complete' ? (
           <CompletePanel
             league={league}
@@ -230,7 +236,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
 }
 
 /** Pre-draft seeding preview (§ P3) — the projected pick order from quiz scores. */
-function ProjectedOrder({ league }: { league: LeagueData }) {
+function ProjectedOrder({ league, online }: { league: LeagueData; online: Set<string> }) {
   const byId = new Map(league.members.map((m) => [m.user_id, m]));
   const anyQuiz = league.members.some((m) => m.quiz_taken);
   return (
@@ -246,12 +252,17 @@ function ProjectedOrder({ league }: { league: LeagueData }) {
               return (
                 <li key={uid} className="flex items-center gap-2">
                   <span className="w-5 text-xs text-muted-foreground">{i + 1}.</span>
+                  <PresenceDot
+                    online={online.has(uid)}
+                    name={m?.user_name || m?.corps_name}
+                  />
                   <span
                     className="font-medium"
                     style={m?.corps_color ? { color: m.corps_color } : undefined}
                   >
                     {m?.corps_name || m?.user_name || 'Player'}
                   </span>
+                  {m?.role === 'owner' ? <OwnerBadge /> : null}
                   {!m?.quiz_taken ? (
                     <span className="text-xs text-muted-foreground">(quiz not taken)</span>
                   ) : null}
@@ -458,17 +469,32 @@ type LiveDraftProps = {
   reverseWeighting: ReverseWeighting;
 };
 
-// Online/offline indicator for a player — driven by live SSE presence.
-function PresenceDot({ online }: { online: boolean }) {
+// Online/offline indicator for a player — driven by live SSE presence. `name`
+// makes the tooltip/screen-reader label say *who* is online ("Alice — online").
+function PresenceDot({ online, name }: { online: boolean; name?: string | null }) {
+  const status = online ? 'online' : 'offline';
+  const label = name ? `${name} — ${status}` : online ? 'Online' : 'Offline';
   return (
     <span
-      title={online ? 'Online' : 'Offline'}
-      aria-label={online ? 'Online' : 'Offline'}
+      title={label}
+      aria-label={label}
       className={cn(
         'inline-block size-2 shrink-0 rounded-full',
         online ? 'bg-green-500' : 'bg-muted-foreground/30'
       )}
     />
+  );
+}
+
+// Marks the league owner in a member/order list.
+function OwnerBadge() {
+  return (
+    <span
+      title="League owner"
+      className="shrink-0 rounded bg-muted px-1 py-px text-[10px] font-medium uppercase tracking-wide text-muted-foreground"
+    >
+      Owner
+    </span>
   );
 }
 
@@ -1044,6 +1070,7 @@ function DraftBoard({
                         <span className="flex items-center gap-1.5">
                           {online ? <PresenceDot online={online.has(m.user_id)} /> : null}
                           {m.corps_name || m.user_name || 'Player'}
+                          {m.role === 'owner' ? <OwnerBadge /> : null}
                         </span>
                       </TableCell>
                     ) : null}
