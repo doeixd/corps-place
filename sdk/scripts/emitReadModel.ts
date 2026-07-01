@@ -63,6 +63,8 @@ import {
   buildStaffProfile,
   buildLatestPredictionSummary,
   buildPredictedEventSlugs,
+  buildEventPredictionSnapshotDates,
+  buildEventPredictionAsOf,
   buildHomeWeekendShows,
   buildLatestResults,
   buildSeasonStandings,
@@ -122,7 +124,10 @@ import {
 // v19: + rm_event_previous_recap — per-event, each corps's own most recent prior show this
 //      season (rows_json) + a per-corps prior-event source map (sources_json), for the
 //      prediction Diff view's "vs Previous show" basis (DIFF_BASIS_TOGGLE_PLAN §3).
-const SCHEMA_VERSION = 19;
+// v20: + rm_event_prediction_snapshots — per-event "forecast as of ___" recap history
+//      (one row per snapshot day; recap_json), for the prediction-page date scrubber
+//      (FORECAST_AS_OF_PREDICTION_PAGE_PLAN).
+const SCHEMA_VERSION = 20;
 
 type Section =
   | "events"
@@ -176,7 +181,7 @@ const SECTION_TABLES: Record<Section, string[]> = {
   recaps: ["rm_event_recap", "rm_event_full_recap"],
   judges: ["rm_judges", "rm_judge_detail"],
   staff: ["rm_staff", "rm_staff_detail"],
-  predictions: ["rm_event_prediction"],
+  predictions: ["rm_event_prediction", "rm_event_prediction_snapshots"],
   shows: ["rm_show_titles", "rm_show_info", "rm_show_detail"],
   home: ["rm_home_weekend_shows", "rm_home_latest_results", "rm_home_standings"],
   merch: ["rm_merch_meta", "rm_merch_product", "rm_merch_corps_teaser"],
@@ -405,6 +410,15 @@ CREATE TABLE rm_staff_detail (person_id TEXT PRIMARY KEY, detail_json TEXT);
 CREATE TABLE rm_event_prediction (
   event_slug TEXT PRIMARY KEY, season TEXT, predicted_at TEXT, summary_json TEXT
 );
+
+-- "Forecast as of ___" for the prediction page: one row per (event, snapshot
+-- day) holding that day's recap. The newest snapshot's recap == rm_event_prediction
+-- summary.recap (parity-checked). recap_json is the predictions array (canonicalized).
+CREATE TABLE rm_event_prediction_snapshots (
+  event_slug TEXT, season TEXT, snapshot_at TEXT, predicted_at TEXT, percent_through REAL,
+  recap_json TEXT
+);
+CREATE INDEX rm_event_pred_snap ON rm_event_prediction_snapshots(event_slug, snapshot_at);
 
 CREATE TABLE rm_show_titles (season TEXT, corps_key TEXT, title TEXT);
 CREATE INDEX rm_show_titles_season ON rm_show_titles(season);
@@ -1238,6 +1252,9 @@ export const runEmit = async (args: Args) => {
     log("building predictions…");
     const slugs = await buildPredictedEventSlugs(src, "2026");
     const predRows: unknown[][] = [];
+    // "Forecast as of ___" history: one row per (event, snapshot day) with that
+    // day's recap, for the prediction-page scrubber.
+    const predSnapshotRows: unknown[][] = [];
     for (const slug of slugs) {
       const summary = await buildLatestPredictionSummary(src, slug, "2026");
       if (summary)
@@ -1247,15 +1264,36 @@ export const runEmit = async (args: Args) => {
           summary.predicted_at,
           JSON.stringify(summary.summary),
         ]);
+      const dates = await buildEventPredictionSnapshotDates(src, slug, "2026");
+      for (const date of dates) {
+        const asof = await buildEventPredictionAsOf(src, slug, date, "2026");
+        if (asof && asof.recap.length > 0)
+          predSnapshotRows.push([
+            slug,
+            "2026",
+            date,
+            asof.predicted_at,
+            asof.percent_through,
+            JSON.stringify(asof.recap),
+          ]);
+      }
     }
     rowCounts.rm_event_prediction = predRows.length;
-    if (dst)
+    rowCounts.rm_event_prediction_snapshots = predSnapshotRows.length;
+    if (dst) {
       await insertRows(
         dst,
         "rm_event_prediction",
         ["event_slug", "season", "predicted_at", "summary_json"],
         predRows,
       );
+      await insertRows(
+        dst,
+        "rm_event_prediction_snapshots",
+        ["event_slug", "season", "snapshot_at", "predicted_at", "percent_through", "recap_json"],
+        predSnapshotRows,
+      );
+    }
   }
 
   // ── Show titles (corps_shows, placeholder titles filtered) ───────────────────

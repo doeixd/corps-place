@@ -19,6 +19,10 @@ import {
   buildCorpsSeasonSnapshots,
   buildEventRecap,
   buildEventPreviousRecap,
+  buildPredictedEventSlugs,
+  buildLatestPredictionSummary,
+  buildEventPredictionSnapshotDates,
+  buildEventPredictionAsOf,
   buildEventSchedule,
   buildEventsForSeason,
   buildHomeWeekendShows,
@@ -39,6 +43,8 @@ import {
   readCorpsSeasonSnapshots,
   readEventRecap,
   readEventPreviousRecap,
+  readEventPredictionSnapshotDates,
+  readEventPredictionAsOf,
   readEventSchedule,
   readEventsForSeason,
   readHomeWeekendShows,
@@ -299,6 +305,23 @@ const main = async () => {
     check(`readEventRecap ${e.slug}`, await buildEventRecap(src, e.slug), await readEventRecap(rm, e.slug));
     check(`readEventPreviousRecap ${e.slug}`,
       await buildEventPreviousRecap(src, e.slug), await readEventPreviousRecap(rm, e.slug));
+  }
+  // Forecast-as-of: reader==builder for dates + a sampled as-of; and the invariant
+  // that the newest snapshot's recap equals the latest saved prediction's recap.
+  const predictedSlugs = await buildPredictedEventSlugs(src, '2026');
+  for (const slug of sampleOf(predictedSlugs, SAMPLE)) {
+    const dates = await buildEventPredictionSnapshotDates(src, slug, '2026');
+    check(`readEventPredictionSnapshotDates ${slug}`, dates,
+      await readEventPredictionSnapshotDates(rm, slug));
+    if (dates.length === 0) continue;
+    check(`readEventPredictionAsOf ${slug} @ ${dates[0]}`,
+      await buildEventPredictionAsOf(src, slug, dates[0], '2026'),
+      await readEventPredictionAsOf(rm, slug, dates[0]));
+    // Newest snapshot recap == the latest prediction summary recap (parity).
+    const newest = await buildEventPredictionAsOf(src, slug, dates[0], '2026');
+    const latest = await buildLatestPredictionSummary(src, slug, '2026');
+    if (newest && latest)
+      check(`prediction-snapshot newest==latest ${slug}`, newest.recap, latest.summary.recap);
   }
 
   src.close();
