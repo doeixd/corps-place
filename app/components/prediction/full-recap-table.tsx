@@ -55,6 +55,13 @@ interface FullRecapTableProps {
   onCycleSort: (key: string) => void;
   yearSlug?: string;
   onStickyScroll: (el: HTMLElement) => void;
+  /**
+   * Animate row reorders (Motion `layout`/`layoutId`). Default on. Turn OFF when
+   * many recap tables are mounted together (the `/scores` index): a shared
+   * `layoutId` across simultaneous tables makes Motion animate one node between
+   * them, which reads as page-wide layout shift.
+   */
+  animateRows?: boolean;
 }
 
 // Match the compact table's frozen columns: Rank (48/64px) + Corps, both keyed
@@ -83,6 +90,7 @@ export function FullRecapTable({
   onCycleSort,
   yearSlug,
   onStickyScroll,
+  animateRows = true,
 }: FullRecapTableProps) {
   const allCorps = recap.corps;
 
@@ -253,14 +261,13 @@ export function FullRecapTable({
             return (
               <motion.tr
                 key={c.corps}
-                layoutId={`recap-row-${c.corps}`}
-                layout="position"
-                transition={{
-                  type: 'spring',
-                  stiffness: 500,
-                  damping: 50,
-                  mass: 1,
-                }}
+                {...(animateRows
+                  ? {
+                      layoutId: `recap-row-${c.corps}`,
+                      layout: 'position' as const,
+                      transition: { type: 'spring', stiffness: 500, damping: 50, mass: 1 },
+                    }
+                  : {})}
                 data-slot="table-row"
                 className="border-b border-border/60 transition-colors hover:bg-muted/60 active:bg-muted/60 last:border-0"
               >

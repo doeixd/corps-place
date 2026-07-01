@@ -32,10 +32,13 @@ export function EventFullRecap({
   recap,
   corps,
   yearSlug,
+  animateRows,
 }: {
   recap: FullEventRecap;
   corps: RecapCorpsRef[];
   yearSlug?: string;
+  /** Forwarded to FullRecapTable — off on the `/scores` index (many tables). */
+  animateRows?: boolean;
 }) {
   const [sorts, setSorts] = useState<FullSortEntry[]>([]);
   const [classFilters, setClassFilters] = useState<string[]>([]);
@@ -71,6 +74,7 @@ export function EventFullRecap({
         onCycleSort={(key) => setSorts((s) => cycleSortGeneric(s, key, sortMode))}
         yearSlug={yearSlug}
         onStickyScroll={onStickyScroll}
+        animateRows={animateRows}
       />
     </CorpsRegistryProvider>
   );

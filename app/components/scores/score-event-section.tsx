@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
+import { cn } from '@/lib/utils';
 import { formatEventDate } from '@/lib/format';
 import { fadeIn } from '@/lib/motion-variants';
 import { EventFullRecap, type RecapCorpsRef } from '@/components/scores/event-full-recap';
@@ -8,7 +9,20 @@ import type { FullEventRecap } from '@/components/prediction/full-recap-table';
 
 const yearOf = (slug: string) => slug.match(/^(\d{4})/)?.[1] ?? '';
 
+// Quick global switch for the `/scores` list animations (skeleton pulse + recap
+// fade-in + recap row layout animation). Off for now to kill the layout shift;
+// flip back to `true` to re-enable. Typed `boolean` (not the `false` literal) so
+// the gated branches type-check either way.
+const SCORES_ANIMATIONS: boolean = false;
+
 type RecapData = { recap: FullEventRecap | null; corps: RecapCorpsRef[] };
+
+// In-memory session cache of fetched recaps, keyed by event slug. The service
+// worker already caches the `/read-model/recaps/` responses (SWR), but that
+// fetch is still async — so on a remount (scroll away/back, client nav back to
+// /scores) `data` would start null and flash the placeholder. This synchronous
+// cache means a placeholder never reappears for data we already have this session.
+const recapCache = new Map<string, RecapData>();
 
 // Rough recap-table geometry so the loading placeholder matches the real height
 // and the lazy load doesn't shove the page down. Header block = class-filter
@@ -25,7 +39,7 @@ const estimateRecapHeight = (corpsCount: number) =>
  * (IntersectionObserver). The recap comes from the cacheable `/read-model/recaps/`
  * route, so the service worker serves it instantly on revisit (StaleWhileRevalidate)
  * while staying fresh. The placeholder is sized to the expected recap height to
- * minimise layout shift, and the recap fades in with the shared motion variant.
+ * minimise layout shift.
  */
 export function ScoreEventSection({
   slug,
@@ -43,8 +57,11 @@ export function ScoreEventSection({
   corpsCount?: number;
 }) {
   const ref = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-  const [data, setData] = useState<RecapData | null>(null);
+  // Seed from the session cache: if we already fetched this event's recap, render
+  // it immediately (no observer, no placeholder). Lazy initializers so the lookup
+  // runs once at mount, not on every render.
+  const [inView, setInView] = useState(() => recapCache.has(slug));
+  const [data, setData] = useState<RecapData | null>(() => recapCache.get(slug) ?? null);
 
   useEffect(() => {
     const el = ref.current;
@@ -71,7 +88,9 @@ export function ScoreEventSection({
       const res = await fetch(`/read-model/recaps/${encodeURIComponent(slug)}`).catch(() => null);
       const json =
         res && res.ok ? ((await res.json().catch(() => null)) as RecapData | null) : null;
-      if (!cancelled) setData(json ?? { recap: null, corps: [] });
+      const next: RecapData = json ?? { recap: null, corps: [] };
+      recapCache.set(slug, next);
+      if (!cancelled) setData(next);
     })();
     return () => {
       cancelled = true;
@@ -92,14 +111,27 @@ export function ScoreEventSection({
         {sub ? <p className="text-sm text-text-secondary">{sub}</p> : null}
       </div>
       {data?.recap && data.recap.corps.length > 0 ? (
-        <motion.div variants={fadeIn} initial="hidden" animate="visible">
-          <EventFullRecap recap={data.recap} corps={data.corps} yearSlug={year || undefined} />
-        </motion.div>
+        // Fade-in + row layout animation re-enable together via SCORES_ANIMATIONS.
+        SCORES_ANIMATIONS ? (
+          <motion.div variants={fadeIn} initial="hidden" animate="visible">
+            <EventFullRecap recap={data.recap} corps={data.corps} yearSlug={year || undefined} />
+          </motion.div>
+        ) : (
+          <EventFullRecap
+            recap={data.recap}
+            corps={data.corps}
+            yearSlug={year || undefined}
+            animateRows={false}
+          />
+        )
       ) : data ? (
         <p className="text-sm text-text-secondary">No recap available for this event.</p>
       ) : (
         <div
-          className="animate-pulse rounded-xl border border-border bg-muted/30"
+          className={cn(
+            'rounded-xl border border-border bg-muted/30',
+            SCORES_ANIMATIONS && 'animate-pulse'
+          )}
           style={{ minHeight: estimateRecapHeight(corpsCount) }}
           aria-hidden
         />
