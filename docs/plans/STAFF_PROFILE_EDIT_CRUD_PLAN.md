@@ -138,8 +138,11 @@ Today's editor is a stack of per-field save buttons. Replace with:
   directory-search combobox (real `corps_key`/slug so links resolve). **Full CRUD of the
   competitive record is now complete.** Remaining nicety: a grouped-by-corps editable table
   (P3 polish).
-- **P3 — UX polish** — unified edit mode, XState editor machine, autosave/undo, divergence
-  badges, moderation surface in `/admin/profile-claims`.
+- **P3 — UX polish. 🟡 PARTIAL.** ✅ Assignments grouped-by-corps table; ✅ unsaved-changes
+  guard extended to all collections; ✅ **moderation surface** — the admin claims queue shows
+  each owner's edits (field + op-count) to spot fabricated credits. **Remaining:** divergence
+  badges ("source changed since you edited" — needs per-item `scrape_diverged` in the
+  reconciler), and an optional XState/autosave refactor of the working per-section save.
 - **P4 — Judges** — bio/photo/awards facts only; explicitly NOT the score-derived
   event/caption record.
 
