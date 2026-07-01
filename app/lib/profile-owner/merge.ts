@@ -124,6 +124,34 @@ export const applyCollectionOps = <Item>(
   return [...map.values()];
 };
 
+/**
+ * The inverse of applyCollectionOps: derive the op log that turns the SCRAPED
+ * list into the owner's EDITED list — what the editor persists. A key present in
+ * scraped but not edited → remove; a new key → add; a changed item → edit.
+ * (A rename that changes the key reads as remove-old + add-new, which is fine.)
+ * Round-trips: applyCollectionOps(scraped, diffCollectionOps(scraped, edited)) ≍
+ * edited (by key).
+ */
+export const diffCollectionOps = <Item>(
+  scraped: readonly Item[],
+  edited: readonly Item[],
+  keyOf: (i: Item) => string
+): CollectionOp[] => {
+  const scrapedByKey = new Map(scraped.map((i) => [keyOf(i), i] as const));
+  const editedByKey = new Map(edited.map((i) => [keyOf(i), i] as const));
+  const ops: CollectionOp[] = [];
+  for (const k of scrapedByKey.keys()) {
+    if (!editedByKey.has(k)) ops.push({ op: 'remove', key: k });
+  }
+  for (const [k, item] of editedByKey) {
+    const s = scrapedByKey.get(k);
+    if (!s) ops.push({ op: 'add', key: k, item: item as unknown as CollectionItem });
+    else if (JSON.stringify(s) !== JSON.stringify(item))
+      ops.push({ op: 'edit', key: k, item: item as unknown as CollectionItem });
+  }
+  return ops;
+};
+
 const ownershipInfo = (
   overlay: NonNullable<ProfileOverlay>,
   live: boolean,

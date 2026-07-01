@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vite-plus/test';
 import {
   applyCollectionOps,
+  diffCollectionOps,
   awardKey,
   performedKey,
   assignmentKey,
@@ -139,6 +140,45 @@ describe('mergeProfileOverlay — collections (P1)', () => {
     const before = JSON.stringify(p);
     mergeProfileOverlay(p, activeOverlay(awardsOverride([{ op: 'add', key: 'x', item: { name: 'X', year: null } }])));
     expect(JSON.stringify(p)).toBe(before);
+  });
+});
+
+describe('diffCollectionOps (editor → op log) round-trips', () => {
+  const key = awardKey;
+  const scraped: AwardItem[] = [
+    { name: 'A', year: 2000 },
+    { name: 'B', year: 2001 },
+    { name: 'C', year: 2002 },
+  ];
+
+  it('no change → no ops', () => {
+    expect(diffCollectionOps(scraped, scraped, key)).toEqual([]);
+  });
+
+  it('derives remove + add + edit', () => {
+    const edited: AwardItem[] = [
+      { name: 'A', year: 1999 }, // edited (same key A:2000? no — year folds into key)
+      { name: 'C', year: 2002 }, // unchanged
+      { name: 'D', year: 2003 }, // added
+    ];
+    const ops = diffCollectionOps(scraped, edited, key);
+    // A's year changed → its key changed → remove old A + add new A; B removed; D added.
+    const removes = ops.filter((o) => o.op === 'remove').length;
+    const adds = ops.filter((o) => o.op === 'add').length;
+    expect(removes).toBe(2); // old A (2000) + B
+    expect(adds).toBe(2); // new A (1999) + D
+  });
+
+  it('round-trips: apply(scraped, diff(scraped, edited)) equals edited by key', () => {
+    const edited: AwardItem[] = [
+      { name: 'A', year: 2000 }, // unchanged
+      { name: 'B-renamed', year: 2001 }, // "edit" that keeps year but new name → new key
+      { name: 'New', year: null }, // added
+    ];
+    const ops = diffCollectionOps(scraped, edited, key);
+    const applied = applyCollectionOps(scraped, ops, key) as AwardItem[];
+    const keysOf = (xs: AwardItem[]) => xs.map((x) => awardKey(x)).sort();
+    expect(keysOf(applied)).toEqual(keysOf(edited));
   });
 });
 
