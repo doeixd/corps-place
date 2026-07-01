@@ -183,7 +183,14 @@ export function ScrollableEventCardGrid({
 
   useIsomorphicLayoutEffect(() => {
     const container = containerRef.current;
-    if (!container || !scrollToKey) return;
+    if (!container) return;
+    // No target card (e.g. a past-season filter) ⇒ snap back to the top so a new
+    // filter pill always opens the list from the start rather than keeping the
+    // previous scroll offset.
+    if (!scrollToKey) {
+      container.scrollTop = 0;
+      return;
+    }
     const card = container.querySelector<HTMLElement>(
       `[data-grid-key="${CSS.escape(scrollToKey)}"]`
     );
