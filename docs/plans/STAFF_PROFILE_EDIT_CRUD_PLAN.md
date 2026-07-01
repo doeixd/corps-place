@@ -133,9 +133,11 @@ Today's editor is a stack of per-field save buttons. Replace with:
 - **P1 — Awards + performed/groups CRUD. ✅ SHIPPED (staff).** Editor sections + durable
   op-log save; loader threads scraped baselines; gated on the baseline (staff-only).
 - **P2 — Assignments CRUD. ✅ SHIPPED (staff).** Fix section (controlled `ROLE_TYPES` vocab),
-  title, season, year range; remove misattributions; add a row at a corps already on the
-  profile. **Follow-up (P2b):** the corps **search-picker** to add an assignment at a
-  brand-new corps (needs a corps-options feed + combobox); grouped-by-corps editable table.
+  title, season, year range; remove misattributions.
+- **P2b — Corps search-picker. ✅ SHIPPED.** Add an assignment at ANY corps via a lazy
+  directory-search combobox (real `corps_key`/slug so links resolve). **Full CRUD of the
+  competitive record is now complete.** Remaining nicety: a grouped-by-corps editable table
+  (P3 polish).
 - **P3 — UX polish** — unified edit mode, XState editor machine, autosave/undo, divergence
   badges, moderation surface in `/admin/profile-claims`.
 - **P4 — Judges** — bio/photo/awards facts only; explicitly NOT the score-derived
