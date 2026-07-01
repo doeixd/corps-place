@@ -16,6 +16,7 @@ import {
 // Reuse the league photo uploader (optimistic preview + auto-orient/downscale +
 // error-reverting state machine) so profile photos match that UX.
 import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo-upload';
+import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import {
   awardKey,
   performedKey,
@@ -89,23 +90,42 @@ export function ProfileEditor({
     JSON.stringify(assignments) !== JSON.stringify(initial.assignments ?? []);
   const setAsn = (i: number, patch: Partial<AssignmentItem>) =>
     setAssignments((list) => list.map((x, j) => (j === i ? { ...x, ...patch } : x)));
-  // Add-a-row is scoped to a corps already on the profile (adding a brand-new
-  // corps needs the corps search-picker — a P2 follow-up).
-  const [addCorps, setAddCorps] = useState('');
-  const distinctCorps = Array.from(
-    new Map(
-      (initial.assignments ?? []).map((a) => [a.corps_key, a] as const)
-    ).values()
-  );
-  const addAssignmentRow = () => {
-    const c = distinctCorps.find((x) => x.corps_key === addCorps);
-    if (!c) return;
+  // Add-an-assignment at ANY corps (P2b): a search combobox over the corps
+  // directory, fetched LAZILY on first focus (an event handler, not a mount
+  // effect — the directory shouldn't load on every profile view).
+  const [corpsQuery, setCorpsQuery] = useState('');
+  const [corpsList, setCorpsList] = useState<
+    { corps_key: string; name: string; slug: string | null }[] | null
+  >(null);
+  const [loadingCorps, setLoadingCorps] = useState(false);
+  const loadCorps = () => {
+    if (corpsList !== null || loadingCorps) return;
+    setLoadingCorps(true);
+    getCorpsDirectory()
+      .then((rows) =>
+        setCorpsList(
+          (rows as { corps_key: string; name: string; slug: string | null }[]).map((c) => ({
+            corps_key: c.corps_key,
+            name: c.name,
+            slug: c.slug,
+          }))
+        )
+      )
+      .catch(() => setCorpsList([]))
+      .finally(() => setLoadingCorps(false));
+  };
+  const corpsMatches = (() => {
+    const q = corpsQuery.trim().toLowerCase();
+    if (!q || !corpsList) return [];
+    return corpsList.filter((c) => c.name.toLowerCase().includes(q)).slice(0, 8);
+  })();
+  const addAssignmentForCorps = (c: { corps_key: string; name: string; slug: string | null }) => {
     setAssignments((list) => [
       ...list,
       {
         corps_key: c.corps_key,
-        corps_name: c.corps_name,
-        corps_slug: c.corps_slug,
+        corps_name: c.name,
+        corps_slug: c.slug,
         season: null,
         title: null,
         role_type: null,
@@ -113,7 +133,7 @@ export function ProfileEditor({
         end_year: null,
       },
     ]);
-    setAddCorps('');
+    setCorpsQuery('');
   };
   const yearOrNull = (raw: string) => {
     const t = raw.trim();
@@ -455,28 +475,42 @@ export function ProfileEditor({
       </div>
 
       {/* Assignments (P2) — correct the noisy scraped record: fix a section/title/
-          season/years or remove a misattribution; add a row at a corps already on
-          the profile (a brand-new corps needs the search-picker — P2 follow-up). */}
+          season/years or remove a misattribution; add a row at ANY corps via the
+          search combobox (P2b). */}
       <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
-        <div className="flex items-center justify-between gap-2">
-          <Label>Assignments</Label>
-          <div className="flex items-center gap-1">
-            <select
-              value={addCorps}
-              onChange={(e) => setAddCorps(e.target.value)}
-              className="rounded-md border border-border bg-background px-1.5 py-1 text-xs"
-            >
-              <option value="">add at corps…</option>
-              {distinctCorps.map((c) => (
-                <option key={c.corps_key} value={c.corps_key}>
-                  {c.corps_name}
-                </option>
-              ))}
-            </select>
-            <Button variant="ghost" size="sm" disabled={!addCorps} onClick={addAssignmentRow}>
-              + Add
-            </Button>
-          </div>
+        <Label>Assignments</Label>
+        {/* Add at any corps — lazy directory search. */}
+        <div className="relative">
+          <Input
+            placeholder="Add a corps…"
+            value={corpsQuery}
+            onFocus={loadCorps}
+            onChange={(e) => {
+              setCorpsQuery(e.target.value);
+              loadCorps();
+            }}
+            className="text-sm"
+          />
+          {corpsQuery.trim() && (
+            <div className="themed-scrollbar mt-1 max-h-40 space-y-0.5 overflow-y-auto rounded-md border border-border bg-background p-1">
+              {corpsList === null ? (
+                <p className="px-1 py-1 text-xs text-muted-foreground">Loading corps…</p>
+              ) : corpsMatches.length === 0 ? (
+                <p className="px-1 py-1 text-xs text-muted-foreground">No matches.</p>
+              ) : (
+                corpsMatches.map((c) => (
+                  <button
+                    key={c.corps_key}
+                    type="button"
+                    onClick={() => addAssignmentForCorps(c)}
+                    className="block w-full truncate rounded px-2 py-1 text-left text-sm hover:bg-accent hover:text-foreground"
+                  >
+                    {c.name}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
         </div>
         {assignments.length === 0 ? (
           <p className="text-xs text-muted-foreground">No assignments.</p>
