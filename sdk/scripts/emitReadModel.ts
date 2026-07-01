@@ -50,6 +50,7 @@ import {
   buildEventRecap,
   buildEventFullRecap,
   buildEventPreviousRecap,
+  buildCorpsCanonicalMap,
   buildEventSchedule,
   buildEventSeasonOptions,
   buildEventSeriesCandidates,
@@ -1119,6 +1120,10 @@ export const runEmit = async (args: Args) => {
     const recapRows: unknown[][] = [];
     const fullRecapRows: unknown[][] = [];
     const previousRecapRows: unknown[][] = [];
+    // Build the corps identity (alias) map once and reuse it for every event's
+    // previous-recap resolution — buildCorpsCanonicalMap scans the whole corps
+    // table, so per-event rebuilds would be very expensive across all seasons.
+    const canonicalCorps = await buildCorpsCanonicalMap(src);
     const seenComp = new Set<string>();
     for (const e of recapEvents) {
       const season = e.season ?? e.start_date?.slice(0, 4) ?? "";
@@ -1151,7 +1156,7 @@ export const runEmit = async (args: Args) => {
       // Per-corps "previous show" recap for the Diff "vs Previous" basis — each
       // corps's own most recent prior show this season. Only emitted when at
       // least one corps has a prior show (so season openers stay absent).
-      const prev = await buildEventPreviousRecap(src, resolved);
+      const prev = await buildEventPreviousRecap(src, resolved, canonicalCorps);
       if (prev.rows.length > 0)
         previousRecapRows.push([
           resolved,
