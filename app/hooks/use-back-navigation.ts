@@ -1,4 +1,4 @@
-import { useRouter } from '@tanstack/react-router';
+import type { RouterHistory } from '@tanstack/react-router';
 import { useSyncExternalStore } from 'react';
 
 /**
@@ -11,23 +11,42 @@ import { useSyncExternalStore } from 'react';
  * update = `REPLACE`), so entering a page via Back reads `true` while any
  * subsequent interaction on that page flips it back to `false`.
  *
+ * The history subscription must be **persistent**, not tied to the lifetime of
+ * whichever component reads the flag — otherwise navigating Back *from* a page
+ * that has no consumer means nobody is listening and the `BACK` action is
+ * missed. So {@link trackBackNavigation} is wired once in the always-mounted
+ * root route, and consumers read the shared module-level flag.
+ *
  * Consumers use it to skip one-shot entrance animations when the user is
  * retracing their steps — replaying a staggered fade on Back feels wrong when
  * the page was already seen. SSR always returns `false` (no history there).
  */
 export function useIsBackNavigation(): boolean {
-  const router = useRouter();
   return useSyncExternalStore(
-    (onChange) =>
-      router.history.subscribe(({ action }) => {
-        wasBack = action.type === 'BACK';
-        onChange();
-      }),
+    subscribe,
     () => wasBack,
     () => false
   );
 }
 
-// Module-level so every consumer shares the latest history action; each
-// subscription updates it before notifying React to re-read the snapshot.
+/**
+ * Wire the shared flag to the router history. Call once from the root route so
+ * every BACK/FORWARD/PUSH/REPLACE is observed regardless of which page is
+ * mounted. Returns an unsubscribe function.
+ */
+export function trackBackNavigation(history: RouterHistory): () => void {
+  return history.subscribe(({ action }) => {
+    const next = action.type === 'BACK';
+    if (next === wasBack) return;
+    wasBack = next;
+    listeners.forEach((l) => l());
+  });
+}
+
 let wasBack = false;
+const listeners = new Set<() => void>();
+
+function subscribe(onChange: () => void): () => void {
+  listeners.add(onChange);
+  return () => listeners.delete(onChange);
+}

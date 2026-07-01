@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { registerServiceWorker } from '@/lib/register-sw';
+import { trackBackNavigation } from '@/hooks/use-back-navigation';
 import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -47,10 +48,7 @@ const subscribeTheme = (onChange: () => void) => {
 // Favicon + browser-chrome color for the favorited corps, derived server-side
 // from the cookie so the initial HTML is already correct (no first-paint flash,
 // and the head() tags match on hydration instead of resetting to defaults).
-function favoriteHead(
-  theme: Theme | null,
-  brand: Brand
-): { iconHref: string; themeColor: string } {
+function favoriteHead(theme: Theme | null, brand: Brand): { iconHref: string; themeColor: string } {
   // PageantryJobs uses its own mark + chrome color and ignores the favorite-corps
   // accent entirely — the corps favicon must never appear on the jobs site.
   if (brand === 'jobs') {
@@ -255,6 +253,10 @@ function ServiceWorkerManager() {
 // vite:preloadError reload above (which only fires once a stale chunk 404s).
 function AutoUpdater() {
   const router = useRouter();
+  // Persistent history subscription so Back/Forward is observed regardless of
+  // which page is mounted (see use-back-navigation). Root is always mounted, so
+  // this catches the BACK action even when leaving a page that has no consumer.
+  useEffect(() => trackBackNavigation(router.history), [router]);
   useEffect(() => {
     // Compare the server's build id now against the one observed at page load — both
     // read from the same endpoint, so a client/server build-stamp skew can't trigger a
