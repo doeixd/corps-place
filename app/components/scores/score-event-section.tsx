@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { getHybridEventFullRecap, getCorpsByKeys } from '@/lib/server-fns/hybrid';
 import { formatEventDate } from '@/lib/format';
 import { fadeIn } from '@/lib/motion-variants';
 import { EventFullRecap, type RecapCorpsRef } from '@/components/scores/event-full-recap';
@@ -11,16 +10,10 @@ const yearOf = (slug: string) => slug.match(/^(\d{4})/)?.[1] ?? '';
 
 type RecapData = { recap: FullEventRecap | null; corps: RecapCorpsRef[] };
 
-// Session cache (client, per tab): a recap fetched once renders INSTANTLY when the
-// section scrolls back into view or the list re-renders — no refetch, no blank
-// flash. Public data, so a shared module map is safe. Never populated during SSR
-// (the fetch lives in an effect), so there's no cross-request leak.
-const recapCache = new Map<string, RecapData>();
-
 // Rough recap-table geometry so the loading placeholder matches the real height
-// and the lazy load doesn't shove the page down (the old fixed h-40 was way short
-// for a 12+ corps table). Header block = class-filter toolbar + the multi-row
-// caption/judge/subcaption thead; then one body row per scored corps.
+// and the lazy load doesn't shove the page down. Header block = class-filter
+// toolbar + the multi-row caption/judge/subcaption thead; then one body row per
+// scored corps.
 const RECAP_HEADER_PX = 150;
 const RECAP_ROW_PX = 44;
 const estimateRecapHeight = (corpsCount: number) =>
@@ -28,10 +21,11 @@ const estimateRecapHeight = (corpsCount: number) =>
 
 /**
  * One event on the `/scores` index: a heading (linking to its own page) plus the
- * full recap, fetched + rendered only once the section nears the viewport
- * (IntersectionObserver) so a long list of wide recap tables stays cheap. The
- * placeholder is sized to the expected recap height to minimise layout shift, and
- * a cached recap skips the fetch entirely and renders immediately.
+ * full recap, fetched only once the section nears the viewport
+ * (IntersectionObserver). The recap comes from the cacheable `/read-model/recaps/`
+ * route, so the service worker serves it instantly on revisit (StaleWhileRevalidate)
+ * while staying fresh. The placeholder is sized to the expected recap height to
+ * minimise layout shift, and the recap fades in with the shared motion variant.
  */
 export function ScoreEventSection({
   slug,
@@ -49,9 +43,8 @@ export function ScoreEventSection({
   corpsCount?: number;
 }) {
   const ref = useRef<HTMLElement>(null);
-  // Seed synchronously from the session cache so a revisit renders with zero blank.
-  const [data, setData] = useState<RecapData | null>(() => recapCache.get(slug) ?? null);
-  const [inView, setInView] = useState<boolean>(() => recapCache.has(slug));
+  const [inView, setInView] = useState(false);
+  const [data, setData] = useState<RecapData | null>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -73,16 +66,12 @@ export function ScoreEventSection({
     if (!inView || data) return;
     let cancelled = false;
     void (async () => {
-      const recap = await getHybridEventFullRecap({ data: slug }).catch(() => null);
-      const keys = (recap?.corps ?? [])
-        .map((c) => c.corpsKey)
-        .filter((k): k is string => typeof k === 'string' && k.length > 0);
-      const corps = keys.length
-        ? ((await getCorpsByKeys({ data: keys }).catch(() => [])) as RecapCorpsRef[])
-        : [];
-      const result: RecapData = { recap, corps };
-      recapCache.set(slug, result);
-      if (!cancelled) setData(result);
+      // The service worker caches this /read-model/ response (SWR), so a recap
+      // loaded once is instant next time yet still revalidates to fresh data.
+      const res = await fetch(`/read-model/recaps/${encodeURIComponent(slug)}`).catch(() => null);
+      const json =
+        res && res.ok ? ((await res.json().catch(() => null)) as RecapData | null) : null;
+      if (!cancelled) setData(json ?? { recap: null, corps: [] });
     })();
     return () => {
       cancelled = true;

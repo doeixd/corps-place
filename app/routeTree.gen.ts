@@ -88,6 +88,7 @@ import { ServerRoute as AppIconDotsvgServerRouteImport } from './routes/app-icon
 import { ServerRoute as ApiVersionServerRouteImport } from './routes/api/version'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
 import { ServerRoute as ApiCollectServerRouteImport } from './routes/api/collect'
+import { ServerRoute as ReadModelRecapsSlugServerRouteImport } from './routes/read-model/recaps/$slug'
 import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
 import { ServerRoute as ApiOgJobsHomeServerRouteImport } from './routes/api/og/jobs-home'
 import { ServerRoute as ApiOgHomeServerRouteImport } from './routes/api/og/home'
@@ -490,6 +491,12 @@ const ApiCollectServerRoute = ApiCollectServerRouteImport.update({
   path: '/api/collect',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ReadModelRecapsSlugServerRoute =
+  ReadModelRecapsSlugServerRouteImport.update({
+    id: '/read-model/recaps/$slug',
+    path: '/read-model/recaps/$slug',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
 const ApiShowMediaIdServerRoute = ApiShowMediaIdServerRouteImport.update({
   id: '/api/show-media/$id',
   path: '/api/show-media/$id',
@@ -1078,6 +1085,7 @@ export interface FileServerRoutesByFullPath {
   '/api/og/home': typeof ApiOgHomeServerRoute
   '/api/og/jobs-home': typeof ApiOgJobsHomeServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
+  '/read-model/recaps/$slug': typeof ReadModelRecapsSlugServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
@@ -1099,6 +1107,7 @@ export interface FileServerRoutesByTo {
   '/api/og/home': typeof ApiOgHomeServerRoute
   '/api/og/jobs-home': typeof ApiOgJobsHomeServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
+  '/read-model/recaps/$slug': typeof ReadModelRecapsSlugServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
@@ -1121,6 +1130,7 @@ export interface FileServerRoutesById {
   '/api/og/home': typeof ApiOgHomeServerRoute
   '/api/og/jobs-home': typeof ApiOgJobsHomeServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
+  '/read-model/recaps/$slug': typeof ReadModelRecapsSlugServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
@@ -1144,6 +1154,7 @@ export interface FileServerRouteTypes {
     | '/api/og/home'
     | '/api/og/jobs-home'
     | '/api/show-media/$id'
+    | '/read-model/recaps/$slug'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
     | '/api/og/score/$slug'
@@ -1165,6 +1176,7 @@ export interface FileServerRouteTypes {
     | '/api/og/home'
     | '/api/og/jobs-home'
     | '/api/show-media/$id'
+    | '/read-model/recaps/$slug'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
     | '/api/og/score/$slug'
@@ -1186,6 +1198,7 @@ export interface FileServerRouteTypes {
     | '/api/og/home'
     | '/api/og/jobs-home'
     | '/api/show-media/$id'
+    | '/read-model/recaps/$slug'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
     | '/api/og/score/$slug'
@@ -1208,6 +1221,7 @@ export interface RootServerRouteChildren {
   ApiOgHomeServerRoute: typeof ApiOgHomeServerRoute
   ApiOgJobsHomeServerRoute: typeof ApiOgJobsHomeServerRoute
   ApiShowMediaIdServerRoute: typeof ApiShowMediaIdServerRoute
+  ReadModelRecapsSlugServerRoute: typeof ReadModelRecapsSlugServerRoute
   ApiFantasyJobsDispatchServerRoute: typeof ApiFantasyJobsDispatchServerRoute
   ApiFantasyJobsRecomputeServerRoute: typeof ApiFantasyJobsRecomputeServerRoute
   ApiOgScoreSlugServerRoute: typeof ApiOgScoreSlugServerRoute
@@ -1760,6 +1774,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiCollectServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/read-model/recaps/$slug': {
+      id: '/read-model/recaps/$slug'
+      path: '/read-model/recaps/$slug'
+      fullPath: '/read-model/recaps/$slug'
+      preLoaderRoute: typeof ReadModelRecapsSlugServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/show-media/$id': {
       id: '/api/show-media/$id'
       path: '/api/show-media/$id'
@@ -1957,6 +1978,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ApiOgHomeServerRoute: ApiOgHomeServerRoute,
   ApiOgJobsHomeServerRoute: ApiOgJobsHomeServerRoute,
   ApiShowMediaIdServerRoute: ApiShowMediaIdServerRoute,
+  ReadModelRecapsSlugServerRoute: ReadModelRecapsSlugServerRoute,
   ApiFantasyJobsDispatchServerRoute: ApiFantasyJobsDispatchServerRoute,
   ApiFantasyJobsRecomputeServerRoute: ApiFantasyJobsRecomputeServerRoute,
   ApiOgScoreSlugServerRoute: ApiOgScoreSlugServerRoute,
