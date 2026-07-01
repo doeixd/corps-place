@@ -67,6 +67,8 @@ export const Route = createFileRoute('/vs')({
         'Compare any corps, seasons, and reference baselines on one curve, aligned by % through the season.',
       path: '/vs',
     }),
+  // Static read-model data; a moderate window keeps repeat navs fast.
+  staleTime: 5 * 60_000,
   component: VsPage,
 });
 

@@ -74,7 +74,9 @@ export const Route = createFileRoute('/shop/all')({
         'Search and filter the full drum corps merch catalog — every product across all groups.',
       path: '/shop/all',
     }),
-  staleTime: 60_000,
+  // Static read-model data; a moderate window keeps repeat navs fast while still
+  // refreshing periodically (scores/merch update on re-emit).
+  staleTime: 5 * 60_000,
   component: MerchCatalog,
 });
 

@@ -90,7 +90,9 @@ export const Route = createFileRoute('/shop/$productId')({
       ],
     };
   },
-  staleTime: 60_000,
+  // Static read-model data; a moderate window keeps repeat navs fast while still
+  // refreshing periodically (scores/merch update on re-emit).
+  staleTime: 5 * 60_000,
   component: ProductDetail,
 });
 

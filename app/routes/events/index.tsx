@@ -57,7 +57,9 @@ export const Route = createFileRoute('/events/')({
       ],
     });
   },
-  staleTime: 60_000,
+  // Static read-model data; a moderate window keeps repeat navs fast while still
+  // refreshing periodically (scores/merch update on re-emit).
+  staleTime: 5 * 60_000,
   component: EventsDirectory,
 });
 

@@ -58,7 +58,9 @@ export const Route = createFileRoute('/shop/group/$storeId')({
       image: g.products.find((p) => p.image)?.image ?? undefined,
     });
   },
-  staleTime: 60_000,
+  // Static read-model data; a moderate window keeps repeat navs fast while still
+  // refreshing periodically (scores/merch update on re-emit).
+  staleTime: 5 * 60_000,
   component: GroupStorefront,
 });
 

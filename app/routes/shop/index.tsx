@@ -27,7 +27,9 @@ export const Route = createFileRoute('/shop/')({
         'Browse official merch from drum corps across the activity — hoodies, tees, hats and more, all in one place.',
       path: '/shop',
     }),
-  staleTime: 60_000,
+  // Static read-model data; a moderate window keeps repeat navs fast while still
+  // refreshing periodically (scores/merch update on re-emit).
+  staleTime: 5 * 60_000,
   component: ShopLanding,
 });
 

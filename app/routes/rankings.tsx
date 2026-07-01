@@ -129,6 +129,8 @@ export const Route = createFileRoute('/rankings')({
       : 'Season standings and a rank bump chart — filter by metric, division, and as-of date.';
     return seoHead({ title, description, path: loaderData?.canonical ?? '/rankings' });
   },
+  // Static read-model data; a moderate window keeps repeat navs fast.
+  staleTime: 5 * 60_000,
   component: RankingsPage,
 });
 

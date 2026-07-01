@@ -127,6 +127,8 @@ export const Route = createFileRoute('/scores/$slug')({
       ],
     });
   },
+  // Static read-model data; a moderate window keeps repeat navs fast.
+  staleTime: 5 * 60_000,
   component: ScoresEventPage,
 });
 
