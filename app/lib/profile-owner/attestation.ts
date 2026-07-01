@@ -15,6 +15,7 @@ export const ATTESTATION_COPY =
 /** Override fields an owner may edit (plan §6 default scope: bio + facts + photo;
  *  scraped competitive record stays authoritative). */
 export const ALLOWED_PROFILE_FIELDS = [
+  'display_name',
   'biography',
   'photo',
   'hometown',

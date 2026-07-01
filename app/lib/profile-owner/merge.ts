@@ -62,6 +62,10 @@ export type OwnershipInfo = {
 
 /** Common profile surface both StaffProfile and JudgeProfile expose. */
 export type CommonProfile = {
+  // Owner-editable display name (top-level). Display-only: person_id / URL is
+  // slug(display_name) frozen at ingest, so an override changes the shown name,
+  // not the page URL. Optional so any profile shape satisfies the surface.
+  display_name?: string | null;
   biography: string | null;
   photo_url: string | null;
   bioFacts: {
@@ -192,6 +196,11 @@ export const mergeProfileOverlay = <T extends CommonProfile>(
   const ov = overlay.overrides;
   const patch: Partial<CommonProfile> = {};
 
+  if (ov.display_name) {
+    // A name can't be blank/removed → a removal or empty value reverts to scraped.
+    const next = isRemoved(ov.display_name.content) ? null : asText(ov.display_name.content);
+    patch.display_name = next && next.trim() ? next.trim() : (profile.display_name ?? null);
+  }
   if (ov.biography) {
     patch.biography = isRemoved(ov.biography.content)
       ? null
@@ -266,6 +275,8 @@ export const hashSource = (v: unknown): string => {
  *  at save time and to detect later divergence when the source is re-scraped. */
 export const scrapedFieldValue = (profile: CommonProfile, fieldKey: string): unknown => {
   switch (fieldKey) {
+    case 'display_name':
+      return profile.display_name ?? null;
     case 'biography':
       return profile.biography;
     case 'photo':

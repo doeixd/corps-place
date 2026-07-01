@@ -256,6 +256,7 @@ function JudgeProfilePage() {
             entityType="judge"
             entityId={profile.judge_id}
             initial={{
+              displayName: profile.display_name,
               biography: profile.biography,
               photoUrl: profile.photo_url,
               hometown: profile.bioFacts?.hometown ?? null,

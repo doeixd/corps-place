@@ -50,6 +50,7 @@ export function ProfileEditor({
   entityType: 'staff' | 'judge';
   entityId: string;
   initial: {
+    displayName: string | null;
     biography: string | null;
     photoUrl: string | null;
     hometown: string | null;
@@ -71,6 +72,7 @@ export function ProfileEditor({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [displayName, setDisplayName] = useState(initial.displayName ?? '');
   const [bio, setBio] = useState(initial.biography ?? '');
   const [hometown, setHometown] = useState(initial.hometown ?? '');
   const [posTitle, setPosTitle] = useState(initial.currentPosition?.title ?? '');
@@ -249,13 +251,20 @@ export function ProfileEditor({
 
   // Per-field dirty detection: disable a Save until its value changes, and warn on
   // close if anything is unsaved.
+  const nameDirty = displayName.trim() !== (initial.displayName ?? '');
   const bioDirty = bio !== (initial.biography ?? '');
   const homeDirty = hometown !== (initial.hometown ?? '');
   const posDirty =
     posTitle !== (initial.currentPosition?.title ?? '') ||
     posOrg !== (initial.currentPosition?.org ?? '');
   const anyDirty =
-    bioDirty || homeDirty || posDirty || awardsDirty || performedDirty || assignmentsDirty;
+    nameDirty ||
+    bioDirty ||
+    homeDirty ||
+    posDirty ||
+    awardsDirty ||
+    performedDirty ||
+    assignmentsDirty;
   const closeEditor = () => {
     if (anyDirty && !confirm('You have unsaved changes. Close without saving them?')) return;
     setOpen(false);
@@ -277,6 +286,27 @@ export function ProfileEditor({
         <Button variant="ghost" size="sm" onClick={closeEditor}>
           Done
         </Button>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="po-name">Display name</Label>
+        <Input
+          id="po-name"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+        />
+        <span className="text-xs text-muted-foreground">
+          The name shown on your profile. The page URL stays the same.
+        </span>
+        <BusyButton
+          busy={busy === 'name'}
+          size="sm"
+          className="self-start"
+          disabled={!nameDirty || !displayName.trim()}
+          onClick={() => void save('name', 'display_name', displayName.trim())}
+        >
+          Save name
+        </BusyButton>
       </div>
 
       <div className="flex flex-col gap-1.5">
