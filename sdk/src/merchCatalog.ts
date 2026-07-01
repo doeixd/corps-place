@@ -952,6 +952,17 @@ const collectProductNodes = (
   if (isProduct) acc.push(obj);
 };
 
+// DOM-fallback product-image heuristic. Shopify keeps `/products/` in the path;
+// Square Online/Weebly, Wix, Squarespace, and BigCommerce host content images
+// under `/uploads/` or on a recognizable CDN suffix. Broadened from the old
+// Shopify-only match so non-Shopify SPAs (e.g. bkmarketplace.org on editmysite)
+// surface a product photo instead of nothing.
+const PRODUCT_IMG_RE =
+  /cdn\.shopify|\/products?\/|\/uploads\/|editmysite\.com|squarespace-cdn|wixstatic\.com|bigcommerce\.com|squarecdn/i;
+// Exclude site chrome that also lives on those CDNs/paths: logos, payment-method
+// icons, sprites, favicons, and mobile splash/app icons.
+const IMG_NOISE_RE = /logo|sprite|favicon|payment|\/static\/icons\/|placeholder|splash|icon_\d/i;
+
 /** Pure: extract a Product from a PDP's HTML (schema.org JSON-LD, then OpenGraph). */
 const productFromHtml = (
   html: string,
@@ -1051,8 +1062,11 @@ const productFromHtml = (
     const imgRaw =
       $("img")
         .toArray()
-        .map((e) => $(e).attr("src") || $(e).attr("data-src") || "")
-        .find((s) => /cdn\.shopify|\/products?\//i.test(s)) ?? null;
+        .map(
+          (e) =>
+            $(e).attr("src") || $(e).attr("data-src") || $(e).attr("data-original") || "",
+        )
+        .find((s) => s && PRODUCT_IMG_RE.test(s) && !IMG_NOISE_RE.test(s)) ?? null;
     // Prefer a matched content image; fall back to og:image (Printify/Woo host
     // their mockups off-CDN, e.g. images-api.printify.com / S3, so the pattern
     // match misses them but og:image is present). Drop the resizing query.
@@ -1092,12 +1106,133 @@ const productFromHtml = (
   return null;
 };
 
+// --- Square Online (Weebly commerce, e.g. bkmarketplace.org) ----------------
+// Square Online storefronts are Vue SPAs: a product page ships a bare shell and
+// hydrates its gallery from a store JSON API post-load, so sitemap+JSON-LD scraping
+// (and even a headless render) capture a photo-less placeholder — the reason every
+// bkmarketplace product came back image-less. But that API is public + unauth'd;
+// the SPA calls
+//   cdn5.editmysite.com/app/store/api/v28/editor/users/<userId>/sites/<siteId>/products
+// which returns every product with its image, price, and URL. We read it directly
+// (like the Bonfire adapter), pulling the two IDs out of the store shell HTML.
+const SQUARE_STORE_API = "https://cdn5.editmysite.com/app/store/api/v28/editor";
+
+/** Extract the Square Online user + site IDs the store API path needs, from the
+ *  shell HTML (`user_id: '138271369'` / `"user":{"id":138271369` + `"site_id":…`). */
+const squareIdsFromHtml = (
+  html: string,
+): { userId: string; siteId: string } | null => {
+  const userId =
+    html.match(/user_id:\s*['"](\d{4,})['"]/)?.[1] ??
+    html.match(/"user"\s*:\s*\{\s*"id"\s*:\s*(\d{4,})/)?.[1] ??
+    null;
+  const siteId = html.match(/"site_id"\s*:\s*"?(\d{6,})"?/)?.[1] ?? null;
+  return userId && siteId ? { userId, siteId } : null;
+};
+
+const finiteNum = (v: unknown): number | null =>
+  typeof v === "number" && Number.isFinite(v) ? v : null;
+
+/** Map one Square Online store-API product node to our normalized shape. */
+const squareProduct = (
+  raw: unknown,
+  origin: string,
+): NormalizedProduct | null => {
+  if (!raw || typeof raw !== "object") return null;
+  const p = raw as Record<string, unknown>;
+  const name = typeof p.name === "string" ? p.name.trim() : "";
+  if (!name) return null;
+  // `thumbnail.data.url` is the product image; absent (or the universal
+  // placeholder) means the merchant never uploaded one — leave image null.
+  const thumbUrl = (p.thumbnail as { data?: { url?: unknown } } | undefined)?.data
+    ?.url;
+  const image =
+    typeof thumbUrl === "string" &&
+    thumbUrl.length > 0 &&
+    !thumbUrl.includes("universal_product_placeholder")
+      ? thumbUrl
+      : null;
+  const siteLink = typeof p.site_link === "string" ? p.site_link : null;
+  const productUrl =
+    (typeof p.absolute_site_link === "string" && p.absolute_site_link) ||
+    (siteLink ? `${origin}/${siteLink.replace(/^\//, "")}` : origin);
+  const price = (p.price ?? {}) as Record<string, unknown>;
+  const low = finiteNum(price.low);
+  const high = finiteNum(price.high);
+  const description =
+    typeof p.short_description === "string"
+      ? maybeUrlDecode(p.short_description)
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim() || null
+      : null;
+  return {
+    externalId: String(p.square_id ?? p.id ?? p.site_product_id ?? productUrl),
+    title: name,
+    description,
+    productUrl,
+    image,
+    images: image ? [image] : [],
+    priceMin: low ?? high,
+    priceMax: high ?? low,
+    currency: "USD",
+    available: p.visibility === "visible" ? null : false,
+    variants: [],
+    cartCapability: "link",
+    addToCartTemplate: null,
+    category: bucketCategory(name),
+  };
+};
+
+/** Read a Square Online store's full catalog from its public products API.
+ *  Returns null when the store isn't Square Online (IDs absent) so the caller
+ *  falls back to the generic sitemap+JSON-LD path. */
+const fetchSquareOnlineCatalog = (
+  store: MerchStore,
+  timeoutMs: number,
+  maxPages: number,
+): Effect.Effect<NormalizedProduct[] | null, MerchFetchError> =>
+  Effect.gen(function* () {
+    const origin = originOf(store.storeUrl);
+    const shell = yield* orEmpty(httpText(origin, timeoutMs, HTML_ACCEPT));
+    const ids = squareIdsFromHtml(shell);
+    if (!ids) return null;
+    const out: NormalizedProduct[] = [];
+    const seen = new Set<string>();
+    for (let page = 1; page <= maxPages; page++) {
+      const url = `${SQUARE_STORE_API}/users/${ids.userId}/sites/${ids.siteId}/products?page=${page}&per_page=100`;
+      const json = (yield* httpJson(url, timeoutMs)) as {
+        data?: unknown[];
+        meta?: { pagination?: { total_pages?: number } };
+      };
+      const items = Array.isArray(json.data) ? json.data : [];
+      if (items.length === 0) break;
+      for (const it of items) {
+        const np = squareProduct(it, origin);
+        if (np && !seen.has(np.externalId)) {
+          seen.add(np.externalId);
+          out.push(np);
+        }
+      }
+      if (page >= (json.meta?.pagination?.total_pages ?? page)) break;
+    }
+    return out.length > 0 ? out : null;
+  });
+
 const universalJsonLdAdapter: MerchAdapter = {
   platform: "universal",
   fetchCatalog: (store, opts) =>
     Effect.gen(function* () {
       const timeoutMs = opts?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
       const origin = originOf(store.storeUrl);
+      // Square Online storefronts (Weebly commerce) expose a public products API
+      // that carries the images the SPA hides from a scrape — try it first.
+      const square = yield* fetchSquareOnlineCatalog(
+        store,
+        timeoutMs,
+        opts?.maxPages ?? 40,
+      ).pipe(Effect.catch(() => Effect.succeed(null)));
+      if (square && square.length > 0) return square;
       const urls = yield* discoverProductUrls(origin, timeoutMs);
       if (urls.length >= UNIVERSAL_MAX_PRODUCTS)
         yield* Effect.logWarning(
