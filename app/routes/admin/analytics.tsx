@@ -1,6 +1,7 @@
 // Site analytics (first-party, cookieless). Pageviews/uniques, top paths &
 // referrers, domain events, brand/device splits, engagement. Read-only; gated by
 // viewAdmin. Data comes from analytics.db via getAnalyticsSummary.
+import { useState, type PointerEvent } from 'react';
 import { createFileRoute, useRouterState, useRouter } from '@tanstack/react-router';
 import { adminLoader } from '@/lib/admin-loader';
 import { AdminPage } from '@/components/admin/admin-page';
@@ -221,7 +222,13 @@ function formatBucket(t: number, bucketMs: number): string {
   return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
-/** Lightweight inline SVG line chart (area + line) over the bucketed series. */
+/**
+ * Inline SVG line chart (area + line) over the bucketed series, with hover: move
+ * the pointer to read the exact value + time at each bucket (crosshair + dot +
+ * tooltip), and ~5 evenly-spaced time ticks along the x-axis. The SVG stretches
+ * (preserveAspectRatio="none"), so the HTML overlay maps by fraction of width and
+ * the fixed container height (= viewBox height) makes the y-axis 1:1.
+ */
 function LineChart({
   series,
   metric,
@@ -231,39 +238,108 @@ function LineChart({
   metric: Metric;
   bucketMs: number;
 }) {
+  const [hover, setHover] = useState<number | null>(null);
   const W = 720;
   const H = 160;
   const P = 8;
+  const n = series.length;
   const max = Math.max(1, ...series.map((d) => d[metric]));
-  const x = (i: number) => (series.length <= 1 ? W / 2 : P + (i / (series.length - 1)) * (W - 2 * P));
+  const x = (i: number) => (n <= 1 ? W / 2 : P + (i / (n - 1)) * (W - 2 * P));
   const y = (v: number) => H - P - (v / max) * (H - 2 * P);
+  const xPct = (i: number) => (x(i) / W) * 100;
   const line = series.map((d, i) => `${x(i)},${y(d[metric])}`).join(' ');
-  const area = `${x(0)},${H - P} ${line} ${x(series.length - 1)},${H - P}`;
+  const area = `${x(0)},${H - P} ${line} ${x(n - 1)},${H - P}`;
+
+  const onMove = (e: PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (rect.width === 0) return;
+    const frac = (e.clientX - rect.left) / rect.width;
+    setHover(Math.max(0, Math.min(n - 1, Math.round(frac * (n - 1)))));
+  };
+
+  // ~5 evenly-spaced x-axis ticks; first left-aligned, last right-aligned so the
+  // labels don't clip at the chart edges.
+  const tickCount = Math.min(5, n);
+  const ticks =
+    tickCount <= 1
+      ? [0]
+      : Array.from({ length: tickCount }, (_, k) => Math.round((k * (n - 1)) / (tickCount - 1)));
+  const hv = hover != null ? series[hover] : null;
+  const metricLabel = metric === 'views' ? 'views' : 'visitors';
+
   return (
     <div>
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className="w-full text-primary"
+      <div
+        className="relative touch-none"
         style={{ height: H }}
-        preserveAspectRatio="none"
-        role="img"
-        aria-label={`${metric} over time`}
+        onPointerMove={onMove}
+        onPointerLeave={() => setHover(null)}
       >
-        <polygon points={area} className="fill-primary/10" />
-        <polyline
-          points={line}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
-      <div className="mt-1 flex justify-between text-[10px] text-text-muted">
-        <span>{formatBucket(series[0].t, bucketMs)}</span>
-        <span>peak {max.toLocaleString()}</span>
-        <span>{formatBucket(series[series.length - 1].t, bucketMs)}</span>
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="h-full w-full text-primary"
+          preserveAspectRatio="none"
+          role="img"
+          aria-label={`${metric} over time`}
+        >
+          <polygon points={area} className="fill-primary/10" />
+          <polyline
+            points={line}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+        {hv ? (
+          <>
+            <div
+              className="pointer-events-none absolute inset-y-0 w-px bg-primary/40"
+              style={{ left: `${xPct(hover!)}%` }}
+            />
+            <div
+              className="pointer-events-none absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary ring-2 ring-background"
+              style={{ left: `${xPct(hover!)}%`, top: y(hv[metric]) }}
+            />
+            <div
+              className="pointer-events-none absolute z-10 -translate-y-full whitespace-nowrap rounded-md border border-border bg-popover px-2 py-1 text-[10px] shadow-md"
+              style={{
+                left: `clamp(28px, ${xPct(hover!)}%, calc(100% - 28px))`,
+                top: y(hv[metric]) - 6,
+                transform: 'translate(-50%, -100%)',
+              }}
+            >
+              <div className="font-semibold tabular-nums text-foreground">
+                {hv[metric].toLocaleString()} {metricLabel}
+              </div>
+              <div className="text-text-muted">{formatBucket(hv.t, bucketMs)}</div>
+            </div>
+          </>
+        ) : null}
       </div>
+      <div className="relative mt-1 h-3 text-[10px] text-text-muted">
+        {ticks.map((i, k) => (
+          <span
+            key={i}
+            className="absolute whitespace-nowrap tabular-nums"
+            style={{
+              left: `${xPct(i)}%`,
+              transform:
+                k === 0
+                  ? 'translateX(0)'
+                  : k === ticks.length - 1
+                    ? 'translateX(-100%)'
+                    : 'translateX(-50%)',
+            }}
+          >
+            {formatBucket(series[i].t, bucketMs)}
+          </span>
+        ))}
+      </div>
+      <p className="mt-0.5 text-right text-[10px] text-text-muted tabular-nums">
+        peak {max.toLocaleString()}
+      </p>
     </div>
   );
 }
