@@ -2,6 +2,7 @@ import type { ReactNode, RefObject } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { useGridColumns } from '@/hooks/use-grid-columns';
+import { useIsBackNavigation } from '@/hooks/use-back-navigation';
 
 /**
  * The responsive grid layouts our card lists use. Each entry couples the literal
@@ -84,6 +85,9 @@ export function StaggeredGrid<T>({
   const columns = useGridColumns(v.two, v.three);
   const wave = columns === 1 ? 5 : columns;
   const layoutEnabled = shouldAnimateGridLayout(animateLayout, items.length, layoutAnimationLimit);
+  // When the user arrived here via Back, the page was already seen — render the
+  // cards in their final state instead of replaying the staggered entrance.
+  const skipEntrance = useIsBackNavigation();
 
   const cards = items.map((item, i) => (
     <motion.div
@@ -91,16 +95,20 @@ export function StaggeredGrid<T>({
       data-grid-key={getKey(item)}
       layout={layoutEnabled}
       className="collection-card h-full min-w-0"
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-        transition: {
-          duration: 0.37,
-          ease: 'easeOut',
-          delay: Math.min(i, wave - 1) * step,
-        },
-      }}
+      initial={skipEntrance ? false : { opacity: 0, y: 12 }}
+      whileInView={
+        skipEntrance
+          ? undefined
+          : {
+              opacity: 1,
+              y: 0,
+              transition: {
+                duration: 0.37,
+                ease: 'easeOut',
+                delay: Math.min(i, wave - 1) * step,
+              },
+            }
+      }
       viewport={{ once: true, amount: 0.15, root: viewportRoot }}
       exit={layoutEnabled ? { opacity: 0, scale: 0.92 } : undefined}
       transition={{
