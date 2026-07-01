@@ -74,7 +74,7 @@ export function StaggeredGrid<T>({
   renderItem,
   variant = 'sm-lg',
   gap = 'gap-4',
-  step = 0.11,
+  step = 0.06,
   animateLayout = false,
   layoutAnimationLimit = DEFAULT_LAYOUT_ANIMATION_LIMIT,
   animationKey,
@@ -103,7 +103,7 @@ export function StaggeredGrid<T>({
               opacity: 1,
               y: 0,
               transition: {
-                duration: 0.37,
+                duration: 0.28,
                 ease: 'easeOut',
                 delay: Math.min(i, wave - 1) * step,
               },
