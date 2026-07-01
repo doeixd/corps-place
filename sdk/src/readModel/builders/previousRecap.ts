@@ -207,7 +207,11 @@ export const buildEventPreviousRecap = async (
   }
 
   const compArr = [...comps];
-  const inClause = placeholders(compArr.length);
+  const priorKeys = [...priorKeyToCurrent.keys()];
+  const inComp = placeholders(compArr.length);
+  const inKey = placeholders(priorKeys.length);
+  // Scope both the competitions AND the corps_keys we actually chose, so a prior
+  // competition's non-participant corps aren't fetched then thrown away.
   const [scoreResult, captionResult, categoryResult] = await Promise.all([
     db.execute({
       sql: `
@@ -219,19 +223,21 @@ export const buildEventPreviousRecap = async (
                cs.division_name AS division_name
         FROM corps_scores cs
         LEFT JOIN corps_aliases ca ON lower(ca.alias_name) = lower(cs.corps_name)
-        WHERE cs.competition_slug IN (${inClause})
+        WHERE cs.competition_slug IN (${inComp}) AND cs.corps_key IN (${inKey})
       `,
-      args: compArr,
+      args: [...compArr, ...priorKeys],
     }),
     db.execute({
       sql: `SELECT competition_slug, corps_key, caption_name, score
-            FROM caption_scores WHERE competition_slug IN (${inClause})`,
-      args: compArr,
+            FROM caption_scores
+            WHERE competition_slug IN (${inComp}) AND corps_key IN (${inKey})`,
+      args: [...compArr, ...priorKeys],
     }),
     db.execute({
       sql: `SELECT competition_slug, corps_key, category_name, score
-            FROM category_scores WHERE competition_slug IN (${inClause})`,
-      args: compArr,
+            FROM category_scores
+            WHERE competition_slug IN (${inComp}) AND corps_key IN (${inKey})`,
+      args: [...compArr, ...priorKeys],
     }),
   ]);
 

@@ -1264,6 +1264,7 @@ function CurrentPredictionPage({
                     <ToggleGroup
                       variant="outline"
                       spacing={0}
+                      aria-label="Diff comparison basis"
                       value={[ctx.diffBase]}
                       onValueChange={(v) => {
                         const next = v[0] as DiffBase | undefined;
