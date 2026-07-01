@@ -59,11 +59,14 @@ export function ProfileEditor({
     assignments?: readonly AssignmentItem[];
   };
   /** Scraped baselines for the collection editors — the editor diffs its edited
-   *  list against these to build the durable op-log (never the merged list). */
+   *  list against these to build the durable op-log (never the merged list). Each
+   *  is optional so a route can enable only some collections (judges: awards only,
+   *  since their event/caption record is score-derived and off-limits). A section
+   *  renders iff its baseline is provided. */
   scraped?: {
-    awards: readonly AwardItem[];
-    performed: readonly PerformedItem[];
-    assignments: readonly AssignmentItem[];
+    awards?: readonly AwardItem[];
+    performed?: readonly PerformedItem[];
+    assignments?: readonly AssignmentItem[];
   };
 }) {
   const router = useRouter();
@@ -356,6 +359,7 @@ export function ProfileEditor({
       {scraped && (
         <>
       {/* Awards (P1) — owner CRUD, stored as a durable op-log over the scraped list. */}
+      {scraped.awards !== undefined && (
       <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
         <div className="flex items-center justify-between">
           <Label>Awards</Label>
@@ -415,8 +419,10 @@ export function ProfileEditor({
           Save awards
         </BusyButton>
       </div>
+      )}
 
       {/* Also-performed-with (P1) — non-DCI groups / corps the person marched in. */}
+      {scraped.performed !== undefined && (
       <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
         <div className="flex items-center justify-between">
           <Label>Also performed with</Label>
@@ -488,10 +494,12 @@ export function ProfileEditor({
           Save groups
         </BusyButton>
       </div>
+      )}
 
       {/* Assignments (P2) — correct the noisy scraped record: fix a section/title/
           season/years or remove a misattribution; add a row at ANY corps via the
           search combobox (P2b). */}
+      {scraped.assignments !== undefined && (
       <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
         <Label>Assignments</Label>
         {/* Add at any corps — lazy directory search. */}
@@ -608,6 +616,7 @@ export function ProfileEditor({
           Save assignments
         </BusyButton>
       </div>
+      )}
         </>
       )}
 

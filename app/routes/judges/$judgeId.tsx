@@ -81,7 +81,12 @@ export const Route = createFileRoute('/judges/$judgeId')({
     if (overlay?.aliasOf && overlay.aliasOf.type === 'judge' && overlay.aliasOf.id !== params.judgeId) {
       throw redirect({ to: '/judges/$judgeId', params: { judgeId: overlay.aliasOf.id }, replace: true });
     }
-    return { profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped };
+    return {
+      profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped,
+      // Judges get awards editing only (bioFacts.awards); the scraped baseline for
+      // the diff-based op-log save.
+      scrapedAwards: scraped?.bioFacts?.awards ?? [],
+    };
   },
   head: ({ loaderData }) => {
     const d = loaderData;
@@ -125,7 +130,7 @@ export const Route = createFileRoute('/judges/$judgeId')({
 });
 
 function JudgeProfilePage() {
-  const { profile } = Route.useLoaderData();
+  const { profile, scrapedAwards } = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   // Name this entry so back controls reached from here read "Back to <judge>".
@@ -255,7 +260,10 @@ function JudgeProfilePage() {
               photoUrl: profile.photo_url,
               hometown: profile.bioFacts?.hometown ?? null,
               currentPosition: profile.bioFacts?.currentPosition ?? null,
+              awards: profile.bioFacts?.awards ?? [],
             }}
+            // Judges: awards only (their event/caption record is score-derived).
+            scraped={{ awards: scrapedAwards }}
           />
         )}
 
