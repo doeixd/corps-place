@@ -178,6 +178,10 @@ interface PredictionSearch {
   fakeScores?: boolean;
   /** Diff basis; omitted when it equals the default (`prediction`). */
   diffbase?: DiffBase;
+  /** Active tri-modal view; omitted when it equals the dynamic default. Persisted
+   *  so a Diff link (incl. ?view=diff&diffbase=previous) is shareable + SSRs the
+   *  right view. The codec already encodes it; validateSearch must keep it. */
+  view?: PredictionView;
 }
 
 const isWindow = (v: unknown): v is ScenarioWindow =>
@@ -207,6 +211,8 @@ const validatePredictionSearch = (search: Record<string, unknown>): PredictionSe
   // Only 'previous' is a non-default basis; anything else stays the default.
   if (search.diffbase === 'previous' || search.diffbase === 'prediction')
     out.diffbase = search.diffbase;
+  if (search.view === 'scores' || search.view === 'prediction' || search.view === 'diff')
+    out.view = search.view;
   return out;
 };
 
