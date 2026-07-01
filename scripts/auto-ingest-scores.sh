@@ -59,6 +59,10 @@ REPORT_DIR="$repo_root/sdk/results/score-ingest-runs"
 published=false
 regenerated=false
 notified=""
+# Accumulates space-separated tags for any non-fatal step that failed (publish,
+# notify, backfill, forecast, fantasy). A non-empty value makes write_report both
+# record the detail AND fire the admin push, so partial failures aren't silent.
+errors=""
 write_report() {
   local status="$1"
   mkdir -p "$REPORT_DIR" 2>/dev/null || return 0
@@ -88,12 +92,18 @@ json.dump({
 print(f"[auto-ingest] run report -> {path}")
 PY
   # Also record the run into contributions.db so /admin shows cron health, and push
-  # every registered admin device on a failure. Best-effort: never fail the run.
+  # every registered admin device on a failure. Best-effort: never fail the run. A
+  # scrape_failed status alerts on its own; any accumulated step errors force an
+  # alert too (so a stale-standings / failed-publish run still pages an admin).
+  local alert_flag=""
+  [ -n "$errors" ] && alert_flag="--alert"
   vp exec tsx scripts/recordIngestRun.ts \
     --status "$status" --season "$SEASON" \
     --before "${before:-}" --after "${after:-}" \
     --pending "$(printf '%s' "${pending:-}" | tr '\n' ' ')" \
-    --published "$published" 2>&1 | sed 's/^/    /' || true
+    --published "$published" \
+    --detail "${errors# }" \
+    $alert_flag 2>&1 | sed 's/^/    /' || true
 }
 
 # Gate: scrape only when a show's scores should be posting — i.e. NOW is in the
@@ -172,35 +182,24 @@ after="$(count_scores)"
 echo "[auto-ingest $(ts)] scores after=$after (delta=$((after - before)))"
 
 if [ "$after" -gt "$before" ]; then
-  echo "[auto-ingest $(ts)] new scores landed — backfilling actuals, regenerating future forecasts, then publishing once…"
-  # (1) Backfill actuals/errors into saved prediction runs for each newly-scored
-  # show (review High #1). Reads the just-ingested DB scores (no extra scrape);
-  # #9 makes this fill ALL snapshots for the event. Best-effort per show.
-  if [ "$pending" != "__GATE_ERR__" ]; then
-    for slug in $pending; do
-      [ -z "$slug" ] && continue
-      if [ "$(event_has_scores "$slug")" -gt 0 ]; then
-        echo "[auto-ingest $(ts)] backfilling actuals for $slug…"
-        NODE_OPTIONS="--max-old-space-size=1536" vp exec tsx scripts/updateEventPredictionStatus.ts \
-          --event "$slug" --season "$SEASON" 2>&1 | sed 's/^/    /' \
-          || echo "[auto-ingest $(ts)] backfill failed for $slug (non-fatal)"
-      fi
-    done
+  echo "[auto-ingest $(ts)] new scores landed (delta=$((after - before))) — fast-publishing, then backfill/forecast + full publish…"
+
+  # (1) FAST PUBLISH — get the raw scores live ASAP. A seeded incremental emit
+  # rebuilds only the light sections (events/recaps/home, ~25s) from the current
+  # live slot instead of the full ~208s emit (dominated by the ~179s corps
+  # rebuild). Event pages, the home "latest results", and the scored badge go live
+  # in ~5s. Corps pages, rankings and predictions catch up in the full emit (5).
+  # Non-fatal: if the fast path fails, the full emit still publishes everything.
+  echo "[auto-ingest $(ts)] fast-publishing scores (events,recaps,home)…"
+  if SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2048" \
+       bash "$repo_root/scripts/refresh-prod-read-model.sh" --only events,recaps,home --seed-active 2>&1 | sed 's/^/    /'; then
+    echo "[auto-ingest $(ts)] scores live in ~5s — corps/predictions to follow."
+  else
+    echo "[auto-ingest $(ts)] fast publish FAILED (non-fatal; full emit still runs)"
+    errors="$errors fast-publish-failed"
   fi
-  # (2) Regenerate FUTURE-only forecasts (score-state aware after #2) WITHOUT its
-  # own publish, so the released scores and the updated forecasts ship together in
-  # (3) one read-model emit below — closing the "scores live but forecasts stale"
-  # gap the review flagged. Best-effort: a regen hiccup must not block publishing.
-  echo "[auto-ingest $(ts)] regenerating future forecasts (no publish)…"
-  SKIP_PUBLISH=1 bash "$repo_root/scripts/nightly-predictions.sh" 2>&1 | sed 's/^/    /' \
-    || echo "[auto-ingest $(ts)] future-forecast regen had failures (non-fatal)"
-  regenerated=true
-  # (3) Single publish: scores + refreshed forecasts together.
-  echo "[auto-ingest $(ts)] publishing prod read-model…"
-  SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2560" bash "$repo_root/scripts/refresh-prod-read-model.sh"
-  published=true
-  echo "[auto-ingest $(ts)] published — drumcorps.app updates in ~5s."
-  # Email score-notify subscribers for each pending show that now has scores.
+
+  # (2) Notify score-notify subscribers now that the scores are live.
   if [ "$pending" != "__GATE_ERR__" ]; then
     for slug in $pending; do
       [ -z "$slug" ] && continue
@@ -210,29 +209,64 @@ if [ "$after" -gt "$before" ]; then
           notified="$notified $slug"
         else
           echo "[auto-ingest $(ts)] notify failed for $slug (non-fatal)"
+          errors="$errors notify-failed:$slug"
         fi
       fi
     done
   fi
 
-  # Fantasy standings are a function of the fresh scores, so recompute them right
-  # after the read-model swap, then dispatch queued notifications (standings
-  # emails/push + any due draft reminders). Without this, standings + their
-  # emails lag behind posted scores until a separate cron runs. The endpoints are
-  # guarded by FANTASY_CRON_SECRET and hit the live app; best-effort, never fail
-  # the ingest over a fantasy hiccup. Short settle so the server has picked up the
-  # flipped A/B pointer (~5s poll) before recompute reads the read-model.
+  # (3) Backfill actuals/errors into saved prediction runs for each newly-scored
+  # show. Reads the just-ingested DB scores (no extra scrape). Best-effort per show.
+  if [ "$pending" != "__GATE_ERR__" ]; then
+    for slug in $pending; do
+      [ -z "$slug" ] && continue
+      if [ "$(event_has_scores "$slug")" -gt 0 ]; then
+        echo "[auto-ingest $(ts)] backfilling actuals for $slug…"
+        NODE_OPTIONS="--max-old-space-size=1536" vp exec tsx scripts/updateEventPredictionStatus.ts \
+          --event "$slug" --season "$SEASON" 2>&1 | sed 's/^/    /' \
+          || { echo "[auto-ingest $(ts)] backfill failed for $slug (non-fatal)"; errors="$errors backfill-failed:$slug"; }
+      fi
+    done
+  fi
+
+  # (4) Regenerate FUTURE-only forecasts WITHOUT their own publish — the full emit
+  # (5) ships the released scores + refreshed forecasts together. Best-effort.
+  echo "[auto-ingest $(ts)] regenerating future forecasts (no publish)…"
+  if SKIP_PUBLISH=1 bash "$repo_root/scripts/nightly-predictions.sh" 2>&1 | sed 's/^/    /'; then
+    regenerated=true
+  else
+    echo "[auto-ingest $(ts)] future-forecast regen had failures (non-fatal)"
+    errors="$errors forecast-regen-failed"
+  fi
+
+  # (5) FULL PUBLISH — corps/rankings/predictions + everything, live. Guarded so an
+  # emit failure is recorded + alerted (was an unguarded `set -e` abort that skipped
+  # the run report entirely). If this fails, the fast-published scores are still up.
+  echo "[auto-ingest $(ts)] publishing full read-model…"
+  if SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2560" \
+       bash "$repo_root/scripts/refresh-prod-read-model.sh" 2>&1 | sed 's/^/    /'; then
+    published=true
+    echo "[auto-ingest $(ts)] full read-model published — drumcorps.app fully updated in ~5s."
+  else
+    echo "[auto-ingest $(ts)] FULL PUBLISH FAILED — scores may be live from the fast publish, corps/predictions stale."
+    errors="$errors full-publish-failed"
+  fi
+
+  # (6) Fantasy standings are a function of the fresh scores, so recompute them
+  # after the swap, then dispatch queued notifications (standings emails/push + due
+  # draft reminders). Guarded by FANTASY_CRON_SECRET; best-effort. Short settle so
+  # the server has picked up the flipped A/B pointer (~5s poll) before recompute.
   if [ -n "${FANTASY_CRON_SECRET:-}" ]; then
     fantasy_site="${FANTASY_SITE:-https://drumcorps.app}"
     sleep 10
     echo "[auto-ingest $(ts)] recomputing fantasy standings ($SEASON)…"
     curl -fsS -m 120 -X POST "$fantasy_site/api/fantasy/jobs/recompute?season=$SEASON" \
       -H "x-fantasy-cron: $FANTASY_CRON_SECRET" 2>&1 | sed 's/^/    /' \
-      || echo "[auto-ingest $(ts)] fantasy recompute failed (non-fatal)"
+      || { echo "[auto-ingest $(ts)] fantasy recompute failed (non-fatal)"; errors="$errors fantasy-recompute-failed"; }
     echo "[auto-ingest $(ts)] dispatching fantasy notifications…"
     curl -fsS -m 120 -X POST "$fantasy_site/api/fantasy/jobs/dispatch" \
       -H "x-fantasy-cron: $FANTASY_CRON_SECRET" 2>&1 | sed 's/^/    /' \
-      || echo "[auto-ingest $(ts)] fantasy dispatch failed (non-fatal)"
+      || { echo "[auto-ingest $(ts)] fantasy dispatch failed (non-fatal)"; errors="$errors fantasy-dispatch-failed"; }
   else
     echo "[auto-ingest $(ts)] FANTASY_CRON_SECRET unset — skipping fantasy recompute/dispatch."
   fi

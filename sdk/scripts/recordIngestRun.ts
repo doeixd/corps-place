@@ -97,11 +97,17 @@ async function alertAdmins(): Promise<void> {
     return;
   }
   webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC, VAPID_PRIVATE);
+  // A hard scrape failure ingested nothing; anything else with a detail is a
+  // partial failure (e.g. scores published but a full-emit/fantasy step failed).
+  const hardFail = status === "scrape_failed";
+  const title = hardFail
+    ? "⚠️ Score auto-ingest FAILED"
+    : `⚠️ Score ingest issue (${status})`;
   const body =
     (pending ? `Pending: ${pending}. ` : "") +
-    (detail ? detail : "Score auto-ingest failed.");
+    (detail || (hardFail ? "Scrape failed." : "See admin jobs."));
   const payload = JSON.stringify({
-    title: "⚠️ Score auto-ingest failed",
+    title,
     body,
     url: "https://drumcorps.app/admin/jobs",
   });

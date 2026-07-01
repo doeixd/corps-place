@@ -143,12 +143,59 @@ const ALL_SECTIONS: Section[] = [
   "fantasy",
 ];
 
+// The rm_* tables each section (re)builds. Derived from the section blocks below;
+// used by the seeded incremental emit (--seed-active) to DROP+rebuild ONLY the
+// requested sections' tables while inheriting every other table from the seed
+// (the current live slot). MUST stay in sync with the section blocks — if you add
+// a table to a section, add it here (a full seeded rebuild asserts coverage).
+// rm_meta is rebuilt on every emit (see the finalize block), so it's not listed.
+const SECTION_TABLES: Record<Section, string[]> = {
+  events: [
+    "rm_events",
+    "rm_event_schedule",
+    "rm_event_season_options",
+    "rm_event_competition_resolution",
+  ],
+  corps: [
+    "rm_corps",
+    "rm_corps_detail",
+    "rm_corps_season_points",
+    "rm_corps_prediction_snapshots",
+    "rm_vs_corps_scores",
+    "rm_vs_baselines",
+    "rm_vs_corps_predicted",
+    "rm_rankings",
+    "rm_corps_appearances",
+    "rm_corps_appearance_results",
+  ],
+  recaps: ["rm_event_recap", "rm_event_full_recap"],
+  judges: ["rm_judges", "rm_judge_detail"],
+  staff: ["rm_staff", "rm_staff_detail"],
+  predictions: ["rm_event_prediction"],
+  shows: ["rm_show_titles", "rm_show_info", "rm_show_detail"],
+  home: ["rm_home_weekend_shows", "rm_home_latest_results", "rm_home_standings"],
+  merch: ["rm_merch_meta", "rm_merch_product", "rm_merch_corps_teaser"],
+  fantasy: [
+    "rm_fantasy_draft_pool",
+    "rm_fantasy_prior_finals",
+    "rm_fantasy_season_best",
+    "rm_fantasy_season_finals",
+  ],
+};
+
 interface Args {
   source: string;
   out: string;
   dryRun: boolean;
   only: Section[];
   jsonSnapshot?: string;
+  // Seeded incremental publish: copy the current active slot as the base, then
+  // DROP+rebuild ONLY the `--only` sections' tables (+ rm_meta) and flip. Every
+  // other table is inherited from the seed, so a partial emit can go LIVE without
+  // blanking the rest — used for the fast score-publish path (rebuild the ~28s
+  // events/recaps/home instead of the ~208s full emit, which is dominated by the
+  // ~179s corps section). Requires an existing active slot to seed from.
+  seedActive: boolean;
 }
 
 export const parseArgs = (argv: string[]): Args => {
@@ -170,6 +217,7 @@ export const parseArgs = (argv: string[]): Args => {
     dryRun: argv.includes("--dry-run"),
     only,
     jsonSnapshot: get("--json-snapshot"),
+    seedActive: argv.includes("--seed-active"),
   };
 };
 
@@ -421,6 +469,27 @@ const quoteIdent = (name: string) => {
   return `"${name}"`;
 };
 
+// The rm_* table a schema statement defines: `CREATE TABLE rm_x` → rm_x,
+// `CREATE INDEX i ON rm_x(...)` → rm_x. Used by the seeded emit to run only the
+// schema for the tables it rebuilds. Returns null if it matches neither shape.
+const schemaStatementTable = (stmt: string): string | null =>
+  stmt.match(/CREATE\s+TABLE\s+(rm_\w+)/i)?.[1] ??
+  stmt.match(/CREATE\s+INDEX\s+\S+\s+ON\s+(rm_\w+)/i)?.[1] ??
+  null;
+
+// Tables to DROP+rebuild for a seeded incremental emit: the requested sections'
+// tables plus rm_meta (always refreshed with built_at/schema_version). Throws if a
+// section has no mapping (guards against SECTION_TABLES drifting from ALL_SECTIONS).
+const seededRebuildTables = (only: Section[]): Set<string> => {
+  const tables = new Set<string>(["rm_meta"]);
+  for (const section of only) {
+    const mapped = SECTION_TABLES[section];
+    if (!mapped) throw new Error(`no SECTION_TABLES mapping for section: ${section}`);
+    for (const t of mapped) tables.add(t);
+  }
+  return tables;
+};
+
 // Guardrail views to report on (warn, don't fail unless --strict added later).
 const DQ_VIEWS = [
   "dq_caption_total_mismatches",
@@ -484,12 +553,46 @@ export const runEmit = async (args: Args) => {
   const src = createClient({ url: `file:${args.source}` });
 
   const tmpOut = `${args.out}.tmp`;
-  if (fs.existsSync(tmpOut)) fs.rmSync(tmpOut);
+  rmDbFiles(tmpOut);
+
+  // Seeded incremental publish: base the build on the current live slot so only
+  // the requested sections are recomputed and everything else is inherited. We
+  // resolve + copy the active slot into tmpOut BEFORE opening it, then below run
+  // schema for just the rebuilt tables (DROP+CREATE) instead of the full schema.
+  let seededRebuild: Set<string> | null = null;
+  if (args.seedActive && !args.dryRun) {
+    const slots = slotsOf(args.out);
+    const active = readActiveSlot(slots);
+    const seedFile = active ? slotFile(slots, active) : null;
+    if (!seedFile || !fs.existsSync(seedFile)) {
+      throw new Error(
+        `--seed-active: no live slot to seed from (${slots.pointer}). Run a full emit first.`,
+      );
+    }
+    fs.copyFileSync(seedFile, tmpOut);
+    seededRebuild = seededRebuildTables(args.only);
+    log(
+      `seeded from active slot ${active} — rebuilding only: ${[...seededRebuild].join(", ")}`,
+    );
+  }
+
   const dst = args.dryRun ? null : createClient({ url: `file:${tmpOut}` });
 
   if (dst) {
-    for (const stmt of schemaStatements()) {
-      await dst.execute(stmt);
+    if (seededRebuild) {
+      // Drop the tables we're about to rebuild (indexes go with them), then run
+      // only their CREATE statements. Every other table stays as seeded.
+      for (const t of seededRebuild) {
+        await dst.execute(`DROP TABLE IF EXISTS ${quoteIdent(t)}`);
+      }
+      for (const stmt of schemaStatements()) {
+        const table = schemaStatementTable(stmt);
+        if (table && seededRebuild.has(table)) await dst.execute(stmt);
+      }
+    } else {
+      for (const stmt of schemaStatements()) {
+        await dst.execute(stmt);
+      }
     }
   }
 
@@ -1376,13 +1479,14 @@ export const runEmit = async (args: Args) => {
   if (dst) {
     await dst.close();
 
-    // PARTIAL EMIT GUARD. The build in `tmpOut` is a FRESH db with only the
-    // `--only` sections populated; every other rm_* table is empty. Publishing
-    // it into a slot + flipping the pointer would blank the live read-model for
-    // all the un-built sections. So a partial emit NEVER touches the slots or the
-    // pointer — it writes a standalone <stem>.partial.db for inspection instead.
-    // Use a full emit (no --only) for anything that should go live.
-    const isPartial = new Set(args.only).size < ALL_SECTIONS.length;
+    // PARTIAL EMIT GUARD. A FRESH partial build has only the `--only` sections
+    // populated; every other rm_* table is empty, so publishing it would blank
+    // the live read-model for the un-built sections. Such a partial NEVER touches
+    // the slots/pointer — it writes a standalone <stem>.partial.db for inspection.
+    // EXCEPTION: a SEEDED partial (--seed-active) inherited every other table from
+    // the live slot, so it's fully populated and IS safe to publish.
+    const isPartial =
+      !seededRebuild && new Set(args.only).size < ALL_SECTIONS.length;
     if (isPartial) {
       const partialOut = args.out.replace(/\.db$/i, ".partial.db");
       rmDbFiles(partialOut);
