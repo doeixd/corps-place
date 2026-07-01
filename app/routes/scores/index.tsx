@@ -172,6 +172,7 @@ function ScoresIndex() {
                     name={e.event_name || e.name || e.slug}
                     date={e.start_date}
                     place={place(e.location_city, e.location_state)}
+                    corpsCount={e.lineup_entries ?? e.participant_entries ?? 0}
                   />
                 ))}
               </div>
