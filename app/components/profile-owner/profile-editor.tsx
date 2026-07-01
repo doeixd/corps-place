@@ -140,6 +140,20 @@ export function ProfileEditor({
     const n = Number(t);
     return t && Number.isFinite(n) ? n : null;
   };
+  // Group assignment rows by corps (matching the profile display), keeping each
+  // row's flat index so edit/remove still address the underlying list.
+  const assignmentGroups = (() => {
+    const groups = new Map<
+      string,
+      { corps_name: string; items: { a: AssignmentItem; i: number }[] }
+    >();
+    assignments.forEach((a, i) => {
+      const g = groups.get(a.corps_key) ?? { corps_name: a.corps_name, items: [] };
+      g.items.push({ a, i });
+      groups.set(a.corps_key, g);
+    });
+    return [...groups.values()];
+  })();
 
   const onMerge = async () => {
     const other = mergeId.trim();
@@ -237,7 +251,8 @@ export function ProfileEditor({
   const posDirty =
     posTitle !== (initial.currentPosition?.title ?? '') ||
     posOrg !== (initial.currentPosition?.org ?? '');
-  const anyDirty = bioDirty || homeDirty || posDirty;
+  const anyDirty =
+    bioDirty || homeDirty || posDirty || awardsDirty || performedDirty || assignmentsDirty;
   const closeEditor = () => {
     if (anyDirty && !confirm('You have unsaved changes. Close without saving them?')) return;
     setOpen(false);
@@ -515,59 +530,62 @@ export function ProfileEditor({
         {assignments.length === 0 ? (
           <p className="text-xs text-muted-foreground">No assignments.</p>
         ) : (
-          assignments.map((a, i) => (
-            <div
-              key={i}
-              className="flex flex-wrap items-center gap-1.5 rounded-md border border-border p-1.5"
-            >
-              <span className="min-w-24 flex-1 truncate text-sm font-medium">{a.corps_name}</span>
-              <Input
-                placeholder="Season"
-                value={a.season ?? ''}
-                onChange={(e) => setAsn(i, { season: e.target.value || null })}
-                className="w-16"
-              />
-              <select
-                value={a.role_type ?? ''}
-                onChange={(e) => setAsn(i, { role_type: e.target.value || null })}
-                aria-label="Section"
-                className="rounded-md border border-border bg-background px-1.5 py-1.5 text-sm"
-              >
-                <option value="">section…</option>
-                {ROLE_TYPES.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
+          assignmentGroups.map((g) => (
+            <div key={g.items[0].a.corps_key} className="rounded-md border border-border p-1.5">
+              <div className="mb-1 px-0.5 text-sm font-semibold text-text-primary">{g.corps_name}</div>
+              <div className="flex flex-col gap-1">
+                {g.items.map(({ a, i }) => (
+                  <div key={i} className="flex flex-wrap items-center gap-1.5">
+                    <Input
+                      placeholder="Season"
+                      value={a.season ?? ''}
+                      onChange={(e) => setAsn(i, { season: e.target.value || null })}
+                      className="w-16"
+                    />
+                    <select
+                      value={a.role_type ?? ''}
+                      onChange={(e) => setAsn(i, { role_type: e.target.value || null })}
+                      aria-label="Section"
+                      className="rounded-md border border-border bg-background px-1.5 py-1.5 text-sm"
+                    >
+                      <option value="">section…</option>
+                      {ROLE_TYPES.map((r) => (
+                        <option key={r} value={r}>
+                          {r}
+                        </option>
+                      ))}
+                    </select>
+                    <Input
+                      placeholder="Title"
+                      value={a.title ?? ''}
+                      onChange={(e) => setAsn(i, { title: e.target.value || null })}
+                      className="w-32 flex-1"
+                    />
+                    <Input
+                      placeholder="From"
+                      type="number"
+                      value={a.start_year ?? ''}
+                      onChange={(e) => setAsn(i, { start_year: yearOrNull(e.target.value) })}
+                      className="w-16"
+                    />
+                    <Input
+                      placeholder="To"
+                      type="number"
+                      value={a.end_year ?? ''}
+                      onChange={(e) => setAsn(i, { end_year: yearOrNull(e.target.value) })}
+                      className="w-16"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      aria-label="Remove assignment"
+                      onClick={() => setAssignments((list) => list.filter((_, j) => j !== i))}
+                    >
+                      ✕
+                    </Button>
+                  </div>
                 ))}
-              </select>
-              <Input
-                placeholder="Title"
-                value={a.title ?? ''}
-                onChange={(e) => setAsn(i, { title: e.target.value || null })}
-                className="w-32"
-              />
-              <Input
-                placeholder="From"
-                type="number"
-                value={a.start_year ?? ''}
-                onChange={(e) => setAsn(i, { start_year: yearOrNull(e.target.value) })}
-                className="w-16"
-              />
-              <Input
-                placeholder="To"
-                type="number"
-                value={a.end_year ?? ''}
-                onChange={(e) => setAsn(i, { end_year: yearOrNull(e.target.value) })}
-                className="w-16"
-              />
-              <Button
-                variant="ghost"
-                size="sm"
-                aria-label="Remove assignment"
-                onClick={() => setAssignments((list) => list.filter((_, j) => j !== i))}
-              >
-                ✕
-              </Button>
+              </div>
             </div>
           ))
         )}
