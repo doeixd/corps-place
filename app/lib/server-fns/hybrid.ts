@@ -432,6 +432,18 @@ export const getHybridEventFullRecap = createServerFn({ method: 'GET' })
     return Effect.runPromise(program);
   });
 
+// Per-corps "previous show" recap for the Diff view's "vs Previous" basis.
+// Decoupled from the prediction-page loader so the default load never pays for
+// it (fetched on demand / prefetched after paint — see DIFF_BASIS_TOGGLE_PLAN §4).
+export const getHybridEventPreviousRecap = createServerFn({ method: 'GET' })
+  .validator((slug: string) => slug)
+  .handler(async ({ data }) => {
+    const program = Effect.flatMap(EventRecapService, (s) => s.getEventPreviousRecap(data)).pipe(
+      provideServices
+    );
+    return Effect.runPromise(program);
+  });
+
 // ── Fake-scores test hook ────────────────────────────────────────────────────
 // Synthesize an EventRecap from a 2026 prediction so the Scores/Diff views can
 // be exercised before real 2026 scores land. OFF by default — only reachable via

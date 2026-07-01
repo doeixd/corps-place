@@ -3,6 +3,7 @@ import { Context, Effect, Layer, Schema } from 'effect';
 import * as path from 'node:path';
 import { buildEventRecap } from '@sdk/src/readModel/builders/recap.js';
 import { buildEventFullRecap } from '@sdk/src/readModel/builders/fullRecap.js';
+import { buildEventPreviousRecap } from '@sdk/src/readModel/builders/previousRecap.js';
 import { readEventRecap, readEventFullRecap } from '@sdk/src/readModel/readers.js';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
 
@@ -71,7 +72,28 @@ const makeEventRecapService = Effect.gen(function* () {
     );
   });
 
-  return { getEventRecap, getEventFullRecap };
+  // Per-corps "previous show" recap for the Diff view's "vs Previous" basis.
+  const getEventPreviousRecap = Effect.fn('EventRecapService.getEventPreviousRecap')(function* (
+    slug: string
+  ) {
+    return yield* Effect.suspend(() =>
+      Effect.tryPromise({
+        try: () =>
+          readModelEnabled()
+            ? // Phase 2 adds rm_event_previous_recap + a reader; until then prod
+              // has no source for it, so the "vs Previous" basis stays hidden there.
+              Promise.resolve({ rows: [], sources: {} })
+            : buildEventPreviousRecap(getDb(), slug),
+        catch: (cause) =>
+          new EventRecapDataError({
+            message: 'Could not load the previous-show recap.',
+            details: String(cause),
+          }),
+      })
+    );
+  });
+
+  return { getEventRecap, getEventFullRecap, getEventPreviousRecap };
 });
 
 export class EventRecapService extends Context.Service<
