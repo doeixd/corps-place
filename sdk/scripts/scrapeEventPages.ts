@@ -1,7 +1,7 @@
 // Scrape current DCI event pages and persist lineups + metadata.
 // Usage: npx tsx scripts/scrapeEventPages.ts [--slug=event-slug] [--season=2024] [--limit=50] [--offset=0]
 
-import { Effect } from "effect";
+import { Effect, Layer, Option } from "effect";
 import { LibsqlClient } from "@effect/sql-libsql";
 import * as SqlClient from "effect/unstable/sql/SqlClient";
 import * as cheerio from "cheerio";
@@ -9,6 +9,10 @@ import {
   EventPageScrape,
   upsertEventPageScrape
 } from "../src/relational.js";
+import {
+  BrowserbaseService,
+  BrowserbaseServiceLive
+} from "../src/browserbaseService.js";
 
 if (typeof globalThis.File === "undefined") {
   const FilePolyfill = class {
@@ -122,10 +126,41 @@ const fetchJsonWithRetry = async <T>(requestUrl: string, attempt = 0): Promise<{
   return { status: response.status, data };
 };
 
+// DCI.org is behind Cloudflare, so a plain fetch of an event page returns a
+// challenge shell — a small 403 body or a 200 "Attention Required" page — with no
+// lineup data. Detect that and fall back to a real browser render (remote Chrome →
+// local Chromium → Browserbase) via BrowserbaseService, read through serviceOption
+// so the script still runs (plain-fetch only) when the layer isn't provided.
+// Mirrors the recap-scraper fix.
+const looksBlocked = (status: number, html: string): boolean =>
+  status === 403 ||
+  status === 503 ||
+  /Attention Required! \| Cloudflare|Just a moment\.\.\.|challenge-platform|__cf_chl|Enable JavaScript and cookies/i.test(
+    html
+  );
+
 const getEventPage = (slug: string) =>
-  Effect.tryPromise(async () => {
+  Effect.gen(function* () {
     const requestUrl = `${baseUrl}/${slug}`;
-    return fetchWithRetry(requestUrl);
+    const direct = yield* Effect.tryPromise(() => fetchWithRetry(requestUrl));
+    if (!looksBlocked(direct.status, direct.html)) return direct;
+
+    const renderer = yield* Effect.serviceOption(BrowserbaseService);
+    if (Option.isSome(renderer)) {
+      const rendered = yield* renderer.value
+        .fetchHtml(requestUrl)
+        .pipe(Effect.catch(() => Effect.succeed("")));
+      if (rendered.trim().length > 0) {
+        return {
+          status: 200,
+          url: requestUrl,
+          html: rendered
+        } satisfies EventPageResponse;
+      }
+    }
+    // Blocked and no renderer produced content — return the blocked response so
+    // the caller's status handling (404→Wayback, ≥400→fail) still applies.
+    return direct;
   });
 
 const getWaybackPage = (slug: string) =>
@@ -348,8 +383,27 @@ const parseEventPage = (slug: string, html: string, sourceUrl?: string) => {
   return { scrape, diagnostics };
 };
 
-const fetchEventSlugs = (sql: SqlClient.SqlClient, season?: string) =>
-  season
+const fetchEventSlugs = (
+  sql: SqlClient.SqlClient,
+  season?: string,
+  window?: { minDate: string; maxDate: string }
+) => {
+  // Scoped to an upcoming window (recently-passed + next N days) — for the daily
+  // lineup-refresh cron, so it only re-scrapes events whose lineups can still
+  // change, not the whole season. Compared on the date prefix (start_date is a
+  // full ISO timestamp).
+  if (season && window) {
+    return sql<{ slug: string }>`
+      SELECT slug
+      FROM events
+      WHERE slug IS NOT NULL
+        AND (season = ${season} OR strftime('%Y', start_date) = ${season})
+        AND substr(start_date, 1, 10) >= ${window.minDate}
+        AND substr(start_date, 1, 10) <= ${window.maxDate}
+      ORDER BY start_date
+    `.pipe(Effect.map((rows) => rows.map((row) => row.slug)));
+  }
+  return season
     ? sql<{ slug: string }>`
         SELECT slug
         FROM events
@@ -362,6 +416,7 @@ const fetchEventSlugs = (sql: SqlClient.SqlClient, season?: string) =>
     : sql<{ slug: string }>`
         SELECT slug FROM events WHERE slug IS NOT NULL
       `.pipe(Effect.map((rows) => rows.map((row) => row.slug)));
+};
 
 const main = Effect.gen(function* () {
   const args = process.argv.slice(2);
@@ -372,8 +427,30 @@ const main = Effect.gen(function* () {
   const overwrite = args.includes("--overwrite");
   const verbose = args.includes("--verbose");
 
+  // Optional upcoming-window scoping (used by the lineup-refresh cron):
+  // --upcoming-days=N restricts to events from --past-days ago (default 7) through
+  // N days out. Only applies together with --season.
+  const upcomingDays = parseNumberFlag(args, "--upcoming-days");
+  const pastDays = parseNumberFlag(args, "--past-days") ?? 7;
+  const window =
+    upcomingDays != null
+      ? {
+          minDate: new Date(Date.now() - pastDays * 86400000)
+            .toISOString()
+            .slice(0, 10),
+          maxDate: new Date(Date.now() + upcomingDays * 86400000)
+            .toISOString()
+            .slice(0, 10)
+        }
+      : undefined;
+  if (window) {
+    console.log(
+      `Scoping to upcoming window ${window.minDate} … ${window.maxDate} (--upcoming-days=${upcomingDays}).`
+    );
+  }
+
   const sql = yield* (SqlClient.SqlClient);
-  const slugs = slug ? [slug] : yield* (fetchEventSlugs(sql, season));
+  const slugs = slug ? [slug] : yield* (fetchEventSlugs(sql, season, window));
   const sliced = slugs.slice(offset, limit ? offset + limit : undefined);
   const startTime = Date.now();
 
@@ -476,8 +553,12 @@ const main = Effect.gen(function* () {
 });
 
 const SqlLayer = LibsqlClient.layer({ url: "file:./dci-relational.db" });
+// Provide the browser-render service so Cloudflare-blocked event pages fall back
+// to a real browser. Merged, not required (read via serviceOption), so the script
+// still runs plain-fetch-only if rendering is unavailable.
+const AppLayer = Layer.merge(SqlLayer, BrowserbaseServiceLive);
 
-Effect.runPromise(main.pipe(Effect.provide(SqlLayer))).catch((error) => {
+Effect.runPromise(main.pipe(Effect.provide(AppLayer))).catch((error) => {
   console.error("Event page scrape failed:", error);
   process.exitCode = 1;
 });

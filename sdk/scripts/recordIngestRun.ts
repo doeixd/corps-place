@@ -28,6 +28,7 @@ const numOrNull = (v: string | undefined): number | null => {
 };
 
 const status = flag("status") ?? "unknown";
+const kind = flag("kind") ?? "score-ingest";
 const season = flag("season") ?? null;
 const pending = flag("pending") ?? null;
 const before = numOrNull(flag("before"));
@@ -60,10 +61,11 @@ const ts = new Date().toISOString();
 db.prepare(
   `INSERT INTO ingest_runs
      (run_id, ts, kind, status, season, pending_events, scores_before, scores_after, scores_delta, published, detail)
-   VALUES (?, ?, 'score-ingest', ?, ?, ?, ?, ?, ?, ?, ?)`
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 ).run(
   randomUUID(),
   ts,
+  kind,
   status,
   season,
   pending,
@@ -100,9 +102,8 @@ async function alertAdmins(): Promise<void> {
   // A hard scrape failure ingested nothing; anything else with a detail is a
   // partial failure (e.g. scores published but a full-emit/fantasy step failed).
   const hardFail = status === "scrape_failed";
-  const title = hardFail
-    ? "⚠️ Score auto-ingest FAILED"
-    : `⚠️ Score ingest issue (${status})`;
+  const label = kind === "lineup-refresh" ? "Lineup refresh" : "Score auto-ingest";
+  const title = hardFail ? `⚠️ ${label} FAILED` : `⚠️ ${label} issue (${status})`;
   const body =
     (pending ? `Pending: ${pending}. ` : "") +
     (detail || (hardFail ? "Scrape failed." : "See admin jobs."));

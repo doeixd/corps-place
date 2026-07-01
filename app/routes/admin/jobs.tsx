@@ -41,6 +41,9 @@ const STATUS_VARIANT: Record<string, NonNullable<BadgeProps['variant']>> = {
   scrape_failed: 'destructive-light',
   no_new_scores: 'secondary',
   idle: 'outline',
+  // lineup-refresh statuses
+  lineups_ok: 'success-light',
+  lineups_error: 'destructive-light',
 };
 
 export const Route = createFileRoute('/admin/jobs')({
