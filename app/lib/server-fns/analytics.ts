@@ -37,7 +37,11 @@ const str = (v: unknown): string =>
 
 // Selectable ranges → window (ms back from now; null = all time) + chart bucket width.
 const RANGES = {
+  '1min': { ms: 60_000, bucket: 5_000 },
+  '30min': { ms: 30 * 60_000, bucket: 60_000 },
   '1h': { ms: 3_600_000, bucket: 5 * 60_000 },
+  '8h': { ms: 8 * 3_600_000, bucket: 30 * 60_000 },
+  '12h': { ms: 12 * 3_600_000, bucket: 3_600_000 },
   '24h': { ms: 24 * 3_600_000, bucket: 3_600_000 },
   '7d': { ms: 7 * 86_400_000, bucket: 86_400_000 },
   '30d': { ms: 30 * 86_400_000, bucket: 86_400_000 },
@@ -100,7 +104,7 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
       const topPaths = await q(
         `SELECT path, COUNT(*) AS views, COUNT(DISTINCT visitor) AS visitors
          FROM events WHERE ts >= ? AND type='pageview' AND path IS NOT NULL
-         GROUP BY path ORDER BY views DESC LIMIT 20`
+         GROUP BY path ORDER BY views DESC LIMIT 200`
       );
       const topReferrers = await q(
         `SELECT ref_host AS host, COUNT(*) AS views

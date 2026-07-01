@@ -35,7 +35,11 @@ export const Route = createFileRoute('/admin/analytics')({
 });
 
 const RANGES = [
+  { key: '1min', label: '1min' },
+  { key: '30min', label: '30min' },
   { key: '1h', label: '1h' },
+  { key: '8h', label: '8h' },
+  { key: '12h', label: '12h' },
   { key: '24h', label: '24h' },
   { key: '7d', label: '7d' },
   { key: '30d', label: '30d' },
@@ -145,11 +149,13 @@ function Analytics({ summary }: { summary: AnalyticsSummary }) {
           title="Top pages"
           rows={summary.topPaths.map((p) => [p.path, `${p.views} · ${p.visitors}u`])}
           empty="No pageviews yet"
+          scrollable
         />
         <TableCard
           title="Top referrers"
           rows={summary.topReferrers.map((r) => [r.host, r.views])}
           empty="No external referrers"
+          scrollable
         />
         <TableCard
           title="Events"
@@ -206,6 +212,9 @@ function Analytics({ summary }: { summary: AnalyticsSummary }) {
 /** Format a bucket start time for the chart axis, granularity-aware. */
 function formatBucket(t: number, bucketMs: number): string {
   const d = new Date(t);
+  // Sub-minute buckets (the 1min range) need seconds to be distinguishable.
+  if (bucketMs < 60_000)
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   if (bucketMs < 86_400_000) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   if (bucketMs >= 28 * 86_400_000)
     return d.toLocaleDateString([], { month: 'short', year: '2-digit' });
@@ -293,19 +302,32 @@ function TableCard({
   title,
   rows,
   empty,
+  scrollable,
 }: {
   title: string;
   rows: [string, number | string][];
   empty: string;
+  /** Cap the list height and scroll within, so a long list (e.g. all top pages)
+   *  doesn't grow the card unbounded. Only scrolls when the content overflows. */
+  scrollable?: boolean;
 }) {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex-row items-baseline justify-between gap-2">
         <CardTitle className="text-sm font-semibold text-text-secondary">{title}</CardTitle>
+        {scrollable && rows.length ? (
+          <span className="text-xs text-text-muted tabular-nums">{rows.length}</span>
+        ) : null}
       </CardHeader>
       <CardContent className="text-sm">
         {rows.length ? (
-          <ul className="flex flex-col gap-1">
+          <ul
+            className={
+              scrollable
+                ? 'flex max-h-80 flex-col gap-1 overflow-y-auto pr-1'
+                : 'flex flex-col gap-1'
+            }
+          >
             {rows.map(([k, v], i) => (
               <li key={`${k}-${i}`} className="flex justify-between gap-3">
                 <span className="truncate text-text-secondary">{k}</span>
