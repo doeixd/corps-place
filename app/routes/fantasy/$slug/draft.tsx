@@ -293,6 +293,18 @@ function SchedulePanel({
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  // Re-render once the scheduled time passes so a manual-mode room can flip its
+  // "waiting on the owner" message live (the SSE feed only fires on draft events,
+  // and no event happens when a manual draft's time simply arrives).
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    if (isOwner || !scheduledAt || savedAutoStart) return;
+    const at = new Date(scheduledAt).getTime();
+    if (Number.isNaN(at) || Date.now() >= at) return;
+    const t = setTimeout(() => setNowMs(Date.now()), at - Date.now() + 500);
+    return () => clearTimeout(t);
+  }, [isOwner, scheduledAt, savedAutoStart]);
+
   // Starting the draft is a one-way door. Confirm when it would start a draft with no
   // set time, or earlier than the scheduled time — to avoid catching players off guard.
   const handleStartClick = () => {
@@ -302,6 +314,17 @@ function SchedulePanel({
   };
 
   if (!isOwner) {
+    const sched = scheduledAt ? new Date(scheduledAt).getTime() : null;
+    const timeArrived = sched != null && !Number.isNaN(sched) && nowMs >= sched;
+    // Manual mode + the scheduled time has arrived → the room won't open on its
+    // own; make it clear everyone is waiting on the owner to hit start.
+    if (scheduledAt && !savedAutoStart && timeArrived) {
+      return (
+        <p className="text-sm font-medium text-foreground">
+          The scheduled draft time has arrived — waiting on the owner to start the draft.
+        </p>
+      );
+    }
     return (
       <p className="text-muted-foreground">
         {scheduledAt
