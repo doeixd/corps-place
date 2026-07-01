@@ -34,7 +34,6 @@ import {
   type FullSortEntry,
 } from '@/lib/prediction-scenario';
 import type { SortMode, PredictionView, DiffBase } from '@/machines/prediction-machine';
-import { useDelayedFlag } from '@/hooks/use-delayed-flag';
 import { useSearchSync } from '@/lib/use-search-sync';
 import { searchString } from '@/lib/utils';
 
@@ -612,12 +611,14 @@ function CurrentPredictionPage({
       ),
     [ctx.scoredRecap, ctx.baseRecap, ctx.diffBase, ctx.previousRecap]
   );
-  // Previous-show fetch in flight (delay the spinner so a quick load doesn't flash).
-  const previousLoading = useDelayedFlag(snapshot.matches({ previous: 'loading' }), 250);
-  // Diff "vs Previous" states: still fetching (no data yet) vs loaded-but-empty
-  // (no corps has a scored prior show — season opener, or prod pre-read-model).
+  // Diff "vs Previous" states. The fetch is usually prefetched when the Diff tab
+  // opens, so by the time the user switches basis the data is already present and
+  // none of these show. `previousRecap == null` = not loaded yet (show the card
+  // rather than a table of `—`); loaded-empty = no corps has a scored prior show
+  // (season opener); error = the fetch failed.
+  const previousError = ctx.diffBase === 'previous' && snapshot.matches({ previous: 'error' });
   const previousPending =
-    ctx.diffBase === 'previous' && previousLoading && ctx.previousRecap == null;
+    ctx.diffBase === 'previous' && ctx.previousRecap == null && !previousError;
   const previousEmpty =
     ctx.diffBase === 'previous' && ctx.previousRecap != null && ctx.previousRecap.length === 0;
 
@@ -1285,6 +1286,13 @@ function CurrentPredictionPage({
                       description="Fetching each corps's most recent prior show."
                     />
                   </Show>
+                  <Show when={previousError}>
+                    <StatusCard
+                      tone="error"
+                      title="Couldn't load previous scores"
+                      description="Switch back to vs Prediction, or try again shortly."
+                    />
+                  </Show>
                   <Show when={previousEmpty}>
                     <StatusCard
                       tone="empty"
@@ -1292,7 +1300,7 @@ function CurrentPredictionPage({
                       description="None of this event's corps have a scored prior show this season yet."
                     />
                   </Show>
-                  <Show when={!previousPending && !previousEmpty}>
+                  <Show when={!previousPending && !previousError && !previousEmpty}>
                     <DiffRecapTable
                       rows={diffRows}
                       corpsLookup={corpsLookup}

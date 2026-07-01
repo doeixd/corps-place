@@ -533,8 +533,32 @@ export const predictionMachine = setup({
       initial: 'idle',
       states: {
         idle: {
-          always: { guard: ({ context }) => context.previousRecap != null, target: 'ready' },
+          always: [
+            // Already have it (loader-seeded) → ready.
+            { guard: ({ context }) => context.previousRecap != null, target: 'ready' },
+            // Deep-linked ?diffbase=previous (codec seeds diffBase before any
+            // event fires) → load it so SSR/first paint resolves to the table.
+            {
+              guard: ({ context }) =>
+                context.diffBase === 'previous' &&
+                context.previousRecap == null &&
+                typeof context.slug === 'string' &&
+                context.slug.length > 0,
+              target: 'loading',
+            },
+          ],
           on: {
+            // Prefetch the moment the user opens the Diff tab, so a later switch
+            // to the "vs Previous" basis is instant (loads in the background while
+            // the default "vs Prediction" table is shown).
+            SET_VIEW: {
+              guard: ({ context, event }) =>
+                event.view === 'diff' &&
+                context.previousRecap == null &&
+                typeof context.slug === 'string' &&
+                context.slug.length > 0,
+              target: 'loading',
+            },
             SET_DIFF_BASE: {
               guard: ({ context, event }) =>
                 event.base === 'previous' &&
