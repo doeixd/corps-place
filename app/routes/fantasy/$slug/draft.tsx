@@ -185,7 +185,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
         </div>
       ) : null}
 
-      {draft?.status === 'scheduled' ? <ProjectedOrder league={league} online={online} /> : null}
+      {draft?.status === 'scheduled' ? <ProjectedOrder league={league} /> : null}
 
       <SectionErrorBoundary label="the draft room">
         {!draft || draft.status === 'scheduled' ? (
@@ -230,7 +230,7 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
 }
 
 /** Pre-draft seeding preview (§ P3) — the projected pick order from quiz scores. */
-function ProjectedOrder({ league, online }: { league: LeagueData; online: Set<string> }) {
+function ProjectedOrder({ league }: { league: LeagueData }) {
   const byId = new Map(league.members.map((m) => [m.user_id, m]));
   const anyQuiz = league.members.some((m) => m.quiz_taken);
   return (
@@ -246,14 +246,12 @@ function ProjectedOrder({ league, online }: { league: LeagueData; online: Set<st
               return (
                 <li key={uid} className="flex items-center gap-2">
                   <span className="w-5 text-xs text-muted-foreground">{i + 1}.</span>
-                  <PresenceDot online={online.has(uid)} />
                   <span
                     className="font-medium"
                     style={m?.corps_color ? { color: m.corps_color } : undefined}
                   >
                     {m?.corps_name || m?.user_name || 'Player'}
                   </span>
-                  {m?.role === 'owner' ? <OwnerBadge /> : null}
                   {!m?.quiz_taken ? (
                     <span className="text-xs text-muted-foreground">(quiz not taken)</span>
                   ) : null}
@@ -471,18 +469,6 @@ function PresenceDot({ online }: { online: boolean }) {
         online ? 'bg-green-500' : 'bg-muted-foreground/30'
       )}
     />
-  );
-}
-
-// Marks the league owner in a member/order list.
-function OwnerBadge() {
-  return (
-    <span
-      title="League owner"
-      className="shrink-0 rounded bg-muted px-1 py-px text-[10px] font-medium uppercase tracking-wide text-muted-foreground"
-    >
-      Owner
-    </span>
   );
 }
 
@@ -1058,7 +1044,6 @@ function DraftBoard({
                         <span className="flex items-center gap-1.5">
                           {online ? <PresenceDot online={online.has(m.user_id)} /> : null}
                           {m.corps_name || m.user_name || 'Player'}
-                          {m.role === 'owner' ? <OwnerBadge /> : null}
                         </span>
                       </TableCell>
                     ) : null}
