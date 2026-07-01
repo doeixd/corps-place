@@ -652,6 +652,39 @@ const SCHEMA = [
    )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_score_push_endpoint ON score_push_subscriptions (endpoint)`,
 
+  // Per-device Web Push subscriptions for ADMIN operational alerts (e.g. the score
+  // auto-ingest failing). Keyed by endpoint like score_push_subscriptions, but the
+  // audience is admins/moderators (registered from /admin/jobs), and the sender is
+  // the VM-side scripts/recordIngestRun.ts on the cron failure path. `user_id` is
+  // the admin who registered the device (for pruning / display).
+  `CREATE TABLE IF NOT EXISTS admin_push_subscriptions (
+     endpoint TEXT PRIMARY KEY,
+     user_id TEXT NOT NULL,
+     p256dh TEXT NOT NULL,
+     auth TEXT NOT NULL,
+     created_at TEXT NOT NULL
+   )`,
+
+  // Auto-ingest (and sibling cron) run history, so /admin can show cron health +
+  // logs instead of log-spelunking on the box. Written by the VM-side
+  // scripts/recordIngestRun.ts (called from auto-ingest-scores.sh's write_report),
+  // read by the adminIngestRuns server-fn. Mirrors the JSON run reports the script
+  // already writes to sdk/results/score-ingest-runs/ (which the container can't see).
+  `CREATE TABLE IF NOT EXISTS ingest_runs (
+     run_id TEXT PRIMARY KEY,
+     ts TEXT NOT NULL,
+     kind TEXT NOT NULL,                    -- 'score-ingest'
+     status TEXT NOT NULL,                  -- idle | scrape_failed | published | no_new_scores
+     season TEXT,
+     pending_events TEXT,                   -- space-joined slugs
+     scores_before INTEGER,
+     scores_after INTEGER,
+     scores_delta INTEGER,
+     published INTEGER NOT NULL DEFAULT 0,   -- 0/1
+     detail TEXT                            -- optional message / log tail
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_ingest_runs_ts ON ingest_runs (ts DESC)`,
+
   // ---------------------------------------------------------------------------
   // Staff/Judge profile ownership (docs/plans/STAFF_PROFILE_OWNERSHIP_PLAN.md).
   // A real person claims & manages their own /staff or /judges profile. Keyed by

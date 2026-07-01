@@ -87,6 +87,13 @@ json.dump({
 }, open(path, 'w'), indent=2)
 print(f"[auto-ingest] run report -> {path}")
 PY
+  # Also record the run into contributions.db so /admin shows cron health, and push
+  # every registered admin device on a failure. Best-effort: never fail the run.
+  vp exec tsx scripts/recordIngestRun.ts \
+    --status "$status" --season "$SEASON" \
+    --before "${before:-}" --after "${after:-}" \
+    --pending "$(printf '%s' "${pending:-}" | tr '\n' ' ')" \
+    --published "$published" 2>&1 | sed 's/^/    /' || true
 }
 
 # Gate: scrape only when a show's scores should be posting — i.e. NOW is in the

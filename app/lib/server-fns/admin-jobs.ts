@@ -138,6 +138,64 @@ export const adminJob = createServerFn({ method: 'GET' })
     };
   });
 
+export interface IngestRunRow {
+  runId: string;
+  ts: string;
+  kind: string;
+  status: string;
+  season: string | null;
+  pendingEvents: string | null;
+  scoresBefore: number | null;
+  scoresAfter: number | null;
+  scoresDelta: number | null;
+  published: boolean;
+  detail: string | null;
+}
+
+const IngestRunsInput = v.object({
+  limit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(200)), 30),
+});
+
+/**
+ * Recent auto-ingest (cron) runs — cron health the /admin/jobs queue can't show
+ * (the score auto-ingest runs on a cron, not the admin_jobs queue). Rows are
+ * written VM-side by scripts/recordIngestRun.ts. Cap: viewAdmin.
+ */
+export const adminIngestRuns = createServerFn({ method: 'GET' })
+  .validator((d: unknown) => v.parse(IngestRunsInput, d))
+  .handler(async ({ data }): Promise<IngestRunRow[]> => {
+    await requireCapability(getWebRequest(), 'viewAdmin');
+    const db = await getContributionsDb();
+    // The table is created lazily (by the app schema or the VM recorder); tolerate
+    // its absence on a fresh DB so the page still renders.
+    let rows: Record<string, unknown>[] = [];
+    try {
+      rows = (
+        await db.execute({
+          sql: `SELECT run_id, ts, kind, status, season, pending_events,
+                       scores_before, scores_after, scores_delta, published, detail
+                FROM ingest_runs ORDER BY ts DESC LIMIT ?`,
+          args: [data.limit],
+        })
+      ).rows as unknown as Record<string, unknown>[];
+    } catch (e) {
+      if (!String(e).includes('no such table')) throw e;
+    }
+    return rows.map((r) => ({
+      runId: String(r.run_id),
+      ts: String(r.ts),
+      kind: String(r.kind),
+      status: String(r.status),
+      season: (r.season as string) ?? null,
+      pendingEvents: (r.pending_events as string) ?? null,
+      scoresBefore: r.scores_before == null ? null : Number(r.scores_before),
+      scoresAfter: r.scores_after == null ? null : Number(r.scores_after),
+      scoresDelta: r.scores_delta == null ? null : Number(r.scores_delta),
+      published: Number(r.published ?? 0) === 1,
+      detail: (r.detail as string) ?? null,
+    }));
+  });
+
 /** Cancel a job — only while still 'queued' (a running job is owned by the worker). Cap: runJobs. */
 export const adminCancelJob = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ jobId: v.string() }), d))
