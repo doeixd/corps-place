@@ -33,8 +33,15 @@ import {
   readAllShows,
   listPredictedEvents as readPredictedEvents,
   listAllShowTitles as readAllShowTitles,
+  readEventPredictionSnapshotDates,
+  readEventPredictionAsOf,
 } from '@sdk/src/readModel/readers.js';
 import { buildAllShowTitles } from '@sdk/src/readModel/builders/shows.js';
+import {
+  buildEventPredictionSnapshotDates,
+  buildEventPredictionAsOf,
+  type EventPredictionAsOf,
+} from '@sdk/src/readModel/builders/predictions.js';
 import { createClient } from '@libsql/client';
 import * as path from 'node:path';
 
@@ -190,6 +197,29 @@ export const listPredictedEvents = createServerFn({ method: 'GET' }).handler(
     return readPredictedEvents(getReadModelClient());
   }
 );
+
+// ── Forecast-as-of (prediction-page date scrubber) ───────────────────────────
+// Distinct snapshot days for an event's prediction history, and the recap as of a
+// chosen day. Prod reads the emitted rm_event_prediction_snapshots; dev falls back
+// to the relational builder. Until the read-model section ships, prod returns
+// empty/null (the scrubber simply hides). See FORECAST_AS_OF_PREDICTION_PAGE_PLAN.
+export const getHybridEventPredictionSnapshotDates = createServerFn({ method: 'GET' })
+  .validator((slug: string) => slug)
+  .handler(async ({ data }): Promise<{ dates: string[] }> => {
+    if (readModelEnabled()) {
+      return { dates: await readEventPredictionSnapshotDates(getReadModelClient(), data).catch(() => []) };
+    }
+    return { dates: await buildEventPredictionSnapshotDates(getShowTitlesBigDb(), data).catch(() => []) };
+  });
+
+export const getHybridEventPredictionAsOf = createServerFn({ method: 'GET' })
+  .validator((data: { slug: string; date: string }) => data)
+  .handler(async ({ data }): Promise<EventPredictionAsOf | null> => {
+    if (readModelEnabled()) {
+      return readEventPredictionAsOf(getReadModelClient(), data.slug, data.date).catch(() => null);
+    }
+    return buildEventPredictionAsOf(getShowTitlesBigDb(), data.slug, data.date).catch(() => null);
+  });
 
 // All show titles across seasons — powers the /shows program directory.
 export const getAllShowTitles = createServerFn({ method: 'GET' }).handler(

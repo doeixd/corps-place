@@ -148,8 +148,10 @@ export const buildPredictedEventSlugs = async (
 
 /** One event's prediction recap as of a snapshot date, plus run context. */
 export interface EventPredictionAsOf {
-  /** The predictions array (same RecapRow shape as the latest recap), canonicalized. */
-  recap: unknown[];
+  /** The predictions array (same RecapRow shape as the latest recap), canonicalized.
+   *  Heterogeneous model rows — typed `any[]` like the rest of the prediction path. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  recap: any[];
   /** Timestamp of the resolved run (the latest on/before the requested day). */
   predicted_at: string | null;
   /** Season progress of that run (0–100), for labeling. */

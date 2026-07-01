@@ -25,7 +25,7 @@ import type { FullEventRecap } from "./builders/fullRecap.js";
 import type { EventPreviousRecap } from "./builders/previousRecap.js";
 import type { JudgeProfile, JudgeSummary } from "./builders/judges.js";
 import type { StaffProfile, StaffSummary } from "./builders/staff.js";
-import type { LatestPredictionRow } from "./builders/predictions.js";
+import type { LatestPredictionRow, EventPredictionAsOf } from "./builders/predictions.js";
 import type { ShowInfoSummary, ShowDetail } from "./builders/shows.js";
 import type { VsCorpsScorePoint, VsBaselinePoint, VsPredictedPoint } from "./builders/vs.js";
 import type { RankingScoreRow, RankMetric } from "./builders/rankings.js";
@@ -1009,6 +1009,44 @@ export const readLatestPredictionSummary = async (
     season: row.season,
     predicted_at: row.predicted_at,
     summary: JSON.parse(row.summary_json),
+  };
+};
+
+// Forecast-as-of: prediction history for an event (rm_event_prediction_snapshots).
+// Distinct snapshot days, and the recap as of one day. Keyed by event_slug (like
+// rm_event_prediction). Callers wrap in `.catch(() => …)` so a read-model without
+// the table (pre-emit) degrades to no scrubber.
+export const readEventPredictionSnapshotDates = async (
+  db: Client,
+  eventSlug: string,
+): Promise<string[]> => {
+  const r = await db.execute({
+    sql: `SELECT snapshot_at FROM rm_event_prediction_snapshots
+          WHERE event_slug = ? ORDER BY snapshot_at DESC`,
+    args: [eventSlug],
+  });
+  return (r.rows as unknown as { snapshot_at: string | null }[])
+    .map((x) => x.snapshot_at)
+    .filter((d): d is string => !!d);
+};
+
+export const readEventPredictionAsOf = async (
+  db: Client,
+  eventSlug: string,
+  date: string,
+): Promise<EventPredictionAsOf | null> => {
+  const r = await db.execute({
+    sql: `SELECT recap_json, predicted_at, percent_through
+          FROM rm_event_prediction_snapshots
+          WHERE event_slug = ? AND snapshot_at = ? LIMIT 1`,
+    args: [eventSlug, date],
+  });
+  const row = r.rows[0] as any;
+  if (!row) return null;
+  return {
+    recap: JSON.parse(row.recap_json),
+    predicted_at: row.predicted_at ?? null,
+    percent_through: typeof row.percent_through === 'number' ? row.percent_through : null,
   };
 };
 
