@@ -297,14 +297,42 @@ const makeProfileOwnerService = Effect.gen(function* () {
     // are merged/removed by the ingest pipeline (claims live in a separate DB, so the
     // merge can't carry them). Resolve each against the read-model and flag orphans
     // so a moderator can re-point or revoke.
-    const out: ((typeof rows)[number] & { orphaned: boolean; currentName: string | null })[] = [];
+    // What each owner has EDITED — surfaced to moderators to spot abuse (fabricated
+    // credits). Small table (only edited profiles), so one scan + group in JS. For
+    // collection overrides the summary is the op count; scalars just show the field.
+    const overrideRows = yield* sql<{
+      entity_type: string;
+      entity_id: string;
+      field_key: string;
+      content_json: string;
+    }>`SELECT entity_type, entity_id, field_key, content_json FROM profile_overrides`;
+    const editsByEntity = new Map<string, { field: string; ops: number | null }[]>();
+    for (const o of overrideRows) {
+      let ops: number | null = null;
+      try {
+        const c = JSON.parse(o.content_json) as { ops?: unknown };
+        if (Array.isArray(c?.ops)) ops = c.ops.length;
+      } catch {
+        // non-JSON scalar content — leave ops null
+      }
+      const key = `${o.entity_type}:${o.entity_id}`;
+      const arr = editsByEntity.get(key) ?? [];
+      arr.push({ field: o.field_key, ops });
+      editsByEntity.set(key, arr);
+    }
+
+    const out: ((typeof rows)[number] & {
+      orphaned: boolean;
+      currentName: string | null;
+      edits: { field: string; ops: number | null }[];
+    })[] = [];
     const nameCache = new Map<string, string | null>();
     for (const r of rows) {
       const key = `${r.entity_type}:${r.entity_id}`;
       if (!nameCache.has(key))
         nameCache.set(key, yield* resolveDisplayName(r.entity_type as EntityType, r.entity_id));
       const name = nameCache.get(key) ?? null;
-      out.push({ ...r, orphaned: name == null, currentName: name });
+      out.push({ ...r, orphaned: name == null, currentName: name, edits: editsByEntity.get(key) ?? [] });
     }
     return out;
   });

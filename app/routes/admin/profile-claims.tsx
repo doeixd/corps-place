@@ -37,6 +37,7 @@ type ClaimRow = {
   attested_at: string;
   orphaned: boolean; // entity_id no longer resolves in the read-model (merged/removed)
   currentName: string | null;
+  edits: { field: string; ops: number | null }[]; // owner's overrides (for review)
 };
 
 export const Route = createFileRoute('/admin/profile-claims')({
@@ -166,6 +167,12 @@ function ProfileClaims({ all }: { all: ClaimRow[] }) {
         <span className="text-text-secondary">
           claimed as “{c.google_name ?? '—'}” · {new Date(c.claimed_at).toLocaleDateString()}
         </span>
+        <Show when={c.edits.length > 0}>
+          <Badge variant="secondary" size="sm">
+            edited:{' '}
+            {c.edits.map((e) => (e.ops != null ? `${e.field} (${e.ops})` : e.field)).join(', ')}
+          </Badge>
+        </Show>
         <ClaimActions claim={c} onDone={() => router.invalidate()} />
       </div>
     );
