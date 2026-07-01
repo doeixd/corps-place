@@ -49,14 +49,14 @@ export const Route = createFileRoute('/shows/$slug/$season')({
     const { slug, season } = params;
     const corps = await getCorps({ data: slug });
     const key = corps?.corps_key;
-    // show / contributions / history / citations each depend only on the corps key —
-    // NOT on one another — so fetch them in one parallel batch instead of a 4-deep
+    // show / contributions / history / citations each depend only on the corps key â
+    // NOT on one another â so fetch them in one parallel batch instead of a 4-deep
     // server-fn waterfall (one round-trip instead of four after the corps lookup).
     // Core, above-the-fold data only. history + governance are DEFERRED off this
     // blocking loader (Phase 1, INP): they feed below-the-fold panels, so the page
     // paints on core data and those panels fetch on mount (HistoryPanel self-fetches;
     // governance is fetched in the component for the moderator gate). citations stays
-    // — repertoire/movements render inline citations above the fold.
+    // â repertoire/movements render inline citations above the fold.
     const [show, contributions, citations] = key
       ? await Promise.all([
           getShowDetail({ data: { corpsKey: key, season } }),
@@ -101,10 +101,10 @@ export const Route = createFileRoute('/shows/$slug/$season')({
     const authoredPlain = d.authored?.about?.plain?.trim() || null;
     const description = clampDescription(
       authoredPlain ?? s.description ?? s.tagline ?? s.subtitle ?? s.designerNotes,
-      `${corpsName} ${d.season} drum corps production${s.title ? ` "${s.title}"` : ''} — program, repertoire, designers and media on DrumCorps.app.`
+      `${corpsName} ${d.season} drum corps production${s.title ? ` "${s.title}"` : ''} â program, repertoire, designers and media on DrumCorps.app.`
     );
     return seoHead({
-      title: `${corpsName ? corpsName + ' ' : ''}${d.season} — ${s.title} (Drum Corps Show)`,
+      title: `${corpsName ? corpsName + ' ' : ''}${d.season} â ${s.title} (Drum Corps Show)`,
       description,
       path: `/shows/${params.slug}/${params.season}`,
       // Generated Satori OG card (show title + corps + season); the real media
@@ -140,7 +140,10 @@ export const Route = createFileRoute('/shows/$slug/$season')({
       ],
     });
   },
-  staleTime: 60_000,
+  // Static read-model data (per-emit; client hard-reloads on deploy) — keep it
+  // fresh for the session so repeat navs render instantly from the router cache.
+  staleTime: Infinity,
+  gcTime: Infinity,
   component: ShowDetailPage,
 });
 
@@ -205,19 +208,19 @@ function ShowDetailPage() {
               <h1 className="text-2xl font-bold text-text-primary">
                 {show.title}
                 <span className="mt-1 block text-xs font-medium uppercase tracking-wide text-text-secondary">
-                  {corps.name} · {show.season}
+                  {corps.name} Â· {show.season}
                 </span>
               </h1>
               <Show when={show.subtitle}>{(s) => <p className="text-text-secondary">{s}</p>}</Show>
               <Show when={show.tagline}>
-                {(t) => <p className="text-sm italic text-text-secondary">“{t}”</p>}
+                {(t) => <p className="text-sm italic text-text-secondary">â{t}â</p>}
               </Show>
               <div className="pt-1">
                 <ScoreNotifyButton
                   targetKind="event"
                   targetSlug={`${corps.slug}/${show.season}`}
                   // This subscription is keyed by corps+season, so it fires for
-                  // EVERY scored show this corps performs this season — the label
+                  // EVERY scored show this corps performs this season â the label
                   // must say so rather than imply this single show.
                   targetLabel={`every ${corps.name} show in ${show.season}`}
                 />
@@ -273,7 +276,7 @@ function ShowDetailPage() {
             />
           </SectionErrorBoundary>
 
-          {/* Media (scraped seed + authored overlay) — below the fold; defer its
+          {/* Media (scraped seed + authored overlay) â below the fold; defer its
               mount (video facades) until scrolled near to cut initial render cost. */}
           <SectionErrorBoundary label="the media section">
             <LazyMount minHeight={240}>
@@ -300,7 +303,7 @@ function ShowDetailPage() {
                       <Show when={r.authorName || r.publication}>
                         {() => (
                           <p className="mt-1 text-xs text-text-secondary">
-                            {[r.authorName, r.publication].filter(Boolean).join(' · ')}
+                            {[r.authorName, r.publication].filter(Boolean).join(' Â· ')}
                           </p>
                         )}
                       </Show>
@@ -311,7 +314,7 @@ function ShowDetailPage() {
             </Section>
           </Show>
 
-          {/* ── Authored sections (live wiki editing) ── */}
+          {/* ââ Authored sections (live wiki editing) ââ */}
           <SectionErrorBoundary label="the synopsis section">
             <AboutSection
               corpsKey={corps.corps_key}
@@ -342,7 +345,7 @@ function ShowDetailPage() {
             />
           </SectionErrorBoundary>
 
-          {/* References / citations (M11a) — off-screen on load; skip its render
+          {/* References / citations (M11a) â off-screen on load; skip its render
               until scrolled near (content-visibility) to cut initial paint cost. */}
           <div className="[contain-intrinsic-size:auto_300px] [content-visibility:auto]">
             <SectionErrorBoundary label="the references section">
@@ -390,7 +393,7 @@ function ShowDetailPage() {
   );
 }
 
-// ── Presentational helpers ───────────────────────────────────────────────────
+// ââ Presentational helpers âââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 function Section({
   icon,
