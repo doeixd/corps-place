@@ -95,6 +95,8 @@ import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
 import { ServerRoute as ApiCollectServerRouteImport } from './routes/api/collect'
 import { ServerRoute as ReadModelStaffPersonIdServerRouteImport } from './routes/read-model/staff/$personId'
 import { ServerRoute as ReadModelRecapsSlugServerRouteImport } from './routes/read-model/recaps/$slug'
+import { ServerRoute as ReadModelMerchStoresDotjsonServerRouteImport } from './routes/read-model/merch/stores[.]json'
+import { ServerRoute as ReadModelMerchFacetsDotjsonServerRouteImport } from './routes/read-model/merch/facets[.]json'
 import { ServerRoute as ReadModelJudgesJudgeIdServerRouteImport } from './routes/read-model/judges/$judgeId'
 import { ServerRoute as ReadModelCorpsSlugServerRouteImport } from './routes/read-model/corps/$slug'
 import { ServerRoute as ReadModelCorpsScoresSlugServerRouteImport } from './routes/read-model/corps-scores/$slug'
@@ -110,6 +112,7 @@ import { ServerRoute as ApiFantasyMediaIdServerRouteImport } from './routes/api/
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
 import { ServerRoute as ReadModelPredictionPageYearSlugSlugServerRouteImport } from './routes/read-model/prediction-page/$yearSlug/$slug'
 import { ServerRoute as ReadModelMerchProductsProductIdServerRouteImport } from './routes/read-model/merch/products/$productId'
+import { ServerRoute as ReadModelMerchCatalogAllDotjsonServerRouteImport } from './routes/read-model/merch/catalog/all[.]json'
 import { ServerRoute as ApiOgScoreSlugServerRouteImport } from './routes/api/og/score/$slug'
 import { ServerRoute as ApiFantasyJobsRecomputeServerRouteImport } from './routes/api/fantasy/jobs/recompute'
 import { ServerRoute as ApiFantasyJobsDispatchServerRouteImport } from './routes/api/fantasy/jobs/dispatch'
@@ -543,6 +546,18 @@ const ReadModelRecapsSlugServerRoute =
     path: '/read-model/recaps/$slug',
     getParentRoute: () => rootServerRouteImport,
   } as any)
+const ReadModelMerchStoresDotjsonServerRoute =
+  ReadModelMerchStoresDotjsonServerRouteImport.update({
+    id: '/read-model/merch/stores.json',
+    path: '/read-model/merch/stores.json',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelMerchFacetsDotjsonServerRoute =
+  ReadModelMerchFacetsDotjsonServerRouteImport.update({
+    id: '/read-model/merch/facets.json',
+    path: '/read-model/merch/facets.json',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
 const ReadModelJudgesJudgeIdServerRoute =
   ReadModelJudgesJudgeIdServerRouteImport.update({
     id: '/$judgeId',
@@ -626,6 +641,12 @@ const ReadModelMerchProductsProductIdServerRoute =
   ReadModelMerchProductsProductIdServerRouteImport.update({
     id: '/read-model/merch/products/$productId',
     path: '/read-model/merch/products/$productId',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelMerchCatalogAllDotjsonServerRoute =
+  ReadModelMerchCatalogAllDotjsonServerRouteImport.update({
+    id: '/read-model/merch/catalog/all.json',
+    path: '/read-model/merch/catalog/all.json',
     getParentRoute: () => rootServerRouteImport,
   } as any)
 const ApiOgScoreSlugServerRoute = ApiOgScoreSlugServerRouteImport.update({
@@ -1190,11 +1211,14 @@ export interface FileServerRoutesByFullPath {
   '/read-model/corps-scores/$slug': typeof ReadModelCorpsScoresSlugServerRoute
   '/read-model/corps/$slug': typeof ReadModelCorpsSlugServerRoute
   '/read-model/judges/$judgeId': typeof ReadModelJudgesJudgeIdServerRoute
+  '/read-model/merch/facets.json': typeof ReadModelMerchFacetsDotjsonServerRoute
+  '/read-model/merch/stores.json': typeof ReadModelMerchStoresDotjsonServerRoute
   '/read-model/recaps/$slug': typeof ReadModelRecapsSlugServerRoute
   '/read-model/staff/$personId': typeof ReadModelStaffPersonIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
+  '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
   '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
   '/read-model/prediction-page/$yearSlug/$slug': typeof ReadModelPredictionPageYearSlugSlugServerRoute
   '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
@@ -1226,11 +1250,14 @@ export interface FileServerRoutesByTo {
   '/read-model/corps-scores/$slug': typeof ReadModelCorpsScoresSlugServerRoute
   '/read-model/corps/$slug': typeof ReadModelCorpsSlugServerRoute
   '/read-model/judges/$judgeId': typeof ReadModelJudgesJudgeIdServerRoute
+  '/read-model/merch/facets.json': typeof ReadModelMerchFacetsDotjsonServerRoute
+  '/read-model/merch/stores.json': typeof ReadModelMerchStoresDotjsonServerRoute
   '/read-model/recaps/$slug': typeof ReadModelRecapsSlugServerRoute
   '/read-model/staff/$personId': typeof ReadModelStaffPersonIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
+  '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
   '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
   '/read-model/prediction-page/$yearSlug/$slug': typeof ReadModelPredictionPageYearSlugSlugServerRoute
   '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
@@ -1263,11 +1290,14 @@ export interface FileServerRoutesById {
   '/read-model/corps-scores/$slug': typeof ReadModelCorpsScoresSlugServerRoute
   '/read-model/corps/$slug': typeof ReadModelCorpsSlugServerRoute
   '/read-model/judges/$judgeId': typeof ReadModelJudgesJudgeIdServerRoute
+  '/read-model/merch/facets.json': typeof ReadModelMerchFacetsDotjsonServerRoute
+  '/read-model/merch/stores.json': typeof ReadModelMerchStoresDotjsonServerRoute
   '/read-model/recaps/$slug': typeof ReadModelRecapsSlugServerRoute
   '/read-model/staff/$personId': typeof ReadModelStaffPersonIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
+  '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
   '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
   '/read-model/prediction-page/$yearSlug/$slug': typeof ReadModelPredictionPageYearSlugSlugServerRoute
   '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
@@ -1301,11 +1331,14 @@ export interface FileServerRouteTypes {
     | '/read-model/corps-scores/$slug'
     | '/read-model/corps/$slug'
     | '/read-model/judges/$judgeId'
+    | '/read-model/merch/facets.json'
+    | '/read-model/merch/stores.json'
     | '/read-model/recaps/$slug'
     | '/read-model/staff/$personId'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
     | '/api/og/score/$slug'
+    | '/read-model/merch/catalog/all.json'
     | '/read-model/merch/products/$productId'
     | '/read-model/prediction-page/$yearSlug/$slug'
     | '/api/fantasy/draft/$leagueId/stream'
@@ -1337,11 +1370,14 @@ export interface FileServerRouteTypes {
     | '/read-model/corps-scores/$slug'
     | '/read-model/corps/$slug'
     | '/read-model/judges/$judgeId'
+    | '/read-model/merch/facets.json'
+    | '/read-model/merch/stores.json'
     | '/read-model/recaps/$slug'
     | '/read-model/staff/$personId'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
     | '/api/og/score/$slug'
+    | '/read-model/merch/catalog/all.json'
     | '/read-model/merch/products/$productId'
     | '/read-model/prediction-page/$yearSlug/$slug'
     | '/api/fantasy/draft/$leagueId/stream'
@@ -1373,11 +1409,14 @@ export interface FileServerRouteTypes {
     | '/read-model/corps-scores/$slug'
     | '/read-model/corps/$slug'
     | '/read-model/judges/$judgeId'
+    | '/read-model/merch/facets.json'
+    | '/read-model/merch/stores.json'
     | '/read-model/recaps/$slug'
     | '/read-model/staff/$personId'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
     | '/api/og/score/$slug'
+    | '/read-model/merch/catalog/all.json'
     | '/read-model/merch/products/$productId'
     | '/read-model/prediction-page/$yearSlug/$slug'
     | '/api/fantasy/draft/$leagueId/stream'
@@ -1408,10 +1447,13 @@ export interface RootServerRouteChildren {
   ReadModelCorpsAppearancesSlugServerRoute: typeof ReadModelCorpsAppearancesSlugServerRoute
   ReadModelCorpsMerchSlugServerRoute: typeof ReadModelCorpsMerchSlugServerRoute
   ReadModelCorpsScoresSlugServerRoute: typeof ReadModelCorpsScoresSlugServerRoute
+  ReadModelMerchFacetsDotjsonServerRoute: typeof ReadModelMerchFacetsDotjsonServerRoute
+  ReadModelMerchStoresDotjsonServerRoute: typeof ReadModelMerchStoresDotjsonServerRoute
   ReadModelRecapsSlugServerRoute: typeof ReadModelRecapsSlugServerRoute
   ApiFantasyJobsDispatchServerRoute: typeof ApiFantasyJobsDispatchServerRoute
   ApiFantasyJobsRecomputeServerRoute: typeof ApiFantasyJobsRecomputeServerRoute
   ApiOgScoreSlugServerRoute: typeof ApiOgScoreSlugServerRoute
+  ReadModelMerchCatalogAllDotjsonServerRoute: typeof ReadModelMerchCatalogAllDotjsonServerRoute
   ReadModelMerchProductsProductIdServerRoute: typeof ReadModelMerchProductsProductIdServerRoute
   ReadModelPredictionPageYearSlugSlugServerRoute: typeof ReadModelPredictionPageYearSlugSlugServerRoute
   ApiFantasyDraftLeagueIdStreamServerRoute: typeof ApiFantasyDraftLeagueIdStreamServerRoute
@@ -2012,6 +2054,20 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ReadModelRecapsSlugServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/read-model/merch/stores.json': {
+      id: '/read-model/merch/stores.json'
+      path: '/read-model/merch/stores.json'
+      fullPath: '/read-model/merch/stores.json'
+      preLoaderRoute: typeof ReadModelMerchStoresDotjsonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/merch/facets.json': {
+      id: '/read-model/merch/facets.json'
+      path: '/read-model/merch/facets.json'
+      fullPath: '/read-model/merch/facets.json'
+      preLoaderRoute: typeof ReadModelMerchFacetsDotjsonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/read-model/judges/$judgeId': {
       id: '/read-model/judges/$judgeId'
       path: '/$judgeId'
@@ -2115,6 +2171,13 @@ declare module '@tanstack/react-start/server' {
       path: '/read-model/merch/products/$productId'
       fullPath: '/read-model/merch/products/$productId'
       preLoaderRoute: typeof ReadModelMerchProductsProductIdServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/merch/catalog/all.json': {
+      id: '/read-model/merch/catalog/all.json'
+      path: '/read-model/merch/catalog/all.json'
+      fullPath: '/read-model/merch/catalog/all.json'
+      preLoaderRoute: typeof ReadModelMerchCatalogAllDotjsonServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
     '/api/og/score/$slug': {
@@ -2311,10 +2374,16 @@ const rootServerRouteChildren: RootServerRouteChildren = {
     ReadModelCorpsAppearancesSlugServerRoute,
   ReadModelCorpsMerchSlugServerRoute: ReadModelCorpsMerchSlugServerRoute,
   ReadModelCorpsScoresSlugServerRoute: ReadModelCorpsScoresSlugServerRoute,
+  ReadModelMerchFacetsDotjsonServerRoute:
+    ReadModelMerchFacetsDotjsonServerRoute,
+  ReadModelMerchStoresDotjsonServerRoute:
+    ReadModelMerchStoresDotjsonServerRoute,
   ReadModelRecapsSlugServerRoute: ReadModelRecapsSlugServerRoute,
   ApiFantasyJobsDispatchServerRoute: ApiFantasyJobsDispatchServerRoute,
   ApiFantasyJobsRecomputeServerRoute: ApiFantasyJobsRecomputeServerRoute,
   ApiOgScoreSlugServerRoute: ApiOgScoreSlugServerRoute,
+  ReadModelMerchCatalogAllDotjsonServerRoute:
+    ReadModelMerchCatalogAllDotjsonServerRoute,
   ReadModelMerchProductsProductIdServerRoute:
     ReadModelMerchProductsProductIdServerRoute,
   ReadModelPredictionPageYearSlugSlugServerRoute:

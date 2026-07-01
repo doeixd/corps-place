@@ -29,10 +29,18 @@ const run = async (): Promise<Response> => {
       staff: `staff?v=${v}`,
     },
   };
+  // If the read-model meta is degraded (version === 'dev' — read-model unset or a
+  // transient rm_meta read error), DON'T let clients cache the manifest: it would
+  // point every shard at ?v=dev, and the shards are served `immutable`, so a
+  // momentary blip could get cached "forever". no-store keeps the manifest fully
+  // revalidated until a real version is available.
+  const degraded = meta.version === 'dev';
   return new Response(JSON.stringify(body), {
     headers: {
       'content-type': 'application/json; charset=utf-8',
-      'cache-control': 'public, max-age=30, stale-while-revalidate=86400',
+      'cache-control': degraded
+        ? 'no-store'
+        : 'public, max-age=30, stale-while-revalidate=86400',
     },
   });
 };
