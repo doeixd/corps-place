@@ -140,3 +140,77 @@ export const buildPredictedEventSlugs = async (
   });
   return (result.rows as unknown as { event_slug: string }[]).map((r) => r.event_slug);
 };
+
+// ── Forecast-as-of (prediction history) ──────────────────────────────────────
+// The model re-forecasts an event periodically; each run stamps `predicted_at`.
+// A "snapshot" is the recap as it stood on a given day, so scrubbing the date
+// replays how the forecast converged. See FORECAST_AS_OF_PREDICTION_PAGE_PLAN.md.
+
+/** One event's prediction recap as of a snapshot date, plus run context. */
+export interface EventPredictionAsOf {
+  /** The predictions array (same RecapRow shape as the latest recap), canonicalized. */
+  recap: unknown[];
+  /** Timestamp of the resolved run (the latest on/before the requested day). */
+  predicted_at: string | null;
+  /** Season progress of that run (0–100), for labeling. */
+  percent_through: number | null;
+}
+
+/**
+ * Distinct snapshot days (YYYY-MM-DD) that have a saved prediction run for this
+ * event, newest first. Empty when no run exists (e.g. non-2026 or not predicted).
+ */
+export const buildEventPredictionSnapshotDates = async (
+  db: Client,
+  eventSlug: string,
+  season = '2026'
+): Promise<string[]> => {
+  const r = await db.execute({
+    sql: `
+      SELECT DISTINCT substr(predicted_at, 1, 10) AS d
+      FROM model_event_prediction_runs
+      WHERE season = ? AND event_slug = ? AND predicted_at IS NOT NULL
+      ORDER BY d DESC
+    `,
+    args: [season, eventSlug],
+  });
+  return (r.rows as unknown as { d: string | null }[])
+    .map((x) => x.d)
+    .filter((d): d is string => !!d);
+};
+
+/**
+ * The event's prediction recap AS OF a date (YYYY-MM-DD): the latest run whose
+ * `predicted_at` is on or before the end of that day. Same latest-on/before rule
+ * as `buildCorpsSeasonSnapshots` / `buildVsPredictionSnapshot`, so the event page
+ * and the /vs chart can't disagree. The recap is canonicalized (alias → corps_key)
+ * exactly like `buildLatestPredictionSummary`, so the diff view's outer-join still
+ * merges predicted + scored rows for older snapshots. Returns null when no run is
+ * that old.
+ */
+export const buildEventPredictionAsOf = async (
+  db: Client,
+  eventSlug: string,
+  date: string,
+  season = '2026'
+): Promise<EventPredictionAsOf | null> => {
+  const cutoff = `${date}T23:59:59.999Z`;
+  const result = await db.execute({
+    sql: `
+      SELECT * FROM model_event_prediction_runs
+      WHERE season = ? AND event_slug = ? AND predicted_at <= ?
+      ORDER BY predicted_at DESC
+      LIMIT 1
+    `,
+    args: [season, eventSlug, cutoff],
+  });
+  const run = result.rows[0] as any;
+  if (!run) return null;
+  const payload = JSON.parse(String(run.payload_json));
+  canonicalizePredictions(payload, await loadCorpsCanon(db));
+  return {
+    recap: Array.isArray(payload?.predictions) ? payload.predictions : [],
+    predicted_at: run.predicted_at ?? null,
+    percent_through: typeof run.percent_through === 'number' ? run.percent_through : null,
+  };
+};
