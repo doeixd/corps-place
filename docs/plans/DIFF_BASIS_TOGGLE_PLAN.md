@@ -206,6 +206,25 @@ Emit + verify locally → publish read-model to R2 → deploy. The
 
 ---
 
+## 10b. As-built status (all phases implemented)
+
+- **Phase 1–2 shipped as designed.** Builder + service + server-fn; machine
+  `diffBase` + `previous` load region + codec; toggle UI + basis-aware table;
+  emitted `rm_event_previous_recap` section (`SCHEMA_VERSION` 17) + reader +
+  `verifyReadModel` parity. Builder and emit→reader round-trips smoke-tested
+  against in-memory fixtures.
+- **Phase 3 deviation — prefetch/deep-link is machine-native, not loader-based.**
+  The loader is NOT coupled to `?diffbase` (that would re-run the expensive
+  prediction/recap loader on every basis toggle and double-fetch). Instead: the
+  machine prefetches the moment the Diff tab opens (`SET_VIEW→loading`), and an
+  `always`-guard auto-loads when `diffBase` is codec-seeded to `'previous'` from
+  a deep link. Trade-off: a deep-linked `?diffbase=previous` shows a brief
+  loading card during SSR/first paint instead of SSR-rendered rows — acceptable
+  for a rare shared-link case, and the prefetch makes the card rare in normal use.
+- **Availability:** the Diff tab gate is unchanged (`hasScores && hasPrediction`);
+  the basis toggle always offers both options, and "vs Previous" degrades to a
+  loading / empty / error card when there's no prior-show data.
+
 ## 11. Suggested build order
 
 1. **App-side slice against the live builder** — server-fn + builder (live/dev
