@@ -10,8 +10,11 @@ import {
   getHybridEventFullRecap,
   getHybridEventPredictionPageData,
   getHybridEventPreviousRecap,
+  getHybridEventPredictionSnapshotDates,
+  getHybridEventPredictionAsOf,
   getHybridPrediction,
 } from '@/lib/server-fns/hybrid';
+import { AsofScrubber } from '@/components/rankings/asof-scrubber';
 import { loadDetailOrServer } from '@/db/detail-shard';
 import {
   SCORE_COLUMNS,
@@ -182,7 +185,20 @@ interface PredictionSearch {
    *  so a Diff link (incl. ?view=diff&diffbase=previous) is shareable + SSRs the
    *  right view. The codec already encodes it; validateSearch must keep it. */
   view?: PredictionView;
+  /** Forecast-as-of snapshot date (YYYY-MM-DD); omitted at the latest. */
+  asof?: string;
 }
+
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+// "Jun 13" for a YYYY-MM-DD snapshot date (UTC, so it doesn't shift a day).
+const fmtAsOfLabel = (d: string | null): string => {
+  if (!d) return 'latest';
+  const dt = new Date(`${d}T00:00:00Z`);
+  return Number.isNaN(dt.getTime())
+    ? d
+    : dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+};
 
 const isWindow = (v: unknown): v is ScenarioWindow =>
   (SCENARIO_WINDOWS as readonly string[]).includes(v as string);
@@ -213,6 +229,8 @@ const validatePredictionSearch = (search: Record<string, unknown>): PredictionSe
     out.diffbase = search.diffbase;
   if (search.view === 'scores' || search.view === 'prediction' || search.view === 'diff')
     out.view = search.view;
+  const asof = searchString(search.asof);
+  if (asof && ISO_DATE_RE.test(asof)) out.asof = asof;
   return out;
 };
 
@@ -237,11 +255,16 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
     // (Toggling basis in-session re-runs the loader; the machine's own actor also
     // covers that path — an accepted redundancy for SSR-correct shared links.)
     diffbasePrevious: search.diffbase === 'previous',
+    // Deep-linked ?asof=<date>: fetch that day's forecast so SSR renders the
+    // time-traveled recap. Scrubbing in-session re-runs the loader; the machine's
+    // `asof` region also covers it — same accepted redundancy for shared links.
+    asof: typeof search.asof === 'string' && ISO_DATE_RE.test(search.asof) ? search.asof : undefined,
   }),
   loader: async ({ params, deps }) => {
     const { yearSlug, slug } = params;
     const fakeScores = deps?.fakeScores === true;
     const wantPrevious = deps?.diffbasePrevious === true;
+    const asOf = deps?.asof ?? null;
     // Fetch the previous-show recap only when deep-linked to it (decoupled from
     // the page data so a normal load never pays for it). null ⇒ not fetched here
     // (the machine actor loads it on demand); a value ⇒ seed the machine so SSR
@@ -249,6 +272,17 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
     const loadPrevious = () =>
       wantPrevious
         ? getHybridEventPreviousRecap({ data: slug }).catch(() => ({ rows: [], sources: {} }))
+        : Promise.resolve(null);
+    // Forecast-as-of (2026 only): the snapshot dates power the scrubber; the as-of
+    // recap is fetched only when deep-linked so SSR renders that day's forecast.
+    const isPastSeason = yearSlug !== '2026';
+    const loadSnapshotDates = () =>
+      isPastSeason
+        ? Promise.resolve({ dates: [] as string[] })
+        : getHybridEventPredictionSnapshotDates({ data: slug }).catch(() => ({ dates: [] as string[] }));
+    const loadAsOfRecap = () =>
+      !isPastSeason && asOf
+        ? getHybridEventPredictionAsOf({ data: { slug, date: asOf } }).catch(() => null)
         : Promise.resolve(null);
 
     const empty = {
@@ -263,9 +297,9 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
       fullRecap: null,
       previousRecap: null,
       previousSources: {},
+      predictionSnapshotDates: [] as string[],
+      asOfRecap: null,
     };
-
-    const isPastSeason = yearSlug !== '2026';
 
     // PAST-SEASON: unchanged. Static shard on client nav (CDN-cached), falling
     // back to the server fns on SSR/miss/error. Full recap always preloaded.
@@ -289,6 +323,8 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
         ...(base as object),
         previousRecap: previous?.rows ?? null,
         previousSources: previous?.sources ?? {},
+        predictionSnapshotDates: [] as string[],
+        asOfRecap: null,
       };
     }
 
@@ -303,15 +339,19 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
         data: { yearSlug, slug, fakeScores },
       });
       const hasRecap = (data.recap?.scores?.length ?? 0) > 0;
-      const [fullRecap, previous] = await Promise.all([
+      const [fullRecap, previous, snapshotDates, asOfRecap] = await Promise.all([
         hasRecap ? getHybridEventFullRecap({ data: slug }).catch(() => null) : Promise.resolve(null),
         loadPrevious(),
+        loadSnapshotDates(),
+        loadAsOfRecap(),
       ]);
       return {
         ...data,
         fullRecap,
         previousRecap: previous?.rows ?? null,
         previousSources: previous?.sources ?? {},
+        predictionSnapshotDates: snapshotDates.dates,
+        asOfRecap: asOfRecap?.recap ?? null,
       };
     } catch {
       return empty;
@@ -508,6 +548,10 @@ function PredictionPage() {
         // (SSR-seeded); null otherwise → the machine loads it on demand.
         seededPreviousRecap={(loaderData.previousRecap as RecapRow[] | null) ?? null}
         seededPreviousSources={loaderData.previousSources ?? {}}
+        // Forecast-as-of: snapshot dates power the scrubber; the as-of recap is
+        // present only on a deep-linked ?asof= (SSR-seeded).
+        snapshotDates={(loaderData.predictionSnapshotDates as string[] | undefined) ?? []}
+        seededAsOfRecap={(loaderData.asOfRecap as RecapRow[] | null) ?? null}
       />
     </CorpsRegistryProvider>
   );
@@ -573,6 +617,8 @@ function CurrentPredictionPage({
   seededFullRecap,
   seededPreviousRecap,
   seededPreviousSources,
+  snapshotDates,
+  seededAsOfRecap,
 }: {
   params: { yearSlug: string; slug: string };
   slug: string;
@@ -591,6 +637,8 @@ function CurrentPredictionPage({
   seededFullRecap: FullEventRecap | null;
   seededPreviousRecap: RecapRow[] | null;
   seededPreviousSources: Record<string, { slug: string; name: string; date: string }>;
+  snapshotDates: string[];
+  seededAsOfRecap: RecapRow[] | null;
 }) {
   // Name this entry so a back control on a page reached from here reads
   // "Back to <event>" instead of the generic section label.
@@ -610,6 +658,9 @@ function CurrentPredictionPage({
       // the `previous` region starts `ready` (no client fetch, SSR renders rows).
       previousRecap: seededPreviousRecap,
       previousSources: seededPreviousSources,
+      // Deep-linked ?asof= — seeds the as-of recap so SSR renders that day's
+      // forecast without a client round trip (the codec decode supplies asOf).
+      asOfRecap: seededAsOfRecap,
     },
   });
 
@@ -671,6 +722,28 @@ function CurrentPredictionPage({
     ctx.diffBase === 'previous' && ctx.previousRecap == null && !previousError;
   const previousEmpty =
     ctx.diffBase === 'previous' && ctx.previousRecap != null && ctx.previousRecap.length === 0;
+
+  // Forecast-as-of scrubber: time-travel the prediction to an earlier model run.
+  // 2026-only (snapshotDates is empty otherwise); hidden with <2 dates or under
+  // ?fakeScores (synthetic recap has no real history). The scrubber wants dates
+  // oldest→newest; our server list is newest-first.
+  const isFakeScores = search.fakeScores === true;
+  const showForecastScrubber = snapshotDates.length >= 2 && !isFakeScores;
+  const scrubberDatesAsc = useMemo(() => [...snapshotDates].reverse(), [snapshotDates]);
+  const forecastScrubber = showForecastScrubber ? (
+    <div className="mb-3 space-y-1.5">
+      <AsofScrubber
+        dates={scrubberDatesAsc}
+        asof={ctx.asOf}
+        onSelect={(date) => send({ type: 'SET_AS_OF', date })}
+      />
+      <Show when={ctx.asOf != null}>
+        <p className="text-xs text-text-secondary">
+          Time-traveled — showing the forecast <span className="font-medium text-foreground">as of {fmtAsOfLabel(ctx.asOf)}</span>, not the latest.
+        </p>
+      </Show>
+    </div>
+  ) : null;
 
   // Scores-view Full Recap toggle. The prediction machine carries no full-recap
   // state (it's prediction-first), so the Scores view owns a small local toggle
@@ -1330,6 +1403,9 @@ function CurrentPredictionPage({
                       </p>
                     </Show>
                   </div>
+                  {/* As-of only applies to the prediction comparand; scrubbing it
+                      shrinks the ±Diff as the forecast converged on the scores. */}
+                  <Show when={ctx.diffBase === 'prediction'}>{forecastScrubber}</Show>
                   <Show when={previousPending}>
                     <StatusCard
                       tone="info"
@@ -1373,6 +1449,8 @@ function CurrentPredictionPage({
                 {/* ---- Prediction view: the existing Monte Carlo recap toolbar +
                     table, unchanged. Only renders in the prediction view. ---- */}
                 <Show when={view === 'prediction'}>
+                {/* Forecast-as-of scrubber: swaps the recap to that day's forecast. */}
+                {forecastScrubber}
                 {/* Recap toolbar + table */}
                 <Show
                   when={predictionRowsAvailable}
