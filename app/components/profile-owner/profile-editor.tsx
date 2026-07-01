@@ -19,10 +19,19 @@ import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo
 import {
   awardKey,
   performedKey,
+  assignmentKey,
   diffCollectionOps,
   type AwardItem,
   type PerformedItem,
+  type AssignmentItem,
 } from '@/lib/profile-owner/merge';
+
+// The canonical section/role vocabulary (from the live staff data) for the
+// assignment section dropdown, so owners fix a caption with a controlled value.
+const ROLE_TYPES = [
+  'brass', 'percussion', 'visual', 'guard', 'drum-major', 'design',
+  'music', 'director', 'admin', 'audio', 'medical', 'media', 'other',
+] as const;
 
 /**
  * Owner field editor for a claimed staff/judge profile (plan §6 scope: bio, photo,
@@ -46,12 +55,14 @@ export function ProfileEditor({
     currentPosition: { title: string; org: string } | null;
     awards?: readonly AwardItem[];
     performed?: readonly PerformedItem[];
+    assignments?: readonly AssignmentItem[];
   };
   /** Scraped baselines for the collection editors — the editor diffs its edited
    *  list against these to build the durable op-log (never the merged list). */
   scraped?: {
     awards: readonly AwardItem[];
     performed: readonly PerformedItem[];
+    assignments: readonly AssignmentItem[];
   };
 }) {
   const router = useRouter();
@@ -71,6 +82,44 @@ export function ProfileEditor({
   );
   const awardsDirty = JSON.stringify(awards) !== JSON.stringify(initial.awards ?? []);
   const performedDirty = JSON.stringify(performed) !== JSON.stringify(initial.performed ?? []);
+  const [assignments, setAssignments] = useState<AssignmentItem[]>(() =>
+    (initial.assignments ?? []).map((a) => ({ ...a }))
+  );
+  const assignmentsDirty =
+    JSON.stringify(assignments) !== JSON.stringify(initial.assignments ?? []);
+  const setAsn = (i: number, patch: Partial<AssignmentItem>) =>
+    setAssignments((list) => list.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+  // Add-a-row is scoped to a corps already on the profile (adding a brand-new
+  // corps needs the corps search-picker — a P2 follow-up).
+  const [addCorps, setAddCorps] = useState('');
+  const distinctCorps = Array.from(
+    new Map(
+      (initial.assignments ?? []).map((a) => [a.corps_key, a] as const)
+    ).values()
+  );
+  const addAssignmentRow = () => {
+    const c = distinctCorps.find((x) => x.corps_key === addCorps);
+    if (!c) return;
+    setAssignments((list) => [
+      ...list,
+      {
+        corps_key: c.corps_key,
+        corps_name: c.corps_name,
+        corps_slug: c.corps_slug,
+        season: null,
+        title: null,
+        role_type: null,
+        start_year: null,
+        end_year: null,
+      },
+    ]);
+    setAddCorps('');
+  };
+  const yearOrNull = (raw: string) => {
+    const t = raw.trim();
+    const n = Number(t);
+    return t && Number.isFinite(n) ? n : null;
+  };
 
   const onMerge = async () => {
     const other = mergeId.trim();
@@ -109,7 +158,7 @@ export function ProfileEditor({
   // not the merged list — so re-scrapes still surface new items). Drops empty rows.
   const saveCollection = async <T,>(
     label: string,
-    fieldKey: 'awards' | 'performed',
+    fieldKey: 'awards' | 'performed' | 'assignments',
     scrapedList: readonly T[],
     edited: readonly T[],
     keyOf: (i: T) => string,
@@ -402,6 +451,109 @@ export function ProfileEditor({
           }
         >
           Save groups
+        </BusyButton>
+      </div>
+
+      {/* Assignments (P2) — correct the noisy scraped record: fix a section/title/
+          season/years or remove a misattribution; add a row at a corps already on
+          the profile (a brand-new corps needs the search-picker — P2 follow-up). */}
+      <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
+        <div className="flex items-center justify-between gap-2">
+          <Label>Assignments</Label>
+          <div className="flex items-center gap-1">
+            <select
+              value={addCorps}
+              onChange={(e) => setAddCorps(e.target.value)}
+              className="rounded-md border border-border bg-background px-1.5 py-1 text-xs"
+            >
+              <option value="">add at corps…</option>
+              {distinctCorps.map((c) => (
+                <option key={c.corps_key} value={c.corps_key}>
+                  {c.corps_name}
+                </option>
+              ))}
+            </select>
+            <Button variant="ghost" size="sm" disabled={!addCorps} onClick={addAssignmentRow}>
+              + Add
+            </Button>
+          </div>
+        </div>
+        {assignments.length === 0 ? (
+          <p className="text-xs text-muted-foreground">No assignments.</p>
+        ) : (
+          assignments.map((a, i) => (
+            <div
+              key={i}
+              className="flex flex-wrap items-center gap-1.5 rounded-md border border-border p-1.5"
+            >
+              <span className="min-w-24 flex-1 truncate text-sm font-medium">{a.corps_name}</span>
+              <Input
+                placeholder="Season"
+                value={a.season ?? ''}
+                onChange={(e) => setAsn(i, { season: e.target.value || null })}
+                className="w-16"
+              />
+              <select
+                value={a.role_type ?? ''}
+                onChange={(e) => setAsn(i, { role_type: e.target.value || null })}
+                aria-label="Section"
+                className="rounded-md border border-border bg-background px-1.5 py-1.5 text-sm"
+              >
+                <option value="">section…</option>
+                {ROLE_TYPES.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+              <Input
+                placeholder="Title"
+                value={a.title ?? ''}
+                onChange={(e) => setAsn(i, { title: e.target.value || null })}
+                className="w-32"
+              />
+              <Input
+                placeholder="From"
+                type="number"
+                value={a.start_year ?? ''}
+                onChange={(e) => setAsn(i, { start_year: yearOrNull(e.target.value) })}
+                className="w-16"
+              />
+              <Input
+                placeholder="To"
+                type="number"
+                value={a.end_year ?? ''}
+                onChange={(e) => setAsn(i, { end_year: yearOrNull(e.target.value) })}
+                className="w-16"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label="Remove assignment"
+                onClick={() => setAssignments((list) => list.filter((_, j) => j !== i))}
+              >
+                ✕
+              </Button>
+            </div>
+          ))
+        )}
+        <BusyButton
+          busy={busy === 'assignments'}
+          size="sm"
+          className="self-start"
+          disabled={!assignmentsDirty}
+          onClick={() =>
+            void saveCollection(
+              'assignments',
+              'assignments',
+              scraped?.assignments ?? [],
+              assignments,
+              assignmentKey,
+              (a) => !a.corps_key
+            )
+          }
+        >
+          Save assignments
         </BusyButton>
       </div>
         </>

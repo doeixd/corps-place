@@ -6,8 +6,10 @@ import {
   performedKey,
   assignmentKey,
   mergeProfileOverlay,
+  mergeAssignmentsOverlay,
   scrapedFieldValue,
   type AwardItem,
+  type AssignmentItem,
   type CollectionOp,
   type ProfileOverlay,
 } from './merge';
@@ -179,6 +181,45 @@ describe('diffCollectionOps (editor → op log) round-trips', () => {
     const applied = applyCollectionOps(scraped, ops, key) as AwardItem[];
     const keysOf = (xs: AwardItem[]) => xs.map((x) => awardKey(x)).sort();
     expect(keysOf(applied)).toEqual(keysOf(edited));
+  });
+});
+
+describe('mergeAssignmentsOverlay (staff assignments, P2)', () => {
+  const a: AssignmentItem = {
+    corps_key: 'k1', corps_name: 'Cavaliers', corps_slug: 'cavaliers',
+    season: '2011', title: 'Brass Tech', role_type: 'brass', start_year: null, end_year: null,
+  };
+  const scraped: AssignmentItem[] = [a];
+
+  it('edits an assignment under an active claim (e.g. fix the section)', () => {
+    const fixed = { ...a, role_type: 'percussion' };
+    const ops: CollectionOp[] = [{ op: 'edit', key: assignmentKey(a), item: fixed }];
+    const out = mergeAssignmentsOverlay(scraped, {
+      claim: { status: 'active', name_match: 'exact' },
+      overrides: { assignments: { content: { ops }, diverged: false } },
+    });
+    // key includes role_type, so an edit reads as remove-old + add-new → the fixed row.
+    expect(out.some((x) => x.role_type === 'percussion')).toBe(true);
+    expect(out.some((x) => x.role_type === 'brass')).toBe(false);
+  });
+
+  it('removes a misattributed assignment', () => {
+    const ops: CollectionOp[] = [{ op: 'remove', key: assignmentKey(a) }];
+    const out = mergeAssignmentsOverlay(scraped, {
+      claim: { status: 'active', name_match: 'exact' },
+      overrides: { assignments: { content: { ops }, diverged: false } },
+    });
+    expect(out).toHaveLength(0);
+  });
+
+  it('no active claim → scraped unchanged (and a fresh copy)', () => {
+    expect(mergeAssignmentsOverlay(scraped, null)).toEqual(scraped);
+    expect(
+      mergeAssignmentsOverlay(scraped, {
+        claim: { status: 'pending', name_match: 'weak' },
+        overrides: { assignments: { content: { ops: [{ op: 'remove', key: assignmentKey(a) }] }, diverged: false } },
+      })
+    ).toEqual(scraped);
   });
 });
 

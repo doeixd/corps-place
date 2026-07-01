@@ -20,8 +20,9 @@ export const ALLOWED_PROFILE_FIELDS = [
   'hometown',
   'current_position',
   'links',
-  // Editable collections (op-log content: { ops: CollectionOp[] }) — P1.
+  // Editable collections (op-log content: { ops: CollectionOp[] }) — P1/P2.
   'awards',
   'performed',
+  'assignments',
 ] as const;
 export type ProfileField = (typeof ALLOWED_PROFILE_FIELDS)[number];

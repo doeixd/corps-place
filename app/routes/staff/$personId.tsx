@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { getStaffProfile } from '@/lib/server-fns/hybrid';
 import { getProfileOverlay } from '@/lib/server-fns/profile-owner';
-import { mergeProfileOverlay } from '@/lib/profile-owner/merge';
+import { mergeProfileOverlay, mergeAssignmentsOverlay } from '@/lib/profile-owner/merge';
 import { ClaimPanel } from '@/components/profile-owner/claim-panel';
 import { ProfileEditor } from '@/components/profile-owner/profile-editor';
 import { checkClaimByEntity } from '@/lib/server-fns/jobs';
@@ -49,12 +49,18 @@ export const Route = createFileRoute('/staff/$personId')({
     if (overlay?.aliasOf && overlay.aliasOf.type === 'staff' && overlay.aliasOf.id !== params.personId) {
       throw redirect({ to: '/staff/$personId', params: { personId: overlay.aliasOf.id }, replace: true });
     }
+    const merged = scraped ? mergeProfileOverlay(scraped, overlay) : scraped;
     return {
-      profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped,
+      // Assignments are top-level + staff-specific, so merge them separately.
+      profile:
+        merged && scraped
+          ? { ...merged, assignments: mergeAssignmentsOverlay(scraped.assignments ?? [], overlay) }
+          : merged,
       // Scraped baselines for the collection editors: the editor diffs its edited
       // list against these to produce the durable op-log (never the merged list).
       scrapedAwards: scraped?.bioFacts?.awards ?? [],
       scrapedPerformed: scraped?.bioFacts?.performedOther ?? [],
+      scrapedAssignments: scraped?.assignments ?? [],
       claimProfileId: null as string | null, // M2.5.4: resolve slug from checkClaimByEntity
     };
   },
@@ -100,7 +106,7 @@ export const Route = createFileRoute('/staff/$personId')({
 });
 
 function StaffProfilePage() {
-  const { profile, scrapedAwards, scrapedPerformed } = Route.useLoaderData();
+  const { profile, scrapedAwards, scrapedPerformed, scrapedAssignments } = Route.useLoaderData();
 
   // Group assignments by corps (hook must run unconditionally — before any early return).
   const byCorps = useMemo(() => groupByCorps(profile?.assignments ?? []), [profile]);
@@ -163,8 +169,13 @@ function StaffProfilePage() {
                 currentPosition: profile.bioFacts?.currentPosition ?? null,
                 awards: profile.bioFacts?.awards ?? [],
                 performed: profile.bioFacts?.performedOther ?? [],
+                assignments: profile.assignments ?? [],
               }}
-              scraped={{ awards: scrapedAwards, performed: scrapedPerformed }}
+              scraped={{
+                awards: scrapedAwards,
+                performed: scrapedPerformed,
+                assignments: scrapedAssignments,
+              }}
             />
           )}
         </div>

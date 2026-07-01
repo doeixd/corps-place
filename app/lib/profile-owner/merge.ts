@@ -237,6 +237,22 @@ export const mergeProfileOverlay = <T extends CommonProfile>(
   return { ...profile, ...patch, ownership: ownershipInfo(overlay, true, ov) };
 };
 
+/**
+ * Staff-only: apply the 'assignments' collection override to the TOP-LEVEL
+ * assignments list (StaffAssignment ≍ AssignmentItem). Kept separate from
+ * mergeProfileOverlay because judges carry a different, score-derived
+ * event/caption record that must NOT be owner-editable (plan §1.3 / P2). Applies
+ * only under an ACTIVE claim; otherwise returns the scraped list unchanged.
+ */
+export const mergeAssignmentsOverlay = (
+  scraped: readonly AssignmentItem[],
+  overlay: ProfileOverlay
+): AssignmentItem[] => {
+  if (!overlay?.claim || overlay.claim.status !== 'active') return [...scraped];
+  const ov = overlay.overrides.assignments;
+  return ov ? applyCollectionOps(scraped, opsOf(ov.content), assignmentKey) : [...scraped];
+};
+
 /** Stable, dependency-free hash of a scraped value (djb2 → base36). Same on client
  *  and server so save-time and reconcile-time hashes are comparable. */
 export const hashSource = (v: unknown): string => {
