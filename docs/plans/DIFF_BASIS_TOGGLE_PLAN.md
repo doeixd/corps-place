@@ -224,6 +224,14 @@ Emit + verify locally → publish read-model to R2 → deploy. The
 - **Availability:** the Diff tab gate is unchanged (`hasScores && hasPrediction`);
   the basis toggle always offers both options, and "vs Previous" degrades to a
   loading / empty / error card when there's no prior-show data.
+- **Alias-robust matching:** a corps recorded under a different `corps_key` at an
+  earlier event is still matched — the builder resolves each participant's full
+  identity group via `buildCorpsCanonicalMap` (union-find over `corps_aliases`),
+  finds the prior show under any group key, and re-keys the folded row back to the
+  current key so `computeDiff` joins. The emit builds the canonical map once.
+- **Correctness guards:** same-event prior rounds are excluded by the resolved
+  current event slug (works for event- and competition-slug callers); the
+  `previous.error` state retries on re-entering the basis / Diff tab.
 
 ## 11. Suggested build order
 
