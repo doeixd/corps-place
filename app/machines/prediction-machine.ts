@@ -600,7 +600,25 @@ export const predictionMachine = setup({
         },
         ready: {},
         error: {
-          on: { LOAD_PREVIOUS: 'loading' },
+          // Retry on an explicit reload or when the user re-enters the previous
+          // basis / re-opens the Diff tab (guarded on slug so we can actually load).
+          on: {
+            LOAD_PREVIOUS: 'loading',
+            SET_DIFF_BASE: {
+              guard: ({ context, event }) =>
+                event.base === 'previous' &&
+                typeof context.slug === 'string' &&
+                context.slug.length > 0,
+              target: 'loading',
+            },
+            SET_VIEW: {
+              guard: ({ context, event }) =>
+                event.view === 'diff' &&
+                typeof context.slug === 'string' &&
+                context.slug.length > 0,
+              target: 'loading',
+            },
+          },
         },
       },
     },

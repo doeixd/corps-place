@@ -67,6 +67,16 @@ export const buildEventPreviousRecap = async (
           (SELECT slug FROM competitions WHERE slug = ?1)
         ) AS cslug
       ),
+      -- The current event slug, resolved from the competition so the exclusion
+      -- below works whether the caller passed an event slug (app) or a competition
+      -- slug (emit). Falls back to the raw input when unmapped.
+      this_event AS (
+        SELECT COALESCE(
+          (SELECT event_slug FROM event_to_competition
+             WHERE competition_slug = (SELECT cslug FROM this_comp)),
+          ?1
+        ) AS eslug
+      ),
       this_meta AS (
         SELECT c.date AS d, c.season AS s
         FROM competitions c
@@ -93,7 +103,10 @@ export const buildEventPreviousRecap = async (
         WHERE cs.corps_key IN (SELECT corps_key FROM participants)
           AND c.season = tm.s
           AND c.date < tm.d
-          AND COALESCE(m.event_slug, cs.competition_slug) <> ?1
+          -- Never count a prior round of the SAME event, nor the current comp
+          -- itself (belt-and-suspenders alongside the date filter).
+          AND COALESCE(m.event_slug, cs.competition_slug) <> (SELECT eslug FROM this_event)
+          AND cs.competition_slug <> (SELECT cslug FROM this_comp)
           AND (cs.total_score IS NOT NULL OR cs.rank IS NOT NULL)
       )
       SELECT corps_key, competition_slug, date, event_name, event_slug
