@@ -16,6 +16,13 @@ import {
 // Reuse the league photo uploader (optimistic preview + auto-orient/downscale +
 // error-reverting state machine) so profile photos match that UX.
 import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo-upload';
+import {
+  awardKey,
+  performedKey,
+  diffCollectionOps,
+  type AwardItem,
+  type PerformedItem,
+} from '@/lib/profile-owner/merge';
 
 /**
  * Owner field editor for a claimed staff/judge profile (plan §6 scope: bio, photo,
@@ -28,6 +35,7 @@ export function ProfileEditor({
   entityType,
   entityId,
   initial,
+  scraped,
 }: {
   entityType: 'staff' | 'judge';
   entityId: string;
@@ -36,6 +44,14 @@ export function ProfileEditor({
     photoUrl: string | null;
     hometown: string | null;
     currentPosition: { title: string; org: string } | null;
+    awards?: readonly AwardItem[];
+    performed?: readonly PerformedItem[];
+  };
+  /** Scraped baselines for the collection editors — the editor diffs its edited
+   *  list against these to build the durable op-log (never the merged list). */
+  scraped?: {
+    awards: readonly AwardItem[];
+    performed: readonly PerformedItem[];
   };
 }) {
   const router = useRouter();
@@ -46,6 +62,15 @@ export function ProfileEditor({
   const [posOrg, setPosOrg] = useState(initial.currentPosition?.org ?? '');
   const [busy, setBusy] = useState<string | null>(null);
   const [mergeId, setMergeId] = useState('');
+  // Editable collections (P1). Copy so local edits don't alias the loader data.
+  const [awards, setAwards] = useState<AwardItem[]>(() =>
+    (initial.awards ?? []).map((a) => ({ ...a }))
+  );
+  const [performed, setPerformed] = useState<PerformedItem[]>(() =>
+    (initial.performed ?? []).map((p) => ({ ...p }))
+  );
+  const awardsDirty = JSON.stringify(awards) !== JSON.stringify(initial.awards ?? []);
+  const performedDirty = JSON.stringify(performed) !== JSON.stringify(initial.performed ?? []);
 
   const onMerge = async () => {
     const other = mergeId.trim();
@@ -78,6 +103,21 @@ export function ProfileEditor({
     } finally {
       setBusy(null);
     }
+  };
+
+  // Persist a collection edit as the durable op-log (diff vs the SCRAPED baseline,
+  // not the merged list — so re-scrapes still surface new items). Drops empty rows.
+  const saveCollection = async <T,>(
+    label: string,
+    fieldKey: 'awards' | 'performed',
+    scrapedList: readonly T[],
+    edited: readonly T[],
+    keyOf: (i: T) => string,
+    isEmpty: (i: T) => boolean
+  ) => {
+    const cleaned = edited.filter((i) => !isEmpty(i));
+    const ops = diffCollectionOps(scrapedList, cleaned, keyOf);
+    await save(label, fieldKey, { ops });
   };
 
   // Persist a chosen photo. Rethrows on failure so PhotoUpload's machine reverts the
@@ -226,6 +266,146 @@ export function ProfileEditor({
           Save position
         </BusyButton>
       </div>
+
+      {/* Collection editors (P1) — only when the route supplies the scraped baseline
+          to diff against (staff today; judges follow in P4). */}
+      {scraped && (
+        <>
+      {/* Awards (P1) — owner CRUD, stored as a durable op-log over the scraped list. */}
+      <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
+        <div className="flex items-center justify-between">
+          <Label>Awards</Label>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setAwards((a) => [...a, { name: '', year: null }])}
+          >
+            + Add award
+          </Button>
+        </div>
+        {awards.length === 0 ? (
+          <p className="text-xs text-muted-foreground">No awards yet.</p>
+        ) : (
+          awards.map((a, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <Input
+                placeholder="Award name"
+                value={a.name}
+                onChange={(e) =>
+                  setAwards((list) => list.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))
+                }
+                className="flex-1"
+              />
+              <Input
+                placeholder="Year"
+                type="number"
+                value={a.year ?? ''}
+                onChange={(e) => {
+                  const raw = e.target.value.trim();
+                  const n = Number(raw);
+                  const year = raw && Number.isFinite(n) ? n : null;
+                  setAwards((list) => list.map((x, j) => (j === i ? { ...x, year } : x)));
+                }}
+                className="w-20"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label="Remove award"
+                onClick={() => setAwards((list) => list.filter((_, j) => j !== i))}
+              >
+                ✕
+              </Button>
+            </div>
+          ))
+        )}
+        <BusyButton
+          busy={busy === 'awards'}
+          size="sm"
+          className="self-start"
+          disabled={!awardsDirty}
+          onClick={() =>
+            void saveCollection('awards', 'awards', scraped?.awards ?? [], awards, awardKey, (a) => !a.name.trim())
+          }
+        >
+          Save awards
+        </BusyButton>
+      </div>
+
+      {/* Also-performed-with (P1) — non-DCI groups / corps the person marched in. */}
+      <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
+        <div className="flex items-center justify-between">
+          <Label>Also performed with</Label>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setPerformed((p) => [...p, { group: '', startYear: null, endYear: null }])}
+          >
+            + Add group
+          </Button>
+        </div>
+        {performed.length === 0 ? (
+          <p className="text-xs text-muted-foreground">No groups yet.</p>
+        ) : (
+          performed.map((p, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <Input
+                placeholder="Group / corps"
+                value={p.group}
+                onChange={(e) =>
+                  setPerformed((list) => list.map((x, j) => (j === i ? { ...x, group: e.target.value } : x)))
+                }
+                className="flex-1"
+              />
+              <Input
+                placeholder="From"
+                type="number"
+                value={p.startYear ?? ''}
+                onChange={(e) => {
+                  const raw = e.target.value.trim();
+                  const n = Number(raw);
+                  const startYear = raw && Number.isFinite(n) ? n : null;
+                  setPerformed((list) => list.map((x, j) => (j === i ? { ...x, startYear } : x)));
+                }}
+                className="w-16"
+              />
+              <Input
+                placeholder="To"
+                type="number"
+                value={p.endYear ?? ''}
+                onChange={(e) => {
+                  const raw = e.target.value.trim();
+                  const n = Number(raw);
+                  const endYear = raw && Number.isFinite(n) ? n : null;
+                  setPerformed((list) => list.map((x, j) => (j === i ? { ...x, endYear } : x)));
+                }}
+                className="w-16"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label="Remove group"
+                onClick={() => setPerformed((list) => list.filter((_, j) => j !== i))}
+              >
+                ✕
+              </Button>
+            </div>
+          ))
+        )}
+        <BusyButton
+          busy={busy === 'performed'}
+          size="sm"
+          className="self-start"
+          disabled={!performedDirty}
+          onClick={() =>
+            void saveCollection('performed', 'performed', scraped?.performed ?? [], performed, performedKey, (p) => !p.group.trim())
+          }
+        >
+          Save groups
+        </BusyButton>
+      </div>
+        </>
+      )}
 
       <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-3">
         <Label>Merge another profile into this one</Label>

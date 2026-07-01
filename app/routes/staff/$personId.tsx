@@ -51,6 +51,10 @@ export const Route = createFileRoute('/staff/$personId')({
     }
     return {
       profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped,
+      // Scraped baselines for the collection editors: the editor diffs its edited
+      // list against these to produce the durable op-log (never the merged list).
+      scrapedAwards: scraped?.bioFacts?.awards ?? [],
+      scrapedPerformed: scraped?.bioFacts?.performedOther ?? [],
       claimProfileId: null as string | null, // M2.5.4: resolve slug from checkClaimByEntity
     };
   },
@@ -96,7 +100,7 @@ export const Route = createFileRoute('/staff/$personId')({
 });
 
 function StaffProfilePage() {
-  const { profile } = Route.useLoaderData();
+  const { profile, scrapedAwards, scrapedPerformed } = Route.useLoaderData();
 
   // Group assignments by corps (hook must run unconditionally — before any early return).
   const byCorps = useMemo(() => groupByCorps(profile?.assignments ?? []), [profile]);
@@ -157,7 +161,10 @@ function StaffProfilePage() {
                 photoUrl: profile.photo_url,
                 hometown: profile.bioFacts?.hometown ?? null,
                 currentPosition: profile.bioFacts?.currentPosition ?? null,
+                awards: profile.bioFacts?.awards ?? [],
+                performed: profile.bioFacts?.performedOther ?? [],
               }}
+              scraped={{ awards: scrapedAwards, performed: scrapedPerformed }}
             />
           )}
         </div>
