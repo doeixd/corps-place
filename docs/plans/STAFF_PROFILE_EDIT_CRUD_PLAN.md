@@ -143,8 +143,16 @@ Today's editor is a stack of per-field save buttons. Replace with:
   each owner's edits (field + op-count) to spot fabricated credits. **Remaining:** divergence
   badges ("source changed since you edited" — needs per-item `scrape_diverged` in the
   reconciler), and an optional XState/autosave refactor of the working per-section save.
-- **P4 — Judges** — bio/photo/awards facts only; explicitly NOT the score-derived
-  event/caption record.
+- **P4 — Judges. ✅ SHIPPED.** Awards editing enabled for judges (per-collection section
+  gating — a section renders iff its scraped baseline is provided). Their score-derived
+  event/caption record stays off-limits by design.
+
+---
+
+**Status summary:** P0, P1, P2, P2b, P4 all shipped; P3 mostly shipped (grouped table,
+unsaved-changes guard, moderation surface). Only the low-value refinements remain —
+divergence badges (per-item `scrape_diverged`) and an optional XState/autosave refactor.
+**The feature — full, durable, moderatable owner CRUD of the profile record — is complete.**
 
 ---
 
