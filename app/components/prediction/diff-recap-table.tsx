@@ -26,6 +26,7 @@ import {
   type RecapRow,
 } from '@/lib/prediction-scenario';
 import type { DiffCaption, DiffRow } from '@/lib/diff';
+import { formatEventDate } from '@/lib/format';
 import { ArrowDown01Icon as HugeiconsArrowDown01 } from '@/components/icons/generated';
 
 interface DiffRecapTableProps {
@@ -43,6 +44,17 @@ interface DiffRecapTableProps {
    */
   onCycleSort: (key: RangeKey) => void;
   yearSlug?: string;
+  /**
+   * What the diff is measured against — labels the middle sub-column ("Pred" vs
+   * "Prev") and the tooltip ("Predicted" vs "Previous"). Default `prediction`.
+   */
+  comparand?: 'prediction' | 'previous';
+  /**
+   * Per-corps prior-event source (slug/name/date), keyed by corps_key. Only used
+   * when `comparand === 'previous'` — the comparand event differs per corps, so
+   * each row's tooltip names that corps's own prior show.
+   */
+  sources?: Record<string, { slug: string; name: string; date: string }>;
 }
 
 // Match the compact/full recap frozen columns (see full-recap-table.tsx): Rank +
@@ -91,8 +103,15 @@ export function DiffRecapTable({
   sortMode,
   onCycleSort,
   yearSlug,
+  comparand = 'prediction',
+  sources,
 }: DiffRecapTableProps) {
   const engageStickyScroll = useStickyScroll();
+
+  // Basis-dependent labels: the middle sub-column header and the tooltip word.
+  const isPrevious = comparand === 'previous';
+  const comparandShort = isPrevious ? 'Prev' : 'Pred';
+  const comparandWord = isPrevious ? 'Previous' : 'Predicted';
 
   const divisions = useMemo(() => {
     const set = new Set<string>();
@@ -295,7 +314,7 @@ export function DiffRecapTable({
                       // Same h-5 flex box + label sizing as full-recap's SortButton
                       // (these aren't sortable, so they read as its inactive state).
                       <span className="inline-flex h-5 items-center justify-center text-[11px] text-muted-foreground/50">
-                        {sub.label}
+                        {sub.kind === 'predicted' ? comparandShort : sub.label}
                       </span>
                     )}
                   </th>
@@ -320,6 +339,14 @@ export function DiffRecapTable({
                   corps_key: row.corps_key,
                   corps: row.name,
                 } as RecapRow);
+                // In "vs Previous" mode each corps's comparand is its own prior
+                // show, so the tooltip names that event + date.
+                const source = isPrevious ? sources?.[row.corps_key] : undefined;
+                const sourceNote = source
+                  ? [source.name, source.date ? formatEventDate(source.date) : null]
+                      .filter(Boolean)
+                      .join(' · ')
+                  : undefined;
                 return (
                   <motion.tr
                     key={row.corps_key}
@@ -345,6 +372,8 @@ export function DiffRecapTable({
                         maxAbs={maxAbsDiff.get(band.key) ?? 0}
                         rank={diffRanks.get(band.key)?.get(row.corps_key)}
                         emphasis={band.emphasis}
+                        comparandWord={comparandWord}
+                        sourceNote={sourceNote}
                       />
                     ))}
                   </motion.tr>
@@ -368,6 +397,8 @@ function BandCells({
   maxAbs,
   rank,
   emphasis,
+  comparandWord,
+  sourceNote,
 }: {
   caption: DiffCaption;
   decimals: number;
@@ -375,6 +406,10 @@ function BandCells({
   rank?: string;
   /** The Total band: close it with a heavier divider from the subcaptions. */
   emphasis?: boolean;
+  /** Tooltip word for the comparand column ("Predicted" | "Previous"). */
+  comparandWord: string;
+  /** Prior-event note appended to the tooltip in "vs Previous" mode. */
+  sourceNote?: string;
 }) {
   const { scored, predicted, diff } = caption;
   const oneSided = scored == null || predicted == null;
@@ -433,8 +468,9 @@ function BandCells({
           </TooltipTrigger>
           <TooltipContent>
             <span className="tabular-nums">
-              Scored {scored == null ? '—' : fmt(scored, 3)} · Predicted{' '}
-              {predicted == null ? '—' : fmt(predicted, 3)} · Diff{' '}
+              Scored {scored == null ? '—' : fmt(scored, 3)} · {comparandWord}{' '}
+              {predicted == null ? '—' : fmt(predicted, 3)}
+              {sourceNote ? ` — ${sourceNote}` : ''} · Diff{' '}
               {diff == null ? '—' : `${diff > 0 ? '+' : ''}${fmt(diff, 3)}`}
             </span>
           </TooltipContent>

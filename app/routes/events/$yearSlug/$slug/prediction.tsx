@@ -33,7 +33,8 @@ import {
   cycleSortGeneric,
   type FullSortEntry,
 } from '@/lib/prediction-scenario';
-import type { SortMode, PredictionView } from '@/machines/prediction-machine';
+import type { SortMode, PredictionView, DiffBase } from '@/machines/prediction-machine';
+import { useDelayedFlag } from '@/hooks/use-delayed-flag';
 import { useSearchSync } from '@/lib/use-search-sync';
 import { searchString } from '@/lib/utils';
 
@@ -175,6 +176,8 @@ interface PredictionSearch {
    * views can be exercised before real scores land. OFF unless `?fakeScores=1`.
    */
   fakeScores?: boolean;
+  /** Diff basis; omitted when it equals the default (`prediction`). */
+  diffbase?: DiffBase;
 }
 
 const isWindow = (v: unknown): v is ScenarioWindow =>
@@ -201,6 +204,9 @@ const validatePredictionSearch = (search: Record<string, unknown>): PredictionSe
   if (Number.isFinite(n) && n > 1) out.n = Math.floor(n);
   if (search.fakeScores === true || search.fakeScores === '1' || search.fakeScores === 'true')
     out.fakeScores = true;
+  // Only 'previous' is a non-default basis; anything else stays the default.
+  if (search.diffbase === 'previous' || search.diffbase === 'prediction')
+    out.diffbase = search.diffbase;
   return out;
 };
 
@@ -596,10 +602,18 @@ function CurrentPredictionPage({
   // Diff view rows: full outer join of the real scored recap vs the predicted
   // means (`baseRecap`, the rows the Prediction view's base table renders).
   // Pure (no Effect / DB), memoized so it only recomputes when either side moves.
+  // The comparand swaps with the Diff basis: predicted means (`baseRecap`) or
+  // each corps's own previous show (`previousRecap`, loaded on demand).
   const diffRows = useMemo(
-    () => computeDiff(ctx.scoredRecap ?? [], ctx.baseRecap),
-    [ctx.scoredRecap, ctx.baseRecap]
+    () =>
+      computeDiff(
+        ctx.scoredRecap ?? [],
+        ctx.diffBase === 'previous' ? (ctx.previousRecap ?? []) : ctx.baseRecap
+      ),
+    [ctx.scoredRecap, ctx.baseRecap, ctx.diffBase, ctx.previousRecap]
   );
+  // Previous-show fetch in flight (delay the spinner so a quick load doesn't flash).
+  const previousLoading = useDelayedFlag(snapshot.matches({ previous: 'loading' }), 250);
 
   // Scores-view Full Recap toggle. The prediction machine carries no full-recap
   // state (it's prediction-first), so the Scores view owns a small local toggle
@@ -1237,19 +1251,53 @@ function CurrentPredictionPage({
                     (baseRecap). Sort cycling routes through the machine's
                     view-aware CYCLE_SORT (keyed by caption → diffSorts). ---- */}
                 <Show when={view === 'diff'}>
-                  <DiffRecapTable
-                    rows={diffRows}
-                    corpsLookup={corpsLookup}
-                    classFilters={ctx.classFilters}
-                    onSetClassFilters={(filters) =>
-                      send({ type: 'SET_CLASS_FILTERS', classFilters: filters })
+                  {/* Diff basis: compare scored vs the prediction, or vs each
+                      corps's own most recent prior show this season. */}
+                  <div className="mb-4 flex flex-col gap-1.5">
+                    <ToggleGroup
+                      variant="outline"
+                      spacing={0}
+                      value={[ctx.diffBase]}
+                      onValueChange={(v) => {
+                        const next = v[0] as DiffBase | undefined;
+                        if (next) send({ type: 'SET_DIFF_BASE', base: next });
+                      }}
+                    >
+                      <ToggleGroupItem value="prediction">vs Prediction</ToggleGroupItem>
+                      <ToggleGroupItem value="previous">vs Previous show</ToggleGroupItem>
+                    </ToggleGroup>
+                    <Show when={ctx.diffBase === 'previous'}>
+                      <p className="text-xs text-text-secondary">
+                        Each corps vs its own most recent prior show this season.
+                      </p>
+                    </Show>
+                  </div>
+                  <Show
+                    when={!(ctx.diffBase === 'previous' && previousLoading && ctx.previousRecap == null)}
+                    fallback={
+                      <StatusCard
+                        tone="info"
+                        title="Loading previous scores…"
+                        description="Fetching each corps's most recent prior show."
+                      />
                     }
-                    groupByClass={ctx.groupByClass}
-                    diffSorts={ctx.diffSorts}
-                    sortMode={ctx.sortMode}
-                    onCycleSort={(key) => send({ type: 'CYCLE_SORT', key })}
-                    yearSlug={params.yearSlug}
-                  />
+                  >
+                    <DiffRecapTable
+                      rows={diffRows}
+                      corpsLookup={corpsLookup}
+                      classFilters={ctx.classFilters}
+                      onSetClassFilters={(filters) =>
+                        send({ type: 'SET_CLASS_FILTERS', classFilters: filters })
+                      }
+                      groupByClass={ctx.groupByClass}
+                      diffSorts={ctx.diffSorts}
+                      sortMode={ctx.sortMode}
+                      onCycleSort={(key) => send({ type: 'CYCLE_SORT', key })}
+                      yearSlug={params.yearSlug}
+                      comparand={ctx.diffBase}
+                      sources={ctx.previousSources}
+                    />
+                  </Show>
                 </Show>
 
                 {/* ---- Prediction view: the existing Monte Carlo recap toolbar +
