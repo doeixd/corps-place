@@ -1,7 +1,8 @@
-import { Duration, Effect, Ref, Schedule } from "effect";
+import { Duration, Effect, Option, Ref, Schedule } from "effect";
 import * as SqlClient from "effect/unstable/sql/SqlClient";
 
 import * as Domain from "./domain.js";
+import { BrowserbaseService } from "./browserbaseService.js";
 import {
   buildCompetitionFromWebsiteRecap,
   buildCorpsScoresFromWebsiteRecap,
@@ -163,8 +164,58 @@ const fetchScoresListPage = (season: string, page: number, config: ScoreEventsCo
 // serves recaps under a different path shape (e.g. `/scores/final-scores/...`),
 // so following the row's own link is the reliable path; slug reconstruction is
 // a fallback only (review Medium #7).
+// DCI.org is behind Cloudflare, so a plain Node `fetch` of a recap page that
+// isn't already cached returns a 403 challenge shell — which parses to zero
+// class tables and used to abort the whole ingest run (2026-07-01 incident:
+// the newly-released Northwest Youth Music Games recap never landed). Try the
+// cheap plain fetch first; if it's blocked/empty, fall back to a browser render
+// (remote Chrome → local Chromium → Browserbase) via BrowserbaseService, which
+// clears the Cloudflare wall. The service is read through `Effect.serviceOption`
+// so the scraper still runs (plain-fetch only) when the layer isn't provided.
 const fetchRecapPageByUrl = (url: string) =>
-  Effect.tryPromise(() => fetchHtmlWithRetry(url));
+  Effect.gen(function* () {
+    // A plain fetch often *succeeds* against Cloudflare but returns a challenge
+    // shell — either a small 403 body or a large 200 "Attention Required" page.
+    // Both fetch fine yet contain no score tables, so the only reliable "was I
+    // blocked?" signal is whether the HTML actually parses into a recap. Accept
+    // the direct HTML only if it parses; otherwise fall back to a real browser
+    // render (remote Chrome → local Chromium → Browserbase), which clears the
+    // wall. The renderer is optional (serviceOption) so the scraper still runs
+    // plain-fetch-only when the layer isn't provided.
+    const direct = yield* Effect.tryPromise(() => fetchHtmlWithRetry(url)).pipe(
+      Effect.catch(() => Effect.succeed(""))
+    );
+    if (direct.trim().length > 0) {
+      const parsed = yield* parseRecapHtml(direct).pipe(Effect.result);
+      if (parsed._tag === "Success") return direct;
+      yield* Effect.logInfo(
+        `[website] direct fetch for ${url} didn't parse (likely Cloudflare shell); trying browser render`
+      );
+    } else {
+      yield* Effect.logInfo(
+        `[website] direct fetch blocked/empty for ${url}; trying browser render`
+      );
+    }
+
+    const renderer = yield* Effect.serviceOption(BrowserbaseService);
+    if (Option.isSome(renderer)) {
+      const rendered = yield* renderer.value
+        .fetchHtml(url)
+        .pipe(Effect.catch(() => Effect.succeed("")));
+      if (rendered.trim().length > 0) {
+        yield* Effect.logInfo(
+          `[website] rendered ${url} — ${rendered.length} chars (Cloudflare bypass)`
+        );
+        return rendered;
+      }
+    }
+
+    return yield* Effect.fail(
+      new WebsiteRecapParseError(
+        `Failed to fetch ${url}: blocked and no renderer produced a parseable recap`
+      )
+    );
+  });
 
 const parseScoresList = (html: string, season: string) =>
   parseScoresListHtml(html, season).pipe(
@@ -382,18 +433,50 @@ const scrapeWebsiteRecapByEntry = (
   corpsDivisionMap?: CorpsDivisionMap
 ) =>
   Effect.gen(function* () {
-    // Follow the exact href the list row carried; only reconstruct the slug URL
-    // when the row lacked a usable absolute link (review Medium #7).
-    const followedFromList = typeof entry.url === 'string' && entry.url.startsWith('http');
-    const recapPageUrl = followedFromList ? entry.url : recapUrl(entry.id);
-    yield* (
-      Effect.logInfo(
-        `[website] Fetching recap ${season}:${entry.id} ${recapPageUrl}` +
-          (followedFromList ? ' (followed list href)' : ' (reconstructed slug url)')
+    // Which URL actually carries the recap data changed in 2026: DCI's scores-list
+    // rows now link to `/scores/final-scores/<slug>`, a summary-only SPA layout
+    // (place / corps / total) that the recap parser can't read. The full judge +
+    // subcaption breakdown still lives at `/scores/recap/<slug>` in the legacy
+    // table format the parser understands. So try the `/scores/recap/` URL first
+    // and fall back to the list href only for events served solely under that
+    // path — using whichever candidate actually parses (review Medium #7 kept:
+    // the list href is still honored, just no longer trusted blindly).
+    const followedFromList =
+      typeof entry.url === "string" && entry.url.startsWith("http");
+    const candidates = [
+      ...new Set(
+        [recapUrl(entry.id), followedFromList ? entry.url : null].filter(
+          (url): url is string => typeof url === "string"
+        )
       )
-    );
-    const html = yield* (fetchRecapPageByUrl(recapPageUrl));
-    const recap = yield* (parseRecap(html));
+    ];
+
+    let chosen:
+      | { url: string; html: string; recap: Domain.WebsiteRecap }
+      | null = null;
+    for (const url of candidates) {
+      yield* Effect.logInfo(`[website] Fetching recap ${season}:${entry.id} ${url}`);
+      const fetched = yield* fetchRecapPageByUrl(url).pipe(Effect.result);
+      if (fetched._tag === "Failure") continue;
+      const parsed = yield* parseRecap(fetched.success).pipe(Effect.result);
+      if (parsed._tag === "Success") {
+        chosen = { url, html: fetched.success, recap: parsed.success };
+        break;
+      }
+      yield* Effect.logInfo(
+        `[website] recap ${season}:${entry.id} at ${url} fetched but didn't parse; trying next candidate`
+      );
+    }
+
+    if (chosen === null) {
+      return yield* Effect.fail(
+        new WebsiteRecapParseError(
+          `No parseable recap for ${season}:${entry.id} (tried ${candidates.join(", ")})`
+        )
+      );
+    }
+
+    const { url: recapPageUrl, html, recap } = chosen;
 
     yield* (
       retryDb(
@@ -531,16 +614,33 @@ export const scrapeWebsiteRecapsForSeason = (
     const recapCountRef = yield* (Ref.make(0));
     const corpsCountRef = yield* (Ref.make(0));
 
-    const recapResults = yield* (
+    // Per-entry fault isolation: a single recap that fails to fetch/parse (e.g. a
+    // brand-new event still behind Cloudflare with no working renderer) must not
+    // sink the whole run — the other recaps should still ingest and publish. A
+    // failed entry is logged and dropped (returns null → filtered out below).
+    const recapResultsRaw = yield* (
       Effect.forEach(
         [...unique.values()],
         (entry) =>
           scrapeWebsiteRecapByEntry(sql, entry, season, corpsDivisionMap).pipe(
             Effect.tap(() => Ref.update(recapCountRef, (count) => count + 1)),
-            Effect.tap((result) => Ref.update(corpsCountRef, (count) => count + result.corpsScores))
+            Effect.tap((result) =>
+              Ref.update(corpsCountRef, (count) => count + result.corpsScores)
+            ),
+            Effect.catch((error) =>
+              Effect.as(
+                Effect.logWarning(
+                  `[website] recap ${season}:${entry.id} skipped — ${String(error)}`
+                ),
+                null
+              )
+            )
           ),
         { concurrency }
       )
+    );
+    const recapResults = recapResultsRaw.filter(
+      (result): result is NonNullable<typeof result> => result !== null
     );
 
     if (ingest) {

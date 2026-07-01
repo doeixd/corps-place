@@ -1,10 +1,11 @@
 // Scrape DCI score recaps from the public website and ingest into SQLite.
 // Usage: npx tsx scripts/scrapeWebsiteRecaps.ts --season=2023 [--maxPages=10] [--concurrency=3] [--retries=3] [--verify]
 
-import { Duration, Effect, Schedule } from "effect";
+import { Duration, Effect, Layer, Schedule } from "effect";
 import { LibsqlClient } from "@effect/sql-libsql";
 
 import { ensureRelationalSchema } from "../src/relational.js";
+import { BrowserbaseServiceLive } from "../src/browserbaseService.js";
 import {
   scrapeWebsiteRecaps,
   verifyWebsiteRecaps
@@ -73,7 +74,13 @@ const main = Effect.gen(function* () {
 
 const SqlLayer = LibsqlClient.layer({ url: "file:./dci-relational.db" });
 
-Effect.runPromise(main.pipe(Effect.provide(SqlLayer)))
+// Provide the browser-render service so recap fetches that hit Cloudflare's 403
+// challenge (any newly-released event not yet cached) fall back to a real
+// browser and actually land. Merged, not required: the scraper reads it via
+// serviceOption, so the plain-fetch path still works if rendering is unavailable.
+const AppLayer = Layer.merge(SqlLayer, BrowserbaseServiceLive);
+
+Effect.runPromise(main.pipe(Effect.provide(AppLayer)))
   .then(() => {
     console.log("\nDone!");
   })
