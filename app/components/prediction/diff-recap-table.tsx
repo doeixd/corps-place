@@ -58,15 +58,26 @@ const SUB_LABELS = [
   { kind: 'diff' as const, label: '±Diff' },
 ];
 
+// The banded columns: the Total aggregate first (matching the Scores/Prediction
+// recap column order, where Total leads), then the 8 subcaptions. Each band is
+// split into the Score | Pred | ±Diff sub-columns above.
+type BandKey = 'total' | Caption;
+const BANDS: { key: BandKey; label: string; emphasis?: boolean }[] = [
+  { key: 'total', label: 'Total', emphasis: true },
+  ...CAPTIONS.map((c) => ({ key: c as BandKey, label: c })),
+];
+const bandCaption = (row: DiffRow, key: BandKey): DiffCaption =>
+  key === 'total' ? row.total : row.captions[key];
+
 const numOrNull = (v: number | null): number | null =>
   typeof v === 'number' && Number.isFinite(v) ? v : null;
 
 /**
- * Scored-vs-predicted diff table: one row per corps, the 8 subcaptions banded
- * (GE1…MP) and each split into `Score | Pred | ±Diff` sub-columns. Diff cells are
- * signed, colored by direction (`--diff-positive` / `--diff-negative`) with a
- * background tint scaled by that column's absolute-diff magnitude. Aggregates are
- * intentionally NOT tripled (§3 of the plan). Sticky Rank+Corps, horizontal
+ * Scored-vs-predicted diff table: one row per corps, a leading Total band plus
+ * the 8 subcaptions (GE1…MP), each split into `Score | Pred | ±Diff` sub-columns.
+ * Diff cells are signed, colored by direction (`--diff-positive` /
+ * `--diff-negative`) with a background tint scaled by that column's absolute-diff
+ * magnitude. Sticky Rank+Corps, horizontal
  * scroll, per-band diff sort, class grouping + per-scope diff ranks — mirroring
  * the conventions in full-recap-table.tsx / score-recap-table.tsx.
  */
@@ -97,18 +108,15 @@ export function DiffRecapTable({
     [rows, classFilters]
   );
 
-  const classCount = useMemo(
-    () => new Set(visibleRows.map((r) => r.division)).size,
-    [visibleRows]
-  );
+  const classCount = useMemo(() => new Set(visibleRows.map((r) => r.division)).size, [visibleRows]);
 
   // Fewest decimals across every value in the grid so uniform trailing zeros
   // collapse, matching the recap tables.
   const decimals = useMemo(() => {
     const vals: number[] = [];
     for (const row of visibleRows)
-      for (const cap of CAPTIONS) {
-        const c = row.captions[cap];
+      for (const band of BANDS) {
+        const c = bandCaption(row, band.key);
         for (const v of [c.scored, c.predicted, c.diff])
           if (typeof v === 'number') vals.push(Math.abs(v));
       }
@@ -121,8 +129,8 @@ export function DiffRecapTable({
     if (diffSorts.length === 0) return visibleRows;
     return [...visibleRows].sort((a, b) => {
       for (const s of diffSorts) {
-        const av = numOrNull(a.captions[s.key as Caption]?.diff ?? null);
-        const bv = numOrNull(b.captions[s.key as Caption]?.diff ?? null);
+        const av = numOrNull(bandCaption(a, s.key as BandKey)?.diff ?? null);
+        const bv = numOrNull(bandCaption(b, s.key as BandKey)?.diff ?? null);
         if (av === null && bv === null) continue;
         if (av === null) return 1;
         if (bv === null) return -1;
@@ -134,7 +142,9 @@ export function DiffRecapTable({
 
   const sections = useMemo(() => {
     if (!groupByClass || classCount <= 1)
-      return [{ key: null as RecapGroupKey | null, label: null as string | null, rows: sortedRows }];
+      return [
+        { key: null as RecapGroupKey | null, label: null as string | null, rows: sortedRows },
+      ];
     const byGroup = new Map<RecapGroupKey, DiffRow[]>();
     for (const row of sortedRows) {
       const key = recapGroup(row.division);
@@ -152,14 +162,13 @@ export function DiffRecapTable({
   // Per-scope (grouped / overall) diff rank per subcaption, like computeLeafRanks
   // in the full recap: higher diff = rank 1, ties share. Keyed `cap` → corps_key.
   const diffRanks = useMemo(() => {
-    const scopes =
-      groupByClass && classCount > 1 ? sections.map((s) => s.rows) : [visibleRows];
-    const byCap = new Map<Caption, Map<string, string>>();
-    for (const cap of CAPTIONS) {
+    const scopes = groupByClass && classCount > 1 ? sections.map((s) => s.rows) : [visibleRows];
+    const byCap = new Map<BandKey, Map<string, string>>();
+    for (const band of BANDS) {
       const map = new Map<string, string>();
       for (const scope of scopes) {
         const ranked = scope
-          .map((r) => ({ key: r.corps_key, v: numOrNull(r.captions[cap].diff) }))
+          .map((r) => ({ key: r.corps_key, v: numOrNull(bandCaption(r, band.key).diff) }))
           .filter((x) => x.v !== null)
           .sort((a, b) => (b.v as number) - (a.v as number));
         ranked.forEach((x, i) => {
@@ -167,7 +176,7 @@ export function DiffRecapTable({
           else map.set(x.key, String(i + 1));
         });
       }
-      byCap.set(cap, map);
+      byCap.set(band.key, map);
     }
     return byCap;
   }, [sections, visibleRows, groupByClass, classCount]);
@@ -176,14 +185,14 @@ export function DiffRecapTable({
   // across the visible rows. A small GE1 diff (range ~0.5) tints as strongly as a
   // larger MB diff — the scale is relative to each column's own spread (Q4).
   const maxAbsDiff = useMemo(() => {
-    const m = new Map<Caption, number>();
-    for (const cap of CAPTIONS) {
+    const m = new Map<BandKey, number>();
+    for (const band of BANDS) {
       let max = 0;
       for (const r of visibleRows) {
-        const d = numOrNull(r.captions[cap].diff);
+        const d = numOrNull(bandCaption(r, band.key).diff);
         if (d !== null) max = Math.max(max, Math.abs(d));
       }
-      m.set(cap, max);
+      m.set(band.key, max);
     }
     return m;
   }, [visibleRows]);
@@ -209,8 +218,8 @@ export function DiffRecapTable({
     );
   }
 
-  // Rank + Corps + Class, then 8 bands × 3 sub-columns.
-  const totalCols = 3 + CAPTIONS.length * 3;
+  // Rank + Corps + Class, then Total + 8 subcaption bands × 3 sub-columns.
+  const totalCols = 3 + BANDS.length * 3;
 
   return (
     <Card>
@@ -233,28 +242,33 @@ export function DiffRecapTable({
                 onSetClassFilters={onSetClassFilters}
                 divisions={divisions}
               />
-              {CAPTIONS.map((cap) => (
+              {BANDS.map((band) => (
                 <th
-                  key={cap}
+                  key={band.key}
                   colSpan={3}
-                  className="border-l border-border bg-muted/70 px-2 py-2 text-center text-sm font-semibold text-foreground/85"
+                  className={cn(
+                    'border-l border-border bg-muted/70 px-2 py-2 text-center text-sm font-semibold text-foreground/85',
+                    // Total leads and is the summary band — divide it from the
+                    // subcaptions and give its header the emphasized fill.
+                    band.emphasis && 'border-r-2 border-r-border bg-foreground/5'
+                  )}
                 >
-                  {cap}
+                  {band.label}
                 </th>
               ))}
             </tr>
             {/* Tier 2 — Score | Pred | ±Diff sub-labels; the ±Diff label is the
                 sortable control (the diff is what the Diff view ranks on). */}
             <tr className="border-b border-border text-xs">
-              {CAPTIONS.map((cap) =>
-                SUB_LABELS.map((sub) => (
+              {BANDS.map((band) =>
+                SUB_LABELS.map((sub, si) => (
                   <th
-                    key={`${cap}~${sub.kind}`}
+                    key={`${band.key}~${sub.kind}`}
                     aria-sort={
                       sub.kind === 'diff'
-                        ? sortDir(cap) === 'asc'
+                        ? sortDir(band.key) === 'asc'
                           ? 'ascending'
-                          : sortDir(cap) === 'desc'
+                          : sortDir(band.key) === 'desc'
                             ? 'descending'
                             : 'none'
                         : undefined
@@ -265,15 +279,17 @@ export function DiffRecapTable({
                       'border-l border-r border-border bg-muted/50 px-2 py-1.5 text-center align-bottom font-semibold text-text-primary',
                       // The ±Diff sub-column is the emphasized one (it's what the view
                       // ranks on) — matched to the Full Recap "TOT" column treatment.
-                      sub.kind === 'diff' && 'bg-foreground/5 border-l-foreground/30'
+                      sub.kind === 'diff' && 'bg-foreground/5 border-l-foreground/30',
+                      // Close the Total band with the same divider as its tier-1 header.
+                      band.emphasis && si === SUB_LABELS.length - 1 && 'border-r-2 border-r-border'
                     )}
                   >
                     {sub.kind === 'diff' ? (
                       <SortButton
                         label={sub.label}
-                        dir={sortDir(cap)}
-                        priority={sortPriority(cap)}
-                        onSort={() => onCycleSort(cap)}
+                        dir={sortDir(band.key)}
+                        priority={sortPriority(band.key)}
+                        onSort={() => onCycleSort(band.key)}
                       />
                     ) : (
                       // Same h-5 flex box + label sizing as full-recap's SortButton
@@ -321,13 +337,14 @@ export function DiffRecapTable({
                     <td className="px-3 py-2.5 align-middle">
                       <ClassBadge division={row.division ?? info?.division ?? undefined} />
                     </td>
-                    {CAPTIONS.map((cap) => (
+                    {BANDS.map((band) => (
                       <BandCells
-                        key={cap}
-                        caption={row.captions[cap]}
+                        key={band.key}
+                        caption={bandCaption(row, band.key)}
                         decimals={decimals}
-                        maxAbs={maxAbsDiff.get(cap) ?? 0}
-                        rank={diffRanks.get(cap)?.get(row.corps_key)}
+                        maxAbs={maxAbsDiff.get(band.key) ?? 0}
+                        rank={diffRanks.get(band.key)?.get(row.corps_key)}
+                        emphasis={band.emphasis}
                       />
                     ))}
                   </motion.tr>
@@ -350,11 +367,14 @@ function BandCells({
   decimals,
   maxAbs,
   rank,
+  emphasis,
 }: {
   caption: DiffCaption;
   decimals: number;
   maxAbs: number;
   rank?: string;
+  /** The Total band: close it with a heavier divider from the subcaptions. */
+  emphasis?: boolean;
 }) {
   const { scored, predicted, diff } = caption;
   const oneSided = scored == null || predicted == null;
@@ -395,10 +415,15 @@ function BandCells({
       </td>
       <td className="px-2 py-2.5 text-center align-middle">{sub(predicted, oneSided)}</td>
       <td
-        className="relative border-l border-l-foreground/30 bg-foreground/5 px-2 py-2.5 text-center align-middle"
+        className={cn(
+          'relative border-l border-l-foreground/30 bg-foreground/5 px-2 py-2.5 text-center align-middle',
+          emphasis && 'border-r-2 border-r-border'
+        )}
         style={
           color && alpha > 0
-            ? { backgroundColor: `color-mix(in oklch, ${color} ${Math.round(alpha * 100)}%, transparent)` }
+            ? {
+                backgroundColor: `color-mix(in oklch, ${color} ${Math.round(alpha * 100)}%, transparent)`,
+              }
             : undefined
         }
       >

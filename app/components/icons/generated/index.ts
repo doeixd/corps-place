@@ -60,6 +60,7 @@ export { MusicNote03Icon } from './music-note-03';
 export { NewTwitterIcon } from './new-twitter';
 export { NoteEditIcon } from './note-edit';
 export { PinOffIcon } from './pin-off';
+export { PlusMinusIcon } from './plus-minus';
 export { RankingIcon } from './ranking';
 export { RefreshIcon } from './refresh';
 export { RestoreBinIcon } from './restore-bin';

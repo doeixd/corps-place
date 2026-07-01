@@ -103,7 +103,7 @@ import { dciLinks, type DciLinks } from '@/lib/dci-links';
 import {
   AiMagicIcon as PredictionIcon,
   Analytics01Icon as ScoresTabIcon,
-  ArrowUp02Icon as DiffTabIcon,
+  PlusMinusIcon as DiffTabIcon,
   ChartCandlestickIcon as HugeiconsChartCandlestick,
   ChartScatterIcon as HugeiconsChartScatter,
   CheckmarkCircle02Icon as CheckmarkCircleIcon,
