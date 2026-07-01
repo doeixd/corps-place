@@ -4,7 +4,11 @@ import * as path from 'node:path';
 import { buildEventRecap } from '@sdk/src/readModel/builders/recap.js';
 import { buildEventFullRecap } from '@sdk/src/readModel/builders/fullRecap.js';
 import { buildEventPreviousRecap } from '@sdk/src/readModel/builders/previousRecap.js';
-import { readEventRecap, readEventFullRecap } from '@sdk/src/readModel/readers.js';
+import {
+  readEventRecap,
+  readEventFullRecap,
+  readEventPreviousRecap,
+} from '@sdk/src/readModel/readers.js';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
 
 export class EventRecapDataError extends Schema.TaggedErrorClass<EventRecapDataError>()(
@@ -80,9 +84,7 @@ const makeEventRecapService = Effect.gen(function* () {
       Effect.tryPromise({
         try: () =>
           readModelEnabled()
-            ? // Phase 2 adds rm_event_previous_recap + a reader; until then prod
-              // has no source for it, so the "vs Previous" basis stays hidden there.
-              Promise.resolve({ rows: [], sources: {} })
+            ? readEventPreviousRecap(getReadModelClient(), slug)
             : buildEventPreviousRecap(getDb(), slug),
         catch: (cause) =>
           new EventRecapDataError({

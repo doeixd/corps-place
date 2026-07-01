@@ -49,6 +49,7 @@ import {
   buildRankingSeasons,
   buildEventRecap,
   buildEventFullRecap,
+  buildEventPreviousRecap,
   buildEventSchedule,
   buildEventSeasonOptions,
   buildEventSeriesCandidates,
@@ -117,7 +118,10 @@ import {
 //      timeline per snapshot date); the newest snapshot matches rm_corps_season_points (review #3).
 // v18: rm_corps_prediction_snapshots gains `pct` (run percent-through-season) so the same matrix
 //      drives the /vs chart's as-of prediction (x = %-through), making it work in prod (was relational-only).
-const SCHEMA_VERSION = 18;
+// v19: + rm_event_previous_recap — per-event, each corps's own most recent prior show this
+//      season (rows_json) + a per-corps prior-event source map (sources_json), for the
+//      prediction Diff view's "vs Previous show" basis (DIFF_BASIS_TOGGLE_PLAN §3).
+const SCHEMA_VERSION = 19;
 
 type Section =
   | "events"
@@ -385,6 +389,11 @@ CREATE TABLE rm_event_full_recap (
   competition_slug TEXT PRIMARY KEY, event_slug TEXT, full_json TEXT
 );
 CREATE INDEX rm_event_full_recap_evt ON rm_event_full_recap(event_slug);
+
+CREATE TABLE rm_event_previous_recap (
+  competition_slug TEXT PRIMARY KEY, event_slug TEXT, rows_json TEXT, sources_json TEXT
+);
+CREATE INDEX rm_event_previous_recap_evt ON rm_event_previous_recap(event_slug);
 
 CREATE TABLE rm_judges (judge_id TEXT PRIMARY KEY, summary_json TEXT);
 CREATE TABLE rm_judge_detail (judge_id TEXT PRIMARY KEY, detail_json TEXT);
@@ -1109,6 +1118,7 @@ export const runEmit = async (args: Args) => {
     const candidates = await buildEventSeriesCandidates(src);
     const recapRows: unknown[][] = [];
     const fullRecapRows: unknown[][] = [];
+    const previousRecapRows: unknown[][] = [];
     const seenComp = new Set<string>();
     for (const e of recapEvents) {
       const season = e.season ?? e.start_date?.slice(0, 4) ?? "";
@@ -1138,9 +1148,21 @@ export const runEmit = async (args: Args) => {
       const full = await buildEventFullRecap(src, resolved);
       if (full.corps.length > 0)
         fullRecapRows.push([resolved, e.slug, JSON.stringify(full)]);
+      // Per-corps "previous show" recap for the Diff "vs Previous" basis — each
+      // corps's own most recent prior show this season. Only emitted when at
+      // least one corps has a prior show (so season openers stay absent).
+      const prev = await buildEventPreviousRecap(src, resolved);
+      if (prev.rows.length > 0)
+        previousRecapRows.push([
+          resolved,
+          e.slug,
+          JSON.stringify(prev.rows),
+          JSON.stringify(prev.sources),
+        ]);
     }
     rowCounts.rm_event_recap = recapRows.length;
     rowCounts.rm_event_full_recap = fullRecapRows.length;
+    rowCounts.rm_event_previous_recap = previousRecapRows.length;
     if (dst) {
       await insertRows(
         dst,
@@ -1153,6 +1175,12 @@ export const runEmit = async (args: Args) => {
         "rm_event_full_recap",
         ["competition_slug", "event_slug", "full_json"],
         fullRecapRows,
+      );
+      await insertRows(
+        dst,
+        "rm_event_previous_recap",
+        ["competition_slug", "event_slug", "rows_json", "sources_json"],
+        previousRecapRows,
       );
     }
   }

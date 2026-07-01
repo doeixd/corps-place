@@ -11,6 +11,7 @@ export * from './recap.js';
 // canonical. An explicit re-export resolves the `export *` ambiguity (TS2308).
 export { normalizeCorpsName } from './corps.js';
 export * from './fullRecap.js';
+export * from './previousRecap.js';
 export * from './home.js';
 export * from './judges.js';
 export * from './staff.js';

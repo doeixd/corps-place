@@ -22,6 +22,7 @@ import type {
 } from "./builders/events.js";
 import type { EventRecap } from "./builders/recap.js";
 import type { FullEventRecap } from "./builders/fullRecap.js";
+import type { EventPreviousRecap } from "./builders/previousRecap.js";
 import type { JudgeProfile, JudgeSummary } from "./builders/judges.js";
 import type { StaffProfile, StaffSummary } from "./builders/staff.js";
 import type { LatestPredictionRow } from "./builders/predictions.js";
@@ -700,6 +701,32 @@ export const readEventFullRecap = async (
   const row = r.rows[0] as any;
   if (!row) return { meta: null, corps: [] };
   return JSON.parse(row.full_json) as FullEventRecap;
+};
+
+// Per-corps "previous show" recap for the Diff "vs Previous" basis. Keyed like
+// the recap tables (competition_slug PK + event_slug), resolved from the app's
+// event slug via rm_events. Absent → empty (season opener / no prior shows).
+export const readEventPreviousRecap = async (
+  db: Client,
+  slug: string,
+): Promise<EventPreviousRecap> => {
+  const res = await db.execute({
+    sql: `SELECT competition_slug FROM rm_events
+          WHERE slug = ? AND competition_slug IS NOT NULL LIMIT 1`,
+    args: [slug],
+  });
+  const comp = (res.rows[0]?.competition_slug as string | undefined) ?? slug;
+  const r = await db.execute({
+    sql: `SELECT rows_json, sources_json FROM rm_event_previous_recap
+          WHERE competition_slug = ? OR competition_slug = ? OR event_slug = ? LIMIT 1`,
+    args: [comp, slug, slug],
+  });
+  const row = r.rows[0] as any;
+  if (!row) return { rows: [], sources: {} };
+  return {
+    rows: JSON.parse(row.rows_json),
+    sources: JSON.parse(row.sources_json),
+  };
 };
 
 // Composite payload for the PAST-SEASON prediction/recap page. Mirrors the

@@ -18,6 +18,7 @@ import {
   buildCorpsSeasonScores,
   buildCorpsSeasonSnapshots,
   buildEventRecap,
+  buildEventPreviousRecap,
   buildEventSchedule,
   buildEventsForSeason,
   buildHomeWeekendShows,
@@ -37,6 +38,7 @@ import {
   readCorpsSeasonScores,
   readCorpsSeasonSnapshots,
   readEventRecap,
+  readEventPreviousRecap,
   readEventSchedule,
   readEventsForSeason,
   readHomeWeekendShows,
@@ -234,6 +236,21 @@ const main = async () => {
     ).rows[0] as any;
     check(`recap ${e.slug} meta`, builderRecap.meta, rmRow ? JSON.parse(rmRow.meta_json) : null);
     check(`recap ${e.slug} scores`, builderRecap.scores, rmRow ? JSON.parse(rmRow.scores_json) : null);
+    // Previous-show recap parity (Diff "vs Previous" basis). Only assert when the
+    // builder finds prior shows — season openers legitimately emit no row.
+    const builderPrev = await buildEventPreviousRecap(src, builderRecap.meta.slug);
+    if (builderPrev.rows.length > 0) {
+      const prevRow = (
+        await rm.execute({
+          sql: `SELECT rows_json, sources_json FROM rm_event_previous_recap WHERE competition_slug = ?`,
+          args: [builderRecap.meta.slug],
+        })
+      ).rows[0] as any;
+      check(`previous-recap ${e.slug} rows`, builderPrev.rows,
+        prevRow ? JSON.parse(prevRow.rows_json) : null);
+      check(`previous-recap ${e.slug} sources`, builderPrev.sources,
+        prevRow ? JSON.parse(prevRow.sources_json) : null);
+    }
   }
 
   // ── Judges directory ──────────────────────────────────────────────────────────
@@ -280,6 +297,8 @@ const main = async () => {
   }
   for (const e of sampleOf(builderEvents.filter((e) => e.scores_released), SAMPLE)) {
     check(`readEventRecap ${e.slug}`, await buildEventRecap(src, e.slug), await readEventRecap(rm, e.slug));
+    check(`readEventPreviousRecap ${e.slug}`,
+      await buildEventPreviousRecap(src, e.slug), await readEventPreviousRecap(rm, e.slug));
   }
 
   src.close();
