@@ -309,8 +309,8 @@ export function ScoreRecapTable({
         }
       >
         <Card>
-          <CardHeader className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-start">
-            <div className="flex flex-wrap items-center gap-3 max-sm:[&_button]:text-xs max-sm:[&_svg]:size-3.5">
+          <CardHeader className="flex flex-row items-center justify-between gap-3">
+            <div className="flex min-w-0 flex-wrap items-center gap-3 max-sm:[&_button]:text-xs max-sm:[&_svg]:size-3.5">
               <Show when={enableRanges}>
                 <Tooltip>
                   <TooltipTrigger
@@ -409,10 +409,12 @@ export function ScoreRecapTable({
               </Show>
             </div>
 
-            {/* Compact/Full recap toggle — its own group, pinned to the far
-                right of the card on desktop; stacks below the controls on mobile. */}
+            {/* Compact/Full recap toggle — its own group, pinned to the far right
+                of the card on the SAME row as the controls at every breakpoint
+                (ml-auto + shrink-0 so it never wraps under the group-by toggle on
+                mobile). */}
             <Show when={Boolean(onToggleFullRecap)}>
-              <div className="flex items-center lg:ml-auto max-sm:[&_button]:text-xs max-sm:[&_svg]:size-3.5">
+              <div className="ml-auto flex shrink-0 items-center max-sm:[&_button]:text-xs max-sm:[&_svg]:size-3.5">
                 <Tooltip>
                   <TooltipTrigger
                     render={
