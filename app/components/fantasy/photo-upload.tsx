@@ -60,6 +60,7 @@ export async function imageFileToUploadBase64(file: File): Promise<string> {
 
 export function PhotoUpload({
   mediaId,
+  imageUrl,
   onFile,
   shape = 'square',
   size = 'size-12',
@@ -69,6 +70,9 @@ export function PhotoUpload({
   fill = false,
 }: {
   mediaId?: string | null;
+  /** A persisted image URL to preview directly (e.g. a profile photo_url), for
+   *  consumers not served by /api/fantasy-media. Takes precedence over mediaId. */
+  imageUrl?: string | null;
   /** Persist the file. MUST reject on failure so the upload state machine can revert
    *  the optimistic preview and toast the error. */
   onFile: (file: File) => void | Promise<void>;
@@ -97,7 +101,10 @@ export function PhotoUpload({
   const box = fill ? 'h-full w-full' : size;
   // The optimistic preview (local object URL) wins until the upload settles; then the
   // persisted media takes over.
-  const src = state.context.previewUrl ?? (mediaId ? `/api/fantasy-media/${mediaId}` : null);
+  const src =
+    state.context.previewUrl ??
+    imageUrl ??
+    (mediaId ? `/api/fantasy-media/${mediaId}` : null);
 
   const fileInput = (
     <input

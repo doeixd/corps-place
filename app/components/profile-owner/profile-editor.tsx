@@ -13,15 +13,9 @@ import {
   deleteProfile,
   mergeProfiles,
 } from '@/lib/server-fns/profile-owner';
-
-/** File → base64 (strip the data: prefix), same as contrib/image-drop. */
-const fileToBase64 = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve((r.result as string).split(',')[1] ?? '');
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
+// Reuse the league photo uploader (optimistic preview + auto-orient/downscale +
+// error-reverting state machine) so profile photos match that UX.
+import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo-upload';
 
 /**
  * Owner field editor for a claimed staff/judge profile (plan §6 scope: bio, photo,
@@ -86,28 +80,12 @@ export function ProfileEditor({
     }
   };
 
-  const onPhoto = async (files: FileList | null) => {
-    const file = files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please choose an image file.');
-      return;
-    }
-    if (file.size > 16 * 1024 * 1024) {
-      toast.error('Image is too large — please choose one under 16 MB.');
-      return;
-    }
-    setBusy('photo');
-    try {
-      const dataBase64 = await fileToBase64(file);
-      await setProfilePhoto({ data: { entityType, entityId, dataBase64 } });
-      toast.success('Photo updated.');
-      await router.invalidate();
-    } catch {
-      toast.error('Photo upload failed — try a JPG or PNG under 16 MB.');
-    } finally {
-      setBusy(null);
-    }
+  // Persist a chosen photo. Rethrows on failure so PhotoUpload's machine reverts the
+  // optimistic preview and toasts. imageFileToUploadBase64 orients + downscales first.
+  const onPhotoFile = async (file: File) => {
+    const dataBase64 = await imageFileToUploadBase64(file);
+    await setProfilePhoto({ data: { entityType, entityId, dataBase64 } });
+    await router.invalidate();
   };
 
   const onDelete = async () => {
@@ -177,25 +155,14 @@ export function ProfileEditor({
       <div className="flex flex-col gap-1.5">
         <Label>Photo</Label>
         <div className="flex items-center gap-3">
-          {initial.photoUrl && (
-            <img
-              src={initial.photoUrl}
-              alt=""
-              className="h-10 w-10 rounded-full object-cover"
-            />
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            disabled={busy === 'photo'}
-            // Reset value so re-selecting the SAME file still fires onChange.
-            onChange={(e) => {
-              void onPhoto(e.target.files);
-              e.target.value = '';
-            }}
-            className="text-sm"
+          <PhotoUpload
+            imageUrl={initial.photoUrl}
+            onFile={onPhotoFile}
+            shape="round"
+            size="size-16"
+            alt=""
+            labels={{ empty: 'Add a photo', change: 'Change photo' }}
           />
-          {busy === 'photo' && <span className="text-xs text-muted-foreground">Uploading…</span>}
           {initial.photoUrl && (
             <Button
               variant="ghost"
