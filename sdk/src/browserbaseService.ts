@@ -82,6 +82,12 @@ export const BrowserbaseServiceLive = Layer.effect(
 
     // --- Remote Chrome over CDP (preferred when configured). ---
     let remoteBrowser: Promise<Browser> | null = null;
+    // Once the tunnel/home Chrome proves unreachable (connect throws — typically an
+    // 8s CDP timeout), stop retrying it for the rest of THIS process so a batch
+    // (e.g. a 48-page scrape) doesn't eat 8s per page falling through. It flips back
+    // on only in a fresh process, so an intermittently-on home machine still gets
+    // used on the next run.
+    let remoteDead = false;
     const getRemote = (): Promise<Browser> => {
       if (!remoteBrowser) {
         remoteBrowser = resolveCdpWsEndpoint(remoteCdpUrl!)
@@ -210,21 +216,24 @@ export const BrowserbaseServiceLive = Layer.effect(
 
     const fetchHtml = (url: string): Effect.Effect<string, DciNetworkError, never> =>
       Effect.gen(function* () {
-        // 0) Remote Chrome over the tunnel (keeps Chromium off this box). On
-        //    failure, fall through to local Chromium / cloud.
-        if (remoteCdpUrl) {
-          const remote = yield* Effect.tryPromise({
-            try: () => renderRemote(url),
-            catch: (cause) =>
-              new DciNetworkError({
-                message: `remote render failed for ${url}: ${String(cause)}`,
-                statusCode: 0,
-                cause,
-              }),
-          }).pipe(Effect.catch(() => Effect.succeed('')));
-          if (remote.trim().length > 0) {
-            yield* Effect.logInfo(`[render] remote ${url} — ${remote.length} chars`);
-            return remote;
+        // 0) Remote Chrome over the tunnel (keeps Chromium off this box). Skipped
+        //    fast once the tunnel is known dead this run. A render ERROR (home
+        //    machine offline / tunnel down) disables remote for the rest of the
+        //    process; a successful-but-empty render does NOT (that's a page issue,
+        //    not a transport one) so we just fall through for this one URL.
+        if (remoteCdpUrl && !remoteDead) {
+          const remote = yield* Effect.tryPromise(() => renderRemote(url)).pipe(
+            Effect.result,
+          );
+          if (remote._tag === 'Success' && remote.success.trim().length > 0) {
+            yield* Effect.logInfo(`[render] remote ${url} — ${remote.success.length} chars`);
+            return remote.success;
+          }
+          if (remote._tag === 'Failure') {
+            remoteDead = true;
+            yield* Effect.logInfo(
+              `[render] remote Chrome unreachable — disabling it for this run, falling back to local/Browserbase`,
+            );
           }
         }
         // 1) Local Chromium (free). On failure, fall through to the cloud.
