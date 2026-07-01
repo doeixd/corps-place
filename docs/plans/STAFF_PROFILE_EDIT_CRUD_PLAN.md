@@ -127,13 +127,15 @@ Today's editor is a stack of per-field save buttons. Replace with:
 
 ## 6. Build order (incremental, commit per step)
 
-- **P0 — Data layer.** Op-based `OverrideContent` shapes + typed `saveOverride`; the
-  collection-merge function with tests; extend `mergeProfileOverlay`. *No UI change; ship
-  behind the existing owner gate.*
-- **P1 — Awards + performed/groups CRUD** end-to-end (simplest collections, low integrity
-  risk). Proves the whole overlay→merge→UI loop with the least blast radius.
-- **P2 — Assignments CRUD** — corps search-and-pick, role/section vocabulary, year ranges,
-  grouped editable table. The substantial phase.
+- **P0 — Data layer. ✅ SHIPPED.** Op-based `OverrideContent` shapes, `applyCollectionOps`
+  + `diffCollectionOps` (round-trip), stable-key helpers, `mergeProfileOverlay` extended for
+  awards/performed, `mergeAssignmentsOverlay` for assignments; 35 profile-owner tests.
+- **P1 — Awards + performed/groups CRUD. ✅ SHIPPED (staff).** Editor sections + durable
+  op-log save; loader threads scraped baselines; gated on the baseline (staff-only).
+- **P2 — Assignments CRUD. ✅ SHIPPED (staff).** Fix section (controlled `ROLE_TYPES` vocab),
+  title, season, year range; remove misattributions; add a row at a corps already on the
+  profile. **Follow-up (P2b):** the corps **search-picker** to add an assignment at a
+  brand-new corps (needs a corps-options feed + combobox); grouped-by-corps editable table.
 - **P3 — UX polish** — unified edit mode, XState editor machine, autosave/undo, divergence
   badges, moderation surface in `/admin/profile-claims`.
 - **P4 — Judges** — bio/photo/awards facts only; explicitly NOT the score-derived
