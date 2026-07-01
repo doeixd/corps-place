@@ -1264,10 +1264,13 @@ export const runEmit = async (args: Args) => {
           summary.predicted_at,
           JSON.stringify(summary.summary),
         ]);
+      // Emit a row for EVERY snapshot day (even an empty post-event actuals run)
+      // so the reader's date list matches buildEventPredictionSnapshotDates exactly
+      // (parity). An empty recap round-trips as '[]'; the app reverts it to latest.
       const dates = await buildEventPredictionSnapshotDates(src, slug, "2026");
       for (const date of dates) {
         const asof = await buildEventPredictionAsOf(src, slug, date, "2026");
-        if (asof && asof.recap.length > 0)
+        if (asof)
           predSnapshotRows.push([
             slug,
             "2026",
