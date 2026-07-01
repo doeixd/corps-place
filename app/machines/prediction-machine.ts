@@ -1,5 +1,9 @@
 import { setup, assign, fromPromise } from 'xstate';
-import { getHybridPrediction, getHybridEventPreviousRecap } from '@/lib/server-fns/hybrid';
+import {
+  getHybridPrediction,
+  getHybridEventPreviousRecap,
+  getHybridEventPredictionAsOf,
+} from '@/lib/server-fns/hybrid';
 import type { EventPredictionRequest } from '@/lib/event-prediction-api';
 import * as PredictionPredicates from '@/predicates/prediction';
 import {
@@ -33,6 +37,9 @@ export type Prediction = NonNullable<Awaited<ReturnType<typeof getHybridPredicti
 export type PreviousRecapData = Awaited<ReturnType<typeof getHybridEventPreviousRecap>>;
 /** The prior event a corps's "previous" row came from (for the diff tooltip). */
 export type PreviousSource = PreviousRecapData['sources'][string];
+
+/** One event's prediction recap as of a snapshot date (server-fn return). */
+export type EventPredictionAsOf = NonNullable<Awaited<ReturnType<typeof getHybridEventPredictionAsOf>>>;
 
 // The compact recap columns (Total + each aggregate + the 8 subcaptions) are
 // shared across all three views, so a sort on one is mirrored onto the others'
@@ -85,6 +92,11 @@ export interface PredictionContext {
   // demand (see the `previous` region). `null` until fetched.
   previousRecap: RecapRow[] | null;
   previousSources: Record<string, PreviousSource>;
+  // "Forecast as of" — the snapshot date whose prediction is displayed. null =
+  // latest. Swapping it re-bases `baseRecap` (so the recap + rolls + diff all
+  // show that day's forecast). Visited dates are cached so scrubbing is instant.
+  asOf: string | null;
+  asOfCache: Record<string, RecapRow[]>;
   // Scenario (Monte Carlo) state — owned by the machine, derived for display in the component.
   baseRecap: RecapRow[];
   currentRecap: RecapRow[];
@@ -128,6 +140,8 @@ export type PredictionEvent =
   | { type: 'SET_DIFF_BASE'; base: DiffBase }
   // Kick the previous-show fetch (prefetch after paint / on first switch).
   | { type: 'LOAD_PREVIOUS' }
+  // Time-travel the forecast to a snapshot date (null = latest).
+  | { type: 'SET_AS_OF'; date: string | null }
   // Column sorting
   | { type: 'CYCLE_SORT'; key: RangeKey }
   | { type: 'SET_SORTS'; sorts: SortEntry[] }
@@ -157,6 +171,24 @@ const multiClass = (recap: RecapRow[]): boolean => {
   return seen.size > 1;
 };
 
+// Re-base the scenario onto a new forecast base — used when the "forecast as of"
+// date swaps `baseRecap` (or restores it to the latest). Mirrors
+// seedScenarioFromPrediction: a live seed re-rolls against the new base so a
+// shared `?seed&?asof` link reproduces exactly; otherwise the point prediction
+// shows. groupByClass re-derives from the new base unless the user chose it.
+const rebaseScenario = (context: PredictionContext, base: RecapRow[]) => {
+  const b = base.map((row) => ({ ...row }));
+  const hasSeed = !!context.seed && b.length > 0;
+  return {
+    baseRecap: b,
+    currentRecap: hasSeed
+      ? rollScenario(b, context.window, createRng(context.seed!))
+      : b.map((row) => ({ ...row })),
+    scenarioCount: hasSeed ? Math.max(context.scenarioCount, 1) : 0,
+    groupByClass: context.groupTouched ? context.groupByClass : multiClass(b),
+  };
+};
+
 // Optional seed supplied by the route loader (SSR / preloaded prediction) so the
 // machine can start in `ready` with no client fetch / first-load spinner. The
 // view-state fields let it hydrate directly from the URL (see useSearchSync), so
@@ -183,6 +215,10 @@ export interface PredictionInput {
   diffBase?: DiffBase;
   previousRecap?: RecapRow[] | null;
   previousSources?: Record<string, PreviousSource>;
+  // Forecast-as-of date (from the URL codec) + optionally the as-of recap when a
+  // deep-linked `?asof=` had the loader prefetch it (SSR).
+  asOf?: string | null;
+  asOfRecap?: RecapRow[] | null;
 }
 
 const recapOf = (prediction: Prediction | null | undefined): RecapRow[] =>
@@ -242,6 +278,8 @@ export const predictionMachine = setup({
         scenarioCount: hasSeed ? 1 : 0,
         // Apply the data-driven grouping default unless the user chose explicitly.
         groupByClass: context.groupTouched ? context.groupByClass : multiClass(base),
+        // A freshly loaded run IS the latest forecast — leave time-travel.
+        asOf: null,
       };
     }),
     // View-aware sort cycle: dispatch to the active view's sort list (`sorts`
@@ -278,6 +316,32 @@ export const predictionMachine = setup({
     setDiffBase: assign({
       diffBase: ({ event }) => (event as Extract<PredictionEvent, { type: 'SET_DIFF_BASE' }>).base,
     }),
+    // Time-travel the forecast. null → restore the latest (always recoverable
+    // from `prediction`). A cached date swaps instantly; an uncached one just
+    // records the date — the `asof` region loads it and calls `applyAsOf`.
+    setAsOf: assign(({ context, event }) => {
+      const date = (event as Extract<PredictionEvent, { type: 'SET_AS_OF' }>).date;
+      if (date === null) return { asOf: null, ...rebaseScenario(context, recapOf(context.prediction)) };
+      const cached = context.asOfCache[date];
+      if (cached) return { asOf: date, ...rebaseScenario(context, cached) };
+      return { asOf: date };
+    }),
+    // The as-of load resolved: cache + re-base onto that day's forecast. An empty
+    // result (no run that old) falls back to the latest and clears asOf.
+    applyAsOf: assign(({ context, event }) => {
+      const out = (event as { output?: EventPredictionAsOf | null }).output;
+      const date = context.asOf;
+      if (!date || !out || !Array.isArray(out.recap) || out.recap.length === 0) {
+        return { asOf: null, ...rebaseScenario(context, recapOf(context.prediction)) };
+      }
+      const recap = out.recap as unknown as RecapRow[];
+      return { asOfCache: { ...context.asOfCache, [date]: recap }, ...rebaseScenario(context, recap) };
+    }),
+    // As-of load failed → revert to the latest forecast.
+    clearAsOf: assign(({ context }) => ({
+      asOf: null,
+      ...rebaseScenario(context, recapOf(context.prediction)),
+    })),
     // Collapsing to single-column keeps only the highest-priority sort.
     setSortMode: assign(({ context, event }) => {
       const { mode } = event as Extract<PredictionEvent, { type: 'SET_SORT_MODE' }>;
@@ -341,12 +405,20 @@ export const predictionMachine = setup({
     loadPrevious: fromPromise(async ({ input }: { input: { slug: string } }) => {
       return await getHybridEventPreviousRecap({ data: input.slug });
     }),
+    // Recap as of a snapshot date, for the forecast-as-of scrubber.
+    loadAsOf: fromPromise(async ({ input }: { input: { slug: string; date: string } }) => {
+      return await getHybridEventPredictionAsOf({ data: { slug: input.slug, date: input.date } });
+    }),
   },
 }).createMachine({
   id: 'prediction',
   type: 'parallel',
   context: ({ input }) => {
-    const base = recapOf(input?.prediction).map((row) => ({ ...row }));
+    // Deep-linked ?asof= whose loader prefetched the recap starts on that day's
+    // forecast; otherwise the latest (from `prediction`).
+    const base = (
+      input?.asOf && input?.asOfRecap ? input.asOfRecap : recapOf(input?.prediction)
+    ).map((row) => ({ ...row }));
     const window = input?.window ?? initialScenario.window;
     const seed = input?.seed ?? null;
     // Seed-hydrated view: roll the scenario now if the recap is already present;
@@ -367,6 +439,12 @@ export const predictionMachine = setup({
       diffBase: input?.diffBase ?? 'prediction',
       previousRecap: input?.previousRecap ?? null,
       previousSources: input?.previousSources ?? {},
+      // Forecast-as-of: date from the URL codec; seed the cache + base from a
+      // loader-prefetched recap when present (deep-link SSR), else the `asof`
+      // region loads it. When both absent, base stays the latest.
+      asOf: input?.asOf ?? null,
+      asOfCache:
+        input?.asOf && input?.asOfRecap ? { [input.asOf]: input.asOfRecap } : {},
       window,
       showRanges: input?.showRanges ?? initialScenario.showRanges,
       classFilters: input?.classFilters ?? initialScenario.classFilters,
@@ -474,6 +552,7 @@ export const predictionMachine = setup({
         },
         SET_VIEW: { actions: 'setView' },
         SET_DIFF_BASE: { actions: 'setDiffBase' },
+        SET_AS_OF: { actions: 'setAsOf' },
         CYCLE_SORT: { actions: 'cycleSort' },
         SET_SORTS: { actions: 'setSorts' },
         SET_SORT_MODE: { actions: 'setSortMode' },
@@ -496,19 +575,28 @@ export const predictionMachine = setup({
               next.groupByClass = p.groupByClass;
               next.groupTouched = true;
             }
-            if (p.seed !== undefined) {
-              next.seed = p.seed;
+            // Seed value first so an as-of rebase below rolls the right seed.
+            if (p.seed !== undefined) next.seed = p.seed;
+            if (p.scenarioCount !== undefined) next.scenarioCount = p.scenarioCount;
+            if (p.asOf !== undefined) {
+              // As-of swaps the base and rebases the scenario (rolling next.seed
+              // against the new base — so ?seed&?asof reproduces). null → latest;
+              // an uncached date just records it (the `asof` region loads it).
+              if (p.asOf === null) Object.assign(next, rebaseScenario(next, recapOf(next.prediction)));
+              else {
+                const cached = next.asOfCache[p.asOf];
+                if (cached) Object.assign(next, rebaseScenario(next, cached));
+              }
+              next.asOf = p.asOf;
+            } else if (p.seed !== undefined) {
+              // No as-of change but the seed changed → re-roll against the current base.
               if (p.seed && next.baseRecap.length > 0) {
                 next.currentRecap = rollScenario(next.baseRecap, next.window, createRng(p.seed));
-                // Honor a count carried alongside the seed (shared link / refresh);
-                // fall back to 1 for a plain seeded link.
                 next.scenarioCount = p.scenarioCount ?? 1;
               } else if (!p.seed) {
                 next.currentRecap = next.baseRecap.map((row) => ({ ...row }));
                 next.scenarioCount = 0;
               }
-            } else if (p.scenarioCount !== undefined) {
-              next.scenarioCount = p.scenarioCount;
             }
             return next;
           }),
@@ -622,6 +710,32 @@ export const predictionMachine = setup({
         },
       },
     },
+    // Lazy load of the "forecast as of" recap. `setAsOf` handles null/cached
+    // instantly; an uncached date (interactive scrub, codec seed, or deep link)
+    // is loaded here, then `applyAsOf` caches it and re-bases the scenario.
+    asof: {
+      initial: 'idle',
+      states: {
+        idle: {
+          always: {
+            guard: ({ context }) =>
+              context.asOf !== null &&
+              !context.asOfCache[context.asOf] &&
+              typeof context.slug === 'string' &&
+              context.slug.length > 0,
+            target: 'loading',
+          },
+        },
+        loading: {
+          invoke: {
+            src: 'loadAsOf',
+            input: ({ context }) => ({ slug: context.slug!, date: context.asOf! }),
+            onDone: { target: 'idle', actions: 'applyAsOf' },
+            onError: { target: 'idle', actions: 'clearAsOf' },
+          },
+        },
+      },
+    },
   },
 });
 
@@ -640,10 +754,14 @@ export interface PredictionSearchParams {
   view?: PredictionView;
   /** Diff basis; omitted when it equals the default (`prediction`). */
   diffbase?: DiffBase;
+  /** Forecast-as-of snapshot date (YYYY-MM-DD); omitted when latest. */
+  asof?: string;
 }
 
 const isView = (v: unknown): v is PredictionView =>
   v === 'scores' || v === 'prediction' || v === 'diff';
+
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const isWindow = (v: unknown): v is ScenarioWindow =>
   (SCENARIO_WINDOWS as readonly string[]).includes(v as string);
@@ -671,6 +789,8 @@ export const predictionSearchCodec: SearchCodec<PredictionContext, PredictionSea
     n: ctx.scenarioCount > 1 ? ctx.scenarioCount : undefined,
     // Omit the default basis so a bare Diff link stays clean.
     diffbase: ctx.diffBase !== 'prediction' ? ctx.diffBase : undefined,
+    // Forecast-as-of date; omitted at the latest so a bare link stays clean.
+    asof: ctx.asOf ?? undefined,
   }),
   decode: (s) => ({
     seed: s.seed ?? null,
@@ -690,5 +810,7 @@ export const predictionSearchCodec: SearchCodec<PredictionContext, PredictionSea
     // Only 'previous' is a non-default basis; anything else is the 'prediction'
     // default (omitted → the machine keeps its default).
     ...(s.diffbase === 'previous' ? { diffBase: 'previous' as DiffBase } : {}),
+    // A valid as-of date time-travels the forecast; anything else = latest.
+    ...(typeof s.asof === 'string' && ISO_DATE_RE.test(s.asof) ? { asOf: s.asof } : {}),
   }),
 };
