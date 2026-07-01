@@ -1,5 +1,5 @@
 import { setup, assign, fromPromise } from 'xstate';
-import { getHybridPrediction } from '@/lib/server-fns/hybrid';
+import { getHybridPrediction, getHybridEventPreviousRecap } from '@/lib/server-fns/hybrid';
 import type { EventPredictionRequest } from '@/lib/event-prediction-api';
 import * as PredictionPredicates from '@/predicates/prediction';
 import {
@@ -23,8 +23,16 @@ export type { SortDir, SortEntry, SortMode };
 /** Which of the three tri-modal recap views is active (see SCORES_PREDICTION_DIFF_TABS_PLAN). */
 export type PredictionView = 'scores' | 'prediction' | 'diff';
 
+/** What the Diff view measures each corps against (see DIFF_BASIS_TOGGLE_PLAN). */
+export type DiffBase = 'prediction' | 'previous';
+
 /** Loaded prediction payload (same shape the route loader returns). */
 export type Prediction = NonNullable<Awaited<ReturnType<typeof getHybridPrediction>>>;
+
+/** Per-corps "previous show" recap payload (server-fn return). */
+export type PreviousRecapData = Awaited<ReturnType<typeof getHybridEventPreviousRecap>>;
+/** The prior event a corps's "previous" row came from (for the diff tooltip). */
+export type PreviousSource = PreviousRecapData['sources'][string];
 
 // The compact recap columns (Total + each aggregate + the 8 subcaptions) are
 // shared across all three views, so a sort on one is mirrored onto the others'
@@ -70,6 +78,13 @@ export interface PredictionContext {
   // Sort list for the Diff view, parallel to `sorts` (which keys Scores +
   // Prediction). Shared columns mirror direction between the two lists.
   diffSorts: SortEntry[];
+  // What the Diff view compares each corps against: their prediction (default)
+  // or their own most recent prior show this season.
+  diffBase: DiffBase;
+  // Previous-show recap rows + the per-corps prior-event source map, loaded on
+  // demand (see the `previous` region). `null` until fetched.
+  previousRecap: RecapRow[] | null;
+  previousSources: Record<string, PreviousSource>;
   // Scenario (Monte Carlo) state — owned by the machine, derived for display in the component.
   baseRecap: RecapRow[];
   currentRecap: RecapRow[];
@@ -109,6 +124,10 @@ export type PredictionEvent =
   | { type: 'SET_GROUP_BY_CLASS'; groupByClass: boolean }
   // Switch the active tri-modal view (preserves shared sort/group/filter state).
   | { type: 'SET_VIEW'; view: PredictionView }
+  // Switch the Diff basis (prediction ↔ previous show); triggers a lazy load.
+  | { type: 'SET_DIFF_BASE'; base: DiffBase }
+  // Kick the previous-show fetch (prefetch after paint / on first switch).
+  | { type: 'LOAD_PREVIOUS' }
   // Column sorting
   | { type: 'CYCLE_SORT'; key: RangeKey }
   | { type: 'SET_SORTS'; sorts: SortEntry[] }
@@ -159,6 +178,11 @@ export interface PredictionInput {
   view?: PredictionView;
   // Actual scored recap rows, seeded from the route loader's recap data.
   scoredRecap?: RecapRow[] | null;
+  // Diff basis (from the URL codec) + optionally the previous-show recap when a
+  // deep-linked `?diffbase=previous` had the loader prefetch it (Phase 3).
+  diffBase?: DiffBase;
+  previousRecap?: RecapRow[] | null;
+  previousSources?: Record<string, PreviousSource>;
 }
 
 const recapOf = (prediction: Prediction | null | undefined): RecapRow[] =>
@@ -251,6 +275,9 @@ export const predictionMachine = setup({
     setView: assign({
       view: ({ event }) => (event as Extract<PredictionEvent, { type: 'SET_VIEW' }>).view,
     }),
+    setDiffBase: assign({
+      diffBase: ({ event }) => (event as Extract<PredictionEvent, { type: 'SET_DIFF_BASE' }>).base,
+    }),
     // Collapsing to single-column keeps only the highest-priority sort.
     setSortMode: assign(({ context, event }) => {
       const { mode } = event as Extract<PredictionEvent, { type: 'SET_SORT_MODE' }>;
@@ -310,6 +337,10 @@ export const predictionMachine = setup({
         return await getHybridPrediction({ data: fullRequest });
       }
     ),
+    // Per-corps "previous show" recap for the Diff "vs Previous" basis.
+    loadPrevious: fromPromise(async ({ input }: { input: { slug: string } }) => {
+      return await getHybridEventPreviousRecap({ data: input.slug });
+    }),
   },
 }).createMachine({
   id: 'prediction',
@@ -333,6 +364,9 @@ export const predictionMachine = setup({
       view: input?.view ?? (scoredRecap ? 'scores' : 'prediction'),
       scoredRecap,
       diffSorts: input?.diffSorts ?? initialScenario.diffSorts,
+      diffBase: input?.diffBase ?? 'prediction',
+      previousRecap: input?.previousRecap ?? null,
+      previousSources: input?.previousSources ?? {},
       window,
       showRanges: input?.showRanges ?? initialScenario.showRanges,
       classFilters: input?.classFilters ?? initialScenario.classFilters,
@@ -439,6 +473,7 @@ export const predictionMachine = setup({
           }),
         },
         SET_VIEW: { actions: 'setView' },
+        SET_DIFF_BASE: { actions: 'setDiffBase' },
         CYCLE_SORT: { actions: 'cycleSort' },
         SET_SORTS: { actions: 'setSorts' },
         SET_SORT_MODE: { actions: 'setSortMode' },
@@ -456,6 +491,7 @@ export const predictionMachine = setup({
             if (p.sorts !== undefined) next.sorts = p.sorts;
             if (p.diffSorts !== undefined) next.diffSorts = p.diffSorts;
             if (p.view !== undefined) next.view = p.view;
+            if (p.diffBase !== undefined) next.diffBase = p.diffBase;
             if (p.groupByClass !== undefined) {
               next.groupByClass = p.groupByClass;
               next.groupTouched = true;
@@ -489,6 +525,61 @@ export const predictionMachine = setup({
         },
       },
     },
+    // Lazy load of the per-corps "previous show" recap for the Diff "vs Previous"
+    // basis. Kept out of the page loader (Phase 1 loads on first switch; a Phase 3
+    // actor prefetches after paint). Seeded → `ready`, so a deep-linked
+    // ?diffbase=previous whose loader prefetched it skips the fetch.
+    previous: {
+      initial: 'idle',
+      states: {
+        idle: {
+          always: { guard: ({ context }) => context.previousRecap != null, target: 'ready' },
+          on: {
+            SET_DIFF_BASE: {
+              guard: ({ context, event }) =>
+                event.base === 'previous' &&
+                context.previousRecap == null &&
+                typeof context.slug === 'string' &&
+                context.slug.length > 0,
+              target: 'loading',
+            },
+            LOAD_PREVIOUS: {
+              guard: ({ context }) =>
+                context.previousRecap == null &&
+                typeof context.slug === 'string' &&
+                context.slug.length > 0,
+              target: 'loading',
+            },
+            SYNC: {
+              guard: ({ context, event }) =>
+                event.patch.diffBase === 'previous' &&
+                context.previousRecap == null &&
+                typeof context.slug === 'string' &&
+                context.slug.length > 0,
+              target: 'loading',
+            },
+          },
+        },
+        loading: {
+          invoke: {
+            src: 'loadPrevious',
+            input: ({ context }) => ({ slug: context.slug! }),
+            onDone: {
+              target: 'ready',
+              actions: assign({
+                previousRecap: ({ event }) => (event.output?.rows ?? []) as RecapRow[],
+                previousSources: ({ event }) => event.output?.sources ?? {},
+              }),
+            },
+            onError: { target: 'error' },
+          },
+        },
+        ready: {},
+        error: {
+          on: { LOAD_PREVIOUS: 'loading' },
+        },
+      },
+    },
   },
 });
 
@@ -505,6 +596,8 @@ export interface PredictionSearchParams {
   n?: number;
   /** Active tri-modal view; omitted when it equals the dynamic default. */
   view?: PredictionView;
+  /** Diff basis; omitted when it equals the default (`prediction`). */
+  diffbase?: DiffBase;
 }
 
 const isView = (v: unknown): v is PredictionView =>
@@ -534,6 +627,8 @@ export const predictionSearchCodec: SearchCodec<PredictionContext, PredictionSea
     group: ctx.groupTouched ? ctx.groupByClass : undefined,
     // Only persist the count past the implied 1 (init already restores 1 from a seed).
     n: ctx.scenarioCount > 1 ? ctx.scenarioCount : undefined,
+    // Omit the default basis so a bare Diff link stays clean.
+    diffbase: ctx.diffBase !== 'prediction' ? ctx.diffBase : undefined,
   }),
   decode: (s) => ({
     seed: s.seed ?? null,
@@ -550,5 +645,8 @@ export const predictionSearchCodec: SearchCodec<PredictionContext, PredictionSea
     // applies its dynamic default (scores-first) otherwise — decode has no
     // scoredRecap to compute the default from (see context init).
     ...(isView(s.view) ? { view: s.view } : {}),
+    // Only 'previous' is a non-default basis; anything else is the 'prediction'
+    // default (omitted → the machine keeps its default).
+    ...(s.diffbase === 'previous' ? { diffBase: 'previous' as DiffBase } : {}),
   }),
 };
