@@ -9,8 +9,40 @@
 /** Override content shapes the editor writes (text / photo url / removal). A concrete
  *  union — `unknown` breaks TanStack's serializable ServerFn return constraint and a
  *  recursive JSON type trips its deep-instantiation guard (TS2589). */
-export type OverrideContent = string | { plain: string } | { url: string } | { removed: true } | null;
+export type OverrideContent =
+  | string
+  | { plain: string }
+  | { url: string }
+  | { removed: true }
+  | CollectionOverride
+  | null;
 export type OverlayField = { content: OverrideContent; diverged: boolean };
+
+// ── Collection overrides (plan §2, Option B) ────────────────────────────────
+// An owner's CRUD of a scraped collection (awards / performed / assignments) is
+// stored as an operation log keyed by a STABLE per-item identity, so a re-scrape
+// still surfaces new items while the owner's add/edit/remove stick. Concrete,
+// non-recursive shapes (same TS2589 / serialization constraint as above).
+export type AwardItem = { name: string; year: number | null };
+export type PerformedItem = { group: string; startYear: number | null; endYear: number | null };
+export type AssignmentItem = {
+  corps_key: string;
+  corps_name: string;
+  corps_slug: string | null;
+  season: string | null;
+  title: string | null;
+  role_type: string | null;
+  start_year: number | null;
+  end_year: number | null;
+};
+export type CollectionItem = AwardItem | PerformedItem | AssignmentItem;
+/** One CRUD op. `edit` carries the FULL replacement item (not a partial) to keep
+ *  the union concrete. `key` is the stable identity (see *Key helpers below). */
+export type CollectionOp =
+  | { op: 'add'; key: string; item: CollectionItem }
+  | { op: 'edit'; key: string; item: CollectionItem }
+  | { op: 'remove'; key: string };
+export type CollectionOverride = { ops: CollectionOp[] };
 
 export type ProfileOverlay = {
   claim: { status: string; name_match: string | null } | null;
@@ -35,6 +67,10 @@ export type CommonProfile = {
   bioFacts: {
     hometown: string | null;
     currentPosition: { title: string; org: string } | null;
+    // Editable collections (P1). Optional so a judge profile (no awards) still
+    // satisfies the shared surface; treated as [] when absent.
+    awards?: readonly AwardItem[];
+    performedOther?: readonly PerformedItem[];
   };
 };
 
@@ -53,6 +89,39 @@ const asUrl = (c: unknown): string | null => {
   if (c && typeof c === 'object' && typeof (c as { url?: unknown }).url === 'string')
     return (c as { url: string }).url;
   return null;
+};
+
+const norm = (s: string | null | undefined) => (s ?? '').trim().toLowerCase();
+
+// Stable identity keys — coarse on purpose so a re-scrape that only reformats a
+// title/name doesn't orphan the override (the reconciler re-links otherwise).
+export const awardKey = (a: AwardItem) => `award:${norm(a.name)}:${a.year ?? ''}`;
+export const performedKey = (p: PerformedItem) => `perf:${norm(p.group)}:${p.startYear ?? ''}`;
+export const assignmentKey = (a: AssignmentItem) =>
+  `asn:${norm(a.corps_key)}:${a.season ?? ''}:${norm(a.role_type)}:${norm(a.title)}`;
+
+const opsOf = (c: OverrideContent): CollectionOp[] =>
+  c && typeof c === 'object' && Array.isArray((c as { ops?: unknown }).ops)
+    ? (c as CollectionOverride).ops
+    : [];
+
+/**
+ * Apply a collection override's ops onto the scraped list: displayed = scraped −
+ * removed + added ± edited, keyed by `keyOf`. Order: scraped first (in place),
+ * then any added items the owner introduced. Pure; no mutation of inputs.
+ */
+export const applyCollectionOps = <Item>(
+  scraped: readonly Item[],
+  ops: CollectionOp[],
+  keyOf: (i: Item) => string
+): Item[] => {
+  const map = new Map<string, Item>();
+  for (const it of scraped) map.set(keyOf(it), it);
+  for (const op of ops) {
+    if (op.op === 'remove') map.delete(op.key);
+    else map.set(op.key, op.item as unknown as Item); // add | edit (full replacement)
+  }
+  return [...map.values()];
 };
 
 const ownershipInfo = (
@@ -105,7 +174,7 @@ export const mergeProfileOverlay = <T extends CommonProfile>(
       ? null
       : asUrl(ov.photo.content) ?? profile.photo_url;
   }
-  if (ov.hometown || ov.current_position) {
+  if (ov.hometown || ov.current_position || ov.awards || ov.performed) {
     const bf = { ...profile.bioFacts };
     if (ov.hometown) {
       bf.hometown = isRemoved(ov.hometown.content)
@@ -121,6 +190,18 @@ export const mergeProfileOverlay = <T extends CommonProfile>(
           bf.currentPosition = { title: c.title, org: c.org };
         }
       }
+    }
+    // Collection overrides (P1): apply the owner's add/edit/remove ops onto the
+    // scraped list, keyed by stable identity.
+    if (ov.awards) {
+      bf.awards = applyCollectionOps(bf.awards ?? [], opsOf(ov.awards.content), awardKey);
+    }
+    if (ov.performed) {
+      bf.performedOther = applyCollectionOps(
+        bf.performedOther ?? [],
+        opsOf(ov.performed.content),
+        performedKey
+      );
     }
     patch.bioFacts = bf;
   }
@@ -149,6 +230,10 @@ export const scrapedFieldValue = (profile: CommonProfile, fieldKey: string): unk
       return profile.bioFacts.hometown;
     case 'current_position':
       return profile.bioFacts.currentPosition;
+    case 'awards':
+      return profile.bioFacts.awards ?? [];
+    case 'performed':
+      return profile.bioFacts.performedOther ?? [];
     default:
       return null;
   }
