@@ -85,6 +85,11 @@ import { ServerRoute as SitemapDotxmlServerRouteImport } from './routes/sitemap[
 import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]txt'
 import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[.]ico'
 import { ServerRoute as AppIconDotsvgServerRouteImport } from './routes/app-icon[.]svg'
+import { ServerRoute as ReadModelStaffServerRouteImport } from './routes/read-model/staff'
+import { ServerRoute as ReadModelManifestDotjsonServerRouteImport } from './routes/read-model/manifest[.]json'
+import { ServerRoute as ReadModelJudgesServerRouteImport } from './routes/read-model/judges'
+import { ServerRoute as ReadModelEventsServerRouteImport } from './routes/read-model/events'
+import { ServerRoute as ReadModelCorpsServerRouteImport } from './routes/read-model/corps'
 import { ServerRoute as ApiVersionServerRouteImport } from './routes/api/version'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
 import { ServerRoute as ApiCollectServerRouteImport } from './routes/api/collect'
@@ -474,6 +479,32 @@ const FaviconDoticoServerRoute = FaviconDoticoServerRouteImport.update({
 const AppIconDotsvgServerRoute = AppIconDotsvgServerRouteImport.update({
   id: '/app-icon.svg',
   path: '/app-icon.svg',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelStaffServerRoute = ReadModelStaffServerRouteImport.update({
+  id: '/read-model/staff',
+  path: '/read-model/staff',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelManifestDotjsonServerRoute =
+  ReadModelManifestDotjsonServerRouteImport.update({
+    id: '/read-model/manifest.json',
+    path: '/read-model/manifest.json',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelJudgesServerRoute = ReadModelJudgesServerRouteImport.update({
+  id: '/read-model/judges',
+  path: '/read-model/judges',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelEventsServerRoute = ReadModelEventsServerRouteImport.update({
+  id: '/read-model/events',
+  path: '/read-model/events',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelCorpsServerRoute = ReadModelCorpsServerRouteImport.update({
+  id: '/read-model/corps',
+  path: '/read-model/corps',
   getParentRoute: () => rootServerRouteImport,
 } as any)
 const ApiVersionServerRoute = ApiVersionServerRouteImport.update({
@@ -1078,6 +1109,11 @@ export interface FileServerRoutesByFullPath {
   '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
+  '/read-model/corps': typeof ReadModelCorpsServerRoute
+  '/read-model/events': typeof ReadModelEventsServerRoute
+  '/read-model/judges': typeof ReadModelJudgesServerRoute
+  '/read-model/manifest.json': typeof ReadModelManifestDotjsonServerRoute
+  '/read-model/staff': typeof ReadModelStaffServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
@@ -1100,6 +1136,11 @@ export interface FileServerRoutesByTo {
   '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
+  '/read-model/corps': typeof ReadModelCorpsServerRoute
+  '/read-model/events': typeof ReadModelEventsServerRoute
+  '/read-model/judges': typeof ReadModelJudgesServerRoute
+  '/read-model/manifest.json': typeof ReadModelManifestDotjsonServerRoute
+  '/read-model/staff': typeof ReadModelStaffServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
@@ -1123,6 +1164,11 @@ export interface FileServerRoutesById {
   '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
+  '/read-model/corps': typeof ReadModelCorpsServerRoute
+  '/read-model/events': typeof ReadModelEventsServerRoute
+  '/read-model/judges': typeof ReadModelJudgesServerRoute
+  '/read-model/manifest.json': typeof ReadModelManifestDotjsonServerRoute
+  '/read-model/staff': typeof ReadModelStaffServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
@@ -1147,6 +1193,11 @@ export interface FileServerRouteTypes {
     | '/api/collect'
     | '/api/media'
     | '/api/version'
+    | '/read-model/corps'
+    | '/read-model/events'
+    | '/read-model/judges'
+    | '/read-model/manifest.json'
+    | '/read-model/staff'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
@@ -1169,6 +1220,11 @@ export interface FileServerRouteTypes {
     | '/api/collect'
     | '/api/media'
     | '/api/version'
+    | '/read-model/corps'
+    | '/read-model/events'
+    | '/read-model/judges'
+    | '/read-model/manifest.json'
+    | '/read-model/staff'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
@@ -1191,6 +1247,11 @@ export interface FileServerRouteTypes {
     | '/api/collect'
     | '/api/media'
     | '/api/version'
+    | '/read-model/corps'
+    | '/read-model/events'
+    | '/read-model/judges'
+    | '/read-model/manifest.json'
+    | '/read-model/staff'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
@@ -1214,6 +1275,11 @@ export interface RootServerRouteChildren {
   ApiCollectServerRoute: typeof ApiCollectServerRoute
   ApiMediaServerRoute: typeof ApiMediaServerRoute
   ApiVersionServerRoute: typeof ApiVersionServerRoute
+  ReadModelCorpsServerRoute: typeof ReadModelCorpsServerRoute
+  ReadModelEventsServerRoute: typeof ReadModelEventsServerRoute
+  ReadModelJudgesServerRoute: typeof ReadModelJudgesServerRoute
+  ReadModelManifestDotjsonServerRoute: typeof ReadModelManifestDotjsonServerRoute
+  ReadModelStaffServerRoute: typeof ReadModelStaffServerRoute
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
   ApiFantasyMediaIdServerRoute: typeof ApiFantasyMediaIdServerRoute
   ApiFantasyStripeWebhookServerRoute: typeof ApiFantasyStripeWebhookServerRoute
@@ -1753,6 +1819,41 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof AppIconDotsvgServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/read-model/staff': {
+      id: '/read-model/staff'
+      path: '/read-model/staff'
+      fullPath: '/read-model/staff'
+      preLoaderRoute: typeof ReadModelStaffServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/manifest.json': {
+      id: '/read-model/manifest.json'
+      path: '/read-model/manifest.json'
+      fullPath: '/read-model/manifest.json'
+      preLoaderRoute: typeof ReadModelManifestDotjsonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/judges': {
+      id: '/read-model/judges'
+      path: '/read-model/judges'
+      fullPath: '/read-model/judges'
+      preLoaderRoute: typeof ReadModelJudgesServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/events': {
+      id: '/read-model/events'
+      path: '/read-model/events'
+      fullPath: '/read-model/events'
+      preLoaderRoute: typeof ReadModelEventsServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/corps': {
+      id: '/read-model/corps'
+      path: '/read-model/corps'
+      fullPath: '/read-model/corps'
+      preLoaderRoute: typeof ReadModelCorpsServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/version': {
       id: '/api/version'
       path: '/api/version'
@@ -1971,6 +2072,11 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ApiCollectServerRoute: ApiCollectServerRoute,
   ApiMediaServerRoute: ApiMediaServerRoute,
   ApiVersionServerRoute: ApiVersionServerRoute,
+  ReadModelCorpsServerRoute: ReadModelCorpsServerRoute,
+  ReadModelEventsServerRoute: ReadModelEventsServerRoute,
+  ReadModelJudgesServerRoute: ReadModelJudgesServerRoute,
+  ReadModelManifestDotjsonServerRoute: ReadModelManifestDotjsonServerRoute,
+  ReadModelStaffServerRoute: ReadModelStaffServerRoute,
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
   ApiFantasyMediaIdServerRoute: ApiFantasyMediaIdServerRoute,
   ApiFantasyStripeWebhookServerRoute: ApiFantasyStripeWebhookServerRoute,
