@@ -101,9 +101,9 @@ export function ClaimPanel({
 
   return (
     <>
-      <Button
-        variant="outline"
-        size="sm"
+      <button
+        type="button"
+        className="self-start text-xs text-muted-foreground underline decoration-dotted underline-offset-4 transition-colors hover:text-foreground"
         onClick={() => {
           if (!signedIn) {
             void signIn.social({ provider: 'google', callbackURL: window.location.pathname });
@@ -113,7 +113,7 @@ export function ClaimPanel({
         }}
       >
         {signedIn ? 'Is this you? Claim this profile' : 'Sign in to claim this profile'}
-      </Button>
+      </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
