@@ -614,6 +614,12 @@ function CurrentPredictionPage({
   );
   // Previous-show fetch in flight (delay the spinner so a quick load doesn't flash).
   const previousLoading = useDelayedFlag(snapshot.matches({ previous: 'loading' }), 250);
+  // Diff "vs Previous" states: still fetching (no data yet) vs loaded-but-empty
+  // (no corps has a scored prior show — season opener, or prod pre-read-model).
+  const previousPending =
+    ctx.diffBase === 'previous' && previousLoading && ctx.previousRecap == null;
+  const previousEmpty =
+    ctx.diffBase === 'previous' && ctx.previousRecap != null && ctx.previousRecap.length === 0;
 
   // Scores-view Full Recap toggle. The prediction machine carries no full-recap
   // state (it's prediction-first), so the Scores view owns a small local toggle
@@ -1272,16 +1278,21 @@ function CurrentPredictionPage({
                       </p>
                     </Show>
                   </div>
-                  <Show
-                    when={!(ctx.diffBase === 'previous' && previousLoading && ctx.previousRecap == null)}
-                    fallback={
-                      <StatusCard
-                        tone="info"
-                        title="Loading previous scores…"
-                        description="Fetching each corps's most recent prior show."
-                      />
-                    }
-                  >
+                  <Show when={previousPending}>
+                    <StatusCard
+                      tone="info"
+                      title="Loading previous scores…"
+                      description="Fetching each corps's most recent prior show."
+                    />
+                  </Show>
+                  <Show when={previousEmpty}>
+                    <StatusCard
+                      tone="empty"
+                      title="No previous-show scores"
+                      description="None of this event's corps have a scored prior show this season yet."
+                    />
+                  </Show>
+                  <Show when={!previousPending && !previousEmpty}>
                     <DiffRecapTable
                       rows={diffRows}
                       corpsLookup={corpsLookup}
