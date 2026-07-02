@@ -164,14 +164,22 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
         </summary>
         <ul className="mt-2 flex list-disc flex-col gap-3 pl-5 text-foreground/80">
           <li>
-            Players take turns. When you&apos;re <strong>on the clock</strong>, you can draft a corps
-            for <strong>any caption you want — in any order</strong>. Switch caption tabs freely;
-            you&apos;re never forced to fill them top-to-bottom.
+            The draft goes <strong>player by player</strong>. When you&apos;re{' '}
+            <strong>on the clock</strong>, a timer starts and you pick one{' '}
+            <strong>corps</strong> from the list below and slot it into a{' '}
+            <strong>caption</strong> — filling an open space on your weighted recap. Then it&apos;s
+            the next player&apos;s turn.
           </li>
           <li>
-            Each <strong>caption</strong> (GE1, VP, MB, …) has a set number of slots for your lineup.
-            Fill them across your turns in whatever order you like — the same corps + caption can
-            only be taken once in the league.
+            Each <strong>caption</strong> (GE1, VP, MB, …) has a set number of slots. Fill them{' '}
+            <strong>in any order you like</strong> across your turns — switch caption tabs freely,
+            you&apos;re never forced to go top-to-bottom — but the same corps + caption can only be
+            taken once in the league.
+          </li>
+          <li>
+            You can only draft each <strong>corps once</strong>. Once a corps is on your roster in
+            one caption, it&apos;s grayed out in every other caption — so your lineup is always a
+            spread of different corps.
           </li>
           <li>
             Picks are <strong>weighted by slot</strong>: within a caption, the <strong>later slots
