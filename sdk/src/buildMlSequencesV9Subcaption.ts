@@ -72,6 +72,12 @@ const DIVISIONS = ["World Class", "Open Class"];
 const SEQ_LEN = 15;
 const FINALS_CUTOFF = 12;
 
+// Provenance columns (NOT NULL in the live table — the training rows were built
+// by a newer builder that stamped these; this repo's builder must stamp its own).
+const BUILDER_VERSION = "v9-subcaption-repo-2026-07-02";
+const REFERENCE_CURVES_VERSION = "v4.1"; // loads ./src/training/referenceCurvesV4.json
+const MAP_VERSION = "current-json-files"; // frozen corps/judge/show index maps
+
 const CAPTION_COUNT = CAPTIONS.length;
 const CAPTION_FEATURES = 4;
 const OPPONENT_TIMESTEP_FEATURES = 7 + 27; // 7 (existing) + 27 (opponent last-3 totals + per-caption stats)
@@ -1268,6 +1274,9 @@ const insertBatch = (sql: SqlClient.SqlClient, rows: any[]) =>
           y_recap_json,
           y_total,
           agnostic_show_id,
+          builder_version,
+          reference_curves_version,
+          map_version,
           split,
           created_at
         ) VALUES (
@@ -1284,6 +1293,9 @@ const insertBatch = (sql: SqlClient.SqlClient, rows: any[]) =>
           ${row.y_recap_json},
           ${row.y_total},
           ${row.agnostic_show_id},
+          ${BUILDER_VERSION},
+          ${REFERENCE_CURVES_VERSION},
+          ${MAP_VERSION},
           ${row.split},
           ${row.created_at}
         )
