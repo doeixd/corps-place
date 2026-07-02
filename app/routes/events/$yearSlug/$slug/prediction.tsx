@@ -93,6 +93,7 @@ import { EventSeasonTitle } from '@/components/prediction/event-season-title';
 import { SortableScoreHeader } from '@/components/prediction/score-header';
 import { PastSeasonScoresPage } from '@/components/prediction/past-season-scores';
 import { ScoreRecapTable } from '@/components/prediction/score-recap-table';
+import { track } from '@/lib/analytics/client';
 import { DiffRecapTable } from '@/components/prediction/diff-recap-table';
 import { computeDiff } from '@/lib/diff';
 import type { FullEventRecap } from '@/components/prediction/full-recap-table';
@@ -1364,7 +1365,10 @@ function CurrentPredictionPage({
                       send({ type: 'SET_GROUP_BY_CLASS', groupByClass })
                     }
                     showFullRecap={scoresShowFullRecap}
-                    onToggleFullRecap={setScoresShowFullRecap}
+                    onToggleFullRecap={(next) => {
+                      track('full_recap_toggle', { on: next });
+                      setScoresShowFullRecap(next);
+                    }}
                     fullRecap={seededFullRecap}
                     fullStatus="ready"
                     fullSorts={scoresFullSorts}

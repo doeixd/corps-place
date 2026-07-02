@@ -2,6 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { Icon } from '@/components/icon';
 import { RankingIcon, InformationCircleIcon } from '@/components/icons/generated';
+import { track } from '@/lib/analytics/client';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { createFileRoute, notFound, Link, useRouter } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
@@ -706,7 +707,10 @@ function LiveDraft({
             canPick={isMyTurn && !picking}
             nextWeightFor={nextWeightFor}
             filledCaptions={filledCaptions}
-            onPick={(corpsKey, caption) => send({ type: 'PICK', corpsKey, caption })}
+            onPick={(corpsKey, caption) => {
+              track('draft_pick', { caption });
+              send({ type: 'PICK', corpsKey, caption });
+            }}
           />
         </CardContent>
       </Card>
@@ -741,6 +745,7 @@ function DraftQueueEditor({
   });
   const save = useAsyncAction(async () => {
     await setDraftQueue({ data: { leagueId, entries: queue } });
+    track('draft_queue_save', { size: queue.length });
     setOpen(false);
   });
 

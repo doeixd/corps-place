@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useSession } from '@/lib/auth-client';
 import { setMemberNotifyPrefs } from '@/lib/server-fns/fantasy';
 import { setTimeZone } from '@/lib/server-fns/consent';
+import { track } from '@/lib/analytics/client';
 import {
   getVapidPublicKey,
   savePushSubscription,
@@ -196,6 +197,7 @@ export function NotificationPrefs({
       if (want) await subscribeDevice();
       else await unsubscribeDevice();
       await setMemberNotifyPrefs({ data: { leagueId, email: prefs.email, push: want } });
+      track('push_alerts_toggle', { on: want });
     } catch (e) {
       setPrefs((p) => ({ ...p, push: prev })); // revert
       setPushError((e as Error).message);
@@ -308,14 +310,15 @@ export function NotificationPrefs({
               variant="outline"
               size="sm"
               className="w-full sm:w-auto"
-              onClick={() =>
+              onClick={() => {
+                track('draft_calendar_download');
                 downloadDraftIcs({
                   leagueId,
                   startsAtIso: draftScheduledAt,
                   leagueName,
                   leagueSlug,
-                })
-              }
+                });
+              }}
             >
               Add draft to calendar
             </Button>

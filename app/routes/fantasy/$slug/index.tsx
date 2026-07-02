@@ -31,6 +31,7 @@ import { NotificationPrefs } from '@/components/fantasy/notification-prefs';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { useCopyToClipboard } from '@/lib/use-copy-to-clipboard';
+import { track } from '@/lib/analytics/client';
 import { leagueDetailCollection, refetchLeagueDetail } from '@/db/fantasy-collections';
 import { HybridRecord } from '@/components/hybrid-collection';
 
@@ -430,6 +431,7 @@ function DraftScheduleCard({
       await scheduleDraft({
         data: { leagueId, scheduledAt: input.scheduledAt, autoStart: input.autoStart },
       });
+      track('draft_schedule', { autoStart: input.autoStart });
       await onChanged();
     }
   );

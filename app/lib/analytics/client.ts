@@ -86,6 +86,7 @@ export function trackPageview(path: string): void {
 
 /** Record an arbitrary client domain event. */
 export function track(name: string, props?: Record<string, unknown>): void {
+  if (typeof window === 'undefined') return; // guard `location` before send()'s own check
   send({ type: 'event', name, path: location.pathname, device: device(), props: props ?? null });
 }
 
