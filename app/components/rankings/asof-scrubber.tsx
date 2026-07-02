@@ -58,6 +58,9 @@ export function AsofScrubber({
   if (dates.length === 0) return null;
   const latest = dates[dates.length - 1];
   const onLatest = !asof || asof === latest;
+  // Most recent first: reading order matches relevance (Latest pill, then
+  // yesterday, then further back as you scroll right).
+  const newestFirst = [...dates].reverse();
 
   const arrow = (dir: number, show: boolean) => (
     <button
@@ -80,12 +83,14 @@ export function AsofScrubber({
       <div
         ref={ref}
         onScroll={updateEdges}
-        className="carousel-scrollbar flex snap-x gap-1.5 overflow-x-auto pb-1 sm:px-8"
+        // Left-aligned: no left padding — at scroll 0 the left arrow is hidden, so
+        // nothing sits under it; pills only pass beneath it once scrolled.
+        className="carousel-scrollbar flex snap-x gap-1.5 overflow-x-auto pb-1 sm:pr-8"
       >
         <button type="button" className={pill(onLatest)} onClick={() => onSelect(null)}>
           Latest
         </button>
-        {dates.map((d) => (
+        {newestFirst.map((d) => (
           <button
             key={d}
             type="button"
