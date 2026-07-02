@@ -1111,10 +1111,15 @@ function DraftBoard({
                         <Icon icon={InformationCircleIcon} size="sm" />
                       </PopoverTrigger>
                       <PopoverContent align="center" className="w-64 p-3 text-xs font-normal">
-                        Each pick’s caption score is multiplied by its <strong>weight</strong> before
-                        it’s added to your total. Every player’s corps in the same slot weighs the
-                        same, and later slots in a caption are worth more, so your last pick counts
-                        for the most.
+                        {/* Wrap in a <p>: PopoverContent is flex-col, so bare text +
+                            an inline <strong> would each become their own flex item
+                            (stacking onto separate lines). One <p> keeps it inline. */}
+                        <p>
+                          Each pick’s caption score is multiplied by its{' '}
+                          <strong>weight</strong> before it’s added to your total. Every player’s
+                          corps in the same slot weighs the same, and later slots in a caption are
+                          worth more, so your last pick counts for the most.
+                        </p>
                       </PopoverContent>
                     </Popover>
                   </span>
@@ -1166,7 +1171,12 @@ function DraftBoard({
                       const corps = pick ? corpsByKey.get(pick.corpsKey) : undefined;
                       const size = pick ? logoSize(pick.weight) : 0;
                       return (
-                        <TableCell key={c} className="p-1 text-center align-middle">
+                        <TableCell
+                          key={c}
+                          // Not-yet-filled slots get a subtle grey wash so only the
+                          // corps a player actually holds stands out on white.
+                          className={cn('p-1 text-center align-middle', !pick && 'bg-muted/15')}
+                        >
                           {pick ? (
                             <span
                               className="inline-flex flex-col items-center gap-0.5"
