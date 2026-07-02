@@ -484,9 +484,11 @@ function PresenceDot({ online, name }: { online: boolean; name?: string | null }
     >
       {online ? (
         <>
-          {/* live green dot with a soft "ping" halo so online reads as active */}
-          <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-500/60" />
-          <span className="relative inline-block size-2 rounded-full bg-green-500" />
+          {/* live dot in the site accent (bg-primary) with a soft "ping" halo. NB:
+              default palette colors like bg-green-500 don't exist — app.css resets
+              `--color-*: initial`, so only semantic tokens (primary/success/…) work. */}
+          <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary/60" />
+          <span className="relative inline-block size-2 rounded-full bg-primary" />
         </>
       ) : (
         // hollow ring so offline is still visible instead of vanishing
