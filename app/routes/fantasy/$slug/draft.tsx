@@ -322,17 +322,18 @@ function SchedulePanel({
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  // Re-render once the scheduled time passes so a manual-mode room can flip its
-  // "waiting on the owner" message live (the SSE feed only fires on draft events,
-  // and no event happens when a manual draft's time simply arrives).
+  // Re-render once the scheduled time passes so the pre-draft message flips live
+  // in BOTH modes — manual ("waiting on the owner") and auto-start ("opens in the
+  // next few minutes") — since the SSE feed only fires on draft events and no
+  // event happens when the time simply arrives.
   const [nowMs, setNowMs] = useState(() => Date.now());
   useEffect(() => {
-    if (isOwner || !scheduledAt || savedAutoStart) return;
+    if (isOwner || !scheduledAt) return;
     const at = new Date(scheduledAt).getTime();
     if (Number.isNaN(at) || Date.now() >= at) return;
     const t = setTimeout(() => setNowMs(Date.now()), at - Date.now() + 500);
     return () => clearTimeout(t);
-  }, [isOwner, scheduledAt, savedAutoStart]);
+  }, [isOwner, scheduledAt]);
 
   // Starting the draft is a one-way door. Confirm when it would start a draft with no
   // set time, or earlier than the scheduled time — to avoid catching players off guard.
@@ -351,6 +352,17 @@ function SchedulePanel({
       return (
         <p className="text-sm font-medium text-foreground">
           The scheduled draft time has arrived — waiting on the owner to start the draft
+          <AnimatedEllipsis />
+        </p>
+      );
+    }
+    // Auto-start + time arrived: the cron sweep starts it within a few minutes;
+    // the room flips live on its own via the SSE snapshot — no reload needed.
+    if (scheduledAt && savedAutoStart && timeArrived) {
+      return (
+        <p className="text-sm font-medium text-foreground">
+          The scheduled draft time has arrived — the draft room opens automatically in the next few
+          minutes
           <AnimatedEllipsis />
         </p>
       );

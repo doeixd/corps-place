@@ -2,6 +2,7 @@ import { createServerFileRoute } from '@tanstack/react-start/server';
 import { Effect } from 'effect';
 import { NotificationService } from '@/lib/fantasy/services/notification-service';
 import { DraftService } from '@/lib/fantasy/services/draft-service';
+import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { effectDraftEnabled } from '@/lib/fantasy/flag';
 import { fantasyRuntime } from '@/rpc';
 
@@ -19,11 +20,13 @@ const run = async ({ request }: { request: Request }): Promise<Response> => {
   if (!authorized(request)) return new Response('Not found', { status: 404 });
   const summary = await fantasyRuntime.runPromise(
     Effect.gen(function* () {
-      // Auto-start due scheduled drafts — only when the Effect draft engine is the active
-      // one, so we never start a draft via DraftService while the legacy engine serves it.
+      // Auto-start due scheduled drafts — through whichever engine is active, so a
+      // draft is always started by the same engine that will serve its picks.
+      // (Previously the legacy branch was a no-op, so prod — which runs the legacy
+      // engine — silently never honored "start automatically at the scheduled time".)
       const drafts = effectDraftEnabled()
         ? yield* Effect.flatMap(DraftService, (s) => s.startDueScheduledDrafts())
-        : { started: 0 };
+        : yield* Effect.promise(() => draftEngine.startDueScheduledDrafts());
       const dispatch = yield* Effect.flatMap(NotificationService, (s) => s.dispatch());
       return { ...dispatch, draftsStarted: drafts.started };
     })

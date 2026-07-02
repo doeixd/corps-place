@@ -381,6 +381,35 @@ export async function startDraft(leagueId: string): Promise<StartFeasibility> {
 }
 
 /**
+ * Start every due auto-start scheduled draft — the LEGACY engine's cron hook,
+ * mirroring DraftService.startDueScheduledDrafts. Without this, prod (which runs
+ * the legacy engine — FANTASY_EFFECT_DRAFT unset) never honored "start the draft
+ * automatically at the scheduled time": the dispatch cron only ran the Effect
+ * implementation. A draft that isn't startable yet (<2 members, identities
+ * incomplete, infeasible pool) simply stays scheduled for the owner — failures
+ * are swallowed per league so one bad draft can't poison the loop.
+ */
+export async function startDueScheduledDrafts(): Promise<{ started: number }> {
+  const db = await getContributionsDb();
+  const due = await db.execute({
+    sql: `SELECT league_id FROM fantasy_drafts
+          WHERE status = 'scheduled' AND auto_start = 1
+            AND scheduled_at IS NOT NULL AND scheduled_at <= ?`,
+    args: [new Date().toISOString()],
+  });
+  let started = 0;
+  for (const row of due.rows) {
+    try {
+      const res = await startDraft(String(row.league_id));
+      if (res.ok) started++;
+    } catch {
+      /* not startable yet — stays scheduled; never abort the sweep */
+    }
+  }
+  return { started };
+}
+
+/**
  * Cheap necessary-condition feasibility (R4): every member needs `totalRounds`
  * distinct corps (when oneCaptionPerCorps), and the league needs M*R unique
  * (corps,caption) pairs overall. Not a full matching proof, but it catches the
