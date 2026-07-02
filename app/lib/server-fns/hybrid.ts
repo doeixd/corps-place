@@ -203,22 +203,31 @@ export const listPredictedEvents = createServerFn({ method: 'GET' }).handler(
 // chosen day. Prod reads the emitted rm_event_prediction_snapshots; dev falls back
 // to the relational builder. Until the read-model section ships, prod returns
 // empty/null (the scrubber simply hides). See FORECAST_AS_OF_PREDICTION_PAGE_PLAN.
+// Event URLs come in both forms — /events/2026/dci-west and /events/2026/2026-dci-west —
+// but rm_event_prediction_snapshots keys the season-prefixed event_slug. The route
+// param is the bare form, so without this the reads silently return [] (the
+// scrubber only appeared on prefixed URLs). Forecast-as-of is 2026-only, matching
+// the builders' season default.
+const asOfEventSlug = (slug: string): string => (/^\d{4}-/.test(slug) ? slug : `2026-${slug}`);
+
 export const getHybridEventPredictionSnapshotDates = createServerFn({ method: 'GET' })
   .validator((slug: string) => slug)
   .handler(async ({ data }): Promise<{ dates: string[] }> => {
+    const slug = asOfEventSlug(data);
     if (readModelEnabled()) {
-      return { dates: await readEventPredictionSnapshotDates(getReadModelClient(), data).catch(() => []) };
+      return { dates: await readEventPredictionSnapshotDates(getReadModelClient(), slug).catch(() => []) };
     }
-    return { dates: await buildEventPredictionSnapshotDates(getShowTitlesBigDb(), data).catch(() => []) };
+    return { dates: await buildEventPredictionSnapshotDates(getShowTitlesBigDb(), slug).catch(() => []) };
   });
 
 export const getHybridEventPredictionAsOf = createServerFn({ method: 'GET' })
   .validator((data: { slug: string; date: string }) => data)
   .handler(async ({ data }): Promise<EventPredictionAsOf | null> => {
+    const slug = asOfEventSlug(data.slug);
     if (readModelEnabled()) {
-      return readEventPredictionAsOf(getReadModelClient(), data.slug, data.date).catch(() => null);
+      return readEventPredictionAsOf(getReadModelClient(), slug, data.date).catch(() => null);
     }
-    return buildEventPredictionAsOf(getShowTitlesBigDb(), data.slug, data.date).catch(() => null);
+    return buildEventPredictionAsOf(getShowTitlesBigDb(), slug, data.date).catch(() => null);
   });
 
 // All show titles across seasons — powers the /shows program directory.
