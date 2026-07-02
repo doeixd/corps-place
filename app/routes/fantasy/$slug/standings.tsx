@@ -86,7 +86,11 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
   const [sorts, setSorts] = useState<SortEntry[]>([]);
   const [sortMode, setSortMode] = useState<SortMode>('exclusive');
 
-  const recapRows = rows.map(toRecapRow);
+  // The live collection doesn't guarantee row order — sort by rank explicitly so
+  // the default (unsorted-columns) view is always the standings order.
+  const recapRows = [...rows]
+    .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+    .map(toRecapRow);
 
   return (
     <PageShell className="flex flex-col gap-6">
