@@ -62,16 +62,22 @@ export function computeRosterScore(
       perCaption[key] = 0; // missingCaptionPolicy 'zero'
       continue;
     }
-    let weightedSum = 0; // Σ(vᵢ·wᵢ)
-    let weightTotal = 0; // Σ(wᵢ)
+    let weightedSum = 0; // Σ(vᵢ·wᵢ) over SCORED picks
+    let weightTotal = 0; // Σ(wᵢ) over SCORED picks
     for (const p of group) {
       const v = best(p.corpsKey, p.caption);
+      // "No season-best yet" (the corps hasn't competed) is MISSING DATA, not a
+      // zero performance — averaging it in halves the caption early season and
+      // makes totals look nothing like real DCI scores. Exclude unscored picks
+      // from the average; they start counting the day the corps first scores.
+      if (v <= 0) continue;
       weightedSum += v * p.weight;
       weightTotal += p.weight;
     }
     if (mode === 'sum') {
       perCaption[key] = weightedSum; // unbounded points pile, no normalization
     } else {
+      // 0 only while NONE of the caption's picks have scored yet.
       perCaption[key] = weightTotal === 0 ? 0 : weightedSum / weightTotal;
     }
   }

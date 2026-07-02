@@ -1,24 +1,24 @@
+import { useState } from 'react';
 import { createFileRoute, notFound } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { BackLink } from '@/components/back-link';
 import { LeagueTabs } from '@/components/fantasy/league-tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { getStandings } from '@/lib/server-fns/fantasy';
 import { standingsCollection } from '@/db/fantasy-collections';
 import { HybridCollection } from '@/components/hybrid-collection';
-import { CAPTION_KEYS } from '@/lib/fantasy/captions';
 import { Explain } from '@/components/fantasy/explain';
 import { SectionErrorBoundary } from '@/components/error-boundary';
+import { ScoreRecapTable } from '@/components/prediction/score-recap-table';
+import {
+  cycleSort,
+  type RecapRow,
+  type RangeKey,
+  type SortEntry,
+} from '@/lib/prediction-scenario';
+import type { SortMode } from '@/machines/score-table-machine';
 
 type Standings = Awaited<ReturnType<typeof getStandings>>;
 type Row = Standings['rows'][number];
@@ -42,8 +42,6 @@ export const Route = createFileRoute('/fantasy/$slug/standings')({
   component: StandingsPage,
 });
 
-const fmt = (n: number) => (n === 0 ? '—' : n.toFixed(3));
-
 function StandingsPage() {
   const { league, rows } = Route.useLoaderData();
   const { slug } = Route.useParams();
@@ -56,12 +54,39 @@ function StandingsPage() {
   );
 }
 
+/** A standings row reshaped into the recap table's RecapRow (same caption keys). */
+const toRecapRow = (row: Row): RecapRow => ({
+  corps: row.corpsName || row.userName || 'Player',
+  rank: row.rank ?? undefined,
+  total: row.total,
+  GE: row.ge,
+  Visual: row.visual,
+  Music: row.music,
+  GE1: row.perCaption.GE1 ?? 0,
+  GE2: row.perCaption.GE2 ?? 0,
+  VP: row.perCaption.VP ?? 0,
+  VA: row.perCaption.VA ?? 0,
+  CG: row.perCaption.CG ?? 0,
+  MB: row.perCaption.MB ?? 0,
+  MA: row.perCaption.MA ?? 0,
+  MP: row.perCaption.MP ?? 0,
+  // Fantasy corps identity logo (rendered by the table's CorpsNameCell override).
+  logo: row.corpsLogoMediaId ? `/api/fantasy-media/${row.corpsLogoMediaId}` : undefined,
+});
+
 function StandingsContent({ league, rows }: { league: Standings['league']; rows: Row[] }) {
   const final = rows.some((r) => r.isFinal);
   const lastUpdated = rows.reduce<string | null>(
     (max, r) => (r.computedAt && (!max || r.computedAt > max) ? r.computedAt : max),
     null
   );
+
+  // Same sort interactions as the prediction recap table (cycle desc → asc →
+  // off; stack vs exclusive), managed locally — no URL sync needed here.
+  const [sorts, setSorts] = useState<SortEntry[]>([]);
+  const [sortMode, setSortMode] = useState<SortMode>('exclusive');
+
+  const recapRows = rows.map(toRecapRow);
 
   return (
     <PageShell className="flex flex-col gap-6">
@@ -98,68 +123,30 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
       ) : (
         <SectionErrorBoundary label="the standings table">
           <p className="text-sm text-muted-foreground">
-            Each player&apos;s total is the sum of their drafted corps&apos; caption scores from
-            real drum corps <Explain term="recap">recaps</Explain>. On a wider screen the total breaks down
-            by General Effect, Visual, Music, and the eight captions — hover any code to see what it
-            means.
+            Each player&apos;s total is built from their drafted corps&apos; season-best caption
+            scores from real drum corps <Explain term="recap">recaps</Explain>, DCI-style: GE plus
+            half of Visual and Music. Captions where no drafted corps has scored yet show an em
+            dash and fill in as the season goes. Tap a column to sort.
           </p>
-          <Table containerClassName="overflow-x-auto">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-8">#</TableHead>
-                <TableHead>Corps</TableHead>
-                <TableHead className="text-right font-semibold">Total</TableHead>
-                <TableHead className="hidden text-right sm:table-cell">GE</TableHead>
-                <TableHead className="hidden text-right sm:table-cell">Visual</TableHead>
-                <TableHead className="hidden border-r border-border text-right sm:table-cell">
-                  Music
-                </TableHead>
-                {CAPTION_KEYS.map((c) => (
-                  <TableHead key={c} className="hidden text-right lg:table-cell">
-                    <Explain term={c}>{c}</Explain>
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((row) => (
-                <StandingRow key={row.userId} row={row} />
-              ))}
-            </TableBody>
-          </Table>
+          <ScoreRecapTable
+            rows={recapRows}
+            corpsLookup={() => undefined}
+            title="Standings"
+            classFilters={[]}
+            onSetClassFilters={() => {}}
+            sorts={sorts}
+            onCycleSort={(key: RangeKey) => setSorts((prev) => cycleSort(prev, key, sortMode))}
+            onSetSorts={setSorts}
+            sortMode={sortMode}
+            onSetSortMode={setSortMode}
+            // Standings are point scores — no prediction intervals, no Ranges toggle.
+            showRanges={false}
+            onSetShowRanges={() => {}}
+            groupByClass={false}
+            onSetGroupByClass={() => {}}
+          />
         </SectionErrorBoundary>
       )}
     </PageShell>
-  );
-}
-
-function StandingRow({ row }: { row: Row }) {
-  return (
-    <TableRow style={row.corpsColor ? { borderLeft: `3px solid ${row.corpsColor}` } : undefined}>
-      <TableCell className="text-muted-foreground">{row.rank ?? '—'}</TableCell>
-      <TableCell>
-        <div className="flex items-center gap-2">
-          {row.corpsLogoMediaId ? (
-            <img
-              src={`/api/fantasy-media/${row.corpsLogoMediaId}`}
-              alt=""
-              className="size-6 rounded-md object-cover"
-            />
-          ) : null}
-          <span className="font-medium">{row.corpsName || row.userName || 'Player'}</span>
-        </div>
-      </TableCell>
-      <TableCell className="text-right font-semibold">{row.total.toFixed(3)}</TableCell>
-      <TableCell className="hidden text-right sm:table-cell">{fmt(row.ge)}</TableCell>
-      <TableCell className="hidden text-right sm:table-cell">{fmt(row.visual)}</TableCell>
-      <TableCell className="hidden border-r border-border text-right sm:table-cell">
-        {fmt(row.music)}
-      </TableCell>
-      {CAPTION_KEYS.map((c) => (
-        <TableCell key={c} className="hidden text-right text-muted-foreground lg:table-cell">
-          {fmt(row.perCaption[c] ?? 0)}
-        </TableCell>
-      ))}
-    </TableRow>
   );
 }

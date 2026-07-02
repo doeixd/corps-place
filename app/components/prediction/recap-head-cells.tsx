@@ -80,6 +80,8 @@ export function RecapHeadCells({
       >
         Corps
       </motion.th>
+      {/* No divisions at all (e.g. fantasy standings reuse) → no class column. */}
+      {divisions.length === 0 && !classFilterActive ? null : (
       <motion.th
         layoutId="recap-head-class"
         {...morph}
@@ -137,6 +139,7 @@ export function RecapHeadCells({
           </DropdownMenuContent>
         </DropdownMenu>
       </motion.th>
+      )}
     </>
   );
 }

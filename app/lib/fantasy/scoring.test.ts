@@ -80,6 +80,19 @@ describe('computeRosterScore', () => {
     expect(score.perCaption.GE1).toBe(0);
   });
 
+  it('an unscored pick is excluded from the caption average, not counted as 0', () => {
+    // One scored corps (15.6) + one that hasn't competed yet. Early season the
+    // caption should read 15.6 — NOT (15.6·w + 0·w)/(w+w) ≈ 7.8.
+    const bests = { 'scored|VP': 15.6 };
+    const score = computeRosterScore(
+      [pick('scored', 'VP', 1.0), pick('ghost', 'VP', 2.0)],
+      lookup(bests),
+      DEFAULT_WEIGHTS,
+      'recap'
+    );
+    expect(score.perCaption.VP).toBeCloseTo(15.6, 5);
+  });
+
   it("'sum' mode does not normalize (unbounded points pile)", () => {
     const bests = { 'a|MB': 19, 'b|MB': 18 };
     const score = computeRosterScore(

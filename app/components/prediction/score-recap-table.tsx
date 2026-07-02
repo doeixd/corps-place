@@ -587,15 +587,21 @@ export function ScoreRecapTable({
                                     corpsKey={
                                       typeof row.corps_key === 'string' ? row.corps_key : null
                                     }
+                                    // Per-row logo override (fantasy corps identities live
+                                    // outside the corps registry).
+                                    logo={typeof row.logo === 'string' ? row.logo : undefined}
                                   />
                                 );
                               })()}
                             </TableCell>
-                            <TableCell>
-                              <ClassBadge
-                                division={row.division ?? corpsLookup(row)?.division ?? undefined}
-                              />
-                            </TableCell>
+                            {/* Mirror RecapHeadCells: no divisions in the data → no class column. */}
+                            {divisions.length === 0 ? null : (
+                              <TableCell>
+                                <ClassBadge
+                                  division={row.division ?? corpsLookup(row)?.division ?? undefined}
+                                />
+                              </TableCell>
+                            )}
                             {SCORE_COLUMNS.map((col) => {
                               const rank = captionRanks.get(col.key)?.get(String(row.corps));
                               // A caption/subtotal that's blank or zero (e.g. totals-only
