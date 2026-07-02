@@ -59,8 +59,10 @@ export function AsofScrubber({
   const latest = dates[dates.length - 1];
   const onLatest = !asof || asof === latest;
   // Most recent first: reading order matches relevance (Latest pill, then
-  // yesterday, then further back as you scroll right).
-  const newestFirst = [...dates].reverse();
+  // yesterday, then further back as you scroll right). The newest date itself is
+  // dropped — it's the same state as the Latest pill (selecting it normalizes to
+  // null), so showing it was a dead duplicate that never rendered active.
+  const newestFirst = [...dates].reverse().filter((d) => d !== latest);
 
   const arrow = (dir: number, show: boolean) => (
     <button
@@ -95,7 +97,7 @@ export function AsofScrubber({
             key={d}
             type="button"
             className={pill(!onLatest && asof === d)}
-            onClick={() => onSelect(d === latest ? null : d)}
+            onClick={() => onSelect(d)}
           >
             {fmtDate(d)}
           </button>
