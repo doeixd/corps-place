@@ -139,7 +139,13 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
             {league.league.name} · Season {league.league.season}
           </p>
           <h1 className="text-2xl font-bold text-text-primary">Draft room</h1>
-          <p className="text-sm text-text-secondary">{draft ? draft.status : 'not scheduled'}</p>
+          <p className="text-sm text-text-secondary">
+            {draft?.status === 'scheduled' && draft.scheduledAt
+              ? `Scheduled at: ${formatDraftDateTime(draft.scheduledAt)}`
+              : draft
+                ? draft.status
+                : 'not scheduled'}
+          </p>
         </div>
         <LeagueTabs
           slug={league.league.slug}
