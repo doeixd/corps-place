@@ -58,6 +58,40 @@ print('\n'.join(r[0] for r in rows))
 EOF
 )
 
+# ── Same-season ML sequence refresh ─────────────────────────────────────────
+# predictEventRecap picks its mode from ml_sequence_rows_v9_subcaption: with no
+# same-season rows it stays in preseason_forecast FOREVER, where the model's
+# weight on point totals is 0 (pure prior-season baselines) — even after real
+# scores land. Rebuild the current season's rows whenever the DB has scored
+# competitions the sequence table hasn't seen, so in-season predictions actually
+# engage the model. Upsert-only + single season → training seasons untouched.
+# NOTE: never regenerate the index maps (corps/judge/show) here — they're
+# positional and frozen into the trained model's embeddings.
+seq_stale=$(python3 - <<'EOF'
+import sqlite3
+db = sqlite3.connect('file:dci-relational.db?mode=ro', uri=True)
+scored = db.execute("""
+  SELECT COUNT(DISTINCT cs.competition_slug) FROM corps_scores cs
+  JOIN competitions c ON c.slug = cs.competition_slug WHERE c.season='2026'
+""").fetchone()[0]
+seq = db.execute(
+  "SELECT COUNT(DISTINCT competition_slug) FROM ml_sequence_rows_v9_subcaption WHERE season='2026'"
+).fetchone()[0]
+print('stale' if scored > seq else 'fresh')
+EOF
+)
+if [ "$seq_stale" = "stale" ]; then
+  echo "[nightly-predictions] 2026 sequence rows behind ingested scores — rebuilding…"
+  if ! NODE_OPTIONS="--max-old-space-size=1536" vp exec tsx scripts/computeEloRatingsV7.ts 2>&1 | tail -2; then
+    echo "[nightly-predictions] elo recompute failed (non-fatal — sequences fall back to averages)"
+  fi
+  if NODE_OPTIONS="--max-old-space-size=1536" vp exec tsx src/buildMlSequencesV9Subcaption.ts --seasons 2026 2>&1 | tail -3; then
+    echo "[nightly-predictions] 2026 ML sequences rebuilt."
+  else
+    echo "[nightly-predictions] 2026 sequence rebuild FAILED (non-fatal; predictions stay on baselines)"
+  fi
+fi
+
 if [ -z "$missing" ]; then
   echo "[nightly-predictions] no events to (re)generate — nothing to do."
   exit 0

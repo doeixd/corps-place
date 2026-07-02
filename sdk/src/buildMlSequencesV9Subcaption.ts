@@ -63,6 +63,9 @@ const CAPTION_MAP: Record<string, string> = captionProxy({
 })
 
 
+// Training seasons. NOTE: the CURRENT season is intentionally not listed — it's
+// built incrementally in-season via `--seasons <year>` (scripts/nightly-predictions.sh)
+// so predictEventRecap's same-season history/mode detection sees fresh rows.
 const SEASONS = ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2022", "2023", "2024", "2025"];
 const DIVISIONS = ["World Class", "Open Class"];
 
@@ -1290,9 +1293,23 @@ const insertBatch = (sql: SqlClient.SqlClient, rows: any[]) =>
 
 const SqlLayer = LibsqlClient.layer({ url: "file:./dci-relational.db" });
 
-Effect.runPromise(buildSequencesV9().pipe(Effect.provide(SqlLayer)))
-  .then(() => console.log("Done building V9 sequences."))
-  .catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-  });
+// Run ONLY when executed directly (`tsx src/buildMlSequencesV9Subcaption.ts`),
+// never on import — importing this module used to kick off a full rebuild.
+// `--seasons 2026` (comma-separated) restricts the build; the INSERT is an
+// upsert keyed by (season, competition_slug, division, corps_key), so a
+// single-season run can't disturb the other seasons' training rows.
+const invokedDirectly = process.argv[1]?.includes("buildMlSequencesV9Subcaption");
+if (invokedDirectly) {
+  const seasonsArgIdx = process.argv.indexOf("--seasons");
+  const seasonsArg =
+    seasonsArgIdx >= 0 && process.argv[seasonsArgIdx + 1]
+      ? process.argv[seasonsArgIdx + 1].split(",").map((s) => s.trim()).filter(Boolean)
+      : undefined;
+  if (seasonsArg) console.log(`Building V9 subcaption sequences for seasons: ${seasonsArg.join(", ")}`);
+  Effect.runPromise(buildSequencesV9(seasonsArg).pipe(Effect.provide(SqlLayer)))
+    .then(() => console.log("Done building V9 sequences."))
+    .catch((error) => {
+      console.error(error);
+      process.exitCode = 1;
+    });
+}
