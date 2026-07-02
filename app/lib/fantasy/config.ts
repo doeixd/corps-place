@@ -76,7 +76,7 @@ export const DEFAULT_CONFIG: LeagueConfig = {
   draftType: 'snake',
   pickSeconds: 60,
   quizOrderDir: 'high_first',
-  captionCaps: { GE1: 1, GE2: 1, VP: 2, VA: 2, CG: 2, MB: 2, MA: 2, MP: 2 }, // sum = 14 rounds
+  captionCaps: { GE1: 2, GE2: 2, VP: 2, VA: 2, CG: 2, MB: 2, MA: 2, MP: 2 }, // sum = 16 rounds (GE capped the same as every other caption)
   oneCaptionPerCorps: true,
   allowedDivisions: ['world', 'open'],
   reverseWeighting: { enabled: true, minWeight: 1.0, maxWeight: 2.0 },

@@ -14,8 +14,8 @@ describe('LeagueConfig', () => {
     expect(parsed.weights).toEqual({ ge: 40, visual: 30, music: 30 });
   });
 
-  it('totalRounds = sum of caption caps (default = 14)', () => {
-    expect(totalRounds(DEFAULT_CONFIG)).toBe(14);
+  it('totalRounds = sum of caption caps (default = 16)', () => {
+    expect(totalRounds(DEFAULT_CONFIG)).toBe(16);
   });
 
   it('normalizes weights to sum to 100', () => {
