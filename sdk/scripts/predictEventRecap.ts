@@ -1336,7 +1336,14 @@ async function main() {
     // out. Those rows don't resolve to a real competitive corps, so fall back to
     // the prior-season finalist template (active corps only) whenever the scraped
     // lineup has no real corps — not just when it's empty.
-    const hasRealCorps = lineup.some((row) => row.corps_key && row.division_name);
+    // "Real corps" must mean a corps in a SUPPORTED prediction division: the
+    // championship-finals lineup lists only ceremonies + exhibition acts (Marine
+    // D&B Corps etc.), which DO resolve to corps keys — counting them left the
+    // finals page permanently at "No recap prediction" instead of falling back
+    // to the projected top-12 field.
+    const hasRealCorps = lineup.some(
+      (row) => row.corps_key && isSupportedPredictionDivision(predictionDivision(cli, row))
+    );
     if (!hasRealCorps) {
       const fallback = await loadPriorSeasonChampionshipLineup(db, event, priorSeason, cli.season);
       if (fallback) {
