@@ -51,6 +51,7 @@ import { CAPTION_KEYS, KEY_TO_CAPTION_NAME, type CaptionKey } from '@/lib/fantas
 import { pickWeight, type ReverseWeighting } from '@/lib/fantasy/draft';
 import { useDraftStream, useDraftPresence } from '@/lib/fantasy/use-draft-stream';
 import { DraftScheduleFields } from '@/components/fantasy/draft-schedule-fields';
+import { formatDraftDateTime } from '@/lib/fantasy/format-time';
 import { useWebHaptics } from 'web-haptics/react';
 import { Countdown } from '@/components/fantasy/countdown';
 import { BusyButton } from '@/components/fantasy/busy-button';
@@ -340,7 +341,7 @@ function SchedulePanel({
     return (
       <p className="text-muted-foreground">
         {scheduledAt
-          ? `The draft is scheduled for ${new Date(scheduledAt).toLocaleString()}. ${
+          ? `The draft is scheduled for ${formatDraftDateTime(scheduledAt)}. ${
               savedAutoStart
                 ? 'It will open automatically at that time.'
                 : 'The room opens when the owner starts it.'
@@ -376,7 +377,7 @@ function SchedulePanel({
               {scheduledAt ? (
                 <>
                   The draft is scheduled for{' '}
-                  <strong>{new Date(scheduledAt).toLocaleString()}</strong>, which hasn&apos;t
+                  <strong>{formatDraftDateTime(scheduledAt)}</strong>, which hasn&apos;t
                   arrived yet. Starting now begins it <strong>early</strong> — anyone counting on
                   the scheduled time may not be in the room yet. Make sure every player is here and
                   ready, because the draft can&apos;t go back to setup once it starts.

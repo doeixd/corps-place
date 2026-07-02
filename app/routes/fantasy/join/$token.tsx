@@ -3,6 +3,7 @@ import { PageShell } from '@/components/page-shell';
 import { Card, CardContent } from '@/components/ui/card';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
+import { formatDraftDateTime } from '@/lib/fantasy/format-time';
 import { getInvite, acceptInvite } from '@/lib/server-fns/fantasy';
 import { refetchMyLeagues } from '@/db/fantasy-collections';
 import { signIn, useSession } from '@/lib/auth-client';
@@ -89,7 +90,7 @@ function JoinLeague() {
               {league.hostName ? `Hosted by ${league.hostName}` : null}
               {league.hostName && league.draftScheduledAt ? ' · ' : ''}
               {league.draftScheduledAt
-                ? `Draft ${new Date(league.draftScheduledAt).toLocaleString()}`
+                ? `Draft ${formatDraftDateTime(league.draftScheduledAt)}`
                 : null}
             </p>
           ) : null}

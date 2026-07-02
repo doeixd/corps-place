@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { BusyButton } from '@/components/fantasy/busy-button';
+import { formatDraftDateTime, shortZoneCode } from '@/lib/fantasy/format-time';
 
 /**
  * The draft-time scheduling fields, shared by the draft room and the league settings
@@ -34,7 +35,7 @@ export function DraftScheduleFields({
       </p>
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="draft-time">Draft time</Label>
+          <Label htmlFor="draft-time">Draft time ({shortZoneCode()})</Label>
           <p className="max-w-xs text-xs text-muted-foreground">
             When the draft should happen. With <strong>Start automatically</strong> on (below), the
             room opens by itself at this time. Otherwise, you open it yourself — and{' '}
@@ -74,7 +75,7 @@ export function DraftScheduleFields({
       </label>
       {scheduledAt ? (
         <p className="text-sm text-muted-foreground">
-          Scheduled for {new Date(scheduledAt).toLocaleString()} —{' '}
+          Scheduled for {formatDraftDateTime(scheduledAt)} —{' '}
           {savedAutoStart ? 'starts automatically.' : 'you’ll start it manually.'}
         </p>
       ) : null}

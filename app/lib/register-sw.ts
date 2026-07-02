@@ -28,7 +28,11 @@ export function registerServiceWorker(): void {
     return;
   }
 
-  window.addEventListener('load', () => {
+  // `registerServiceWorker` is called from a post-hydration effect, by which
+  // point `window.load` has usually already fired — a bare `load` listener would
+  // then never run and the worker would never register (breaking push alerts).
+  // Register now if the document is already loaded; otherwise wait for `load`.
+  const start = () => {
     void navigator.serviceWorker
       .register('/sw.js')
       .then((reg) => {
@@ -59,5 +63,8 @@ export function registerServiceWorker(): void {
       .catch(() => {
         /* registration failed — app still works without offline support */
       });
-  });
+  };
+
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
 }

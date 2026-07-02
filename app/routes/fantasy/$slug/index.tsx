@@ -27,7 +27,6 @@ import { PhotoUpload, imageFileToUploadBase64 } from '@/components/fantasy/photo
 import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
 import { LeagueSettings } from '@/components/fantasy/league-settings';
 import { CorpsIdentityForm } from '@/components/fantasy/corps-identity-form';
-import { PushToggle } from '@/components/fantasy/push-toggle';
 import { NotificationPrefs } from '@/components/fantasy/notification-prefs';
 import { BusyButton } from '@/components/fantasy/busy-button';
 import { useAsyncAction } from '@/lib/use-async-action';
@@ -176,8 +175,6 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
           onChanged={refresh}
         />
       ) : null}
-
-      {viewer.isMember && data.pushEnabled ? <PushToggle /> : null}
 
       {viewer.isMember && me ? (
         <NotificationPrefs

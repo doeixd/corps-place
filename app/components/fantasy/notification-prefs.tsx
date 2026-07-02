@@ -5,6 +5,66 @@ import { Label } from '@/components/ui/label';
 import { useSession } from '@/lib/auth-client';
 import { setMemberNotifyPrefs } from '@/lib/server-fns/fantasy';
 import { setTimeZone } from '@/lib/server-fns/consent';
+import {
+  getVapidPublicKey,
+  savePushSubscription,
+  deletePushSubscription,
+} from '@/lib/server-fns/fantasy';
+
+// --- Browser push (device subscription) helpers ------------------------------
+const pushSupported = (): boolean =>
+  typeof window !== 'undefined' &&
+  'serviceWorker' in navigator &&
+  'PushManager' in window &&
+  'Notification' in window;
+
+/** Decode a base64url VAPID key into the Uint8Array the Push API wants. */
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(base64);
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  return out;
+}
+
+const readyRegistration = async (): Promise<ServiceWorkerRegistration> => {
+  // `.ready` resolves once the worker is active (register-sw.ts registers it on load).
+  const reg = await navigator.serviceWorker.ready.catch(() => null);
+  if (!reg) throw new Error('Notifications need the offline app worker, which is not active here.');
+  return reg;
+};
+
+/** Subscribe this device to push and persist the subscription. */
+async function subscribeDevice(): Promise<void> {
+  const { publicKey } = await getVapidPublicKey();
+  if (!publicKey) throw new Error('Push notifications are not configured.');
+  if ((await Notification.requestPermission()) !== 'granted') {
+    throw new Error('Notifications permission was denied.');
+  }
+  const reg = await readyRegistration();
+  const sub = await reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(publicKey) as BufferSource,
+  });
+  const json = sub.toJSON();
+  await savePushSubscription({
+    data: {
+      endpoint: json.endpoint ?? '',
+      keys: { p256dh: json.keys?.p256dh ?? '', auth: json.keys?.auth ?? '' },
+    },
+  });
+}
+
+/** Remove this device's push subscription. */
+async function unsubscribeDevice(): Promise<void> {
+  const reg = await navigator.serviceWorker.getRegistration();
+  const sub = await reg?.pushManager.getSubscription();
+  if (sub) {
+    await deletePushSubscription({ data: { endpoint: sub.endpoint } });
+    await sub.unsubscribe();
+  }
+}
 
 // A short, drum-corps-centric list; the user's actual zone is always added on top.
 const COMMON_TIMEZONES = [
@@ -48,6 +108,44 @@ export function NotificationPrefs({
 }) {
   const [prefs, setPrefs] = useState({ email: initialEmail, push: initialPush });
   const [error, setError] = useState<string | null>(null);
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushError, setPushError] = useState<string | null>(null);
+  const supported = pushSupported();
+
+  // Reflect this device's *actual* subscription state (the server pref can be on
+  // while this particular device has never subscribed, and vice versa).
+  useEffect(() => {
+    if (!supported) return;
+    let cancelled = false;
+    void navigator.serviceWorker
+      .getRegistration()
+      .then((reg) => reg?.pushManager.getSubscription() ?? null)
+      .then((sub) => {
+        if (!cancelled) setPrefs((p) => ({ ...p, push: !!sub }));
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [supported]);
+
+  // Toggling push both subscribes/unsubscribes THIS device and sets the league pref.
+  const togglePush = async (want: boolean) => {
+    setPushError(null);
+    setPushBusy(true);
+    const prev = prefs.push;
+    setPrefs((p) => ({ ...p, push: want })); // optimistic
+    try {
+      if (want) await subscribeDevice();
+      else await unsubscribeDevice();
+      await setMemberNotifyPrefs({ data: { leagueId, email: prefs.email, push: want } });
+    } catch (e) {
+      setPrefs((p) => ({ ...p, push: prev })); // revert
+      setPushError((e as Error).message);
+    } finally {
+      setPushBusy(false);
+    }
+  };
 
   const { data: session } = useSession();
   const savedTz = (session?.user as { timeZone?: string | null } | undefined)?.timeZone ?? null;
@@ -108,16 +206,26 @@ export function NotificationPrefs({
             </span>
           </span>
         </label>
-        <label className="flex items-start gap-2">
-          <Checkbox
-            checked={prefs.push}
-            onCheckedChange={(v) => void update({ push: !!v })}
-            className="mt-0.5"
-          />
-          <span className="text-sm">
-            Push notifications for live draft updates (on the clock, on deck, picks)
-          </span>
-        </label>
+        {supported ? (
+          <label className="flex items-start gap-2">
+            <Checkbox
+              checked={prefs.push}
+              disabled={pushBusy}
+              onCheckedChange={(v) => void togglePush(!!v)}
+              className="mt-0.5"
+            />
+            <span className="text-sm">
+              Enable draft alerts on this device{pushBusy ? '…' : ''}
+              <span className="mt-0.5 block text-xs text-muted-foreground">
+                Push notifications for live draft updates — when the draft starts, when
+                you’re on deck, and when you’re on the clock.
+              </span>
+              {pushError ? (
+                <span className="mt-0.5 block text-xs text-destructive">{pushError}</span>
+              ) : null}
+            </span>
+          </label>
+        ) : null}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="tz">Time zone</Label>
           <select
