@@ -181,6 +181,9 @@ function LeagueDashboardContent({ data, slug }: { data: LeagueData; slug: string
           leagueId={league.leagueId}
           initialEmail={me.notify_email}
           initialPush={me.notify_push}
+          draftScheduledAt={data.draft?.scheduled_at ?? null}
+          leagueName={league.name}
+          leagueSlug={league.slug}
         />
       ) : null}
 

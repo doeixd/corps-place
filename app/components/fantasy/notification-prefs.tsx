@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useSession } from '@/lib/auth-client';
@@ -66,6 +67,55 @@ async function unsubscribeDevice(): Promise<void> {
   }
 }
 
+// --- Add-to-calendar (.ics) ---------------------------------------------------
+/** UTC timestamp in the iCalendar basic format, e.g. 20260702T150000Z. */
+const icsStamp = (d: Date): string => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+
+/** Build a one-hour VEVENT .ics for the draft and trigger a download. */
+function downloadDraftIcs(opts: {
+  leagueId: string;
+  startsAtIso: string;
+  leagueName?: string;
+  leagueSlug?: string;
+}): void {
+  const start = new Date(opts.startsAtIso);
+  const end = new Date(start.getTime() + 60 * 60 * 1000);
+  const title = `${opts.leagueName ? `${opts.leagueName} — ` : ''}Fantasy Drum Corps Draft`;
+  const url = opts.leagueSlug ? `https://drumcorps.app/fantasy/${opts.leagueSlug}/draft` : '';
+  const esc = (s: string) => s.replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//drumcorps.app//Fantasy Draft//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:${opts.leagueId}-draft@drumcorps.app`,
+    `DTSTAMP:${icsStamp(new Date())}`,
+    `DTSTART:${icsStamp(start)}`,
+    `DTEND:${icsStamp(end)}`,
+    `SUMMARY:${esc(title)}`,
+    `DESCRIPTION:${esc(`Your fantasy drum corps draft.${url ? ` Join here: ${url}` : ''}`)}`,
+    ...(url ? [`URL:${url}`] : []),
+    'BEGIN:VALARM',
+    'TRIGGER:-PT15M',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:Fantasy draft starts soon',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ];
+  const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+  const href = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = href;
+  a.download = 'fantasy-draft.ics';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(href);
+}
+
 // A short, drum-corps-centric list; the user's actual zone is always added on top.
 const COMMON_TIMEZONES = [
   'America/New_York',
@@ -101,10 +151,17 @@ export function NotificationPrefs({
   leagueId,
   initialEmail,
   initialPush,
+  draftScheduledAt = null,
+  leagueName,
+  leagueSlug,
 }: {
   leagueId: string;
   initialEmail: boolean;
   initialPush: boolean;
+  /** The scheduled draft time (ISO), if the owner has set one — enables "Add to calendar". */
+  draftScheduledAt?: string | null;
+  leagueName?: string;
+  leagueSlug?: string;
 }) {
   const [prefs, setPrefs] = useState({ email: initialEmail, push: initialPush });
   const [error, setError] = useState<string | null>(null);
@@ -244,6 +301,30 @@ export function NotificationPrefs({
             Auto-detected. Draft times in your emails and reminders use this zone.
           </span>
         </div>
+        {draftScheduledAt ? (
+          <div className="flex flex-col gap-1.5">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-full sm:w-auto"
+              onClick={() =>
+                downloadDraftIcs({
+                  leagueId,
+                  startsAtIso: draftScheduledAt,
+                  leagueName,
+                  leagueSlug,
+                })
+              }
+            >
+              Add draft to calendar
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              Downloads a calendar invite for the scheduled draft (Apple, Google, Outlook), with a
+              15-minute reminder.
+            </span>
+          </div>
+        ) : null}
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
       </CardContent>
     </Card>
