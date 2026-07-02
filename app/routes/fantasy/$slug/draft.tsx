@@ -332,7 +332,8 @@ function SchedulePanel({
     if (scheduledAt && !savedAutoStart && timeArrived) {
       return (
         <p className="text-sm font-medium text-foreground">
-          The scheduled draft time has arrived — waiting on the owner to start the draft.
+          The scheduled draft time has arrived — waiting on the owner to start the draft
+          <AnimatedEllipsis />
         </p>
       );
     }
@@ -478,11 +479,30 @@ function PresenceDot({ online, name }: { online: boolean; name?: string | null }
     <span
       title={label}
       aria-label={label}
-      className={cn(
-        'inline-block size-2 shrink-0 rounded-full',
-        online ? 'bg-green-500' : 'bg-muted-foreground/30'
+      className="relative inline-flex size-2 shrink-0 items-center justify-center"
+    >
+      {online ? (
+        <>
+          {/* live green dot with a soft "ping" halo so online reads as active */}
+          <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-500/60" />
+          <span className="relative inline-block size-2 rounded-full bg-green-500" />
+        </>
+      ) : (
+        // hollow ring so offline is still visible instead of vanishing
+        <span className="inline-block size-2 rounded-full border border-muted-foreground/50" />
       )}
-    />
+    </span>
+  );
+}
+
+// Three staggered bouncing dots — a live "waiting…" affordance to watch.
+function AnimatedEllipsis() {
+  return (
+    <span aria-hidden className="ml-0.5 inline-flex">
+      <span className="animate-bounce [animation-delay:-0.3s]">.</span>
+      <span className="animate-bounce [animation-delay:-0.15s]">.</span>
+      <span className="animate-bounce">.</span>
+    </span>
   );
 }
 
