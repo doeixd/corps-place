@@ -915,10 +915,14 @@ export const queryJudgeScoresForCompetition = (slug: string) =>
         caption_name: string;
         judge_id: string;
         score: number;
+        division_name: string;
       }>`
-        SELECT corps_key, caption_name, judge_id, score
-        FROM judge_scores
-        WHERE competition_slug = ${slug}
+        SELECT js.corps_key, js.caption_name, js.judge_id, js.score,
+               COALESCE(cs.division_name, 'Unknown') AS division_name
+        FROM judge_scores js
+        LEFT JOIN corps_scores cs
+          ON cs.competition_slug = js.competition_slug AND cs.corps_key = js.corps_key
+        WHERE js.competition_slug = ${slug}
       `
     );
   });

@@ -45,8 +45,11 @@ const main = Effect.gen(function* () {
     const scores = yield* (queryJudgeScoresForCompetition(comp.slug));
 
     for (const score of scores) {
-      const judgeKey = `${score.judge_id}:${comp.season}:${score.caption_name}`;
-      const corpsKey = `${score.corps_key}:${comp.season}:${score.caption_name}`;
+      // division_name is NOT NULL in all four elo tables (schema drifted after
+      // this script was written — the missing column aborted every run mid-wipe).
+      const division = (score as any).division_name || 'Unknown';
+      const judgeKey = `${score.judge_id}:${comp.season}:${division}:${score.caption_name}`;
+      const corpsKey = `${score.corps_key}:${comp.season}:${division}:${score.caption_name}`;
 
       const jState = judgeEloMap.get(judgeKey) || { elo: INITIAL_ELO, confidence: INITIAL_CONFIDENCE, numScores: 0 };
       const cState = corpsEloMap.get(corpsKey) || { elo: INITIAL_ELO, confidence: INITIAL_CONFIDENCE, numScores: 0 };
@@ -82,6 +85,7 @@ const main = Effect.gen(function* () {
       judgeHistory.push({
         judge_id: score.judge_id,
         season: comp.season,
+        division_name: division,
         competition_slug: comp.slug,
         caption_name: score.caption_name,
         elo_before: jEloBefore,
@@ -92,6 +96,7 @@ const main = Effect.gen(function* () {
       corpsHistory.push({
         corps_key: score.corps_key,
         season: comp.season,
+        division_name: division,
         competition_slug: comp.slug,
         caption_name: score.caption_name,
         elo_before: cEloBefore,
@@ -135,10 +140,11 @@ function saveFinalRatings(sql: any, judgeEloMap: Map<string, EloState>, corpsElo
 
     const judgeRatings: any[] = [];
     for (const [key, state] of judgeEloMap) {
-      const [id, season, caption] = key.split(":");
+      const [id, season, division, caption] = key.split(":");
       judgeRatings.push({
         judge_id: id,
         season,
+        division_name: division,
         caption_name: caption,
         elo_rating: state.elo,
         confidence: state.confidence,
@@ -156,10 +162,11 @@ function saveFinalRatings(sql: any, judgeEloMap: Map<string, EloState>, corpsElo
 
     const corpsRatings: any[] = [];
     for (const [key, state] of corpsEloMap) {
-      const [id, season, caption] = key.split(":");
+      const [id, season, division, caption] = key.split(":");
       corpsRatings.push({
         corps_key: id,
         season,
+        division_name: division,
         caption_name: caption,
         elo_rating: state.elo,
         confidence: state.confidence,
