@@ -767,6 +767,26 @@ async function countSameSeasonHistory(db: Client, season: string, targetDate: st
   return Number((result.rows[0] as any)?.count ?? 0);
 }
 
+/**
+ * This CORPS' observed shows so far this season. NOTE: features.observedHistoryLen
+ * can't stand in for this — in non-preseason modes the feature template falls back
+ * to the corps' latest row from ANY season (typically last year's finals), so a
+ * corps that hasn't competed yet still reports a non-zero history length.
+ */
+async function countCorpsSameSeasonShows(
+  db: Client,
+  corpsKey: string,
+  season: string,
+  targetDate: string
+) {
+  const result = await db.execute({
+    sql: `SELECT COUNT(*) AS count FROM ml_sequence_rows_v9_subcaption
+          WHERE season = ? AND corps_key = ? AND competition_date < ?`,
+    args: [season, corpsKey, targetDate],
+  });
+  return Number((result.rows[0] as any)?.count ?? 0);
+}
+
 async function getPriorSeasonFinalRank(
   db: Client,
   corpsKey: string,
@@ -1340,12 +1360,16 @@ async function main() {
       const corpsKey = await resolveHistoricalCorpsKey(db, entry, priorSeason);
       const priorSeasonRank = priorSeasonRanks.get(corpsKey);
       const seedRank = mode === 'preseason_forecast' ? fieldSeedRanks.get(corpsKey) : undefined;
-      const priorSeasonComparable =
-        mode === 'preseason_forecast' && isAllAgeDivision(division)
+      // Fetched in EVERY mode for World/Open (not just preseason): in-season, a
+      // corps that hasn't competed yet has no same-season history to ground the
+      // model, and without this anchor its prediction collapses to the raw
+      // prior-season-finals baseline (~20 points high in early July). Whether the
+      // anchor is APPLIED is decided below (preseason, or zero observed history).
+      const priorSeasonComparable = isAllAgeDivision(division)
+        ? mode === 'preseason_forecast'
           ? await getPriorSeasonComparableRecap(db, corpsKey, priorSeason, percentThrough)
-          : mode === 'preseason_forecast'
-            ? await getPriorSeasonComparableTotal(db, corpsKey, priorSeason, percentThrough)
-            : undefined;
+          : undefined
+        : await getPriorSeasonComparableTotal(db, corpsKey, priorSeason, percentThrough);
       const sameSeasonBreakdownPriors =
         cli.sameSeasonBreakdownPrior && breakdownSplitCurves
           ? await loadSameSeasonBreakdownPriors(db, {
@@ -1424,9 +1448,29 @@ async function main() {
       const pointCaps = useBaseline
         ? blendCaps(modelShapeCaps, baselineCaps, shapeModelWeight)
         : blendCaps(rawCaps, baselineCaps, modelWeight);
+      // Anchor to the corps' prior-season total at a comparable percent-through
+      // when we have nothing better: preseason (always), or in-season for a corps
+      // with NO observed same-season shows yet — otherwise its point total is the
+      // raw prior-season-finals baseline, ~20 points high in early July. Once the
+      // corps has real 2026 scores, the model's sequence input grounds it and the
+      // anchor turns off.
+      const corpsSameSeasonShows = await countCorpsSameSeasonShows(
+        db,
+        corpsKey,
+        cli.season,
+        event.start_date
+      );
+      const anchorToComparable =
+        priorSeasonComparable && (useBaseline || corpsSameSeasonShows === 0);
+      // In-season cold corps (and all-age) anchor mostly to the comparable: their
+      // baselineTotal is FINALS-scaled (the template is last year's final recap),
+      // unlike preseason's percent-scaled fingerprint baseline — leaving 45% of a
+      // finals-level total in the blend re-inflates the prediction.
+      const comparableDominates =
+        isAllAgeDivision(division) || (!useBaseline && corpsSameSeasonShows === 0);
       const comparableWeight =
-        useBaseline && priorSeasonComparable
-          ? isAllAgeDivision(division)
+        anchorToComparable && priorSeasonComparable
+          ? comparableDominates
             ? Math.max(
                 0.85,
                 preseasonComparableWeight(percentThrough, priorSeasonComparable.percentThrough)
@@ -1434,12 +1478,12 @@ async function main() {
             : preseasonComparableWeight(percentThrough, priorSeasonComparable.percentThrough)
           : 0;
       const preseasonTargetTotal =
-        useBaseline && priorSeasonComparable
+        anchorToComparable && priorSeasonComparable
           ? baselineTotal * (1 - comparableWeight) + priorSeasonComparable.total * comparableWeight
           : undefined;
       const pointCapsTotal = totalFromV9Captions(pointCaps);
       const caps =
-        useBaseline && preseasonTargetTotal
+        preseasonTargetTotal != null
           ? reconcileCapsToTotalPreservingShape(pointCaps, preseasonTargetTotal)
           : pointCaps;
       const finalTotal = totalFromV9Captions(caps);
