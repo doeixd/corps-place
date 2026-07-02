@@ -37,6 +37,7 @@ import { Route as ShopAllRouteImport } from './routes/shop/all'
 import { Route as ShopProductIdRouteImport } from './routes/shop/$productId'
 import { Route as ScoresSlugRouteImport } from './routes/scores/$slug'
 import { Route as PredictPaletteRouteImport } from './routes/predict/palette'
+import { Route as PredictBallotRouteImport } from './routes/predict/ballot'
 import { Route as NotifyUnsubscribeRouteImport } from './routes/notify/unsubscribe'
 import { Route as MerchSplatRouteImport } from './routes/merch.$'
 import { Route as JudgesJudgeIdRouteImport } from './routes/judges/$judgeId'
@@ -249,6 +250,11 @@ const ScoresSlugRoute = ScoresSlugRouteImport.update({
 const PredictPaletteRoute = PredictPaletteRouteImport.update({
   id: '/predict/palette',
   path: '/predict/palette',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictBallotRoute = PredictBallotRouteImport.update({
+  id: '/predict/ballot',
+  path: '/predict/ballot',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotifyUnsubscribeRoute = NotifyUnsubscribeRouteImport.update({
@@ -714,6 +720,7 @@ export interface FileRoutesByFullPath {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
+  '/predict/ballot': typeof PredictBallotRoute
   '/predict/palette': typeof PredictPaletteRoute
   '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -786,6 +793,7 @@ export interface FileRoutesByTo {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
+  '/predict/ballot': typeof PredictBallotRoute
   '/predict/palette': typeof PredictPaletteRoute
   '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -859,6 +867,7 @@ export interface FileRoutesById {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
+  '/predict/ballot': typeof PredictBallotRoute
   '/predict/palette': typeof PredictPaletteRoute
   '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -933,6 +942,7 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
+    | '/predict/ballot'
     | '/predict/palette'
     | '/scores/$slug'
     | '/shop/$productId'
@@ -1005,6 +1015,7 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
+    | '/predict/ballot'
     | '/predict/palette'
     | '/scores/$slug'
     | '/shop/$productId'
@@ -1077,6 +1088,7 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
+    | '/predict/ballot'
     | '/predict/palette'
     | '/scores/$slug'
     | '/shop/$productId'
@@ -1150,6 +1162,7 @@ export interface RootRouteChildren {
   JudgesJudgeIdRoute: typeof JudgesJudgeIdRoute
   MerchSplatRoute: typeof MerchSplatRoute
   NotifyUnsubscribeRoute: typeof NotifyUnsubscribeRoute
+  PredictBallotRoute: typeof PredictBallotRoute
   PredictPaletteRoute: typeof PredictPaletteRoute
   ScoresSlugRoute: typeof ScoresSlugRoute
   ShopProductIdRoute: typeof ShopProductIdRoute
@@ -1642,6 +1655,13 @@ declare module '@tanstack/react-router' {
       path: '/predict/palette'
       fullPath: '/predict/palette'
       preLoaderRoute: typeof PredictPaletteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predict/ballot': {
+      id: '/predict/ballot'
+      path: '/predict/ballot'
+      fullPath: '/predict/ballot'
+      preLoaderRoute: typeof PredictBallotRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notify/unsubscribe': {
@@ -2310,6 +2330,7 @@ const rootRouteChildren: RootRouteChildren = {
   JudgesJudgeIdRoute: JudgesJudgeIdRoute,
   MerchSplatRoute: MerchSplatRoute,
   NotifyUnsubscribeRoute: NotifyUnsubscribeRoute,
+  PredictBallotRoute: PredictBallotRoute,
   PredictPaletteRoute: PredictPaletteRoute,
   ScoresSlugRoute: ScoresSlugRoute,
   ShopProductIdRoute: ShopProductIdRoute,

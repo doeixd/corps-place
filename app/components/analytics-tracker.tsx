@@ -28,6 +28,7 @@ const TRACKED_PARAMS = [
   'cap', // caption picker (/vs)
   'window', // prediction scenario window
   'sort', // table sorts (compact recap)
+  'preset', // /predict/ballot corps-set preset
 ] as const;
 
 let lastParams: Record<string, string | null> = {};
