@@ -1,5 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { toast } from 'sonner';
+import { Icon } from '@/components/icon';
+import { RankingIcon, InformationCircleIcon } from '@/components/icons/generated';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { createFileRoute, notFound, Link, useRouter } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { PageShell } from '@/components/page-shell';
@@ -176,8 +179,9 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
             on. The exact weight is shown on the picker (before you pick) and on the board.
           </li>
           <li>
-            Set a <strong>draft queue</strong> (the button below) and if your timer runs out we
-            auto-pick your highest-ranked available corps for you.
+            Set a <strong>draft queue</strong> (the button in the draft board header, once the
+            draft starts) and if your timer runs out we auto-pick your highest-ranked available
+            corps for you.
           </li>
           <li>
             The <strong>draft board</strong> lists everyone&apos;s picks and weights as they happen.
@@ -185,14 +189,6 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
           </li>
         </ul>
       </details>
-
-      {/* The draft queue only matters once picking is live (it auto-picks when
-          your timer runs out), so it's hidden until the draft has started. */}
-      {draft && (draft.status === 'live' || draft.status === 'paused') && league.viewer.isMember ? (
-        <div className="flex justify-end">
-          <DraftQueueEditor leagueId={leagueId} pool={initial.pool} rank={initial.rank} />
-        </div>
-      ) : null}
 
       <SectionErrorBoundary label="the draft room">
         {!draft || draft.status === 'scheduled' ? (
@@ -235,6 +231,12 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
             online={online}
             captionCaps={league.league.config.captionCaps}
             reverseWeighting={league.league.config.reverseWeighting}
+            oneCaptionPerCorps={league.league.config.oneCaptionPerCorps}
+            queueSlot={
+              league.viewer.isMember ? (
+                <DraftQueueEditor leagueId={leagueId} pool={initial.pool} rank={initial.rank} />
+              ) : null
+            }
           />
         )}
       </SectionErrorBoundary>
@@ -455,6 +457,7 @@ function CompletePanel({
         pool={pool}
         currentUserId={null}
         captionCaps={league.league.config.captionCaps}
+        reverseWeighting={league.league.config.reverseWeighting}
       />
     </div>
   );
@@ -475,6 +478,8 @@ type LiveDraftProps = {
   online: Set<string>;
   captionCaps: Record<CaptionKey, number>;
   reverseWeighting: ReverseWeighting;
+  oneCaptionPerCorps: boolean;
+  queueSlot?: ReactNode;
 };
 
 // Online/offline indicator for a player — driven by live SSE presence. `name`
@@ -542,6 +547,8 @@ function LiveDraft({
   isOwner,
   membersById,
   online,
+  oneCaptionPerCorps,
+  queueSlot,
 }: LiveDraftProps) {
   const isMyTurn = draft.status === 'live' && draft.currentUserId === viewerId;
 
@@ -570,6 +577,13 @@ function LiveDraft({
   // caption (later slots are worth more).
   const nextWeightFor = (c: CaptionKey): number =>
     pickWeight((myCaptionCount.get(c) ?? 0) + 1, captionCaps[c] ?? 1, reverseWeighting);
+
+  // Corps the viewer already drafted (in any caption). With oneCaptionPerCorps,
+  // a corps on your roster can't be picked again in another caption, so it's
+  // grayed out everywhere in the picker (legality U2).
+  const rosterCorpsKeys = oneCaptionPerCorps
+    ? new Set(picks.filter((p) => p.userId === viewerId).map((p) => p.corpsKey))
+    : new Set<string>();
 
   // Captions the viewer has already filled (picked the full cap) — dimmed in the tabs.
   const filledCaptions = new Set(
@@ -662,7 +676,9 @@ function LiveDraft({
         pool={pool}
         currentUserId={draft.currentUserId}
         captionCaps={captionCaps}
+        reverseWeighting={reverseWeighting}
         online={online}
+        queueSlot={queueSlot}
       />
 
       {/* Picking is the primary, time-pressured action, so it's inline + always
@@ -678,6 +694,7 @@ function LiveDraft({
             pool={pool}
             rank={rank}
             takenPairs={takenPairs}
+            rosterCorpsKeys={rosterCorpsKeys}
             canPick={isMyTurn && !picking}
             nextWeightFor={nextWeightFor}
             filledCaptions={filledCaptions}
@@ -746,6 +763,7 @@ function DraftQueueEditor({
       <DrawerTrigger
         render={
           <Button variant="outline" size="sm">
+            <Icon icon={RankingIcon} size="sm" />
             Draft queue{queue.length > 0 ? ` (${queue.length})` : ''}
           </Button>
         }
@@ -880,6 +898,7 @@ function SectionPicker({
   pool,
   rank,
   takenPairs,
+  rosterCorpsKeys,
   canPick,
   nextWeightFor,
   filledCaptions,
@@ -888,6 +907,7 @@ function SectionPicker({
   pool: DraftState['pool'];
   rank: DraftState['rank'];
   takenPairs: Set<string>;
+  rosterCorpsKeys: Set<string>;
   canPick: boolean;
   nextWeightFor: (caption: CaptionKey) => number;
   filledCaptions: Set<CaptionKey>;
@@ -972,15 +992,19 @@ function SectionPicker({
       <ul className="flex max-h-[55vh] flex-col gap-1 overflow-y-auto">
         {ranked.map((corps) => {
           const taken = takenPairs.has(`${corps.corpsKey}|${caption}`);
+          // Already on the viewer's roster (in another caption) — can't be drafted
+          // again when oneCaptionPerCorps is on. `taken` (this exact caption) wins.
+          const onRoster = !taken && rosterCorpsKeys.has(corps.corpsKey);
+          const unavailable = taken || onRoster;
           return (
             <li key={corps.corpsKey}>
               <button
                 type="button"
-                disabled={taken || !canPick}
+                disabled={unavailable || !canPick}
                 onClick={() => onPick(corps.corpsKey, caption)}
                 className={cn(
                   'flex w-full items-center gap-2 rounded-lg border border-border p-2 text-left text-sm hover:bg-muted disabled:cursor-not-allowed disabled:hover:bg-transparent',
-                  taken && 'opacity-40'
+                  unavailable && 'opacity-40'
                 )}
               >
                 <span
@@ -999,6 +1023,8 @@ function SectionPicker({
                 <span className="text-xs text-muted-foreground">{corps.divisionName}</span>
                 {taken ? (
                   <span className="ml-auto text-xs text-muted-foreground">taken</span>
+                ) : onRoster ? (
+                  <span className="ml-auto text-xs text-muted-foreground">on roster</span>
                 ) : null}
               </button>
             </li>
@@ -1020,14 +1046,18 @@ function DraftBoard({
   pool,
   currentUserId,
   captionCaps,
+  reverseWeighting,
   online,
+  queueSlot,
 }: {
   picks: DraftState['snapshot']['picks'];
   members: Member[];
   pool: DraftState['pool'];
   currentUserId: string | null;
   captionCaps: Record<CaptionKey, number>;
+  reverseWeighting: ReverseWeighting;
   online?: Set<string>;
+  queueSlot?: ReactNode;
 }) {
   const corpsByKey = new Map(pool.map((c) => [c.corpsKey, c]));
 
@@ -1056,8 +1086,9 @@ function DraftBoard({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between gap-3">
         <CardTitle>Draft board</CardTitle>
+        {queueSlot}
       </CardHeader>
       <CardContent className="overflow-x-auto">
           <p className="mb-2 text-xs text-muted-foreground">
@@ -1068,6 +1099,26 @@ function DraftBoard({
             <TableHeader>
               <TableRow>
                 <TableHead className="sticky left-0 z-20 bg-card">Player</TableHead>
+                <TableHead className="px-2 text-center text-xs whitespace-nowrap">
+                  <span className="inline-flex items-center gap-1">
+                    Weight
+                    {/* Popover (not a hover tooltip) so the explanation also opens on tap. */}
+                    <Popover>
+                      <PopoverTrigger
+                        className="inline-grid size-4 place-items-center rounded-full text-muted-foreground hover:text-foreground"
+                        aria-label="What does Weight mean?"
+                      >
+                        <Icon icon={InformationCircleIcon} size="sm" />
+                      </PopoverTrigger>
+                      <PopoverContent align="center" className="w-64 p-3 text-xs font-normal">
+                        Each pick’s caption score is multiplied by its <strong>weight</strong> before
+                        it’s added to your total. Every player’s corps in the same slot weighs the
+                        same, and later slots in a caption are worth more, so your last pick counts
+                        for the most.
+                      </PopoverContent>
+                    </Popover>
+                  </span>
+                </TableHead>
                 {CAPTION_KEYS.map((c) => (
                   <TableHead key={c} className="px-2 text-center text-xs" title={c}>
                     {KEY_TO_CAPTION_NAME[c]}
@@ -1103,6 +1154,9 @@ function DraftBoard({
                         </span>
                       </TableCell>
                     ) : null}
+                    <TableCell className="px-2 text-center align-middle text-xs font-medium tabular-nums whitespace-nowrap">
+                      ×{pickWeight(slot + 1, maxCap, reverseWeighting).toFixed(1)}
+                    </TableCell>
                     {CAPTION_KEYS.map((c) => {
                       const cap = captionCaps[c] ?? 1;
                       // This caption holds fewer corps than the tallest column — no slot here.
