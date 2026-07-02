@@ -768,23 +768,60 @@ async function countSameSeasonHistory(db: Client, season: string, targetDate: st
 }
 
 /**
- * This CORPS' observed shows so far this season. NOTE: features.observedHistoryLen
- * can't stand in for this — in non-preseason modes the feature template falls back
- * to the corps' latest row from ANY season (typically last year's finals), so a
- * corps that hasn't competed yet still reports a non-zero history length.
+ * This CORPS' observed shows so far this season (count + latest show date).
+ * NOTE: features.observedHistoryLen can't stand in for this — in non-preseason
+ * modes the feature template falls back to the corps' latest row from ANY season
+ * (typically last year's finals), so a corps that hasn't competed yet still
+ * reports a non-zero history length.
  */
 async function countCorpsSameSeasonShows(
   db: Client,
   corpsKey: string,
   season: string,
   targetDate: string
-) {
+): Promise<{ count: number; lastDate: string | null }> {
   const result = await db.execute({
-    sql: `SELECT COUNT(*) AS count FROM ml_sequence_rows_v9_subcaption
+    sql: `SELECT COUNT(*) AS count, MAX(competition_date) AS last_date
+          FROM ml_sequence_rows_v9_subcaption
           WHERE season = ? AND corps_key = ? AND competition_date < ?`,
     args: [season, corpsKey, targetDate],
   });
-  return Number((result.rows[0] as any)?.count ?? 0);
+  const row = result.rows[0] as any;
+  return { count: Number(row?.count ?? 0), lastDate: (row?.last_date as string | null) ?? null };
+}
+
+// ── Reference-curve season growth ────────────────────────────────────────────
+// The model's template inputs are frozen at the corps' LAST observed show, so its
+// raw prediction is date-independent — the same total for a show tomorrow and for
+// finals six weeks out (scores actually climb ~15+ points over a season). Project
+// the prediction forward along the historical reference curves (rank × percent-
+// through × caption): growth = curve(target pct) − curve(last observed pct).
+// cwd-relative like the sequence builder (the script runs from sdk/).
+const REFERENCE_CURVES: { curves: Record<string, Record<string, number>> } = JSON.parse(
+  fs.readFileSync(path.resolve(process.cwd(), 'src/training/referenceCurvesV4.json'), 'utf-8')
+);
+
+/** Expected caption score for a rank at a percent-through (mirrors the trainer's getBaseline). */
+function curveBaseline(rank: number, pct: number, caption: string): number {
+  const r = rank < 1 || !Number.isFinite(rank) ? 12 : Math.round(rank);
+  const bucket = Math.round(Math.max(0, Math.min(100, pct)) / 5) * 5;
+  const curves = REFERENCE_CURVES.curves;
+  return (
+    curves[`${r}-${bucket}`]?.[caption] ??
+    curves[`${r}-50`]?.[caption] ??
+    curves[`12-${bucket}`]?.[caption] ??
+    15.0
+  );
+}
+
+/** Per-caption additive growth between two percent-through points (never negative). */
+function curveGrowth(rank: number, fromPct: number, toPct: number): Record<Caption, number> {
+  return Object.fromEntries(
+    CAPTIONS.map((caption) => [
+      caption,
+      Math.max(0, curveBaseline(rank, toPct, caption) - curveBaseline(rank, fromPct, caption)),
+    ])
+  ) as Record<Caption, number>;
 }
 
 async function getPriorSeasonFinalRank(
@@ -1454,12 +1491,8 @@ async function main() {
       // raw prior-season-finals baseline, ~20 points high in early July. Once the
       // corps has real 2026 scores, the model's sequence input grounds it and the
       // anchor turns off.
-      const corpsSameSeasonShows = await countCorpsSameSeasonShows(
-        db,
-        corpsKey,
-        cli.season,
-        event.start_date
-      );
+      const sameSeason = await countCorpsSameSeasonShows(db, corpsKey, cli.season, event.start_date);
+      const corpsSameSeasonShows = sameSeason.count;
       const anchorToComparable =
         priorSeasonComparable && (useBaseline || corpsSameSeasonShows === 0);
       // In-season cold corps (and all-age) anchor mostly to the comparable: their
@@ -1481,11 +1514,37 @@ async function main() {
         anchorToComparable && priorSeasonComparable
           ? baselineTotal * (1 - comparableWeight) + priorSeasonComparable.total * comparableWeight
           : undefined;
+      // In-season corps WITH observed shows: the model's template inputs are
+      // frozen at its last show, so the raw prediction is date-independent (the
+      // same total for tomorrow and for finals). Project it forward along the
+      // historical reference curves from the last observed show's percent-through
+      // to this event's.
+      let seasonGrownCaps: Record<Caption, number> | undefined;
+      if (!useBaseline && corpsSameSeasonShows > 0 && sameSeason.lastDate) {
+        const lastPct = estimatePercentThrough(
+          new Date(sameSeason.lastDate),
+          seasonRange.start,
+          seasonRange.end
+        );
+        if (percentThrough > lastPct) {
+          const growth = curveGrowth(
+            priorSeasonRank ?? seedRank ?? 12,
+            lastPct,
+            percentThrough
+          );
+          seasonGrownCaps = Object.fromEntries(
+            CAPTIONS.map((caption) => [
+              caption,
+              Math.min(20, Math.max(0, pointCaps[caption] + growth[caption])),
+            ])
+          ) as Record<Caption, number>;
+        }
+      }
       const pointCapsTotal = totalFromV9Captions(pointCaps);
       const caps =
         preseasonTargetTotal != null
           ? reconcileCapsToTotalPreservingShape(pointCaps, preseasonTargetTotal)
-          : pointCaps;
+          : (seasonGrownCaps ?? pointCaps);
       const finalTotal = totalFromV9Captions(caps);
       const predictedScoreBreakdown = breakdownSplitCurves
         ? splitV9RecapWithCurvesAndPrior(breakdownSplitCurves, {
