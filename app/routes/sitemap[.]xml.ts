@@ -211,7 +211,10 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
       if (newest)
         for (const season of seasons)
           for (const metric of RANK_METRICS)
-            paths.add(rankingsCanonicalPath(season, metric, newest));
+            // Base (world+open) plus one page per single division — a lone
+            // World/Open/All-Age list is a distinct, searchable landing page.
+            for (const div of [undefined, ['world'], ['open'], ['all-age']] as const)
+              paths.add(rankingsCanonicalPath(season, metric, newest, div));
     } catch {
       /* rankings unavailable — sitemap still lists everything else */
     }

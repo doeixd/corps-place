@@ -17,22 +17,27 @@ export const parseDivs = (v: unknown): string[] | undefined => {
 };
 
 /**
- * Canonical `/rankings` path for pSEO. Only `season` (when not the newest, which
- * is the bare `/rankings` default) and `metric` (when not the default `total`)
- * survive — every other filter (as-of, division, aggregation, recency) collapses
- * onto this base, so the param permutations dedupe to ONE indexable URL per
- * season×metric. The sitemap builds its rankings URLs with this same helper, so
- * the emitted `<link rel="canonical">` and the sitemap entries always agree.
- * Built by hand (not URLSearchParams) so the string is byte-identical in both.
+ * Canonical `/rankings` path for pSEO. `season` (when not the newest, which is
+ * the bare `/rankings` default), `metric` (when not the default `total`), and a
+ * SINGLE selected division survive — a lone World/Open/All-Age list is a real,
+ * distinct landing page ("2026 open class drum corps rankings"). Every other
+ * filter (as-of, multi-division combos, aggregation, recency) collapses onto
+ * this base, so the param permutations dedupe to one indexable URL per
+ * season×metric×division. The sitemap builds its rankings URLs with this same
+ * helper, so the emitted `<link rel="canonical">` and the sitemap entries always
+ * agree. Built by hand (not URLSearchParams) so the string is byte-identical.
  */
 export function rankingsCanonicalPath(
   season: string,
   metric: RankMetric,
   newestSeason: string,
+  div?: readonly string[],
 ): string {
   const parts: string[] = [];
   if (season && season !== newestSeason) parts.push(`season=${encodeURIComponent(season)}`);
   if (metric !== 'total') parts.push(`metric=${metric}`);
+  if (div?.length === 1 && (RANK_DIVISIONS as readonly string[]).includes(div[0]))
+    parts.push(`div=${div[0]}`);
   return parts.length ? `/rankings?${parts.join('&')}` : '/rankings';
 }
 

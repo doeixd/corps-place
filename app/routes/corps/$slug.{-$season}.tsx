@@ -80,7 +80,14 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
     const defaultSeason = seasons[0] ?? 'all';
     const validSeasons = new Set(seasons.length > 1 ? [...seasons, 'all'] : seasons);
     if (season !== undefined && (season === defaultSeason || !validSeasons.has(season))) {
-      throw redirect({ to: '/corps/$slug/{-$season}', params: { slug }, replace: true });
+      // season must be EXPLICITLY unset: redirect params merge with the current
+      // ones, so omitting it kept season in the target URL — an infinite
+      // self-redirect (ERR_TOO_MANY_REDIRECTS on /corps/<slug>/<defaultSeason>).
+      throw redirect({
+        to: '/corps/$slug/{-$season}',
+        params: { slug, season: undefined },
+        replace: true,
+      });
     }
 
     // Is there a rich show page for the season currently in view? Only link to

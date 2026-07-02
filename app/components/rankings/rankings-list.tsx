@@ -34,6 +34,7 @@ function Row({
   mode,
   onHover,
   highlighted,
+  striped,
 }: {
   row: RankRow;
   rank: number;
@@ -42,6 +43,7 @@ function Row({
   mode: 'light' | 'dark';
   onHover?: (slug: string | null) => void;
   highlighted: boolean;
+  striped: boolean;
 }) {
   const tier = recencyTier(row.daysSinceLast, recency);
   const vars = corpsPaletteVars(
@@ -60,7 +62,14 @@ function Row({
       onMouseLeave={() => onHover?.(null)}
       className={cn(
         'flex items-center gap-3 rounded-lg border border-transparent px-2 py-1.5 transition-colors',
-        highlighted ? 'border-[var(--corps-accent-border)] bg-[var(--corps-accent-muted)]' : 'hover:bg-muted/50'
+        // Zebra striping: a subtle wash on alternate rows so long lists scan
+        // easily. `muted` is a semantic token, so it reads right in both themes;
+        // hover/highlight take precedence over the stripe.
+        highlighted
+          ? 'border-[var(--corps-accent-border)] bg-[var(--corps-accent-muted)]'
+          : striped
+            ? 'bg-muted/40 hover:bg-muted/60'
+            : 'hover:bg-muted/50'
       )}
     >
       <span className="w-7 shrink-0 text-right font-mono text-sm tabular-nums text-text-secondary">
@@ -159,6 +168,7 @@ export function RankingsList({
                 mode={mode}
                 onHover={onHover}
                 highlighted={hoveredSlug === row.corpsSlug}
+                striped={i % 2 === 1}
               />
             ))}
           </AnimatePresence>

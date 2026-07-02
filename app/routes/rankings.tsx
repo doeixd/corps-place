@@ -29,6 +29,26 @@ import {
 const DEFAULT_RECENCY = [7, 14, 28];
 const DIVISION_LABELS: Record<string, string> = { world: 'World', open: 'Open', 'all-age': 'All-Age' };
 
+// SEO phrase for the selected divisions — drives the h1/title/description so the
+// page reads as its own landing page per filter ("2026 Open Class Drum Corps
+// Rankings"). `title` is the h1/title infix; `body` the description wording.
+const DIVISION_SEO: Record<string, string> = {
+  world: 'World Class',
+  open: 'Open Class',
+  'all-age': 'All-Age',
+};
+function divisionSeoPhrase(divs: readonly string[]): { title: string; body: string } {
+  const labels = divs.map((d) => DIVISION_SEO[d]).filter(Boolean);
+  const isDefault =
+    divs.length === 2 && divs.includes('world') && divs.includes('open');
+  if (isDefault || labels.length === 0) {
+    // The flagship page: name both classes for search coverage.
+    return { title: 'DCI', body: 'World Class & Open Class' };
+  }
+  const joined = labels.join(' & ');
+  return { title: joined, body: joined };
+}
+
 function RecencySettings({
   recency,
   onChange,
@@ -73,7 +93,10 @@ interface RankSearch {
   metric?: RankMetric;
   agg?: RankAgg;
   group?: RankGroup;
-  div?: string[];
+  // A single division stays a PLAIN STRING (`?div=open`) so the URL round-trips
+  // without the router's JSON-array 307 (`?div=%5B%22open%22%5D`) — the canonical
+  // and sitemap use the plain form, and a canonical URL must not redirect.
+  div?: string | string[];
   recency?: number[];
 }
 
@@ -93,7 +116,10 @@ export const Route = createFileRoute('/rankings')({
     metric: parseMetric(s.metric),
     agg: s.agg === 'last3' ? 'last3' : undefined,
     group: s.group === 'division' ? 'division' : undefined,
-    div: parseDivs(s.div),
+    div: (() => {
+      const parsed = parseDivs(s.div);
+      return parsed === undefined ? undefined : parsed.length === 1 ? parsed[0] : parsed;
+    })(),
     recency: parseRecency(s.recency),
   }),
   loaderDeps: ({ search }) => search,
@@ -101,32 +127,36 @@ export const Route = createFileRoute('/rankings')({
     const { seasons } = await getRankingSeasons();
     const season = deps.season && seasons.includes(deps.season) ? deps.season : seasons[0] ?? '';
     const metric: RankMetric = deps.metric ?? 'total';
+    const selectedDivs = parseDivs(deps.div);
+    const divs = selectedDivs ?? DEFAULT_DIVISIONS;
     const result = await getRankings({
       data: {
         season,
         asof: deps.asof,
         metric,
         agg: deps.agg ?? 'best',
-        div: deps.div ?? DEFAULT_DIVISIONS,
+        div: divs,
       },
     });
-    // pSEO canonical: collapse all non-major filters onto the season×metric base
-    // (newest season → bare /rankings). Same helper feeds the sitemap.
-    const canonical = rankingsCanonicalPath(season, metric, seasons[0] ?? season);
-    return { seasons, season, metric, canonical, result };
+    // pSEO canonical: season×metric base (+ a single selected division — its own
+    // landing page). Everything else collapses. Same helper feeds the sitemap.
+    const canonical = rankingsCanonicalPath(season, metric, seasons[0] ?? season, selectedDivs);
+    return { seasons, season, metric, divs, canonical, result };
   },
   head: ({ loaderData }) => {
     const season = loaderData?.season;
     const metric = loaderData?.metric ?? 'total';
     const metricLabel = RANK_METRIC_LABELS[metric];
     const isTotal = metric === 'total';
+    const divisionPhrase = divisionSeoPhrase(loaderData?.divs ?? DEFAULT_DIVISIONS);
     const title = season
-      ? `${season} ${isTotal ? '' : `${metricLabel} `}Drum Corps Rankings`
-      : 'Drum Corps Rankings — season standings';
+      ? `${season} ${divisionPhrase.title} Drum Corps Rankings${isTotal ? '' : ` — ${metricLabel}`}`
+      : 'Drum Corps Rankings — DCI season standings';
     const description = season
-      ? `${season} drum corps ${isTotal ? 'overall' : metricLabel.toLowerCase()} season standings` +
-        ' — filter by metric, division, and as-of date, with a rank bump chart.'
-      : 'Season standings and a rank bump chart — filter by metric, division, and as-of date.';
+      ? `${season} DCI ${divisionPhrase.body} drum corps rankings — ` +
+        `${isTotal ? 'overall' : metricLabel.toLowerCase()} season standings with scores, ` +
+        'a rank bump chart, and filters for caption, division, and as-of date.'
+      : 'DCI season standings and a rank bump chart — filter by caption, division, and as-of date.';
     return seoHead({ title, description, path: loaderData?.canonical ?? '/rankings' });
   },
   // Static read-model data; a moderate window keeps repeat navs fast.
@@ -157,7 +187,7 @@ function RankingsPage() {
   const metric: RankMetric = search.metric ?? 'total';
   const agg: RankAgg = search.agg ?? 'best';
   const group: RankGroup = search.group ?? 'overall';
-  const divs = search.div ?? DEFAULT_DIVISIONS;
+  const divs = parseDivs(search.div) ?? DEFAULT_DIVISIONS;
   const recency = search.recency ?? DEFAULT_RECENCY;
 
   const set = (patch: Partial<RankSearch>) =>
@@ -174,7 +204,11 @@ function RankingsPage() {
   const setDivs = (next: string[]) => {
     const valid = next.filter((d) => (RANK_DIVISIONS as readonly string[]).includes(d));
     const isDefault = valid.length === 2 && valid.includes('world') && valid.includes('open');
-    set({ div: valid.length === 0 || isDefault ? undefined : valid });
+    // Single division → plain string (clean, canonical-stable, redirect-free URL).
+    set({
+      div:
+        valid.length === 0 || isDefault ? undefined : valid.length === 1 ? valid[0] : valid,
+    });
   };
 
   if (!season) {
@@ -186,13 +220,20 @@ function RankingsPage() {
     );
   }
 
+  const divisionPhrase = divisionSeoPhrase(divs);
+  const metricLabel = RANK_METRIC_LABELS[metric];
+
   return (
     <PageShell className="flex flex-col gap-5">
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold text-text-primary">Rankings</h1>
+        <h1 className="text-2xl font-bold text-text-primary">
+          {season} {divisionPhrase.title} Drum Corps Rankings
+          {metric !== 'total' ? ` — ${metricLabel}` : ''}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          {season} season standings + a rank bump chart ·{' '}
-          {agg === 'best' ? 'highest score so far' : 'average of last 3 shows'}
+          DCI {divisionPhrase.body}{' '}
+          {metric === 'total' ? 'season standings' : `${metricLabel.toLowerCase()} standings`} + a
+          rank bump chart · {agg === 'best' ? 'highest score so far' : 'average of last 3 shows'}
           {result.asof ? ` · as of ${result.asof}` : ''}
           {agg === 'last3' ? ' · * = fewer than 3 shows' : ''}.
         </p>
