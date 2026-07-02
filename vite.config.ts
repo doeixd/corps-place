@@ -101,6 +101,15 @@ const plugins: PluginOption[] = [
 
 export default defineConfig({
   base: normalizedBase === '/' ? undefined : normalizedBase,
+  build: {
+    // "r1" cache-generation prefix (2026-07-02 incident): Cloudflare cached
+    // rollout-window 404s for /assets/<chunk> URLs WITH the immutable header
+    // (routeRules stamped it on error responses too — since guarded by the
+    // no-cache-errors nitro plugin), poisoning those URLs at the edge for up to
+    // a year. Moving every built asset to a fresh path makes all poisoned URLs
+    // unreachable without an edge purge. Bump r1 → r2 if it ever happens again.
+    assetsDir: 'assets/r1',
+  },
   define: {
     // Shared by the client (AutoUpdater) and the /api/version route — same value
     // per build, so a mismatch reliably means "the server was redeployed".

@@ -8,6 +8,10 @@
 // cache them immutably for a year. This is the single biggest client-perf win without a
 // CDN. (HTML/document responses are unaffected — they don't match /assets/**.)
 export default {
+  // Guard: error responses (e.g. rollout-window 404s for new chunk names) must
+  // never carry the immutable header below — Cloudflare cached such a 404 for up
+  // to a year per colo/encoding variant (2026-07-02 incident).
+  plugins: ['./server-plugins/no-cache-errors.ts'],
   routeRules: {
     '/assets/**': {
       headers: { 'cache-control': 'public, max-age=31536000, immutable' },
