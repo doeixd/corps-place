@@ -136,15 +136,16 @@ function Home() {
       <div className="space-y-8">
         <CorpsRegistryProvider corps={lineupCorps}>
           <WeekendShowsCarousel weekend={weekend} />
-        </CorpsRegistryProvider>
 
-        {/* Featured prediction · latest results · standings — three ranked
-            snapshots, side by side on wide screens, stacked on mobile. */}
-        <div className="grid gap-4 lg:grid-cols-3">
-          <FeaturedPredictionPanel prediction={featuredPrediction} />
-          <LatestResultsPanel results={latestResults} />
-          <StandingsSnapshot standings={standings} />
-        </div>
+          {/* Featured prediction · latest results · rankings — three ranked
+              snapshots, side by side on wide screens, stacked on mobile. Inside
+              the registry so the rankings snapshot resolves corps logos. */}
+          <div className="grid gap-4 lg:grid-cols-3">
+            <FeaturedPredictionPanel prediction={featuredPrediction} />
+            <LatestResultsPanel results={latestResults} />
+            <StandingsSnapshot standings={standings} />
+          </div>
+        </CorpsRegistryProvider>
 
         {/* Cross-promo for the sibling site (corps brand only — Home() doesn't
             render on pageantryjobs.com). External link to the other host. */}

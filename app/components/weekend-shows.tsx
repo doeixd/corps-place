@@ -173,7 +173,7 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
   const { state, request } = useGeolocation();
   if (!weekend || weekend.shows.length === 0) return null;
 
-  const heading = weekend.isCurrentWeekend ? 'This weekend' : 'Next weekend';
+  const heading = weekend.isCurrentWeekend ? 'This weekend' : 'Shows coming up';
   const dateRange = `${formatEventDate(weekend.weekendStart)} – ${formatEventDate(weekend.weekendEnd)}`;
 
   // Derived during render (no effect): order + distances follow the geo state.

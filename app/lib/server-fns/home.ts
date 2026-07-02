@@ -48,10 +48,12 @@ export const getHomePageData = createServerFn({ method: 'GET' }).handler(
         ],
         { concurrency: 'unbounded' }
       );
-      const keys = uniqueKeys(weekend);
+      const keys = new Set(uniqueKeys(weekend));
+      // Rankings-snapshot corps too, so their logos resolve from the same registry.
+      for (const row of standings?.standings ?? []) if (row.corpsKey) keys.add(row.corpsKey);
       const lineupCorps =
-        keys.length > 0
-          ? yield* Effect.flatMap(CorpsDirectoryService, (s) => s.getCorpsByKeys(keys))
+        keys.size > 0
+          ? yield* Effect.flatMap(CorpsDirectoryService, (s) => s.getCorpsByKeys([...keys]))
           : [];
       return { weekend, latestResults, standings, featuredPrediction, lineupCorps };
     }).pipe(Effect.provide(HomeShowsServiceLive), Effect.provide(CorpsDirectoryServiceLive));
