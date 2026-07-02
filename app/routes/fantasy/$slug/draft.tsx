@@ -160,9 +160,9 @@ function DraftView({ league, initial }: { league: LeagueData; initial: DraftStat
 
       <details className="rounded-lg border border-border bg-muted/30 px-4 py-3 text-sm">
         <summary className="cursor-pointer font-medium text-text-primary">
-          How the draft works
+          <span className="ml-1.5">How the draft works</span>
         </summary>
-        <ul className="mt-2 flex list-disc flex-col gap-1.5 pl-5 text-muted-foreground">
+        <ul className="mt-2 flex list-disc flex-col gap-3 pl-5 text-foreground/80">
           <li>
             Players take turns. When you&apos;re <strong>on the clock</strong>, you can draft a corps
             for <strong>any caption you want — in any order</strong>. Switch caption tabs freely;
