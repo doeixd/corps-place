@@ -141,9 +141,12 @@ const makeStandingsService = Effect.gen(function* () {
     const isFinal = Boolean(finals && finals.recapPresent && now >= finals.date);
     const through = finals?.recapPresent ? finals.slug : null;
 
-    const leagues = yield* sql<{ league_id: string; config_json: string }>`
-      SELECT league_id, config_json FROM fantasy_leagues
-      WHERE season = ${season} AND status IN ('active', 'complete') AND is_test = 0
+    // Test leagues ARE included so their standings compute like any other league
+    // (so testers see a populated standings tab); we only suppress their member
+    // notifications below.
+    const leagues = yield* sql<{ league_id: string; config_json: string; is_test: number }>`
+      SELECT league_id, config_json, is_test FROM fantasy_leagues
+      WHERE season = ${season} AND status IN ('active', 'complete')
     `.pipe(Effect.orDie);
 
     let memberTotal = 0;
@@ -151,6 +154,7 @@ const makeStandingsService = Effect.gen(function* () {
 
     for (const league of leagues) {
       const leagueId = league.league_id;
+      const isTest = Boolean(league.is_test);
       const config = JSON.parse(league.config_json) as LeagueConfig;
 
       const pickRows = yield* sql<{
@@ -244,7 +248,7 @@ const makeStandingsService = Effect.gen(function* () {
           return isFinal && !p.final;
         })
         .map((r) => r.userId);
-      if (changed.length > 0) {
+      if (changed.length > 0 && !isTest) {
         const kind = isFinal ? 'season_complete' : 'standings';
         yield* sql
           .withTransaction(
