@@ -19,7 +19,11 @@ import {
   eventPredictionInputSignature,
 } from '../src/training/v9EventPredictionDb.js';
 import { findLatestV9SubcaptionModelDir } from '../src/training/v9ModelPaths.js';
-import { V9_RAW_STATIC_DIM, type PredictionContextMode } from '../src/training/v9FeatureModes.js';
+import {
+  V9_FEATURE_INDICES,
+  V9_RAW_STATIC_DIM,
+  type PredictionContextMode,
+} from '../src/training/v9FeatureModes.js';
 import {
   splitV9RecapWithCurvesAndPrior,
   validateV9BreakdownSplitCurveArtifact,
@@ -779,7 +783,7 @@ async function countCorpsSameSeasonShows(
   corpsKey: string,
   season: string,
   targetDate: string
-): Promise<{ count: number; lastDate: string | null }> {
+): Promise<{ count: number; lastDate: string | null; lastTotal: number | null }> {
   const result = await db.execute({
     sql: `SELECT COUNT(*) AS count, MAX(competition_date) AS last_date
           FROM ml_sequence_rows_v9_subcaption
@@ -787,7 +791,46 @@ async function countCorpsSameSeasonShows(
     args: [season, corpsKey, targetDate],
   });
   const row = result.rows[0] as any;
-  return { count: Number(row?.count ?? 0), lastDate: (row?.last_date as string | null) ?? null };
+  const lastDate = (row?.last_date as string | null) ?? null;
+  let lastTotal: number | null = null;
+  if (lastDate) {
+    const t = await db.execute({
+      sql: `SELECT y_total FROM ml_sequence_rows_v9_subcaption
+            WHERE season = ? AND corps_key = ? AND competition_date = ? LIMIT 1`,
+      args: [season, corpsKey, lastDate],
+    });
+    lastTotal = t.rows[0] ? Number((t.rows[0] as any).y_total) : null;
+  }
+  return { count: Number(row?.count ?? 0), lastDate, lastTotal };
+}
+
+/**
+ * This corps' CURRENT-season overall rank within its division (order of latest
+ * observed totals) — the reference-curve lookup key. Falls back to prior-season
+ * rank upstream when the corps hasn't competed yet.
+ */
+async function currentSeasonRank(
+  db: Client,
+  season: string,
+  division: string,
+  corpsKey: string,
+  targetDate: string
+): Promise<number | undefined> {
+  const res = await db.execute({
+    sql: `SELECT corps_key, y_total FROM ml_sequence_rows_v9_subcaption m
+          WHERE m.season = ? AND m.division_name = ? AND m.competition_date < ?
+            AND m.competition_date = (
+              SELECT MAX(m2.competition_date) FROM ml_sequence_rows_v9_subcaption m2
+              WHERE m2.season = m.season AND m2.corps_key = m.corps_key
+                AND m2.division_name = m.division_name AND m2.competition_date < ?
+            )`,
+    args: [season, division, targetDate, targetDate],
+  });
+  const ordered = res.rows
+    .map((r: any) => ({ key: String(r.corps_key), total: Number(r.y_total) }))
+    .sort((a, b) => b.total - a.total);
+  const idx = ordered.findIndex((r) => r.key === corpsKey);
+  return idx >= 0 ? idx + 1 : undefined;
 }
 
 // ── Reference-curve season growth ────────────────────────────────────────────
@@ -823,6 +866,10 @@ function curveGrowth(rank: number, fromPct: number, toPct: number): Record<Capti
     ])
   ) as Record<Caption, number>;
 }
+
+/** The reference-curve caption vector for a rank at a percent-through. */
+const curveCapsVector = (rank: number, pct: number): number[] =>
+  CAPTIONS.map((caption) => curveBaseline(rank, pct, caption));
 
 async function getPriorSeasonFinalRank(
   db: Client,
@@ -1428,12 +1475,43 @@ async function main() {
         judgeIndices: judgeInfo.known === CAPTIONS.length ? judgeInfo.indices : undefined,
         keepKnownLineupContext: mode !== 'lineup_unknown',
       });
+      const sameSeason = await countCorpsSameSeasonShows(db, corpsKey, cli.season, event.start_date);
+      const corpsSameSeasonShows = sameSeason.count;
+      const useBaseline = mode === 'preseason_forecast';
+
+      // In-season corps WITH observed shows: train-consistent inference. Training
+      // computed y_residuals against the reference curve AT THE TARGET show's
+      // percent-through (buildMlSequencesV9Subcaption), but the default inference
+      // baselineRecap is the corps' LAST recap — the model's residual lands on the
+      // wrong (date-frozen) baseline, which is why predictions sat at the same
+      // total for every future event. Rebuild baselineRecap and the static rank-
+      // baseline slots from the curve at the target percent. 2025 backtest: MAE
+      // 5.8/4.3/2.6 (Jul 1/15/30 cutoffs) vs 7.4/6.1/3.3 for curve-delta post-hoc
+      // and 7.5/4.3/2.8 for autoregressive rollout.
+      const inSeasonWithHistory = !useBaseline && corpsSameSeasonShows > 0;
+      const curveRank = inSeasonWithHistory
+        ? ((await currentSeasonRank(db, cli.season, division, corpsKey, event.start_date)) ??
+          priorSeasonRank ??
+          seedRank ??
+          12)
+        : (priorSeasonRank ?? seedRank ?? 12);
+      const targetCurveCaps = curveCapsVector(curveRank, percentThrough);
+      let inferenceStatic = features.staticFeatures;
+      let inferenceBaselineRecap = features.baselineRecap;
+      if (inSeasonWithHistory) {
+        inferenceStatic = [...features.staticFeatures];
+        for (let capIdx = 0; capIdx < CAPTIONS.length; capIdx++) {
+          inferenceStatic[V9_FEATURE_INDICES.rankBaselineStart + capIdx] =
+            targetCurveCaps[capIdx] / 20;
+        }
+        inferenceBaselineRecap = targetCurveCaps;
+      }
       const prediction = model.predictOne({
         sequence: features.sequence,
-        staticFeatures: features.staticFeatures,
+        staticFeatures: inferenceStatic,
         judgeIndices: features.judgeIndices,
         corpsId: features.corpsId,
-        baselineRecap: features.baselineRecap,
+        baselineRecap: inferenceBaselineRecap,
         historyLen: features.observedHistoryLen,
         judgeBiasScale: features.judgeBiasScale,
         corpsScale: features.corpsScale,
@@ -1442,7 +1520,6 @@ async function main() {
 
       // Preseason predictions use baseline/fingerprint totals, with a limited
       // model contribution for caption shape when a historical corps template exists.
-      const useBaseline = mode === 'preseason_forecast';
       const rawCaps = Object.fromEntries(
         CAPTIONS.map((caption) => [caption, Number(prediction.captions[caption].p50.toFixed(3))])
       ) as Record<Caption, number>;
@@ -1471,7 +1548,10 @@ async function main() {
         ])
       ) as Record<Caption, number>;
       const historyLen = features.observedHistoryLen;
-      const modelWeight = useBaseline ? 0 : modelWeightForHistory(historyLen);
+      // In-season w/ history the model ran with the train-consistent curve
+      // baseline — its output IS the estimate (the backtest's winning mode used it
+      // unblended); blending toward the last recap would re-freeze it in time.
+      const modelWeight = useBaseline ? 0 : inSeasonWithHistory ? 1 : modelWeightForHistory(historyLen);
       const baselineTotal = totalFromV9Captions(baselineCaps);
       const shapeModelWeight = useBaseline
         ? captionShapeModelWeight({
@@ -1491,8 +1571,6 @@ async function main() {
       // raw prior-season-finals baseline, ~20 points high in early July. Once the
       // corps has real 2026 scores, the model's sequence input grounds it and the
       // anchor turns off.
-      const sameSeason = await countCorpsSameSeasonShows(db, corpsKey, cli.season, event.start_date);
-      const corpsSameSeasonShows = sameSeason.count;
       const anchorToComparable =
         priorSeasonComparable && (useBaseline || corpsSameSeasonShows === 0);
       // In-season cold corps (and all-age) anchor mostly to the comparable: their
@@ -1514,37 +1592,60 @@ async function main() {
         anchorToComparable && priorSeasonComparable
           ? baselineTotal * (1 - comparableWeight) + priorSeasonComparable.total * comparableWeight
           : undefined;
-      // In-season corps WITH observed shows: the model's template inputs are
-      // frozen at its last show, so the raw prediction is date-independent (the
-      // same total for tomorrow and for finals). Project it forward along the
-      // historical reference curves from the last observed show's percent-through
-      // to this event's.
-      let seasonGrownCaps: Record<Caption, number> | undefined;
-      if (!useBaseline && corpsSameSeasonShows > 0 && sameSeason.lastDate) {
+      // In-season corps WITH observed shows: the 2025-backtest winner ("P2").
+      // Three estimators with decorrelated errors, blended:
+      //   persist — the corps' actual last total (unbeatable ≤7 days out; weight
+      //             decays linearly to 0 by 14 days),
+      //   target  — this predictOne run (curve-at-target baseline; slight UNDER-
+      //             bias at long horizon, −4 @22d+),
+      //   curveΔ  — a second model run against the frozen last-recap baseline plus
+      //             curve growth (mirror OVER-bias, +8 @22d+).
+      // 50/50 target+curveΔ cancels the bias; persist grounds the short horizon.
+      //   Backtest MAE (Jul 1/15/30 cutoffs): P2 4.06/2.71/1.21 · target-only
+      //   5.8/4.3/2.6 · curveΔ-only 7.4/6.1/3.3 · AR rollout 7.5/4.3/2.8.
+      let inSeasonTargetTotal: number | undefined;
+      if (inSeasonWithHistory && sameSeason.lastDate && sameSeason.lastTotal != null) {
         const lastPct = estimatePercentThrough(
           new Date(sameSeason.lastDate),
           seasonRange.start,
           seasonRange.end
         );
-        if (percentThrough > lastPct) {
-          const growth = curveGrowth(
-            priorSeasonRank ?? seedRank ?? 12,
-            lastPct,
-            percentThrough
-          );
-          seasonGrownCaps = Object.fromEntries(
+        const frozen = model.predictOne({
+          sequence: features.sequence,
+          staticFeatures: features.staticFeatures, // original (frozen) statics
+          judgeIndices: features.judgeIndices,
+          corpsId: features.corpsId,
+          baselineRecap: features.baselineRecap, // last recap
+          historyLen: features.observedHistoryLen,
+          judgeBiasScale: features.judgeBiasScale,
+          corpsScale: features.corpsScale,
+          agnosticShowId: features.agnosticShowId,
+        });
+        const growth = curveGrowth(curveRank, lastPct, percentThrough);
+        const curveDeltaTotal = totalFromV9Captions(
+          Object.fromEntries(
             CAPTIONS.map((caption) => [
               caption,
-              Math.min(20, Math.max(0, pointCaps[caption] + growth[caption])),
+              Math.min(20, Math.max(0, frozen.captions[caption].p50 + growth[caption])),
             ])
-          ) as Record<Caption, number>;
-        }
+          ) as Record<Caption, number>
+        );
+        const modelBlend = (totalFromV9Captions(pointCaps) + curveDeltaTotal) / 2;
+        const horizonDays = Math.max(
+          0,
+          (Date.parse(event.start_date) - Date.parse(sameSeason.lastDate)) / 86_400_000
+        );
+        const persistWeight = Math.max(0, 1 - horizonDays / 14);
+        inSeasonTargetTotal =
+          persistWeight * sameSeason.lastTotal + (1 - persistWeight) * modelBlend;
       }
       const pointCapsTotal = totalFromV9Captions(pointCaps);
       const caps =
         preseasonTargetTotal != null
           ? reconcileCapsToTotalPreservingShape(pointCaps, preseasonTargetTotal)
-          : (seasonGrownCaps ?? pointCaps);
+          : inSeasonTargetTotal != null
+            ? reconcileCapsToTotalPreservingShape(pointCaps, inSeasonTargetTotal)
+            : pointCaps;
       const finalTotal = totalFromV9Captions(caps);
       const predictedScoreBreakdown = breakdownSplitCurves
         ? splitV9RecapWithCurvesAndPrior(breakdownSplitCurves, {
