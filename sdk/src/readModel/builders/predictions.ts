@@ -160,7 +160,12 @@ export interface EventPredictionAsOf {
 
 /**
  * Distinct snapshot days (YYYY-MM-DD) that have a saved prediction run for this
- * event, newest first. Empty when no run exists (e.g. non-2026 or not predicted).
+ * event, newest first. Consecutive days whose as-of recap is IDENTICAL collapse
+ * to the run's first day (nightly regens often change nothing; duplicate pills in
+ * the as-of scrubber are dead weight). Compared as JSON.stringify(recap) — the
+ * exact string the emit stores in rm_event_prediction_snapshots.recap_json, so
+ * the reader's dedupe over stored rows matches this list (verifyReadModel parity).
+ * Empty when no run exists (e.g. non-2026 or not predicted).
  */
 export const buildEventPredictionSnapshotDates = async (
   db: Client,
@@ -172,13 +177,23 @@ export const buildEventPredictionSnapshotDates = async (
       SELECT DISTINCT substr(predicted_at, 1, 10) AS d
       FROM model_event_prediction_runs
       WHERE season = ? AND event_slug = ? AND predicted_at IS NOT NULL
-      ORDER BY d DESC
+      ORDER BY d ASC
     `,
     args: [season, eventSlug],
   });
-  return (r.rows as unknown as { d: string | null }[])
+  const datesAsc = (r.rows as unknown as { d: string | null }[])
     .map((x) => x.d)
     .filter((d): d is string => !!d);
+  const kept: string[] = [];
+  let prevRecap: string | null = null;
+  for (const date of datesAsc) {
+    const asof = await buildEventPredictionAsOf(db, eventSlug, date, season);
+    if (!asof) continue; // mirrors the emit's `if (asof)` row skip
+    const recap = JSON.stringify(asof.recap);
+    if (recap !== prevRecap) kept.push(date);
+    prevRecap = recap;
+  }
+  return kept.reverse(); // newest first (existing contract)
 };
 
 /**

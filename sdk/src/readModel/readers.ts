@@ -1021,13 +1021,24 @@ export const readEventPredictionSnapshotDates = async (
   eventSlug: string,
 ): Promise<string[]> => {
   const r = await db.execute({
-    sql: `SELECT snapshot_at FROM rm_event_prediction_snapshots
-          WHERE event_slug = ? ORDER BY snapshot_at DESC`,
+    sql: `SELECT snapshot_at, recap_json FROM rm_event_prediction_snapshots
+          WHERE event_slug = ? ORDER BY snapshot_at ASC`,
     args: [eventSlug],
   });
-  return (r.rows as unknown as { snapshot_at: string | null }[])
-    .map((x) => x.snapshot_at)
-    .filter((d): d is string => !!d);
+  // Consecutive days with an IDENTICAL forecast collapse to the run's first day —
+  // nightly regens often change nothing, and duplicate pills in the as-of scrubber
+  // are dead weight. recap_json is the emit's JSON.stringify of the same builder
+  // output, so string equality mirrors buildEventPredictionSnapshotDates exactly
+  // (parity-checked by verifyReadModel).
+  const kept: string[] = [];
+  let prevRecap: string | null = null;
+  for (const row of r.rows as unknown as { snapshot_at: string | null; recap_json: string | null }[]) {
+    if (!row.snapshot_at) continue;
+    const recap = row.recap_json ?? '';
+    if (recap !== prevRecap) kept.push(row.snapshot_at);
+    prevRecap = recap;
+  }
+  return kept.reverse(); // newest first (existing contract)
 };
 
 export const readEventPredictionAsOf = async (
