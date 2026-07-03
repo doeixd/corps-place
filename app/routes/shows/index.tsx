@@ -18,7 +18,7 @@ interface ShowItem {
 }
 
 /**
- * `/shows` â the program directory: every corps' show (title + season) across the
+ * `/shows` — the program directory: every corps' show (title + season) across the
  * archive, filterable by season, each linking to its show-detail wiki page. Makes
  * the show wiki discoverable + crawlable (it was previously only reachable via
  * corps pages).
@@ -38,7 +38,7 @@ export const Route = createFileRoute('/shows/')({
   head: ({ loaderData }) =>
     seoHead({
       title: 'Drum Corps Show Programs & Repertoire by Season',
-      description: `Browse ${loaderData?.shows.length ?? 0} drum corps show programs â titles, repertoire, designers and media by season on DrumCorps.app.`,
+      description: `Browse ${loaderData?.shows.length ?? 0} drum corps show programs — titles, repertoire, designers and media by season on DrumCorps.app.`,
       path: '/shows',
       jsonLd: [
         breadcrumbLd([
@@ -52,7 +52,7 @@ export const Route = createFileRoute('/shows/')({
             '@type': 'ListItem',
             position: i + 1,
             url: `${SITE_URL}/shows/${s.slug}/${s.season}`,
-            name: `${s.corpsName} ${s.season} â ${s.title}`,
+            name: `${s.corpsName} ${s.season} — ${s.title}`,
           })),
         },
       ],
@@ -105,7 +105,7 @@ function ShowsIndex() {
     <PageShell>
       <PageHeader
         title="Drum Corps Shows & Programs"
-        subtitle="Every drum corps show by season â titles, repertoire & media"
+        subtitle="Every drum corps show by season — titles, repertoire & media"
         backTo="/"
         backLabel="Home"
       />
@@ -119,7 +119,7 @@ function ShowsIndex() {
           />
           <Input
             type="text"
-            placeholder="Search shows by corps or titleâ¦"
+            placeholder="Search shows by corps or title…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             className="pl-9"
@@ -132,7 +132,7 @@ function ShowsIndex() {
 
       {total === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-6 text-sm text-text-secondary">
-          No shows match â try another search.
+          No shows match — try another search.
         </p>
       ) : (
         <div className="space-y-8">
@@ -141,7 +141,7 @@ function ShowsIndex() {
               <h2 className="mb-3 text-xl font-semibold text-text-primary">
                 {g.season}{' '}
                 <span className="text-sm font-normal text-text-secondary">
-                  Â· {g.items.length} {g.items.length === 1 ? 'show' : 'shows'}
+                  · {g.items.length} {g.items.length === 1 ? 'show' : 'shows'}
                 </span>
               </h2>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -153,7 +153,7 @@ function ShowsIndex() {
                     className="group rounded-lg border border-border p-3 transition-colors hover:border-primary/50 hover:bg-muted/40"
                   >
                     <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {s.corpsName} Â· {s.season}
+                      {s.corpsName} · {s.season}
                     </p>
                     <p className="mt-1 font-semibold leading-snug text-text-primary group-hover:text-primary">
                       {s.title}

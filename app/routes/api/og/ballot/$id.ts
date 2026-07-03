@@ -1,5 +1,5 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
-import { renderOgPng, OG_HEADERS } from '@/lib/og/render';
+import { renderOgPng, OG_HEADERS, ogText } from '@/lib/og/render';
 import { BallotCard } from '@/lib/og/templates';
 import { getContributionsDb } from '@/lib/contributions-db';
 
@@ -42,10 +42,10 @@ export const ServerRoute = createServerFileRoute('/api/og/ballot/$id').methods({
 
       const png = await renderOgPng(
         BallotCard({
-          title: (row.title as string | null) || `${season} Finals Prediction`,
-          author: (row.display_name as string | null) || null,
-          sub: `Locked ${lockedDate} · ${presetLabel}`,
-          rows: overall.slice(0, 10).map((e, i) => ({ rank: i + 1, name: e.name })),
+          title: ogText((row.title as string | null) || `${season} Finals Prediction`),
+          author: row.display_name ? ogText(row.display_name as string) : null,
+          sub: `Locked ${lockedDate} - ${presetLabel}`,
+          rows: overall.slice(0, 10).map((e, i) => ({ rank: i + 1, name: ogText(e.name) })),
           more: Math.max(0, overall.length - 10),
         })
       );

@@ -11,6 +11,20 @@ const fonts = [
   { name: 'Inter', data: interBold, weight: 700 as const, style: 'normal' as const },
 ];
 
+/**
+ * Normalize typographic punctuation to ASCII for image rendering. The bundled
+ * Inter subset doesn't cover every General Punctuation glyph, and Satori renders
+ * missing glyphs as visible artifacts — user-supplied strings (titles, names)
+ * especially can carry smart quotes from mobile keyboards.
+ */
+export const ogText = (s: string): string =>
+  s
+    .replace(/[‘’′]/g, "'")
+    .replace(/[“”″]/g, '"')
+    .replace(/[–—]/g, '-')
+    .replace(/…/g, '...')
+    .replace(/ /g, ' ');
+
 /** Render a Satori JSX tree (1200×630) to a PNG. Returns a Uint8Array (valid
  *  BodyInit for Response; Buffer is rejected by the DOM lib's BodyInit type). */
 export async function renderOgPng(node: ReactNode): Promise<Uint8Array<ArrayBuffer>> {

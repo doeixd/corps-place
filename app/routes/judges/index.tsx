@@ -44,8 +44,8 @@ export const Route = createFileRoute('/judges/')({
     if (!d) return {};
     const n = d.judges.length;
     return seoHead({
-      title: 'Drum Corps Judges Directory â Adjudicators & Caption Assignments',
-      description: `Browse ${n} drum corps judges and adjudicators â caption assignments, scores given, and event history by season on DrumCorps.app.`,
+      title: 'Drum Corps Judges Directory — Adjudicators & Caption Assignments',
+      description: `Browse ${n} drum corps judges and adjudicators — caption assignments, scores given, and event history by season on DrumCorps.app.`,
       path: '/judges',
       jsonLd: [
         breadcrumbLd([
@@ -112,7 +112,7 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
           />
           <Input
             type="text"
-            placeholder="Search judges by nameâ¦"
+            placeholder="Search judges by name…"
             value={filter.search}
             onChange={(e) => send({ type: 'SET_SEARCH', search: e.target.value })}
             className="pl-9"
@@ -198,7 +198,7 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
           getKey={(j) => j.judge_id}
           step={0.06}
           gap="gap-3"
-          // Replay the entrance stagger only on season/sort changes â NOT on every
+          // Replay the entrance stagger only on season/sort changes — NOT on every
           // search keystroke, which would remount and re-animate all ~240 cards
           // (each with an SVG avatar ring) on each character typed.
           animationKey={`${filter.season}|${filter.sortField}|${filter.sortDir}`}

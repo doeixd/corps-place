@@ -20,7 +20,7 @@ import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
 // (a merged-away staff_id slug, or an old wrong-merge person_id that no longer
 // exists). Redirect them so stale bookmarks / inbound links land on the live
 // profile instead of a "not found". Staff merges are manual and rare, so a
-// curated map is the simplest prod-safe mechanism â the read-model carries only
+// curated map is the simplest prod-safe mechanism — the read-model carries only
 // current person_ids, not their history. Add an entry whenever records are merged.
 const STAFF_REDIRECTS: Record<string, string> = {
   'richard-valentin': 'ricardo-valentin',
@@ -72,11 +72,11 @@ export const Route = createFileRoute('/staff/$personId')({
     const corpsNames = [...new Set(p.groups.map((g) => g.corps_name))];
     const span = p.seasons.length
       ? p.seasons.length > 1
-        ? `${p.seasons[p.seasons.length - 1]}â${p.seasons[0]}`
+        ? `${p.seasons[p.seasons.length - 1]}–${p.seasons[0]}`
         : p.seasons[0]
       : '';
     return seoHead({
-      title: `${p.display_name} â Drum Corps Instructor`,
+      title: `${p.display_name} — Drum Corps Instructor`,
       description: clampDescription(
         p.biography,
         `${p.display_name} has worked with ${corpsNames.length} drum corps${corpsNames.length ? `: ${corpsNames.slice(0, 3).join(', ')}${corpsNames.length > 3 ? ' and more' : ''}` : ''}${span ? ` (${span})` : ''}. Roles, bio and corps history on DrumCorps.app.`
@@ -111,7 +111,7 @@ export const Route = createFileRoute('/staff/$personId')({
 function StaffProfilePage() {
   const { profile, scrapedAwards, scrapedPerformed, scrapedAssignments } = Route.useLoaderData();
 
-  // Group assignments by corps (hook must run unconditionally â before any early return).
+  // Group assignments by corps (hook must run unconditionally — before any early return).
   const byCorps = useMemo(() => groupByCorps(profile?.assignments ?? []), [profile]);
 
   if (!profile) {
@@ -121,7 +121,7 @@ function StaffProfilePage() {
         <StatusCard
           tone="info"
           title="Not found"
-          description="This staff profile isnât available."
+          description="This staff profile isn’t available."
         />
       </PageShell>
     );
@@ -129,7 +129,7 @@ function StaffProfilePage() {
 
   const seasons = profile.seasons ?? [];
   const range =
-    seasons.length > 1 ? `${seasons[seasons.length - 1]}â${seasons[0]}` : (seasons[0] ?? '');
+    seasons.length > 1 ? `${seasons[seasons.length - 1]}–${seasons[0]}` : (seasons[0] ?? '');
 
   return (
     <PageShell>
@@ -185,7 +185,7 @@ function StaffProfilePage() {
         </div>
       </div>
 
-      <h2 className="mt-8 mb-3 text-lg font-semibold">Where theyâve taught</h2>
+      <h2 className="mt-8 mb-3 text-lg font-semibold">Where they’ve taught</h2>
       <div className="flex flex-col gap-3">
         {byCorps.map((g) => (
           <Card key={g.corps_key}>
@@ -194,7 +194,7 @@ function StaffProfilePage() {
               <ul className="mt-2 flex flex-col gap-1 text-sm text-muted-foreground">
                 {g.rows.map((r, i) => (
                   <li key={`${r.season}-${r.title}-${i}`} className="flex gap-2">
-                    <span className="w-12 shrink-0 tabular-nums">{r.season ?? 'â'}</span>
+                    <span className="w-12 shrink-0 tabular-nums">{r.season ?? '—'}</span>
                     <span>
                       {r.title ?? r.role_type ?? 'Staff'}
                       {r.role_type && r.title && (
@@ -222,7 +222,7 @@ function StaffProfilePage() {
                   <span className="ml-1 text-muted-foreground tabular-nums">
                     {p.since_season}
                     {p.through_season && p.through_season !== p.since_season
-                      ? `â${p.through_season}`
+                      ? `–${p.through_season}`
                       : ''}
                   </span>
                 )}

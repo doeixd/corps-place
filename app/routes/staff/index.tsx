@@ -29,7 +29,7 @@ export const Route = createFileRoute('/staff/')({
     const n = d.staff.length;
     return seoHead({
       title: 'Drum Corps Staff & Instructors Directory',
-      description: `Browse ${n} drum corps instructors, designers and directors â the people who teach drum corps, with roles, corps history and bios on DrumCorps.app.`,
+      description: `Browse ${n} drum corps instructors, designers and directors — the people who teach drum corps, with roles, corps history and bios on DrumCorps.app.`,
       path: '/staff',
       jsonLd: [
         breadcrumbLd([
@@ -125,7 +125,7 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
     didRestoreScrollRef.current = true;
 
     // Always set the viewport: a saved offset (`?s=`) restores the prior place;
-    // no offset means a fresh entry (e.g. from the home directory) â scroll to
+    // no offset means a fresh entry (e.g. from the home directory) → scroll to
     // top. Skipping the 0 case left the window at the previous page's scroll.
     const scrollY = typeof search.s === 'number' ? search.s : 0;
     const frame = requestAnimationFrame(() => window.scrollTo(0, scrollY));
@@ -177,7 +177,7 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
       <div className="mb-6 max-w-sm">
         <Input
           type="search"
-          placeholder="Search by name, role, or corpsâ¦"
+          placeholder="Search by name, role, or corps…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -228,7 +228,7 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
 function StaffCard({ staff }: { staff: StaffSummary }) {
   const seasons = staff.seasons ?? [];
   const range =
-    seasons.length > 1 ? `${seasons[seasons.length - 1]}â${seasons[0]}` : (seasons[0] ?? '');
+    seasons.length > 1 ? `${seasons[seasons.length - 1]}–${seasons[0]}` : (seasons[0] ?? '');
   return (
     <Link to="/staff/$personId" params={{ personId: staff.person_id }} className="block">
       <Card className="h-full transition-colors hover:bg-accent/40">
@@ -251,7 +251,7 @@ function StaffCard({ staff }: { staff: StaffSummary }) {
               <p className="truncate text-sm text-muted-foreground">{staff.default_title}</p>
             )}
             <p className="truncate text-xs text-muted-foreground">
-              {staff.corps_count} corps{range && ` Â· ${range}`}
+              {staff.corps_count} corps{range && ` · ${range}`}
             </p>
           </div>
         </CardContent>

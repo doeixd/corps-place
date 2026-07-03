@@ -96,11 +96,11 @@ export const Route = createFileRoute('/judges/$judgeId')({
     const seasons = p.seasons;
     const span = seasons.length
       ? seasons.length > 1
-        ? `${seasons[seasons.length - 1]}â${seasons[0]}`
+        ? `${seasons[seasons.length - 1]}–${seasons[0]}`
         : seasons[0]
       : '';
     return seoHead({
-      title: `${p.display_name} â Drum Corps Judge`,
+      title: `${p.display_name} — Drum Corps Judge`,
       description: clampDescription(
         p.biography,
         `${p.display_name} is a drum corps judge with ${p.assignments.length} adjudication assignment${p.assignments.length === 1 ? '' : 's'}${span ? ` (${span})` : ''}. Captions, scores and event history on DrumCorps.app.`
@@ -140,7 +140,7 @@ function JudgeProfilePage() {
   useRegisterBackName(profile?.display_name);
 
   // View state (season / groupBy / captions) lives in a machine, seeded from the
-  // URL and kept in two-way sync with it â same mechanism as the directory pages.
+  // URL and kept in two-way sync with it — same mechanism as the directory pages.
   const codec = useMemo(() => judgeProfileSearchCodec(), []);
   const [state, send] = useMachine(judgeProfileMachine, { input: codec.decode(search) });
   const filter = state.context;
@@ -311,7 +311,7 @@ function JudgeProfilePage() {
                           (p) =>
                             p.group +
                             (p.startYear
-                              ? ` (${p.startYear}${p.endYear && p.endYear !== p.startYear ? `â${p.endYear}` : ''})`
+                              ? ` (${p.startYear}${p.endYear && p.endYear !== p.startYear ? `–${p.endYear}` : ''})`
                               : '')
                         )
                         .join('; ')}
@@ -510,10 +510,10 @@ function JudgeProfilePage() {
                                         <CaptionChip caption={entry.caption_name} />
                                       </td>
                                       <td className="px-4 py-2 text-right font-medium tabular-nums">
-                                        {entry.score != null ? entry.score.toFixed(2) : 'â'}
+                                        {entry.score != null ? entry.score.toFixed(2) : '—'}
                                       </td>
                                       <td className="px-4 py-2 text-right tabular-nums text-text-muted">
-                                        {entry.rank != null ? `#${entry.rank}` : 'â'}
+                                        {entry.rank != null ? `#${entry.rank}` : '—'}
                                       </td>
                                     </tr>
                                   )}
