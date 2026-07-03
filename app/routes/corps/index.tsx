@@ -187,7 +187,9 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
         <StaggeredGrid
           items={filtered}
           getKey={(c) => c.corps_key}
-          renderItem={(c) => <CorpsCard corps={c} />}
+          // First screenful of logos loads eagerly (the post-paint lazy-load
+          // trickle reads as "still loading"); the rest stay lazy.
+          renderItem={(c) => <CorpsCard corps={c} eagerLogo={filtered.indexOf(c) < 12} />}
           step={0.06}
           animateLayout
         />

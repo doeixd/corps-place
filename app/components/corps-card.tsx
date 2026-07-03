@@ -14,10 +14,23 @@ const badgeDivision = (c: Pick<CorpsSummary, 'division_name' | 'is_alumni'>) =>
   (c.is_alumni ?? 0) !== 0 ? 'Alumni' : (c.division_name ?? undefined);
 
 // Logo + name/city/division, plus a hover arrow on the linked variant.
-function CorpsCardBody({ corps, withArrow }: { corps: CorpsSummary; withArrow?: boolean }) {
+function CorpsCardBody({
+  corps,
+  withArrow,
+  eagerLogo,
+}: {
+  corps: CorpsSummary;
+  withArrow?: boolean;
+  eagerLogo?: boolean;
+}) {
   return (
     <CardContent className="flex items-center gap-4 py-4">
-      <CorpsLogo name={corps.name} logo={corpsLogoSource(corps)} className="size-[4.5rem]" />
+      <CorpsLogo
+        name={corps.name}
+        logo={corpsLogoSource(corps)}
+        className="size-[4.5rem]"
+        eager={eagerLogo}
+      />
       <div className="min-w-0 flex-1">
         <div className="truncate font-semibold">{corps.name}</div>
         <div className="truncate text-sm text-text-secondary">{corps.display_city || '—'}</div>
@@ -43,14 +56,14 @@ function CorpsCardBody({ corps, withArrow }: { corps: CorpsSummary; withArrow?: 
  * A corps directory card. Links to the corps profile when a `slug` is present;
  * otherwise renders a static (unlinked) card with the same body.
  */
-export function CorpsCard({ corps }: { corps: CorpsSummary }) {
+export function CorpsCard({ corps, eagerLogo }: { corps: CorpsSummary; eagerLogo?: boolean }) {
   const favInput = toFavoriteInput(corps);
   const slug = corps.slug;
 
   const body = (
     <Card className={cn('relative h-full', slug && 'card-hover')}>
       <FavoriteCorpsButton corps={favInput} size="sm" className="absolute top-2 right-2 z-10" />
-      <CorpsCardBody corps={corps} withArrow={!!slug} />
+      <CorpsCardBody corps={corps} withArrow={!!slug} eagerLogo={eagerLogo} />
     </Card>
   );
 

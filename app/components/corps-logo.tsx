@@ -60,6 +60,7 @@ export function CorpsLogo({
   logo,
   className,
   width = 72,
+  eager = false,
 }: {
   name: string;
   /** A logo source: a plain URL, or `{ light, dark }` from {@link corpsLogoSource}. */
@@ -67,6 +68,8 @@ export function CorpsLogo({
   className?: string;
   /** Rendered tile width in CSS px; drives the resized variant + 2x srcset. */
   width?: number;
+  /** Load immediately instead of lazily — for above-the-fold cards. */
+  eager?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const { light, dark } = normalizeSource(logo);
@@ -92,7 +95,7 @@ export function CorpsLogo({
             width={width}
             widths={[width, width * 2]}
             fit="contain"
-            lazy
+            lazy={!eager}
             assumeCached
             fallback={null}
             onError={() => setFailed(true)}
@@ -105,7 +108,7 @@ export function CorpsLogo({
               width={width}
               widths={[width, width * 2]}
               fit="contain"
-              lazy
+              lazy={!eager}
               assumeCached
               dark={darkVariant}
               fallback={null}
