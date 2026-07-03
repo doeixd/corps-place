@@ -219,6 +219,7 @@ export function ScrollableEventCardGrid({
   return (
     <div
       ref={containerRef}
+      id="events-scrollport"
       tabIndex={0}
       role="region"
       aria-label="Events"
@@ -244,6 +245,25 @@ export function ScrollableEventCardGrid({
         entrance={false}
         viewportRoot={containerRef}
       />
+      {/* SSR pre-alignment: scrollTop can't be expressed in HTML, so without
+          this the server paints the list at the top and the layout effect
+          above snaps it to the next show at hydration — a visible jump
+          seconds later on slow devices. This runs while the document parses
+          (everything above it exists; layout is computable on demand), so the
+          first paint is already aligned. The layout effect stays authoritative
+          afterwards (client navs, filter changes, column settle) — re-applying
+          the same target is idempotent. suppressHydrationWarning: the script
+          content embeds scrollToKey, which can legitimately differ if the
+          route was preloaded across a date boundary. */}
+      {scrollToKey ? (
+        <script
+          type="text/javascript"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var c=document.getElementById('events-scrollport');if(!c||c.scrollTop>0)return;var e=c.querySelector(${JSON.stringify(`[data-grid-key="${scrollToKey}"]`)});if(!e)return;c.scrollTop+=e.getBoundingClientRect().top-c.getBoundingClientRect().top-${SCROLLABLE_GRID_INSET};})()`,
+          }}
+        />
+      ) : null}
     </div>
   );
 }
