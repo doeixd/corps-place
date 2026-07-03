@@ -113,12 +113,19 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return staff;
-    return staff.filter(
-      (s) =>
-        s.display_name.toLowerCase().includes(q) ||
-        (s.default_title ?? '').toLowerCase().includes(q) ||
-        (s.corps_names ?? []).some((n) => n.toLowerCase().includes(q))
+    const matched = !q
+      ? staff
+      : staff.filter(
+          (s) =>
+            s.display_name.toLowerCase().includes(q) ||
+            (s.default_title ?? '').toLowerCase().includes(q) ||
+            (s.corps_names ?? []).some((n) => n.toLowerCase().includes(q))
+        );
+    // Sort explicitly: rows arrive from the TanStack DB collection sorted by
+    // key (person_id) once the shard loads — the directory's canonical order
+    // is alphabetical (mirrors the read-model builder).
+    return [...matched].sort((a, b) =>
+      a.display_name.localeCompare(b.display_name, undefined, { sensitivity: 'base' })
     );
   }, [staff, query]);
 

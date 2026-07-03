@@ -28,16 +28,25 @@ export const availableSeasons = (events: readonly EventDirectoryRow[]): string[]
     b.localeCompare(a)
   );
 
-// `asc` keeps the source order (the directory query is season-desc, date-asc);
-// `desc` reverses it.
+// Sort by date explicitly (slug tiebreak for same-day shows). This used to
+// assume the input was already date-asc and just reverse for `desc` — true for
+// the loader's query order, but the rows now also arrive from the TanStack DB
+// collection, which returns them sorted by key (event_id) and rendered the
+// directory alphabetically.
 const orderEvents = (
   events: readonly EventDirectoryRow[],
   dir: SortDir
-): readonly EventDirectoryRow[] =>
-  Match.value(dir).pipe(
-    Match.when('desc', () => [...events].reverse()),
-    Match.orElse(() => events)
+): readonly EventDirectoryRow[] => {
+  const sorted = [...events].sort(
+    (a, b) =>
+      (a.start_date ?? '').localeCompare(b.start_date ?? '') ||
+      (a.slug ?? '').localeCompare(b.slug ?? '')
   );
+  return Match.value(dir).pipe(
+    Match.when('desc', () => sorted.reverse()),
+    Match.orElse(() => sorted)
+  );
+};
 
 // Filter by season + search, then order. Reuses the effect/Predicate refinements
 // in `@/predicates/event`, combined with `Predicate.and`.
