@@ -398,6 +398,7 @@ function BallotPage() {
         title={`${season} Drum Corps Finals Predictions`}
         subtitle={`Starts from the model’s projected finals order. Drag to make it yours — overall or by caption — then lock it in and share.`}
         subtitleClassName="text-sm"
+        className="mb-0"
       />
 
       {saved.length > 0 ? (
