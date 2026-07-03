@@ -30,7 +30,7 @@ type StaggeredGridProps<T> = {
   items: readonly T[];
   /** Stable React key per item. */
   getKey: (item: T) => string;
-  renderItem: (item: T) => ReactNode;
+  renderItem: (item: T, index: number) => ReactNode;
   /** Responsive column layout (default `sm-lg`). */
   variant?: GridVariant;
   /** Grid gap utility (default `gap-4`). */
@@ -135,7 +135,7 @@ export function StaggeredGrid<T>({
         layout: { duration: 0.25, ease: 'easeOut' },
       }}
     >
-      {renderItem(item)}
+      {renderItem(item, i)}
     </motion.div>
   ));
 

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Show } from 'jotai-solid-api';
 import type { CorpsSummary } from '@/lib/corps-directory';
@@ -56,7 +57,16 @@ function CorpsCardBody({
  * A corps directory card. Links to the corps profile when a `slug` is present;
  * otherwise renders a static (unlinked) card with the same body.
  */
-export function CorpsCard({ corps, eagerLogo }: { corps: CorpsSummary; eagerLogo?: boolean }) {
+// memo: directory search keeps state in the URL, so every keystroke re-renders
+// the whole grid — memoizing skips the ~100 unchanged cards (rows keep their
+// array identity across filters).
+export const CorpsCard = memo(function CorpsCard({
+  corps,
+  eagerLogo,
+}: {
+  corps: CorpsSummary;
+  eagerLogo?: boolean;
+}) {
   const favInput = toFavoriteInput(corps);
   const slug = corps.slug;
 
@@ -74,4 +84,4 @@ export function CorpsCard({ corps, eagerLogo }: { corps: CorpsSummary; eagerLogo
   ) : (
     <div className="block h-full">{body}</div>
   );
-}
+});

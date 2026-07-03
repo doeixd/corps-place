@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Show } from 'jotai-solid-api';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
@@ -97,12 +98,24 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
       replace: true,
       resetScroll: false,
     });
-  const setSearchTerm = (value: string) =>
-    void navigate({
-      search: (prev) => ({ ...prev, q: value || undefined }),
-      replace: true,
-      resetScroll: false,
-    });
+  // The input is controlled locally and the URL write is debounced: navigating
+  // per keystroke re-ran the router (history.replaceState, every <Link>'s
+  // active-state check, the full grid diff) on each character — ~19ms of
+  // main-thread block per key on a mid phone.
+  const [pendingSearch, setPendingSearch] = useState<string | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const setSearchTerm = (value: string) => {
+    setPendingSearch(value);
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setPendingSearch(null);
+      void navigate({
+        search: (prev) => ({ ...prev, q: value || undefined }),
+        replace: true,
+        resetScroll: false,
+      });
+    }, 250);
+  };
   const setIncludeInactive = (value: boolean) =>
     void navigate({
       search: (prev) => ({ ...prev, inactive: value ? true : undefined }),
@@ -111,8 +124,9 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
     });
 
   const inCategory = CorpsPredicates.inCategory(division);
-  const matchesSearch = CorpsPredicates.hasSearchTerm(searchTerm)
-    ? CorpsPredicates.matchesSearch(searchTerm)
+  const liveTerm = pendingSearch ?? searchTerm;
+  const matchesSearch = CorpsPredicates.hasSearchTerm(liveTerm)
+    ? CorpsPredicates.matchesSearch(liveTerm)
     : null;
   const visibleCorps = includeInactive ? corps : corps.filter(CorpsPredicates.isCurrent);
   const filtered = visibleCorps.filter(
@@ -138,7 +152,7 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
           <Input
             type="text"
             placeholder="Search corps by name or city…"
-            value={searchTerm}
+            value={pendingSearch ?? searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-9"
           />
@@ -157,7 +171,7 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
       <div className="flex items-center justify-between gap-2 mb-4">
         <h2 className="text-xl font-semibold">
           Corps ({filtered.length}
-          <Show when={searchTerm || division !== 'all'}>{` of ${visibleCorps.length}`}</Show>)
+          <Show when={liveTerm || division !== 'all'}>{` of ${visibleCorps.length}`}</Show>)
         </h2>
         <Toggle
           variant="outline"
@@ -183,15 +197,17 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
         }
       >
         {/* `animateLayout` adds the filter choreography: survivors rearrange
-            (`layout`) and removed cards fade out (`exit`) as the filter changes. */}
+            (`layout`) and removed cards fade out (`exit`) as the filter changes.
+            Disabled while a keystroke is pending: FLIP measurement + exit
+            animations per character were most of the typing jank. */}
         <StaggeredGrid
           items={filtered}
           getKey={(c) => c.corps_key}
           // First screenful of logos loads eagerly (the post-paint lazy-load
           // trickle reads as "still loading"); the rest stay lazy.
-          renderItem={(c) => <CorpsCard corps={c} eagerLogo={filtered.indexOf(c) < 12} />}
+          renderItem={(c, i) => <CorpsCard corps={c} eagerLogo={i < 12} />}
           step={0.06}
-          animateLayout
+          animateLayout={pendingSearch === null}
         />
       </Show>
     </PageShell>

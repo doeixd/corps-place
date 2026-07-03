@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Show } from 'jotai-solid-api';
 import { Card, CardContent } from '@/components/ui/card';
@@ -64,7 +64,9 @@ const SCROLLABLE_GRID_INSET = 28;
  * location, readiness chips, and a "View Event" affordance. Shared by the events
  * directory and the corps "Appearances" section.
  */
-export function EventCard({
+// memo: the events grid re-renders per URL keystroke/filter; unchanged cards
+// keep their row identity and skip re-rendering.
+export const EventCard = memo(function EventCard({
   event,
   result,
 }: {
@@ -131,7 +133,7 @@ export function EventCard({
       </Card>
     </Link>
   );
-}
+});
 
 /**
  * Responsive grid of {@link EventCard}s with a staggered fade-in. Pass
