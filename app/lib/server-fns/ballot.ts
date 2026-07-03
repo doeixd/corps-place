@@ -34,6 +34,8 @@ export interface BallotRecord {
   title: string | null;
   displayName: string | null;
   overall: BallotEntry[];
+  /** Optional per-caption orders (only the captions the user actually arranged). */
+  captions: Partial<Record<string, BallotEntry[]>>;
   lockedAt: string;
 }
 
@@ -47,6 +49,12 @@ export const lockBallot = createServerFn({ method: 'POST' })
         title: v.optional(v.pipe(v.string(), v.maxLength(80))),
         displayName: v.optional(v.pipe(v.string(), v.maxLength(60))),
         overall: v.pipe(v.array(EntrySchema), v.minLength(2), v.maxLength(40)),
+        captions: v.optional(
+          v.record(
+            v.picklist(BALLOT_CAPTIONS),
+            v.pipe(v.array(EntrySchema), v.minLength(2), v.maxLength(40))
+          )
+        ),
       }),
       d
     )
@@ -61,6 +69,10 @@ export const lockBallot = createServerFn({ method: 'POST' })
     // A permutation, not a multiset — duplicate corps would corrupt the ranking.
     const slugs = data.overall.map((e) => e.slug);
     if (new Set(slugs).size !== slugs.length) throw new Error('VALIDATION:duplicate-corps');
+    for (const entries of Object.values(data.captions ?? {})) {
+      const s = entries.map((e) => e.slug);
+      if (new Set(s).size !== s.length) throw new Error('VALIDATION:duplicate-corps');
+    }
 
     const db = await getContributionsDb();
     const now = new Date().toISOString();
@@ -78,6 +90,12 @@ export const lockBallot = createServerFn({ method: 'POST' })
         data.displayName ? cleanText(data.displayName, 60) || null : null,
         JSON.stringify({
           overall: data.overall.map((e) => ({ slug: e.slug, name: cleanText(e.name, 80) })),
+          ...Object.fromEntries(
+            Object.entries(data.captions ?? {}).map(([cap, entries]) => [
+              cap,
+              entries.map((e) => ({ slug: e.slug, name: cleanText(e.name, 80) })),
+            ])
+          ),
         }),
         now,
         now,
@@ -86,15 +104,20 @@ export const lockBallot = createServerFn({ method: 'POST' })
     return { ballotId };
   });
 
-const rowToRecord = (r: Record<string, unknown>): BallotRecord => ({
-  ballotId: r.ballot_id as string,
-  season: r.season as string,
-  preset: r.preset as string,
-  title: (r.title as string | null) ?? null,
-  displayName: (r.display_name as string | null) ?? null,
-  overall: (JSON.parse(r.orders_json as string) as { overall: BallotEntry[] }).overall ?? [],
-  lockedAt: r.locked_at as string,
-});
+const rowToRecord = (r: Record<string, unknown>): BallotRecord => {
+  const orders = JSON.parse(r.orders_json as string) as Record<string, BallotEntry[]>;
+  const { overall, ...captions } = orders;
+  return {
+    ballotId: r.ballot_id as string,
+    season: r.season as string,
+    preset: r.preset as string,
+    title: (r.title as string | null) ?? null,
+    displayName: (r.display_name as string | null) ?? null,
+    overall: overall ?? [],
+    captions,
+    lockedAt: r.locked_at as string,
+  };
+};
 
 /** Public read for the share page + OG image. */
 export const getBallot = createServerFn({ method: 'GET' })
@@ -115,6 +138,20 @@ export const getBallot = createServerFn({ method: 'GET' })
 
 // ── Prediction pool ───────────────────────────────────────────────────────────
 
+export const BALLOT_CAPTIONS = ['GE1', 'GE2', 'VP', 'VA', 'CG', 'MB', 'MA', 'MP'] as const;
+export type BallotCaption = (typeof BALLOT_CAPTIONS)[number];
+
+const CAPTION_NAME_TO_KEY: Record<string, BallotCaption> = {
+  'General Effect 1': 'GE1',
+  'General Effect 2': 'GE2',
+  'Visual Proficiency': 'VP',
+  'Visual - Analysis': 'VA',
+  'Color Guard': 'CG',
+  'Music - Brass': 'MB',
+  'Music - Analysis': 'MA',
+  'Music - Percussion': 'MP',
+};
+
 export interface PredictionPoolCorps {
   corpsSlug: string; // corps page slug when known, else the corps key
   corpsName: string;
@@ -124,6 +161,12 @@ export interface PredictionPoolCorps {
   corpsLogoDarkUrl: string | null;
   /** Model-predicted championship-prelims total (the default ordering), if predicted. */
   predictedTotal: number | null;
+  /** Model-predicted caption scores (per-caption card default order). */
+  predictedCaptions: Partial<Record<BallotCaption, number>> | null;
+  /** PRIOR-season championship placement — the ▲▼ baseline for the Overall card. */
+  priorRank: number | null;
+  /** PRIOR-season championship caption ranks — the ▲▼ baselines per caption card. */
+  priorCaptionRanks: Partial<Record<BallotCaption, number>> | null;
 }
 
 /** Recursively find the recap rows inside the prediction summary payload. */
@@ -155,7 +198,17 @@ export const getPredictionPool = createServerFn({ method: 'GET' })
   })
   .handler(async ({ data: season }): Promise<PredictionPoolCorps[]> => {
     const pool = await getDraftPool(season).catch(() => []);
-    let predictedByName = new Map<string, number>();
+
+    // Model prediction (championship prelims — the widest predicted field):
+    // totals + per-caption scores + the model's own prior_season_rank, keyed by
+    // corps_key with a name fallback.
+    type Pred = {
+      total: number;
+      captions: Partial<Record<BallotCaption, number>>;
+      priorRank: number | null;
+    };
+    const predByKey = new Map<string, Pred>();
+    const predByName = new Map<string, Pred>();
     try {
       if (readModelEnabled()) {
         const summary = await readLatestPredictionSummary(
@@ -163,26 +216,87 @@ export const getPredictionPool = createServerFn({ method: 'GET' })
           `${season}-dci-world-championship-prelims`
         );
         const rows = summary ? findRecapRows(summary.summary) : null;
-        if (rows)
-          predictedByName = new Map(
-            rows
-              .filter((r) => typeof r.corps === 'string' && typeof r.total === 'number')
-              .map((r) => [String(r.corps).toLowerCase(), Number(r.total)])
-          );
+        for (const r of rows ?? []) {
+          if (typeof r.corps !== 'string' || typeof r.total !== 'number') continue;
+          const captions: Partial<Record<BallotCaption, number>> = {};
+          for (const cap of BALLOT_CAPTIONS)
+            if (typeof r[cap] === 'number') captions[cap] = Number(r[cap]);
+          const pred: Pred = {
+            total: Number(r.total),
+            captions,
+            priorRank: typeof r.prior_season_rank === 'number' ? Number(r.prior_season_rank) : null,
+          };
+          if (typeof r.corps_key === 'string') predByKey.set(String(r.corps_key), pred);
+          predByName.set(String(r.corps).toLowerCase(), pred);
+        }
       }
     } catch {
       /* prediction unavailable — pool still returns, ordered alphabetically */
     }
+
+    // PRIOR-season championship caption scores → per-caption prior ranks (the
+    // ▲▼ baselines the user compares against). Keyed by corps_key.
+    const priorCaptionRanksByKey = new Map<string, Partial<Record<BallotCaption, number>>>();
+    const priorTotalRankByKey = new Map<string, number>();
+    try {
+      if (readModelEnabled()) {
+        const priorSeason = String(Number(season) - 1);
+        const r = await getReadModelClient().execute({
+          sql: `SELECT corps_key, caption_name, score FROM rm_fantasy_prior_finals WHERE season = ?`,
+          args: [priorSeason],
+        });
+        const scores = new Map<string, Partial<Record<BallotCaption, number>>>();
+        for (const row of r.rows as unknown as {
+          corps_key: string;
+          caption_name: string;
+          score: number;
+        }[]) {
+          const cap = CAPTION_NAME_TO_KEY[row.caption_name];
+          if (!cap) continue;
+          const m = scores.get(row.corps_key) ?? {};
+          m[cap] = Number(row.score);
+          scores.set(row.corps_key, m);
+        }
+        // Rank per caption (score desc), and overall by the DCI total formula.
+        for (const cap of BALLOT_CAPTIONS) {
+          const ranked = [...scores.entries()]
+            .filter(([, m]) => typeof m[cap] === 'number')
+            .sort((a, b) => (b[1][cap] ?? 0) - (a[1][cap] ?? 0));
+          ranked.forEach(([key], i) => {
+            const m = priorCaptionRanksByKey.get(key) ?? {};
+            m[cap] = i + 1;
+            priorCaptionRanksByKey.set(key, m);
+          });
+        }
+        const totalOf = (m: Partial<Record<BallotCaption, number>>) =>
+          (m.GE1 ?? 0) + (m.GE2 ?? 0) + ((m.VP ?? 0) + (m.VA ?? 0) + (m.CG ?? 0)) / 2 +
+          ((m.MB ?? 0) + (m.MA ?? 0) + (m.MP ?? 0)) / 2;
+        [...scores.entries()]
+          .sort((a, b) => totalOf(b[1]) - totalOf(a[1]))
+          .forEach(([key], i) => priorTotalRankByKey.set(key, i + 1));
+      }
+    } catch {
+      /* prior-season data unavailable — arrows simply don't render */
+    }
+
     return pool
-      .map((c) => ({
-        corpsSlug: c.slug ?? c.corpsKey,
-        corpsName: c.name,
-        division: c.divisionName ?? 'World Class',
-        corpsLogo: c.corpsLogo,
-        corpsLogoDark: c.corpsLogoDark,
-        corpsLogoDarkUrl: c.corpsLogoDarkUrl,
-        predictedTotal: predictedByName.get(c.name.toLowerCase()) ?? null,
-      }))
+      .map((c) => {
+        const pred = predByKey.get(c.corpsKey) ?? predByName.get(c.name.toLowerCase()) ?? null;
+        return {
+          corpsSlug: c.slug ?? c.corpsKey,
+          corpsName: c.name,
+          division: c.divisionName ?? 'World Class',
+          corpsLogo: c.corpsLogo,
+          corpsLogoDark: c.corpsLogoDark,
+          corpsLogoDarkUrl: c.corpsLogoDarkUrl,
+          predictedTotal: pred?.total ?? null,
+          predictedCaptions: pred && Object.keys(pred.captions).length ? pred.captions : null,
+          // Prefer the prior-finals table's rank (championship placement); the
+          // model's prior_season_rank is the fallback for corps outside it.
+          priorRank: priorTotalRankByKey.get(c.corpsKey) ?? pred?.priorRank ?? null,
+          priorCaptionRanks: priorCaptionRanksByKey.get(c.corpsKey) ?? null,
+        };
+      })
       .sort(
         (a, b) =>
           (b.predictedTotal ?? -1) - (a.predictedTotal ?? -1) ||

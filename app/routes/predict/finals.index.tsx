@@ -1,9 +1,10 @@
-// Prediction Ballot (PREDICTION_BALLOT_PLAN M1) — palette v2. Drag corps into
-// your predicted finals order (season-high standing for non-finalists — the same
-// quantity /rankings shows). M1 scope: presets + the reorderable Overall list +
-// add/remove + sessionStorage autosave. Caption cards, lock-in, and sharing land
-// in M2–M4. The original /predict/palette is untouched.
-import { useEffect, useMemo, useState } from 'react';
+// Drum Corps Finals Predictions (PREDICTION_BALLOT_PLAN M1–M3 + caption cards).
+// Drag corps into your predicted finals order — Overall plus one card per
+// caption, swiped/chip-switched. Defaults come from the MODEL's predicted
+// championship ranking; the ▲▼ arrows compare YOUR order against each corps'
+// PRIOR-SEASON championship placement (per caption on caption cards). The
+// original /predict/palette is untouched.
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
@@ -18,7 +19,14 @@ import { corpsLogoSource } from '@/components/corps-logo';
 import { SignInButton } from '@/components/sign-in-button';
 import { seoHead } from '@/lib/seo';
 import { getRankingSeasons } from '@/lib/server-fns/rankings';
-import { lockBallot, myBallots, getPredictionPool } from '@/lib/server-fns/ballot';
+import {
+  lockBallot,
+  myBallots,
+  getPredictionPool,
+  BALLOT_CAPTIONS,
+  type BallotCaption,
+  type PredictionPoolCorps,
+} from '@/lib/server-fns/ballot';
 import { useSession } from '@/lib/auth-client';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { recapGroup } from '@/lib/prediction-scenario';
@@ -35,7 +43,28 @@ const PRESET_LABELS: Record<Preset, string> = {
   all: 'All corps',
 };
 
-/** The preset's corps slugs, in current-rank order, from the full ranked pool. */
+// ── dimensions (Overall + one card per caption) ───────────────────────────────
+type Dim = 'overall' | BallotCaption;
+const DIMENSIONS: Dim[] = ['overall', ...BALLOT_CAPTIONS];
+const DIM_LABELS: Record<Dim, string> = {
+  overall: 'Overall',
+  GE1: 'GE 1',
+  GE2: 'GE 2',
+  VP: 'Visual Prof.',
+  VA: 'Visual Anal.',
+  CG: 'Color Guard',
+  MB: 'Brass',
+  MA: 'Music Anal.',
+  MP: 'Percussion',
+};
+
+// A PredictionPoolCorps is structurally a BallotCorps (same identity/logo
+// fields), so pool rows feed BallotList directly.
+interface RankedCorps extends PredictionPoolCorps {
+  group: string;
+}
+
+/** The preset's corps, in the pool's (predicted) order. */
 function presetSlice(rows: RankedCorps[], preset: Preset): RankedCorps[] {
   const world = rows.filter((r) => r.group === 'world');
   const open = rows.filter((r) => r.group === 'open');
@@ -53,12 +82,6 @@ function presetSlice(rows: RankedCorps[], preset: Preset): RankedCorps[] {
   }
 }
 
-interface RankedCorps extends BallotCorps {
-  rank: number;
-  score: number;
-  group: string;
-}
-
 interface BallotSearch {
   preset?: Preset;
 }
@@ -74,15 +97,8 @@ export const Route = createFileRoute('/predict/finals/')({
     // included), pre-ordered by the model's PREDICTED finals ranking. One fetch
     // covers every preset (they're client-side slices of this pool).
     const rows = await getPredictionPool({ data: season });
-    const pool: RankedCorps[] = rows.map((r, i) => ({
-      corpsSlug: r.corpsSlug,
-      corpsName: r.corpsName,
-      division: r.division,
-      corpsLogo: r.corpsLogo,
-      corpsLogoDark: r.corpsLogoDark,
-      corpsLogoDarkUrl: r.corpsLogoDarkUrl,
-      rank: i + 1,
-      score: r.predictedTotal ?? 0,
+    const pool: RankedCorps[] = rows.map((r) => ({
+      ...r,
       group: recapGroup(r.division),
     }));
     return { season, pool };
@@ -91,33 +107,57 @@ export const Route = createFileRoute('/predict/finals/')({
     seoHead({
       title: `${loaderData?.season ?? ''} Drum Corps Finals Predictions — make your DCI picks`.trim(),
       description:
-        `Predict the ${loaderData?.season ?? ''} DCI World Championship Finals: drag World Class and Open Class drum corps into your predicted finals order, starting from the model's projected rankings — then lock in and share your prediction.`.trim(),
+        `Predict the ${loaderData?.season ?? ''} DCI World Championship Finals: drag World Class and Open Class drum corps into your predicted finals order — overall and by caption — starting from the model's projected rankings, then lock in and share your prediction.`.trim(),
       path: '/predict/finals',
     }),
   staleTime: 5 * 60_000,
   component: BallotPage,
 });
 
-// sessionStorage autosave (plan §5): a sign-in round-trip or accidental nav must
-// not lose an arranged ballot. Keyed per season+preset; the saved order is
-// reconciled against the live pool on restore (departed corps drop, new corps
-// append at the bottom).
-const draftKey = (season: string, preset: Preset) => `ballot-draft:${season}:${preset}`;
-const loadDraft = (season: string, preset: Preset): string[] | null => {
+// sessionStorage autosave: a sign-in round-trip or accidental nav must not lose
+// an arranged prediction. Keyed per season+preset; v2 stores per-dimension
+// orders. Restored orders are reconciled against the live pool (departed corps
+// drop; membership changes flow from the Overall card).
+type Orders = Partial<Record<Dim, string[]>>;
+const draftKey = (season: string, preset: Preset) => `finals-draft-v2:${season}:${preset}`;
+const loadDraft = (season: string, preset: Preset): Orders | null => {
   try {
     const raw = sessionStorage.getItem(draftKey(season, preset));
     const parsed = raw ? (JSON.parse(raw) as unknown) : null;
-    return Array.isArray(parsed) && parsed.every((x) => typeof x === 'string') ? parsed : null;
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+    return parsed as Orders;
   } catch {
     return null;
   }
 };
-const saveDraft = (season: string, preset: Preset, order: string[]): void => {
+const saveDraft = (season: string, preset: Preset, orders: Orders): void => {
   try {
-    sessionStorage.setItem(draftKey(season, preset), JSON.stringify(order));
+    sessionStorage.setItem(draftKey(season, preset), JSON.stringify(orders));
   } catch {
     /* private mode — draft just isn't persisted */
   }
+};
+
+/** Order `members` by a per-corps metric (desc), stable on the incoming order. */
+const orderByMetric = (
+  members: string[],
+  metric: (slug: string) => number | null | undefined
+): string[] =>
+  members
+    .map((slug, i) => ({ slug, i, v: metric(slug) }))
+    .sort((a, b) => (b.v ?? -Infinity) - (a.v ?? -Infinity) || a.i - b.i)
+    .map((x) => x.slug);
+
+/** Positions (1-based) of `members` ordered by a prior-season rank (asc). */
+const baselineFromPrior = (
+  members: string[],
+  prior: (slug: string) => number | null | undefined
+): Map<string, number> => {
+  const ranked = members
+    .map((slug) => ({ slug, r: prior(slug) }))
+    .filter((x): x is { slug: string; r: number } => typeof x.r === 'number')
+    .sort((a, b) => a.r - b.r);
+  return new Map(ranked.map((x, i) => [x.slug, i + 1]));
 };
 
 function BallotPage() {
@@ -128,11 +168,10 @@ function BallotPage() {
   const preset: Preset = search.preset ?? 'finals';
   const { data: session } = useSession();
 
-  // Lock-in inputs: the prediction's own name + the author name for the image.
   const [title, setTitle] = useState('');
   const [displayName, setDisplayName] = useState('');
-  // The signed-in user's saved predictions (dropdown). Fetched client-side so the
-  // page itself stays cacheable/anonymous-friendly.
+  const [dim, setDim] = useState<Dim>('overall');
+  const [addOpen, setAddOpen] = useState(false);
   const [saved, setSaved] = useState<
     Array<{ ballotId: string; title: string | null; preset: string; lockedAt: string }>
   >([]);
@@ -149,65 +188,128 @@ function BallotPage() {
     };
   }, [session?.user]);
 
-  const byArrangement = useMemo(() => {
-    const slice = presetSlice(pool, preset);
-    return {
-      defaultOrder: slice.map((c) => c.corpsSlug),
-      // Baseline = the corps' position within THIS preset's current ranking —
-      // drives the ▲/▼ "you moved them" indicators.
-      baselineRanks: new Map(slice.map((c, i) => [c.corpsSlug, i + 1])),
-    };
-  }, [pool, preset]);
-
   const corpsBySlug = useMemo(
-    () => new Map<string, BallotCorps>(pool.map((c) => [c.corpsSlug, c])),
+    () => new Map<string, RankedCorps>(pool.map((c) => [c.corpsSlug, c])),
     [pool]
   );
+  const defaultOverall = useMemo(
+    () => presetSlice(pool, preset).map((c) => c.corpsSlug),
+    [pool, preset]
+  );
 
-  const [order, setOrder] = useState<string[]>(byArrangement.defaultOrder);
-  const [addOpen, setAddOpen] = useState(false);
+  // Per-dimension orders. `overall` is always present; a caption key exists only
+  // once the user has touched that card (untouched cards derive from the model's
+  // predicted caption scores at render time and are omitted from the lock).
+  const [orders, setOrders] = useState<Orders>({ overall: defaultOverall });
 
-  // Restore the draft (or reset to defaults) whenever the preset changes.
   useEffect(() => {
     const draft = loadDraft(season, preset);
-    if (draft) {
-      const valid = draft.filter((slug) => corpsBySlug.has(slug));
-      setOrder(valid.length > 0 ? valid : byArrangement.defaultOrder);
+    if (draft?.overall?.length) {
+      const clean: Orders = {};
+      for (const [k, list] of Object.entries(draft)) {
+        const valid = (list ?? []).filter((slug) => corpsBySlug.has(slug));
+        if (valid.length >= 2) clean[k as Dim] = valid;
+      }
+      setOrders(clean.overall ? clean : { overall: defaultOverall });
     } else {
-      setOrder(byArrangement.defaultOrder);
+      setOrders({ overall: defaultOverall });
     }
-    setAddOpen(false);
-  }, [season, preset, byArrangement, corpsBySlug]);
+    setDim('overall');
+  }, [season, preset, defaultOverall, corpsBySlug]);
 
-  const update = (next: string[]) => {
-    setOrder(next);
+  const membership = orders.overall ?? defaultOverall;
+
+  // The list shown for the current card: explicit order when touched, else the
+  // membership sorted by the model's predicted score for that dimension.
+  const currentOrder = useMemo(() => {
+    if (dim === 'overall') return membership;
+    const touched = orders[dim];
+    if (touched) {
+      const inSet = new Set(membership);
+      const kept = touched.filter((s) => inSet.has(s));
+      const missing = membership.filter((s) => !touched.includes(s));
+      return [...kept, ...missing];
+    }
+    return orderByMetric(membership, (slug) => corpsBySlug.get(slug)?.predictedCaptions?.[dim]);
+  }, [dim, membership, orders, corpsBySlug]);
+
+  // ▲▼ baseline = PRIOR-SEASON championship placement (per caption on caption
+  // cards), positioned within the current corps set. Corps that didn't appear at
+  // last season's championship simply show no arrow.
+  const baselineRanks = useMemo(
+    () =>
+      baselineFromPrior(currentOrder, (slug) =>
+        dim === 'overall'
+          ? corpsBySlug.get(slug)?.priorRank
+          : corpsBySlug.get(slug)?.priorCaptionRanks?.[dim]
+      ),
+    [currentOrder, dim, corpsBySlug]
+  );
+
+  const applyOrders = (next: Orders) => {
+    setOrders(next);
     saveDraft(season, preset, next);
   };
+  const updateCurrent = (list: string[]) => {
+    applyOrders({ ...orders, [dim]: list });
+  };
 
-  const edited =
-    order.length !== byArrangement.defaultOrder.length ||
-    order.some((slug, i) => byArrangement.defaultOrder[i] !== slug);
+  const overallEdited =
+    membership.length !== defaultOverall.length ||
+    membership.some((slug, i) => defaultOverall[i] !== slug);
+  const currentEdited = dim === 'overall' ? overallEdited : Boolean(orders[dim]);
+  const touchedCaptions = BALLOT_CAPTIONS.filter((c) => Boolean(orders[c]));
 
   const addable = useMemo(() => {
-    const inBallot = new Set(order);
+    const inBallot = new Set(membership);
     return pool.filter((c) => !inBallot.has(c.corpsSlug));
-  }, [pool, order]);
+  }, [pool, membership]);
+
+  // Horizontal swipe between caption cards (drag stays on the row handles).
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest('[aria-label^="Reorder"]')) return;
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start) return;
+    const dx = e.changedTouches[0].clientX - start.x;
+    const dy = e.changedTouches[0].clientY - start.y;
+    if (Math.abs(dx) < 64 || Math.abs(dy) > Math.abs(dx) * 0.6) return;
+    const idx = DIMENSIONS.indexOf(dim);
+    const next = DIMENSIONS[idx + (dx < 0 ? 1 : -1)];
+    if (next) {
+      track('ballot_dim', { dim: next, via: 'swipe' });
+      setDim(next);
+    }
+  };
 
   const lock = useAsyncAction(async () => {
-    const overall = order
-      .map((slug) => corpsBySlug.get(slug))
-      .filter((c): c is BallotCorps => Boolean(c))
-      .map((c) => ({ slug: c.corpsSlug, name: c.corpsName }));
+    const entries = (list: string[]) =>
+      list
+        .map((slug) => corpsBySlug.get(slug))
+        .filter((c): c is RankedCorps => Boolean(c))
+        .map((c) => ({ slug: c.corpsSlug, name: c.corpsName }));
     const res = await lockBallot({
       data: {
         season,
-        preset: edited && order.length !== byArrangement.defaultOrder.length ? 'custom' : preset,
+        preset: membership.length !== defaultOverall.length ? 'custom' : preset,
         title: title.trim() || undefined,
         displayName: displayName.trim() || undefined,
-        overall,
+        overall: entries(membership),
+        captions: touchedCaptions.length
+          ? Object.fromEntries(
+              touchedCaptions.map((c) => [
+                c,
+                entries([...(orders[c] ?? [])].filter((s) => membership.includes(s))),
+              ])
+            )
+          : undefined,
       },
     });
-    track('ballot_lock', { preset, n: overall.length });
+    track('ballot_lock', { preset, n: membership.length, captions: touchedCaptions.length });
     await routerNavigate({ to: '/predict/finals/$id', params: { id: res.ballotId } });
   });
 
@@ -215,7 +317,7 @@ function BallotPage() {
     <PageShell className="flex flex-col gap-5">
       <PageHeader
         title={`${season} Drum Corps Finals Predictions`}
-        subtitle={`Predict the ${season} DCI World Championship Finals: every World Class and Open Class corps performing this season, pre-ordered by the model\u2019s projected finals ranking. Drag to make it yours \u2014 it autosaves in this browser until you lock it in.`}
+        subtitle={`Predict the ${season} DCI World Championship Finals: every World Class and Open Class corps performing this season, pre-ordered by the model’s projected finals ranking. Drag to make it yours — overall and caption by caption — it autosaves in this browser until you lock it in.`}
       />
 
       <div className="flex flex-wrap items-center gap-3">
@@ -231,18 +333,6 @@ function BallotPage() {
             })
           }
         />
-        {edited ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              track('ballot_reset', { preset });
-              update(byArrangement.defaultOrder);
-            }}
-          >
-            Reset to predicted ranks
-          </Button>
-        ) : null}
         {saved.length > 0 ? (
           <select
             aria-label="My saved predictions"
@@ -264,71 +354,119 @@ function BallotPage() {
         ) : null}
       </div>
 
-      <Card>
-        <CardContent className="py-4">
-          <p className="mb-3 text-xs text-muted-foreground">
-            Drag the handle to reorder · ▲▼ show how far you've moved a corps from its predicted
-            finals rank · tap a name to open its page.
-          </p>
-          <BallotList
-            order={order}
-            corps={corpsBySlug}
-            baselineRanks={byArrangement.baselineRanks}
-            onReorder={(next) => {
-              track('ballot_reorder', { preset, n: next.length });
-              update(next);
-            }}
-            onRemove={(slug) => {
-              track('ballot_remove', { preset });
-              update(order.filter((s) => s !== slug));
-            }}
-          />
+      {/* Caption cards: chips switch, horizontal swipe on touch. A dot marks
+          cards you've arranged (they're the ones saved when you lock in). */}
+      <FilterChips
+        ariaLabel="Prediction dimension"
+        className="min-w-0"
+        value={dim}
+        items={DIMENSIONS.map((d): FilterChipItem => ({
+          value: d,
+          label: orders[d as BallotCaption] && d !== 'overall' ? `${DIM_LABELS[d]} •` : DIM_LABELS[d],
+        }))}
+        onSelect={(d) => {
+          track('ballot_dim', { dim: d, via: 'chip' });
+          setDim(d as Dim);
+        }}
+      />
 
-          {/* Add corps from outside the preset (plan §2) — appended at the bottom. */}
-          <div className="mt-4 border-t border-border pt-3">
-            <Button variant="ghost" size="sm" onClick={() => setAddOpen((o) => !o)}>
-              {addOpen ? 'Hide' : `+ Add corps (${addable.length} more)`}
-            </Button>
-            {addOpen ? (
-              <div className="mt-2 grid gap-1 sm:grid-cols-2">
-                {addable.map((c) => (
-                  <button
-                    key={c.corpsSlug}
-                    type="button"
-                    onClick={() => {
-                      track('ballot_add', { preset });
-                      update([...order, c.corpsSlug]);
-                    }}
-                    className="flex items-center gap-2 rounded-lg border border-border p-2 text-left text-sm hover:bg-muted"
-                  >
-                    <CorpsNameCell
-                      name={c.corpsName}
-                      slug={null}
-                      logo={corpsLogoSource({
-                        corps_logo: c.corpsLogo ?? null,
-                        corps_logo_dark: c.corpsLogoDark ?? null,
-                        corps_logo_dark_url: c.corpsLogoDarkUrl ?? null,
-                      })}
-                      logoClassName="size-5 sm:size-5"
-                      className="min-w-0 flex-1"
-                    />
-                    <span className="shrink-0 text-xs text-muted-foreground">add</span>
-                  </button>
-                ))}
-              </div>
+      <Card>
+        <CardContent className="py-4" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs text-muted-foreground">
+              {dim === 'overall'
+                ? `Drag to reorder · ▲▼ vs each corps' ${Number(season) - 1} championship placement · swipe for captions.`
+                : orders[dim]
+                  ? `Your ${DIM_LABELS[dim]} order · ▲▼ vs ${Number(season) - 1} finals ${DIM_LABELS[dim]} rank.`
+                  : `Model's predicted ${DIM_LABELS[dim]} order — drag to make it yours · ▲▼ vs ${Number(season) - 1} finals rank.`}
+            </p>
+            {currentEdited ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  track('ballot_reset', { preset, dim });
+                  if (dim === 'overall') applyOrders({ ...orders, overall: defaultOverall });
+                  else {
+                    const next = { ...orders };
+                    delete next[dim];
+                    applyOrders(next);
+                  }
+                }}
+              >
+                Reset to predicted
+              </Button>
             ) : null}
           </div>
+          <BallotList
+            order={currentOrder}
+            corps={corpsBySlug}
+            baselineRanks={baselineRanks}
+            onReorder={(next) => {
+              track('ballot_reorder', { preset, dim, n: next.length });
+              updateCurrent(next);
+            }}
+            onRemove={
+              dim === 'overall'
+                ? (slug) => {
+                    track('ballot_remove', { preset });
+                    applyOrders({ ...orders, overall: membership.filter((s) => s !== slug) });
+                  }
+                : undefined
+            }
+          />
+
+          {/* Membership edits live on the Overall card; captions inherit its corps set. */}
+          {dim === 'overall' ? (
+            <div className="mt-4 border-t border-border pt-3">
+              <Button variant="ghost" size="sm" onClick={() => setAddOpen((o) => !o)}>
+                {addOpen ? 'Hide' : `+ Add corps (${addable.length} more)`}
+              </Button>
+              {addOpen ? (
+                <div className="mt-2 grid gap-1 sm:grid-cols-2">
+                  {addable.map((c) => (
+                    <button
+                      key={c.corpsSlug}
+                      type="button"
+                      onClick={() => {
+                        track('ballot_add', { preset });
+                        applyOrders({ ...orders, overall: [...membership, c.corpsSlug] });
+                      }}
+                      className="flex items-center gap-2 rounded-lg border border-border p-2 text-left text-sm hover:bg-muted"
+                    >
+                      <CorpsNameCell
+                        name={c.corpsName}
+                        slug={null}
+                        logo={corpsLogoSource({
+                          corps_logo: c.corpsLogo ?? null,
+                          corps_logo_dark: c.corpsLogoDark ?? null,
+                          corps_logo_dark_url: c.corpsLogoDarkUrl ?? null,
+                        })}
+                        logoClassName="size-5 sm:size-5"
+                        className="min-w-0 flex-1"
+                      />
+                      <span className="shrink-0 text-xs text-muted-foreground">add</span>
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </CardContent>
       </Card>
 
-      {/* Lock it in (plan §5): immutable once saved — a new take is a new ballot. */}
+      {/* Lock it in: immutable once saved — a new take is a new prediction. */}
       <Card>
         <CardContent className="flex flex-col gap-3 py-4">
           <div>
             <h2 className="font-semibold">Lock it in</h2>
             <p className="text-sm text-muted-foreground">
               Locking saves this prediction permanently — it can't be edited afterward (you can
-              always lock a new one). You'll get a share link with an image of your rankings.
+              always lock a new one). Your Overall order
+              {touchedCaptions.length
+                ? ` and ${touchedCaptions.length} caption ${touchedCaptions.length === 1 ? 'order' : 'orders'}`
+                : ''}{' '}
+              will be saved, with a share link and an image of your rankings.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -356,7 +494,7 @@ function BallotPage() {
           {session?.user ? (
             <Button
               className="w-full sm:w-auto"
-              disabled={lock.busy || order.length < 2}
+              disabled={lock.busy || membership.length < 2}
               onClick={() => void lock.run()}
             >
               {lock.busy ? 'Locking…' : 'Lock it in'}

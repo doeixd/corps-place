@@ -1,5 +1,6 @@
 // Shared, read-only view of a locked prediction ballot (PREDICTION_BALLOT_PLAN
 // M4). Ballots are immutable — this page (and its OG image) can never drift.
+import { useState } from 'react';
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { CorpsNameCell } from '@/components/corps-name-cell';
 import { corpsLogoSource } from '@/components/corps-logo';
 import { ShareButton } from '@/components/share-button';
+import { FilterChips, type FilterChipItem } from '@/components/filter-chips';
 import { seoHead, siteBase } from '@/lib/seo';
 import { getBallot } from '@/lib/server-fns/ballot';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
@@ -56,9 +58,17 @@ export const Route = createFileRoute('/predict/finals/$id')({
   component: SharedBallotPage,
 });
 
+const CAPTION_LABELS: Record<string, string> = {
+  GE1: 'GE 1', GE2: 'GE 2', VP: 'Visual Prof.', VA: 'Visual Anal.',
+  CG: 'Color Guard', MB: 'Brass', MA: 'Music Anal.', MP: 'Percussion',
+};
+
 function SharedBallotPage() {
   const { ballot, liveRows } = Route.useLoaderData();
   const { id } = Route.useParams();
+  const savedCaptions = Object.keys(ballot.captions ?? {});
+  const [view, setView] = useState('overall');
+  const shown = view === 'overall' ? ballot.overall : (ballot.captions[view] ?? ballot.overall);
 
   const liveBySlug = new Map(liveRows.map((r) => [r.corpsSlug, r]));
   const currentRank = new Map(liveRows.map((r, i) => [r.corpsSlug, i + 1]));
@@ -105,10 +115,23 @@ function SharedBallotPage() {
         </Button>
       </div>
 
+      {savedCaptions.length > 0 ? (
+        <FilterChips
+          ariaLabel="Prediction dimension"
+          className="min-w-0"
+          value={view}
+          items={[
+            { value: 'overall', label: 'Overall' },
+            ...savedCaptions.map((c): FilterChipItem => ({ value: c, label: CAPTION_LABELS[c] ?? c })),
+          ]}
+          onSelect={setView}
+        />
+      ) : null}
+
       <Card>
         <CardContent className="py-4">
           <div className="space-y-0.5">
-            {ballot.overall.map((entry, i) => {
+            {shown.map((entry, i) => {
               const live = liveBySlug.get(entry.slug);
               const now = currentRank.get(entry.slug);
               const delta = now !== undefined ? now - (i + 1) : 0;
