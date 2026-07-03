@@ -164,7 +164,18 @@ function RootDocument({
           initialIconHref={favorite.iconHref}
           initialThemeColor={favorite.themeColor}
         />
-        <script dangerouslySetInnerHTML={{ __html: noFlashThemeScript }} />
+        {/* Two redact (react-replacement) hydration workarounds, both upstream bugs:
+            - explicit `type`: head hydration keys scripts on [src, type]; a
+              typeless inline script skips its own node and mis-claims the first
+              JSON-LD script, corrupting head hydration.
+            - suppressHydrationWarning: the innerHTML probe round-trips script
+              text through div.innerHTML, entity-escaping `&&` and false-failing
+              the comparison (content is verified byte-identical). */}
+        <script
+          type="text/javascript"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: noFlashThemeScript }}
+        />
         <HeadContent />
       </head>
       <body>

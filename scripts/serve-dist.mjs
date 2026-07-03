@@ -21,13 +21,23 @@ createServer(async (req, res) => {
           return;
         }
       } catch {}
+      // 2026-07-02 Cloudflare incident guard: a missing hashed asset (rollout
+      // window, stale HTML) must be an uncacheable 404 — NEVER a cacheable
+      // response the edge can pin for a year.
+      if (clean.startsWith('/assets/')) {
+        res.writeHead(404, { 'cache-control': 'no-store' });
+        res.end('Not found');
+        return;
+      }
     }
     const request = new Request('http://localhost:' + (process.env.PORT||3187) + req.url, {
       method: req.method, headers: req.headers,
       body: ['GET','HEAD'].includes(req.method) ? undefined : req, duplex: 'half',
     });
     const r = await handler(request);
-    res.writeHead(r.status, Object.fromEntries(r.headers));
+    const headers = Object.fromEntries(r.headers);
+    if (r.status >= 400) headers['cache-control'] = 'no-store';
+    res.writeHead(r.status, headers);
     res.end(Buffer.from(await r.arrayBuffer()));
   } catch (e) { res.writeHead(500); res.end(String(e)); }
 }).listen(process.env.PORT||3187, () => console.log('listening', process.env.PORT||3187));
