@@ -15,6 +15,24 @@ import {
 
 const CHUNK_SIZE = 500;
 
+// One-shot seed rows per collection id, registered by HybridCollection from the
+// route loader's payload BEFORE the first subscription triggers sync. The loader
+// and the shard read the same read-model, so when a seed is present the sync can
+// skip the network fetch entirely — the directory otherwise downloads twice on
+// every cold visit (server-fn for SSR + shard for the collection). Consumed on
+// use; a later re-sync (collection GC'd and re-subscribed) falls back to the
+// fetch so long-lived sessions still pick up a re-emitted read-model.
+const collectionSeeds = new Map<string, object[]>();
+// Ids created by jsonIndexCollectionOptions — seeds for any other collection
+// (e.g. fantasy standings, which sync differently) are ignored, not leaked.
+const indexCollectionIds = new Set<string>();
+
+/** Register loader rows as the initial sync payload for a json-index collection. */
+export function seedIndexCollection(id: string | undefined, rows: object[]): void {
+  if (id && indexCollectionIds.has(id) && rows.length > 0 && !collectionSeeds.has(id))
+    collectionSeeds.set(id, rows);
+}
+
 /**
  * Build collection options that bulk-load one read-model index shard
  * (events/corps/judges) into a TanStack DB collection. Resolve the versioned
@@ -26,6 +44,7 @@ export function jsonIndexCollectionOptions<T extends object>(opts: {
   getKey: (row: T) => string | number;
   shard: keyof ReadModelManifest['shards'];
 }): CollectionConfig<T, string | number> {
+  indexCollectionIds.add(opts.id);
   return {
     id: opts.id,
     getKey: opts.getKey,
@@ -36,6 +55,22 @@ export function jsonIndexCollectionOptions<T extends object>(opts: {
         // in Node — and let the client hydrate the collection after first paint.
         if (typeof window === 'undefined') {
           markReady();
+          return;
+        }
+
+        // Seeded from the route loader → same data the shard would return;
+        // write it synchronously and skip the duplicate network load.
+        const seed = collectionSeeds.get(opts.id) as T[] | undefined;
+        if (seed) {
+          collectionSeeds.delete(opts.id);
+          for (let i = 0; i < seed.length; i += CHUNK_SIZE) {
+            begin();
+            for (const row of seed.slice(i, i + CHUNK_SIZE)) {
+              write({ type: 'insert', value: row });
+            }
+            commit();
+            if (i === 0) markReady();
+          }
           return;
         }
 

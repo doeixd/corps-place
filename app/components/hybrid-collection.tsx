@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLiveQuery, type Collection } from '@tanstack/react-db';
+import { seedIndexCollection } from '@/db/json-collection';
 
 /**
  * Renders directory data from the route's loader during SSR + first client paint,
@@ -93,6 +94,11 @@ function LiveBridge<T extends object>({
   loader: T[];
   children: (rows: T[]) => ReactNode;
 }) {
+  // Seed the collection's first sync from the loader payload — same read-model
+  // data the shard would return, so sync can skip the duplicate network fetch.
+  // Must run before useLiveQuery's subscription triggers that sync; a no-op for
+  // non-index collections and already-synced ones (the seed is one-shot).
+  seedIndexCollection((collection as { id?: string }).id, loader);
   const { data } = useLiveQuery(collection as never);
   const rows = (data ?? []) as T[];
   // The collection sorts by the configured key (e.g. corps_key), but the loader
