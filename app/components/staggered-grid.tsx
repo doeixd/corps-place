@@ -53,6 +53,8 @@ type StaggeredGridProps<T> = {
    * all wait the full delay and pop in together instead of cascading at once.
    */
   staggerOriginKey?: string | null;
+  /** Set false to render cards in their final state — no entrance animation. */
+  entrance?: boolean;
   /**
    * Scrollable ancestor to use as the `whileInView` IntersectionObserver root.
    * Pass this when the grid lives inside an `overflow` container — otherwise the
@@ -86,6 +88,7 @@ export function StaggeredGrid<T>({
   layoutAnimationLimit = DEFAULT_LAYOUT_ANIMATION_LIMIT,
   animationKey,
   staggerOriginKey,
+  entrance = true,
   viewportRoot,
   className,
 }: StaggeredGridProps<T>) {
@@ -102,7 +105,7 @@ export function StaggeredGrid<T>({
   const layoutEnabled = shouldAnimateGridLayout(animateLayout, items.length, layoutAnimationLimit);
   // When the user arrived here via Back, the page was already seen — render the
   // cards in their final state instead of replaying the staggered entrance.
-  const skipEntrance = useIsBackNavigation();
+  const skipEntrance = useIsBackNavigation() || !entrance;
 
   const cards = items.map((item, i) => (
     <motion.div
