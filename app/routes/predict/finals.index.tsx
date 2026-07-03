@@ -305,6 +305,7 @@ function BallotPage() {
         ...Object.fromEntries(BALLOT_CAPTIONS.map((c) => [c, next[c]?.join('~')])),
       }),
       replace: true,
+      resetScroll: false, // param writes are state mirrors, not navigation
     });
   };
   const updateCurrent = (list: string[]) => {
@@ -414,50 +415,51 @@ function BallotPage() {
                 ...Object.fromEntries(BALLOT_CAPTIONS.map((c) => [c, undefined])),
               }),
               replace: true,
+              resetScroll: false,
             })
           }
         />
       </div>
 
       {/* Caption cards: chips switch, horizontal swipe on touch. A dot marks
-          cards you've arranged (they're the ones saved when you lock in). */}
-      <FilterChips
-        ariaLabel="Prediction dimension"
-        className="min-w-0"
-        value={dim}
-        items={DIMENSIONS.map((d): FilterChipItem => ({
-          value: d,
-          label: orders[d as BallotCaption] && d !== 'overall' ? `${DIM_LABELS[d]} •` : DIM_LABELS[d],
-        }))}
-        onSelect={(d) => {
-          track('ballot_dim', { dim: d, via: 'chip' });
-          setDim(d as Dim);
-        }}
-      />
+          cards you've arranged (they're the ones saved when you lock in). Reset
+          lives out here, above the list section it acts on. */}
+      <div className="flex flex-wrap items-center gap-3">
+        <FilterChips
+          ariaLabel="Prediction dimension"
+          className="min-w-0 flex-1"
+          value={dim}
+          items={DIMENSIONS.map((d): FilterChipItem => ({
+            value: d,
+            label: orders[d as BallotCaption] && d !== 'overall' ? `${DIM_LABELS[d]} •` : DIM_LABELS[d],
+          }))}
+          onSelect={(d) => {
+            track('ballot_dim', { dim: d, via: 'chip' });
+            setDim(d as Dim);
+          }}
+        />
+        {currentEdited ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="shrink-0"
+            onClick={() => {
+              track('ballot_reset', { preset, dim });
+              if (dim === 'overall') applyOrders({ ...orders, overall: defaultOverall });
+              else {
+                const next = { ...orders };
+                delete next[dim];
+                applyOrders(next);
+              }
+            }}
+          >
+            Reset
+          </Button>
+        ) : null}
+      </div>
 
       <Card>
         <CardContent className="pt-2 pb-4" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-          {/* Rendered only when there's something to reset — an empty row would
-              re-add the top padding this card is trying to shed. */}
-          {currentEdited ? (
-            <div className="mb-2 flex flex-wrap items-center justify-end gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  track('ballot_reset', { preset, dim });
-                  if (dim === 'overall') applyOrders({ ...orders, overall: defaultOverall });
-                  else {
-                    const next = { ...orders };
-                    delete next[dim];
-                    applyOrders(next);
-                  }
-                }}
-              >
-                Reset to predicted
-              </Button>
-            </div>
-          ) : null}
           <BallotList
             order={currentOrder}
             corps={corpsBySlug}
