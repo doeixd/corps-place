@@ -397,6 +397,7 @@ function BallotPage() {
       <PageHeader
         title={`${season} Drum Corps Finals Predictions`}
         subtitle={`Predict the ${season} DCI World Championship Finals: every World Class and Open Class corps performing this season, pre-ordered by the model’s projected finals ranking. Drag to make it yours — overall and caption by caption — it autosaves in this browser until you lock it in.`}
+        subtitleClassName="text-sm"
       />
 
       {saved.length > 0 ? (
