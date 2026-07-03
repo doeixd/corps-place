@@ -4,6 +4,7 @@ import {
   EventDirectoryService,
   EventDirectoryServiceLive,
   type EventSeasonOption,
+  type EventDirectoryRow,
 } from '@/lib/event-directory';
 import {
   EventPredictionService,
@@ -410,13 +411,25 @@ export const getHybridAllEvents = createServerFn({ method: 'GET' }).handler(asyn
 // the all-seasons list is ~1MB serialized — so SSR ships only the requested
 // season (deep links included) while the client-side events collection
 // shard-loads the full set for cross-season filtering after hydration.
+// All-seasons events list changes only on a read-model re-emit — cache it like
+// the corps directory instead of re-reading the full table on every /events and
+// /scores SSR + season switch.
+const EVENTS_DIRECTORY_CACHE_MS = 5 * 60_000;
+let eventsDirectoryCache: { expiresAt: number; value: EventDirectoryRow[] } | null = null;
+
 export const getHybridEventsDirectory = createServerFn({ method: 'GET' })
   .validator((data: { season?: string } | undefined) => data ?? {})
   .handler(async ({ data }) => {
-    const program = Effect.flatMap(EventDirectoryService, (s) => s.listAllSeasonEvents()).pipe(
-      provideServices
-    );
-    const all = await Effect.runPromise(program);
+    let all: EventDirectoryRow[];
+    if (eventsDirectoryCache && eventsDirectoryCache.expiresAt > Date.now()) {
+      all = eventsDirectoryCache.value;
+    } else {
+      const program = Effect.flatMap(EventDirectoryService, (s) => s.listAllSeasonEvents()).pipe(
+        provideServices
+      );
+      all = await Effect.runPromise(program);
+      eventsDirectoryCache = { expiresAt: Date.now() + EVENTS_DIRECTORY_CACHE_MS, value: all };
+    }
     const seasons = [...new Set(all.map((e) => String(e.season)))].sort((a, b) =>
       b.localeCompare(a)
     );

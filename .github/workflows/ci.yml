@@ -1,0 +1,27 @@
+# Typecheck + tests on every push/PR. Runs on GitHub's runners (the prod box
+# has no headroom for this), so it can't physically block the Coolify deploy —
+# treat a red X on master as "the deploy that just went out is suspect".
+name: ci
+on:
+  push:
+    branches: [master, dev]
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.8.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: npm run gen:icons
+      - name: Typecheck
+        run: npm run check
+      - name: Tests
+        run: npm run test
