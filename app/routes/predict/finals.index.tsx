@@ -17,6 +17,7 @@ import { BallotList, type BallotCorps } from '@/components/ballot/ballot-list';
 import { CorpsNameCell } from '@/components/corps-name-cell';
 import { corpsLogoSource } from '@/components/corps-logo';
 import { SignInButton } from '@/components/sign-in-button';
+import { ShareButton } from '@/components/share-button';
 import { seoHead } from '@/lib/seo';
 import { getRankingSeasons } from '@/lib/server-fns/rankings';
 import {
@@ -84,11 +85,35 @@ function presetSlice(rows: RankedCorps[], preset: Preset): RankedCorps[] {
 
 interface BallotSearch {
   preset?: Preset;
+  /** Edited Overall order — `~`-joined corps slugs. Absent = model's default. */
+  o?: string;
+  // Edited caption orders (same encoding), keyed by caption.
+  GE1?: string;
+  GE2?: string;
+  VP?: string;
+  VA?: string;
+  CG?: string;
+  MB?: string;
+  MA?: string;
+  MP?: string;
 }
+
+// URL order params: `~`-joined slug lists so an arrangement is shareable (and
+// creatable) WITHOUT signing in — the URL is the draft; locking in is where
+// sign-in happens. Slugs only (never indexes): the pool's predicted order
+// changes nightly, so positional encodings would corrupt shared links.
+const ORDER_SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
+const parseOrderParam = (v: unknown): string | undefined => {
+  if (typeof v !== 'string' || !v) return undefined;
+  const parts = v.split('~');
+  return parts.length >= 2 && parts.every((p) => ORDER_SLUG_RE.test(p)) ? v : undefined;
+};
 
 export const Route = createFileRoute('/predict/finals/')({
   validateSearch: (s: Record<string, unknown>): BallotSearch => ({
     preset: PRESETS.includes(s.preset as Preset) ? (s.preset as Preset) : undefined,
+    o: parseOrderParam(s.o),
+    ...Object.fromEntries(BALLOT_CAPTIONS.map((c) => [c, parseOrderParam(s[c])])),
   }),
   loader: async () => {
     const { seasons } = await getRankingSeasons();
@@ -197,22 +222,42 @@ function BallotPage() {
     [pool, preset]
   );
 
+  // Orders encoded in the URL (shared links / signed-out creation). Read via a
+  // ref inside the seed effect so param writes don't re-trigger seeding.
+  const urlOrders = useMemo(() => {
+    const out: Orders = {};
+    if (search.o) out.overall = search.o.split('~');
+    for (const c of BALLOT_CAPTIONS) {
+      const v = search[c];
+      if (typeof v === 'string' && v) out[c] = v.split('~');
+    }
+    return out;
+  }, [search]);
+  const urlOrdersRef = useRef(urlOrders);
+  urlOrdersRef.current = urlOrders;
+
   // Per-dimension orders. `overall` is always present; a caption key exists only
   // once the user has touched that card (untouched cards derive from the model's
   // predicted caption scores at render time and are omitted from the lock).
   const [orders, setOrders] = useState<Orders>({ overall: defaultOverall });
 
   useEffect(() => {
-    const draft = loadDraft(season, preset);
-    if (draft?.overall?.length) {
+    const sanitize = (src: Orders): Orders => {
       const clean: Orders = {};
-      for (const [k, list] of Object.entries(draft)) {
+      for (const [k, list] of Object.entries(src)) {
         const valid = (list ?? []).filter((slug) => corpsBySlug.has(slug));
         if (valid.length >= 2) clean[k as Dim] = valid;
       }
-      setOrders(clean.overall ? clean : { overall: defaultOverall });
+      return clean;
+    };
+    // URL params win (a shared link IS the draft); else this browser's draft.
+    const fromUrl = sanitize(urlOrdersRef.current);
+    if (fromUrl.overall || Object.keys(fromUrl).length > 0) {
+      setOrders({ overall: fromUrl.overall ?? defaultOverall, ...fromUrl });
     } else {
-      setOrders({ overall: defaultOverall });
+      const draft = loadDraft(season, preset);
+      const clean = draft ? sanitize(draft) : {};
+      setOrders(clean.overall || Object.keys(clean).length ? { overall: clean.overall ?? defaultOverall, ...clean } : { overall: defaultOverall });
     }
     setDim('overall');
   }, [season, preset, defaultOverall, corpsBySlug]);
@@ -246,9 +291,21 @@ function BallotPage() {
     [currentOrder, dim, corpsBySlug]
   );
 
+  const sameList = (a: string[] | undefined, b: string[]) =>
+    !!a && a.length === b.length && a.every((x, i) => b[i] === x);
   const applyOrders = (next: Orders) => {
     setOrders(next);
     saveDraft(season, preset, next);
+    // Mirror to the URL so the current arrangement is shareable without an
+    // account — default (untouched) dims stay out to keep the URL short.
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        o: next.overall && !sameList(next.overall, defaultOverall) ? next.overall.join('~') : undefined,
+        ...Object.fromEntries(BALLOT_CAPTIONS.map((c) => [c, next[c]?.join('~')])),
+      }),
+      replace: true,
+    });
   };
   const updateCurrent = (list: string[]) => {
     applyOrders({ ...orders, [dim]: list });
@@ -320,20 +377,8 @@ function BallotPage() {
         subtitle={`Predict the ${season} DCI World Championship Finals: every World Class and Open Class corps performing this season, pre-ordered by the model’s projected finals ranking. Drag to make it yours — overall and caption by caption — it autosaves in this browser until you lock it in.`}
       />
 
-      <div className="flex flex-wrap items-center gap-3">
-        <FilterChips
-          ariaLabel="Preset"
-          className="min-w-0"
-          value={preset}
-          items={PRESETS.map((p): FilterChipItem => ({ value: p, label: PRESET_LABELS[p] }))}
-          onSelect={(p) =>
-            void navigate({
-              search: (prev) => ({ ...prev, preset: p === 'finals' ? undefined : (p as Preset) }),
-              replace: true,
-            })
-          }
-        />
-        {saved.length > 0 ? (
+      {saved.length > 0 ? (
+        <div className="flex items-center">
           <select
             aria-label="My saved predictions"
             className="h-8 rounded-lg border border-border bg-background px-2 text-sm text-text-secondary"
@@ -351,7 +396,27 @@ function BallotPage() {
               </option>
             ))}
           </select>
-        ) : null}
+        </div>
+      ) : null}
+
+      <div className="flex flex-wrap items-center gap-3">
+        <FilterChips
+          ariaLabel="Preset"
+          className="min-w-0"
+          value={preset}
+          items={PRESETS.map((p): FilterChipItem => ({ value: p, label: PRESET_LABELS[p] }))}
+          onSelect={(p) =>
+            void navigate({
+              search: (prev) => ({
+                ...prev,
+                preset: p === 'finals' ? undefined : (p as Preset),
+                o: undefined,
+                ...Object.fromEntries(BALLOT_CAPTIONS.map((c) => [c, undefined])),
+              }),
+              replace: true,
+            })
+          }
+        />
       </div>
 
       {/* Caption cards: chips switch, horizontal swipe on touch. A dot marks
@@ -372,14 +437,7 @@ function BallotPage() {
 
       <Card>
         <CardContent className="py-4" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-xs text-muted-foreground">
-              {dim === 'overall'
-                ? `Drag to reorder · ▲▼ vs each corps' ${Number(season) - 1} championship placement · swipe for captions.`
-                : orders[dim]
-                  ? `Your ${DIM_LABELS[dim]} order · ▲▼ vs ${Number(season) - 1} finals ${DIM_LABELS[dim]} rank.`
-                  : `Model's predicted ${DIM_LABELS[dim]} order — drag to make it yours · ▲▼ vs ${Number(season) - 1} finals rank.`}
-            </p>
+          <div className="mb-3 flex flex-wrap items-center justify-end gap-2">
             {currentEdited ? (
               <Button
                 variant="outline"
@@ -415,6 +473,14 @@ function BallotPage() {
                 : undefined
             }
           />
+
+          <p className="mt-3 text-xs text-muted-foreground">
+            {dim === 'overall'
+              ? `Drag to reorder · ▲▼ vs each corps' ${Number(season) - 1} championship placement · swipe for captions · tap a name to open its page.`
+              : orders[dim]
+                ? `Your ${DIM_LABELS[dim]} order · ▲▼ vs ${Number(season) - 1} finals ${DIM_LABELS[dim]} rank.`
+                : `Model's predicted ${DIM_LABELS[dim]} order — drag to make it yours · ▲▼ vs ${Number(season) - 1} finals rank.`}
+          </p>
 
           {/* Membership edits live on the Overall card; captions inherit its corps set. */}
           {dim === 'overall' ? (
@@ -455,14 +521,34 @@ function BallotPage() {
         </CardContent>
       </Card>
 
+      {/* Share the working arrangement — the URL carries the full state, so no
+          account is needed to create or share; locking in is where sign-in lives. */}
+      <Card>
+        <CardContent className="flex flex-col gap-2 py-4">
+          <div>
+            <h2 className="font-semibold">Share this prediction</h2>
+            <p className="text-sm text-muted-foreground">
+              Your arrangement lives in the link — share it as-is, no account needed. Anyone who
+              opens it can keep editing their own copy.
+            </p>
+          </div>
+          <div>
+            <ShareButton
+              url={typeof window !== 'undefined' ? window.location.href : ''}
+              title={`My ${season} drum corps finals prediction`}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Lock it in: immutable once saved — a new take is a new prediction. */}
       <Card>
         <CardContent className="flex flex-col gap-3 py-4">
           <div>
             <h2 className="font-semibold">Lock it in</h2>
             <p className="text-sm text-muted-foreground">
-              Locking saves this prediction permanently — it can't be edited afterward (you can
-              always lock a new one). Your Overall order
+              Signing in is only needed here: locking saves this prediction permanently under your
+              account — it can't be edited afterward (you can always lock a new one). Your Overall order
               {touchedCaptions.length
                 ? ` and ${touchedCaptions.length} caption ${touchedCaptions.length === 1 ? 'order' : 'orders'}`
                 : ''}{' '}
