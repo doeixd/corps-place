@@ -45,7 +45,14 @@ export const Route = createFileRoute('/events/')({
   // hydration for cross-season switching. Deep links (?season=) stay SSR-correct
   // via loaderDeps.
   loaderDeps: ({ search }) => ({ season: search.season }),
-  loader: async ({ deps }) => await getHybridEventsDirectory({ data: { season: deps.season } }),
+  loader: async ({ deps }) => {
+    const dir = await getHybridEventsDirectory({ data: { season: deps.season } });
+    // Computed ONCE here so SSR and hydration render the same split: computing
+    // it on both sides made the first visible card change at hydration when the
+    // server's UTC "today" disagreed with the browser's local one.
+    const upcomingKey = nextUpcomingEventKey(dir.events, dir.seasons[0] ?? '');
+    return { ...dir, upcomingKey };
+  },
   head: ({ loaderData }) => {
     const d = loaderData;
     if (!d) return {};
@@ -117,10 +124,10 @@ function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
   const currentSeason = seasons[0];
   const splitAtUpcoming =
     filter.season === currentSeason && !filter.search.trim() && filter.dir !== 'desc';
-  const upcomingKey = useMemo(
-    () => (splitAtUpcoming ? nextUpcomingEventKey(events, currentSeason) : null),
-    [events, currentSeason, splitAtUpcoming]
-  );
+  // From the loader (not recomputed client-side): keeps the SSR'd split stable
+  // through hydration regardless of the browser's timezone.
+  const loaderUpcomingKey = Route.useLoaderData().upcomingKey;
+  const upcomingKey = splitAtUpcoming ? loaderUpcomingKey : null;
   const upcomingIndex = upcomingKey
     ? ordered.findIndex((e) => eventCardKey(e) === upcomingKey)
     : -1;
