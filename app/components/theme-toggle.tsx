@@ -16,6 +16,10 @@ export function ThemeToggle({ className }: { className?: string }) {
       size="icon"
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       aria-pressed={isDark}
+      // With no theme cookie, the no-FOUC script resolves the OS preference
+      // before hydration, so the client's theme legitimately differs from the
+      // SSR'd one — same rationale as suppressHydrationWarning on <html>.
+      suppressHydrationWarning
       onClick={() => {
         track('theme_toggle', { to: isDark ? 'light' : 'dark' });
         themeStore.send({ type: 'toggle' });

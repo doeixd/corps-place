@@ -1,0 +1,13 @@
+diff --git a/dist/dom/features/hydration/full.js b/dist/dom/features/hydration/full.js
+index f9499260dd8ba58607eb880f623065098684e5a6..6e03d309b56aa306392696af5dda2ef452f265d4 100644
+--- a/dist/dom/features/hydration/full.js
++++ b/dist/dom/features/hydration/full.js
+@@ -86,7 +86,7 @@ var HydrationCursor = class {
+     let n = this.n;
+     while (n && n !== this.e) {
+       if (n.nodeType === 1) {
+-        if (n.tagName === "SCRIPT") {
++        if (n.tagName === "SCRIPT" || n.tagName === "IFRAME") {
+           n = n.nextSibling;
+           continue;
+         }
