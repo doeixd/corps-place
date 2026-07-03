@@ -354,7 +354,11 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
         predictionSnapshotDates: snapshotDates.dates,
         asOfRecap: asOfRecap?.recap ?? null,
       };
-    } catch {
+    } catch (err) {
+      // Degrading to the empty shell is deliberate (the page still renders),
+      // but silently is not — this is how a broken service reads as "coming
+      // soon" in prod with nothing in the logs.
+      console.error(`[prediction loader] ${slug}:`, err);
       return empty;
     }
   },
