@@ -1,9 +1,15 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
-import {
-  JobDescriptionEditor,
-  emptyJobDescription,
-} from '@/components/jobs/job-description-editor';
+import { lazy, Suspense } from 'react';
+import { emptyFreeFormDoc } from '@/lib/contrib/free-form';
+// Lazy: the Lexical editor (~200KB) loads when the form renders, off the
+// route's critical path.
+const JobDescriptionEditor = lazy(() =>
+  import('@/components/jobs/job-description-editor').then((m) => ({
+    default: m.JobDescriptionEditor,
+  }))
+);
+const emptyJobDescription = () => emptyFreeFormDoc('lexical');
 import type { FreeFormDoc } from '@/lib/contrib/free-form';
 import { useSession } from '@/lib/auth-client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -387,7 +393,9 @@ function PostJobPage() {
             <label className="text-sm font-medium text-text-primary">Job Description</label>
             {mounted ? (
               <SectionErrorBoundary label="the description editor">
-                <JobDescriptionEditor value={description} onChange={setDescription} />
+                <Suspense fallback={<div className="h-40 animate-pulse rounded-lg border border-border bg-muted/40" />}>
+                  <JobDescriptionEditor value={description} onChange={setDescription} />
+                </Suspense>
               </SectionErrorBoundary>
             ) : (
               <div className="min-h-40 rounded-lg px-3 py-2 text-sm text-text-muted ring-1 ring-foreground/15">

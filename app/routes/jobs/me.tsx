@@ -28,7 +28,13 @@ import {
   createJobAlert,
   saveJobsProfileBlock,
 } from '@/lib/server-fns/jobs';
-import { JobDescriptionEditor } from '@/components/jobs/job-description-editor';
+import { lazy, Suspense } from 'react';
+// Lazy: see jobs/post — keeps the Lexical runtime out of the route chunk.
+const JobDescriptionEditor = lazy(() =>
+  import('@/components/jobs/job-description-editor').then((m) => ({
+    default: m.JobDescriptionEditor,
+  }))
+);
 import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
 import { toast } from 'sonner';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
@@ -402,11 +408,13 @@ function AboutSection({ profileId, blocks }: { profileId: string; blocks: Block[
     <Card>
       <CardContent className="space-y-4 py-5">
         <h2 className="text-base font-semibold text-text-primary">About</h2>
-        <JobDescriptionEditor
+        <Suspense fallback={<div className="h-40 animate-pulse rounded-lg border border-border bg-muted/40" />}>
+          <JobDescriptionEditor
           value={about}
           onChange={setAbout}
           placeholder="Write a short professional summary…"
-        />
+          />
+        </Suspense>
         <div className="flex items-center gap-3">
           <Button onClick={save} disabled={saving} variant="outline" size="sm">
             {saving ? 'Saving…' : 'Save About'}

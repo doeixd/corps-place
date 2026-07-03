@@ -25,14 +25,19 @@ import {
   SentIcon,
 } from '@/components/icons/generated';
 import { FavouriteIcon } from '@/components/icons/favourite-filled';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { celebrate } from '@/lib/confetti';
 import { ConfirmDialog } from '@/components/fantasy/confirm-dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
-import { LexicalView } from '@/components/jobs/lexical-view';
+// Lazy: the Lexical runtime is ~200KB and only renders the rich description —
+// the plain-text flattening (what LexicalView itself SSRs pre-mount) serves as
+// the Suspense fallback, so text is visible immediately either way.
+const LexicalView = lazy(() =>
+  import('@/components/jobs/lexical-view').then((m) => ({ default: m.LexicalView }))
+);
 import { SectionErrorBoundary } from '@/components/error-boundary';
 
 export const Route = createFileRoute('/jobs/$jobSlug')({
@@ -363,7 +368,15 @@ function JobDetail() {
             typeof content.doc === 'string' &&
             content.doc.trim().startsWith('{') &&
             content.doc.includes('"root"') ? (
-              <LexicalView doc={content.doc} plain={content.plain ?? ''} />
+              <Suspense
+                fallback={
+                  <div className="whitespace-pre-line text-sm leading-relaxed text-text-secondary">
+                    {content.plain ?? ''}
+                  </div>
+                }
+              >
+                <LexicalView doc={content.doc} plain={content.plain ?? ''} />
+              </Suspense>
             ) : content?.plain ? (
               <p className="whitespace-pre-line text-sm leading-relaxed text-text-secondary">
                 {content.plain}
