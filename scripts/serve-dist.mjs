@@ -14,7 +14,9 @@ createServer(async (req, res) => {
       try {
         const st = await stat(p);
         if (st.isFile()) {
-          res.writeHead(200, { 'content-type': MIME[path.extname(p)] ?? 'application/octet-stream' });
+          const headers = { 'content-type': MIME[path.extname(p)] ?? 'application/octet-stream' };
+          if (clean.startsWith('/assets/')) headers['cache-control'] = 'public, max-age=31536000, immutable';
+          res.writeHead(200, headers);
           res.end(await readFile(p));
           return;
         }

@@ -15,7 +15,8 @@
     "predev": "npm run gen:icons",
     "postinstall": "patch-package",
     "prebuild": "node scripts/check-disk-space.mjs",
-    "postbuild": "node scripts/check-build-output.mjs && node scripts/patch-lexical-node.mjs"
+    "postbuild": "node scripts/check-build-output.mjs && node scripts/patch-lexical-node.mjs",
+    "start": "node scripts/serve-dist.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1071.0",
