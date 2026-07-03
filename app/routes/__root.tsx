@@ -6,7 +6,8 @@ import {
   useRouter,
   useRouterState,
 } from '@tanstack/react-router';
-import { toast } from 'sonner';
+// sonner is imported dynamically (see Toaster/toast call sites) — a static
+// import here would put the ~31KB toast library in the critical main chunk.
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { registerServiceWorker } from '@/lib/register-sw';
@@ -18,7 +19,12 @@ import { SiteNav } from '@/components/site-nav';
 import { AnnouncementBanner } from '@/components/announcement-banner';
 import { ConsentGate } from '@/components/consent-gate';
 import { AnalyticsTracker } from '@/components/analytics-tracker';
-import { Toaster } from '@/components/ui/sonner';
+import { lazy, Suspense } from 'react';
+// Lazy: the toast host isn't needed for first paint, and a static import drags
+// sonner (~31KB) into the critical main chunk. SSR renders nothing for it.
+const Toaster = lazy(() =>
+  import('@/components/ui/sonner').then((m) => ({ default: m.Toaster }))
+);
 import { THEME_COOKIE, readThemeCookie } from '@/lib/theme-cookie';
 import type { Theme } from '@/lib/theme-cookie';
 import { FAVORITE_COOKIE, readFavoriteCookie } from '@/lib/favorite-cookie';
@@ -283,6 +289,7 @@ function AutoUpdater() {
         }
         if (id !== baseline) {
           stale = true;
+          const { toast } = await import('sonner');
           toast('A new version is available', {
             description: 'It will apply on your next page change.',
             action: { label: 'Refresh now', onClick: () => window.location.reload() },
@@ -372,6 +379,20 @@ export const Route = createRootRoute({
   component: RootComponent,
 });
 
+// Mounts the toast host only in the browser, after hydration: it renders
+// nothing at first paint, so there's no SSR markup to mismatch and the lazy
+// sonner chunk loads off the critical path.
+function DeferredToaster({ theme }: { theme: string }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  return (
+    <Suspense fallback={null}>
+      <Toaster theme={theme} />
+    </Suspense>
+  );
+}
+
 function RootComponent() {
   const { theme, brand, favorite } = Route.useLoaderData();
   return (
@@ -386,7 +407,7 @@ function RootComponent() {
             <ThemeToggle className="fixed top-4 right-4 z-50" />
             <SiteNav />
             <ConsentGate />
-            <Toaster theme={theme ?? 'system'} />
+            <DeferredToaster theme={theme ?? 'system'} />
             {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
                 (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
                 (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}
