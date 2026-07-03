@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { getReadModelMeta } from '@/lib/read-model-meta';
 
 /**
@@ -45,4 +45,8 @@ const run = async (): Promise<Response> => {
   });
 };
 
-export const ServerRoute = createServerFileRoute('/read-model/manifest.json').methods({ GET: run });
+export const Route = createFileRoute('/read-model/manifest.json')({
+  server: {
+    handlers: { GET: run },
+  },
+});

@@ -1,5 +1,5 @@
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import { requireCapability } from '@/lib/authz';
 import { analyticsDb } from '@/lib/analytics/db';
 
@@ -57,7 +57,7 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
     range: ((RANGE_KEYS as readonly string[]).includes(d?.range ?? '') ? d!.range : '30d') as RangeKey,
   }))
   .handler(async ({ data }): Promise<AnalyticsSummary> => {
-    await requireCapability(getWebRequest(), 'viewAdmin');
+    await requireCapability(getRequest(), 'viewAdmin');
     const range = data.range;
     const cfg = RANGES[range];
     const bucketMs = cfg.bucket;

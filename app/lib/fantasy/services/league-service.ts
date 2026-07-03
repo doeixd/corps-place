@@ -74,7 +74,7 @@ interface DraftRow {
 
 export interface GetLeagueInput {
   slug: string;
-  /** Resolved at the boundary from `getActor(getWebRequest())`; null when signed out. */
+  /** Resolved at the boundary from `getActor(getRequest())`; null when signed out. */
   viewerUserId: string | null;
 }
 

@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   getHybridEventPredictionPageData,
   getHybridEventFullRecap,
@@ -9,9 +9,9 @@ import { SHARD_HEADERS } from '@/lib/read-model-meta';
 // route loader's `fromServer`: page data + the judge-level full recap, combined.
 // On error we let the framework 500 so loadDetailOrServer falls back to its own
 // server-fn path. Cache-busted by the manifest ?v=.
-export const ServerRoute = createServerFileRoute(
-  '/read-model/prediction-page/$yearSlug/$slug'
-).methods({
+export const Route = createFileRoute('/read-model/prediction-page/$yearSlug/$slug')({
+  server: {
+    handlers: {
   GET: async ({ params }) => {
     const yearSlug = params.yearSlug;
     const slug = params.slug.replace(/\.json$/i, '');
@@ -20,5 +20,7 @@ export const ServerRoute = createServerFileRoute(
       getHybridEventFullRecap({ data: slug }).catch(() => null),
     ]);
     return new Response(JSON.stringify({ ...data, fullRecap }), { headers: SHARD_HEADERS });
+  },
+    },
   },
 });

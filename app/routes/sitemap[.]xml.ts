@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   getCorpsDirectory,
   getJudgeDirectory,
@@ -70,7 +70,9 @@ function buildSitemap(
   });
 }
 
-export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
+export const Route = createFileRoute('/sitemap.xml')({
+  server: {
+    handlers: {
   GET: async ({ request }) => {
     const origin = new URL(request.url).origin;
 
@@ -234,5 +236,7 @@ export const ServerRoute = createServerFileRoute('/sitemap.xml').methods({
     }
 
     return buildSitemap(origin, paths, dated);
+  },
+    },
   },
 });

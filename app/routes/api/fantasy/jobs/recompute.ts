@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { Effect } from 'effect';
 import { StandingsService } from '@/lib/fantasy/services/standings-service';
 import { fantasyRuntime } from '@/rpc';
@@ -24,7 +24,11 @@ const run = async ({ request }: { request: Request }): Promise<Response> => {
   return Response.json({ ok: true, season, ...summary });
 };
 
-export const ServerRoute = createServerFileRoute('/api/fantasy/jobs/recompute').methods({
+export const Route = createFileRoute('/api/fantasy/jobs/recompute')({
+  server: {
+    handlers: {
   GET: run,
   POST: run,
+    },
+  },
 });

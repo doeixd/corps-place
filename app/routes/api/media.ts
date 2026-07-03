@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   getOrFetchMedia,
   getOrFetchResizedMedia,
@@ -16,7 +16,9 @@ import {
  * until the route tree is regenerated (dev/build) — same escape hatch as the
  * other API routes.
  */
-export const ServerRoute = createServerFileRoute('/api/media').methods({
+export const Route = createFileRoute('/api/media')({
+  server: {
+    handlers: {
   GET: async ({ request }) => {
     const params = new URL(request.url).searchParams;
     const u = params.get('u');
@@ -59,5 +61,7 @@ export const ServerRoute = createServerFileRoute('/api/media').methods({
         'cache-control': 'public, max-age=31536000, immutable',
       },
     });
+  },
+    },
   },
 });

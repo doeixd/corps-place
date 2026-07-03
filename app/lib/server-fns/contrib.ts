@@ -1,5 +1,5 @@
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import { Schema, SchemaParser } from 'effect';
 import * as v from 'valibot';
 import { getContributionsDb } from '@/lib/contributions-db';
@@ -97,7 +97,7 @@ export const getShowGovernance = createServerFn({ method: 'GET' })
   .validator((data: { corpsKey: string; season: string }) => data)
   .handler(async ({ data }): Promise<ShowGovernance> => {
     const db = await getContributionsDb();
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     return pageGovernance(
       db,
       data.corpsKey,
@@ -112,7 +112,7 @@ export const getShowGovernance = createServerFn({ method: 'GET' })
 export const setShowSteward = createServerFn({ method: 'POST' })
   .validator((data: { corpsKey: string; season: string; steward: boolean }) => data)
   .handler(async ({ data }): Promise<ShowGovernance> => {
-    const actor = await requireCapability(getWebRequest(), 'edit');
+    const actor = await requireCapability(getRequest(), 'edit');
     const now = new Date().toISOString();
     const db = await getContributionsDb();
     const ctx = { authorId: actor.userId, actorRole: actor.role, now };
@@ -135,7 +135,7 @@ export const setShowLockLevel = createServerFn({ method: 'POST' })
     lockLevel: parseShowPageLock(data.lockLevel),
   }))
   .handler(async ({ data }): Promise<ShowGovernance> => {
-    const actor = await requireCapability(getWebRequest(), 'lock');
+    const actor = await requireCapability(getRequest(), 'lock');
     const now = new Date().toISOString();
     const db = await getContributionsDb();
     const ctx = { authorId: actor.userId, actorRole: actor.role, now };
@@ -148,7 +148,7 @@ export const setShowLockLevel = createServerFn({ method: 'POST' })
 export const setShowOrphaned = createServerFn({ method: 'POST' })
   .validator((data: { corpsKey: string; season: string; orphaned: boolean }) => data)
   .handler(async ({ data }): Promise<ShowGovernance> => {
-    const actor = await requireCapability(getWebRequest(), 'orphan');
+    const actor = await requireCapability(getRequest(), 'orphan');
     const now = new Date().toISOString();
     const db = await getContributionsDb();
     const ctx = { authorId: actor.userId, actorRole: actor.role, now };
@@ -258,7 +258,7 @@ export const revertRevision = createServerFn({ method: 'POST' })
         args: [block.page_id],
       })
     ).rows[0]?.lock_level ?? 'none') as PageLock;
-    const actor = await requireCapability(getWebRequest(), 'revert', { lockLevel });
+    const actor = await requireCapability(getRequest(), 'revert', { lockLevel });
 
     const now = new Date().toISOString();
     const blockId = await writeBlock(
@@ -385,7 +385,7 @@ export const saveShowBlock = createServerFn({ method: 'POST' })
     ).rows[0]?.lock_level ?? 'none') as PageLock;
 
     // The chokepoint: throws ForbiddenError if not allowed (I-12).
-    const actor = await requireCapability(getWebRequest(), 'edit', { lockLevel });
+    const actor = await requireCapability(getRequest(), 'edit', { lockLevel });
     await enforceRateLimit(db, actor, 'edit');
 
     // Domain normalization the schema can't express (e.g. hex colors).
@@ -472,7 +472,7 @@ export const saveShowOverride = createServerFn({ method: 'POST' })
         args: [data.corpsKey, data.season],
       })
     ).rows[0]?.lock_level ?? 'none') as PageLock;
-    const actor = await requireCapability(getWebRequest(), 'edit', { lockLevel });
+    const actor = await requireCapability(getRequest(), 'edit', { lockLevel });
     await enforceRateLimit(db, actor, 'edit');
 
     const now = new Date().toISOString();
@@ -508,7 +508,7 @@ export const reconcileShowDivergence = createServerFn({ method: 'POST' })
         args: [data.corpsKey, data.season],
       })
     ).rows[0]?.lock_level ?? 'none') as PageLock;
-    await requireCapability(getWebRequest(), 'lock', { lockLevel });
+    await requireCapability(getRequest(), 'lock', { lockLevel });
     const show = await readScrapedShowDetail(data.corpsKey, data.season);
     return reconcileShowDivergenceForDetail(db, data.corpsKey, data.season, show);
   });

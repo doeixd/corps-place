@@ -3,7 +3,7 @@ import { routeTree } from './routeTree.gen';
 import { NotFound } from './components/not-found';
 import { RouteErrorFallback } from './components/error-fallback';
 
-export function createRouter() {
+export function getRouter() {
   const router = createTanStackRouter({
     routeTree,
     // Built-in scroll restoration: resets to top on forward navigation and restores
@@ -40,6 +40,9 @@ export function createRouter() {
 
 declare module '@tanstack/react-router' {
   interface Register {
-    router: ReturnType<typeof createRouter>;
+    router: ReturnType<typeof getRouter>;
   }
 }
+
+// Back-compat alias (pre-1.132 Start expected createRouter).
+export const createRouter = getRouter;

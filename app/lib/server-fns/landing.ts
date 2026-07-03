@@ -1,4 +1,4 @@
-import { createServerFn } from '@tanstack/react-start/client';
+import { createServerFn } from '@tanstack/react-start';
 
 /**
  * Returns the AI-generated intro for a pSEO landing page slug, or null. The

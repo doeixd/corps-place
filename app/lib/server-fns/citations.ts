@@ -1,5 +1,5 @@
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { ensureShowPage } from '@/lib/contrib/store';
 import { requireCapability, type PageLock } from '@/lib/authz';
@@ -133,7 +133,7 @@ export const createCitation = createServerFn({ method: 'POST' })
         args: [data.corpsKey, data.season],
       })
     ).rows[0]?.lock_level ?? 'none') as PageLock;
-    const actor = await requireCapability(getWebRequest(), 'edit', { lockLevel });
+    const actor = await requireCapability(getRequest(), 'edit', { lockLevel });
 
     const now = new Date().toISOString();
     const pageId = await ensureShowPage(db, data.corpsKey, data.season, {

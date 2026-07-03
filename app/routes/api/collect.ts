@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { recordEvent, type RecordInput } from '@/lib/analytics/record';
 
 // First-party analytics beacon sink. The client posts here via navigator.sendBeacon
@@ -20,7 +20,9 @@ const refHostOf = (ref: unknown, selfHost: string | null): string | null => {
   }
 };
 
-export const ServerRoute = createServerFileRoute('/api/collect').methods({
+export const Route = createFileRoute('/api/collect')({
+  server: {
+    handlers: {
   POST: async ({ request }) => {
     try {
       const raw = await request.text();
@@ -54,5 +56,7 @@ export const ServerRoute = createServerFileRoute('/api/collect').methods({
     }
     // 204 with no body; sendBeacon ignores the response anyway.
     return new Response(null, { status: 204 });
+  },
+    },
   },
 });

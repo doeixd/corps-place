@@ -8,8 +8,8 @@
  * them from the client bundle. Do NOT add a module-scope helper that closes over a
  * server import (that defeats tree-shaking; see memory fantasy-jobs-deploy-bundle-leak).
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { getActor } from '@/lib/authz';
 import { getContributionsDb } from '@/lib/contributions-db';
@@ -18,7 +18,7 @@ import { CURRENT_TERMS_VERSION } from '@/lib/consent';
 export const acceptTerms = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ contactConsent: v.boolean() }), d))
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) throw new Error('UNAUTHENTICATED');
     const db = await getContributionsDb();
     await db.execute({
@@ -50,7 +50,7 @@ export const setTimeZone = createServerFn({ method: 'POST' })
     )
   )
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) throw new Error('UNAUTHENTICATED');
     const db = await getContributionsDb();
     await db.execute({

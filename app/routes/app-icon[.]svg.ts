@@ -1,9 +1,11 @@
 // Generates a compact favorite-colored favicon. The URL includes the palette and
 // an artwork version, so it is safe to cache immutably without pinning old icons.
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { APP_ICON_VERSION, DEFAULT_APP_ICON_HREF, favoriteIconMarkup } from '@/lib/logo-recolor';
 
-export const ServerRoute = createServerFileRoute('/app-icon.svg').methods({
+export const Route = createFileRoute('/app-icon.svg')({
+  server: {
+    handlers: {
   GET: async ({ request }) => {
     const url = new URL(request.url);
     const primary = url.searchParams.get('p');
@@ -25,5 +27,7 @@ export const ServerRoute = createServerFileRoute('/app-icon.svg').methods({
         'cache-control': 'public, max-age=31536000, immutable',
       },
     });
+  },
+    },
   },
 });

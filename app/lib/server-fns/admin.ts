@@ -3,15 +3,15 @@
  *
  * Two enforcement points everywhere: the route loader calls `requireAdmin` (UX gate),
  * and every admin server-fn calls `requireCapability` FIRST (the real gate). Mirrors
- * the `createServerFn` + `getWebRequest` + valibot idiom in `fantasy.ts`.
+ * the `createServerFn` + `getRequest` + valibot idiom in `fantasy.ts`.
  *
  * This file is the route-independent foundation for M1 — it adds no routes (so no
  * `routeTree.gen.ts` regeneration). The Overview snapshot here reports only
  * `contributions.db` facts, which the serving container CAN read; relational-DB /
  * read-model freshness, model, and scrape health are VM-fed (§8.1) and added later.
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import type { Client } from '@libsql/client';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
@@ -43,7 +43,7 @@ const CapInput = v.object({ cap: v.picklist(ADMIN_CAPS) });
 export const requireAdmin = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(CapInput, d))
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) return { status: 'signed_out' as const };
     if (!can(actor, data.cap)) return { status: 'forbidden' as const };
     return { status: 'ok' as const, userId: actor.userId, role: actor.role };
@@ -87,7 +87,7 @@ const ListAuditInput = v.object({
 export const listAudit = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(ListAuditInput, d))
   .handler(async ({ data }): Promise<AuditRow[]> => {
-    await requireCapability(getWebRequest(), 'viewAdmin');
+    await requireCapability(getRequest(), 'viewAdmin');
     const db = await getContributionsDb();
     const rows = (
       await db.execute({
@@ -113,7 +113,7 @@ export const listAudit = createServerFn({ method: 'GET' })
  *  serving container) + contributions.db size. Scrape freshness lives in
  *  dci-relational.db (not on this container) → VM-fed later. Cap: viewAdmin. */
 export const adminSystem = createServerFn({ method: 'GET' }).handler(async () => {
-  await requireCapability(getWebRequest(), 'viewAdmin');
+  await requireCapability(getRequest(), 'viewAdmin');
   const db = await getContributionsDb();
   const contributionsDbBytes = await dbSizeBytes(db);
 
@@ -237,7 +237,7 @@ export const getAnnouncement = createServerFn({ method: 'GET' }).handler(async (
 export const setAnnouncement = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ text: v.pipe(v.string(), v.maxLength(280)) }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'runJobs');
+    const actor = await requireCapability(getRequest(), 'runJobs');
     const db = await getContributionsDb();
     const now = new Date().toISOString();
     await db.execute({
@@ -253,7 +253,7 @@ export const setAnnouncement = createServerFn({ method: 'POST' })
 
 /** Overview snapshot (§4) — contributions.db only in this slice. Cap: viewAdmin. */
 export const adminStatus = createServerFn({ method: 'GET' }).handler(async () => {
-  await requireCapability(getWebRequest(), 'viewAdmin');
+  await requireCapability(getRequest(), 'viewAdmin');
   const db = await getContributionsDb();
   const [pages, revisions, media, citations, leagues, members, sizeBytes] = await Promise.all([
     countRows(db, 'show_pages'),

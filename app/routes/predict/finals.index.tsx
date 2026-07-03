@@ -6,6 +6,8 @@
 // original /predict/palette is untouched.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createIsomorphicFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent } from '@/components/ui/card';
@@ -109,6 +111,25 @@ const parseOrderParam = (v: unknown): string | undefined => {
   return parts.length >= 2 && parts.every((p) => ORDER_SLUG_RE.test(p)) ? v : undefined;
 };
 
+// SSR-only ?o=/preset capture for the og:image URL (see loader). The server
+// branch is stripped from the client bundle by the start compiler.
+const ssrOgQuery = createIsomorphicFn()
+  .server((season: string): string => {
+    try {
+      const url = new URL(getRequest().url);
+      const qp = new URLSearchParams();
+      const o = url.searchParams.get('o');
+      const preset = url.searchParams.get('preset');
+      if (o) qp.set('o', o);
+      if (preset) qp.set('preset', preset);
+      qp.set('season', season);
+      return `?${qp.toString()}`;
+    } catch {
+      return ''; // non-request SSR context — generic image
+    }
+  })
+  .client((): string => '');
+
 export const Route = createFileRoute('/predict/finals/')({
   validateSearch: (s: Record<string, unknown>): BallotSearch => ({
     preset: PRESETS.includes(s.preset as Preset) ? (s.preset as Preset) : undefined,
@@ -128,25 +149,9 @@ export const Route = createFileRoute('/predict/finals/')({
     }));
     // og:image for shared links: capture ?o=/preset from the REQUEST during SSR
     // (crawlers never run JS, and the loader has no search deps by design — a
-    // client-side reorder doesn't need fresh meta). Dynamic import keeps the
-    // server module out of the client bundle.
-    let ogQuery = '';
-    if (typeof document === 'undefined') {
-      try {
-        const { getWebRequest } = await import('@tanstack/react-start/server');
-        const url = new URL(getWebRequest().url);
-        const qp = new URLSearchParams();
-        const o = url.searchParams.get('o');
-        const preset = url.searchParams.get('preset');
-        if (o) qp.set('o', o);
-        if (preset) qp.set('preset', preset);
-        qp.set('season', season);
-        ogQuery = `?${qp.toString()}`;
-      } catch {
-        /* non-request SSR context — generic image */
-      }
-    }
-    return { season, pool, ogQuery };
+    // client-side reorder doesn't need fresh meta). Isomorphic: the server
+    // branch (and its server-only import) is compiled out of the client bundle.
+    return { season, pool, ogQuery: ssrOgQuery(season) };
   },
   head: ({ loaderData }) =>
     seoHead({

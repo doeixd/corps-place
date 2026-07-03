@@ -1,4 +1,4 @@
-import { getWebRequest } from '@tanstack/react-start/server';
+import { getRequest } from '@tanstack/react-start/server';
 import type { Client } from '@libsql/client';
 import { auth } from './auth';
 
@@ -117,7 +117,7 @@ export const requireCapability = async (
 
 /** Throws unless the session user owns `profileId` (moderators may override). */
 export const requireJobsProfileOwner = async (db: Client, profileId: string): Promise<Actor> => {
-  const actor = await getActor(getWebRequest());
+  const actor = await getActor(getRequest());
   if (!actor) throw new ForbiddenError('edit');
   const row = (
     await db.execute({
@@ -141,7 +141,7 @@ export const requireProfileOwner = async (
   entityType: string,
   entityId: string
 ): Promise<Actor> => {
-  const actor = await getActor(getWebRequest());
+  const actor = await getActor(getRequest());
   if (!actor) throw new ForbiddenError('claimProfile');
   if (can(actor, 'manageProfileClaims')) return actor; // moderators+ override
   const row = (

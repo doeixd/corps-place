@@ -8,8 +8,8 @@
  * messages `UNAUTHENTICATED` / `FORBIDDEN` / `NOT_FOUND` / `CONFLICT[:reason]` so
  * routes can branch on them.
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import type { Client, Row } from '@libsql/client';
 import { Effect, Match } from 'effect';
 import * as v from 'valibot';
@@ -95,7 +95,7 @@ const str = (v: unknown): string => v as string;
 // ---------------------------------------------------------------------------
 
 const requireActor = async (): Promise<Actor> => {
-  const actor = await getActor(getWebRequest());
+  const actor = await getActor(getRequest());
   if (!actor) throw new Error('UNAUTHENTICATED');
   return actor;
 };
@@ -169,7 +169,7 @@ export const createLeague = createServerFn({ method: 'POST' })
 export const getLeague = createServerFn({ method: 'GET' })
   .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     return runFantasy(
       Effect.flatMap(LeagueService, (svc) =>
         svc.get({ slug: data.slug, viewerUserId: actor?.userId ?? null })
@@ -380,7 +380,7 @@ export const cancelLeague = createServerFn({ method: 'POST' })
 
 // Strangler shim (P2): capability-gated at the boundary, then QuizService.
 export const adminListQuestions = createServerFn({ method: 'GET' }).handler(async () => {
-  await requireCapability(getWebRequest(), 'manageFantasyQuiz');
+  await requireCapability(getRequest(), 'manageFantasyQuiz');
   return runFantasy(Effect.flatMap(QuizService, (svc) => svc.adminListQuestions()));
 });
 
@@ -402,7 +402,7 @@ const QuestionInput = v.object({
 export const adminUpsertQuestion = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(QuestionInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyQuiz');
+    const actor = await requireCapability(getRequest(), 'manageFantasyQuiz');
     return runFantasy(
       Effect.flatMap(QuizService, (svc) =>
         svc.adminUpsertQuestion({
@@ -423,7 +423,7 @@ export const adminUpsertQuestion = createServerFn({ method: 'POST' })
 export const adminSetQuestionActive = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ questionId: v.string(), active: v.boolean() }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyQuiz');
+    const actor = await requireCapability(getRequest(), 'manageFantasyQuiz');
     return runFantasy(
       Effect.flatMap(QuizService, (svc) =>
         svc.adminSetQuestionActive({ actor, questionId: data.questionId, active: data.active })
@@ -642,7 +642,7 @@ export const getDraftState = createServerFn({ method: 'GET' })
 export const getDraftPage = createServerFn({ method: 'GET' })
   .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     const league = await runFantasy(
       Effect.flatMap(LeagueService, (svc) =>
         svc.get({ slug: data.slug, viewerUserId: actor?.userId ?? null })
@@ -697,7 +697,7 @@ export const setDraftQueue = createServerFn({ method: 'POST' })
 export const getStandings = createServerFn({ method: 'GET' })
   .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     return runFantasy(
       Effect.flatMap(StandingsService, (svc) => svc.getStandings(data.slug, actor?.userId ?? null))
     );

@@ -1,10 +1,12 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { getCorps, getShowDetail } from '@/lib/server-fns/hybrid';
 import { renderOgPng, OG_HEADERS } from '@/lib/og/render';
 import { ShowCard } from '@/lib/og/templates';
 
 /** Generated OG image for a per-corps show page (/shows/$slug/$season). */
-export const ServerRoute = createServerFileRoute('/api/og/show/$slug/$season').methods({
+export const Route = createFileRoute('/api/og/show/$slug/$season')({
+  server: {
+    handlers: {
   GET: async ({ params }) => {
     try {
       const corps = await getCorps({ data: params.slug }).catch(() => null);
@@ -27,5 +29,7 @@ export const ServerRoute = createServerFileRoute('/api/og/show/$slug/$season').m
     } catch {
       return new Response('og error', { status: 500 });
     }
+  },
+    },
   },
 });

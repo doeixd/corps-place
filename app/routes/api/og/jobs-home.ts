@@ -1,11 +1,13 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { renderOgPng, OG_HEADERS } from '@/lib/og/render';
 import { HomeCard } from '@/lib/og/templates';
 import { pageantryFaviconPngDataUri } from '@/lib/og/favicon.generated';
 
 /** Default PageantryJobs social card (favicon + name + explainer). Brand-wide
  *  og:image fallback for jobs pages that don't set their own. */
-export const ServerRoute = createServerFileRoute('/api/og/jobs-home').methods({
+export const Route = createFileRoute('/api/og/jobs-home')({
+  server: {
+    handlers: {
   GET: async () =>
     new Response(
       await renderOgPng(
@@ -19,4 +21,6 @@ export const ServerRoute = createServerFileRoute('/api/og/jobs-home').methods({
       ),
       { headers: OG_HEADERS }
     ),
+    },
+  },
 });

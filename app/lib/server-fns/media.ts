@@ -1,5 +1,5 @@
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import { createRequire } from 'node:module';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { ensureShowPage } from '@/lib/contrib/store';
@@ -46,7 +46,7 @@ export const uploadShowMedia = createServerFn({ method: 'POST' })
         args: [data.corpsKey, data.season],
       })
     ).rows[0]?.lock_level ?? 'none') as PageLock;
-    const actor = await requireCapability(getWebRequest(), 'upload', { lockLevel });
+    const actor = await requireCapability(getRequest(), 'upload', { lockLevel });
 
     // Re-encode to WebP: .rotate() bakes orientation; webp() emits no metadata → EXIF/GPS gone.
     const { data: webp, info } = await getSharp()(raw)

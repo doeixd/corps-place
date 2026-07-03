@@ -7,8 +7,8 @@
  * Cap `manageUsers` (admin) on every fn; guard rails (no escalation above self, no
  * demoting the last admin) + an audit row on each change.
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { requireCapability, type Role } from '@/lib/authz';
@@ -43,7 +43,7 @@ const ListUsersInput = v.object({
 export const listUsers = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(ListUsersInput, d))
   .handler(async ({ data }): Promise<AdminUserRow[]> => {
-    await requireCapability(getWebRequest(), 'manageUsers');
+    await requireCapability(getRequest(), 'manageUsers');
     const db = await getContributionsDb();
     const q = data.q.trim();
     const like = `%${q}%`;
@@ -77,7 +77,7 @@ const BanInput = v.object({
 export const setUserBanned = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(BanInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageUsers');
+    const actor = await requireCapability(getRequest(), 'manageUsers');
     if (data.userId === actor.userId) throw new Error('FORBIDDEN: cannot ban yourself');
     const db = await getContributionsDb();
     const target = (
@@ -113,7 +113,7 @@ const UserIdInput = v.object({ userId: v.string() });
 export const logImpersonation = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UserIdInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'impersonate');
+    const actor = await requireCapability(getRequest(), 'impersonate');
     if (data.userId === actor.userId) throw new Error('FORBIDDEN: cannot impersonate yourself');
     const db = await getContributionsDb();
     await writeAudit(db, actor, { action: 'impersonate_user', target: data.userId });
@@ -124,7 +124,7 @@ export const logImpersonation = createServerFn({ method: 'POST' })
 export const exportUserData = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UserIdInput, d))
   .handler(async ({ data }) => {
-    await requireCapability(getWebRequest(), 'manageUsers');
+    await requireCapability(getRequest(), 'manageUsers');
     const db = await getContributionsDb();
     const rowsOf = async (sql: string) =>
       (await db.execute({ sql, args: [data.userId] })).rows as unknown as Record<string, unknown>[];
@@ -154,7 +154,7 @@ export const exportUserData = createServerFn({ method: 'POST' })
 export const anonymizeUser = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UserIdInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageUsers');
+    const actor = await requireCapability(getRequest(), 'manageUsers');
     if (data.userId === actor.userId) throw new Error('FORBIDDEN: cannot erase yourself');
     const db = await getContributionsDb();
     const target = (
@@ -187,7 +187,7 @@ const SetRoleInput = v.object({
 export const setUserRole = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(SetRoleInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageUsers');
+    const actor = await requireCapability(getRequest(), 'manageUsers');
 
     // Can't grant a role higher than your own.
     if (RANK[data.role as Role] > RANK[actor.role])

@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { getHybridEventFullRecap, getCorpsByKeys } from '@/lib/server-fns/hybrid';
 
 /**
@@ -34,6 +34,10 @@ const run = async ({ params }: { params: { slug: string } }): Promise<Response> 
   });
 };
 
-export const ServerRoute = createServerFileRoute('/read-model/recaps/$slug').methods({
+export const Route = createFileRoute('/read-model/recaps/$slug')({
+  server: {
+    handlers: {
   GET: run,
+    },
+  },
 });

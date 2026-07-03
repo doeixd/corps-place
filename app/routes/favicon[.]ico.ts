@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { DEFAULT_APP_ICON_HREF } from '@/lib/logo-recolor';
 
 /**
@@ -8,7 +8,9 @@ import { DEFAULT_APP_ICON_HREF } from '@/lib/logo-recolor';
  * the tab icon went blank. Redirect to the real (small) favicon so there is always
  * something to show.
  */
-export const ServerRoute = createServerFileRoute('/favicon.ico').methods({
+export const Route = createFileRoute('/favicon.ico')({
+  server: {
+    handlers: {
   GET: async () =>
     new Response(null, {
       status: 302,
@@ -17,4 +19,6 @@ export const ServerRoute = createServerFileRoute('/favicon.ico').methods({
         'cache-control': 'public, max-age=86400',
       },
     }),
+    },
+  },
 });

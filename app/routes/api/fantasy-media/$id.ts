@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { getUpload, isUploadKey } from '@/lib/r2';
 
@@ -8,7 +8,9 @@ import { getUpload, isUploadKey } from '@/lib/r2';
  * content-stable UUIDs). The `isUploadKey` guard ensures we only ever read our
  * own uploads/ prefix. Mirrors /api/show-media/$id.ts.
  */
-export const ServerRoute = createServerFileRoute('/api/fantasy-media/$id').methods({
+export const Route = createFileRoute('/api/fantasy-media/$id')({
+  server: {
+    handlers: {
   GET: async ({ params }) => {
     const db = await getContributionsDb();
     const row = (
@@ -28,5 +30,7 @@ export const ServerRoute = createServerFileRoute('/api/fantasy-media/$id').metho
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });
+  },
+    },
   },
 });

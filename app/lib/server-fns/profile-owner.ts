@@ -1,5 +1,5 @@
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import { Effect } from 'effect';
 import {
   ProfileOwnerService,
@@ -38,7 +38,7 @@ export const getProfileOverlay = createServerFn({ method: 'GET' })
     // is never sent to the client (only the boolean).
     let amOwner = false;
     if (overlay.claim) {
-      const session = await auth.api.getSession({ headers: getWebRequest().headers });
+      const session = await auth.api.getSession({ headers: getRequest().headers });
       amOwner = !!session?.user && session.user.id === overlay.claim.user_id;
     }
     return {
@@ -56,7 +56,7 @@ export const getProfileOverlay = createServerFn({ method: 'GET' })
 export const evaluateProfileNameMatch = createServerFn({ method: 'GET' })
   .validator((data: { entityType: EntityType; entityId: string }) => data)
   .handler(async ({ data }) => {
-    const req = getWebRequest();
+    const req = getRequest();
     const session = await auth.api.getSession({ headers: req.headers });
     const googleName = session?.user?.name ?? '';
     return Effect.runPromise(
@@ -74,7 +74,7 @@ export const claimProfile = createServerFn({ method: 'POST' })
   .validator((data: { entityType: EntityType; entityId: string; attested: boolean }) => data)
   .handler(async ({ data }) => {
     if (data.attested !== true) throw new ForbiddenError('claimProfile');
-    const req = getWebRequest();
+    const req = getRequest();
     const actor = await requireCapability(req, 'claimProfile');
     // Guardrail (plan §14, Tiered+): cap claims per user so a spoofed-name sweep
     // can't mass-claim profiles. 5 / hour is well above any honest use.
@@ -209,7 +209,7 @@ export const setProfilePhoto = createServerFn({ method: 'POST' })
 export const listProfileClaims = createServerFn({ method: 'GET' })
   .validator((data?: { status?: string }) => data ?? {})
   .handler(async ({ data }) => {
-    await requireCapability(getWebRequest(), 'manageProfileClaims');
+    await requireCapability(getRequest(), 'manageProfileClaims');
     return Effect.runPromise(
       Effect.flatMap(ProfileOwnerService, (s) => s.listClaims(data.status)).pipe(
         Effect.provide(ProfileOwnerServiceLive)
@@ -221,7 +221,7 @@ export const listProfileClaims = createServerFn({ method: 'GET' })
 export const approveProfileClaim = createServerFn({ method: 'POST' })
   .validator((data: { claimId: string }) => data)
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageProfileClaims');
+    const actor = await requireCapability(getRequest(), 'manageProfileClaims');
     await Effect.runPromise(
       Effect.flatMap(ProfileOwnerService, (s) =>
         s.approveClaim(data.claimId, {
@@ -238,7 +238,7 @@ export const approveProfileClaim = createServerFn({ method: 'POST' })
  *  Safe to run on a schedule or on demand. Returns how many were checked/changed. */
 export const reconcileProfileOverrides = createServerFn({ method: 'POST' })
   .handler(async (): Promise<{ checked: number; changed: number }> => {
-    const actor = await requireCapability(getWebRequest(), 'manageProfileClaims');
+    const actor = await requireCapability(getRequest(), 'manageProfileClaims');
     return Effect.runPromise(
       Effect.flatMap(ProfileOwnerService, (s) =>
         s.reconcile({ authorId: actor.userId, actorRole: actor.role, now: new Date().toISOString() })
@@ -250,7 +250,7 @@ export const reconcileProfileOverrides = createServerFn({ method: 'POST' })
 export const repointProfileClaim = createServerFn({ method: 'POST' })
   .validator((data: { claimId: string; newEntityId: string }) => data)
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageProfileClaims');
+    const actor = await requireCapability(getRequest(), 'manageProfileClaims');
     await Effect.runPromise(
       Effect.flatMap(ProfileOwnerService, (s) =>
         s.repointClaim(data.claimId, data.newEntityId, {

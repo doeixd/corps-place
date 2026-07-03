@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { renderOgPng, OG_HEADERS, ogText, logoDataUri } from '@/lib/og/render';
 import { BallotCard } from '@/lib/og/templates';
 import { getContributionsDb } from '@/lib/contributions-db';
@@ -10,7 +10,9 @@ import { getDraftPool } from '@/lib/fantasy/score-db';
  * an id never changes — the shared OG_HEADERS long cache is safe. Also fetched
  * directly by the share page's "Download image" button (one rendering path).
  */
-export const ServerRoute = createServerFileRoute('/api/og/ballot/$id').methods({
+export const Route = createFileRoute('/api/og/ballot/$id')({
+  server: {
+    handlers: {
   GET: async ({ params }) => {
     const id = params.id;
     if (!/^[a-f0-9]{16}$/.test(id)) return new Response('Not found', { status: 404 });
@@ -59,5 +61,7 @@ export const ServerRoute = createServerFileRoute('/api/og/ballot/$id').methods({
     } catch {
       return new Response('Unavailable', { status: 500 });
     }
+  },
+    },
   },
 });

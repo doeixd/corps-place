@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { getUpload, isUploadKey } from '@/lib/r2';
 
@@ -11,7 +11,9 @@ import { getUpload, isUploadKey } from '@/lib/r2';
  * NOTE: the '/api/show-media/$id' literal isn't in the generated route types until
  * the route tree is regenerated (dev/build) — same escape hatch as the other API routes.
  */
-export const ServerRoute = createServerFileRoute('/api/show-media/$id').methods({
+export const Route = createFileRoute('/api/show-media/$id')({
+  server: {
+    handlers: {
   GET: async ({ params }) => {
     const db = await getContributionsDb();
     const row = (
@@ -33,5 +35,7 @@ export const ServerRoute = createServerFileRoute('/api/show-media/$id').methods(
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });
+  },
+    },
   },
 });

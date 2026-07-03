@@ -8,8 +8,8 @@
  * metadata) and R2 putUpload/uploadKey. Rows live in the dedicated `fantasy_media`
  * table, served back via /api/fantasy-media/$id.
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import { Effect, Match } from 'effect';
 import * as v from 'valibot';
 import { getActor } from '@/lib/authz';
@@ -27,7 +27,7 @@ const UploadInput = v.object({
 export const uploadFantasyLogo = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UploadInput, d))
   .handler(async ({ data }): Promise<FantasyLogoResult> => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) throw new Error('UNAUTHENTICATED');
     return fantasyRuntime.runPromise(
       Effect.flatMap(MediaService, (s) =>

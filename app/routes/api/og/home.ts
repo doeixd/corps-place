@@ -1,11 +1,13 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { renderOgPng, OG_HEADERS } from '@/lib/og/render';
 import { HomeCard } from '@/lib/og/templates';
 import { faviconPngDataUri } from '@/lib/og/favicon.generated';
 
 /** Default DrumCorps.app social card (favicon + name + explainer). Used as the
  *  brand-wide og:image fallback for pages that don't set their own. */
-export const ServerRoute = createServerFileRoute('/api/og/home').methods({
+export const Route = createFileRoute('/api/og/home')({
+  server: {
+    handlers: {
   GET: async () =>
     new Response(
       await renderOgPng(
@@ -19,4 +21,6 @@ export const ServerRoute = createServerFileRoute('/api/og/home').methods({
       ),
       { headers: OG_HEADERS }
     ),
+    },
+  },
 });

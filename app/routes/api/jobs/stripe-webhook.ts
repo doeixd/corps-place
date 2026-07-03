@@ -1,10 +1,12 @@
 import type Stripe from 'stripe';
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { Effect } from 'effect';
 import { constructWebhookEvent } from '@/lib/jobs/payments';
 import { JobsService, JobsServiceLive } from '@/lib/jobs/jobs-service';
 
-export const ServerRoute = createServerFileRoute('/api/jobs/stripe-webhook').methods({
+export const Route = createFileRoute('/api/jobs/stripe-webhook')({
+  server: {
+    handlers: {
   POST: async ({ request }) => {
     const signature = request.headers.get('stripe-signature');
     if (!signature) return new Response('Missing signature', { status: 400 });
@@ -33,5 +35,7 @@ export const ServerRoute = createServerFileRoute('/api/jobs/stripe-webhook').met
     }
 
     return Response.json({ received: true });
+  },
+    },
   },
 });

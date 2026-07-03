@@ -1,4 +1,4 @@
-import { createServerFn } from '@tanstack/react-start/client';
+import { createServerFn } from '@tanstack/react-start';
 import { parseVideo } from '@/lib/video-embed';
 
 /**

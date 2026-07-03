@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   getHybridEventBasic,
   getHybridEventFullRecap,
@@ -12,7 +12,9 @@ const isYear = (s: string) => /^\d{4}$/.test(s);
 const place = (c?: string | null, st?: string | null) => [c, st].filter(Boolean).join(', ');
 
 /** Generated OG image for a scored event (podium) or a season archive (/scores/$year). */
-export const ServerRoute = createServerFileRoute('/api/og/score/$slug').methods({
+export const Route = createFileRoute('/api/og/score/$slug')({
+  server: {
+    handlers: {
   GET: async ({ params }) => {
     const slug = params.slug;
     try {
@@ -54,5 +56,7 @@ export const ServerRoute = createServerFileRoute('/api/og/score/$slug').methods(
     } catch {
       return new Response('og error', { status: 500 });
     }
+  },
+    },
   },
 });

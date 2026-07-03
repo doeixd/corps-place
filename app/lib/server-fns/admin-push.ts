@@ -5,8 +5,8 @@
  * VM-side scripts/recordIngestRun.ts on the failure path. Device-based (keyed by
  * endpoint) like score_push_subscriptions. Cap: viewAdmin (moderators+).
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { requireCapability } from '@/lib/authz';
@@ -14,7 +14,7 @@ import { vapidPublicKey } from '@/lib/fantasy/push';
 
 /** VAPID public key the client needs to subscribe (null when push is off). */
 export const getAdminVapidPublicKey = createServerFn({ method: 'GET' }).handler(async () => {
-  await requireCapability(getWebRequest(), 'viewAdmin');
+  await requireCapability(getRequest(), 'viewAdmin');
   return { publicKey: vapidPublicKey() };
 });
 
@@ -27,7 +27,7 @@ const PushSubInput = v.object({
 export const saveAdminPushSubscription = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(PushSubInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'viewAdmin');
+    const actor = await requireCapability(getRequest(), 'viewAdmin');
     const db = await getContributionsDb();
     await db.execute({
       sql: `INSERT INTO admin_push_subscriptions (endpoint, user_id, p256dh, auth, created_at)
@@ -49,7 +49,7 @@ export const saveAdminPushSubscription = createServerFn({ method: 'POST' })
 export const deleteAdminPushSubscription = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ endpoint: v.string() }), d))
   .handler(async ({ data }) => {
-    await requireCapability(getWebRequest(), 'viewAdmin');
+    await requireCapability(getRequest(), 'viewAdmin');
     const db = await getContributionsDb();
     await db.execute({
       sql: 'DELETE FROM admin_push_subscriptions WHERE endpoint = ?',

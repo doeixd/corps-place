@@ -9,8 +9,8 @@
  * so the body is stripped from the client bundle — do NOT import it into a client
  * component except via the server-fn call.
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import { Effect, Match } from 'effect';
 import * as v from 'valibot';
 import { getActor } from '@/lib/authz';
@@ -26,7 +26,7 @@ const SetInput = v.object({
 export const setJobsProfilePhoto = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(SetInput, d))
   .handler(async ({ data }): Promise<{ ok: true; mediaId: string | null }> => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) throw new Error('UNAUTHENTICATED');
     if (!rateLimit(`jobs:photo:${actor.userId}`, 12, 10 * 60_000))
       throw new Error('Too many requests — please slow down and try again in a bit.');

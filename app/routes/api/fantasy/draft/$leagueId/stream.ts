@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { Effect, Fiber, PubSub, Stream } from 'effect';
 import { getActor } from '@/lib/authz';
 import { getContributionsDb } from '@/lib/contributions-db';
@@ -16,7 +16,9 @@ import { fantasyRuntime } from '@/rpc';
  * proxies from closing the idle connection. The DB is the source of truth, so a
  * reconnect simply re-reads the full snapshot (no replay bookkeeping needed).
  */
-export const ServerRoute = createServerFileRoute('/api/fantasy/draft/$leagueId/stream').methods({
+export const Route = createFileRoute('/api/fantasy/draft/$leagueId/stream')({
+  server: {
+    handlers: {
   GET: async ({ request, params }) => {
     const actor = await getActor(request);
     if (!actor) return new Response('Unauthorized', { status: 401 });
@@ -120,5 +122,7 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/draft/$leagueId/s
         Connection: 'keep-alive',
       },
     });
+  },
+    },
   },
 });

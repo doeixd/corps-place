@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { renderOgPng, OG_HEADERS, ogText, logoDataUri } from '@/lib/og/render';
 import { BallotCard } from '@/lib/og/templates';
 import { getDraftPool } from '@/lib/fantasy/score-db';
@@ -22,7 +22,9 @@ const PRESET_LABELS: Record<string, string> = {
  * per arrangement (OG_HEADERS is a 1-day cache, fine for the default order
  * drifting as predictions update).
  */
-export const ServerRoute = createServerFileRoute('/api/og/finals').methods({
+export const Route = createFileRoute('/api/og/finals')({
+  server: {
+    handlers: {
   GET: async ({ request }) => {
     try {
       const url = new URL(request.url);
@@ -68,5 +70,7 @@ export const ServerRoute = createServerFileRoute('/api/og/finals').methods({
     } catch {
       return new Response('Unavailable', { status: 500 });
     }
+  },
+    },
   },
 });

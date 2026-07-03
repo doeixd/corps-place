@@ -8,8 +8,8 @@
  * `hideMedia` actions need the additive `hidden` columns (§6.3, guarded migration
  * at M4) and land with that migration — not here.
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { requireCapability } from '@/lib/authz';
@@ -37,7 +37,7 @@ const ListRevisionsInput = v.object({
 export const listRecentRevisions = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(ListRevisionsInput, d))
   .handler(async ({ data }): Promise<AdminRevisionRow[]> => {
-    await requireCapability(getWebRequest(), 'viewAdmin');
+    await requireCapability(getRequest(), 'viewAdmin');
     const db = await getContributionsDb();
     const rows = (
       await db.execute({
@@ -86,7 +86,7 @@ const ListPagesInput = v.object({
 export const listShowPages = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(ListPagesInput, d))
   .handler(async ({ data }): Promise<AdminPageRow[]> => {
-    await requireCapability(getWebRequest(), 'viewAdmin');
+    await requireCapability(getRequest(), 'viewAdmin');
     const db = await getContributionsDb();
     const where = data.lockedOnly ? "WHERE lock_level != 'none'" : '';
     const rows = (
@@ -116,7 +116,7 @@ const HideRevisionInput = v.object({
 export const hideRevision = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(HideRevisionInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'hideRevision');
+    const actor = await requireCapability(getRequest(), 'hideRevision');
     const db = await getContributionsDb();
     const res = await db.execute({
       sql: 'UPDATE show_revisions SET hidden = ? WHERE revision_id = ?',
@@ -139,7 +139,7 @@ const SetLockInput = v.object({
 export const setPageLock = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(SetLockInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'lock');
+    const actor = await requireCapability(getRequest(), 'lock');
     const db = await getContributionsDb();
     const prior = (
       await db.execute({

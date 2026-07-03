@@ -1,4 +1,4 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 
 /**
  * Reports this build's id (compiled in via Vite `define`, see vite.config.ts). The
@@ -9,7 +9,9 @@ import { createServerFileRoute } from '@tanstack/react-start/server';
  * until the route tree is regenerated (dev/build) — same escape hatch as the other
  * API routes.
  */
-export const ServerRoute = createServerFileRoute('/api/version').methods({
+export const Route = createFileRoute('/api/version')({
+  server: {
+    handlers: {
   GET: async () =>
     new Response(JSON.stringify({ id: __APP_VERSION__ }), {
       headers: {
@@ -17,4 +19,6 @@ export const ServerRoute = createServerFileRoute('/api/version').methods({
         'cache-control': 'no-store, no-cache, must-revalidate',
       },
     }),
+    },
+  },
 });

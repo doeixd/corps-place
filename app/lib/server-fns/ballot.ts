@@ -1,8 +1,8 @@
 // Prediction Ballot server-fns (PREDICTION_BALLOT_PLAN §5). Locking is the ONLY
 // write and it is append-only: a locked ballot is immutable by design — a new
 // take is a new ballot. Reads are public (shared links).
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor } from '@/lib/authz';
@@ -60,7 +60,7 @@ export const lockBallot = createServerFn({ method: 'POST' })
     )
   )
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) throw new Error('UNAUTHENTICATED');
     if (!durableStorageStatus().ready) throw new Error('STORAGE_UNAVAILABLE');
     if (!rateLimit(`ballot-lock:${actor.userId}`, 10, 60_000))
@@ -307,7 +307,7 @@ export const getPredictionPool = createServerFn({ method: 'GET' })
 /** The signed-in user's locked ballots (the "my predictions" dropdown), newest first. */
 export const myBallots = createServerFn({ method: 'GET' }).handler(
   async (): Promise<Array<Pick<BallotRecord, 'ballotId' | 'title' | 'preset' | 'lockedAt' | 'season'>>> => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) return [];
     const db = await getContributionsDb();
     const res = await db.execute({

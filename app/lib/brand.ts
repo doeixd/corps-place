@@ -1,5 +1,5 @@
 import { createIsomorphicFn } from '@tanstack/react-start';
-import { getRequestHost, getRequestURL } from '@tanstack/react-start/server';
+import { getRequestHost, getRequestUrl } from '@tanstack/react-start/server';
 
 export type Brand = 'corps' | 'jobs';
 
@@ -72,7 +72,7 @@ export const getBrand = (request: Request): Brand => {
 export const readBrand = createIsomorphicFn()
   .server(() =>
     getBrand(
-      new Request(getRequestURL(), {
+      new Request(getRequestUrl(), {
         headers: { host: getRequestHost() },
       })
     )

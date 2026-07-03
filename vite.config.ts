@@ -7,7 +7,8 @@ import { defineConfig } from 'vite-plus';
 // dep is unreachable).
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PluginOption = any;
-import { tanstackStart } from '@tanstack/react-start-plugin';
+import { tanstackStart } from '@tanstack/react-start/plugin/vite';
+import { redact } from '@tanstack/redact/vite';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
@@ -76,12 +77,14 @@ const dciApiProxy =
     : undefined;
 
 const plugins: PluginOption[] = [
+  // Swap react/react-dom/scheduler for @tanstack/redact (smaller runtime).
+  redact() as unknown as PluginOption,
   ...(tanstackStart({
-    customViteReactPlugin: true,
-    tsr: {
-      srcDirectory: './app',
-      routesDirectory: './app/routes',
-      generatedRouteTree: './app/routeTree.gen.ts',
+    srcDirectory: './app',
+    router: {
+      // Relative to srcDirectory in the new plugin shape.
+      routesDirectory: './routes',
+      generatedRouteTree: './routeTree.gen.ts',
     },
   }) as unknown as PluginOption[]),
   // NOTE: @vitejs/plugin-react v6 is oxc-based and no longer accepts a `babel`
@@ -117,11 +120,21 @@ export default defineConfig({
   },
   plugins,
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'app'),
-      '@sdk': path.resolve(__dirname, 'sdk'),
-    },
-    dedupe: ['react', 'react-dom'],
+    alias: [
+      { find: '@', replacement: path.resolve(__dirname, 'app') },
+      { find: '@sdk', replacement: path.resolve(__dirname, 'sdk') },
+      // redact: absolute paths (bare-id replacements silently fail to resolve
+      // from importers inside other packages' pnpm dirs and fall back to react).
+      { find: /^react-dom\/client$/, replacement: path.resolve(__dirname, 'node_modules/@tanstack/redact/dist/dom/client.js') },
+      { find: /^react-dom\/server(\.edge)?$/, replacement: path.resolve(__dirname, 'node_modules/@tanstack/redact/dist/server/index.js') },
+      { find: /^react-dom$/, replacement: path.resolve(__dirname, 'node_modules/@tanstack/redact/dist/dom/index.js') },
+      { find: /^react\/jsx-runtime$/, replacement: path.resolve(__dirname, 'node_modules/@tanstack/redact/dist/react/jsx-runtime.js') },
+      { find: /^react\/jsx-dev-runtime$/, replacement: path.resolve(__dirname, 'node_modules/@tanstack/redact/dist/react/jsx-runtime.js') },
+      { find: /^react$/, replacement: path.resolve(__dirname, 'node_modules/@tanstack/redact/dist/react/index.js') },
+      { find: /^scheduler$/, replacement: path.resolve(__dirname, 'node_modules/@tanstack/redact/dist/scheduler/index.js') },
+    ],
+    // dedupe react/react-dom dropped: it pinned the real runtime over redact.
+    dedupe: ['@tanstack/redact'],
   },
   // Persistent cache for faster rebuilds (dev + production). Overridable via
   // VITE_CACHE_DIR for environments where node_modules isn't writable.
@@ -217,21 +230,11 @@ export default defineConfig({
     // Node load the CJS natively. It's a complete, simple package, so nitro's file
     // tracing copies it fine in the Docker build (unlike @reduxjs/toolkit, whose
     // missing dist entry is the reason the rest of this list stays bundled).
-    noExternal: [
-      /^recharts/,
-      /^@reduxjs\/toolkit/,
-      /^react-redux/,
-      /^redux/,
-      /^immer/,
-      /^reselect/,
-      /^victory-vendor/,
-      /^d3-/,
-      // use-sync-external-store's CJS shim (shim/with-selector.js, pulled in by
-      // @xstate/react) throws "module is not defined" when Vite's dev SSR
-      // module-runner tries to leave it as external. Bundling it (noExternal)
-      // forces Vite's CJS→ESM transform, which works.
-      'use-sync-external-store',
-    ],
+    // redact experiment: bundle EVERYTHING into the server build so the react
+    // alias applies to every react-consuming dep (framer-motion, base-ui, …) —
+    // any external dep would load the real react and split the hooks runtime.
+    noExternal: true,
+    external: ['sharp', '@libsql/client', '@libsql/core', '@libsql/hrana-client', 'libsql', 'better-sqlite3', 'bufferutil', 'utf-8-validate'],
     optimizeDeps: {
       exclude: [
         'react',

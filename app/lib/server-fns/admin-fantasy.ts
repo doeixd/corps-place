@@ -4,8 +4,8 @@
  * Quiz-bank CRUD already lives in fantasy.ts (adminListQuestions/…, manageFantasyQuiz).
  * Every mutation is audited.
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { randomUUID } from 'node:crypto';
 import { getContributionsDb } from '@/lib/contributions-db';
@@ -41,7 +41,7 @@ const ListLeaguesInput = v.object({
 export const adminListLeagues = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(ListLeaguesInput, d))
   .handler(async ({ data }): Promise<AdminLeagueRow[]> => {
-    await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     const rows = (
       await db.execute({
@@ -79,7 +79,7 @@ export interface AdminLeagueDetail {
 export const adminGetLeague = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }): Promise<AdminLeagueDetail> => {
-    await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     const l = (
       await db.execute({
@@ -128,7 +128,7 @@ const LeagueIdInput = v.object({ leagueId: v.string() });
 export const adminPauseDraft = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(LeagueIdInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     await draftEngine.pauseDraft(data.leagueId);
     await writeAudit(await getContributionsDb(), actor, {
       action: 'fantasy_pause_draft',
@@ -141,7 +141,7 @@ export const adminPauseDraft = createServerFn({ method: 'POST' })
 export const adminResumeDraft = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(LeagueIdInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     await draftEngine.resumeDraft(data.leagueId);
     await writeAudit(await getContributionsDb(), actor, {
       action: 'fantasy_resume_draft',
@@ -154,7 +154,7 @@ export const adminResumeDraft = createServerFn({ method: 'POST' })
 export const adminCancelLeague = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(LeagueIdInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     const before = (
       await db.execute({
@@ -180,7 +180,7 @@ export const adminCancelLeague = createServerFn({ method: 'POST' })
 export const adminTakedownIdentity = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string(), userId: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     const before = (
       await db.execute({
@@ -209,7 +209,7 @@ export const adminRecomputeStandings = createServerFn({ method: 'POST' })
     v.parse(v.object({ season: v.pipe(v.string(), v.regex(/^\d{4}$/)) }), d)
   )
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const summary = await fantasyRuntime.runPromise(
       Effect.flatMap(StandingsService, (s) => s.recompute(data.season))
     );
@@ -252,7 +252,7 @@ const BOT_COLORS = [
 export const adminCreateTestLeague = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(CreateTestLeagueInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     const now = new Date().toISOString();
     const leagueId = randomUUID();
@@ -307,7 +307,7 @@ export const adminCreateTestLeague = createServerFn({ method: 'POST' })
 
 /** List test leagues (is_test = 1) with member counts. Cap: manageFantasyLeagues. */
 export const adminListTestLeagues = createServerFn({ method: 'GET' }).handler(async () => {
-  await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+  await requireCapability(getRequest(), 'manageFantasyLeagues');
   const db = await getContributionsDb();
   const rows = (
     await db.execute(
@@ -346,7 +346,7 @@ export const adminListTestLeagues = createServerFn({ method: 'GET' }).handler(as
 export const adminDeleteTestLeague = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     const league = (
       await db.execute({
@@ -403,7 +403,7 @@ const assertTestLeague = async (
 export const adminStartDraftNow = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     const { config_json } = await assertTestLeague(db, data.leagueId);
     const config = JSON.parse(config_json) as LeagueConfig;
@@ -434,7 +434,7 @@ export const adminStartDraftNow = createServerFn({ method: 'POST' })
 export const adminAutoPickCurrent = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
-    await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     await assertTestLeague(db, data.leagueId);
     // No expectedDeadline → runAutoPickIfDue skips the timing guard and picks now.
@@ -448,7 +448,7 @@ export const adminAutoPickCurrent = createServerFn({ method: 'POST' })
 export const adminFastForwardDraft = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     await assertTestLeague(db, data.leagueId);
     let picks = 0;
@@ -492,7 +492,7 @@ const SAMPLE_QUESTIONS: { q: string; choices: string[]; correct: number; diff: '
 
 /** Seed a starter quiz bank (idempotent — fixed ids). Cap: manageFantasyLeagues. */
 export const adminSeedQuizQuestions = createServerFn({ method: 'POST' }).handler(async () => {
-  const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+  const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
   const db = await getContributionsDb();
   const now = new Date().toISOString();
   let added = 0;
@@ -516,7 +516,7 @@ export const adminSeedQuizQuestions = createServerFn({ method: 'POST' }).handler
 export const adminResetQuizAttempt = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ leagueId: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     await assertTestLeague(db, data.leagueId);
     await db.execute({
@@ -551,7 +551,7 @@ export const adminSeedSyntheticScores = createServerFn({ method: 'POST' })
     v.parse(v.object({ leagueId: v.string(), final: v.optional(v.boolean(), false) }), d)
   )
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     await assertTestLeague(db, data.leagueId);
     const now = new Date().toISOString();
@@ -672,7 +672,7 @@ export const adminSendTestNotification = createServerFn({ method: 'POST' })
     v.parse(v.object({ kind: v.picklist(Object.keys(TEST_NOTIF) as [string, ...string[]]) }), d)
   )
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
+    const actor = await requireCapability(getRequest(), 'manageFantasyLeagues');
     const db = await getContributionsDb();
     const tpl = TEST_NOTIF[data.kind];
     const me = (

@@ -1,5 +1,5 @@
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { getActor } from '@/lib/authz';
@@ -50,7 +50,7 @@ export const subscribeScores = createServerFn({ method: 'POST' })
     if (!rateLimit(`score-notify:subscribe:${email}`, 20, 60_000))
       throw new Error('Too many requests — please slow down and try again in a bit.');
 
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
 
     const methods = {
       email: data.methods?.email ?? true,
@@ -80,7 +80,7 @@ export const subscribeScores = createServerFn({ method: 'POST' })
     void recordServerEvent(
       'score_subscribe',
       { kind: data.targetKind, push: methods.push, email: methods.email },
-      getWebRequest()
+      getRequest()
     );
     return { ok: true };
   });
@@ -114,7 +114,7 @@ export const saveScorePushSubscription = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(PushSubInput, d))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const email = data.email?.trim().toLowerCase() || null;
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     const db = await getContributionsDb();
     await db.execute({
       sql: `INSERT INTO score_push_subscriptions (id, email, user_id, endpoint, p256dh, auth, created_at)

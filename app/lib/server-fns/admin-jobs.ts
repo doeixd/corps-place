@@ -3,8 +3,8 @@
  * spawns (the serving container has no sdk/scripts). A VM worker claims 'queued'
  * rows and runs them. Every fn re-checks capability; enqueue/cancel are audited.
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { requireCapability } from '@/lib/authz';
@@ -65,7 +65,7 @@ const EnqueueInput = v.object({
 export const adminEnqueueJob = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(EnqueueInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'runJobs');
+    const actor = await requireCapability(getRequest(), 'runJobs');
     const db = await getContributionsDb();
     // Per-kind dedupe for SINGLETON kinds only (parameterized kinds allow many).
     if (SINGLETON_KINDS.has(data.kind)) {
@@ -108,7 +108,7 @@ const ListJobsInput = v.object({
 export const adminJobs = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(ListJobsInput, d))
   .handler(async ({ data }): Promise<JobRow[]> => {
-    await requireCapability(getWebRequest(), 'viewAdmin');
+    await requireCapability(getRequest(), 'viewAdmin');
     const db = await getContributionsDb();
     const rows = (
       await db.execute({
@@ -125,7 +125,7 @@ export const adminJobs = createServerFn({ method: 'GET' })
 export const adminJob = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(v.object({ jobId: v.string() }), d))
   .handler(async ({ data }) => {
-    await requireCapability(getWebRequest(), 'viewAdmin');
+    await requireCapability(getRequest(), 'viewAdmin');
     const db = await getContributionsDb();
     const row = (
       await db.execute({ sql: 'SELECT * FROM admin_jobs WHERE job_id = ?', args: [data.jobId] })
@@ -164,7 +164,7 @@ const IngestRunsInput = v.object({
 export const adminIngestRuns = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(IngestRunsInput, d))
   .handler(async ({ data }): Promise<IngestRunRow[]> => {
-    await requireCapability(getWebRequest(), 'viewAdmin');
+    await requireCapability(getRequest(), 'viewAdmin');
     const db = await getContributionsDb();
     // The table is created lazily (by the app schema or the VM recorder); tolerate
     // its absence on a fresh DB so the page still renders.
@@ -200,7 +200,7 @@ export const adminIngestRuns = createServerFn({ method: 'GET' })
 export const adminCancelJob = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ jobId: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'runJobs');
+    const actor = await requireCapability(getRequest(), 'runJobs');
     const db = await getContributionsDb();
     const res = await db.execute({
       sql: `UPDATE admin_jobs SET status = 'canceled', finished_at = ?

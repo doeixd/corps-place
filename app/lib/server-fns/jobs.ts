@@ -1,5 +1,5 @@
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { Effect } from 'effect';
 import { getActor, ForbiddenError } from '@/lib/authz';
@@ -30,7 +30,7 @@ const limit = (action: string, userId: string, max: number, windowMs: number): v
 // fantasy-jobs-deploy-bundle-leak.
 
 const getJobsCtx = async () => {
-  const actor = await getActor(getWebRequest());
+  const actor = await getActor(getRequest());
   if (!actor) throw new ForbiddenError('edit');
   return { authorId: actor.userId, actorRole: actor.role, now: new Date().toISOString() };
 };
@@ -57,7 +57,7 @@ export const getJobsProfile = createServerFn({ method: 'GET' })
   );
 
 export const getMyJobsProfile = createServerFn({ method: 'GET' }).handler(async () => {
-  const actor = await getActor(getWebRequest());
+  const actor = await getActor(getRequest());
   if (!actor) return null;
   return Effect.runPromise(
     Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(actor.userId)).pipe(
@@ -341,7 +341,7 @@ export const createJobPosting = createServerFn({ method: 'POST' })
     void recordServerEvent(
       'job_post',
       { discipline: data.discipline ?? null, remote: data.remoteOk ?? null },
-      getWebRequest()
+      getRequest()
     );
     return { ok: true as const, postingId };
   });
@@ -522,7 +522,7 @@ const ApplyInput = v.object({
 export const applyToJob = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(ApplyInput, d))
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) throw new Error('Sign in to apply');
     limit('apply', actor.userId, 12, 60_000);
     const result = await Effect.runPromise(
@@ -548,7 +548,7 @@ ${data.message ? `<blockquote style="border-left:3px solid #ddd;padding-left:12p
     // Domain analytics (best-effort): job-application conversions. Only the first
     // application per user+posting (isNew), not re-submits.
     if (result.isNew) {
-      void recordServerEvent('job_apply', { postingId: data.postingId }, getWebRequest());
+      void recordServerEvent('job_apply', { postingId: data.postingId }, getRequest());
     }
     return { ok: true as const, applicationId: result.applicationId };
   });
@@ -556,7 +556,7 @@ ${data.message ? `<blockquote style="border-left:3px solid #ddd;padding-left:12p
 export const hasAppliedToJob = createServerFn({ method: 'GET' })
   .validator((d: { postingId: string }) => d)
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) return false;
     return Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.hasApplied(data.postingId, actor.userId)).pipe(
@@ -643,7 +643,7 @@ export const searchTalent = createServerFn({ method: 'GET' })
     // Runs in the route loader, which executes for signed-out visitors too — return
     // empty (no data leak) instead of throwing, so the page can render its sign-in
     // gate rather than a 500.
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) return { rows: [], total: 0 };
 
     const baseFilters = {
@@ -810,7 +810,7 @@ const UploadResumeInput = v.object({
 export const uploadAndParseResume = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(UploadResumeInput, d))
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) throw new Error('Sign in to upload a résumé');
     limit('resume', actor.userId, 10, 10 * 60_000);
     // DoS guard: reject empty / oversized uploads before touching disk.
@@ -856,7 +856,7 @@ export const bookmarkJob = createServerFn({ method: 'POST' })
 export const isJobBookmarked = createServerFn({ method: 'GET' })
   .validator((d: { postingId: string }) => d)
   .handler(async ({ data }) => {
-    const actor = await getActor(getWebRequest());
+    const actor = await getActor(getRequest());
     if (!actor) return false;
     return Effect.runPromise(
       Effect.flatMap(JobsService, (svc) => svc.isBookmarked(actor.userId, data.postingId)).pipe(

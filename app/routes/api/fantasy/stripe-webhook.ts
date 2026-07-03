@@ -1,5 +1,5 @@
 import type Stripe from 'stripe';
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 import { Effect } from 'effect';
 import { constructWebhookEvent } from '@/lib/fantasy/payments';
 import { PaymentService } from '@/lib/fantasy/services/payment-service';
@@ -12,7 +12,9 @@ import { fantasyRuntime } from '@/rpc';
  * `checkout.session.completed` we record the payment intent in `payment_ref`
  * (needed for refunds); an external `charge.refunded` flips it back.
  */
-export const ServerRoute = createServerFileRoute('/api/fantasy/stripe-webhook').methods({
+export const Route = createFileRoute('/api/fantasy/stripe-webhook')({
+  server: {
+    handlers: {
   POST: async ({ request }) => {
     const signature = request.headers.get('stripe-signature');
     if (!signature) return new Response('Missing signature', { status: 400 });
@@ -49,5 +51,7 @@ export const ServerRoute = createServerFileRoute('/api/fantasy/stripe-webhook').
     }
 
     return Response.json({ received: true });
+  },
+    },
   },
 });

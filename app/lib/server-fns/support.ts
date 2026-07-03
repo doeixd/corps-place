@@ -2,8 +2,8 @@
  * Support server-fns (ADMIN_PAGE_PLAN §10). Public /contact submission + the
  * customerSupport-gated inbox, reply (logged), and unified user-detail lookup.
  */
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { getActor, requireCapability } from '@/lib/authz';
@@ -34,7 +34,7 @@ export const submitContact = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(ContactInput, d))
   .handler(async ({ data }) => {
     if (data.website) return { ok: true as const }; // silently drop bot submissions
-    const actor = await getActor(getWebRequest()); // may be null (signed out)
+    const actor = await getActor(getRequest()); // may be null (signed out)
     const db = await getContributionsDb();
     const now = new Date().toISOString();
     await db.execute({
@@ -82,7 +82,7 @@ const ListContactInput = v.object({
 export const listContactMessages = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(ListContactInput, d))
   .handler(async ({ data }): Promise<ContactRow[]> => {
-    await requireCapability(getWebRequest(), 'customerSupport');
+    await requireCapability(getRequest(), 'customerSupport');
     const db = await getContributionsDb();
     const where = data.status === 'all' ? '' : 'WHERE status = ?';
     const rows = (
@@ -112,7 +112,7 @@ export const setContactStatus = createServerFn({ method: 'POST' })
     )
   )
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'customerSupport');
+    const actor = await requireCapability(getRequest(), 'customerSupport');
     const db = await getContributionsDb();
     const res = await db.execute({
       sql: 'UPDATE contact_messages SET status = ?, handled_by = ?, handled_at = ? WHERE message_id = ?',
@@ -137,7 +137,7 @@ const ReplyInput = v.object({
 export const replyContact = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(ReplyInput, d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'customerSupport');
+    const actor = await requireCapability(getRequest(), 'customerSupport');
     const db = await getContributionsDb();
     const msg = (
       await db.execute({
@@ -168,7 +168,7 @@ export const replyContact = createServerFn({ method: 'POST' })
 export const getUserDetail = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(v.object({ userId: v.string() }), d))
   .handler(async ({ data }) => {
-    await requireCapability(getWebRequest(), 'customerSupport');
+    await requireCapability(getRequest(), 'customerSupport');
     const db = await getContributionsDb();
     const u = (
       await db.execute({
@@ -223,7 +223,7 @@ export interface EmailLogRow {
 export const listUserEmails = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(v.object({ userId: v.string() }), d))
   .handler(async ({ data }): Promise<EmailLogRow[]> => {
-    await requireCapability(getWebRequest(), 'customerSupport');
+    await requireCapability(getRequest(), 'customerSupport');
     const db = await getContributionsDb();
     const email = await lookupEmail(db, data.userId);
     if (!email) return [];
@@ -255,7 +255,7 @@ export interface SessionRow {
 export const listUserSessions = createServerFn({ method: 'GET' })
   .validator((d: unknown) => v.parse(v.object({ userId: v.string() }), d))
   .handler(async ({ data }): Promise<SessionRow[]> => {
-    await requireCapability(getWebRequest(), 'customerSupport');
+    await requireCapability(getRequest(), 'customerSupport');
     const db = await getContributionsDb();
     const rows = (
       await db.execute({
@@ -278,7 +278,7 @@ export const listUserSessions = createServerFn({ method: 'GET' })
 export const revokeUserSessions = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ userId: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'customerSupport');
+    const actor = await requireCapability(getRequest(), 'customerSupport');
     const db = await getContributionsDb();
     const res = await db.execute({
       sql: 'DELETE FROM session WHERE "userId" = ?',
@@ -297,7 +297,7 @@ export const revokeUserSessions = createServerFn({ method: 'POST' })
 export const logSignInLinkSent = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(v.object({ userId: v.string() }), d))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'customerSupport');
+    const actor = await requireCapability(getRequest(), 'customerSupport');
     await writeAudit(await getContributionsDb(), actor, {
       action: 'send_signin_link',
       target: data.userId,

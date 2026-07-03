@@ -1,6 +1,8 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const ServerRoute = createServerFileRoute('/robots.txt').methods({
+export const Route = createFileRoute('/robots.txt')({
+  server: {
+    handlers: {
   GET: async ({ request }) => {
     const origin = new URL(request.url).origin;
     const body = `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`;
@@ -10,5 +12,7 @@ export const ServerRoute = createServerFileRoute('/robots.txt').methods({
         'cache-control': 'public, max-age=86400',
       },
     });
+  },
+    },
   },
 });

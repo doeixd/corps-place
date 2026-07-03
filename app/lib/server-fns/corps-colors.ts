@@ -4,8 +4,8 @@
 // a `save_corps_colors` job the VM worker runs against the relational source DB. Gated
 // by the real role system (was dev-only).
 
-import { createServerFn } from '@tanstack/react-start/client';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { createServerFn } from '@tanstack/react-start';
+import { getRequest } from '@tanstack/react-start/server';
 import { Schema, SchemaParser } from 'effect';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
@@ -23,7 +23,7 @@ const SaveInput = Schema.Struct({
 export const saveCorpsColors = createServerFn({ method: 'POST' })
   .validator(SchemaParser.decodeUnknownSync(SaveInput))
   .handler(async ({ data }) => {
-    const actor = await requireCapability(getWebRequest(), 'viewAdmin');
+    const actor = await requireCapability(getRequest(), 'viewAdmin');
 
     const primary = normalizeHex(data.primary);
     if (!primary) throw new Error(`Invalid primary color: ${data.primary}`);
