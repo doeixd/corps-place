@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
-import { getHybridAllEvents } from '@/lib/server-fns/hybrid';
+import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
 import { availableSeasons } from '@/lib/event-filtering';
 import { eventFilterMachine, eventFilterSearchCodec } from '@/machines/event-filter-machine';
 import { useSearchSync } from '@/lib/use-search-sync';
@@ -37,9 +37,12 @@ export const Route = createFileRoute('/scores/')({
     if (q) out.q = q;
     return out;
   },
-  loader: async () => ({ events: await getHybridAllEvents() }),
+  // SSR ships only the viewed season (the all-seasons list is ~1MB serialized
+  // into the HTML). ?season=all (the archive view) still loads everything.
+  loaderDeps: ({ search }) => ({ season: search.season }),
+  loader: async ({ deps }) => await getHybridEventsDirectory({ data: { season: deps.season } }),
   head: ({ loaderData }) => {
-    const n = loaderData?.events.filter((e) => e.scores_released).length ?? 0;
+    const n = loaderData?.scoredTotal ?? 0;
     return seoHead({
       title: 'Drum Corps Scores & Full Recaps by Season',
       description: `Final scores and complete caption-by-caption recaps from ${n} scored drum corps shows — browse results by season on DrumCorps.app.`,
@@ -78,9 +81,12 @@ function ScoresIndex() {
 
   const scored = useMemo(() => events.filter((e) => e.scores_released), [events]);
   const scoredSeasons = availableSeasons(scored);
-  const seasons = scoredSeasons.includes(CURRENT_SCORES_SEASON)
-    ? scoredSeasons
-    : [CURRENT_SCORES_SEASON, ...scoredSeasons];
+  // Season chips come from the loader's full season list — `events` only holds
+  // the viewed season now, so deriving chips from it would show one entry.
+  const loaderSeasons = Route.useLoaderData().seasons;
+  const seasons = loaderSeasons.includes(CURRENT_SCORES_SEASON)
+    ? loaderSeasons
+    : [CURRENT_SCORES_SEASON, ...loaderSeasons];
   const defaultSeason = CURRENT_SCORES_SEASON;
   const codec = useMemo(() => eventFilterSearchCodec(defaultSeason), [defaultSeason]);
 

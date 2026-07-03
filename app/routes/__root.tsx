@@ -91,7 +91,14 @@ function FavoriteHeadBranding({
   return (
     <>
       <link rel="icon" href={iconHref} type="image/svg+xml" data-app-icon="true" />
-      <link rel="apple-touch-icon" href={iconHref} data-app-icon="true" />
+      {/* Static PNG: iOS doesn't render SVG touch icons, and pointing this at the
+          same SVG as rel=icon made Chromium download the 33KB artwork twice. Not
+          recolored per favorite — it's the home-screen icon, not browser chrome. */}
+      <link
+        rel="apple-touch-icon"
+        href={brand === 'jobs' ? initialIconHref : '/apple-touch-icon.png'}
+        data-app-icon="true"
+      />
       <meta name="theme-color" content={themeColor} />
     </>
   );

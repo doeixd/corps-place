@@ -21,6 +21,7 @@ import { seedIndexCollection } from '@/db/json-collection';
 export function HybridCollection<T extends object>({
   collection,
   loader,
+  seed = true,
   children,
 }: {
   // Row type is inferred from `loader`, not the collection: the collection's
@@ -28,11 +29,17 @@ export function HybridCollection<T extends object>({
   // T to it would clash with the loader/children's concrete row type.
   collection: Collection<any, string | number, any>;
   loader: T[];
+  /**
+   * Seed the collection's first sync from `loader` (skips the duplicate shard
+   * fetch). MUST be false when the loader carries only a slice of the directory
+   * (e.g. one season) — seeding a partial list would starve the collection.
+   */
+  seed?: boolean;
   children: (rows: T[]) => ReactNode;
 }) {
   if (typeof window === 'undefined') return <>{children(loader)}</>;
   return (
-    <LiveBridge collection={collection} loader={loader}>
+    <LiveBridge collection={collection} loader={loader} seed={seed}>
       {children}
     </LiveBridge>
   );
@@ -88,17 +95,19 @@ function RecordBridge<T extends object>({
 function LiveBridge<T extends object>({
   collection,
   loader,
+  seed,
   children,
 }: {
   collection: Collection<T, string | number, any>;
   loader: T[];
+  seed: boolean;
   children: (rows: T[]) => ReactNode;
 }) {
   // Seed the collection's first sync from the loader payload — same read-model
   // data the shard would return, so sync can skip the duplicate network fetch.
   // Must run before useLiveQuery's subscription triggers that sync; a no-op for
   // non-index collections and already-synced ones (the seed is one-shot).
-  seedIndexCollection((collection as { id?: string }).id, loader);
+  if (seed) seedIndexCollection((collection as { id?: string }).id, loader);
   const { data } = useLiveQuery(collection as never);
   const rows = (data ?? []) as T[];
   // The collection sorts by the configured key (e.g. corps_key), but the loader

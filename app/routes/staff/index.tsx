@@ -22,11 +22,17 @@ export const Route = createFileRoute('/staff/')({
     if (typeof search.s === 'number' && search.s > 0) out.s = search.s;
     return out;
   },
-  loader: async () => ({ staff: await getStaffDirectory() }),
+  // SSR ships only the first screenfuls: the list is client-virtualized (SSR
+  // renders no cards), so inlining all ~9k rows added ~2MB of HTML for nothing.
+  // The staff collection shard-loads the full set right after hydration.
+  loader: async () => {
+    const all = await getStaffDirectory();
+    return { staff: all.slice(0, 60), total: all.length };
+  },
   head: ({ loaderData }) => {
     const d = loaderData;
     if (!d) return {};
-    const n = d.staff.length;
+    const n = d.total;
     return seoHead({
       title: 'Drum Corps Staff & Instructors Directory',
       description: `Browse ${n} drum corps instructors, designers and directors — the people who teach drum corps, with roles, corps history and bios on DrumCorps.app.`,
@@ -49,7 +55,8 @@ export const Route = createFileRoute('/staff/')({
 function StaffDirectory() {
   const { staff } = Route.useLoaderData();
   return (
-    <HybridCollection collection={staffCollection} loader={staff}>
+    // seed=false: the loader is a 60-row slice, not the full directory.
+    <HybridCollection collection={staffCollection} loader={staff} seed={false}>
       {(rows) => <StaffDirectoryContent staff={rows as unknown as StaffSummary[]} />}
     </HybridCollection>
   );
@@ -88,6 +95,9 @@ function useStaffColumns() {
 function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+  // Full directory size from the loader — `staff` is the 60-row SSR slice until
+  // the shard loads, and the header count shouldn't flash 60 → 9k.
+  const { total } = Route.useLoaderData();
   const columns = useStaffColumns();
   const latestSearchRef = useRef(search);
   const didRestoreScrollRef = useRef(false);
@@ -170,7 +180,7 @@ function StaffDirectoryContent({ staff }: { staff: StaffSummary[] }) {
     <PageShell>
       <PageHeader
         title="Staff"
-        subtitle={`${staff.length} instructors, designers & directors across the activity`}
+        subtitle={`${Math.max(staff.length, total)} instructors, designers & directors across the activity`}
         backTo="/"
         backLabel="Home"
       />

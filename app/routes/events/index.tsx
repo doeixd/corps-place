@@ -6,7 +6,7 @@ import { eventsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
 import { Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
-import { getHybridAllEvents } from '@/lib/server-fns/hybrid';
+import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
 import { searchString } from '@/lib/utils';
 import type { EventDirectoryRow } from '@/lib/event-directory';
 import {
@@ -40,11 +40,16 @@ export const Route = createFileRoute('/events/')({
     if (searchString(search.dir) === 'desc') out.dir = 'desc';
     return out;
   },
-  loader: async () => ({ events: await getHybridAllEvents() }),
+  // SSR ships only the viewed season (the all-seasons list is ~1MB serialized
+  // into the HTML); the events collection shard-loads the full set after
+  // hydration for cross-season switching. Deep links (?season=) stay SSR-correct
+  // via loaderDeps.
+  loaderDeps: ({ search }) => ({ season: search.season }),
+  loader: async ({ deps }) => await getHybridEventsDirectory({ data: { season: deps.season } }),
   head: ({ loaderData }) => {
     const d = loaderData;
     if (!d) return {};
-    const n = d.events.length;
+    const n = d.total;
     return seoHead({
       title: 'Drum Corps Competitions, Schedules & Scores',
       description: `Browse ${n} drum corps competitions — schedules, lineups, scores and AI predictions by season on DrumCorps.app.`,
@@ -66,7 +71,8 @@ export const Route = createFileRoute('/events/')({
 function EventsDirectory() {
   const { events } = Route.useLoaderData();
   return (
-    <HybridCollection collection={eventsCollection} loader={events}>
+    // seed=false: the loader is one season's slice, not the full directory.
+    <HybridCollection collection={eventsCollection} loader={events} seed={false}>
       {(rows) => <EventsDirectoryContent events={rows} />}
     </HybridCollection>
   );
@@ -76,9 +82,14 @@ function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  // Seasons present in the data, newest first; latest is the default (kept out
-  // of the URL for a clean default view).
-  const seasons = availableSeasons(events);
+  // Seasons newest first; latest is the default (kept out of the URL for a
+  // clean default view). The loader's `seasons` covers all seasons even while
+  // `events` is still the single-season SSR slice (pre-shard) — without it the
+  // season dropdown would briefly collapse to one entry.
+  const loaderSeasons = Route.useLoaderData().seasons;
+  const seasons = [...new Set([...loaderSeasons, ...availableSeasons(events)])].sort((a, b) =>
+    b.localeCompare(a)
+  );
   const defaultSeason = seasons[0] ?? 'all';
   const codec = useMemo(() => eventFilterSearchCodec(defaultSeason), [defaultSeason]);
 

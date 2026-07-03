@@ -405,6 +405,36 @@ export const getHybridAllEvents = createServerFn({ method: 'GET' }).handler(asyn
   return Effect.runPromise(program);
 });
 
+// One season's slice of the events directory + the full season list and total.
+// The /events and /scores loaders inline their payload into the SSR HTML, and
+// the all-seasons list is ~1MB serialized — so SSR ships only the requested
+// season (deep links included) while the client-side events collection
+// shard-loads the full set for cross-season filtering after hydration.
+export const getHybridEventsDirectory = createServerFn({ method: 'GET' })
+  .validator((data: { season?: string } | undefined) => data ?? {})
+  .handler(async ({ data }) => {
+    const program = Effect.flatMap(EventDirectoryService, (s) => s.listAllSeasonEvents()).pipe(
+      provideServices
+    );
+    const all = await Effect.runPromise(program);
+    const seasons = [...new Set(all.map((e) => String(e.season)))].sort((a, b) =>
+      b.localeCompare(a)
+    );
+    // 'all' is the archive view — the one case that genuinely needs every season.
+    const season =
+      data.season === 'all'
+        ? 'all'
+        : data.season && seasons.includes(data.season)
+          ? data.season
+          : seasons[0];
+    return {
+      events: season === 'all' ? all : all.filter((e) => String(e.season) === season),
+      seasons,
+      total: all.length,
+      scoredTotal: all.filter((e) => e.scores_released).length,
+    };
+  });
+
 // Get latest refresh status
 export const getHybridRefreshStatus = createServerFn({ method: 'GET' }).handler(async () => {
   const program = Effect.flatMap(EventDirectoryService, (s) => s.latest2026Refresh()).pipe(
