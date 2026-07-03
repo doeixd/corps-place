@@ -176,6 +176,18 @@ function RootDocument({
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: noFlashThemeScript }}
         />
+        {/* Entry-load watchdog: a page served during a deploy rollout can
+            reference asset hashes that no longer exist — the entry module 404s,
+            no JS ever runs, and the page is permanently dead (the in-app
+            vite:preloadError reload can't help; it lives in the JS that failed).
+            This inline capture-phase handler reloads once to pull fresh HTML. */}
+        <script
+          type="text/javascript"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `window.addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='SCRIPT'&&t.src&&t.src.indexOf('/assets/')!==-1&&!sessionStorage.getItem('cp-entry-reload')){sessionStorage.setItem('cp-entry-reload','1');location.reload();}},true);window.addEventListener('load',function(){sessionStorage.removeItem('cp-entry-reload');});`,
+          }}
+        />
         <HeadContent />
       </head>
       <body>
