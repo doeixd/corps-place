@@ -110,6 +110,7 @@ import { ServerRoute as ReadModelCorpsAppearanceResultsSlugServerRouteImport } f
 import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
 import { ServerRoute as ApiOgJobsHomeServerRouteImport } from './routes/api/og/jobs-home'
 import { ServerRoute as ApiOgHomeServerRouteImport } from './routes/api/og/home'
+import { ServerRoute as ApiOgFinalsServerRouteImport } from './routes/api/og/finals'
 import { ServerRoute as ApiJobsStripeWebhookServerRouteImport } from './routes/api/jobs/stripe-webhook'
 import { ServerRoute as ApiFantasyStripeWebhookServerRouteImport } from './routes/api/fantasy/stripe-webhook'
 import { ServerRoute as ApiFantasyMediaIdServerRouteImport } from './routes/api/fantasy-media/$id'
@@ -632,6 +633,11 @@ const ApiOgJobsHomeServerRoute = ApiOgJobsHomeServerRouteImport.update({
 const ApiOgHomeServerRoute = ApiOgHomeServerRouteImport.update({
   id: '/api/og/home',
   path: '/api/og/home',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiOgFinalsServerRoute = ApiOgFinalsServerRouteImport.update({
+  id: '/api/og/finals',
+  path: '/api/og/finals',
   getParentRoute: () => rootServerRouteImport,
 } as any)
 const ApiJobsStripeWebhookServerRoute =
@@ -1260,6 +1266,7 @@ export interface FileServerRoutesByFullPath {
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
   '/api/jobs/stripe-webhook': typeof ApiJobsStripeWebhookServerRoute
+  '/api/og/finals': typeof ApiOgFinalsServerRoute
   '/api/og/home': typeof ApiOgHomeServerRoute
   '/api/og/jobs-home': typeof ApiOgJobsHomeServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
@@ -1300,6 +1307,7 @@ export interface FileServerRoutesByTo {
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
   '/api/jobs/stripe-webhook': typeof ApiJobsStripeWebhookServerRoute
+  '/api/og/finals': typeof ApiOgFinalsServerRoute
   '/api/og/home': typeof ApiOgHomeServerRoute
   '/api/og/jobs-home': typeof ApiOgJobsHomeServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
@@ -1341,6 +1349,7 @@ export interface FileServerRoutesById {
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
   '/api/jobs/stripe-webhook': typeof ApiJobsStripeWebhookServerRoute
+  '/api/og/finals': typeof ApiOgFinalsServerRoute
   '/api/og/home': typeof ApiOgHomeServerRoute
   '/api/og/jobs-home': typeof ApiOgJobsHomeServerRoute
   '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
@@ -1383,6 +1392,7 @@ export interface FileServerRouteTypes {
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
     | '/api/jobs/stripe-webhook'
+    | '/api/og/finals'
     | '/api/og/home'
     | '/api/og/jobs-home'
     | '/api/show-media/$id'
@@ -1423,6 +1433,7 @@ export interface FileServerRouteTypes {
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
     | '/api/jobs/stripe-webhook'
+    | '/api/og/finals'
     | '/api/og/home'
     | '/api/og/jobs-home'
     | '/api/show-media/$id'
@@ -1463,6 +1474,7 @@ export interface FileServerRouteTypes {
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
     | '/api/jobs/stripe-webhook'
+    | '/api/og/finals'
     | '/api/og/home'
     | '/api/og/jobs-home'
     | '/api/show-media/$id'
@@ -1504,6 +1516,7 @@ export interface RootServerRouteChildren {
   ApiFantasyMediaIdServerRoute: typeof ApiFantasyMediaIdServerRoute
   ApiFantasyStripeWebhookServerRoute: typeof ApiFantasyStripeWebhookServerRoute
   ApiJobsStripeWebhookServerRoute: typeof ApiJobsStripeWebhookServerRoute
+  ApiOgFinalsServerRoute: typeof ApiOgFinalsServerRoute
   ApiOgHomeServerRoute: typeof ApiOgHomeServerRoute
   ApiOgJobsHomeServerRoute: typeof ApiOgJobsHomeServerRoute
   ApiShowMediaIdServerRoute: typeof ApiShowMediaIdServerRoute
@@ -2224,6 +2237,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiOgHomeServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/og/finals': {
+      id: '/api/og/finals'
+      path: '/api/og/finals'
+      fullPath: '/api/og/finals'
+      preLoaderRoute: typeof ApiOgFinalsServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/jobs/stripe-webhook': {
       id: '/api/jobs/stripe-webhook'
       path: '/api/jobs/stripe-webhook'
@@ -2469,6 +2489,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ApiFantasyMediaIdServerRoute: ApiFantasyMediaIdServerRoute,
   ApiFantasyStripeWebhookServerRoute: ApiFantasyStripeWebhookServerRoute,
   ApiJobsStripeWebhookServerRoute: ApiJobsStripeWebhookServerRoute,
+  ApiOgFinalsServerRoute: ApiOgFinalsServerRoute,
   ApiOgHomeServerRoute: ApiOgHomeServerRoute,
   ApiOgJobsHomeServerRoute: ApiOgJobsHomeServerRoute,
   ApiShowMediaIdServerRoute: ApiShowMediaIdServerRoute,

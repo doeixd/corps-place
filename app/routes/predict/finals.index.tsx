@@ -18,7 +18,7 @@ import { CorpsNameCell } from '@/components/corps-name-cell';
 import { corpsLogoSource } from '@/components/corps-logo';
 import { SignInButton } from '@/components/sign-in-button';
 import { ShareButton } from '@/components/share-button';
-import { seoHead } from '@/lib/seo';
+import { seoHead, siteBase } from '@/lib/seo';
 import { getRankingSeasons } from '@/lib/server-fns/rankings';
 import {
   lockBallot,
@@ -126,7 +126,27 @@ export const Route = createFileRoute('/predict/finals/')({
       ...r,
       group: recapGroup(r.division),
     }));
-    return { season, pool };
+    // og:image for shared links: capture ?o=/preset from the REQUEST during SSR
+    // (crawlers never run JS, and the loader has no search deps by design — a
+    // client-side reorder doesn't need fresh meta). Dynamic import keeps the
+    // server module out of the client bundle.
+    let ogQuery = '';
+    if (typeof document === 'undefined') {
+      try {
+        const { getWebRequest } = await import('@tanstack/react-start/server');
+        const url = new URL(getWebRequest().url);
+        const qp = new URLSearchParams();
+        const o = url.searchParams.get('o');
+        const preset = url.searchParams.get('preset');
+        if (o) qp.set('o', o);
+        if (preset) qp.set('preset', preset);
+        qp.set('season', season);
+        ogQuery = `?${qp.toString()}`;
+      } catch {
+        /* non-request SSR context — generic image */
+      }
+    }
+    return { season, pool, ogQuery };
   },
   head: ({ loaderData }) =>
     seoHead({
@@ -134,6 +154,7 @@ export const Route = createFileRoute('/predict/finals/')({
       description:
         `Predict the ${loaderData?.season ?? ''} DCI World Championship Finals: drag World Class and Open Class drum corps into your predicted finals order — overall and by caption — starting from the model's projected rankings, then lock in and share your prediction.`.trim(),
       path: '/predict/finals',
+      image: `${siteBase().url}/api/og/finals${loaderData?.ogQuery ?? ''}`,
     }),
   staleTime: 5 * 60_000,
   component: BallotPage,
@@ -536,11 +557,32 @@ function BallotPage() {
               opens it can keep editing their own copy.
             </p>
           </div>
-          <div>
+          <div className="flex flex-wrap items-center gap-2">
             <ShareButton
               url={typeof window !== 'undefined' ? window.location.href : ''}
               title={`My ${season} drum corps finals prediction`}
             />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                track('ballot_image_download', { locked: false });
+                const qp = new URLSearchParams(window.location.search);
+                qp.set('season', season);
+                const res = await fetch(`/api/og/finals?${qp.toString()}`);
+                const blob = await res.blob();
+                const href = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = href;
+                a.download = `finals-prediction-${season}.png`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(href);
+              }}
+            >
+              Download image
+            </Button>
           </div>
         </CardContent>
       </Card>
