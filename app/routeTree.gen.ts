@@ -64,12 +64,14 @@ import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-color
 import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
+import { Route as PredictFinalsIndexRouteImport } from './routes/predict/finals.index'
 import { Route as PredictBallotIndexRouteImport } from './routes/predict/ballot.index'
 import { Route as FantasySlugIndexRouteImport } from './routes/fantasy/$slug/index'
 import { Route as EventsYearSlugIndexRouteImport } from './routes/events/$yearSlug/index'
 import { Route as ShowsSlugSeasonRouteImport } from './routes/shows/$slug.$season'
 import { Route as ShopGroupStoreIdRouteImport } from './routes/shop/group/$storeId'
 import { Route as ShopCategoryCatRouteImport } from './routes/shop/category/$cat'
+import { Route as PredictFinalsIdRouteImport } from './routes/predict/finals.$id'
 import { Route as PredictBallotIdRouteImport } from './routes/predict/ballot.$id'
 import { Route as JobsProfileSlugRouteImport } from './routes/jobs/profile/$slug'
 import { Route as JobsCSlugRouteImport } from './routes/jobs/c/$slug'
@@ -389,6 +391,11 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   path: '/admin/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PredictFinalsIndexRoute = PredictFinalsIndexRouteImport.update({
+  id: '/predict/finals/',
+  path: '/predict/finals/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PredictBallotIndexRoute = PredictBallotIndexRouteImport.update({
   id: '/predict/ballot/',
   path: '/predict/ballot/',
@@ -417,6 +424,11 @@ const ShopGroupStoreIdRoute = ShopGroupStoreIdRouteImport.update({
 const ShopCategoryCatRoute = ShopCategoryCatRouteImport.update({
   id: '/shop/category/$cat',
   path: '/shop/category/$cat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictFinalsIdRoute = PredictFinalsIdRouteImport.update({
+  id: '/predict/finals/$id',
+  path: '/predict/finals/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PredictBallotIdRoute = PredictBallotIdRouteImport.update({
@@ -763,12 +775,14 @@ export interface FileRoutesByFullPath {
   '/jobs/c/$slug': typeof JobsCSlugRoute
   '/jobs/profile/$slug': typeof JobsProfileSlugRoute
   '/predict/ballot/$id': typeof PredictBallotIdRoute
+  '/predict/finals/$id': typeof PredictFinalsIdRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
   '/events/$yearSlug': typeof EventsYearSlugIndexRoute
   '/fantasy/$slug': typeof FantasySlugIndexRoute
   '/predict/ballot': typeof PredictBallotIndexRoute
+  '/predict/finals': typeof PredictFinalsIndexRoute
   '/events/$yearSlug/$slug/prediction': typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileRoutesByTo {
@@ -837,12 +851,14 @@ export interface FileRoutesByTo {
   '/jobs/c/$slug': typeof JobsCSlugRoute
   '/jobs/profile/$slug': typeof JobsProfileSlugRoute
   '/predict/ballot/$id': typeof PredictBallotIdRoute
+  '/predict/finals/$id': typeof PredictFinalsIdRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
   '/events/$yearSlug': typeof EventsYearSlugIndexRoute
   '/fantasy/$slug': typeof FantasySlugIndexRoute
   '/predict/ballot': typeof PredictBallotIndexRoute
+  '/predict/finals': typeof PredictFinalsIndexRoute
   '/events/$yearSlug/$slug/prediction': typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileRoutesById {
@@ -912,12 +928,14 @@ export interface FileRoutesById {
   '/jobs/c/$slug': typeof JobsCSlugRoute
   '/jobs/profile/$slug': typeof JobsProfileSlugRoute
   '/predict/ballot/$id': typeof PredictBallotIdRoute
+  '/predict/finals/$id': typeof PredictFinalsIdRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
   '/events/$yearSlug/': typeof EventsYearSlugIndexRoute
   '/fantasy/$slug/': typeof FantasySlugIndexRoute
   '/predict/ballot/': typeof PredictBallotIndexRoute
+  '/predict/finals/': typeof PredictFinalsIndexRoute
   '/events/$yearSlug/$slug/prediction': typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileRouteTypes {
@@ -988,12 +1006,14 @@ export interface FileRouteTypes {
     | '/jobs/c/$slug'
     | '/jobs/profile/$slug'
     | '/predict/ballot/$id'
+    | '/predict/finals/$id'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
     | '/events/$yearSlug'
     | '/fantasy/$slug'
     | '/predict/ballot'
+    | '/predict/finals'
     | '/events/$yearSlug/$slug/prediction'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -1062,12 +1082,14 @@ export interface FileRouteTypes {
     | '/jobs/c/$slug'
     | '/jobs/profile/$slug'
     | '/predict/ballot/$id'
+    | '/predict/finals/$id'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
     | '/events/$yearSlug'
     | '/fantasy/$slug'
     | '/predict/ballot'
+    | '/predict/finals'
     | '/events/$yearSlug/$slug/prediction'
   id:
     | '__root__'
@@ -1136,12 +1158,14 @@ export interface FileRouteTypes {
     | '/jobs/c/$slug'
     | '/jobs/profile/$slug'
     | '/predict/ballot/$id'
+    | '/predict/finals/$id'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
     | '/events/$yearSlug/'
     | '/fantasy/$slug/'
     | '/predict/ballot/'
+    | '/predict/finals/'
     | '/events/$yearSlug/$slug/prediction'
   fileRoutesById: FileRoutesById
 }
@@ -1209,12 +1233,14 @@ export interface RootRouteChildren {
   JobsCSlugRoute: typeof JobsCSlugRoute
   JobsProfileSlugRoute: typeof JobsProfileSlugRoute
   PredictBallotIdRoute: typeof PredictBallotIdRoute
+  PredictFinalsIdRoute: typeof PredictFinalsIdRoute
   ShopCategoryCatRoute: typeof ShopCategoryCatRoute
   ShopGroupStoreIdRoute: typeof ShopGroupStoreIdRoute
   ShowsSlugSeasonRoute: typeof ShowsSlugSeasonRoute
   EventsYearSlugIndexRoute: typeof EventsYearSlugIndexRoute
   FantasySlugIndexRoute: typeof FantasySlugIndexRoute
   PredictBallotIndexRoute: typeof PredictBallotIndexRoute
+  PredictFinalsIndexRoute: typeof PredictFinalsIndexRoute
   EventsYearSlugSlugPredictionRoute: typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileServerRoutesByFullPath {
@@ -1872,6 +1898,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/predict/finals/': {
+      id: '/predict/finals/'
+      path: '/predict/finals'
+      fullPath: '/predict/finals'
+      preLoaderRoute: typeof PredictFinalsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/predict/ballot/': {
       id: '/predict/ballot/'
       path: '/predict/ballot'
@@ -1912,6 +1945,13 @@ declare module '@tanstack/react-router' {
       path: '/shop/category/$cat'
       fullPath: '/shop/category/$cat'
       preLoaderRoute: typeof ShopCategoryCatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predict/finals/$id': {
+      id: '/predict/finals/$id'
+      path: '/predict/finals/$id'
+      fullPath: '/predict/finals/$id'
+      preLoaderRoute: typeof PredictFinalsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/predict/ballot/$id': {
@@ -2399,12 +2439,14 @@ const rootRouteChildren: RootRouteChildren = {
   JobsCSlugRoute: JobsCSlugRoute,
   JobsProfileSlugRoute: JobsProfileSlugRoute,
   PredictBallotIdRoute: PredictBallotIdRoute,
+  PredictFinalsIdRoute: PredictFinalsIdRoute,
   ShopCategoryCatRoute: ShopCategoryCatRoute,
   ShopGroupStoreIdRoute: ShopGroupStoreIdRoute,
   ShowsSlugSeasonRoute: ShowsSlugSeasonRoute,
   EventsYearSlugIndexRoute: EventsYearSlugIndexRoute,
   FantasySlugIndexRoute: FantasySlugIndexRoute,
   PredictBallotIndexRoute: PredictBallotIndexRoute,
+  PredictFinalsIndexRoute: PredictFinalsIndexRoute,
   EventsYearSlugSlugPredictionRoute: EventsYearSlugSlugPredictionRoute,
 }
 export const routeTree = rootRouteImport

@@ -7,6 +7,9 @@ import * as v from 'valibot';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor } from '@/lib/authz';
 import { rateLimit } from '@/lib/rate-limit';
+import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
+import { readLatestPredictionSummary } from '@sdk/src/readModel/readers.js';
+import { getDraftPool } from '@/lib/fantasy/score-db';
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const PRESETS = ['finals', 'semis', 'world', 'open', 'all', 'custom'] as const;
@@ -108,6 +111,83 @@ export const getBallot = createServerFn({ method: 'GET' })
       })
     ).rows[0];
     return row ? rowToRecord(row as unknown as Record<string, unknown>) : null;
+  });
+
+// ── Prediction pool ───────────────────────────────────────────────────────────
+
+export interface PredictionPoolCorps {
+  corpsSlug: string; // corps page slug when known, else the corps key
+  corpsName: string;
+  division: string;
+  corpsLogo: string | null;
+  corpsLogoDark: number | null;
+  corpsLogoDarkUrl: string | null;
+  /** Model-predicted championship-prelims total (the default ordering), if predicted. */
+  predictedTotal: number | null;
+}
+
+/** Recursively find the recap rows inside the prediction summary payload. */
+const findRecapRows = (o: unknown, depth = 0): Array<Record<string, unknown>> | null => {
+  if (depth > 5 || o == null) return null;
+  if (Array.isArray(o))
+    return o.length > 0 && typeof o[0] === 'object' && o[0] !== null && 'total' in (o[0] as object)
+      ? (o as Array<Record<string, unknown>>)
+      : null;
+  if (typeof o === 'object') {
+    for (const v2 of Object.values(o as Record<string, unknown>)) {
+      const r = findRecapRows(v2, depth + 1);
+      if (r) return r;
+    }
+  }
+  return null;
+};
+
+/**
+ * EVERY corps performing this season (the fantasy draft pool — event lineups,
+ * not scores, so pre-debut corps are included), ordered by the model's PREDICTED
+ * finals ranking (championship-prelims totals — the widest predicted field).
+ * Corps without a prediction sort after, alphabetically.
+ */
+export const getPredictionPool = createServerFn({ method: 'GET' })
+  .validator((season: string) => {
+    if (!/^\d{4}$/.test(season)) throw new Error('VALIDATION:bad-season');
+    return season;
+  })
+  .handler(async ({ data: season }): Promise<PredictionPoolCorps[]> => {
+    const pool = await getDraftPool(season).catch(() => []);
+    let predictedByName = new Map<string, number>();
+    try {
+      if (readModelEnabled()) {
+        const summary = await readLatestPredictionSummary(
+          getReadModelClient(),
+          `${season}-dci-world-championship-prelims`
+        );
+        const rows = summary ? findRecapRows(summary.summary) : null;
+        if (rows)
+          predictedByName = new Map(
+            rows
+              .filter((r) => typeof r.corps === 'string' && typeof r.total === 'number')
+              .map((r) => [String(r.corps).toLowerCase(), Number(r.total)])
+          );
+      }
+    } catch {
+      /* prediction unavailable — pool still returns, ordered alphabetically */
+    }
+    return pool
+      .map((c) => ({
+        corpsSlug: c.slug ?? c.corpsKey,
+        corpsName: c.name,
+        division: c.divisionName ?? 'World Class',
+        corpsLogo: c.corpsLogo,
+        corpsLogoDark: c.corpsLogoDark,
+        corpsLogoDarkUrl: c.corpsLogoDarkUrl,
+        predictedTotal: predictedByName.get(c.name.toLowerCase()) ?? null,
+      }))
+      .sort(
+        (a, b) =>
+          (b.predictedTotal ?? -1) - (a.predictedTotal ?? -1) ||
+          a.corpsName.localeCompare(b.corpsName)
+      );
   });
 
 /** The signed-in user's locked ballots (the "my predictions" dropdown), newest first. */

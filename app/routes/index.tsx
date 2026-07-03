@@ -214,11 +214,11 @@ function Home() {
               description="Season standings + a rank bump chart — filter by metric, division, and as-of date."
             />
             <ExploreCard
-              to="/predict/ballot"
+              to="/predict/finals"
               preload="intent"
               icon={DicesIcon}
-              title="Prediction Ballot"
-              description="Drag corps into your predicted finals order and see how you differ from the live rankings."
+              title="Finals Predictions"
+              description="Predict the DCI World Championship Finals — drag corps into your order, lock it in, and share it."
             />
             <ExploreCard
               to="/vs"
