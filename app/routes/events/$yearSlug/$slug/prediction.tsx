@@ -336,15 +336,23 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
     // needs no client fetch. (Synthesized fake recaps have no DB full recap, so
     // the preload simply degrades to null there.)
     try {
-      const data = await getHybridEventPredictionPageData({
+      // Fire everything concurrently: snapshot dates / previous / as-of don't
+      // depend on the page data, and awaiting it first serialized two server
+      // round trips per navigation (the second didn't even start until the
+      // first had come back).
+      const dataP = getHybridEventPredictionPageData({
         data: { yearSlug, slug, fakeScores },
       });
+      const previousP = loadPrevious();
+      const snapshotDatesP = loadSnapshotDates();
+      const asOfRecapP = loadAsOfRecap();
+      const data = await dataP;
       const hasRecap = (data.recap?.scores?.length ?? 0) > 0;
       const [fullRecap, previous, snapshotDates, asOfRecap] = await Promise.all([
         hasRecap ? getHybridEventFullRecap({ data: slug }).catch(() => null) : Promise.resolve(null),
-        loadPrevious(),
-        loadSnapshotDates(),
-        loadAsOfRecap(),
+        previousP,
+        snapshotDatesP,
+        asOfRecapP,
       ]);
       return {
         ...data,
