@@ -1,7 +1,8 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
-import { renderOgPng, OG_HEADERS, ogText } from '@/lib/og/render';
+import { renderOgPng, OG_HEADERS, ogText, logoDataUri } from '@/lib/og/render';
 import { BallotCard } from '@/lib/og/templates';
 import { getContributionsDb } from '@/lib/contributions-db';
+import { getDraftPool } from '@/lib/fantasy/score-db';
 
 /**
  * Generated OG image for a locked prediction ballot: title/author, lock date,
@@ -40,13 +41,18 @@ export const ServerRoute = createServerFileRoute('/api/og/ballot/$id').methods({
         timeZone: 'UTC',
       });
 
+      // orders_json only stores slug+name; logos come from the season pool.
+      const pool = await getDraftPool(season).catch(() => []);
+      const logoBySlug = new Map(pool.map((c) => [c.slug ?? c.corpsKey, c.corpsLogo]));
+      const shown = overall.slice(0, 12);
+      const logos = await Promise.all(shown.map((e) => logoDataUri(logoBySlug.get(e.slug))));
       const png = await renderOgPng(
         BallotCard({
           title: ogText((row.title as string | null) || `${season} Finals Prediction`),
           author: row.display_name ? ogText(row.display_name as string) : null,
           sub: `Locked ${lockedDate} - ${presetLabel}`,
-          rows: overall.slice(0, 10).map((e, i) => ({ rank: i + 1, name: ogText(e.name) })),
-          more: Math.max(0, overall.length - 10),
+          rows: shown.map((e, i) => ({ rank: i + 1, name: ogText(e.name), logo: logos[i] })),
+          more: Math.max(0, overall.length - 12),
         })
       );
       return new Response(png, { headers: OG_HEADERS });

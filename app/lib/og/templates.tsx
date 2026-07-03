@@ -179,7 +179,7 @@ export function ShowCard({
   );
 }
 
-/** Shared prediction-ballot card: title/author, lock date, top of the order. */
+/** Shared prediction-ballot card: title/author line + the top 12 with logos. */
 export function BallotCard({
   title,
   author,
@@ -190,13 +190,12 @@ export function BallotCard({
   title: string;
   author: string | null;
   sub: string; // e.g. "Locked Jul 2, 2026 · Finalists"
-  rows: { rank: number; name: string }[];
+  rows: { rank: number; name: string; logo?: string | null }[];
   more: number; // count of rows beyond the ones shown
 }) {
   return (
     <Frame>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <Eyebrow text="PREDICTION BALLOT" />
         <div style={{ display: 'flex', color: TEXT, fontSize: 54, fontWeight: 700, lineHeight: 1.05 }}>
           {title}
         </div>
@@ -204,20 +203,20 @@ export function BallotCard({
           {author ? `by ${author} · ${sub}` : sub}
         </div>
       </div>
-      <div style={{ display: 'flex', gap: 40 }}>
-        {[rows.slice(0, 5), rows.slice(5, 10)].map((col, ci) => (
-          <div key={ci} style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+      <div style={{ display: 'flex', gap: 48 }}>
+        {[rows.slice(0, 6), rows.slice(6, 12)].map((col, ci) => (
+          <div key={ci} style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
             {col.map((r) => (
-              <div key={r.rank} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div key={r.rank} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div
                   style={{
                     display: 'flex',
-                    width: 36,
-                    height: 36,
-                    borderRadius: 18,
+                    width: 34,
+                    height: 34,
+                    borderRadius: 17,
                     backgroundColor: r.rank <= 3 ? medalColor(r.rank - 1) : '#1e293b',
                     color: r.rank <= 3 ? '#0a0e1a' : TEXT,
-                    fontSize: 20,
+                    fontSize: 19,
                     fontWeight: 700,
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -225,7 +224,21 @@ export function BallotCard({
                 >
                   {r.rank}
                 </div>
-                <div style={{ display: 'flex', color: TEXT, fontSize: 26, fontWeight: 600 }}>
+                {/* Logos sit on a light tile so dark artwork stays readable on the card. */}
+                <div
+                  style={{
+                    display: 'flex',
+                    width: 44,
+                    height: 44,
+                    borderRadius: 10,
+                    backgroundColor: '#f1f5f9',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {r.logo ? <img src={r.logo} width={36} height={36} /> : <div style={{ display: 'flex' }} />}
+                </div>
+                <div style={{ display: 'flex', color: TEXT, fontSize: 25, fontWeight: 600 }}>
                   {r.name}
                 </div>
               </div>
@@ -234,13 +247,15 @@ export function BallotCard({
         ))}
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', color: MUTED, fontSize: 26, fontWeight: 700 }}>
+          DrumCorps.app/predict
+        </div>
         {more > 0 ? (
           <div style={{ display: 'flex', color: MUTED, fontSize: 22 }}>{`+ ${more} more`}</div>
         ) : (
           <div style={{ display: 'flex' }} />
         )}
       </div>
-      <Footer />
     </Frame>
   );
 }

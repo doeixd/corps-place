@@ -1,5 +1,5 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
-import { renderOgPng, OG_HEADERS, ogText } from '@/lib/og/render';
+import { renderOgPng, OG_HEADERS, ogText, logoDataUri } from '@/lib/og/render';
 import { BallotCard } from '@/lib/og/templates';
 import { getDraftPool } from '@/lib/fantasy/score-db';
 import { getPredictionPool } from '@/lib/server-fns/ballot';
@@ -35,6 +35,7 @@ export const ServerRoute = createServerFileRoute('/api/og/finals').methods({
       // editor uses: page slug when known, else corps key).
       const pool = await getDraftPool(season).catch(() => []);
       const nameBySlug = new Map(pool.map((c) => [c.slug ?? c.corpsKey, c.name]));
+      const logoBySlug = new Map(pool.map((c) => [c.slug ?? c.corpsKey, c.corpsLogo]));
 
       const oParam = url.searchParams.get('o') ?? '';
       let slugs = oParam.split('~').filter((s) => SLUG_RE.test(s) && nameBySlug.has(s));
@@ -52,13 +53,15 @@ export const ServerRoute = createServerFileRoute('/api/og/finals').methods({
         year: 'numeric',
         timeZone: 'UTC',
       });
+      const shown = slugs.slice(0, 12);
+      const logos = await Promise.all(shown.map((s) => logoDataUri(logoBySlug.get(s))));
       const png = await renderOgPng(
         BallotCard({
           title: custom ? `My ${season} Finals Prediction` : `${season} Predicted Finals Rankings`,
           author: null,
           sub: `${custom ? 'Fan prediction' : 'Model forecast'} - ${presetLabel} - ${today}`,
-          rows: slugs.slice(0, 10).map((s, i) => ({ rank: i + 1, name: ogText(nameBySlug.get(s)!) })),
-          more: Math.max(0, slugs.length - 10),
+          rows: shown.map((s, i) => ({ rank: i + 1, name: ogText(nameBySlug.get(s)!), logo: logos[i] })),
+          more: Math.max(0, slugs.length - 12),
         })
       );
       return new Response(png, { headers: OG_HEADERS });

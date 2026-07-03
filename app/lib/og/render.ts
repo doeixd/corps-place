@@ -37,6 +37,33 @@ export async function renderOgPng(node: ReactNode): Promise<Uint8Array<ArrayBuff
   return out;
 }
 
+// Remote-image cache for card artwork (corps logos). Satori doesn't fetch and
+// librsvg can't follow remote hrefs, so images must be inlined as data URIs.
+// Keyed by URL+size; a failed fetch caches null so a dead CDN asset doesn't
+// re-block every render.
+const logoCache = new Map<string, Promise<string | null>>();
+
+/** Fetch + downscale a logo to an inline PNG data URI (null on any failure). */
+export function logoDataUri(url: string | null | undefined, size = 80): Promise<string | null> {
+  if (!url || !/^https?:\/\//.test(url)) return Promise.resolve(null);
+  const key = `${size}:${url}`;
+  let p = logoCache.get(key);
+  if (!p) {
+    p = (async () => {
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
+      if (!res.ok) return null;
+      const buf = Buffer.from(await res.arrayBuffer());
+      const png = await sharp(buf)
+        .resize(size, size, { fit: 'inside', withoutEnlargement: true })
+        .png()
+        .toBuffer();
+      return `data:image/png;base64,${png.toString('base64')}`;
+    })().catch(() => null);
+    logoCache.set(key, p);
+  }
+  return p;
+}
+
 /** Standard headers: PNG + long, immutable-ish CDN cache (content is stable once scored). */
 export const OG_HEADERS = {
   'Content-Type': 'image/png',
