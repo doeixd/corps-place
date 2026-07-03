@@ -763,6 +763,23 @@ const SCHEMA = [
   // One active alias per merged entity (a page can't be merged into two canonicals).
   `CREATE UNIQUE INDEX IF NOT EXISTS uq_profile_merge_active ON profile_merges (merged_type, merged_id) WHERE active = 1`,
   `CREATE INDEX IF NOT EXISTS idx_profile_merge_canonical ON profile_merges (canonical_type, canonical_id, active)`,
+  // Prediction ballots (PREDICTION_BALLOT_PLAN §5): locked, IMMUTABLE snapshots of
+  // a user's predicted finals order. Users may lock as many as they like; there is
+  // no update path by design — a new take is a new row. orders_json snapshots
+  // [{slug, name}] so shared pages / OG images render even if a corps later drops
+  // from the live rankings.
+  `CREATE TABLE IF NOT EXISTS prediction_ballots (
+     ballot_id    TEXT PRIMARY KEY,
+     user_id      TEXT NOT NULL,
+     season       TEXT NOT NULL,
+     preset       TEXT NOT NULL,          -- finals | semis | world | open | all | custom
+     title        TEXT,                   -- user-given prediction name (dropdown + share heading)
+     display_name TEXT,                   -- author name shown on the shared image (optional)
+     orders_json  TEXT NOT NULL,          -- { overall: [{slug, name}, ...] }
+     locked_at    TEXT NOT NULL,
+     created_at   TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_ballots_user_season ON prediction_ballots (user_id, season)`,
 ];
 
 /**

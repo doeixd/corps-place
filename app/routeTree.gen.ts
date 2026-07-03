@@ -37,7 +37,6 @@ import { Route as ShopAllRouteImport } from './routes/shop/all'
 import { Route as ShopProductIdRouteImport } from './routes/shop/$productId'
 import { Route as ScoresSlugRouteImport } from './routes/scores/$slug'
 import { Route as PredictPaletteRouteImport } from './routes/predict/palette'
-import { Route as PredictBallotRouteImport } from './routes/predict/ballot'
 import { Route as NotifyUnsubscribeRouteImport } from './routes/notify/unsubscribe'
 import { Route as MerchSplatRouteImport } from './routes/merch.$'
 import { Route as JudgesJudgeIdRouteImport } from './routes/judges/$judgeId'
@@ -65,11 +64,13 @@ import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-color
 import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
+import { Route as PredictBallotIndexRouteImport } from './routes/predict/ballot.index'
 import { Route as FantasySlugIndexRouteImport } from './routes/fantasy/$slug/index'
 import { Route as EventsYearSlugIndexRouteImport } from './routes/events/$yearSlug/index'
 import { Route as ShowsSlugSeasonRouteImport } from './routes/shows/$slug.$season'
 import { Route as ShopGroupStoreIdRouteImport } from './routes/shop/group/$storeId'
 import { Route as ShopCategoryCatRouteImport } from './routes/shop/category/$cat'
+import { Route as PredictBallotIdRouteImport } from './routes/predict/ballot.$id'
 import { Route as JobsProfileSlugRouteImport } from './routes/jobs/profile/$slug'
 import { Route as JobsCSlugRouteImport } from './routes/jobs/c/$slug'
 import { Route as FantasyJoinTokenRouteImport } from './routes/fantasy/join/$token'
@@ -115,6 +116,7 @@ import { ServerRoute as ReadModelPredictionPageYearSlugSlugServerRouteImport } f
 import { ServerRoute as ReadModelMerchProductsProductIdServerRouteImport } from './routes/read-model/merch/products/$productId'
 import { ServerRoute as ReadModelMerchCatalogAllDotjsonServerRouteImport } from './routes/read-model/merch/catalog/all[.]json'
 import { ServerRoute as ApiOgScoreSlugServerRouteImport } from './routes/api/og/score/$slug'
+import { ServerRoute as ApiOgBallotIdServerRouteImport } from './routes/api/og/ballot/$id'
 import { ServerRoute as ApiFantasyJobsRecomputeServerRouteImport } from './routes/api/fantasy/jobs/recompute'
 import { ServerRoute as ApiFantasyJobsDispatchServerRouteImport } from './routes/api/fantasy/jobs/dispatch'
 import { ServerRoute as ApiOgShowSlugSeasonServerRouteImport } from './routes/api/og/show/$slug.$season'
@@ -252,11 +254,6 @@ const PredictPaletteRoute = PredictPaletteRouteImport.update({
   path: '/predict/palette',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PredictBallotRoute = PredictBallotRouteImport.update({
-  id: '/predict/ballot',
-  path: '/predict/ballot',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NotifyUnsubscribeRoute = NotifyUnsubscribeRouteImport.update({
   id: '/notify/unsubscribe',
   path: '/notify/unsubscribe',
@@ -392,6 +389,11 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   path: '/admin/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PredictBallotIndexRoute = PredictBallotIndexRouteImport.update({
+  id: '/predict/ballot/',
+  path: '/predict/ballot/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FantasySlugIndexRoute = FantasySlugIndexRouteImport.update({
   id: '/fantasy/$slug/',
   path: '/fantasy/$slug/',
@@ -415,6 +417,11 @@ const ShopGroupStoreIdRoute = ShopGroupStoreIdRouteImport.update({
 const ShopCategoryCatRoute = ShopCategoryCatRouteImport.update({
   id: '/shop/category/$cat',
   path: '/shop/category/$cat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictBallotIdRoute = PredictBallotIdRouteImport.update({
+  id: '/predict/ballot/$id',
+  path: '/predict/ballot/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JobsProfileSlugRoute = JobsProfileSlugRouteImport.update({
@@ -660,6 +667,11 @@ const ApiOgScoreSlugServerRoute = ApiOgScoreSlugServerRouteImport.update({
   path: '/api/og/score/$slug',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiOgBallotIdServerRoute = ApiOgBallotIdServerRouteImport.update({
+  id: '/api/og/ballot/$id',
+  path: '/api/og/ballot/$id',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 const ApiFantasyJobsRecomputeServerRoute =
   ApiFantasyJobsRecomputeServerRouteImport.update({
     id: '/api/fantasy/jobs/recompute',
@@ -720,7 +732,6 @@ export interface FileRoutesByFullPath {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
-  '/predict/ballot': typeof PredictBallotRoute
   '/predict/palette': typeof PredictPaletteRoute
   '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -751,11 +762,13 @@ export interface FileRoutesByFullPath {
   '/fantasy/join/$token': typeof FantasyJoinTokenRoute
   '/jobs/c/$slug': typeof JobsCSlugRoute
   '/jobs/profile/$slug': typeof JobsProfileSlugRoute
+  '/predict/ballot/$id': typeof PredictBallotIdRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
   '/events/$yearSlug': typeof EventsYearSlugIndexRoute
   '/fantasy/$slug': typeof FantasySlugIndexRoute
+  '/predict/ballot': typeof PredictBallotIndexRoute
   '/events/$yearSlug/$slug/prediction': typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileRoutesByTo {
@@ -793,7 +806,6 @@ export interface FileRoutesByTo {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
-  '/predict/ballot': typeof PredictBallotRoute
   '/predict/palette': typeof PredictPaletteRoute
   '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -824,11 +836,13 @@ export interface FileRoutesByTo {
   '/fantasy/join/$token': typeof FantasyJoinTokenRoute
   '/jobs/c/$slug': typeof JobsCSlugRoute
   '/jobs/profile/$slug': typeof JobsProfileSlugRoute
+  '/predict/ballot/$id': typeof PredictBallotIdRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
   '/events/$yearSlug': typeof EventsYearSlugIndexRoute
   '/fantasy/$slug': typeof FantasySlugIndexRoute
+  '/predict/ballot': typeof PredictBallotIndexRoute
   '/events/$yearSlug/$slug/prediction': typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileRoutesById {
@@ -867,7 +881,6 @@ export interface FileRoutesById {
   '/judges/$judgeId': typeof JudgesJudgeIdRoute
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
-  '/predict/ballot': typeof PredictBallotRoute
   '/predict/palette': typeof PredictPaletteRoute
   '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
@@ -898,11 +911,13 @@ export interface FileRoutesById {
   '/fantasy/join/$token': typeof FantasyJoinTokenRoute
   '/jobs/c/$slug': typeof JobsCSlugRoute
   '/jobs/profile/$slug': typeof JobsProfileSlugRoute
+  '/predict/ballot/$id': typeof PredictBallotIdRoute
   '/shop/category/$cat': typeof ShopCategoryCatRoute
   '/shop/group/$storeId': typeof ShopGroupStoreIdRoute
   '/shows/$slug/$season': typeof ShowsSlugSeasonRoute
   '/events/$yearSlug/': typeof EventsYearSlugIndexRoute
   '/fantasy/$slug/': typeof FantasySlugIndexRoute
+  '/predict/ballot/': typeof PredictBallotIndexRoute
   '/events/$yearSlug/$slug/prediction': typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileRouteTypes {
@@ -942,7 +957,6 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
-    | '/predict/ballot'
     | '/predict/palette'
     | '/scores/$slug'
     | '/shop/$productId'
@@ -973,11 +987,13 @@ export interface FileRouteTypes {
     | '/fantasy/join/$token'
     | '/jobs/c/$slug'
     | '/jobs/profile/$slug'
+    | '/predict/ballot/$id'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
     | '/events/$yearSlug'
     | '/fantasy/$slug'
+    | '/predict/ballot'
     | '/events/$yearSlug/$slug/prediction'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -1015,7 +1031,6 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
-    | '/predict/ballot'
     | '/predict/palette'
     | '/scores/$slug'
     | '/shop/$productId'
@@ -1046,11 +1061,13 @@ export interface FileRouteTypes {
     | '/fantasy/join/$token'
     | '/jobs/c/$slug'
     | '/jobs/profile/$slug'
+    | '/predict/ballot/$id'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
     | '/events/$yearSlug'
     | '/fantasy/$slug'
+    | '/predict/ballot'
     | '/events/$yearSlug/$slug/prediction'
   id:
     | '__root__'
@@ -1088,7 +1105,6 @@ export interface FileRouteTypes {
     | '/judges/$judgeId'
     | '/merch/$'
     | '/notify/unsubscribe'
-    | '/predict/ballot'
     | '/predict/palette'
     | '/scores/$slug'
     | '/shop/$productId'
@@ -1119,11 +1135,13 @@ export interface FileRouteTypes {
     | '/fantasy/join/$token'
     | '/jobs/c/$slug'
     | '/jobs/profile/$slug'
+    | '/predict/ballot/$id'
     | '/shop/category/$cat'
     | '/shop/group/$storeId'
     | '/shows/$slug/$season'
     | '/events/$yearSlug/'
     | '/fantasy/$slug/'
+    | '/predict/ballot/'
     | '/events/$yearSlug/$slug/prediction'
   fileRoutesById: FileRoutesById
 }
@@ -1162,7 +1180,6 @@ export interface RootRouteChildren {
   JudgesJudgeIdRoute: typeof JudgesJudgeIdRoute
   MerchSplatRoute: typeof MerchSplatRoute
   NotifyUnsubscribeRoute: typeof NotifyUnsubscribeRoute
-  PredictBallotRoute: typeof PredictBallotRoute
   PredictPaletteRoute: typeof PredictPaletteRoute
   ScoresSlugRoute: typeof ScoresSlugRoute
   ShopProductIdRoute: typeof ShopProductIdRoute
@@ -1191,11 +1208,13 @@ export interface RootRouteChildren {
   FantasyJoinTokenRoute: typeof FantasyJoinTokenRoute
   JobsCSlugRoute: typeof JobsCSlugRoute
   JobsProfileSlugRoute: typeof JobsProfileSlugRoute
+  PredictBallotIdRoute: typeof PredictBallotIdRoute
   ShopCategoryCatRoute: typeof ShopCategoryCatRoute
   ShopGroupStoreIdRoute: typeof ShopGroupStoreIdRoute
   ShowsSlugSeasonRoute: typeof ShowsSlugSeasonRoute
   EventsYearSlugIndexRoute: typeof EventsYearSlugIndexRoute
   FantasySlugIndexRoute: typeof FantasySlugIndexRoute
+  PredictBallotIndexRoute: typeof PredictBallotIndexRoute
   EventsYearSlugSlugPredictionRoute: typeof EventsYearSlugSlugPredictionRoute
 }
 export interface FileServerRoutesByFullPath {
@@ -1230,6 +1249,7 @@ export interface FileServerRoutesByFullPath {
   '/read-model/staff/$personId': typeof ReadModelStaffPersonIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/og/ballot/$id': typeof ApiOgBallotIdServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
   '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
   '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
@@ -1269,6 +1289,7 @@ export interface FileServerRoutesByTo {
   '/read-model/staff/$personId': typeof ReadModelStaffPersonIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/og/ballot/$id': typeof ApiOgBallotIdServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
   '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
   '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
@@ -1309,6 +1330,7 @@ export interface FileServerRoutesById {
   '/read-model/staff/$personId': typeof ReadModelStaffPersonIdServerRoute
   '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/og/ballot/$id': typeof ApiOgBallotIdServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
   '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
   '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
@@ -1350,6 +1372,7 @@ export interface FileServerRouteTypes {
     | '/read-model/staff/$personId'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
+    | '/api/og/ballot/$id'
     | '/api/og/score/$slug'
     | '/read-model/merch/catalog/all.json'
     | '/read-model/merch/products/$productId'
@@ -1389,6 +1412,7 @@ export interface FileServerRouteTypes {
     | '/read-model/staff/$personId'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
+    | '/api/og/ballot/$id'
     | '/api/og/score/$slug'
     | '/read-model/merch/catalog/all.json'
     | '/read-model/merch/products/$productId'
@@ -1428,6 +1452,7 @@ export interface FileServerRouteTypes {
     | '/read-model/staff/$personId'
     | '/api/fantasy/jobs/dispatch'
     | '/api/fantasy/jobs/recompute'
+    | '/api/og/ballot/$id'
     | '/api/og/score/$slug'
     | '/read-model/merch/catalog/all.json'
     | '/read-model/merch/products/$productId'
@@ -1465,6 +1490,7 @@ export interface RootServerRouteChildren {
   ReadModelRecapsSlugServerRoute: typeof ReadModelRecapsSlugServerRoute
   ApiFantasyJobsDispatchServerRoute: typeof ApiFantasyJobsDispatchServerRoute
   ApiFantasyJobsRecomputeServerRoute: typeof ApiFantasyJobsRecomputeServerRoute
+  ApiOgBallotIdServerRoute: typeof ApiOgBallotIdServerRoute
   ApiOgScoreSlugServerRoute: typeof ApiOgScoreSlugServerRoute
   ReadModelMerchCatalogAllDotjsonServerRoute: typeof ReadModelMerchCatalogAllDotjsonServerRoute
   ReadModelMerchProductsProductIdServerRoute: typeof ReadModelMerchProductsProductIdServerRoute
@@ -1657,13 +1683,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PredictPaletteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/predict/ballot': {
-      id: '/predict/ballot'
-      path: '/predict/ballot'
-      fullPath: '/predict/ballot'
-      preLoaderRoute: typeof PredictBallotRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/notify/unsubscribe': {
       id: '/notify/unsubscribe'
       path: '/notify/unsubscribe'
@@ -1853,6 +1872,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/predict/ballot/': {
+      id: '/predict/ballot/'
+      path: '/predict/ballot'
+      fullPath: '/predict/ballot'
+      preLoaderRoute: typeof PredictBallotIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fantasy/$slug/': {
       id: '/fantasy/$slug/'
       path: '/fantasy/$slug'
@@ -1886,6 +1912,13 @@ declare module '@tanstack/react-router' {
       path: '/shop/category/$cat'
       fullPath: '/shop/category/$cat'
       preLoaderRoute: typeof ShopCategoryCatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predict/ballot/$id': {
+      id: '/predict/ballot/$id'
+      path: '/predict/ballot/$id'
+      fullPath: '/predict/ballot/$id'
+      preLoaderRoute: typeof PredictBallotIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jobs/profile/$slug': {
@@ -2207,6 +2240,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiOgScoreSlugServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/og/ballot/$id': {
+      id: '/api/og/ballot/$id'
+      path: '/api/og/ballot/$id'
+      fullPath: '/api/og/ballot/$id'
+      preLoaderRoute: typeof ApiOgBallotIdServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/fantasy/jobs/recompute': {
       id: '/api/fantasy/jobs/recompute'
       path: '/api/fantasy/jobs/recompute'
@@ -2330,7 +2370,6 @@ const rootRouteChildren: RootRouteChildren = {
   JudgesJudgeIdRoute: JudgesJudgeIdRoute,
   MerchSplatRoute: MerchSplatRoute,
   NotifyUnsubscribeRoute: NotifyUnsubscribeRoute,
-  PredictBallotRoute: PredictBallotRoute,
   PredictPaletteRoute: PredictPaletteRoute,
   ScoresSlugRoute: ScoresSlugRoute,
   ShopProductIdRoute: ShopProductIdRoute,
@@ -2359,11 +2398,13 @@ const rootRouteChildren: RootRouteChildren = {
   FantasyJoinTokenRoute: FantasyJoinTokenRoute,
   JobsCSlugRoute: JobsCSlugRoute,
   JobsProfileSlugRoute: JobsProfileSlugRoute,
+  PredictBallotIdRoute: PredictBallotIdRoute,
   ShopCategoryCatRoute: ShopCategoryCatRoute,
   ShopGroupStoreIdRoute: ShopGroupStoreIdRoute,
   ShowsSlugSeasonRoute: ShowsSlugSeasonRoute,
   EventsYearSlugIndexRoute: EventsYearSlugIndexRoute,
   FantasySlugIndexRoute: FantasySlugIndexRoute,
+  PredictBallotIndexRoute: PredictBallotIndexRoute,
   EventsYearSlugSlugPredictionRoute: EventsYearSlugSlugPredictionRoute,
 }
 export const routeTree = rootRouteImport
@@ -2402,6 +2443,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ReadModelRecapsSlugServerRoute: ReadModelRecapsSlugServerRoute,
   ApiFantasyJobsDispatchServerRoute: ApiFantasyJobsDispatchServerRoute,
   ApiFantasyJobsRecomputeServerRoute: ApiFantasyJobsRecomputeServerRoute,
+  ApiOgBallotIdServerRoute: ApiOgBallotIdServerRoute,
   ApiOgScoreSlugServerRoute: ApiOgScoreSlugServerRoute,
   ReadModelMerchCatalogAllDotjsonServerRoute:
     ReadModelMerchCatalogAllDotjsonServerRoute,

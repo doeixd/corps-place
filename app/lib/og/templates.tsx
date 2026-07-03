@@ -178,3 +178,69 @@ export function ShowCard({
     </Frame>
   );
 }
+
+/** Shared prediction-ballot card: title/author, lock date, top of the order. */
+export function BallotCard({
+  title,
+  author,
+  sub,
+  rows,
+  more,
+}: {
+  title: string;
+  author: string | null;
+  sub: string; // e.g. "Locked Jul 2, 2026 · Finalists"
+  rows: { rank: number; name: string }[];
+  more: number; // count of rows beyond the ones shown
+}) {
+  return (
+    <Frame>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <Eyebrow text="PREDICTION BALLOT" />
+        <div style={{ display: 'flex', color: TEXT, fontSize: 54, fontWeight: 700, lineHeight: 1.05 }}>
+          {title}
+        </div>
+        <div style={{ display: 'flex', color: MUTED, fontSize: 26 }}>
+          {author ? `by ${author} · ${sub}` : sub}
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 40 }}>
+        {[rows.slice(0, 5), rows.slice(5, 10)].map((col, ci) => (
+          <div key={ci} style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+            {col.map((r) => (
+              <div key={r.rank} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    width: 36,
+                    height: 36,
+                    borderRadius: 18,
+                    backgroundColor: r.rank <= 3 ? medalColor(r.rank - 1) : '#1e293b',
+                    color: r.rank <= 3 ? '#0a0e1a' : TEXT,
+                    fontSize: 20,
+                    fontWeight: 700,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {r.rank}
+                </div>
+                <div style={{ display: 'flex', color: TEXT, fontSize: 26, fontWeight: 600 }}>
+                  {r.name}
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {more > 0 ? (
+          <div style={{ display: 'flex', color: MUTED, fontSize: 22 }}>{`+ ${more} more`}</div>
+        ) : (
+          <div style={{ display: 'flex' }} />
+        )}
+      </div>
+      <Footer />
+    </Frame>
+  );
+}

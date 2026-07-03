@@ -25,6 +25,7 @@ import {
   BookOpen01Icon,
   Briefcase01Icon,
 } from '@/components/icons/generated';
+import { DicesIcon } from '@/components/icons/dices';
 import { JobsLanding } from '@/components/jobs/landing';
 import { useBrand } from '@/lib/brand-context';
 
@@ -211,6 +212,13 @@ function Home() {
               icon={RankingIcon}
               title="Rankings"
               description="Season standings + a rank bump chart — filter by metric, division, and as-of date."
+            />
+            <ExploreCard
+              to="/predict/ballot"
+              preload="intent"
+              icon={DicesIcon}
+              title="Prediction Ballot"
+              description="Drag corps into your predicted finals order and see how you differ from the live rankings."
             />
             <ExploreCard
               to="/vs"

@@ -4,17 +4,23 @@
 // add/remove + sessionStorage autosave. Caption cards, lock-in, and sharing land
 // in M2–M4. The original /predict/palette is untouched.
 import { useEffect, useMemo, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { FilterChips, type FilterChipItem } from '@/components/filter-chips';
 import { BallotList, type BallotCorps } from '@/components/ballot/ballot-list';
 import { CorpsNameCell } from '@/components/corps-name-cell';
 import { corpsLogoSource } from '@/components/corps-logo';
+import { SignInButton } from '@/components/sign-in-button';
 import { seoHead } from '@/lib/seo';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
+import { lockBallot, myBallots } from '@/lib/server-fns/ballot';
+import { useSession } from '@/lib/auth-client';
+import { useAsyncAction } from '@/lib/use-async-action';
 import { recapGroup } from '@/lib/prediction-scenario';
 import { track } from '@/lib/analytics/client';
 
@@ -57,7 +63,7 @@ interface BallotSearch {
   preset?: Preset;
 }
 
-export const Route = createFileRoute('/predict/ballot')({
+export const Route = createFileRoute('/predict/ballot/')({
   validateSearch: (s: Record<string, unknown>): BallotSearch => ({
     preset: PRESETS.includes(s.preset as Preset) ? (s.preset as Preset) : undefined,
   }),
@@ -118,7 +124,30 @@ function BallotPage() {
   const { season, pool } = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+  const routerNavigate = useNavigate();
   const preset: Preset = search.preset ?? 'finals';
+  const { data: session } = useSession();
+
+  // Lock-in inputs: the prediction's own name + the author name for the image.
+  const [title, setTitle] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  // The signed-in user's saved predictions (dropdown). Fetched client-side so the
+  // page itself stays cacheable/anonymous-friendly.
+  const [saved, setSaved] = useState<
+    Array<{ ballotId: string; title: string | null; preset: string; lockedAt: string }>
+  >([]);
+  useEffect(() => {
+    if (!session?.user) return;
+    let cancelled = false;
+    void myBallots()
+      .then((rows) => {
+        if (!cancelled) setSaved(rows);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.user]);
 
   const byArrangement = useMemo(() => {
     const slice = presetSlice(pool, preset);
@@ -164,6 +193,24 @@ function BallotPage() {
     return pool.filter((c) => !inBallot.has(c.corpsSlug));
   }, [pool, order]);
 
+  const lock = useAsyncAction(async () => {
+    const overall = order
+      .map((slug) => corpsBySlug.get(slug))
+      .filter((c): c is BallotCorps => Boolean(c))
+      .map((c) => ({ slug: c.corpsSlug, name: c.corpsName }));
+    const res = await lockBallot({
+      data: {
+        season,
+        preset: edited && order.length !== byArrangement.defaultOrder.length ? 'custom' : preset,
+        title: title.trim() || undefined,
+        displayName: displayName.trim() || undefined,
+        overall,
+      },
+    });
+    track('ballot_lock', { preset, n: overall.length });
+    await routerNavigate({ to: '/predict/ballot/$id', params: { id: res.ballotId } });
+  });
+
   return (
     <PageShell className="flex flex-col gap-5">
       <PageHeader
@@ -195,6 +242,25 @@ function BallotPage() {
           >
             Reset to current ranks
           </Button>
+        ) : null}
+        {saved.length > 0 ? (
+          <select
+            aria-label="My saved predictions"
+            className="h-8 rounded-lg border border-border bg-background px-2 text-sm text-text-secondary"
+            value=""
+            onChange={(e) => {
+              const id = e.target.value;
+              if (id) void routerNavigate({ to: '/predict/ballot/$id', params: { id } });
+            }}
+          >
+            <option value="">My predictions ({saved.length})</option>
+            {saved.map((b) => (
+              <option key={b.ballotId} value={b.ballotId}>
+                {(b.title || `${PRESET_LABELS[b.preset as Preset] ?? b.preset} prediction`) +
+                  ` — ${new Date(b.lockedAt).toLocaleDateString()}`}
+              </option>
+            ))}
+          </select>
         ) : null}
       </div>
 
@@ -252,6 +318,60 @@ function BallotPage() {
               </div>
             ) : null}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Lock it in (plan §5): immutable once saved — a new take is a new ballot. */}
+      <Card>
+        <CardContent className="flex flex-col gap-3 py-4">
+          <div>
+            <h2 className="font-semibold">Lock it in</h2>
+            <p className="text-sm text-muted-foreground">
+              Locking saves this prediction permanently — it can't be edited afterward (you can
+              always lock a new one). You'll get a share link with an image of your rankings.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-1 flex-col gap-1.5">
+              <Label htmlFor="ballot-title">Prediction name (optional)</Label>
+              <Input
+                id="ballot-title"
+                value={title}
+                maxLength={80}
+                placeholder={`e.g. My ${season} finals call`}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-col gap-1.5">
+              <Label htmlFor="ballot-name">Your name (optional — shown on the image)</Label>
+              <Input
+                id="ballot-name"
+                value={displayName}
+                maxLength={60}
+                placeholder="e.g. Patrick"
+                onChange={(e) => setDisplayName(e.target.value)}
+              />
+            </div>
+          </div>
+          {session?.user ? (
+            <Button
+              className="w-full sm:w-auto"
+              disabled={lock.busy || order.length < 2}
+              onClick={() => void lock.run()}
+            >
+              {lock.busy ? 'Locking…' : 'Lock it in'}
+            </Button>
+          ) : (
+            <div className="flex flex-col gap-1">
+              <SignInButton callbackURL="/predict/ballot" className="w-full sm:w-auto">
+                Sign in to lock it in
+              </SignInButton>
+              <p className="text-xs text-muted-foreground">
+                Your arrangement is saved in this browser and will still be here after signing in.
+              </p>
+            </div>
+          )}
+          {lock.error ? <p className="text-sm text-destructive">{lock.error}</p> : null}
         </CardContent>
       </Card>
     </PageShell>
