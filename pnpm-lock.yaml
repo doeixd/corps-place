@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  '@tanstack/react-db@0.1.86':
+    hash: b08e45fb516ea810926360ab6826cbb94198abb96e6f63fb0d340e68ceee81c8
+    path: patches/@tanstack__react-db@0.1.86.patch
   '@tanstack/redact@0.0.17':
     hash: 3037a44183d2a736054fbab4900a9507759282529ca4faee7f3d23e0f6974e40
     path: patches/@tanstack__redact@0.0.17.patch
@@ -72,7 +75,7 @@ importers:
         version: 1.1.0(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260621.1)(@libsql/client@0.17.4(bufferutil@4.1.0))(@opentelemetry/api@1.9.0)(kysely@0.29.2))(graphql@16.14.2)(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.4)(yaml@2.9.0))
       '@tanstack/react-db':
         specifier: ^0.1.86
-        version: 0.1.86(react@19.2.7)(typescript@5.9.3)
+        version: 0.1.86(patch_hash=b08e45fb516ea810926360ab6826cbb94198abb96e6f63fb0d340e68ceee81c8)(react@19.2.7)(typescript@5.9.3)
       '@tanstack/react-router':
         specifier: 1.170.16
         version: 1.170.16(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -10812,7 +10815,7 @@ snapshots:
 
   '@tanstack/pacer-lite@0.2.2': {}
 
-  '@tanstack/react-db@0.1.86(react@19.2.7)(typescript@5.9.3)':
+  '@tanstack/react-db@0.1.86(patch_hash=b08e45fb516ea810926360ab6826cbb94198abb96e6f63fb0d340e68ceee81c8)(react@19.2.7)(typescript@5.9.3)':
     dependencies:
       '@tanstack/db': 0.6.8(typescript@5.9.3)
       react: 19.2.7

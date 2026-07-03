@@ -1,0 +1,24 @@
+diff --git a/dist/cjs/useLiveQuery.cjs b/dist/cjs/useLiveQuery.cjs
+index 94a0801474b27195631b190f7d96f06757d1a6f3..c17f7f3b5048225e0cb7a407303d62228b757007 100644
+--- a/dist/cjs/useLiveQuery.cjs
++++ b/dist/cjs/useLiveQuery.cjs
+@@ -106,6 +106,7 @@ Or switch to syncMode "eager" if you want all data to sync automatically.`
+   }
+   const snapshot = react.useSyncExternalStore(
+     subscribeRef.current,
++    getSnapshotRef.current,
+     getSnapshotRef.current
+   );
+   const returnedSnapshotRef = react.useRef(null);
+diff --git a/dist/esm/useLiveQuery.js b/dist/esm/useLiveQuery.js
+index 4dfdba9f6ac832761c18d3439179659f88fb566b..110b5d1a5a537640c1d40fe2a8046e25b47bdaaa 100644
+--- a/dist/esm/useLiveQuery.js
++++ b/dist/esm/useLiveQuery.js
+@@ -104,6 +104,7 @@ Or switch to syncMode "eager" if you want all data to sync automatically.`
+   }
+   const snapshot = useSyncExternalStore(
+     subscribeRef.current,
++    getSnapshotRef.current,
+     getSnapshotRef.current
+   );
+   const returnedSnapshotRef = useRef(null);
