@@ -436,9 +436,11 @@ function BallotPage() {
       />
 
       <Card>
-        <CardContent className="py-4" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-          <div className="mb-3 flex flex-wrap items-center justify-end gap-2">
-            {currentEdited ? (
+        <CardContent className="pt-2 pb-4" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+          {/* Rendered only when there's something to reset — an empty row would
+              re-add the top padding this card is trying to shed. */}
+          {currentEdited ? (
+            <div className="mb-2 flex flex-wrap items-center justify-end gap-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -454,8 +456,8 @@ function BallotPage() {
               >
                 Reset to predicted
               </Button>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
           <BallotList
             order={currentOrder}
             corps={corpsBySlug}
