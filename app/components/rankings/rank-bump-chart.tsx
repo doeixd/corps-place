@@ -17,11 +17,21 @@ import { corpsPalette } from '@sdk/src/corpsColors.js';
 import { themeStore } from '@/stores/theme-store';
 import { RANK_SERIES_CAP, type RankRow } from '@/lib/rankings/types';
 
-const fmtDate = (d: string) => {
+// Shared formatter + cache — toLocaleDateString builds an Intl.DateTimeFormat
+// per call, and the chart formats every tick on every render (see asof-scrubber).
+const DATE_FMT = new Intl.DateTimeFormat(undefined, {
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+const fmtCache = new Map<string, string>();
+const fmtDate = (d: string): string => {
+  const cached = fmtCache.get(d);
+  if (cached) return cached;
   const dt = new Date(`${d}T00:00:00Z`);
-  return Number.isNaN(dt.getTime())
-    ? d
-    : dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  const out = Number.isNaN(dt.getTime()) ? d : DATE_FMT.format(dt);
+  fmtCache.set(d, out);
+  return out;
 };
 
 interface MergedRow {
