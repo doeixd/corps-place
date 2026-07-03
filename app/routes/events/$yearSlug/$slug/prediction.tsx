@@ -689,16 +689,14 @@ function CurrentPredictionPage({
   const view = ctx.view;
   const hasScores = (ctx.scoredRecap?.length ?? 0) > 0;
   const hasPrediction = !!prediction;
-  const tabItems = useMemo(() => {
-    const items: { value: PredictionView; label: string; icon: IconComponent }[] = [];
-    if (hasScores) items.push({ value: 'scores', label: 'Scores', icon: ScoresTabIcon });
-    if (hasPrediction)
-      items.push({ value: 'prediction', label: 'Prediction', icon: PredictionIcon });
-    if (hasScores && hasPrediction)
-      items.push({ value: 'diff', label: 'Diff', icon: DiffTabIcon });
-    return items;
-  }, [hasScores, hasPrediction]);
-  const showTabs = tabItems.length > 1;
+  // All three tabs render regardless of what data exists — the layout doesn't
+  // jump when scores land. Views whose data is missing show a placeholder.
+  const tabItems: { value: PredictionView; label: string; icon: IconComponent }[] = [
+    { value: 'scores', label: 'Scores', icon: ScoresTabIcon },
+    { value: 'prediction', label: 'Prediction', icon: PredictionIcon },
+    { value: 'diff', label: 'Diff', icon: DiffTabIcon },
+  ];
+  const showTabs = true;
 
   // Diff view rows: full outer join of the real scored recap vs the predicted
   // means (`baseRecap`, the rows the Prediction view's base table renders).
@@ -1343,7 +1341,14 @@ function CurrentPredictionPage({
 
                 {/* ---- Scores view (P4): real scored recap, same table as past
                     seasons, seeded from the machine's scoredRecap. ---- */}
-                <Show when={view === 'scores'}>
+                <Show when={view === 'scores' && !hasScores}>
+                  <StatusCard
+                    tone="empty"
+                    title="No scores yet"
+                    description="Scores appear here shortly after the show ends."
+                  />
+                </Show>
+                <Show when={view === 'scores' && hasScores}>
                   <ScoreRecapTable
                     rows={ctx.scoredRecap ?? []}
                     corpsLookup={corpsLookup}
@@ -1384,7 +1389,14 @@ function CurrentPredictionPage({
                     Diff rows join scoredRecap against the predicted means
                     (baseRecap). Sort cycling routes through the machine's
                     view-aware CYCLE_SORT (keyed by caption → diffSorts). ---- */}
-                <Show when={view === 'diff'}>
+                <Show when={view === 'diff' && !hasScores}>
+                  <StatusCard
+                    tone="empty"
+                    title="Nothing to compare yet"
+                    description="Once scores are in, this view compares them against the prediction."
+                  />
+                </Show>
+                <Show when={view === 'diff' && hasScores}>
                   {/* Diff basis: compare scored vs the prediction, or vs each
                       corps's own most recent prior show this season. */}
                   <div className="mb-4 flex flex-col gap-1.5">
