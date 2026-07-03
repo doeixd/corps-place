@@ -238,6 +238,10 @@ export function ScrollableEventCardGrid({
         variant="md-lg"
         step={0.06}
         animationKey={animationKey}
+        // The wave starts at the pre-scrolled next-show card, not the (off-screen)
+        // top of the list — otherwise the first visible cards all share the max
+        // clamped delay and appear late, together.
+        staggerOriginKey={scrollToKey}
         viewportRoot={containerRef}
       />
     </div>
