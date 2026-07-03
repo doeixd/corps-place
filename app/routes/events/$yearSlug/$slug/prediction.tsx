@@ -415,7 +415,12 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
       ],
     });
   },
-  staleTime: 30_000,
+  // Predictions are pre-generated (nightly emit + post-show ingest); 30s made
+  // every back-and-forth navigation refetch data that hadn't changed. Repeat
+  // visits within a session now render from the router cache instantly; the
+  // auto-ingest publish hot-swaps the read-model and a reload/AutoUpdater
+  // cycle picks it up.
+  staleTime: 10 * 60_000,
   component: PredictionPage,
 });
 

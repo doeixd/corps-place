@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useMachine } from '@xstate/react';
 import { eventsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
@@ -110,21 +110,23 @@ function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
   // "Appearances" list (see `selectEvents`).
   const ordered = selectEvents(events, filter);
 
-  // The card the scrollable section opens on. Only for the current (newest)
-  // season and only when not actively searching (don't yank the list mid-search).
-  // Prefer the next upcoming show; once the season is over, fall back to its most
-  // recent show rather than snapping back to the season opener.
+  // Current-season default view starts at the NEXT UPCOMING show; earlier shows
+  // collapse behind a button. This replaced the scroll-to-card approach, which
+  // could never SSR (scrollTop isn't expressible in HTML) and visibly jumped at
+  // hydration. The server renders exactly what the user sees — nothing moves.
   const currentSeason = seasons[0];
-  const scrollToKey = useMemo(() => {
-    if (filter.season !== currentSeason || filter.search.trim()) return null;
-    const next = nextUpcomingEventKey(events, currentSeason);
-    if (next) return next;
-    const lastInSeason = events
-      .filter((e) => e.season === currentSeason)
-      .sort((a, b) => a.start_date.localeCompare(b.start_date))
-      .at(-1);
-    return lastInSeason ? eventCardKey(lastInSeason) : null;
-  }, [events, currentSeason, filter.season, filter.search]);
+  const splitAtUpcoming =
+    filter.season === currentSeason && !filter.search.trim() && filter.dir !== 'desc';
+  const upcomingKey = useMemo(
+    () => (splitAtUpcoming ? nextUpcomingEventKey(events, currentSeason) : null),
+    [events, currentSeason, splitAtUpcoming]
+  );
+  const upcomingIndex = upcomingKey
+    ? ordered.findIndex((e) => eventCardKey(e) === upcomingKey)
+    : -1;
+  const [showEarlier, setShowEarlier] = useState(false);
+  const earlier = upcomingIndex > 0 && !showEarlier ? ordered.slice(0, upcomingIndex) : [];
+  const visible = upcomingIndex > 0 && !showEarlier ? ordered.slice(upcomingIndex) : ordered;
 
   return (
     <PageShell>
@@ -196,13 +198,22 @@ function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
           />
         }
       >
-        {/* `animationKey` = active filter/sort so the grid remounts and re-runs
-            the staggered fade-in on every change. The cards live in their own
-            scrollable section, auto-scrolled to `scrollToKey` (the next show). */}
+        {earlier.length > 0 ? (
+          <button
+            type="button"
+            onClick={() => setShowEarlier(true)}
+            className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm text-text-secondary transition-colors hover:border-primary/60 hover:text-foreground"
+          >
+            Show {earlier.length} earlier {earlier.length === 1 ? 'show' : 'shows'}
+          </button>
+        ) : null}
+        {/* `animationKey` = active filter/sort so the grid remounts on change.
+            The default current-season view starts at the next upcoming show
+            (earlier ones expand above), so no scroll alignment is needed. */}
         <ScrollableEventCardGrid
-          events={ordered}
-          animationKey={`${filter.season}|${filter.search}|${filter.dir}`}
-          scrollToKey={scrollToKey}
+          events={visible}
+          animationKey={`${filter.season}|${filter.search}|${filter.dir}|${showEarlier}`}
+          scrollToKey={null}
           scrollTopKey={filter.dir}
         />
       </Show>
