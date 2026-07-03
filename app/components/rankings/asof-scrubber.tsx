@@ -7,11 +7,22 @@ import { Icon } from '@/components/icon';
 import { ArrowLeft01Icon, ArrowRight01Icon } from '@/components/icons/generated';
 import { cn } from '@/lib/utils';
 
-const fmtDate = (d: string) => {
+// One shared formatter + a cache: `toLocaleDateString` constructs a fresh
+// Intl.DateTimeFormat per call (~1-3ms), and this runs per pill per render —
+// it was the hottest app function on the prediction page's navigation profile.
+const DATE_FMT = new Intl.DateTimeFormat(undefined, {
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+const fmtCache = new Map<string, string>();
+const fmtDate = (d: string): string => {
+  const cached = fmtCache.get(d);
+  if (cached) return cached;
   const dt = new Date(`${d}T00:00:00Z`);
-  return Number.isNaN(dt.getTime())
-    ? d
-    : dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  const out = Number.isNaN(dt.getTime()) ? d : DATE_FMT.format(dt);
+  fmtCache.set(d, out);
+  return out;
 };
 
 const pill = (active: boolean) =>
