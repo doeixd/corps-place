@@ -422,6 +422,7 @@ function BallotPage() {
       ) : null}
 
       <div className="flex flex-wrap items-center gap-3">
+        <span className="shrink-0 text-xs font-medium text-text-secondary">Corps set</span>
         <FilterChips
           ariaLabel="Preset"
           className="min-w-0"
@@ -446,6 +447,7 @@ function BallotPage() {
           cards you've arranged (they're the ones saved when you lock in). Reset
           lives out here, above the list section it acts on. */}
       <div className="flex flex-wrap items-center gap-3">
+        <span className="shrink-0 text-xs font-medium text-text-secondary">Ranking</span>
         <FilterChips
           ariaLabel="Prediction dimension"
           className="min-w-0 flex-1"
