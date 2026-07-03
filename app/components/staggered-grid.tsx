@@ -47,6 +47,13 @@ type StaggeredGridProps<T> = {
   /** Change to remount the grid and replay the entrance (e.g. active filter/sort). */
   animationKey?: string;
   /**
+   * Key of the card the entrance wave should originate from. For pre-scrolled
+   * lists (events aligned to the next upcoming show): without this, every
+   * far-index card gets the same clamped max delay, so the first visible rows
+   * all wait the full delay and pop in together instead of cascading at once.
+   */
+  staggerOriginKey?: string | null;
+  /**
    * Scrollable ancestor to use as the `whileInView` IntersectionObserver root.
    * Pass this when the grid lives inside an `overflow` container — otherwise the
    * observer watches the browser viewport and cards clipped by the container
@@ -78,12 +85,20 @@ export function StaggeredGrid<T>({
   animateLayout = false,
   layoutAnimationLimit = DEFAULT_LAYOUT_ANIMATION_LIMIT,
   animationKey,
+  staggerOriginKey,
   viewportRoot,
   className,
 }: StaggeredGridProps<T>) {
   const v = GRID_VARIANTS[variant];
   const columns = useGridColumns(v.two, v.three);
   const wave = columns === 1 ? 5 : columns;
+  // Index the wave counts from — the scroll-target card when given, else the top.
+  const originIndex = staggerOriginKey
+    ? Math.max(
+        0,
+        items.findIndex((item) => getKey(item) === staggerOriginKey)
+      )
+    : 0;
   const layoutEnabled = shouldAnimateGridLayout(animateLayout, items.length, layoutAnimationLimit);
   // When the user arrived here via Back, the page was already seen — render the
   // cards in their final state instead of replaying the staggered entrance.
@@ -105,7 +120,7 @@ export function StaggeredGrid<T>({
               transition: {
                 duration: 0.28,
                 ease: 'easeOut',
-                delay: Math.min(i, wave - 1) * step,
+                delay: Math.min(Math.max(i - originIndex, 0), wave - 1) * step,
               },
             }
       }
