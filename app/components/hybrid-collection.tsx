@@ -37,6 +37,12 @@ export function HybridCollection<T extends object>({
   seed?: boolean;
   children: (rows: T[]) => ReactNode;
 }) {
+  // NOTE: useLiveQuery inside LiveBridge is hydration-safe only because of the
+  // pnpm patch on @tanstack/react-db (patches/): upstream omits the
+  // getServerSnapshot arg to useSyncExternalStore, which throws React #407 →
+  // #423 during hydration on every page rendered through this component —
+  // React then discards the SSR DOM and re-renders the whole tree client-side
+  // (losing scroll positions and doubling render work).
   if (typeof window === 'undefined') return <>{children(loader)}</>;
   return (
     <LiveBridge collection={collection} loader={loader} seed={seed}>

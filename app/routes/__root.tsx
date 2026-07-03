@@ -414,7 +414,7 @@ function RootComponent() {
         <MotionConfig reducedMotion={REDUCED_MOTION}>
           <TooltipProvider delay={150}>
             <NavigationProgressBar />
-            <ThemeToggle className="fixed top-4 right-4 z-50" />
+            <ThemeToggle className="fixed top-4 right-4 z-50" ssrTheme={theme ?? undefined} />
             <SiteNav />
             <ConsentGate />
             <DeferredToaster theme={theme ?? 'system'} />

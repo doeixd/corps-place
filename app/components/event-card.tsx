@@ -183,7 +183,8 @@ export function ScrollableEventCardGrid({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const prevScrollTopKey = useRef(scrollTopKey);
-  // Mirror the StaggeredGrid `md-lg` breakpoints: the column count settles from 1
+  const prevAnimationKey = useRef(animationKey);
+  const prevScrollToKey = useRef(scrollToKey);  // Mirror the StaggeredGrid `md-lg` breakpoints: the column count settles from 1
   // → 2/3 after mount (useGridColumns reads matchMedia in an effect), which moves
   // card positions, so re-run the align once it changes (see plan: "column settle").
   const columns = useGridColumns('md', 'lg');
@@ -198,20 +199,32 @@ export function ScrollableEventCardGrid({
       container.scrollTop = 0;
       return;
     }
-    // No target card (e.g. a past-season filter) ⇒ snap back to the top so a new
-    // filter pill always opens the list from the start rather than keeping the
-    // previous scroll offset.
+    // No target card (e.g. a past-season filter) ⇒ snap back to the top when
+    // the FILTER changes — but never unconditionally: this effect also re-runs
+    // on the column-count settle after hydration, and resetting there wiped the
+    // ssrStartKey scroll compensation (the pixel-perfect fill-in).
     if (!scrollToKey) {
-      container.scrollTop = 0;
+      if (prevAnimationKey.current !== animationKey) container.scrollTop = 0;
+      prevAnimationKey.current = animationKey;
       return;
     }
+    // Align to the target ONLY when the view actually changed (filter/sort/key).
+    // Mount alignment is done by the inline parse-time script below — re-running
+    // it here (this effect also fires on the post-hydration column settle) was
+    // the visible "jump": scroll was already correct and got recomputed against
+    // mid-hydration geometry.
+    if (
+      prevAnimationKey.current === animationKey &&
+      prevScrollToKey.current === scrollToKey
+    ) {
+      return;
+    }
+    prevAnimationKey.current = animationKey;
+    prevScrollToKey.current = scrollToKey;
     const card = container.querySelector<HTMLElement>(
       `[data-grid-key="${CSS.escape(scrollToKey)}"]`
     );
     if (!card) return;
-    // Offset math scoped to the container — align the card's top to the box top
-    // with enough inset for hover lift/shadow. Not scrollIntoView, which would also
-    // scroll the page/ancestors.
     const delta = card.getBoundingClientRect().top - container.getBoundingClientRect().top;
     container.scrollTop += delta - SCROLLABLE_GRID_INSET;
   }, [scrollToKey, scrollTopKey, animationKey, columns]);
@@ -245,19 +258,14 @@ export function ScrollableEventCardGrid({
         entrance={false}
         viewportRoot={containerRef}
       />
-      {/* SSR pre-alignment: scrollTop can't be expressed in HTML, so without
-          this the server paints the list at the top and the layout effect
-          above snaps it to the next show at hydration — a visible jump
-          seconds later on slow devices. This runs while the document parses
-          (everything above it exists; layout is computable on demand), so the
-          first paint is already aligned. The layout effect stays authoritative
-          afterwards (client navs, filter changes, column settle) — re-applying
-          the same target is idempotent. suppressHydrationWarning: the script
-          content embeds scrollToKey, which can legitimately differ if the
-          route was preloaded across a date boundary. */}
+      {/* Parse-time alignment: scrollTop isn't expressible in SSR HTML, so this
+          inline script (runs while the document parses — the cards above it
+          already exist and layout is computable on demand) scrolls the box
+          before first paint. Pixel-perfect: the DOM is the full list on both
+          sides of hydration; nothing re-renders or re-aligns afterwards (the
+          layout effect above is change-gated). */}
       {scrollToKey ? (
         <script
-          type="text/javascript"
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `(function(){var c=document.getElementById('events-scrollport');if(!c||c.scrollTop>0)return;var e=c.querySelector(${JSON.stringify(`[data-grid-key="${scrollToKey}"]`)});if(!e)return;c.scrollTop+=e.getBoundingClientRect().top-c.getBoundingClientRect().top-${SCROLLABLE_GRID_INSET};})()`,

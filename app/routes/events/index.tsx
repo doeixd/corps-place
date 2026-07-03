@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import { eventsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
@@ -128,12 +128,7 @@ function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
   // through hydration regardless of the browser's timezone.
   const loaderUpcomingKey = Route.useLoaderData().upcomingKey;
   const upcomingKey = splitAtUpcoming ? loaderUpcomingKey : null;
-  const upcomingIndex = upcomingKey
-    ? ordered.findIndex((e) => eventCardKey(e) === upcomingKey)
-    : -1;
-  const [showEarlier, setShowEarlier] = useState(false);
-  const earlier = upcomingIndex > 0 && !showEarlier ? ordered.slice(0, upcomingIndex) : [];
-  const visible = upcomingIndex > 0 && !showEarlier ? ordered.slice(upcomingIndex) : ordered;
+
 
   return (
     <PageShell>
@@ -205,22 +200,15 @@ function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
           />
         }
       >
-        {earlier.length > 0 ? (
-          <button
-            type="button"
-            onClick={() => setShowEarlier(true)}
-            className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm text-text-secondary transition-colors hover:border-primary/60 hover:text-foreground"
-          >
-            Show {earlier.length} earlier {earlier.length === 1 ? 'show' : 'shows'}
-          </button>
-        ) : null}
         {/* `animationKey` = active filter/sort so the grid remounts on change.
-            The default current-season view starts at the next upcoming show
-            (earlier ones expand above), so no scroll alignment is needed. */}
+            SSR renders the list starting at the next upcoming show; the grid
+            fills the earlier cards back in pre-paint during hydration and
+            compensates scrollTop, so first paint and hydrated paint match
+            pixel-for-pixel (see ScrollableEventCardGrid.ssrStartKey). */}
         <ScrollableEventCardGrid
-          events={visible}
-          animationKey={`${filter.season}|${filter.search}|${filter.dir}|${showEarlier}`}
-          scrollToKey={null}
+          events={ordered}
+          animationKey={`${filter.season}|${filter.search}|${filter.dir}`}
+          scrollToKey={upcomingKey}
           scrollTopKey={filter.dir}
         />
       </Show>
