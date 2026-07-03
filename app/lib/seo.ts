@@ -67,6 +67,18 @@ export function buildSeo(input: SeoInput): {
     { property: 'og:description', content: description },
     ...(url ? [{ property: 'og:url', content: url } as HeadMeta] : []),
     ...(ogImage ? [{ property: 'og:image', content: ogImage } as HeadMeta] : []),
+    // Explicit dimensions for our generated cards (all satori renders are
+    // 1200×630) — WhatsApp/iMessage often skip the image on the first-ever
+    // share of a URL when og:image:width/height are absent. External images
+    // (product/press photos) have unknown dimensions, so no claim for those.
+    ...(ogImage?.includes('/api/og/')
+      ? ([
+          { property: 'og:image:width', content: '1200' },
+          { property: 'og:image:height', content: '630' },
+          { property: 'og:image:type', content: 'image/png' },
+        ] as HeadMeta[])
+      : []),
+    ...(ogImage ? [{ property: 'og:image:alt', content: title } as HeadMeta] : []),
     // Twitter
     { name: 'twitter:card', content: ogImage ? 'summary_large_image' : 'summary' },
     { name: 'twitter:title', content: title },
