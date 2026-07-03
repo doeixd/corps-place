@@ -34,7 +34,8 @@ RUN apt-get update \
 RUN npm install -g pnpm
 
 # Install ALL deps (dev + prod) — cache-friendly: deps before source
-COPY package.json pnpm-lock.yaml .npmrc ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY patches ./patches
 ENV PNPM_STORE_DIR=/root/.pnpm-store
 RUN --mount=type=cache,target=/root/.pnpm-store \
  pnpm install --frozen-lockfile
@@ -63,7 +64,8 @@ RUN apt-get update \
 RUN npm install -g pnpm
 
 # Install production deps only — no TypeScript, puppeteer, vite etc.
-COPY package.json pnpm-lock.yaml .npmrc ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY patches ./patches
 ENV PNPM_STORE_DIR=/root/.pnpm-store
 RUN --mount=type=cache,target=/root/.pnpm-store \
  pnpm install --prod --frozen-lockfile
