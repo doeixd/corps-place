@@ -242,6 +242,17 @@ function ShowDetailPage() {
             )}
           </Show>
 
+          {/* Synopsis (authored wiki) — above the repertoire so the prose "what
+              is this show" answer reads before the source-material list. */}
+          <SectionErrorBoundary label="the synopsis section">
+            <AboutSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={authored.about}
+              citations={citations}
+            />
+          </SectionErrorBoundary>
+
           {/* Repertoire (scraped seed + per-row override wiki) */}
           <SectionErrorBoundary label="the repertoire section">
             <RepertoireSection
@@ -314,15 +325,8 @@ function ShowDetailPage() {
             </Section>
           </Show>
 
-          {/* ── Authored sections (live wiki editing) ── */}
-          <SectionErrorBoundary label="the synopsis section">
-            <AboutSection
-              corpsKey={corps.corps_key}
-              season={show.season}
-              initial={authored.about}
-              citations={citations}
-            />
-          </SectionErrorBoundary>
+          {/* ── Authored sections (live wiki editing; synopsis lives up top,
+              above the repertoire) ── */}
           <SectionErrorBoundary label="the uniform section">
             <UniformSection
               corpsKey={corps.corps_key}
