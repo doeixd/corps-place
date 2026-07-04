@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { BusyButton } from '@/components/fantasy/busy-button';
@@ -20,8 +20,10 @@ import {
 import { useSession } from '@/lib/auth-client';
 import {
   subscribeScores,
+  unsubscribeScores,
   getScoreVapidPublicKey,
   saveScorePushSubscription,
+  deleteScorePushSubscription,
 } from '@/lib/server-fns/score-notify';
 import { cn } from '@/lib/utils';
 
@@ -41,6 +43,28 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
   return out;
 }
+
+// Local record of "this browser subscribed": drives the button's subscribed
+// state and the in-dialog unsubscribe, without a lookup endpoint (which would
+// allow probing arbitrary emails' subscriptions).
+type LocalSub = { email: string; token: string | null; endpoint?: string };
+const subKey = (kind: string, slug: string) => `score-notify:v1:${kind}:${slug}`;
+const readLocalSub = (kind: string, slug: string): LocalSub | null => {
+  try {
+    const raw = localStorage.getItem(subKey(kind, slug));
+    return raw ? (JSON.parse(raw) as LocalSub) : null;
+  } catch {
+    return null;
+  }
+};
+const writeLocalSub = (kind: string, slug: string, sub: LocalSub | null): void => {
+  try {
+    if (sub) localStorage.setItem(subKey(kind, slug), JSON.stringify(sub));
+    else localStorage.removeItem(subKey(kind, slug));
+  } catch {
+    /* private mode */
+  }
+};
 
 /** Subscribe this device to push; returns the subscription JSON or throws. */
 async function subscribeDevice(publicKey: string) {
@@ -85,6 +109,13 @@ export function ScoreNotifyButton({
   const [wantPush, setWantPush] = useState(false);
   // null = unknown/not loaded, '' = not configured, string = usable key.
   const [vapidKey, setVapidKey] = useState<string | null>(null);
+  // null until mounted (localStorage is client-only; reading during hydration
+  // would mismatch the SSR markup — see the theme-toggle incident).
+  const [localSub, setLocalSub] = useState<LocalSub | null>(null);
+  useEffect(() => {
+    setLocalSub(readLocalSub(targetKind, targetSlug));
+  }, [targetKind, targetSlug]);
+  const subscribed = localSub !== null;
 
   const canPush = pushSupported() && !!vapidKey;
 
@@ -110,11 +141,13 @@ export function ScoreNotifyButton({
     try {
       // Try push first (if requested) so we can record the right method, but
       // never let a push failure block the email subscription.
+      let pushEndpoint: string | undefined;
       if (wantPush && canPush) {
         try {
           const device = await subscribeDevice(vapidKey as string);
           await saveScorePushSubscription({ data: { ...device, email: value } });
           pushOn = true;
+          pushEndpoint = device.endpoint;
         } catch (err) {
           toast.warning(
             err instanceof Error && err.message.includes('denied')
@@ -124,7 +157,7 @@ export function ScoreNotifyButton({
         }
       }
 
-      await subscribeScores({
+      const res = await subscribeScores({
         data: {
           targetKind,
           targetSlug,
@@ -133,6 +166,9 @@ export function ScoreNotifyButton({
           methods: { email: true, push: pushOn },
         },
       });
+      const sub: LocalSub = { email: value, token: res.token, endpoint: pushEndpoint };
+      writeLocalSub(targetKind, targetSlug, sub);
+      setLocalSub(sub);
       toast.success(
         pushOn
           ? "You're subscribed — we'll email and push you when scores post."
@@ -146,34 +182,76 @@ export function ScoreNotifyButton({
     }
   };
 
+  const unsubscribe = async () => {
+    if (!localSub) return;
+    setBusy(true);
+    try {
+      if (localSub.token) await unsubscribeScores({ data: { token: localSub.token } });
+      if (localSub.endpoint) {
+        // Best-effort: server row + this device's browser-level subscription.
+        await deleteScorePushSubscription({ data: { endpoint: localSub.endpoint } }).catch(
+          () => {}
+        );
+        try {
+          const reg = await navigator.serviceWorker.getRegistration();
+          await (await reg?.pushManager.getSubscription())?.unsubscribe();
+        } catch {
+          /* browser push already gone */
+        }
+      }
+      writeLocalSub(targetKind, targetSlug, null);
+      setLocalSub(null);
+      toast.success(`Unsubscribed — no more score notifications for ${targetLabel}.`);
+      setOpen(false);
+    } catch {
+      toast.error('Could not unsubscribe. Please try again.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger
         render={
           <button
             type="button"
-            aria-label="Notify me of scores"
+            aria-label={subscribed ? 'Score notifications on — manage' : 'Notify me of scores'}
+            aria-pressed={subscribed}
             // Match FavoriteCorpsButton's labelled variant so the pair reads as
             // a matched set (same border, padding, type scale, hover).
             className={cn(
               'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium transition-colors',
-              'border-border text-text-secondary hover:border-text-secondary/40 hover:text-text-primary',
+              subscribed
+                ? 'border-primary/50 text-primary hover:border-primary'
+                : 'border-border text-text-secondary hover:border-text-secondary/40 hover:text-text-primary',
               className
             )}
           />
         }
       >
-        <Icon icon={Megaphone01Icon} size="md" />
-        Notify me
+        <Icon icon={Megaphone01Icon} size="md" className={subscribed ? 'text-primary' : undefined} />
+        {subscribed ? 'Notifying' : 'Notify me'}
       </DialogTrigger>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Notify me of scores</DialogTitle>
+          <DialogTitle>{subscribed ? 'Score notifications: on' : 'Notify me of scores'}</DialogTitle>
           <DialogDescription>
-            We&apos;ll let you know as soon as scores are posted for {targetLabel}.
+            {subscribed
+              ? `You're subscribed as ${localSub?.email} — we'll let you know when scores post for ${targetLabel}.`
+              : `We'll let you know as soon as scores are posted for ${targetLabel}.`}
           </DialogDescription>
         </DialogHeader>
 
+        {subscribed ? (
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" size="sm" />}>Close</DialogClose>
+            <BusyButton size="sm" variant="destructive" busy={busy} onClick={() => void unsubscribe()}>
+              Unsubscribe
+            </BusyButton>
+          </DialogFooter>
+        ) : (
+          <>
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="score-notify-email">Email</Label>
@@ -218,6 +296,8 @@ export function ScoreNotifyButton({
             Subscribe
           </BusyButton>
         </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
