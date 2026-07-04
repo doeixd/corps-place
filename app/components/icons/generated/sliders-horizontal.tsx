@@ -16,7 +16,7 @@ export const SlidersHorizontalIcon = (props: SVGProps<SVGSVGElement> & { size?: 
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" d="M4 5h6m3 0h7m-4 4v6M10 2v6m2 8v6m4-10h4M4 12h9m-1 7h8M4 19h5"/>
+      <use href="#hi-sliders-horizontal" />
     </svg>
   );
 };

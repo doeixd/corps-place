@@ -16,7 +16,7 @@ export const InformationCircleIcon = (props: SVGProps<SVGSVGElement> & { size?: 
       strokeLinejoin="round"
       {...svgProps}
     >
-      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m.125-3.75H12m.25 0a.25.25 0 1 0-.5 0a.25.25 0 0 0 .5 0"/></g>
+      <use href="#hi-information-circle" />
     </svg>
   );
 };

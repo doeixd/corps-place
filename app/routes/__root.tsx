@@ -41,6 +41,8 @@ import {
 } from '@/stores/favorite-corps-store';
 import { themeStore } from '@/stores/theme-store';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
+import { IconSprite } from '@/components/icons/generated';
+import { CustomIconSprite } from '@/components/icons/custom-sprite';
 import { readBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
 import { BrandProvider } from '@/lib/brand-context';
 import { buildSeo, jsonLdScript } from '@/lib/seo';
@@ -187,6 +189,10 @@ function RootDocument({
         <HeadContent />
       </head>
       <body>
+        {/* Shared icon sprite: every generated icon renders a <use> against these
+            symbols, so repeated cards don't re-inline identical path data. */}
+        <IconSprite />
+        <CustomIconSprite />
         {children}
         <Scripts />
       </body>
