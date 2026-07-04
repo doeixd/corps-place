@@ -185,16 +185,17 @@ function RootDocument({
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: noFlashThemeScript }}
         />
-        {/* TEMP debug beacon (dev-branch): a device out there renders the page
-            but never becomes interactive, and we can't see its console. Report
-            the first JS error / unhandled rejection / failure-to-boot to
-            /api/collect so the analytics db captures what that browser sees.
-            Inline + first so it runs even when every chunk fails. */}
+        {/* Client error beacon: report the first JS error / unhandled rejection /
+            failure-to-boot to /api/collect — it's the only visibility we have into
+            devices we can't reproduce on (caught the OS-dark hydration fatal no
+            probe could reach). Rate-limited at 5 per pageload and 12 per session
+            so a reload loop can't flood analytics. Inline + first so it runs even
+            when every chunk fails. */}
         <script
           type="text/javascript"
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
-            __html: `(function(){var sent=0;function send(n,p){if(sent++>4)return;try{p.ua=navigator.userAgent.slice(0,120);navigator.sendBeacon('/api/collect',JSON.stringify({type:'event',name:n,path:location.pathname,props:p}));}catch(e){}}window.addEventListener('error',function(e){if(e.target&&e.target.tagName){send('client_asset_error',{tag:e.target.tagName,src:String(e.target.src||e.target.href||'').slice(-80)});}else{send('client_js_error',{m:String(e.message).slice(0,180),src:String(e.filename||'').slice(-60),ln:e.lineno});}},true);window.addEventListener('unhandledrejection',function(e){send('client_rejection',{m:String((e.reason&&e.reason.message)||e.reason).slice(0,180)});});setTimeout(function(){if(!window.__cp_booted){send('client_no_boot',{});}},8000);})()`,
+            __html: `(function(){var sent=0;function send(n,p){if(sent++>4)return;var k='cp-beacon-n',c=0;try{c=+(sessionStorage.getItem(k)||0);if(c>=12)return;sessionStorage.setItem(k,String(c+1));}catch(e){}try{p.ua=navigator.userAgent.slice(0,120);navigator.sendBeacon('/api/collect',JSON.stringify({type:'event',name:n,path:location.pathname,props:p}));}catch(e){}}window.addEventListener('error',function(e){if(e.target&&e.target.tagName){send('client_asset_error',{tag:e.target.tagName,src:String(e.target.src||e.target.href||'').slice(-80)});}else{send('client_js_error',{m:String(e.message).slice(0,180),src:String(e.filename||'').slice(-60),ln:e.lineno});}},true);window.addEventListener('unhandledrejection',function(e){send('client_rejection',{m:String((e.reason&&e.reason.message)||e.reason).slice(0,180)});});setTimeout(function(){if(!window.__cp_booted){send('client_no_boot',{});}},8000);})()`,
           }}
         />
         {/* Entry-load watchdog: a page served during a deploy rollout can
