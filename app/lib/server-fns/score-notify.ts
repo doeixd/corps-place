@@ -43,7 +43,7 @@ const PushSubInput = v.object({
 
 export const subscribeScores = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(SubscribeInput, d))
-  .handler(async ({ data }): Promise<{ ok: true }> => {
+  .handler(async ({ data }): Promise<{ ok: true; token: string | null }> => {
     const email = data.email.trim().toLowerCase();
 
     // Anti-abuse throttle keyed by email (covers signed-out subscribers too).
@@ -82,7 +82,16 @@ export const subscribeScores = createServerFn({ method: 'POST' })
       { kind: data.targetKind, push: methods.push, email: methods.email },
       getWebRequest()
     );
-    return { ok: true };
+    // Return the STORED token (INSERT OR IGNORE keeps the original row on
+    // re-subscribe, so the freshly generated one above may not be it). The
+    // client keeps it locally to show the subscribed state and offer an
+    // in-dialog unsubscribe without a lookup endpoint (no email enumeration).
+    const row = await db.execute({
+      sql: `SELECT unsubscribe_token FROM score_notify_subscriptions
+            WHERE target_kind = ? AND target_slug = ? AND email = ? LIMIT 1`,
+      args: [data.targetKind, data.targetSlug, email],
+    });
+    return { ok: true, token: (row.rows[0]?.unsubscribe_token as string | undefined) ?? null };
   });
 
 export const unsubscribeScores = createServerFn({ method: 'POST' })
