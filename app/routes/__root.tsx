@@ -92,11 +92,20 @@ function FavoriteHeadBranding({
   // store so it can never repaint the corps favicon over the PageantryJobs mark.
   const dynamicIconHref = useFavoriteIconHref(initialIconHref);
   const dynamicThemeColor = useFavoriteThemeColor(initialThemeColor);
-  const iconHref = brand === 'jobs' ? initialIconHref : dynamicIconHref;
-  const themeColor = brand === 'jobs' ? initialThemeColor : dynamicThemeColor;
+  // Render the SERVER values through hydration: with no theme cookie the
+  // no-FOUC script resolves the OS preference before hydration, so the store's
+  // theme-color (e.g. dark #0b0b0c) differs from the SSR'd one (#ffffff). That
+  // mismatch on <meta theme-color> killed hydration outright on OS-dark
+  // devices under redact (and was a silent full-tree client re-render under
+  // react). Post-mount the live values take over — a normal update.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const live = brand !== 'jobs' && mounted;
+  const iconHref = live ? dynamicIconHref : initialIconHref;
+  const themeColor = live ? dynamicThemeColor : initialThemeColor;
   return (
     <>
-      <link rel="icon" href={iconHref} type="image/svg+xml" data-app-icon="true" />
+      <link rel="icon" href={iconHref} type="image/svg+xml" data-app-icon="true" suppressHydrationWarning />
       {/* Static PNG: iOS doesn't render SVG touch icons, and pointing this at the
           same SVG as rel=icon made Chromium download the 33KB artwork twice. Not
           recolored per favorite — it's the home-screen icon, not browser chrome. */}
@@ -105,7 +114,7 @@ function FavoriteHeadBranding({
         href={brand === 'jobs' ? initialIconHref : '/apple-touch-icon.png'}
         data-app-icon="true"
       />
-      <meta name="theme-color" content={themeColor} />
+      <meta name="theme-color" content={themeColor} suppressHydrationWarning />
     </>
   );
 }
