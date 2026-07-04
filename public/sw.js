@@ -12,7 +12,7 @@
 // that drops caches not matching) to invalidate. The client registration keys
 // updates on /read-model/meta.json built_at.
 
-const CACHE_VERSION = 'rm-v3';
+const CACHE_VERSION = 'rm-v4';
 const DOC_CACHE = `${CACHE_VERSION}-docs`;
 const ASSET_CACHE = `${CACHE_VERSION}-assets`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
@@ -28,6 +28,15 @@ self.addEventListener('activate', (event) => {
       const names = await caches.keys();
       await Promise.all(names.filter((n) => !ALL_CACHES.includes(n)).map((n) => caches.delete(n)));
       await self.clients.claim();
+      // Rescue path (rm-v4): a browser wedged on a stale shell (dead asset
+      // hashes / poisoned edge entries) never runs app JS, so no in-app
+      // recovery can reach it — but the browser re-fetches THIS file on
+      // navigation, bypassing any old worker. Reload every open tab once on
+      // activation so wedged pages pull a fresh document.
+      const wins = await self.clients.matchAll({ type: 'window' });
+      await Promise.all(
+        wins.map((c) => ('navigate' in c ? c.navigate(c.url).catch(() => {}) : null))
+      );
     })()
   );
 });
