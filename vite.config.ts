@@ -22,11 +22,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // reports a different id — i.e. after a deploy. Prefer the git SHA (deterministic
 // across the single config eval / both build environments); fall back to a build
 // timestamp when .git isn't present in the build context.
-// TEMP diagnostics: the dev nixpacks build has VITE_ENABLE_SW=true in its
-// shell (probe-verified) yet the output compiles the flag as false.
-console.log('[env-probe] VITE_ENABLE_SW=%s VITE_ENABLE_FANTASY=%s NODE_ENV=%s',
-  process.env.VITE_ENABLE_SW, process.env.VITE_ENABLE_FANTASY, process.env.NODE_ENV);
-
 const BUILD_ID = (() => {
   try {
     return execSync('git rev-parse --short HEAD', {
