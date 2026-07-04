@@ -36,6 +36,7 @@ import { Route as ShopBookmarksRouteImport } from './routes/shop/bookmarks'
 import { Route as ShopAllRouteImport } from './routes/shop/all'
 import { Route as ShopProductIdRouteImport } from './routes/shop/$productId'
 import { Route as ScoresSlugRouteImport } from './routes/scores/$slug'
+import { Route as PredictResultsRouteImport } from './routes/predict/results'
 import { Route as PredictPaletteRouteImport } from './routes/predict/palette'
 import { Route as NotifyUnsubscribeRouteImport } from './routes/notify/unsubscribe'
 import { Route as MerchSplatRouteImport } from './routes/merch.$'
@@ -250,6 +251,11 @@ const ShopProductIdRoute = ShopProductIdRouteImport.update({
 const ScoresSlugRoute = ScoresSlugRouteImport.update({
   id: '/scores/$slug',
   path: '/scores/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictResultsRoute = PredictResultsRouteImport.update({
+  id: '/predict/results',
+  path: '/predict/results',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PredictPaletteRoute = PredictPaletteRouteImport.update({
@@ -751,6 +757,7 @@ export interface FileRoutesByFullPath {
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
   '/predict/palette': typeof PredictPaletteRoute
+  '/predict/results': typeof PredictResultsRoute
   '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
@@ -827,6 +834,7 @@ export interface FileRoutesByTo {
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
   '/predict/palette': typeof PredictPaletteRoute
+  '/predict/results': typeof PredictResultsRoute
   '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
@@ -904,6 +912,7 @@ export interface FileRoutesById {
   '/merch/$': typeof MerchSplatRoute
   '/notify/unsubscribe': typeof NotifyUnsubscribeRoute
   '/predict/palette': typeof PredictPaletteRoute
+  '/predict/results': typeof PredictResultsRoute
   '/scores/$slug': typeof ScoresSlugRoute
   '/shop/$productId': typeof ShopProductIdRoute
   '/shop/all': typeof ShopAllRoute
@@ -982,6 +991,7 @@ export interface FileRouteTypes {
     | '/merch/$'
     | '/notify/unsubscribe'
     | '/predict/palette'
+    | '/predict/results'
     | '/scores/$slug'
     | '/shop/$productId'
     | '/shop/all'
@@ -1058,6 +1068,7 @@ export interface FileRouteTypes {
     | '/merch/$'
     | '/notify/unsubscribe'
     | '/predict/palette'
+    | '/predict/results'
     | '/scores/$slug'
     | '/shop/$productId'
     | '/shop/all'
@@ -1134,6 +1145,7 @@ export interface FileRouteTypes {
     | '/merch/$'
     | '/notify/unsubscribe'
     | '/predict/palette'
+    | '/predict/results'
     | '/scores/$slug'
     | '/shop/$productId'
     | '/shop/all'
@@ -1211,6 +1223,7 @@ export interface RootRouteChildren {
   MerchSplatRoute: typeof MerchSplatRoute
   NotifyUnsubscribeRoute: typeof NotifyUnsubscribeRoute
   PredictPaletteRoute: typeof PredictPaletteRoute
+  PredictResultsRoute: typeof PredictResultsRoute
   ScoresSlugRoute: typeof ScoresSlugRoute
   ShopProductIdRoute: typeof ShopProductIdRoute
   ShopAllRoute: typeof ShopAllRoute
@@ -1713,6 +1726,13 @@ declare module '@tanstack/react-router' {
       path: '/scores/$slug'
       fullPath: '/scores/$slug'
       preLoaderRoute: typeof ScoresSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predict/results': {
+      id: '/predict/results'
+      path: '/predict/results'
+      fullPath: '/predict/results'
+      preLoaderRoute: typeof PredictResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/predict/palette': {
@@ -2431,6 +2451,7 @@ const rootRouteChildren: RootRouteChildren = {
   MerchSplatRoute: MerchSplatRoute,
   NotifyUnsubscribeRoute: NotifyUnsubscribeRoute,
   PredictPaletteRoute: PredictPaletteRoute,
+  PredictResultsRoute: PredictResultsRoute,
   ScoresSlugRoute: ScoresSlugRoute,
   ShopProductIdRoute: ShopProductIdRoute,
   ShopAllRoute: ShopAllRoute,
