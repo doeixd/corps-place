@@ -16,7 +16,7 @@ export const ArrowLeft03Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' |
       strokeLinejoin="round"
       {...svgProps}
     >
-      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5"><path d="M4 6v12"/><path strokeLinejoin="round" d="M8 12h12m-8-4s-4 2.946-4 4s4 4 4 4"/></g>
+      <use href="#hi-arrow-left-03" />
     </svg>
   );
 };

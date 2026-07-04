@@ -16,7 +16,7 @@ export const Tick02Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md'
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m5 14l3.5 3.5L19 6.5"/>
+      <use href="#hi-tick-02" />
     </svg>
   );
 };

@@ -16,7 +16,7 @@ export const Moon02Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md'
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21.5 14.078A8.557 8.557 0 0 1 9.922 2.5C5.668 3.497 2.5 7.315 2.5 11.873a9.627 9.627 0 0 0 9.627 9.627c4.558 0 8.376-3.168 9.373-7.422"/>
+      <use href="#hi-moon-02" />
     </svg>
   );
 };

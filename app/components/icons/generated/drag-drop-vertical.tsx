@@ -16,7 +16,7 @@ export const DragDropVerticalIcon = (props: SVGProps<SVGSVGElement> & { size?: '
       strokeLinejoin="round"
       {...svgProps}
     >
-      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 6a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-6 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m6 12a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-6a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-6 6a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-6a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/>
+      <use href="#hi-drag-drop-vertical" />
     </svg>
   );
 };
