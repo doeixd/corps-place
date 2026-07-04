@@ -187,7 +187,10 @@ function Home() {
             <ExploreCard
               to="/events/$yearSlug"
               params={{ yearSlug: '2026' }}
-              preload="render"
+              // "intent", not "render": render-preload executed the whole events
+              // route (incl. the ~190KB TanStack DB collection layer) during boot,
+              // competing with hydration for the CPU on slow devices.
+              preload="intent"
               icon={Calendar01Icon}
               title="2026 Events"
               description="Browse the season — lineups, schedules, scores, and predictions."

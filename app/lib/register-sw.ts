@@ -65,6 +65,13 @@ export function registerServiceWorker(): void {
       });
   };
 
-  if (document.readyState === 'complete') start();
-  else window.addEventListener('load', start, { once: true });
+  // Register after the browser is idle, not at `load`: hydration continues well
+  // past the load event on slow devices, and SW registration/installation was
+  // stealing CPU from it. Offline support can wait a few seconds.
+  const whenIdle = () =>
+    'requestIdleCallback' in window
+      ? requestIdleCallback(start, { timeout: 8000 })
+      : setTimeout(start, 4000);
+  if (document.readyState === 'complete') whenIdle();
+  else window.addEventListener('load', () => void whenIdle(), { once: true });
 }
