@@ -176,6 +176,18 @@ function RootDocument({
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: noFlashThemeScript }}
         />
+        {/* TEMP debug beacon (dev-branch): a device out there renders the page
+            but never becomes interactive, and we can't see its console. Report
+            the first JS error / unhandled rejection / failure-to-boot to
+            /api/collect so the analytics db captures what that browser sees.
+            Inline + first so it runs even when every chunk fails. */}
+        <script
+          type="text/javascript"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var sent=0;function send(n,p){if(sent++>4)return;try{p.ua=navigator.userAgent.slice(0,120);navigator.sendBeacon('/api/collect',JSON.stringify({type:'event',name:n,path:location.pathname,props:p}));}catch(e){}}window.addEventListener('error',function(e){if(e.target&&e.target.tagName){send('client_asset_error',{tag:e.target.tagName,src:String(e.target.src||e.target.href||'').slice(-80)});}else{send('client_js_error',{m:String(e.message).slice(0,180),src:String(e.filename||'').slice(-60),ln:e.lineno});}},true);window.addEventListener('unhandledrejection',function(e){send('client_rejection',{m:String((e.reason&&e.reason.message)||e.reason).slice(0,180)});});setTimeout(function(){if(!window.__cp_booted){send('client_no_boot',{});}},8000);})()`,
+          }}
+        />
         {/* Entry-load watchdog: a page served during a deploy rollout can
             reference asset hashes that no longer exist — the entry module 404s,
             no JS ever runs, and the page is permanently dead (the in-app
@@ -418,6 +430,10 @@ function DeferredToaster({ theme }: { theme: string }) {
 
 function RootComponent() {
   const { theme, brand, favorite } = Route.useLoaderData();
+  // Debug-beacon boot marker (see the inline script in RootDocument's head).
+  useEffect(() => {
+    (window as unknown as { __cp_booted?: number }).__cp_booted = 1;
+  }, []);
   return (
     <RootDocument theme={theme} brand={brand} favorite={favorite}>
       <BrandProvider brand={brand}>
