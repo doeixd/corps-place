@@ -16,6 +16,7 @@ createServer(async (req, res) => {
         if (st.isFile()) {
           const headers = { 'content-type': MIME[path.extname(p)] ?? 'application/octet-stream' };
           if (clean.startsWith('/assets/')) headers['cache-control'] = 'public, max-age=31536000, immutable';
+          if (clean === '/sw.js') headers['cache-control'] = 'no-cache';
           res.writeHead(200, headers);
           res.end(await readFile(p));
           return;
@@ -37,6 +38,14 @@ createServer(async (req, res) => {
     const r = await handler(request);
     const headers = Object.fromEntries(r.headers);
     if (r.status >= 400) headers['cache-control'] = 'no-store';
+    // Documents must never be reused from browser/edge caches: a cached HTML
+    // shell references hashed assets that die on the next deploy — the page
+    // then loads with no JS at all ('site is dead' reports). Same for /sw.js:
+    // a stale service worker must be replaceable immediately.
+    const ct = headers['content-type'] ?? '';
+    if (!headers['cache-control'] && (ct.includes('text/html') || clean === '/sw.js')) {
+      headers['cache-control'] = 'no-cache';
+    }
     res.writeHead(r.status, headers);
     res.end(Buffer.from(await r.arrayBuffer()));
   } catch (e) { res.writeHead(500); res.end(String(e)); }
