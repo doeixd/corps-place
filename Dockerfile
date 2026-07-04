@@ -42,6 +42,13 @@ RUN --mount=type=cache,target=/root/.pnpm-store \
 
 # App source (sdk/src is included for @sdk/* imports; heavy sdk dirs are .dockerignored)
 COPY . .
+# Feature flags are baked at build time (vite inlines import.meta.env). These
+# used to come from Coolify's build env; with off-box GH-Actions builds the
+# image must carry them itself — defaults ON so a plain `docker build` matches
+# what prod has always shipped.
+ARG VITE_ENABLE_FANTASY=true
+ARG VITE_ENABLE_SW=true
+ENV NODE_ENV=production VITE_ENABLE_FANTASY=$VITE_ENABLE_FANTASY VITE_ENABLE_SW=$VITE_ENABLE_SW
 RUN npm run build
 # Fail the build if server-only code leaked into the client bundle (blank-site class).
 RUN node scripts/check-client-bundle.mjs
