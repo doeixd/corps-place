@@ -3,7 +3,7 @@
 // ballots are immutable and the actuals are fixed once ingested, so nothing is
 // persisted. Gated on rm_fantasy_season_finals.recap_present so partial
 // championship weeks (prelims scored, finals pending) don't grade early.
-import { createServerFn } from '@tanstack/react-start/client';
+import { createServerFn } from '@tanstack/react-start';
 import { getContributionsDb } from '@/lib/contributions-db';
 import { getReadModelClient, readModelEnabled } from '@/lib/read-model-db';
 import {
