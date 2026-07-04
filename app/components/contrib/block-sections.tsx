@@ -20,7 +20,7 @@ const LexicalFreeForm = lazy(() =>
 );
 import { SectionErrorBoundary } from '@/components/error-boundary';
 import { renderLexicalDoc } from '@/lib/contrib/lexical-render';
-import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
+import { emptyFreeFormDoc, freeFormDocFromPlain, type FreeFormDoc } from '@/lib/contrib/free-form';
 import type { CitationOption } from '@/components/contrib/citation-controls';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -557,20 +557,48 @@ export function AboutSection({
   season,
   initial,
   citations = [],
-}: BlockProps<FreeFormDoc> & { citations?: readonly CitationOption[] }) {
+  scraped = null,
+}: BlockProps<FreeFormDoc> & {
+  citations?: readonly CitationOption[];
+  /**
+   * Scraped seed (the show's imported description + designer notes). Rendered
+   * as the section body until someone writes an authored version — ONE "about"
+   * section instead of a scraped block and a wiki block saying the same thing
+   * twice. Editing pre-fills the composer with the scraped text so contributors
+   * improve it rather than start blank; once authored content exists it
+   * replaces the scraped body entirely.
+   */
+  scraped?: { description: string; designerNotes?: string | null } | null;
+}) {
   const [value, setValue] = useState<FreeFormDoc | null>(initial);
+  const hasAuthored = Boolean(value?.plain?.trim());
   return (
     <ContribBlock
       icon={BookOpen01Icon}
-      title="Synopsis"
-      emptyHint="Write a full guide to this show — its movements, story, symbolism, and what to watch for. Editing opens guided starting points to help."
-      hasContent={Boolean(value?.plain?.trim())}
-      view={renderLexicalDoc(value?.doc)}
+      title="About this show"
+      emptyHint="What is this show about? Write a guide — its movements, story, symbolism, and what to watch for. Editing opens guided starting points to help."
+      hasContent={hasAuthored || Boolean(scraped?.description)}
+      view={
+        hasAuthored ? (
+          renderLexicalDoc(value?.doc)
+        ) : scraped?.description ? (
+          <div className="text-sm leading-relaxed">
+            <p className="whitespace-pre-line text-text-secondary">{scraped.description}</p>
+            {scraped.designerNotes ? (
+              <p className="mt-3 whitespace-pre-line text-text-secondary">
+                {scraped.designerNotes}
+              </p>
+            ) : null}
+          </div>
+        ) : null
+      }
       edit={(close) => (
         <AboutEditor
           corpsKey={corpsKey}
           season={season}
-          value={value}
+          value={
+            value ?? (scraped?.description ? freeFormDocFromPlain(scraped.description) : null)
+          }
           citations={citations}
           onSaved={(v) => {
             setValue(v);

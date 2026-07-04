@@ -40,7 +40,7 @@ import { StatusCard } from '@/components/status-card';
 import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon, type IconComponent } from '@/components/icon';
-import { RankingIcon, BookOpen01Icon } from '@/components/icons/generated';
+import { RankingIcon } from '@/components/icons/generated';
 import { SectionErrorBoundary } from '@/components/error-boundary';
 import { LazyMount } from '@/components/lazy-mount';
 
@@ -228,19 +228,23 @@ function ShowDetailPage() {
             </div>
           </div>
 
-          {/* Description / about (scraped) */}
-          <Show when={show.description}>
-            {(d) => (
-              <Section icon={BookOpen01Icon} title="About this show">
-                <p className="whitespace-pre-line text-text-secondary">{d}</p>
-                <Show when={show.designerNotes}>
-                  {(n) => (
-                    <p className="mt-3 whitespace-pre-line text-sm text-text-secondary">{n}</p>
-                  )}
-                </Show>
-              </Section>
-            )}
-          </Show>
+          {/* About this show — ONE section (scraped seed + authored overlay,
+              like repertoire/movements): renders the authored synopsis when one
+              exists, else the scraped description; editing pre-fills with the
+              scraped text so contributions improve it instead of duplicating it. */}
+          <SectionErrorBoundary label="the about section">
+            <AboutSection
+              corpsKey={corps.corps_key}
+              season={show.season}
+              initial={authored.about}
+              citations={citations}
+              scraped={
+                show.description
+                  ? { description: show.description, designerNotes: show.designerNotes }
+                  : null
+              }
+            />
+          </SectionErrorBoundary>
 
           {/* Repertoire (scraped seed + per-row override wiki) */}
           <SectionErrorBoundary label="the repertoire section">
@@ -252,18 +256,6 @@ function ShowDetailPage() {
               citations={citations}
               dcxMuseumUrl={corps.dcx_museum_url}
               corpsName={corps.name}
-            />
-          </SectionErrorBoundary>
-
-          {/* Synopsis (authored wiki) — right under the repertoire (the about
-              blurb already sits above it); shows an "Add" call-to-contribute
-              when nothing is written yet. */}
-          <SectionErrorBoundary label="the synopsis section">
-            <AboutSection
-              corpsKey={corps.corps_key}
-              season={show.season}
-              initial={authored.about}
-              citations={citations}
             />
           </SectionErrorBoundary>
 

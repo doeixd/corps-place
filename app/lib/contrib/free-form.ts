@@ -48,6 +48,45 @@ export const emptyFreeFormDoc = (format: FreeFormFormat): FreeFormDoc => ({
 });
 
 /**
+ * Build a Lexical FreeFormDoc from plain text — used to PRE-FILL the editor with
+ * scraped seed content (e.g. the show description) so contributors improve the
+ * existing text instead of writing from scratch beside it. Newlines become
+ * paragraphs. The result is only an editor starting value: on save, `doc` and
+ * `plain` are re-derived from the live editor state as usual.
+ */
+export const freeFormDocFromPlain = (text: string): FreeFormDoc => {
+  const paragraph = (line: string) => ({
+    type: 'paragraph',
+    version: 1,
+    direction: null,
+    format: '',
+    indent: 0,
+    children: [
+      { type: 'text', version: 1, text: line, format: 0, style: '', mode: 'normal', detail: 0 },
+    ],
+  });
+  const lines = text
+    .split(/\n+/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  return {
+    format: 'lexical',
+    version: 1,
+    doc: JSON.stringify({
+      root: {
+        type: 'root',
+        version: 1,
+        direction: null,
+        format: '',
+        indent: 0,
+        children: lines.map(paragraph),
+      },
+    }),
+    plain: lines.join('\n'),
+  };
+};
+
+/**
  * Server-side integrity check (plan §6.6): `plain` must be the flattening the
  * editor produced for `doc`, so search/diff can't be poisoned independently of
  * what readers see. Each editor integration supplies its own `flattenDoc`; this
