@@ -759,12 +759,17 @@ tr:active .sticky-col {
    hover target, or a wrapping Link carries `group`). `card-hover-flat` is the
    no-lift variant for panels (latest results / featured prediction). */
 @layer components {
-  /* Bound grid-item style/layout invalidation. NOTE: `content-visibility: auto` +
-     a fixed `contain-intrinsic-size: 7rem` was removed — it collapsed taller cards to
-     the 7rem placeholder while offscreen, clipping their borders/content on scroll.
-     `contain: layout style` alone is safe and still scopes invalidation. */
+  /* Skip layout/paint for offscreen grid cards. The earlier attempt with a FIXED
+     `contain-intrinsic-size: 7rem` collapsed taller cards to the placeholder and
+     clipped them on scroll; the `auto` keyword fixes that — once a card has
+     rendered, its real size is remembered and the 9rem estimate is only used
+     pre-first-render. Verified by scroll-through screenshots (top/mid/bottom/
+     return) on /corps: no clipping, natural heights. On a 4x-throttled CPU this
+     cut /corps TaskDuration ~15% and load ~27%. */
   .collection-card {
     contain: layout style;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 9rem;
   }
   .card-hover,
   .card-hover-flat {
