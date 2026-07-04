@@ -27,6 +27,9 @@ WORKDIR /app
 # and the build started OOM-failing under load. `vite build` fits comfortably in
 # 2048 (verified), so cap there to leave headroom for the running container.
 ENV NODE_OPTIONS="--max-old-space-size=2048"
+# Dev builds run alongside prod's image + caches on a small disk; 10GiB free is
+# rarely available mid-iteration. 6 is enough for this build (measured).
+ENV BUILD_MIN_FREE_GB=6
 
 # Native toolchain for sharp and any native gyp fallback
 RUN apt-get update \
