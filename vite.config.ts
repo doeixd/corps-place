@@ -110,8 +110,12 @@ export default defineConfig({
     // (routeRules stamped it on error responses too — since guarded by the
     // no-cache-errors nitro plugin), poisoning those URLs at the edge for up to
     // a year. Moving every built asset to a fresh path makes all poisoned URLs
-    // unreachable without an edge purge. Bump r1 → r2 if it ever happens again.
-    assetsDir: 'assets/r1',
+    // unreachable without an edge purge. Bump the generation if it recurs.
+    // r2 (2026-07-04, DEV branch): the early dev-harness deploys let missing
+    // assets fall through to the SSR catch-all (200 HTML for .js URLs, which
+    // Cloudflare caches by extension) before the no-store guard landed —
+    // per-colo poison persisted for one user; fresh paths bypass it everywhere.
+    assetsDir: 'assets/r2',
   },
   define: {
     // Shared by the client (AutoUpdater) and the /api/version route — same value
