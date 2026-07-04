@@ -5,7 +5,7 @@
 // PRIOR-SEASON championship placement (per caption on caption cards). The
 // original /predict/palette is untouched.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { createIsomorphicFn } from '@tanstack/react-start';
 import { getRequest } from '@tanstack/react-start/server';
 import { PageShell } from '@/components/page-shell';
@@ -407,7 +407,7 @@ function BallotPage() {
       />
 
       {saved.length > 0 ? (
-        <div className="flex items-center">
+        <div className="flex items-center gap-3">
           <select
             aria-label="My saved predictions"
             className="h-8 rounded-lg border border-border bg-background px-2 text-sm text-text-secondary"
@@ -425,6 +425,13 @@ function BallotPage() {
               </option>
             ))}
           </select>
+          <Link
+            to="/predict/results"
+            search={{ season }}
+            className="shrink-0 text-xs text-text-secondary underline-offset-2 hover:underline"
+          >
+            Season results
+          </Link>
         </div>
       ) : null}
 

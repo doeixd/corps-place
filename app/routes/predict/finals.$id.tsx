@@ -12,6 +12,7 @@ import { ShareButton } from '@/components/share-button';
 import { FilterChips, type FilterChipItem } from '@/components/filter-chips';
 import { seoHead, siteBase } from '@/lib/seo';
 import { getBallot } from '@/lib/server-fns/ballot';
+import { getBallotGrade } from '@/lib/server-fns/ballot-grading';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
 import { track } from '@/lib/analytics/client';
 import { cn } from '@/lib/utils';
@@ -32,14 +33,17 @@ export const Route = createFileRoute('/predict/finals/$id')({
     // Live rankings for logo resolution + the "current rank" comparison column.
     // The ballot itself is self-contained (names snapshotted at lock time), so a
     // rankings failure only loses logos/deltas, never the page.
-    const [{ seasons }, rankings] = await Promise.all([
+    const [{ seasons }, rankings, grade] = await Promise.all([
       getRankingSeasons().catch(() => ({ seasons: [] as string[] })),
       getRankings({
         data: { season: ballot.season, metric: 'total', agg: 'best', div: ['world', 'open'] },
       }).catch(() => null),
+      // Post-finals report card; null/unavailable until the season's finals
+      // recap lands, and a grading failure never loses the page.
+      getBallotGrade({ data: params.id }).catch(() => null),
     ]);
     void seasons;
-    return { ballot, liveRows: rankings?.rows ?? [] };
+    return { ballot, liveRows: rankings?.rows ?? [], grade: grade?.available ? grade : null };
   },
   head: ({ loaderData, params }) => {
     const b = loaderData?.ballot;
@@ -64,11 +68,17 @@ const CAPTION_LABELS: Record<string, string> = {
 };
 
 function SharedBallotPage() {
-  const { ballot, liveRows } = Route.useLoaderData();
+  const { ballot, liveRows, grade } = Route.useLoaderData();
   const { id } = Route.useParams();
   const savedCaptions = Object.keys(ballot.captions ?? {});
   const [view, setView] = useState('overall');
   const shown = view === 'overall' ? ballot.overall : (ballot.captions[view] ?? ballot.overall);
+  // Post-finals only: the grade for the dimension being viewed, keyed by pick position.
+  const viewGrade = grade
+    ? view === 'overall'
+      ? grade.overall
+      : (grade.captions[view as keyof typeof grade.captions] ?? null)
+    : null;
 
   const liveBySlug = new Map(liveRows.map((r) => [r.corpsSlug, r]));
   const currentRank = new Map(liveRows.map((r, i) => [r.corpsSlug, i + 1]));
@@ -115,6 +125,51 @@ function SharedBallotPage() {
         </Button>
       </div>
 
+      {grade?.overall ? (
+        <Card>
+          <CardContent className="py-4">
+            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+              <div>
+                <div className="text-3xl font-bold tabular-nums">{grade.overall.pct}%</div>
+                <div className="text-xs text-muted-foreground">prediction score</div>
+              </div>
+              <div className="text-sm text-text-secondary">
+                <span className="font-semibold tabular-nums">{grade.overall.earned}</span>
+                {' / '}
+                <span className="tabular-nums">{grade.overall.possible}</span> points ·{' '}
+                <span className="font-semibold tabular-nums">{grade.overall.exact}</span> exact{' '}
+                {grade.overall.exact === 1 ? 'pick' : 'picks'}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="ml-auto"
+                render={<Link to="/predict/results" search={{ season: ballot.season }} />}
+              >
+                Season results & consensus →
+              </Button>
+            </div>
+            {Object.keys(grade.captions).length > 0 ? (
+              <div className="mt-3 flex flex-wrap gap-2 border-t border-border pt-3">
+                {Object.entries(grade.captions).map(([cap, g]) => (
+                  <span
+                    key={cap}
+                    className="rounded-full border border-border px-2.5 py-0.5 text-xs tabular-nums text-text-secondary"
+                  >
+                    {CAPTION_LABELS[cap] ?? cap} {g.pct}%
+                  </span>
+                ))}
+              </div>
+            ) : null}
+            <p className="mt-3 text-xs text-muted-foreground">
+              Graded against the {ballot.season} World Championship results: 10 points for a corps
+              placed exactly right, −3 per position off. Championships-week caption bests decide
+              placements, so every competing corps counts — not just finalists.
+            </p>
+          </CardContent>
+        </Card>
+      ) : null}
+
       {savedCaptions.length > 0 ? (
         <FilterChips
           ariaLabel="Prediction dimension"
@@ -135,6 +190,7 @@ function SharedBallotPage() {
               const live = liveBySlug.get(entry.slug);
               const now = currentRank.get(entry.slug);
               const delta = now !== undefined ? now - (i + 1) : 0;
+              const pick = viewGrade?.picks[i]?.slug === entry.slug ? viewGrade.picks[i] : null;
               return (
                 <div
                   key={entry.slug}
@@ -161,7 +217,29 @@ function SharedBallotPage() {
                     logoClassName="size-8 sm:size-8"
                     className="min-w-0 flex-1 font-medium"
                   />
-                  {delta !== 0 ? (
+                  {pick ? (
+                    <span
+                      className={cn(
+                        'shrink-0 text-xs tabular-nums',
+                        pick.delta === 0
+                          ? 'font-semibold text-success'
+                          : pick.actual === null
+                            ? 'text-muted-foreground'
+                            : 'text-text-secondary'
+                      )}
+                      title={
+                        pick.actual === null
+                          ? 'Did not compete at championships'
+                          : `Finished #${pick.actual} — ${pick.points} pts`
+                      }
+                    >
+                      {pick.actual === null
+                        ? 'DNC'
+                        : pick.delta === 0
+                          ? `#${pick.actual} ✓`
+                          : `#${pick.actual} · ${pick.points}pt`}
+                    </span>
+                  ) : delta !== 0 ? (
                     <span
                       className="shrink-0 text-xs tabular-nums text-muted-foreground"
                       title="Current rank vs this prediction"
