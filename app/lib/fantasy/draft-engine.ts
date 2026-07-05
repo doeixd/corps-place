@@ -339,7 +339,9 @@ export async function startDraft(leagueId: string): Promise<StartFeasibility> {
       })
     ).rows;
 
-    if (memberRows.length < 2) throw new Error('CONFLICT:need-two-members');
+    // Solo leagues can draft (a 1-member draft is just picking your roster) —
+    // only an EMPTY league can't start. 'need-two-members' copy retired with it.
+    if (memberRows.length < 1) throw new Error('CONFLICT:need-two-members');
     if (memberRows.some((m) => !m.corps_name)) throw new Error('CONFLICT:identities-incomplete');
 
     const totalRounds = Number(draftRow.total_rounds);

@@ -662,7 +662,8 @@ const makeDraftService = Effect.gen(function* () {
           WHERE m.league_id = ${leagueId} AND m.status = 'active'
         `.pipe(Effect.orDie);
 
-        if (memberRows.length < 2)
+        // Solo leagues can draft; only an empty league can't start.
+        if (memberRows.length < 1)
           return yield* Effect.fail(new DraftConflict({ reason: 'need-two-members' }));
         if (memberRows.some((m) => !m.corps_name))
           return yield* Effect.fail(new DraftConflict({ reason: 'identities-incomplete' }));
