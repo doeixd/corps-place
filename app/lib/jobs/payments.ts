@@ -24,9 +24,10 @@ const siteOrigin = (): string =>
 
 export async function createBoostCheckoutSession(input: {
   postingId: string;
+  orderId: string;
   slug: string;
   customerEmail?: string;
-}): Promise<{ url: string }> {
+}): Promise<{ url: string; sessionId: string }> {
   const priceId = process.env.STRIPE_BOOST_PRICE_ID;
   if (!priceId) throw new Error('STRIPE_BOOST_PRICE_ID not set');
   const origin = siteOrigin();
@@ -35,12 +36,12 @@ export async function createBoostCheckoutSession(input: {
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${origin}/jobs/${input.slug}?boosted=1`,
     cancel_url: `${origin}/jobs/${input.slug}?canceled=1`,
-    metadata: { postingId: input.postingId },
-    payment_intent_data: { metadata: { postingId: input.postingId } },
+    metadata: { postingId: input.postingId, orderId: input.orderId },
+    payment_intent_data: { metadata: { postingId: input.postingId, orderId: input.orderId } },
     customer_email: input.customerEmail,
   });
   if (!session.url) throw new Error('Stripe did not return a checkout URL');
-  return { url: session.url };
+  return { url: session.url, sessionId: session.id };
 }
 
 export function constructWebhookEvent(rawBody: string, signature: string): Stripe.Event {

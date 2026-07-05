@@ -1303,19 +1303,30 @@ const makeJobsService = Effect.gen(function* () {
     return orderId;
   });
 
+  // Link the Stripe Checkout session to the order once it exists. The order is
+  // created BEFORE the session (we need the orderId in the session metadata), so
+  // stripe_session_id starts null; without writing it back, markBoostPaid's
+  // lookup by session id could never match and paid boosts never activated.
+  const attachOrderSession = Effect.fn('JobsService.attachOrderSession')(function* (
+    orderId: string,
+    sessionId: string
+  ) {
+    yield* sql`UPDATE jobs_order SET stripe_session_id = ${sessionId} WHERE order_id = ${orderId}`;
+  });
+
   const markBoostPaid = Effect.fn('JobsService.markBoostPaid')(function* (
     sessionId: string,
     paymentIntent: string | null
   ) {
     const now = new Date().toISOString();
-    // Find the order by stripe_session_id, mark completed
+    // Find the order by stripe_session_id (attached at checkout), mark completed.
     const order = yield* sql<{
       order_id: string;
       posting_id: string | null;
     }>`SELECT order_id, posting_id FROM jobs_order WHERE stripe_session_id = ${sessionId} AND status = 'pending' LIMIT 1`;
-    if (!order[0]) return; // Idempotent — already processed
+    if (!order[0]) return; // Idempotent — already processed (or session never attached)
 
-    yield* sql`UPDATE jobs_order SET status = 'completed', completed_at = ${now} WHERE order_id = ${order[0].order_id}`;
+    yield* sql`UPDATE jobs_order SET status = 'completed', payment_intent = ${paymentIntent}, completed_at = ${now} WHERE order_id = ${order[0].order_id}`;
 
     // If the order is for a boost, flip the posting
     if (order[0].posting_id) {
@@ -1368,6 +1379,7 @@ const makeJobsService = Effect.gen(function* () {
     deleteAlert,
     fireAlertsForNewPosting,
     createBoostOrder,
+    attachOrderSession,
     markBoostPaid,
     bookmarkJob,
     removeBookmark,
