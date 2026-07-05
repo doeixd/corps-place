@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMachine } from '@xstate/react';
 import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
@@ -11,13 +11,55 @@ import { PageHeader } from '@/components/page-header';
 import { SeasonChips } from '@/components/filter-chips';
 import { Input } from '@/components/ui/input';
 import { Icon } from '@/components/icon';
-import { Search01Icon } from '@/components/icons/generated';
+import { Search01Icon, Megaphone01Icon, Cancel01Icon } from '@/components/icons/generated';
 import { ScoreEventSection } from '@/components/scores/score-event-section';
 import { seoHead, breadcrumbLd, SITE_URL } from '@/lib/seo';
 
 type ScoresSearch = { season?: string; q?: string };
 
 const CURRENT_SCORES_SEASON = '2026';
+
+// One-time dismissible discovery nudge for score alerts (localStorage-gated,
+// mounted-gated so SSR/hydration render nothing and dismissal sticks).
+const NUDGE_KEY = 'score-notify-nudge-dismissed:v1';
+
+function ScoreNotifyNudge() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    try {
+      setVisible(localStorage.getItem(NUDGE_KEY) !== '1');
+    } catch {
+      /* storage unavailable — keep hidden */
+    }
+  }, []);
+  if (!visible) return null;
+  const dismiss = () => {
+    setVisible(false);
+    try {
+      localStorage.setItem(NUDGE_KEY, '1');
+    } catch {
+      /* ignore */
+    }
+  };
+  return (
+    <div className="mb-4 flex items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 text-sm text-text-secondary">
+      <Icon icon={Megaphone01Icon} size="sm" className="shrink-0 text-primary" />
+      <p className="min-w-0 flex-1">
+        Never miss a score — every corps page and upcoming event page has a{' '}
+        <span className="font-medium text-text-primary">Notify me</span> button for email or push
+        alerts the moment results post.
+      </p>
+      <button
+        type="button"
+        onClick={dismiss}
+        aria-label="Dismiss"
+        className="shrink-0 rounded p-1 text-text-muted hover:text-text-primary"
+      >
+        <Icon icon={Cancel01Icon} size="sm" />
+      </button>
+    </div>
+  );
+}
 
 const place = (city?: string | null, state?: string | null) =>
   [city, state].filter(Boolean).join(', ') || null;
@@ -130,6 +172,8 @@ function ScoresIndex() {
         backTo="/"
         backLabel="Home"
       />
+
+      <ScoreNotifyNudge />
 
       <div className="mb-6 flex items-center gap-2">
         <div className="relative w-full sm:w-80">
