@@ -593,6 +593,7 @@ const SCHEMA = [
      amount_cents      INTEGER NOT NULL,
      currency          TEXT NOT NULL DEFAULT 'usd',
      status            TEXT NOT NULL DEFAULT 'pending',
+     payment_intent    TEXT,
      created_at        TEXT NOT NULL,
      completed_at      TEXT
    )`,

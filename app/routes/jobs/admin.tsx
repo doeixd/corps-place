@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,13 @@ import { Icon } from '@/components/icon';
 import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { buildSeo } from '@/lib/seo';
-import { getFlagQueue, getPendingClaims, dismissFlag, actionFlag } from '@/lib/server-fns/jobs';
+import {
+  getFlagQueue,
+  getPendingClaims,
+  dismissFlag,
+  actionFlag,
+  revokeJobsClaim,
+} from '@/lib/server-fns/jobs';
 import { Alert02Icon, CheckmarkCircle02Icon } from '@/components/icons/generated';
 
 export const Route = createFileRoute('/jobs/admin')({
@@ -18,7 +24,16 @@ export const Route = createFileRoute('/jobs/admin')({
       path: '/jobs/admin',
       noindex: true,
     }),
-  loader: async () => ({ flags: await getFlagQueue(), claims: await getPendingClaims() }),
+  // getFlagQueue/getPendingClaims are moderator-gated server-fns; a non-moderator
+  // (or signed-out) request throws ForbiddenError. Convert that to notFound() so
+  // the moderation console's existence isn't advertised, matching /admin's idiom.
+  loader: async () => {
+    try {
+      return { flags: await getFlagQueue(), claims: await getPendingClaims() };
+    } catch {
+      throw notFound();
+    }
+  },
   component: AdminPage,
 });
 
@@ -39,6 +54,13 @@ function AdminPage() {
     setLoading(flagId);
     await actionFlag({ data: { flagId } });
     setFlags((prev) => prev.filter((f) => f.flag_id !== flagId));
+    setLoading(null);
+  };
+
+  const handleRevoke = async (claimId: string) => {
+    setLoading(claimId);
+    await revokeJobsClaim({ data: { claimId } });
+    setClaims((prev) => prev.filter((c) => c.claim_id !== claimId));
     setLoading(null);
   };
 
@@ -123,9 +145,19 @@ function AdminPage() {
                         Entity: {c.entity_id} · Profile: {c.profile_id}
                       </p>
                     </div>
-                    <Badge variant="success-light" size="sm">
-                      {c.status}
-                    </Badge>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <Badge variant="success-light" size="sm">
+                        {c.status}
+                      </Badge>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={loading === c.claim_id}
+                        onClick={() => handleRevoke(c.claim_id)}
+                      >
+                        Revoke
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}

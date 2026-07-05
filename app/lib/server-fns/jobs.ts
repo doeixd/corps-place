@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { getRequest } from '@tanstack/react-start/server';
 import * as v from 'valibot';
 import { Effect } from 'effect';
-import { getActor, ForbiddenError } from '@/lib/authz';
+import { getActor, ForbiddenError, requireCapability } from '@/lib/authz';
 import { rateLimit } from '@/lib/rate-limit';
 import { JobsService, JobsServiceLive } from '@/lib/jobs/jobs-service';
 import { JOBS_BLOCK_SCHEMAS, isJobsBlockKind } from '@/lib/jobs/schemas';
@@ -244,6 +244,20 @@ export const listJobs = createServerFn({ method: 'GET' })
     return { ...result, rows: sorted };
   });
 
+// Apply link must be an http(s) URL when present — reject javascript:/data: and
+// other schemes that render as clickable but hostile links on the posting page.
+// Empty string (the "no external apply URL" default) stays valid.
+const isHttpUrlOrEmpty = (s: string): boolean => {
+  if (s === '') return true;
+  try {
+    const u = new URL(s);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+const isEmailOrEmpty = (s: string): boolean => s === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
 const CreatePostingInput = v.object({
   title: v.pipe(v.string(), v.minLength(1, 'Title required'), v.maxLength(200)),
   location: v.optional(v.pipe(v.string(), v.maxLength(200)), ''),
@@ -252,8 +266,14 @@ const CreatePostingInput = v.object({
   compText: v.optional(v.pipe(v.string(), v.maxLength(500)), ''),
   salaryMin: v.optional(v.nullable(v.number())),
   salaryMax: v.optional(v.nullable(v.number())),
-  applyUrl: v.optional(v.pipe(v.string(), v.maxLength(500)), ''),
-  applyEmail: v.optional(v.pipe(v.string(), v.maxLength(200)), ''),
+  applyUrl: v.optional(
+    v.pipe(v.string(), v.maxLength(500), v.check(isHttpUrlOrEmpty, 'Enter a valid http(s) URL')),
+    ''
+  ),
+  applyEmail: v.optional(
+    v.pipe(v.string(), v.maxLength(200), v.check(isEmailOrEmpty, 'Enter a valid email')),
+    ''
+  ),
   contentJson: v.string(),
   discipline: v.optional(v.pipe(v.string(), v.maxLength(40)), ''),
   expiresDays: v.optional(v.number()),
@@ -580,8 +600,13 @@ export const reportContent = createServerFn({ method: 'POST' })
     return { ok: true as const, flagId };
   });
 
+// Moderation queue + actions are moderator-only. getJobsCtx alone authenticates
+// but never checked role — so any signed-in user could read the flag/claim
+// queues and hide postings/profiles. These now require the same moderator
+// capabilities the wiki + admin-jobs use ('hideRevision' to see/action content
+// flags, 'manageProfileClaims' to review identity claims).
 export const getFlagQueue = createServerFn({ method: 'GET' }).handler(async () => {
-  const ctx = await getJobsCtx();
+  await requireCapability(getWebRequest(), 'hideRevision');
   return Effect.runPromise(
     Effect.flatMap(JobsService, (svc) => svc.listFlags('open')).pipe(
       Effect.provide(JobsServiceLive)
@@ -590,7 +615,7 @@ export const getFlagQueue = createServerFn({ method: 'GET' }).handler(async () =
 });
 
 export const getPendingClaims = createServerFn({ method: 'GET' }).handler(async () => {
-  await getJobsCtx();
+  await requireCapability(getWebRequest(), 'manageProfileClaims');
   return Effect.runPromise(
     Effect.flatMap(JobsService, (svc) => svc.listPendingClaims()).pipe(
       Effect.provide(JobsServiceLive)
@@ -601,9 +626,9 @@ export const getPendingClaims = createServerFn({ method: 'GET' }).handler(async 
 export const dismissFlag = createServerFn({ method: 'POST' })
   .validator((d: { flagId: string }) => d)
   .handler(async ({ data }) => {
-    const ctx = await getJobsCtx();
+    const actor = await requireCapability(getWebRequest(), 'hideRevision');
     await Effect.runPromise(
-      Effect.flatMap(JobsService, (svc) => svc.dismissFlag(data.flagId, ctx.authorId)).pipe(
+      Effect.flatMap(JobsService, (svc) => svc.dismissFlag(data.flagId, actor.userId)).pipe(
         Effect.provide(JobsServiceLive)
       )
     );
@@ -613,11 +638,30 @@ export const dismissFlag = createServerFn({ method: 'POST' })
 export const actionFlag = createServerFn({ method: 'POST' })
   .validator((d: { flagId: string }) => d)
   .handler(async ({ data }) => {
-    const ctx = await getJobsCtx();
+    const actor = await requireCapability(getWebRequest(), 'hideRevision');
     await Effect.runPromise(
-      Effect.flatMap(JobsService, (svc) => svc.actionFlag(data.flagId, ctx.authorId)).pipe(
+      Effect.flatMap(JobsService, (svc) => svc.actionFlag(data.flagId, actor.userId)).pipe(
         Effect.provide(JobsServiceLive)
       )
+    );
+    return { ok: true as const };
+  });
+
+// Revoke a person-claim. Claims go active immediately (trust-then-verify), so a
+// moderator needs a way to undo an impersonating one — the service method
+// existed but had no server-fn, leaving the review queue toothless.
+export const revokeJobsClaim = createServerFn({ method: 'POST' })
+  .validator((d: { claimId: string }) => d)
+  .handler(async ({ data }) => {
+    const actor = await requireCapability(getWebRequest(), 'manageProfileClaims');
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.revokeClaim(data.claimId, actor.userId, {
+          authorId: actor.userId,
+          actorRole: actor.role,
+          now: new Date().toISOString(),
+        })
+      ).pipe(Effect.provide(JobsServiceLive))
     );
     return { ok: true as const };
   });
@@ -788,15 +832,39 @@ export const createBoostCheckout = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const ctx = await getJobsCtx();
     const { createBoostCheckoutSession } = await import('@/lib/jobs/payments');
+    // Only the posting's owner may boost it — otherwise a signed-in user could
+    // open boost orders against arbitrary postings. getPostingForEdit filters by
+    // the caller's employer profile, returning null when they don't own it.
+    const profile = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.getProfileByUser(ctx.authorId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
+    if (!profile) throw new ForbiddenError('edit');
+    const posting = await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) =>
+        svc.getPostingForEdit(data.postingId, profile.profile.profile_id)
+      ).pipe(Effect.provide(JobsServiceLive))
+    );
+    if (!posting) throw new ForbiddenError('edit');
     const orderId = await Effect.runPromise(
       Effect.flatMap(JobsService, (svc) =>
         svc.createBoostOrder(ctx.authorId, data.postingId, ctx)
       ).pipe(Effect.provide(JobsServiceLive))
     );
-    const { url } = await createBoostCheckoutSession({
+    // Create the Stripe session, then link its id back to the order so the
+    // webhook's markBoostPaid(sessionId) lookup can find it (it starts null —
+    // the order must exist before the session for orderId to go in metadata).
+    const { url, sessionId } = await createBoostCheckoutSession({
       postingId: data.postingId,
+      orderId,
       slug: data.slug,
     });
+    await Effect.runPromise(
+      Effect.flatMap(JobsService, (svc) => svc.attachOrderSession(orderId, sessionId)).pipe(
+        Effect.provide(JobsServiceLive)
+      )
+    );
     return { ok: true as const, url, orderId };
   });
 

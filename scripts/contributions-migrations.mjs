@@ -44,6 +44,8 @@ export const ADD_COLUMNS = [
   // PageantryJobs — single-select discipline dimension on postings + profiles.
   { table: 'jobs_posting', column: 'discipline', ddl: 'ALTER TABLE jobs_posting ADD COLUMN discipline TEXT' },
   { table: 'jobs_profile', column: 'discipline', ddl: 'ALTER TABLE jobs_profile ADD COLUMN discipline TEXT' },
+  // PageantryJobs — Stripe PaymentIntent on a boost order (for refunds/reconciliation).
+  { table: 'jobs_order', column: 'payment_intent', ddl: 'ALTER TABLE jobs_order ADD COLUMN payment_intent TEXT' },
 ];
 
 /**

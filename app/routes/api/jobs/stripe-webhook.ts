@@ -21,16 +21,23 @@ export const Route = createFileRoute('/api/jobs/stripe-webhook')({
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      const postingId = session.metadata?.postingId;
       const paymentIntent =
         typeof session.payment_intent === 'string' ? session.payment_intent : null;
 
-      if (session.id && postingId) {
-        await Effect.runPromise(
-          Effect.flatMap(JobsService, (s) => s.markBoostPaid(session.id ?? '', paymentIntent)).pipe(
-            Effect.provide(JobsServiceLive)
-          )
-        );
+      if (session.id) {
+        try {
+          await Effect.runPromise(
+            Effect.flatMap(JobsService, (s) => s.markBoostPaid(session.id ?? '', paymentIntent)).pipe(
+              Effect.provide(JobsServiceLive)
+            )
+          );
+        } catch (err) {
+          // Return 5xx so Stripe RETRIES the webhook — swallowing the error left
+          // a paid order stuck 'pending' with no second chance. markBoostPaid is
+          // idempotent (no-op once the order is completed), so retries are safe.
+          console.error('[stripe-webhook] markBoostPaid failed', err);
+          return new Response('Failed to process payment', { status: 500 });
+        }
       }
     }
 
