@@ -151,7 +151,7 @@ export const fantasyDraftMachine = setup({
           actions: assign({
             error: ({ event }) =>
               matchMessage(event.error as Error, {
-                'need-two-members': 'You need at least two members to start.',
+                'need-two-members': 'You need at least one member to start the draft.',
                 'identities-incomplete': 'Every member must name their corps first.',
               }),
           }),

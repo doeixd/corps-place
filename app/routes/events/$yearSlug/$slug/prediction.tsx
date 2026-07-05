@@ -76,6 +76,7 @@ import {
 import { Badge } from '@/components/reui/badge';
 import { Alert, AlertTitle, AlertDescription } from '@/components/reui/alert';
 import { PageHeader } from '@/components/page-header';
+import { ScoreNotifyButton } from '@/components/score-notify-button';
 import { PredictionExplainer } from '@/components/prediction/prediction-explainer';
 import { useRegisterBackName } from '@/lib/use-register-back-name';
 import { useStickyScroll, useSuppressLayoutOnce } from '@/lib/table-interactions';
@@ -1171,6 +1172,19 @@ function CurrentPredictionPage({
         //   </Button>
         // }
       />
+
+      {/* Score alerts for the unscored event — hidden once real scores exist
+          (the ping already fired; the recap is on the page). */}
+      {scoredRecap === null ? (
+        <div className="-mt-4 mb-6">
+          <ScoreNotifyButton
+            targetKind="event"
+            targetSlug={slug}
+            targetLabel={event?.event_name ?? event?.name ?? eventLabel(slug) ?? slug}
+          />
+        </div>
+      ) : null}
+
       {/* Advanced generation controls (Mode / Percent Through / Force / Refresh).
           Hidden for now — the machine still supports SET_MODE / SET_PERCENT_THROUGH
           / SET_FORCE / SET_REFRESH, so flipping SHOW_ADVANCED_CONTROLS back on (or

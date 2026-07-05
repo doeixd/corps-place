@@ -9,6 +9,7 @@ import { PageShell } from '@/components/page-shell';
 import { PageHeader } from '@/components/page-header';
 import { EventFullRecap, type RecapCorpsRef } from '@/components/scores/event-full-recap';
 import { StatusCard } from '@/components/status-card';
+import { ScoreNotifyButton } from '@/components/score-notify-button';
 import { seoHead, breadcrumbLd, SITE_URL } from '@/lib/seo';
 import { formatEventDate } from '@/lib/format';
 
@@ -208,11 +209,21 @@ function ScoresEventPage() {
           ) : null}
         </div>
       ) : (
-        <StatusCard
-          tone="info"
-          title="Scores not posted yet"
-          description="Results for this event haven't been published. Check back after the show."
-        />
+        <div className="space-y-3">
+          <StatusCard
+            tone="info"
+            title="Scores not posted yet"
+            description="Results for this event haven't been published. Get notified the moment they land instead of checking back."
+          />
+          {/* Peak-intent placement: someone on a scoreless event page is exactly
+              who wants a "scores are in" ping. Event-slug subscriptions are
+              matched directly by notifyScoreSubscribers. */}
+          <ScoreNotifyButton
+            targetKind="event"
+            targetSlug={slug}
+            targetLabel={`${name}${year ? ` ${year}` : ''}`}
+          />
+        </div>
       )}
     </PageShell>
   );
