@@ -33,6 +33,8 @@ type SyncWriter = {
 type Entry<T extends object> = {
   collection: Collection<T, string | number, any>;
   refetch: () => Promise<void>;
+  /** One-shot: use these rows for the NEXT sync instead of fetching. */
+  seed: (rows: T[]) => void;
 };
 
 /**
@@ -51,13 +53,20 @@ function serverBackedCollection<T extends object>(opts: {
   // Monotonic token so an older overlapping refetch can't clobber a newer one's
   // rows (begin/truncate/write/commit must not interleave between two loads).
   let seq = 0;
+  // One-shot seed from the route loader (same data the fetch would return), so
+  // the FIRST sync skips the duplicate server-fn roundtrip — mirrors
+  // json-collection's seedIndexCollection. A later refetch() still hits the
+  // server (e.g. after a mutation), and the seed is consumed on use.
+  let seedRows: T[] | null = null;
 
   const load = async (): Promise<void> => {
     if (typeof window === 'undefined' || !writer) return;
     const w = writer;
     const mySeq = ++seq;
     try {
-      const rows = await opts.fetchRows();
+      const seeded = seedRows;
+      seedRows = null;
+      const rows = seeded ?? (await opts.fetchRows());
       if (writer !== w || mySeq !== seq) return; // unsubscribed or superseded mid-flight
       w.begin();
       w.truncate();
@@ -88,7 +97,13 @@ function serverBackedCollection<T extends object>(opts: {
     },
   };
 
-  return { collection: createCollection(config), refetch: load };
+  return {
+    collection: createCollection(config),
+    refetch: load,
+    seed: (rows) => {
+      seedRows = rows;
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -98,11 +113,12 @@ function serverBackedCollection<T extends object>(opts: {
 const myLeagues = serverBackedCollection<LeagueRow>({
   id: 'fantasy-my-leagues',
   getKey: (l) => l.league_id,
-  // listMyLeagues throws UNAUTHENTICATED when signed out — caught → empty list.
+  // Anonymous-safe: listMyLeagues returns an empty list when signed out.
   fetchRows: async () => (await listMyLeagues()).leagues,
 });
 export const leaguesCollection = myLeagues.collection;
 export const refetchMyLeagues = myLeagues.refetch;
+export const seedMyLeagues = myLeagues.seed;
 
 // ---------------------------------------------------------------------------
 // per-slug collections — keyed registries (a module singleton can't hold a slug)

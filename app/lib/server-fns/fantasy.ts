@@ -179,8 +179,16 @@ export const getLeague = createServerFn({ method: 'GET' })
 
 // Strangler shim (P1): delegates to LeagueService over the Effect path.
 export const listMyLeagues = createServerFn({ method: 'GET' }).handler(async () => {
-  const actor = await requireActor();
-  return runFantasy(Effect.flatMap(LeagueService, (svc) => svc.listMyLeagues(actor.userId)));
+  // Anonymous-safe: signed-out visitors get an empty list instead of a thrown
+  // UNAUTHENTICATED — /fantasy is a public page and the leagues collection
+  // re-syncs on it, so throwing meant a guaranteed 500 (and error-log spam)
+  // for every signed-out visit.
+  const actor = await getActor(getWebRequest());
+  if (!actor) return { signedIn: false as const, leagues: [] };
+  const { leagues } = await runFantasy(
+    Effect.flatMap(LeagueService, (svc) => svc.listMyLeagues(actor.userId))
+  );
+  return { signedIn: true as const, leagues };
 });
 
 const UpdateConfigInput = v.object({ leagueId: v.string(), config: v.unknown() });
