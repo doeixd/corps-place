@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import { proxiedImage } from '@/lib/media';
 import { cn } from '@/lib/utils';
 
@@ -22,6 +22,7 @@ export function ProgressiveImage({
   fit = 'cover',
   lazy = true,
   priority = false,
+  aspectRatio,
   assumeCached = false,
   dark = false,
   thumbDataUrl,
@@ -37,7 +38,14 @@ export function ProgressiveImage({
   sizes?: string;
   fit?: 'cover' | 'contain';
   lazy?: boolean;
+  /** LCP hint: sets fetchPriority=high AND forces eager loading (overrides `lazy`). */
   priority?: boolean;
+  /**
+   * Reserve space before the image loads (prevents layout shift): rendered as
+   * `aspect-ratio` on the wrapper. Callers that size the wrapper via className
+   * can omit it.
+   */
+  aspectRatio?: number | string;
   assumeCached?: boolean;
   dark?: boolean;
   thumbDataUrl?: string | null;
@@ -49,6 +57,16 @@ export function ProgressiveImage({
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [showPlaceholder, setShowPlaceholder] = useState(false);
+
+  // Catch images that finished loading BEFORE hydration attached onLoad (SSR +
+  // warm cache — the common repeat-visit case). Without this, `loaded` stays
+  // false and the placeholder fades in behind an already-complete image, which
+  // bleeds through transparent logos. A ref callback runs at attach time, so it
+  // sees the browser's actual state instead of waiting for an event that
+  // already fired.
+  const imgRef = useCallback((img: HTMLImageElement | null) => {
+    if (img?.complete && img.naturalWidth > 0) setLoaded(true);
+  }, []);
 
   // Delay the placeholder so fast-loading images don't flash it.
   useEffect(() => {
@@ -62,38 +80,43 @@ export function ProgressiveImage({
     onError?.();
   };
 
-  const proxyOpts = { assumeCached, width, dark };
-  const resolved = src ? proxiedImage(src, proxyOpts) : null;
+  const resolved = src ? proxiedImage(src, { assumeCached, width, dark }) : null;
 
   // Thumbhash data URLs are inline placeholders, so they don't add another image
   // request. If the caller has no thumbhash, render only the final image.
   const placeholderUrl = thumbDataUrl ?? null;
 
   const wList = widths ?? [width, width * 2];
-  const srcSet = resolved
-    ? wList
-        .map((w) => {
-          const u = src ? proxiedImage(src, { assumeCached, width: w, dark }) : null;
-          return u ? `${u} ${w}w` : null;
-        })
-        .filter(Boolean)
-        .join(', ')
-    : undefined;
+  const srcSet =
+    resolved && src
+      ? wList
+          .map((w) => {
+            const u = w === width ? resolved : proxiedImage(src, { assumeCached, width: w, dark });
+            return u ? `${u} ${w}w` : null;
+          })
+          .filter(Boolean)
+          .join(', ')
+      : undefined;
 
   const resolvedSizes = sizes ?? `${Math.round(width)}px`;
+  // priority is the LCP hint — a lazy LCP image is a contradiction (loading=lazy
+  // wins over fetchPriority and delays the request), so priority forces eager.
+  const eager = priority || !lazy;
 
   if (!resolved || failed) {
     return fallback ? <>{fallback}</> : null;
   }
 
   return (
-    <div className={cn('relative overflow-hidden', className)}>
+    <div
+      className={cn('relative overflow-hidden', className)}
+      style={aspectRatio !== undefined ? { aspectRatio } : undefined}
+    >
       {placeholderUrl ? (
         <img
           src={placeholderUrl}
           alt=""
           aria-hidden="true"
-          loading={lazy ? 'lazy' : undefined}
           decoding="async"
           className={cn(
             'absolute inset-0 h-full w-full transition-opacity duration-150',
@@ -104,11 +127,12 @@ export function ProgressiveImage({
         />
       ) : null}
       <img
+        ref={imgRef}
         src={resolved}
         srcSet={srcSet || undefined}
         sizes={resolvedSizes}
         alt={alt}
-        loading={lazy ? 'lazy' : undefined}
+        loading={eager ? undefined : 'lazy'}
         {...(priority ? { fetchPriority: 'high' as const } : {})}
         decoding="async"
         onLoad={() => setLoaded(true)}
