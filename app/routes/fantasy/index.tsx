@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { listMyLeagues } from '@/lib/server-fns/fantasy';
-import { leaguesCollection } from '@/db/fantasy-collections';
+import { leaguesCollection, seedMyLeagues } from '@/db/fantasy-collections';
 import { HybridCollection } from '@/components/hybrid-collection';
 import { useSession } from '@/lib/auth-client';
 import { SignInButton } from '@/components/sign-in-button';
@@ -15,16 +15,12 @@ type LeagueRow = Awaited<ReturnType<typeof listMyLeagues>>['leagues'][number];
 export const Route = createFileRoute('/fantasy/')({
   beforeLoad: requireFantasyEnabled,
   loader: async () => {
-    try {
-      const { leagues } = await listMyLeagues();
-      return { signedIn: true, leagues };
-    } catch (e) {
-      if ((e as Error).message.includes('UNAUTHENTICATED')) {
-        return { signedIn: false, leagues: [] as LeagueRow[] };
-      }
-      throw e;
-    }
+    const { signedIn, leagues } = await listMyLeagues();
+    return { signedIn, leagues };
   },
+  // Leagues barely change mid-session and the live collection picks up changes
+  // anyway; a short staleTime keeps tab-hopping navs off the network.
+  staleTime: 60_000,
   head: () =>
     seoHead({
       title: 'Fantasy Drum Corps — My Leagues',
@@ -36,10 +32,15 @@ export const Route = createFileRoute('/fantasy/')({
 
 function FantasyHome() {
   const { signedIn, leagues } = Route.useLoaderData();
+  // Seed the collection's first sync from the loader rows — the leagues list
+  // was fetched twice per visit (loader for SSR, then the collection's own
+  // listMyLeagues re-fetch after hydration). A later refetchMyLeagues (e.g.
+  // after creating a league) still hits the server.
+  if (typeof window !== 'undefined') seedMyLeagues(leagues);
   // SSR + first paint render from the loader; after hydration the live
   // collection drives the list (e.g. picks up a league created in another tab).
   return (
-    <HybridCollection collection={leaguesCollection} loader={leagues}>
+    <HybridCollection collection={leaguesCollection} loader={leagues} seed={false}>
       {(rows) => <FantasyHomeContent signedIn={signedIn} leagues={rows} />}
     </HybridCollection>
   );
