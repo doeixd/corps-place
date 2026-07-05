@@ -13,6 +13,42 @@ import {
 import { V9_RAW_STATIC_DIM } from '@sdk/src/training/v9FeatureModes.js';
 import { findLatestV9SubcaptionModelDir } from '@sdk/src/training/v9ModelPaths.js';
 
+import type { RecapRow } from '@/lib/prediction-scenario';
+
+/**
+ * A prediction recap row as consumed by the app — typed on the fields the UI
+ * and server-fn boundary actually read (RecapRow's knowns + corps_key); the
+ * model's many extra fields flow through via RecapRow's index signature.
+ * This is the type that catches loader/shard row-shape drift.
+ */
+export interface PredictionRecapRow extends RecapRow {
+  corps_key: string;
+  // `any`, not RecapRow's `unknown`: createServerFn's serializable-return
+  // constraint rejects unknown-valued index signatures.
+  [key: string]: any;
+}
+
+/**
+ * The prediction summary served to routes (== summarizePayload / the frozen
+ * rm_event_prediction summary_json). Scalar fields + recap rows are typed;
+ * the model-internal sub-objects stay loose on purpose — the app treats them
+ * as opaque display blobs and their shape belongs to the model pipeline.
+ */
+export interface EventPredictionSummary {
+  source: 'cache' | 'generated';
+  prediction_id: string;
+  generated_at?: string;
+  model_dir?: string;
+  event?: Record<string, any> | null;
+  competition?: Record<string, any> | null;
+  readiness?: Record<string, any> | null;
+  input_audit?: Record<string, any> | null;
+  model_metadata?: Record<string, any> | null;
+  builder_version?: string;
+  caveats: any[];
+  recap: PredictionRecapRow[];
+}
+
 export type EventPredictionRequest = {
   slug: string;
   force?: boolean;
@@ -521,7 +557,7 @@ const summarizePayload = (
   payload: any,
   source: 'cache' | 'generated',
   run?: ModelEventPredictionRun
-) => ({
+): EventPredictionSummary => ({
   source,
   prediction_id:
     run?.prediction_id ??
@@ -569,7 +605,9 @@ const readRmPredictionSummary = (rmUrl: string, slug: string) =>
           args: [slug],
         });
         const row = r.rows[0] as { summary_json?: string } | undefined;
-        return row?.summary_json ? JSON.parse(String(row.summary_json)) : null;
+        return row?.summary_json
+          ? (JSON.parse(String(row.summary_json)) as EventPredictionSummary)
+          : null;
       } finally {
         client.close?.();
       }

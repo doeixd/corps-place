@@ -5,14 +5,21 @@ import {
   EventDirectoryServiceLive,
   type EventSeasonOption,
   type EventDirectoryRow,
+  type EventScheduleRow,
 } from '@/lib/event-directory';
 import {
   EventPredictionService,
   EventPredictionServiceLive,
   type EventPredictionRequest,
+  type EventPredictionSummary,
+  type PredictionRecapRow,
 } from '@/lib/event-prediction-api';
 import { EventRecapService, EventRecapServiceLive } from '@/lib/event-recap';
-import type { EventRecap, RecapRowOut } from '@sdk/src/readModel/builders/recap.js';
+import type {
+  CompetitionMetaRow,
+  EventRecap,
+  RecapRowOut,
+} from '@sdk/src/readModel/builders/recap.js';
 import {
   CorpsDirectoryService,
   CorpsDirectoryServiceLive,
@@ -88,11 +95,11 @@ const uniqueStrings = (values: readonly unknown[]) =>
   );
 
 type EventPredictionPageData = {
-  prediction: any | null;
-  event: any | null;
-  schedule: any[];
+  prediction: EventPredictionSummary | null;
+  event: EventDirectoryRow | null;
+  schedule: EventScheduleRow[];
   corps: CorpsSummary[];
-  recap: { meta: any | null; scores: any[] } | null;
+  recap: { meta: CompetitionMetaRow | null; scores: RecapRowOut[] } | null;
   seasonOptions: EventSeasonOption[];
   showTitles: Record<string, string>;
   showInfo: Record<string, ShowInfoSummary>;
@@ -496,7 +503,7 @@ export const getHybridPrediction = createServerFn({ method: 'POST' })
 // Actual recap scores for a past-season competition (from relational DB).
 export const getHybridEventRecap = createServerFn({ method: 'GET' })
   .validator((slug: string) => slug)
-  .handler(async ({ data }): Promise<{ meta: any | null; scores: any[] }> => {
+  .handler(async ({ data }): Promise<EventRecap> => {
     const program = Effect.flatMap(EventRecapService, (s) => s.getEventRecap(data)).pipe(
       provideServices
     );
@@ -550,7 +557,7 @@ const fakeOffset = (corpsKey: string, caption: string): number => {
   return Number(((unit - 0.5) * 1.6).toFixed(3));
 };
 
-const synthesizeRecapFromPrediction = (predictionRows: readonly any[]): EventRecap => {
+const synthesizeRecapFromPrediction = (predictionRows: readonly PredictionRecapRow[]): EventRecap => {
   const scores: RecapRowOut[] = predictionRows.map((row) => {
     const out: Record<string, number | undefined> = {};
     for (const cap of SUB_CAPTIONS) {
@@ -655,15 +662,15 @@ export const getHybridEventPredictionPageData = createServerFn({
 
         // Fake-scores test hook: synthesize a recap from the prediction when the
         // explicit flag is set, no real recap exists, and a prediction exists.
-        if (data.fakeScores && recap == null && (prediction?.recap?.length ?? 0) > 0) {
+        if (data.fakeScores && recap == null && prediction && prediction.recap.length > 0) {
           recap = synthesizeRecapFromPrediction(prediction.recap);
         }
 
         const predictionKeys = uniqueStrings(
-          (prediction?.recap ?? []).map((row: any) => row.corps_key)
+          (prediction?.recap ?? []).map((row) => row.corps_key)
         );
-        const recapKeys = uniqueStrings((recap?.scores ?? []).map((row: any) => row.corps_key));
-        const scheduleKeys = uniqueStrings(schedule.map((row: any) => row.corps_key));
+        const recapKeys = uniqueStrings((recap?.scores ?? []).map((row) => row.corps_key));
+        const scheduleKeys = uniqueStrings(schedule.map((row) => row.corps_key));
         // Union prediction + recap + schedule keys: corps the V9 model doesn't
         // score (e.g. alumni units on a parade lineup) still appear in the table
         // and need their directory row for the logo/link/class chip.
@@ -678,7 +685,7 @@ export const getHybridEventPredictionPageData = createServerFn({
           event,
           schedule,
           corps,
-          recap: recap ? { meta: recap.meta, scores: recap.scores as any[] } : null,
+          recap: recap ? { meta: recap.meta, scores: recap.scores } : null,
           seasonOptions,
           showTitles,
           showInfo,
@@ -720,9 +727,9 @@ export const getHybridEventPredictionPageData = createServerFn({
         { concurrency: 'unbounded' }
       );
       const schedule = primarySchedule.length > 0 ? primarySchedule : fallbackSchedule;
-      const recapKeys = uniqueStrings(recap.scores.map((row: any) => row.corps_key));
-      const scheduleKeys = uniqueStrings(schedule.map((row: any) => row.corps_key));
-      const fullRecapKeys = uniqueStrings(fullRecap.corps.map((c: any) => c.corpsKey));
+      const recapKeys = uniqueStrings(recap.scores.map((row) => row.corps_key));
+      const scheduleKeys = uniqueStrings(schedule.map((row) => row.corps_key));
+      const fullRecapKeys = uniqueStrings(fullRecap.corps.map((c) => c.corpsKey));
       const corpsKeys = uniqueStrings([...recapKeys, ...scheduleKeys, ...fullRecapKeys]);
       const corps =
         corpsKeys.length > 0
@@ -734,7 +741,7 @@ export const getHybridEventPredictionPageData = createServerFn({
         event,
         schedule,
         corps,
-        recap: { meta: recap.meta, scores: recap.scores as any[] },
+        recap: { meta: recap.meta, scores: recap.scores },
         seasonOptions,
         showTitles: Object.fromEntries(
           Object.entries(showInfo).map(([corpsKey, info]) => [corpsKey, info.title])

@@ -250,7 +250,7 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
   loaderDeps: ({ search }) => ({
     fakeScores:
       (search.fakeScores as unknown) === true ||
-      search.fakeScores === '1' ||
+      (search.fakeScores as unknown) === '1' ||
       (search.fakeScores as unknown) === 'true',
     // Deep-linked ?diffbase=previous: fetch the previous-show recap in the loader
     // so SSR/first paint renders the "vs Previous" table instead of a spinner.
@@ -2058,10 +2058,12 @@ function PredictionDetails({ prediction }: { prediction: EventPrediction }) {
           <CardTitle className="text-base">Prediction Details</CardTitle>
           <div className="flex items-center gap-3">
             <Badge variant="success-light">{summary}</Badge>
-            <Show when={!!prediction.generated_at}>
-              <time className="text-xs text-muted-foreground">
-                {new Date(prediction.generated_at).toLocaleString()}
-              </time>
+            <Show when={prediction.generated_at}>
+              {(at) => (
+                <time className="text-xs text-muted-foreground">
+                  {new Date(at).toLocaleString()}
+                </time>
+              )}
             </Show>
           </div>
         </CardHeader>
