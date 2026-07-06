@@ -19,6 +19,17 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$repo_root/sdk"
 
+# Serialize emits. The nightly-predictions cron and the every-5-min score-ingest
+# cron both call this script; a full emit's corps section takes ~3 min, so an
+# ingest emit landing mid-nightly used to race the shared build temp + the A/B
+# slot copy → SQLITE_READONLY_DBMOVED and a failed/partial publish. flock makes a
+# second emit WAIT for the first (up to 15 min) instead of racing, by re-exec'ing
+# this script under the lock. Degrades to no-lock if flock is unavailable.
+_LOCK="/tmp/read-model-emit.lock"
+if [ "${_RM_EMIT_LOCKED:-}" != "1" ] && command -v flock >/dev/null 2>&1; then
+  exec env _RM_EMIT_LOCKED=1 flock --timeout 900 "$_LOCK" "$0" "$@"
+fi
+
 # Run under the vite-plus managed Node (pinned 20.x via sdk/.node-version). NOTE:
 # putting ~/.vite-plus/bin on PATH only exposes `vp`, NOT node/npx — so `npx tsx`
 # would run the system Node (v24) and crash on the Node-20-built better-sqlite3

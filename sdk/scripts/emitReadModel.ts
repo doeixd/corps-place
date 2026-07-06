@@ -576,7 +576,13 @@ export const runEmit = async (args: Args) => {
   // discipline — never run schema-ensure / DROP / DELETE here (READ_MODEL_PLAN §5).
   const src = createClient({ url: `file:${args.source}` });
 
-  const tmpOut = `${args.out}.tmp`;
+  // Per-process temp path: a fixed `${out}.tmp` is deleted by rmDbFiles at the
+  // START of every emit, so an overlapping run (score-ingest emit landing during
+  // the nightly ~3-min corps build) would rm the file this run holds open →
+  // SQLITE_READONLY_DBMOVED. Scoping the temp to this PID keeps concurrent emits
+  // from clobbering each other's build. (refresh-prod-read-model.sh also flocks
+  // to serialize the slot-copy step; this is defense in depth.)
+  const tmpOut = `${args.out}.${process.pid}.tmp`;
   rmDbFiles(tmpOut);
 
   // Seeded incremental publish: base the build on the current live slot so only
