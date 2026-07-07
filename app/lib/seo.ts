@@ -3,7 +3,7 @@
 // every route stays consistent. Product-specific tags / JSON-LD are layered on
 // top by the caller.
 
-import { readBrand, BRAND_CONFIG } from './brand';
+import { readBrand, routeBrand, BRAND_CONFIG } from './brand';
 
 export const SITE_URL = 'https://drumcorps.app';
 export const SITE_NAME = 'Drum Corps';
@@ -49,7 +49,17 @@ export function buildSeo(input: SeoInput): {
   links: { rel: string; href: string }[];
 } {
   const { title, description, path, image, type = 'website', noindex } = input;
-  const { url: siteUrl, name: siteName } = siteBase();
+  // Canonical/OG domain follows the CONTENT the route serves, not the host that
+  // served it. A corps page reachable on pageantryjobs.com must still canonical
+  // to drumcorps.app (and vice-versa) or the two hosts index each other's pages.
+  // Brand-neutral routes (the `/` landing, /admin…) have no owner → fall back to
+  // the host brand, since each brand legitimately renders its own home there.
+  const owner = path ? routeBrand(path) : null;
+  const { url: siteUrl, name: siteName } = owner
+    ? owner === 'jobs'
+      ? { url: JOBS_URL, name: BRAND_CONFIG.jobs.name }
+      : { url: SITE_URL, name: SITE_NAME }
+    : siteBase();
   const url = path ? `${siteUrl}${path}` : undefined;
   // Brand-aware default social card for pages that don't set their own image, so
   // every share unfurls with a branded card (favicon + name).
