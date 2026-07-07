@@ -109,14 +109,41 @@ const buildCorpsDivisionMapForSeason = (
 const differenceInDays = (later: Date, earlier: Date) =>
   Math.round((later.getTime() - earlier.getTime()) / (1000 * 60 * 60 * 24));
 
-const buildSeasonMeta = (competitions: ReadonlyArray<Domain.Competition>) => {
+// Anchor season end to the SCHEDULED finals, not the last scored recap — see
+// relational.ts computeSeasonMeta. Prevents mid-season percent_through collapse.
+const buildSeasonMeta = (
+  competitions: ReadonlyArray<Domain.Competition>,
+  scheduledEnd?: Date | undefined
+) => {
   const sorted = [...competitions].sort((a, b) => a.date.getTime() - b.date.getTime());
   const firstDate = sorted[0]?.date;
-  const lastDate = sorted[sorted.length - 1]?.date ?? firstDate;
+  const lastScored = sorted[sorted.length - 1]?.date ?? firstDate;
+  const lastDate =
+    scheduledEnd && lastScored
+      ? scheduledEnd > lastScored
+        ? scheduledEnd
+        : lastScored
+      : (scheduledEnd ?? lastScored);
   const seasonLength =
     firstDate && lastDate ? Math.max(1, differenceInDays(lastDate, firstDate)) : 0;
   return { firstDate, lastDate, seasonLength };
 };
+
+const resolveScheduledSeasonEnd = (
+  sql: SqlClient.SqlClient,
+  season: string
+): Effect.Effect<Date | undefined, unknown> =>
+  sql<{ end_date: string | null }>`
+    SELECT MAX(date(start_date)) AS end_date
+    FROM events
+    WHERE season = ${season}
+  `.pipe(
+    Effect.map((rows) => {
+      const raw = rows[0]?.end_date;
+      return raw ? new Date(`${raw}T00:00:00.000Z`) : undefined;
+    }),
+    Effect.orElseSucceed(() => undefined)
+  );
 
 const getArg = (flag: string) => {
   const idx = process.argv.indexOf(flag);
@@ -233,7 +260,11 @@ const program = Effect.gen(function* () {
       }
     }
 
-    const seasonMeta = buildSeasonMeta(parsedResults.map((result) => result.competition));
+    const scheduledEnd = yield* resolveScheduledSeasonEnd(sql, season);
+    const seasonMeta = buildSeasonMeta(
+      parsedResults.map((result) => result.competition),
+      scheduledEnd
+    );
 
     for (const result of parsedResults) {
       yield* (

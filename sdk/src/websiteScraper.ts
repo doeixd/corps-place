@@ -242,14 +242,43 @@ const parseRecap = (html: string) =>
 const differenceInDays = (later: Date, earlier: Date) =>
   Math.round((later.getTime() - earlier.getTime()) / (1000 * 60 * 60 * 24));
 
-const buildSeasonMeta = (competitions: ReadonlyArray<Domain.Competition>) => {
+// Anchor the season end to the SCHEDULED finals (scheduledEnd), not the last
+// *scored* recap. For a complete season these coincide; mid-season the last
+// scored show would otherwise collapse seasonLength and pin percent_through
+// toward 100 for every event (see relational.ts computeSeasonMeta).
+const buildSeasonMeta = (
+  competitions: ReadonlyArray<Domain.Competition>,
+  scheduledEnd?: Date | undefined
+) => {
   const sorted = [...competitions].sort((a, b) => a.date.getTime() - b.date.getTime());
   const firstDate = sorted[0]?.date;
-  const lastDate = sorted[sorted.length - 1]?.date ?? firstDate;
+  const lastScored = sorted[sorted.length - 1]?.date ?? firstDate;
+  const lastDate =
+    scheduledEnd && lastScored
+      ? scheduledEnd > lastScored
+        ? scheduledEnd
+        : lastScored
+      : (scheduledEnd ?? lastScored);
   const seasonLength =
     firstDate && lastDate ? Math.max(1, differenceInDays(lastDate, firstDate)) : 0;
   return { firstDate, lastDate, seasonLength };
 };
+
+const resolveScheduledSeasonEnd = (
+  sql: SqlClient.SqlClient,
+  season: string
+): Effect.Effect<Date | undefined, unknown> =>
+  sql<{ end_date: string | null }>`
+    SELECT MAX(date(start_date)) AS end_date
+    FROM events
+    WHERE season = ${season}
+  `.pipe(
+    Effect.map((rows) => {
+      const raw = rows[0]?.end_date;
+      return raw ? new Date(`${raw}T00:00:00.000Z`) : undefined;
+    }),
+    Effect.orElseSucceed(() => undefined)
+  );
 
 const parseDivisionFromCorpsType = (type: string | null | undefined): Domain.DivisionName | undefined => {
   if (!type) return undefined;
@@ -647,7 +676,11 @@ export const scrapeWebsiteRecapsForSeason = (
       yield* (
         Effect.logInfo(`[website] Ingesting ${recapResults.length} recaps for ${season}`)
       );
-      const seasonMeta = buildSeasonMeta(recapResults.map((result) => result.competition));
+      const scheduledEnd = yield* resolveScheduledSeasonEnd(sql, season);
+      const seasonMeta = buildSeasonMeta(
+        recapResults.map((result) => result.competition),
+        scheduledEnd
+      );
       yield* (
         Effect.forEach(
           recapResults,
