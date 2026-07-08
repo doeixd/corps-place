@@ -1,9 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { seoHead, breadcrumbLd } from '@/lib/seo';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import { eventsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
+import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import { Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
 import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
@@ -86,6 +87,37 @@ function EventsDirectory() {
 }
 
 function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
+  // Background warm-up: once the list has rendered, quietly preload the detail
+  // (prediction/recap) route for each event in view, so the first click into any
+  // of them is instant instead of blocking on the loader's shard/server-fn fetch.
+  // Idle + connection-gated (see warmRoutesOnIdle); re-runs when the season/set
+  // changes. Detail shards are small (~30KB, CDN-cached), so a season is ~2-3MB.
+  const router = useRouter();
+  useEffect(() => {
+    // Cap the warm set: each current-season warm runs the detail loader (a few
+    // read-model server-fns), so warming the whole season on every visit would be
+    // a lot of proactive server work. The first ~40 (list is date-ordered, so the
+    // most-likely clicks) covers the pain without hammering the backend.
+    const WARM_CAP = 40;
+    const targets = events
+      .flatMap((e) =>
+        e.slug && e.season
+          ? [
+              {
+                to: '/events/$yearSlug/$slug/prediction',
+                params: { yearSlug: e.season, slug: e.slug },
+              },
+            ]
+          : []
+      )
+      .slice(0, WARM_CAP);
+    return warmRoutesOnIdle(router as never, targets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, events.length, events[0]?.season]);
+  return <EventsDirectoryContentInner events={events} />;
+}
+
+function EventsDirectoryContentInner({ events }: { events: EventDirectoryRow[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
