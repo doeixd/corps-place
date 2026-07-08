@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
+import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import { useMachine } from '@xstate/react';
 import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
 import { availableSeasons } from '@/lib/event-filtering';
@@ -123,6 +124,17 @@ function ScoresIndex() {
 
   const scored = useMemo(() => events.filter((e) => e.scores_released), [events]);
   const scoredSeasons = availableSeasons(scored);
+
+  // Background warm-up: idle-preload the in-view scored events' recap detail
+  // pages so the first click is instant (same helper as /events, /corps).
+  const router = useRouter();
+  useEffect(() => {
+    const targets = scored
+      .flatMap((e) => (e.slug ? [{ to: '/scores/$slug', params: { slug: e.slug } }] : []))
+      .slice(0, 40);
+    return warmRoutesOnIdle(router as never, targets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, scored.length]);
   // Season chips come from the loader's full season list — `events` only holds
   // the viewed season now, so deriving chips from it would show one entry.
   const loaderSeasons = Route.useLoaderData().seasons;

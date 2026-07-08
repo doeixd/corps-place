@@ -1,5 +1,6 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { createFileRoute, Link, useNavigate, useRouter } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import { AnimatePresence, motion } from 'motion/react';
 import { Show } from 'jotai-solid-api';
 import { getShopHome } from '@/lib/server-fns/hybrid';
@@ -39,6 +40,19 @@ function ShopLanding() {
   const [q, setQ] = useState('');
   const bookmarks = useBookmarks();
   const recentBookmarks = bookmarks.slice(0, 12);
+
+  // Background warm-up: idle-preload the in-view group (store) pages so the first
+  // click is instant (same helper as /events, /corps, /judges, /scores).
+  const router = useRouter();
+  useEffect(() => {
+    const targets = groups
+      .flatMap((g) =>
+        g.slug ? [{ to: '/shop/group/$storeId', params: { storeId: g.slug } }] : []
+      )
+      .slice(0, 40);
+    return warmRoutesOnIdle(router as never, targets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, groups.length]);
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
