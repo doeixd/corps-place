@@ -434,16 +434,16 @@ export async function buildV9PredictionFeatures(
       rawStatic[targetIdx] = fingerprint.features[idx] ?? 0;
     }
   }
-  // Recompute the cold-start block for the target when the template is from a different
-  // season (or synthetic). Same-season templates already carry near-correct cold-start,
-  // so they're left untouched to avoid any recompute drift on the well-behaved path.
-  const targetSeason = String(input.season ?? input.targetDate.slice(0, 4));
-  const templateIsCrossSeason = !template || String(template.season) !== targetSeason;
-  if (templateIsCrossSeason) {
-    const coldStart = await computeColdStartBlock(db, input, priorSeasonRank);
-    for (let i = 0; i < coldStart.length; i++) {
-      rawStatic[V9_COLD_START_STATIC_OFFSET + i] = coldStart[i]!;
-    }
+  // ALWAYS recompute the cold-start block for the TARGET. The template's block reflects
+  // the template show's season context — percentThrough, shows-so-far, days-since-start,
+  // event-week — which is stale for the event we're forecasting (a same-season template
+  // is the corps' LAST show, so e.g. percentThrough/178 would read the last show's ~2%
+  // instead of the target's 19%). All 10 features are known for the target, and training
+  // stored each row's block for ITS OWN show, so this matches the training distribution
+  // and stays consistent with the curve baseline (also rebuilt at the target percent).
+  const coldStart = await computeColdStartBlock(db, input, priorSeasonRank);
+  for (let i = 0; i < coldStart.length; i++) {
+    rawStatic[V9_COLD_START_STATIC_OFFSET + i] = coldStart[i]!;
   }
   const captionAwareBaselineCaptions = { ...baseline.captions };
   if (input.mode === 'preseason_forecast' && fingerprint.confidence > 0) {
