@@ -1,11 +1,12 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
+import { useEffect, useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import { Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
 import { getJudgeDirectory } from '@/lib/server-fns/hybrid';
 import { judgesCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
+import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import type { JudgeSummary } from '@/lib/judge-directory';
 import { cn, searchString } from '@/lib/utils';
 import { availableSeasons, selectJudges } from '@/lib/judge-filtering';
@@ -74,6 +75,19 @@ function JudgesDirectory() {
 function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  // Background warm-up: idle-preload the in-view judges' detail pages after the
+  // list renders so the first click is instant (same helper as /events, /corps).
+  const router = useRouter();
+  useEffect(() => {
+    const targets = judges
+      .flatMap((j) =>
+        j.judge_id ? [{ to: '/judges/$judgeId', params: { judgeId: j.judge_id } }] : []
+      )
+      .slice(0, 40);
+    return warmRoutesOnIdle(router as never, targets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, judges.length]);
 
   const seasons = availableSeasons(judges);
   const defaultSeason = seasons[0] ?? 'all';
