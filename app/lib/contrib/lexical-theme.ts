@@ -7,6 +7,7 @@
  * renders via the pure `renderLexicalDoc` walker, which mirrors these styles.
  */
 export const FREE_FORM_THEME = {
+  link: 'text-primary underline underline-offset-2 hover:text-primary/80',
   text: {
     bold: 'font-semibold',
     italic: 'italic',

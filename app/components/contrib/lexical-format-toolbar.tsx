@@ -8,7 +8,9 @@ import {
   INSERT_ORDERED_LIST_COMMAND,
 } from '@lexical/list';
 import { $setBlocksType } from '@lexical/selection';
-import { mergeRegister } from '@lexical/utils';
+import { TOGGLE_LINK_COMMAND, $isLinkNode } from '@lexical/link';
+import { mergeRegister, $findMatchingParent } from '@lexical/utils';
+import { safeHref } from '@/lib/contrib/url-safe';
 import {
   $getSelection,
   $isRangeSelection,
@@ -41,6 +43,7 @@ export function LexicalFormatToolbar() {
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
   const [isCode, setIsCode] = useState(false);
+  const [isLink, setIsLink] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [blockType, setBlockType] = useState<BlockType>('paragraph');
@@ -73,6 +76,9 @@ export function LexicalFormatToolbar() {
           setIsUnderline(selection.hasFormat('underline'));
           setIsStrikethrough(selection.hasFormat('strikethrough'));
           setIsCode(selection.hasFormat('code'));
+
+          const linkParent = $findMatchingParent(selection.anchor.getNode(), $isLinkNode);
+          setIsLink(linkParent != null);
 
           const anchorNode = selection.anchor.getNode();
           const element =
@@ -135,6 +141,18 @@ export function LexicalFormatToolbar() {
   const format = (cmd: 'bold' | 'italic' | 'underline' | 'strikethrough' | 'code') => () =>
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, cmd);
 
+  const toggleLink = () => {
+    if (isLink) {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+      return;
+    }
+    const input = window.prompt('Link URL');
+    if (input == null) return; // cancelled
+    const safe = safeHref(input);
+    if (safe) editor.dispatchCommand(TOGGLE_LINK_COMMAND, safe);
+    else if (input.trim()) window.alert('Only http(s) and mailto links are allowed.');
+  };
+
   return (
     <div className="flex flex-wrap items-center gap-0.5">
       {/* Inline text formats */}
@@ -152,6 +170,9 @@ export function LexicalFormatToolbar() {
       </button>
       <button type="button" onClick={format('code')} className={`${btn(isCode)} font-mono text-xs`} title="Inline code" aria-label="Inline code" aria-pressed={isCode}>
         {'</>'}
+      </button>
+      <button type="button" onClick={toggleLink} className={btn(isLink)} title={isLink ? 'Remove link' : 'Add link'} aria-label="Link" aria-pressed={isLink}>
+        🔗
       </button>
 
       <Divider />

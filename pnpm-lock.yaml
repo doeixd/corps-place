@@ -46,7 +46,13 @@ importers:
       '@formisch/react':
         specifier: ^0.6.0
         version: 0.6.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)(valibot@1.4.1(typescript@5.9.3))
+      '@lexical/link':
+        specifier: 0.45.0
+        version: 0.45.0
       '@lexical/list':
+        specifier: 0.45.0
+        version: 0.45.0
+      '@lexical/markdown':
         specifier: 0.45.0
         version: 0.45.0
       '@lexical/react':
