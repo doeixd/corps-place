@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { useEffect, useRef, useState } from 'react';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { Show } from 'jotai-solid-api';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { corpsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
+import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import type { CorpsSummary } from '@/lib/corps-directory';
 import { searchString } from '@/lib/utils';
 import * as CorpsPredicates from '@/predicates/corps';
@@ -87,6 +88,21 @@ function CorpsDirectory() {
 function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  // Background warm-up: after the directory renders, quietly preload the detail
+  // route for the in-view corps during idle time so the first click is instant
+  // (same idle/connection-gated helper as /events). Capped so warming the full
+  // directory (each warm = a few read-model calls) doesn't hammer the backend.
+  const router = useRouter();
+  useEffect(() => {
+    const targets = corps
+      .flatMap((c) =>
+        c.slug ? [{ to: '/corps/$slug/{-$season}', params: { slug: c.slug } }] : []
+      )
+      .slice(0, 40);
+    return warmRoutesOnIdle(router as never, targets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, corps.length]);
 
   const division = search.cls ?? 'all';
   const searchTerm = search.q ?? '';
