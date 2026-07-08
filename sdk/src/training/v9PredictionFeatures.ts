@@ -32,6 +32,11 @@ export type V9PredictionFeatureInput = {
   corpsKey: string;
   division: string;
   targetDate: string;
+  // Knowledge horizon: only data with competition_date < knowledgeDate is used for
+  // template selection and same-season history. Defaults to targetDate (predict with
+  // all data up to the event). Set it to a PAST date to reconstruct "prediction as of
+  // <date>" faithfully (frozen knowledge) for the scrubber history.
+  knowledgeDate?: string;
   percentThrough: number;
   season?: string;
   seedRank?: number;
@@ -81,13 +86,16 @@ export const totalFromV9Captions = (captions: Record<V9Caption, number>) =>
 
 export async function loadV9TemplateRow(
   db: Client,
-  input: Pick<V9PredictionFeatureInput, 'corpsKey' | 'division' | 'templateSeason' | 'targetDate'>
+  input: Pick<
+    V9PredictionFeatureInput,
+    'corpsKey' | 'division' | 'templateSeason' | 'targetDate' | 'knowledgeDate'
+  >
 ) {
   const templateSeasonClause = input.templateSeason ? 'AND season = ?' : '';
   const dateClause = input.templateSeason ? '' : 'AND competition_date < ?';
   const args = input.templateSeason
     ? [input.corpsKey, input.division, input.templateSeason]
-    : [input.corpsKey, input.division, input.targetDate];
+    : [input.corpsKey, input.division, input.knowledgeDate ?? input.targetDate];
 
   const result = await db.execute({
     sql: `
@@ -342,6 +350,9 @@ async function computeColdStartBlock(
   const season = String(input.season ?? input.targetDate.slice(0, 4));
   const prevSeason = String(Number(season) - 1);
   const target = input.targetDate;
+  // Same-season history is known only up to the knowledge horizon (defaults to the
+  // event date); the day-diffs below are still measured to the forecast target.
+  const horizon = input.knowledgeDate ?? input.targetDate;
   const days = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000);
   const nScore = (s: number) => (s - 70) / 30;
   const nRank = (r: number) => Math.max(1, Math.min(25, Math.round(r))) / 25;
@@ -352,15 +363,16 @@ async function computeColdStartBlock(
   const ss = await db.execute({
     sql: `SELECT competition_date AS d FROM corps_competition_results
           WHERE corps_key = ? AND season = ? AND competition_date < ? ORDER BY competition_date`,
-    args: [input.corpsKey, season, target],
+    args: [input.corpsKey, season, horizon],
   });
   const pastDates = ss.rows.map((r) => String(r.d));
   const pastCount = pastDates.length;
   const lastSame = pastCount ? pastDates[pastCount - 1]! : undefined;
 
   const fs = await db.execute({
-    sql: `SELECT MIN(competition_date) AS d FROM corps_competition_results WHERE season = ?`,
-    args: [season],
+    sql: `SELECT MIN(competition_date) AS d FROM corps_competition_results
+          WHERE season = ? AND competition_date < ?`,
+    args: [season, horizon],
   });
   const firstScored = fs.rows[0]?.d ? String(fs.rows[0].d) : undefined;
 

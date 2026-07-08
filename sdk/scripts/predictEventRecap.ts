@@ -39,6 +39,7 @@ type Cli = {
   division: string;
   mode: PredictionContextMode | 'auto';
   percentThrough?: number;
+  asOf?: string;
   refresh: boolean;
   forceRefresh: boolean;
   checkOnly: boolean;
@@ -205,6 +206,10 @@ const parseCli = (argv: string[]): Cli => {
     division: getArg(argv, '--division', 'auto')!,
     mode,
     percentThrough: percentText == null ? undefined : Number(percentText),
+    // Reconstruct "prediction as of <YYYY-MM-DD>": freeze knowledge (templates +
+    // same-season history) before this date and stamp the run's predicted_at at it,
+    // so it slots into the scrubber snapshot at that day.
+    asOf: getArg(argv, '--as-of'),
     refresh: hasFlag(argv, '--refresh') || hasFlag(argv, '--force-refresh'),
     forceRefresh: hasFlag(argv, '--force-refresh'),
     checkOnly: hasFlag(argv, '--check-only'),
@@ -1356,7 +1361,11 @@ async function main() {
         lineupSource = fallback.source;
       }
     }
-    const sameSeasonHistory = await countSameSeasonHistory(db, cli.season, event.start_date);
+    // Knowledge horizon: normally the event date (predict with everything known so
+    // far). With --as-of it's frozen at a past date to reconstruct that day's snapshot.
+    // percentThrough stays the EVENT's (we still forecast the event's score).
+    const knowledgeDate = cli.asOf ?? event.start_date;
+    const sameSeasonHistory = await countSameSeasonHistory(db, cli.season, knowledgeDate);
     const judgeInfo = await loadJudgeIndices(db, competition?.slug);
     const mode = chooseMode(cli, sameSeasonHistory, judgeInfo.known);
     const seasonRange = await getSeasonDateRange(db, cli.season);
@@ -1479,6 +1488,7 @@ async function main() {
         corpsKey,
         division,
         targetDate: event.start_date,
+        knowledgeDate,
         percentThrough,
         season: cli.season,
         fieldSize,
@@ -1487,7 +1497,7 @@ async function main() {
         judgeIndices: judgeInfo.known === CAPTIONS.length ? judgeInfo.indices : undefined,
         keepKnownLineupContext: mode !== 'lineup_unknown',
       });
-      const sameSeason = await countCorpsSameSeasonShows(db, corpsKey, cli.season, event.start_date);
+      const sameSeason = await countCorpsSameSeasonShows(db, corpsKey, cli.season, knowledgeDate);
       const corpsSameSeasonShows = sameSeason.count;
       const useBaseline = mode === 'preseason_forecast';
 
@@ -1502,7 +1512,7 @@ async function main() {
       // and 7.5/4.3/2.8 for autoregressive rollout.
       const inSeasonWithHistory = !useBaseline && corpsSameSeasonShows > 0;
       const curveRank = inSeasonWithHistory
-        ? ((await currentSeasonRank(db, cli.season, division, corpsKey, event.start_date)) ??
+        ? ((await currentSeasonRank(db, cli.season, division, corpsKey, knowledgeDate)) ??
           priorSeasonRank ??
           seedRank ??
           12)
@@ -1771,7 +1781,9 @@ async function main() {
       cli.output ??
       path.join('results', 'predictions', `${event.slug}-prediction-${nowStamp()}.json`);
     const output = {
-      generated_at: new Date().toISOString(),
+      // With --as-of, stamp the run at that day (noon UTC) so the read-model scrubber
+      // slots it into the correct historical snapshot; otherwise use now.
+      generated_at: cli.asOf ? `${cli.asOf}T12:00:00.000Z` : new Date().toISOString(),
       model_dir: modelDir,
       event,
       competition,
