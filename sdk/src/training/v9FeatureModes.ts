@@ -38,7 +38,11 @@ const STATIC_JUDGE_ELO_START = 101;
 const STATIC_JUDGE_ELO_END = 112;
 const STATIC_RANK_BASELINE_START = 121;
 const STATIC_RANK_BASELINE_END = 128;
-const STATIC_PAST_SHOWS_COUNT_IDX = 168;
+// pastShows.length/40 is at index 136 in the built x_static (after the 5 date/static
+// features at 132-136); index 168 is the last subcaption EMA. The old value (168)
+// made maskV9PreseasonForecastContext zero a subcaption feature instead of the
+// past-shows count. Verified against stored rows (idx 136 = k/40, idx 168 = a score).
+const STATIC_PAST_SHOWS_COUNT_IDX = 136;
 
 export const V9_FEATURE_INDICES = {
   previousRank: STATIC_PREV_RANK_IDX,
