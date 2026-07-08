@@ -23,6 +23,7 @@ interface LexNode {
   text?: string;
   format?: number;
   tag?: string;
+  listType?: string;
   citationId?: string;
 }
 
@@ -105,6 +106,24 @@ function renderNode(node: LexNode, key: string, numbers: Record<string, number>)
         >
           {renderChildren(node, numbers)}
         </blockquote>
+      );
+    case 'list': {
+      const ordered = node.listType === 'number' || node.tag === 'ol';
+      const Tag = ordered ? 'ol' : 'ul';
+      return (
+        <Tag
+          key={key}
+          className={`mb-3 pl-5 ${ordered ? 'list-decimal' : 'list-disc'}`}
+        >
+          {renderChildren(node, numbers)}
+        </Tag>
+      );
+    }
+    case 'listitem':
+      return (
+        <li key={key} className="mb-1">
+          {renderChildren(node, numbers)}
+        </li>
       );
     default:
       return null; // unknown node type → dropped (I-14)

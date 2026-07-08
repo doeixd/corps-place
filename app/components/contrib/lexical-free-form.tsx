@@ -10,6 +10,7 @@ import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { ListNode, ListItemNode } from '@lexical/list';
 import { $getRoot, $insertNodes, type EditorState } from 'lexical';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
+import { FREE_FORM_THEME } from '@/lib/contrib/lexical-theme';
 import { LexicalFormatToolbar } from '@/components/contrib/lexical-format-toolbar';
 import { CitationNode, $createCitationNode } from '@/components/contrib/citation-node';
 import type { CitationOption } from '@/components/contrib/citation-controls';
@@ -49,6 +50,7 @@ export function LexicalFreeForm({
       initialConfig={{
         namespace: 'free-form-spike',
         nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, CitationNode],
+        theme: FREE_FORM_THEME,
         onError: (e) => {
           throw e;
         },
