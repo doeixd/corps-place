@@ -3,12 +3,23 @@ import * as SqlClient from "effect/unstable/sql/SqlClient";
 import { LibsqlClient } from "@effect/sql-libsql";
 import * as MlQueries from "./mlQueries.js";
 import * as fs from "node:fs";
+import { pathToFileURL } from "node:url";
 import { createProxy, noSpecialChars, ignoreCase } from '@doeixd/make-with'
+import {
+  V9_CAPTION_FINGERPRINT_CONFIDENCE_IDX,
+  V9_CAPTION_FINGERPRINT_DIM,
+  V9_CAPTION_FINGERPRINT_FEATURES_PER_CAPTION,
+  V9_CAPTION_FINGERPRINT_START,
+  V9_RAW_STATIC_DIM,
+} from "./training/v9FeatureModes.js";
 
 const REFERENCE_CURVES = JSON.parse(fs.readFileSync("./src/training/referenceCurvesV4.json", "utf-8"));
 const JUDGE_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/judgeIndexMap.json", "utf-8"));
 const CORPS_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/corpsIndexMap.json", "utf-8"));
 const SHOW_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/showIndexMap.json", "utf-8"));
+const JUDGE_INDEX_MAP_PATH = "./src/training/judgeIndexMap.json";
+const BUILDER_VERSION = "v9-subcaption-clean-2026-05-21";
+const MAP_VERSION = "current-json-files";
 
 // Subcaption normalization helpers
 const SUBCAPTION_CONTENT_VARIANTS = [
@@ -62,28 +73,27 @@ const CAPTION_MAP: Record<string, string> = captionProxy({
   "Percussion": "MP",
 })
 
+const FULL_CAPTION_BY_SHORT: Record<string, string> = {};
+for (const [fullCaptionName, shortCaptionName] of Object.entries(CAPTION_MAP)) {
+  FULL_CAPTION_BY_SHORT[shortCaptionName] ??= fullCaptionName;
+}
 
-// Training seasons. NOTE: the CURRENT season is intentionally not listed — it's
-// built incrementally in-season via `--seasons <year>` (scripts/nightly-predictions.sh)
-// so predictEventRecap's same-season history/mode detection sees fresh rows.
+const fullCaptionNameFor = (caption: string) => FULL_CAPTION_BY_SHORT[caption] ?? caption;
+
 const SEASONS = ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2022", "2023", "2024", "2025"];
 const DIVISIONS = ["World Class", "Open Class"];
 
 const SEQ_LEN = 15;
 const FINALS_CUTOFF = 12;
 
-// Provenance columns (NOT NULL in the live table — the training rows were built
-// by a newer builder that stamped these; this repo's builder must stamp its own).
-const BUILDER_VERSION = "v9-subcaption-repo-2026-07-02";
-const REFERENCE_CURVES_VERSION = "v4.1"; // loads ./src/training/referenceCurvesV4.json
-const MAP_VERSION = "current-json-files"; // frozen corps/judge/show index maps
-
 const CAPTION_COUNT = CAPTIONS.length;
 const CAPTION_FEATURES = 4;
 const OPPONENT_TIMESTEP_FEATURES = 7 + 27; // 7 (existing) + 27 (opponent last-3 totals + per-caption stats)
 const COMPARATIVE_FEATURES = 10; // relative_total + relative_caption×8 + show_competitiveness
 const TIMESTEP_FEATURES = 7 + 11 + CAPTION_COUNT * CAPTION_FEATURES + OPPONENT_TIMESTEP_FEATURES + 4 + COMPARATIVE_FEATURES + 3; // 98 + 3 = 101
-const STATIC_FEATURES = 53 + 12 + 8 + 3 + 4 + 27 + 16 + 8 + 1 + 5 + 32; // V7 static + rank baselines + daysSinceLastMatch + 5 new static + 32 subcaption features = 169
+const COLD_START_FEATURES = 10;
+const STATIC_FEATURES = V9_RAW_STATIC_DIM;
+const BASE_STATIC_FEATURES = STATIC_FEATURES - V9_CAPTION_FINGERPRINT_DIM;
 
 const EMA_ALPHA = 0.3;
 
@@ -93,18 +103,392 @@ const normalizeCaptionScore = (score: number) => score / 20;
 const normalizeGap = (gap: number) => gap / 25;
 const normalizeDays = (days: number) => Math.min(days, 120) / 120;
 const normalizeRecentGap = (days: number) => Math.min(days, 14) / 14;
+const normalizeOffseasonGap = (days: number) => Math.min(Math.max(days, 0), 365) / 365;
 
-const getBaseline = (rank: number, pct: number, caption: string): number => {
-  if (rank < 1) rank = 12;
-  const bucket = Math.round(pct / 5) * 5;
-  const key = `${rank}-${bucket}`;
+const INITIAL_ELO = 1500;
+const INITIAL_CONFIDENCE = 50;
+const K_FACTOR_NEW = 32;
+const K_FACTOR_STABLE = 16;
+const CONFIDENCE_THRESHOLD = 20;
+const CONFIDENCE_DECAY = 0.95;
+const MAX_SCORE = 20;
+
+type EloState = {
+  elo: number;
+  confidence: number;
+  numScores: number;
+};
+
+const mean = (values: number[]) =>
+  values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+
+const hasCompleteCaptionScores = (show: { captions?: Record<string, { score?: number }> }) =>
+  CAPTIONS.every((caption) => {
+    const score = show.captions?.[caption]?.score;
+    return Number.isFinite(score) && score! > 0 && score! <= MAX_SCORE;
+  });
+
+const captionDerivedTotal = (captions: Record<string, { score?: number }>) =>
+  ((captions.GE1?.score ?? 0) + (captions.GE2?.score ?? 0)) +
+  (((captions.VP?.score ?? 0) + (captions.VA?.score ?? 0) + (captions.CG?.score ?? 0)) / 2) +
+  (((captions.MB?.score ?? 0) + (captions.MA?.score ?? 0) + (captions.MP?.score ?? 0)) / 2);
+
+const hasConsistentCaptionTotal = (show: { captions?: Record<string, { score?: number }>; total_score?: number }) => {
+  if (!hasCompleteCaptionScores(show)) return false;
+  if (!Number.isFinite(show.total_score) || show.total_score! <= 0 || show.total_score! > 100) return false;
+  return Math.abs(captionDerivedTotal(show.captions!) - show.total_score!) <= 0.05;
+};
+
+const std = (values: number[]) => {
+  if (values.length < 2) return 0;
+  const avg = mean(values);
+  return Math.sqrt(values.reduce((sum, value) => sum + (value - avg) ** 2, 0) / (values.length - 1));
+};
+
+const rebuildShowAggregatesV7 = (sql: SqlClient.SqlClient, asOfDate?: string) =>
+  Effect.gen(function* () {
+    console.log("Rebuilding show_aggregates_v7...");
+    yield* (sql`DELETE FROM show_aggregates_v7`);
+
+    const competitions = yield* (sql<{
+      season: string;
+      slug: string;
+      competition_date: string;
+    }>`
+      SELECT season, slug, date as competition_date
+      FROM competitions
+      WHERE date <= ${asOfDate ?? "9999-12-31"}
+      ORDER BY date ASC
+    `);
+    console.log(`Computing show aggregates for ${competitions.length} competitions...`);
+
+    let processed = 0;
+    for (const comp of competitions) {
+      const scores = yield* (sql<{
+        total_score: number;
+        ge1: number;
+        ge2: number;
+        vp: number;
+        va: number;
+        cg: number;
+        mb: number;
+        ma: number;
+        mp: number;
+      }>`
+        SELECT
+          cs.total_score,
+          MAX(CASE WHEN js.caption_name = 'GE1' THEN js.score ELSE 0 END) as ge1,
+          MAX(CASE WHEN js.caption_name = 'GE2' THEN js.score ELSE 0 END) as ge2,
+          MAX(CASE WHEN js.caption_name = 'VP' THEN js.score ELSE 0 END) as vp,
+          MAX(CASE WHEN js.caption_name = 'VA' THEN js.score ELSE 0 END) as va,
+          MAX(CASE WHEN js.caption_name = 'CG' THEN js.score ELSE 0 END) as cg,
+          MAX(CASE WHEN js.caption_name = 'MB' THEN js.score ELSE 0 END) as mb,
+          MAX(CASE WHEN js.caption_name = 'MA' THEN js.score ELSE 0 END) as ma,
+          MAX(CASE WHEN js.caption_name = 'MP' THEN js.score ELSE 0 END) as mp
+        FROM corps_scores cs
+        JOIN judge_scores js ON js.competition_slug = cs.competition_slug AND js.corps_key = cs.corps_key
+        WHERE cs.competition_slug = ${comp.slug}
+        GROUP BY cs.corps_key
+      `);
+
+      if (scores.length === 0) continue;
+
+      const aggregates = {
+        competition_slug: comp.slug,
+        avg_total: mean(scores.map((s) => s.total_score)),
+        std_total: std(scores.map((s) => s.total_score)),
+        avg_ge1: mean(scores.map((s) => s.ge1)),
+        avg_ge2: mean(scores.map((s) => s.ge2)),
+        avg_vp: mean(scores.map((s) => s.vp)),
+        avg_va: mean(scores.map((s) => s.va)),
+        avg_cg: mean(scores.map((s) => s.cg)),
+        avg_ma: mean(scores.map((s) => s.ma)),
+        avg_mb: mean(scores.map((s) => s.mb)),
+        avg_mp: mean(scores.map((s) => s.mp)),
+        field_size: scores.length,
+        created_at: new Date().toISOString(),
+      };
+
+      yield* (sql`INSERT OR REPLACE INTO show_aggregates_v7 ${sql.insert(aggregates)}`);
+
+      processed++;
+      if (processed % 100 === 0) {
+        console.log(`Rebuilt ${processed} / ${competitions.length} show aggregates...`);
+      }
+    }
+
+    console.log("Done rebuilding show_aggregates_v7.");
+  });
+
+const flushEloHistory = (sql: SqlClient.SqlClient, judgeHistory: any[], corpsHistory: any[]) =>
+  Effect.gen(function* () {
+    if (judgeHistory.length > 0) {
+      yield* (sql`INSERT INTO judge_elo_history ${sql.insert(judgeHistory)}`);
+      judgeHistory.length = 0;
+    }
+    if (corpsHistory.length > 0) {
+      yield* (sql`INSERT INTO corps_elo_history ${sql.insert(corpsHistory)}`);
+      corpsHistory.length = 0;
+    }
+  });
+
+const saveFinalEloRatings = (
+  sql: SqlClient.SqlClient,
+  judgeEloMap: Map<string, EloState>,
+  corpsEloMap: Map<string, EloState>
+) =>
+  Effect.gen(function* () {
+    const judgeRatings: any[] = [];
+    for (const [key, state] of judgeEloMap) {
+      const [id, season, division, caption] = key.split(":");
+      judgeRatings.push({
+        judge_id: id,
+        season,
+        division_name: division,
+        caption_name: caption,
+        elo_rating: state.elo,
+        confidence: state.confidence,
+        num_scores: state.numScores,
+        last_updated: new Date().toISOString(),
+      });
+
+      if (judgeRatings.length > 500) {
+        yield* (sql`INSERT INTO judge_elo_ratings ${sql.insert(judgeRatings)}`);
+        judgeRatings.length = 0;
+      }
+    }
+    if (judgeRatings.length > 0) {
+      yield* (sql`INSERT INTO judge_elo_ratings ${sql.insert(judgeRatings)}`);
+    }
+
+    const corpsRatings: any[] = [];
+    for (const [key, state] of corpsEloMap) {
+      const [id, season, division, caption] = key.split(":");
+      corpsRatings.push({
+        corps_key: id,
+        season,
+        division_name: division,
+        caption_name: caption,
+        elo_rating: state.elo,
+        confidence: state.confidence,
+        num_shows: state.numScores,
+        last_updated: new Date().toISOString(),
+      });
+
+      if (corpsRatings.length > 500) {
+        yield* (sql`INSERT INTO corps_elo_ratings ${sql.insert(corpsRatings)}`);
+        corpsRatings.length = 0;
+      }
+    }
+    if (corpsRatings.length > 0) {
+      yield* (sql`INSERT INTO corps_elo_ratings ${sql.insert(corpsRatings)}`);
+    }
+  });
+
+const rebuildEloRatingsV7 = (sql: SqlClient.SqlClient, asOfDate?: string) =>
+  Effect.gen(function* () {
+    console.log("Rebuilding judge/corps Elo tables...");
+
+    yield* (sql`DROP TABLE IF EXISTS judge_elo_history`);
+    yield* (sql`DROP TABLE IF EXISTS corps_elo_history`);
+    yield* (sql`DROP TABLE IF EXISTS judge_elo_ratings`);
+    yield* (sql`DROP TABLE IF EXISTS corps_elo_ratings`);
+
+    yield* (sql`
+      CREATE TABLE judge_elo_ratings (
+        judge_id TEXT NOT NULL,
+        season TEXT NOT NULL,
+        division_name TEXT NOT NULL,
+        caption_name TEXT NOT NULL,
+        elo_rating REAL NOT NULL DEFAULT 1500,
+        confidence REAL NOT NULL DEFAULT 50,
+        num_scores INTEGER NOT NULL DEFAULT 0,
+        last_updated TEXT,
+        PRIMARY KEY (judge_id, season, division_name, caption_name)
+      )
+    `);
+    yield* (sql`
+      CREATE TABLE judge_elo_history (
+        history_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        judge_id TEXT NOT NULL,
+        season TEXT NOT NULL,
+        division_name TEXT NOT NULL,
+        competition_slug TEXT NOT NULL,
+        caption_name TEXT NOT NULL,
+        elo_before REAL NOT NULL,
+        elo_after REAL NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    `);
+    yield* (sql`
+      CREATE TABLE corps_elo_ratings (
+        corps_key TEXT NOT NULL,
+        season TEXT NOT NULL,
+        division_name TEXT NOT NULL,
+        caption_name TEXT NOT NULL DEFAULT 'overall',
+        elo_rating REAL NOT NULL DEFAULT 1500,
+        confidence REAL NOT NULL DEFAULT 50,
+        num_shows INTEGER NOT NULL DEFAULT 0,
+        last_updated TEXT,
+        PRIMARY KEY (corps_key, season, division_name, caption_name)
+      )
+    `);
+    yield* (sql`
+      CREATE TABLE corps_elo_history (
+        history_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        corps_key TEXT NOT NULL,
+        season TEXT NOT NULL,
+        division_name TEXT NOT NULL,
+        competition_slug TEXT NOT NULL,
+        caption_name TEXT,
+        elo_before REAL NOT NULL,
+        elo_after REAL NOT NULL,
+        competition_date TEXT NOT NULL
+      )
+    `);
+
+    const competitions = yield* (sql<{
+      season: string;
+      slug: string;
+      competition_date: string;
+    }>`
+      SELECT season, slug, date as competition_date
+      FROM competitions
+      WHERE date <= ${asOfDate ?? "9999-12-31"}
+      ORDER BY date ASC
+    `);
+    console.log(`Computing Elo for ${competitions.length} competitions...`);
+
+    const judgeEloMap = new Map<string, EloState>();
+    const corpsEloMap = new Map<string, EloState>();
+    const judgeHistory: any[] = [];
+    const corpsHistory: any[] = [];
+
+    let processed = 0;
+    for (const comp of competitions) {
+      const scores = yield* (sql<{
+        corps_key: string;
+        division_name: string;
+        caption_name: string;
+        judge_id: string;
+        score: number;
+      }>`
+        SELECT js.corps_key, cs.division_name, js.caption_name, js.judge_id, js.score
+        FROM judge_scores js
+        JOIN corps_scores cs ON cs.competition_slug = js.competition_slug AND cs.corps_key = js.corps_key
+        WHERE js.competition_slug = ${comp.slug}
+          AND cs.division_name IN ('World Class', 'Open Class')
+          AND js.score > 0
+          AND js.score <= ${MAX_SCORE}
+          AND js.judge_id NOT LIKE '%unknown%'
+      `);
+
+      const competitionJudgeEloBefore = new Map<string, number>();
+      const competitionCorpsEloBefore = new Map<string, number>();
+      for (const score of scores) {
+        const judgeKey = `${score.judge_id}:${comp.season}:${score.division_name}:${score.caption_name}`;
+        const corpsKey = `${score.corps_key}:${comp.season}:${score.division_name}:${score.caption_name}`;
+        if (!competitionJudgeEloBefore.has(judgeKey)) {
+          competitionJudgeEloBefore.set(judgeKey, judgeEloMap.get(judgeKey)?.elo ?? INITIAL_ELO);
+        }
+        if (!competitionCorpsEloBefore.has(corpsKey)) {
+          competitionCorpsEloBefore.set(corpsKey, corpsEloMap.get(corpsKey)?.elo ?? INITIAL_ELO);
+        }
+      }
+
+      for (const score of scores) {
+        const judgeKey = `${score.judge_id}:${comp.season}:${score.division_name}:${score.caption_name}`;
+        const corpsKey = `${score.corps_key}:${comp.season}:${score.division_name}:${score.caption_name}`;
+
+        const judgeState = judgeEloMap.get(judgeKey) ?? {
+          elo: INITIAL_ELO,
+          confidence: INITIAL_CONFIDENCE,
+          numScores: 0,
+        };
+        const corpsState = corpsEloMap.get(corpsKey) ?? {
+          elo: INITIAL_ELO,
+          confidence: INITIAL_CONFIDENCE,
+          numScores: 0,
+        };
+
+        const expected = 1 / (1 + Math.exp(-(corpsState.elo - judgeState.elo) / 400));
+        const actual = score.score / MAX_SCORE;
+        const kJudge = judgeState.numScores < CONFIDENCE_THRESHOLD ? K_FACTOR_NEW : K_FACTOR_STABLE;
+        const kCorps = corpsState.numScores < CONFIDENCE_THRESHOLD ? K_FACTOR_NEW : K_FACTOR_STABLE;
+        const delta = actual - expected;
+
+        const judgeEloBefore = competitionJudgeEloBefore.get(judgeKey) ?? judgeState.elo;
+        const corpsEloBefore = competitionCorpsEloBefore.get(corpsKey) ?? corpsState.elo;
+
+        judgeState.elo += kJudge * delta;
+        corpsState.elo += kCorps * delta;
+        judgeState.confidence *= CONFIDENCE_DECAY;
+        corpsState.confidence *= CONFIDENCE_DECAY;
+        judgeState.numScores++;
+        corpsState.numScores++;
+
+        judgeEloMap.set(judgeKey, judgeState);
+        corpsEloMap.set(corpsKey, corpsState);
+
+        const updatedAt =
+          (comp.competition_date as any) instanceof Date
+            ? (comp.competition_date as any).toISOString()
+            : String(comp.competition_date);
+
+        judgeHistory.push({
+          judge_id: score.judge_id,
+          season: comp.season,
+          division_name: score.division_name,
+          competition_slug: comp.slug,
+          caption_name: score.caption_name,
+          elo_before: judgeEloBefore,
+          elo_after: judgeState.elo,
+          updated_at: updatedAt,
+        });
+
+        corpsHistory.push({
+          corps_key: score.corps_key,
+          season: comp.season,
+          division_name: score.division_name,
+          competition_slug: comp.slug,
+          caption_name: score.caption_name,
+          elo_before: corpsEloBefore,
+          elo_after: corpsState.elo,
+          competition_date: updatedAt,
+        });
+      }
+
+      if (judgeHistory.length > 1000) {
+        yield* (flushEloHistory(sql, judgeHistory, corpsHistory));
+      }
+
+      processed++;
+      if (processed % 100 === 0) {
+        console.log(`Processed ${processed} / ${competitions.length} competitions for Elo...`);
+      }
+    }
+
+    yield* (flushEloHistory(sql, judgeHistory, corpsHistory));
+    yield* (saveFinalEloRatings(sql, judgeEloMap, corpsEloMap));
+
+    console.log("Done rebuilding Elo tables.");
+  });
+
+const getBaseline = (rank: number, pct: number, caption: string, division = "World Class"): number => {
+  const safeRank = Math.max(1, Math.min(25, Math.round(Number.isFinite(rank) ? rank : 12)));
+  const bucket = Math.max(0, Math.min(100, Math.round((Number.isFinite(pct) ? pct : 50) / 5) * 5));
+  const key = `${division}|${safeRank}-${bucket}`;
+  const legacyKey = `${safeRank}-${bucket}`;
   const curves = REFERENCE_CURVES.curves;
 
   if (curves[key] && curves[key][caption]) {
     return curves[key][caption];
   }
 
-  return curves[`${rank}-50`]?.[caption] || 15.0;
+  return curves[`${division}|${safeRank}-50`]?.[caption] ||
+    curves[legacyKey]?.[caption] ||
+    curves[`${safeRank}-50`]?.[caption] ||
+    15.0;
 };
 
 const computeSlope = (values: number[]): number => {
@@ -182,6 +566,106 @@ const computeSeriesStats = (values: number[]) => {
     ? Math.sqrt(values.reduce((sum, value) => sum + (value - meanValue) ** 2, 0) / values.length)
     : 0;
   return { mean: meanValue, slope, volatility };
+};
+
+const emptyCaptionResidualRecord = () =>
+  Object.fromEntries(CAPTIONS.map((caption) => [caption, 0])) as Record<Caption, number>;
+
+type CaptionFingerprintEntry = {
+  season: number;
+  date: string;
+  percentThrough: number;
+  residuals: Record<Caption, number>;
+};
+
+const averageResiduals = (entries: CaptionFingerprintEntry[]) => {
+  const result = emptyCaptionResidualRecord();
+  if (entries.length === 0) return result;
+  for (const caption of CAPTIONS) {
+    result[caption] = mean(entries.map((entry) => entry.residuals[caption] ?? 0));
+  }
+  return result;
+};
+
+const weightedResiduals = (entries: CaptionFingerprintEntry[]) => {
+  const result = emptyCaptionResidualRecord();
+  if (entries.length === 0) return result;
+  const maxSeason = Math.max(...entries.map((entry) => entry.season));
+  for (const caption of CAPTIONS) {
+    let weightedSum = 0;
+    let weightSum = 0;
+    for (const entry of entries) {
+      const age = Math.max(0, maxSeason - entry.season);
+      const weight = Math.pow(0.65, age);
+      weightedSum += (entry.residuals[caption] ?? 0) * weight;
+      weightSum += weight;
+    }
+    result[caption] = weightSum > 0 ? weightedSum / weightSum : 0;
+  }
+  return result;
+};
+
+const volatilityResiduals = (entries: CaptionFingerprintEntry[]) => {
+  const result = emptyCaptionResidualRecord();
+  for (const caption of CAPTIONS) {
+    result[caption] = std(entries.map((entry) => entry.residuals[caption] ?? 0));
+  }
+  return result;
+};
+
+const growthResiduals = (entries: CaptionFingerprintEntry[]) => {
+  const result = emptyCaptionResidualRecord();
+  if (entries.length < 2) return result;
+
+  for (const caption of CAPTIONS) {
+    const bySeason = new Map<number, { early: number[]; late: number[] }>();
+    for (const entry of entries) {
+      const bucket = bySeason.get(entry.season) ?? { early: [], late: [] };
+      if (entry.percentThrough <= 35) bucket.early.push(entry.residuals[caption] ?? 0);
+      if (entry.percentThrough >= 75) bucket.late.push(entry.residuals[caption] ?? 0);
+      bySeason.set(entry.season, bucket);
+    }
+    const seasonGrowth = [...bySeason.values()]
+      .filter((bucket) => bucket.early.length > 0 && bucket.late.length > 0)
+      .map((bucket) => mean(bucket.late) - mean(bucket.early));
+    result[caption] = mean(seasonGrowth);
+  }
+  return result;
+};
+
+const buildCaptionFingerprintFeatures = (
+  fingerprints: Map<string, CaptionFingerprintEntry[]>,
+  corpsKey: string,
+  division: string,
+  targetSeason: string
+) => {
+  const seasonNum = Number(targetSeason);
+  const entries = (fingerprints.get(`${division}:${corpsKey}`) ?? [])
+    .filter((entry) => entry.season < seasonNum)
+    .sort((a, b) => a.season - b.season || a.date.localeCompare(b.date));
+  const priorSeason = entries.filter((entry) => entry.season === seasonNum - 1);
+  const priorOrLatestSeason = priorSeason.length
+    ? priorSeason
+    : entries.filter((entry) => entry.season === Math.max(...entries.map((candidate) => candidate.season), -Infinity));
+  const lastThreeSeasonFloor = seasonNum - 3;
+  const multiYear = entries.filter((entry) => entry.season >= lastThreeSeasonFloor);
+  const priorAvg = averageResiduals(priorOrLatestSeason);
+  const multiAvg = weightedResiduals(multiYear.length ? multiYear : entries);
+  const growth = growthResiduals(multiYear.length ? multiYear : entries);
+  const vol = volatilityResiduals(multiYear.length ? multiYear : entries);
+  const confidence = Math.min(1, entries.length / 24);
+
+  const features: number[] = [];
+  for (const caption of CAPTIONS) {
+    features.push(
+      priorAvg[caption] / 2,
+      multiAvg[caption] / 2,
+      growth[caption] / 2,
+      Math.min(vol[caption] / 2, 2)
+    );
+  }
+  features.push(confidence);
+  return features;
 };
 
 const bucketPercent = (percent: number) => Math.max(0, Math.min(100, Math.round(percent / 5) * 5));
@@ -331,7 +815,15 @@ type CompetitionContext = {
   corps_present: string[];
 };
 
-export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(function* () {
+type BuildV9SubcaptionOptions = {
+  rebuildLoadedData?: boolean;
+  asOfDate?: string;
+};
+
+export const buildSequencesV9 = (
+  seasons: string[] = SEASONS,
+  options: BuildV9SubcaptionOptions = {},
+) => Effect.gen(function* () {
   const sql = yield* (SqlClient.SqlClient);
 
   yield* (sql`
@@ -350,6 +842,9 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
       y_recap_json TEXT NOT NULL,
       y_total REAL NOT NULL,
       agnostic_show_id INTEGER NOT NULL DEFAULT 0,
+      builder_version TEXT NOT NULL,
+      reference_curves_version TEXT NOT NULL,
+      map_version TEXT NOT NULL,
       split TEXT NOT NULL CHECK(split IN ('train','val','test')),
       created_at TEXT NOT NULL,
       UNIQUE(season, competition_slug, division_name, corps_key)
@@ -399,7 +894,10 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
 
   for (const season of seasons) {
     for (const division of DIVISIONS) {
-      const seasonRows = yield* (MlQueries.querySeasonCaptionsV6(season, division));
+      const queriedRows = yield* (MlQueries.querySeasonCaptionsV6(season, division));
+      const seasonRows = options.asOfDate
+        ? queriedRows.filter((row) => row.date <= options.asOfDate!)
+        : queriedRows;
       seasonRowsMap.set(seasonDivisionKey(season, division), seasonRows);
 
       for (const row of seasonRows) {
@@ -410,7 +908,7 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
         if (row.total_score <= 0) continue;
 
         const bucket = bucketPercent(row.percent_through ?? 0);
-        const rangeKey = `${bucket}_${capKey}`;
+        const rangeKey = `${division}_${bucket}_${capKey}`;
         const existing = captionRangeMap.get(rangeKey);
         if (!existing) {
           captionRangeMap.set(rangeKey, { min: row.score, max: row.score });
@@ -422,9 +920,9 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
     }
   }
 
-  const getCaptionRange = (percentThrough: number, caption: string) => {
+  const getCaptionRange = (percentThrough: number, caption: string, division: string) => {
     const bucket = bucketPercent(percentThrough);
-    const range = captionRangeMap.get(`${bucket}_${caption}`);
+    const range = captionRangeMap.get(`${division}_${bucket}_${caption}`);
     return {
       min: range?.min ?? 0,
       max: range?.max ?? 20,
@@ -432,20 +930,78 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
   };
 
   const prevSeasonRanks: Record<string, Record<string, Record<string, number>>> = {};
+  const prevSeasonFinalState: Record<string, Record<string, Record<string, { total: number; rank: number; date: string }>>> = {};
   for (const season of seasons) {
     let prevYear = parseInt(season, 10) - 1;
     if (season === "2022") prevYear = 2019;
 
     prevSeasonRanks[season] = {};
+    prevSeasonFinalState[season] = {};
     for (const division of DIVISIONS) {
       const raw = yield* (MlQueries.queryPreviousSeasonFinalRankings(prevYear.toString(), division));
       const sortedRaw = [...raw].sort((a, b) => b.best_total - a.best_total);
       prevSeasonRanks[season]![division] = {};
+      prevSeasonFinalState[season]![division] = {};
       sortedRaw.forEach((row, idx) => {
-        prevSeasonRanks[season]![division]![row.corps_key] = idx + 1;
+        const rank = idx + 1;
+        prevSeasonRanks[season]![division]![row.corps_key] = rank;
+        prevSeasonFinalState[season]![division]![row.corps_key] = {
+          total: row.best_total,
+          rank,
+          date: `${prevYear}-08-15`,
+        };
       });
     }
   }
+
+  const captionFingerprintHistory = new Map<string, CaptionFingerprintEntry[]>();
+  for (const season of seasons) {
+    for (const division of DIVISIONS) {
+      const rows = seasonRowsMap.get(seasonDivisionKey(season, division)) ?? [];
+      const byShowCorps = new Map<string, {
+        corpsKey: string;
+        date: string;
+        percentThrough: number;
+        rank: number;
+        captions: Partial<Record<Caption, number>>;
+      }>();
+
+      for (const row of rows) {
+        if (!Number.isFinite(row.total_score) || row.total_score <= 0 || row.total_score > 100) continue;
+        const caption = CAPTION_MAP[row.caption_name] as Caption | undefined;
+        if (!caption || !Number.isFinite(row.score) || row.score <= 0 || row.score > MAX_SCORE) continue;
+        const key = `${row.slug}:${row.corps_key}`;
+        const existing = byShowCorps.get(key) ?? {
+          corpsKey: row.corps_key,
+          date: row.date,
+          percentThrough: Number(row.percent_through ?? 50),
+          rank: Number(row.rank ?? 12),
+          captions: {} as Partial<Record<Caption, number>>,
+        };
+        existing.captions[caption] = Number(row.score);
+        byShowCorps.set(key, existing);
+      }
+
+      for (const show of byShowCorps.values()) {
+        if (!CAPTIONS.every((caption) => Number.isFinite(show.captions[caption]))) continue;
+        const residuals = emptyCaptionResidualRecord();
+        for (const caption of CAPTIONS) {
+          residuals[caption] =
+            Number(show.captions[caption]) - getBaseline(show.rank, show.percentThrough, caption, division);
+        }
+        const key = `${division}:${show.corpsKey}`;
+        const list = captionFingerprintHistory.get(key) ?? [];
+        list.push({
+          season: Number(season),
+          date: show.date,
+          percentThrough: show.percentThrough,
+          residuals,
+        });
+        captionFingerprintHistory.set(key, list);
+      }
+    }
+  }
+  console.log(`Prepared caption fingerprint history for ${captionFingerprintHistory.size} corps/division pairs.`);
 
   console.log("Loading show aggregates...");
   const showAggregatesRows = yield* (sql<{
@@ -469,59 +1025,57 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
   }
   console.log(`Loaded ${showAggregatesMap.size} show aggregates`);
 
-  console.log("Loading judge Elo ratings...");
-  const judgeEloMap = new Map<string, Map<string, number>>();
-  for (const season of seasons) {
-    const judgeElos = yield* (sql<{
-      caption_name: string;
-      avg_elo: number;
-    }>`SELECT caption_name, AVG(elo_rating) as avg_elo FROM judge_elo_ratings WHERE season = ${season} GROUP BY caption_name`);
+  console.log("Pre-caching pre-show corps Elo history...");
+  const allCorpsElos = yield* (sql<{
+    corps_key: string;
+    season: string;
+    division_name: string;
+    competition_slug: string;
+    caption_name: string;
+    elo_before: number;
+  }>`
+    SELECT h.corps_key, h.season, h.division_name, h.competition_slug, h.caption_name, h.elo_before
+    FROM corps_elo_history h
+    JOIN (
+      SELECT corps_key, season, division_name, competition_slug, caption_name, MIN(history_id) AS history_id
+      FROM corps_elo_history
+      GROUP BY corps_key, season, division_name, competition_slug, caption_name
+    ) first
+      ON first.history_id = h.history_id
+  `);
 
-    const captionEloMap = new Map<string, number>();
-    for (const row of judgeElos) {
-      captionEloMap.set(row.caption_name, row.avg_elo);
-    }
-    judgeEloMap.set(season, captionEloMap);
+  const corpsPreShowEloCache = new Map<string, number>();
+  for (const row of allCorpsElos) {
+    const key = `${row.corps_key}:${row.season}:${row.division_name}:${row.competition_slug}:${row.caption_name}`;
+    corpsPreShowEloCache.set(key, row.elo_before);
   }
-  console.log(`Loaded judge Elo for ${judgeEloMap.size} seasons`);
+  console.log(`Cached ${corpsPreShowEloCache.size} pre-show corps Elo entries.`);
 
-  console.log("Loading corps Elo ratings...");
-  const corpsEloMap = new Map<string, Map<string, Map<string, number>>>();
-  for (const season of seasons) {
-    const corpsElos = yield* (sql<{
-      corps_key: string;
-      caption_name: string;
-      elo_rating: number;
-    }>`SELECT corps_key, caption_name, elo_rating FROM corps_elo_ratings WHERE season = ${season}`);
-
-    if (!corpsEloMap.has(season)) {
-      corpsEloMap.set(season, new Map());
-    }
-    const seasonMap = corpsEloMap.get(season)!;
-
-    for (const row of corpsElos) {
-      if (!seasonMap.has(row.corps_key)) {
-        seasonMap.set(row.corps_key, new Map());
-      }
-      seasonMap.get(row.corps_key)!.set(row.caption_name, row.elo_rating);
-    }
-  }
-  console.log(`Loaded corps Elo for ${corpsEloMap.size} seasons`);
-
-  console.log("Pre-caching all judge Elo ratings...");
+  console.log("Pre-caching pre-show judge Elo history...");
   const allJudgeElos = yield* (sql<{
     judge_id: string;
     season: string;
+    division_name: string;
+    competition_slug: string;
     caption_name: string;
-    elo_rating: number;
-  }>`SELECT judge_id, season, caption_name, elo_rating FROM judge_elo_ratings`);
+    elo_before: number;
+  }>`
+    SELECT h.judge_id, h.season, h.division_name, h.competition_slug, h.caption_name, h.elo_before
+    FROM judge_elo_history h
+    JOIN (
+      SELECT judge_id, season, division_name, competition_slug, caption_name, MIN(history_id) AS history_id
+      FROM judge_elo_history
+      GROUP BY judge_id, season, division_name, competition_slug, caption_name
+    ) first
+      ON first.history_id = h.history_id
+  `);
 
-  const judgeEloCache = new Map<string, number>();
+  const judgePreShowEloCache = new Map<string, number>();
   for (const row of allJudgeElos) {
-    const key = `${row.judge_id}:${row.season}:${row.caption_name}`;
-    judgeEloCache.set(key, row.elo_rating);
+    const key = `${row.judge_id}:${row.season}:${row.division_name}:${row.competition_slug}:${row.caption_name}`;
+    judgePreShowEloCache.set(key, row.elo_before);
   }
-  console.log(`Cached ${judgeEloCache.size} judge Elo entries.`);
+  console.log(`Cached ${judgePreShowEloCache.size} pre-show judge Elo entries.`);
 
   for (const season of seasons) {
     console.log(`Processing season ${season}...`);
@@ -614,6 +1168,65 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
         competitionMap.set(row.slug, context);
       }
 
+      const showLookup = new Map<string, Map<string, any>>();
+      for (const [corpsKey, shows] of corpsMap.entries()) {
+        for (const show of shows) {
+          const byCorps = showLookup.get(show.slug) ?? new Map<string, any>();
+          byCorps.set(corpsKey, show);
+          showLookup.set(show.slug, byCorps);
+        }
+      }
+
+      for (const [slug, context] of competitionMap.entries()) {
+        const byCorps = showLookup.get(slug);
+        if (!byCorps) continue;
+        const ranked = context.corps_present
+          .map((corpsKey) => byCorps.get(corpsKey))
+          .filter((show): show is any => !!show && Number.isFinite(show.total_score) && show.total_score > 0)
+          .sort((a, b) => b.total_score - a.total_score);
+
+        context.score_by_rank = new Map<number, number>();
+        context.leader_score = ranked[0]?.total_score ?? 0;
+        ranked.forEach((show, index) => {
+          show.rank = index + 1;
+          context.score_by_rank.set(index + 1, show.total_score);
+        });
+      }
+
+      const localShowAggregatesMap = new Map<string, {
+        avg_total: number;
+        std_total: number;
+        avg_ge1: number;
+        avg_ge2: number;
+        avg_vp: number;
+        avg_va: number;
+        avg_cg: number;
+        avg_ma: number;
+        avg_mb: number;
+        avg_mp: number;
+        field_size: number;
+      }>();
+      for (const [slug, byCorps] of showLookup.entries()) {
+        const completeShows = Array.from(byCorps.values()).filter(hasConsistentCaptionTotal);
+        if (!completeShows.length) continue;
+        const totals = completeShows.map((show) => show.total_score as number);
+        const captionAverage = (caption: Caption) =>
+          mean(completeShows.map((show) => show.captions[caption]!.score!));
+        localShowAggregatesMap.set(slug, {
+          avg_total: mean(totals),
+          std_total: std(totals),
+          avg_ge1: captionAverage("GE1"),
+          avg_ge2: captionAverage("GE2"),
+          avg_vp: captionAverage("VP"),
+          avg_va: captionAverage("VA"),
+          avg_cg: captionAverage("CG"),
+          avg_ma: captionAverage("MA"),
+          avg_mb: captionAverage("MB"),
+          avg_mp: captionAverage("MP"),
+          field_size: completeShows.length,
+        });
+      }
+
       const defaultRank = Math.max(1, corpsMap.size);
 
       for (const shows of corpsMap.values()) {
@@ -672,6 +1285,13 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
         overallRankCache.get(date)?.get(corpsKey) ?? fallback;
 
       const opponentHistoryMap = new Map<string, OpponentHistoryEntry[]>();
+      const scoredSeasonDates = Array.from(new Set(
+        Array.from(corpsMap.values())
+          .flat()
+          .filter(hasConsistentCaptionTotal)
+          .map((show) => show.date)
+      )).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+      const firstScoredDateOfSeason = scoredSeasonDates[0];
 
       for (const [corpsKey, shows] of corpsMap.entries()) {
         const prevRank = prevSeasonRanks[season]?.[division]?.[corpsKey] ?? defaultRank;
@@ -684,7 +1304,7 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
           let residualSum = 0;
           const captionScores = CAPTIONS.map((caption) => {
             const score = show.captions[caption]?.score ?? 0;
-            const baseline = getBaseline(rankEntering, show.percent_through, caption);
+            const baseline = getBaseline(rankEntering, show.percent_through, caption, division);
             residualSum += score - baseline;
             return score;
           });
@@ -780,7 +1400,7 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
               const captionRank = show.captions[caption]?.rank;
               const prevCaptionScore = prevShow?.captions[caption]?.score ?? captionScore;
               if (captionScore !== undefined) {
-                const baseline = getBaseline(rankEntering, show.percent_through, caption);
+                const baseline = getBaseline(rankEntering, show.percent_through, caption, division);
                 feats.push(captionScore - baseline);
                 feats.push(captionRank ? captionRank / fieldSize : 0);
                 feats.push(normalizeCaptionScore(captionScore));
@@ -834,7 +1454,7 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
             const isEarlySeason = showDate.getMonth() < 6 ? 1 : 0;
             feats.push(isFinals, isSemis, isRegional, isEarlySeason);
 
-            const showAgg = showAggregatesMap.get(show.slug);
+            const showAgg = localShowAggregatesMap.get(show.slug) ?? showAggregatesMap.get(show.slug);
             if (showAgg) {
               const relativeTotal = showAgg.std_total > 0 ? (show.total_score - showAgg.avg_total) / showAgg.std_total : 0;
               feats.push(relativeTotal);
@@ -874,7 +1494,7 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
             const actual = targetShow.captions[caption]?.score;
             if (actual !== undefined) {
               y_recap[caption] = actual;
-              const baseline = getBaseline(rankEntering, targetShow.percent_through, caption);
+              const baseline = getBaseline(rankEntering, targetShow.percent_through, caption, division);
               y_residuals[caption] = Number((actual - baseline).toFixed(4));
             } else {
               y_recap[caption] = 0;
@@ -924,7 +1544,7 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
             let residualSum = 0;
             for (const caption of CAPTIONS) {
               const score = show.captions[caption]?.score ?? 0;
-              const baseline = getBaseline(rankEnter, show.percent_through, caption);
+              const baseline = getBaseline(rankEnter, show.percent_through, caption, division);
               const residual = score - baseline;
               residualSum += residual;
               captionResidualSeries[caption]!.push(residual);
@@ -1016,12 +1636,32 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
           const rankVsHistorical = currentRank - meanRank;
           const targetDate = new Date(targetShow.date);
           const premiereDate = new Date(pastShows[0]?.date ?? targetShow.date);
-          const daysSinceSeasonStart = normalizeDays(MlQueries.daysBetween(pastShows[0]?.date ?? targetShow.date, targetShow.date));
+          const daysSinceSeasonStart = normalizeDays(MlQueries.daysBetween(firstScoredDateOfSeason ?? pastShows[0]?.date ?? targetShow.date, targetShow.date));
           const lastHistoryDate = pastShows[pastShows.length - 1]?.date;
           const daysSinceLastMatch = lastHistoryDate
             ? normalizeRecentGap(MlQueries.daysBetween(lastHistoryDate, targetShow.date))
             : 0.5;
           const showsRemainingApprox = Math.max(0, SEQ_LEN - (pastShows.length + 1)) / SEQ_LEN;
+          const isSeasonDebutForCorps = pastShows.length === 0 ? 1 : 0;
+          const sameSeasonHistoryCountNorm = Math.min(pastShows.length, 40) / 40;
+          const daysSinceLastSameSeasonShowNorm = lastHistoryDate
+            ? normalizeRecentGap(MlQueries.daysBetween(lastHistoryDate, targetShow.date))
+            : 1;
+          const lastPriorSeasonShow = prevSeasonFinalState[season]?.[division]?.[corpsKey];
+          const daysSinceLastScoredAnySeasonNorm = lastHistoryDate
+            ? normalizeOffseasonGap(MlQueries.daysBetween(lastHistoryDate, targetShow.date))
+            : lastPriorSeasonShow
+              ? normalizeOffseasonGap(MlQueries.daysBetween(lastPriorSeasonShow.date, targetShow.date))
+              : 1;
+          const lastSeasonFinalScoreNorm = lastPriorSeasonShow ? normalizeScore(lastPriorSeasonShow.total) : normalizeScore(70);
+          const lastSeasonFinalRankNorm = lastPriorSeasonShow ? normalizeRank(lastPriorSeasonShow.rank) : normalizeRank(prevRank);
+          const isFirstScoredEventOfSeason = firstScoredDateOfSeason === targetShow.date ? 1 : 0;
+          const eventWeekIndexNorm = firstScoredDateOfSeason
+            ? Math.min(Math.floor(MlQueries.daysBetween(firstScoredDateOfSeason, targetShow.date) / 7), 12) / 12
+            : 0;
+          const targetDayOfSeasonNorm = firstScoredDateOfSeason
+            ? normalizeDays(MlQueries.daysBetween(firstScoredDateOfSeason, targetShow.date))
+            : 0;
 
           const competition = competitionMap.get(targetShow.slug);
           const fieldSize = competition?.field_size ?? 25;
@@ -1037,12 +1677,12 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
           const isMajorShow = targetShow.slug.toLowerCase().includes("finals") ||
             targetShow.slug.toLowerCase().includes("regional") ? 1 : 0;
           const captionRangeFeatures = CAPTIONS.flatMap((caption) => {
-            const range = getCaptionRange(targetShow.percent_through, caption);
+            const range = getCaptionRange(targetShow.percent_through, caption, division);
             return [normalizeCaptionScore(range.min), normalizeCaptionScore(range.max)];
           });
 
           const rankBaselineFeatures = CAPTIONS.map((caption) =>
-            normalizeCaptionScore(getBaseline(rankEntering, targetShow.percent_through, caption))
+            normalizeCaptionScore(getBaseline(rankEntering, targetShow.percent_through, caption, division))
           );
 
           const opponentSnapshots: OpponentSnapshot[] = [];
@@ -1094,8 +1734,8 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
             const judgeId = assignment.judge_id;
             const captionName = assignment.caption_name;
 
-            const eloKey = `${judgeId}:${season}:${captionName}`;
-            const elo = judgeEloCache.get(eloKey) ?? 1500;
+            const eloKey = `${judgeId}:${season}:${division}:${targetShow.slug}:${captionName}`;
+            const elo = judgePreShowEloCache.get(eloKey) ?? 1500;
             judgeElos.push(elo);
 
             if (!captionJudgeEloMap.has(captionName)) {
@@ -1113,7 +1753,7 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
           }
 
           for (const caption of CAPTIONS) {
-            const fullCaptionName = Object.keys(CAPTION_MAP).find(k => CAPTION_MAP[k] === caption) ?? caption;
+            const fullCaptionName = fullCaptionNameFor(caption);
             const elos = captionJudgeEloMap.get(fullCaptionName) ?? [];
             const avgElo = elos.length > 0 ? elos.reduce((a, b) => a + b, 0) / elos.length : 1500;
             perCaptionJudgeElo.push((avgElo - 1500) / 200);
@@ -1132,17 +1772,31 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
           }
 
           const perCaptionCorpsElo: number[] = [];
-          const seasonCorpsElo = corpsEloMap.get(season)?.get(corpsKey) ?? new Map();
           for (const caption of CAPTIONS) {
-            const fullCaptionName = Object.keys(CAPTION_MAP).find(k => CAPTION_MAP[k] === caption) ?? caption;
-            const corpsElo = seasonCorpsElo.get(fullCaptionName) ?? 1500;
+            const fullCaptionName = fullCaptionNameFor(caption);
+            const corpsElo = corpsPreShowEloCache.get(`${corpsKey}:${season}:${division}:${targetShow.slug}:${fullCaptionName}`) ?? 1500;
             perCaptionCorpsElo.push((corpsElo - 1500) / 200);
+          }
+
+          // Judge-completeness is a TRAINING-DATA quality filter. Current-season rows
+          // (seasons not in the historical SEASONS list) are inference TEMPLATES built
+          // pre-panel, so keep them even when the panel is unknown — inference
+          // recomputes judge context anyway. Dropping them would strand in-season
+          // corps on a synthetic/preseason fallback (the very regression we're fixing).
+          if (SEASONS.includes(season) && judgeIndices.some((idx) => idx <= 0)) {
+            continue;
           }
 
           const divisionName = targetShow.division_name?.toLowerCase() ?? "";
           const isWorldClass = divisionName.includes("world") ? 1 : 0;
           const isOpenClass = divisionName.includes("open") ? 1 : 0;
           const isAllAgeClass = divisionName.includes("all-age") || divisionName.includes("all age") ? 1 : 0;
+          const captionFingerprintFeatures = buildCaptionFingerprintFeatures(
+            captionFingerprintHistory,
+            corpsKey,
+            division,
+            season
+          );
 
           const x_static: number[] = [
             normalizeRank(prevRank),
@@ -1213,8 +1867,38 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
             ...lastAchievementByCaption,
             ...emaContentByCaption,
             ...emaAchievementByCaption,
+            // Cold-start / 2026 opener features (10)
+            isSeasonDebutForCorps,
+            sameSeasonHistoryCountNorm,
+            daysSinceLastSameSeasonShowNorm,
+            daysSinceLastScoredAnySeasonNorm,
+            lastSeasonFinalScoreNorm,
+            lastSeasonFinalRankNorm,
+            isFirstScoredEventOfSeason,
+            eventWeekIndexNorm,
+            targetDayOfSeasonNorm,
+            targetShow.percent_through / 100,
+            // Caption fingerprint features (33):
+            // per caption: prior-season residual, 3-year residual, growth, volatility; then confidence.
+            ...captionFingerprintFeatures,
           ];
 
+          if (x_static.length - captionFingerprintFeatures.length !== BASE_STATIC_FEATURES) {
+            throw new Error(
+              `Expected ${BASE_STATIC_FEATURES} base static features before caption fingerprints, ` +
+              `got ${x_static.length - captionFingerprintFeatures.length}`
+            );
+          }
+          if (
+            captionFingerprintFeatures.length !== V9_CAPTION_FINGERPRINT_DIM ||
+            x_static[V9_CAPTION_FINGERPRINT_CONFIDENCE_IDX] !== captionFingerprintFeatures.at(-1)
+          ) {
+            throw new Error(
+              `Caption fingerprint block is misaligned: start=${V9_CAPTION_FINGERPRINT_START}, ` +
+              `featuresPerCaption=${V9_CAPTION_FINGERPRINT_FEATURES_PER_CAPTION}, ` +
+              `got ${captionFingerprintFeatures.length}`
+            );
+          }
           if (x_static.length !== STATIC_FEATURES) {
             throw new Error(`Expected ${STATIC_FEATURES} static features, got ${x_static.length}`);
           }
@@ -1239,6 +1923,9 @@ export const buildSequencesV9 = (seasons: string[] = SEASONS) => Effect.gen(func
             y_recap_json: JSON.stringify(y_recap),
             y_total: targetShow.total_score,
             agnostic_show_id: getAgnosticShowId(targetShow.slug),
+            builder_version: BUILDER_VERSION,
+            reference_curves_version: REFERENCE_CURVES.version ?? "unknown",
+            map_version: MAP_VERSION,
             split,
             created_at: new Date().toISOString(),
           });
@@ -1293,9 +1980,9 @@ const insertBatch = (sql: SqlClient.SqlClient, rows: any[]) =>
           ${row.y_recap_json},
           ${row.y_total},
           ${row.agnostic_show_id},
-          ${BUILDER_VERSION},
-          ${REFERENCE_CURVES_VERSION},
-          ${MAP_VERSION},
+          ${row.builder_version},
+          ${row.reference_curves_version},
+          ${row.map_version},
           ${row.split},
           ${row.created_at}
         )
@@ -1305,23 +1992,21 @@ const insertBatch = (sql: SqlClient.SqlClient, rows: any[]) =>
 
 const SqlLayer = LibsqlClient.layer({ url: "file:./dci-relational.db" });
 
-// Run ONLY when executed directly (`tsx src/buildMlSequencesV9Subcaption.ts`),
-// never on import — importing this module used to kick off a full rebuild.
-// `--seasons 2026` (comma-separated) restricts the build; the INSERT is an
-// upsert keyed by (season, competition_slug, division, corps_key), so a
-// single-season run can't disturb the other seasons' training rows.
-const invokedDirectly = process.argv[1]?.includes("buildMlSequencesV9Subcaption");
-if (invokedDirectly) {
-  const seasonsArgIdx = process.argv.indexOf("--seasons");
-  const seasonsArg =
-    seasonsArgIdx >= 0 && process.argv[seasonsArgIdx + 1]
-      ? process.argv[seasonsArgIdx + 1].split(",").map((s) => s.trim()).filter(Boolean)
-      : undefined;
-  if (seasonsArg) console.log(`Building V9 subcaption sequences for seasons: ${seasonsArg.join(", ")}`);
-  Effect.runPromise(buildSequencesV9(seasonsArg).pipe(Effect.provide(SqlLayer)))
-    .then(() => console.log("Done building V9 sequences."))
-    .catch((error) => {
-      console.error(error);
-      process.exitCode = 1;
-    });
-}
+// `--seasons 2026` (comma-separated) restricts the build; INSERT OR REPLACE is an
+// upsert keyed by (season, competition_slug, division, corps_key), so a single-season
+// run can't disturb other seasons' rows. For a current-season build, buildSequencesV9
+// still loads global history (prev-season ranks, corps_historical) so the base features
+// are correct; the fingerprint block is recomputed at inference regardless.
+const seasonsArgIdx = process.argv.indexOf("--seasons");
+const seasonsArg =
+  seasonsArgIdx >= 0 && process.argv[seasonsArgIdx + 1]
+    ? process.argv[seasonsArgIdx + 1]!.split(",").map((s) => s.trim()).filter(Boolean)
+    : undefined;
+if (seasonsArg) console.log(`Building V9 subcaption sequences for seasons: ${seasonsArg.join(", ")}`);
+
+Effect.runPromise(buildSequencesV9(seasonsArg ?? SEASONS).pipe(Effect.provide(SqlLayer)))
+  .then(() => console.log("Done building V9 sequences."))
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
