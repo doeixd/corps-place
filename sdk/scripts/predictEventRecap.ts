@@ -129,8 +129,13 @@ const CAPTIONS = [...V9_CAPTIONS];
 const isAllAgeDivision = (division: string | null | undefined) =>
   /\ball[-\s]?age\b/i.test(division ?? '');
 
+// The V9 model is trained ONLY on World Class + Open Class (see buildSequencesV9
+// DIVISIONS). All-Age / SoundSport corps have no training representation, so they
+// fall back to a synthetic_unknown_corps template and mis-predict by 15-20 pts
+// (e.g. Govenaires 51.6→72.0, Minnesota Brass 54.0→68.6 at 2026-07-07). Exclude
+// them from prediction entirely — a missing prediction beats a wildly wrong one.
 const isSupportedPredictionDivision = (division: string | null | undefined) =>
-  division === 'World Class' || division === 'Open Class' || isAllAgeDivision(division);
+  division === 'World Class' || division === 'Open Class';
 
 const predictionDivision = (cli: Cli, entry: LineupRow) =>
   cli.division.toLowerCase() === 'auto' ? entry.division_name || 'World Class' : cli.division;
