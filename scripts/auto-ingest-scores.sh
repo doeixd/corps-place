@@ -139,20 +139,38 @@ for slug, sd, wst in db.execute(
         continue
     start_utc = local - datetime.timedelta(hours=off)        # local time -> UTC
     est_end = start_utc + datetime.timedelta(hours=3.5)
-    if est_end - datetime.timedelta(minutes=30) <= now <= est_end + datetime.timedelta(hours=6):
-        # "Already ingested?" must resolve the competition slug the way the rest of
-        # the system does: 2026 score rows land under a season-prefixed or
-        # event_to_competition-bridged competition slug, not the bare event slug.
-        # Checking only `competition_slug = events.slug` left scored shows looking
-        # pending all post-show window (review Medium #10).
+    # Poll from 30 min before est end to 12h after. Extended from 6h so late-
+    # posting divisions (DCI posts Open Class and World Class results at different
+    # times) are still caught overnight while the completeness check below keeps
+    # re-scraping.
+    if est_end - datetime.timedelta(minutes=30) <= now <= est_end + datetime.timedelta(hours=12):
+        # Completeness gate (fixes partial ingestion). The event used to drop out
+        # of the window as soon as ANY score existed — so when Open Class posted
+        # first, the later World Class scores never triggered a re-scrape and the
+        # site showed a phantom field (e.g. 2026-dci-west: 5 Open Class ingested,
+        # 5 World Class stranded, predictions looked wildly wrong).
+        #
+        # Now: re-scrape until the COMPETITIVE field is complete. Expected = the
+        # announced performing lineup minus SoundSport (DCI's non-ranked division,
+        # which reliably never scores) and exhibition/non-corps. Scored = distinct
+        # corps with a score (resolving the competition slug the same 3 ways).
+        # When no lineup is known (expected == 0) fall back to "any score exists"
+        # so unknown-lineup events still get scraped once.
+        expected = db.execute(
+            "SELECT COUNT(DISTINCT corps_key) FROM classified_event_lineup"
+            " WHERE event_slug=? AND effective_is_non_performance=0 AND is_non_corps=0"
+            "   AND COALESCE(is_exhibition,0)=0 AND corps_key IS NOT NULL AND corps_key!=''"
+            "   AND COALESCE(division_name,'') NOT LIKE '%SoundSport%'",
+            (slug,)).fetchone()[0]
         scored = db.execute(
-            "SELECT EXISTS("
-            " SELECT 1 FROM corps_scores WHERE competition_slug=?"
-            " UNION ALL SELECT 1 FROM corps_scores WHERE competition_slug=?"
-            " UNION ALL SELECT 1 FROM corps_scores cs JOIN event_to_competition etc"
+            "SELECT COUNT(DISTINCT corps_key) FROM ("
+            " SELECT corps_key FROM corps_scores WHERE competition_slug=?"
+            " UNION SELECT corps_key FROM corps_scores WHERE competition_slug=?"
+            " UNION SELECT cs.corps_key FROM corps_scores cs JOIN event_to_competition etc"
             "  ON etc.competition_slug=cs.competition_slug WHERE etc.event_slug=?)",
             (slug, season + '-' + slug, slug)).fetchone()[0]
-        if not scored:
+        incomplete = (scored < expected) if expected > 0 else (scored == 0)
+        if incomplete:
             out.append(slug)
 print('\n'.join(out))
 PY

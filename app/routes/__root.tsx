@@ -3,6 +3,7 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  redirect,
   useRouter,
   useRouterState,
 } from '@tanstack/react-router';
@@ -43,7 +44,8 @@ import { themeStore } from '@/stores/theme-store';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 import { IconSprite } from '@/components/icons/generated';
 import { CustomIconSprite } from '@/components/icons/custom-sprite';
-import { readBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
+import { readBrand, routeBrand, BRAND_CONFIG, type Brand } from '@/lib/brand';
+import { SITE_URL, JOBS_URL } from '@/lib/seo';
 import { BrandProvider } from '@/lib/brand-context';
 import { buildSeo, jsonLdScript } from '@/lib/seo';
 import '@/app.css';
@@ -387,6 +389,21 @@ function AutoUpdater() {
 }
 
 export const Route = createRootRoute({
+  // Brand isolation: drumcorps.app and pageantryjobs.com are one deployment, so
+  // every route resolves 200 on BOTH hosts. Without this, corps pages served on
+  // pageantryjobs.com (and job pages on drumcorps.app) get crawled + indexed under
+  // the wrong domain (duplicate content, cross-brand sitemap pollution). 301 any
+  // off-brand PAGE load to its owning domain. Server routes (/api, /sitemap.xml,
+  // /robots.txt, assets) never hit the root beforeLoad, so infra is untouched;
+  // brand-neutral pages (/, /admin, /dev, /contact, /faq) return null and stay.
+  beforeLoad: ({ location }) => {
+    const owner = routeBrand(location.pathname);
+    if (!owner) return;
+    const host = readBrand();
+    if (owner === host) return;
+    const base = owner === 'jobs' ? JOBS_URL : SITE_URL;
+    throw redirect({ href: `${base}${location.href}`, code: 301 });
+  },
   // Read the favorite cookie so head() can render the corps's favicon + theme-color
   // into the SSR HTML (correct first paint, no hydration reset).
   loader: () => {

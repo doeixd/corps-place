@@ -4854,16 +4854,48 @@ interface SeasonMeta {
 
 const computeSeasonMeta = (
   competitions: ReadonlyArray<Domain.Competition>,
+  scheduledEnd?: Date | undefined,
 ): SeasonMeta => {
   const sorted = [...competitions].sort((a, b) => competitionOrder(a, b));
   const firstDate = sorted[0]?.date;
-  const lastDate = sorted[sorted.length - 1]?.date ?? firstDate;
+  const lastScored = sorted[sorted.length - 1]?.date ?? firstDate;
+  // Anchor the season end to the SCHEDULED finals, not the last *scored* event.
+  // For a complete season these coincide (no-op); for an in-progress season the
+  // last scored event is merely the latest result, which would collapse
+  // seasonLength and pin every event's percent_through toward 100 — making early
+  // shows read as finals-level and driving systemic over-prediction. Take the
+  // later of the two so a stray post-finals exhibition can't shorten the season.
+  const lastDate =
+    scheduledEnd && lastScored
+      ? scheduledEnd > lastScored
+        ? scheduledEnd
+        : lastScored
+      : (scheduledEnd ?? lastScored);
   const seasonLength =
     firstDate && lastDate
       ? Math.max(1, differenceInDays(lastDate, firstDate))
       : 0;
   return { firstDate, lastDate, seasonLength };
 };
+
+/** Scheduled season end = latest scheduled event date for the season (the
+ *  events table holds the full schedule through World Championship Finals, even
+ *  before those shows are scored). Undefined when the season isn't scheduled. */
+const resolveScheduledSeasonEnd = (
+  sql: SqlClient.SqlClient,
+  season: string,
+): Effect.Effect<Date | undefined, unknown> =>
+  sql<{ end_date: string | null }>`
+    SELECT MAX(date(start_date)) AS end_date
+    FROM events
+    WHERE season = ${season}
+  `.pipe(
+    Effect.map((rows) => {
+      const raw = rows[0]?.end_date;
+      return raw ? new Date(`${raw}T00:00:00.000Z`) : undefined;
+    }),
+    Effect.orElseSucceed(() => undefined),
+  );
 
 const deriveCompetitionMeta = (
   competition: Domain.Competition,
@@ -5879,7 +5911,8 @@ const ingestSeason = (
       `[Season ${season}] Found ${competitions.length} competitions. Starting ingestion...`,
     );
 
-    const seasonMeta = computeSeasonMeta(competitions);
+    const scheduledEnd = yield* resolveScheduledSeasonEnd(sql, season);
+    const seasonMeta = computeSeasonMeta(competitions, scheduledEnd);
 
     yield* Effect.forEach(
       competitions,

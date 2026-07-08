@@ -142,8 +142,8 @@ function Home() {
               snapshots, side by side on wide screens, stacked on mobile. Inside
               the registry so the rankings snapshot resolves corps logos. */}
           <div className="grid gap-4 lg:grid-cols-3">
-            <FeaturedPredictionPanel prediction={featuredPrediction} />
             <LatestResultsPanel results={latestResults} />
+            <FeaturedPredictionPanel prediction={featuredPrediction} />
             <StandingsSnapshot standings={standings} />
           </div>
         </CorpsRegistryProvider>

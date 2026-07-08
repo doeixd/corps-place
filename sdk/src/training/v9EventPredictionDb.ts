@@ -188,6 +188,15 @@ export async function ensureEventPredictionTables(db: Client) {
   await db.execute(
     'CREATE INDEX IF NOT EXISTS idx_model_event_predictions_event ON model_event_prediction_runs(event_slug, predicted_at)'
   );
+  // Covering index for the "prediction as of <day>" snapshot join in
+  // buildCorpsSeasonSnapshots: it range-scans predicted_at within a season and
+  // groups by event_slug. Without it that theta-join degraded to ~17.6s PER CORPS
+  // (× ~125 corps ≈ 37 min for the read-model corps section) as runs accumulated
+  // through the season; with it the same query is ~0.02s (see EXPLAIN: uses this
+  // index for the predicted_at range instead of scanning all season runs per day).
+  await db.execute(
+    'CREATE INDEX IF NOT EXISTS idx_runs_season_predicted ON model_event_prediction_runs(season, predicted_at, event_slug)'
+  );
   await db.execute(
     'CREATE INDEX IF NOT EXISTS idx_model_event_prediction_rows_event ON model_event_prediction_rows(event_slug, competition_slug)'
   );

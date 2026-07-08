@@ -16,6 +16,20 @@
 # partial emit does NOT publish; use a full emit to go live).
 set -euo pipefail
 
+# Serialize emits. The nightly-predictions cron and the every-5-min score-ingest
+# cron both call this script; a full emit's corps section takes ~3 min, so an
+# ingest emit landing mid-nightly used to race the shared build temp + the A/B
+# slot copy → SQLITE_READONLY_DBMOVED and a failed/partial publish. flock makes a
+# second emit WAIT for the first (up to 15 min) instead of racing, by re-exec'ing
+# this script under the lock. Resolve $0 to an ABSOLUTE path first — the re-exec
+# must not depend on cwd (callers invoke us with a relative path). Degrades to
+# no-lock if flock is unavailable.
+_SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+_LOCK="/tmp/read-model-emit.lock"
+if [ "${_RM_EMIT_LOCKED:-}" != "1" ] && command -v flock >/dev/null 2>&1; then
+  exec env _RM_EMIT_LOCKED=1 flock --timeout 900 "$_LOCK" bash "$_SELF" "$@"
+fi
+
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$repo_root/sdk"
 

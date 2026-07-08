@@ -182,11 +182,13 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
       ],
     });
   },
-  // Corps detail is static read-model data (per-emit; the client hard-reloads on a
-  // new deploy). Keep it fresh for the session so revisiting a corps — or paging
-  // between its season tabs — is instant from the router cache rather than
-  // re-running five shard loads + getShowDetail every minute.
-  staleTime: Infinity,
+  // Corps detail is read-model data that changes on each emit (nightly predictions
+  // + every-5-min score ingest). A short staleTime keeps season tab / revisit nav
+  // instant from the router cache while still letting a same-session visitor pick
+  // up fresh predictions & actuals (was Infinity, which pinned the whole session to
+  // whatever state existed on first view — mid-season score updates never appeared).
+  // gcTime stays long so navigating away and back is still a cache hit.
+  staleTime: 5 * 60 * 1000,
   gcTime: Infinity,
   component: CorpsDetailPage,
 });

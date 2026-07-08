@@ -32,6 +32,11 @@ export type V9PredictionFeatureInput = {
   corpsKey: string;
   division: string;
   targetDate: string;
+  // Knowledge horizon: only data with competition_date < knowledgeDate is used for
+  // template selection and same-season history. Defaults to targetDate (predict with
+  // all data up to the event). Set it to a PAST date to reconstruct "prediction as of
+  // <date>" faithfully (frozen knowledge) for the scrubber history.
+  knowledgeDate?: string;
   percentThrough: number;
   season?: string;
   seedRank?: number;
@@ -81,13 +86,16 @@ export const totalFromV9Captions = (captions: Record<V9Caption, number>) =>
 
 export async function loadV9TemplateRow(
   db: Client,
-  input: Pick<V9PredictionFeatureInput, 'corpsKey' | 'division' | 'templateSeason' | 'targetDate'>
+  input: Pick<
+    V9PredictionFeatureInput,
+    'corpsKey' | 'division' | 'templateSeason' | 'targetDate' | 'knowledgeDate'
+  >
 ) {
   const templateSeasonClause = input.templateSeason ? 'AND season = ?' : '';
   const dateClause = input.templateSeason ? '' : 'AND competition_date < ?';
   const args = input.templateSeason
     ? [input.corpsKey, input.division, input.templateSeason]
-    : [input.corpsKey, input.division, input.targetDate];
+    : [input.corpsKey, input.division, input.knowledgeDate ?? input.targetDate];
 
   const result = await db.execute({
     sql: `
@@ -325,6 +333,72 @@ const buildSyntheticStatic = (input: V9PredictionFeatureInput, baseline: V9Basel
   return staticFeatures;
 };
 
+// The cold-start block (V9_COLD_START_STATIC_OFFSET .. +9) describes the TARGET show's
+// season context (debut?, same-season history, days/percent-through, prior-season
+// finish). The builder computes it per-target. When inference templates off a DIFFERENT
+// season — e.g. a season opener with no same-season row falls back to last year's finals
+// — the template's cold-start leaks that season's context, most damagingly
+// percentThrough=1.0 (finals) into an early-season forecast, biasing predictions high
+// (2026-06-27 barnum: 7th Regiment 64.6 predicted vs 47.25 actual). Recompute it for the
+// target so the model sees the correct "as-of-target" context. Mirrors the builder's
+// cold-start section (see buildSequencesV9).
+async function computeColdStartBlock(
+  db: Client,
+  input: V9PredictionFeatureInput,
+  priorSeasonRank: number | undefined
+): Promise<number[]> {
+  const season = String(input.season ?? input.targetDate.slice(0, 4));
+  const prevSeason = String(Number(season) - 1);
+  const target = input.targetDate;
+  // Same-season history is known only up to the knowledge horizon (defaults to the
+  // event date); the day-diffs below are still measured to the forecast target.
+  const horizon = input.knowledgeDate ?? input.targetDate;
+  const days = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000);
+  const nScore = (s: number) => (s - 70) / 30;
+  const nRank = (r: number) => Math.max(1, Math.min(25, Math.round(r))) / 25;
+  const nDays = (d: number) => Math.min(Math.max(d, 0), 120) / 120;
+  const nRecent = (d: number) => Math.min(Math.max(d, 0), 14) / 14;
+  const nOff = (d: number) => Math.min(Math.max(d, 0), 365) / 365;
+
+  const ss = await db.execute({
+    sql: `SELECT competition_date AS d FROM corps_competition_results
+          WHERE corps_key = ? AND season = ? AND competition_date < ? ORDER BY competition_date`,
+    args: [input.corpsKey, season, horizon],
+  });
+  const pastDates = ss.rows.map((r) => String(r.d));
+  const pastCount = pastDates.length;
+  const lastSame = pastCount ? pastDates[pastCount - 1]! : undefined;
+
+  const fs = await db.execute({
+    sql: `SELECT MIN(competition_date) AS d FROM corps_competition_results
+          WHERE season = ? AND competition_date < ?`,
+    args: [season, horizon],
+  });
+  const firstScored = fs.rows[0]?.d ? String(fs.rows[0].d) : undefined;
+
+  const ps = await db.execute({
+    sql: `SELECT MAX(total_score) AS t, MAX(competition_date) AS d
+          FROM corps_competition_results WHERE corps_key = ? AND season = ?`,
+    args: [input.corpsKey, prevSeason],
+  });
+  const prevTotal = ps.rows[0]?.t != null ? Number(ps.rows[0].t) : undefined;
+  const prevLast = ps.rows[0]?.d ? String(ps.rows[0].d) : undefined;
+  const lastAnyScored = lastSame ?? prevLast;
+
+  return [
+    pastCount === 0 ? 1 : 0, // isSeasonDebut
+    Math.min(pastCount, 40) / 40, // sameSeasonHistoryCount
+    lastSame ? nRecent(days(lastSame, target)) : 1, // daysSinceLastSameSeasonShow
+    lastAnyScored ? nOff(days(lastAnyScored, target)) : 1, // daysSinceLastScoredAnySeason
+    prevTotal != null ? nScore(prevTotal) : nScore(70), // lastSeasonFinalScore
+    nRank(priorSeasonRank ?? 12), // lastSeasonFinalRank
+    firstScored && firstScored === target ? 1 : 0, // isFirstScoredEventOfSeason
+    firstScored ? Math.min(Math.floor(days(firstScored, target) / 7), 12) / 12 : 0, // eventWeekIndex
+    firstScored ? nDays(days(firstScored, target)) : 0, // targetDayOfSeason
+    Math.max(0, Math.min(1, (input.percentThrough ?? 50) / 100)), // percentThrough
+  ];
+}
+
 export async function buildV9PredictionFeatures(
   db: Client,
   input: V9PredictionFeatureInput
@@ -359,6 +433,17 @@ export async function buildV9PredictionFeatures(
     if (targetIdx <= V9_FEATURE_INDICES.captionFingerprintEnd) {
       rawStatic[targetIdx] = fingerprint.features[idx] ?? 0;
     }
+  }
+  // ALWAYS recompute the cold-start block for the TARGET. The template's block reflects
+  // the template show's season context — percentThrough, shows-so-far, days-since-start,
+  // event-week — which is stale for the event we're forecasting (a same-season template
+  // is the corps' LAST show, so e.g. percentThrough/178 would read the last show's ~2%
+  // instead of the target's 19%). All 10 features are known for the target, and training
+  // stored each row's block for ITS OWN show, so this matches the training distribution
+  // and stays consistent with the curve baseline (also rebuilt at the target percent).
+  const coldStart = await computeColdStartBlock(db, input, priorSeasonRank);
+  for (let i = 0; i < coldStart.length; i++) {
+    rawStatic[V9_COLD_START_STATIC_OFFSET + i] = coldStart[i]!;
   }
   const captionAwareBaselineCaptions = { ...baseline.captions };
   if (input.mode === 'preseason_forecast' && fingerprint.confidence > 0) {

@@ -69,6 +69,48 @@ export const getBrand = (request: Request): Brand => {
   return 'corps';
 };
 
+// Content routes that belong exclusively to the CORPS brand (drumcorps.app).
+// Anything under one of these prefixes served on the jobs host is off-brand and
+// should canonicalize/redirect to drumcorps.app. Legal pages count too — the
+// jobs brand has its own /jobs/privacy + /jobs/terms.
+const CORPS_ROUTE_PREFIXES = [
+  '/corps',
+  '/events',
+  '/fantasy',
+  '/judges',
+  '/merch',
+  '/notify',
+  '/predict',
+  '/rankings',
+  '/scores',
+  '/shows',
+  '/shop',
+  '/staff',
+  '/vs',
+  '/privacy-policy',
+  '/terms-of-service',
+];
+
+/**
+ * Which brand a given route path *belongs to*, independent of the host serving
+ * it. Corps content → 'corps'; the job board (`/jobs…`) → 'jobs'; everything
+ * else (the `/` landing, `/admin`, `/dev`, `/contact`, `/faq`, and shared infra)
+ * → null, meaning it legitimately renders under whichever brand's host it's on.
+ *
+ * Used to (a) redirect off-brand page loads to the owning domain and (b) emit a
+ * content-correct <link rel="canonical"> so the two hosts never index each
+ * other's pages. Server routes (/api, /sitemap.xml, /robots.txt, assets) never
+ * reach this — they aren't page routes.
+ */
+export const routeBrand = (pathname: string): Brand | null => {
+  const p = (pathname || '/').toLowerCase();
+  if (p === '/jobs' || p.startsWith('/jobs/')) return 'jobs';
+  for (const prefix of CORPS_ROUTE_PREFIXES) {
+    if (p === prefix || p.startsWith(`${prefix}/`)) return 'corps';
+  }
+  return null;
+};
+
 export const readBrand = createIsomorphicFn()
   .server(() =>
     getBrand(

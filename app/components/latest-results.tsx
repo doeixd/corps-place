@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
 import { ClassBadge } from '@/components/class-badge';
+import { CorpsNameCell } from '@/components/corps-name-cell';
 import { formatEventDate, formatScore } from '@/lib/format';
 import { yearOf } from '@/lib/date';
 import { medalClass } from '@/lib/rank';
@@ -51,7 +52,13 @@ export function LatestResultsPanel({ results }: { results: LatestResults | null 
                     >
                       {p.rank ?? '–'}
                     </span>
-                    <span className="flex-1 truncate font-medium">{p.corps}</span>
+                    <CorpsNameCell
+                      name={p.corps}
+                      slug={null}
+                      corpsKey={p.corpsKey}
+                      logoClassName="size-4 sm:size-4"
+                      className="min-w-0 flex-1 font-medium"
+                    />
                     <Show when={p.division}>{(div) => <ClassBadge division={div} noLink />}</Show>
                     <span className="w-16 shrink-0 text-right tabular-nums">
                       {p.total != null ? formatScore(p.total) : '—'}
