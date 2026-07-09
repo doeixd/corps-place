@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { safeHref } from '@/lib/contrib/url-safe';
 
 /**
  * Read-only renderer for the free-form Lexical document (M4, invariant I-14).
@@ -23,6 +24,8 @@ interface LexNode {
   text?: string;
   format?: number;
   tag?: string;
+  listType?: string;
+  url?: string;
   citationId?: string;
 }
 
@@ -106,6 +109,41 @@ function renderNode(node: LexNode, key: string, numbers: Record<string, number>)
           {renderChildren(node, numbers)}
         </blockquote>
       );
+    case 'list': {
+      const ordered = node.listType === 'number' || node.tag === 'ol';
+      const Tag = ordered ? 'ol' : 'ul';
+      return (
+        <Tag
+          key={key}
+          className={`mb-3 pl-5 ${ordered ? 'list-decimal' : 'list-disc'}`}
+        >
+          {renderChildren(node, numbers)}
+        </Tag>
+      );
+    }
+    case 'listitem':
+      return (
+        <li key={key} className="mb-1">
+          {renderChildren(node, numbers)}
+        </li>
+      );
+    case 'link':
+    case 'autolink': {
+      const href = safeHref(node.url);
+      // Unsafe/unknown href → render the link's text, unlinked (never drop content).
+      if (!href) return <span key={key}>{renderChildren(node, numbers)}</span>;
+      return (
+        <a
+          key={key}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className="text-primary underline underline-offset-2 hover:text-primary/80"
+        >
+          {renderChildren(node, numbers)}
+        </a>
+      );
+    }
     default:
       return null; // unknown node type → dropped (I-14)
   }

@@ -28,5 +28,17 @@ export default {
     '/read-model/**': {
       headers: { 'cache-control': 'public, max-age=31536000, immutable' },
     },
+    // The hybrid server-fns are pure read-model reads (no auth, no cookies, no
+    // per-user data) — the same deterministic JSON for everyone until the next
+    // emit. Without a Cache-Control they refetch from origin on every navigation
+    // in every session (measured ~900ms on throttled mobile vs ~50ms from cache).
+    // 5 min matches the routes' staleTime; SWR covers the expiry gap without
+    // blocking. Errors are stripped to no-store by the no-cache-errors plugin
+    // (prefix is in GUARDED_PREFIXES). NOTE: Cloudflare only honors this at the
+    // edge with a Cache Rule for these paths ("respect origin") — extensionless
+    // URLs aren't edge-cached by default; browser caching works regardless.
+    '/_serverFn/app_lib_server-fns_hybrid_ts--**': {
+      headers: { 'cache-control': 'public, max-age=300, stale-while-revalidate=1800' },
+    },
   },
 };

@@ -11,6 +11,7 @@ import { EventFullRecap, type RecapCorpsRef } from '@/components/scores/event-fu
 import { StatusCard } from '@/components/status-card';
 import { ScoreNotifyButton } from '@/components/score-notify-button';
 import { seoHead, breadcrumbLd, SITE_URL } from '@/lib/seo';
+import { buildEventJsonLd } from '@/lib/event-jsonld';
 import { formatEventDate } from '@/lib/format';
 
 const yearOf = (slug: string) => slug.match(/^(\d{4})/)?.[1] ?? '';
@@ -98,18 +99,17 @@ export const Route = createFileRoute('/scores/$slug')({
       : `Results for ${name} haven't been posted yet — scores and the full recap will appear here.`;
 
     const sportsEvent = hasScores
-      ? {
-          '@context': 'https://schema.org',
-          '@type': 'SportsEvent',
+      ? buildEventJsonLd(event, {
           name: `${name}${year ? ` ${year}` : ''}`,
-          sport: 'Drum and Bugle Corps',
-          ...(event.start_date ? { startDate: event.start_date } : {}),
-          ...(loc ? { location: { '@type': 'Place', name: loc } } : {}),
+          description,
           url: `${SITE_URL}/scores/${slug}`,
-          competitor: [...corpsList]
+          corps: [...corpsList]
             .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
-            .map((c) => ({ '@type': 'SportsTeam', name: c.corps })),
-        }
+            .map((c) => c.corps)
+            .filter((n): n is string => Boolean(n)),
+          image: `${SITE_URL}/api/og/score/${slug}`,
+          scored: true,
+        })
       : null;
 
     return seoHead({

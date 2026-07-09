@@ -127,7 +127,10 @@ import {
 // v20: + rm_event_prediction_snapshots — per-event "forecast as of ___" recap history
 //      (one row per snapshot day; recap_json), for the prediction-page date scrubber
 //      (FORECAST_AS_OF_PREDICTION_PAGE_PLAN).
-const SCHEMA_VERSION = 20;
+// v21: rm_corps gains corps_photo (cover/hero URL) so /corps can background-preload
+//      covers → the corps detail page's hero image renders instantly.
+// v22: rm_events gains buy_tickets so the Event/SportsEvent JSON-LD can emit `offers`.
+const SCHEMA_VERSION = 22;
 
 type Section =
   | "events"
@@ -290,7 +293,7 @@ CREATE TABLE rm_events (
   event_id TEXT PRIMARY KEY, slug TEXT, season TEXT, name TEXT, event_name TEXT,
   start_date TEXT, start_time TEXT, web_start_time TEXT, edt_start_time TEXT, timezone TEXT,
   location_city TEXT, location_state TEXT, venue_name TEXT, venue_address TEXT,
-  event_image TEXT, event_image_thumb TEXT, competition_slug TEXT,
+  event_image TEXT, event_image_thumb TEXT, buy_tickets TEXT, competition_slug TEXT,
   scores_released INTEGER, recap_released INTEGER, lineup_entries INTEGER,
   all_times_present INTEGER, participant_entries INTEGER, schedule_entries INTEGER,
   judge_assignments INTEGER, prediction_runs INTEGER, latest_prediction_at TEXT,
@@ -324,7 +327,7 @@ CREATE TABLE rm_event_competition_resolution (
 CREATE TABLE rm_corps (
   corps_key TEXT PRIMARY KEY, slug TEXT, name TEXT, division_name TEXT, display_city TEXT,
   corps_logo TEXT, corps_logo_dark INTEGER, corps_logo_dark_url TEXT,
-  color_primary TEXT, color_secondary TEXT, color_source TEXT,
+  color_primary TEXT, color_secondary TEXT, color_source TEXT, corps_photo TEXT,
   active INTEGER, performing INTEGER, is_alumni INTEGER,
   aliases_json TEXT, sort_index INTEGER
 );
@@ -684,6 +687,7 @@ export const runEmit = async (args: Args) => {
           s?.venue_address ?? e.venue_address ?? null,
           e.event_image ?? null,
           e.event_image_thumb ?? null,
+          e.buy_tickets ?? null,
           e.competition_slug,
           e.scores_released,
           e.recap_released,
@@ -719,6 +723,7 @@ export const runEmit = async (args: Args) => {
           "venue_address",
           "event_image",
           "event_image_thumb",
+          "buy_tickets",
           "competition_slug",
           "scores_released",
           "recap_released",
@@ -869,6 +874,7 @@ export const runEmit = async (args: Args) => {
         c.color_primary,
         c.color_secondary,
         c.color_source,
+        c.corps_photo,
         c.active,
         c.performing,
         c.is_alumni,
@@ -890,6 +896,7 @@ export const runEmit = async (args: Args) => {
           "color_primary",
           "color_secondary",
           "color_source",
+          "corps_photo",
           "active",
           "performing",
           "is_alumni",

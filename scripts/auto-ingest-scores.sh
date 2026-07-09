@@ -138,30 +138,48 @@ for slug, sd, wst in db.execute(
     except Exception:
         continue
     start_utc = local - datetime.timedelta(hours=off)        # local time -> UTC
-    est_end = start_utc + datetime.timedelta(hours=3.5)
-    # Poll from 30 min before est end to 12h after. Extended from 6h so late-
-    # posting divisions (DCI posts Open Class and World Class results at different
-    # times) are still caught overnight while the completeness check below keeps
-    # re-scraping.
-    if est_end - datetime.timedelta(minutes=30) <= now <= est_end + datetime.timedelta(hours=12):
-        # Completeness gate (fixes partial ingestion). The event used to drop out
-        # of the window as soon as ANY score existed — so when Open Class posted
-        # first, the later World Class scores never triggered a re-scrape and the
-        # site showed a phantom field (e.g. 2026-dci-west: 5 Open Class ingested,
-        # 5 World Class stranded, predictions looked wildly wrong).
-        #
-        # Now: re-scrape until the COMPETITIVE field is complete. Expected = the
-        # announced performing lineup minus SoundSport (DCI's non-ranked division,
-        # which reliably never scores) and exhibition/non-corps. Scored = distinct
-        # corps with a score (resolving the competition slug the same 3 ways).
-        # When no lineup is known (expected == 0) fall back to "any score exists"
-        # so unknown-lineup events still get scraped once.
-        expected = db.execute(
-            "SELECT COUNT(DISTINCT corps_key) FROM classified_event_lineup"
-            " WHERE event_slug=? AND effective_is_non_performance=0 AND is_non_corps=0"
-            "   AND COALESCE(is_exhibition,0)=0 AND corps_key IS NOT NULL AND corps_key!=''"
-            "   AND COALESCE(division_name,'') NOT LIKE '%SoundSport%'",
-            (slug,)).fetchone()[0]
+    # Completeness gate (fixes partial ingestion). The event used to drop out of
+    # the window as soon as ANY score existed — so when Open Class posted first,
+    # the later World Class scores never triggered a re-scrape and the site showed
+    # a phantom field (e.g. 2026-dci-west: 5 Open + 5 World stranded). We re-scrape
+    # until the COMPETITIVE field is complete. Expected = the announced performing
+    # lineup minus SoundSport (DCI's non-ranked division, which reliably never
+    # scores) and exhibition/non-corps.
+    expected = db.execute(
+        "SELECT COUNT(DISTINCT corps_key) FROM classified_event_lineup"
+        " WHERE event_slug=? AND effective_is_non_performance=0 AND is_non_corps=0"
+        "   AND COALESCE(is_exhibition,0)=0 AND corps_key IS NOT NULL AND corps_key!=''"
+        "   AND COALESCE(division_name,'') NOT LIKE '%SoundSport%'",
+        (slug,)).fetchone()[0]
+    # When do scores actually post? Use the PUBLISHED SCHEDULE we've already
+    # ingested, not a flat start+3.5h guess. Each lineup row carries a local clock
+    # time (last corps, encore, and usually a literal "Scores Announced" row); the
+    # LATEST of them ≈ when results go up. A flat estimate opened the window up to
+    # an hour after a small regional's scores were already live. Fall back to a
+    # field-size estimate (~13 min/corps + 40, clamped 1–4h) when no times exist.
+    sched = []
+    for (t,) in db.execute(
+        "SELECT time FROM classified_event_lineup WHERE event_slug=? AND time IS NOT NULL AND time!=''",
+        (slug,)):
+        tm = re.match(r'\s*(\d{1,2}):(\d{2})\s*([AaPp][Mm])', t or '')
+        if not tm:
+            continue
+        th, tmin, tap = int(tm.group(1)), int(tm.group(2)), tm.group(3).upper()
+        if tap == 'PM' and th != 12: th += 12
+        if tap == 'AM' and th == 12: th = 0
+        cand = local.replace(hour=th, minute=tmin)          # event date @ this row's time
+        # An AM row for an evening show is past midnight → next day. (A pre-show PM
+        # row like "Gates Open 6:00 PM" stays same-day — don't bump it.)
+        if tap == 'AM' and hh >= 12: cand += datetime.timedelta(days=1)
+        sched.append(cand)
+    if sched:
+        est_end = max(sched) - datetime.timedelta(hours=off)  # last scheduled local -> UTC
+        lead = datetime.timedelta(minutes=15)                 # open just before scores post
+    else:
+        dur_min = min(max(expected * 13 + 40, 60), 240) if expected > 0 else 210
+        est_end = start_utc + datetime.timedelta(minutes=dur_min)
+        lead = datetime.timedelta(minutes=45)
+    if est_end - lead <= now <= est_end + datetime.timedelta(hours=12):
         scored = db.execute(
             "SELECT COUNT(DISTINCT corps_key) FROM ("
             " SELECT corps_key FROM corps_scores WHERE competition_slug=?"

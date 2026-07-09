@@ -68,7 +68,10 @@ export function EventFullRecap({
         corpsLookup={corpsLookup}
         classFilters={classFilters}
         onSetClassFilters={setClassFilters}
-        groupByClass={false}
+        // Group recap rows into division sections (World/Open/…), each with its
+        // own recomputed ranks. groupFullCorps no-ops for single-division events,
+        // so those still render as one flat table.
+        groupByClass={true}
         sorts={sorts}
         sortMode={sortMode}
         onCycleSort={(key) => setSorts((s) => cycleSortGeneric(s, key, sortMode))}

@@ -6,6 +6,8 @@ import {
   Home01Icon,
   Calendar01Icon,
   UserMultipleIcon,
+  Analytics01Icon,
+  LicenseIcon,
   JusticeScale01Icon,
   GiftIcon,
   RankingIcon,
@@ -21,10 +23,10 @@ import { useBrand } from '@/lib/brand-context';
 const CORPS_NAV_ITEMS = [
   { to: '/', label: 'Home', icon: Home01Icon, exact: true },
   { to: '/events', label: 'Events', icon: Calendar01Icon, exact: false },
-  // /scores is intentionally NOT in the nav — it's an SEO/results surface
-  // reachable from the home Explore grid + internal links, not a primary tab.
+  { to: '/scores', label: 'Scores', icon: LicenseIcon, exact: false },
   { to: '/corps', label: 'Corps', icon: UserMultipleIcon, exact: false },
-  { to: '/judges', label: 'Judges', icon: JusticeScale01Icon, exact: false },
+  { to: '/rankings', label: 'Rankings', icon: Analytics01Icon, exact: false },
+  { to: '/vs', label: 'VS', icon: JusticeScale01Icon, exact: false },
   { to: '/shop', label: 'Shop', icon: GiftIcon, exact: false },
   // Fantasy DCI — only when the feature flag is on (plan §0.5 #9).
   ...(FANTASY_ENABLED
@@ -86,6 +88,11 @@ export function SiteNav() {
   // localStorage-backed bookmark count, SSR-safe (0 on the server, hydrates on mount).
   const bookmarkCount = useBookmarks().length;
   const countFor = (to: string) => (to === '/shop' ? bookmarkCount : 0);
+
+  // No manual prewarming of the nav's top-level pages: the router already preloads
+  // any nav link on hover/touch-intent (`defaultPreload: 'intent'`), so eagerly
+  // idle-warming Rankings/Scores/VS on every page was redundant speculative work
+  // that competed with the current page's load on mobile.
 
   return (
     <>

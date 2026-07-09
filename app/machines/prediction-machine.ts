@@ -82,6 +82,9 @@ export interface PredictionContext {
   // Actual scored recap (real scores), seeded from the route loader. `null` when
   // no scores exist yet (today's normal 2026 case) → only the Prediction view.
   scoredRecap: RecapRow[] | null;
+  // True when today IS the show date: default to the Scores view even before
+  // scores post, since that's what people are here for on show day.
+  isShowDay: boolean;
   // Sort list for the Diff view, parallel to `sorts` (which keys Scores +
   // Prediction). Shared columns mirror direction between the two lists.
   diffSorts: SortEntry[];
@@ -171,6 +174,14 @@ const multiClass = (recap: RecapRow[]): boolean => {
   return seen.size > 1;
 };
 
+// Default grouping decision: group by class when EITHER the forecast base or the
+// actual scored recap spans >1 division. The scored recap matters because
+// predictions exclude untrained divisions (All-Age/SoundSport), so a World-Class-
+// only prediction base reads as single-class even when the real results (shown in
+// the Scores view) span two divisions — that was leaving 2-division shows ungrouped.
+const defaultGroupByClass = (base: RecapRow[], scored: RecapRow[] | null): boolean =>
+  multiClass(base) || (scored != null && multiClass(scored));
+
 // Re-base the scenario onto a new forecast base — used when the "forecast as of"
 // date swaps `baseRecap` (or restores it to the latest). Mirrors
 // seedScenarioFromPrediction: a live seed re-rolls against the new base so a
@@ -185,7 +196,9 @@ const rebaseScenario = (context: PredictionContext, base: RecapRow[]) => {
       ? rollScenario(b, context.window, createRng(context.seed!))
       : b.map((row) => ({ ...row })),
     scenarioCount: hasSeed ? Math.max(context.scenarioCount, 1) : 0,
-    groupByClass: context.groupTouched ? context.groupByClass : multiClass(b),
+    groupByClass: context.groupTouched
+      ? context.groupByClass
+      : defaultGroupByClass(b, context.scoredRecap),
   };
 };
 
@@ -210,6 +223,9 @@ export interface PredictionInput {
   view?: PredictionView;
   // Actual scored recap rows, seeded from the route loader's recap data.
   scoredRecap?: RecapRow[] | null;
+  // True when today is the event's show date (route computes it): default to the
+  // Scores view even before scores post.
+  isShowDay?: boolean;
   // Diff basis (from the URL codec) + optionally the previous-show recap when a
   // deep-linked `?diffbase=previous` had the loader prefetch it (Phase 3).
   diffBase?: DiffBase;
@@ -277,7 +293,9 @@ export const predictionMachine = setup({
           : base.map((row) => ({ ...row })),
         scenarioCount: hasSeed ? 1 : 0,
         // Apply the data-driven grouping default unless the user chose explicitly.
-        groupByClass: context.groupTouched ? context.groupByClass : multiClass(base),
+        groupByClass: context.groupTouched
+          ? context.groupByClass
+          : defaultGroupByClass(base, context.scoredRecap),
         // A freshly loaded run IS the latest forecast — leave time-travel.
         asOf: null,
       };
@@ -432,9 +450,11 @@ export const predictionMachine = setup({
       error: null,
       ...initialScenario,
       // Tri-modal view. Explicit URL choice wins; otherwise the dynamic default
-      // shows real data first (`scores` when scored data exists, else `prediction`).
-      view: input?.view ?? (scoredRecap ? 'scores' : 'prediction'),
+      // shows real data first: the Scores view when scored data exists OR it's the
+      // show date (people come for scores on show day), else Prediction.
+      view: input?.view ?? (scoredRecap || input?.isShowDay ? 'scores' : 'prediction'),
       scoredRecap,
+      isShowDay: input?.isShowDay ?? false,
       diffSorts: input?.diffSorts ?? initialScenario.diffSorts,
       diffBase: input?.diffBase ?? 'prediction',
       previousRecap: input?.previousRecap ?? null,
@@ -453,7 +473,7 @@ export const predictionMachine = setup({
       // Grouping: an explicit URL choice wins; otherwise default from the data
       // (grouped when the recap spans >1 class). `groupTouched` records whether
       // the value is explicit so it's only persisted to the URL when it is.
-      groupByClass: input?.groupByClass ?? multiClass(base),
+      groupByClass: input?.groupByClass ?? defaultGroupByClass(base, scoredRecap),
       groupTouched: input?.groupByClass !== undefined,
       seed,
       // Restore the roll count from the URL (input.scenarioCount) when present;
@@ -775,7 +795,10 @@ export const predictionSearchCodec: SearchCodec<PredictionContext, PredictionSea
   encode: (ctx) => ({
     // Omit when it equals the dynamic default (`scores` if real scored data
     // exists, else `prediction`), keeping a bare prediction link clean.
-    view: ctx.view !== (ctx.scoredRecap ? 'scores' : 'prediction') ? ctx.view : undefined,
+    view:
+      ctx.view !== (ctx.scoredRecap || ctx.isShowDay ? 'scores' : 'prediction')
+        ? ctx.view
+        : undefined,
     seed: ctx.seed ?? undefined,
     win: ctx.seed || ctx.window !== '0.8' ? ctx.window : undefined,
     ranges: ctx.showRanges ? true : undefined,

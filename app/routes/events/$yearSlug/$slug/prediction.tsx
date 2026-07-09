@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
+import { buildEventJsonLd } from '@/lib/event-jsonld';
 import { useMachine } from '@xstate/react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Show, For } from 'jotai-solid-api';
@@ -378,40 +379,64 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
     if (!e) return {};
     const ename = e.event_name ?? e.name;
     const loc = [e.location_city, e.location_state].filter(Boolean).join(', ');
-    const corpsCount = d.corps?.length ?? 0;
-    const place =
-      e.venue_name || loc
-        ? {
-            location: {
-              '@type': 'Place',
-              ...(e.venue_name ? { name: e.venue_name } : {}),
-              address: [e.venue_address, loc].filter(Boolean).join(', ') || undefined,
-            },
-          }
-        : {};
+    const url = `${SITE_URL}/events/${params.yearSlug}/${params.slug}/prediction`;
+    const path = `/events/${params.yearSlug}/${params.slug}/prediction`;
+
+    // Once scores are released, upgrade the page's SEO to a results page: the
+    // scores-podium OG image (so a share shows the placements, not the site card)
+    // and a SportsEvent with the ranked corps as competitors. We deliberately do
+    // NOT emit dateModified: there's no honest per-event "scores modified"
+    // timestamp in the read-model (the show date is a guess, generated_at is the
+    // prediction time and churns nightly, built_at is site-wide) — a fabricated
+    // one would falsely signal freshness. Google picks up the real change from the
+    // scores appearing in the HTML on re-crawl.
+    const ranked = ((d.recap?.scores ?? []) as Array<{ corps?: string; rank?: number }>)
+      .filter((s) => s.corps)
+      .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
+    const hasScores = ranked.length > 0;
+    const winner = ranked[0]?.corps;
+    const corpsCount = hasScores ? ranked.length : (d.corps?.length ?? 0);
+
+    const title = hasScores
+      ? `${ename} ${params.yearSlug} — Scores, Recap & Predictions`
+      : `${ename} ${params.yearSlug} — Schedule, Scores & Predictions`;
+    const description = clampDescription(
+      null,
+      hasScores
+        ? `Final scores and the caption-by-caption recap from ${ename} (${params.yearSlug})` +
+            `${loc ? ` in ${loc}` : ''}.${winner ? ` ${winner} placed first.` : ''} ` +
+            'Plus AI score predictions on DrumCorps.app.'
+        : `${ename} (${params.yearSlug})${loc ? ` in ${loc}` : ''}` +
+            `${corpsCount ? `, ${corpsCount} corps` : ''} — schedule, lineup, scores and AI ` +
+            'score predictions on DrumCorps.app.'
+    );
+
+    const corpsNames = hasScores
+      ? ranked.map((c) => c.corps as string)
+      : ((d.corps ?? []) as Array<{ corps?: string; name?: string }>)
+          .map((c) => c.corps ?? c.name)
+          .filter((n): n is string => Boolean(n));
+
+    const eventLd = buildEventJsonLd(e, {
+      name: `${ename} ${params.yearSlug}`,
+      description,
+      url,
+      corps: corpsNames,
+      image: hasScores ? `${SITE_URL}/api/og/score/${params.slug}` : undefined,
+      scored: hasScores,
+    });
+
     return seoHead({
-      title: `${ename} ${params.yearSlug} — Schedule, Scores & Predictions`,
-      description: clampDescription(
-        null,
-        `${ename} (${params.yearSlug})${loc ? ` in ${loc}` : ''}${corpsCount ? `, ${corpsCount} corps` : ''} — schedule, lineup, scores and AI score predictions on DrumCorps.app.`
-      ),
-      path: `/events/${params.yearSlug}/${params.slug}/prediction`,
+      title,
+      description,
+      path,
+      ...(hasScores ? { image: `${SITE_URL}/api/og/score/${params.slug}` } : {}),
       jsonLd: [
-        {
-          '@context': 'https://schema.org',
-          '@type': 'Event',
-          name: `${ename} ${params.yearSlug}`,
-          ...(e.start_date ? { startDate: e.start_date } : {}),
-          url: `${SITE_URL}/events/${params.yearSlug}/${params.slug}/prediction`,
-          ...place,
-        },
+        eventLd,
         breadcrumbLd([
           { name: 'Home', path: '/' },
           { name: 'Events', path: '/events' },
-          {
-            name: `${ename} ${params.yearSlug}`,
-            path: `/events/${params.yearSlug}/${params.slug}/prediction`,
-          },
+          { name: `${ename} ${params.yearSlug}`, path },
         ]),
       ],
     });
@@ -663,6 +688,15 @@ function CurrentPredictionPage({
   // "Back to <event>" instead of the generic section label.
   useRegisterBackName(event?.event_name ?? event?.name ?? eventLabel(slug));
 
+  // Show day = today is the event's date (through the morning after, so an evening
+  // show + late-night scores still count). On show day we default to the Scores
+  // view even before scores post — that's what people are here for that day.
+  const isShowDay = useMemo(() => {
+    if (!event?.start_date) return false;
+    const days = Math.floor((Date.now() - new Date(event.start_date).getTime()) / 86_400_000);
+    return days >= 0 && days <= 1;
+  }, [event?.start_date]);
+
   // Seed the machine from the URL so initial view state matches the search params
   // (no mount-time round trip); useSearchSync keeps them in sync thereafter.
   const [snapshot, send] = useMachine(predictionMachine, {
@@ -673,6 +707,7 @@ function CurrentPredictionPage({
       // Provides both the data and the dynamic default view (scores-first) when
       // the URL omits `view`; the decoded `view` (if present) overrides it.
       scoredRecap,
+      isShowDay,
       // Present only on a deep-linked ?diffbase=previous — seeds the machine so
       // the `previous` region starts `ready` (no client fetch, SSR renders rows).
       previousRecap: seededPreviousRecap,

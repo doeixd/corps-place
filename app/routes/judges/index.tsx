@@ -1,11 +1,12 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
+import { useEffect, useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import { Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
 import { getJudgeDirectory } from '@/lib/server-fns/hybrid';
 import { judgesCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
+import { warmVisibleOnIdle } from '@/lib/warm-routes';
 import type { JudgeSummary } from '@/lib/judge-directory';
 import { cn, searchString } from '@/lib/utils';
 import { availableSeasons, selectJudges } from '@/lib/judge-filtering';
@@ -74,6 +75,16 @@ function JudgesDirectory() {
 function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  // Background warm-up: preload a judge's detail page only once its card scrolls
+  // into view (visible-only; data-grid-key = judge_id, which is the route param).
+  const router = useRouter();
+  useEffect(() => {
+    return warmVisibleOnIdle(router as never, (key) =>
+      key ? { to: '/judges/$judgeId', params: { judgeId: key } } : null
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, judges.length]);
 
   const seasons = availableSeasons(judges);
   const defaultSeason = seasons[0] ?? 'all';

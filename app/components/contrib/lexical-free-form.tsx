@@ -5,11 +5,17 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { ListNode, ListItemNode } from '@lexical/list';
+import { LinkNode, AutoLinkNode } from '@lexical/link';
 import { $getRoot, $insertNodes, type EditorState } from 'lexical';
 import { emptyFreeFormDoc, type FreeFormDoc } from '@/lib/contrib/free-form';
+import { FREE_FORM_THEME } from '@/lib/contrib/lexical-theme';
+import { FREE_FORM_TRANSFORMERS } from '@/lib/contrib/lexical-markdown';
+import { isSafeHref } from '@/lib/contrib/url-safe';
 import { LexicalFormatToolbar } from '@/components/contrib/lexical-format-toolbar';
 import { CitationNode, $createCitationNode } from '@/components/contrib/citation-node';
 import type { CitationOption } from '@/components/contrib/citation-controls';
@@ -48,7 +54,8 @@ export function LexicalFreeForm({
     <LexicalComposer
       initialConfig={{
         namespace: 'free-form-spike',
-        nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, CitationNode],
+        nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, AutoLinkNode, CitationNode],
+        theme: FREE_FORM_THEME,
         onError: (e) => {
           throw e;
         },
@@ -75,6 +82,8 @@ export function LexicalFreeForm({
         </div>
         <HistoryPlugin />
         <ListPlugin />
+        <LinkPlugin validateUrl={isSafeHref} />
+        <MarkdownShortcutPlugin transformers={FREE_FORM_TRANSFORMERS} />
         <OnChangePlugin onChange={handleChange} />
       </div>
     </LexicalComposer>

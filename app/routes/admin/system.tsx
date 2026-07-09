@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { BusyButton } from '@/components/fantasy/busy-button';
+import { showInstallPromptForTest, resetInstallPromptState } from '@/components/install-prompt';
 import { Badge } from '@/components/reui/badge';
 import { useAsyncAction } from '@/lib/use-async-action';
 import { adminSystem, getAnnouncement, setAnnouncement } from '@/lib/server-fns/admin';
@@ -177,6 +178,37 @@ function System({ data }: { data: SystemData }) {
             <BusyButton size="sm" busy={save.busy} onClick={() => void save.run()}>
               Save
             </BusyButton>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold text-text-secondary">
+            Install prompt (testing)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2 text-sm">
+          <p className="text-text-secondary">
+            The Add-to-Home-Screen banner normally shows only on mobile, after 3 pages, once
+            per person. Preview it here (bypasses those gates; on desktop it shows the iOS-style
+            variant), or reset the “already seen” state to test the real trigger.
+          </p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => showInstallPromptForTest()}
+              className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Preview install prompt
+            </button>
+            <button
+              type="button"
+              onClick={() => resetInstallPromptState()}
+              className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-text-secondary transition-colors hover:bg-foreground/5"
+            >
+              Reset “seen” state
+            </button>
           </div>
         </CardContent>
       </Card>

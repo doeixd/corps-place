@@ -1,9 +1,11 @@
-import { useRef, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { useEffect, useRef, useState } from 'react';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { Show } from 'jotai-solid-api';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { corpsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
+import { warmVisibleOnIdle } from '@/lib/warm-routes';
+import { proxiedImage } from '@/lib/media';
 import type { CorpsSummary } from '@/lib/corps-directory';
 import { searchString } from '@/lib/utils';
 import * as CorpsPredicates from '@/predicates/corps';
@@ -87,6 +89,32 @@ function CorpsDirectory() {
 function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  // Background warm-up: preload a corps's detail route (+ hero image) only once its
+  // card scrolls into view — visible-only, so we never bulk-fetch the whole
+  // directory's nested data. The router's `defaultPreload: 'intent'` still preloads
+  // on hover/touch; this makes an in-view card instant even before that fires.
+  // Keyed by corps_key (the card's data-grid-key); resolved to slug + cover image.
+  const router = useRouter();
+  useEffect(() => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const cssWidth = window.innerWidth >= 1024 ? 448 : window.innerWidth;
+    const widths = [384, 480, 640, 768, 896, 1024];
+    const w = widths.find((x) => x >= cssWidth * dpr) ?? 1024;
+    const byKey = new Map(corps.map((c) => [c.corps_key, c]));
+    return warmVisibleOnIdle(router as never, (key) => {
+      const c = byKey.get(key);
+      if (!c?.slug) return null;
+      return {
+        to: '/corps/$slug/{-$season}',
+        params: { slug: c.slug },
+        image:
+          (c.corps_photo ? proxiedImage(c.corps_photo, { width: w, assumeCached: true }) : undefined) ??
+          undefined,
+      };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, corps.length]);
 
   const division = search.cls ?? 'all';
   const searchTerm = search.q ?? '';

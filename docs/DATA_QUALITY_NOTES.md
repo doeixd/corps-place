@@ -341,3 +341,174 @@ and no recap** — showing an empty recap is correct. Don't backfill or "fix" th
 they may also carry odd multi-year slugs (e.g. `2024-2025-super-3-…`) by DCI's own
 branding. A no-score event is only a bug if a **scored** `competition` for the same
 real show exists with no event pointing at it (§1).
+
+---
+
+## 11. `caption_scores` is dirty — it silently poisons the prediction curves
+
+`caption_scores` (one row per corps × subcaption per show) feeds the **V4 reference
+curve** (`sdk/scripts/computeReferenceCurvesV4.ts` → `src/training/referenceCurvesV4.json`)
+and the **V9 feature builder**. The curve is the per-`(rank, %-through, caption)`
+baseline that every in-season prediction anchors to, so a bad row here shows up on
+the site as an impossible caption (e.g. a corps with 19 VP and 10.8 VA). These are
+NOT UI bugs — they are dirty source rows averaged into the baseline.
+
+> **UPDATE (2026-07-09): the curve generator now reads the clean domain view, not
+> raw `caption_scores`** — see §11g. §11a–11c below explain the historical bugs and
+> why they happened (still true of the raw table + the V9 feature builder, which
+> reads raw). The generator's own vulnerability to them is now closed at the source.
+
+### 11a. Caption-name drift → a whole caption silently vanishes (the VA bug, 2026-07)
+
+The DB stores the visual-analysis caption as **`"Visual - Analysis"`** (hyphenated,
+like `"Music - Analysis"`). There are **zero** `"Visual Analysis"` (no-hyphen) rows.
+Any code that maps the no-hyphen spelling matches nothing and **silently drops VA**
+(`if (!slug) continue`). The curve generator's `CAPTION_MAP` had the no-hyphen key,
+so a regeneration would produce a curve with **no VA column at all**; the broken
+`8.8`-VA column that actually shipped was a **stale artifact** carried in by a bulk
+"Restore full project tree" commit (see the V9 memory), never regenerated.
+
+Why only VA was hit: every *other* caption name matched — `"Visual Proficiency"`,
+`"Color Guard"`, and the already-hyphenated `"Music - *"`. VA was the one caption
+whose DB name has a hyphen the map lacked.
+
+Canonical DB caption names (whitelist):
+```
+General Effect 1 · General Effect 2 · Visual Proficiency · Visual - Analysis
+Color Guard · Music - Brass · Music - Analysis · Music - Percussion
+```
+Judge names also leak into `caption_name` (e.g. `"M. Turner"`) — 3 rows.
+
+**Fix / prevention:** map BOTH spellings to `VA` (the V9 subcaption builder already
+does; the curve generator now does too) and **whitelist** caption names so anything
+unknown is skipped. The generator now **aborts** if any mapped caption matches 0
+source rows — a rename can no longer silently drop a caption.
+
+### 11b. Out-of-range caption scores — and why the fix is *exclude*, not *repair*
+
+A real subcaption tops out ~20 (older GE scale reaches ~24). Two out-of-range
+classes exist in `caption_scores`; we investigated repairing them (2026-07-09) and
+concluded **neither is a corrupted value that can be repaired** — one is off-domain,
+the other is genuinely absent. Excluding is correct, not lazy. Details:
+
+**(1) High values (80–99) = off-domain I&E scores, NOT corruption, and they never
+reach the curve.** ~700 rows have a full total (80–99) in a subcaption cell
+(`Music - Brass` up to 99, `Visual Proficiency` 93), concentrated in 2017–2019.
+These are **Individual & Ensemble / individual-performer** rows scored on the ~100
+scale — e.g. `noah-aguillon-troopers` is *Noah Aguillon*, an individual brass
+soloist at a "Performers Showcase"; his `89.0` **is** the correct I&E total. Nothing
+to repair — the value is right for what it is, just off-domain. The generator's
+existing `WHERE cs.division_name = 'World Class'` filter **already excludes all of
+them** — 0 reach the World-Class curve. (The `score <= 25` upper bound below is
+belt-and-suspenders against a future mis-tagged division.)
+
+**(2) Zeros = genuinely MISSING data (DNP / standstill / no-recap), NOT repairable.**
+The only out-of-range rows that actually reach the curve are **565 all-zero panels**
+across **74 World-Class corps-events**: `total_score = 0`, all 8 captions `0`, and
+the matching `subcaption_scores` are `0`/absent too. These are corps that didn't
+receive a scored caption breakdown (exhibition, standstill, DNP, missing recap).
+**0 of 565 are recoverable** from any source (0 have a real total; 0 have matching
+non-zero subcaptions), so "repair" would mean **fabricating** scores — which biases
+the curve worse than dropping the row. Averaged in un-dropped, they drag cells toward
+zero.
+
+**Where repair *would* be valid** — a real World-Class corps in a real show with one
+zeroed caption and 7 clean siblings (recompute the one cell from `subcaption_scores`
+or `total − Σsiblings`) — the entire history has **~1 such row**. Not worth a code
+path.
+
+**Fix / prevention:** the generator filters to `0 < score <= 25` and logs the drop
+count. Read this as *"drop panels with no recorded caption data (zeros) and any
+stray out-of-domain magnitude"* — an **exclusion of non-data**, not a discard of
+signal. If a future audit finds genuinely-repairable rows (clean siblings, real
+total), prefer recomputing from `subcaption_scores` over dropping.
+
+### 11c. Rank range: curves only need ranks 1–25
+
+`v9Baselines.ts` clamps the lookup rank to `[1, 25]` (`Math.max(1, Math.min(25, …))`),
+so any rank-26+ curve cell — including the sparse `"100-*"` "unranked" sentinels —
+is **never read**. Keeping them only bloated the file and tripped sanity checks on
+noise. The generator now emits **only ranks 1–25**.
+
+### 11d. Guards so this can't silently recur
+
+- **Generator self-validation** (`computeReferenceCurvesV4.ts`): before writing it
+  asserts (a) every mapped caption matched >0 source rows, (b) every curve key
+  carries every caption, (c) no caption sits >3 pts **below or above** its sibling
+  mean at the same key (below = a dropped/corrupt column like VA; above = total
+  leakage). It **refuses to write** a bad curve. `CURVE_DB_PATH` / `CURVE_OUT_PATH`
+  are env-overridable for dry-runs.
+- **File-level test** (`sdk/test/referenceCurveIntegrity.test.ts`, run
+  `vp exec tsx test/referenceCurveIntegrity.test.ts` from `sdk/`): validates the
+  **committed** JSON directly (completeness + symmetric sibling anomaly). This is the
+  guard that catches a corrupt artifact that **bypassed the generator** — the exact
+  path the stale VA column took.
+
+### 11e. How to regenerate the curve cleanly
+
+```bash
+cd sdk
+# dry-run to a temp file first and eyeball the "Dropped N …" + "Validation OK" lines
+CURVE_OUT_PATH=/tmp/curve.json vp exec tsx scripts/computeReferenceCurvesV4.ts
+# if clean, write for real, then gate on the integrity test + a backtest
+vp exec tsx scripts/computeReferenceCurvesV4.ts
+vp exec tsx test/referenceCurveIntegrity.test.ts
+vp exec tsx scripts/backtestPredictionModes.ts --cutoffs 2025-07-15,2025-07-30
+```
+The live curve is the fully-clean regen (adopted 2026-07-09) — judge any curve
+change on the **ensemble / target mode**, never `curve` mode alone (a full v4.1
+division-aware swap was rejected for regressing the P2 ensemble +0.155; see the V9
+memory). After a curve change, regenerate the site-wide predictions (§8).
+
+### 11f. Diagnostic queries
+
+```sql
+-- name drift: every caption name + range (spot the totals & judge-name rows)
+SELECT caption_name, COUNT(*), ROUND(MIN(score),1), ROUND(MAX(score),1)
+FROM caption_scores GROUP BY caption_name ORDER BY 2 DESC;
+
+-- out-of-range contamination among known captions
+SELECT caption_name, COUNT(*) FROM caption_scores
+WHERE caption_name IN ('General Effect 1','General Effect 2','Visual Proficiency',
+  'Visual - Analysis','Color Guard','Music - Brass','Music - Analysis','Music - Percussion')
+  AND (score > 20.5 OR score <= 0)
+GROUP BY caption_name ORDER BY 2 DESC;
+
+-- a curve cell where one caption diverges from its siblings (corruption smell)
+-- inspect referenceCurvesV4.json directly; the integrity test automates this.
+```
+
+The emit's `dq_*` guardrails (`dq_invalid_caption_scores`, `dq_zero_scores`,
+`dq_rank_inversions`, `dq_missing_caption_panels`, …) quantify the raw contamination
+and are the right thing to gate on if this is ever tightened further. **Open item:**
+the V9 feature builder reads the same dirty `caption_scores`; a clean rebuild +
+retrain is the natural next step (not yet done as of 2026-07-09).
+
+### 11g. The real fix: generate the curve from the clean domain view
+
+`caption_scores` is the *raw* table. There is a **domain semantic layer** built on
+top of it — SQL views `clean_reference_curve_entries` / `clean_reference_curve_metric_scores`
+(+ `domain_caption_aliases`, `domain_divisions`, `domain_captions`,
+`domain_event_exclusion_patterns`) — that does all the cleaning §11a–11c approximate,
+correctly and structurally:
+
+- **name normalization** via `domain_caption_aliases` (`"Visual - Analysis"` *and*
+  `"Visual Analysis"` *and* `"Brass"`/`"Percussion"` all → their slug) — a table, not
+  a hardcoded map that can drift.
+- **domain filtering** via `domain_divisions.is_model_division` (World/Open only) +
+  `domain_event_exclusion_patterns` — drops the I&E/individual/showcase rows.
+- **range bounds** via `domain_captions.min_score`/`max_score` + `total_score > 0` —
+  drops zeros/DNP and total-leakage.
+- **sum reconciliation**: `ABS(caption_total - total_score) <= 0.05` keeps ONLY rows
+  whose 8 captions actually sum to the total — a real integrity gate.
+- **rank**: `rank_bucket` is the ROW_NUMBER-by-total rank, clamped `[1,25]`.
+
+These are **views**, so they're always fresh (recompute from `caption_scores` on
+read; cover 2013–present). **As of 2026-07-09 `computeReferenceCurvesV4.ts` reads
+`clean_reference_curve_metric_scores`** (World Class, legacy `rank-bucket` keys) —
+`metric_name` is already the slug, so no `CAPTION_MAP`. Backtested strictly better
+than the old raw+filter curve (target, curve, and pairwise-rank all improved). This
+is the design the recovered `doeixd/recovered-ml-212` pipeline used; the view existed
+in prod all along, unused. **Prefer the view for any new curve/feature work** over
+re-deriving cleaning against the raw table — and the deferred V9-builder retrain
+should read the view too.

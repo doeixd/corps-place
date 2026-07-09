@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
+import { BackLink } from '@/components/back-link';
 import { Card, CardContent } from '@/components/ui/card';
 import { seoHead } from '@/lib/seo';
 import { resolveVsSeries, getVsSeasonAvailability, getVsActiveCorps } from '@/lib/server-fns/vs';
@@ -146,6 +147,7 @@ function VsPage() {
 
   return (
     <PageShell className="flex flex-col gap-6">
+      <BackLink to="/" label="Back" />
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-text-primary">VS — Score Comparison</h1>
         <p className="text-sm text-muted-foreground">

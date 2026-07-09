@@ -26,6 +26,7 @@ export type EventDirectoryRow = {
   venue_address: string | null;
   event_image: string | null;
   event_image_thumb: string | null;
+  buy_tickets: string | null;
   competition_slug: string | null;
   scores_released: number;
   recap_released: number;
@@ -405,6 +406,7 @@ export const buildAllEvents = async (
         e.location_state,
         e.event_image,
         e.event_image_thumb,
+        e.buy_tickets,
         COALESCE(NULLIF(e.season, ''), NULLIF(e.year, ''), substr(e.start_date, 1, 4)) AS season
       FROM events e
       ${slugFilter}
@@ -479,6 +481,7 @@ export const buildAllEvents = async (
       eb.location_state,
       eb.event_image,
       eb.event_image_thumb,
+      eb.buy_tickets,
       eb.season,
       cm.competition_slug,
       COALESCE(cm.scores_released, 0) AS scores_released,

@@ -5,6 +5,8 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { ListNode, ListItemNode } from '@lexical/list';
+import { LinkNode, AutoLinkNode } from '@lexical/link';
+import { FREE_FORM_THEME } from '@/lib/contrib/lexical-theme';
 
 const PROSE =
   '[&_h2]:text-base [&_h2]:font-semibold [&_h3]:font-medium [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-3 [&_blockquote]:text-text-secondary';
@@ -48,7 +50,8 @@ export function LexicalView({ doc, plain }: { doc: string; plain: string }) {
       <LexicalComposer
         initialConfig={{
           namespace: 'job-description-view',
-          nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode],
+          nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, AutoLinkNode],
+          theme: FREE_FORM_THEME,
           editable: false,
           editorState: doc,
           onError: (e) => {

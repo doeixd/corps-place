@@ -1,11 +1,14 @@
 import { useState, type ReactNode } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
+import { BackLink } from '@/components/back-link';
+import { Icon } from '@/components/icon';
+import { ArrowDown01Icon } from '@/components/icons/generated';
 import { Card, CardContent } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { FilterChips, type FilterChipItem } from '@/components/filter-chips';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { seoHead } from '@/lib/seo';
+import { seoHead, SITE_URL } from '@/lib/seo';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
 import { RankingsList } from '@/components/rankings/rankings-list';
 import { RankBumpChart } from '@/components/rankings/rank-bump-chart';
@@ -26,7 +29,11 @@ import {
   rankingsCanonicalPath,
 } from '@/lib/rankings/codec';
 
-const DEFAULT_RECENCY = [7, 14, 28];
+// Data-driven from 2022–25 World/Open Jun–Aug inter-show gaps (n=2150): corps
+// compete every 1–2 days (median 2), and ≤3d covers 87% of consecutive-show gaps,
+// ≤5d = p95, ≤8d = p98. So Fresh ≤3 (on the normal cadence), Recent ≤5 (a short
+// break), Stale ≤8 (a real break); beyond that is rare (extended absence / done).
+const DEFAULT_RECENCY = [3, 5, 8];
 const DIVISION_LABELS: Record<string, string> = { world: 'World', open: 'Open', 'all-age': 'All-Age' };
 
 // SEO phrase for the selected divisions — drives the h1/title/description so the
@@ -56,32 +63,58 @@ function RecencySettings({
   recency: number[];
   onChange: (r: number[]) => void;
 }) {
-  const labels = ['Fresh ≤', 'Recent ≤', 'Stale ≤'];
+  // One row per tier; the dot colors + descriptions mirror how rankings-list.tsx
+  // fades each corps by days-since-last-competed (opacity 1 / 0.82 / 0.64 / 0.48).
+  const tiers = [
+    { label: 'Fresh', dot: 'bg-emerald-500', desc: 'full brightness' },
+    { label: 'Recent', dot: 'bg-amber-500', desc: 'lightly faded' },
+    { label: 'Stale', dot: 'bg-orange-500', desc: 'more faded' },
+  ];
   return (
     <Popover>
       <PopoverTrigger className="inline-flex h-7 items-center rounded-[min(var(--radius-md),12px)] border border-input px-2.5 text-[0.8rem] font-medium text-text-secondary transition-colors hover:bg-muted hover:text-foreground">
         Recency settings
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-60 space-y-2 p-3">
-        <p className="text-xs text-muted-foreground">
-          Dim corps that haven&apos;t performed in this many days.
-        </p>
+      <PopoverContent align="end" className="w-72 space-y-3 p-3">
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-foreground">Recency fading</p>
+          <p className="text-xs leading-snug text-muted-foreground">
+            Corps that haven&apos;t competed recently have staler standings, so each is
+            faded by how many days since its last show. Set the day cutoff for each tier:
+          </p>
+        </div>
         {recency.map((v, i) => (
-          <label key={i} className="flex items-center justify-between gap-2 text-sm">
-            <span className="text-text-secondary">{labels[i]}</span>
-            <input
-              type="number"
-              min={1}
-              value={v}
-              onChange={(e) => {
-                const next = [...recency];
-                next[i] = Math.max(1, Number(e.target.value) || 1);
-                onChange([...next].sort((a, b) => a - b));
-              }}
-              className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm outline-none focus:border-primary/60"
-            />
-          </label>
+          <div key={i} className="space-y-0.5">
+            <label className="flex items-center justify-between gap-2 text-sm">
+              <span className="flex items-center gap-2 text-text-secondary">
+                <span className={`size-1.5 shrink-0 rounded-full ${tiers[i]?.dot ?? ''}`} />
+                {tiers[i]?.label ?? ''} ≤
+              </span>
+              <span className="flex items-center gap-1.5">
+                <input
+                  type="number"
+                  min={1}
+                  value={v}
+                  onChange={(e) => {
+                    const next = [...recency];
+                    next[i] = Math.max(1, Number(e.target.value) || 1);
+                    onChange([...next].sort((a, b) => a - b));
+                  }}
+                  className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-sm outline-none focus:border-primary/60"
+                />
+                <span className="text-xs text-muted-foreground">days</span>
+              </span>
+            </label>
+            <p className="pl-3.5 text-[11px] text-muted-foreground">
+              Competed within {v} days → {tiers[i]?.desc ?? ''}.
+            </p>
+          </div>
         ))}
+        <p className="border-t border-border pt-2 text-[11px] leading-snug text-muted-foreground">
+          <span className="mr-1 inline-block size-1.5 rounded-full bg-red-500 align-middle" />
+          Longer than the Stale cutoff → most faded. Fresh corps show with no marker;
+          the others get a colored dot and a “Nd ago” note.
+        </p>
       </PopoverContent>
     </Popover>
   );
@@ -157,7 +190,31 @@ export const Route = createFileRoute('/rankings')({
         `${isTotal ? 'overall' : metricLabel.toLowerCase()} season standings with scores, ` +
         'a rank bump chart, and filters for caption, division, and as-of date.'
       : 'DCI season standings and a rank bump chart — filter by caption, division, and as-of date.';
-    return seoHead({ title, description, path: loaderData?.canonical ?? '/rankings' });
+    const path = loaderData?.canonical ?? '/rankings';
+    // "Updated when": the most recent competition day in this season's rankings is
+    // when the data last changed — emit it as Dataset.dateModified so search engines
+    // see the page's freshness. Falls back to the resolved as-of day.
+    const updated = loaderData?.result?.allDates?.at(-1) ?? loaderData?.result?.asof ?? undefined;
+    return seoHead({
+      title,
+      description,
+      path,
+      jsonLd: updated
+        ? [
+            {
+              '@context': 'https://schema.org',
+              '@type': 'Dataset',
+              name: title,
+              description,
+              url: `${SITE_URL}${path}`,
+              ...(season ? { temporalCoverage: season } : {}),
+              dateModified: updated,
+              isAccessibleForFree: true,
+              creator: { '@type': 'Organization', name: 'DrumCorps.app' },
+            },
+          ]
+        : undefined,
+    });
   },
   // Static read-model data; a moderate window keeps repeat navs fast.
   staleTime: 5 * 60_000,
@@ -225,6 +282,7 @@ function RankingsPage() {
 
   return (
     <PageShell className="flex flex-col gap-5">
+      <BackLink to="/" label="Back" />
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-text-primary">
           {season} {divisionPhrase.title} Drum Corps Rankings
@@ -239,10 +297,20 @@ function RankingsPage() {
         </p>
       </div>
 
-      {/* Controls — single-select chips reuse the site-wide FilterChips; the
+      {/* Controls — collapsed into a compact disclosure so they don't push the
+          rankings down. Single-select chips reuse the site-wide FilterChips; the
           two-option filters are segmented ToggleGroups; divisions is a
           multi-select ToggleGroup. */}
-      <div className="flex flex-col gap-3">
+      <details className="group rounded-lg border border-border">
+        <summary className="flex cursor-pointer select-none list-none items-center justify-between gap-2 px-3 py-2 text-sm font-medium text-text-secondary [&::-webkit-details-marker]:hidden">
+          <span>Filters &amp; options</span>
+          <Icon
+            icon={ArrowDown01Icon}
+            size="sm"
+            className="shrink-0 transition-transform group-open:rotate-180"
+          />
+        </summary>
+        <div className="flex flex-col gap-3 border-t border-border p-3">
         <LabeledField label="Season">
           <FilterChips
             ariaLabel="Season"
@@ -322,8 +390,9 @@ function RankingsPage() {
               set({ recency: r.join(',') === DEFAULT_RECENCY.join(',') ? undefined : r })
             }
           />
+          </div>
         </div>
-      </div>
+      </details>
 
       {/* As-of scrubber: time-travel through the season's competition dates. */}
       <AsofScrubber

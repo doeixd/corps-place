@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { createFileRoute, Link, redirect } from '@tanstack/react-router';
+import type { CorpsSeasonSnapshotRow } from '@/lib/corps-directory';
 import { useMachine } from '@xstate/react';
 import { For, Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
@@ -53,23 +55,25 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
   // server round-trip); SSR and any fallback use the server fns.
   loader: async ({ params }) => {
     const { slug, season } = params;
-    const [corps, seasonScores, appearances, appearanceResults, corpsMerch, seasonSnapshots] =
-      await Promise.all([
-        loadDetailOrServer(`corps/${slug}.json`, () => getCorps({ data: slug })),
-        loadDetailOrServer(`corps-scores/${slug}.json`, () => getCorpsSeasonScores({ data: slug })),
-        loadDetailOrServer(`corps-appearances/${slug}.json`, () =>
-          getCorpsAppearances({ data: slug })
-        ),
-        loadDetailOrServer(`corps-appearance-results/${slug}.json`, () =>
-          getCorpsAppearanceResults({ data: slug })
-        ),
-        loadDetailOrServer<CorpsMerchTeaser | null>(`corps-merch/${slug}.json`, () =>
-          getCorpsMerch({ data: slug })
-        ),
-        // No static shard for the prediction-history matrix — fetch via server fn
-        // (degrades to [] when unavailable). Powers the chart's "as of" slider.
-        getCorpsSeasonSnapshots({ data: slug }),
-      ]);
+    // NOTE: the prediction-history matrix (getCorpsSeasonSnapshots — the chart's
+    // "as of" date slider) is deliberately NOT loaded here. TSR serializes loader
+    // data into the SSR HTML, and that one dataset bloated this document to 651KB
+    // (measured), dominating download + hydration cost on mobile. It's a
+    // below-the-fold interactive extra, so the page fetches it client-side after
+    // mount instead (see the useSeasonSnapshots hook in the component).
+    const [corps, seasonScores, appearances, appearanceResults, corpsMerch] = await Promise.all([
+      loadDetailOrServer(`corps/${slug}.json`, () => getCorps({ data: slug })),
+      loadDetailOrServer(`corps-scores/${slug}.json`, () => getCorpsSeasonScores({ data: slug })),
+      loadDetailOrServer(`corps-appearances/${slug}.json`, () =>
+        getCorpsAppearances({ data: slug })
+      ),
+      loadDetailOrServer(`corps-appearance-results/${slug}.json`, () =>
+        getCorpsAppearanceResults({ data: slug })
+      ),
+      loadDetailOrServer<CorpsMerchTeaser | null>(`corps-merch/${slug}.json`, () =>
+        getCorpsMerch({ data: slug })
+      ),
+    ]);
 
     // `season` is a path-level view filter over the already-loaded appearances —
     // it doesn't change the data fetched above. Canonicalize the URL so there's
@@ -120,7 +124,6 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
     return {
       corps,
       seasonScores,
-      seasonSnapshots,
       appearances,
       appearanceResults,
       corpsMerch,
@@ -195,11 +198,32 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
 
 type SocialLink = { label: string; href: string | null; icon: IconComponent };
 
+// Client-side fetch of the prediction-history matrix (the chart's "as of" date
+// slider). Kept OUT of the route loader on purpose — serialized into the SSR
+// document it ballooned the page to 651KB; loaded here it arrives after first
+// paint, from the SW/HTTP-cached hybrid server-fn, and the chart's `snapshots`
+// prop is optional so the slider simply appears when ready.
+function useSeasonSnapshots(slug: string) {
+  const [snapshots, setSnapshots] = useState<CorpsSeasonSnapshotRow[]>([]);
+  useEffect(() => {
+    let live = true;
+    setSnapshots([]);
+    getCorpsSeasonSnapshots({ data: slug })
+      .then((rows) => {
+        if (live) setSnapshots(rows ?? []);
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [slug]);
+  return snapshots;
+}
+
 function CorpsDetailPage() {
   const {
     corps,
     seasonScores,
-    seasonSnapshots,
     appearances,
     appearanceResults,
     corpsMerch,
@@ -217,6 +241,7 @@ function CorpsDetailPage() {
   // redirected unknown/default-equal seasons, so resolve defensively here and
   // fall back to the default if anything slips through.
   const { slug, season } = Route.useParams();
+  const seasonSnapshots = useSeasonSnapshots(slug);
   const navigate = Route.useNavigate();
   const appearanceSeasons = availableSeasons(appearances);
   const defaultSeason = appearanceSeasons[0] ?? 'all';
