@@ -378,7 +378,8 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
     if (!e) return {};
     const ename = e.event_name ?? e.name;
     const loc = [e.location_city, e.location_state].filter(Boolean).join(', ');
-    const corpsCount = d.corps?.length ?? 0;
+    const url = `${SITE_URL}/events/${params.yearSlug}/${params.slug}/prediction`;
+    const path = `/events/${params.yearSlug}/${params.slug}/prediction`;
     const place =
       e.venue_name || loc
         ? {
@@ -389,29 +390,73 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
             },
           }
         : {};
-    return seoHead({
-      title: `${ename} ${params.yearSlug} — Schedule, Scores & Predictions`,
-      description: clampDescription(
-        null,
-        `${ename} (${params.yearSlug})${loc ? ` in ${loc}` : ''}${corpsCount ? `, ${corpsCount} corps` : ''} — schedule, lineup, scores and AI score predictions on DrumCorps.app.`
-      ),
-      path: `/events/${params.yearSlug}/${params.slug}/prediction`,
-      jsonLd: [
-        {
+
+    // Once scores are released, upgrade the page's SEO to a results page: the
+    // scores-podium OG image (so a share shows the placements, not the site card),
+    // a SportsEvent with the ranked corps as competitors, and a WebPage with
+    // dateModified so search engines pick up that scores just posted.
+    const ranked = ((d.recap?.scores ?? []) as Array<{ corps?: string; rank?: number }>)
+      .filter((s) => s.corps)
+      .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
+    const hasScores = ranked.length > 0;
+    const winner = ranked[0]?.corps;
+    const corpsCount = hasScores ? ranked.length : (d.corps?.length ?? 0);
+
+    const title = hasScores
+      ? `${ename} ${params.yearSlug} — Scores, Recap & Predictions`
+      : `${ename} ${params.yearSlug} — Schedule, Scores & Predictions`;
+    const description = clampDescription(
+      null,
+      hasScores
+        ? `Final scores and the caption-by-caption recap from ${ename} (${params.yearSlug})` +
+            `${loc ? ` in ${loc}` : ''}.${winner ? ` ${winner} placed first.` : ''} ` +
+            'Plus AI score predictions on DrumCorps.app.'
+        : `${ename} (${params.yearSlug})${loc ? ` in ${loc}` : ''}` +
+            `${corpsCount ? `, ${corpsCount} corps` : ''} — schedule, lineup, scores and AI ` +
+            'score predictions on DrumCorps.app.'
+    );
+
+    const eventLd = hasScores
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'SportsEvent',
+          name: `${ename} ${params.yearSlug}`,
+          sport: 'Drum and Bugle Corps',
+          ...(e.start_date ? { startDate: e.start_date } : {}),
+          ...(loc ? { location: { '@type': 'Place', name: loc } } : place),
+          url,
+          competitor: ranked.map((c) => ({ '@type': 'SportsTeam', name: c.corps })),
+        }
+      : {
           '@context': 'https://schema.org',
           '@type': 'Event',
           name: `${ename} ${params.yearSlug}`,
           ...(e.start_date ? { startDate: e.start_date } : {}),
-          url: `${SITE_URL}/events/${params.yearSlug}/${params.slug}/prediction`,
+          url,
           ...place,
-        },
+        };
+
+    return seoHead({
+      title,
+      description,
+      path,
+      ...(hasScores ? { image: `${SITE_URL}/api/og/score/${params.slug}` } : {}),
+      jsonLd: [
+        eventLd,
+        // Freshness hint: scores post on show day, so dateModified = the show date.
+        hasScores && e.start_date
+          ? {
+              '@context': 'https://schema.org',
+              '@type': 'WebPage',
+              url,
+              name: title,
+              dateModified: e.start_date,
+            }
+          : null,
         breadcrumbLd([
           { name: 'Home', path: '/' },
           { name: 'Events', path: '/events' },
-          {
-            name: `${ename} ${params.yearSlug}`,
-            path: `/events/${params.yearSlug}/${params.slug}/prediction`,
-          },
+          { name: `${ename} ${params.yearSlug}`, path },
         ]),
       ],
     });
