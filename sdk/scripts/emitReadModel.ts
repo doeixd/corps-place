@@ -129,7 +129,8 @@ import {
 //      (FORECAST_AS_OF_PREDICTION_PAGE_PLAN).
 // v21: rm_corps gains corps_photo (cover/hero URL) so /corps can background-preload
 //      covers → the corps detail page's hero image renders instantly.
-const SCHEMA_VERSION = 21;
+// v22: rm_events gains buy_tickets so the Event/SportsEvent JSON-LD can emit `offers`.
+const SCHEMA_VERSION = 22;
 
 type Section =
   | "events"
@@ -292,7 +293,7 @@ CREATE TABLE rm_events (
   event_id TEXT PRIMARY KEY, slug TEXT, season TEXT, name TEXT, event_name TEXT,
   start_date TEXT, start_time TEXT, web_start_time TEXT, edt_start_time TEXT, timezone TEXT,
   location_city TEXT, location_state TEXT, venue_name TEXT, venue_address TEXT,
-  event_image TEXT, event_image_thumb TEXT, competition_slug TEXT,
+  event_image TEXT, event_image_thumb TEXT, buy_tickets TEXT, competition_slug TEXT,
   scores_released INTEGER, recap_released INTEGER, lineup_entries INTEGER,
   all_times_present INTEGER, participant_entries INTEGER, schedule_entries INTEGER,
   judge_assignments INTEGER, prediction_runs INTEGER, latest_prediction_at TEXT,
@@ -686,6 +687,7 @@ export const runEmit = async (args: Args) => {
           s?.venue_address ?? e.venue_address ?? null,
           e.event_image ?? null,
           e.event_image_thumb ?? null,
+          e.buy_tickets ?? null,
           e.competition_slug,
           e.scores_released,
           e.recap_released,
@@ -721,6 +723,7 @@ export const runEmit = async (args: Args) => {
           "venue_address",
           "event_image",
           "event_image_thumb",
+          "buy_tickets",
           "competition_slug",
           "scores_released",
           "recap_released",

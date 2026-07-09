@@ -66,6 +66,7 @@ const rmEventRow = (r: any, includeVenue: boolean): EventDirectoryRow => ({
     : { venue_name: null, venue_address: null }),
   event_image: r.event_image,
   event_image_thumb: r.event_image_thumb,
+  buy_tickets: r.buy_tickets ?? null,
   competition_slug: r.competition_slug,
   scores_released: Number(r.scores_released),
   recap_released: Number(r.recap_released),

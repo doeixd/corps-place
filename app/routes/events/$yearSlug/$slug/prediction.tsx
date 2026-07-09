@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { seoHead, breadcrumbLd, clampDescription, SITE_URL } from '@/lib/seo';
+import { buildEventJsonLd } from '@/lib/event-jsonld';
 import { useMachine } from '@xstate/react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Show, For } from 'jotai-solid-api';
@@ -380,16 +381,6 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
     const loc = [e.location_city, e.location_state].filter(Boolean).join(', ');
     const url = `${SITE_URL}/events/${params.yearSlug}/${params.slug}/prediction`;
     const path = `/events/${params.yearSlug}/${params.slug}/prediction`;
-    const place =
-      e.venue_name || loc
-        ? {
-            location: {
-              '@type': 'Place',
-              ...(e.venue_name ? { name: e.venue_name } : {}),
-              address: [e.venue_address, loc].filter(Boolean).join(', ') || undefined,
-            },
-          }
-        : {};
 
     // Once scores are released, upgrade the page's SEO to a results page: the
     // scores-podium OG image (so a share shows the placements, not the site card)
@@ -420,25 +411,20 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
             'score predictions on DrumCorps.app.'
     );
 
-    const eventLd = hasScores
-      ? {
-          '@context': 'https://schema.org',
-          '@type': 'SportsEvent',
-          name: `${ename} ${params.yearSlug}`,
-          sport: 'Drum and Bugle Corps',
-          ...(e.start_date ? { startDate: e.start_date } : {}),
-          ...(loc ? { location: { '@type': 'Place', name: loc } } : place),
-          url,
-          competitor: ranked.map((c) => ({ '@type': 'SportsTeam', name: c.corps })),
-        }
-      : {
-          '@context': 'https://schema.org',
-          '@type': 'Event',
-          name: `${ename} ${params.yearSlug}`,
-          ...(e.start_date ? { startDate: e.start_date } : {}),
-          url,
-          ...place,
-        };
+    const corpsNames = hasScores
+      ? ranked.map((c) => c.corps as string)
+      : ((d.corps ?? []) as Array<{ corps?: string; name?: string }>)
+          .map((c) => c.corps ?? c.name)
+          .filter((n): n is string => Boolean(n));
+
+    const eventLd = buildEventJsonLd(e, {
+      name: `${ename} ${params.yearSlug}`,
+      description,
+      url,
+      corps: corpsNames,
+      image: hasScores ? `${SITE_URL}/api/og/score/${params.slug}` : undefined,
+      scored: hasScores,
+    });
 
     return seoHead({
       title,
