@@ -45,6 +45,14 @@ export const Route = createFileRoute('/scores/')({
   head: ({ loaderData }) => {
     const n = loaderData?.scoredTotal ?? 0;
     const season = CURRENT_SCORES_SEASON;
+    // Honest dateModified: the archive last changed when the most recent show was
+    // scored, so use the latest scored event's date. Advances only when a new show
+    // posts (mirrors the rankings page); omitted when nothing is scored yet.
+    const lastScored = (loaderData?.events ?? [])
+      .filter((e) => e.scores_released && e.start_date)
+      .map((e) => e.start_date.slice(0, 10))
+      .sort()
+      .at(-1);
     return seoHead({
       title: `${season} DCI Drum Corps Scores & Recaps — World Class, Open Class`,
       description:
@@ -64,6 +72,7 @@ export const Route = createFileRoute('/scores/')({
           name: `${season} DCI Drum Corps Scores & Recaps`,
           description: `World Class and Open Class scores and full recaps from the ${season} Drum Corps International season.`,
           url: `${SITE_URL}/scores`,
+          ...(lastScored ? { dateModified: lastScored } : {}),
           isPartOf: { '@type': 'WebSite', name: 'DrumCorps.app', url: SITE_URL },
           about: [
             { '@type': 'Thing', name: 'Drum Corps International' },

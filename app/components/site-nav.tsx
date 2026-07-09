@@ -10,6 +10,7 @@ import {
   UserMultipleIcon,
   Analytics01Icon,
   LicenseIcon,
+  JusticeScale01Icon,
   GiftIcon,
   RankingIcon,
   Briefcase01Icon,
@@ -27,6 +28,7 @@ const CORPS_NAV_ITEMS = [
   { to: '/scores', label: 'Scores', icon: LicenseIcon, exact: false },
   { to: '/corps', label: 'Corps', icon: UserMultipleIcon, exact: false },
   { to: '/rankings', label: 'Rankings', icon: Analytics01Icon, exact: false },
+  { to: '/vs', label: 'VS', icon: JusticeScale01Icon, exact: false },
   { to: '/shop', label: 'Shop', icon: GiftIcon, exact: false },
   // Fantasy DCI — only when the feature flag is on (plan §0.5 #9).
   ...(FANTASY_ENABLED
