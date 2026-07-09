@@ -91,13 +91,18 @@ export function SiteNav() {
   const bookmarkCount = useBookmarks().length;
   const countFor = (to: string) => (to === '/shop' ? bookmarkCount : 0);
 
-  // Prewarm the Rankings page: it's in the nav on every page, so idle-preload its
-  // loader once the nav mounts (same gated helper as the directory warm-ups) —
-  // the first click into Rankings is then instant, not just on hover.
+  // Prewarm the data-heavy top-level pages that live in the nav on every page:
+  // idle-preload their loaders once the nav mounts (same gated helper as the
+  // directory warm-ups) so the first click into any of them is instant, not just
+  // on hover. Rankings/Scores/VS each carry a non-trivial loader.
   const router = useRouter();
   useEffect(() => {
     if (brand !== 'corps') return;
-    return warmRoutesOnIdle(router as never, [{ to: '/rankings', params: {} }]);
+    return warmRoutesOnIdle(router as never, [
+      { to: '/rankings', params: {} },
+      { to: '/scores', params: {} },
+      { to: '/vs', params: {} },
+    ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, brand]);
 
