@@ -124,7 +124,17 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
     return {
       corps,
       seasonScores,
-      appearances,
+      // Slim the SSR payload: `appearances` is one FULL event-directory row per
+      // career appearance (327 rows / ~300KB TSR-serialized for Bluecoats) but a
+      // season view renders only that season's shows. Serialize just the active
+      // season; the component backfills the career client-side from the immutable
+      // corps-appearances shard (useFullAppearances) for season switching. The
+      // explicit 'all' view keeps the full list — it IS the content there.
+      appearances:
+        activeSeason === 'all' ? appearances : appearances.filter((a) => a.season === activeSeason),
+      // Season chips + validation need the full season list even though the rows
+      // are sliced.
+      appearanceSeasons: seasons,
       appearanceResults,
       corpsMerch,
       showForSeason,
@@ -220,11 +230,34 @@ function useSeasonSnapshots(slug: string) {
   return snapshots;
 }
 
+// Client-side fetch of the corps's FULL appearance history. The loader slims
+// `appearances` to the active season (one full event row per career show was
+// ~300KB serialized); this backfills the career after mount — same immutable
+// corps-appearances shard, SW/browser-cached — so season switching is instant
+// and complete.
+function useFullAppearances(slug: string) {
+  const [full, setFull] = useState<Awaited<ReturnType<typeof getCorpsAppearances>> | null>(null);
+  useEffect(() => {
+    let live = true;
+    setFull(null);
+    loadDetailOrServer(`corps-appearances/${slug}.json`, () => getCorpsAppearances({ data: slug }))
+      .then((rows) => {
+        if (live && rows) setFull(rows);
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [slug]);
+  return full;
+}
+
 function CorpsDetailPage() {
   const {
     corps,
     seasonScores,
-    appearances,
+    appearances: loaderAppearances,
+    appearanceSeasons,
     appearanceResults,
     corpsMerch,
     showForSeason,
@@ -242,8 +275,11 @@ function CorpsDetailPage() {
   // fall back to the default if anything slips through.
   const { slug, season } = Route.useParams();
   const seasonSnapshots = useSeasonSnapshots(slug);
+  // Career appearances: prefer the client-fetched full list; until it lands, the
+  // loader's active-season slice covers the rendered view (season chips come from
+  // the loader's full `appearanceSeasons`, so they never depend on the slice).
+  const appearances = useFullAppearances(slug) ?? loaderAppearances;
   const navigate = Route.useNavigate();
-  const appearanceSeasons = availableSeasons(appearances);
   const defaultSeason = appearanceSeasons[0] ?? 'all';
   const isValidSeason = (s: string | undefined): s is string =>
     !!s && (appearanceSeasons.includes(s) || (s === 'all' && appearanceSeasons.length > 1));
