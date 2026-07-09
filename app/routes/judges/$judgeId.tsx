@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMachine } from '@xstate/react';
 import { For, Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
@@ -81,8 +81,20 @@ export const Route = createFileRoute('/judges/$judgeId')({
     if (overlay?.aliasOf && overlay.aliasOf.type === 'judge' && overlay.aliasOf.id !== params.judgeId) {
       throw redirect({ to: '/judges/$judgeId', params: { judgeId: overlay.aliasOf.id }, replace: true });
     }
+    const merged = scraped ? mergeProfileOverlay(scraped, overlay) : scraped;
+    // Slim the SSR payload: `corpsScores` is the judge's ENTIRE scoring career
+    // (~500KB for a veteran judge — 94% of the profile) but the page shows one
+    // season at a time. Serialize only the latest season's scores; the component
+    // fetches the full career client-side after mount (useFullCorpsScores) for
+    // season switching / 'all'. Without this the SSR document hit 832KB raw and
+    // hydration paid for all of it.
+    const latestSeason = merged?.seasons?.[0];
+    const profile =
+      merged && latestSeason
+        ? { ...merged, corpsScores: merged.corpsScores.filter((s) => s.season === latestSeason) }
+        : merged;
     return {
-      profile: scraped ? mergeProfileOverlay(scraped, overlay) : scraped,
+      profile,
       // Judges get awards editing only (bioFacts.awards); the scraped baseline for
       // the diff-based op-log save.
       scrapedAwards: scraped?.bioFacts?.awards ?? [],
@@ -132,8 +144,34 @@ export const Route = createFileRoute('/judges/$judgeId')({
   component: JudgeProfilePage,
 });
 
+// Client-side fetch of the judge's FULL scoring career. The route loader slims
+// `corpsScores` to the latest season so the SSR document stays small (see the
+// loader note); this hook backfills the complete list after mount — from the
+// immutable judges/<id>.json shard (SW/browser-cached) with the server-fn as
+// fallback — so season switching and 'all' have full data. Returns null until
+// loaded; callers fall back to the loader's season slice.
+function useFullCorpsScores(judgeId: string) {
+  const [full, setFull] = useState<JudgeProfile['corpsScores'] | null>(null);
+  useEffect(() => {
+    let live = true;
+    setFull(null);
+    loadDetailOrServer<JudgeProfile | null>(`judges/${judgeId}.json`, () =>
+      getJudgeProfile({ data: judgeId })
+    )
+      .then((p) => {
+        if (live && p) setFull(p.corpsScores);
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [judgeId]);
+  return full;
+}
+
 function JudgeProfilePage() {
   const { profile, scrapedAwards } = Route.useLoaderData();
+  const fullCorpsScores = useFullCorpsScores(Route.useParams().judgeId);
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   // Name this entry so back controls reached from here read "Back to <judge>".
@@ -169,7 +207,10 @@ function JudgeProfilePage() {
   // group modes (assignments and corps scores both carry `caption_name`).
   const captionOptions = profile ? availableCaptions(profile.assignments) : [];
   const seasonAssignments = profile ? filterBySeason(profile.assignments, selectedSeason) : [];
-  const seasonCorpsScores = profile ? filterBySeason(profile.corpsScores, selectedSeason) : [];
+  // Prefer the client-fetched full career (all seasons); until it lands, the
+  // loader's latest-season slice covers the default view.
+  const corpsScores = fullCorpsScores ?? profile?.corpsScores ?? [];
+  const seasonCorpsScores = profile ? filterBySeason(corpsScores, selectedSeason) : [];
   const filteredAssignments = filterByCaptions(seasonAssignments, selectedCaptions);
   const filteredCorpsScores = filterByCaptions(seasonCorpsScores, selectedCaptions);
   const showGroups = groupAssignmentsByShow(filteredAssignments);
