@@ -5,89 +5,55 @@ import * as fs from 'node:fs';
 const DB_PATH = process.env.CURVE_DB_PATH ?? './dci-relational.db';
 const OUT_PATH = process.env.CURVE_OUT_PATH ?? './src/training/referenceCurvesV4.json';
 
-const CAPTION_MAP: Record<string, string> = {
-  // We need to check if detailed captions exist.
-  // Standard captions if available:
-  "General Effect 1": "GE1",
-  "General Effect 2": "GE2",
-  "Visual Proficiency": "VP",
-  // DB stores this hyphenated ("Visual - Analysis", matching the "Music - *"
-  // style). The old map had ONLY the no-hyphen "Visual Analysis", which never
-  // matched, so VA silently fell through `if (!slug) continue` and was the one
-  // caption dropped on regeneration — leaving a stale/corrupt VA column (rank-8
-  // VA ~8.8 vs ~18 for every sibling). Map both forms (as the V9 subcaption
-  // builder does) so either historical spelling is picked up.
-  "Visual - Analysis": "VA",
-  "Visual Analysis": "VA",
-  "Color Guard": "CG",
-  "Music - Brass": "MB",
-  "Music - Analysis": "MA",
-  "Music - Percussion": "MP",
-};
+// The 8 canonical caption slugs, in output order.
+const CAPTIONS = ["GE1", "GE2", "VP", "VA", "CG", "MB", "MA", "MP"] as const;
+
+// Source: the `clean_reference_curve_metric_scores` VIEW (the domain semantic
+// layer), NOT raw `caption_scores`. The view already does the cleaning we used to
+// (badly) approximate here — see DATA_QUALITY_NOTES.md §11:
+//   - `domain_caption_aliases` normalizes caption names → slug (handles the
+//     "Visual - Analysis" vs "Visual Analysis" drift via a table, not a typo-prone
+//     hardcoded map — this is what silently dropped VA before).
+//   - `domain_divisions.is_model_division` + `domain_event_exclusion_patterns`
+//     drop I&E / individual / showcase rows (the 80-99 "total leakage").
+//   - per-caption min/max bounds + `total_score > 0` drop zeros / DNP panels.
+//   - `ABS(caption_total - total_score) <= 0.05` keeps only rows whose 8 captions
+//     actually sum to the total — a real integrity gate, not a heuristic.
+//   - `rank_bucket` is the clamped [1,25] competition-division rank.
+// Backtested strictly better than the old raw+filter curve (target, curve, and
+// pairwise-rank all improved). We keep this generator's guards below as the
+// complementary safety net regardless of source.
 
 function main() {
   const db = new Database(DB_PATH, { readonly: true });
   console.log('Computing V4 Reference Curves (Rank/Pct/Caption) from', DB_PATH);
 
-  // 1. Fetch all caption scores linked to rank and percent_through
+  // 1. Fetch from the clean view. metric_name is already the slug; rank_bucket is
+  // the clamped [1,25] rank; percent_bucket is the 5-pt bucket; rows are already
+  // cleaned + sum-reconciled. World Class only, to match the legacy v4 lookup keys.
   const rows = db.prepare(`
-    SELECT 
-      cs.rank, 
-      c.percent_through,
-      caps.caption_name,
-      caps.score
-    FROM corps_scores cs
-    JOIN competitions c ON cs.competition_slug = c.slug
-    JOIN caption_scores caps ON caps.competition_slug = cs.competition_slug AND caps.corps_key = cs.corps_key
-    WHERE cs.rank IS NOT NULL 
-      AND cs.division_name = 'World Class'
-      AND c.percent_through IS NOT NULL
-      AND caps.score IS NOT NULL
-  `).all() as { rank: number, percent_through: number, caption_name: string, score: number }[];
+    SELECT rank_bucket AS rank, percent_bucket AS bucket, metric_name AS slug, score
+    FROM clean_reference_curve_metric_scores
+    WHERE division_name = 'World Class'
+      AND metric_name IN ('GE1','GE2','VP','VA','CG','MB','MA','MP')
+      AND rank_bucket BETWEEN 1 AND 25
+      AND score IS NOT NULL
+  `).all() as { rank: number, bucket: number, slug: string, score: number }[];
 
-  // 2. Aggregate
-  // Key: "RANK-BUCKET" -> { GE1: {sum, count}, GE2: ... }
+  // 2. Aggregate. Key: "RANK-BUCKET" -> { GE1: {sum, count}, GE2: ... }
   const curves: Record<string, Record<string, { sum: number, count: number }>> = {};
 
-  const getPctBucket = (pct: number) => Math.floor(pct / 5) * 5;
-
-  // Track how many source rows matched each mapped caption. A caption that maps
-  // to ZERO rows means the DB caption_name drifted out from under CAPTION_MAP
-  // (exactly how VA silently corrupted: DB "Visual - Analysis" vs the old
-  // no-hyphen key). We assert on this below instead of shipping a hole.
+  // Track rows per caption. Zero for any caption ⇒ the view stopped emitting it
+  // (alias/table drift) — asserted below instead of shipping a hole.
   const matchedPerSlug: Record<string, number> = {};
 
-  // Drop out-of-range caption scores. A real subcaption sits in (0, ~20] (older
-  // GE scale reaches ~24). This is an EXCLUSION OF NON-DATA, not a discard of
-  // signal — see DATA_QUALITY_NOTES.md §11b for the full audit:
-  //   - Zeros (<=0): the ONLY out-of-range rows that reach this curve are ~565
-  //     all-zero panels (74 World-Class corps-events) = DNP/standstill/no-recap.
-  //     total_score=0 and subcaptions=0/absent too, so they're GENUINELY MISSING,
-  //     not repairable — averaging them in just drags cells toward zero.
-  //   - High (>25): full I&E/individual totals (80-99) on the ~100 scale (e.g. an
-  //     individual soloist). The `division_name='World Class'` filter in the query
-  //     already excludes these; the 25 ceiling is belt-and-suspenders vs a future
-  //     mis-tagged division. It also preserves legit high GE.
-  const VALID_MIN = 0; // exclusive
-  const VALID_MAX = 25; // inclusive
-  let droppedRange = 0;
-
   for (const row of rows) {
-    const slug = CAPTION_MAP[row.caption_name];
-    if (!slug) continue; // Skip unknown captions (judge-name leakage, etc.)
-    if (row.score <= VALID_MIN || row.score > VALID_MAX) { droppedRange++; continue; }
+    const slug = row.slug;
     matchedPerSlug[slug] = (matchedPerSlug[slug] ?? 0) + 1;
 
-    const bucket = getPctBucket(row.percent_through);
-    const key = `${row.rank}-${bucket}`;
-
-    if (!curves[key]) {
-      curves[key] = {};
-    }
-    if (!curves[key][slug]) {
-      curves[key][slug] = { sum: 0, count: 0 };
-    }
-
+    const key = `${row.rank}-${row.bucket}`;
+    if (!curves[key]) curves[key] = {};
+    if (!curves[key][slug]) curves[key][slug] = { sum: 0, count: 0 };
     curves[key][slug].sum += row.score;
     curves[key][slug].count += 1;
   }
@@ -111,10 +77,7 @@ function main() {
 
   const ranks = Array.from({ length: 25 }, (_, i) => i + 1);
   const buckets = Array.from({ length: 21 }, (_, i) => i * 5); // 0, 5 ... 100
-  // Dedupe: CAPTION_MAP intentionally maps two spellings ("Visual - Analysis"
-  // and legacy "Visual Analysis") to the same "VA" slug, so raw Object.values
-  // would list VA twice.
-  const captions = [...new Set(Object.values(CAPTION_MAP))];
+  const captions = [...CAPTIONS];
 
   // Helper to get value
   const getVal = (r: number, b: number, c: string) => finalLookup[`${r}-${b}`]?.[c];
@@ -213,7 +176,7 @@ function main() {
   for (const cap of captions) {
     if (!matchedPerSlug[cap]) {
       problems.push(
-        `caption "${cap}" matched 0 source rows — a DB caption_name likely drifted from CAPTION_MAP`
+        `caption "${cap}" matched 0 rows from clean_reference_curve_metric_scores — the view/alias table likely drifted`
       );
     }
   }
@@ -248,8 +211,7 @@ function main() {
     if (problems.length > 20) console.error(`   … and ${problems.length - 20} more`);
     process.exit(1);
   }
-  console.log(`Dropped ${droppedRange} out-of-range caption scores (<=${VALID_MIN} or >${VALID_MAX}) as unclean.`);
-  console.log(`Validation OK: ${captions.length} captions present across ${Object.keys(finalLookup).length} keys, no sibling anomalies.`);
+  console.log(`Read ${rows.length} clean caption-cells; Validation OK: ${captions.length} captions across ${Object.keys(finalLookup).length} keys, no sibling anomalies.`);
 
   // 5. Save
   const output = {
