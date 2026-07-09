@@ -663,6 +663,15 @@ function CurrentPredictionPage({
   // "Back to <event>" instead of the generic section label.
   useRegisterBackName(event?.event_name ?? event?.name ?? eventLabel(slug));
 
+  // Show day = today is the event's date (through the morning after, so an evening
+  // show + late-night scores still count). On show day we default to the Scores
+  // view even before scores post — that's what people are here for that day.
+  const isShowDay = useMemo(() => {
+    if (!event?.start_date) return false;
+    const days = Math.floor((Date.now() - new Date(event.start_date).getTime()) / 86_400_000);
+    return days >= 0 && days <= 1;
+  }, [event?.start_date]);
+
   // Seed the machine from the URL so initial view state matches the search params
   // (no mount-time round trip); useSearchSync keeps them in sync thereafter.
   const [snapshot, send] = useMachine(predictionMachine, {
@@ -673,6 +682,7 @@ function CurrentPredictionPage({
       // Provides both the data and the dynamic default view (scores-first) when
       // the URL omits `view`; the decoded `view` (if present) overrides it.
       scoredRecap,
+      isShowDay,
       // Present only on a deep-linked ?diffbase=previous — seeds the machine so
       // the `previous` region starts `ready` (no client fetch, SSR renders rows).
       previousRecap: seededPreviousRecap,
