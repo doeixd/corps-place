@@ -1,12 +1,14 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useRouter } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { Icon, type IconComponent } from '@/components/icon';
 import { Logo } from '@/components/logo';
 import { useBookmarks } from '@/stores/bookmark-store';
+import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import {
   Home01Icon,
   Calendar01Icon,
   UserMultipleIcon,
-  JusticeScale01Icon,
+  Analytics01Icon,
   GiftIcon,
   RankingIcon,
   Briefcase01Icon,
@@ -24,7 +26,7 @@ const CORPS_NAV_ITEMS = [
   // /scores is intentionally NOT in the nav — it's an SEO/results surface
   // reachable from the home Explore grid + internal links, not a primary tab.
   { to: '/corps', label: 'Corps', icon: UserMultipleIcon, exact: false },
-  { to: '/judges', label: 'Judges', icon: JusticeScale01Icon, exact: false },
+  { to: '/rankings', label: 'Rankings', icon: Analytics01Icon, exact: false },
   { to: '/shop', label: 'Shop', icon: GiftIcon, exact: false },
   // Fantasy DCI — only when the feature flag is on (plan §0.5 #9).
   ...(FANTASY_ENABLED
@@ -86,6 +88,16 @@ export function SiteNav() {
   // localStorage-backed bookmark count, SSR-safe (0 on the server, hydrates on mount).
   const bookmarkCount = useBookmarks().length;
   const countFor = (to: string) => (to === '/shop' ? bookmarkCount : 0);
+
+  // Prewarm the Rankings page: it's in the nav on every page, so idle-preload its
+  // loader once the nav mounts (same gated helper as the directory warm-ups) —
+  // the first click into Rankings is then instant, not just on hover.
+  const router = useRouter();
+  useEffect(() => {
+    if (brand !== 'corps') return;
+    return warmRoutesOnIdle(router as never, [{ to: '/rankings', params: {} }]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, brand]);
 
   return (
     <>
