@@ -856,13 +856,16 @@ const REFERENCE_CURVES: { curves: Record<string, Record<string, number>> } = JSO
 
 /** Expected caption score for a rank at a percent-through (mirrors the trainer's getBaseline). */
 function curveBaseline(rank: number, pct: number, caption: string): number {
-  const r = rank < 1 || !Number.isFinite(rank) ? 12 : Math.round(rank);
+  // Clamp to [1,25] EXACTLY like the trainer's getBaseline (buildMlSequencesV9-
+  // Subcaption.ts) — train/serve parity. Without the upper clamp a rank>25 corps
+  // (large Open-Class field) missed the grid and fell to an arbitrary `12-bucket`
+  // anchor here while training used `25-bucket`.
+  const r = Math.max(1, Math.min(25, Math.round(Number.isFinite(rank) ? rank : 12)));
   const bucket = Math.round(Math.max(0, Math.min(100, pct)) / 5) * 5;
   const curves = REFERENCE_CURVES.curves;
   return (
     curves[`${r}-${bucket}`]?.[caption] ??
     curves[`${r}-50`]?.[caption] ??
-    curves[`12-${bucket}`]?.[caption] ??
     15.0
   );
 }
