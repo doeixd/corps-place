@@ -1,11 +1,12 @@
 import { useState, type ReactNode } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
+import { BackLink } from '@/components/back-link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { FilterChips, type FilterChipItem } from '@/components/filter-chips';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { seoHead } from '@/lib/seo';
+import { seoHead, SITE_URL } from '@/lib/seo';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
 import { RankingsList } from '@/components/rankings/rankings-list';
 import { RankBumpChart } from '@/components/rankings/rank-bump-chart';
@@ -157,7 +158,31 @@ export const Route = createFileRoute('/rankings')({
         `${isTotal ? 'overall' : metricLabel.toLowerCase()} season standings with scores, ` +
         'a rank bump chart, and filters for caption, division, and as-of date.'
       : 'DCI season standings and a rank bump chart — filter by caption, division, and as-of date.';
-    return seoHead({ title, description, path: loaderData?.canonical ?? '/rankings' });
+    const path = loaderData?.canonical ?? '/rankings';
+    // "Updated when": the most recent competition day in this season's rankings is
+    // when the data last changed — emit it as Dataset.dateModified so search engines
+    // see the page's freshness. Falls back to the resolved as-of day.
+    const updated = loaderData?.result?.allDates?.at(-1) ?? loaderData?.result?.asof ?? undefined;
+    return seoHead({
+      title,
+      description,
+      path,
+      jsonLd: updated
+        ? [
+            {
+              '@context': 'https://schema.org',
+              '@type': 'Dataset',
+              name: title,
+              description,
+              url: `${SITE_URL}${path}`,
+              ...(season ? { temporalCoverage: season } : {}),
+              dateModified: updated,
+              isAccessibleForFree: true,
+              creator: { '@type': 'Organization', name: 'DrumCorps.app' },
+            },
+          ]
+        : undefined,
+    });
   },
   // Static read-model data; a moderate window keeps repeat navs fast.
   staleTime: 5 * 60_000,
@@ -225,6 +250,7 @@ function RankingsPage() {
 
   return (
     <PageShell className="flex flex-col gap-5">
+      <BackLink to="/" label="Back" />
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-text-primary">
           {season} {divisionPhrase.title} Drum Corps Rankings
