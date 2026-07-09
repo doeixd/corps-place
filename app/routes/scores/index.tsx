@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { warmVisibleOnIdle } from '@/lib/warm-routes';
 import { useMachine } from '@xstate/react';
-import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
+import { getHybridEventsDirectory, getHybridEventFullRecap, getCorpsByKeys } from '@/lib/server-fns/hybrid';
 import { availableSeasons } from '@/lib/event-filtering';
 import { eventFilterMachine, eventFilterSearchCodec } from '@/machines/event-filter-machine';
 import { useSearchSync } from '@/lib/use-search-sync';
@@ -13,7 +13,7 @@ import { SeasonChips } from '@/components/filter-chips';
 import { Input } from '@/components/ui/input';
 import { Icon } from '@/components/icon';
 import { Search01Icon } from '@/components/icons/generated';
-import { ScoreEventSection } from '@/components/scores/score-event-section';
+import { ScoreEventSection, type ScoreRecapData } from '@/components/scores/score-event-section';
 import { seoHead, breadcrumbLd, SITE_URL } from '@/lib/seo';
 
 type ScoresSearch = { season?: string; q?: string };
@@ -41,7 +41,34 @@ export const Route = createFileRoute('/scores/')({
   // SSR ships only the viewed season (the all-seasons list is ~1MB serialized
   // into the HTML). ?season=all (the archive view) still loads everything.
   loaderDeps: ({ search }) => ({ season: search.season }),
-  loader: async ({ deps }) => await getHybridEventsDirectory({ data: { season: deps.season } }),
+  loader: async ({ deps }) => {
+    const dir = await getHybridEventsDirectory({ data: { season: deps.season } });
+    // SSR-only: inline the first couple of recap tables (the ones in the initial
+    // viewport). Without this the tables can't even START fetching until
+    // hydration (measured: first recap rendered at ~5s on a throttled phone —
+    // the page was "up" but showed skeletons). ~15-35KB each, so inline only the
+    // top two. Client-side navigations skip this (the page is already
+    // interactive there; sections lazy-fetch as usual) so navs stay instant.
+    let initialRecaps: Record<string, ScoreRecapData> = {};
+    if (typeof document === 'undefined') {
+      const top = dir.events
+        .filter((e) => e.scores_released && e.slug)
+        .sort((a, b) => (b.start_date ?? '').localeCompare(a.start_date ?? ''))
+        .slice(0, 2);
+      const loaded = await Promise.all(
+        top.map(async (e) => {
+          const recap = await getHybridEventFullRecap({ data: e.slug }).catch(() => null);
+          const keys = (recap?.corps ?? [])
+            .map((c) => c.corpsKey)
+            .filter((k): k is string => typeof k === 'string' && k.length > 0);
+          const corps = keys.length ? await getCorpsByKeys({ data: keys }).catch(() => []) : [];
+          return [e.slug, { recap, corps }] as const;
+        })
+      );
+      initialRecaps = Object.fromEntries(loaded.filter(([, d]) => d.recap));
+    }
+    return { ...dir, initialRecaps };
+  },
   head: ({ loaderData }) => {
     const n = loaderData?.scoredTotal ?? 0;
     const season = CURRENT_SCORES_SEASON;
@@ -104,7 +131,7 @@ export const Route = createFileRoute('/scores/')({
 });
 
 function ScoresIndex() {
-  const { events } = Route.useLoaderData();
+  const { events, initialRecaps } = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -216,6 +243,7 @@ function ScoresIndex() {
                   <div key={e.slug} data-grid-key={e.slug}>
                     <ScoreEventSection
                       slug={e.slug}
+                      initial={initialRecaps[e.slug] ?? null}
                       name={e.event_name || e.name || e.slug}
                       date={e.start_date}
                       place={place(e.location_city, e.location_state)}
