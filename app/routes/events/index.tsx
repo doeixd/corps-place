@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import { eventsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
-import { warmRoutesOnIdle } from '@/lib/warm-routes';
+import { warmRoutesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
 import { Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
 import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
@@ -98,7 +98,7 @@ function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
     // read-model server-fns), so warming the whole season on every visit would be
     // a lot of proactive server work. The first ~40 (list is date-ordered, so the
     // most-likely clicks) covers the pain without hammering the backend.
-    const WARM_CAP = 40;
+    const WARM_CAP = WARM_ABOVE_FOLD;
     const targets = events
       .flatMap((e) =>
         e.slug && e.season

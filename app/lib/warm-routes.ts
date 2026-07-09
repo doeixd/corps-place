@@ -8,6 +8,13 @@
 // and caps concurrency so it never competes with real navigation. Returns a
 // cleanup that cancels any remaining warms (call it from a useEffect).
 
+// How many directory rows to bulk-warm. The router preloads on hover/touch-intent
+// (`defaultPreload: 'intent'`), so bulk-warming only needs to cover the cards
+// visible before the user interacts. Detail warms cascade into several read-model
+// shard fetches each, so a small cap is the difference between ~30 and ~340
+// speculative requests on a directory page (mobile). See DATA_QUALITY_NOTES / perf.
+export const WARM_ABOVE_FOLD = 6;
+
 type WarmTarget = { to: string; params: Record<string, string> };
 
 interface PreloadableRouter {

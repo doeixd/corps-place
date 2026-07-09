@@ -1,9 +1,7 @@
-import { Link, useRouter } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { Link } from '@tanstack/react-router';
 import { Icon, type IconComponent } from '@/components/icon';
 import { Logo } from '@/components/logo';
 import { useBookmarks } from '@/stores/bookmark-store';
-import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import {
   Home01Icon,
   Calendar01Icon,
@@ -91,20 +89,10 @@ export function SiteNav() {
   const bookmarkCount = useBookmarks().length;
   const countFor = (to: string) => (to === '/shop' ? bookmarkCount : 0);
 
-  // Prewarm the data-heavy top-level pages that live in the nav on every page:
-  // idle-preload their loaders once the nav mounts (same gated helper as the
-  // directory warm-ups) so the first click into any of them is instant, not just
-  // on hover. Rankings/Scores/VS each carry a non-trivial loader.
-  const router = useRouter();
-  useEffect(() => {
-    if (brand !== 'corps') return;
-    return warmRoutesOnIdle(router as never, [
-      { to: '/rankings', params: {} },
-      { to: '/scores', params: {} },
-      { to: '/vs', params: {} },
-    ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router, brand]);
+  // No manual prewarming of the nav's top-level pages: the router already preloads
+  // any nav link on hover/touch-intent (`defaultPreload: 'intent'`), so eagerly
+  // idle-warming Rankings/Scores/VS on every page was redundant speculative work
+  // that competed with the current page's load on mobile.
 
   return (
     <>

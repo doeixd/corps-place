@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
-import { warmRoutesOnIdle } from '@/lib/warm-routes';
+import { warmRoutesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
 import { useMachine } from '@xstate/react';
 import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
 import { availableSeasons } from '@/lib/event-filtering';
@@ -117,7 +117,7 @@ function ScoresIndex() {
   useEffect(() => {
     const targets = scored
       .flatMap((e) => (e.slug ? [{ to: '/scores/$slug', params: { slug: e.slug } }] : []))
-      .slice(0, 40);
+      .slice(0, WARM_ABOVE_FOLD);
     return warmRoutesOnIdle(router as never, targets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, scored.length]);

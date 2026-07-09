@@ -4,7 +4,7 @@ import { Show } from 'jotai-solid-api';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { corpsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
-import { warmRoutesOnIdle, warmImagesOnIdle } from '@/lib/warm-routes';
+import { warmRoutesOnIdle, warmImagesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
 import { proxiedImage } from '@/lib/media';
 import type { CorpsSummary } from '@/lib/corps-directory';
 import { searchString } from '@/lib/utils';
@@ -90,17 +90,19 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  // Background warm-up: after the directory renders, quietly preload the detail
-  // route for the in-view corps during idle time so the first click is instant
-  // (same idle/connection-gated helper as /events). Capped so warming the full
-  // directory (each warm = a few read-model calls) doesn't hammer the backend.
+  // Background warm-up: preload the detail route for the FIRST FEW (above-the-fold)
+  // corps only. The router's `defaultPreload: 'intent'` already preloads any card
+  // on hover/touch-start, so this only needs to cover the cards visible before the
+  // user interacts — NOT the whole directory. Each detail warm cascades into ~5
+  // read-model shard fetches, so warming 40 flooded mobile with ~200 requests; a
+  // small cap keeps the top row instant while intent-preload handles the rest.
   const router = useRouter();
   useEffect(() => {
     const targets = corps
       .flatMap((c) =>
         c.slug ? [{ to: '/corps/$slug/{-$season}', params: { slug: c.slug } }] : []
       )
-      .slice(0, 40);
+      .slice(0, WARM_ABOVE_FOLD);
     return warmRoutesOnIdle(router as never, targets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, corps.length]);
@@ -118,7 +120,7 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
     const urls = corps
       .flatMap((c) => (c.corps_photo ? [proxiedImage(c.corps_photo, { width: w, assumeCached: true })] : []))
       .filter((u): u is string => !!u)
-      .slice(0, 60);
+      .slice(0, WARM_ABOVE_FOLD);
     return warmImagesOnIdle(urls);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [corps.length]);

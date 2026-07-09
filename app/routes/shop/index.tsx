@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
-import { warmRoutesOnIdle } from '@/lib/warm-routes';
+import { warmRoutesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
 import { AnimatePresence, motion } from 'motion/react';
 import { Show } from 'jotai-solid-api';
 import { getShopHome } from '@/lib/server-fns/hybrid';
@@ -49,7 +49,7 @@ function ShopLanding() {
       .flatMap((g) =>
         g.slug ? [{ to: '/shop/group/$storeId', params: { storeId: g.slug } }] : []
       )
-      .slice(0, 40);
+      .slice(0, WARM_ABOVE_FOLD);
     return warmRoutesOnIdle(router as never, targets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, groups.length]);

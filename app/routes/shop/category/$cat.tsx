@@ -1,7 +1,7 @@
 import { createFileRoute, notFound, useRouter } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Show } from 'jotai-solid-api';
-import { warmRoutesOnIdle } from '@/lib/warm-routes';
+import { warmRoutesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
 import { getShopCategory } from '@/lib/server-fns/hybrid';
 import { selectProducts } from '@/lib/merch-filtering';
 import type { MerchSort, MerchFilterContext } from '@/lib/merch-filtering';
@@ -64,7 +64,7 @@ function CategoryPage() {
       .flatMap((p) =>
         p.productId ? [{ to: '/shop/$productId', params: { productId: p.productId } }] : []
       )
-      .slice(0, 40);
+      .slice(0, WARM_ABOVE_FOLD);
     return warmRoutesOnIdle(router as never, targets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, category.products.length]);

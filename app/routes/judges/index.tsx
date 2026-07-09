@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 import { getJudgeDirectory } from '@/lib/server-fns/hybrid';
 import { judgesCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
-import { warmRoutesOnIdle } from '@/lib/warm-routes';
+import { warmRoutesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
 import type { JudgeSummary } from '@/lib/judge-directory';
 import { cn, searchString } from '@/lib/utils';
 import { availableSeasons, selectJudges } from '@/lib/judge-filtering';
@@ -84,7 +84,7 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
       .flatMap((j) =>
         j.judge_id ? [{ to: '/judges/$judgeId', params: { judgeId: j.judge_id } }] : []
       )
-      .slice(0, 40);
+      .slice(0, WARM_ABOVE_FOLD);
     return warmRoutesOnIdle(router as never, targets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, judges.length]);
