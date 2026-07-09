@@ -2,8 +2,8 @@
 import Database from 'better-sqlite3';
 import * as fs from 'node:fs';
 
-const DB_PATH = './dci-relational.db';
-const OUT_PATH = './src/training/referenceCurvesV4.json';
+const DB_PATH = process.env.CURVE_DB_PATH ?? './dci-relational.db';
+const OUT_PATH = process.env.CURVE_OUT_PATH ?? './src/training/referenceCurvesV4.json';
 
 const CAPTION_MAP: Record<string, string> = {
   // We need to check if detailed captions exist.
@@ -51,9 +51,16 @@ function main() {
 
   const getPctBucket = (pct: number) => Math.floor(pct / 5) * 5;
 
+  // Track how many source rows matched each mapped caption. A caption that maps
+  // to ZERO rows means the DB caption_name drifted out from under CAPTION_MAP
+  // (exactly how VA silently corrupted: DB "Visual - Analysis" vs the old
+  // no-hyphen key). We assert on this below instead of shipping a hole.
+  const matchedPerSlug: Record<string, number> = {};
+
   for (const row of rows) {
     const slug = CAPTION_MAP[row.caption_name];
     if (!slug) continue; // Skip unknown captions
+    matchedPerSlug[slug] = (matchedPerSlug[slug] ?? 0) + 1;
 
     const bucket = getPctBucket(row.percent_through);
     const key = `${row.rank}-${bucket}`;
@@ -154,6 +161,61 @@ function main() {
       }
     }
   }
+
+  // 4a. Fill any residual hole (e.g. the sparse rank-100 sentinel key) with the
+  // key's sibling mean, so a caption is never absent for a key that exists. VA≈
+  // its siblings, so the mean is the right anchor; this is the last line of
+  // defense before the completeness guard below.
+  for (const [key, caps] of Object.entries(finalLookup)) {
+    const missing = captions.filter((c) => caps[c] === undefined);
+    if (!missing.length) continue;
+    const present = captions.filter((c) => caps[c] !== undefined).map((c) => caps[c]!);
+    if (!present.length) continue; // nothing to anchor to — leave for the guard to reject
+    const mean = Number((present.reduce((a, b) => a + b, 0) / present.length).toFixed(3));
+    for (const c of missing) caps[c] = mean;
+  }
+
+  // 4b. Fail-loud validation — refuse to write a corrupt/incomplete curve.
+  // This is the guard that would have stopped the VA regression at the source.
+  const problems: string[] = [];
+
+  // (a) Every mapped caption must have matched source rows. Zero = name drift.
+  for (const cap of captions) {
+    if (!matchedPerSlug[cap]) {
+      problems.push(
+        `caption "${cap}" matched 0 source rows — a DB caption_name likely drifted from CAPTION_MAP`
+      );
+    }
+  }
+
+  // (b) Every curve key must carry every caption (no silent holes).
+  for (const [key, caps] of Object.entries(finalLookup)) {
+    const missing = captions.filter((c) => caps[c] === undefined);
+    if (missing.length) problems.push(`key ${key} missing captions: ${missing.join(',')}`);
+  }
+
+  // (c) No caption may sit anomalously far below its siblings at the same key
+  // (the intra-key detector that surfaced the corruption). VA at ~8.8 while
+  // every sibling was ~18 is exactly this.
+  for (const [key, caps] of Object.entries(finalLookup)) {
+    for (const cap of captions) {
+      const self = caps[cap];
+      const sibs = captions.filter((c) => c !== cap && caps[c] !== undefined).map((c) => caps[c]!);
+      if (self === undefined || sibs.length < 4) continue;
+      const sibMean = sibs.reduce((a, b) => a + b, 0) / sibs.length;
+      if (sibMean - self > 3) {
+        problems.push(`key ${key} caption ${cap}=${self} is ${(sibMean - self).toFixed(1)}pts below sibling mean ${sibMean.toFixed(1)}`);
+      }
+    }
+  }
+
+  if (problems.length) {
+    console.error(`\n❌ Reference-curve validation FAILED (${problems.length} problem(s)) — NOT writing ${OUT_PATH}:`);
+    for (const p of problems.slice(0, 20)) console.error('   - ' + p);
+    if (problems.length > 20) console.error(`   … and ${problems.length - 20} more`);
+    process.exit(1);
+  }
+  console.log(`Validation OK: ${captions.length} captions present across ${Object.keys(finalLookup).length} keys, no sibling anomalies.`);
 
   // 5. Save
   const output = {
