@@ -19,7 +19,15 @@ type NitroAppLike = {
   hooks: { hook: (name: string, fn: (...args: any[]) => void) => void };
 };
 
-const GUARDED_PREFIXES = ['/assets/', '/read-model/', '/_serverFn/app_lib_server-fns_hybrid_ts--'];
+const GUARDED_PREFIXES = [
+  '/assets/',
+  '/read-model/',
+  '/_serverFn/app_lib_server-fns_hybrid_ts--',
+  // Image proxy: 200s are immutable (content-addressed by ?u=&w=), but its
+  // 400/404s carry no Cache-Control at all — under an edge Cache Rule Cloudflare
+  // would apply its default TTL to those. Stamp them no-store explicitly.
+  '/api/media',
+];
 const guarded = (path: string | undefined) =>
   Boolean(path && GUARDED_PREFIXES.some((p) => path.startsWith(p)));
 
