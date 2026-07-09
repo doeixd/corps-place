@@ -353,6 +353,11 @@ baseline that every in-season prediction anchors to, so a bad row here shows up 
 the site as an impossible caption (e.g. a corps with 19 VP and 10.8 VA). These are
 NOT UI bugs — they are dirty source rows averaged into the baseline.
 
+> **UPDATE (2026-07-09): the curve generator now reads the clean domain view, not
+> raw `caption_scores`** — see §11g. §11a–11c below explain the historical bugs and
+> why they happened (still true of the raw table + the V9 feature builder, which
+> reads raw). The generator's own vulnerability to them is now closed at the source.
+
 ### 11a. Caption-name drift → a whole caption silently vanishes (the VA bug, 2026-07)
 
 The DB stores the visual-analysis caption as **`"Visual - Analysis"`** (hyphenated,
@@ -478,3 +483,32 @@ The emit's `dq_*` guardrails (`dq_invalid_caption_scores`, `dq_zero_scores`,
 and are the right thing to gate on if this is ever tightened further. **Open item:**
 the V9 feature builder reads the same dirty `caption_scores`; a clean rebuild +
 retrain is the natural next step (not yet done as of 2026-07-09).
+
+### 11g. The real fix: generate the curve from the clean domain view
+
+`caption_scores` is the *raw* table. There is a **domain semantic layer** built on
+top of it — SQL views `clean_reference_curve_entries` / `clean_reference_curve_metric_scores`
+(+ `domain_caption_aliases`, `domain_divisions`, `domain_captions`,
+`domain_event_exclusion_patterns`) — that does all the cleaning §11a–11c approximate,
+correctly and structurally:
+
+- **name normalization** via `domain_caption_aliases` (`"Visual - Analysis"` *and*
+  `"Visual Analysis"` *and* `"Brass"`/`"Percussion"` all → their slug) — a table, not
+  a hardcoded map that can drift.
+- **domain filtering** via `domain_divisions.is_model_division` (World/Open only) +
+  `domain_event_exclusion_patterns` — drops the I&E/individual/showcase rows.
+- **range bounds** via `domain_captions.min_score`/`max_score` + `total_score > 0` —
+  drops zeros/DNP and total-leakage.
+- **sum reconciliation**: `ABS(caption_total - total_score) <= 0.05` keeps ONLY rows
+  whose 8 captions actually sum to the total — a real integrity gate.
+- **rank**: `rank_bucket` is the ROW_NUMBER-by-total rank, clamped `[1,25]`.
+
+These are **views**, so they're always fresh (recompute from `caption_scores` on
+read; cover 2013–present). **As of 2026-07-09 `computeReferenceCurvesV4.ts` reads
+`clean_reference_curve_metric_scores`** (World Class, legacy `rank-bucket` keys) —
+`metric_name` is already the slug, so no `CAPTION_MAP`. Backtested strictly better
+than the old raw+filter curve (target, curve, and pairwise-rank all improved). This
+is the design the recovered `doeixd/recovered-ml-212` pipeline used; the view existed
+in prod all along, unused. **Prefer the view for any new curve/feature work** over
+re-deriving cleaning against the raw table — and the deferred V9-builder retrain
+should read the view too.
