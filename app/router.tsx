@@ -14,7 +14,11 @@ export function createRouter() {
     defaultPreload: 'intent',
     // Reuse preloaded loader data on the real navigation instead of treating it
     // as immediately stale (0 = always refetch on click, defeating the preload).
-    defaultPreloadStaleTime: 30_000,
+    // 5 min, matching defaultStaleTime's spirit and the routes' own staleTimes
+    // (5min–Infinity): at the old 30s, an intent/visible preload expired before a
+    // slower click and the navigation refetched from origin anyway — the data is
+    // read-model output that changes only on re-emit, so minutes-stale is fine.
+    defaultPreloadStaleTime: 300_000,
     // Page data is now served from the precomputed read-model (READ_MODEL_PLAN
     // §8) and only changes when ingest re-emits, so loader results can be reused
     // across navigations rather than refetched every time. Conservative global
