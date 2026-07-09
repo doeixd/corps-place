@@ -59,32 +59,58 @@ function RecencySettings({
   recency: number[];
   onChange: (r: number[]) => void;
 }) {
-  const labels = ['Fresh ≤', 'Recent ≤', 'Stale ≤'];
+  // One row per tier; the dot colors + descriptions mirror how rankings-list.tsx
+  // fades each corps by days-since-last-competed (opacity 1 / 0.82 / 0.64 / 0.48).
+  const tiers = [
+    { label: 'Fresh', dot: 'bg-emerald-500', desc: 'full brightness' },
+    { label: 'Recent', dot: 'bg-amber-500', desc: 'lightly faded' },
+    { label: 'Stale', dot: 'bg-orange-500', desc: 'more faded' },
+  ];
   return (
     <Popover>
       <PopoverTrigger className="inline-flex h-7 items-center rounded-[min(var(--radius-md),12px)] border border-input px-2.5 text-[0.8rem] font-medium text-text-secondary transition-colors hover:bg-muted hover:text-foreground">
         Recency settings
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-60 space-y-2 p-3">
-        <p className="text-xs text-muted-foreground">
-          Dim corps that haven&apos;t performed in this many days.
-        </p>
+      <PopoverContent align="end" className="w-72 space-y-3 p-3">
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-foreground">Recency fading</p>
+          <p className="text-xs leading-snug text-muted-foreground">
+            Corps that haven&apos;t competed recently have staler standings, so each is
+            faded by how many days since its last show. Set the day cutoff for each tier:
+          </p>
+        </div>
         {recency.map((v, i) => (
-          <label key={i} className="flex items-center justify-between gap-2 text-sm">
-            <span className="text-text-secondary">{labels[i]}</span>
-            <input
-              type="number"
-              min={1}
-              value={v}
-              onChange={(e) => {
-                const next = [...recency];
-                next[i] = Math.max(1, Number(e.target.value) || 1);
-                onChange([...next].sort((a, b) => a - b));
-              }}
-              className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm outline-none focus:border-primary/60"
-            />
-          </label>
+          <div key={i} className="space-y-0.5">
+            <label className="flex items-center justify-between gap-2 text-sm">
+              <span className="flex items-center gap-2 text-text-secondary">
+                <span className={`size-1.5 shrink-0 rounded-full ${tiers[i]?.dot ?? ''}`} />
+                {tiers[i]?.label ?? ''} ≤
+              </span>
+              <span className="flex items-center gap-1.5">
+                <input
+                  type="number"
+                  min={1}
+                  value={v}
+                  onChange={(e) => {
+                    const next = [...recency];
+                    next[i] = Math.max(1, Number(e.target.value) || 1);
+                    onChange([...next].sort((a, b) => a - b));
+                  }}
+                  className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-sm outline-none focus:border-primary/60"
+                />
+                <span className="text-xs text-muted-foreground">days</span>
+              </span>
+            </label>
+            <p className="pl-3.5 text-[11px] text-muted-foreground">
+              Competed within {v} days → {tiers[i]?.desc ?? ''}.
+            </p>
+          </div>
         ))}
+        <p className="border-t border-border pt-2 text-[11px] leading-snug text-muted-foreground">
+          <span className="mr-1 inline-block size-1.5 rounded-full bg-red-500 align-middle" />
+          Longer than the Stale cutoff → most faded. Fresh corps show with no marker;
+          the others get a colored dot and a “Nd ago” note.
+        </p>
       </PopoverContent>
     </Popover>
   );
