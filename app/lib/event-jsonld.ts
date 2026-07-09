@@ -6,9 +6,9 @@ import { SITE_URL } from '@/lib/seo';
  *
  * Includes the full recommended property set when the data exists: name,
  * description, startDate, endDate, eventStatus, location (with a venue name),
- * image, performer (the corps), organizer, and offers (the ticket link). Anything
- * without real data is omitted rather than fabricated — notably endDate, which DCI
- * doesn't publish (raw end_date is empty), and price, which isn't provided.
+ * image, performer (the corps), organizer, and offers (the ticket link). DCI shows
+ * are single-day, so endDate = start date (a fact, not a guess). Price is omitted
+ * (not provided) rather than fabricated.
  */
 
 type EventLike = {
@@ -49,6 +49,8 @@ export function buildEventJsonLd(
   const loc = [event.location_city, event.location_state].filter(Boolean).join(', ');
   const image = opts.image ?? event.event_image ?? undefined;
   const performers = (opts.corps ?? []).filter(Boolean);
+  // DCI competitions are single-day events, so the show ends the day it starts.
+  const endDate = event.end_date ?? event.start_date ?? undefined;
 
   const location =
     event.venue_name || event.venue_address || loc
@@ -67,7 +69,7 @@ export function buildEventJsonLd(
     description: opts.description,
     ...(opts.scored ? { sport: 'Drum and Bugle Corps' } : {}),
     ...(event.start_date ? { startDate: event.start_date } : {}),
-    ...(event.end_date ? { endDate: event.end_date } : {}),
+    ...(endDate ? { endDate } : {}),
     eventStatus: 'https://schema.org/EventScheduled',
     ...(location ? { location } : {}),
     ...(image ? { image: [image] } : {}),
