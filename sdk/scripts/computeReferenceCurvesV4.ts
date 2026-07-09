@@ -11,6 +11,13 @@ const CAPTION_MAP: Record<string, string> = {
   "General Effect 1": "GE1",
   "General Effect 2": "GE2",
   "Visual Proficiency": "VP",
+  // DB stores this hyphenated ("Visual - Analysis", matching the "Music - *"
+  // style). The old map had ONLY the no-hyphen "Visual Analysis", which never
+  // matched, so VA silently fell through `if (!slug) continue` and was the one
+  // caption dropped on regeneration — leaving a stale/corrupt VA column (rank-8
+  // VA ~8.8 vs ~18 for every sibling). Map both forms (as the V9 subcaption
+  // builder does) so either historical spelling is picked up.
+  "Visual - Analysis": "VA",
   "Visual Analysis": "VA",
   "Color Guard": "CG",
   "Music - Brass": "MB",
