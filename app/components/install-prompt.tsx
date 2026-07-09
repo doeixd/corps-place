@@ -13,10 +13,26 @@ import { BRAND_CONFIG } from '@/lib/brand';
  * brand only. Mounted once in the root layout.
  */
 
-const DISMISS_KEY = 'a2hs-dismissed-at';
+const SEEN_KEY = 'a2hs-seen'; // set once the banner is shown, dismissed, or installed
 const COUNT_KEY = 'a2hs-pageviews';
-const DISMISS_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000; // don't nag for 2 weeks
 const MIN_PAGES = 3;
+/** Admin/test hook: dispatch this to force the banner (bypasses every gate). */
+export const INSTALL_PROMPT_TEST_EVENT = 'a2hs:test-show';
+
+/** Force-show the install banner right now (admin test button). */
+export const showInstallPromptForTest = (): void => {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(INSTALL_PROMPT_TEST_EVENT));
+};
+
+/** Clear the "seen/dismissed" + page-count state so the real prompt can recur. */
+export const resetInstallPromptState = (): void => {
+  try {
+    localStorage.removeItem('a2hs-seen');
+    sessionStorage.removeItem('a2hs-pageviews');
+  } catch {
+    /* ignore */
+  }
+};
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -35,9 +51,20 @@ const detectMobile = (): 'ios' | 'android' | null => {
   return null;
 };
 
-const dismissedRecently = (): boolean => {
-  const t = Number(localStorage.getItem(DISMISS_KEY) || 0);
-  return t > 0 && Date.now() - t < DISMISS_COOLDOWN_MS;
+const hasSeen = (): boolean => {
+  try {
+    return localStorage.getItem(SEEN_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+
+const markSeen = (): void => {
+  try {
+    localStorage.setItem(SEEN_KEY, '1');
+  } catch {
+    /* ignore */
+  }
 };
 
 export function InstallPrompt() {
@@ -46,9 +73,10 @@ export function InstallPrompt() {
   const [platform, setPlatform] = useState<'ios' | 'android' | null>(null);
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [show, setShow] = useState(false);
+  const [forced, setForced] = useState(false); // admin/test force-show (bypasses gates)
 
-  // Capture the install event (Android) as early as the component mounts, and
-  // hide/record if the app gets installed.
+  // Capture the install event (Android) as early as the component mounts, record
+  // install, and listen for the admin test hook.
   useEffect(() => {
     setPlatform(detectMobile());
     const onBIP = (e: Event) => {
@@ -57,26 +85,30 @@ export function InstallPrompt() {
     };
     const onInstalled = () => {
       setShow(false);
-      try {
-        localStorage.setItem(DISMISS_KEY, String(Date.now()));
-      } catch {
-        /* ignore */
-      }
+      markSeen();
+    };
+    const onTest = () => {
+      setForced(true);
+      setShow(true);
     };
     window.addEventListener('beforeinstallprompt', onBIP);
     window.addEventListener('appinstalled', onInstalled);
+    window.addEventListener(INSTALL_PROMPT_TEST_EVENT, onTest);
     return () => {
       window.removeEventListener('beforeinstallprompt', onBIP);
       window.removeEventListener('appinstalled', onInstalled);
+      window.removeEventListener(INSTALL_PROMPT_TEST_EVENT, onTest);
     };
   }, []);
 
-  // Count page views this session; reveal once engaged + eligible.
+  // Count page views this session; reveal once engaged + eligible. Never when the
+  // app is already installed (standalone) or the user has already seen/dismissed
+  // it. (The admin test hook bypasses all of this.)
   useEffect(() => {
     if (brand !== 'corps') return; // the drum-corps app only
     let eligible = false;
     try {
-      if (isStandalone() || dismissedRecently()) return;
+      if (isStandalone() || hasSeen()) return;
       const p = detectMobile();
       if (!p) return; // mobile only
       const n = Number(sessionStorage.getItem(COUNT_KEY) || 0) + 1;
@@ -87,20 +119,22 @@ export function InstallPrompt() {
     }
     if (!eligible) return;
     // Android: only once we actually captured an install event; iOS: always (manual).
-    if (detectMobile() === 'ios' || deferred) setShow(true);
+    if (detectMobile() === 'ios' || deferred) {
+      markSeen(); // shown once → don't show again on a later visit
+      setShow(true);
+    }
   }, [pathname, brand, deferred]);
 
-  if (!show || !platform) return null;
+  // Normal flow needs a detected mobile platform; the forced test preview renders
+  // even on desktop (falls back to the instructional variant).
+  if (!show || (!platform && !forced)) return null;
 
   const name = BRAND_CONFIG[brand].name;
   const icon = brand === 'jobs' ? '/pwa-jobs-192.png' : '/pwa-192.png';
 
   const dismiss = () => {
-    try {
-      localStorage.setItem(DISMISS_KEY, String(Date.now()));
-    } catch {
-      /* ignore */
-    }
+    markSeen();
+    setForced(false);
     setShow(false);
   };
 
@@ -133,7 +167,9 @@ export function InstallPrompt() {
         <div className="min-w-0 flex-1">
           <div className="text-sm font-semibold leading-tight">Install {name}</div>
           <div className="mt-0.5 text-xs text-text-secondary">
-            {platform === 'ios' ? (
+            {deferred ? (
+              'Add it to your home screen for a faster, full-screen app.'
+            ) : (
               <>
                 Tap{' '}
                 <svg
@@ -151,12 +187,10 @@ export function InstallPrompt() {
                 </svg>{' '}
                 Share, then “Add to Home Screen”.
               </>
-            ) : (
-              'Add it to your home screen for a faster, full-screen app.'
             )}
           </div>
         </div>
-        {platform === 'android' && deferred ? (
+        {deferred ? (
           <button
             type="button"
             onClick={install}
