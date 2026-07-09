@@ -1,6 +1,7 @@
-import { createFileRoute, notFound } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { createFileRoute, notFound, useRouter } from '@tanstack/react-router';
+import { useEffect, useMemo, useState } from 'react';
 import { Show } from 'jotai-solid-api';
+import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import { getShopCategory } from '@/lib/server-fns/hybrid';
 import { selectProducts } from '@/lib/merch-filtering';
 import type { MerchSort, MerchFilterContext } from '@/lib/merch-filtering';
@@ -55,6 +56,18 @@ function CategoryPage() {
   const category = Route.useLoaderData();
   const searchParams = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  // Background warm-up: idle-preload this category's product detail pages.
+  const router = useRouter();
+  useEffect(() => {
+    const targets = category.products
+      .flatMap((p) =>
+        p.productId ? [{ to: '/shop/$productId', params: { productId: p.productId } }] : []
+      )
+      .slice(0, 40);
+    return warmRoutesOnIdle(router as never, targets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, category.products.length]);
   const [search, setSearch] = useState('');
   const [stores, setStores] = useState<string[]>([]);
   const [sort, setSort] = useState<MerchSort>('featured');

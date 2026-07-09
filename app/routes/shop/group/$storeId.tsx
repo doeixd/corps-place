@@ -1,5 +1,6 @@
-import { createFileRoute, notFound, Link } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { createFileRoute, notFound, Link, useRouter } from '@tanstack/react-router';
+import { useEffect, useMemo, useState } from 'react';
+import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import { Show } from 'jotai-solid-api';
 import { getShopGroup } from '@/lib/server-fns/hybrid';
 import { selectProducts } from '@/lib/merch-filtering';
@@ -68,6 +69,19 @@ function GroupStorefront() {
   const group = Route.useLoaderData();
   const searchParams = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  // Background warm-up: idle-preload this store's product detail pages so the
+  // first product click is instant (closes the /shop → group → product path).
+  const router = useRouter();
+  useEffect(() => {
+    const targets = group.products
+      .flatMap((p) =>
+        p.productId ? [{ to: '/shop/$productId', params: { productId: p.productId } }] : []
+      )
+      .slice(0, 40);
+    return warmRoutesOnIdle(router as never, targets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, group.products.length]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [sort, setSort] = useState<MerchSort>('featured');
