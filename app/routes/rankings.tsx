@@ -29,9 +29,11 @@ import {
   rankingsCanonicalPath,
 } from '@/lib/rankings/codec';
 
-// In-season, corps compete every 1–2 days, so a few days without a show already
-// means a stale standing. Fresh ≤3, Recent ≤7, Stale ≤14 (was 7/14/28).
-const DEFAULT_RECENCY = [3, 7, 14];
+// Data-driven from 2022–25 World/Open Jun–Aug inter-show gaps (n=2150): corps
+// compete every 1–2 days (median 2), and ≤3d covers 87% of consecutive-show gaps,
+// ≤5d = p95, ≤8d = p98. So Fresh ≤3 (on the normal cadence), Recent ≤5 (a short
+// break), Stale ≤8 (a real break); beyond that is rare (extended absence / done).
+const DEFAULT_RECENCY = [3, 5, 8];
 const DIVISION_LABELS: Record<string, string> = { world: 'World', open: 'Open', 'all-age': 'All-Age' };
 
 // SEO phrase for the selected divisions — drives the h1/title/description so the
