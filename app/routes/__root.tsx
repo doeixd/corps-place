@@ -17,6 +17,7 @@ import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { SiteNav } from '@/components/site-nav';
+import { InstallPrompt } from '@/components/install-prompt';
 import { AnnouncementBanner } from '@/components/announcement-banner';
 import { ConsentGate } from '@/components/consent-gate';
 import { AnalyticsTracker } from '@/components/analytics-tracker';
@@ -119,6 +120,13 @@ function FavoriteHeadBranding({
         data-app-icon="true"
       />
       <meta name="theme-color" content={themeColor} suppressHydrationWarning />
+      {/* PWA: make the site installable (Add to Home Screen). The manifest is a
+          host-aware server route; the apple-* metas give iOS a standalone shell
+          since it ignores the manifest's `display: standalone`. */}
+      <link rel="manifest" href="/manifest.webmanifest" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     </>
   );
 }
@@ -448,6 +456,7 @@ function RootComponent() {
             <NavigationProgressBar />
             <ThemeToggle className="fixed top-4 right-4 z-50" ssrTheme={theme ?? undefined} />
             <SiteNav />
+            <InstallPrompt />
             <ConsentGate />
             <DeferredToaster theme={theme ?? 'system'} />
             {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl

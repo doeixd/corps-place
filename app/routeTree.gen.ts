@@ -88,6 +88,7 @@ import { Route as AdminFantasyLeaguesRouteImport } from './routes/admin/fantasy/
 import { Route as EventsYearSlugSlugPredictionRouteImport } from './routes/events/$yearSlug/$slug/prediction'
 import { ServerRoute as SitemapDotxmlServerRouteImport } from './routes/sitemap[.]xml'
 import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]txt'
+import { ServerRoute as ManifestDotwebmanifestServerRouteImport } from './routes/manifest[.]webmanifest'
 import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[.]ico'
 import { ServerRoute as AppIconDotsvgServerRouteImport } from './routes/app-icon[.]svg'
 import { ServerRoute as ReadModelStaffServerRouteImport } from './routes/read-model/staff'
@@ -515,6 +516,12 @@ const RobotsDottxtServerRoute = RobotsDottxtServerRouteImport.update({
   path: '/robots.txt',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ManifestDotwebmanifestServerRoute =
+  ManifestDotwebmanifestServerRouteImport.update({
+    id: '/manifest.webmanifest',
+    path: '/manifest.webmanifest',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
 const FaviconDoticoServerRoute = FaviconDoticoServerRouteImport.update({
   id: '/favicon.ico',
   path: '/favicon.ico',
@@ -1265,6 +1272,7 @@ export interface RootRouteChildren {
 export interface FileServerRoutesByFullPath {
   '/app-icon.svg': typeof AppIconDotsvgServerRoute
   '/favicon.ico': typeof FaviconDoticoServerRoute
+  '/manifest.webmanifest': typeof ManifestDotwebmanifestServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/collect': typeof ApiCollectServerRoute
@@ -1306,6 +1314,7 @@ export interface FileServerRoutesByFullPath {
 export interface FileServerRoutesByTo {
   '/app-icon.svg': typeof AppIconDotsvgServerRoute
   '/favicon.ico': typeof FaviconDoticoServerRoute
+  '/manifest.webmanifest': typeof ManifestDotwebmanifestServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/collect': typeof ApiCollectServerRoute
@@ -1348,6 +1357,7 @@ export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
   '/app-icon.svg': typeof AppIconDotsvgServerRoute
   '/favicon.ico': typeof FaviconDoticoServerRoute
+  '/manifest.webmanifest': typeof ManifestDotwebmanifestServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/collect': typeof ApiCollectServerRoute
@@ -1391,6 +1401,7 @@ export interface FileServerRouteTypes {
   fullPaths:
     | '/app-icon.svg'
     | '/favicon.ico'
+    | '/manifest.webmanifest'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/collect'
@@ -1432,6 +1443,7 @@ export interface FileServerRouteTypes {
   to:
     | '/app-icon.svg'
     | '/favicon.ico'
+    | '/manifest.webmanifest'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/collect'
@@ -1473,6 +1485,7 @@ export interface FileServerRouteTypes {
     | '__root__'
     | '/app-icon.svg'
     | '/favicon.ico'
+    | '/manifest.webmanifest'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/collect'
@@ -1515,6 +1528,7 @@ export interface FileServerRouteTypes {
 export interface RootServerRouteChildren {
   AppIconDotsvgServerRoute: typeof AppIconDotsvgServerRoute
   FaviconDoticoServerRoute: typeof FaviconDoticoServerRoute
+  ManifestDotwebmanifestServerRoute: typeof ManifestDotwebmanifestServerRoute
   RobotsDottxtServerRoute: typeof RobotsDottxtServerRoute
   SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
   ApiCollectServerRoute: typeof ApiCollectServerRoute
@@ -2096,6 +2110,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof RobotsDottxtServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/manifest.webmanifest': {
+      id: '/manifest.webmanifest'
+      path: '/manifest.webmanifest'
+      fullPath: '/manifest.webmanifest'
+      preLoaderRoute: typeof ManifestDotwebmanifestServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/favicon.ico': {
       id: '/favicon.ico'
       path: '/favicon.ico'
@@ -2496,6 +2517,7 @@ export const routeTree = rootRouteImport
 const rootServerRouteChildren: RootServerRouteChildren = {
   AppIconDotsvgServerRoute: AppIconDotsvgServerRoute,
   FaviconDoticoServerRoute: FaviconDoticoServerRoute,
+  ManifestDotwebmanifestServerRoute: ManifestDotwebmanifestServerRoute,
   RobotsDottxtServerRoute: RobotsDottxtServerRoute,
   SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
   ApiCollectServerRoute: ApiCollectServerRoute,
