@@ -52,7 +52,9 @@ const PAGES = [
   { path: '/corps/bluecoats', sel: 'h1', label: 'corps detail' },
   { path: '/judges', sel: '[data-grid-key], a[href*="/judges/"]', label: 'judges directory' },
   { path: '/judges/m-turner-1', sel: 'h1', label: 'judge detail (slimmed loader)' },
-  { path: '/rankings', sel: 'table, [class*=rank]', label: 'rankings' },
+  // Rankings renders an SVG bump chart + a list (no <table>); the chart SVG is
+  // the reliable "real content" signal.
+  { path: '/rankings', sel: 'svg path, a[href*="/corps/"]', label: 'rankings', waitMs: 12000 },
   { path: '/vs', sel: 'h1', label: 'vs' },
   { path: '/shop', sel: 'a[href*="/shop/"]', label: 'shop' },
   {
