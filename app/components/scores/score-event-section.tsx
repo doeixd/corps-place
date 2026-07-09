@@ -15,7 +15,8 @@ const yearOf = (slug: string) => slug.match(/^(\d{4})/)?.[1] ?? '';
 // the gated branches type-check either way.
 const SCORES_ANIMATIONS: boolean = false;
 
-type RecapData = { recap: FullEventRecap | null; corps: RecapCorpsRef[] };
+export type ScoreRecapData = { recap: FullEventRecap | null; corps: RecapCorpsRef[] };
+type RecapData = ScoreRecapData;
 
 // In-memory session cache of fetched recaps, keyed by event slug. The service
 // worker already caches the `/read-model/recaps/` responses (SWR), but that
@@ -47,6 +48,7 @@ export function ScoreEventSection({
   date,
   place,
   corpsCount = 0,
+  initial = null,
 }: {
   slug: string;
   name: string;
@@ -55,13 +57,24 @@ export function ScoreEventSection({
   /** Expected scored-corps count (from the event's lineup_entries) — sizes the
    *  placeholder so the recap doesn't cause a big jump when it loads. */
   corpsCount?: number;
+  /** SSR-inlined recap (the /scores loader ships the first couple so the top of
+   *  the page shows real tables at first paint instead of skeletons-until-
+   *  hydration). Renders on the server too — no observer, no fetch. */
+  initial?: RecapData | null;
 }) {
   const ref = useRef<HTMLElement>(null);
-  // Seed from the session cache: if we already fetched this event's recap, render
-  // it immediately (no observer, no placeholder). Lazy initializers so the lookup
-  // runs once at mount, not on every render.
-  const [inView, setInView] = useState(() => recapCache.has(slug));
-  const [data, setData] = useState<RecapData | null>(() => recapCache.get(slug) ?? null);
+  // Seed from the session cache or the SSR-inlined payload: render immediately
+  // (no observer, no placeholder). Lazy initializers so the lookup runs once at
+  // mount, not on every render.
+  // recapCache is browser-only: on the server the module is a cross-request
+  // singleton, and caching there would pin stale recaps into SSR HTML.
+  const inBrowser = typeof document !== 'undefined';
+  const [inView, setInView] = useState(() => (inBrowser && recapCache.has(slug)) || !!initial);
+  const [data, setData] = useState<RecapData | null>(() => {
+    const seeded = (inBrowser ? recapCache.get(slug) : null) ?? initial ?? null;
+    if (seeded && inBrowser && !recapCache.has(slug)) recapCache.set(slug, seeded);
+    return seeded;
+  });
 
   useEffect(() => {
     const el = ref.current;
