@@ -392,9 +392,13 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
         : {};
 
     // Once scores are released, upgrade the page's SEO to a results page: the
-    // scores-podium OG image (so a share shows the placements, not the site card),
-    // a SportsEvent with the ranked corps as competitors, and a WebPage with
-    // dateModified so search engines pick up that scores just posted.
+    // scores-podium OG image (so a share shows the placements, not the site card)
+    // and a SportsEvent with the ranked corps as competitors. We deliberately do
+    // NOT emit dateModified: there's no honest per-event "scores modified"
+    // timestamp in the read-model (the show date is a guess, generated_at is the
+    // prediction time and churns nightly, built_at is site-wide) — a fabricated
+    // one would falsely signal freshness. Google picks up the real change from the
+    // scores appearing in the HTML on re-crawl.
     const ranked = ((d.recap?.scores ?? []) as Array<{ corps?: string; rank?: number }>)
       .filter((s) => s.corps)
       .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
@@ -443,16 +447,6 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
       ...(hasScores ? { image: `${SITE_URL}/api/og/score/${params.slug}` } : {}),
       jsonLd: [
         eventLd,
-        // Freshness hint: scores post on show day, so dateModified = the show date.
-        hasScores && e.start_date
-          ? {
-              '@context': 'https://schema.org',
-              '@type': 'WebPage',
-              url,
-              name: title,
-              dateModified: e.start_date,
-            }
-          : null,
         breadcrumbLd([
           { name: 'Home', path: '/' },
           { name: 'Events', path: '/events' },
