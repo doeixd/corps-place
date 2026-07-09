@@ -155,6 +155,33 @@ function main() {
     if (!Number.isFinite(rank) || rank < 1 || rank > MAX_RANK) delete finalLookup[key];
   }
 
+  // 4a0b. Guarantee full [1,25] rank coverage. The consumer (`v9Baselines.ts`
+  // `selectRank`) CLAMPS the lookup rank to [1,25], but the data can be sparse at
+  // the deep field — e.g. no World-Class corps has ever placed 25th (max field is
+  // 24), so there's no rank-25 row. A clamped rank-25 lookup would then miss every
+  // fallback and hit the hard-coded 15 default (a garbage baseline for all 8
+  // captions). Clone the nearest present rank into any missing rank so the whole
+  // clamp range always resolves. (Rank 25 ≈ rank 24 — both deep field.)
+  {
+    const buckets = Array.from({ length: 21 }, (_, i) => i * 5);
+    const rankHasData = (r: number) => buckets.some((b) => finalLookup[`${r}-${b}`]);
+    for (let r = 1; r <= MAX_RANK; r++) {
+      if (rankHasData(r)) continue;
+      // nearest present rank (prefer lower/adjacent)
+      let src = -1;
+      for (let d = 1; d < MAX_RANK && src < 0; d++) {
+        if (r - d >= 1 && rankHasData(r - d)) src = r - d;
+        else if (r + d <= MAX_RANK && rankHasData(r + d)) src = r + d;
+      }
+      if (src < 0) continue; // no data anywhere — the guard will reject
+      for (const b of buckets) {
+        const from = finalLookup[`${src}-${b}`];
+        if (from) finalLookup[`${r}-${b}`] = { ...from };
+      }
+      console.log(`Filled missing rank ${r} from nearest rank ${src} (deep-field clamp coverage).`);
+    }
+  }
+
   // 4a. Fill any residual hole (e.g. the sparse rank-100 sentinel key) with the
   // key's sibling mean, so a caption is never absent for a key that exists. VA≈
   // its siblings, so the mean is the right anchor; this is the last line of
