@@ -59,3 +59,38 @@ export function warmRoutesOnIdle(
     cancelled = true;
   };
 }
+
+/**
+ * Background-preload a list of image URLs into the browser cache (idle +
+ * connection-gated, same discipline as warmRoutesOnIdle). Pass the *exact* URL
+ * the page will request (e.g. the proxiedImage variant) so the later render is a
+ * cache hit. Returns a cleanup that cancels remaining loads.
+ */
+export function warmImagesOnIdle(
+  urls: readonly string[],
+  { concurrency = 3 }: { concurrency?: number } = {}
+): () => void {
+  if (typeof window === 'undefined' || urls.length === 0 || !connectionAllowsWarm()) {
+    return () => {};
+  }
+  let cancelled = false;
+  let i = 0;
+  const next = (): void => {
+    if (cancelled || i >= urls.length) return;
+    if (document.visibilityState === 'hidden') {
+      onIdle(next);
+      return;
+    }
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => onIdle(next);
+    img.onerror = () => onIdle(next);
+    img.src = urls[i++]!;
+  };
+  onIdle(() => {
+    for (let w = 0; w < concurrency; w++) onIdle(next);
+  });
+  return () => {
+    cancelled = true;
+  };
+}

@@ -39,6 +39,9 @@ export type CorpsSummary = {
   color_primary: string | null;
   color_secondary: string | null;
   color_source: string | null; // 'auto' | 'manual' | null
+  // Cover/hero photo URL (only ~15% of corps have one). Carried in the directory
+  // so /corps can background-preload covers → the detail page's hero is instant.
+  corps_photo: string | null;
   aliases: readonly string[];
 };
 
@@ -46,7 +49,6 @@ export type CorpsSummary = {
 export type CorpsDetail = CorpsSummary & {
   about: string | null;
   description: string | null;
-  corps_photo: string | null;
   website: string | null;
   facebook: string | null;
   twitter: string | null;
@@ -176,7 +178,7 @@ export const buildCorpsDirectory = async (db: Client): Promise<CorpsSummary[]> =
       )
       SELECT c.corps_key, c.slug, c.name, c.division_name, c.display_city, c.corps_logo,
         COALESCE(c.corps_logo_dark, 0) AS corps_logo_dark, c.corps_logo_dark_url,
-        c.color_primary, c.color_secondary, c.color_source,
+        c.color_primary, c.color_secondary, c.color_source, c.corps_photo,
         CASE WHEN ac.corps_key IS NOT NULL THEN 1 ELSE 0 END AS active,
         CASE WHEN pc.corps_key IS NOT NULL THEN 1 ELSE 0 END AS performing,
         -- Alumni/legacy facet: matched via the 'alumni' patterns on the
@@ -490,7 +492,7 @@ export const buildCorpsByKeys = async (
     sql: `
       SELECT corps_key, slug, name, division_name, display_city, corps_logo,
              COALESCE(corps_logo_dark, 0) AS corps_logo_dark, corps_logo_dark_url,
-             color_primary, color_secondary, color_source,
+             color_primary, color_secondary, color_source, corps_photo,
              active, 0 AS performing, 0 AS is_alumni
       FROM corps
       WHERE corps_key IN (${placeholders})

@@ -4,7 +4,8 @@ import { Show } from 'jotai-solid-api';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { corpsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
-import { warmRoutesOnIdle } from '@/lib/warm-routes';
+import { warmRoutesOnIdle, warmImagesOnIdle } from '@/lib/warm-routes';
+import { proxiedImage } from '@/lib/media';
 import type { CorpsSummary } from '@/lib/corps-directory';
 import { searchString } from '@/lib/utils';
 import * as CorpsPredicates from '@/predicates/corps';
@@ -103,6 +104,24 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
     return warmRoutesOnIdle(router as never, targets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, corps.length]);
+
+  // Also background-preload the corps cover/hero images (only ~15% of corps have
+  // one) at the width the detail page's hero will request, so that hero renders
+  // instantly on click. Pairs with the route warm above.
+  useEffect(() => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    // Mirror the detail cover's sizes: 28rem (448px) on wide screens, else 100vw.
+    const cssWidth = window.innerWidth >= 1024 ? 448 : window.innerWidth;
+    const widths = [384, 480, 640, 768, 896, 1024];
+    const need = cssWidth * dpr;
+    const w = widths.find((x) => x >= need) ?? 1024;
+    const urls = corps
+      .flatMap((c) => (c.corps_photo ? [proxiedImage(c.corps_photo, { width: w, assumeCached: true })] : []))
+      .filter((u): u is string => !!u)
+      .slice(0, 60);
+    return warmImagesOnIdle(urls);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [corps.length]);
 
   const division = search.cls ?? 'all';
   const searchTerm = search.q ?? '';

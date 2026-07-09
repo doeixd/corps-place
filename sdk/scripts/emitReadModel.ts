@@ -127,7 +127,9 @@ import {
 // v20: + rm_event_prediction_snapshots — per-event "forecast as of ___" recap history
 //      (one row per snapshot day; recap_json), for the prediction-page date scrubber
 //      (FORECAST_AS_OF_PREDICTION_PAGE_PLAN).
-const SCHEMA_VERSION = 20;
+// v21: rm_corps gains corps_photo (cover/hero URL) so /corps can background-preload
+//      covers → the corps detail page's hero image renders instantly.
+const SCHEMA_VERSION = 21;
 
 type Section =
   | "events"
@@ -324,7 +326,7 @@ CREATE TABLE rm_event_competition_resolution (
 CREATE TABLE rm_corps (
   corps_key TEXT PRIMARY KEY, slug TEXT, name TEXT, division_name TEXT, display_city TEXT,
   corps_logo TEXT, corps_logo_dark INTEGER, corps_logo_dark_url TEXT,
-  color_primary TEXT, color_secondary TEXT, color_source TEXT,
+  color_primary TEXT, color_secondary TEXT, color_source TEXT, corps_photo TEXT,
   active INTEGER, performing INTEGER, is_alumni INTEGER,
   aliases_json TEXT, sort_index INTEGER
 );
@@ -869,6 +871,7 @@ export const runEmit = async (args: Args) => {
         c.color_primary,
         c.color_secondary,
         c.color_source,
+        c.corps_photo,
         c.active,
         c.performing,
         c.is_alumni,
@@ -890,6 +893,7 @@ export const runEmit = async (args: Args) => {
           "color_primary",
           "color_secondary",
           "color_source",
+          "corps_photo",
           "active",
           "performing",
           "is_alumni",
