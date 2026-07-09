@@ -6,7 +6,11 @@
 //   • navigations (HTML docs) → NetworkFirst (online = fresh SSR, offline = cache)
 //   • hashed static assets     → CacheFirst (immutable, content-hashed names)
 //   • /read-model/*.json       → StaleWhileRevalidate (offline payload)
-//   • /api/*, server fns, POST → bypassed entirely (never intercepted/cached)
+//   • hybrid server fns (GET)  → StaleWhileRevalidate — these are pure read-model
+//     reads (no auth/cookies; see the nitro routeRule that marks them public) and
+//     are the loader data for the directory pages, so caching them makes those
+//     pages work offline and repeat-render instantly
+//   • /api/*, other server fns, POST → bypassed entirely (never intercepted/cached)
 //
 // Cache name carries a version; bump CACHE_VERSION (or rely on the activate step
 // that drops caches not matching) to invalidate. The client registration keys
@@ -45,6 +49,13 @@ const isAsset = (url) =>
 
 const isData = (url) => url.pathname.startsWith('/read-model/');
 
+// The hybrid server-fns are the ONE cacheable server-fn family: pure read-model
+// reads, same JSON for everyone until the next emit (mirrors the nitro routeRule
+// that stamps them `public, max-age=300`). Everything else under /_serverFn stays
+// bypassed (auth/fantasy/admin must always hit the network).
+const isHybridFnData = (url) =>
+  url.pathname.startsWith('/_serverFn/app_lib_server-fns_hybrid_ts--');
+
 // Drop cached entries for the same shard path that carry a different ?v= (i.e.
 // superseded by a newer emit), keeping DATA_CACHE to one entry per shard.
 const pruneSupersededShards = async (cache, currentUrl) => {
@@ -74,7 +85,7 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return; // never cache mutations
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return; // same-origin only
-  if (isBypassed(url)) return; // server fns / API — passthrough
+  if (isBypassed(url) && !isHybridFnData(url)) return; // server fns / API — passthrough
 
   // Navigations: NetworkFirst so online always renders fresh SSR; cache the doc
   // for offline, and fall back to the cached doc (then any cached doc) offline.
@@ -114,7 +125,9 @@ self.addEventListener('fetch', (event) => {
   // new URL — so CacheFirst: serve from cache, never revalidate. The unversioned
   // entry points (manifest.json/meta.json) are how a new version is discovered, so
   // they stay StaleWhileRevalidate. (Pairs with the proxy.mjs cache policy.)
-  if (isData(url)) {
+  if (isData(url) || isHybridFnData(url)) {
+    // Hybrid fn URLs carry ?payload= (never ?v=), so they always take the
+    // StaleWhileRevalidate branch below — instant from cache, refreshed behind.
     const immutable = url.searchParams.has('v');
     event.respondWith(
       (async () => {
