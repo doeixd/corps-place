@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { warmRoutesOnIdle } from '@/lib/warm-routes';
 import { useMachine } from '@xstate/react';
@@ -12,55 +12,13 @@ import { PageHeader } from '@/components/page-header';
 import { SeasonChips } from '@/components/filter-chips';
 import { Input } from '@/components/ui/input';
 import { Icon } from '@/components/icon';
-import { Search01Icon, Megaphone01Icon, Cancel01Icon } from '@/components/icons/generated';
+import { Search01Icon } from '@/components/icons/generated';
 import { ScoreEventSection } from '@/components/scores/score-event-section';
 import { seoHead, breadcrumbLd, SITE_URL } from '@/lib/seo';
 
 type ScoresSearch = { season?: string; q?: string };
 
 const CURRENT_SCORES_SEASON = '2026';
-
-// One-time dismissible discovery nudge for score alerts (localStorage-gated,
-// mounted-gated so SSR/hydration render nothing and dismissal sticks).
-const NUDGE_KEY = 'score-notify-nudge-dismissed:v1';
-
-function ScoreNotifyNudge() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    try {
-      setVisible(localStorage.getItem(NUDGE_KEY) !== '1');
-    } catch {
-      /* storage unavailable — keep hidden */
-    }
-  }, []);
-  if (!visible) return null;
-  const dismiss = () => {
-    setVisible(false);
-    try {
-      localStorage.setItem(NUDGE_KEY, '1');
-    } catch {
-      /* ignore */
-    }
-  };
-  return (
-    <div className="mb-4 flex items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 text-sm text-text-secondary">
-      <Icon icon={Megaphone01Icon} size="sm" className="shrink-0 text-primary" />
-      <p className="min-w-0 flex-1">
-        Never miss a score — every corps page and upcoming event page has a{' '}
-        <span className="font-medium text-text-primary">Notify me</span> button for email or push
-        alerts the moment results post.
-      </p>
-      <button
-        type="button"
-        onClick={dismiss}
-        aria-label="Dismiss"
-        className="shrink-0 rounded p-1 text-text-muted hover:text-text-primary"
-      >
-        <Icon icon={Cancel01Icon} size="sm" />
-      </button>
-    </div>
-  );
-}
 
 const place = (city?: string | null, state?: string | null) =>
   [city, state].filter(Boolean).join(', ') || null;
@@ -86,10 +44,15 @@ export const Route = createFileRoute('/scores/')({
   loader: async ({ deps }) => await getHybridEventsDirectory({ data: { season: deps.season } }),
   head: ({ loaderData }) => {
     const n = loaderData?.scoredTotal ?? 0;
+    const season = CURRENT_SCORES_SEASON;
     return seoHead({
-      title: 'Drum Corps Scores & Full Recaps by Season',
-      description: `Final scores and complete caption-by-caption recaps from ${n} scored drum corps shows — browse results by season on DrumCorps.app.`,
+      title: `${season} DCI Drum Corps Scores & Recaps — World Class, Open Class`,
+      description:
+        `${season} DCI drum corps scores and full caption-by-caption recaps: World Class and ` +
+        `Open Class results, placements and GE/Visual/Music breakdowns from ${n} scored shows. ` +
+        `Browse every DCI season on DrumCorps.app.`,
       path: '/scores',
+      image: `${SITE_URL}/api/og/score/${season}`,
       jsonLd: [
         breadcrumbLd([
           { name: 'Home', path: '/' },
@@ -97,7 +60,21 @@ export const Route = createFileRoute('/scores/')({
         ]),
         {
           '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: `${season} DCI Drum Corps Scores & Recaps`,
+          description: `World Class and Open Class scores and full recaps from the ${season} Drum Corps International season.`,
+          url: `${SITE_URL}/scores`,
+          isPartOf: { '@type': 'WebSite', name: 'DrumCorps.app', url: SITE_URL },
+          about: [
+            { '@type': 'Thing', name: 'Drum Corps International' },
+            { '@type': 'Thing', name: 'World Class' },
+            { '@type': 'Thing', name: 'Open Class' },
+          ],
+        },
+        {
+          '@context': 'https://schema.org',
           '@type': 'ItemList',
+          name: `${season} DCI Drum Corps Scores`,
           itemListElement: (loaderData?.events ?? [])
             .filter((e) => e.scores_released)
             .slice(0, 100)
@@ -179,13 +156,11 @@ function ScoresIndex() {
   return (
     <PageShell>
       <PageHeader
-        title="Drum Corps Scores & Recaps"
-        subtitle="Final results & full caption recaps by season"
+        title={`${CURRENT_SCORES_SEASON} DCI Drum Corps Scores — World Class & Open Class`}
+        subtitle="Final results and full caption-by-caption recaps, by season"
         backTo="/"
         backLabel="Home"
       />
-
-      <ScoreNotifyNudge />
 
       <div className="mb-6 flex items-center gap-2">
         <div className="relative w-full sm:w-80">
