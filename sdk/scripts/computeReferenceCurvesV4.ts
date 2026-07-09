@@ -57,12 +57,17 @@ function main() {
   // no-hyphen key). We assert on this below instead of shipping a hole.
   const matchedPerSlug: Record<string, number> = {};
 
-  // Reject unclean caption scores before they contaminate the averages. A real
-  // subcaption sits in (0, ~20]; the DB has ~1250 poison rows in the active
-  // range — full TOTALS (80-99) leaked into Music/Visual subcaption cells
-  // (mostly 2017-2019) and 0.0 sentinels — that would drag/spike the curve.
-  // 25 keeps legitimately high GE (older scale tops out ~24) while dropping the
-  // 40-99 total-leakage. Zeros are never a real caption score here.
+  // Drop out-of-range caption scores. A real subcaption sits in (0, ~20] (older
+  // GE scale reaches ~24). This is an EXCLUSION OF NON-DATA, not a discard of
+  // signal — see DATA_QUALITY_NOTES.md §11b for the full audit:
+  //   - Zeros (<=0): the ONLY out-of-range rows that reach this curve are ~565
+  //     all-zero panels (74 World-Class corps-events) = DNP/standstill/no-recap.
+  //     total_score=0 and subcaptions=0/absent too, so they're GENUINELY MISSING,
+  //     not repairable — averaging them in just drags cells toward zero.
+  //   - High (>25): full I&E/individual totals (80-99) on the ~100 scale (e.g. an
+  //     individual soloist). The `division_name='World Class'` filter in the query
+  //     already excludes these; the 25 ceiling is belt-and-suspenders vs a future
+  //     mis-tagged division. It also preserves legit high GE.
   const VALID_MIN = 0; // exclusive
   const VALID_MAX = 25; // inclusive
   let droppedRange = 0;

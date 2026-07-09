@@ -379,16 +379,44 @@ does; the curve generator now does too) and **whitelist** caption names so anyth
 unknown is skipped. The generator now **aborts** if any mapped caption matches 0
 source rows — a rename can no longer silently drop a caption.
 
-### 11b. Total-value leakage & zeros in subcaption cells
+### 11b. Out-of-range caption scores — and why the fix is *exclude*, not *repair*
 
-A real subcaption tops out ~20 (older GE scale reaches ~24). But `caption_scores`
-has ~1250 rows in the curve's active range that are **full totals (80–99) stored in
-a subcaption cell** — `Music - Brass` up to 99, `Music - Percussion` 97.5,
-`Visual Proficiency` 93 — concentrated in **2017–2019** — plus `0.0` sentinels.
-Averaged in, these spike or drag the curve.
+A real subcaption tops out ~20 (older GE scale reaches ~24). Two out-of-range
+classes exist in `caption_scores`; we investigated repairing them (2026-07-09) and
+concluded **neither is a corrupted value that can be repaired** — one is off-domain,
+the other is genuinely absent. Excluding is correct, not lazy. Details:
 
-**Fix / prevention:** the generator now filters to `0 < score <= 25` (keeps legit
-high GE, drops the 40–99 leakage and zeros) and logs the drop count.
+**(1) High values (80–99) = off-domain I&E scores, NOT corruption, and they never
+reach the curve.** ~700 rows have a full total (80–99) in a subcaption cell
+(`Music - Brass` up to 99, `Visual Proficiency` 93), concentrated in 2017–2019.
+These are **Individual & Ensemble / individual-performer** rows scored on the ~100
+scale — e.g. `noah-aguillon-troopers` is *Noah Aguillon*, an individual brass
+soloist at a "Performers Showcase"; his `89.0` **is** the correct I&E total. Nothing
+to repair — the value is right for what it is, just off-domain. The generator's
+existing `WHERE cs.division_name = 'World Class'` filter **already excludes all of
+them** — 0 reach the World-Class curve. (The `score <= 25` upper bound below is
+belt-and-suspenders against a future mis-tagged division.)
+
+**(2) Zeros = genuinely MISSING data (DNP / standstill / no-recap), NOT repairable.**
+The only out-of-range rows that actually reach the curve are **565 all-zero panels**
+across **74 World-Class corps-events**: `total_score = 0`, all 8 captions `0`, and
+the matching `subcaption_scores` are `0`/absent too. These are corps that didn't
+receive a scored caption breakdown (exhibition, standstill, DNP, missing recap).
+**0 of 565 are recoverable** from any source (0 have a real total; 0 have matching
+non-zero subcaptions), so "repair" would mean **fabricating** scores — which biases
+the curve worse than dropping the row. Averaged in un-dropped, they drag cells toward
+zero.
+
+**Where repair *would* be valid** — a real World-Class corps in a real show with one
+zeroed caption and 7 clean siblings (recompute the one cell from `subcaption_scores`
+or `total − Σsiblings`) — the entire history has **~1 such row**. Not worth a code
+path.
+
+**Fix / prevention:** the generator filters to `0 < score <= 25` and logs the drop
+count. Read this as *"drop panels with no recorded caption data (zeros) and any
+stray out-of-domain magnitude"* — an **exclusion of non-data**, not a discard of
+signal. If a future audit finds genuinely-repairable rows (clean siblings, real
+total), prefer recomputing from `subcaption_scores` over dropping.
 
 ### 11c. Rank range: curves only need ranks 1–25
 
