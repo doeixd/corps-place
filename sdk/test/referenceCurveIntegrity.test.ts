@@ -74,6 +74,11 @@ check(`no caption sits >${SIBLING_DROP_LIMIT}pts below its sibling mean (corrupt
       if (mean - self > SIBLING_DROP_LIMIT) {
         anomalies.push(`${key} ${cap}=${self} is ${(mean - self).toFixed(1)}pts below sibling mean ${mean.toFixed(1)}`);
       }
+      // High side catches total-value leakage (an 80-99 total averaged into a
+      // subcaption cell), which the generator's range filter now drops upstream.
+      if (self - mean > SIBLING_DROP_LIMIT) {
+        anomalies.push(`${key} ${cap}=${self} is ${(self - mean).toFixed(1)}pts above sibling mean ${mean.toFixed(1)} (total leak?)`);
+      }
     }
   }
   assert.equal(

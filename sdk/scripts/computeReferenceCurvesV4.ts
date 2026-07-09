@@ -57,9 +57,20 @@ function main() {
   // no-hyphen key). We assert on this below instead of shipping a hole.
   const matchedPerSlug: Record<string, number> = {};
 
+  // Reject unclean caption scores before they contaminate the averages. A real
+  // subcaption sits in (0, ~20]; the DB has ~1250 poison rows in the active
+  // range — full TOTALS (80-99) leaked into Music/Visual subcaption cells
+  // (mostly 2017-2019) and 0.0 sentinels — that would drag/spike the curve.
+  // 25 keeps legitimately high GE (older scale tops out ~24) while dropping the
+  // 40-99 total-leakage. Zeros are never a real caption score here.
+  const VALID_MIN = 0; // exclusive
+  const VALID_MAX = 25; // inclusive
+  let droppedRange = 0;
+
   for (const row of rows) {
     const slug = CAPTION_MAP[row.caption_name];
-    if (!slug) continue; // Skip unknown captions
+    if (!slug) continue; // Skip unknown captions (judge-name leakage, etc.)
+    if (row.score <= VALID_MIN || row.score > VALID_MAX) { droppedRange++; continue; }
     matchedPerSlug[slug] = (matchedPerSlug[slug] ?? 0) + 1;
 
     const bucket = getPctBucket(row.percent_through);
@@ -95,7 +106,10 @@ function main() {
 
   const ranks = Array.from({ length: 25 }, (_, i) => i + 1);
   const buckets = Array.from({ length: 21 }, (_, i) => i * 5); // 0, 5 ... 100
-  const captions = Object.values(CAPTION_MAP);
+  // Dedupe: CAPTION_MAP intentionally maps two spellings ("Visual - Analysis"
+  // and legacy "Visual Analysis") to the same "VA" slug, so raw Object.values
+  // would list VA twice.
+  const captions = [...new Set(Object.values(CAPTION_MAP))];
 
   // Helper to get value
   const getVal = (r: number, b: number, c: string) => finalLookup[`${r}-${b}`]?.[c];
@@ -162,6 +176,17 @@ function main() {
     }
   }
 
+  // 4a0. Drop keys outside the consumer's lookup range. v9Baselines clamps rank
+  // to [1,25] (selectRank → Math.max(1, Math.min(25, …))), so any rank>25 cell —
+  // incl. the sparse "100-*" unranked sentinels and thin rank 26-40 raw rows —
+  // is NEVER read. Keeping them only bloats the file and trips sanity checks on
+  // noise. Restrict output to the ranks that are actually used.
+  const MAX_RANK = 25;
+  for (const key of Object.keys(finalLookup)) {
+    const rank = Number(key.split('-')[0]);
+    if (!Number.isFinite(rank) || rank < 1 || rank > MAX_RANK) delete finalLookup[key];
+  }
+
   // 4a. Fill any residual hole (e.g. the sparse rank-100 sentinel key) with the
   // key's sibling mean, so a caption is never absent for a key that exists. VA≈
   // its siblings, so the mean is the right anchor; this is the last line of
@@ -204,7 +229,10 @@ function main() {
       if (self === undefined || sibs.length < 4) continue;
       const sibMean = sibs.reduce((a, b) => a + b, 0) / sibs.length;
       if (sibMean - self > 3) {
-        problems.push(`key ${key} caption ${cap}=${self} is ${(sibMean - self).toFixed(1)}pts below sibling mean ${sibMean.toFixed(1)}`);
+        problems.push(`key ${key} caption ${cap}=${self} is ${(sibMean - self).toFixed(1)}pts BELOW sibling mean ${sibMean.toFixed(1)}`);
+      }
+      if (self - sibMean > 3) {
+        problems.push(`key ${key} caption ${cap}=${self} is ${(self - sibMean).toFixed(1)}pts ABOVE sibling mean ${sibMean.toFixed(1)} (total-value leakage?)`);
       }
     }
   }
@@ -215,6 +243,7 @@ function main() {
     if (problems.length > 20) console.error(`   … and ${problems.length - 20} more`);
     process.exit(1);
   }
+  console.log(`Dropped ${droppedRange} out-of-range caption scores (<=${VALID_MIN} or >${VALID_MAX}) as unclean.`);
   console.log(`Validation OK: ${captions.length} captions present across ${Object.keys(finalLookup).length} keys, no sibling anomalies.`);
 
   // 5. Save
