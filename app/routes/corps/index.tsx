@@ -4,7 +4,7 @@ import { Show } from 'jotai-solid-api';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
 import { corpsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
-import { warmRoutesOnIdle, warmImagesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
+import { warmVisibleOnIdle } from '@/lib/warm-routes';
 import { proxiedImage } from '@/lib/media';
 import type { CorpsSummary } from '@/lib/corps-directory';
 import { searchString } from '@/lib/utils';
@@ -90,40 +90,31 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  // Background warm-up: preload the detail route for the FIRST FEW (above-the-fold)
-  // corps only. The router's `defaultPreload: 'intent'` already preloads any card
-  // on hover/touch-start, so this only needs to cover the cards visible before the
-  // user interacts — NOT the whole directory. Each detail warm cascades into ~5
-  // read-model shard fetches, so warming 40 flooded mobile with ~200 requests; a
-  // small cap keeps the top row instant while intent-preload handles the rest.
+  // Background warm-up: preload a corps's detail route (+ hero image) only once its
+  // card scrolls into view — visible-only, so we never bulk-fetch the whole
+  // directory's nested data. The router's `defaultPreload: 'intent'` still preloads
+  // on hover/touch; this makes an in-view card instant even before that fires.
+  // Keyed by corps_key (the card's data-grid-key); resolved to slug + cover image.
   const router = useRouter();
   useEffect(() => {
-    const targets = corps
-      .flatMap((c) =>
-        c.slug ? [{ to: '/corps/$slug/{-$season}', params: { slug: c.slug } }] : []
-      )
-      .slice(0, WARM_ABOVE_FOLD);
-    return warmRoutesOnIdle(router as never, targets);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router, corps.length]);
-
-  // Also background-preload the corps cover/hero images (only ~15% of corps have
-  // one) at the width the detail page's hero will request, so that hero renders
-  // instantly on click. Pairs with the route warm above.
-  useEffect(() => {
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
-    // Mirror the detail cover's sizes: 28rem (448px) on wide screens, else 100vw.
     const cssWidth = window.innerWidth >= 1024 ? 448 : window.innerWidth;
     const widths = [384, 480, 640, 768, 896, 1024];
-    const need = cssWidth * dpr;
-    const w = widths.find((x) => x >= need) ?? 1024;
-    const urls = corps
-      .flatMap((c) => (c.corps_photo ? [proxiedImage(c.corps_photo, { width: w, assumeCached: true })] : []))
-      .filter((u): u is string => !!u)
-      .slice(0, WARM_ABOVE_FOLD);
-    return warmImagesOnIdle(urls);
+    const w = widths.find((x) => x >= cssWidth * dpr) ?? 1024;
+    const byKey = new Map(corps.map((c) => [c.corps_key, c]));
+    return warmVisibleOnIdle(router as never, (key) => {
+      const c = byKey.get(key);
+      if (!c?.slug) return null;
+      return {
+        to: '/corps/$slug/{-$season}',
+        params: { slug: c.slug },
+        image:
+          (c.corps_photo ? proxiedImage(c.corps_photo, { width: w, assumeCached: true }) : undefined) ??
+          undefined,
+      };
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [corps.length]);
+  }, [router, corps.length]);
 
   const division = search.cls ?? 'all';
   const searchTerm = search.q ?? '';

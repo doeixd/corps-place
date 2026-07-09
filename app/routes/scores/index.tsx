@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
-import { warmRoutesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
+import { warmVisibleOnIdle } from '@/lib/warm-routes';
 import { useMachine } from '@xstate/react';
 import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
 import { availableSeasons } from '@/lib/event-filtering';
@@ -111,14 +111,13 @@ function ScoresIndex() {
   const scored = useMemo(() => events.filter((e) => e.scores_released), [events]);
   const scoredSeasons = availableSeasons(scored);
 
-  // Background warm-up: idle-preload the in-view scored events' recap detail
-  // pages so the first click is instant (same helper as /events, /corps).
+  // Background warm-up: preload a scored event's recap page only once its section
+  // scrolls into view (visible-only; data-grid-key = the event slug).
   const router = useRouter();
   useEffect(() => {
-    const targets = scored
-      .flatMap((e) => (e.slug ? [{ to: '/scores/$slug', params: { slug: e.slug } }] : []))
-      .slice(0, WARM_ABOVE_FOLD);
-    return warmRoutesOnIdle(router as never, targets);
+    return warmVisibleOnIdle(router as never, (key) =>
+      key ? { to: '/scores/$slug', params: { slug: key } } : null
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, scored.length]);
   // Season chips come from the loader's full season list — `events` only holds
@@ -214,14 +213,15 @@ function ScoresIndex() {
               </h2>
               <div className="space-y-12">
                 {g.items.map((e) => (
-                  <ScoreEventSection
-                    key={e.slug}
-                    slug={e.slug}
-                    name={e.event_name || e.name || e.slug}
-                    date={e.start_date}
-                    place={place(e.location_city, e.location_state)}
-                    corpsCount={e.lineup_entries ?? e.participant_entries ?? 0}
-                  />
+                  <div key={e.slug} data-grid-key={e.slug}>
+                    <ScoreEventSection
+                      slug={e.slug}
+                      name={e.event_name || e.name || e.slug}
+                      date={e.start_date}
+                      place={place(e.location_city, e.location_state)}
+                      corpsCount={e.lineup_entries ?? e.participant_entries ?? 0}
+                    />
+                  </div>
                 ))}
               </div>
             </section>

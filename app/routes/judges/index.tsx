@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 import { getJudgeDirectory } from '@/lib/server-fns/hybrid';
 import { judgesCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
-import { warmRoutesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
+import { warmVisibleOnIdle } from '@/lib/warm-routes';
 import type { JudgeSummary } from '@/lib/judge-directory';
 import { cn, searchString } from '@/lib/utils';
 import { availableSeasons, selectJudges } from '@/lib/judge-filtering';
@@ -76,16 +76,13 @@ function JudgesDirectoryContent({ judges }: { judges: JudgeSummary[] }) {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  // Background warm-up: idle-preload the in-view judges' detail pages after the
-  // list renders so the first click is instant (same helper as /events, /corps).
+  // Background warm-up: preload a judge's detail page only once its card scrolls
+  // into view (visible-only; data-grid-key = judge_id, which is the route param).
   const router = useRouter();
   useEffect(() => {
-    const targets = judges
-      .flatMap((j) =>
-        j.judge_id ? [{ to: '/judges/$judgeId', params: { judgeId: j.judge_id } }] : []
-      )
-      .slice(0, WARM_ABOVE_FOLD);
-    return warmRoutesOnIdle(router as never, targets);
+    return warmVisibleOnIdle(router as never, (key) =>
+      key ? { to: '/judges/$judgeId', params: { judgeId: key } } : null
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, judges.length]);
 

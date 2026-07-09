@@ -37,6 +37,70 @@ const connectionAllowsWarm = (): boolean => {
   return true;
 };
 
+/**
+ * Warm the NESTED detail route (+ optional hero image) for a directory card only
+ * once it scrolls into view — the visible-only, filter-proof successor to bulk
+ * `warmRoutesOnIdle(slice(0, N))`. Observes `[data-grid-key]` elements (emitted by
+ * StaggeredGrid and score rows); when one intersects, it resolves that key to a
+ * route/image and preloads it once. `rootMargin` warms a screenful ahead so the
+ * card is ready by the time it's tapped; `startDelayMs` waits for the page to
+ * settle first so warming never competes with the initial load.
+ *
+ * Re-run the effect when the rendered/filtered set changes so newly-shown cards
+ * get observed (the query runs at attach time).
+ */
+export function warmVisibleOnIdle(
+  router: PreloadableRouter,
+  resolve: (key: string) => (WarmTarget & { image?: string }) | null,
+  {
+    rootMargin = '600px 0px',
+    startDelayMs = 1200,
+    selector = '[data-grid-key]',
+  }: { rootMargin?: string; startDelayMs?: number; selector?: string } = {}
+): () => void {
+  if (
+    typeof window === 'undefined' ||
+    !connectionAllowsWarm() ||
+    typeof IntersectionObserver === 'undefined'
+  ) {
+    return () => {};
+  }
+  let cancelled = false;
+  let io: IntersectionObserver | null = null;
+  const warmed = new Set<string>();
+  const timer = setTimeout(() => {
+    onIdle(() => {
+      if (cancelled) return;
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue; // only unobserve/warm once actually seen
+            const key = (entry.target as HTMLElement).dataset.gridKey;
+            io!.unobserve(entry.target);
+            if (!key || warmed.has(key)) continue;
+            warmed.add(key);
+            const r = resolve(key);
+            if (!r) continue;
+            void Promise.resolve(router.preloadRoute({ to: r.to, params: r.params })).catch(() => {});
+            if (r.image) {
+              const img = new Image();
+              img.decoding = 'async';
+              img.src = r.image;
+            }
+          }
+        },
+        { rootMargin }
+      );
+      document.querySelectorAll(selector).forEach((el) => io!.observe(el));
+    });
+  }, startDelayMs);
+  return () => {
+    cancelled = true;
+    clearTimeout(timer);
+    io?.disconnect();
+  };
+}
+
 export function warmRoutesOnIdle(
   router: PreloadableRouter,
   targets: readonly WarmTarget[],
