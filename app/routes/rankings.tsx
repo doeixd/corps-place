@@ -2,6 +2,8 @@ import { useState, type ReactNode } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { BackLink } from '@/components/back-link';
+import { Icon } from '@/components/icon';
+import { ArrowDown01Icon } from '@/components/icons/generated';
 import { Card, CardContent } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { FilterChips, type FilterChipItem } from '@/components/filter-chips';
@@ -265,10 +267,20 @@ function RankingsPage() {
         </p>
       </div>
 
-      {/* Controls — single-select chips reuse the site-wide FilterChips; the
+      {/* Controls — collapsed into a compact disclosure so they don't push the
+          rankings down. Single-select chips reuse the site-wide FilterChips; the
           two-option filters are segmented ToggleGroups; divisions is a
           multi-select ToggleGroup. */}
-      <div className="flex flex-col gap-3">
+      <details className="group rounded-lg border border-border">
+        <summary className="flex cursor-pointer select-none list-none items-center justify-between gap-2 px-3 py-2 text-sm font-medium text-text-secondary [&::-webkit-details-marker]:hidden">
+          <span>Filters &amp; options</span>
+          <Icon
+            icon={ArrowDown01Icon}
+            size="sm"
+            className="shrink-0 transition-transform group-open:rotate-180"
+          />
+        </summary>
+        <div className="flex flex-col gap-3 border-t border-border p-3">
         <LabeledField label="Season">
           <FilterChips
             ariaLabel="Season"
@@ -348,8 +360,9 @@ function RankingsPage() {
               set({ recency: r.join(',') === DEFAULT_RECENCY.join(',') ? undefined : r })
             }
           />
+          </div>
         </div>
-      </div>
+      </details>
 
       {/* As-of scrubber: time-travel through the season's competition dates. */}
       <AsofScrubber
