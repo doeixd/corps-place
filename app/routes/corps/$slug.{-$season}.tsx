@@ -67,9 +67,13 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
       loadDetailOrServer(`corps-appearances/${slug}.json`, () =>
         getCorpsAppearances({ data: slug })
       ),
-      loadDetailOrServer(`corps-appearance-results/${slug}.json`, () =>
-        getCorpsAppearanceResults({ data: slug })
-      ),
+      // NOTE: called directly, not via loadDetailOrServer — there is no
+      // corps-appearance-results shard emitted, so loadDetailOrServer would fetch
+      // a 404 (+ manifest) on every client nav before falling back here anyway.
+      // getCorpsAppearanceResults is a hybrid server-fn, so this GET is browser-
+      // and edge-cacheable (the _serverFn cache rule) — a real cached hop instead
+      // of a wasted 404 + fallback.
+      getCorpsAppearanceResults({ data: slug }),
       loadDetailOrServer<CorpsMerchTeaser | null>(`corps-merch/${slug}.json`, () =>
         getCorpsMerch({ data: slug })
       ),
@@ -94,14 +98,13 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
       });
     }
 
-    // Is there a rich show page for the season currently in view? Only link to
-    // one that exists (the show route degrades gracefully, but we don't want a
-    // link into an empty page). "all" is a multi-season view with no single show.
+    // The season currently in view (for slicing appearances below). NOTE: "is
+    // there a rich show page for this season" (getShowDetail) is NOT resolved
+    // here — it only feeds a below-the-fold promo card, and as a sequential
+    // dependent hop (needs corps_key from the batch above) it added a second wave
+    // to every SSR and a live _serverFn round-trip to every client nav. The
+    // component fetches it after mount instead (useShowForSeason).
     const activeSeason = season ?? defaultSeason;
-    const showForSeason =
-      corps?.corps_key && activeSeason && activeSeason !== 'all'
-        ? await getShowDetail({ data: { corpsKey: corps.corps_key, season: activeSeason } })
-        : null;
 
     // Thumbhash for the cover photo — look it up from the media cache during SSR
     // so the placeholder renders instantly with zero network requests. Client-side
@@ -137,7 +140,6 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
       appearanceSeasons: seasons,
       appearanceResults,
       corpsMerch,
-      showForSeason,
       coverThumbDataUrl,
     };
   },
@@ -230,6 +232,29 @@ function useSeasonSnapshots(slug: string) {
   return snapshots;
 }
 
+// Client-side fetch of "is there a rich show page for this season" — a
+// below-the-fold promo card. Kept off the loader (it was a sequential dependent
+// hop on the SSR path + a live _serverFn round-trip on client nav). getShowDetail
+// is browser/edge-cacheable (hybrid _serverFn cache rule), so repeat views are
+// cheap; the card just fills in shortly after mount.
+function useShowForSeason(corpsKey: string | null, season: string) {
+  const [show, setShow] = useState<Awaited<ReturnType<typeof getShowDetail>> | null>(null);
+  useEffect(() => {
+    let live = true;
+    setShow(null);
+    if (!corpsKey || !season || season === 'all') return;
+    getShowDetail({ data: { corpsKey, season } })
+      .then((d) => {
+        if (live) setShow(d ?? null);
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [corpsKey, season]);
+  return show;
+}
+
 // Client-side fetch of the corps's FULL appearance history. The loader slims
 // `appearances` to the active season (one full event row per career show was
 // ~300KB serialized); this backfills the career after mount — same immutable
@@ -260,7 +285,6 @@ function CorpsDetailPage() {
     appearanceSeasons,
     appearanceResults,
     corpsMerch,
-    showForSeason,
     coverThumbDataUrl,
   } = Route.useLoaderData();
   // This corps's per-appearance place + total, keyed by `eventCardKey` (the server
@@ -284,6 +308,9 @@ function CorpsDetailPage() {
   const isValidSeason = (s: string | undefined): s is string =>
     !!s && (appearanceSeasons.includes(s) || (s === 'all' && appearanceSeasons.length > 1));
   const activeSeason = isValidSeason(season) ? season : defaultSeason;
+  // Deferred (below-the-fold show-promo card): fetched after mount so it's off
+  // the loader's critical path — see the loader note.
+  const showForSeason = useShowForSeason(corps?.corps_key ?? null, activeSeason);
   const goSeason = (next: string) =>
     navigate({
       to: '/corps/$slug/{-$season}',
