@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vite-plus/test';
-import { parseMetric, parseDivs, parseRecency } from './codec';
+import { parseMetric, parseDivs, parseRecency, parseChart } from './codec';
 
 describe('rankings codec', () => {
   it('parseMetric: known metrics pass, others drop', () => {
@@ -26,5 +26,12 @@ describe('rankings codec', () => {
     expect(parseRecency('7,-1,14,28')).toEqual([7, 14, 28]); // negative dropped → 3 remain
     expect(parseRecency('1,2')).toBeUndefined();
     expect(parseRecency(undefined)).toBeUndefined();
+  });
+
+  it('parseChart: only explicit "score" survives; default rank drops to undefined', () => {
+    expect(parseChart('score')).toBe('score');
+    expect(parseChart('rank')).toBeUndefined();
+    expect(parseChart('bogus')).toBeUndefined();
+    expect(parseChart(undefined)).toBeUndefined();
   });
 });

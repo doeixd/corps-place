@@ -16,6 +16,10 @@ export const RANK_METRIC_LABELS: Record<RankMetric, string> = {
 export type RankAgg = 'best' | 'last3';
 export type RankGroup = 'overall' | 'division';
 
+/** Which value the season line chart plots: finishing rank or raw score. */
+export const RANK_CHART_MODES = ['rank', 'score'] as const;
+export type RankChartMode = (typeof RANK_CHART_MODES)[number];
+
 /** Division category keys (from `divisionCategory`) the `div` filter offers. */
 export const RANK_DIVISIONS = ['world', 'open', 'all-age'] as const;
 export type RankDivision = (typeof RANK_DIVISIONS)[number];

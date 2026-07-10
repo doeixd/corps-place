@@ -19,10 +19,12 @@ import {
   RANK_DIVISIONS,
   DEFAULT_DIVISIONS,
   type RankAgg,
+  type RankChartMode,
   type RankGroup,
   type RankMetric,
 } from '@/lib/rankings/types';
 import {
+  parseChart,
   parseMetric,
   parseDivs,
   parseRecency,
@@ -131,6 +133,8 @@ interface RankSearch {
   // and sitemap use the plain form, and a canonical URL must not redirect.
   div?: string | string[];
   recency?: number[];
+  // Which value the season line chart plots: `rank` (default) or `score`.
+  chart?: RankChartMode;
 }
 
 export const Route = createFileRoute('/rankings')({
@@ -154,6 +158,7 @@ export const Route = createFileRoute('/rankings')({
       return parsed === undefined ? undefined : parsed.length === 1 ? parsed[0] : parsed;
     })(),
     recency: parseRecency(s.recency),
+    chart: parseChart(s.chart),
   }),
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => {
@@ -246,6 +251,7 @@ function RankingsPage() {
   const group: RankGroup = search.group ?? 'overall';
   const divs = parseDivs(search.div) ?? DEFAULT_DIVISIONS;
   const recency = search.recency ?? DEFAULT_RECENCY;
+  const chartMode: RankChartMode = search.chart === 'score' ? 'score' : 'rank';
 
   const set = (patch: Partial<RankSearch>) =>
     navigate({ search: (prev) => ({ ...prev, ...patch }), replace: true });
@@ -403,11 +409,33 @@ function RankingsPage() {
 
       <Card>
         <CardContent className="px-2 py-4">
+          {/* Chart view toggle: rank bump vs. raw score over the season. Score
+              lets you see how tightly corps are packed competitively. */}
+          <div className="mb-2 flex items-center justify-between gap-2 px-2">
+            <span className="text-xs font-medium uppercase tracking-wide text-text-secondary">
+              {chartMode === 'score' ? 'Scores over the season' : 'Rankings over the season'}
+            </span>
+            <ToggleGroup
+              variant="outline"
+              size="sm"
+              spacing={0}
+              aria-label="Chart view"
+              value={[chartMode]}
+              onValueChange={(v) => {
+                const next = v[0] as RankChartMode | undefined;
+                if (next) set({ chart: next === 'score' ? 'score' : undefined });
+              }}
+            >
+              <ToggleGroupItem value="rank">Rank</ToggleGroupItem>
+              <ToggleGroupItem value="score">Score</ToggleGroupItem>
+            </ToggleGroup>
+          </div>
           <RankBumpChart
             rows={result.rows}
             dates={result.dates}
             hoveredSlug={hovered}
             onHover={setHovered}
+            mode={chartMode}
           />
         </CardContent>
       </Card>

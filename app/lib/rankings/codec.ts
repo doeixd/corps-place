@@ -2,13 +2,22 @@
 // extracted from the route so they're unit-tested. Tolerant of array OR comma-
 // string inputs (TanStack may serialize a list either way) and drops anything
 // invalid — the URL never yields a value the resolver can't use. Client-safe.
-import { RANK_DIVISIONS, RANK_METRICS, type RankMetric } from './types';
+import {
+  RANK_DIVISIONS,
+  RANK_METRICS,
+  type RankChartMode,
+  type RankMetric,
+} from './types';
 
 const asList = (v: unknown): string[] =>
   Array.isArray(v) ? v.map(String) : typeof v === 'string' && v ? v.split(',') : [];
 
 export const parseMetric = (v: unknown): RankMetric | undefined =>
   RANK_METRICS.includes(v as RankMetric) ? (v as RankMetric) : undefined;
+
+/** Chart mode; `undefined` (= default `rank`) for anything but an explicit `score`. */
+export const parseChart = (v: unknown): RankChartMode | undefined =>
+  v === 'score' ? 'score' : undefined;
 
 /** Included divisions; `undefined` (= default world+open) when empty/invalid. */
 export const parseDivs = (v: unknown): string[] | undefined => {
