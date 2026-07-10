@@ -14,7 +14,11 @@ import type { CSSProperties, ReactNode } from 'react';
 import { registerServiceWorker } from '@/lib/register-sw';
 import { trackBackNavigation } from '@/hooks/use-back-navigation';
 import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
-import { TooltipProvider } from '@/components/ui/tooltip';
+// NOTE: no global Tooltip.Provider here on purpose. It's optional in base-ui (it
+// only shares a hover delay, now defaulted on the Tooltip Root), and importing it
+// dragged the whole base-ui tooltip + floating-ui positioning graph into the
+// shared entry on every page. Tooltips carry their own machinery in the lazy
+// route chunks that render them.
 import { ThemeToggle } from '@/components/theme-toggle';
 import { SiteNav } from '@/components/site-nav';
 import { lazy, Suspense } from 'react';
@@ -490,8 +494,7 @@ function RootComponent() {
           <AnalyticsTracker />
         </Suspense>
         <MotionConfig reducedMotion={REDUCED_MOTION}>
-          <TooltipProvider delay={150}>
-            <NavigationProgressBar />
+          <NavigationProgressBar />
             <ThemeToggle className="fixed top-4 right-4 z-50" ssrTheme={theme ?? undefined} />
             <SiteNav />
             <Suspense fallback={null}>
@@ -511,7 +514,6 @@ function RootComponent() {
               </Suspense>
               <Outlet />
             </main>
-          </TooltipProvider>
         </MotionConfig>
       </BrandProvider>
     </RootDocument>

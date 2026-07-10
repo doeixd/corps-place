@@ -10,8 +10,16 @@ function Tooltip({ ...props }: TooltipPrimitive.Root.Props) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
 }
 
-function TooltipTrigger({ ...props }: TooltipPrimitive.Trigger.Props) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
+// Default the open delay on the Trigger (base-ui puts `delay` here, falling back
+// to provider context, then to its 600ms OPEN_DELAY). It was previously set once
+// on a global Tooltip.Provider in __root at 150ms. Carrying the 150ms here lets us
+// drop that eager provider — which dragged the whole base-ui tooltip + floating-ui
+// positioning graph (~300KB of source) into the shared client entry on every page
+// — so the tooltip machinery now loads only in the (lazy) route chunks that render
+// one. base-ui's Provider is optional; the only behavior it added was this delay
+// (plus "instant on adjacent tooltip" grouping, which we accept losing).
+function TooltipTrigger({ delay = 150, ...props }: TooltipPrimitive.Trigger.Props) {
+  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" delay={delay} {...props} />;
 }
 
 function TooltipContent({
