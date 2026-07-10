@@ -149,8 +149,10 @@ function Home() {
         </CorpsRegistryProvider>
 
         {/* Cross-promo for the sibling site (corps brand only — Home() doesn't
-            render on pageantryjobs.com). External link to the other host. */}
-        <section>
+            render on pageantryjobs.com). External link to the other host.
+            content-visibility: below the fold on mobile — skip its style/layout
+            until scrolled near (same coarse-section pattern as shows/$slug). */}
+        <section className="[contain-intrinsic-size:auto_180px] [content-visibility:auto]">
           <a
             href="https://pageantryjobs.com"
             className="group flex flex-col gap-4 rounded-xl border border-border bg-gradient-to-br from-primary/5 via-transparent to-transparent p-6 transition-colors hover:border-primary/40 sm:flex-row sm:items-center sm:justify-between"
@@ -181,7 +183,7 @@ function Home() {
           </a>
         </section>
 
-        <section className="space-y-3">
+        <section className="space-y-3 [contain-intrinsic-size:auto_640px] [content-visibility:auto]">
           <h2 className="text-xl font-semibold">Explore</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <ExploreCard

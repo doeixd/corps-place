@@ -114,7 +114,18 @@ export function ScoreEventSection({
   const sub = [formatEventDate(date), place].filter(Boolean).join(' · ');
 
   return (
-    <section ref={ref} className="space-y-3 scroll-mt-20">
+    // content-visibility: skip style/layout/paint for sections far off-screen —
+    // /scores renders up to ~100 of these and the recalc/layout cost of the
+    // off-screen recap tables dominated the trace. Same proven coarse-section
+    // pattern as shows/$slug (NOT the per-card variant that clipped borders and
+    // was reverted twice — see app.css .collection-card note). The intrinsic-size
+    // estimate mirrors the loading placeholder so scrollbar geometry is stable;
+    // IntersectionObserver (data fetch) still fires normally for cv:auto content.
+    <section
+      ref={ref}
+      className="space-y-3 scroll-mt-20 [content-visibility:auto]"
+      style={{ containIntrinsicSize: `auto ${estimateRecapHeight(corpsCount) + 70}px` }}
+    >
       <div>
         <Link to="/scores/$slug" params={{ slug }} className="group inline-block">
           <h2 className="text-xl font-semibold transition-colors group-hover:text-primary">
