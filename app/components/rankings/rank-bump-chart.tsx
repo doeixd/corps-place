@@ -16,6 +16,7 @@ import { useSelector } from '@xstate/react';
 import { corpsPalette } from '@sdk/src/corpsColors.js';
 import { themeStore } from '@/stores/theme-store';
 import { RANK_SERIES_CAP, type RankRow } from '@/lib/rankings/types';
+import { useChartZoom, RESET_ZOOM_CLASS } from '@/lib/use-chart-zoom';
 
 // Shared formatter + cache — toLocaleDateString builds an Intl.DateTimeFormat
 // per call, and the chart formats every tick on every render (see asof-scrubber).
@@ -101,7 +102,7 @@ export function RankBumpChart({
     [plotted]
   );
 
-  const data = useMemo<MergedRow[]>(() => {
+  const allData = useMemo<MergedRow[]>(() => {
     const byDate = new Map<string, MergedRow>(dates.map((d) => [d, { date: d }]));
     for (const r of plotted)
       for (const h of r.history) {
@@ -111,10 +112,37 @@ export function RankBumpChart({
     return dates.map((d) => byDate.get(d)!);
   }, [plotted, dates]);
 
-  const maxRank = useMemo(
-    () => Math.max(1, ...plotted.flatMap((r) => r.history.map((h) => h.rank))),
-    [plotted]
-  );
+  // Zoom: the x-axis is categorical (competition dates), so the zoom window
+  // lives in INDEX space — the visible slice of the date list. Same gestures as
+  // the VS chart (pinch / ctrl+wheel / drag-pan / double-tap reset), page scroll
+  // untouched while not zoomed.
+  const { xDomain, zoomed, reset, wrapRef, handlers, touchAction } = useChartZoom({
+    min: 0,
+    max: Math.max(1, dates.length - 1),
+    minSpan: 2,
+  });
+  const data = useMemo<MergedRow[]>(() => {
+    if (!xDomain) return allData;
+    const lo = Math.max(0, Math.floor(xDomain[0]));
+    const hi = Math.min(allData.length - 1, Math.ceil(xDomain[1]));
+    return allData.slice(lo, hi + 1);
+  }, [allData, xDomain]);
+
+  // Rank axis follows the visible window when zoomed (tightens around whoever is
+  // on screen); full [1, max] otherwise.
+  const [minRank, maxRank] = useMemo(() => {
+    const source = zoomed ? data : allData;
+    let lo = Infinity;
+    let hi = 1;
+    for (const row of source)
+      for (const [k, v] of Object.entries(row)) {
+        if (k === 'date' || typeof v !== 'number') continue;
+        lo = Math.min(lo, v);
+        hi = Math.max(hi, v);
+      }
+    if (!Number.isFinite(lo)) lo = 1;
+    return zoomed ? [Math.max(1, lo - 1), hi + 1] : [1, hi];
+  }, [data, allData, zoomed]);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -122,7 +150,18 @@ export function RankBumpChart({
   if (!mounted || dates.length === 0) return <div className={`${height} w-full`} />;
 
   return (
-    <div className={`${height} w-full`}>
+    <div
+      ref={wrapRef}
+      className={`${height} relative w-full select-none`}
+      style={{ touchAction }}
+      {...handlers}
+      onDoubleClick={reset}
+    >
+      {zoomed ? (
+        <button type="button" onClick={reset} className={RESET_ZOOM_CLASS}>
+          Reset zoom
+        </button>
+      ) : null}
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: 16, bottom: 4, left: -16 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
@@ -136,7 +175,7 @@ export function RankBumpChart({
           />
           <YAxis
             reversed
-            domain={[1, maxRank]}
+            domain={[minRank, maxRank]}
             allowDecimals={false}
             tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
             tickLine={false}

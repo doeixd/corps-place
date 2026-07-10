@@ -3,7 +3,7 @@
 // baselines align on one x-axis. One or two <Line>s per series (a 2026 corps =
 // actual solid + predicted dashed). Theme-aware colors via assignVsColors; SSR
 // guard mirrors corps-score-chart to avoid hydration CLS.
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -20,6 +20,7 @@ import { themeStore } from '@/stores/theme-store';
 import { assignVsColors } from '@/lib/vs/colors';
 import type { VsResolvedSeries } from '@/lib/vs/types';
 import { VsLegend, VsTooltip, type VsCellMeta, type VsLegendItem } from './chart-primitives';
+import { useChartZoom, RESET_ZOOM_CLASS } from '@/lib/use-chart-zoom';
 
 interface MergedRow {
   pct: number;
@@ -28,120 +29,6 @@ interface MergedRow {
 }
 
 const lineKey = (seriesId: string, lineIdx: number) => `${seriesId}@@${lineIdx}`;
-
-// --- Zoom/pan ---------------------------------------------------------------
-// Recharts has no built-in pinch zoom, so we drive the XAxis domain ourselves:
-//   • touch: two-finger pinch zooms around the pinch midpoint; while zoomed a
-//     one-finger drag pans. When NOT zoomed the wrapper keeps `touch-action:
-//     pan-y` so normal page scrolling over the chart is untouched — it flips to
-//     `none` only while zoomed (drag = pan, not scroll). Double-tap resets.
-//   • desktop: ctrl/cmd+wheel (= trackpad pinch) zooms around the cursor; drag
-//     pans while zoomed; double-click resets. Plain wheel keeps scrolling the
-//     page. A "Reset" pill shows whenever zoomed.
-const X_MIN = 0;
-const X_MAX = 100;
-const MIN_SPAN = 5; // don't zoom tighter than 5 percentage points
-const DOUBLE_TAP_MS = 300;
-
-const clampDomain = (lo: number, hi: number): [number, number] => {
-  let span = Math.min(Math.max(hi - lo, MIN_SPAN), X_MAX - X_MIN);
-  let nlo = Math.max(X_MIN, Math.min(lo, X_MAX - span));
-  return [nlo, nlo + span];
-};
-
-function useChartZoom() {
-  const [xDomain, setXDomain] = useState<[number, number] | null>(null);
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const pointers = useRef(new Map<number, { x: number; y: number }>());
-  const pinchStart = useRef<{ dist: number; domain: [number, number]; midFrac: number } | null>(null);
-  const panStart = useRef<{ x: number; domain: [number, number] } | null>(null);
-  const lastTap = useRef(0);
-
-  const zoomed = xDomain !== null;
-  const reset = useCallback(() => setXDomain(null), []);
-
-  // x-position → fraction of the wrapper width (close enough to plot-area
-  // fraction for centering; margins/axis gutter introduce only a small skew).
-  const fracOf = (clientX: number) => {
-    const r = wrapRef.current?.getBoundingClientRect();
-    if (!r || r.width === 0) return 0.5;
-    return Math.min(1, Math.max(0, (clientX - r.left) / r.width));
-  };
-
-  const zoomAround = useCallback((frac: number, scale: number, base?: [number, number]) => {
-    setXDomain((cur) => {
-      const [lo, hi] = base ?? cur ?? [X_MIN, X_MAX];
-      const span = hi - lo;
-      const next = span * scale;
-      const focus = lo + span * frac;
-      const d = clampDomain(focus - next * frac, focus + next * (1 - frac));
-      return d[0] <= X_MIN && d[1] >= X_MAX ? null : d;
-    });
-  }, []);
-
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
-    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pointers.current.size === 2) {
-      const [a, b] = [...pointers.current.values()];
-      pinchStart.current = {
-        dist: Math.max(12, Math.hypot(a.x - b.x, a.y - b.y)),
-        domain: xDomain ?? [X_MIN, X_MAX],
-        midFrac: fracOf((a.x + b.x) / 2),
-      };
-      panStart.current = null;
-    } else if (pointers.current.size === 1) {
-      // Double-tap / double-click reset (touch has no dblclick with our handlers).
-      const now = performance.now();
-      if (now - lastTap.current < DOUBLE_TAP_MS) setXDomain(null);
-      lastTap.current = now;
-      if (xDomain) panStart.current = { x: e.clientX, domain: xDomain };
-    }
-  }, [xDomain]);
-
-  const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!pointers.current.has(e.pointerId)) return;
-    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pointers.current.size === 2 && pinchStart.current) {
-      const [a, b] = [...pointers.current.values()];
-      const dist = Math.max(12, Math.hypot(a.x - b.x, a.y - b.y));
-      const scale = pinchStart.current.dist / dist; // fingers apart → span shrinks
-      zoomAround(pinchStart.current.midFrac, scale, pinchStart.current.domain);
-    } else if (pointers.current.size === 1 && panStart.current) {
-      const r = wrapRef.current?.getBoundingClientRect();
-      if (!r || r.width === 0) return;
-      const [lo, hi] = panStart.current.domain;
-      const shift = ((panStart.current.x - e.clientX) / r.width) * (hi - lo);
-      setXDomain(clampDomain(lo + shift, hi + shift));
-    }
-  }, [zoomAround]);
-
-  const onPointerEnd = useCallback((e: React.PointerEvent) => {
-    pointers.current.delete(e.pointerId);
-    if (pointers.current.size < 2) pinchStart.current = null;
-    if (pointers.current.size === 0) panStart.current = null;
-    else if (pointers.current.size === 1 && xDomain) {
-      // Pinch ended with one finger still down — hand off to panning cleanly.
-      const [a] = [...pointers.current.values()];
-      panStart.current = { x: a.x, domain: xDomain };
-    }
-  }, [xDomain]);
-
-  // Wheel zoom must preventDefault (stop page scroll/browser zoom), which React's
-  // synthetic wheel can't (passive) — attach natively.
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const onWheel = (e: WheelEvent) => {
-      if (!e.ctrlKey && !e.metaKey) return; // plain wheel keeps scrolling the page
-      e.preventDefault();
-      zoomAround(fracOf(e.clientX), Math.exp(e.deltaY * 0.002));
-    };
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, [zoomAround]);
-
-  return { xDomain, zoomed, reset, wrapRef, onPointerDown, onPointerMove, onPointerEnd };
-}
 
 // The hover-preview series is merged into the chart data under this fixed id so
 // its dataKeys never collide with a real series and the tooltip can skip it.
@@ -254,8 +141,11 @@ export function VsChart({
   const [highlighted, setHighlighted] = useState<string | null>(null);
   const dimmed = (id: string) => highlighted != null && id !== highlighted;
 
-  const { xDomain, zoomed, reset, wrapRef, onPointerDown, onPointerMove, onPointerEnd } =
-    useChartZoom();
+  const { xDomain, zoomed, reset, wrapRef, handlers, touchAction } = useChartZoom({
+    min: 0,
+    max: 100,
+    minSpan: 5,
+  });
 
   // Y domain follows the visible x-window so zooming in actually spreads the
   // lines vertically (recharts' 'auto' considers ALL data, not the window).
@@ -293,19 +183,15 @@ export function VsChart({
           // Not zoomed: pan-y lets the page scroll normally over the chart while
           // two-finger pinches still reach our pointer handlers. Zoomed: none, so
           // a one-finger drag pans the window instead of scrolling the page.
-          style={{ touchAction: zoomed ? 'none' : 'pan-y' }}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerEnd}
-          onPointerCancel={onPointerEnd}
-          onPointerLeave={onPointerEnd}
+          style={{ touchAction }}
+          {...handlers}
           onDoubleClick={reset}
         >
           {zoomed ? (
             <button
               type="button"
               onClick={reset}
-              className="absolute right-2 top-1 z-10 rounded-full border border-border bg-background/90 px-2.5 py-1 text-xs font-medium text-text-secondary shadow-sm transition-colors hover:border-primary/60 hover:text-foreground"
+              className={RESET_ZOOM_CLASS}
             >
               Reset zoom
             </button>
