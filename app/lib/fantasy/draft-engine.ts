@@ -288,6 +288,16 @@ async function commitPickAndAdvance(
     );
     clearTimer(leagueId);
     broadcast(leagueId, { event: 'state', data: { status: 'complete' } });
+    // Seed standings immediately: scoring is season-best (§5.2), so a league
+    // drafted MID-SEASON already has real points from every prior show — but
+    // the recompute otherwise only runs after the NEXT score ingest, leaving
+    // the fresh league's standings empty for potentially days. Fire-and-forget:
+    // on failure, standings simply appear on the next ingest cycle as before.
+    void (async () => {
+      const { recomputeFantasyStandingsForSeason } = await import('./standings');
+      const season = await leagueSeason(db, leagueId);
+      await recomputeFantasyStandingsForSeason(season);
+    })().catch(() => {});
     return;
   }
 
