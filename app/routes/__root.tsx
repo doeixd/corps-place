@@ -17,15 +17,30 @@ import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { SiteNav } from '@/components/site-nav';
-import { InstallPrompt } from '@/components/install-prompt';
-import { AnnouncementBanner } from '@/components/announcement-banner';
-import { ConsentGate } from '@/components/consent-gate';
-import { AnalyticsTracker } from '@/components/analytics-tracker';
 import { lazy, Suspense } from 'react';
 // Lazy: the toast host isn't needed for first paint, and a static import drags
 // sonner (~31KB) into the critical main chunk. SSR renders nothing for it.
 const Toaster = lazy(() =>
   import('@/components/ui/sonner').then((m) => ({ default: m.Toaster }))
+);
+// Lazy for the same reason: none of these render anything at first paint —
+// AnalyticsTracker is a side-effect-only tracker, InstallPrompt is a
+// pageview-gated PWA nudge, AnnouncementBanner client-fetches on mount, and
+// ConsentGate shows nothing to signed-out visitors. Static imports dragged the
+// base-ui Dialog/Checkbox primitives and the better-auth client (~73KB, via
+// ConsentGate's useSession) into the critical entry chunk that loads on every
+// route. SSR renders nothing for them, so deferring is visually identical.
+const AnalyticsTracker = lazy(() =>
+  import('@/components/analytics-tracker').then((m) => ({ default: m.AnalyticsTracker }))
+);
+const InstallPrompt = lazy(() =>
+  import('@/components/install-prompt').then((m) => ({ default: m.InstallPrompt }))
+);
+const AnnouncementBanner = lazy(() =>
+  import('@/components/announcement-banner').then((m) => ({ default: m.AnnouncementBanner }))
+);
+const ConsentGate = lazy(() =>
+  import('@/components/consent-gate').then((m) => ({ default: m.ConsentGate }))
 );
 import { THEME_COOKIE, readThemeCookie } from '@/lib/theme-cookie';
 import type { Theme } from '@/lib/theme-cookie';
@@ -466,20 +481,26 @@ function RootComponent() {
       <BrandProvider brand={brand}>
         <ServiceWorkerManager />
         <AutoUpdater />
-        <AnalyticsTracker />
+        <Suspense fallback={null}>
+          <AnalyticsTracker />
+        </Suspense>
         <MotionConfig reducedMotion={REDUCED_MOTION}>
           <TooltipProvider delay={150}>
             <NavigationProgressBar />
             <ThemeToggle className="fixed top-4 right-4 z-50" ssrTheme={theme ?? undefined} />
             <SiteNav />
-            <InstallPrompt />
-            <ConsentGate />
+            <Suspense fallback={null}>
+              <InstallPrompt />
+              <ConsentGate />
+            </Suspense>
             <DeferredToaster theme={theme ?? 'system'} />
             {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
                 (`side-nav`) and the bottom-tab height incl. iOS safe area on mobile
                 (`bottom-nav`). Both self-step across breakpoints, so no md:/xl: here. */}
             <main className="pb-bottom-nav pl-side-nav">
-              <AnnouncementBanner />
+              <Suspense fallback={null}>
+                <AnnouncementBanner />
+              </Suspense>
               <Outlet />
             </main>
           </TooltipProvider>
