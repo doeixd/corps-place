@@ -1315,7 +1315,7 @@ function CurrentPredictionPage({
             showInfo={showInfo}
             corpsLookup={corpsLookup}
           >
-            <StatusCard
+            <StatusCard className="max-w-none"
               tone="empty"
               title="Prediction coming soon"
               description="This event's score prediction hasn't been generated yet. Check back shortly — predictions are produced automatically once the lineup is in."
@@ -1362,7 +1362,7 @@ function CurrentPredictionPage({
                 showInfo={showInfo}
                 corpsLookup={corpsLookup}
               >
-                <StatusCard tone="info" title="No prediction" description="No prediction data." />
+                <StatusCard className="max-w-none" tone="info" title="No prediction" description="No prediction data." />
               </PredictionStatusShell>
             }
           >
@@ -1426,7 +1426,7 @@ function CurrentPredictionPage({
                 {/* ---- Scores view (P4): real scored recap, same table as past
                     seasons, seeded from the machine's scoredRecap. ---- */}
                 <Show when={view === 'scores' && !hasScores}>
-                  <StatusCard
+                  <StatusCard className="max-w-none"
                     tone="empty"
                     title="No scores yet"
                     description="Scores appear here shortly after the show ends."
@@ -1474,7 +1474,7 @@ function CurrentPredictionPage({
                     (baseRecap). Sort cycling routes through the machine's
                     view-aware CYCLE_SORT (keyed by caption → diffSorts). ---- */}
                 <Show when={view === 'diff' && !hasScores}>
-                  <StatusCard
+                  <StatusCard className="max-w-none"
                     tone="empty"
                     title="Nothing to compare yet"
                     description="Once scores are in, this view compares them against the prediction."
@@ -1507,21 +1507,21 @@ function CurrentPredictionPage({
                       shrinks the ±Diff as the forecast converged on the scores. */}
                   <Show when={ctx.diffBase === 'prediction'}>{forecastScrubber}</Show>
                   <Show when={previousPending}>
-                    <StatusCard
+                    <StatusCard className="max-w-none"
                       tone="info"
                       title="Loading previous scores…"
                       description="Fetching each corps's most recent prior show."
                     />
                   </Show>
                   <Show when={previousError}>
-                    <StatusCard
+                    <StatusCard className="max-w-none"
                       tone="error"
                       title="Couldn't load previous scores"
                       description="Switch back to vs Prediction, or try again shortly."
                     />
                   </Show>
                   <Show when={previousEmpty}>
-                    <StatusCard
+                    <StatusCard className="max-w-none"
                       tone="empty"
                       title="No previous-show scores"
                       description="None of this event's corps have a scored prior show this season yet."
@@ -1555,7 +1555,7 @@ function CurrentPredictionPage({
                 <Show
                   when={predictionRowsAvailable}
                   fallback={
-                    <StatusCard
+                    <StatusCard className="max-w-none"
                       tone="info"
                       title="No recap prediction"
                       description={emptyPredictionDescription}
