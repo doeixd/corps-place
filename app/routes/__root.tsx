@@ -45,6 +45,7 @@ const ConsentGate = lazy(() =>
 import { THEME_COOKIE, readThemeCookie } from '@/lib/theme-cookie';
 import type { Theme } from '@/lib/theme-cookie';
 import { FAVORITE_COOKIE, readFavoriteCookie } from '@/lib/favorite-cookie';
+import { maybeSignedIn } from '@/lib/auth-cookie';
 import {
   DEFAULT_APP_ICON_HREF,
   JOBS_APP_ICON_HREF,
@@ -422,7 +423,11 @@ export const Route = createRootRoute({
   loader: () => {
     const brand = readBrand();
     const theme = readThemeCookie();
-    return { brand, favorite: favoriteHead(theme, brand), theme };
+    // Cheap cookie-presence hint (not an authz check) so signed-out visitors —
+    // the vast majority — never mount ConsentGate and thus never download the
+    // better-auth client chunk it pulls. SSR-computed and passed through loader
+    // data so the value is identical across hydration (no mismatch).
+    return { brand, favorite: favoriteHead(theme, brand), theme, maybeSignedIn: maybeSignedIn() };
   },
   // Default title + meta for any route without its own head() (error boundaries,
   // redirect routes). Child route head()s override the title via HeadContent.
@@ -475,7 +480,7 @@ function DeferredToaster({ theme }: { theme: string }) {
 }
 
 function RootComponent() {
-  const { theme, brand, favorite } = Route.useLoaderData();
+  const { theme, brand, favorite, maybeSignedIn: signedInHint } = Route.useLoaderData();
   return (
     <RootDocument theme={theme} brand={brand} favorite={favorite}>
       <BrandProvider brand={brand}>
@@ -491,7 +496,10 @@ function RootComponent() {
             <SiteNav />
             <Suspense fallback={null}>
               <InstallPrompt />
-              <ConsentGate />
+              {/* Only mount (and thus download) the consent gate + its better-auth
+                  client when a session cookie is present. Signed-out visitors skip
+                  the chunk entirely; the gate is null for them anyway. */}
+              {signedInHint ? <ConsentGate /> : null}
             </Suspense>
             <DeferredToaster theme={theme ?? 'system'} />
             {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl
