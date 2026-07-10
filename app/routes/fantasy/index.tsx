@@ -1,16 +1,21 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { lazy, Suspense } from 'react';
 import { PageShell } from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
 import { seoHead } from '@/lib/seo';
 import { requireFantasyEnabled } from '@/lib/fantasy/flag';
 import { listMyLeagues } from '@/lib/server-fns/fantasy';
-import { leaguesCollection, seedMyLeagues } from '@/db/fantasy-collections';
-import { HybridCollection } from '@/components/hybrid-collection';
-import { useSession } from '@/lib/auth-client';
 import { SignInButton } from '@/components/sign-in-button';
 import { HowItWorks } from '@/components/fantasy/how-it-works';
+import { StaticLeagueList } from '@/components/fantasy/league-list-item';
 
-type LeagueRow = Awaited<ReturnType<typeof listMyLeagues>>['leagues'][number];
+// The live league list pulls the TanStack DB collection layer (~190KB with its
+// HybridCollection wrapper) and the better-auth client. Load it lazily so
+// logged-out visitors — and signed-in users with no leagues — never download it;
+// /fantasy is then just the marketing + sign-in shell for them. Signed-in users
+// with leagues get the SSR'd static list immediately (the Suspense fallback,
+// straight from loader data) while the live version streams in.
+const MyLeaguesList = lazy(() => import('@/components/fantasy/my-leagues-list'));
 
 export const Route = createFileRoute('/fantasy/')({
   beforeLoad: requireFantasyEnabled,
@@ -31,37 +36,24 @@ export const Route = createFileRoute('/fantasy/')({
 });
 
 function FantasyHome() {
+  // `signedIn` comes from the loader (a real server-side session check), so it's
+  // authoritative — no client useSession() needed here (which would pull the
+  // better-auth client onto this route for logged-out visitors too). A sign-in
+  // flow does a full redirect, so the loader re-runs and this updates.
   const { signedIn, leagues } = Route.useLoaderData();
-  // Seed the collection's first sync from the loader rows — the leagues list
-  // was fetched twice per visit (loader for SSR, then the collection's own
-  // listMyLeagues re-fetch after hydration). A later refetchMyLeagues (e.g.
-  // after creating a league) still hits the server.
-  if (typeof window !== 'undefined') seedMyLeagues(leagues);
-  // SSR + first paint render from the loader; after hydration the live
-  // collection drives the list (e.g. picks up a league created in another tab).
-  return (
-    <HybridCollection collection={leaguesCollection} loader={leagues} seed={false}>
-      {(rows) => <FantasyHomeContent signedIn={signedIn} leagues={rows} />}
-    </HybridCollection>
-  );
-}
-
-function FantasyHomeContent({ signedIn, leagues }: { signedIn: boolean; leagues: LeagueRow[] }) {
-  const { data: session } = useSession();
-  const isSignedIn = signedIn || Boolean(session?.user);
 
   return (
     <PageShell className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-3 pr-12 lg:pr-0">
         <h1 className="text-2xl font-bold text-text-primary">Fantasy Drum Corps</h1>
-        {isSignedIn ? (
+        {signedIn ? (
           <Button render={<Link to="/fantasy/create" />}>Create a league</Button>
         ) : (
           <SignInButton callbackURL="/fantasy">Sign in to play</SignInButton>
         )}
       </div>
 
-      {!isSignedIn ? (
+      {!signedIn ? (
         <>
           <p className="text-muted-foreground">
             Sign in to create a private league, draft real drum corps, and compete on standings
@@ -78,37 +70,13 @@ function FantasyHomeContent({ signedIn, leagues }: { signedIn: boolean; leagues:
           <HowItWorks />
         </>
       ) : (
-        <ul className="flex flex-col gap-2">
-          {leagues.map((l) => (
-            <li key={l.league_id}>
-              <LeagueListItem league={l} />
-            </li>
-          ))}
-        </ul>
+        // Only signed-in users who actually have leagues pay for the collection
+        // layer. The static list (from loader data) SSRs + fills the fallback so
+        // the leagues show instantly; the live collection swaps in once loaded.
+        <Suspense fallback={<StaticLeagueList leagues={leagues} />}>
+          <MyLeaguesList leagues={leagues} />
+        </Suspense>
       )}
     </PageShell>
-  );
-}
-
-function LeagueListItem({ league }: { league: LeagueRow }) {
-  return (
-    <Link
-      to="/fantasy/$slug"
-      params={{ slug: league.slug }}
-      className="flex items-center gap-3 rounded-lg border border-border p-3 hover:bg-muted"
-    >
-      {league.image_media_id ? (
-        <img
-          src={`/api/fantasy-media/${league.image_media_id}`}
-          alt=""
-          className="size-10 shrink-0 rounded-lg border border-border object-cover"
-        />
-      ) : null}
-      <span className="font-medium">{league.name}</span>
-      <span className="ml-auto text-sm text-muted-foreground">
-        {league.season} · {league.status}
-        {league.role === 'owner' ? ' · owner' : ''}
-      </span>
-    </Link>
   );
 }
