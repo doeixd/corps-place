@@ -17,7 +17,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { useSession } from '@/lib/auth-client';
 import {
   subscribeScores,
   unsubscribeScores,
@@ -106,7 +105,6 @@ export function ScoreNotifyButton({
    *  icon at the row's type scale, no bordered button chrome. */
   compact?: boolean;
 }) {
-  const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
@@ -126,7 +124,15 @@ export function ScoreNotifyButton({
   // Prefill email + probe push config when the dialog opens.
   const onOpenChange = (next: boolean) => {
     if (next) {
-      setEmail((cur) => cur || session?.user?.email || '');
+      // Prefill from the signed-in user's email, if any. Load the better-auth
+      // client on demand (dialog open) rather than at import — otherwise ~31KB of
+      // auth client ships on every corps/event page just for this prefill.
+      void import('@/lib/auth-client').then(({ authClient }) =>
+        authClient
+          .getSession()
+          .then((s) => setEmail((cur) => cur || s?.data?.user?.email || ''))
+          .catch(() => {})
+      );
       if (vapidKey === null && pushSupported()) {
         void getScoreVapidPublicKey().then((r) => setVapidKey(r.publicKey ?? ''));
       }
