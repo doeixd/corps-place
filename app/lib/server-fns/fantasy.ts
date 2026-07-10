@@ -20,7 +20,12 @@ import { MembershipService } from '@/lib/fantasy/services/membership-service';
 import { QuizService } from '@/lib/fantasy/services/quiz-service';
 import { DraftService } from '@/lib/fantasy/services/draft-service';
 import { effectDraftEnabled } from '@/lib/fantasy/flag';
-import { fantasyRuntime } from '@/rpc';
+// `@/rpc` is imported LAZILY inside runFantasy (below), never at module scope: a
+// static `import { fantasyRuntime } from '@/rpc'` runs @/rpc's
+// ManagedRuntime.make(FantasyServicesLive) side effect at module init, and since
+// that import can't be tree-shaken (it's side-effecting), the whole nine-service
+// fantasy runtime — plus Stripe, web-push, better-auth, libsql — gets dragged
+// into the CLIENT entry on every route whose loader touches this module.
 import type { FantasyError } from '@/lib/fantasy/services/errors';
 import { getContributionsDb, durableStorageStatus } from '@/lib/contributions-db';
 import { getActor, requireCapability, type Actor } from '@/lib/authz';
@@ -64,8 +69,11 @@ const legacyFantasyMessage = (e: FantasyError): string =>
  * strings the routes branch on. Unexpected defects (orDie'd infra failures) are
  * logged + normalized to `INTERNAL` instead of leaking an Effect cause dump.
  */
-const runFantasy = <A, E extends FantasyError, R>(program: Effect.Effect<A, E, R>): Promise<A> =>
-  fantasyRuntime.runPromise(
+const runFantasy = async <A, E extends FantasyError, R>(
+  program: Effect.Effect<A, E, R>
+): Promise<A> => {
+  const { fantasyRuntime } = await import('@/rpc');
+  return fantasyRuntime.runPromise(
     program.pipe(
       Effect.catch((e) => Effect.fail(new Error(legacyFantasyMessage(e)))),
       Effect.catchDefect((d) =>
@@ -78,6 +86,7 @@ const runFantasy = <A, E extends FantasyError, R>(program: Effect.Effect<A, E, R
       // satisfied at run time; cast it away for the runtime's run signature.
     ) as Effect.Effect<A, Error, never>
   );
+};
 
 /** Throw a uniform CONFLICT when a per-user action exceeds its rate budget (§13). */
 const limitPerUser = (action: string, userId: string, max: number, windowMs = 60_000): void => {

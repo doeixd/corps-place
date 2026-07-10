@@ -20,7 +20,12 @@ import * as draftEngine from '@/lib/fantasy/draft-engine';
 import { Effect } from 'effect';
 import { StandingsService } from '@/lib/fantasy/services/standings-service';
 import { DraftService } from '@/lib/fantasy/services/draft-service';
-import { fantasyRuntime } from '@/rpc';
+// Lazy — a static `import { fantasyRuntime } from '@/rpc'` runs @/rpc's
+// ManagedRuntime.make(FantasyServicesLive) side effect at module init, which
+// can't be tree-shaken and so drags the whole nine-service fantasy runtime (+
+// Stripe, web-push, better-auth, libsql) into the CLIENT bundle. Only these
+// admin handlers need it, so load it on demand inside them.
+const loadFantasyRuntime = () => import('@/rpc').then((m) => m.fantasyRuntime);
 
 export interface AdminLeagueRow {
   leagueId: string;
@@ -210,7 +215,7 @@ export const adminRecomputeStandings = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const actor = await requireCapability(getWebRequest(), 'manageFantasyLeagues');
-    const summary = await fantasyRuntime.runPromise(
+    const summary = await (await loadFantasyRuntime()).runPromise(
       Effect.flatMap(StandingsService, (s) => s.recompute(data.season))
     );
     await writeAudit(await getContributionsDb(), actor, {
@@ -423,7 +428,7 @@ export const adminStartDraftNow = createServerFn({ method: 'POST' })
       sql: `UPDATE fantasy_leagues SET status = 'scheduled', updated_at = ? WHERE league_id = ?`,
       args: [now, data.leagueId],
     });
-    const result = (await fantasyRuntime.runPromise(
+    const result = (await (await loadFantasyRuntime()).runPromise(
       Effect.flatMap(DraftService, (s) => s.start(data.leagueId))
     )) as { ok: boolean; reason?: string };
     await writeAudit(db, actor, { action: 'test_start_draft_now', target: data.leagueId });
@@ -438,7 +443,7 @@ export const adminAutoPickCurrent = createServerFn({ method: 'POST' })
     const db = await getContributionsDb();
     await assertTestLeague(db, data.leagueId);
     // No expectedDeadline → runAutoPickIfDue skips the timing guard and picks now.
-    await fantasyRuntime.runPromise(
+    await (await loadFantasyRuntime()).runPromise(
       Effect.flatMap(DraftService, (s) => s.runAutoPickIfDue(data.leagueId))
     );
     return { ok: true as const };
@@ -460,7 +465,7 @@ export const adminFastForwardDraft = createServerFn({ method: 'POST' })
         })
       ).rows[0] as { status?: string } | undefined;
       if (!draft || draft.status !== 'live') break;
-      await fantasyRuntime.runPromise(
+      await (await loadFantasyRuntime()).runPromise(
         Effect.flatMap(DraftService, (s) => s.runAutoPickIfDue(data.leagueId))
       );
       picks++;

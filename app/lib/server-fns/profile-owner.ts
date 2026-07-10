@@ -12,8 +12,12 @@ import { requireCapability, requireProfileOwner, ForbiddenError } from '@/lib/au
 import { rateLimit } from '@/lib/rate-limit';
 import { auth } from '@/lib/auth';
 import { getContributionsDb } from '@/lib/contributions-db';
-import { MediaService } from '@/lib/fantasy/services/media-service';
-import { fantasyRuntime } from '@/rpc';
+// NOTE: `@/rpc` and MediaService are imported LAZILY inside setProfilePhoto's
+// handler (below). A module-scope `import { fantasyRuntime } from '@/rpc'` runs
+// @/rpc's ManagedRuntime.make(FantasyServicesLive) at module init, dragging the
+// entire nine-service fantasy runtime (+ Stripe, web-push, better-auth, libsql)
+// into the CLIENT entry on every route that renders a claim panel. Only one
+// handler needs it, so keep it out of the module graph.
 
 // Server-fn boundary for staff/judge profile ownership. Effect/ProfileOwnerService
 // stay behind these handlers (code-split server-side) so the client bundle imports
@@ -175,6 +179,10 @@ export const setProfilePhoto = createServerFn({ method: 'POST' })
 
     if (data.dataBase64) {
       const dataBase64 = data.dataBase64;
+      const [{ fantasyRuntime }, { MediaService }] = await Promise.all([
+        import('@/rpc'),
+        import('@/lib/fantasy/services/media-service'),
+      ]);
       const res = await fantasyRuntime.runPromise(
         Effect.flatMap(MediaService, (s) => s.uploadProfilePhoto({ actor, dataBase64 }))
       );
