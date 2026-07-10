@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { lazy, Suspense, useState, type ReactNode } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { BackLink } from '@/components/back-link';
@@ -11,7 +11,13 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead, SITE_URL } from '@/lib/seo';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
 import { RankingsList } from '@/components/rankings/rankings-list';
-import { RankBumpChart } from '@/components/rankings/rank-bump-chart';
+// Lazy: recharts (~330KB) is the heaviest thing on this route, and the chart
+// already renders only an empty placeholder until its mount effect fires — so
+// deferring it is transparent to SSR/first paint while the standings list and
+// filters render immediately.
+const RankBumpChart = lazy(() =>
+  import('@/components/rankings/rank-bump-chart').then((m) => ({ default: m.RankBumpChart }))
+);
 import { AsofScrubber } from '@/components/rankings/asof-scrubber';
 import {
   RANK_METRICS,
@@ -430,13 +436,15 @@ function RankingsPage() {
               <ToggleGroupItem value="score">Score</ToggleGroupItem>
             </ToggleGroup>
           </div>
-          <RankBumpChart
-            rows={result.rows}
-            dates={result.dates}
-            hoveredSlug={hovered}
-            onHover={setHovered}
-            mode={chartMode}
-          />
+          <Suspense fallback={<div className="h-80 w-full" />}>
+            <RankBumpChart
+              rows={result.rows}
+              dates={result.dates}
+              hoveredSlug={hovered}
+              onHover={setHovered}
+              mode={chartMode}
+            />
+          </Suspense>
         </CardContent>
       </Card>
 
