@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Show, For } from 'jotai-solid-api';
 import * as Match from 'effect/Match';
@@ -6,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/reui/badge';
 import { Icon } from '@/components/icon';
+import { cn } from '@/lib/utils';
 import { ClassBadge } from '@/components/class-badge';
 import { CorpsNameCell } from '@/components/corps-name-cell';
 import { useGeolocation } from '@/hooks/use-geolocation';
@@ -13,6 +15,8 @@ import { sortByDistance, formatDistance, type LatLng } from '@/lib/geo';
 import { formatEventDate } from '@/lib/format';
 import type { FeaturedWeekend, WeekendShow, WeekendShowLineupEntry } from '@/lib/home-shows';
 import {
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
   ArrowRight02Icon,
   Location01Icon,
   MapsLocation02Icon,
@@ -172,6 +176,36 @@ function ShowCard({ show, distanceMiles }: { show: WeekendShow; distanceMiles: n
  */
 export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) {
   const { state, request } = useGeolocation();
+
+  // Smart scroll arrows: track whether the row can scroll further left/right so
+  // each arrow only shows when it has somewhere to go. Same pattern as ShopSection.
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ left: false, right: false });
+  const updateEdges = useCallback(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setEdges({
+      left: scrollLeft > 1,
+      right: scrollLeft < scrollWidth - clientWidth - 1,
+    });
+  }, []);
+  const showCount = weekend?.shows.length ?? 0;
+  useEffect(() => {
+    updateEdges();
+    const el = scrollerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(updateEdges);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [showCount, updateEdges]);
+  const scrollByPage = (dir: number) => {
+    scrollerRef.current?.scrollBy({
+      left: dir * scrollerRef.current.clientWidth * 0.8,
+      behavior: 'smooth',
+    });
+  };
+
   if (!weekend || weekend.shows.length === 0) return null;
 
   const heading = weekend.isCurrentWeekend ? 'This weekend' : 'Shows coming up';
@@ -228,15 +262,46 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
         </Show>
       </div>
 
-      <div
-        className="carousel-scrollbar -mx-2 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-pl-2 px-2 pt-3 pb-3"
-        tabIndex={0}
-        role="group"
-        aria-label="Weekend shows, scroll horizontally"
-      >
-        <For each={ordered}>
-          {(row) => <ShowCard show={row.item} distanceMiles={row.distanceMiles} />}
-        </For>
+      <div className="relative -mx-2">
+        <div
+          ref={scrollerRef}
+          onScroll={updateEdges}
+          className="carousel-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-pl-2 px-2 pt-3 pb-3"
+          tabIndex={0}
+          role="group"
+          aria-label="Weekend shows, scroll horizontally"
+        >
+          <For each={ordered}>
+            {(row) => <ShowCard show={row.item} distanceMiles={row.distanceMiles} />}
+          </For>
+        </div>
+
+        {/* Smart prev/next arrows, matching the shop carousels: each fades in only
+            when the row can scroll that way, and both stay hidden when everything
+            fits. Touch users swipe, so they show only on hover-capable (sm+)
+            pointers; the bottom scrollbar shifts the cards' center up ~6px. */}
+        <button
+          type="button"
+          aria-label="Previous shows"
+          onClick={() => scrollByPage(-1)}
+          className={cn(
+            'absolute left-1 top-[calc(50%-6px)] z-10 hidden size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow transition-opacity hover:bg-background sm:flex',
+            edges.left ? 'opacity-100' : 'pointer-events-none opacity-0'
+          )}
+        >
+          <Icon icon={ArrowLeft01Icon} size="md" className="size-[1.125rem]" />
+        </button>
+        <button
+          type="button"
+          aria-label="Next shows"
+          onClick={() => scrollByPage(1)}
+          className={cn(
+            'absolute right-1 top-[calc(50%-6px)] z-10 hidden size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow transition-opacity hover:bg-background sm:flex',
+            edges.right ? 'opacity-100' : 'pointer-events-none opacity-0'
+          )}
+        >
+          <Icon icon={ArrowRight01Icon} size="md" className="size-[1.125rem]" />
+        </button>
       </div>
     </motion.section>
   );
