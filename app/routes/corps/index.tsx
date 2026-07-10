@@ -97,8 +97,11 @@ function CorpsDirectoryContent({ corps }: { corps: CorpsSummary[] }) {
   // Keyed by corps_key (the card's data-grid-key); resolved to slug + cover image.
   const router = useRouter();
   useEffect(() => {
+    // Read layout geometry once — repeated window.innerWidth reads can force
+    // extra reflows on mount.
+    const innerWidth = window.innerWidth;
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
-    const cssWidth = window.innerWidth >= 1024 ? 448 : window.innerWidth;
+    const cssWidth = innerWidth >= 1024 ? 448 : innerWidth;
     const widths = [384, 480, 640, 768, 896, 1024];
     const w = widths.find((x) => x >= cssWidth * dpr) ?? 1024;
     const byKey = new Map(corps.map((c) => [c.corps_key, c]));

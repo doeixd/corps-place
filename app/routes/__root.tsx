@@ -50,6 +50,10 @@ import { SITE_URL, JOBS_URL } from '@/lib/seo';
 import { BrandProvider } from '@/lib/brand-context';
 import { buildSeo, jsonLdScript } from '@/lib/seo';
 import '@/app.css';
+// Resolve the hashed, immutably-cached URL of the primary (latin) Instrument Sans
+// subset so we can preload it. Vite emits it under the `r1` assetsDir; the `?url`
+// import keeps this correct across content-hash and `r1→r2` prefix bumps.
+import instrumentSansLatinUrl from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
 
 const subscribeTheme = (onChange: () => void) => {
   const sub = themeStore.subscribe(onChange);
@@ -177,6 +181,18 @@ function RootDocument({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* Preload the body font's latin subset. It's otherwise discovered only
+            after main.css parses (deep in the critical chain); preloading pulls it
+            parallel with the CSS to cut the LCP tail. `crossOrigin` is required —
+            fonts fetch anonymously, and a mismatched preload is discarded + refetched.
+            Only the latin subset is preloaded (latin-ext is rarely used here). */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href={instrumentSansLatinUrl}
+          crossOrigin="anonymous"
+        />
         {/* Keep favorite branding in the persistent document head, outside
             HeadContent. Route reconciliation and live updates can otherwise
             restore stale loader values or briefly remove the favicon. */}
