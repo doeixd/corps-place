@@ -22,6 +22,7 @@ export type CanonicalCorps = {
   corps_logo: string | null;
   corps_logo_dark: number | null;
   corps_logo_dark_url: string | null;
+  active: number | null;
 };
 
 // Build `corps_key → canonical display identity` for every key that belongs to a
@@ -32,7 +33,7 @@ export type CanonicalCorps = {
 export const buildCorpsCanonicalMap = async (db: Client): Promise<Map<string, CanonicalCorps>> => {
   const [corpsRes, aliasRes] = await Promise.all([
     db.execute(
-      `SELECT corps_key, name, slug, corps_logo, corps_logo_dark, corps_logo_dark_url FROM corps`
+      `SELECT corps_key, name, slug, corps_logo, corps_logo_dark, corps_logo_dark_url, active FROM corps`
     ),
     db.execute(`SELECT alias_name, canonical_name FROM corps_aliases`),
   ]);
@@ -43,6 +44,7 @@ export const buildCorpsCanonicalMap = async (db: Client): Promise<Map<string, Ca
     corps_logo: string | null;
     corps_logo_dark: number | null;
     corps_logo_dark_url: string | null;
+    active: number | null;
   }>;
   const aliases = aliasRes.rows as unknown as Array<{
     alias_name: string | null;
@@ -98,11 +100,18 @@ export const buildCorpsCanonicalMap = async (db: Client): Promise<Map<string, Ca
       corps_logo: c.corps_logo,
       corps_logo_dark: c.corps_logo_dark,
       corps_logo_dark_url: c.corps_logo_dark_url,
+      active: c.active,
     });
     byRoot.set(root, list);
   }
 
-  const completeness = (r: CanonicalCorps) => (r.slug ? 2 : 0) + (r.corps_logo ? 1 : 0);
+  // slug/logo first (the clickable, picture-bearing identity), then ACTIVE as
+  // the tiebreak: when two records are equally complete (exact duplicates, e.g.
+  // Northern Lights), the directory only lists the active one — picking the
+  // inactive twin left schedule rows pointing at a corps_key the client logo
+  // registry doesn't contain (initials fallback instead of the logo).
+  const completeness = (r: CanonicalCorps) =>
+    (r.slug ? 4 : 0) + (r.corps_logo ? 2 : 0) + (r.active ? 1 : 0);
   const map = new Map<string, CanonicalCorps>();
   for (const list of byRoot.values()) {
     if (list.length < 2) continue; // singleton: already its own identity
