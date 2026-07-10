@@ -1,77 +1,26 @@
 // <VsChart> — the presentational multi-series comparison chart (plan M2). Plots
 // each resolved series against % through season (0–100), so corps/seasons/
-// baselines align on one x-axis. One or two <Line>s per series (a 2026 corps =
-// actual solid + predicted dashed). Theme-aware colors via assignVsColors; SSR
-// guard mirrors corps-score-chart to avoid hydration CLS.
-import { useEffect, useMemo, useState } from 'react';
-import {
-  ResponsiveContainer,
-  ComposedChart,
-  Area,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from 'recharts';
+// baselines align on one x-axis.
+//
+// This module is the SSR'd *shell*: it renders a fixed-height box (reserving the
+// chart's space) plus the legend, and lazy-loads the recharts-heavy body
+// (vs-chart-body) in the background. So recharts (~330KB) never blocks first
+// paint, the legend is present immediately (no layout shift when the chart
+// arrives), and the shell mirrors the placeholder pattern the charts already use
+// to avoid the ResponsiveContainer SSR width warning.
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useSelector } from '@xstate/react';
-import { cn } from '@/lib/utils';
 import { themeStore } from '@/stores/theme-store';
 import { assignVsColors } from '@/lib/vs/colors';
 import type { VsResolvedSeries } from '@/lib/vs/types';
-import { VsLegend, VsTooltip, type VsCellMeta, type VsLegendItem } from './chart-primitives';
-import { useChartZoom, RESET_ZOOM_CLASS } from '@/lib/use-chart-zoom';
-
-interface MergedRow {
-  pct: number;
-  __meta: Record<string, VsCellMeta>;
-  [dataKey: string]: number | [number, number] | Record<string, VsCellMeta>;
-}
-
-const lineKey = (seriesId: string, lineIdx: number) => `${seriesId}@@${lineIdx}`;
+import { VsLegend, type VsLegendItem } from './chart-primitives';
 
 // The hover-preview series is merged into the chart data under this fixed id so
 // its dataKeys never collide with a real series and the tooltip can skip it.
 const GHOST_ID = 'ghost';
-const GHOST_OPACITY = 0.4;
 const GHOST_FADE_MS = 240;
 
-/** Merge every series' points into rows keyed by pct; each (series,line) gets a
- *  dataKey column, with per-cell metadata for the tooltip. Gaps stay undefined
- *  (Recharts `connectNulls` bridges within a line; absent points never read 0). */
-function mergeRows(series: VsResolvedSeries[]): MergedRow[] {
-  const byPct = new Map<number, MergedRow>();
-  const rowFor = (pct: number): MergedRow => {
-    let r = byPct.get(pct);
-    if (!r) {
-      r = { pct, __meta: {} };
-      byPct.set(pct, r);
-    }
-    return r;
-  };
-  for (const s of series) {
-    s.lines.forEach((line, li) => {
-      const key = lineKey(s.id, li);
-      for (const p of line.points) {
-        const row = rowFor(p.pct);
-        row[key] = p.value;
-        if (p.low != null && p.high != null) row[`${key}__band`] = [p.low, p.high];
-        row.__meta[key] = {
-          seriesId: s.id,
-          seriesLabel: s.label,
-          color: s.color,
-          dashed: line.style === 'dashed',
-          date: p.date,
-          eventLabel: p.eventLabel,
-          // The transient hover preview (id forced to 'ghost') is excluded from
-          // the tooltip — it's a peek, not a committed series.
-          ghost: s.id === GHOST_ID,
-        };
-      }
-    });
-  }
-  return [...byPct.values()].sort((a, b) => a.pct - b.pct);
-}
+const VsChartBody = lazy(() => import('./vs-chart-body'));
 
 export function VsChart({
   series,
@@ -93,6 +42,17 @@ export function VsChart({
 }) {
   const theme = useSelector(themeStore, (s) => s.context.theme);
   const colored = useMemo(() => assignVsColors(series, theme), [series, theme]);
+
+  const legendItems = useMemo<VsLegendItem[]>(
+    () =>
+      colored.map((s) => ({
+        id: s.id,
+        label: s.label,
+        color: s.color,
+        hasDashed: s.lines.some((l) => l.style === 'dashed'),
+      })),
+    [colored]
+  );
 
   // Ghost preview: keep the line mounted through a fade-out before unmounting, so
   // both appear (fade in) and disappear (fade out) animate. `ghost` holds the
@@ -118,187 +78,25 @@ export function VsChart({
     () => (ghost ? assignVsColors([{ ...ghost, id: GHOST_ID }], theme)[0] : null),
     [ghost, theme]
   );
-  const rows = useMemo(
-    () => mergeRows(ghostColored ? [...colored, ghostColored] : colored),
-    [colored, ghostColored]
-  );
 
-  const legendItems = useMemo<VsLegendItem[]>(
-    () =>
-      colored.map((s) => ({
-        id: s.id,
-        label: s.label,
-        color: s.color,
-        hasDashed: s.lines.some((l) => l.style === 'dashed'),
-      })),
-    [colored]
-  );
-
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  // Legend hover: highlight one series by dimming every other line/band.
+  // Legend hover: highlight one series by dimming every other line/band. Owned
+  // here (in the shell) so the eager legend and the lazy chart body share it.
   const [highlighted, setHighlighted] = useState<string | null>(null);
-  const dimmed = (id: string) => highlighted != null && id !== highlighted;
-
-  const { xDomain, zoomed, reset, wrapRef, handlers, touchAction } = useChartZoom({
-    min: 0,
-    max: 100,
-    minSpan: 5,
-  });
-
-  // Y domain follows the visible x-window so zooming in actually spreads the
-  // lines vertically (recharts' 'auto' considers ALL data, not the window).
-  const yDomain = useMemo<[number | string, number | string]>(() => {
-    if (!xDomain) return ['auto', 'auto'];
-    const [lo, hi] = xDomain;
-    let min = Infinity;
-    let max = -Infinity;
-    for (const row of rows) {
-      if (row.pct < lo || row.pct > hi) continue;
-      for (const [k, v] of Object.entries(row)) {
-        if (k === 'pct' || k === '__meta') continue;
-        if (typeof v === 'number') {
-          min = Math.min(min, v);
-          max = Math.max(max, v);
-        } else if (Array.isArray(v)) {
-          min = Math.min(min, v[0]);
-          max = Math.max(max, v[1]);
-        }
-      }
-    }
-    if (!Number.isFinite(min) || !Number.isFinite(max)) return ['auto', 'auto'];
-    const pad = Math.max((max - min) * 0.08, 0.5);
-    return [Math.floor((min - pad) * 10) / 10, Math.ceil((max + pad) * 10) / 10];
-  }, [rows, xDomain]);
 
   return (
     <div className="space-y-3">
-      {!mounted ? (
-        <div className={`${height} w-full`} />
-      ) : (
-        <div
-          ref={wrapRef}
-          className={`${height} relative w-full select-none`}
-          // Not zoomed: pan-y lets the page scroll normally over the chart while
-          // two-finger pinches still reach our pointer handlers. Zoomed: none, so
-          // a one-finger drag pans the window instead of scrolling the page.
-          style={{ touchAction }}
-          {...handlers}
-          onDoubleClick={reset}
-        >
-          {zoomed ? (
-            <button
-              type="button"
-              onClick={reset}
-              className={RESET_ZOOM_CLASS}
-            >
-              Reset zoom
-            </button>
-          ) : null}
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={rows} margin={{ top: 8, right: 12, bottom: 8, left: -8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
-              <XAxis
-                dataKey="pct"
-                type="number"
-                domain={xDomain ?? [0, 100]}
-                allowDataOverflow
-                ticks={xDomain ? undefined : [0, 25, 50, 75, 100]}
-                tickFormatter={(v: number) => `${Math.round(v)}%`}
-                tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
-                tickLine={false}
-                axisLine={{ stroke: 'var(--color-border)' }}
-                label={{
-                  value: 'Season progress',
-                  position: 'insideBottom',
-                  offset: -4,
-                  fontSize: 11,
-                  fill: 'var(--color-muted-foreground)',
-                }}
-              />
-              <YAxis
-                domain={yDomain}
-                allowDataOverflow
-                tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
-                tickLine={false}
-                axisLine={false}
-                width={yLabel ? 52 : 40}
-                label={
-                  yLabel
-                    ? {
-                        value: yLabel,
-                        angle: -90,
-                        position: 'insideLeft',
-                        fontSize: 11,
-                        fill: 'var(--color-muted-foreground)',
-                        style: { textAnchor: 'middle' },
-                      }
-                    : undefined
-                }
-              />
-              <Tooltip content={<VsTooltip />} />
-              {/* Uncertainty bands first (behind the lines). */}
-              {colored.flatMap((s) =>
-                s.lines.flatMap((line, li) =>
-                  line.points.some((p) => p.low != null && p.high != null)
-                    ? [
-                        <Area
-                          key={`${lineKey(s.id, li)}__band`}
-                          dataKey={`${lineKey(s.id, li)}__band`}
-                          stroke="none"
-                          fill={s.color}
-                          fillOpacity={0.12}
-                          connectNulls
-                          legendType="none"
-                          activeDot={false}
-                          className={cn('vs-series', dimmed(s.id) && 'vs-series--dim')}
-                          isAnimationActive={false}
-                        />,
-                      ]
-                    : []
-                )
-              )}
-              {colored.flatMap((s) =>
-                s.lines.map((line, li) => (
-                  <Line
-                    key={lineKey(s.id, li)}
-                    name={s.label}
-                    dataKey={lineKey(s.id, li)}
-                    type="monotone"
-                    stroke={s.color}
-                    strokeWidth={line.style === 'dashed' ? 2 : 2.5}
-                    strokeDasharray={line.style === 'dashed' ? '5 4' : undefined}
-                    dot={{ r: 2, fill: s.color }}
-                    activeDot={{ r: 4 }}
-                    connectNulls
-                    className={cn('vs-series', dimmed(s.id) && 'vs-series--dim')}
-                    isAnimationActive={false}
-                  />
-                ))
-              )}
-              {/* Hover preview ("ghost") line — low opacity, fades in/out. */}
-              {ghostColored?.lines.map((line, li) => (
-                <Line
-                  key={lineKey(GHOST_ID, li)}
-                  dataKey={lineKey(GHOST_ID, li)}
-                  type="monotone"
-                  stroke={ghostColored.color}
-                  strokeWidth={line.style === 'dashed' ? 2 : 2.5}
-                  strokeDasharray={line.style === 'dashed' ? '5 4' : undefined}
-                  strokeOpacity={ghostShown ? GHOST_OPACITY : 0}
-                  dot={false}
-                  activeDot={false}
-                  connectNulls
-                  legendType="none"
-                  className="vs-ghost-line"
-                  isAnimationActive={false}
-                />
-              ))}
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+      {/* Fixed-height box reserves the chart's space during SSR + while the
+          recharts body loads, so there's no layout shift. */}
+      <Suspense fallback={<div className={`${height} w-full`} />}>
+        <VsChartBody
+          colored={colored}
+          ghostColored={ghostColored}
+          ghostShown={ghostShown}
+          yLabel={yLabel}
+          height={height}
+          highlighted={highlighted}
+        />
+      </Suspense>
       <VsLegend items={legendItems} onRemove={onRemove} onHover={setHighlighted} />
     </div>
   );

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { PageShell } from '@/components/page-shell';
 import { BackLink } from '@/components/back-link';
@@ -6,13 +6,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { seoHead } from '@/lib/seo';
 import { resolveVsSeries, getVsSeasonAvailability, getVsActiveCorps } from '@/lib/server-fns/vs';
 import { getCorpsDirectory } from '@/lib/server-fns/hybrid';
-// Lazy: recharts (~330KB) is by far the heaviest dependency on this route. The
-// chart already renders only a placeholder until its mount effect fires, so the
-// page shell (title, add/compare controls, filters) paints immediately and the
-// chart + legend stream in once the chunk loads.
-const VsChart = lazy(() =>
-  import('@/components/vs/vs-chart').then((m) => ({ default: m.VsChart }))
-);
+// VsChart is the SSR'd shell (fixed-height box + legend); it lazy-loads the
+// recharts-heavy body itself, so recharts (~330KB) stays off first paint without
+// deferring the legend or causing layout shift. Imported normally on purpose.
+import { VsChart } from '@/components/vs/vs-chart';
 import { decodeVsSeries, encodeVsSeries, vsSeriesToken } from '@/lib/vs/codec';
 import { parseCaption, VS_CAPTION_LABELS, type VsCaption } from '@/lib/vs/captions';
 // Old popover-based builder — replaced by <AddCompareSection> below, kept (not
@@ -165,14 +162,12 @@ function VsPage() {
       </div>
       <Card>
         <CardContent className="space-y-3 px-2 py-4">
-          <Suspense fallback={<div className="h-80 w-full" />}>
-            <VsChart
-              series={series}
-              onRemove={series.length > 1 ? onRemove : undefined}
-              preview={preview}
-              yLabel={caption === 'total' ? undefined : VS_CAPTION_LABELS[caption]}
-            />
-          </Suspense>
+          <VsChart
+            series={series}
+            onRemove={series.length > 1 ? onRemove : undefined}
+            preview={preview}
+            yLabel={caption === 'total' ? undefined : VS_CAPTION_LABELS[caption]}
+          />
           {/* Old inline popover trigger — replaced by the <AddCompareSection>
               below; kept commented out (not deleted) for reference / rollback.
           <div className="flex items-center gap-3 px-1">
