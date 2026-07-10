@@ -87,6 +87,9 @@ import { Route as AdminFantasyQuizRouteImport } from './routes/admin/fantasy/qui
 import { Route as AdminFantasyLeaguesRouteImport } from './routes/admin/fantasy/leagues'
 import { Route as EventsYearSlugSlugPredictionRouteImport } from './routes/events/$yearSlug/$slug/prediction'
 import { ServerRoute as SitemapDotxmlServerRouteImport } from './routes/sitemap[.]xml'
+import { ServerRoute as SitemapStaffDotxmlServerRouteImport } from './routes/sitemap-staff[.]xml'
+import { ServerRoute as SitemapShopDotxmlServerRouteImport } from './routes/sitemap-shop[.]xml'
+import { ServerRoute as SitemapCoreDotxmlServerRouteImport } from './routes/sitemap-core[.]xml'
 import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]txt'
 import { ServerRoute as ManifestDotwebmanifestServerRouteImport } from './routes/manifest[.]webmanifest'
 import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[.]ico'
@@ -509,6 +512,22 @@ const EventsYearSlugSlugPredictionRoute =
 const SitemapDotxmlServerRoute = SitemapDotxmlServerRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const SitemapStaffDotxmlServerRoute =
+  SitemapStaffDotxmlServerRouteImport.update({
+    id: '/sitemap-staff.xml',
+    path: '/sitemap-staff.xml',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const SitemapShopDotxmlServerRoute = SitemapShopDotxmlServerRouteImport.update({
+  id: '/sitemap-shop.xml',
+  path: '/sitemap-shop.xml',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const SitemapCoreDotxmlServerRoute = SitemapCoreDotxmlServerRouteImport.update({
+  id: '/sitemap-core.xml',
+  path: '/sitemap-core.xml',
   getParentRoute: () => rootServerRouteImport,
 } as any)
 const RobotsDottxtServerRoute = RobotsDottxtServerRouteImport.update({
@@ -1274,6 +1293,9 @@ export interface FileServerRoutesByFullPath {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/manifest.webmanifest': typeof ManifestDotwebmanifestServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
+  '/sitemap-core.xml': typeof SitemapCoreDotxmlServerRoute
+  '/sitemap-shop.xml': typeof SitemapShopDotxmlServerRoute
+  '/sitemap-staff.xml': typeof SitemapStaffDotxmlServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
@@ -1316,6 +1338,9 @@ export interface FileServerRoutesByTo {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/manifest.webmanifest': typeof ManifestDotwebmanifestServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
+  '/sitemap-core.xml': typeof SitemapCoreDotxmlServerRoute
+  '/sitemap-shop.xml': typeof SitemapShopDotxmlServerRoute
+  '/sitemap-staff.xml': typeof SitemapStaffDotxmlServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
@@ -1359,6 +1384,9 @@ export interface FileServerRoutesById {
   '/favicon.ico': typeof FaviconDoticoServerRoute
   '/manifest.webmanifest': typeof ManifestDotwebmanifestServerRoute
   '/robots.txt': typeof RobotsDottxtServerRoute
+  '/sitemap-core.xml': typeof SitemapCoreDotxmlServerRoute
+  '/sitemap-shop.xml': typeof SitemapShopDotxmlServerRoute
+  '/sitemap-staff.xml': typeof SitemapStaffDotxmlServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/collect': typeof ApiCollectServerRoute
   '/api/media': typeof ApiMediaServerRoute
@@ -1403,6 +1431,9 @@ export interface FileServerRouteTypes {
     | '/favicon.ico'
     | '/manifest.webmanifest'
     | '/robots.txt'
+    | '/sitemap-core.xml'
+    | '/sitemap-shop.xml'
+    | '/sitemap-staff.xml'
     | '/sitemap.xml'
     | '/api/collect'
     | '/api/media'
@@ -1445,6 +1476,9 @@ export interface FileServerRouteTypes {
     | '/favicon.ico'
     | '/manifest.webmanifest'
     | '/robots.txt'
+    | '/sitemap-core.xml'
+    | '/sitemap-shop.xml'
+    | '/sitemap-staff.xml'
     | '/sitemap.xml'
     | '/api/collect'
     | '/api/media'
@@ -1487,6 +1521,9 @@ export interface FileServerRouteTypes {
     | '/favicon.ico'
     | '/manifest.webmanifest'
     | '/robots.txt'
+    | '/sitemap-core.xml'
+    | '/sitemap-shop.xml'
+    | '/sitemap-staff.xml'
     | '/sitemap.xml'
     | '/api/collect'
     | '/api/media'
@@ -1530,6 +1567,9 @@ export interface RootServerRouteChildren {
   FaviconDoticoServerRoute: typeof FaviconDoticoServerRoute
   ManifestDotwebmanifestServerRoute: typeof ManifestDotwebmanifestServerRoute
   RobotsDottxtServerRoute: typeof RobotsDottxtServerRoute
+  SitemapCoreDotxmlServerRoute: typeof SitemapCoreDotxmlServerRoute
+  SitemapShopDotxmlServerRoute: typeof SitemapShopDotxmlServerRoute
+  SitemapStaffDotxmlServerRoute: typeof SitemapStaffDotxmlServerRoute
   SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
   ApiCollectServerRoute: typeof ApiCollectServerRoute
   ApiMediaServerRoute: typeof ApiMediaServerRoute
@@ -2103,6 +2143,27 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof SitemapDotxmlServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/sitemap-staff.xml': {
+      id: '/sitemap-staff.xml'
+      path: '/sitemap-staff.xml'
+      fullPath: '/sitemap-staff.xml'
+      preLoaderRoute: typeof SitemapStaffDotxmlServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/sitemap-shop.xml': {
+      id: '/sitemap-shop.xml'
+      path: '/sitemap-shop.xml'
+      fullPath: '/sitemap-shop.xml'
+      preLoaderRoute: typeof SitemapShopDotxmlServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/sitemap-core.xml': {
+      id: '/sitemap-core.xml'
+      path: '/sitemap-core.xml'
+      fullPath: '/sitemap-core.xml'
+      preLoaderRoute: typeof SitemapCoreDotxmlServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/robots.txt': {
       id: '/robots.txt'
       path: '/robots.txt'
@@ -2519,6 +2580,9 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   FaviconDoticoServerRoute: FaviconDoticoServerRoute,
   ManifestDotwebmanifestServerRoute: ManifestDotwebmanifestServerRoute,
   RobotsDottxtServerRoute: RobotsDottxtServerRoute,
+  SitemapCoreDotxmlServerRoute: SitemapCoreDotxmlServerRoute,
+  SitemapShopDotxmlServerRoute: SitemapShopDotxmlServerRoute,
+  SitemapStaffDotxmlServerRoute: SitemapStaffDotxmlServerRoute,
   SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
   ApiCollectServerRoute: ApiCollectServerRoute,
   ApiMediaServerRoute: ApiMediaServerRoute,
