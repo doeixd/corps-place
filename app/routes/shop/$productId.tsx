@@ -11,7 +11,6 @@ import { ProductGallery } from '@/components/merch/product-gallery';
 import { GroupLogo } from '@/components/shop/group-logo';
 import { Icon } from '@/components/icon';
 import { LinkSquare02Icon, SentIcon } from '@/components/icons/generated';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatPrice, formatDescription, type MerchProductDetail } from '@/lib/merch-types';
 import { buildSeo, clampDescription, SITE_URL } from '@/lib/seo';
 
@@ -185,38 +184,28 @@ function ProductDetail() {
 
             <div className="flex items-center gap-3">
               <BookmarkButton product={product} showLabel />
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <a
-                      href={product.productUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="View on store"
-                      className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-primary/60 hover:text-primary"
-                    />
-                  }
-                >
-                  <Icon icon={LinkSquare02Icon} size="sm" />
-                  <span>View on store</span>
-                </TooltipTrigger>
-                <TooltipContent>Opens the store's page in a new tab</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <button
-                      type="button"
-                      onClick={onShare}
-                      aria-label="Share"
-                      className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-border text-text-secondary transition-colors hover:border-primary/60 hover:text-primary"
-                    />
-                  }
-                >
-                  <Icon icon={SentIcon} size="sm" className="-translate-x-px translate-y-px" />
-                </TooltipTrigger>
-                <TooltipContent>Share</TooltipContent>
-              </Tooltip>
+              {/* Native title hints instead of base-ui Tooltip — keeps the tooltip
+                  + floating-ui positioning stack (~80KB) off the product page. */}
+              <a
+                href={product.productUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="View on store"
+                title="Opens the store's page in a new tab"
+                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-primary/60 hover:text-primary"
+              >
+                <Icon icon={LinkSquare02Icon} size="sm" />
+                <span>View on store</span>
+              </a>
+              <button
+                type="button"
+                onClick={onShare}
+                aria-label="Share"
+                title="Share"
+                className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-border text-text-secondary transition-colors hover:border-primary/60 hover:text-primary"
+              >
+                <Icon icon={SentIcon} size="sm" className="-translate-x-px translate-y-px" />
+              </button>
             </div>
 
             <Show when={desc.intro.length > 0 || desc.bullets.length > 0}>

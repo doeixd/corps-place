@@ -6,7 +6,6 @@ import { BookmarkButton } from '@/components/merch/bookmark-button';
 import { GroupLogo } from '@/components/shop/group-logo';
 import { Icon } from '@/components/icon';
 import { LinkSquare02Icon } from '@/components/icons/generated';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ProgressiveImage } from '@/components/progressive-image';
 import { formatPrice, type MerchProductSummary } from '@/lib/merch-types';
 import { useThumbhash } from '@/hooks/use-thumbhash';
@@ -63,22 +62,20 @@ export function ProductCard({ product }: { product: MerchProductSummary }) {
           <span className="text-sm font-medium">{formatPrice(product)}</span>
           <div className="flex items-center gap-1.5">
             <BookmarkButton product={product} />
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <a
-                    href={product.productUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="View on store"
-                    className="inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-border text-text-secondary transition-colors hover:border-primary/60 hover:text-primary"
-                  />
-                }
-              >
-                <Icon icon={LinkSquare02Icon} size="sm" />
-              </TooltipTrigger>
-              <TooltipContent>View on store</TooltipContent>
-            </Tooltip>
+            {/* Native title/aria-label instead of a base-ui Tooltip: this hint is
+                a single word on a link, and a Tooltip here dragged the whole
+                base-ui tooltip + floating-ui positioning stack (~80KB) onto every
+                product-grid page. A native title tooltip is zero-JS and accessible. */}
+            <a
+              href={product.productUrl}
+              target="_blank"
+              rel="noreferrer"
+              title="View on store"
+              aria-label="View on store"
+              className="inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-border text-text-secondary transition-colors hover:border-primary/60 hover:text-primary"
+            >
+              <Icon icon={LinkSquare02Icon} size="sm" />
+            </a>
           </div>
         </div>
       </CardContent>

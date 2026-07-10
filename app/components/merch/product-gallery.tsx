@@ -3,7 +3,6 @@ import { Show } from 'jotai-solid-api';
 import { ProgressiveImage } from '@/components/progressive-image';
 import { Icon } from '@/components/icon';
 import { ArrowLeft01Icon, ArrowRight01Icon } from '@/components/icons/generated';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useThumbhash } from '@/hooks/use-thumbhash';
 
 /** Single gallery slide — self-contained so it can own its thumbhash fetch. */
@@ -80,36 +79,26 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
           ))}
         </div>
         <Show when={hasMany}>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <button
-                  type="button"
-                  aria-label="Previous image"
-                  onClick={() => go(-1)}
-                  className="absolute left-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow hover:bg-background"
-                />
-              }
-            >
-              <Icon icon={ArrowLeft01Icon} size="md" className="size-[1.125rem]" />
-            </TooltipTrigger>
-            <TooltipContent>Previous</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <button
-                  type="button"
-                  aria-label="Next image"
-                  onClick={() => go(1)}
-                  className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow hover:bg-background"
-                />
-              }
-            >
-              <Icon icon={ArrowRight01Icon} size="md" className="size-[1.125rem]" />
-            </TooltipTrigger>
-            <TooltipContent>Next</TooltipContent>
-          </Tooltip>
+          {/* Native title hints (not base-ui Tooltip) to keep the floating-ui
+              positioning stack off the product page — these are one-word labels. */}
+          <button
+            type="button"
+            aria-label="Previous image"
+            title="Previous"
+            onClick={() => go(-1)}
+            className="absolute left-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow hover:bg-background"
+          >
+            <Icon icon={ArrowLeft01Icon} size="md" className="size-[1.125rem]" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next image"
+            title="Next"
+            onClick={() => go(1)}
+            className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow hover:bg-background"
+          >
+            <Icon icon={ArrowRight01Icon} size="md" className="size-[1.125rem]" />
+          </button>
           <div className="absolute bottom-2 right-2 rounded-full bg-background/80 px-2 py-0.5 text-xs text-text-secondary">
             {i + 1} / {valid.length}
           </div>
