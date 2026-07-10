@@ -135,6 +135,7 @@ function ShowCard({ show, distanceMiles }: { show: WeekendShow; distanceMiles: n
                                 slug={null}
                                 corpsKey={entry.corpsKey}
                                 logoClassName="size-4 sm:size-4"
+                                logoWidth={16}
                                 className="font-medium"
                               />
                             }

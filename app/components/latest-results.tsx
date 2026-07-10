@@ -57,6 +57,7 @@ export function LatestResultsPanel({ results }: { results: LatestResults | null 
                       slug={null}
                       corpsKey={p.corpsKey}
                       logoClassName="size-4 sm:size-4"
+                      logoWidth={16}
                       className="min-w-0 flex-1 font-medium"
                     />
                     <Show when={p.division}>{(div) => <ClassBadge division={div} noLink />}</Show>

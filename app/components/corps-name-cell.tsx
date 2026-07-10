@@ -16,6 +16,7 @@ export function CorpsNameCell({
   logo,
   className,
   logoClassName,
+  logoWidth = 24,
 }: {
   name: string;
   slug?: string | null;
@@ -28,6 +29,13 @@ export function CorpsNameCell({
   logo?: LogoSource;
   className?: string;
   logoClassName?: string;
+  /**
+   * Rendered logo tile width in CSS px — drives the resized variant + 2x srcset,
+   * so the proxy only serves an appropriately small image. Defaults to 24 (the
+   * default `sm:size-6` tile); pass a smaller value when the tile is smaller
+   * (e.g. 16 for a `size-4` tile) to avoid over-fetching.
+   */
+  logoWidth?: number;
 }) {
   const logoSource = useCorpsLogoSource({ corpsKey, name, override: logo });
   const content = (
@@ -35,6 +43,7 @@ export function CorpsNameCell({
       <CorpsLogo
         name={name}
         logo={logoSource}
+        width={logoWidth}
         className={cn('size-5 shrink-0 sm:size-6', logoClassName)}
       />
       <span className="truncate group-hover/corps:underline">{name}</span>
