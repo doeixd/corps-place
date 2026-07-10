@@ -102,15 +102,22 @@ export function RankBumpChart({
 }) {
   const themeMode = useSelector(themeStore, (s) => s.context.theme) ?? 'light';
 
-  // Cap plotted lines: top N by final rank + the hovered corps if outside it.
+  // Top N by final rank — the stable base line set. Kept as its own memo so the
+  // hover path below can return this exact ref when the hovered corps is already
+  // visible, leaving the data/axis memos untouched.
+  const top = useMemo(() => rows.slice(0, RANK_SERIES_CAP), [rows]);
+
+  // Cap plotted lines: top N + the hovered corps only when it's OUTSIDE the top
+  // N. When it's already visible (the hot path — hovering any drawn line) we
+  // return `top` unchanged, so `allData`/`data`/`yMin,yMax` below don't recompute
+  // and recharts doesn't rebuild the whole dataset on every mousemove.
   const plotted = useMemo(() => {
-    const top = rows.slice(0, RANK_SERIES_CAP);
     if (hoveredSlug && !top.some((r) => r.corpsSlug === hoveredSlug)) {
       const extra = rows.find((r) => r.corpsSlug === hoveredSlug);
       if (extra) return [...top, extra];
     }
     return top;
-  }, [rows, hoveredSlug]);
+  }, [top, rows, hoveredSlug]);
 
   const names = useMemo(
     () => Object.fromEntries(plotted.map((r) => [r.corpsSlug, r.corpsName])),
@@ -177,6 +184,12 @@ export function RankBumpChart({
       style={{ touchAction }}
       {...handlers}
       onDoubleClick={reset}
+      // The chart only ever SETS hover (via each line's activeDot). Clear it when
+      // the pointer leaves the chart so the highlight doesn't get stuck on — the
+      // list rows already pair enter/leave, but leaving the chart into empty space
+      // never touched a row. Kept after the handler spread (which has no
+      // onMouseLeave) so nothing overrides it.
+      onMouseLeave={() => onHover?.(null)}
     >
       {zoomed ? (
         <button type="button" onClick={reset} className={RESET_ZOOM_CLASS}>
