@@ -6,11 +6,20 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
  * the model, what's on the page, and what every control (rolling, scenarios,
  * windows, ranges, filters) does.
  */
-export function PredictionExplainer({ className }: { className?: string }) {
+export function PredictionExplainer({
+  className,
+  lead,
+}: {
+  className?: string;
+  /** View-specific sentence rendered before the disclaimer (what the active
+   *  Prediction/Diff tab is showing). */
+  lead?: string;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <div className={className}>
-      <p className="text-xs leading-relaxed text-text-muted">
+      <p className="max-w-prose text-xs leading-relaxed text-text-muted">
+        {lead ? <>{lead} </> : null}
         AI-generated forecast — an estimate, not a guarantee.{' '}
         <button
           type="button"

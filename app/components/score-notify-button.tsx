@@ -96,11 +96,15 @@ export function ScoreNotifyButton({
   targetSlug,
   targetLabel,
   className,
+  compact = false,
 }: {
   targetKind: 'event' | 'corps';
   targetSlug: string;
   targetLabel: string;
   className?: string;
+  /** Small inline variant for meta/pill rows (event page subtitle): plain text +
+   *  icon at the row's type scale, no bordered button chrome. */
+  compact?: boolean;
 }) {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
@@ -218,19 +222,30 @@ export function ScoreNotifyButton({
             type="button"
             aria-label={subscribed ? 'Score notifications on — manage' : 'Notify me of scores'}
             aria-pressed={subscribed}
-            // Match FavoriteCorpsButton's labelled variant so the pair reads as
-            // a matched set (same border, padding, type scale, hover).
+            // compact: quiet inline affordance for meta rows. Default: match
+            // FavoriteCorpsButton's labelled variant so the pair reads as a
+            // matched set (same border, padding, type scale, hover).
             className={cn(
-              'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium transition-colors',
+              compact
+                ? 'inline-flex shrink-0 items-center gap-1 text-xs font-medium underline-offset-2 transition-colors hover:underline'
+                : 'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium transition-colors',
               subscribed
-                ? 'border-primary/50 text-primary hover:border-primary'
-                : 'border-border text-text-secondary hover:border-text-secondary/40 hover:text-text-primary',
+                ? compact
+                  ? 'text-primary'
+                  : 'border-primary/50 text-primary hover:border-primary'
+                : compact
+                  ? 'text-text-secondary hover:text-text-primary'
+                  : 'border-border text-text-secondary hover:border-text-secondary/40 hover:text-text-primary',
               className
             )}
           />
         }
       >
-        <Icon icon={Megaphone01Icon} size="md" className={subscribed ? 'text-primary' : undefined} />
+        <Icon
+          icon={Megaphone01Icon}
+          size={compact ? 'sm' : 'md'}
+          className={cn(compact && 'size-3.5', subscribed && 'text-primary')}
+        />
         {subscribed ? 'Notifying' : 'Notify me'}
       </DialogTrigger>
       <DialogContent className="max-w-sm">

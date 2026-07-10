@@ -1182,6 +1182,17 @@ function CurrentPredictionPage({
                 )}
               </For>
             </Show>
+            {/* Score alerts, inline with the meta pills — quiet by design. Hidden
+                once real scores exist (the ping already fired). */}
+            <Show when={scoredRecap === null}>
+              <span className="shrink-0 text-text-muted">•</span>
+              <ScoreNotifyButton
+                compact
+                targetKind="event"
+                targetSlug={slug}
+                targetLabel={event?.event_name ?? event?.name ?? eventLabel(slug) ?? slug}
+              />
+            </Show>
           </span>
         }
         backTo="/events/$yearSlug"
@@ -1207,18 +1218,6 @@ function CurrentPredictionPage({
         //   </Button>
         // }
       />
-
-      {/* Score alerts for the unscored event — hidden once real scores exist
-          (the ping already fired; the recap is on the page). */}
-      {scoredRecap === null ? (
-        <div className="-mt-4 mb-6">
-          <ScoreNotifyButton
-            targetKind="event"
-            targetSlug={slug}
-            targetLabel={event?.event_name ?? event?.name ?? eventLabel(slug) ?? slug}
-          />
-        </div>
-      ) : null}
 
       {/* Advanced generation controls (Mode / Percent Through / Force / Refresh).
           Hidden for now — the machine still supports SET_MODE / SET_PERCENT_THROUGH
@@ -1400,9 +1399,28 @@ function CurrentPredictionPage({
                   </ToggleGroup>
                 </Show>
 
-                {/* Explainer + disclaimer — hidden on the pure real-scores view. */}
-                <Show when={view !== 'scores'}>
-                  <PredictionExplainer className="-mt-1 pl-[1px]" />
+                {/* Per-view explainer under the toggle: one sentence on what the
+                    active tab shows. The AI-forecast disclaimer + Learn-more ride
+                    along on the views that contain model output; the Scores view
+                    gets a plain factual line instead (real results need no
+                    disclaimer). */}
+                <Show when={view === 'prediction'}>
+                  <PredictionExplainer
+                    className="-mt-1 pl-[1px]"
+                    lead="How the model expects this show to score — every corps' predicted captions and total, built only from results before show day."
+                  />
+                </Show>
+                <Show when={view === 'diff'}>
+                  <PredictionExplainer
+                    className="-mt-1 pl-[1px]"
+                    lead="Forecast vs. reality — the actual results lined up against the model's prediction, showing where it ran high or low for each corps."
+                  />
+                </Show>
+                <Show when={view === 'scores' && showTabs}>
+                  <p className="-mt-1 max-w-prose pl-[1px] text-xs leading-relaxed text-text-muted">
+                    The official results — final totals and caption scores from this show&apos;s
+                    judged recap.
+                  </p>
                 </Show>
 
                 {/* ---- Scores view (P4): real scored recap, same table as past
