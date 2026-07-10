@@ -31,7 +31,12 @@ createServer(async (req, res) => {
         return;
       }
     }
-    const request = new Request('http://localhost:' + (process.env.PORT||3187) + req.url, {
+    // Honor the real host + proto (via the proxy's headers) so SSR routes that
+    // build absolute URLs (sitemap.xml, robots.txt, canonicals) emit the public
+    // origin, not localhost. Falls back to localhost for direct local runs.
+    const proto = req.headers['x-forwarded-proto'] || 'http';
+    const host = req.headers['x-forwarded-host'] || req.headers.host || ('localhost:' + (process.env.PORT||3187));
+    const request = new Request(proto + '://' + host + req.url, {
       method: req.method, headers: req.headers,
       body: ['GET','HEAD'].includes(req.method) ? undefined : req, duplex: 'half',
     });
