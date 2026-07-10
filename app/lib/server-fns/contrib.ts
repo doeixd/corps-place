@@ -26,7 +26,11 @@ import {
   adaptUniform,
 } from '@/lib/contrib/schemas';
 import { scrapedSeedableHashes } from '@/lib/contrib/seedable';
-import { getShowDetail } from '@/lib/server-fns/hybrid';
+// `@/lib/server-fns/hybrid` is imported lazily in readScrapedShowDetail (below).
+// A module-scope import pulls hybrid's whole module graph (its Effect service
+// layers, libsql, node:path) into every CLIENT component that imports contrib
+// (the corps-page contribution sections) — a compounding leak. Only two handlers
+// need it.
 import { reconcileShowDivergenceForDetail } from '@/lib/contrib/reconcile';
 import { normalizeHex } from '@sdk/src/corpsColors.js';
 
@@ -442,8 +446,10 @@ const OVERRIDE_SCHEMAS = {
 } as const;
 
 /** Read the scraped show-detail server-side (the divergence baseline source). */
-const readScrapedShowDetail = (corpsKey: string, season: string) =>
-  getShowDetail({ data: { corpsKey, season } });
+const readScrapedShowDetail = async (corpsKey: string, season: string) => {
+  const { getShowDetail } = await import('@/lib/server-fns/hybrid');
+  return getShowDetail({ data: { corpsKey, season } });
+};
 
 export const saveShowOverride = createServerFn({ method: 'POST' })
   .validator((data: SaveOverrideData) => data)
