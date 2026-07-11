@@ -208,7 +208,7 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
 
   if (!weekend || weekend.shows.length === 0) return null;
 
-  const heading = weekend.isCurrentWeekend ? 'This weekend' : 'Shows coming up';
+  const heading = weekend.isCurrentWeekend ? 'Shows this weekend' : 'Shows coming up';
   const dateRange = `${formatEventDate(weekend.weekendStart)} – ${formatEventDate(weekend.weekendEnd)}`;
 
   // Derived during render (no effect): order + distances follow the geo state.
@@ -221,13 +221,11 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
     <motion.section
       initial={false}
       className="space-y-3"
-      aria-label={`Shows ${heading.toLowerCase()}`}
+      aria-label={heading}
     >
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <h2 className="text-lg font-medium text-text-primary pl-[1px]">
-            Shows {heading.toLowerCase()}
-          </h2>
+          <h2 className="text-lg font-medium text-text-primary pl-[1px]">{heading}</h2>
           <p className="pl-[1px] text-sm text-text-secondary">{dateRange}</p>
           <Show when={state.status === 'located'}>
             <p className="text-xs text-text-secondary">Sorted nearest first</p>
@@ -278,14 +276,15 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
 
         {/* Smart prev/next arrows, matching the shop carousels: each fades in only
             when the row can scroll that way, and both stay hidden when everything
-            fits. Touch users swipe, so they show only on hover-capable (sm+)
-            pointers; the bottom scrollbar shifts the cards' center up ~6px. */}
+            fits. Shown on all viewports (touch users can swipe too, but the
+            arrows are the visible affordance that there's more to see); the
+            bottom scrollbar shifts the cards' center up ~6px. */}
         <button
           type="button"
           aria-label="Previous shows"
           onClick={() => scrollByPage(-1)}
           className={cn(
-            'absolute left-1 top-[calc(50%-6px)] z-10 hidden size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow transition-opacity hover:bg-background sm:flex',
+            'absolute left-1 top-[calc(50%-6px)] z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow transition-opacity hover:bg-background',
             edges.left ? 'opacity-100' : 'pointer-events-none opacity-0'
           )}
         >
@@ -296,7 +295,7 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
           aria-label="Next shows"
           onClick={() => scrollByPage(1)}
           className={cn(
-            'absolute right-1 top-[calc(50%-6px)] z-10 hidden size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow transition-opacity hover:bg-background sm:flex',
+            'absolute right-1 top-[calc(50%-6px)] z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow transition-opacity hover:bg-background',
             edges.right ? 'opacity-100' : 'pointer-events-none opacity-0'
           )}
         >
