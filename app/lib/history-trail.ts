@@ -11,10 +11,14 @@ import type { RouterHistory } from '@tanstack/react-router';
 
 const tracked = new WeakSet<RouterHistory>();
 const trails = new WeakMap<RouterHistory, Map<number, string>>();
-// Display names a page registered for its own history entry (keyed by index),
-// so a smart back control can show the specific page it returns to
-// ("Back to Blue Devils") rather than just the section.
-const names = new WeakMap<RouterHistory, Map<number, string>>();
+// Display names a page registered for its own history entry, so a smart back
+// control can show the specific page it returns to ("Back to Blue Devils")
+// rather than just the section. Keyed by history index, and stamped with the
+// pathname it was registered for: history indices get REUSED when the user goes
+// back then navigates elsewhere, so a name can outlive the page that set it. The
+// pathname lets `previousName` reject a stale name whose entry now holds a
+// different page (see there) instead of promising a destination back() won't go.
+const names = new WeakMap<RouterHistory, Map<number, { name: string; pathname: string }>>();
 
 function indexOf(history: RouterHistory): number {
   return (history.location.state as { __TSR_index?: number }).__TSR_index ?? 0;
@@ -54,12 +58,23 @@ export function previousPathname(history: RouterHistory): string | undefined {
 export function registerEntryName(history: RouterHistory, name: string): void {
   let map = names.get(history);
   if (!map) names.set(history, (map = new Map()));
-  map.set(indexOf(history), name);
+  map.set(indexOf(history), { name, pathname: history.location.pathname });
 }
 
-/** Registered display name for the entry `history.back()` would land on. */
+/**
+ * Registered display name for the entry `history.back()` would land on — but
+ * ONLY if that name still belongs there. A history index is reused when the user
+ * goes back then navigates to a different page: the trail (updated on every nav)
+ * follows the new page, while the name lingers from the index's prior occupant.
+ * So we only trust the name when its stamped pathname matches the pathname the
+ * trail records for that entry; otherwise return undefined so the control shows a
+ * plain "Back" rather than naming a destination it won't actually return to.
+ */
 export function previousName(history: RouterHistory): string | undefined {
-  return names.get(history)?.get(indexOf(history) - 1);
+  const prevIndex = indexOf(history) - 1;
+  const entry = names.get(history)?.get(prevIndex);
+  if (!entry) return undefined;
+  return trails.get(history)?.get(prevIndex) === entry.pathname ? entry.name : undefined;
 }
 
 // Friendly names for the top-level sections, keyed by first path segment. Used
