@@ -16,6 +16,9 @@ export type SendEmailInput = {
   tag?: string;
   /** Override the default sender; defaults to FANTASY_EMAIL_FROM ?? MAGIC_LINK_FROM. */
   from?: string;
+  /** Where a human reply should go. The default sender is a no-inbox sending
+   *  identity, so support replies set this to a monitored/threaded address. */
+  replyTo?: string;
   /** Optional attachments (e.g. a calendar .ics); `content` is base64-encoded. */
   attachments?: { filename: string; content: string }[];
 };
@@ -50,6 +53,7 @@ export const sendEmail = async ({
   html,
   tag,
   from,
+  replyTo,
   attachments,
 }: SendEmailInput): Promise<void> => {
   const key = process.env.RESEND_API_KEY;
@@ -71,6 +75,7 @@ export const sendEmail = async ({
     to,
     subject,
     html,
+    ...(replyTo ? { replyTo } : {}),
     ...(tag ? { tags: [{ name: 'category', value: tag }] } : {}),
     ...(attachments && attachments.length ? { attachments } : {}),
   });

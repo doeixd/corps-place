@@ -101,6 +101,7 @@ import { ServerRoute as ReadModelEventsServerRouteImport } from './routes/read-m
 import { ServerRoute as ReadModelCorpsServerRouteImport } from './routes/read-model/corps'
 import { ServerRoute as ApiVersionServerRouteImport } from './routes/api/version'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
+import { ServerRoute as ApiInboundEmailServerRouteImport } from './routes/api/inbound-email'
 import { ServerRoute as ApiCollectServerRouteImport } from './routes/api/collect'
 import { ServerRoute as ReadModelStaffPersonIdServerRouteImport } from './routes/read-model/staff/$personId'
 import { ServerRoute as ReadModelRecapsSlugServerRouteImport } from './routes/read-model/recaps/$slug'
@@ -585,6 +586,11 @@ const ApiVersionServerRoute = ApiVersionServerRouteImport.update({
 const ApiMediaServerRoute = ApiMediaServerRouteImport.update({
   id: '/api/media',
   path: '/api/media',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiInboundEmailServerRoute = ApiInboundEmailServerRouteImport.update({
+  id: '/api/inbound-email',
+  path: '/api/inbound-email',
   getParentRoute: () => rootServerRouteImport,
 } as any)
 const ApiCollectServerRoute = ApiCollectServerRouteImport.update({
@@ -1298,6 +1304,7 @@ export interface FileServerRoutesByFullPath {
   '/sitemap-staff.xml': typeof SitemapStaffDotxmlServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/collect': typeof ApiCollectServerRoute
+  '/api/inbound-email': typeof ApiInboundEmailServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/read-model/corps': typeof ReadModelCorpsServerRouteWithChildren
@@ -1343,6 +1350,7 @@ export interface FileServerRoutesByTo {
   '/sitemap-staff.xml': typeof SitemapStaffDotxmlServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/collect': typeof ApiCollectServerRoute
+  '/api/inbound-email': typeof ApiInboundEmailServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/read-model/corps': typeof ReadModelCorpsServerRouteWithChildren
@@ -1389,6 +1397,7 @@ export interface FileServerRoutesById {
   '/sitemap-staff.xml': typeof SitemapStaffDotxmlServerRoute
   '/sitemap.xml': typeof SitemapDotxmlServerRoute
   '/api/collect': typeof ApiCollectServerRoute
+  '/api/inbound-email': typeof ApiInboundEmailServerRoute
   '/api/media': typeof ApiMediaServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/read-model/corps': typeof ReadModelCorpsServerRouteWithChildren
@@ -1436,6 +1445,7 @@ export interface FileServerRouteTypes {
     | '/sitemap-staff.xml'
     | '/sitemap.xml'
     | '/api/collect'
+    | '/api/inbound-email'
     | '/api/media'
     | '/api/version'
     | '/read-model/corps'
@@ -1481,6 +1491,7 @@ export interface FileServerRouteTypes {
     | '/sitemap-staff.xml'
     | '/sitemap.xml'
     | '/api/collect'
+    | '/api/inbound-email'
     | '/api/media'
     | '/api/version'
     | '/read-model/corps'
@@ -1526,6 +1537,7 @@ export interface FileServerRouteTypes {
     | '/sitemap-staff.xml'
     | '/sitemap.xml'
     | '/api/collect'
+    | '/api/inbound-email'
     | '/api/media'
     | '/api/version'
     | '/read-model/corps'
@@ -1572,6 +1584,7 @@ export interface RootServerRouteChildren {
   SitemapStaffDotxmlServerRoute: typeof SitemapStaffDotxmlServerRoute
   SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
   ApiCollectServerRoute: typeof ApiCollectServerRoute
+  ApiInboundEmailServerRoute: typeof ApiInboundEmailServerRoute
   ApiMediaServerRoute: typeof ApiMediaServerRoute
   ApiVersionServerRoute: typeof ApiVersionServerRoute
   ReadModelCorpsServerRoute: typeof ReadModelCorpsServerRouteWithChildren
@@ -2241,6 +2254,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiMediaServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/inbound-email': {
+      id: '/api/inbound-email'
+      path: '/api/inbound-email'
+      fullPath: '/api/inbound-email'
+      preLoaderRoute: typeof ApiInboundEmailServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/collect': {
       id: '/api/collect'
       path: '/api/collect'
@@ -2585,6 +2605,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   SitemapStaffDotxmlServerRoute: SitemapStaffDotxmlServerRoute,
   SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
   ApiCollectServerRoute: ApiCollectServerRoute,
+  ApiInboundEmailServerRoute: ApiInboundEmailServerRoute,
   ApiMediaServerRoute: ApiMediaServerRoute,
   ApiVersionServerRoute: ApiVersionServerRoute,
   ReadModelCorpsServerRoute: ReadModelCorpsServerRouteWithChildren,

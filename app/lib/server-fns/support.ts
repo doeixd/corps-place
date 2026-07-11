@@ -72,6 +72,9 @@ export interface ContactRow {
   topic: string | null;
   status: string;
   createdAt: string;
+  /** How many times the sender has replied back to our emails (via the inbound
+   *  handler). > 0 means "they responded". */
+  inboundReplies: number;
 }
 
 const ListContactInput = v.object({
@@ -84,11 +87,13 @@ export const listContactMessages = createServerFn({ method: 'GET' })
   .handler(async ({ data }): Promise<ContactRow[]> => {
     await requireCapability(getWebRequest(), 'customerSupport');
     const db = await getContributionsDb();
-    const where = data.status === 'all' ? '' : 'WHERE status = ?';
+    const where = data.status === 'all' ? '' : 'WHERE m.status = ?';
     const rows = (
       await db.execute({
-        sql: `SELECT message_id, user_id, email, subject, body, topic, status, created_at
-              FROM contact_messages ${where} ORDER BY created_at DESC LIMIT ?`,
+        sql: `SELECT m.message_id, m.user_id, m.email, m.subject, m.body, m.topic, m.status, m.created_at,
+                     (SELECT COUNT(*) FROM contact_replies r
+                       WHERE r.message_id = m.message_id AND r.direction = 'inbound') AS inbound_replies
+              FROM contact_messages m ${where} ORDER BY m.created_at DESC LIMIT ?`,
         args: data.status === 'all' ? [data.limit] : [data.status, data.limit],
       })
     ).rows as unknown as Record<string, unknown>[];
@@ -100,6 +105,40 @@ export const listContactMessages = createServerFn({ method: 'GET' })
       body: String(r.body),
       topic: (r.topic as string) ?? null,
       status: String(r.status),
+      createdAt: String(r.created_at),
+      inboundReplies: Number(r.inbound_replies ?? 0),
+    }));
+  });
+
+export interface ThreadTurn {
+  replyId: string;
+  direction: 'outbound' | 'inbound';
+  fromAddr: string | null;
+  subject: string | null;
+  body: string;
+  createdAt: string;
+}
+
+/** The full conversation on a contact message: admin replies + sender responses,
+ *  oldest first. Cap: customerSupport. */
+export const listContactThread = createServerFn({ method: 'GET' })
+  .validator((d: unknown) => v.parse(v.object({ messageId: v.string() }), d))
+  .handler(async ({ data }): Promise<ThreadTurn[]> => {
+    await requireCapability(getWebRequest(), 'customerSupport');
+    const db = await getContributionsDb();
+    const rows = (
+      await db.execute({
+        sql: `SELECT reply_id, direction, from_addr, subject, body, created_at
+              FROM contact_replies WHERE message_id = ? ORDER BY created_at ASC`,
+        args: [data.messageId],
+      })
+    ).rows as unknown as Record<string, unknown>[];
+    return rows.map((r) => ({
+      replyId: String(r.reply_id),
+      direction: r.direction === 'inbound' ? 'inbound' : 'outbound',
+      fromAddr: (r.from_addr as string) ?? null,
+      subject: (r.subject as string) ?? null,
+      body: String(r.body),
       createdAt: String(r.created_at),
     }));
   });
@@ -146,14 +185,30 @@ export const replyContact = createServerFn({ method: 'POST' })
       })
     ).rows[0] as { email?: string; user_id?: string } | undefined;
     if (!msg?.email) throw new Error('NOT_FOUND');
+    const now = new Date().toISOString();
+    // Route a human reply to a monitored, thread-tagged address. The default
+    // sender (login@drumcorps.app) has no inbox — a bare reply would bounce. The
+    // `support+<messageId>@` plus-address lets the inbound handler thread the
+    // reply back to this conversation (see /api/inbound-email); Cloudflare Email
+    // Routing delivers it (forward + worker). SUPPORT_INBOX_DOMAIN overrides the
+    // domain if inbound is set up on a subdomain.
+    const inboundDomain = process.env.SUPPORT_INBOX_DOMAIN ?? 'drumcorps.app';
+    const replyTo = `support+${data.messageId}@${inboundDomain}`;
     // sendEmail logs the delivery to email_log itself (by address) — no manual insert.
     await sendEmail({
       to: msg.email,
       subject: data.subject,
       html: `<p>${esc(data.body)}</p>`,
       tag: 'support_reply',
+      replyTo,
     });
-    const now = new Date().toISOString();
+    // Record the outbound reply as a thread turn so the console shows the full
+    // conversation (outbound + inbound) rather than just the original message.
+    await db.execute({
+      sql: `INSERT INTO contact_replies (reply_id, message_id, direction, from_addr, subject, body, created_at)
+            VALUES (?, ?, 'outbound', ?, ?, ?, ?)`,
+      args: [crypto.randomUUID(), data.messageId, actor.userId, data.subject, data.body, now],
+    });
     await db.execute({
       sql: 'UPDATE contact_messages SET status = ?, handled_by = ?, handled_at = ? WHERE message_id = ?',
       args: ['replied', actor.userId, now, data.messageId],

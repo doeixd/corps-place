@@ -453,6 +453,20 @@ const SCHEMA = [
    )`,
   `CREATE INDEX IF NOT EXISTS idx_contact_status ON contact_messages (status, created_at)`,
 
+  // Conversation turns on a contact message: the admin's outbound replies AND the
+  // sender's inbound responses (captured by /api/inbound-email). Lets the support
+  // console show the full back-and-forth, not just the original message.
+  `CREATE TABLE IF NOT EXISTS contact_replies (
+     reply_id   TEXT PRIMARY KEY,
+     message_id TEXT NOT NULL,               -- FK to contact_messages.message_id
+     direction  TEXT NOT NULL,               -- outbound (admin) | inbound (sender)
+     from_addr  TEXT,                         -- admin user_id (outbound) or email (inbound)
+     subject    TEXT,
+     body       TEXT NOT NULL,
+     created_at TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_contact_replies_msg ON contact_replies (message_id, created_at)`,
+
   // Outbound email delivery log (ADMIN_PAGE_PLAN §10.3) — written by the support
   // reply fn so operators can see/resend what went out.
   `CREATE TABLE IF NOT EXISTS email_log (

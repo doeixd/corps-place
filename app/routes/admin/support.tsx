@@ -14,9 +14,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAsyncAction } from '@/lib/use-async-action';
 import {
   listContactMessages,
+  listContactThread,
   setContactStatus,
   replyContact,
   type ContactRow,
+  type ThreadTurn,
 } from '@/lib/server-fns/support';
 import { seoHead } from '@/lib/seo';
 
@@ -35,11 +37,18 @@ export const Route = createFileRoute('/admin/support')({
 function Support({ rows }: { rows: ContactRow[] }) {
   const router = useRouter();
   const [reply, setReply] = useState<{ id: string; subject: string; body: string } | null>(null);
+  // Which message's conversation thread is open, and its turns (fetched on demand).
+  const [thread, setThread] = useState<{ id: string; turns: ThreadTurn[] } | null>(null);
+  const viewThread = useAsyncAction(async (id: string) => {
+    if (thread?.id === id) return setThread(null); // toggle closed
+    setThread({ id, turns: await listContactThread({ data: { messageId: id } }) });
+  });
 
   const send = useAsyncAction(async () => {
     if (!reply) return;
     await replyContact({ data: { messageId: reply.id, subject: reply.subject, body: reply.body } });
     setReply(null);
+    setThread(null);
     await router.invalidate();
   });
   const close = useAsyncAction(async (id: string) => {
@@ -74,11 +83,48 @@ function Support({ rows }: { rows: ContactRow[] }) {
                         view user
                       </Link>
                     </Show>
+                    <Show when={m.inboundReplies > 0}>
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                        {m.inboundReplies === 1 ? 'Replied' : `${m.inboundReplies} replies`}
+                      </span>
+                    </Show>
                     <span className="ml-auto text-xs text-text-secondary tabular-nums">
                       {new Date(m.createdAt).toLocaleString()}
                     </span>
                   </div>
                   <p className="whitespace-pre-wrap text-text-secondary">{m.body}</p>
+
+                  {/* Conversation thread — admin replies + the sender's responses. */}
+                  <Show when={thread?.id === m.messageId}>
+                    <div className="flex flex-col gap-2 border-t border-border pt-2">
+                      <For each={thread?.turns ?? []}>
+                        {(t) => (
+                          <div
+                            className={
+                              'rounded-md border px-3 py-2 ' +
+                              (t.direction === 'inbound'
+                                ? 'border-primary/30 bg-primary/5'
+                                : 'border-border bg-muted/40')
+                            }
+                          >
+                            <div className="mb-0.5 flex items-baseline justify-between gap-2 text-xs text-text-secondary">
+                              <span className="font-medium">
+                                {t.direction === 'inbound' ? `${m.email} (them)` : 'You'}
+                              </span>
+                              <span className="tabular-nums">
+                                {new Date(t.createdAt).toLocaleString()}
+                              </span>
+                            </div>
+                            <p className="whitespace-pre-wrap text-sm text-text-primary">{t.body}</p>
+                          </div>
+                        )}
+                      </For>
+                      <Show when={(thread?.turns.length ?? 0) === 0}>
+                        <p className="text-xs text-text-secondary">No replies yet.</p>
+                      </Show>
+                    </div>
+                  </Show>
+
                   <Show
                     when={reply?.id === m.messageId}
                     fallback={
@@ -96,6 +142,14 @@ function Support({ rows }: { rows: ContactRow[] }) {
                         >
                           Reply
                         </Button>
+                        <BusyButton
+                          size="sm"
+                          variant="ghost"
+                          busy={viewThread.busy}
+                          onClick={() => void viewThread.run(m.messageId)}
+                        >
+                          {thread?.id === m.messageId ? 'Hide conversation' : 'View conversation'}
+                        </BusyButton>
                         <BusyButton
                           size="sm"
                           variant="ghost"
