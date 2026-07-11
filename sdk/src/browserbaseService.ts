@@ -22,6 +22,22 @@ export interface BrowserbaseService {
 export const BrowserbaseService = Context.Service<BrowserbaseService>('BrowserbaseService');
 
 const NAV_TIMEOUT_MS = 30000;
+/** Cap Browserbase session PROVISIONING (projects.list / sessions.create /
+ *  puppeteer.connect). page.goto has NAV_TIMEOUT_MS, but session setup had no
+ *  timeout — a stuck session provisioning hung the whole scrape indefinitely
+ *  (observed: a 15-min sleeping-at-0%-CPU scrape that froze score ingestion). */
+const SESSION_TIMEOUT_MS = 30000;
+/** Reject if `p` doesn't settle within `ms`, so a hung remote call can't stall a
+ *  batch. The loser's timer is unref'd so it never keeps the process alive. */
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<never>((_, reject) => {
+      const t = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+      (t as { unref?: () => void }).unref?.();
+    }),
+  ]);
+}
 /** Recycle the shared local Chromium after this many renders to reap leaked
  *  renderer/helper processes (prevents OOM on small-RAM hosts over a long batch). */
 const RENDER_RECYCLE_EVERY = 12;
@@ -91,7 +107,13 @@ export const BrowserbaseServiceLive = Layer.effect(
     const getRemote = (): Promise<Browser> => {
       if (!remoteBrowser) {
         remoteBrowser = resolveCdpWsEndpoint(remoteCdpUrl!)
-          .then((browserWSEndpoint) => puppeteer.connect({ browserWSEndpoint }))
+          .then((browserWSEndpoint) =>
+            withTimeout(
+              puppeteer.connect({ browserWSEndpoint }),
+              SESSION_TIMEOUT_MS,
+              'remote CDP puppeteer.connect'
+            )
+          )
           .then((br) => {
             // If the tunnel/Chrome drops, clear the cache so the next call retries.
             br.on('disconnected', () => {
@@ -190,12 +212,20 @@ export const BrowserbaseServiceLive = Layer.effect(
     const renderViaSession = async (url: string): Promise<string> => {
       if (!bb) throw new Error('Browserbase API key not set');
       if (!projectId) {
-        const projects = await bb.projects.list();
+        const projects = await withTimeout(bb.projects.list(), SESSION_TIMEOUT_MS, 'bb.projects.list');
         projectId = projects?.[0]?.id ?? null;
         if (!projectId) throw new Error('no Browserbase projects available');
       }
-      const session = await bb.sessions.create({ projectId });
-      const browser = await puppeteer.connect({ browserWSEndpoint: session.connectUrl });
+      const session = await withTimeout(
+        bb.sessions.create({ projectId }),
+        SESSION_TIMEOUT_MS,
+        'bb.sessions.create'
+      );
+      const browser = await withTimeout(
+        puppeteer.connect({ browserWSEndpoint: session.connectUrl }),
+        SESSION_TIMEOUT_MS,
+        'browserbase puppeteer.connect'
+      );
       try {
         const page = (await browser.pages())[0] ?? (await browser.newPage());
         await page.goto(url, { waitUntil: 'domcontentloaded', timeout: NAV_TIMEOUT_MS });
