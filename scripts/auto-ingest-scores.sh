@@ -204,7 +204,17 @@ else
 fi
 
 before="$(count_scores)"
-echo "[auto-ingest $(ts)] recent show(s) present; scraping $SEASON recaps (scores before=$before)…"
+# Scope the scrape to the pending show(s) when the gate identified them, so we
+# fetch just that recap instead of re-scraping the whole season's recaps every
+# poll — faster, and it avoids incidentally touching unrelated freshly-posted
+# pages (a class of hang). On a fail-open (gate error) we don't know the show, so
+# fall back to a full-season scrape.
+slugs_arg=""
+if [ -n "$pending" ] && [ "$pending" != "__GATE_ERR__" ]; then
+  slugs_csv="$(printf '%s' "$pending" | tr '\n' ',' | sed 's/,,*/,/g; s/^,//; s/,$//')"
+  [ -n "$slugs_csv" ] && slugs_arg="--slugs=$slugs_csv"
+fi
+echo "[auto-ingest $(ts)] recent show(s) present; scraping $SEASON recaps${slugs_arg:+ (only: $slugs_csv)} (scores before=$before)…"
 # Hard timeout on the scrape: a Browserbase fetch of a freshly-posted (uncached)
 # recap can HANG indefinitely (browser session never responds, no internal
 # timeout) — that stalls the whole ingest and holds the flock lock, so every
@@ -212,7 +222,7 @@ echo "[auto-ingest $(ts)] recent show(s) present; scraping $SEASON recaps (score
 # are seconds; a couple of new-page Browserbase fetches take 1-3 min) and SIGKILL
 # 30s after SIGTERM. On timeout we treat it as a scrape failure and exit; the next
 # cron run retries with a fresh session.
-if ! out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 2>&1)"; then
+if ! out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 ${slugs_arg} 2>&1)"; then
   rc=$?
   printf '%s\n' "$out" | tail -20
   if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then

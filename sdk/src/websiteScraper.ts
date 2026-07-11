@@ -24,6 +24,11 @@ export interface WebsiteScrapeOptions {
   readonly maxPages?: number;
   readonly concurrency?: number;
   readonly ingest?: boolean;
+  /** Only scrape recaps for these score-list entry ids (= competition slugs).
+   *  The score LIST is still fetched (one cheap call), but only these entries'
+   *  RECAPS (the expensive per-event Browserbase fetches) are pulled. Lets the
+   *  auto-ingest scrape just the pending show instead of the whole season. */
+  readonly onlySlugs?: ReadonlyArray<string>;
 }
 
 export interface WebsiteScrapeResult {
@@ -631,9 +636,20 @@ export const scrapeWebsiteRecapsForSeason = (
       )
     );
     const unique = new Map(entriesResult.entries.map((entry) => [entry.id, entry]));
+    // Optional targeting: only fetch recaps for the requested slugs. The score
+    // list above is cheap (one AJAX call); the per-recap fetches are the costly
+    // (Browserbase) part, so scoping them to the pending show avoids re-scraping
+    // the whole season every poll — and avoids incidentally touching unrelated
+    // freshly-posted pages that could hang.
+    const only =
+      options.onlySlugs && options.onlySlugs.length ? new Set(options.onlySlugs) : null;
+    const targetEntries = only
+      ? [...unique.values()].filter((entry) => only.has(entry.id))
+      : [...unique.values()];
     yield* (
       Effect.logInfo(
-        `[website] ${season} score list recaps found: ${entriesResult.entries.length} (unique: ${unique.size})`
+        `[website] ${season} score list recaps found: ${entriesResult.entries.length} (unique: ${unique.size})` +
+          (only ? `; targeting ${targetEntries.length} of ${unique.size} (--slugs)` : "")
       )
     );
 
@@ -649,7 +665,7 @@ export const scrapeWebsiteRecapsForSeason = (
     // failed entry is logged and dropped (returns null → filtered out below).
     const recapResultsRaw = yield* (
       Effect.forEach(
-        [...unique.values()],
+        targetEntries,
         (entry) =>
           scrapeWebsiteRecapByEntry(sql, entry, season, corpsDivisionMap).pipe(
             Effect.tap(() => Ref.update(recapCountRef, (count) => count + 1)),

@@ -31,6 +31,12 @@ const maxPages = parseNumberFlag(args, "--maxPages");
 const concurrency = parseNumberFlag(args, "--concurrency") ?? 3;
 const retries = parseNumberFlag(args, "--retries") ?? 3;
 const verify = args.includes("--verify");
+// Optional: scrape recaps for ONLY these comma-separated slugs (the auto-ingest
+// passes the pending show so it doesn't re-scrape the whole season each poll).
+const onlySlugs = (parseStringFlag(args, "--slugs") ?? "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 const verifySlugs = [
   "2023-dci-world-championship-finals",
@@ -45,7 +51,8 @@ const main = Effect.gen(function* () {
       seasons: [season],
       maxPages,
       concurrency,
-      ingest: true
+      ingest: true,
+      ...(onlySlugs.length ? { onlySlugs } : {})
     })
   );
 
