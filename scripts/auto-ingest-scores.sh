@@ -205,9 +205,21 @@ fi
 
 before="$(count_scores)"
 echo "[auto-ingest $(ts)] recent show(s) present; scraping $SEASON recaps (scores before=$before)…"
-if ! out="$(vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 2>&1)"; then
+# Hard timeout on the scrape: a Browserbase fetch of a freshly-posted (uncached)
+# recap can HANG indefinitely (browser session never responds, no internal
+# timeout) — that stalls the whole ingest and holds the flock lock, so every
+# subsequent poll just exits and scores never land. Cap it at 5 min (normal runs
+# are seconds; a couple of new-page Browserbase fetches take 1-3 min) and SIGKILL
+# 30s after SIGTERM. On timeout we treat it as a scrape failure and exit; the next
+# cron run retries with a fresh session.
+if ! out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 2>&1)"; then
+  rc=$?
   printf '%s\n' "$out" | tail -20
-  echo "[auto-ingest $(ts)] scrape FAILED"
+  if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
+    echo "[auto-ingest $(ts)] scrape TIMED OUT after 5m (hung fetch) — killed; next run retries"
+  else
+    echo "[auto-ingest $(ts)] scrape FAILED (rc=$rc)"
+  fi
   after="$(count_scores)"
   write_report scrape_failed
   exit 1
