@@ -967,7 +967,7 @@ export const getShopCategory = createServerFn({ method: 'GET' })
     // the requested name through the same synonym rules the catalog uses; when it
     // lands on a live bucket, tell the route to redirect there instead of 404ing.
     // Lazy import: merchCatalog is sdk code that must not enter the client bundle.
-    const { resolveCategory } = await import('@sdk/src/merchCatalog.js');
+    const { resolveCategory } = await import('@sdk/src/merchCategories.js');
     const mapped = resolveCategory(value, '');
     if (mapped && mapped !== value && (await lookup(mapped))) {
       return { redirect: mapped } as const;
