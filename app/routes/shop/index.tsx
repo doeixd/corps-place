@@ -67,14 +67,6 @@ function ShopLanding() {
         subtitle="Official merch from drum corps across the activity"
         backTo="/"
         backLabel="Home"
-        actions={
-          <Link
-            to="/shop/all"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm text-text-secondary transition-colors hover:border-primary/60 hover:text-foreground"
-          >
-            All products
-          </Link>
-        }
       />
 
       {/* Search — hands off to the full catalog with the query applied. */}
@@ -98,6 +90,12 @@ function ShopLanding() {
       {/* Quick category filter — horizontally scrollable chips linking to each
           category page (mirrors the catalog's category chips). */}
       <div className="carousel-scrollbar mb-8 flex gap-2 overflow-x-auto pb-2">
+        <Link
+          to="/shop/all"
+          className="shrink-0 whitespace-nowrap rounded-full border border-primary/50 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-primary hover:bg-primary/10"
+        >
+          All products
+        </Link>
         {categories.map((c) => (
           <Link
             key={c.value}
