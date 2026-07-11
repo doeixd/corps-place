@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import { eventsCollection } from '@/db/collections';
 import { HybridCollection } from '@/components/hybrid-collection';
-import { warmRoutesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
+import { warmVisibleOnIdle } from '@/lib/warm-routes';
 import { Show } from 'jotai-solid-api';
 import { motion } from 'motion/react';
 import { getHybridEventsDirectory } from '@/lib/server-fns/hybrid';
@@ -87,31 +87,23 @@ function EventsDirectory() {
 }
 
 function EventsDirectoryContent({ events }: { events: EventDirectoryRow[] }) {
-  // Background warm-up: once the list has rendered, quietly preload the detail
-  // (prediction/recap) route for each event in view, so the first click into any
-  // of them is instant instead of blocking on the loader's shard/server-fn fetch.
-  // Idle + connection-gated (see warmRoutesOnIdle); re-runs when the season/set
-  // changes. Detail shards are small (~30KB, CDN-cached), so a season is ~2-3MB.
+  // Background warm-up: preload an event's detail (prediction) route only when
+  // its card scrolls into view, so the first click is instant. Visible-based
+  // (warmVisibleOnIdle on the grid's [data-grid-key]) — the old first-N-of-list
+  // warm missed entirely here: the scrollport auto-scrolls to the NEXT UPCOMING
+  // show mid-list, so the head of the date-ordered list (oldest events) got
+  // warmed while the cards actually on screen didn't.
   const router = useRouter();
   useEffect(() => {
-    // Cap the warm set: each current-season warm runs the detail loader (a few
-    // read-model server-fns), so warming the whole season on every visit would be
-    // a lot of proactive server work. The first ~40 (list is date-ordered, so the
-    // most-likely clicks) covers the pain without hammering the backend.
-    const WARM_CAP = WARM_ABOVE_FOLD;
-    const targets = events
-      .flatMap((e) =>
-        e.slug && e.season
-          ? [
-              {
-                to: '/events/$yearSlug/$slug/prediction',
-                params: { yearSlug: e.season, slug: e.slug },
-              },
-            ]
-          : []
-      )
-      .slice(0, WARM_CAP);
-    return warmRoutesOnIdle(router as never, targets);
+    const byKey = new Map(events.map((e) => [eventCardKey(e), e]));
+    return warmVisibleOnIdle(router as never, (key) => {
+      const e = byKey.get(key);
+      if (!e?.slug || !e.season) return null;
+      return {
+        to: '/events/$yearSlug/$slug/prediction',
+        params: { yearSlug: e.season, slug: e.slug },
+      };
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, events.length, events[0]?.season]);
   return <EventsDirectoryContentInner events={events} />;
