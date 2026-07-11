@@ -6,7 +6,7 @@
 // installed worker and clears its caches — a kill switch so a bad/stale SW can
 // be turned off by shipping with the flag unset.
 //
-// Update strategy: poll /read-model/meta.json; when built_at changes, tell the
+// Update strategy: poll /read-model/manifest.json; when built_at changes, tell the
 // waiting worker to skipWaiting so clients pick up the new version (the SW's
 // StaleWhileRevalidate already refreshes the JSON itself).
 
@@ -48,7 +48,9 @@ export function registerServiceWorker(): void {
         let lastBuiltAt: string | null = null;
         const checkVersion = async () => {
           try {
-            const res = await fetch('/read-model/meta.json', { cache: 'no-store' });
+            // The dynamically-served manifest (meta.json is a dev-only static file
+            // that 404s in prod — the update check was silently dead).
+            const res = await fetch('/read-model/manifest.json', { cache: 'no-store' });
             if (!res.ok) return;
             const meta = await res.json();
             if (lastBuiltAt && meta.built_at !== lastBuiltAt) void reg.update();
