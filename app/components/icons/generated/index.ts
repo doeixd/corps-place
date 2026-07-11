@@ -73,6 +73,7 @@ export { SpotifyIcon } from './spotify';
 export { Sun01Icon } from './sun-01';
 export { Target02Icon } from './target-02';
 export { Tick02Icon } from './tick-02';
+export { Ticket01Icon } from './ticket-01';
 export { UnfoldMoreIcon } from './unfold-more';
 export { UserGroupIcon } from './user-group';
 export { UserMultipleIcon } from './user-multiple';

@@ -18,7 +18,13 @@ import { ClassBadge } from '@/components/class-badge';
 import { CorpsNameCell } from '@/components/corps-name-cell';
 import { Icon, type IconComponent } from '@/components/icon';
 import type { EventDirectoryRow, EventScheduleRow } from '@/lib/event-directory';
-import { MapsLocation02Icon, ArrowDown01Icon } from '@/components/icons/generated';
+import {
+  MapsLocation02Icon,
+  ArrowDown01Icon,
+  LinkSquare02Icon,
+  Ticket01Icon,
+} from '@/components/icons/generated';
+import { dciLinks } from '@/lib/dci-links';
 import type { ShowInfoSummary } from '@sdk/src/readModel/builders/shows.js';
 import { getShowPreviews, type ShowPreviewData } from '@/lib/server-fns/contrib';
 import { LineupRowExpanded } from '@/components/contrib/lineup-row-expanded';
@@ -189,18 +195,67 @@ export function LineupSchedule({
     ? `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`
     : null;
 
+  // dci.org event page (verified-allowlist gated) + the ticket vendor link, shown
+  // beside the location button. Recap/scores stay in the season title's links.
+  const dciEventHref = event ? dciLinks(event, event.slug).event : null;
+  const ticketsHref = event?.buy_tickets || null;
+
+  // Schedule times are venue-local; DCI's web start time carries the zone
+  // abbreviation (e.g. "5:45 PM CT"), so surface it when present.
+  const hasTimes = rows.some((r) => r.time);
+  const tzAbbrev = event?.web_start_time?.trim().match(/\b([A-Z]{2,4})$/)?.[1] ?? null;
+  const tzLabel = tzAbbrev
+    ? ({ ET: 'Eastern', CT: 'Central', MT: 'Mountain', PT: 'Pacific' } as Record<string, string>)[
+        tzAbbrev
+      ]
+    : null;
+  const tzNote = hasTimes
+    ? tzAbbrev
+      ? `Times are ${tzLabel ? `${tzLabel} (${tzAbbrev})` : tzAbbrev}, local to the venue`
+      : 'Times are local to the venue'
+    : null;
+
   return (
     <div className="space-y-4 pt-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-lg font-medium text-text-primary pl-[1px]">Lineup</h2>
-        <Show when={!!mapsHref}>
+        <div className="pl-[1px]">
+          <h2 className="text-lg font-medium text-text-primary">Lineup</h2>
+          <Show when={tzNote}>
+            {(note) => <p className="text-xs text-muted-foreground">{note}</p>}
+          </Show>
+        </div>
+        <Show when={!!(mapsHref || dciEventHref || ticketsHref)}>
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <MapLink
-              href={mapsHref!}
-              icon={MapsLocation02Icon}
-              label={locationLabel}
-              tooltip="Open this venue's location in Google Maps"
-            />
+            <Show when={ticketsHref}>
+              {(href) => (
+                <MapLink
+                  href={href}
+                  icon={Ticket01Icon}
+                  label="Tickets"
+                  tooltip="Buy tickets for this event"
+                />
+              )}
+            </Show>
+            <Show when={dciEventHref}>
+              {(href) => (
+                <MapLink
+                  href={href}
+                  icon={LinkSquare02Icon}
+                  label="DCI.org"
+                  tooltip="Open this event's page on dci.org"
+                />
+              )}
+            </Show>
+            <Show when={mapsHref}>
+              {(href) => (
+                <MapLink
+                  href={href}
+                  icon={MapsLocation02Icon}
+                  label={locationLabel}
+                  tooltip="Open this venue's location in Google Maps"
+                />
+              )}
+            </Show>
           </div>
         </Show>
       </div>
