@@ -1,4 +1,4 @@
-import { createFileRoute, notFound, useRouter } from '@tanstack/react-router';
+import { createFileRoute, notFound, redirect, useRouter } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Show } from 'jotai-solid-api';
 import { warmRoutesOnIdle, WARM_ABOVE_FOLD } from '@/lib/warm-routes';
@@ -33,6 +33,10 @@ export const Route = createFileRoute('/shop/category/$cat')({
   },
   loader: async ({ params }): Promise<ShopCategory> => {
     const category = await getShopCategory({ data: params.cat });
+    // Legacy pre-normalization names ("Hats", "Mug", …) resolve to their new
+    // bucket server-side; land on the canonical URL.
+    if (category && 'redirect' in category)
+      throw redirect({ to: '/shop/category/$cat', params: { cat: category.redirect }, replace: true });
     if (!category) throw notFound();
     return category;
   },

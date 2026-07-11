@@ -951,14 +951,28 @@ export const getShopGroup = createServerFn({ method: 'GET' })
 export const getShopCategory = createServerFn({ method: 'GET' })
   .validator((value: string) => value)
   .handler(async ({ data: value }) => {
-    const program = Effect.gen(function* () {
-      const merch = yield* MerchDirectoryService;
-      const catalog = yield* merch.getCatalog();
-      const products = catalog.items.filter((p) => p.category === value);
-      if (products.length === 0) return null;
-      return { value, count: products.length, products };
-    }).pipe(provideServices);
-    return Effect.runPromise(program);
+    const lookup = (v: string) =>
+      Effect.runPromise(
+        Effect.gen(function* () {
+          const merch = yield* MerchDirectoryService;
+          const catalog = yield* merch.getCatalog();
+          const products = catalog.items.filter((p) => p.category === v);
+          if (products.length === 0) return null;
+          return { value: v, count: products.length, products };
+        }).pipe(provideServices)
+      );
+    const exact = await lookup(value);
+    if (exact) return exact;
+    // Legacy category names (pre-normalization links, stale cached chips): fold
+    // the requested name through the same synonym rules the catalog uses; when it
+    // lands on a live bucket, tell the route to redirect there instead of 404ing.
+    // Lazy import: merchCatalog is sdk code that must not enter the client bundle.
+    const { resolveCategory } = await import('@sdk/src/merchCatalog.js');
+    const mapped = resolveCategory(value, '');
+    if (mapped && mapped !== value && (await lookup(mapped))) {
+      return { redirect: mapped } as const;
+    }
+    return null;
   });
 
 export const getMerchProduct = createServerFn({ method: 'GET' })

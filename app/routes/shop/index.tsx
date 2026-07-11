@@ -92,7 +92,7 @@ function ShopLanding() {
       <div className="carousel-scrollbar mb-8 flex gap-2 overflow-x-auto pb-2">
         <Link
           to="/shop/all"
-          className="shrink-0 whitespace-nowrap rounded-full border border-primary/50 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-primary hover:bg-primary/10"
+          className="shrink-0 whitespace-nowrap rounded-full border border-border px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-primary/60 hover:bg-muted"
         >
           All products
         </Link>
