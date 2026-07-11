@@ -181,7 +181,7 @@ const SECTION_TABLES: Record<Section, string[]> = {
     "rm_corps_appearances",
     "rm_corps_appearance_results",
   ],
-  recaps: ["rm_event_recap", "rm_event_full_recap"],
+  recaps: ["rm_event_recap", "rm_event_full_recap", "rm_event_previous_recap"],
   judges: ["rm_judges", "rm_judge_detail"],
   staff: ["rm_staff", "rm_staff_detail"],
   predictions: ["rm_event_prediction", "rm_event_prediction_snapshots"],
