@@ -34,6 +34,13 @@ export const submitContact = createServerFn({ method: 'POST' })
   .validator((d: unknown) => v.parse(ContactInput, d))
   .handler(async ({ data }) => {
     if (data.website) return { ok: true as const }; // silently drop bot submissions
+    // Abuse guard beyond the honeypot: each accepted submission emails the
+    // support inbox, so cap per sender address (5/hour, same limiter as
+    // subscribeScores). Silently accept over-limit like the honeypot — no
+    // signal for a script to tune against.
+    const { rateLimit } = await import('@/lib/rate-limit');
+    if (!rateLimit(`contact:${data.email.toLowerCase()}`, 5, 3_600_000))
+      return { ok: true as const };
     const actor = await getActor(getWebRequest()); // may be null (signed out)
     const db = await getContributionsDb();
     const now = new Date().toISOString();

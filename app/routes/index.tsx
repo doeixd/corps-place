@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import { useSession, signOut } from '@/lib/auth-client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
 import { Logo } from '@/components/logo';
@@ -116,7 +115,6 @@ function ExploreCard({
 function Home() {
   const { weekend, latestResults, standings, featuredPrediction, lineupCorps } =
     Route.useLoaderData();
-  const { data: session } = useSession();
 
   // Single source of truth from the root loader — same value SSR + client, so the
   // jobs landing never flips to the corps home on hydration.
@@ -257,37 +255,10 @@ function Home() {
         </section>
       </div>
 
-      <footer className="mt-12 border-t border-border pt-6 text-center">
-        <p className="text-xs text-text-muted">
-          <Link to="/privacy-policy" className="hover:text-text-secondary transition-colors">
-            Privacy Policy
-          </Link>
-          <span className="mx-2 text-border">·</span>
-          <Link to="/terms-of-service" className="hover:text-text-secondary transition-colors">
-            Terms of Service
-          </Link>
-          <span className="mx-2 text-border">·</span>
-          <Link to="/contact" className="hover:text-text-secondary transition-colors">
-            Contact
-          </Link>
-          {session?.user ? (
-            <>
-              <span className="mx-2 text-border">·</span>
-              <button
-                type="button"
-                onClick={() =>
-                  void signOut().then(() => {
-                    window.location.href = '/';
-                  })
-                }
-                className="transition-colors hover:text-text-secondary"
-              >
-                Log out
-              </button>
-            </>
-          ) : null}
-        </p>
-      </footer>
+      {/* Legal/help links now live in the site-wide footer (__root → SiteFooter);
+          log-out moved to /account/settings. Dropping the per-page footer also
+          drops the homepage's only useSession — the auth-client chunk no longer
+          loads on / for signed-out visitors. */}
     </PageShell>
   );
 }

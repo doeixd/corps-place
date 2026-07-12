@@ -16,7 +16,20 @@ import { urlsetResponse, honestLastmod, type DatedUrl } from '@/lib/sitemap-shar
 // bulk staff/shop sitemaps so search engines judge (and crawl) it on its own
 // merits. See sitemap-shared.ts for the rationale.
 
-const STATIC_PATHS = ['/', '/events', '/scores', '/shows', '/corps', '/judges', '/rankings'];
+const STATIC_PATHS = [
+  '/',
+  '/events',
+  '/scores',
+  '/shows',
+  '/corps',
+  '/judges',
+  '/rankings',
+  '/vs',
+  '/staff',
+  '/faq',
+  '/contact',
+  '/predict/finals',
+];
 
 export const ServerRoute = createServerFileRoute('/sitemap-core.xml').methods({
   GET: async ({ request }) => {

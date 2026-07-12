@@ -13,6 +13,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { registerServiceWorker } from '@/lib/register-sw';
 import { watchReadModelFreshness } from '@/lib/read-model-freshness';
+import { SiteFooter } from '@/components/site-footer';
 import { trackBackNavigation } from '@/hooks/use-back-navigation';
 import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
 // NOTE: no global Tooltip.Provider here on purpose. It's optional in base-ui (it
@@ -546,6 +547,7 @@ function RootComponent() {
                 <AnnouncementBanner />
               </Suspense>
               <Outlet />
+              <SiteFooter />
             </main>
         </MotionConfig>
       </BrandProvider>

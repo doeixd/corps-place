@@ -45,7 +45,12 @@ const inferType = (host: string): string => {
 
 // SSRF guard: only fetch public http(s) hosts for OG prefetch.
 const PRIVATE =
-  /^(localhost$|127\.|10\.|192\.168\.|169\.254\.|0\.0\.0\.0$|::1$|172\.(1[6-9]|2\d|3[01])\.)/i;
+  /^(localhost$|127\.|10\.|192\.168\.|169\.254\.|0\.0\.0\.0$|::1$|::$|f[cd][0-9a-f]{2}:|fe80:|172\.(1[6-9]|2\d|3[01])\.)/i;
+// Bare-numeric hosts (decimal/octal/hex encodings like http://2130706433/) can
+// smuggle loopback past the dotted-quad patterns — reject them outright.
+const NUMERIC_HOST = /^(0x[0-9a-f]+|\d+)$/i;
+const isBlockedHost = (hostname: string): boolean =>
+  PRIVATE.test(hostname) || NUMERIC_HOST.test(hostname) || hostname.endsWith('.internal');
 const decodeEntities = (s: string) =>
   s
     .replace(/&amp;/g, '&')
@@ -59,14 +64,25 @@ const fetchMeta = async (
   url: string
 ): Promise<{ title: string | null; publisher: string | null }> => {
   try {
-    const u = new URL(url);
-    if (!/^https?:$/.test(u.protocol) || PRIVATE.test(u.hostname))
-      return { title: null, publisher: null };
-    const res = await fetch(url, {
-      signal: AbortSignal.timeout(5000),
-      headers: { 'User-Agent': 'corps.place-citation-bot/1.0' },
-      redirect: 'follow',
-    });
+    // Follow redirects MANUALLY so every hop is re-validated — `redirect:
+    // 'follow'` only checks the first hostname, letting a public URL 302 into
+    // localhost/cloud-metadata (SSRF).
+    let target = new URL(url);
+    let res: Response | null = null;
+    for (let hop = 0; hop < 4; hop++) {
+      if (!/^https?:$/.test(target.protocol) || isBlockedHost(target.hostname))
+        return { title: null, publisher: null };
+      res = await fetch(target, {
+        signal: AbortSignal.timeout(5000),
+        headers: { 'User-Agent': 'corps.place-citation-bot/1.0' },
+        redirect: 'manual',
+      });
+      const loc = res.status >= 300 && res.status < 400 ? res.headers.get('location') : null;
+      if (!loc) break;
+      target = new URL(loc, target);
+      res = null;
+    }
+    if (!res) return { title: null, publisher: null };
     const html = (await res.text()).slice(0, 512 * 1024);
     const og = (p: string) =>
       html.match(
