@@ -77,9 +77,10 @@ function RecencySettings({
   // One row per tier; the dot colors + descriptions mirror how rankings-list.tsx
   // fades each corps by days-since-last-competed (opacity 1 / 0.82 / 0.64 / 0.48).
   const tiers = [
-    { label: 'Fresh', dot: 'bg-emerald-500', desc: 'full brightness' },
-    { label: 'Recent', dot: 'bg-amber-500', desc: 'lightly faded' },
-    { label: 'Stale', dot: 'bg-orange-500', desc: 'more faded' },
+    // Semantic tokens — the default Tailwind palette is wiped in app.css.
+    { label: 'Fresh', dot: 'bg-success', desc: 'full brightness' },
+    { label: 'Recent', dot: 'bg-warning', desc: 'lightly faded' },
+    { label: 'Stale', dot: 'bg-warning opacity-70', desc: 'more faded' },
   ];
   return (
     <Popover>
@@ -122,7 +123,7 @@ function RecencySettings({
           </div>
         ))}
         <p className="border-t border-border pt-2 text-[11px] leading-snug text-muted-foreground">
-          <span className="mr-1 inline-block size-1.5 rounded-full bg-red-500 align-middle" />
+          <span className="mr-1 inline-block size-1.5 rounded-full bg-destructive align-middle" />
           Longer than the Stale cutoff → most faded. Fresh corps show with no marker;
           the others get a colored dot and a “Nd ago” note.
         </p>

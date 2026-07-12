@@ -48,11 +48,15 @@ const recencyTier = (days: number, thresholds: number[]) => {
   return thresholds.length;
 };
 const TIER_OPACITY = [1, 0.82, 0.64, 0.48];
+// Semantic tokens only — the raw palette classes (bg-emerald-500 …) compile to
+// nothing here (app.css wipes Tailwind's default palette), which left these
+// dots invisible since they shipped. success → warning → warning/70 →
+// destructive reads as the same fresh→stale ramp.
 const TIER_DOT = [
-  'bg-emerald-500',
-  'bg-amber-500',
-  'bg-orange-500',
-  'bg-red-500',
+  'bg-success',
+  'bg-warning',
+  'bg-warning opacity-70',
+  'bg-destructive',
 ];
 
 function Row({
