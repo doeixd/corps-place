@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import type { CorpsSeasonSnapshotRow } from '@/lib/corps-directory';
 import { useMachine } from '@xstate/react';
@@ -18,7 +18,9 @@ import { ProductGrid } from '@/components/merch/product-grid';
 import type { CorpsMerchTeaser } from '@/lib/merch-types';
 import { loadDetailOrServer } from '@/db/detail-shard';
 import { eventFilterMachine } from '@/machines/event-filter-machine';
-import { availableSeasons, selectEvents } from '@/lib/event-filtering';
+import { availableSeasons, selectEvents, eventCardKey } from '@/lib/event-filtering';
+import { TourMap } from '@/components/tour/tour-map';
+import { toTourStops } from '@/lib/tour';
 import { cn } from '@/lib/utils';
 import { CorpsScoreChart } from '@/components/corps-score-chart';
 import { EventCardGrid } from '@/components/event-card';
@@ -331,6 +333,17 @@ function CorpsDetailPage() {
     dir: filter.dir,
   });
 
+  // Season tour map stops (TOUR_MAP_PLAN M5): geocoded appearances of the
+  // active season, date-ordered, with this corps's result per stop.
+  const tourStops = useMemo(
+    () =>
+      activeSeason === 'all'
+        ? []
+        : toTourStops(appearances, activeSeason, (e) => resultByKey.get(eventCardKey(e))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [appearances, activeSeason]
+  );
+
   if (!corps) {
     return (
       <PageShell>
@@ -581,6 +594,28 @@ function CorpsDetailPage() {
             <ProductGrid
               products={corpsMerch.products}
               className="[&>*:nth-child(n+5)]:hidden sm:[&>*:nth-child(n+5)]:block"
+            />
+          </section>
+        ) : null}
+
+        {/* Season tour map (TOUR_MAP_PLAN M5): the season's appearances as a
+            route across the US, scrubbable by date. Single-season views only;
+            hidden below 2 geocoded stops. Seeds from the already-loaded
+            appearances — no extra fetch; map libs lazy-load post-mount. */}
+        {tourStops.length >= 2 ? (
+          <section className="space-y-4 pt-4">
+            <h3 className="text-xl font-semibold">
+              {activeSeason} tour
+              <span className="ml-2 text-sm font-normal text-text-secondary">
+                {tourStops.length} stops
+              </span>
+            </h3>
+            <TourMap
+              stops={tourStops}
+              colors={{
+                primary: corps.color_primary ?? null,
+                secondary: corps.color_secondary ?? null,
+              }}
             />
           </section>
         ) : null}
