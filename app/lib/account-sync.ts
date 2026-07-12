@@ -71,6 +71,18 @@ export function startAccountSync(): () => void {
     pushTimer = setTimeout(() => void push(), PUSH_DEBOUNCE_MS);
   };
 
+  // Flush a pending debounced push when the tab hides — otherwise a change made
+  // <4s before closing/navigating away is lost, and the next merge resurrects
+  // the old state (e.g. a just-removed bookmark coming back).
+  const onHide = () => {
+    if (document.visibilityState === 'hidden' && pushTimer) {
+      clearTimeout(pushTimer);
+      pushTimer = null;
+      void push();
+    }
+  };
+  document.addEventListener('visibilitychange', onHide);
+
   void (async () => {
     try {
       const { getMyPreferences } = await import('@/lib/server-fns/account');
@@ -124,6 +136,7 @@ export function startAccountSync(): () => void {
 
   return () => {
     cancelled = true;
+    document.removeEventListener('visibilitychange', onHide);
     if (pushTimer) clearTimeout(pushTimer);
     for (const s of subs) s.unsubscribe();
   };

@@ -30,16 +30,26 @@ const MAIN_ONLY_MARKERS = ['node:fs', 'node:crypto', '@libsql/client', '@effect/
 
 let files;
 try {
-  files = readdirSync(ASSETS).filter((f) => f.endsWith('.js'));
+  // Recursive: chunks live under a version prefix (assets/r1/ since the
+  // asset-404 poisoning fix). A flat readdir here scanned ZERO files and the
+  // guard passed vacuously — fail loudly if that ever happens again.
+  files = readdirSync(ASSETS, { recursive: true })
+    .map(String)
+    .filter((f) => f.endsWith('.js'));
 } catch (err) {
   console.error(`[bundle-check] cannot read ${ASSETS}: ${err?.message ?? err}`);
+  process.exit(1);
+}
+if (files.length === 0) {
+  console.error(`[bundle-check] FAIL — no client chunks found under ${ASSETS} (wrong path?)`);
   process.exit(1);
 }
 
 const hits = [];
 for (const f of files) {
   const txt = readFileSync(path.join(ASSETS, f), 'utf8');
-  const markers = /^main-/.test(f) ? [...APP_MARKERS, ...MAIN_ONLY_MARKERS] : APP_MARKERS;
+  const base = path.basename(f);
+  const markers = /^main-/.test(base) ? [...APP_MARKERS, ...MAIN_ONLY_MARKERS] : APP_MARKERS;
   for (const marker of markers) if (txt.includes(marker)) hits.push(`${f} → ${marker}`);
 }
 

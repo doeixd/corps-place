@@ -100,13 +100,23 @@ self.addEventListener('fetch', (event) => {
 
   // Navigations: NetworkFirst so online always renders fresh SSR; cache the doc
   // for offline, and fall back to the cached doc (then any cached doc) offline.
+  // Personal pages (/account, /admin) are never doc-cached: on a shared device a
+  // later signed-out user could otherwise open the previous user's cached HTML
+  // offline. They still render online (network path below).
+  const isPersonalDoc =
+    url.pathname === '/account' ||
+    url.pathname.startsWith('/account/') ||
+    url.pathname === '/admin' ||
+    url.pathname.startsWith('/admin/');
   if (request.mode === 'navigate') {
     event.respondWith(
       (async () => {
         try {
           const fresh = await fetch(request);
-          const cache = await caches.open(DOC_CACHE);
-          await cache.put(request, fresh.clone());
+          if (!isPersonalDoc) {
+            const cache = await caches.open(DOC_CACHE);
+            await cache.put(request, fresh.clone());
+          }
           return fresh;
         } catch {
           const cache = await caches.open(DOC_CACHE);

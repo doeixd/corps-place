@@ -90,11 +90,23 @@ export const getMyAccountOverview = createServerFn({ method: 'GET' }).handler(
   }
 );
 
+// Cheap per-user rate limit for name changes (in-memory — resets on deploy,
+// which is fine: this only blunts scripted churn, the validator does the rest).
+const nameChangeStamps = new Map<string, number[]>();
+const NAME_CHANGE_LIMIT = 5; // per hour
+
 export const updateAccountName = createServerFn({ method: 'POST' })
   .validator((d: unknown) =>
     v.parse(
       v.object({
-        name: v.pipe(v.string(), v.trim(), v.minLength(1), v.maxLength(80)),
+        name: v.pipe(
+          v.string(),
+          v.trim(),
+          v.minLength(1),
+          v.maxLength(80),
+          // Printable only — control chars would corrupt emails/attribution lines.
+          v.regex(/^[^\u0000-\u001f\u007f]+$/, 'Invalid characters')
+        ),
       }),
       d
     )
@@ -103,6 +115,11 @@ export const updateAccountName = createServerFn({ method: 'POST' })
     const { getActor } = await import('@/lib/authz');
     const actor = await getActor(getWebRequest());
     if (!actor) throw new Error('UNAUTHENTICATED');
+    const now = Date.now();
+    const stamps = (nameChangeStamps.get(actor.userId) ?? []).filter((t) => now - t < 3_600_000);
+    if (stamps.length >= NAME_CHANGE_LIMIT) throw new Error('RATE_LIMITED');
+    stamps.push(now);
+    nameChangeStamps.set(actor.userId, stamps);
     const { getContributionsDb } = await import('@/lib/contributions-db');
     const db = await getContributionsDb();
     await db.execute({
@@ -337,6 +354,7 @@ export const exportMyData = createServerFn({ method: 'POST' }).handler(async () 
     ballots: await rowsOf('SELECT * FROM prediction_ballots WHERE user_id = ?'),
     profileClaims: await rowsOf('SELECT * FROM profile_claims WHERE user_id = ?'),
     contactMessages: await rowsOf('SELECT * FROM contact_messages WHERE user_id = ?'),
+    preferences: await rowsOf('SELECT * FROM user_preferences WHERE user_id = ?'),
     scoreSubscriptions: (
       await db.execute({
         sql: 'SELECT * FROM score_notify_subscriptions WHERE user_id = ? OR email = ?',
@@ -394,9 +412,10 @@ export const deleteMyAccount = createServerFn({ method: 'POST' })
           'write'
         );
       } else {
-        // Sole member — the league dies with the account.
+        // Sole member — the league dies with the account. 'canceled' (one L) is
+        // the lifecycle machine's terminal status (app/lib/fantasy/machines/league.ts).
         await db.execute({
-          sql: `UPDATE fantasy_leagues SET status = 'cancelled' WHERE league_id = ?`,
+          sql: `UPDATE fantasy_leagues SET status = 'canceled' WHERE league_id = ?`,
           args: [leagueId],
         });
       }

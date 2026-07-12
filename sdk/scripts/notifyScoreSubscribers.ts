@@ -197,9 +197,21 @@ const main = async () => {
         `<p style="color:#888;font-size:12px">You're getting this because you asked to be notified about ` +
         `${s.target_slug === "*" ? "all shows' scores" : s.target_kind === "corps" ? "a corps in this show" : s.target_slug === ev ? "this event" : "this corps this season"}. ` +
         `<a href="${unsub}">Unsubscribe</a>.</p>`;
+      // Respect the per-subscription method toggles (managed on
+      // /account/notifications): email unless every row for this address turned
+      // it off; push only when some row opted in. Both off ⇒ nothing to send —
+      // still mark the event notified so a later re-run doesn't resurrect it.
+      const wantsEmail = subs.some((x) => {
+        if (x.email !== email) return false;
+        try {
+          return (JSON.parse(x.methods_json ?? "{}") as { email?: boolean }).email !== false;
+        } catch {
+          return true;
+        }
+      });
       let delivered = dryRun;
       if (!dryRun) {
-        const emailOk = await sendEmail(email, subject, html);
+        const emailOk = wantsEmail ? await sendEmail(email, subject, html) : false;
         const pushOk = wantsPush(email)
           ? await sendPushToEmail(email, {
               title: subject,
@@ -207,7 +219,7 @@ const main = async () => {
               url,
             })
           : false;
-        delivered = emailOk || pushOk;
+        delivered = emailOk || pushOk || (!wantsEmail && !wantsPush(email));
       }
       if (delivered && !dryRun) {
         // mark this event notified for EVERY row of this email (event + corps subs)
@@ -227,8 +239,12 @@ const main = async () => {
         }
         sent++;
       } else if (dryRun) {
-        const via = wantsPush(email) ? "email+push" : "email";
-        console.log(`  [dry-run] would ${via} ${email} (${s.target_kind}:${s.target_slug})`);
+        const channels = [wantsEmail ? "email" : null, wantsPush(email) ? "push" : null]
+          .filter(Boolean)
+          .join("+");
+        console.log(
+          `  [dry-run] would ${channels || "skip (all methods off)"} ${email} (${s.target_kind}:${s.target_slug})`
+        );
       }
     }
   }
