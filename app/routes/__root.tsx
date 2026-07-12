@@ -311,13 +311,12 @@ function AccountSyncManager() {
         if (!cancelled) cleanup = m.startAccountSync();
       });
     };
-    const idle =
-      'requestIdleCallback' in window
-        ? requestIdleCallback(start, { timeout: 8000 })
-        : setTimeout(start, 4000);
+    const hasRic = 'requestIdleCallback' in window;
+    const idle = hasRic ? requestIdleCallback(start, { timeout: 8000 }) : setTimeout(start, 4000);
     return () => {
       cancelled = true;
-      if (typeof idle === 'number' && 'cancelIdleCallback' in window) cancelIdleCallback(idle);
+      if (hasRic) cancelIdleCallback(idle as number);
+      else clearTimeout(idle as ReturnType<typeof setTimeout>);
       cleanup?.();
     };
   }, []);

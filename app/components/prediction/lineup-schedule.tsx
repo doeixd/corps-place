@@ -182,6 +182,11 @@ export function LineupSchedule({
     [rows, season, previews.size, loading]
   );
 
+  // Hooks must run unconditionally — keep this ABOVE the empty-lineup early
+  // return or the hook order changes when a lineup goes empty → populated
+  // (caught by react-doctor rules-of-hooks).
+  const displayMode = useTimeDisplayMode();
+
   if (rows.length === 0) return null;
 
   const city = event?.location_city;
@@ -213,7 +218,6 @@ export function LineupSchedule({
         tzAbbrev
       ]
     : null;
-  const displayMode = useTimeDisplayMode();
   const venueZone = venueZoneFromAbbrev(tzAbbrev);
   const showViewerLocal = displayMode === 'local' && !!venueZone;
   const displayTime = (time: string | undefined): string | undefined => {
