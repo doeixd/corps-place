@@ -88,14 +88,16 @@ async function alertAdmins(): Promise<void> {
   const VAPID_PRIVATE = process.env.VAPID_PRIVATE_KEY;
   const VAPID_SUBJECT = process.env.VAPID_SUBJECT ?? "mailto:login@drumcorps.app";
   if (!VAPID_PUBLIC || !VAPID_PRIVATE) {
-    console.log("[record-run] VAPID keys unset — admin alert skipped.");
+    console.log("[record-run] VAPID keys unset — falling back to email.");
+    await emailAdminsFallback();
     return;
   }
   const subs = db
     .prepare("SELECT endpoint, p256dh, auth FROM admin_push_subscriptions")
     .all() as { endpoint: string; p256dh: string; auth: string }[];
   if (subs.length === 0) {
-    console.log("[record-run] no admin push subscriptions registered — alert skipped.");
+    console.log("[record-run] no admin push subscriptions registered — falling back to email.");
+    await emailAdminsFallback();
     return;
   }
   webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC, VAPID_PRIVATE);
@@ -128,6 +130,58 @@ async function alertAdmins(): Promise<void> {
     }
   }
   console.log(`[record-run] admin alert: ${delivered}/${subs.length} devices notified.`);
+  if (delivered === 0) await emailAdminsFallback();
+}
+
+// Email fallback so failures still reach a human when web push can't (no
+// subscriptions registered / VAPID unset / all pushes bounced — the 2026-07-12
+// Grand Prix outage failed 18 runs in a row into a dead alert channel).
+// Throttled: at most one alert email per hour, keyed off prior failure rows in
+// ingest_runs, so a repeating failure doesn't flood the inbox.
+const ALERT_EMAIL = process.env.INGEST_ALERT_EMAIL ?? "ithepatrickglenni@gmail.com";
+async function emailAdminsFallback(): Promise<void> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) {
+    console.log("[record-run] RESEND_API_KEY unset — email fallback skipped.");
+    return;
+  }
+  // Another failure row in the last hour (besides the one just inserted) means
+  // an email either just went out or was already throttled — stay quiet.
+  const recent = db
+    .prepare(
+      `SELECT COUNT(*) AS n FROM ingest_runs
+        WHERE status IN ('scrape_failed', 'publish_failed')
+          AND ts >= datetime('now', '-60 minutes') AND ts < ?`
+    )
+    .get(ts) as { n: number };
+  if (recent.n > 0) {
+    console.log(`[record-run] email fallback throttled (${recent.n} failure(s) in the last hour).`);
+    return;
+  }
+  const from = process.env.MAGIC_LINK_FROM ?? "DrumCorps.app <login@drumcorps.app>";
+  const subject = `⚠️ ${kind === "lineup-refresh" ? "Lineup refresh" : "Score auto-ingest"} ${status}`;
+  const text =
+    `Status: ${status}\n` +
+    (pending ? `Pending show(s): ${pending}\n` : "") +
+    (detail ? `Detail: ${detail}\n` : "") +
+    `Scores before/after: ${before ?? "?"} / ${after ?? "?"}\n\n` +
+    `Runs & logs: https://drumcorps.app/admin/jobs\n` +
+    `(Sent because no web-push admin device is registered — enable admin ` +
+    `notifications on the site to get pushes instead.)`;
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from, to: [ALERT_EMAIL], subject, text }),
+    });
+    console.log(
+      res.ok
+        ? `[record-run] alert emailed to ${ALERT_EMAIL}.`
+        : `[record-run] alert email failed: HTTP ${res.status}`
+    );
+  } catch (err) {
+    console.log(`[record-run] alert email failed: ${String(err)}`);
+  }
 }
 
 async function main(): Promise<void> {
