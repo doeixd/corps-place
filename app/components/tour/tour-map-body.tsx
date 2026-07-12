@@ -90,8 +90,9 @@ export default function TourMapBody({ stops, colors }: TourMapProps) {
     return out;
   }, [geo, stops]);
 
-  // Scrub state: index of the last revealed stop. Starts fully revealed so the
-  // map reads complete at a glance; scrubbing back replays the tour.
+  // Scrub state: index of the last revealed stop. Historical seasons start
+  // fully revealed; mid-season the initial scrub snaps to TODAY (below) so the
+  // map reads "the tour so far". Scrubbing replays / previews the rest.
   const [reveal, setReveal] = useState(stops.length - 1);
   const clampedReveal = Math.min(reveal, Math.max(projected.length - 1, 0));
   const active = projected[clampedReveal] ?? null;
@@ -100,6 +101,39 @@ export default function TourMapBody({ stops, colors }: TourMapProps) {
   useEffect(() => {
     firstRender.current = false;
   }, []);
+
+  // "Today" position on the scrubber: index of the last stop on/before today,
+  // and a track fraction date-interpolated between the surrounding stops (the
+  // slider is index-spaced, so we interpolate within the segment). Null when
+  // today is outside the tour window (past seasons / preseason).
+  const today = useMemo(() => {
+    if (projected.length < 2) return null;
+    const iso = new Date().toISOString().slice(0, 10);
+    const first = projected[0]!.date;
+    const last = projected[projected.length - 1]!.date;
+    if (iso < first || iso > last) return null;
+    let index = 0;
+    for (let i = 0; i < projected.length; i++) if (projected[i]!.date <= iso) index = i;
+    let fraction = index / (projected.length - 1);
+    const next = projected[index + 1];
+    if (next && next.date > projected[index]!.date) {
+      const segStart = Date.parse(projected[index]!.date);
+      const segEnd = Date.parse(next.date);
+      const within = (Date.parse(iso) - segStart) / (segEnd - segStart);
+      fraction = (index + Math.max(0, Math.min(1, within))) / (projected.length - 1);
+    }
+    return { iso, index, fraction };
+  }, [projected]);
+
+  // Mid-season initial position = today (once, when geometry/stops resolve);
+  // any user interaction afterwards wins.
+  const snappedToToday = useRef(false);
+  useEffect(() => {
+    if (today && !snappedToToday.current) {
+      snappedToToday.current = true;
+      setReveal(today.index);
+    }
+  }, [today]);
 
   const routeD = useMemo(
     () =>
@@ -187,18 +221,43 @@ export default function TourMapBody({ stops, colors }: TourMapProps) {
         })}
       </svg>
 
-      {/* Scrubber: discrete stop index — "watch the tour unfold". */}
+      {/* Scrubber: discrete stop index — "watch the tour unfold". A "Today"
+          marker sits on the track at the current date's position (interpolated
+          between the surrounding stops); clicking it scrubs to today. Only
+          rendered mid-tour — pre/post-season it would pin to an edge. */}
       <div className="px-1">
-        <Slider
-          min={0}
-          max={Math.max(projected.length - 1, 0)}
-          step={1}
-          value={[clampedReveal]}
-          onValueChange={(v: number | readonly number[]) =>
-            setReveal(Array.isArray(v) ? (v[0] ?? 0) : (v as number))
-          }
-          aria-label="Reveal tour through date"
-        />
+        <div className="relative">
+          {today ? (
+            <button
+              type="button"
+              onClick={() => setReveal(today.index)}
+              aria-label={`Jump to today (${formatEventDate(today.iso)})`}
+              className="group absolute -top-1 bottom-0 z-10 -translate-x-1/2"
+              style={{ left: `${(today.fraction * 100).toFixed(2)}%` }}
+            >
+              <span className="block h-4 w-[2px] rounded-full bg-foreground/50 transition-colors group-hover:bg-foreground" />
+            </button>
+          ) : null}
+          <Slider
+            min={0}
+            max={Math.max(projected.length - 1, 0)}
+            step={1}
+            value={[clampedReveal]}
+            onValueChange={(v: number | readonly number[]) =>
+              setReveal(Array.isArray(v) ? (v[0] ?? 0) : (v as number))
+            }
+            aria-label="Reveal tour through date"
+          />
+          {today ? (
+            <span
+              aria-hidden
+              className="absolute top-full mt-0.5 -translate-x-1/2 text-[10px] font-medium text-text-muted"
+              style={{ left: `${(today.fraction * 100).toFixed(2)}%` }}
+            >
+              Today
+            </span>
+          ) : null}
+        </div>
         <div className="mt-1 flex justify-between text-[11px] text-text-muted">
           <span>{projected[0] ? formatEventDate(projected[0].date) : ''}</span>
           <span>
