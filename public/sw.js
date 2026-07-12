@@ -53,7 +53,12 @@ const isAsset = (url) =>
   url.pathname.startsWith('/assets/') ||
   url.pathname.startsWith('/_build/');
 
-const isData = (url) => url.pathname.startsWith('/read-model/');
+// manifest.json is the VERSION SIGNAL (freshness watcher + SW update check) —
+// serving it stale-while-revalidate would delay change detection by a full
+// poll tick, so it always goes to the network (browser cache max-age=30 +
+// edge purge on publish keep it cheap and current).
+const isData = (url) =>
+  url.pathname.startsWith('/read-model/') && !url.pathname.endsWith('/manifest.json');
 
 // The hybrid server-fns are the ONE cacheable server-fn family: pure read-model
 // reads, same JSON for everyone until the next emit (mirrors the nitro routeRule
