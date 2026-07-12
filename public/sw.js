@@ -40,6 +40,12 @@ self.addEventListener('activate', (event) => {
 // when a new read-model version is detected).
 self.addEventListener('message', (event) => {
   if (event.data === 'SKIP_WAITING') self.skipWaiting();
+  // Read-model published: drop the SWR'd data cache (hybrid server-fns +
+  // read-model JSON) so the next fetches hit the network and re-cache fresh
+  // data. Hashed assets and NetworkFirst docs are already safe.
+  if (event.data === 'INVALIDATE_DATA') {
+    event.waitUntil ? event.waitUntil(caches.delete(DATA_CACHE)) : caches.delete(DATA_CACHE);
+  }
 });
 
 const isAsset = (url) =>

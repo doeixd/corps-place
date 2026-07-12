@@ -12,6 +12,7 @@ import {
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { registerServiceWorker } from '@/lib/register-sw';
+import { watchReadModelFreshness } from '@/lib/read-model-freshness';
 import { trackBackNavigation } from '@/hooks/use-back-navigation';
 import { MotionConfig, REDUCED_MOTION } from '@/lib/motion';
 // NOTE: no global Tooltip.Provider here on purpose. It's optional in base-ui (it
@@ -300,6 +301,11 @@ function NavigationProgressBar({ delayMs = 150 }: { delayMs?: number }) {
 // Registers (or, when disabled, unregisters) the offline service worker on the
 // client. No-op during SSR. Renders nothing.
 function ServiceWorkerManager() {
+  const router = useRouter();
+  // Data freshness for open tabs: when a new read-model publishes (version
+  // change in /read-model/manifest.json), drop the SW data cache and re-run the
+  // active route's loaders — the in-tab counterpart of the edge purge.
+  useEffect(() => watchReadModelFreshness(router), [router]);
   useEffect(() => {
     registerServiceWorker();
 
