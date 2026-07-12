@@ -13,6 +13,17 @@ import { Icon } from '@/components/icon';
 import { LinkSquare02Icon, SentIcon } from '@/components/icons/generated';
 import { formatPrice, formatDescription, type MerchProductDetail } from '@/lib/merch-types';
 import { buildSeo, clampDescription, SITE_URL } from '@/lib/seo';
+import { proxiedImage } from '@/lib/media';
+
+// Product images are stored as media-cache KEYS (`merch-product:<id>/<n>`), not
+// URLs — social scrapers need an ABSOLUTE, publicly-fetchable URL, so route
+// through /api/media (the cache serves these keys) and prefix the site origin.
+const absoluteProductImage = (raw: string | null | undefined): string | undefined => {
+  if (!raw) return undefined;
+  const proxied = proxiedImage(raw, { assumeCached: true, width: 1200 });
+  if (!proxied) return undefined;
+  return proxied.startsWith('http') ? proxied : `${SITE_URL}${proxied}`;
+};
 
 export const Route = createFileRoute('/shop/$productId')({
   loader: async ({ params }) => {
@@ -35,7 +46,7 @@ export const Route = createFileRoute('/shop/$productId')({
     );
     const path = `/shop/${params.productId}`;
     const canonical = `${SITE_URL}${path}`;
-    const image = p.images[0] ?? p.image ?? undefined;
+    const image = absoluteProductImage(p.images[0] ?? p.image);
     const availability =
       p.available === false ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock';
     const base = buildSeo({ title, description, path, image, type: 'product' });
@@ -44,7 +55,12 @@ export const Route = createFileRoute('/shop/$productId')({
       '@context': 'https://schema.org',
       '@type': 'Product',
       name: p.title,
-      image: p.images.length > 0 ? p.images : image ? [image] : undefined,
+      image:
+        p.images.length > 0
+          ? p.images.map(absoluteProductImage).filter(Boolean)
+          : image
+            ? [image]
+            : undefined,
       description: rawDesc || undefined,
       sku: p.productId,
       category: p.category ?? undefined,
