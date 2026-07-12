@@ -153,11 +153,14 @@ function Row({
         {showDelta && row.scoreDelta != null ? (
           <span
             className={cn(
+              // Semantic tokens only — app.css wipes Tailwind's default palette
+              // (text-emerald-*/text-red-* compile to nothing here). `success`
+              // and `destructive` are theme-aware.
               'font-mono text-[10px] tabular-nums',
               row.scoreDelta > 0
-                ? 'text-emerald-600 dark:text-emerald-400'
+                ? 'text-success'
                 : row.scoreDelta < 0
-                  ? 'text-red-600 dark:text-red-400'
+                  ? 'text-destructive'
                   : 'text-text-muted'
             )}
             title="Change vs previous performance"
