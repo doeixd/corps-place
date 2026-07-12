@@ -53,7 +53,9 @@ function AccountBallots() {
             {ballots.map((b) => (
               <Link
                 key={b.ballotId}
-                to={b.preset === 'finals' ? '/predict/finals/$id' : '/predict/ballot/$id'}
+                // /predict/ballot/$id is only a legacy redirect to finals/$id —
+                // link the canonical route directly.
+                to="/predict/finals/$id"
                 params={{ id: b.ballotId }}
                 className="block focus-visible:outline-none"
               >

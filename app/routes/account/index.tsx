@@ -101,7 +101,7 @@ function AccountOverview() {
             hint="This device"
           />
           <Tile
-            to="/account/settings"
+            to="/account/notifications"
             label="Score alerts"
             value={overview.counts.scoreSubscriptions}
             hint="Email & push subscriptions"
@@ -142,8 +142,11 @@ function AccountOverview() {
               <span className="font-semibold text-text-primary">
                 {overview.counts.contributions}
               </span>{' '}
-              wiki contribution{overview.counts.contributions === 1 ? '' : 's'} — thank you! A
-              full contribution history is coming to this page soon.
+              wiki contribution{overview.counts.contributions === 1 ? '' : 's'} — thank you!{' '}
+              <Link to="/account/contributions" className="text-primary hover:underline">
+                See your history
+              </Link>
+              .
             </CardContent>
           </Card>
         ) : null}

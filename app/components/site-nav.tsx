@@ -27,7 +27,9 @@ const CORPS_NAV_ITEMS = [
   { to: '/scores', label: 'Scores', icon: LicenseIcon, exact: false },
   { to: '/corps', label: 'Corps', icon: UserMultipleIcon, exact: false },
   { to: '/rankings', label: 'Rankings', icon: Analytics01Icon, exact: false },
-  { to: '/vs', label: 'VS', icon: JusticeScale01Icon, exact: false },
+  // VS stays off the mobile bottom bar: 9 tabs don't fit a phone, and the
+  // compare tool is reachable from every corps page. Desktop rail shows all.
+  { to: '/vs', label: 'VS', icon: JusticeScale01Icon, exact: false, mobileHidden: true },
   { to: '/shop', label: 'Shop', icon: GiftIcon, exact: false },
   // Fantasy DCI — only when the feature flag is on (plan §0.5 #9).
   ...(FANTASY_ENABLED
@@ -45,7 +47,14 @@ const JOBS_NAV_ITEMS = [
   { to: '/jobs/me', label: 'Dashboard', icon: DashboardSquare01Icon, exact: false },
 ] as const;
 
-type NavItem = { to: string; label: string; icon: IconComponent; exact: boolean };
+type NavItem = {
+  to: string;
+  label: string;
+  icon: IconComponent;
+  exact: boolean;
+  /** Omit from the mobile bottom tab bar (space-capped) — desktop shows all. */
+  mobileHidden?: boolean;
+};
 
 const NAV_ITEMS_BY_BRAND: Record<Brand, readonly NavItem[]> = {
   corps: CORPS_NAV_ITEMS,
@@ -85,6 +94,7 @@ export function SiteNav() {
   // so this resolves identically on SSR and hydration.
   const brand = useBrand();
   const navItems = NAV_ITEMS_BY_BRAND[brand];
+  const mobileItems = navItems.filter((i) => !i.mobileHidden);
   const identity = BRAND_CONFIG[brand];
 
   // localStorage-backed bookmark count, SSR-safe (0 on the server, hydrates on mount).
@@ -136,13 +146,13 @@ export function SiteNav() {
         </div>
       </nav>
 
-      {/* Mobile bottom tabs */}
+      {/* Mobile bottom tabs (space-capped: items flagged mobileHidden stay desktop-only) */}
       <nav
         aria-label="Primary"
         className="fixed inset-x-0 bottom-0 z-40 grid min-h-[var(--bottom-nav-bar)] border-t border-border bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
-        style={{ gridTemplateColumns: `repeat(${navItems.length}, minmax(0, 1fr))` }}
+        style={{ gridTemplateColumns: `repeat(${mobileItems.length}, minmax(0, 1fr))` }}
       >
-        {navItems.map((item) => (
+        {mobileItems.map((item) => (
           <Link
             key={item.to}
             to={item.to}

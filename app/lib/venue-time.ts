@@ -82,7 +82,13 @@ export function toViewerLocalTime(
       new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' })
         .formatToParts(instant)
         .find((p) => p.type === 'timeZoneName')?.value ?? '';
-    return zone ? `${time} ${zone}` : time;
+    // Crossing midnight for this viewer (e.g. a 7 PM ET show seen from Europe):
+    // mark the day shift or the bare time is misleading. Compare full local
+    // date vs the venue date (month-wrap safe).
+    const localYmd = `${instant.getFullYear()}-${String(instant.getMonth() + 1).padStart(2, '0')}-${String(instant.getDate()).padStart(2, '0')}`;
+    const venueYmd = `${dateM[1]}-${dateM[2]}-${dateM[3]}`;
+    const shift = localYmd === venueYmd ? '' : localYmd > venueYmd ? ' (+1 day)' : ' (−1 day)';
+    return `${zone ? `${time} ${zone}` : time}${shift}`;
   } catch {
     return null;
   }
