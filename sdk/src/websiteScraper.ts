@@ -545,11 +545,16 @@ const scrapeWebsiteRecapByEntry = (
 const collectScoreListEntries = (
   sql: SqlClient.SqlClient,
   season: string,
-  maxPages?: number
+  maxPages?: number,
+  /** Stop paginating as soon as every one of these slugs has been seen (the
+   *  targeted auto-ingest only needs its pending show, which is on the first
+   *  page in-season — later pages are pure Cloudflare-403 exposure). */
+  onlySlugs?: readonly string[]
 ) =>
   Effect.gen(function* () {
     const entries: Domain.WebsiteScoreListEntry[] = [];
     const seen = new Set<string>();
+    const wanted = onlySlugs && onlySlugs.length ? new Set(onlySlugs) : null;
     const config = yield* (Effect.tryPromise(() => fetchScoreEventsConfig(season)));
     if (!config) {
       yield* (
@@ -576,9 +581,9 @@ const collectScoreListEntries = (
       // AJAX POST is blocked/fails; pure HTML when there was no AJAX config at all
       // (review Medium #6).
       const ajaxConfig = config;
-      const pageResult = ajaxConfig
-        ? yield* (
-            scrapeScoresListPage(sql, season, page, ajaxConfig).pipe(
+      const pageAttempt = yield* (
+        (ajaxConfig
+          ? scrapeScoresListPage(sql, season, page, ajaxConfig).pipe(
               Effect.catch((error) =>
                 Effect.gen(function* () {
                   yield* (
@@ -590,8 +595,24 @@ const collectScoreListEntries = (
                 })
               )
             )
+          : scrapeScoresListPageHtml(sql, season, page)
+        ).pipe(Effect.result)
+      );
+      if (pageAttempt._tag === "Failure") {
+        // A blocked page-1 means we learned nothing — fail the run. A blocked
+        // LATER page (Cloudflare 403s on uncached pagination URLs) must not sink
+        // the entries already collected: newest shows are on page 1, so degrade
+        // to what we have. (2026-07-12 incident: page 2 403'd every poll and the
+        // Grand Prix recap on page 1 never ingested.)
+        if (page === 1) return yield* Effect.fail(pageAttempt.failure);
+        yield* (
+          Effect.logWarning(
+            `[website] Scores page ${season}#${page} failed (${pageAttempt.failure}); continuing with ${entries.length} entries from earlier pages`
           )
-        : yield* (scrapeScoresListPageHtml(sql, season, page));
+        );
+        break;
+      }
+      const pageResult = pageAttempt.success;
       if (totalPages === undefined) {
         totalPages = pageResult.totalPages;
         yield* (
@@ -613,6 +634,14 @@ const collectScoreListEntries = (
       pagesScraped += 1;
       newEntries.forEach((entry) => seen.add(entry.id));
       entries.push(...newEntries);
+      if (wanted && [...wanted].every((slug) => seen.has(slug))) {
+        yield* (
+          Effect.logInfo(
+            `[website] all ${wanted.size} targeted slug(s) found by page ${page}; stopping pagination`
+          )
+        );
+        break;
+      }
       page += 1;
     }
 
@@ -629,7 +658,9 @@ export const scrapeWebsiteRecapsForSeason = (
     const concurrency = Math.max(1, Math.min(options.concurrency ?? 2, 8));
     const ingest = options.ingest !== false;
 
-    const entriesResult = yield* (collectScoreListEntries(sql, season, maxPages));
+    const entriesResult = yield* (
+      collectScoreListEntries(sql, season, maxPages, options.onlySlugs)
+    );
     yield* (
       Effect.logInfo(
         `[website] ${season} score list pages scraped: ${entriesResult.pagesScraped}`
