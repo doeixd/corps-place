@@ -50,6 +50,31 @@ echo "[refresh-prod-read-model] emitting into /data/corps-place/read-model.db (A
 vp exec tsx scripts/emitReadModel.ts --out /data/corps-place/read-model.db "$@"
 echo "[refresh-prod-read-model] done — server hot-swaps within ~5s."
 
+# Purge the Cloudflare edge cache after every publish so the 5-min HTML/data
+# Cache Rules never serve pre-publish pages (a signed-out visitor could
+# otherwise see stale /rankings or event scores for up to the TTL). Purge
+# everything: hashed assets re-warm instantly and /api/media refills from the
+# on-disk cache, so the blast radius is one cold request per page/asset.
+# Non-fatal — a failed purge just falls back to the 5-min TTL. Wait ~8s first
+# so the server's pointer poll (~5s) has hot-swapped before fresh SSRs re-cache.
+CF_TOKEN="$(grep -E '^CLOUDFLARE_API_TOKEN=' "$repo_root/.env" 2>/dev/null | head -1 | cut -d= -f2-)"
+CF_ZONE="c710acd5ee534fd065c5c0b5b3e4316d" # drumcorps.app
+if [ -n "$CF_TOKEN" ]; then
+  sleep 8
+  purge_ok=$(curl -s -m 15 -X POST \
+    -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" \
+    --data '{"purge_everything":true}' \
+    "https://api.cloudflare.com/client/v4/zones/$CF_ZONE/purge_cache" |
+    grep -oE '"success": ?true' || true)
+  if [ -n "$purge_ok" ]; then
+    echo "[refresh-prod-read-model] Cloudflare edge cache purged."
+  else
+    echo "[refresh-prod-read-model] Cloudflare purge FAILED (non-fatal; 5-min TTL applies)."
+  fi
+else
+  echo "[refresh-prod-read-model] CLOUDFLARE_API_TOKEN not found — purge skipped."
+fi
+
 # Always travel the product-image bytes WITH the read-model — otherwise newly
 # ingested products reference media-cache keys whose bytes aren't on prod yet and
 # render as broken images (prod has .skip-r2-pull; /api/media can't fetch-on-miss
