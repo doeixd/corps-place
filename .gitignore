@@ -80,3 +80,10 @@ data/yearbook/Drum Corps International 2012 Yearbook.pdf
 data/yearbook/Drum Corps International 2015 Yearbook.pdf
 data/yearbook/*PubHTML5.pdf
 data/deletions/
+
+# Local-only operational files (must never be committed)
+.coolify-deploy-token
+dci-scraping-export/
+dci-scraping-export.zip
+sdk/results/
+sdk/.allage-backfill-before.txt

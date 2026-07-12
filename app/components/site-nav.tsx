@@ -27,15 +27,16 @@ const CORPS_NAV_ITEMS = [
   { to: '/scores', label: 'Scores', icon: LicenseIcon, exact: false },
   { to: '/corps', label: 'Corps', icon: UserMultipleIcon, exact: false },
   { to: '/rankings', label: 'Rankings', icon: Analytics01Icon, exact: false },
-  // VS stays off the mobile bottom bar: 9 tabs don't fit a phone, and the
-  // compare tool is reachable from every corps page. Desktop rail shows all.
-  { to: '/vs', label: 'VS', icon: JusticeScale01Icon, exact: false, mobileHidden: true },
+  { to: '/vs', label: 'VS', icon: JusticeScale01Icon, exact: false },
   { to: '/shop', label: 'Shop', icon: GiftIcon, exact: false },
   // Fantasy DCI — only when the feature flag is on (plan §0.5 #9).
   ...(FANTASY_ENABLED
     ? [{ to: '/fantasy', label: 'Fantasy', icon: RankingIcon, exact: false } as const]
     : []),
-  { to: '/account', label: 'Account', icon: UserCircleIcon, exact: false },
+  // Account shows only for (probably) signed-in visitors — see signedInOnly
+  // filtering below; signed-out users reach /account via the footer or any
+  // sign-in button, and mobile keeps a tab slot free.
+  { to: '/account', label: 'Account', icon: UserCircleIcon, exact: false, signedInOnly: true },
 ] as const;
 
 // PageantryJobs gets its own sections — never the corps nav (different site).
@@ -54,6 +55,8 @@ type NavItem = {
   exact: boolean;
   /** Omit from the mobile bottom tab bar (space-capped) — desktop shows all. */
   mobileHidden?: boolean;
+  /** Show only when the session-cookie hint says the visitor is signed in. */
+  signedInOnly?: boolean;
 };
 
 const NAV_ITEMS_BY_BRAND: Record<Brand, readonly NavItem[]> = {
@@ -88,12 +91,14 @@ function NavIcon({
  * desktop (icon rail on md, icon + label from xl) and bottom tabs on mobile.
  * The matching content offsets live in the root layout's <main>.
  */
-export function SiteNav() {
+export function SiteNav({ signedIn = false }: { signedIn?: boolean }) {
   // Brand-aware: PageantryJobs and DrumCorps.app share the nav chrome but never
   // each other's sections, logo, or name. readBrand() is isomorphic (host-based)
   // so this resolves identically on SSR and hydration.
   const brand = useBrand();
-  const navItems = NAV_ITEMS_BY_BRAND[brand];
+  // The signed-in gate uses the SSR cookie hint (same value server+client, so
+  // no hydration mismatch); a wrong hint only costs a nav item, never access.
+  const navItems = NAV_ITEMS_BY_BRAND[brand].filter((i) => !i.signedInOnly || signedIn);
   const mobileItems = navItems.filter((i) => !i.mobileHidden);
   const identity = BRAND_CONFIG[brand];
 

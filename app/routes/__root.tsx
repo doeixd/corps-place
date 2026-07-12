@@ -527,7 +527,7 @@ function RootComponent() {
         <MotionConfig reducedMotion={REDUCED_MOTION}>
           <NavigationProgressBar />
             <ThemeToggle className="fixed top-4 right-4 z-50" ssrTheme={theme ?? undefined} />
-            <SiteNav />
+            <SiteNav signedIn={signedInHint} />
             <Suspense fallback={null}>
               <InstallPrompt />
               {/* Only mount (and thus download) the consent gate + its better-auth
