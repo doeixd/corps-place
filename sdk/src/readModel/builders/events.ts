@@ -24,6 +24,13 @@ export type EventDirectoryRow = {
   location_state: string | null;
   venue_name: string | null;
   venue_address: string | null;
+  // Venue coordinates for the tour map (TOUR_MAP_PLAN M1), from event_venues
+  // (geocodeVenues.ts). Null when the venue isn't geocoded — map drops the pin,
+  // list keeps the row.
+  venue_latitude: number | null;
+  venue_longitude: number | null;
+  geocode_city: string | null;
+  geocode_state: string | null;
   event_image: string | null;
   event_image_thumb: string | null;
   buy_tickets: string | null;
@@ -303,13 +310,19 @@ export const buildEventsForSeason = async (
         GROUP BY event_slug
       ),
       venues AS (
-        -- One venue per event, name + address taken from the same row. SQLite
-        -- returns the other columns from the row holding MIN(venue_id), so the
-        -- pair stays consistent even when an event has multiple venue rows.
-        SELECT event_slug, name AS venue_name, address AS venue_address, MIN(venue_id)
-        FROM event_venues
-        WHERE event_slug IS NOT NULL
-        GROUP BY event_slug
+        -- One venue per event, all columns from the SAME row. Prefer a geocoded
+        -- row (an event can have several venue rows and MIN(venue_id) often
+        -- picked one without coordinates), then lowest venue_id for stability.
+        SELECT event_slug, name AS venue_name, address AS venue_address,
+               venue_latitude, venue_longitude, geocode_city, geocode_state
+        FROM (
+          SELECT ev.*, ROW_NUMBER() OVER (
+            PARTITION BY event_slug
+            ORDER BY (venue_latitude IS NULL), venue_id
+          ) AS rn
+          FROM event_venues ev
+          WHERE event_slug IS NOT NULL
+        ) WHERE rn = 1
       )
       SELECT
         eb.slug,
@@ -324,6 +337,10 @@ export const buildEventsForSeason = async (
         eb.location_state,
         v.venue_name,
         v.venue_address,
+        v.venue_latitude,
+        v.venue_longitude,
+        v.geocode_city,
+        v.geocode_state,
         eb.event_image,
         eb.event_image_thumb,
         cm.competition_slug,
@@ -466,6 +483,20 @@ export const buildAllEvents = async (
     prediction_counts AS (
       SELECT event_slug, COUNT(*) AS count, MAX(predicted_at) AS latest_prediction_at
       FROM model_event_prediction_runs GROUP BY event_slug
+    ),
+    venues AS (
+      -- One venue per event, all columns from the SAME row; geocoded rows
+      -- preferred (coordinates feed the corps tour map, TOUR_MAP_PLAN M1).
+      SELECT event_slug, name AS venue_name, address AS venue_address,
+             venue_latitude, venue_longitude, geocode_city, geocode_state
+      FROM (
+        SELECT ev.*, ROW_NUMBER() OVER (
+          PARTITION BY event_slug
+          ORDER BY (venue_latitude IS NULL), venue_id
+        ) AS rn
+        FROM event_venues ev
+        WHERE event_slug IS NOT NULL
+      ) WHERE rn = 1
     )
     SELECT
       eb.event_id,
@@ -479,6 +510,12 @@ export const buildAllEvents = async (
       eb.timezone,
       eb.location_city,
       eb.location_state,
+      v.venue_name,
+      v.venue_address,
+      v.venue_latitude,
+      v.venue_longitude,
+      v.geocode_city,
+      v.geocode_state,
       eb.event_image,
       eb.event_image_thumb,
       eb.buy_tickets,
@@ -501,6 +538,7 @@ export const buildAllEvents = async (
     LEFT JOIN schedule_counts sc ON sc.event_id = eb.event_id
     LEFT JOIN judge_counts jc ON jc.competition_slug = cm.competition_slug
     LEFT JOIN prediction_counts pr ON pr.event_slug = eb.slug
+    LEFT JOIN venues v ON v.event_slug = eb.slug
     ORDER BY
       eb.season DESC,
       eb.start_date ASC,

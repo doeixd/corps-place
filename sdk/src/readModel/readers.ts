@@ -45,10 +45,11 @@ import type {
   CorpsMerchTeaser,
 } from "./builders/merch.js";
 
-// rm_events → EventDirectoryRow. `includeVenue` mirrors which builder we stand in
-// for: buildEventsForSeason selects venues; buildAllEvents does not. Keeping the
-// distinction makes the reader byte-identical to the builder it replaces.
-const rmEventRow = (r: any, includeVenue: boolean): EventDirectoryRow => ({
+// rm_events → EventDirectoryRow. `includeVenue` used to mirror the builder
+// split (buildAllEvents omitted venues); since TOUR_MAP_PLAN M1 both builders
+// select venues + coordinates, so the flag is retained for signature stability
+// but venue fields are always included.
+const rmEventRow = (r: any, _includeVenue: boolean): EventDirectoryRow => ({
   event_id: r.event_id,
   season: r.season ?? undefined,
   slug: r.slug,
@@ -61,9 +62,12 @@ const rmEventRow = (r: any, includeVenue: boolean): EventDirectoryRow => ({
   timezone: r.timezone,
   location_city: r.location_city,
   location_state: r.location_state,
-  ...(includeVenue
-    ? { venue_name: r.venue_name, venue_address: r.venue_address }
-    : { venue_name: null, venue_address: null }),
+  venue_name: r.venue_name ?? null,
+  venue_address: r.venue_address ?? null,
+  venue_latitude: r.venue_latitude == null ? null : Number(r.venue_latitude),
+  venue_longitude: r.venue_longitude == null ? null : Number(r.venue_longitude),
+  geocode_city: r.geocode_city ?? null,
+  geocode_state: r.geocode_state ?? null,
   event_image: r.event_image,
   event_image_thumb: r.event_image_thumb,
   buy_tickets: r.buy_tickets ?? null,

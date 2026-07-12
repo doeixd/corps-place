@@ -130,7 +130,7 @@ import {
 // v21: rm_corps gains corps_photo (cover/hero URL) so /corps can background-preload
 //      covers → the corps detail page's hero image renders instantly.
 // v22: rm_events gains buy_tickets so the Event/SportsEvent JSON-LD can emit `offers`.
-const SCHEMA_VERSION = 22;
+const SCHEMA_VERSION = 23; // 23: rm_events + venue coordinates (TOUR_MAP_PLAN M1)
 
 type Section =
   | "events"
@@ -298,6 +298,7 @@ CREATE TABLE rm_events (
   event_id TEXT PRIMARY KEY, slug TEXT, season TEXT, name TEXT, event_name TEXT,
   start_date TEXT, start_time TEXT, web_start_time TEXT, edt_start_time TEXT, timezone TEXT,
   location_city TEXT, location_state TEXT, venue_name TEXT, venue_address TEXT,
+  venue_latitude REAL, venue_longitude REAL, geocode_city TEXT, geocode_state TEXT,
   event_image TEXT, event_image_thumb TEXT, buy_tickets TEXT, competition_slug TEXT,
   scores_released INTEGER, recap_released INTEGER, lineup_entries INTEGER,
   all_times_present INTEGER, participant_entries INTEGER, schedule_entries INTEGER,
@@ -690,6 +691,10 @@ export const runEmit = async (args: Args) => {
           e.location_state,
           s?.venue_name ?? e.venue_name ?? null,
           s?.venue_address ?? e.venue_address ?? null,
+          e.venue_latitude ?? null,
+          e.venue_longitude ?? null,
+          e.geocode_city ?? null,
+          e.geocode_state ?? null,
           e.event_image ?? null,
           e.event_image_thumb ?? null,
           e.buy_tickets ?? null,
@@ -726,6 +731,10 @@ export const runEmit = async (args: Args) => {
           "location_state",
           "venue_name",
           "venue_address",
+          "venue_latitude",
+          "venue_longitude",
+          "geocode_city",
+          "geocode_state",
           "event_image",
           "event_image_thumb",
           "buy_tickets",
@@ -913,6 +922,15 @@ export const runEmit = async (args: Args) => {
     }
 
     log("building corps detail / season-points / appearances…");
+    // SECTION COUPLING: appearances key off the all-events list, which the
+    // events section builds. A `--only corps` emit (without events) used to
+    // inherit an EMPTY allEvents and silently write 0 appearance rows
+    // (2026-07-12 incident: published a corps rebuild with empty appearance
+    // shards; caught by the row count, rolled back via the A/B pointer).
+    if (allEvents.length === 0) {
+      log("  (events section skipped — building all-events index for appearance keys)");
+      allEvents = await buildAllEvents(src);
+    }
     const eventIdBySlug = new Map(
       allEvents.map((e) => [e.slug, e.event_id ?? e.slug]),
     );
