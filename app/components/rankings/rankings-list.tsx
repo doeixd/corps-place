@@ -72,7 +72,10 @@ function Row({
             : 'hover:bg-muted/50'
       )}
     >
-      <span className="w-7 shrink-0 text-right font-mono text-sm tabular-nums text-text-secondary">
+      {/* w-6 fits the widest real rank (2 digits — 58 corps max across all
+          seasons) with right-alignment keeping logos flush; w-7 left ~a third
+          of the column as dead space beside single-digit ranks. */}
+      <span className="w-6 shrink-0 text-right font-mono text-sm tabular-nums text-text-secondary">
         {rank}
       </span>
       <CorpsLogo
