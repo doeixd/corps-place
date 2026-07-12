@@ -1,6 +1,8 @@
 # Corps Tour Map — implementation plan
 
 Status: planned (2026-06-22). Not started. Research verified against codebase + DB.
+2026-07-12: §Corps-site enrichment added — 15 corps websites surveyed live (3
+agents); source matrix, ingestion tiers, and map integration below.
 
 ## Goal
 
@@ -163,3 +165,104 @@ dropping rows without lat/lng (kept in the existing appearances list, just not p
 - Standalone `/tour` explorer (compare multiple corps' tours, multi-season).
 - Animated auto-play with play/pause.
 - Cluster/zoom-to-region interaction for dense northeast legs.
+
+---
+
+# Corps-site enrichment (v2) — housing, rehearsal & free-day stops
+
+Surveyed 2026-07-12: 15 World Class corps websites explored live. The DCI feed
+only gives SHOW stops; corps sites fill the gaps between them — rehearsal days,
+housing sites, free days, parades — which is what makes a tour map read as a
+*tour* instead of a scatter of shows.
+
+## Source matrix (verified live, July 2026)
+
+| Corps | 2026 schedule | Housing/rehearsal data | Format | Feed |
+|---|---|---|---|---|
+| Boston Crusaders | bostoncrusaders.org/schedule/ | ✅ **Rehearsal Location column in the table** (William Allen HS, Muskogee HS, …) + free days | HTML table (easiest of all) | — |
+| Carolina Crown | carolinacrown.org/calendar-list | ✅ Rehearsal sites as calendar items, "HOUSING: …" lines, "Free Day: San Antonio River Walk" | HTML cards (list view; grid is JS) | per-event .ics + Google Cal links |
+| Blue Devils | bluedevils.org …&module=tour | ✅ Housing w/ full street address + full day schedule on `events/details.php?eventID=N` | server-rendered PHP; N+1 detail fetches | — |
+| Blue Stars | bluestars.org/2026-season | ✅ Housing/rehearsal **Google Sheet** + "Rehearsals are free and open to the public unless otherwise communicated" | HTML + assets | ✅ **public ICS, verified 200, 604 VEVENTs**: calendar.google.com/calendar/ical/schedule%40bluestars.org/public/basic.ics (filter: includes 2017+ history, Zoom links) |
+| Troopers | troopersdrumcorps.org/see-the-corps | ✅ **Dedicated housing-locations page** (with "check in first" + "do not ship" disclaimers) | Wix, JS-rendered — needs browser | — |
+| Colts | colts.org/schedule-colts | ◐ Move-in, rehearsal *cities*, explicit FREE DAY rows; no site names. Volunteer Google Sheet may name sites | HTML month tables | volunteer Google Sheet |
+| Cavaliers | cavaliers.org/tickets (schedule JS-rendered) | ◐ housing-info PDF: cavaliers.org/s/cavaliers_housing_information.pdf | Squarespace, needs browser for schedule | — |
+| SCV | scvanguard.org/events-calendar/ | ❌ shows only | Tribe Events | ✅ ICS: `?post_type=tribe_events&ical=1` |
+| Phantom Regiment | regiment.org/events/list/ | ❌ shows only (street addresses incl.) | Tribe Events | ✅ ICS: `?post_type=tribe_events&ical=1` |
+| Bluecoats | bluecoats.com/events | ❌ explicit; daytime venue-addressed entries are implicit rehearsal days | Squarespace cards (static) | probe `?format=ical`/`?format=json` |
+| Madison Scouts | forwardperformingarts.org/madison-scouts/events | ❌ housing; ✅ **parades/non-DCI local events** DCI doesn't list | plain HTML list | — |
+| Crossmen | tour page = JS shell → redirects to dci.org/events/?corp=66888 | ❌ | delegates to DCI SPA | — |
+| Blue Knights | ascendperformingarts.org | ❌ (calendar JS-rendered, hosted events only) | needs browser | — |
+| Mandarins | hiatus 2026 (returning 2027; 2025 page named rehearsal schools) | n/a | — | — |
+| The Cadets | **defunct** (Ch. 7, Apr 2024) — domain parked | n/a | — | — |
+
+Cross-cutting: `dci.org/events/?corp=<id>` is the shared canonical backend
+(Crossmen 66888, Blue Stars 66874, …) — reverse-engineering that once covers
+every corps' SHOW list, but never housing.
+
+## Data model
+
+New relational table `corps_tour_stops`:
+`(corps_key, season, date, kind, name, venue_name, address, city, state,
+lat, lng, start_time, end_time, open_to_public, source_url, source_kind,
+raw_json, scraped_at)` with `kind ∈ show | rehearsal | housing | free_day |
+parade | move_in`. Read-model: `rm_corps_tour` detail shard per corps+season
+(joins DCI show stops with enrichment stops, deduped — see below). The v1
+`TourStop` type gains `kind` + `openToPublic`.
+
+Dedupe rule: enrichment SHOW entries that match a DCI event (same date +
+fuzzy city/venue) are dropped in favor of the DCI row (which has results,
+slugs, links); everything else (rehearsal/housing/free-day/parade) is additive.
+Housing lines attached to a show entry (Crown's "HOUSING: X") become a
+separate `housing` stop on the same date.
+
+## Ingestion tiers (per-corps adapters, one nightly/weekly cron in-season)
+
+- **T1 — feeds (cheapest, do first):** Blue Stars ICS (filter by season window
+  + event type), SCV + Phantom Tribe ICS, Crown per-event ICS, Bluecoats
+  Squarespace `?format=json` probe. Standard node-ical parse; LOCATION carries
+  addresses.
+- **T2 — static HTML scrape:** Boston (the Rehearsal Location table — highest
+  housing value per line of code), Crown calendar-list cards, Madison list
+  (parades!), Colts month tables (free days/move-in), Blue Devils list +
+  bounded N+1 `details.php` fetches (housing addresses + day schedules).
+- **T3 — browser-rendered (reuse BrowserbaseService):** Troopers see-the-corps
+  + housing-locations, Cavaliers tickets schedule, Blue Knights calendar.
+- **T4 — one-off assets, manual-ish cadence:** Cavaliers housing PDF, Blue
+  Stars + Colts Google Sheets (public CSV export URLs).
+- Geocode via the existing `geocodeVenues.ts` pipeline (cache by address);
+  stops that fail geocoding keep city-level coordinates (geocode the city).
+
+## Map integration
+
+- Pin taxonomy: show = solid corps-color pin (v1); rehearsal/housing = smaller
+  hollow pin; free day = star; parade = flag. Route legs to non-show stops
+  drawn dashed. Timeline scrubber includes all stop kinds.
+- "Rehearsal & housing stops" is a per-corps TOGGLE, shown only when
+  enrichment exists for that corps+season (coverage varies wildly — matrix
+  above). Tooltip shows source + scraped_at ("via bostoncrusaders.org,
+  checked Jul 12").
+- Open-rehearsal stops (Blue Stars policy, BD published day schedules) get an
+  "open to the public" badge — that's the fan-facing payoff.
+
+## Editorial/safety policy (decide before shipping)
+
+Housing sites are schools where minors sleep. The corps publish them for fans
+and volunteers, but aggregating them deserves care:
+- Default: show `housing` stops at **city level** (no street address) with a
+  link to the corps' own page for details; show full venue only for stops the
+  corps explicitly opens to the public (open rehearsals, Blue Stars policy).
+- Honor the source disclaimers (Troopers: "check that this information is
+  current") — always render the source link + last-checked date.
+- Never surface housing in search/SEO surfaces; the map section is enough.
+
+## Milestones (v2, after v1 M1–M5)
+
+- **M6** — `corps_tour_stops` table + T1 feed adapters (Blue Stars/SCV/
+  Phantom/Crown) + `rm_corps_tour` emit section + dedupe-vs-DCI tests.
+- **M7** — T2 HTML adapters (Boston, Crown cards, Madison, Colts, Blue Devils
+  incl. details) + geocoding + refresh cron (`refresh-tour-stops.sh`, weekly
+  in-season) with per-corps failure isolation + ingest_runs recording.
+- **M8** — map layer: kind-styled pins, dashed legs, toggle, source
+  attribution, open-to-public badge; city-level housing policy.
+- **M9** — T3 browser adapters (Troopers, Cavaliers, Blue Knights) + T4
+  assets; per-corps coverage table on the admin jobs page.
