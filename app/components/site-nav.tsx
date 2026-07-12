@@ -15,6 +15,7 @@ import {
   Search01Icon,
   AddCircleIcon,
   DashboardSquare01Icon,
+  UserCircleIcon,
 } from '@/components/icons/generated';
 import { FANTASY_ENABLED } from '@/lib/fantasy/flag';
 import { BRAND_CONFIG, type Brand } from '@/lib/brand';
@@ -32,6 +33,7 @@ const CORPS_NAV_ITEMS = [
   ...(FANTASY_ENABLED
     ? [{ to: '/fantasy', label: 'Fantasy', icon: RankingIcon, exact: false } as const]
     : []),
+  { to: '/account', label: 'Account', icon: UserCircleIcon, exact: false },
 ] as const;
 
 // PageantryJobs gets its own sections — never the corps nav (different site).

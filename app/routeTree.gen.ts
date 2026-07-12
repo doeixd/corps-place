@@ -28,6 +28,7 @@ import { Route as FantasyIndexRouteImport } from './routes/fantasy/index'
 import { Route as EventsIndexRouteImport } from './routes/events/index'
 import { Route as CorpsIndexRouteImport } from './routes/corps/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as VsSlugRouteImport } from './routes/vs.$slug'
 import { Route as StaffPersonIdRouteImport } from './routes/staff/$personId'
 import { Route as ShopStoresRouteImport } from './routes/shop/stores'
@@ -65,6 +66,10 @@ import { Route as AdminCorpsColorsRouteImport } from './routes/admin/corps-color
 import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
+import { Route as AccountSettingsRouteImport } from './routes/account/settings'
+import { Route as AccountLeaguesRouteImport } from './routes/account/leagues'
+import { Route as AccountBookmarksRouteImport } from './routes/account/bookmarks'
+import { Route as AccountBallotsRouteImport } from './routes/account/ballots'
 import { Route as PredictFinalsIndexRouteImport } from './routes/predict/finals.index'
 import { Route as PredictBallotIndexRouteImport } from './routes/predict/ballot.index'
 import { Route as FantasySlugIndexRouteImport } from './routes/fantasy/$slug/index'
@@ -216,6 +221,11 @@ const CorpsIndexRoute = CorpsIndexRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VsSlugRoute = VsSlugRouteImport.update({
@@ -401,6 +411,26 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
 const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   id: '/admin/analytics',
   path: '/admin/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountSettingsRoute = AccountSettingsRouteImport.update({
+  id: '/account/settings',
+  path: '/account/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountLeaguesRoute = AccountLeaguesRouteImport.update({
+  id: '/account/leagues',
+  path: '/account/leagues',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountBookmarksRoute = AccountBookmarksRouteImport.update({
+  id: '/account/bookmarks',
+  path: '/account/bookmarks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountBallotsRoute = AccountBallotsRouteImport.update({
+  id: '/account/ballots',
+  path: '/account/ballots',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PredictFinalsIndexRoute = PredictFinalsIndexRouteImport.update({
@@ -761,6 +791,10 @@ export interface FileRoutesByFullPath {
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRouteWithChildren
+  '/account/ballots': typeof AccountBallotsRoute
+  '/account/bookmarks': typeof AccountBookmarksRoute
+  '/account/leagues': typeof AccountLeaguesRoute
+  '/account/settings': typeof AccountSettingsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
@@ -798,6 +832,7 @@ export interface FileRoutesByFullPath {
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
   '/vs/$slug': typeof VsSlugRoute
+  '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
   '/corps': typeof CorpsIndexRoute
   '/events': typeof EventsIndexRoute
@@ -838,6 +873,10 @@ export interface FileRoutesByTo {
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRouteWithChildren
+  '/account/ballots': typeof AccountBallotsRoute
+  '/account/bookmarks': typeof AccountBookmarksRoute
+  '/account/leagues': typeof AccountLeaguesRoute
+  '/account/settings': typeof AccountSettingsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
@@ -875,6 +914,7 @@ export interface FileRoutesByTo {
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
   '/vs/$slug': typeof VsSlugRoute
+  '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
   '/corps': typeof CorpsIndexRoute
   '/events': typeof EventsIndexRoute
@@ -916,6 +956,10 @@ export interface FileRoutesById {
   '/rankings': typeof RankingsRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/vs': typeof VsRouteWithChildren
+  '/account/ballots': typeof AccountBallotsRoute
+  '/account/bookmarks': typeof AccountBookmarksRoute
+  '/account/leagues': typeof AccountLeaguesRoute
+  '/account/settings': typeof AccountSettingsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRoute
@@ -953,6 +997,7 @@ export interface FileRoutesById {
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
   '/vs/$slug': typeof VsSlugRoute
+  '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/corps/': typeof CorpsIndexRoute
   '/events/': typeof EventsIndexRoute
@@ -995,6 +1040,10 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/terms-of-service'
     | '/vs'
+    | '/account/ballots'
+    | '/account/bookmarks'
+    | '/account/leagues'
+    | '/account/settings'
     | '/admin/analytics'
     | '/admin/audit'
     | '/admin/content'
@@ -1032,6 +1081,7 @@ export interface FileRouteTypes {
     | '/shop/stores'
     | '/staff/$personId'
     | '/vs/$slug'
+    | '/account'
     | '/admin'
     | '/corps'
     | '/events'
@@ -1072,6 +1122,10 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/terms-of-service'
     | '/vs'
+    | '/account/ballots'
+    | '/account/bookmarks'
+    | '/account/leagues'
+    | '/account/settings'
     | '/admin/analytics'
     | '/admin/audit'
     | '/admin/content'
@@ -1109,6 +1163,7 @@ export interface FileRouteTypes {
     | '/shop/stores'
     | '/staff/$personId'
     | '/vs/$slug'
+    | '/account'
     | '/admin'
     | '/corps'
     | '/events'
@@ -1149,6 +1204,10 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/terms-of-service'
     | '/vs'
+    | '/account/ballots'
+    | '/account/bookmarks'
+    | '/account/leagues'
+    | '/account/settings'
     | '/admin/analytics'
     | '/admin/audit'
     | '/admin/content'
@@ -1186,6 +1245,7 @@ export interface FileRouteTypes {
     | '/shop/stores'
     | '/staff/$personId'
     | '/vs/$slug'
+    | '/account/'
     | '/admin/'
     | '/corps/'
     | '/events/'
@@ -1227,6 +1287,10 @@ export interface RootRouteChildren {
   RankingsRoute: typeof RankingsRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   VsRoute: typeof VsRouteWithChildren
+  AccountBallotsRoute: typeof AccountBallotsRoute
+  AccountBookmarksRoute: typeof AccountBookmarksRoute
+  AccountLeaguesRoute: typeof AccountLeaguesRoute
+  AccountSettingsRoute: typeof AccountSettingsRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminContentRoute: typeof AdminContentRoute
@@ -1263,6 +1327,7 @@ export interface RootRouteChildren {
   ShopCartRoute: typeof ShopCartRoute
   ShopStoresRoute: typeof ShopStoresRoute
   StaffPersonIdRoute: typeof StaffPersonIdRoute
+  AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
   CorpsIndexRoute: typeof CorpsIndexRoute
   EventsIndexRoute: typeof EventsIndexRoute
@@ -1739,6 +1804,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/': {
+      id: '/account/'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vs/$slug': {
       id: '/vs/$slug'
       path: '/$slug'
@@ -1996,6 +2068,34 @@ declare module '@tanstack/react-router' {
       path: '/admin/analytics'
       fullPath: '/admin/analytics'
       preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/settings': {
+      id: '/account/settings'
+      path: '/account/settings'
+      fullPath: '/account/settings'
+      preLoaderRoute: typeof AccountSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/leagues': {
+      id: '/account/leagues'
+      path: '/account/leagues'
+      fullPath: '/account/leagues'
+      preLoaderRoute: typeof AccountLeaguesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/bookmarks': {
+      id: '/account/bookmarks'
+      path: '/account/bookmarks'
+      fullPath: '/account/bookmarks'
+      preLoaderRoute: typeof AccountBookmarksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/ballots': {
+      id: '/account/ballots'
+      path: '/account/ballots'
+      fullPath: '/account/ballots'
+      preLoaderRoute: typeof AccountBallotsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/predict/finals/': {
@@ -2525,6 +2625,10 @@ const rootRouteChildren: RootRouteChildren = {
   RankingsRoute: RankingsRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   VsRoute: VsRouteWithChildren,
+  AccountBallotsRoute: AccountBallotsRoute,
+  AccountBookmarksRoute: AccountBookmarksRoute,
+  AccountLeaguesRoute: AccountLeaguesRoute,
+  AccountSettingsRoute: AccountSettingsRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminContentRoute: AdminContentRoute,
@@ -2561,6 +2665,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShopCartRoute: ShopCartRoute,
   ShopStoresRoute: ShopStoresRoute,
   StaffPersonIdRoute: StaffPersonIdRoute,
+  AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
   CorpsIndexRoute: CorpsIndexRoute,
   EventsIndexRoute: EventsIndexRoute,
