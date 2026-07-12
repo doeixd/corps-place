@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { themeStore, type ThemePreference } from '@/stores/theme-store';
+import { timeDisplayStore, useTimeDisplayMode } from '@/stores/time-display-store';
 import { useFavoriteCorps } from '@/stores/favorite-corps-store';
 import { buildSeo } from '@/lib/seo';
 
@@ -59,6 +60,7 @@ function AccountSettings() {
   const router = useRouter();
   const favorite = useFavoriteCorps();
   const themePreference = useSelector(themeStore, (s) => s.context.preference);
+  const timeDisplay = useTimeDisplayMode();
 
   const [name, setName] = useState(overview.identity?.name ?? '');
   const [savingName, setSavingName] = useState(false);
@@ -178,6 +180,29 @@ function AccountSettings() {
             <Button variant="outline" onClick={detectTz} disabled={savingTz}>
               {savingTz ? 'Saving…' : saved === 'timezone' ? 'Saved ✓' : 'Auto-detect'}
             </Button>
+          </div>
+        </SectionCard>
+
+        <SectionCard
+          title="Event times"
+          description="Schedules show venue-local times by default — the convention at shows. Switch to your timezone if you follow from home."
+        >
+          <div className="flex gap-2">
+            {(
+              [
+                { value: 'venue', label: 'Venue time' },
+                { value: 'local', label: 'My timezone' },
+              ] as const
+            ).map((o) => (
+              <Button
+                key={o.value}
+                variant={timeDisplay === o.value ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => timeDisplayStore.trigger.set({ mode: o.value })}
+              >
+                {o.label}
+              </Button>
+            ))}
           </div>
         </SectionCard>
 

@@ -425,6 +425,7 @@ export const deleteMyAccount = createServerFn({ method: 'POST' })
           args: [actor.userId, email],
         },
         { sql: 'DELETE FROM fantasy_push_subscriptions WHERE user_id = ?', args: [actor.userId] },
+        { sql: 'DELETE FROM user_preferences WHERE user_id = ?', args: [actor.userId] },
         {
           sql: `UPDATE fantasy_members SET status = 'left' WHERE user_id = ?`,
           args: [actor.userId],
@@ -437,6 +438,58 @@ export const deleteMyAccount = createServerFn({ method: 'POST' })
       ],
       'write'
     );
+    return { ok: true as const };
+  });
+
+// ── Roaming preferences (USER_PROFILE_PLAN Phase 3 / D4) ─────────────────────
+// One JSON blob per user. The client (account-sync) merges server↔local on
+// sign-in and pushes debounced updates; the server just stores it. Size-bounded
+// so a hostile client can't grow the row unboundedly.
+
+const PREFS_MAX_BYTES = 256 * 1024;
+
+export const getMyPreferences = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ signedIn: boolean; prefsJson: string | null; updatedAt: string | null }> => {
+    const { getActor } = await import('@/lib/authz');
+    const actor = await getActor(getWebRequest());
+    if (!actor) return { signedIn: false, prefsJson: null, updatedAt: null };
+    const { getContributionsDb } = await import('@/lib/contributions-db');
+    const db = await getContributionsDb();
+    const res = await db.execute({
+      sql: 'SELECT prefs_json, updated_at FROM user_preferences WHERE user_id = ? LIMIT 1',
+      args: [actor.userId],
+    });
+    const row = res.rows[0];
+    return {
+      signedIn: true,
+      prefsJson: row?.prefs_json == null ? null : String(row.prefs_json),
+      updatedAt: row?.updated_at == null ? null : String(row.updated_at),
+    };
+  }
+);
+
+export const saveMyPreferences = createServerFn({ method: 'POST' })
+  .validator((d: unknown) =>
+    v.parse(v.object({ prefsJson: v.pipe(v.string(), v.maxLength(PREFS_MAX_BYTES)) }), d)
+  )
+  .handler(async ({ data }) => {
+    const { getActor } = await import('@/lib/authz');
+    const actor = await getActor(getWebRequest());
+    if (!actor) throw new Error('UNAUTHENTICATED');
+    // Must be valid JSON (defends the read path; content is client-owned).
+    try {
+      JSON.parse(data.prefsJson);
+    } catch {
+      throw new Error('INVALID_JSON');
+    }
+    const { getContributionsDb } = await import('@/lib/contributions-db');
+    const db = await getContributionsDb();
+    await db.execute({
+      sql: `INSERT INTO user_preferences (user_id, prefs_json, updated_at) VALUES (?, ?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET prefs_json = excluded.prefs_json,
+                                               updated_at = excluded.updated_at`,
+      args: [actor.userId, data.prefsJson, new Date().toISOString()],
+    });
     return { ok: true as const };
   });
 

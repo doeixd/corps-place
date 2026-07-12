@@ -651,6 +651,16 @@ const SCHEMA = [
    )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_score_notify_uniq ON score_notify_subscriptions (target_kind, target_slug, email)`,
 
+  // Account-synced device preferences (USER_PROFILE_PLAN Phase 3 / D4): one JSON
+  // blob per user holding roaming copies of device-local state (favorite corps,
+  // shop bookmarks, display prefs). Cookies/localStorage stay the fast path;
+  // this is the cross-device backup the client merges from on sign-in.
+  `CREATE TABLE IF NOT EXISTS user_preferences (
+     user_id    TEXT PRIMARY KEY,
+     prefs_json TEXT NOT NULL,
+     updated_at TEXT NOT NULL
+   )`,
+
   // Per-device Web Push subscriptions for "notify me of scores". Push is
   // device-based, so unlike fantasy_push_subscriptions (keyed by user_id) these
   // are keyed by endpoint and tie back to score_notify_subscriptions by email

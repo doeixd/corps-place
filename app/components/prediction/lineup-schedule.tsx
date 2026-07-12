@@ -25,6 +25,8 @@ import {
   Ticket01Icon,
 } from '@/components/icons/generated';
 import { dciLinks } from '@/lib/dci-links';
+import { useTimeDisplayMode, timeDisplayStore } from '@/stores/time-display-store';
+import { venueZoneFromAbbrev, toViewerLocalTime, viewerZoneLabel } from '@/lib/venue-time';
 import type { ShowInfoSummary } from '@sdk/src/readModel/builders/shows.js';
 import { getShowPreviews, type ShowPreviewData } from '@/lib/server-fns/contrib';
 import { LineupRowExpanded } from '@/components/contrib/lineup-row-expanded';
@@ -201,7 +203,9 @@ export function LineupSchedule({
   const ticketsHref = event?.buy_tickets || null;
 
   // Schedule times are venue-local; DCI's web start time carries the zone
-  // abbreviation (e.g. "5:45 PM CT"), so surface it when present.
+  // abbreviation (e.g. "5:45 PM CT"), so surface it when present — and when the
+  // viewer opted into "my timezone" (account settings / the toggle here) and the
+  // venue zone is resolvable, convert each row's time to the viewer's zone.
   const hasTimes = rows.some((r) => r.time);
   const tzAbbrev = event?.web_start_time?.trim().match(/\b([A-Z]{2,4})$/)?.[1] ?? null;
   const tzLabel = tzAbbrev
@@ -209,11 +213,22 @@ export function LineupSchedule({
         tzAbbrev
       ]
     : null;
+  const displayMode = useTimeDisplayMode();
+  const venueZone = venueZoneFromAbbrev(tzAbbrev);
+  const showViewerLocal = displayMode === 'local' && !!venueZone;
+  const displayTime = (time: string | undefined): string | undefined => {
+    if (!time || !showViewerLocal) return time;
+    return toViewerLocalTime(event?.start_date, time, venueZone) ?? time;
+  };
   const tzNote = hasTimes
-    ? tzAbbrev
-      ? `Times are ${tzLabel ? `${tzLabel} (${tzAbbrev})` : tzAbbrev}, local to the venue`
-      : 'Times are local to the venue'
+    ? showViewerLocal
+      ? `Times shown in your timezone${viewerZoneLabel() ? ` (${viewerZoneLabel()})` : ''}`
+      : tzAbbrev
+        ? `Times are ${tzLabel ? `${tzLabel} (${tzAbbrev})` : tzAbbrev}, local to the venue`
+        : 'Times are local to the venue'
     : null;
+  // Offer the toggle only when a conversion is actually possible.
+  const canToggleTz = hasTimes && !!venueZone;
 
   return (
     <div className="space-y-4 pt-6">
@@ -221,7 +236,27 @@ export function LineupSchedule({
         <div className="pl-[1px]">
           <h2 className="text-lg font-medium text-text-primary">Lineup</h2>
           <Show when={tzNote}>
-            {(note) => <p className="text-xs text-muted-foreground">{note}</p>}
+            {(note) => (
+              <p className="text-xs text-muted-foreground">
+                {note}
+                {canToggleTz ? (
+                  <>
+                    {' · '}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        timeDisplayStore.trigger.set({
+                          mode: showViewerLocal ? 'venue' : 'local',
+                        })
+                      }
+                      className="underline decoration-dotted underline-offset-2 transition-colors hover:text-foreground"
+                    >
+                      {showViewerLocal ? 'show venue time' : 'show my time'}
+                    </button>
+                  </>
+                ) : null}
+              </p>
+            )}
           </Show>
         </div>
         <Show when={!!(mapsHref || dciEventHref || ticketsHref)}>
@@ -320,7 +355,7 @@ export function LineupSchedule({
                             ) : (
                               <span className="inline-block size-5" />
                             )}
-                            <span>{row.time ?? '—'}</span>
+                            <span>{displayTime(row.time) ?? '—'}</span>
                           </span>
                         </TableCell>
                         <TableCell

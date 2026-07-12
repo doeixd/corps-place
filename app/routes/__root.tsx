@@ -298,6 +298,31 @@ function NavigationProgressBar({ delayMs = 150 }: { delayMs?: number }) {
   );
 }
 
+// Cross-device preference roaming for signed-in users (USER_PROFILE_PLAN D4).
+// Lazy: the sync module (and its server-fn imports) loads after idle, never on
+// the critical path. Renders nothing.
+function AccountSyncManager() {
+  useEffect(() => {
+    let cleanup: (() => void) | null = null;
+    let cancelled = false;
+    const start = () => {
+      void import('@/lib/account-sync').then((m) => {
+        if (!cancelled) cleanup = m.startAccountSync();
+      });
+    };
+    const idle =
+      'requestIdleCallback' in window
+        ? requestIdleCallback(start, { timeout: 8000 })
+        : setTimeout(start, 4000);
+    return () => {
+      cancelled = true;
+      if (typeof idle === 'number' && 'cancelIdleCallback' in window) cancelIdleCallback(idle);
+      cleanup?.();
+    };
+  }, []);
+  return null;
+}
+
 // Registers (or, when disabled, unregisters) the offline service worker on the
 // client. No-op during SSR. Renders nothing.
 function ServiceWorkerManager() {
@@ -509,6 +534,8 @@ function RootComponent() {
                   client when a session cookie is present. Signed-out visitors skip
                   the chunk entirely; the gate is null for them anyway. */}
               {signedInHint ? <ConsentGate /> : null}
+              {/* Roaming prefs (favorites/bookmarks/time-display) — signed-in only. */}
+              {signedInHint ? <AccountSyncManager /> : null}
             </Suspense>
             <DeferredToaster theme={theme ?? 'system'} />
             {/* Offsets mirror SiteNav via shared tokens: the sidebar width on md+/xl

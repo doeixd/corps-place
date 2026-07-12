@@ -1,6 +1,6 @@
 # User Profile Page — Plan
 
-Status: Phases 1-2 SHIPPED (8e1129d, c59fdf9). Phase 3 (device-data sync, tz display) planned. Explored 2026-07-12.
+Status: Phases 1-3 SHIPPED (8e1129d, c59fdf9, + Phase 3). Remaining optional: multiple favorite corps (open question 3). Explored 2026-07-12.
 
 A signed-in user's home for everything they own on drumcorps.app: leagues,
 favorite corps, notification subscriptions, bookmarked products, prediction
