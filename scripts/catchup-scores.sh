@@ -37,12 +37,21 @@ trap 'rm -f "$before_file" "$after_file"' EXIT
 scored_slugs > "$before_file"
 
 echo "[catchup $(ts)] full-season recap scrape (season=$season)…"
-if ! timeout -k 30 900 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$season" 2>&1 | tail -5; then
-  echo "[catchup $(ts)] scrape failed/timed out (non-fatal — next daily run retries)"
+scrape_out=$(mktemp)
+timeout -k 30 900 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$season" >"$scrape_out" 2>&1
+scrape_rc=$?
+tail -5 "$scrape_out"
+# The scraper can complete its work ("Done!") but keep the event loop alive on
+# lingering browser handles until the timeout kills it (rc 124) — that's a
+# SUCCESS. Only treat it as failed when the completion marker never printed.
+if [ $scrape_rc -ne 0 ] && ! grep -q "^Done!$" "$scrape_out"; then
+  echo "[catchup $(ts)] scrape failed (rc=$scrape_rc, non-fatal — next daily run retries)"
   vp exec tsx scripts/recordIngestRun.ts --status scrape_failed --kind score-catchup \
-    --season "$season" --detail "daily catch-up scrape failed" || true
+    --season "$season" --detail "daily catch-up scrape failed (rc=$scrape_rc)" || true
+  rm -f "$scrape_out"
   exit 0
 fi
+rm -f "$scrape_out"
 
 scored_slugs > "$after_file"
 new_slugs=$(comm -13 "$before_file" "$after_file")

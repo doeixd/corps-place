@@ -147,13 +147,18 @@ async function emailAdminsFallback(): Promise<void> {
   }
   // Another failure row in the last hour (besides the one just inserted) means
   // an email either just went out or was already throttled — stay quiet.
+  // NOTE: ts is stored as an ISO string ('...T...Z'); sqlite's datetime() emits
+  // 'YYYY-MM-DD HH:MM:SS' (space separator), and comparing the two as strings
+  // matched EVERYTHING ('T' > ' ') — the throttle read "157 failures in the
+  // last hour" and permanently suppressed the fallback. Compare ISO-to-ISO.
+  const cutoff = new Date(Date.now() - 60 * 60 * 1000).toISOString();
   const recent = db
     .prepare(
       `SELECT COUNT(*) AS n FROM ingest_runs
         WHERE status IN ('scrape_failed', 'publish_failed')
-          AND ts >= datetime('now', '-60 minutes') AND ts < ?`
+          AND ts >= ? AND ts < ?`
     )
-    .get(ts) as { n: number };
+    .get(cutoff, ts) as { n: number };
   if (recent.n > 0) {
     console.log(`[record-run] email fallback throttled (${recent.n} failure(s) in the last hour).`);
     return;
