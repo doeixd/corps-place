@@ -243,14 +243,14 @@ if [ "$after" -gt "$before" ]; then
   echo "[auto-ingest $(ts)] new scores landed (delta=$((after - before))) — fast-publishing, then backfill/forecast + full publish…"
 
   # (1) FAST PUBLISH — get the raw scores live ASAP. A seeded incremental emit
-  # rebuilds only the light sections (events/recaps/home, ~25s) from the current
-  # live slot instead of the full ~208s emit (dominated by the ~179s corps
-  # rebuild). Event pages, the home "latest results", and the scored badge go live
-  # in ~5s. Corps pages, rankings and predictions catch up in the full emit (5).
+  # rebuilds only the light sections (events/recaps/home/rankings, ~30s) from the
+  # current live slot instead of the full ~208s emit (dominated by the ~179s corps
+  # rebuild). Event pages, home "latest results", /rankings and the scored badge
+  # go live in ~5s. Corps pages and predictions catch up in the full emit (5).
   # Non-fatal: if the fast path fails, the full emit still publishes everything.
-  echo "[auto-ingest $(ts)] fast-publishing scores (events,recaps,home)…"
+  echo "[auto-ingest $(ts)] fast-publishing scores (events,recaps,home,rankings)…"
   if SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2048" \
-       bash "$repo_root/scripts/refresh-prod-read-model.sh" --only events,recaps,home --seed-active 2>&1 | sed 's/^/    /'; then
+       bash "$repo_root/scripts/refresh-prod-read-model.sh" --only events,recaps,home,rankings --seed-active 2>&1 | sed 's/^/    /'; then
     echo "[auto-ingest $(ts)] scores live in ~5s — corps/predictions to follow."
   else
     echo "[auto-ingest $(ts)] fast publish FAILED (non-fatal; full emit still runs)"

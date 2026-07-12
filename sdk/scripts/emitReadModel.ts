@@ -142,7 +142,8 @@ type Section =
   | "shows"
   | "home"
   | "merch"
-  | "fantasy";
+  | "fantasy"
+  | "rankings";
 const ALL_SECTIONS: Section[] = [
   "events",
   "corps",
@@ -154,6 +155,7 @@ const ALL_SECTIONS: Section[] = [
   "home",
   "merch",
   "fantasy",
+  "rankings",
 ];
 
 // The rm_* tables each section (re)builds. Derived from the section blocks below;
@@ -177,7 +179,6 @@ const SECTION_TABLES: Record<Section, string[]> = {
     "rm_vs_corps_scores",
     "rm_vs_baselines",
     "rm_vs_corps_predicted",
-    "rm_rankings",
     "rm_corps_appearances",
     "rm_corps_appearance_results",
   ],
@@ -194,6 +195,10 @@ const SECTION_TABLES: Record<Section, string[]> = {
     "rm_fantasy_season_best",
     "rm_fantasy_season_finals",
   ],
+  // Own section (not corps): the raw score grid is cheap to rebuild, so the
+  // auto-ingest fast publish can include it and /rankings updates with the
+  // scores instead of waiting minutes for the full corps-detail build.
+  rankings: ["rm_rankings"],
 };
 
 interface Args {
@@ -1102,7 +1107,7 @@ export const runEmit = async (args: Args) => {
   // ── Rankings (/rankings page) ──────────────────────────────────────────────
   // Raw per-show, per-corps, per-metric score grid across every season — the
   // resolver windows it for best/last3/as-of + the bump chart in prod.
-  if (args.only.includes("corps")) {
+  if (args.only.includes("rankings")) {
     log("building rankings…");
     const rankingRows: unknown[][] = [];
     for (const season of await buildRankingSeasons(src)) {
