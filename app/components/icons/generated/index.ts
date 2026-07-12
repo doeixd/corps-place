@@ -60,6 +60,7 @@ export { Moon02Icon } from './moon-02';
 export { MusicNote03Icon } from './music-note-03';
 export { NewTwitterIcon } from './new-twitter';
 export { NoteEditIcon } from './note-edit';
+export { Notification01Icon } from './notification-01';
 export { PinOffIcon } from './pin-off';
 export { PlusMinusIcon } from './plus-minus';
 export { RankingIcon } from './ranking';

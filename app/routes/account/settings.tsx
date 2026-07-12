@@ -5,6 +5,8 @@ import {
   getMyAccountOverview,
   updateAccountName,
   setContactConsent,
+  exportMyData,
+  deleteMyAccount,
 } from '@/lib/server-fns/account';
 import { setTimeZone } from '@/lib/server-fns/consent';
 import { AccountShell, AccountSignedOut } from '@/components/account/account-shell';
@@ -64,6 +66,9 @@ function AccountSettings() {
   const [savingTz, setSavingTz] = useState(false);
   const [consent, setConsent] = useState(overview.identity?.contactConsent ?? false);
   const [saved, setSaved] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState('');
+  const [deleting, setDeleting] = useState(false);
 
   if (!overview.signedIn || !overview.identity) {
     return (
@@ -231,13 +236,74 @@ function AccountSettings() {
         </SectionCard>
 
         <SectionCard
-          title="Delete account"
-          description="Coming soon — for now, contact us from the Contact page and we'll remove your account and data."
+          title="Your data"
+          description="Download everything tied to your account as JSON."
         >
-          <p className="text-xs text-text-muted">
-            Your wiki contributions stay (attributed to “Deleted user”); everything else is
-            removed.
-          </p>
+          <Button
+            variant="outline"
+            disabled={exporting}
+            onClick={async () => {
+              setExporting(true);
+              try {
+                const { json } = await exportMyData();
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'drumcorps-app-data.json';
+                a.click();
+                URL.revokeObjectURL(url);
+              } finally {
+                setExporting(false);
+              }
+            }}
+          >
+            {exporting ? 'Preparing…' : 'Download my data'}
+          </Button>
+        </SectionCard>
+
+        <SectionCard
+          title="Delete account"
+          description="Permanently removes your account, sessions, subscriptions and league memberships. Wiki contributions stay, attributed to “Deleted user”. Leagues you own transfer to their longest-standing member."
+        >
+          {overview.identity.role === 'admin' ? (
+            <p className="text-sm text-text-secondary">
+              Admin accounts can&rsquo;t self-delete (last-admin lockout guard) — demote the
+              account first from the admin console.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              <label className="block text-sm text-text-secondary">
+                Type <span className="font-mono font-semibold">delete</span> to confirm
+              </label>
+              <div className="flex max-w-md items-center gap-2">
+                <Input
+                  value={deleteConfirm}
+                  onChange={(e) => setDeleteConfirm(e.target.value)}
+                  placeholder="delete"
+                  aria-label="Type delete to confirm"
+                />
+                <Button
+                  variant="destructive"
+                  disabled={deleteConfirm !== 'delete' || deleting}
+                  onClick={async () => {
+                    setDeleting(true);
+                    try {
+                      await deleteMyAccount({ data: { confirm: 'delete' } });
+                      const { signOut } = await import('@/lib/auth-client');
+                      await signOut().catch(() => {});
+                      window.location.href = '/';
+                    } catch {
+                      setDeleting(false);
+                    }
+                  }}
+                >
+                  {deleting ? 'Deleting…' : 'Delete my account'}
+                </Button>
+              </div>
+              <p className="text-xs text-text-muted">This can&rsquo;t be undone.</p>
+            </div>
+          )}
         </SectionCard>
       </div>
     </AccountShell>

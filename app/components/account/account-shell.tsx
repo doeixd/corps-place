@@ -11,6 +11,9 @@ import {
   LicenseIcon,
   GiftIcon,
   Settings01Icon,
+  Notification01Icon,
+  NoteEditIcon,
+  UserGroupIcon,
 } from '@/components/icons/generated';
 
 type AccountNavItem = { to: string; label: string; icon: IconComponent };
@@ -19,7 +22,10 @@ const ACCOUNT_NAV_ITEMS: readonly AccountNavItem[] = [
   { to: '/account', label: 'Overview', icon: DashboardSquare01Icon },
   { to: '/account/leagues', label: 'Leagues', icon: RankingIcon },
   { to: '/account/ballots', label: 'Ballots', icon: LicenseIcon },
+  { to: '/account/notifications', label: 'Notifications', icon: Notification01Icon },
   { to: '/account/bookmarks', label: 'Bookmarks', icon: GiftIcon },
+  { to: '/account/contributions', label: 'Contributions', icon: NoteEditIcon },
+  { to: '/account/profiles', label: 'My profiles', icon: UserGroupIcon },
   { to: '/account/settings', label: 'Settings', icon: Settings01Icon },
 ] as const;
 

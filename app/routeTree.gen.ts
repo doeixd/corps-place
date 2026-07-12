@@ -67,7 +67,10 @@ import { Route as AdminContentRouteImport } from './routes/admin/content'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
 import { Route as AccountSettingsRouteImport } from './routes/account/settings'
+import { Route as AccountProfilesRouteImport } from './routes/account/profiles'
+import { Route as AccountNotificationsRouteImport } from './routes/account/notifications'
 import { Route as AccountLeaguesRouteImport } from './routes/account/leagues'
+import { Route as AccountContributionsRouteImport } from './routes/account/contributions'
 import { Route as AccountBookmarksRouteImport } from './routes/account/bookmarks'
 import { Route as AccountBallotsRouteImport } from './routes/account/ballots'
 import { Route as PredictFinalsIndexRouteImport } from './routes/predict/finals.index'
@@ -418,9 +421,24 @@ const AccountSettingsRoute = AccountSettingsRouteImport.update({
   path: '/account/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountProfilesRoute = AccountProfilesRouteImport.update({
+  id: '/account/profiles',
+  path: '/account/profiles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountNotificationsRoute = AccountNotificationsRouteImport.update({
+  id: '/account/notifications',
+  path: '/account/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountLeaguesRoute = AccountLeaguesRouteImport.update({
   id: '/account/leagues',
   path: '/account/leagues',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountContributionsRoute = AccountContributionsRouteImport.update({
+  id: '/account/contributions',
+  path: '/account/contributions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountBookmarksRoute = AccountBookmarksRouteImport.update({
@@ -793,7 +811,10 @@ export interface FileRoutesByFullPath {
   '/vs': typeof VsRouteWithChildren
   '/account/ballots': typeof AccountBallotsRoute
   '/account/bookmarks': typeof AccountBookmarksRoute
+  '/account/contributions': typeof AccountContributionsRoute
   '/account/leagues': typeof AccountLeaguesRoute
+  '/account/notifications': typeof AccountNotificationsRoute
+  '/account/profiles': typeof AccountProfilesRoute
   '/account/settings': typeof AccountSettingsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -875,7 +896,10 @@ export interface FileRoutesByTo {
   '/vs': typeof VsRouteWithChildren
   '/account/ballots': typeof AccountBallotsRoute
   '/account/bookmarks': typeof AccountBookmarksRoute
+  '/account/contributions': typeof AccountContributionsRoute
   '/account/leagues': typeof AccountLeaguesRoute
+  '/account/notifications': typeof AccountNotificationsRoute
+  '/account/profiles': typeof AccountProfilesRoute
   '/account/settings': typeof AccountSettingsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -958,7 +982,10 @@ export interface FileRoutesById {
   '/vs': typeof VsRouteWithChildren
   '/account/ballots': typeof AccountBallotsRoute
   '/account/bookmarks': typeof AccountBookmarksRoute
+  '/account/contributions': typeof AccountContributionsRoute
   '/account/leagues': typeof AccountLeaguesRoute
+  '/account/notifications': typeof AccountNotificationsRoute
+  '/account/profiles': typeof AccountProfilesRoute
   '/account/settings': typeof AccountSettingsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -1042,7 +1069,10 @@ export interface FileRouteTypes {
     | '/vs'
     | '/account/ballots'
     | '/account/bookmarks'
+    | '/account/contributions'
     | '/account/leagues'
+    | '/account/notifications'
+    | '/account/profiles'
     | '/account/settings'
     | '/admin/analytics'
     | '/admin/audit'
@@ -1124,7 +1154,10 @@ export interface FileRouteTypes {
     | '/vs'
     | '/account/ballots'
     | '/account/bookmarks'
+    | '/account/contributions'
     | '/account/leagues'
+    | '/account/notifications'
+    | '/account/profiles'
     | '/account/settings'
     | '/admin/analytics'
     | '/admin/audit'
@@ -1206,7 +1239,10 @@ export interface FileRouteTypes {
     | '/vs'
     | '/account/ballots'
     | '/account/bookmarks'
+    | '/account/contributions'
     | '/account/leagues'
+    | '/account/notifications'
+    | '/account/profiles'
     | '/account/settings'
     | '/admin/analytics'
     | '/admin/audit'
@@ -1289,7 +1325,10 @@ export interface RootRouteChildren {
   VsRoute: typeof VsRouteWithChildren
   AccountBallotsRoute: typeof AccountBallotsRoute
   AccountBookmarksRoute: typeof AccountBookmarksRoute
+  AccountContributionsRoute: typeof AccountContributionsRoute
   AccountLeaguesRoute: typeof AccountLeaguesRoute
+  AccountNotificationsRoute: typeof AccountNotificationsRoute
+  AccountProfilesRoute: typeof AccountProfilesRoute
   AccountSettingsRoute: typeof AccountSettingsRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAuditRoute: typeof AdminAuditRoute
@@ -2077,11 +2116,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/profiles': {
+      id: '/account/profiles'
+      path: '/account/profiles'
+      fullPath: '/account/profiles'
+      preLoaderRoute: typeof AccountProfilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/notifications': {
+      id: '/account/notifications'
+      path: '/account/notifications'
+      fullPath: '/account/notifications'
+      preLoaderRoute: typeof AccountNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/account/leagues': {
       id: '/account/leagues'
       path: '/account/leagues'
       fullPath: '/account/leagues'
       preLoaderRoute: typeof AccountLeaguesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/contributions': {
+      id: '/account/contributions'
+      path: '/account/contributions'
+      fullPath: '/account/contributions'
+      preLoaderRoute: typeof AccountContributionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account/bookmarks': {
@@ -2627,7 +2687,10 @@ const rootRouteChildren: RootRouteChildren = {
   VsRoute: VsRouteWithChildren,
   AccountBallotsRoute: AccountBallotsRoute,
   AccountBookmarksRoute: AccountBookmarksRoute,
+  AccountContributionsRoute: AccountContributionsRoute,
   AccountLeaguesRoute: AccountLeaguesRoute,
+  AccountNotificationsRoute: AccountNotificationsRoute,
+  AccountProfilesRoute: AccountProfilesRoute,
   AccountSettingsRoute: AccountSettingsRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAuditRoute: AdminAuditRoute,
