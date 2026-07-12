@@ -1,6 +1,6 @@
 # User Profile Page — Plan
 
-Status: PLANNED (not started). Explored 2026-07-12.
+Status: Phase 1 SHIPPED (8e1129d). Phases 2-3 planned. Explored 2026-07-12.
 
 A signed-in user's home for everything they own on drumcorps.app: leagues,
 favorite corps, notification subscriptions, bookmarked products, prediction
@@ -122,6 +122,21 @@ the homepage footer log-out. Cookie-gate the session fetch like ConsentGate
                               show page + history), steward roles, profile
                               claims (from profile-owner overlay), uploaded
                               media count
+/account/profiles             Staff/judge public-profile ownership (the
+                              profile-owner system): list my claimed profiles
+                              (from profile_claims by user_id, joined to the
+                              staff/judge read-model row for name/photo/link),
+                              claim status (pending/approved/rejected +
+                              attestation date), quick actions — edit my
+                              profile (deep-link to the public page, which
+                              already hosts the owner editing UI:
+                              saveProfileField/setProfilePhoto), revoke claim
+                              (revokeProfileClaim), request removal
+                              (deleteProfile). Also an entry point: "Are you
+                              staff or a judge? Find your page" → /staff//judges
+                              search (claiming itself stays ON the public page
+                              where name-match attestation runs). Moderators
+                              additionally see a link to the admin claims queue.
 /account/settings             Name (updateAccountName), timezone picker
                               (setTimeZone — IANA select w/ auto-detect
                               button), theme (device), favorite corps (device,
@@ -138,6 +153,11 @@ the homepage footer log-out. Cookie-gate the session fetch like ConsentGate
 - `listMyScoreSubscriptions` / `updateScoreSubscriptionMethods(id, methods)` /
   self-unsubscribe (by id, ownership-checked — not the public token path)
 - `listMyContributions(cursor?)` — show_revisions by author_id, paginated 50
+- `listMyProfileClaims` — profile_claims by user_id (status, kind, target
+  slug/name, claimed_at) joined to the staff/judge read-model for display name +
+  photo; powers /account/profiles. Mutations reuse the EXISTING profile-owner
+  fns (revokeProfileClaim, deleteProfile) — no new mutation surface, so the
+  attestation/rate-limit/moderation invariants stay in one place
 - `deleteMyAccount(confirmText)` + `exportMyData` (self-service variants of the
   admin fns; share the implementation, different gate)
 - Phase 2: `getMyPreferences` / `saveMyPreferences(prefsJson)` (user_preferences)
@@ -152,10 +172,15 @@ Route skeleton + nav avatar menu; Overview; Leagues; Ballots; Bookmarks
 (device); Settings with name + timezone + theme + consent; server-fns
 `getMyAccountOverview`, `updateAccountName`. No schema changes.
 
-**Phase 2 — Notifications + Contributions + account lifecycle.**
+**Phase 2 — Notifications + Contributions + Profiles + account lifecycle.**
 `listMyScoreSubscriptions` (+ email→user_id backfill), management UI, push
-device management; `listMyContributions`; `deleteMyAccount` + `exportMyData`
-with confirmation flows. Schema change: none (all tables exist).
+device management; `listMyContributions`; `/account/profiles` staff/judge
+profile-ownership tab (`listMyProfileClaims` + existing profile-owner
+mutations); `deleteMyAccount` + `exportMyData` with confirmation flows.
+Delete-account interaction: revoke the user's profile claims (claims are
+personal attestations — they don't survive anonymization) but leave approved
+field overrides/photos in place (they're public content, like wiki edits).
+Schema change: none (all tables exist).
 
 **Phase 3 — Sync + timezone display.**
 `user_preferences` table + favorites/bookmarks roaming (D4); "times in my
