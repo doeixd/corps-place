@@ -253,10 +253,20 @@ const differenceInDays = (later: Date, earlier: Date) =>
 // toward 100 for every event (see relational.ts computeSeasonMeta).
 const buildSeasonMeta = (
   competitions: ReadonlyArray<Domain.Competition>,
-  scheduledEnd?: Date | undefined
+  scheduledEnd?: Date | undefined,
+  scheduledStart?: Date | undefined
 ) => {
   const sorted = [...competitions].sort((a, b) => a.date.getTime() - b.date.getTime());
-  const firstDate = sorted[0]?.date;
+  const batchFirst = sorted[0]?.date;
+  // Season start = the SCHEDULED first event when known — a partial batch's
+  // earliest show is not the season opener. Take the earlier of the two so a
+  // scored show before the published schedule can't yield negative days.
+  const firstDate =
+    scheduledStart && batchFirst
+      ? scheduledStart < batchFirst
+        ? scheduledStart
+        : batchFirst
+      : (scheduledStart ?? batchFirst);
   const lastScored = sorted[sorted.length - 1]?.date ?? firstDate;
   const lastDate =
     scheduledEnd && lastScored
@@ -280,6 +290,28 @@ const resolveScheduledSeasonEnd = (
   `.pipe(
     Effect.map((rows) => {
       const raw = rows[0]?.end_date;
+      return raw ? new Date(`${raw}T00:00:00.000Z`) : undefined;
+    }),
+    Effect.orElseSucceed(() => undefined)
+  );
+
+// Scheduled season START — same rationale as scheduledEnd, other bound. The
+// batch-scoped firstDate corrupted day_of_season/percent_through for every
+// competition an in-season PARTIAL scrape touched (targeted 3-min polls, the
+// daily catch-up): a batch whose earliest show is July 8 wrote "day 3 of a
+// 31-day season" onto July 11 shows, telling the model mid-July was opening
+// week (observed 2026-07-12 as systematic ~+1.2 underprediction).
+const resolveScheduledSeasonStart = (
+  sql: SqlClient.SqlClient,
+  season: string
+): Effect.Effect<Date | undefined, unknown> =>
+  sql<{ start_date: string | null }>`
+    SELECT MIN(date(start_date)) AS start_date
+    FROM events
+    WHERE season = ${season}
+  `.pipe(
+    Effect.map((rows) => {
+      const raw = rows[0]?.start_date;
       return raw ? new Date(`${raw}T00:00:00.000Z`) : undefined;
     }),
     Effect.orElseSucceed(() => undefined)
@@ -724,9 +756,11 @@ export const scrapeWebsiteRecapsForSeason = (
         Effect.logInfo(`[website] Ingesting ${recapResults.length} recaps for ${season}`)
       );
       const scheduledEnd = yield* resolveScheduledSeasonEnd(sql, season);
+      const scheduledStart = yield* resolveScheduledSeasonStart(sql, season);
       const seasonMeta = buildSeasonMeta(
         recapResults.map((result) => result.competition),
-        scheduledEnd
+        scheduledEnd,
+        scheduledStart
       );
       yield* (
         Effect.forEach(
