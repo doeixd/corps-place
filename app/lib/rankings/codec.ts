@@ -6,6 +6,7 @@ import {
   RANK_DIVISIONS,
   RANK_METRICS,
   type RankChartMode,
+  type RankDateMode,
   type RankMetric,
 } from './types';
 
@@ -18,6 +19,15 @@ export const parseMetric = (v: unknown): RankMetric | undefined =>
 /** Chart mode; `undefined` (= default `rank`) for anything but an explicit `score`. */
 export const parseChart = (v: unknown): RankChartMode | undefined =>
   v === 'score' ? 'score' : undefined;
+
+/** Display toggles that DEFAULT ON: only an explicit '0' (off) survives in the
+ *  URL — the default state stays param-free (canonical URLs unaffected). */
+export const parseOffFlag = (v: unknown): '0' | undefined =>
+  v === '0' || v === 0 ? '0' : undefined;
+
+/** Row date display; `undefined` (= default recency-dot behavior) otherwise. */
+export const parseDateMode = (v: unknown): RankDateMode | undefined =>
+  v === 'days' || v === 'date' ? v : undefined;
 
 /** Included divisions; `undefined` (= default world+open) when empty/invalid. */
 export const parseDivs = (v: unknown): string[] | undefined => {

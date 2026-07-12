@@ -11,7 +11,36 @@ import { corpsPaletteVars } from '@sdk/src/corpsColors.js';
 import { themeStore } from '@/stores/theme-store';
 import { recapGroup, RECAP_GROUP_ORDER, RECAP_GROUP_LABELS } from '@/lib/prediction-scenario';
 import { cn } from '@/lib/utils';
-import { RANK_METRIC_LABELS, type RankGroup, type RankMetric, type RankRow } from '@/lib/rankings/types';
+import {
+  RANK_CUTOFFS,
+  RANK_METRIC_LABELS,
+  type RankDateMode,
+  type RankGroup,
+  type RankMetric,
+  type RankRow,
+} from '@/lib/rankings/types';
+
+// Deterministic "Jul 11" from a YYYY-MM-DD string (no Date/locale — SSR-safe).
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const shortDate = (ymd: string): string => {
+  const m = Number(ymd.slice(5, 7));
+  const d = Number(ymd.slice(8, 10));
+  return m >= 1 && m <= 12 && d >= 1 ? `${MONTHS[m - 1]} ${d}` : ymd;
+};
+
+/** Subtle centered-label divider: lines either side, tiny uppercase text. */
+function CutoffDivider({ label }: { label: string }) {
+  // motion + layout so AnimatePresence popLayout can measure it like the rows.
+  return (
+    <motion.div layout initial={false} aria-hidden className="flex items-center gap-3 px-2 py-1">
+      <span className="h-px flex-1 bg-border" />
+      <span className="text-[10px] font-medium uppercase tracking-widest text-text-muted">
+        {label}
+      </span>
+      <span className="h-px flex-1 bg-border" />
+    </motion.div>
+  );
+}
 
 /** Recency tier 0..3 from daysSinceLast vs the thresholds (e.g. [7,14,28]). */
 const recencyTier = (days: number, thresholds: number[]) => {
@@ -32,6 +61,8 @@ function Row({
   season,
   recency,
   mode,
+  dateMode,
+  showDelta,
   onHover,
   highlighted,
   striped,
@@ -41,6 +72,8 @@ function Row({
   season: string;
   recency: number[];
   mode: 'light' | 'dark';
+  dateMode: RankDateMode;
+  showDelta: boolean;
   onHover?: (slug: string | null) => void;
   highlighted: boolean;
   striped: boolean;
@@ -95,15 +128,44 @@ function Row({
       >
         {row.corpsName}
       </Link>
-      {tier > 0 ? (
-        <span className="hidden items-center gap-1 text-xs text-muted-foreground sm:inline-flex">
-          <span className={cn('size-1.5 rounded-full', TIER_DOT[Math.min(tier, 3)])} />
-          {row.daysSinceLast}d ago
+      {dateMode === 'dot' ? (
+        tier > 0 ? (
+          <span className="hidden items-center gap-1 text-xs text-muted-foreground sm:inline-flex">
+            <span className={cn('size-1.5 rounded-full', TIER_DOT[Math.min(tier, 3)])} />
+            {row.daysSinceLast}d ago
+          </span>
+        ) : null
+      ) : (
+        // 'days' / 'date': shown on EVERY row (incl. mobile); the tier dot stays
+        // as the freshness signal when the row is stale.
+        <span className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
+          {tier > 0 ? (
+            <span className={cn('size-1.5 rounded-full', TIER_DOT[Math.min(tier, 3)])} />
+          ) : null}
+          {dateMode === 'days' ? `${row.daysSinceLast}d ago` : shortDate(row.lastPerformedDate)}
         </span>
-      ) : null}
-      <span className="shrink-0 tabular-nums font-semibold text-text-primary">
-        {row.score.toFixed(3)}
-        {row.partial ? <span className="ml-0.5 text-[10px] text-muted-foreground">*</span> : null}
+      )}
+      <span className="flex shrink-0 flex-col items-end leading-tight">
+        <span className="tabular-nums font-semibold text-text-primary">
+          {row.score.toFixed(3)}
+          {row.partial ? <span className="ml-0.5 text-[10px] text-muted-foreground">*</span> : null}
+        </span>
+        {showDelta && row.scoreDelta != null ? (
+          <span
+            className={cn(
+              'font-mono text-[10px] tabular-nums',
+              row.scoreDelta > 0
+                ? 'text-emerald-600 dark:text-emerald-400'
+                : row.scoreDelta < 0
+                  ? 'text-red-600 dark:text-red-400'
+                  : 'text-text-muted'
+            )}
+            title="Change vs previous performance"
+          >
+            {row.scoreDelta > 0 ? '+' : ''}
+            {row.scoreDelta.toFixed(2)}
+          </span>
+        ) : null}
       </span>
     </motion.div>
   );
@@ -117,6 +179,9 @@ export function RankingsList({
   recency,
   hoveredSlug,
   onHover,
+  showCutoffs = true,
+  showDelta = true,
+  dateMode = 'dot',
 }: {
   rows: RankRow[];
   season: string;
@@ -125,6 +190,9 @@ export function RankingsList({
   recency: number[];
   hoveredSlug?: string | null;
   onHover?: (slug: string | null) => void;
+  showCutoffs?: boolean;
+  showDelta?: boolean;
+  dateMode?: RankDateMode;
 }) {
   const mode = useSelector(themeStore, (s) => s.context.theme) ?? 'light';
 
@@ -161,19 +229,32 @@ export function RankingsList({
             </h3>
           ) : null}
           <AnimatePresence initial={false} mode="popLayout">
-            {section.rows.map((row, i) => (
-              <Row
-                key={row.corpsSlug}
-                row={row}
-                rank={i + 1}
-                season={season}
-                recency={recency}
-                mode={mode}
-                onHover={onHover}
-                highlighted={hoveredSlug === row.corpsSlug}
-                striped={i % 2 === 1}
-              />
-            ))}
+            {section.rows.map((row, i) => {
+              // Championship cutoffs (after 12th and 25th): meaningful on the
+              // flat overall list, or within the World Class section when
+              // grouped by division. Only when more rows follow.
+              const cutoffApplies =
+                showCutoffs && (section.key === 'all' || section.key === 'world');
+              const cutoff = cutoffApplies
+                ? RANK_CUTOFFS.find((c) => c.rank === i + 1 && i + 1 < section.rows.length)
+                : undefined;
+              return [
+                <Row
+                  key={row.corpsSlug}
+                  row={row}
+                  rank={i + 1}
+                  season={season}
+                  recency={recency}
+                  mode={mode}
+                  dateMode={dateMode}
+                  showDelta={showDelta}
+                  onHover={onHover}
+                  highlighted={hoveredSlug === row.corpsSlug}
+                  striped={i % 2 === 1}
+                />,
+                cutoff ? <CutoffDivider key={`cutoff-${cutoff.rank}`} label={cutoff.label} /> : null,
+              ];
+            })}
           </AnimatePresence>
         </div>
       ))}

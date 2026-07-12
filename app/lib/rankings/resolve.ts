@@ -99,6 +99,16 @@ export function resolveRankings(
   }
   const out: RankRow[] = final.map((s) => {
     const c = byCorps.get(s.slug)!;
+    // Raw show-over-show movement at asof: the corps' last two performances on
+    // or before the as-of day (chronological; same-day multiples keep insertion
+    // order). Null until a corps has performed twice.
+    const played = c.days
+      .filter((d) => d.day <= asof)
+      .sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0));
+    const lastScore = played[played.length - 1]?.score;
+    const prevScore = played[played.length - 2]?.score;
+    const scoreDelta =
+      lastScore != null && prevScore != null ? Number((lastScore - prevScore).toFixed(3)) : null;
     return {
       corpsSlug: s.slug,
       corpsName: c.name,
@@ -107,6 +117,7 @@ export function resolveRankings(
       rank: s.rank,
       lastPerformedDate: s.lastDay,
       daysSinceLast: Math.max(0, daysBetween(s.lastDay, asof)),
+      scoreDelta,
       partial: s.partial,
       history: history.get(s.slug) ?? [],
     };

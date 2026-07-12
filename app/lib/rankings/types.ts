@@ -25,6 +25,17 @@ export const RANK_DIVISIONS = ['world', 'open', 'all-age'] as const;
 export type RankDivision = (typeof RANK_DIVISIONS)[number];
 export const DEFAULT_DIVISIONS: RankDivision[] = ['world', 'open'];
 
+/** How each row's "last performed" reads: recency dot only (default, stale rows
+ *  only), days-ago on every row, or the calendar date on every row. */
+export const RANK_DATE_MODES = ['dot', 'days', 'date'] as const;
+export type RankDateMode = (typeof RANK_DATE_MODES)[number];
+
+/** Championship cutoffs marked in the list (DCI: top 12 → Finals, top 25 → Semis). */
+export const RANK_CUTOFFS = [
+  { rank: 12, label: 'Finals cutoff' },
+  { rank: 25, label: 'Semifinals cutoff' },
+] as const;
+
 /** One corps in the resolved standings. */
 export interface RankRow {
   corpsSlug: string;
@@ -34,6 +45,9 @@ export interface RankRow {
   rank: number; // overall rank by aggregated score at asof
   lastPerformedDate: string; // YYYY-MM-DD
   daysSinceLast: number; // asof − lastPerformed (recency indicator)
+  /** Raw score movement: last performance − the one before it (same metric),
+   *  null with <2 shows. Independent of the agg mode — it's the trend signal. */
+  scoreDelta: number | null;
   partial: boolean; // last3 had <3 shows
   /** Rank history for the bump chart: one point per competition day ≤ asof on
    *  which the corps had a standing. */

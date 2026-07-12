@@ -26,11 +26,14 @@ import {
   DEFAULT_DIVISIONS,
   type RankAgg,
   type RankChartMode,
+  type RankDateMode,
   type RankGroup,
   type RankMetric,
 } from '@/lib/rankings/types';
 import {
   parseChart,
+  parseDateMode,
+  parseOffFlag,
   parseMetric,
   parseDivs,
   parseRecency,
@@ -141,6 +144,10 @@ interface RankSearch {
   recency?: number[];
   // Which value the season line chart plots: `rank` (default) or `score`.
   chart?: RankChartMode;
+  // Display options (default ON / 'dot'; only non-defaults survive in the URL).
+  cuts?: '0';
+  delta?: '0';
+  dates?: RankDateMode;
 }
 
 export const Route = createFileRoute('/rankings')({
@@ -165,6 +172,9 @@ export const Route = createFileRoute('/rankings')({
     })(),
     recency: parseRecency(s.recency),
     chart: parseChart(s.chart),
+    cuts: parseOffFlag(s.cuts),
+    delta: parseOffFlag(s.delta),
+    dates: parseDateMode(s.dates),
   }),
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => {
@@ -258,6 +268,9 @@ function RankingsPage() {
   const divs = parseDivs(search.div) ?? DEFAULT_DIVISIONS;
   const recency = search.recency ?? DEFAULT_RECENCY;
   const chartMode: RankChartMode = search.chart === 'score' ? 'score' : 'rank';
+  const showCutoffs = search.cuts !== '0';
+  const showDelta = search.delta !== '0';
+  const dateMode: RankDateMode = search.dates ?? 'dot';
 
   const set = (patch: Partial<RankSearch>) =>
     navigate({ search: (prev) => ({ ...prev, ...patch }), replace: true });
@@ -396,6 +409,45 @@ function RankingsPage() {
             </ToggleGroup>
           </LabeledField>
 
+          <LabeledField label="Row date">
+            <ToggleGroup
+              variant="outline"
+              size="sm"
+              spacing={0}
+              aria-label="Row date display"
+              value={[dateMode]}
+              onValueChange={(v) => {
+                const next = v[0] as RankDateMode | undefined;
+                if (next) set({ dates: next === 'dot' ? undefined : next });
+              }}
+            >
+              <ToggleGroupItem value="dot">Auto</ToggleGroupItem>
+              <ToggleGroupItem value="days">Days ago</ToggleGroupItem>
+              <ToggleGroupItem value="date">Date</ToggleGroupItem>
+            </ToggleGroup>
+          </LabeledField>
+
+          <LabeledField label="Show">
+            <ToggleGroup
+              multiple
+              variant="outline"
+              size="sm"
+              spacing={0}
+              aria-label="List extras"
+              value={[...(showCutoffs ? ['cuts'] : []), ...(showDelta ? ['delta'] : [])]}
+              onValueChange={(v) => {
+                const on = new Set(v as string[]);
+                set({
+                  cuts: on.has('cuts') ? undefined : '0',
+                  delta: on.has('delta') ? undefined : '0',
+                });
+              }}
+            >
+              <ToggleGroupItem value="cuts">Cutoff lines</ToggleGroupItem>
+              <ToggleGroupItem value="delta">Score change</ToggleGroupItem>
+            </ToggleGroup>
+          </LabeledField>
+
           <RecencySettings
             recency={recency}
             onChange={(r) =>
@@ -456,6 +508,9 @@ function RankingsPage() {
         recency={recency}
         hoveredSlug={hovered}
         onHover={setHovered}
+        showCutoffs={showCutoffs}
+        showDelta={showDelta}
+        dateMode={dateMode}
       />
     </PageShell>
   );
