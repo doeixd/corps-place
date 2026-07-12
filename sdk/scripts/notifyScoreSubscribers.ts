@@ -133,9 +133,10 @@ const main = async () => {
     const corps = corpsInEvent(ev);
     // Match corps subs (target_slug = corps slug), "event"/show subs
     // (target_slug = "<corps>/<season>") for every corps that competed here,
-    // AND direct event-page subs (target_slug = the event slug itself — the
-    // notify button on /scores/$slug and the event prediction page).
-    const targets = [ev, ...corps, ...(season ? corps.map((c) => `${c}/${season}`) : [])];
+    // direct event-page subs (target_slug = the event slug itself — the notify
+    // button on /scores/$slug and the event prediction page), AND the '*'
+    // wildcard (admins subscribed to every show's scores).
+    const targets = [ev, "*", ...corps, ...(season ? corps.map((c) => `${c}/${season}`) : [])];
     if (targets.length === 0) {
       console.log(`[notify] ${ev}: no corps resolved; skipping.`);
       continue;
@@ -194,7 +195,7 @@ const main = async () => {
         `<p>Scores for <strong>${label}</strong> have been posted.</p>` +
         `<p><a href="${url}">View the recap on DrumCorps.app →</a></p>` +
         `<p style="color:#888;font-size:12px">You're getting this because you asked to be notified about ` +
-        `${s.target_kind === "corps" ? "a corps in this show" : s.target_slug === ev ? "this event" : "this corps this season"}. ` +
+        `${s.target_slug === "*" ? "all shows' scores" : s.target_kind === "corps" ? "a corps in this show" : s.target_slug === ev ? "this event" : "this corps this season"}. ` +
         `<a href="${unsub}">Unsubscribe</a>.</p>`;
       let delivered = dryRun;
       if (!dryRun) {
