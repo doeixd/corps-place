@@ -22,3 +22,24 @@ export function formatEventDate(value: string | null | undefined): string {
 /** A DCI total score to its conventional 3 decimals (`91.4` → `91.400`); '' when absent. */
 export const formatScore = (value: number | null | undefined): string =>
   typeof value === 'number' ? value.toFixed(3) : '';
+
+/**
+ * Fixed-zone (ET) datetime label — deterministic across server and client so an
+ * SSR'd "Updated …" line never mismatches at hydration. ET is the sport's home
+ * timezone. `2026-07-13T04:37:17Z` → `Jul 13, 12:37 AM ET`.
+ */
+export function formatUpdatedET(iso: string): string {
+  try {
+    return (
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+      }).format(new Date(iso)) + ' ET'
+    );
+  } catch {
+    return iso.slice(0, 10);
+  }
+}

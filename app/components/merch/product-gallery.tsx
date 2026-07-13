@@ -6,8 +6,24 @@ import { ArrowLeft01Icon, ArrowRight01Icon } from '@/components/icons/generated'
 import { useThumbhash } from '@/hooks/use-thumbhash';
 
 /** Single gallery slide — self-contained so it can own its thumbhash fetch. */
-function GalleryImage({ src, alt, lazy }: { src: string; alt: string; lazy: boolean }) {
-  const thumb = useThumbhash(src);
+function GalleryImage({
+  src,
+  alt,
+  lazy,
+  priority,
+  wantThumb,
+}: {
+  src: string;
+  alt: string;
+  lazy: boolean;
+  /** LCP hint for the first slide (it's the page's largest paint). */
+  priority?: boolean;
+  /** Fetch the thumbhash placeholder only for the active slide and its
+      neighbors — a 16-image product otherwise fires 16 placeholder requests
+      on mount that race (and delay) the hero image itself. */
+  wantThumb: boolean;
+}) {
+  const thumb = useThumbhash(wantThumb ? src : null);
   return (
     <ProgressiveImage
       src={src}
@@ -15,6 +31,7 @@ function GalleryImage({ src, alt, lazy }: { src: string; alt: string; lazy: bool
       width={640}
       widths={[640, 1280]}
       lazy={lazy}
+      priority={priority}
       fit="cover"
       thumbDataUrl={thumb}
       className="h-full w-full shrink-0 snap-center"
@@ -75,6 +92,8 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
               src={src}
               alt={idx === i ? alt : ''}
               lazy={idx !== 0}
+              priority={idx === 0}
+              wantThumb={Math.abs(idx - i) <= 1}
             />
           ))}
         </div>

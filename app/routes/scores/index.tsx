@@ -20,6 +20,7 @@ import { Icon } from '@/components/icon';
 import { Search01Icon } from '@/components/icons/generated';
 import { ScoreEventSection, type ScoreRecapData } from '@/components/scores/score-event-section';
 import { seoHead, breadcrumbLd, SITE_URL } from '@/lib/seo';
+import { formatUpdatedET } from '@/lib/format';
 
 type ScoresSearch = { season?: string; q?: string };
 
@@ -138,24 +139,6 @@ export const Route = createFileRoute('/scores/')({
   staleTime: 5 * 60_000,
   component: ScoresIndex,
 });
-
-// Fixed-zone (ET) datetime label — deterministic across server and client so the
-// SSR'd header never mismatches at hydration. ET is the sport's home timezone.
-const formatUpdatedET = (iso: string): string => {
-  try {
-    return (
-      new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/New_York',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-      }).format(new Date(iso)) + ' ET'
-    );
-  } catch {
-    return iso.slice(0, 10);
-  }
-};
 
 function ScoresIndex() {
   const { events, initialRecaps, scoresUpdatedAt } = Route.useLoaderData();

@@ -9,7 +9,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { FilterChips, type FilterChipItem } from '@/components/filter-chips';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { seoHead, SITE_URL } from '@/lib/seo';
+import { formatUpdatedET } from '@/lib/format';
 import { getRankings, getRankingSeasons } from '@/lib/server-fns/rankings';
+import { getScoresLastPublished } from '@/lib/server-fns/scores-meta';
 import { RankingsList } from '@/components/rankings/rankings-list';
 // Lazy: recharts (~330KB) is the heaviest thing on this route, and the chart
 // already renders only an empty placeholder until its mount effect fires — so
@@ -45,7 +47,11 @@ import {
 // ≤5d = p95, ≤8d = p98. So Fresh ≤3 (on the normal cadence), Recent ≤5 (a short
 // break), Stale ≤8 (a real break); beyond that is rare (extended absence / done).
 const DEFAULT_RECENCY = [3, 5, 8];
-const DIVISION_LABELS: Record<string, string> = { world: 'World', open: 'Open', 'all-age': 'All-Age' };
+const DIVISION_LABELS: Record<string, string> = {
+  world: 'World',
+  open: 'Open',
+  'all-age': 'All-Age',
+};
 
 // SEO phrase for the selected divisions — drives the h1/title/description so the
 // page reads as its own landing page per filter ("2026 Open Class Drum Corps
@@ -57,8 +63,7 @@ const DIVISION_SEO: Record<string, string> = {
 };
 function divisionSeoPhrase(divs: readonly string[]): { title: string; body: string } {
   const labels = divs.map((d) => DIVISION_SEO[d]).filter(Boolean);
-  const isDefault =
-    divs.length === 2 && divs.includes('world') && divs.includes('open');
+  const isDefault = divs.length === 2 && divs.includes('world') && divs.includes('open');
   if (isDefault || labels.length === 0) {
     // The flagship page: name both classes for search coverage.
     return { title: 'DCI', body: 'World Class & Open Class' };
@@ -91,8 +96,8 @@ function RecencySettings({
         <div className="space-y-1">
           <p className="text-sm font-medium text-foreground">Recency fading</p>
           <p className="text-xs leading-snug text-muted-foreground">
-            Corps that haven&apos;t competed recently have staler standings, so each is
-            faded by how many days since its last show. Set the day cutoff for each tier:
+            Corps that haven&apos;t competed recently have staler standings, so each is faded by how
+            many days since its last show. Set the day cutoff for each tier:
           </p>
         </div>
         {recency.map((v, i) => (
@@ -124,8 +129,8 @@ function RecencySettings({
         ))}
         <p className="border-t border-border pt-2 text-[11px] leading-snug text-muted-foreground">
           <span className="mr-1 inline-block size-1.5 rounded-full bg-destructive align-middle" />
-          Longer than the Stale cutoff → most faded. Fresh corps show with no marker;
-          the others get a colored dot and a “Nd ago” note.
+          Longer than the Stale cutoff → most faded. Fresh corps show with no marker; the others get
+          a colored dot and a “Nd ago” note.
         </p>
       </PopoverContent>
     </Popover>
@@ -180,7 +185,7 @@ export const Route = createFileRoute('/rankings')({
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => {
     const { seasons } = await getRankingSeasons();
-    const season = deps.season && seasons.includes(deps.season) ? deps.season : seasons[0] ?? '';
+    const season = deps.season && seasons.includes(deps.season) ? deps.season : (seasons[0] ?? '');
     const metric: RankMetric = deps.metric ?? 'total';
     const selectedDivs = parseDivs(deps.div);
     const divs = selectedDivs ?? DEFAULT_DIVISIONS;
@@ -196,7 +201,11 @@ export const Route = createFileRoute('/rankings')({
     // pSEO canonical: season×metric base (+ a single selected division — its own
     // landing page). Everything else collapses. Same helper feeds the sitemap.
     const canonical = rankingsCanonicalPath(season, metric, seasons[0] ?? season, selectedDivs);
-    return { seasons, season, metric, divs, canonical, result };
+    // Sub-day freshness only for the CURRENT season — its rankings genuinely
+    // changed when scores last published; past seasons keep their date-only stamp.
+    const scoresUpdatedAt =
+      season === (seasons[0] ?? '') ? await getScoresLastPublished().catch(() => null) : null;
+    return { seasons, season, metric, divs, canonical, result, scoresUpdatedAt };
   },
   head: ({ loaderData }) => {
     const season = loaderData?.season;
@@ -213,10 +222,14 @@ export const Route = createFileRoute('/rankings')({
         'a rank bump chart, and filters for caption, division, and as-of date.'
       : 'DCI season standings and a rank bump chart — filter by caption, division, and as-of date.';
     const path = loaderData?.canonical ?? '/rankings';
-    // "Updated when": the most recent competition day in this season's rankings is
-    // when the data last changed — emit it as Dataset.dateModified so search engines
-    // see the page's freshness. Falls back to the resolved as-of day.
-    const updated = loaderData?.result?.allDates?.at(-1) ?? loaderData?.result?.asof ?? undefined;
+    // "Updated when": prefer the exact scores-published moment (current season —
+    // full ISO datetime, which is what earns the SERP freshness label); fall back
+    // to the most recent competition day / resolved as-of day.
+    const updated =
+      loaderData?.scoresUpdatedAt ??
+      loaderData?.result?.allDates?.at(-1) ??
+      loaderData?.result?.asof ??
+      undefined;
     return seoHead({
       title,
       description,
@@ -258,7 +271,7 @@ function LabeledField({ label, children }: { label: string; children: ReactNode 
 }
 
 function RankingsPage() {
-  const { seasons, season, result } = Route.useLoaderData();
+  const { seasons, season, result, scoresUpdatedAt } = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const [hovered, setHovered] = useState<string | null>(null);
@@ -289,8 +302,7 @@ function RankingsPage() {
     const isDefault = valid.length === 2 && valid.includes('world') && valid.includes('open');
     // Single division → plain string (clean, canonical-stable, redirect-free URL).
     set({
-      div:
-        valid.length === 0 || isDefault ? undefined : valid.length === 1 ? valid[0] : valid,
+      div: valid.length === 0 || isDefault ? undefined : valid.length === 1 ? valid[0] : valid,
     });
   };
 
@@ -320,6 +332,12 @@ function RankingsPage() {
           rank bump chart · {agg === 'best' ? 'highest score so far' : 'average of last 3 shows'}
           {result.asof ? ` · as of ${result.asof}` : ''}
           {agg === 'last3' ? ' · * = fewer than 3 shows' : ''}.
+          {scoresUpdatedAt ? (
+            <>
+              {' Updated '}
+              <time dateTime={scoresUpdatedAt}>{formatUpdatedET(scoresUpdatedAt)}</time>.
+            </>
+          ) : null}
         </p>
       </div>
 
@@ -337,124 +355,124 @@ function RankingsPage() {
           />
         </summary>
         <div className="flex flex-col gap-3 border-t border-border p-3">
-        <LabeledField label="Season">
-          <FilterChips
-            ariaLabel="Season"
-            className="min-w-0"
-            value={season}
-            items={seasonItems}
-            onSelect={(y) => set({ season: y, asof: undefined })}
-          />
-        </LabeledField>
-
-        <LabeledField label="Metric">
-          <FilterChips
-            ariaLabel="Ranking metric"
-            className="min-w-0"
-            value={metric}
-            items={metricItems}
-            onSelect={(m) => set({ metric: m === 'total' ? undefined : (m as RankMetric) })}
-          />
-        </LabeledField>
-
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-          <LabeledField label="Aggregation">
-            <ToggleGroup
-              variant="outline"
-              size="sm"
-              spacing={0}
-              aria-label="Aggregation"
-              value={[agg]}
-              onValueChange={(v) => {
-                const next = v[0] as RankAgg | undefined;
-                if (next) set({ agg: next === 'best' ? undefined : 'last3' });
-              }}
-            >
-              <ToggleGroupItem value="best">Best</ToggleGroupItem>
-              <ToggleGroupItem value="last3">Last 3</ToggleGroupItem>
-            </ToggleGroup>
+          <LabeledField label="Season">
+            <FilterChips
+              ariaLabel="Season"
+              className="min-w-0"
+              value={season}
+              items={seasonItems}
+              onSelect={(y) => set({ season: y, asof: undefined })}
+            />
           </LabeledField>
 
-          <LabeledField label="View">
-            <ToggleGroup
-              variant="outline"
-              size="sm"
-              spacing={0}
-              aria-label="Grouping"
-              value={[group]}
-              onValueChange={(v) => {
-                const next = v[0] as RankGroup | undefined;
-                if (next) set({ group: next === 'overall' ? undefined : 'division' });
-              }}
-            >
-              <ToggleGroupItem value="overall">Overall</ToggleGroupItem>
-              <ToggleGroupItem value="division">By division</ToggleGroupItem>
-            </ToggleGroup>
+          <LabeledField label="Metric">
+            <FilterChips
+              ariaLabel="Ranking metric"
+              className="min-w-0"
+              value={metric}
+              items={metricItems}
+              onSelect={(m) => set({ metric: m === 'total' ? undefined : (m as RankMetric) })}
+            />
           </LabeledField>
 
-          <LabeledField label="Divisions">
-            <ToggleGroup
-              multiple
-              variant="outline"
-              size="sm"
-              spacing={0}
-              aria-label="Divisions"
-              value={divs}
-              onValueChange={(v) => setDivs(v as string[])}
-            >
-              {RANK_DIVISIONS.map((d) => (
-                <ToggleGroupItem key={d} value={d}>
-                  {DIVISION_LABELS[d]}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          </LabeledField>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <LabeledField label="Aggregation">
+              <ToggleGroup
+                variant="outline"
+                size="sm"
+                spacing={0}
+                aria-label="Aggregation"
+                value={[agg]}
+                onValueChange={(v) => {
+                  const next = v[0] as RankAgg | undefined;
+                  if (next) set({ agg: next === 'best' ? undefined : 'last3' });
+                }}
+              >
+                <ToggleGroupItem value="best">Best</ToggleGroupItem>
+                <ToggleGroupItem value="last3">Last 3</ToggleGroupItem>
+              </ToggleGroup>
+            </LabeledField>
 
-          <LabeledField label="Row date">
-            <ToggleGroup
-              variant="outline"
-              size="sm"
-              spacing={0}
-              aria-label="Row date display"
-              value={[dateMode]}
-              onValueChange={(v) => {
-                const next = v[0] as RankDateMode | undefined;
-                if (next) set({ dates: next === 'dot' ? undefined : next });
-              }}
-            >
-              <ToggleGroupItem value="dot">Auto</ToggleGroupItem>
-              <ToggleGroupItem value="days">Days ago</ToggleGroupItem>
-              <ToggleGroupItem value="date">Date</ToggleGroupItem>
-            </ToggleGroup>
-          </LabeledField>
+            <LabeledField label="View">
+              <ToggleGroup
+                variant="outline"
+                size="sm"
+                spacing={0}
+                aria-label="Grouping"
+                value={[group]}
+                onValueChange={(v) => {
+                  const next = v[0] as RankGroup | undefined;
+                  if (next) set({ group: next === 'overall' ? undefined : 'division' });
+                }}
+              >
+                <ToggleGroupItem value="overall">Overall</ToggleGroupItem>
+                <ToggleGroupItem value="division">By division</ToggleGroupItem>
+              </ToggleGroup>
+            </LabeledField>
 
-          <LabeledField label="Show">
-            <ToggleGroup
-              multiple
-              variant="outline"
-              size="sm"
-              spacing={0}
-              aria-label="List extras"
-              value={[...(showCutoffs ? ['cuts'] : []), ...(showDelta ? ['delta'] : [])]}
-              onValueChange={(v) => {
-                const on = new Set(v as string[]);
-                set({
-                  cuts: on.has('cuts') ? undefined : '0',
-                  delta: on.has('delta') ? undefined : '0',
-                });
-              }}
-            >
-              <ToggleGroupItem value="cuts">Cutoff lines</ToggleGroupItem>
-              <ToggleGroupItem value="delta">Score change</ToggleGroupItem>
-            </ToggleGroup>
-          </LabeledField>
+            <LabeledField label="Divisions">
+              <ToggleGroup
+                multiple
+                variant="outline"
+                size="sm"
+                spacing={0}
+                aria-label="Divisions"
+                value={divs}
+                onValueChange={(v) => setDivs(v as string[])}
+              >
+                {RANK_DIVISIONS.map((d) => (
+                  <ToggleGroupItem key={d} value={d}>
+                    {DIVISION_LABELS[d]}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </LabeledField>
 
-          <RecencySettings
-            recency={recency}
-            onChange={(r) =>
-              set({ recency: r.join(',') === DEFAULT_RECENCY.join(',') ? undefined : r })
-            }
-          />
+            <LabeledField label="Row date">
+              <ToggleGroup
+                variant="outline"
+                size="sm"
+                spacing={0}
+                aria-label="Row date display"
+                value={[dateMode]}
+                onValueChange={(v) => {
+                  const next = v[0] as RankDateMode | undefined;
+                  if (next) set({ dates: next === 'dot' ? undefined : next });
+                }}
+              >
+                <ToggleGroupItem value="dot">Auto</ToggleGroupItem>
+                <ToggleGroupItem value="days">Days ago</ToggleGroupItem>
+                <ToggleGroupItem value="date">Date</ToggleGroupItem>
+              </ToggleGroup>
+            </LabeledField>
+
+            <LabeledField label="Show">
+              <ToggleGroup
+                multiple
+                variant="outline"
+                size="sm"
+                spacing={0}
+                aria-label="List extras"
+                value={[...(showCutoffs ? ['cuts'] : []), ...(showDelta ? ['delta'] : [])]}
+                onValueChange={(v) => {
+                  const on = new Set(v as string[]);
+                  set({
+                    cuts: on.has('cuts') ? undefined : '0',
+                    delta: on.has('delta') ? undefined : '0',
+                  });
+                }}
+              >
+                <ToggleGroupItem value="cuts">Cutoff lines</ToggleGroupItem>
+                <ToggleGroupItem value="delta">Score change</ToggleGroupItem>
+              </ToggleGroup>
+            </LabeledField>
+
+            <RecencySettings
+              recency={recency}
+              onChange={(r) =>
+                set({ recency: r.join(',') === DEFAULT_RECENCY.join(',') ? undefined : r })
+              }
+            />
           </div>
         </div>
       </details>
