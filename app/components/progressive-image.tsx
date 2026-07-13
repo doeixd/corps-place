@@ -6,6 +6,14 @@ import { cn } from '@/lib/utils';
  *  don't flash a fuzzy placeholder first. */
 const PLACEHOLDER_DELAY_MS = 120;
 
+// URLs that have fully loaded once this session. A remounted instance of an
+// already-seen image (back-nav to a grid, gallery revisit) is a browser cache
+// hit, but `onLoad` still fires later than the placeholder delay for lazy
+// images (the request only starts at the intersection check) — so without this
+// the thumbhash flashes on every mount. Known-loaded URLs start as `loaded`
+// and never render the placeholder at all.
+const loadedOnce = new Set<string>();
+
 /**
  * Progressive image using real <img> elements for both placeholder and final
  * artwork. The placeholder is hidden for ~120ms — if the real image loads
@@ -54,9 +62,19 @@ export function ProgressiveImage({
   className?: string;
   imgClassName?: string;
 }) {
+  const resolvedForState = src ? proxiedImage(src, { assumeCached, width, dark }) : null;
   const [failed, setFailed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(() =>
+    Boolean(resolvedForState && loadedOnce.has(resolvedForState))
+  );
   const [showPlaceholder, setShowPlaceholder] = useState(false);
+
+  // Keyed by the component's base resolved URL (not img.currentSrc, which may
+  // be a different srcset width variant and would never match the mount check).
+  const markLoaded = useCallback(() => {
+    if (resolvedForState) loadedOnce.add(resolvedForState);
+    setLoaded(true);
+  }, [resolvedForState]);
 
   // Catch images that finished loading BEFORE hydration attached onLoad (SSR +
   // warm cache — the common repeat-visit case). Without this, `loaded` stays
@@ -64,9 +82,12 @@ export function ProgressiveImage({
   // bleeds through transparent logos. A ref callback runs at attach time, so it
   // sees the browser's actual state instead of waiting for an event that
   // already fired.
-  const imgRef = useCallback((img: HTMLImageElement | null) => {
-    if (img?.complete && img.naturalWidth > 0) setLoaded(true);
-  }, []);
+  const imgRef = useCallback(
+    (img: HTMLImageElement | null) => {
+      if (img?.complete && img.naturalWidth > 0) markLoaded();
+    },
+    [markLoaded]
+  );
 
   // Delay the placeholder so fast-loading images don't flash it.
   useEffect(() => {
@@ -80,7 +101,7 @@ export function ProgressiveImage({
     onError?.();
   };
 
-  const resolved = src ? proxiedImage(src, { assumeCached, width, dark }) : null;
+  const resolved = resolvedForState;
 
   // Thumbhash data URLs are inline placeholders, so they don't add another image
   // request. If the caller has no thumbhash, render only the final image.
@@ -135,7 +156,7 @@ export function ProgressiveImage({
         loading={eager ? undefined : 'lazy'}
         {...(priority ? { fetchPriority: 'high' as const } : {})}
         decoding="async"
-        onLoad={() => setLoaded(true)}
+        onLoad={markLoaded}
         onError={handleError}
         className={cn(
           'relative',
