@@ -95,6 +95,76 @@ type TourMapProps = {
 Parent (corps page) maps `EventDirectoryRow[]` + `appearanceResults` → `TourStop[]`,
 dropping rows without lat/lng (kept in the existing appearances list, just not pinned).
 
+## Feature inventory (v1 ships ★; rest are fast-follows)
+
+- ★ All-corps season map (default), division filter chips, corps focus mode
+- ★ Date scrubber + Today marker shared across every drawn route; scrubbing
+  in all-corps mode animates the whole activity moving week by week
+- ★ Hover/tap stop card: event name/date/city + which corps were there
+  (shared-venue dots make multi-corps shows first-class), linking to the
+  event page
+- ★ Legend chips (color swatch, logo, ×) for focused corps; "Clear" returns
+  to all-corps
+- ★ Season stats strip under the map: shows on the map, corps touring,
+  miles traveled (haversine along each route — `app/lib/geo.ts`) for the
+  focused corps or the season total
+- Fast-follows: shareable focused-view URLs surfaced via a Share button
+  (`?c=` already encodes them); auto-play the season; "shows near me"
+  (geolocation hook exists in weekend-shows); housing/rehearsal layer
+  (M6-M9) as a stop-kind toggle
+
+## Components (new / touched)
+
+- `app/routes/tour/{-$year}.tsx` — route: loader (seasons, season dataset,
+  codec-parsed c/div/asof), head(), page shell
+- `app/lib/tour/codec.ts` — parseCorpsList (dedupe/cap), parseDivs reuse,
+  parseAsof, `tourCanonicalPath` (+ unit tests, rankings-codec style)
+- `app/lib/server-fns/hybrid.ts` → `getSeasonTour(season)` — the join,
+  grouped `{ corps: [{slug,name,colors,division,stops:[[eventId,date,lat,
+  lng]]}], events: {eventId: {name,slug,city,state}} }`
+- `app/components/tour/tour-map-body.tsx` — REFACTOR to `series[]` + modes
+  (all vs focused), shared-venue dot aggregation, hover-lift; corps pages
+  pass one series (zero visual change — verify screenshots)
+- `app/components/tour/tour-legend.tsx` — chips w/ logo+swatch+remove
+- `app/components/tour/corps-picker.tsx` — division chips + search + logo
+  rows (light; NOT AddCompareSection)
+- `app/components/tour/tour-stats.tsx` — the stats strip
+- `app/routes/api/og/tour.ts` (see OG below)
+- `sitemap-core[.]xml.ts` + corps-page tour section + /events header: links
+
+## SEO & OG (deepened per product ask)
+
+- Titles: bare `/tour` → "DCI Tour Map {year} — Every Drum Corps' Summer
+  Tour Route"; `/tour/2023` → "2023 DCI Tour Map — …". Description names
+  the corps count + show count + date span ("97 corps, 81 shows,
+  June 26 – August 8"). H1 mirrors the title (results-style intent match:
+  people search "dci tour map", "drum corps tour 2026" — currently unserved
+  queries with zero good answers on the web).
+- `tourCanonicalPath`: `?c`/`?div`/`?asof` all collapse to the season page;
+  newest season = bare `/tour`. Sitemap entries per season with ≥10
+  geocoded events (never-future lastmod = latest stop date ≤ today).
+- JSON-LD: `Dataset` (like rankings) + per-event `Event` refs are overkill —
+  Dataset only, `dateModified` = latest scored stop.
+- **OG image = an actual map render.** `/api/og/tour/$year` builds the map
+  SVG server-side (d3-geo geoPath over the public/geo topology + the
+  season's route polylines in brand colors — pure string templating, no
+  satori limitations), rasterizes via sharp, and inlines it as a data-URI
+  background layer in the standard satori card frame (same inline-PNG
+  trick as logoDataUri) with title + stats overlay. Distinctive at a
+  glance in feeds — nothing else in the niche has this. Focused shares
+  (`?c=`) can fast-follow with per-corps OG (corps color + single route).
+  Cache: `public, max-age=86400` + the og no-store error guard.
+
+## Corps integration
+
+- Corps page tour section header gains "Explore all tours →" linking
+  `/tour/$season?c=<slug>` (focused on that corps, season preserved).
+- Focused mode with one corps = superset of the corps-page map — the
+  corps-page section stays (it's contextual + zero-nav), the explorer link
+  is the upsell.
+- /events index header action links `/tour` ("Tour map").
+- Corps directory cards could later deep-link (`?c=` per card) — not v1.
+
 ## Milestones (commit each)
 
 ### M1 — Expose coordinates in the read-model (backend)
@@ -289,10 +359,24 @@ wherever M1 geocoding reached (2019/2022-24 strong; 2025 partial).
   season lives at bare `/tour` (canonical), others at `/tour/2023`. Year is
   the page's identity → path, not search (shows/corps precedent). Loader
   validates the year against available seasons, redirects unknown → bare.
-- **Corps selection: `?c=slug,slug,…`** — token-style compact param (vs
-  `?s=` precedent), **cap 12** (VS_SERIES_CAP precedent), canonicalized on
-  every push, `replace: true, resetScroll: false`. **Default param-free**:
-  top 8 World Class by `sort_index` with ≥2 geocoded stops that season.
+- **DEFAULT = ALL CORPS** (product decision 2026-07-13): the bare page draws
+  every corps' tour for the season — the "whole activity criss-crossing the
+  country" wow-shot IS the page. Legibility strategy for ~97 routes/683
+  stops (fine for SVG, <1k nodes):
+  - all-corps mode: thin low-opacity brand-colored routes (strokeOpacity
+    ~0.35, width 1.25), small pins only at shared venues (venue dots sized
+    by how many corps hit them), no per-corps pins;
+  - hover/tap a route or a corps chip → that corps lifts to full opacity +
+    full pins; others dim (rankings hover-highlight precedent);
+  - selecting corps (picker/legend) switches to focused mode: only the
+    selected routes, full pins, exactly the shipped corps-page look.
+- **Corps selection: `?c=slug,slug,…`** — compact param (vs `?s=`
+  precedent), canonicalized on every push, `replace: true, resetScroll:
+  false`. Param-free default = all-corps mode; `?c=` values switch to
+  focused mode. Soft cap 12 for FOCUSED selections (VS_SERIES_CAP) — the
+  all-mode has no cap since it fetches nothing extra. `?div=` filters the
+  all-corps mode to divisions (world/open/all-age/soundsport, rankings
+  parseDivs precedent).
 - **Date scrub: `?asof=YYYY-MM-DD`** (rankings precedent) + the existing
   tour scrubber/Today-marker UX; axis = full season span (min..max stop
   date across ALL selected corps). Param-free default = today (in-season) /
@@ -310,11 +394,14 @@ wherever M1 geocoding reached (2019/2022-24 strong; 2025 partial).
   render as legend chips above the map (color swatch + name + ×-remove,
   vs chart-primitives style). Hovering a legend chip highlights that route
   and dims others (rankings hover-highlight precedent).
-- **Payload discipline** (SSR-payload playbook): the loader serializes ONLY
-  the selected corps' stops (~100 stops default ≈ small); the full-season
-  dataset for the picker loads on first picker interaction via a cached
-  hybrid server-fn (`getSeasonTour(season)` — grouped stops for all corps,
-  ~15KB gz; SW/edge cacheable like other hybrid fns).
+- **Payload discipline** (SSR-payload playbook): default-all means the
+  loader ships the full season dataset — keep each stop to
+  `[eventId, date, lat, lng]` + a per-corps header (slug/name/colors/
+  division), event names resolved from a separate slim event index only
+  for the hovered/selected stop card. Budget: ≤ ~70KB raw / ~15KB gz in
+  the TSR payload (measure in T3; if over, SSR the routes as a static
+  first-paint SVG and hydrate data client-side from the cached hybrid fn).
+  `getSeasonTour(season)` is a hybrid server-fn (edge+SW cacheable).
 - **Map body**: generalize the shipped tour-map-body to multi-series —
   `TourMapBody({ series: { slug, name, colors, stops }[] , asof, … })`.
   Same lazy shell (aspect-ratio placeholder, d3-geo/topojson in the lazy
@@ -337,13 +424,14 @@ wherever M1 geocoding reached (2019/2022-24 strong; 2025 partial).
 - **T2 — multi-series map**: refactor tour-map-body to `series[]` (corps
   pages pass one series — zero visual change, verify), per-corps colors,
   legend chips with remove/hover-highlight, shared scrubber across series.
-- **T3 — page**: `/tour/{-$year}` route (loader: seasons + default/selected
-  series), picker panel, SeasonChips, empty/sparse states (StatusCard),
-  mobile (picker collapses into a details disclosure like /rankings
-  filters).
-- **T4 — SEO + polish**: canonical helper + sitemap entries, OG description
-  per season, "Explore all tours" links from corps tour sections + /events,
-  smoke-test entries in test-site-pages.mjs.
+- **T3 — page**: `/tour/{-$year}` route (loader: seasons + full-season
+  dataset; measure TSR payload vs the ≤15KB-gz budget), all-corps default
+  + focused mode, picker panel, SeasonChips, stats strip, empty/sparse
+  states (StatusCard), mobile (picker collapses into a details disclosure
+  like /rankings filters).
+- **T4 — SEO + OG + polish**: canonical helper + sitemap entries, the
+  map-render OG card (/api/og/tour/$year), "Explore all tours" links from
+  corps tour sections + /events, smoke-test entries in test-site-pages.mjs.
 
 Rough effort: T1+T2 one session, T3+T4 one session. Housing/rehearsal
 enrichment (M6-M9 above) composes onto this page later as an extra stop
