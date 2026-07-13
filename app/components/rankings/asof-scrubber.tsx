@@ -53,9 +53,10 @@ export function AsofScrubber({
   }, []);
 
   useEffect(() => {
-    updateEdges();
     const el = ref.current;
     if (!el) return;
+    // observe() delivers an initial callback after layout — an eager
+    // updateEdges() here would force a reflow mid-hydration.
     const ro = new ResizeObserver(updateEdges);
     ro.observe(el);
     return () => ro.disconnect();

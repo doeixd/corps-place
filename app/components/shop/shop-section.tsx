@@ -45,9 +45,10 @@ export function ShopSection<T>({
   // (expanded) state doesn't scroll, so we skip the observer there.
   useEffect(() => {
     if (expanded) return;
-    updateEdges();
     const el = scrollerRef.current;
     if (!el) return;
+    // observe() delivers an initial callback after layout — an eager
+    // updateEdges() here would force a reflow mid-hydration.
     const ro = new ResizeObserver(updateEdges);
     ro.observe(el);
     return () => ro.disconnect();

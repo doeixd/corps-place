@@ -192,9 +192,11 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
   }, []);
   const showCount = weekend?.shows.length ?? 0;
   useEffect(() => {
-    updateEdges();
     const el = scrollerRef.current;
     if (!el) return;
+    // No synchronous updateEdges() here: observe() always delivers an initial
+    // callback after layout, so an eager call only forces a reflow mid-hydration
+    // (this was a Lighthouse "forced reflow" hotspot on the home page).
     const ro = new ResizeObserver(updateEdges);
     ro.observe(el);
     return () => ro.disconnect();
@@ -218,11 +220,7 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
       : weekend.shows.map((show) => ({ item: show, distanceMiles: null as number | null }));
 
   return (
-    <motion.section
-      initial={false}
-      className="space-y-3"
-      aria-label={heading}
-    >
+    <motion.section initial={false} className="space-y-3" aria-label={heading}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h2 className="text-lg font-medium text-text-primary pl-[1px]">{heading}</h2>
