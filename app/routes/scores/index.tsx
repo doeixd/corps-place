@@ -2,7 +2,12 @@ import { useEffect, useMemo } from 'react';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { warmVisibleOnIdle } from '@/lib/warm-routes';
 import { useMachine } from '@xstate/react';
-import { getHybridEventsDirectory, getHybridEventFullRecap, getCorpsByKeys } from '@/lib/server-fns/hybrid';
+import {
+  getHybridEventsDirectory,
+  getHybridEventFullRecap,
+  getCorpsByKeys,
+} from '@/lib/server-fns/hybrid';
+import { getScoresLastPublished } from '@/lib/server-fns/scores-meta';
 import { availableSeasons } from '@/lib/event-filtering';
 import { eventFilterMachine, eventFilterSearchCodec } from '@/machines/event-filter-machine';
 import { useSearchSync } from '@/lib/use-search-sync';
@@ -67,19 +72,23 @@ export const Route = createFileRoute('/scores/')({
       );
       initialRecaps = Object.fromEntries(loaded.filter(([, d]) => d.recap));
     }
-    return { ...dir, initialRecaps };
+    const scoresUpdatedAt = await getScoresLastPublished().catch(() => null);
+    return { ...dir, initialRecaps, scoresUpdatedAt };
   },
   head: ({ loaderData }) => {
     const n = loaderData?.scoredTotal ?? 0;
     const season = CURRENT_SCORES_SEASON;
-    // Honest dateModified: the archive last changed when the most recent show was
-    // scored, so use the latest scored event's date. Advances only when a new show
-    // posts (mirrors the rankings page); omitted when nothing is scored yet.
-    const lastScored = (loaderData?.events ?? [])
-      .filter((e) => e.scores_released && e.start_date)
-      .map((e) => e.start_date.slice(0, 10))
-      .sort()
-      .at(-1);
+    // Honest dateModified: prefer the exact moment scores were last PUBLISHED
+    // (the ingest_runs log — full ISO datetime, which is what earns the "N hours
+    // ago" freshness label in SERPs); fall back to the latest scored event's
+    // date. Advances only when new scores post; omitted when nothing is scored.
+    const lastScored =
+      loaderData?.scoresUpdatedAt ??
+      (loaderData?.events ?? [])
+        .filter((e) => e.scores_released && e.start_date)
+        .map((e) => e.start_date.slice(0, 10))
+        .sort()
+        .at(-1);
     return seoHead({
       title: `${season} DCI Drum Corps Scores & Results — World Class, Open Class`,
       description:
@@ -130,8 +139,26 @@ export const Route = createFileRoute('/scores/')({
   component: ScoresIndex,
 });
 
+// Fixed-zone (ET) datetime label — deterministic across server and client so the
+// SSR'd header never mismatches at hydration. ET is the sport's home timezone.
+const formatUpdatedET = (iso: string): string => {
+  try {
+    return (
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+      }).format(new Date(iso)) + ' ET'
+    );
+  } catch {
+    return iso.slice(0, 10);
+  }
+};
+
 function ScoresIndex() {
-  const { events, initialRecaps } = Route.useLoaderData();
+  const { events, initialRecaps, scoresUpdatedAt } = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -163,7 +190,8 @@ function ScoresIndex() {
     send,
     search,
     codec,
-    navigate: ({ search: s, replace, resetScroll }) => navigate({ search: s, replace, resetScroll }),
+    navigate: ({ search: s, replace, resetScroll }) =>
+      navigate({ search: s, replace, resetScroll }),
   });
 
   // Group scored events by the active season filter. The default view is the
@@ -192,7 +220,20 @@ function ScoresIndex() {
     <PageShell>
       <PageHeader
         title={`${CURRENT_SCORES_SEASON} DCI Drum Corps Scores — World Class & Open Class`}
-        subtitle="Final results and full caption-by-caption recaps, by season"
+        subtitle={
+          <>
+            Final results and full caption-by-caption recaps, by season
+            {scoresUpdatedAt ? (
+              <>
+                {' · Updated '}
+                {/* Deterministic ET formatting (fixed zone) so SSR and hydration
+                    agree regardless of the visitor's timezone; the machine-readable
+                    dateTime is what corroborates the JSON-LD dateModified. */}
+                <time dateTime={scoresUpdatedAt}>{formatUpdatedET(scoresUpdatedAt)}</time>
+              </>
+            ) : null}
+          </>
+        }
         backTo="/"
         backLabel="Home"
       />
