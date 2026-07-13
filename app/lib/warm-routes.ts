@@ -22,15 +22,17 @@ interface PreloadableRouter {
 }
 
 const onIdle = (cb: () => void): void => {
-  const ric = (globalThis as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number })
-    .requestIdleCallback;
+  const ric = (
+    globalThis as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }
+  ).requestIdleCallback;
   if (typeof ric === 'function') ric(cb, { timeout: 2000 });
   else setTimeout(cb, 200);
 };
 
 const connectionAllowsWarm = (): boolean => {
-  const c = (navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } })
-    .connection;
+  const c = (
+    navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } }
+  ).connection;
   if (!c) return true;
   if (c.saveData) return false;
   if (typeof c.effectiveType === 'string' && /(^|-)2g$/.test(c.effectiveType)) return false;
@@ -48,6 +50,15 @@ const connectionAllowsWarm = (): boolean => {
  *
  * Re-run the effect when the rendered/filtered set changes so newly-shown cards
  * get observed (the query runs at attach time).
+ *
+ * Flood-proof by construction (a real HAR showed 272 requests in 4s — 30 corps
+ * × 4 shards + merch — from one fast scroll through /corps, every request then
+ * waiting 5-6s behind the rest):
+ * - DWELL: a card must stay intersecting `dwellMs` before it's queued; cards
+ *   flicked past during a fast scroll warm nothing.
+ * - BOUNDED QUEUE: at most `concurrency` preloads in flight; each detail warm
+ *   cascades into several read-model shard fetches, so 2 in flight ≈ ~10
+ *   concurrent requests worst case — never enough to starve a real navigation.
  */
 export function warmVisibleOnIdle(
   router: PreloadableRouter,
@@ -56,7 +67,15 @@ export function warmVisibleOnIdle(
     rootMargin = '600px 0px',
     startDelayMs = 1200,
     selector = '[data-grid-key]',
-  }: { rootMargin?: string; startDelayMs?: number; selector?: string } = {}
+    dwellMs = 400,
+    concurrency = 2,
+  }: {
+    rootMargin?: string;
+    startDelayMs?: number;
+    selector?: string;
+    dwellMs?: number;
+    concurrency?: number;
+  } = {}
 ): () => void {
   if (
     typeof window === 'undefined' ||
@@ -68,25 +87,65 @@ export function warmVisibleOnIdle(
   let cancelled = false;
   let io: IntersectionObserver | null = null;
   const warmed = new Set<string>();
+  const dwellTimers = new Map<Element, ReturnType<typeof setTimeout>>();
+  const queue: string[] = [];
+  let inFlight = 0;
+
+  const pump = (): void => {
+    if (cancelled) return;
+    if (document.visibilityState === 'hidden') {
+      onIdle(pump);
+      return;
+    }
+    while (inFlight < concurrency && queue.length) {
+      const key = queue.shift()!;
+      const r = resolve(key);
+      if (!r) continue;
+      inFlight++;
+      Promise.resolve(router.preloadRoute({ to: r.to, params: r.params }))
+        .catch(() => {})
+        .finally(() => {
+          inFlight--;
+          onIdle(pump);
+        });
+      if (r.image) {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = r.image;
+      }
+    }
+  };
+
   const timer = setTimeout(() => {
     onIdle(() => {
       if (cancelled) return;
       io = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            if (!entry.isIntersecting) continue; // only unobserve/warm once actually seen
-            const key = (entry.target as HTMLElement).dataset.gridKey;
-            io!.unobserve(entry.target);
-            if (!key || warmed.has(key)) continue;
-            warmed.add(key);
-            const r = resolve(key);
-            if (!r) continue;
-            void Promise.resolve(router.preloadRoute({ to: r.to, params: r.params })).catch(() => {});
-            if (r.image) {
-              const img = new Image();
-              img.decoding = 'async';
-              img.src = r.image;
+            const el = entry.target;
+            if (!entry.isIntersecting) {
+              // Left the viewport before the dwell elapsed — a flick-scroll pass.
+              const t = dwellTimers.get(el);
+              if (t) {
+                clearTimeout(t);
+                dwellTimers.delete(el);
+              }
+              continue;
             }
+            if (dwellTimers.has(el)) continue;
+            dwellTimers.set(
+              el,
+              setTimeout(() => {
+                dwellTimers.delete(el);
+                if (cancelled) return;
+                io?.unobserve(el);
+                const key = (el as HTMLElement).dataset.gridKey;
+                if (!key || warmed.has(key)) return;
+                warmed.add(key);
+                queue.push(key);
+                pump();
+              }, dwellMs)
+            );
           }
         },
         { rootMargin }
@@ -97,6 +156,8 @@ export function warmVisibleOnIdle(
   return () => {
     cancelled = true;
     clearTimeout(timer);
+    for (const t of dwellTimers.values()) clearTimeout(t);
+    dwellTimers.clear();
     io?.disconnect();
   };
 }
