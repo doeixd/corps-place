@@ -334,55 +334,6 @@ export default function TourExplorerBody({
           'fixed inset-0 z-50 overflow-y-auto bg-background p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:p-6'
       )}
     >
-      {/* Toolbar: play, fullscreen, export, share. */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setPlaying((p) => !p)}
-          disabled={dates.length < 2}
-          aria-label={playing ? 'Pause season playback' : 'Play the season'}
-        >
-          <Icon icon={playing ? PauseIcon : PlayIcon} size="sm" />
-          {playing ? 'Pause' : 'Play season'}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setFullscreen((f) => !f)}
-          aria-label={fullscreen ? 'Exit full screen' : 'View full screen'}
-        >
-          <Icon icon={fullscreen ? ArrowShrinkIcon : ArrowExpandIcon} size="sm" />
-          {fullscreen ? 'Exit' : 'Full screen'}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => void downloadPng()}
-          disabled={rendering != null || !geo}
-        >
-          <Icon icon={Download01Icon} size="sm" />
-          {rendering === 'image' ? 'Rendering…' : 'Image'}
-        </Button>
-        {canRecord ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => void downloadVideo()}
-            disabled={rendering != null || dates.length < 2}
-            title="Replay the whole season as a WebM video"
-          >
-            <Icon icon={Download01Icon} size="sm" />
-            {rendering === 'video'
-              ? 'Recording… (takes ~half a minute)'
-              : 'Video'}
-          </Button>
-        ) : null}
-        <div className="ml-auto">
-          <ShareButton url={shareUrl} title={`${season} DCI Tour Map`} />
-        </div>
-      </div>
-
       <svg
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         className={cn('w-full', fullscreen && 'mx-auto max-h-[78dvh]')}
@@ -520,13 +471,65 @@ export default function TourExplorerBody({
           </div>
           <div className="mt-1 flex justify-between text-[11px] text-text-muted">
             <span>{formatEventDate(dates[0]!)}</span>
-            <span className="font-medium text-text-secondary">
-              {revealDate ? formatEventDate(revealDate) : ''}
-            </span>
             <span>{formatEventDate(dates[dates.length - 1]!)}</span>
+          </div>
+          {/* Current reveal date on its own line, below the Today label's band
+              so the two never overlap. */}
+          <div className="mt-3 text-center text-xs font-medium text-text-secondary">
+            {revealDate ? formatEventDate(revealDate) : ''}
           </div>
         </div>
       ) : null}
+
+      {/* Toolbar: play, fullscreen, export, share. */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPlaying((p) => !p)}
+          disabled={dates.length < 2}
+          aria-label={playing ? 'Pause season playback' : 'Play the season'}
+        >
+          <Icon icon={playing ? PauseIcon : PlayIcon} size="sm" />
+          {playing ? 'Pause' : 'Play season'}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setFullscreen((f) => !f)}
+          aria-label={fullscreen ? 'Exit full screen' : 'View full screen'}
+        >
+          <Icon icon={fullscreen ? ArrowShrinkIcon : ArrowExpandIcon} size="sm" />
+          {fullscreen ? 'Exit' : 'Full screen'}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => void downloadPng()}
+          disabled={rendering != null || !geo}
+        >
+          <Icon icon={Download01Icon} size="sm" />
+          {rendering === 'image' ? 'Rendering…' : 'Image'}
+        </Button>
+        {canRecord ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void downloadVideo()}
+            disabled={rendering != null || dates.length < 2}
+            title="Replay the whole season as a WebM video"
+          >
+            <Icon icon={Download01Icon} size="sm" />
+            {rendering === 'video'
+              ? 'Recording… (takes ~half a minute)'
+              : 'Video'}
+          </Button>
+        ) : null}
+        <div className="ml-auto">
+          <ShareButton url={shareUrl} title={`${season} DCI Tour Map`} />
+        </div>
+      </div>
+
 
       {/* Venue card (all-corps mode): every event at the tapped coordinate. */}
       {!isFocusedMode && activeVenueData ? (
