@@ -190,6 +190,7 @@ function TourPage() {
         }
         backTo="/events"
         backLabel="Events"
+        subtitleClassName="text-sm max-w-2xl"
       />
 
       {/* Season stats — prominent, tabular, self-updating with focus/filters. */}
