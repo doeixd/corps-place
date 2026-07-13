@@ -394,14 +394,14 @@ wherever M1 geocoding reached (2019/2022-24 strong; 2025 partial).
   render as legend chips above the map (color swatch + name + ×-remove,
   vs chart-primitives style). Hovering a legend chip highlights that route
   and dims others (rankings hover-highlight precedent).
-- **Payload discipline** (SSR-payload playbook): default-all means the
-  loader ships the full season dataset — keep each stop to
-  `[eventId, date, lat, lng]` + a per-corps header (slug/name/colors/
-  division), event names resolved from a separate slim event index only
-  for the hovered/selected stop card. Budget: ≤ ~70KB raw / ~15KB gz in
-  the TSR payload (measure in T3; if over, SSR the routes as a static
-  first-paint SVG and hydrate data client-side from the cached hybrid fn).
-  `getSeasonTour(season)` is a hybrid server-fn (edge+SW cacheable).
+- **Payload — MEASURED 2026-07-13, no longer an estimate**: the full 2026
+  dataset as `[eventId, date, lat(4dp), lng(4dp)]` tuples + corps headers +
+  a compact event index = **69.6KB raw / 7.6KB gzip** (683 stops, 97 corps,
+  80 events; event index alone ~2KB gz). Comfortably shippable in the
+  loader — no split-fetch fallback needed. TSR/seroval inflates raw ~1.3×;
+  still fine (compare: home's payload is 128KB). 4-decimal coords (~11m)
+  exceed ZIP-centroid accuracy anyway. `getSeasonTour(season)` is a hybrid
+  server-fn (edge+SW cacheable, immutable-ish between emits).
 - **Map body**: generalize the shipped tour-map-body to multi-series —
   `TourMapBody({ series: { slug, name, colors, stops }[] , asof, … })`.
   Same lazy shell (aspect-ratio placeholder, d3-geo/topojson in the lazy
@@ -432,6 +432,62 @@ wherever M1 geocoding reached (2019/2022-24 strong; 2025 partial).
 - **T4 — SEO + OG + polish**: canonical helper + sitemap entries, the
   map-render OG card (/api/og/tour/$year), "Explore all tours" links from
   corps tour sections + /events, smoke-test entries in test-site-pages.mjs.
+
+## Rendering performance (all-corps mode is the hot path)
+
+- **No framer-motion on the 97 routes.** The corps-page map animates ONE
+  route with a spring; 97 springs = jank. All-corps routes are plain
+  `<path>` with CSS `transition: opacity/stroke-width 150ms` for hover
+  lift. The drop-spring/pathLength animation stays exclusive to focused
+  mode (≤12 series).
+- **Scrub re-render is per-STEP, not per-frame**: the scrubber is discrete
+  (~43 season days); a step change re-renders 97 paths once — fine.
+  Per-corps reveal = `strokeDasharray/offset` from a cumulative-length
+  table (computed once per dataset on mount, cached), so a step is a style
+  write, not a path rebuild.
+- **Pins**: all-corps mode renders the 72 shared-venue dots (measured:
+  ZIP-centroid geocoding collapses 683 stops onto 72 distinct coords),
+  never 683 pins. Focused mode renders that corps' pins only.
+- **Hit areas**: each route gets an invisible 8px-wide twin path for
+  hover/tap; venue dots get r≥8 transparent halos (mobile targets).
+- **SVG node budget**: ~97×2 paths + 72 dots + states ≈ ~350 nodes — well
+  inside comfortable SVG range; no canvas/WebGL needed.
+- **SEO content is NOT the SVG**: crawlers see nothing in a client-rendered
+  map. The page SSRs a real text section beneath it — "Corps touring in
+  {year}" (linked corps list with show counts) and a biggest-shows list —
+  also the honest content for screen readers.
+
+## Edge cases, correctness & assumptions (decided up front)
+
+- **SoundSport excluded by default** (34 of 97 corps; local/non-competitive
+  clutter — rankings precedent). Opt-in via division chips (`?div=`).
+- **22 corps have <2 geocoded stops** (measured): drawn as a single venue
+  dot, no route; picker shows a "1 mappable stop" hint, not hidden.
+- **ZIP-centroid truth-in-labeling**: coords are ZIP centroids (± miles) —
+  distinct venues in one ZIP merge into one dot; routes are approximate.
+  Stop cards group by COORDINATE and list all events there; copy says
+  "approximate locations"; never imply street-level precision.
+- **Dupes/order**: dedupe stops by (corps,eventId); same-day double-shows
+  order by date then eventId — sub-day leg order unknowable from our data
+  (documented assumption, invisible at national scale).
+- **AlbersUSA insets**: null-projection legs are skipped (shipped guard);
+  no AK/HI shows exist in the data (verified all coords project).
+- **`?c=` hygiene**: unknown/duplicate/not-touring slugs dropped, >12
+  truncated (codec unit tests); empty result falls back to all-corps mode.
+- **`?asof=`**: clamp to [first,last] stop date; invalid → default (today
+  mid-season / full reveal historical) — corps-page semantics.
+- **Year param**: coerce to string defensively; zero-coverage year →
+  redirect bare /tour; partial coverage renders with the stats strip
+  saying "41 of 81 shows mappable" (2025) — honesty over hiding.
+- **Freshness model**: stops appear when events GEOCODE (schedule-shaped),
+  not when scores land — mid-season the whole season is already drawn and
+  the scrubber conveys progress. Assumes the events table carries the full
+  announced schedule (true — refresh-lineups cron maintains it).
+- **Slot-flip correctness**: getSeasonTour reads one read-model slot in one
+  query set per request — A/B flips can't mix seasons (same guarantee all
+  hybrid fns rely on).
+- **OG failure**: /api/og/tour returns no-store on error (satori/sharp can
+  fail); /api/og has no CF cache rule so there's no poisoning class.
 
 Rough effort: T1+T2 one session, T3+T4 one session. Housing/rehearsal
 enrichment (M6-M9 above) composes onto this page later as an extra stop
