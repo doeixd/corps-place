@@ -1,5 +1,5 @@
 import { createServerFileRoute } from '@tanstack/react-start/server';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import * as path from 'node:path';
 import { renderOgPng, OG_HEADERS } from '@/lib/og/render';
 import { getSeasonTour } from '@/lib/server-fns/hybrid';
@@ -32,12 +32,14 @@ async function seasonMapDataUri(season: string): Promise<{ uri: string; corps: n
     import('topojson-client'),
     import('sharp'),
   ]);
-  const topo = JSON.parse(
-    readFileSync(
-      path.resolve(process.cwd(), 'public', 'geo', 'us-states-albers-10m.json'),
-      'utf8'
-    )
-  );
+  // In the container the built assets live under .output/public (verified:
+  // /app/public does not exist at runtime); in dev they're in public/.
+  const topoPath = [
+    path.resolve(process.cwd(), '.output', 'public', 'geo', 'us-states-albers-10m.json'),
+    path.resolve(process.cwd(), 'public', 'geo', 'us-states-albers-10m.json'),
+  ].find(existsSync);
+  if (!topoPath) throw new Error('us-states topology asset not found');
+  const topo = JSON.parse(readFileSync(topoPath, 'utf8'));
   const gp = geoPath();
   const states =
     gp(topoClient.mesh(topo, topo.objects.states, (a: unknown, b: unknown) => a !== b)) ?? '';
@@ -122,7 +124,8 @@ export const ServerRoute = createServerFileRoute('/api/og/tour/$season').methods
         } as never),
         { headers: OG_HEADERS }
       );
-    } catch {
+    } catch (err) {
+      console.error('[og/tour] render failed:', err);
       return new Response('render failed', {
         status: 500,
         headers: { 'cache-control': 'no-store' },
