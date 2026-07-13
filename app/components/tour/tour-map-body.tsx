@@ -131,11 +131,13 @@ export default function TourMapBody({ stops, colors }: TourMapProps) {
         role="img"
         aria-label="Season tour map"
       >
-        <path d={geo.nationPath} className="fill-muted/30" />
+        {/* Light mode needs a real landmass tint (muted/30 was white-on-white)
+            + firmer state lines; dark mode keeps the subtle originals. */}
+        <path d={geo.nationPath} className="fill-muted dark:fill-muted/30" />
         <path
           d={geo.statesPath}
           fill="none"
-          className="stroke-border"
+          className="stroke-muted-foreground/25 dark:stroke-border"
           strokeWidth={0.75}
         />
         {routeD ? (

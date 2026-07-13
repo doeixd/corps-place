@@ -341,8 +341,15 @@ export default function TourExplorerBody({
         aria-label={`${season} tour map — ${corps.length} corps`}
         onMouseLeave={() => onHoverSlug(null)}
       >
-        <path d={geo.nationPath} className="fill-muted/30" />
-        <path d={geo.statesPath} fill="none" className="stroke-border" strokeWidth={0.75} />
+        {/* Light mode needs a real landmass tint (muted/30 was white-on-white)
+            + firmer state lines; dark mode keeps the subtle originals. */}
+        <path d={geo.nationPath} className="fill-muted dark:fill-muted/30" />
+        <path
+          d={geo.statesPath}
+          fill="none"
+          className="stroke-muted-foreground/25 dark:stroke-border"
+          strokeWidth={0.75}
+        />
 
         {/* Routes: visible path + invisible fat hit-twin. CSS transitions only. */}
         {series.map((s) => {
