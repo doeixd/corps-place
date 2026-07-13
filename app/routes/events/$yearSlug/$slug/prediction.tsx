@@ -398,7 +398,7 @@ export const Route = createFileRoute('/events/$yearSlug/$slug/prediction')({
     const corpsCount = hasScores ? ranked.length : (d.corps?.length ?? 0);
 
     const title = hasScores
-      ? `${ename} ${params.yearSlug} — Scores, Recap & Predictions`
+      ? `${ename} ${params.yearSlug} Results — Scores, Recap & Predictions`
       : `${ename} ${params.yearSlug} — Schedule, Scores & Predictions`;
     const description = clampDescription(
       null,

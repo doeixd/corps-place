@@ -91,7 +91,9 @@ export const Route = createFileRoute('/scores/$slug')({
     const winner = [...corpsList].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))[0]?.corps;
     const hasScores = corpsList.length > 0;
 
-    const title = `${name}${year ? ` ${year}` : ''} — Scores & Full Recap`;
+    // "Results" leads — it's what people actually search after a show
+    // ("<event> results"); scores/recap keep the secondary intents.
+    const title = `${name}${year ? ` ${year}` : ''} Results — Scores & Full Recap`;
     const description = hasScores
       ? `Final scores and the complete caption-by-caption recap from ${name}` +
         `${event.start_date ? ` on ${formatEventDate(event.start_date)}` : ''}${loc ? ` in ${loc}` : ''}.` +
@@ -188,7 +190,7 @@ function ScoresEventPage() {
     <PageShell>
       <PageHeader
         title={`${name}${year ? ` ${year}` : ''}`}
-        subtitle={['Scores & full recap', formatEventDate(event.start_date), loc]
+        subtitle={['Results, scores & full recap', formatEventDate(event.start_date), loc]
           .filter(Boolean)
           .join(' · ')}
         backTo="/scores"

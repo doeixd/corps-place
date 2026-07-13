@@ -81,7 +81,7 @@ export const Route = createFileRoute('/scores/')({
       .sort()
       .at(-1);
     return seoHead({
-      title: `${season} DCI Drum Corps Scores & Recaps — World Class, Open Class`,
+      title: `${season} DCI Drum Corps Scores & Results — World Class, Open Class`,
       description:
         `${season} DCI drum corps scores and full caption-by-caption recaps: World Class and ` +
         `Open Class results, placements and GE/Visual/Music breakdowns from ${n} scored shows. ` +
