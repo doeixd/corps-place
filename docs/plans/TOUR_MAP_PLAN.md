@@ -266,3 +266,85 @@ and volunteers, but aggregating them deserves care:
   attribution, open-to-public badge; city-level housing policy.
 - **M9** — T3 browser adapters (Troopers, Cavaliers, Blue Knights) + T4
   assets; per-corps coverage table on the admin jobs page.
+
+---
+
+# /tour/$year — season tour explorer (planned 2026-07-13)
+
+A standalone marquee page: the whole season's tours on one US map — multiple
+corps' routes in brand colors, corps picker, date scrub. v1 corps-page map
+(shipped) is single-corps; this composes the same pieces season-wide.
+
+## Verified data reality
+
+One join over EXISTING read-model tables — no schema work:
+`rm_corps_appearances × rm_events (venue_latitude/longitude, M1) × rm_corps
+(colors/logos/division)`. 2026: 97 corps, 683 geocoded corps-stops; division
+split World 19 / Open 18 / All-Age 15 / SoundSport 34. Historical seasons work
+wherever M1 geocoding reached (2019/2022-24 strong; 2025 partial).
+
+## Design decisions (each follows a surveyed in-app convention)
+
+- **Route: `/tour/{-$year}`** (optional path param, corps-page style): newest
+  season lives at bare `/tour` (canonical), others at `/tour/2023`. Year is
+  the page's identity → path, not search (shows/corps precedent). Loader
+  validates the year against available seasons, redirects unknown → bare.
+- **Corps selection: `?c=slug,slug,…`** — token-style compact param (vs
+  `?s=` precedent), **cap 12** (VS_SERIES_CAP precedent), canonicalized on
+  every push, `replace: true, resetScroll: false`. **Default param-free**:
+  top 8 World Class by `sort_index` with ≥2 geocoded stops that season.
+- **Date scrub: `?asof=YYYY-MM-DD`** (rankings precedent) + the existing
+  tour scrubber/Today-marker UX; axis = full season span (min..max stop
+  date across ALL selected corps). Param-free default = today (in-season) /
+  full reveal (historical) — matching the corps-page map behavior.
+- **URL codec module** `app/lib/tour/codec.ts` (plain validateSearch,
+  rankings-style — no state machine) with unit tests; `tourCanonicalPath()`
+  shared by head() and sitemap-core (rankingsCanonicalPath pattern:
+  newest → `/tour`, else `/tour/$year`; `?c`/`?asof` always collapse).
+- **Colors**: brand hue per corps via `corpsPalette`; collision/brand-less
+  fallback = the /vs 12-color oklch categorical ramp (`assignVsColors`
+  pattern — consider extracting the ramp from app/lib/vs/colors.ts).
+- **Picker**: NOT the 643-line AddCompareSection — a lighter panel:
+  division FilterChips (World/Open/All-Age/SoundSport) + search input +
+  logo'd corps rows with toggle checkmarks, "at cap" notice. Selected corps
+  render as legend chips above the map (color swatch + name + ×-remove,
+  vs chart-primitives style). Hovering a legend chip highlights that route
+  and dims others (rankings hover-highlight precedent).
+- **Payload discipline** (SSR-payload playbook): the loader serializes ONLY
+  the selected corps' stops (~100 stops default ≈ small); the full-season
+  dataset for the picker loads on first picker interaction via a cached
+  hybrid server-fn (`getSeasonTour(season)` — grouped stops for all corps,
+  ~15KB gz; SW/edge cacheable like other hybrid fns).
+- **Map body**: generalize the shipped tour-map-body to multi-series —
+  `TourMapBody({ series: { slug, name, colors, stops }[] , asof, … })`.
+  Same lazy shell (aspect-ratio placeholder, d3-geo/topojson in the lazy
+  chunk, module-level geometry cache — already shared with corps pages).
+  Route lines per corps; pins shrink when >3 corps selected; same-venue
+  same-day pins get the existing cluster offset. Single-corps page keeps
+  its current look by passing one series.
+- **Chrome/SEO**: PageShell + PageHeader; seoHead with per-season title
+  ("2026 DCI Tour Map — every corps' route"), Dataset JSON-LD (dateModified
+  = latest stop ≤ today, never future); sitemap-core adds `/tour` + a
+  `/tour/$year` per season above a coverage threshold (≥10 geocoded
+  events). `staleTime: 5 * 60_000`. Nav: no new item — link from /events
+  header actions + corps-page tour section ("Explore all tours →").
+
+## Milestones
+
+- **T1 — data + codec**: `getSeasonTour` hybrid fn (join above, grouped by
+  corps, season-validated), `app/lib/tour/codec.ts` (+tests: c-list parse/
+  cap/dedupe, asof, canonical path).
+- **T2 — multi-series map**: refactor tour-map-body to `series[]` (corps
+  pages pass one series — zero visual change, verify), per-corps colors,
+  legend chips with remove/hover-highlight, shared scrubber across series.
+- **T3 — page**: `/tour/{-$year}` route (loader: seasons + default/selected
+  series), picker panel, SeasonChips, empty/sparse states (StatusCard),
+  mobile (picker collapses into a details disclosure like /rankings
+  filters).
+- **T4 — SEO + polish**: canonical helper + sitemap entries, OG description
+  per season, "Explore all tours" links from corps tour sections + /events,
+  smoke-test entries in test-site-pages.mjs.
+
+Rough effort: T1+T2 one session, T3+T4 one session. Housing/rehearsal
+enrichment (M6-M9 above) composes onto this page later as an extra stop
+layer — the series shape should carry `kind` from day one to leave room.
