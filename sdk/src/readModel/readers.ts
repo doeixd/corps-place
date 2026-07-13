@@ -1135,13 +1135,23 @@ export const readMerchSnapshot = async (db: Client): Promise<MerchSnapshot> => {
 // Mirrors builders/tour.ts buildSeasonTour over the rm_* tables (same shape).
 export const readSeasonTour = async (db: Client, season: string) => {
   const { assembleSeasonTour } = await import('./builders/tour.js');
+  // Stops come from TWO sources, unioned (assembleSeasonTour dedupes):
+  // appearances (participant/lineup rows — sparse for scrape-era seasons like
+  // 2025, where 39/80 events have no participants) and scores (rm_rankings —
+  // every scored competition knows exactly who performed).
   const stops = await db.execute({
     sql: `SELECT a.corps_slug, e.event_id, e.start_date AS date,
                  e.venue_latitude AS lat, e.venue_longitude AS lng
             FROM rm_corps_appearances a
             JOIN rm_events e ON e.event_id = a.event_id
-           WHERE e.season = ? AND e.venue_latitude IS NOT NULL`,
-    args: [season],
+           WHERE e.season = ? AND e.venue_latitude IS NOT NULL
+          UNION
+          SELECT r.corps_slug, e.event_id, e.start_date AS date,
+                 e.venue_latitude AS lat, e.venue_longitude AS lng
+            FROM rm_rankings r
+            JOIN rm_events e ON e.competition_slug = r.competition_slug AND e.season = r.season
+           WHERE r.season = ? AND r.metric = 'total' AND e.venue_latitude IS NOT NULL`,
+    args: [season, season],
   });
   const corps = await db.execute(
     'SELECT slug, name, division_name, color_primary, color_secondary, corps_logo FROM rm_corps'
