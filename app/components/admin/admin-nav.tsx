@@ -10,6 +10,7 @@ import {
   UserMultipleIcon,
   CustomerSupportIcon,
   LicenseIcon,
+  CloudUploadIcon,
 } from '@/components/icons/generated';
 import { FANTASY_ENABLED } from '@/lib/fantasy/flag';
 
@@ -50,6 +51,7 @@ const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
   { to: '/admin/users', label: 'Users', icon: UserMultipleIcon, min: 'admin' },
   { to: '/admin/support', label: 'Support', icon: CustomerSupportIcon, min: 'moderator' },
   { to: '/admin/audit', label: 'Audit', icon: LicenseIcon, min: 'moderator' },
+  { to: '/admin/uploads', label: 'Uploads', icon: CloudUploadIcon, min: 'admin' },
 ] as const;
 
 /**

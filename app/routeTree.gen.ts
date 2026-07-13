@@ -58,6 +58,7 @@ import { Route as FantasyQuizAdminRouteImport } from './routes/fantasy/quiz-admi
 import { Route as FantasyCreateRouteImport } from './routes/fantasy/create'
 import { Route as DevFreeFormSpikeRouteImport } from './routes/dev/free-form-spike'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminUploadsRouteImport } from './routes/admin/uploads'
 import { Route as AdminSystemRouteImport } from './routes/admin/system'
 import { Route as AdminSupportRouteImport } from './routes/admin/support'
 import { Route as AdminProfileClaimsRouteImport } from './routes/admin/profile-claims'
@@ -131,6 +132,7 @@ import { ServerRoute as ApiJobsStripeWebhookServerRouteImport } from './routes/a
 import { ServerRoute as ApiFantasyStripeWebhookServerRouteImport } from './routes/api/fantasy/stripe-webhook'
 import { ServerRoute as ApiFantasyMediaIdServerRouteImport } from './routes/api/fantasy-media/$id'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
+import { ServerRoute as ApiAdminUploadServerRouteImport } from './routes/api/admin/upload'
 import { ServerRoute as ReadModelPredictionPageYearSlugSlugServerRouteImport } from './routes/read-model/prediction-page/$yearSlug/$slug'
 import { ServerRoute as ReadModelMerchProductsProductIdServerRouteImport } from './routes/read-model/merch/products/$productId'
 import { ServerRoute as ReadModelMerchCatalogAllDotjsonServerRouteImport } from './routes/read-model/merch/catalog/all[.]json'
@@ -377,6 +379,11 @@ const DevFreeFormSpikeRoute = DevFreeFormSpikeRouteImport.update({
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/admin/users',
   path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUploadsRoute = AdminUploadsRouteImport.update({
+  id: '/admin/uploads',
+  path: '/admin/uploads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSystemRoute = AdminSystemRouteImport.update({
@@ -761,6 +768,11 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiAdminUploadServerRoute = ApiAdminUploadServerRouteImport.update({
+  id: '/api/admin/upload',
+  path: '/api/admin/upload',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 const ReadModelPredictionPageYearSlugSlugServerRoute =
   ReadModelPredictionPageYearSlugSlugServerRouteImport.update({
     id: '/read-model/prediction-page/$yearSlug/$slug',
@@ -843,6 +855,7 @@ export interface FileRoutesByFullPath {
   '/admin/profile-claims': typeof AdminProfileClaimsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
+  '/admin/uploads': typeof AdminUploadsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -929,6 +942,7 @@ export interface FileRoutesByTo {
   '/admin/profile-claims': typeof AdminProfileClaimsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
+  '/admin/uploads': typeof AdminUploadsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -1016,6 +1030,7 @@ export interface FileRoutesById {
   '/admin/profile-claims': typeof AdminProfileClaimsRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/system': typeof AdminSystemRoute
+  '/admin/uploads': typeof AdminUploadsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/dev/free-form-spike': typeof DevFreeFormSpikeRoute
   '/fantasy/create': typeof FantasyCreateRoute
@@ -1104,6 +1119,7 @@ export interface FileRouteTypes {
     | '/admin/profile-claims'
     | '/admin/support'
     | '/admin/system'
+    | '/admin/uploads'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -1190,6 +1206,7 @@ export interface FileRouteTypes {
     | '/admin/profile-claims'
     | '/admin/support'
     | '/admin/system'
+    | '/admin/uploads'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -1276,6 +1293,7 @@ export interface FileRouteTypes {
     | '/admin/profile-claims'
     | '/admin/support'
     | '/admin/system'
+    | '/admin/uploads'
     | '/admin/users'
     | '/dev/free-form-spike'
     | '/fantasy/create'
@@ -1363,6 +1381,7 @@ export interface RootRouteChildren {
   AdminProfileClaimsRoute: typeof AdminProfileClaimsRoute
   AdminSupportRoute: typeof AdminSupportRoute
   AdminSystemRoute: typeof AdminSystemRoute
+  AdminUploadsRoute: typeof AdminUploadsRoute
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
   DevFreeFormSpikeRoute: typeof DevFreeFormSpikeRoute
   FantasyCreateRoute: typeof FantasyCreateRoute
@@ -1442,6 +1461,7 @@ export interface FileServerRoutesByFullPath {
   '/read-model/judges': typeof ReadModelJudgesServerRouteWithChildren
   '/read-model/manifest.json': typeof ReadModelManifestDotjsonServerRoute
   '/read-model/staff': typeof ReadModelStaffServerRouteWithChildren
+  '/api/admin/upload': typeof ApiAdminUploadServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
@@ -1490,6 +1510,7 @@ export interface FileServerRoutesByTo {
   '/read-model/judges': typeof ReadModelJudgesServerRouteWithChildren
   '/read-model/manifest.json': typeof ReadModelManifestDotjsonServerRoute
   '/read-model/staff': typeof ReadModelStaffServerRouteWithChildren
+  '/api/admin/upload': typeof ApiAdminUploadServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
@@ -1539,6 +1560,7 @@ export interface FileServerRoutesById {
   '/read-model/judges': typeof ReadModelJudgesServerRouteWithChildren
   '/read-model/manifest.json': typeof ReadModelManifestDotjsonServerRoute
   '/read-model/staff': typeof ReadModelStaffServerRouteWithChildren
+  '/api/admin/upload': typeof ApiAdminUploadServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
   '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
   '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
@@ -1589,6 +1611,7 @@ export interface FileServerRouteTypes {
     | '/read-model/judges'
     | '/read-model/manifest.json'
     | '/read-model/staff'
+    | '/api/admin/upload'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
@@ -1637,6 +1660,7 @@ export interface FileServerRouteTypes {
     | '/read-model/judges'
     | '/read-model/manifest.json'
     | '/read-model/staff'
+    | '/api/admin/upload'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
@@ -1685,6 +1709,7 @@ export interface FileServerRouteTypes {
     | '/read-model/judges'
     | '/read-model/manifest.json'
     | '/read-model/staff'
+    | '/api/admin/upload'
     | '/api/auth/$'
     | '/api/fantasy-media/$id'
     | '/api/fantasy/stripe-webhook'
@@ -1734,6 +1759,7 @@ export interface RootServerRouteChildren {
   ReadModelJudgesServerRoute: typeof ReadModelJudgesServerRouteWithChildren
   ReadModelManifestDotjsonServerRoute: typeof ReadModelManifestDotjsonServerRoute
   ReadModelStaffServerRoute: typeof ReadModelStaffServerRouteWithChildren
+  ApiAdminUploadServerRoute: typeof ApiAdminUploadServerRoute
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
   ApiFantasyMediaIdServerRoute: typeof ApiFantasyMediaIdServerRoute
   ApiFantasyStripeWebhookServerRoute: typeof ApiFantasyStripeWebhookServerRoute
@@ -2090,6 +2116,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/uploads': {
+      id: '/admin/uploads'
+      path: '/admin/uploads'
+      fullPath: '/admin/uploads'
+      preLoaderRoute: typeof AdminUploadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/system': {
@@ -2607,6 +2640,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiAuthSplatServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/admin/upload': {
+      id: '/api/admin/upload'
+      path: '/api/admin/upload'
+      fullPath: '/api/admin/upload'
+      preLoaderRoute: typeof ApiAdminUploadServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/read-model/prediction-page/$yearSlug/$slug': {
       id: '/read-model/prediction-page/$yearSlug/$slug'
       path: '/read-model/prediction-page/$yearSlug/$slug'
@@ -2761,6 +2801,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminProfileClaimsRoute: AdminProfileClaimsRoute,
   AdminSupportRoute: AdminSupportRoute,
   AdminSystemRoute: AdminSystemRoute,
+  AdminUploadsRoute: AdminUploadsRoute,
   AdminUsersRoute: AdminUsersRouteWithChildren,
   DevFreeFormSpikeRoute: DevFreeFormSpikeRoute,
   FantasyCreateRoute: FantasyCreateRoute,
@@ -2843,6 +2884,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ReadModelJudgesServerRoute: ReadModelJudgesServerRouteWithChildren,
   ReadModelManifestDotjsonServerRoute: ReadModelManifestDotjsonServerRoute,
   ReadModelStaffServerRoute: ReadModelStaffServerRouteWithChildren,
+  ApiAdminUploadServerRoute: ApiAdminUploadServerRoute,
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
   ApiFantasyMediaIdServerRoute: ApiFantasyMediaIdServerRoute,
   ApiFantasyStripeWebhookServerRoute: ApiFantasyStripeWebhookServerRoute,

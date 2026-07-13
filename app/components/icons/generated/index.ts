@@ -25,6 +25,7 @@ export { ChartScatterIcon } from './chart-scatter';
 export { CheckmarkCircle02Icon } from './checkmark-circle-02';
 export { CircleIcon } from './circle';
 export { Clock01Icon } from './clock-01';
+export { CloudUploadIcon } from './cloud-upload';
 export { CubeIcon } from './cube';
 export { CustomerSupportIcon } from './customer-support';
 export { DashboardSquare01Icon } from './dashboard-square-01';
