@@ -80,12 +80,21 @@ async function geocodeCity(city: string, state: string) {
 
 async function main() {
   if (!API_KEY) throw new Error("GEOCODING_API_KEY not set");
+  // City/state from the event row, falling back to the linked competition's
+  // "City, ST" location string (older seasons — e.g. 2017 — have empty event
+  // location fields but populated competitions.location).
   const rows = await db.execute({
-    sql: `SELECT e.event_id, e.slug, e.location_city AS city, e.location_state AS state,
+    sql: `SELECT e.event_id, e.slug,
+                 COALESCE(NULLIF(e.location_city,''),
+                          CASE WHEN c.location LIKE '%, __' THEN substr(c.location, 1, length(c.location)-4) END) AS city,
+                 COALESCE(NULLIF(e.location_state,''),
+                          CASE WHEN c.location LIKE '%, __' THEN substr(c.location, -2) END) AS state,
                  (SELECT venue_id FROM event_venues v WHERE v.event_slug = e.slug LIMIT 1) AS venue_id
             FROM events e
-           WHERE e.location_city IS NOT NULL AND e.location_city != ''
-             AND e.location_state IS NOT NULL AND length(e.location_state) = 2
+            LEFT JOIN competitions c
+              ON c.slug = e.slug
+              OR c.slug = (COALESCE(NULLIF(e.season,''), substr(e.start_date,1,4)) || '-' || replace(e.slug, COALESCE(NULLIF(e.season,''), substr(e.start_date,1,4)) || '-', ''))
+           WHERE 1=1
              ${YEAR ? "AND (e.season = ? OR e.start_date LIKE ?)" : ""}
              AND NOT EXISTS (
                SELECT 1 FROM event_venues ev
@@ -97,10 +106,14 @@ async function main() {
   for (const r of rows.rows as unknown as {
     event_id: string;
     slug: string;
-    city: string;
-    state: string;
+    city: string | null;
+    state: string | null;
     venue_id: string | null;
   }[]) {
+    if (!r.city || !r.state || !/^[A-Z]{2}$/.test(r.state) || /TB[AD]/i.test(r.city)) {
+      miss++;
+      continue;
+    }
     const hit = await geocodeCity(r.city, r.state);
     if (!hit) {
       miss++;
