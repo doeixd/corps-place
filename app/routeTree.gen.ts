@@ -133,6 +133,7 @@ import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/
 import { ServerRoute as ReadModelPredictionPageYearSlugSlugServerRouteImport } from './routes/read-model/prediction-page/$yearSlug/$slug'
 import { ServerRoute as ReadModelMerchProductsProductIdServerRouteImport } from './routes/read-model/merch/products/$productId'
 import { ServerRoute as ReadModelMerchCatalogAllDotjsonServerRouteImport } from './routes/read-model/merch/catalog/all[.]json'
+import { ServerRoute as ApiOgTourSeasonServerRouteImport } from './routes/api/og/tour.$season'
 import { ServerRoute as ApiOgScoreSlugServerRouteImport } from './routes/api/og/score/$slug'
 import { ServerRoute as ApiOgBallotIdServerRouteImport } from './routes/api/og/ballot/$id'
 import { ServerRoute as ApiFantasyJobsRecomputeServerRouteImport } from './routes/api/fantasy/jobs/recompute'
@@ -772,6 +773,11 @@ const ReadModelMerchCatalogAllDotjsonServerRoute =
     path: '/read-model/merch/catalog/all.json',
     getParentRoute: () => rootServerRouteImport,
   } as any)
+const ApiOgTourSeasonServerRoute = ApiOgTourSeasonServerRouteImport.update({
+  id: '/api/og/tour/$season',
+  path: '/api/og/tour/$season',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 const ApiOgScoreSlugServerRoute = ApiOgScoreSlugServerRouteImport.update({
   id: '/api/og/score/$slug',
   path: '/api/og/score/$slug',
@@ -1451,6 +1457,7 @@ export interface FileServerRoutesByFullPath {
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
   '/api/og/ballot/$id': typeof ApiOgBallotIdServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
+  '/api/og/tour/$season': typeof ApiOgTourSeasonServerRoute
   '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
   '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
   '/read-model/prediction-page/$yearSlug/$slug': typeof ReadModelPredictionPageYearSlugSlugServerRoute
@@ -1497,6 +1504,7 @@ export interface FileServerRoutesByTo {
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
   '/api/og/ballot/$id': typeof ApiOgBallotIdServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
+  '/api/og/tour/$season': typeof ApiOgTourSeasonServerRoute
   '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
   '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
   '/read-model/prediction-page/$yearSlug/$slug': typeof ReadModelPredictionPageYearSlugSlugServerRoute
@@ -1544,6 +1552,7 @@ export interface FileServerRoutesById {
   '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
   '/api/og/ballot/$id': typeof ApiOgBallotIdServerRoute
   '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
+  '/api/og/tour/$season': typeof ApiOgTourSeasonServerRoute
   '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
   '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
   '/read-model/prediction-page/$yearSlug/$slug': typeof ReadModelPredictionPageYearSlugSlugServerRoute
@@ -1592,6 +1601,7 @@ export interface FileServerRouteTypes {
     | '/api/fantasy/jobs/recompute'
     | '/api/og/ballot/$id'
     | '/api/og/score/$slug'
+    | '/api/og/tour/$season'
     | '/read-model/merch/catalog/all.json'
     | '/read-model/merch/products/$productId'
     | '/read-model/prediction-page/$yearSlug/$slug'
@@ -1638,6 +1648,7 @@ export interface FileServerRouteTypes {
     | '/api/fantasy/jobs/recompute'
     | '/api/og/ballot/$id'
     | '/api/og/score/$slug'
+    | '/api/og/tour/$season'
     | '/read-model/merch/catalog/all.json'
     | '/read-model/merch/products/$productId'
     | '/read-model/prediction-page/$yearSlug/$slug'
@@ -1684,6 +1695,7 @@ export interface FileServerRouteTypes {
     | '/api/fantasy/jobs/recompute'
     | '/api/og/ballot/$id'
     | '/api/og/score/$slug'
+    | '/api/og/tour/$season'
     | '/read-model/merch/catalog/all.json'
     | '/read-model/merch/products/$productId'
     | '/read-model/prediction-page/$yearSlug/$slug'
@@ -1728,6 +1740,7 @@ export interface RootServerRouteChildren {
   ApiFantasyJobsRecomputeServerRoute: typeof ApiFantasyJobsRecomputeServerRoute
   ApiOgBallotIdServerRoute: typeof ApiOgBallotIdServerRoute
   ApiOgScoreSlugServerRoute: typeof ApiOgScoreSlugServerRoute
+  ApiOgTourSeasonServerRoute: typeof ApiOgTourSeasonServerRoute
   ReadModelMerchCatalogAllDotjsonServerRoute: typeof ReadModelMerchCatalogAllDotjsonServerRoute
   ReadModelMerchProductsProductIdServerRoute: typeof ReadModelMerchProductsProductIdServerRoute
   ReadModelPredictionPageYearSlugSlugServerRoute: typeof ReadModelPredictionPageYearSlugSlugServerRoute
@@ -2595,6 +2608,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ReadModelMerchCatalogAllDotjsonServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/og/tour/$season': {
+      id: '/api/og/tour/$season'
+      path: '/api/og/tour/$season'
+      fullPath: '/api/og/tour/$season'
+      preLoaderRoute: typeof ApiOgTourSeasonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/og/score/$slug': {
       id: '/api/og/score/$slug'
       path: '/api/og/score/$slug'
@@ -2825,6 +2845,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ApiFantasyJobsRecomputeServerRoute: ApiFantasyJobsRecomputeServerRoute,
   ApiOgBallotIdServerRoute: ApiOgBallotIdServerRoute,
   ApiOgScoreSlugServerRoute: ApiOgScoreSlugServerRoute,
+  ApiOgTourSeasonServerRoute: ApiOgTourSeasonServerRoute,
   ReadModelMerchCatalogAllDotjsonServerRoute:
     ReadModelMerchCatalogAllDotjsonServerRoute,
   ReadModelMerchProductsProductIdServerRoute:

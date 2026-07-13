@@ -604,12 +604,22 @@ function CorpsDetailPage() {
             appearances — no extra fetch; map libs lazy-load post-mount. */}
         {tourStops.length >= 2 ? (
           <section className="space-y-4 pt-4">
-            <h3 className="text-xl font-semibold">
-              {activeSeason} tour
-              <span className="ml-2 text-sm font-normal text-text-secondary">
-                {tourStops.length} stops
-              </span>
-            </h3>
+            <div className="flex items-baseline justify-between gap-2">
+              <h3 className="text-xl font-semibold">
+                {activeSeason} tour
+                <span className="ml-2 text-sm font-normal text-text-secondary">
+                  {tourStops.length} stops
+                </span>
+              </h3>
+              <Link
+                to="/tour/{-$year}"
+                params={{ year: activeSeason }}
+                search={{ c: slug }}
+                className="shrink-0 text-sm text-primary hover:underline"
+              >
+                Explore all tours →
+              </Link>
+            </div>
             <TourMap
               stops={tourStops}
               colors={{

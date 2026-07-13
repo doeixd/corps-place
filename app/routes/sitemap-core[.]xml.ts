@@ -29,6 +29,7 @@ const STATIC_PATHS = [
   '/faq',
   '/contact',
   '/predict/finals',
+  '/tour',
 ];
 
 export const ServerRoute = createServerFileRoute('/sitemap-core.xml').methods({
