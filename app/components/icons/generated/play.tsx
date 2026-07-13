@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 
-export const ArrowUp02Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md' | 'lg' }) => {
+export const PlayIcon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md' | 'lg' }) => {
   const size = props.size === 'sm' ? 16 : props.size === 'lg' ? 24 : 20;
   const { size: _size, ...svgProps } = props;
   return (
@@ -16,7 +16,7 @@ export const ArrowUp02Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | '
       strokeLinejoin="round"
       {...svgProps}
     >
-      <use href="#hi-arrow-up-02" />
+      <use href="#hi-play" />
     </svg>
   );
 };

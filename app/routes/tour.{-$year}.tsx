@@ -346,10 +346,24 @@ function TourPage() {
         </div>
       </details>
 
-      {/* SSR'd crawlable content: the map is invisible to crawlers/screen readers. */}
-      <section className="space-y-2 pt-2">
-        <h2 className="text-lg font-semibold">Corps touring in {data.season}</h2>
-        <p className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-text-secondary">
+      {/* SSR'd crawlable content: the map is invisible to crawlers/screen
+          readers. Collapsed by default (content inside a closed <details> is
+          still in the DOM, so crawlers/readers get it either way). */}
+      <details className="group rounded-lg border border-border">
+        <summary className="flex cursor-pointer select-none list-none items-center justify-between gap-2 px-3 py-2 [&::-webkit-details-marker]:hidden">
+          <h2 className="text-base font-semibold">
+            Corps touring in {data.season}
+            <span className="ml-2 text-sm font-normal text-text-secondary">
+              {divisionFiltered.length}
+            </span>
+          </h2>
+          <Icon
+            icon={ArrowDown01Icon}
+            size="sm"
+            className="shrink-0 transition-transform group-open:rotate-180"
+          />
+        </summary>
+        <p className="flex flex-wrap gap-x-3 gap-y-1 border-t border-border p-3 text-sm text-text-secondary">
           {divisionFiltered.map((c) => (
             <Link
               key={c.slug}
@@ -362,7 +376,7 @@ function TourPage() {
             </Link>
           ))}
         </p>
-      </section>
+      </details>
     </PageShell>
   );
 }

@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 
-export const SlidersHorizontalIcon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md' | 'lg' }) => {
+export const Download01Icon = (props: SVGProps<SVGSVGElement> & { size?: 'sm' | 'md' | 'lg' }) => {
   const size = props.size === 'sm' ? 16 : props.size === 'lg' ? 24 : 20;
   const { size: _size, ...svgProps } = props;
   return (
@@ -16,7 +16,7 @@ export const SlidersHorizontalIcon = (props: SVGProps<SVGSVGElement> & { size?: 
       strokeLinejoin="round"
       {...svgProps}
     >
-      <use href="#hi-sliders-horizontal" />
+      <use href="#hi-download-01" />
     </svg>
   );
 };

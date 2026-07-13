@@ -4,12 +4,22 @@
 //   - scrub is per-step: reveal per corps = dash-offset from a precomputed
 //     cumulative-length table (straight-segment math, no getTotalLength);
 //   - all-corps mode draws shared-venue dots (~72), never per-stop pins.
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useSelector } from '@xstate/react';
 import { corpsPalette } from '@sdk/src/corpsColors.js';
 import { themeStore } from '@/stores/theme-store';
 import { Slider } from '@/components/ui/slider';
+import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/icon';
+import {
+  ArrowExpandIcon,
+  ArrowShrinkIcon,
+  Download01Icon,
+  PlayIcon,
+  PauseIcon,
+} from '@/components/icons/generated';
+import { ShareButton } from '@/components/share-button';
 import { formatEventDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import type { SeasonTourCorps } from '@sdk/src/readModel/builders/tour.js';
@@ -164,6 +174,146 @@ export default function TourExplorerBody({
 
   const isFocusedMode = !!focused?.length;
 
+  // ── Toolbar: fullscreen lightbox, play, downloads ──────────────────────────
+  const [fullscreen, setFullscreen] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [rendering, setRendering] = useState<string | null>(null);
+
+  // Lightbox: lock page scroll + Esc to close.
+  useEffect(() => {
+    if (!fullscreen) return;
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setFullscreen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.documentElement.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [fullscreen]);
+
+  // Play: advance one season day at a time; restart from 0 when at the end.
+  useEffect(() => {
+    if (!playing || dates.length < 2) return;
+    if (idx >= dates.length - 1) {
+      setRevealIdx(0);
+      return;
+    }
+    const t = setTimeout(() => setRevealIdx((idx + 1) as number), 550);
+    return () => clearTimeout(t);
+  }, [playing, idx, dates.length]);
+  useEffect(() => {
+    if (playing && idx >= dates.length - 1) setPlaying(false);
+  }, [playing, idx, dates.length]);
+
+  /** Standalone SVG string of the CURRENT frame (theme-independent dark style —
+   *  same look as the OG card) for PNG/video export. */
+  const frameSvg = useCallback(
+    (atDate: string | null): string => {
+      if (!geo) return '';
+      const routes = series
+        .map((sr) => {
+          if (!sr.d) return '';
+          let shown = sr.totalLen;
+          if (atDate) {
+            shown = 0;
+            for (let i = 0; i < sr.pts.length; i++)
+              if (sr.pts[i]![2] <= atDate) shown = sr.cumLen[i]!;
+          }
+          const off = Math.max(0, sr.totalLen - shown);
+          return `<path d="${sr.d}" fill="none" stroke="${sr.corps.colorPrimary ?? '#fd5007'}" stroke-width="${isFocusedMode ? 2.2 : 1.6}" stroke-opacity="${isFocusedMode ? 0.9 : 0.55}" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="${sr.totalLen}" stroke-dashoffset="${off}"/>`;
+        })
+        .join('');
+      const label = atDate
+        ? `<text x="40" y="${VIEW_H - 28}" font-family="sans-serif" font-size="26" fill="rgba(255,255,255,0.85)">${season} tour — ${formatEventDate(atDate)} · drumcorps.app/tour</text>`
+        : '';
+      return (
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VIEW_W} ${VIEW_H}" width="${VIEW_W * 2}" height="${VIEW_H * 2}">` +
+        `<rect width="${VIEW_W}" height="${VIEW_H}" fill="#0b0d12"/>` +
+        `<path d="${geo.nationPath}" fill="#151923"/>` +
+        `<path d="${geo.statesPath}" fill="none" stroke="#2a3040" stroke-width="0.8"/>` +
+        routes +
+        label +
+        `</svg>`
+      );
+    },
+    [geo, series, isFocusedMode, season]
+  );
+
+  const svgToCanvas = useCallback(async (svg: string, canvas: HTMLCanvasElement) => {
+    const img = new Image();
+    const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+    try {
+      await new Promise<void>((res, rej) => {
+        img.onload = () => res();
+        img.onerror = () => rej(new Error('svg decode failed'));
+        img.src = url;
+      });
+      canvas.width = VIEW_W * 2;
+      canvas.height = VIEW_H * 2;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }, []);
+
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  const downloadPng = useCallback(async () => {
+    setRendering('image');
+    try {
+      const canvas = document.createElement('canvas');
+      await svgToCanvas(frameSvg(revealDate), canvas);
+      const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/png'));
+      if (blob) downloadBlob(blob, `dci-tour-${season}${revealDate ? `-${revealDate}` : ''}.png`);
+    } finally {
+      setRendering(null);
+    }
+  }, [frameSvg, revealDate, season, svgToCanvas]);
+
+  // Video: replay every season day into a canvas stream via MediaRecorder
+  // (WebM — universal-enough; browsers without MediaRecorder hide the button).
+  const canRecord =
+    typeof window !== 'undefined' && typeof MediaRecorder !== 'undefined';
+  const downloadVideo = useCallback(async () => {
+    if (!canRecord || dates.length < 2) return;
+    setRendering('video');
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = VIEW_W * 2;
+      canvas.height = VIEW_H * 2;
+      const stream = canvas.captureStream(30);
+      const mime = ['video/webm;codecs=vp9', 'video/webm'].find((m) =>
+        MediaRecorder.isTypeSupported(m)
+      );
+      const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6_000_000 });
+      const chunks: Blob[] = [];
+      rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+      const done = new Promise<void>((r) => (rec.onstop = () => r()));
+      rec.start();
+      // Hold each day ~0.45s; ease in with a title frame and out with a hold.
+      for (let i = 0; i < dates.length; i++) {
+        await svgToCanvas(frameSvg(dates[i]!), canvas);
+        await new Promise((r) => setTimeout(r, 450));
+      }
+      await new Promise((r) => setTimeout(r, 1200));
+      rec.stop();
+      await done;
+      downloadBlob(new Blob(chunks, { type: 'video/webm' }), `dci-tour-${season}.webm`);
+    } finally {
+      setRendering(null);
+    }
+  }, [canRecord, dates, frameSvg, season, svgToCanvas]);
+
   if (!geo) {
     return (
       <div
@@ -174,11 +324,68 @@ export default function TourExplorerBody({
     );
   }
 
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+
   return (
-    <div className="space-y-3">
+    <div
+      className={cn(
+        'space-y-3',
+        fullscreen &&
+          'fixed inset-0 z-50 overflow-y-auto bg-background p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:p-6'
+      )}
+    >
+      {/* Toolbar: play, fullscreen, export, share. */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPlaying((p) => !p)}
+          disabled={dates.length < 2}
+          aria-label={playing ? 'Pause season playback' : 'Play the season'}
+        >
+          <Icon icon={playing ? PauseIcon : PlayIcon} size="sm" />
+          {playing ? 'Pause' : 'Play season'}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setFullscreen((f) => !f)}
+          aria-label={fullscreen ? 'Exit full screen' : 'View full screen'}
+        >
+          <Icon icon={fullscreen ? ArrowShrinkIcon : ArrowExpandIcon} size="sm" />
+          {fullscreen ? 'Exit' : 'Full screen'}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => void downloadPng()}
+          disabled={rendering != null || !geo}
+        >
+          <Icon icon={Download01Icon} size="sm" />
+          {rendering === 'image' ? 'Rendering…' : 'Image'}
+        </Button>
+        {canRecord ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void downloadVideo()}
+            disabled={rendering != null || dates.length < 2}
+            title="Replay the whole season as a WebM video"
+          >
+            <Icon icon={Download01Icon} size="sm" />
+            {rendering === 'video'
+              ? 'Recording… (takes ~half a minute)'
+              : 'Video'}
+          </Button>
+        ) : null}
+        <div className="ml-auto">
+          <ShareButton url={shareUrl} title={`${season} DCI Tour Map`} />
+        </div>
+      </div>
+
       <svg
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-        className="w-full"
+        className={cn('w-full', fullscreen && 'mx-auto max-h-[78dvh]')}
         role="img"
         aria-label={`${season} tour map — ${corps.length} corps`}
         onMouseLeave={() => onHoverSlug(null)}
