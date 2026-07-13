@@ -55,7 +55,8 @@ echo "[refresh-prod-read-model] done — server hot-swaps within ~5s."
 # otherwise see stale /rankings or event scores for up to the TTL). Purge
 # everything: hashed assets re-warm instantly and /api/media refills from the
 # on-disk cache, so the blast radius is one cold request per page/asset.
-# Non-fatal — a failed purge just falls back to the 5-min TTL. Wait ~8s first
+# Non-fatal — a failed purge falls back to the edge TTL (hybrid server-fns
+# carry s-maxage=3600, so worst-case staleness is 1 h). Wait ~8s first
 # so the server's pointer poll (~5s) has hot-swapped before fresh SSRs re-cache.
 CF_TOKEN="$(grep -E '^CLOUDFLARE_API_TOKEN=' "$repo_root/.env" 2>/dev/null | head -1 | cut -d= -f2-)"
 CF_ZONE="c710acd5ee534fd065c5c0b5b3e4316d" # drumcorps.app
