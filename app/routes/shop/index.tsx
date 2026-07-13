@@ -21,13 +21,24 @@ import { SectionErrorBoundary } from '@/components/error-boundary';
 
 export const Route = createFileRoute('/shop/')({
   loader: async (): Promise<ShopHome> => getShopHome(),
-  head: () =>
-    buildSeo({
-      title: 'Shop Drum Corps Merch',
+  head: ({ loaderData }) => {
+    // Honest scale straight from the live catalog ("85 official corps stores,
+    // 4,700+ products") — the numbers are the page's actual search hook.
+    const stores = loaderData?.groups.length ?? 0;
+    const products = loaderData?.groups.reduce((n, g) => n + g.count, 0) ?? 0;
+    const scale =
+      stores && products
+        ? `${stores} official corps stores — ${products.toLocaleString('en-US')} products`
+        : 'official corps stores';
+    return buildSeo({
+      title: 'Drum Corps Merch & Apparel — Official Corps Stores',
       description:
-        'Browse official merch from drum corps across the activity — hoodies, tees, hats and more, all in one place.',
+        `Shop drum corps merchandise from ${scale} in one place: hoodies, tees, ` +
+        'hats, drinkware and more from DCI World Class, Open Class and all-age ' +
+        'corps. Search by corps, browse by category.',
       path: '/shop',
-    }),
+    });
+  },
   // Static read-model data; a moderate window keeps repeat navs fast while still
   // refreshing periodically (scores/merch update on re-emit).
   staleTime: 5 * 60_000,
@@ -46,9 +57,7 @@ function ShopLanding() {
   const router = useRouter();
   useEffect(() => {
     const targets = groups
-      .flatMap((g) =>
-        g.slug ? [{ to: '/shop/group/$storeId', params: { storeId: g.slug } }] : []
-      )
+      .flatMap((g) => (g.slug ? [{ to: '/shop/group/$storeId', params: { storeId: g.slug } }] : []))
       .slice(0, WARM_ABOVE_FOLD);
     return warmRoutesOnIdle(router as never, targets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,11 +69,16 @@ function ShopLanding() {
     navigate({ to: '/shop/all', search: term ? { q: term } : {} });
   };
 
+  const productTotal = groups.reduce((n, g) => n + g.count, 0);
   return (
     <PageShell>
       <PageHeader
-        title="Shop"
-        subtitle="Official merch from drum corps across the activity"
+        title="Drum Corps Merch & Apparel"
+        subtitle={
+          productTotal
+            ? `Official merchandise from ${groups.length} corps stores — ${productTotal.toLocaleString('en-US')} products, from hoodies and tees to hats and drinkware, searchable in one place.`
+            : 'Official merchandise from drum corps stores across the activity, searchable in one place.'
+        }
         backTo="/"
         backLabel="Home"
       />
