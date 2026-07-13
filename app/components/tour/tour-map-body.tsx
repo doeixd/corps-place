@@ -19,41 +19,9 @@ import { medalClass, ordinal } from '@/lib/rank';
 import { cn } from '@/lib/utils';
 import type { TourStop } from '@/lib/tour';
 import type { TourMapProps } from './tour-map';
+import { VIEW_W, VIEW_H, loadGeometry, type MapGeometry } from './geometry';
 
-const VIEW_W = 975;
-const VIEW_H = 610;
 
-interface MapGeometry {
-  statesPath: string;
-  nationPath: string;
-  project: (lng: number, lat: number) => [number, number] | null;
-}
-
-// Module-level cache: the topology + projection are identical for every corps,
-// so navigating between corps pages reuses them without re-fetch/re-parse.
-let geometryPromise: Promise<MapGeometry> | null = null;
-const loadGeometry = (): Promise<MapGeometry> => {
-  geometryPromise ??= (async () => {
-    const [{ geoPath, geoAlbersUsa }, { feature, mesh }, topoRes] = await Promise.all([
-      import('d3-geo'),
-      import('topojson-client'),
-      fetch('/geo/us-states-albers-10m.json'),
-    ]);
-    const topo = await topoRes.json();
-    // Pre-projected topology → identity path (no projection argument).
-    const path = geoPath();
-    const statesPath =
-      path(mesh(topo, topo.objects.states, (a: unknown, b: unknown) => a !== b)) ?? '';
-    const nationPath = path(feature(topo, topo.objects.nation)) ?? '';
-    const projection = geoAlbersUsa().scale(1300).translate([VIEW_W / 2, VIEW_H / 2]);
-    return {
-      statesPath,
-      nationPath,
-      project: (lng: number, lat: number) => projection([lng, lat]) ?? null,
-    };
-  })();
-  return geometryPromise;
-};
 
 interface ProjectedStop extends TourStop {
   x: number;

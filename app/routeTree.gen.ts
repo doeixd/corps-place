@@ -30,6 +30,7 @@ import { Route as CorpsIndexRouteImport } from './routes/corps/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as VsSlugRouteImport } from './routes/vs.$slug'
+import { Route as TourChar123YearChar125RouteImport } from './routes/tour.{-$year}'
 import { Route as StaffPersonIdRouteImport } from './routes/staff/$personId'
 import { Route as ShopStoresRouteImport } from './routes/shop/stores'
 import { Route as ShopCartRouteImport } from './routes/shop/cart'
@@ -235,6 +236,11 @@ const VsSlugRoute = VsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => VsRoute,
+} as any)
+const TourChar123YearChar125Route = TourChar123YearChar125RouteImport.update({
+  id: '/tour/{-$year}',
+  path: '/tour/{-$year}',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const StaffPersonIdRoute = StaffPersonIdRouteImport.update({
   id: '/staff/$personId',
@@ -852,6 +858,7 @@ export interface FileRoutesByFullPath {
   '/shop/cart': typeof ShopCartRoute
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
+  '/tour/{-$year}': typeof TourChar123YearChar125Route
   '/vs/$slug': typeof VsSlugRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
@@ -937,6 +944,7 @@ export interface FileRoutesByTo {
   '/shop/cart': typeof ShopCartRoute
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
+  '/tour/{-$year}': typeof TourChar123YearChar125Route
   '/vs/$slug': typeof VsSlugRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
@@ -1023,6 +1031,7 @@ export interface FileRoutesById {
   '/shop/cart': typeof ShopCartRoute
   '/shop/stores': typeof ShopStoresRoute
   '/staff/$personId': typeof StaffPersonIdRoute
+  '/tour/{-$year}': typeof TourChar123YearChar125Route
   '/vs/$slug': typeof VsSlugRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -1110,6 +1119,7 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/stores'
     | '/staff/$personId'
+    | '/tour/{-$year}'
     | '/vs/$slug'
     | '/account'
     | '/admin'
@@ -1195,6 +1205,7 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/stores'
     | '/staff/$personId'
+    | '/tour/{-$year}'
     | '/vs/$slug'
     | '/account'
     | '/admin'
@@ -1280,6 +1291,7 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/stores'
     | '/staff/$personId'
+    | '/tour/{-$year}'
     | '/vs/$slug'
     | '/account/'
     | '/admin/'
@@ -1366,6 +1378,7 @@ export interface RootRouteChildren {
   ShopCartRoute: typeof ShopCartRoute
   ShopStoresRoute: typeof ShopStoresRoute
   StaffPersonIdRoute: typeof StaffPersonIdRoute
+  TourChar123YearChar125Route: typeof TourChar123YearChar125Route
   AccountIndexRoute: typeof AccountIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
   CorpsIndexRoute: typeof CorpsIndexRoute
@@ -1856,6 +1869,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/vs/$slug'
       preLoaderRoute: typeof VsSlugRouteImport
       parentRoute: typeof VsRoute
+    }
+    '/tour/{-$year}': {
+      id: '/tour/{-$year}'
+      path: '/tour/{-$year}'
+      fullPath: '/tour/{-$year}'
+      preLoaderRoute: typeof TourChar123YearChar125RouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/staff/$personId': {
       id: '/staff/$personId'
@@ -2728,6 +2748,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShopCartRoute: ShopCartRoute,
   ShopStoresRoute: ShopStoresRoute,
   StaffPersonIdRoute: StaffPersonIdRoute,
+  TourChar123YearChar125Route: TourChar123YearChar125Route,
   AccountIndexRoute: AccountIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
   CorpsIndexRoute: CorpsIndexRoute,
