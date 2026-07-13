@@ -8,11 +8,19 @@ import {
   type SeasonStandings,
   type FeaturedPrediction,
 } from '@/lib/home-shows';
-import {
-  CorpsDirectoryService,
-  CorpsDirectoryServiceLive,
-  type CorpsSummary,
-} from '@/lib/corps-directory';
+import { CorpsDirectoryService, CorpsDirectoryServiceLive } from '@/lib/corps-directory';
+
+// Exactly the fields CorpsRegistryProvider resolves logos from (CorpsLike) —
+// the full CorpsSummary for ~114 corps was a large chunk of the home page's
+// SSR-inlined loader payload, which sits ahead of the stylesheet in <head>
+// and delays first paint on slow connections.
+export type LineupCorps = {
+  corps_key: string;
+  name: string;
+  corps_logo: string | null;
+  corps_logo_dark: number;
+  corps_logo_dark_url: string | null;
+};
 
 export type HomePageData = {
   weekend: FeaturedWeekend;
@@ -20,7 +28,7 @@ export type HomePageData = {
   standings: SeasonStandings | null;
   featuredPrediction: FeaturedPrediction | null;
   // Corps appearing in the weekend lineups, for logo resolution via the registry.
-  lineupCorps: CorpsSummary[];
+  lineupCorps: LineupCorps[];
 };
 
 const uniqueKeys = (weekend: FeaturedWeekend): string[] => {
@@ -51,10 +59,17 @@ export const getHomePageData = createServerFn({ method: 'GET' }).handler(
       const keys = new Set(uniqueKeys(weekend));
       // Rankings-snapshot corps too, so their logos resolve from the same registry.
       for (const row of standings?.standings ?? []) if (row.corpsKey) keys.add(row.corpsKey);
-      const lineupCorps =
+      const full =
         keys.size > 0
           ? yield* Effect.flatMap(CorpsDirectoryService, (s) => s.getCorpsByKeys([...keys]))
           : [];
+      const lineupCorps: LineupCorps[] = full.map((c) => ({
+        corps_key: c.corps_key,
+        name: c.name,
+        corps_logo: c.corps_logo,
+        corps_logo_dark: c.corps_logo_dark,
+        corps_logo_dark_url: c.corps_logo_dark_url,
+      }));
       return { weekend, latestResults, standings, featuredPrediction, lineupCorps };
     }).pipe(Effect.provide(HomeShowsServiceLive), Effect.provide(CorpsDirectoryServiceLive));
     return Effect.runPromise(program);
