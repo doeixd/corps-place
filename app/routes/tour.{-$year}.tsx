@@ -182,11 +182,33 @@ function TourPage() {
   return (
     <PageShell className="flex flex-col gap-5">
       <PageHeader
-        title={`${data.season} tour map`}
-        subtitle={`Every corps' summer tour route · ${stats.corps} corps · ${stats.shows} shows · ~${stats.miles.toLocaleString('en-US')} route miles`}
+        title={`${data.season} DCI Tour Map`}
+        subtitle={
+          focusedCorps?.length
+            ? `Following ${focusedCorps.map((c) => c.name).join(', ')} across the ${data.season} summer tour.`
+            : `Every drum corps' summer tour route across the United States — scrub through the ${data.season} season day by day, follow any corps, and tap a venue to see its shows.`
+        }
         backTo="/events"
         backLabel="Events"
       />
+
+      {/* Season stats — prominent, tabular, self-updating with focus/filters. */}
+      <div className="flex flex-wrap gap-x-10 gap-y-3">
+        {[
+          { value: stats.corps, label: focusedCorps?.length ? 'corps followed' : 'corps touring' },
+          { value: stats.shows, label: 'shows on the map' },
+          { value: `~${stats.miles.toLocaleString('en-US')}`, label: 'route miles' },
+        ].map((st) => (
+          <div key={st.label} className="flex flex-col">
+            <span className="text-3xl font-bold tabular-nums leading-none text-text-primary">
+              {st.value}
+            </span>
+            <span className="mt-1 text-xs font-medium uppercase tracking-wide text-text-muted">
+              {st.label}
+            </span>
+          </div>
+        ))}
+      </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <FilterChips
