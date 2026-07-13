@@ -43,6 +43,7 @@ import {
   listAllShowTitles as readAllShowTitles,
   readEventPredictionSnapshotDates,
   readEventPredictionAsOf,
+  readSeasonTour,
 } from '@sdk/src/readModel/readers.js';
 import { buildAllShowTitles } from '@sdk/src/readModel/builders/shows.js';
 import {
@@ -992,3 +993,40 @@ export const getCorpsMerch = createServerFn({ method: 'GET' })
     );
     return Effect.runPromise(program);
   });
+
+
+// ── Season tour (/tour explorer — TOUR_MAP_PLAN) ─────────────────────────────
+// Full-season dataset: every corps' geocoded stops (compact tuples) + a slim
+// event index. Measured 7.6KB gz for 2026. Hybrid-prefixed on purpose: the SW
+// and the CF cache rule key off this file's URL prefix.
+export const getSeasonTour = createServerFn({ method: 'GET' })
+  .validator((season: string) => String(season))
+  .handler(async ({ data: season }) => {
+    if (!/^\d{4}$/.test(season)) return null;
+    if (readModelEnabled()) return readSeasonTour(getReadModelClient(), season);
+    const { buildSeasonTour } = await import('@sdk/src/readModel/builders/tour.js');
+    const { createClient } = await import('@libsql/client');
+    const path = await import('node:path');
+    const db = createClient({
+      url:
+        process.env.DCI_RELATIONAL_DB_URL ??
+        `file:${path.resolve(process.cwd(), 'sdk', 'dci-relational.db')}`,
+    });
+    try {
+      return await buildSeasonTour(db, season);
+    } finally {
+      db.close();
+    }
+  });
+
+/** Seasons with mappable tour data (≥2 geocoded events), newest first. */
+export const getTourSeasons = createServerFn({ method: 'GET' }).handler(async () => {
+  if (!readModelEnabled()) return { seasons: [] as string[] };
+  const db = getReadModelClient();
+  const r = await db.execute(
+    `SELECT season, COUNT(*) AS n FROM rm_events
+      WHERE venue_latitude IS NOT NULL AND season IS NOT NULL
+      GROUP BY season HAVING n >= 2 ORDER BY season DESC`
+  );
+  return { seasons: (r.rows as { season?: unknown }[]).map((x) => String(x.season)) };
+});

@@ -1130,3 +1130,36 @@ export const readMerchSnapshot = async (db: Client): Promise<MerchSnapshot> => {
   }
   return { index, facets, stores, details, teasers };
 };
+
+// ── Season tour (/tour explorer) ─────────────────────────────────────────────
+// Mirrors builders/tour.ts buildSeasonTour over the rm_* tables (same shape).
+export const readSeasonTour = async (db: Client, season: string) => {
+  const { assembleSeasonTour } = await import('./builders/tour.js');
+  const stops = await db.execute({
+    sql: `SELECT a.corps_slug, e.event_id, e.start_date AS date,
+                 e.venue_latitude AS lat, e.venue_longitude AS lng
+            FROM rm_corps_appearances a
+            JOIN rm_events e ON e.event_id = a.event_id
+           WHERE e.season = ? AND e.venue_latitude IS NOT NULL`,
+    args: [season],
+  });
+  const corps = await db.execute(
+    'SELECT slug, name, division_name, color_primary, color_secondary FROM rm_corps'
+  );
+  const events = await db.execute({
+    sql: `SELECT event_id, slug, name, location_city AS city, location_state AS state
+            FROM rm_events WHERE season = ? AND venue_latitude IS NOT NULL`,
+    args: [season],
+  });
+  const total = await db.execute({
+    sql: 'SELECT COUNT(*) AS n FROM rm_events WHERE season = ?',
+    args: [season],
+  });
+  return assembleSeasonTour(
+    season,
+    stops.rows as never,
+    corps.rows as never,
+    events.rows as never,
+    Number((total.rows[0] as { n?: unknown })?.n ?? 0)
+  );
+};
