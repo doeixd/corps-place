@@ -4,7 +4,7 @@
 //   - scrub is per-step: reveal per corps = dash-offset from a precomputed
 //     cumulative-length table (straight-segment math, no getTotalLength);
 //   - all-corps mode draws shared-venue dots (~72), never per-stop pins.
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useSelector } from '@xstate/react';
 import { corpsPalette } from '@sdk/src/corpsColors.js';
@@ -25,6 +25,7 @@ import { cn } from '@/lib/utils';
 import type { SeasonTourCorps } from '@sdk/src/readModel/builders/tour.js';
 import type { TourExplorerMapProps } from './tour-explorer-map';
 import { VIEW_W, VIEW_H, loadGeometry, type MapGeometry } from './geometry';
+import { StaticTourMapImg } from './static-map-img';
 
 interface SeriesGeom {
   corps: SeasonTourCorps;
@@ -137,7 +138,8 @@ export default function TourExplorerBody({
     let fraction = i / (dates.length - 1);
     const next = dates[i + 1];
     if (next) {
-      const within = (dateVal(todayIso) - dateVal(dates[i]!)) / (dateVal(next) - dateVal(dates[i]!));
+      const within =
+        (dateVal(todayIso) - dateVal(dates[i]!)) / (dateVal(next) - dateVal(dates[i]!));
       fraction = (i + Math.max(0, Math.min(1, within))) / (dates.length - 1);
     }
     return { index: i, fraction };
@@ -282,8 +284,7 @@ export default function TourExplorerBody({
 
   // Video: replay every season day into a canvas stream via MediaRecorder
   // (WebM — universal-enough; browsers without MediaRecorder hide the button).
-  const canRecord =
-    typeof window !== 'undefined' && typeof MediaRecorder !== 'undefined';
+  const canRecord = typeof window !== 'undefined' && typeof MediaRecorder !== 'undefined';
   const downloadVideo = useCallback(async () => {
     if (!canRecord || dates.length < 2) return;
     setRendering('video');
@@ -314,14 +315,10 @@ export default function TourExplorerBody({
     }
   }, [canRecord, dates, frameSvg, season, svgToCanvas]);
 
+  // Until the geometry chunk resolves, keep showing the static map image the
+  // SSR shell painted — the interactive SVG then swaps in (same aspect box).
   if (!geo) {
-    return (
-      <div
-        className="w-full animate-pulse rounded-lg bg-muted/40"
-        style={{ aspectRatio: `${VIEW_W} / ${VIEW_H}` }}
-        aria-hidden
-      />
-    );
+    return <StaticTourMapImg season={season} corps={focused} />;
   }
 
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
@@ -409,7 +406,9 @@ export default function TourExplorerBody({
                       className="cursor-pointer stroke-background"
                       strokeWidth={1.25}
                     >
-                      <title>{ev ? `${s.corps.name} — ${ev[1]} (${formatEventDate(date)})` : date}</title>
+                      <title>
+                        {ev ? `${s.corps.name} — ${ev[1]} (${formatEventDate(date)})` : date}
+                      </title>
                     </circle>
                   </Link>
                 );
@@ -527,16 +526,13 @@ export default function TourExplorerBody({
             title="Replay the whole season as a WebM video"
           >
             <Icon icon={Download01Icon} size="sm" />
-            {rendering === 'video'
-              ? 'Recording… (takes ~half a minute)'
-              : 'Video'}
+            {rendering === 'video' ? 'Recording… (takes ~half a minute)' : 'Video'}
           </Button>
         ) : null}
         <div className="ml-auto">
           <ShareButton url={shareUrl} title={`${season} DCI Tour Map`} />
         </div>
       </div>
-
 
       {/* Venue card (all-corps mode): every event at the tapped coordinate. */}
       {!isFocusedMode && activeVenueData ? (
@@ -558,9 +554,7 @@ export default function TourExplorerBody({
                     className="text-primary hover:underline"
                   >
                     {ev[1]}
-                    <span className="ml-1 text-xs text-text-muted">
-                      {formatEventDate(date)}
-                    </span>
+                    <span className="ml-1 text-xs text-text-muted">{formatEventDate(date)}</span>
                   </Link>
                 ) : null;
               })}

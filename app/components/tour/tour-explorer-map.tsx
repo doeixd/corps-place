@@ -1,11 +1,13 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import type { SeasonTourCorps, SeasonTourEventIndex } from '@sdk/src/readModel/builders/tour.js';
-import { VIEW_W, VIEW_H } from './geometry';
+import { StaticTourMapImg } from './static-map-img';
 
 /**
  * /tour explorer map — SSR-safe shell (same pattern as the corps-page TourMap):
- * aspect-ratio placeholder, then the lazy body (d3-geo/topojson shared via
- * ./geometry with the corps map).
+ * the static /api/tour-map image paints in the SSR HTML (season + initial ?c
+ * focus only — it's a placeholder, live filters don't re-render it), then the
+ * lazy body (d3-geo/topojson shared via ./geometry with the corps map) swaps
+ * in inside the same aspect box.
  */
 const TourExplorerBody = lazy(() => import('./tour-explorer-body'));
 
@@ -22,24 +24,15 @@ export interface TourExplorerMapProps {
   onToggleFocus: (slug: string) => void;
 }
 
-function Placeholder() {
-  return (
-    <div
-      className="w-full animate-pulse rounded-lg bg-muted/40"
-      style={{ aspectRatio: `${VIEW_W} / ${VIEW_H}` }}
-      aria-hidden
-    />
-  );
-}
-
 export function TourExplorerMap(props: TourExplorerMapProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  const placeholder = <StaticTourMapImg season={props.season} corps={props.focused} />;
   return mounted ? (
-    <Suspense fallback={<Placeholder />}>
+    <Suspense fallback={placeholder}>
       <TourExplorerBody {...props} />
     </Suspense>
   ) : (
-    <Placeholder />
+    placeholder
   );
 }

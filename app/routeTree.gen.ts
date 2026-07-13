@@ -109,6 +109,7 @@ import { ServerRoute as ReadModelJudgesServerRouteImport } from './routes/read-m
 import { ServerRoute as ReadModelEventsServerRouteImport } from './routes/read-model/events'
 import { ServerRoute as ReadModelCorpsServerRouteImport } from './routes/read-model/corps'
 import { ServerRoute as ApiVersionServerRouteImport } from './routes/api/version'
+import { ServerRoute as ApiTourMapServerRouteImport } from './routes/api/tour-map'
 import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
 import { ServerRoute as ApiInboundEmailServerRouteImport } from './routes/api/inbound-email'
 import { ServerRoute as ApiCollectServerRouteImport } from './routes/api/collect'
@@ -636,6 +637,11 @@ const ReadModelCorpsServerRoute = ReadModelCorpsServerRouteImport.update({
 const ApiVersionServerRoute = ApiVersionServerRouteImport.update({
   id: '/api/version',
   path: '/api/version',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiTourMapServerRoute = ApiTourMapServerRouteImport.update({
+  id: '/api/tour-map',
+  path: '/api/tour-map',
   getParentRoute: () => rootServerRouteImport,
 } as any)
 const ApiMediaServerRoute = ApiMediaServerRouteImport.update({
@@ -1429,6 +1435,7 @@ export interface FileServerRoutesByFullPath {
   '/api/collect': typeof ApiCollectServerRoute
   '/api/inbound-email': typeof ApiInboundEmailServerRoute
   '/api/media': typeof ApiMediaServerRoute
+  '/api/tour-map': typeof ApiTourMapServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/read-model/corps': typeof ReadModelCorpsServerRouteWithChildren
   '/read-model/events': typeof ReadModelEventsServerRoute
@@ -1476,6 +1483,7 @@ export interface FileServerRoutesByTo {
   '/api/collect': typeof ApiCollectServerRoute
   '/api/inbound-email': typeof ApiInboundEmailServerRoute
   '/api/media': typeof ApiMediaServerRoute
+  '/api/tour-map': typeof ApiTourMapServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/read-model/corps': typeof ReadModelCorpsServerRouteWithChildren
   '/read-model/events': typeof ReadModelEventsServerRoute
@@ -1524,6 +1532,7 @@ export interface FileServerRoutesById {
   '/api/collect': typeof ApiCollectServerRoute
   '/api/inbound-email': typeof ApiInboundEmailServerRoute
   '/api/media': typeof ApiMediaServerRoute
+  '/api/tour-map': typeof ApiTourMapServerRoute
   '/api/version': typeof ApiVersionServerRoute
   '/read-model/corps': typeof ReadModelCorpsServerRouteWithChildren
   '/read-model/events': typeof ReadModelEventsServerRoute
@@ -1573,6 +1582,7 @@ export interface FileServerRouteTypes {
     | '/api/collect'
     | '/api/inbound-email'
     | '/api/media'
+    | '/api/tour-map'
     | '/api/version'
     | '/read-model/corps'
     | '/read-model/events'
@@ -1620,6 +1630,7 @@ export interface FileServerRouteTypes {
     | '/api/collect'
     | '/api/inbound-email'
     | '/api/media'
+    | '/api/tour-map'
     | '/api/version'
     | '/read-model/corps'
     | '/read-model/events'
@@ -1667,6 +1678,7 @@ export interface FileServerRouteTypes {
     | '/api/collect'
     | '/api/inbound-email'
     | '/api/media'
+    | '/api/tour-map'
     | '/api/version'
     | '/read-model/corps'
     | '/read-model/events'
@@ -1715,6 +1727,7 @@ export interface RootServerRouteChildren {
   ApiCollectServerRoute: typeof ApiCollectServerRoute
   ApiInboundEmailServerRoute: typeof ApiInboundEmailServerRoute
   ApiMediaServerRoute: typeof ApiMediaServerRoute
+  ApiTourMapServerRoute: typeof ApiTourMapServerRoute
   ApiVersionServerRoute: typeof ApiVersionServerRoute
   ReadModelCorpsServerRoute: typeof ReadModelCorpsServerRouteWithChildren
   ReadModelEventsServerRoute: typeof ReadModelEventsServerRoute
@@ -2440,6 +2453,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiVersionServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/tour-map': {
+      id: '/api/tour-map'
+      path: '/api/tour-map'
+      fullPath: '/api/tour-map'
+      preLoaderRoute: typeof ApiTourMapServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/media': {
       id: '/api/media'
       path: '/api/media'
@@ -2816,6 +2836,7 @@ const rootServerRouteChildren: RootServerRouteChildren = {
   ApiCollectServerRoute: ApiCollectServerRoute,
   ApiInboundEmailServerRoute: ApiInboundEmailServerRoute,
   ApiMediaServerRoute: ApiMediaServerRoute,
+  ApiTourMapServerRoute: ApiTourMapServerRoute,
   ApiVersionServerRoute: ApiVersionServerRoute,
   ReadModelCorpsServerRoute: ReadModelCorpsServerRouteWithChildren,
   ReadModelEventsServerRoute: ReadModelEventsServerRoute,

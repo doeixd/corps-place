@@ -622,6 +622,8 @@ function CorpsDetailPage() {
             </div>
             <TourMap
               stops={tourStops}
+              season={activeSeason}
+              corpsSlug={slug}
               colors={{
                 primary: corps.color_primary ?? null,
                 secondary: corps.color_secondary ?? null,

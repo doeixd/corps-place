@@ -20,15 +20,14 @@ import { cn } from '@/lib/utils';
 import type { TourStop } from '@/lib/tour';
 import type { TourMapProps } from './tour-map';
 import { VIEW_W, VIEW_H, loadGeometry, type MapGeometry } from './geometry';
-
-
+import { StaticTourMapImg } from './static-map-img';
 
 interface ProjectedStop extends TourStop {
   x: number;
   y: number;
 }
 
-export default function TourMapBody({ stops, colors }: TourMapProps) {
+export default function TourMapBody({ stops, colors, season, corpsSlug }: TourMapProps) {
   const theme = useSelector(themeStore, (s) => s.context.theme);
   const [geo, setGeo] = useState<MapGeometry | null>(null);
   useEffect(() => {
@@ -110,17 +109,12 @@ export default function TourMapBody({ stops, colors }: TourMapProps) {
         : null,
     [projected]
   );
-  const revealFraction =
-    projected.length >= 2 ? clampedReveal / (projected.length - 1) : 0;
+  const revealFraction = projected.length >= 2 ? clampedReveal / (projected.length - 1) : 0;
 
+  // Until the geometry chunk resolves, keep showing the static map image the
+  // SSR shell painted — the interactive SVG then swaps in (same aspect box).
   if (!geo) {
-    return (
-      <div
-        className="w-full animate-pulse rounded-lg bg-muted/40"
-        style={{ aspectRatio: `${VIEW_W} / ${VIEW_H}` }}
-        aria-hidden
-      />
-    );
+    return <StaticTourMapImg season={season} corps={[corpsSlug]} />;
   }
 
   return (
@@ -230,9 +224,7 @@ export default function TourMapBody({ stops, colors }: TourMapProps) {
         </div>
         <div className="mt-1 flex justify-between text-[11px] text-text-muted">
           <span>{projected[0] ? formatEventDate(projected[0].date) : ''}</span>
-          <span>
-            {projected.at(-1) ? formatEventDate(projected.at(-1)!.date) : ''}
-          </span>
+          <span>{projected.at(-1) ? formatEventDate(projected.at(-1)!.date) : ''}</span>
         </div>
       </div>
 
