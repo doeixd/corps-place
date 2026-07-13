@@ -45,13 +45,35 @@ export const Route = createFileRoute('/tour/{-$year}')({
   loader: async ({ params }) => {
     const { seasons } = await getTourSeasons();
     const newest = seasons[0] ?? '';
+    // No mappable seasons (read-model off / degraded): render the empty state.
+    // NEVER redirect here — bare /tour would fail the same check and loop.
+    if (!newest) {
+      return {
+        seasons: [] as string[],
+        newest: '',
+        data: { season: '', corps: [], events: {}, totalEvents: 0, mappableEvents: 0 },
+        canonical: '/tour',
+      };
+    }
     const wanted = parseTourYear(params.year) ?? newest;
-    if (!seasons.includes(wanted)) throw redirect({ to: '/tour/{-$year}', params: { year: undefined } });
+    // Unknown year (only reachable WITH a year param — bare always resolves to
+    // newest) → canonical bare page.
+    if (!seasons.includes(wanted))
+      throw redirect({ to: '/tour/{-$year}', params: { year: undefined }, replace: true });
     // Canonical URL shape: newest season lives at bare /tour.
     if (params.year && wanted === newest)
       throw redirect({ to: '/tour/{-$year}', params: { year: undefined }, replace: true });
     const data = await getSeasonTour({ data: wanted });
-    if (!data) throw redirect({ to: '/tour/{-$year}', params: { year: undefined } });
+    if (!data) {
+      if (params.year)
+        throw redirect({ to: '/tour/{-$year}', params: { year: undefined }, replace: true });
+      return {
+        seasons,
+        newest,
+        data: { season: newest, corps: [], events: {}, totalEvents: 0, mappableEvents: 0 },
+        canonical: tourCanonicalPath(newest, newest),
+      };
+    }
     return { seasons, newest, data, canonical: tourCanonicalPath(wanted, newest) };
   },
   staleTime: 5 * 60_000,
@@ -309,7 +331,7 @@ function TourPage() {
                 >
                   <CorpsLogo
                     name={c.name}
-                    logo={corpsLogoSource({ corps_logo: null })}
+                    logo={corpsLogoSource({ corps_logo: c.logo })}
                     width={24}
                     className="size-6 shrink-0"
                   />

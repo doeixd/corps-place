@@ -1144,7 +1144,7 @@ export const readSeasonTour = async (db: Client, season: string) => {
     args: [season],
   });
   const corps = await db.execute(
-    'SELECT slug, name, division_name, color_primary, color_secondary FROM rm_corps'
+    'SELECT slug, name, division_name, color_primary, color_secondary, corps_logo FROM rm_corps'
   );
   const events = await db.execute({
     sql: `SELECT event_id, slug, name, location_city AS city, location_state AS state
