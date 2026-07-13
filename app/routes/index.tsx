@@ -23,6 +23,7 @@ import {
   UserGroupIcon,
   BookOpen01Icon,
   Briefcase01Icon,
+  MapsLocation02Icon,
 } from '@/components/icons/generated';
 import { DicesIcon } from '@/components/icons/dices';
 import { JobsLanding } from '@/components/jobs/landing';
@@ -215,6 +216,13 @@ function Home() {
               icon={RankingIcon}
               title="Rankings"
               description="Season standings + a rank bump chart — filter by metric, division, and as-of date."
+            />
+            <ExploreCard
+              to="/tour/{-$year}"
+              preload="intent"
+              icon={MapsLocation02Icon}
+              title="Tour Map"
+              description="Every corps' summer tour on one US map — scrub the season, follow any corps."
             />
             <ExploreCard
               to="/predict/finals"
