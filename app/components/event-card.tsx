@@ -186,7 +186,7 @@ export function ScrollableEventCardGrid({
   const containerRef = useRef<HTMLDivElement>(null);
   const prevScrollTopKey = useRef(scrollTopKey);
   const prevAnimationKey = useRef(animationKey);
-  const prevScrollToKey = useRef(scrollToKey);  // Mirror the StaggeredGrid `md-lg` breakpoints: the column count settles from 1
+  const prevScrollToKey = useRef(scrollToKey); // Mirror the StaggeredGrid `md-lg` breakpoints: the column count settles from 1
   // → 2/3 after mount (useGridColumns reads matchMedia in an effect), which moves
   // card positions, so re-run the align once it changes (see plan: "column settle").
   const columns = useGridColumns('md', 'lg');
@@ -210,14 +210,18 @@ export function ScrollableEventCardGrid({
       prevAnimationKey.current = animationKey;
       return;
     }
-    // Align to the target ONLY when the view actually changed (filter/sort/key).
-    // Mount alignment is done by the inline parse-time script below — re-running
-    // it here (this effect also fires on the post-hydration column settle) was
-    // the visible "jump": scroll was already correct and got recomputed against
-    // mid-hydration geometry.
+    // Align when the view changed (filter/sort/key) — or when the box was never
+    // aligned at all (scrollTop still 0). The inline parse-time script below only
+    // executes on a full SSR load (dangerouslySetInnerHTML scripts don't run when
+    // React inserts them), so client-side navigations mount at the top and need
+    // this effect to do the alignment. The scrollTop>0 check keeps the original
+    // no-jump behavior on hydration: the script already aligned pre-paint, so the
+    // post-hydration column settle still returns early instead of recomputing
+    // against mid-hydration geometry.
     if (
       prevAnimationKey.current === animationKey &&
-      prevScrollToKey.current === scrollToKey
+      prevScrollToKey.current === scrollToKey &&
+      container.scrollTop > 0
     ) {
       return;
     }
