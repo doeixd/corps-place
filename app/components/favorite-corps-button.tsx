@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { useSyncExternalStore } from 'react';
-import { motion } from 'motion/react';
 import { corpsPalette } from '@sdk/src/corpsColors.js';
 import { Icon } from '@/components/icon';
 import { HeartAddIcon } from '@/components/icons/generated';
 import { FavouriteIcon } from '@/components/icons/favourite-filled';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import type { FavoriteCorpsInput } from '@/stores/favorite-corps-store';
 import { favoriteCorpsStore, useIsFavorite } from '@/stores/favorite-corps-store';
@@ -74,65 +72,64 @@ export function FavoriteCorpsButton({
   const hoverAccent =
     !isFav && palette ? ({ '--btn-hover': palette.accent } as React.CSSProperties) : undefined;
 
+  // Native title (no base-ui Tooltip) + CSS-crossfaded icons (no motion/react) —
+  // this button renders on the corps directory AND every corps detail page, so
+  // shedding both libraries here removes ~240KB from those hot routes.
   return (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <button
-            type="button"
-            aria-label={label}
-            aria-pressed={isFav}
-            // Compute the hover accent only once the user actually reaches for it.
-            onPointerEnter={() => setPrimed(true)}
-            onFocus={() => setPrimed(true)}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (isFav) {
-                favoriteCorpsStore.trigger.clear();
-              } else {
-                favoriteCorpsStore.trigger.set({ input: corps });
-              }
-            }}
-            style={{ ...inlineFav, ...hoverAccent }}
-            className={cn(
-              'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border transition-colors',
-              showLabel ? 'px-3 py-2 text-sm font-medium' : sizeTw,
-              isFav
-                ? 'border-(--btn-accent)/60 bg-(--btn-accent)/10 text-(--btn-accent)'
-                : // Labelled variant reads as a proper button (resting border);
-                  // the icon-only card variant stays a ghost heart.
-                  cn(
-                    showLabel
-                      ? 'border-border text-text-secondary'
-                      : 'border-transparent text-text-muted',
-                    'hover:border-(--btn-hover)/40 hover:text-(--btn-hover)'
-                  ),
-              className
-            )}
-          />
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      aria-pressed={isFav}
+      // Compute the hover accent only once the user actually reaches for it.
+      onPointerEnter={() => setPrimed(true)}
+      onFocus={() => setPrimed(true)}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isFav) {
+          favoriteCorpsStore.trigger.clear();
+        } else {
+          favoriteCorpsStore.trigger.set({ input: corps });
         }
-      >
-        <span className="relative inline-flex">
-          <motion.span
-            animate={{ opacity: isFav ? 1 : 0, scale: isFav ? 1 : 0.3 }}
-            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
-            className="absolute inset-0 inline-flex items-center justify-center"
-          >
-            <Icon icon={FavouriteIcon} size={iconSize} />
-          </motion.span>
-          <motion.span
-            animate={{ opacity: isFav ? 0 : 1, scale: isFav ? 0.3 : 1 }}
-            transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
-            className="inline-flex"
-          >
-            <Icon icon={HeartAddIcon} size={iconSize} />
-          </motion.span>
+      }}
+      style={{ ...inlineFav, ...hoverAccent }}
+      className={cn(
+        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border transition-colors',
+        showLabel ? 'px-3 py-2 text-sm font-medium' : sizeTw,
+        isFav
+          ? 'border-(--btn-accent)/60 bg-(--btn-accent)/10 text-(--btn-accent)'
+          : // Labelled variant reads as a proper button (resting border);
+            // the icon-only card variant stays a ghost heart.
+            cn(
+              showLabel
+                ? 'border-border text-text-secondary'
+                : 'border-transparent text-text-muted',
+              'hover:border-(--btn-hover)/40 hover:text-(--btn-hover)'
+            ),
+        className
+      )}
+    >
+      <span className="relative inline-flex">
+        <span
+          className={cn(
+            'absolute inset-0 inline-flex items-center justify-center transition-[opacity,transform] duration-200 ease-out',
+            isFav ? 'scale-100 opacity-100' : 'scale-[0.3] opacity-0'
+          )}
+        >
+          <Icon icon={FavouriteIcon} size={iconSize} />
         </span>
-        {showLabel ? <span>{isFav ? 'Favorited' : 'Favorite'}</span> : null}
-      </TooltipTrigger>
-      <TooltipContent>{label}</TooltipContent>
-    </Tooltip>
+        <span
+          className={cn(
+            'inline-flex transition-[opacity,transform] duration-200 ease-out',
+            isFav ? 'scale-[0.3] opacity-0' : 'scale-100 opacity-100'
+          )}
+        >
+          <Icon icon={HeartAddIcon} size={iconSize} />
+        </span>
+      </span>
+      {showLabel ? <span>{isFav ? 'Favorited' : 'Favorite'}</span> : null}
+    </button>
   );
 }
 

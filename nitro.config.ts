@@ -13,6 +13,7 @@ export default {
   // to a year per colo/encoding variant (2026-07-02 incident).
   plugins: [
     './server-plugins/no-cache-errors.ts',
+    './server-plugins/serverfn-cache.ts',
     './server-plugins/slow-request.ts',
     './server-plugins/early-hints.ts',
   ],

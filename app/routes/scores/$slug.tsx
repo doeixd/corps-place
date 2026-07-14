@@ -37,9 +37,13 @@ export const Route = createFileRoute('/scores/$slug')({
         .sort((a, b) => (b.start_date ?? '').localeCompare(a.start_date ?? ''));
       return { kind: 'season' as const, season: slug, events };
     }
-    const event = await getHybridEventBasic({ data: slug }).catch(() => null);
+    // event + recap are independent (both key off slug) — fetch in parallel,
+    // then resolve corps (which needs the recap's keys) after.
+    const [event, recap] = await Promise.all([
+      getHybridEventBasic({ data: slug }).catch(() => null),
+      getHybridEventFullRecap({ data: slug }).catch(() => null),
+    ]);
     if (!event) throw notFound();
-    const recap = await getHybridEventFullRecap({ data: slug }).catch(() => null);
     const keys = (recap?.corps ?? [])
       .map((c) => c.corpsKey)
       .filter((k): k is string => typeof k === 'string' && k.length > 0);

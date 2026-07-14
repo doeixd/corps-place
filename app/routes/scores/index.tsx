@@ -48,7 +48,11 @@ export const Route = createFileRoute('/scores/')({
   // into the HTML). ?season=all (the archive view) still loads everything.
   loaderDeps: ({ search }) => ({ season: search.season }),
   loader: async ({ deps }) => {
-    const dir = await getHybridEventsDirectory({ data: { season: deps.season } });
+    // Independent reads — fetch the directory + the freshness stamp in parallel.
+    const [dir, scoresUpdatedAt] = await Promise.all([
+      getHybridEventsDirectory({ data: { season: deps.season } }),
+      getScoresLastPublished().catch(() => null),
+    ]);
     // SSR-only: inline the first couple of recap tables (the ones in the initial
     // viewport). Without this the tables can't even START fetching until
     // hydration (measured: first recap rendered at ~5s on a throttled phone —
@@ -73,7 +77,6 @@ export const Route = createFileRoute('/scores/')({
       );
       initialRecaps = Object.fromEntries(loaded.filter(([, d]) => d.recap));
     }
-    const scoresUpdatedAt = await getScoresLastPublished().catch(() => null);
     return { ...dir, initialRecaps, scoresUpdatedAt };
   },
   head: ({ loaderData }) => {
