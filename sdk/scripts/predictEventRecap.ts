@@ -47,6 +47,15 @@ type Cli = {
   output?: string;
   breakdownSplitCurves?: string;
   sameSeasonBreakdownPrior: boolean;
+  // Gentle in-season bias correction: subtract a DAMPED, CAPPED estimate of the
+  // model's running mean signed error (this season, corps with >=1 prior show)
+  // from those corps' predicted totals. 2026 walk-forward: raw MAE 1.335 →
+  // full-strength 0.80, but we deliberately under-correct so a late-season
+  // plateau can't flip us into over-prediction. Defaults are conservative.
+  biasCorrect: boolean;
+  biasStrength: number;
+  biasCap: number;
+  biasMinSamples: number;
 };
 
 type EventRow = {
@@ -217,6 +226,12 @@ const parseCli = (argv: string[]): Cli => {
     output: getArg(argv, '--output'),
     breakdownSplitCurves: getArg(argv, '--breakdown-split-curves', 'results/v9-breakdown-split-curves.json'),
     sameSeasonBreakdownPrior: hasFlag(argv, '--same-season-breakdown-prior'),
+    // On by default, but gentle: two-thirds strength, capped at ±1.25 pts, and
+    // dormant until 10 scored same-season pairs exist. `--no-bias-correct` off.
+    biasCorrect: !hasFlag(argv, '--no-bias-correct'),
+    biasStrength: Number(getArg(argv, '--bias-strength', '0.67')),
+    biasCap: Number(getArg(argv, '--bias-cap', '1.25')),
+    biasMinSamples: Number(getArg(argv, '--bias-min-samples', '10')),
   };
 };
 
@@ -1314,6 +1329,83 @@ const printReadiness = (args: {
     console.log('Judges incomplete/missing. Prediction will use panel-unknown behavior.');
 };
 
+// Gentle in-season bias correction. Estimates the model's running mean signed
+// error (predicted − actual) over this season's already-scored predictions for
+// corps with >=1 prior show, using ONLY shows strictly before `knowledgeDate`
+// (walk-forward: no leakage). Returns a DAMPED, CAPPED correction to subtract
+// from eligible corps' totals — never the raw bias, so a sudden late-season
+// plateau can't over-correct us into over-prediction. Dormant (0) until
+// `minSamples` observations exist. See backtest in the 2026 bias eval.
+async function computeSeasonBiasCorrection(
+  db: Client,
+  season: string,
+  knowledgeDate: string,
+  cfg: { strength: number; cap: number; minSamples: number }
+): Promise<{ correction: number; rawBias: number; samples: number }> {
+  const knowDay = knowledgeDate.slice(0, 10);
+  const rows = await db.execute({
+    sql: `SELECT r.event_slug, r.competition_slug, r.predicted_at,
+                 p.corps_key, p.predicted_total, p.actual_total,
+                 COALESCE(date(c.date), date(e.start_date)) AS show_date
+          FROM model_event_prediction_rows p
+          JOIN model_event_prediction_runs r ON r.prediction_id = p.prediction_id
+          LEFT JOIN competitions c ON c.slug = r.competition_slug
+          LEFT JOIN events e ON e.slug = r.event_slug
+          WHERE r.season = ? AND p.actual_total IS NOT NULL AND p.actual_total > 0`,
+    args: [season],
+  });
+  // Dedupe to the LAST genuine pre-show forecast per (show, corps): the run with
+  // the greatest predicted_at that is still on/before the show date.
+  const best = new Map<
+    string,
+    { predAt: string; pred: number; actual: number; corpsKey: string; showDate: string }
+  >();
+  for (const row of rows.rows as unknown as Array<{
+    event_slug: string | null;
+    competition_slug: string | null;
+    predicted_at: string;
+    corps_key: string;
+    predicted_total: number;
+    actual_total: number;
+    show_date: string | null;
+  }>) {
+    const showDate = row.show_date ? String(row.show_date).slice(0, 10) : null;
+    if (!showDate || showDate >= knowDay) continue; // only shows before we forecast
+    const predAt = String(row.predicted_at);
+    if (predAt.slice(0, 10) > showDate) continue; // must be a pre-show prediction
+    const key = `${row.competition_slug ?? row.event_slug}::${row.corps_key}`;
+    const prev = best.get(key);
+    if (!prev || predAt > prev.predAt)
+      best.set(key, {
+        predAt,
+        pred: Number(row.predicted_total),
+        actual: Number(row.actual_total),
+        corpsKey: String(row.corps_key),
+        showDate,
+      });
+  }
+  let sum = 0;
+  let n = 0;
+  for (const b of best.values()) {
+    // Eligibility: the corps had >=1 prior same-season score before ITS show —
+    // debuts bias the OPPOSITE way (over-prediction) and must stay uncorrected.
+    const prior = await db.execute({
+      sql: `SELECT 1 FROM corps_scores cs JOIN competitions c2 ON c2.slug = cs.competition_slug
+            WHERE cs.corps_key = ? AND cs.competition_slug LIKE ? AND cs.total_score > 0
+              AND date(c2.date) < ? LIMIT 1`,
+      args: [b.corpsKey, `${season}-%`, b.showDate],
+    });
+    if (prior.rows.length === 0) continue;
+    sum += b.pred - b.actual;
+    n += 1;
+  }
+  const rawBias = n > 0 ? sum / n : 0;
+  if (n < cfg.minSamples) return { correction: 0, rawBias, samples: n };
+  const damped = cfg.strength * rawBias;
+  const correction = Math.max(-cfg.cap, Math.min(cfg.cap, damped));
+  return { correction, rawBias, samples: n };
+}
+
 async function main() {
   const cli = parseCli(process.argv.slice(2));
 
@@ -1368,6 +1460,21 @@ async function main() {
     // far). With --as-of it's frozen at a past date to reconstruct that day's snapshot.
     // percentThrough stays the EVENT's (we still forecast the event's score).
     const knowledgeDate = cli.asOf ?? event.start_date;
+    // Computed ONCE per event (not per corps); applied only to in-season corps
+    // with observed history at the caps-finalization step below.
+    const seasonBias = cli.biasCorrect
+      ? await computeSeasonBiasCorrection(db, cli.season, knowledgeDate, {
+          strength: cli.biasStrength,
+          cap: cli.biasCap,
+          minSamples: cli.biasMinSamples,
+        })
+      : { correction: 0, rawBias: 0, samples: 0 };
+    if (seasonBias.correction !== 0)
+      console.log(
+        `[bias] in-season correction ${seasonBias.correction >= 0 ? '+' : ''}${(-seasonBias.correction).toFixed(3)} pts ` +
+          `to history≥1 corps (raw bias ${seasonBias.rawBias.toFixed(3)}, n=${seasonBias.samples}, ` +
+          `strength ${cli.biasStrength}, cap ±${cli.biasCap})`
+      );
     const sameSeasonHistory = await countSameSeasonHistory(db, cli.season, knowledgeDate);
     const judgeInfo = await loadJudgeIndices(db, competition?.slug);
     const mode = chooseMode(cli, sameSeasonHistory, judgeInfo.known);
@@ -1665,12 +1772,24 @@ async function main() {
           persistWeight * sameSeason.lastTotal + (1 - persistWeight) * modelBlend;
       }
       const pointCapsTotal = totalFromV9Captions(pointCaps);
-      const caps =
+      let caps =
         preseasonTargetTotal != null
           ? reconcileCapsToTotalPreservingShape(pointCaps, preseasonTargetTotal)
           : inSeasonTargetTotal != null
             ? reconcileCapsToTotalPreservingShape(pointCaps, inSeasonTargetTotal)
             : pointCaps;
+      // Gentle in-season bias correction: nudge history≥1 corps toward the
+      // season's observed (damped, capped) mean error. Reconciling to the shifted
+      // total keeps captions, GE/Visual/Music, breakdown and intervals consistent.
+      const biasCorrectionApplied =
+        inSeasonWithHistory && seasonBias.correction !== 0
+          ? seasonBias.correction
+          : 0;
+      if (biasCorrectionApplied !== 0)
+        caps = reconcileCapsToTotalPreservingShape(
+          caps,
+          totalFromV9Captions(caps) - biasCorrectionApplied
+        );
       const finalTotal = totalFromV9Captions(caps);
       const predictedScoreBreakdown = breakdownSplitCurves
         ? splitV9RecapWithCurvesAndPrior(breakdownSplitCurves, {
@@ -1764,6 +1883,10 @@ async function main() {
         model_static_dim: modelStaticDim,
         fingerprint_confidence: features.staticFeatures.at(-1),
         baseline_total: Number(baselineTotal.toFixed(3)),
+        // Pts ADDED to this corps' total by the in-season bias correction
+        // (0 when not applied); positive = nudged up. Audit only.
+        season_bias_correction:
+          biasCorrectionApplied !== 0 ? Number((-biasCorrectionApplied).toFixed(3)) : undefined,
         point_estimate_source: useBaseline
           ? priorSeasonComparable
             ? 'caption_shape_preserving_baseline_blended_with_prior_season_comparable_total'
@@ -1808,6 +1931,17 @@ async function main() {
         model_fingerprint: modelFingerprint,
         supports_caption_fingerprints: supportsCaptionFingerprints,
         interval_scale: intervalScale,
+        season_bias_correction: cli.biasCorrect
+          ? {
+              // Pts added to history≥1 corps' totals (positive = nudged up).
+              applied_offset: Number((-seasonBias.correction).toFixed(3)),
+              raw_bias: Number(seasonBias.rawBias.toFixed(3)),
+              samples: seasonBias.samples,
+              strength: cli.biasStrength,
+              cap: cli.biasCap,
+              min_samples: cli.biasMinSamples,
+            }
+          : undefined,
         breakdown_split_curves: breakdownSplitCurves
           ? {
               path: cli.breakdownSplitCurves,
