@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react';
-import { FullRecapTable, type FullEventRecap } from '@/components/prediction/full-recap-table';
+import {
+  FullRecapTableStatic,
+  type FullEventRecap,
+} from '@/components/prediction/full-recap-table-static';
 import {
   cycleSortGeneric,
   type FullSortEntry,
@@ -63,7 +66,7 @@ export function EventFullRecap({
 
   return (
     <CorpsRegistryProvider corps={corps}>
-      <FullRecapTable
+      <FullRecapTableStatic
         recap={recap}
         corpsLookup={corpsLookup}
         classFilters={classFilters}
