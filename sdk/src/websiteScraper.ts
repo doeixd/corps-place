@@ -97,7 +97,16 @@ interface ScoreEventsResponse {
 // the server-rendered scores-list HTML directly (review Medium #6).
 const fetchScoreEventsConfig = async (season: string): Promise<ScoreEventsConfig | null> => {
   const pageUrl = scoresListUrl(season, 1);
-  const html = await fetchHtmlWithRetry(pageUrl);
+  // A 403 here must NOT sink the run: returning null routes the caller onto the
+  // HTML fallback path, which carries the browser-render chain. (2026-07-13
+  // incident: page-1 403s threw from here for 30+ minutes of polls while a
+  // show's scores were posting — the renderer never got a chance.)
+  let html: string;
+  try {
+    html = await fetchHtmlWithRetry(pageUrl);
+  } catch {
+    return null;
+  }
   const ajaxMatch = html.match(
     /scoreEventAjax\s*=\s*\{[^}]*"ajax_url":"([^"]+)","nonce":"([^"]+)"/
   );
@@ -474,7 +483,39 @@ const scrapeScoresListPage = (
 const scrapeScoresListPageHtml = (sql: SqlClient.SqlClient, season: string, page: number) =>
   Effect.gen(function* () {
     const pageUrl = scoresListUrl(season, page);
-    const html = yield* (Effect.tryPromise(() => fetchHtmlWithRetry(pageUrl)));
+    // Same plain-fetch → browser-render chain the recap pages use: Cloudflare
+    // 403s uncached list pages exactly when a fresh show's scores post, and a
+    // dead plain fetch here previously meant no ingest at all until the wall
+    // happened to lift.
+    let html = yield* Effect.tryPromise(() => fetchHtmlWithRetry(pageUrl)).pipe(
+      Effect.catch(() => Effect.succeed(""))
+    );
+    // Cloudflare serves its wall as a 403 (empty here) OR as a 200 challenge
+    // shell — catch both, not just the empty case.
+    const looksBlocked = (s: string) =>
+      s.trim().length === 0 || /attention required|cf-chl|challenge-platform|__cf_chl/i.test(s);
+    if (looksBlocked(html)) {
+      yield* Effect.logInfo(
+        `[website] scores list ${season}#${page} blocked/empty; trying browser render`
+      );
+      const renderer = yield* Effect.serviceOption(BrowserbaseService);
+      if (Option.isSome(renderer)) {
+        html = yield* renderer.value
+          .fetchHtml(pageUrl)
+          .pipe(Effect.catch(() => Effect.succeed("")));
+        if (html.trim().length > 0)
+          yield* Effect.logInfo(
+            `[website] rendered scores list ${season}#${page} — ${html.length} chars (Cloudflare bypass)`
+          );
+      }
+    }
+    if (looksBlocked(html)) {
+      return yield* Effect.fail(
+        new WebsiteRecapParseError(
+          `Failed to fetch ${pageUrl}: blocked and no renderer produced the scores list`
+        )
+      );
+    }
     const parsed = yield* (parseScoresList(html, season));
     yield* (
       retryDb(
