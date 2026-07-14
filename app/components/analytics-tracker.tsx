@@ -56,6 +56,18 @@ function trackParamInteractions(): void {
   lastParams = current;
 }
 
+// Coarse route bucket for nav-timing aggregation: collapse detail-page slugs so
+// `/corps/bluecoats` and `/corps/cavaliers` both report as `/corps/*` (bounded
+// cardinality, groupable). Keeps the first segment; a slug-like second segment
+// (has a digit, a hyphen, or is long) becomes `*`.
+function navBucket(path: string): string {
+  const segs = path.split('/').filter(Boolean);
+  if (segs.length === 0) return '/';
+  const isSlug = (s: string) => /[-\d]/.test(s) || s.length > 14;
+  if (segs.length === 1) return '/' + segs[0];
+  return '/' + segs[0] + (isSlug(segs[1]!) ? '/*' : '/' + segs[1]);
+}
+
 /**
  * Mounts once in the root layout. Fires a pageview on the initial load and on every
  * resolved client navigation (deduped by path), tracks in-page filter/scrubber
@@ -69,7 +81,22 @@ export function AnalyticsTracker(): null {
     initEngagement();
     initWebVitals();
     let last = '';
+    // Soft-navigation timing: onBeforeNavigate → onResolved is the loader +
+    // route-chunk-load time (what the user waits through before the page shows).
+    let navStart = 0;
+    let navFrom = '';
     const fire = () => {
+      // Record the just-completed navigation's duration (client nav only —
+      // navStart is 0 on the initial hard load, so nothing fires there).
+      if (navStart > 0) {
+        const ms = Math.round(performance.now() - navStart);
+        const to = location.pathname;
+        // Real route changes only, and drop absurd spans (backgrounded tab).
+        if (ms >= 0 && ms < 30_000 && to !== navFrom) {
+          track('navigation', { to: navBucket(to), ms });
+        }
+        navStart = 0;
+      }
       maybeTrackSearch(); // every resolve — debounced; covers ?q= param updates
       trackParamInteractions(); // every resolve — same-path param changes = interactions
       const path = location.pathname;
@@ -78,8 +105,15 @@ export function AnalyticsTracker(): null {
       trackPageview(path);
     };
     fire(); // initial load
-    const unsub = router.subscribe('onResolved', fire);
-    return unsub;
+    const unsubResolved = router.subscribe('onResolved', fire);
+    const unsubBefore = router.subscribe('onBeforeNavigate', () => {
+      navStart = performance.now();
+      navFrom = location.pathname;
+    });
+    return () => {
+      unsubResolved();
+      unsubBefore();
+    };
   }, [router]);
   return null;
 }
