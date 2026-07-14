@@ -234,8 +234,8 @@ export default function TourExplorerBody({
       return (
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VIEW_W} ${VIEW_H}" width="${VIEW_W * 2}" height="${VIEW_H * 2}">` +
         `<rect width="${VIEW_W}" height="${VIEW_H}" fill="#0b0d12"/>` +
-        `<path d="${geo.nationPath}" fill="#151923"/>` +
-        `<path d="${geo.statesPath}" fill="none" stroke="#2a3040" stroke-width="0.8"/>` +
+        `<path d="${geo.nationPath}" fill="#2a3242"/>` +
+        `<path d="${geo.statesPath}" fill="none" stroke="#47516a" stroke-width="0.8"/>` +
         routes +
         label +
         `</svg>`
@@ -338,13 +338,15 @@ export default function TourExplorerBody({
         aria-label={`${season} tour map — ${corps.length} corps`}
         onMouseLeave={() => onHoverSlug(null)}
       >
-        {/* Light mode needs a real landmass tint (muted/30 was white-on-white)
-            + firmer state lines; dark mode keeps the subtle originals. */}
-        <path d={geo.nationPath} className="fill-muted dark:fill-muted/30" />
+        {/* Landmass needs real contrast in BOTH themes: light-mode muted/30 was
+            white-on-white; dark-mode muted/30 + border (white/10%) washed the
+            country out against the near-black background. Full muted lifts the
+            landmass clear of the bg; muted-foreground state lines stay legible. */}
+        <path d={geo.nationPath} className="fill-muted dark:fill-muted" />
         <path
           d={geo.statesPath}
           fill="none"
-          className="stroke-muted-foreground/25 dark:stroke-border"
+          className="stroke-muted-foreground/25 dark:stroke-muted-foreground/30"
           strokeWidth={0.75}
         />
 

@@ -125,13 +125,15 @@ export default function TourMapBody({ stops, colors, season, corpsSlug }: TourMa
         role="img"
         aria-label="Season tour map"
       >
-        {/* Light mode needs a real landmass tint (muted/30 was white-on-white)
-            + firmer state lines; dark mode keeps the subtle originals. */}
-        <path d={geo.nationPath} className="fill-muted dark:fill-muted/30" />
+        {/* Landmass needs real contrast in BOTH themes: light-mode muted/30 was
+            white-on-white; dark-mode muted/30 + border (white/10%) washed the
+            country out against the near-black background. Full muted lifts the
+            landmass clear of the bg; muted-foreground state lines stay legible. */}
+        <path d={geo.nationPath} className="fill-muted dark:fill-muted" />
         <path
           d={geo.statesPath}
           fill="none"
-          className="stroke-muted-foreground/25 dark:stroke-border"
+          className="stroke-muted-foreground/25 dark:stroke-muted-foreground/30"
           strokeWidth={0.75}
         />
         {routeD ? (

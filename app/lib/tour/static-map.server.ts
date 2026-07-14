@@ -70,9 +70,12 @@ const PALETTES: Record<
     fallbackRoute: '#fd5007',
   },
   dark: {
-    land: '#1a1f2b',
-    border: '#2a3040',
-    borderOpacity: 1,
+    // Match the interactive map's fill-muted / muted-foreground state lines so
+    // the SSR placeholder → interactive swap is seamless. The old near-black
+    // navy (#1a1f2b) washed the country out against the dark page background.
+    land: '#262626',
+    border: '#a1a1a1',
+    borderOpacity: 0.3,
     dot: 'rgba(235,238,245,0.45)',
     fallbackRoute: '#fd5007',
   },
