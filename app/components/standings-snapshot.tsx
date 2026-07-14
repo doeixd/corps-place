@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router';
 import { Show, For } from 'jotai-solid-api';
-import { motion } from 'motion/react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
 import { CorpsNameCell } from '@/components/corps-name-cell';
@@ -17,7 +16,7 @@ export function StandingsSnapshot({ standings }: { standings: SeasonStandings | 
   if (!standings || standings.standings.length === 0) return null;
 
   return (
-    <motion.section initial={false} aria-label={`${standings.season} rankings`}>
+    <section aria-label={`${standings.season} rankings`}>
       <Card className="h-full">
         <CardContent className="flex h-full flex-col gap-3 py-5">
           <div className="flex items-center justify-between gap-2">
@@ -88,6 +87,6 @@ export function StandingsSnapshot({ standings }: { standings: SeasonStandings | 
           </ol>
         </CardContent>
       </Card>
-    </motion.section>
+    </section>
   );
 }

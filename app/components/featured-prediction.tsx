@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router';
 import { Show, For } from 'jotai-solid-api';
-import { motion } from 'motion/react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
 import { ClassBadge } from '@/components/class-badge';
@@ -17,7 +16,7 @@ export function FeaturedPredictionPanel({ prediction }: { prediction: FeaturedPr
   if (!prediction || prediction.placements.length === 0) return null;
 
   return (
-    <motion.section initial={false} aria-label="Featured prediction">
+    <section aria-label="Featured prediction">
       <Link
         to="/events/$yearSlug/$slug/prediction"
         params={{ yearSlug: '2026', slug: prediction.slug }}
@@ -64,7 +63,9 @@ export function FeaturedPredictionPanel({ prediction }: { prediction: FeaturedPr
               </For>
             </ol>
 
-            <p className="text-[11px] leading-snug text-text-muted">AI estimate — not a guarantee.</p>
+            <p className="text-[11px] leading-snug text-text-muted">
+              AI estimate — not a guarantee.
+            </p>
 
             <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
               See full prediction
@@ -73,6 +74,6 @@ export function FeaturedPredictionPanel({ prediction }: { prediction: FeaturedPr
           </CardContent>
         </Card>
       </Link>
-    </motion.section>
+    </section>
   );
 }

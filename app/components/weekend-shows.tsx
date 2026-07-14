@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Show, For } from 'jotai-solid-api';
 import * as Match from 'effect/Match';
-import { motion } from 'motion/react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/reui/badge';
@@ -220,7 +219,7 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
       : weekend.shows.map((show) => ({ item: show, distanceMiles: null as number | null }));
 
   return (
-    <motion.section initial={false} className="space-y-3" aria-label={heading}>
+    <section className="space-y-3" aria-label={heading}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h2 className="text-lg font-medium text-text-primary pl-[1px]">{heading}</h2>
@@ -300,6 +299,6 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
           <Icon icon={ArrowRight01Icon} size="md" className="size-[1.125rem]" />
         </button>
       </div>
-    </motion.section>
+    </section>
   );
 }

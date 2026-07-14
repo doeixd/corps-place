@@ -1,6 +1,5 @@
 import { memo, type ReactNode } from 'react';
 import { Link } from '@tanstack/react-router';
-import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -54,21 +53,25 @@ function CardFavoriteButton({ saved, onClick }: { saved: boolean; onClick: () =>
         saved ? 'text-primary' : 'text-text-muted hover:text-primary'
       )}
     >
+      {/* Two crossfading icons via CSS transition (no motion/react — this card
+          is on the home route's critical path; the animation library is 40KB). */}
       <span className="relative inline-flex">
-        <motion.span
-          animate={{ opacity: saved ? 1 : 0, scale: saved ? 1 : 0.3 }}
-          transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
-          className="absolute inset-0 inline-flex items-center justify-center"
+        <span
+          className={cn(
+            'absolute inset-0 inline-flex items-center justify-center transition-[opacity,transform] duration-200 ease-out',
+            saved ? 'scale-100 opacity-100' : 'scale-[0.3] opacity-0'
+          )}
         >
           <Icon icon={FavouriteIcon} size="sm" />
-        </motion.span>
-        <motion.span
-          animate={{ opacity: saved ? 0 : 1, scale: saved ? 0.3 : 1 }}
-          transition={{ type: 'spring', stiffness: 600, damping: 16, mass: 0.5 }}
-          className="inline-flex"
+        </span>
+        <span
+          className={cn(
+            'inline-flex transition-[opacity,transform] duration-200 ease-out',
+            saved ? 'scale-[0.3] opacity-0' : 'scale-100 opacity-100'
+          )}
         >
           <Icon icon={HeartAddIcon} size="sm" />
-        </motion.span>
+        </span>
       </span>
     </button>
   );

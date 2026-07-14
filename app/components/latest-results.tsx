@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router';
 import { Show, For } from 'jotai-solid-api';
-import { motion } from 'motion/react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/icon';
 import { ClassBadge } from '@/components/class-badge';
@@ -21,7 +20,7 @@ export function LatestResultsPanel({ results }: { results: LatestResults | null 
   const year = yearOf(results.date);
 
   return (
-    <motion.section initial={false} aria-label="Latest results">
+    <section aria-label="Latest results">
       <Link
         to="/events/$yearSlug/$slug/prediction"
         params={{ yearSlug: year, slug: results.slug }}
@@ -76,6 +75,6 @@ export function LatestResultsPanel({ results }: { results: LatestResults | null 
           </CardContent>
         </Card>
       </Link>
-    </motion.section>
+    </section>
   );
 }
