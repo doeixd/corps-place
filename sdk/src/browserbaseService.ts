@@ -206,6 +206,55 @@ export const BrowserbaseServiceLive = Layer.effect(
       }
     };
 
+    // --- Camofox stealth-Firefox REST service (fallback before Browserbase). ---
+    // A local camofox-browser server (tools/camofox, kept alive by
+    // scripts/camofox-keepalive.sh) wrapping Camoufox — a Firefox fork with
+    // engine-level fingerprint spoofing that clears Cloudflare walls headless
+    // Chromium can't. One probe per process; a dead service is skipped in ~1.5s.
+    const camofoxUrl = process.env.CAMOFOX_URL || 'http://localhost:9377';
+    let camofoxDead: boolean | null = null; // null = not probed yet
+    const camofoxAlive = async (): Promise<boolean> => {
+      if (camofoxDead !== null) return !camofoxDead;
+      try {
+        const res = await fetch(`${camofoxUrl}/health`, { signal: AbortSignal.timeout(1500) });
+        camofoxDead = !res.ok;
+      } catch {
+        camofoxDead = true;
+      }
+      return !camofoxDead;
+    };
+    const renderCamofox = async (url: string): Promise<string> => {
+      const tabRes = await fetch(`${camofoxUrl}/tabs`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ userId: 'scraper', sessionKey: 'scraper', url }),
+        signal: AbortSignal.timeout(90_000),
+      });
+      if (!tabRes.ok) throw new Error(`camofox tab create failed: ${tabRes.status}`);
+      const { tabId } = (await tabRes.json()) as { tabId?: string };
+      if (!tabId) throw new Error('camofox returned no tabId');
+      try {
+        const ev = await fetch(`${camofoxUrl}/tabs/${tabId}/evaluate`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            userId: 'scraper',
+            expression: 'document.documentElement.outerHTML',
+          }),
+          signal: AbortSignal.timeout(30_000),
+        });
+        const data = (await ev.json()) as { ok?: boolean; result?: unknown };
+        if (!data.ok || typeof data.result !== 'string' || data.result.length === 0)
+          throw new Error('camofox evaluate returned no HTML');
+        return data.result;
+      } finally {
+        void fetch(`${camofoxUrl}/tabs/${tabId}?userId=scraper`, {
+          method: 'DELETE',
+          signal: AbortSignal.timeout(10_000),
+        }).catch(() => {});
+      }
+    };
+
     // --- Browserbase cloud session (fallback) — connect puppeteer over CDP. ---
     const bb = apiKey ? new Browserbase({ apiKey }) : null;
     let projectId: string | null = process.env.BROWSERBASE_PROJECT_ID ?? null;
@@ -282,7 +331,21 @@ export const BrowserbaseServiceLive = Layer.effect(
             return local;
           }
         }
-        // 2) Browserbase cloud session fallback.
+        // 2) Camofox stealth Firefox — engine-level anti-detect; the rung that
+        //    clears Cloudflare walls the plain fetch AND headless Chromium hit.
+        if (yield* Effect.tryPromise(() => camofoxAlive()).pipe(
+          Effect.catch(() => Effect.succeed(false))
+        )) {
+          const camo = yield* Effect.tryPromise(() => renderCamofox(url)).pipe(
+            Effect.catch(() => Effect.succeed(''))
+          );
+          if (camo.trim().length > 0) {
+            yield* Effect.logInfo(`[render] camofox ${url} — ${camo.length} chars`);
+            return camo;
+          }
+          yield* Effect.logInfo(`[render] camofox failed for ${url}; falling through`);
+        }
+        // 3) Browserbase cloud session fallback.
         if (bb) {
           yield* Effect.logInfo(`[render] Browserbase ${url}`);
           return yield* Effect.tryPromise({
