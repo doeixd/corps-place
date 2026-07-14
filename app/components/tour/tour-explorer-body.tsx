@@ -244,6 +244,55 @@ export default function TourExplorerBody({
     [geo, series, isFocusedMode, season]
   );
 
+  // Continuous-time frame for the video: each route's revealed length is
+  // INTERPOLATED between its two bracketing stops by elapsed time, so a leg
+  // draws steadily across the days between shows instead of the whole segment
+  // snapping in on the show date. (frameSvg above stays discrete — it's a
+  // single-date snapshot for the PNG export.)
+  const frameSvgAtTime = useCallback(
+    (tMs: number): string => {
+      if (!geo) return '';
+      const routes = series
+        .map((sr) => {
+          if (!sr.d) return '';
+          let shown = 0;
+          const n = sr.pts.length;
+          if (n > 0 && tMs >= Date.parse(sr.pts[n - 1]![2])) {
+            shown = sr.totalLen;
+          } else {
+            for (let i = 0; i < n - 1; i++) {
+              const ta = Date.parse(sr.pts[i]![2]);
+              const tb = Date.parse(sr.pts[i + 1]![2]);
+              if (tMs >= tb) {
+                shown = sr.cumLen[i + 1]!; // this leg fully drawn; keep going
+                continue;
+              }
+              if (tMs >= ta) {
+                const frac = tb > ta ? (tMs - ta) / (tb - ta) : 1;
+                shown = sr.cumLen[i]! + (sr.cumLen[i + 1]! - sr.cumLen[i]!) * frac;
+              }
+              break; // interpolated this leg, or tMs precedes the first stop
+            }
+          }
+          const off = Math.max(0, sr.totalLen - shown);
+          return `<path d="${sr.d}" fill="none" stroke="${sr.corps.colorPrimary ?? '#fd5007'}" stroke-width="${isFocusedMode ? 2.2 : 1.6}" stroke-opacity="${isFocusedMode ? 0.9 : 0.55}" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="${sr.totalLen}" stroke-dashoffset="${off}"/>`;
+        })
+        .join('');
+      const labelDate = new Date(tMs).toISOString().slice(0, 10);
+      const label = `<text x="40" y="${VIEW_H - 28}" font-family="sans-serif" font-size="26" fill="rgba(255,255,255,0.85)">${season} tour — ${formatEventDate(labelDate)} · drumcorps.app/tour</text>`;
+      return (
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VIEW_W} ${VIEW_H}" width="${VIEW_W * 2}" height="${VIEW_H * 2}">` +
+        `<rect width="${VIEW_W}" height="${VIEW_H}" fill="#0b0d12"/>` +
+        `<path d="${geo.nationPath}" fill="#2a3242"/>` +
+        `<path d="${geo.statesPath}" fill="none" stroke="#47516a" stroke-width="0.8"/>` +
+        routes +
+        label +
+        `</svg>`
+      );
+    },
+    [geo, series, isFocusedMode, season]
+  );
+
   const svgToCanvas = useCallback(async (svg: string, canvas: HTMLCanvasElement) => {
     const img = new Image();
     const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
@@ -301,10 +350,16 @@ export default function TourExplorerBody({
       rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
       const done = new Promise<void>((r) => (rec.onstop = () => r()));
       rec.start();
-      // Hold each day ~0.45s; ease in with a title frame and out with a hold.
-      for (let i = 0; i < dates.length; i++) {
-        await svgToCanvas(frameSvg(dates[i]!), canvas);
-        await new Promise((r) => setTimeout(r, 450));
+      // Sweep the whole season span in even time steps (fixed frame count, so
+      // video length is consistent regardless of show count) — the interpolated
+      // frames draw the routes steadily rather than one leg per show day.
+      const firstT = Date.parse(dates[0]!);
+      const lastT = Date.parse(dates[dates.length - 1]!);
+      const FRAMES = 120;
+      for (let f = 0; f <= FRAMES; f++) {
+        const tMs = firstT + ((lastT - firstT) * f) / FRAMES;
+        await svgToCanvas(frameSvgAtTime(tMs), canvas);
+        await new Promise((r) => setTimeout(r, 110));
       }
       await new Promise((r) => setTimeout(r, 1200));
       rec.stop();
@@ -313,7 +368,7 @@ export default function TourExplorerBody({
     } finally {
       setRendering(null);
     }
-  }, [canRecord, dates, frameSvg, season, svgToCanvas]);
+  }, [canRecord, dates, frameSvgAtTime, season, svgToCanvas]);
 
   // Until the geometry chunk resolves, keep showing the static map image the
   // SSR shell painted — the interactive SVG then swaps in (same aspect box).
