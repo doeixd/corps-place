@@ -490,6 +490,15 @@ pipeline state.
   boundaries and scale ramps, the sequence provider switches from 5 to 15 steps
   at the actual A→B boundary, Open Class sampling uses the configured 0.35 share,
   and transitions reset monitor patience before LR reduction/early stopping.
+- Forecast masking is more than zeroing static slots. The final2 chain first
+  removes sequence/trend/history context, masks lineup and judge-Elo statics,
+  clears the agnostic show embedding, and preserves cold-start/fingerprint slots;
+  then May 28 patches replace the hidden history baseline with the rank-curve
+  baseline plus a centered, confidence-scaled caption-fingerprint adjustment
+  clamped to ±0.6 points. Using the earlier global EMA baseline would leak the
+  supposedly hidden history. `npm run test:v95-masking` pins slot behavior,
+  input immutability, zero-rate RNG consumption, the seeded 0.12 decision stream,
+  and forecast-baseline construction.
 
 ## Immediate next task
 

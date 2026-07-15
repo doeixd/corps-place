@@ -42,6 +42,7 @@ import {
   type CurriculumConfig as AutoCurriculumConfig,
   type CurriculumTransition,
 } from "./v95Curriculum.js";
+import { buildForecastBaseline, selectV95Masking } from "./v95Masking.js";
 
 const DB_PATH = "./dci-relational.db";
 const MODEL_DIR = "./models/v95_final2_reconstruction";
@@ -1483,7 +1484,10 @@ function buildSamples(
   seed: number,
   epoch: number = 0,
   baselineDropoutRate: number = BASELINE_DROPOUT_RATE,
-  baselineNoiseStd: number = BASELINE_NOISE_STD_PTS
+  baselineNoiseStd: number = BASELINE_NOISE_STD_PTS,
+  historyHideRate: number = 0,
+  judgeHideRate: number = 0,
+  forecastContextHideRate: number = 0,
 ): Sample[] {
   const samples: Sample[] = [];
   const rng = seededRandom(seed);
@@ -1498,8 +1502,17 @@ function buildSamples(
 
   for (const row of rows) {
 
-    const slicedSeq = row.seq.slice(-seqLen);
-    const slicedMask = row.seqMask.slice(-seqLen).map((v) => (v ? 1 : 0));
+    const { hideForecastContext, hideJudges, hideHistory } = selectV95Masking(
+      rng,
+      row.seqMask.some(Boolean),
+      {
+        history: historyHideRate,
+        judges: judgeHideRate,
+        forecastContext: forecastContextHideRate,
+      },
+    );
+    const slicedSeq = hideHistory ? [] : row.seq.slice(-seqLen);
+    const slicedMask = hideHistory ? [] : row.seqMask.slice(-seqLen).map((v) => (v ? 1 : 0));
 
     while (slicedSeq.length < SEQ_LEN) {
       slicedSeq.unshift(new Array(FEAT_DIM).fill(0));
@@ -1526,10 +1539,17 @@ function buildSamples(
       slicedSeq[lastValidIdx] = step;
     }
 
+    const forecastBaselineRaw = buildForecastBaseline(row.stat, stats.recapMean);
     const baselineRawVector = row.globalBaseline;
     const baselineNormVector: number[] = [];
 
-    const baselineInputRaw = lastScoreBaseline ? [...lastScoreBaseline] : [...baselineRawVector];
+    const baselineInputRaw = hideForecastContext
+      ? [...forecastBaselineRaw]
+      : hideHistory
+        ? stats.recapMean.map((value) => value ?? 0)
+        : lastScoreBaseline
+          ? [...lastScoreBaseline]
+          : [...baselineRawVector];
     if (lastScoreBaseline) {
       for (let idx = 0; idx < CAPTION_COUNT; idx++) {
         if (baselineInputRaw[idx] === 0) {
@@ -1582,9 +1602,29 @@ function buildSamples(
     const normalizedTotal = normalizeValue(row.total, stats.totalMean, stats.totalStd || 1);
 
     const validSteps = slicedSeq.filter((_, i) => slicedMask[i] === 1);
-    const historyLen = Math.max(0, validSteps.length - 1);
+    const historyLen = hideHistory ? 0 : Math.max(0, validSteps.length - 1);
 
-    const trendFeatures = row.trendSlopes;
+    const trendFeatures = hideHistory ? new Array(CAPTION_COUNT).fill(0) : row.trendSlopes;
+    let staticFeatures = [...row.stat];
+    if (hideHistory) {
+      staticFeatures[COLD_START_STATIC_OFFSET] = 0;
+      staticFeatures[COLD_START_STATIC_OFFSET + 1] = 0;
+      staticFeatures[COLD_START_STATIC_OFFSET + 2] = 1;
+      staticFeatures[COLD_START_STATIC_OFFSET + 9] =
+        staticFeatures[COLD_START_STATIC_OFFSET + 9] ?? 0;
+    }
+    if (hideForecastContext) {
+      staticFeatures = applyV9PredictionContextMode(staticFeatures, {
+        mode: "preseason_forecast",
+        seedRank: (row.stat[COLD_START_STATIC_OFFSET + 5] ?? 0) > 0
+          ? (row.stat[COLD_START_STATIC_OFFSET + 5] ?? 0) * 25
+          : undefined,
+        recapMean: forecastBaselineRaw,
+      });
+    }
+    if (hideJudges) {
+      maskV9JudgeContext(staticFeatures);
+    }
 
     if (row.corpsId < 0 || row.corpsId >= CORPS_COUNT) {
       throw new Error(`corps_id out of range: ${row.corpsId}`);
@@ -1612,14 +1652,15 @@ function buildSamples(
       return next;
     })();
 
-    const agnosticShowId = rng() < 0.2 ? 0 : row.agnosticShowId; // 20% dropout for show embedding
+    const agnosticShowId = hideForecastContext || rng() < 0.2 ? 0 : row.agnosticShowId;
+    const judgeIndices = hideJudges ? new Array(CAPTION_COUNT).fill(0) : row.judgeIndices;
 
     samples.push({
       xs: [
         slicedSeq,
-        [...row.stat, ...trendFeatures, ...row.contextFeatures],
+        [...staticFeatures, ...trendFeatures, ...row.contextFeatures],
         slicedMask,
-        row.judgeIndices,
+        judgeIndices,
         corpsId,
         baselineNormVector,
         historyLen,
@@ -1638,12 +1679,12 @@ function buildSamples(
         split: row.split,
         total: row.total,
         historyLen,
-        judgeKnown: row.judgeIndices.every((idx) => idx > 0),
-        historyHidden: false,
-        forecastContextHidden: false,
+        judgeKnown: !hideJudges && row.judgeIndices.every((idx) => idx > 0),
+        historyHidden: hideHistory,
+        forecastContextHidden: hideForecastContext,
         lineupContextHidden: false,
-        seasonDebut: (row.stat[COLD_START_STATIC_OFFSET] ?? 0) >= 0.5,
-        firstSeasonEvent: (row.stat[COLD_START_STATIC_OFFSET + 6] ?? 0) >= 0.5,
+        seasonDebut: (staticFeatures[COLD_START_STATIC_OFFSET] ?? 0) >= 0.5,
+        firstSeasonEvent: (staticFeatures[COLD_START_STATIC_OFFSET + 6] ?? 0) >= 0.5,
       },
     });
 
@@ -2601,7 +2642,10 @@ async function main() {
       args.seed + epoch,
       epoch,
       args.baselineDropout,
-      args.baselineNoiseStd
+      args.baselineNoiseStd,
+      args.historyHideRate,
+      args.judgeHideRate,
+      args.forecastContextHideRate,
     );
 
     const dropRate = guardrailCheck(epochSamples, weights.identityDropoutRate);

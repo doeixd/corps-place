@@ -122,12 +122,20 @@ Replay chronologically:
 1. `04218_2026-05-26T11-35-39.179Z.patch`
 2. `04227_2026-05-26T11-35-49.672Z.patch`
 3. `04235_2026-05-26T11-36-09.807Z.patch`
-4. `04409_2026-05-26T11-44-29.881Z.patch`
-5. `04413_2026-05-26T11-44-38.261Z.patch`
+4. `04250_2026-05-26T11-36-29.200Z.patch`
+5. `04409_2026-05-26T11-44-29.881Z.patch`
+6. `04413_2026-05-26T11-44-38.261Z.patch`
+7. `08638_2026-05-28T11-12-22.643Z.patch`
+8. `08676_2026-05-28T11-14-09.468Z.patch`
+9. `08897_2026-05-28T11-26-21.846Z.patch`
+10. `08901_2026-05-28T11-26-29.307Z.patch`
 
-- [ ] Restore final `maskForecastContext` using normalization-aware values.
-- [ ] Verify only intended slots change; preserve fingerprint/cold-start blocks.
-- [ ] Test deterministic seeded masking and pin the reproduction rate to 0.12.
+The May 28 baseline/fingerprint tail is required for the actual `final2`
+forecast behavior; the earlier mask alone still used a history-derived baseline.
+
+- [x] Restore final forecast masking using normalization-aware values.
+- [x] Verify only intended slots change; preserve fingerprint/cold-start blocks.
+- [x] Test deterministic seeded masking and pin the reproduction rate to 0.12.
 
 ### 6. Accuracy-trunk capacity
 
