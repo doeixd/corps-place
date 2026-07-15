@@ -11,7 +11,14 @@
  * deterministic (set at draft, never mutated), so this is faithful; the only
  * unfaithfulness is if a member's ROSTER changed mid-season (trades/waivers).
  *
- * Idempotent: upserts on (league_id, user_id, as_of_date). Safe to re-run.
+ * Idempotent: upserts on (league_id, user_id, as_of_date). Safe to re-run. Prefer a
+ * quiet window — it writes to contributions.db, which the live 3-min auto-ingest
+ * recompute also writes (SQLite is single-writer; a clash just needs a re-run).
+ *
+ * x-axis note: points are keyed by the competition's calendar date (UTC midnight
+ * stem), while the live recompute keys by its ET ingest date — so a show whose
+ * recap posts after ET-midnight sits one day apart between backfilled and live
+ * points. Same values, slightly shifted x near the seam.
  *
  *   cd /root/corps-place && vp exec tsx scripts/backfill-fantasy-history.ts --season 2026 [--dry-run]
  */
@@ -115,9 +122,12 @@ function rankMembers(league: League, best: SeasonBest) {
     const s = computeRosterScore(m.picks, best, league.weights, league.mode);
     return { userId: m.userId, total: s.total, ge: s.ge, visual: s.visual, music: s.music, rank: 0 };
   });
+  // Tiebreakers MUST match buildStandings (standings.ts) exactly, incl. the
+  // locale-aware userId compare, or a reconstructed rank could differ on an exact
+  // total/ge/music tie.
   scored.sort(
     (a, b) =>
-      b.total - a.total || b.ge - a.ge || b.music - a.music || (a.userId < b.userId ? -1 : 1)
+      b.total - a.total || b.ge - a.ge || b.music - a.music || a.userId.localeCompare(b.userId)
   );
   scored.forEach((s, i) => (s.rank = i + 1));
   return scored;

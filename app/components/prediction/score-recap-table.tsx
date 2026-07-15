@@ -576,12 +576,15 @@ export function ScoreRecapTable({
                           const isOpen = expandable && expanded.has(key);
                           return [
                           <motion.tr
-                            key={String(row.corps)}
+                            key={key}
                             // Shared with the full-recap row of the same corps so a
                             // row morphs between the compact and full tables when the
                             // mode toggles (the two tables alternate in the same
                             // AnimatePresence). Intra-table reorders use `layout`.
-                            layoutId={`recap-row-${String(row.corps)}`}
+                            // Keyed by `rowKey` (id ?? corps) so callers with a stable
+                            // id (standings, where corps names aren't unique) don't
+                            // collide; prediction rows fall back to corps, unchanged.
+                            layoutId={`recap-row-${key}`}
                             layout={animateLayout ? 'position' : false}
                             transition={{
                               type: 'spring',
@@ -686,7 +689,7 @@ export function ScoreRecapTable({
                           </motion.tr>,
                           isOpen && renderRowDetail ? (
                             <tr
-                              key={`${String(row.corps)}-detail`}
+                              key={`${key}-detail`}
                               data-slot="table-row"
                               className="border-b bg-muted/20"
                             >

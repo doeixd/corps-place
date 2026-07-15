@@ -31,12 +31,24 @@ const CATEGORIES: Array<{
   label: string;
   formula: string;
   captions: CaptionKey[];
-}> = [
-  { key: 'ge', label: 'General Effect', formula: 'GE1 + GE2', captions: [] },
-  { key: 'visual', label: 'Visual', formula: '(VP + VA + CG) ÷ 2', captions: [] },
-  { key: 'music', label: 'Music', formula: '(MB + MA + MP) ÷ 2', captions: [] },
-];
-for (const k of CAPTION_KEYS) CATEGORIES.find((c) => c.key === CAPTION_CATEGORY[k])!.captions.push(k);
+}> = (
+  [
+    { key: 'ge', label: 'General Effect', formula: 'GE1 + GE2' },
+    { key: 'visual', label: 'Visual', formula: '(VP + VA + CG) ÷ 2' },
+    { key: 'music', label: 'Music', formula: '(MB + MA + MP) ÷ 2' },
+  ] as const
+).map((c) => ({ ...c, captions: CAPTION_KEYS.filter((k) => CAPTION_CATEGORY[k] === c.key) }));
+
+// The category subtotal shown here is derived from the SAME per-caption values
+// displayed below it — `GE1 + GE2` for GE, `(…)/2` for Visual/Music — so the
+// panel always reconciles with its own formula. At the default 40/30/30 weights
+// this equals the standings table's GE/Visual/Music columns exactly; only a
+// league with custom category weights would see the table's (weighted) column
+// diverge from this raw caption math.
+const rawSubtotal = (perCaption: Record<string, number>, cat: (typeof CATEGORIES)[number]) => {
+  const sum = cat.captions.reduce((s, k) => s + (perCaption[k] ?? 0), 0);
+  return cat.key === 'ge' ? sum : sum / 2;
+};
 
 /** One drafted corps: logo + name, its season-best caption value, and its weight. */
 function CorpsContribution({ pick, corps }: { pick: Contribution; corps?: PickedCorps }) {
@@ -83,7 +95,6 @@ export function StandingsBreakdown({
   data: StandingsBreakdownData;
   corpsByKey: Record<string, PickedCorps>;
 }) {
-  const category = { ge: data.ge, visual: data.visual, music: data.music } as const;
   const hasAnyPick = CAPTION_KEYS.some((k) => (data.contributions[k]?.length ?? 0) > 0);
 
   if (!hasAnyPick) {
@@ -101,7 +112,9 @@ export function StandingsBreakdown({
           <div className="flex items-baseline justify-between border-b border-border/60 pb-1">
             <span className="text-sm font-semibold text-text-primary">{cat.label}</span>
             <span className="font-mono text-sm font-bold tabular-nums">
-              {formatScore(category[cat.key])}
+              {rawSubtotal(data.perCaption, cat) > 0
+                ? formatScore(rawSubtotal(data.perCaption, cat))
+                : '—'}
             </span>
           </div>
           <div className="space-y-2">
@@ -112,7 +125,10 @@ export function StandingsBreakdown({
                   <div className="flex items-baseline justify-between text-[11px] uppercase tracking-wide text-muted-foreground">
                     <span>{CAPTION_LABEL[k]}</span>
                     <span className="font-mono tabular-nums">
-                      {picks.length ? formatScore(data.perCaption[k] ?? 0) : '—'}
+                      {/* In recap mode a 0 aggregate means "no drafted corps has
+                          scored this caption yet" (scored values are >0), so show a
+                          dash — matching the main table — not a literal 0.000. */}
+                      {picks.length && data.perCaption[k] ? formatScore(data.perCaption[k]) : '—'}
                     </span>
                   </div>
                   {picks.length ? (

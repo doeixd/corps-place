@@ -143,9 +143,13 @@ const makeStandingsService = Effect.gen(function* () {
 
     // Season-progress history point (see fantasy_standings_history): key the
     // going-forward snapshot by the recompute's Eastern-time date so the several
-    // recomputes that fire for one show collapse to one point, and it sits on the
-    // same x-axis as backfilled competition-date points. Only written once at
-    // least one show has scored — no flat run of preseason zeroes.
+    // recomputes that fire for one show collapse to one point. Recompute only runs
+    // when new scores land (auto-ingest posts it guarded by "new scores this run"),
+    // so points fall on score-landing days, not idle days. NOTE the x-axis is the
+    // INGEST (ET) date, which the backfill approximates with the competition's
+    // calendar date; a recap that posts after ET-midnight lands its point one day
+    // after the show — same value, slightly shifted x. Only written once at least
+    // one show has scored — no flat run of preseason zeroes.
     const asOfDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(
       new Date(now)
     );
