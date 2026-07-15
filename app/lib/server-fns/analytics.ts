@@ -23,7 +23,16 @@ export type AnalyticsSummary = {
   byDevice: { device: string; views: number }[];
   engagement: { avgSeconds: number; avgScroll: number; samples: number };
   // Core Web Vitals (field): p75 per metric (ms; CLS is ×1000), + INP by page.
-  webVitals: { metric: string; samples: number; p75: number; avg: number }[];
+  // Computed over a fixed ≥28-day window (not the chart range); `lowConfidence`
+  // flags metrics whose sample count is too small for a trustworthy p75.
+  webVitals: {
+    metric: string;
+    samples: number;
+    p75: number;
+    avg: number;
+    lowConfidence: boolean;
+  }[];
+  vitalsWindowDays: number;
   inpByPath: { path: string; samples: number; p75: number }[];
   available: boolean;
 };
@@ -54,7 +63,9 @@ const RANGE_KEYS = Object.keys(RANGES) as RangeKey[];
 
 export const getAnalyticsSummary = createServerFn({ method: 'GET' })
   .validator((d: { range?: string } | undefined) => ({
-    range: ((RANGE_KEYS as readonly string[]).includes(d?.range ?? '') ? d!.range : '30d') as RangeKey,
+    range: ((RANGE_KEYS as readonly string[]).includes(d?.range ?? '')
+      ? d!.range
+      : '30d') as RangeKey,
   }))
   .handler(async ({ data }): Promise<AnalyticsSummary> => {
     await requireCapability(getWebRequest(), 'viewAdmin');
@@ -73,6 +84,7 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
       byDevice: [],
       engagement: { avgSeconds: 0, avgScroll: 0, samples: 0 },
       webVitals: [],
+      vitalsWindowDays: 0,
       inpByPath: [],
       available: false,
     };
@@ -82,6 +94,14 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
 
     // Precise window via the epoch-ms `ts` column (so sub-day ranges like 1h work).
     const sinceMs = cfg.ms == null ? 0 : Date.now() - cfg.ms;
+    // Field Core Web Vitals need a stable, high-volume window to have a
+    // meaningful p75 — a p75 over a 1h slice (2-10 samples) is just noise. So
+    // vitals ALWAYS look back at least 28 days (matching Google's CrUX), or the
+    // selected range if it's wider. Decoupled from the chart range on purpose.
+    const VITALS_WINDOW_MS = 28 * 86_400_000;
+    const vitalsSinceMs = cfg.ms == null ? 0 : Math.min(sinceMs, Date.now() - VITALS_WINDOW_MS);
+    // Below this sample count a p75 is not trustworthy — flagged in the UI.
+    const VITALS_MIN_SAMPLES = 50;
     const q = async (sql: string, args: (number | string)[] = [sinceMs]) =>
       (await db.execute({ sql, args })).rows;
 
@@ -143,7 +163,8 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
          )
          SELECT metric, COUNT(*) AS samples, ROUND(AVG(value)) AS avg,
                 ROUND(MIN(CASE WHEN pr >= 0.75 THEN value END)) AS p75
-         FROM ranked GROUP BY metric ORDER BY metric`
+         FROM ranked GROUP BY metric ORDER BY metric`,
+        [vitalsSinceMs]
       );
       // INP p75 by page — where the slow interactions actually are.
       const inpByPath = await q(
@@ -156,31 +177,51 @@ export const getAnalyticsSummary = createServerFn({ method: 'GET' })
            SELECT path, value, PERCENT_RANK() OVER (PARTITION BY path ORDER BY value) AS pr FROM v
          )
          SELECT path, COUNT(*) AS samples, ROUND(MIN(CASE WHEN pr >= 0.75 THEN value END)) AS p75
-         FROM ranked GROUP BY path HAVING samples >= 3 ORDER BY p75 DESC LIMIT 15`
+         FROM ranked GROUP BY path HAVING samples >= 3 ORDER BY p75 DESC LIMIT 15`,
+        [vitalsSinceMs]
       );
 
       return {
         range,
         bucketMs,
-        totals: { views: num(totals?.views), visitors: num(totals?.visitors), events: num(totals?.events) },
+        totals: {
+          views: num(totals?.views),
+          visitors: num(totals?.visitors),
+          events: num(totals?.events),
+        },
         series: series.map((r) => ({
           t: num(r.b) * bucketMs,
           views: num(r.views),
           visitors: num(r.visitors),
         })),
-        topPaths: topPaths.map((r) => ({ path: str(r.path), views: num(r.views), visitors: num(r.visitors) })),
+        topPaths: topPaths.map((r) => ({
+          path: str(r.path),
+          views: num(r.views),
+          visitors: num(r.visitors),
+        })),
         topReferrers: topReferrers.map((r) => ({ host: str(r.host), views: num(r.views) })),
         topEvents: topEvents.map((r) => ({ name: str(r.name), count: num(r.count) })),
         byBrand: byBrand.map((r) => ({ brand: str(r.brand), views: num(r.views) })),
         byDevice: byDevice.map((r) => ({ device: str(r.device), views: num(r.views) })),
-        engagement: { avgSeconds: Math.round(num(eng?.s)), avgScroll: Math.round(num(eng?.sc)), samples: num(eng?.n) },
+        engagement: {
+          avgSeconds: Math.round(num(eng?.s)),
+          avgScroll: Math.round(num(eng?.sc)),
+          samples: num(eng?.n),
+        },
         webVitals: webVitals.map((r) => ({
           metric: str(r.metric),
           samples: num(r.samples),
           p75: num(r.p75),
           avg: num(r.avg),
+          lowConfidence: num(r.samples) < VITALS_MIN_SAMPLES,
         })),
-        inpByPath: inpByPath.map((r) => ({ path: str(r.path), samples: num(r.samples), p75: num(r.p75) })),
+        vitalsWindowDays:
+          cfg.ms == null ? 0 : Math.round((Date.now() - vitalsSinceMs) / 86_400_000),
+        inpByPath: inpByPath.map((r) => ({
+          path: str(r.path),
+          samples: num(r.samples),
+          p75: num(r.p75),
+        })),
         available: true,
       };
     } catch {

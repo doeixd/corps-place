@@ -28,10 +28,18 @@ export const Route = createFileRoute('/admin/analytics')({
     summary: await getAnalyticsSummary({ data: { range: (deps as { range: string }).range } }),
   })),
   head: () =>
-    seoHead({ title: 'Admin — Analytics', description: 'Site analytics', path: '/admin/analytics' }),
+    seoHead({
+      title: 'Admin — Analytics',
+      description: 'Site analytics',
+      path: '/admin/analytics',
+    }),
   component: () => {
     const { gate, data } = Route.useLoaderData();
-    return <AdminPage gate={gate}>{() => (data ? <Analytics summary={data.summary} /> : null)}</AdminPage>;
+    return (
+      <AdminPage gate={gate}>
+        {() => (data ? <Analytics summary={data.summary} /> : null)}
+      </AdminPage>
+    );
   },
 });
 
@@ -66,10 +74,7 @@ function Analytics({ summary }: { summary: AnalyticsSummary }) {
 
   return (
     <>
-      <PageHeader
-        title="Analytics"
-        subtitle="First-party · cookieless · no third parties"
-      />
+      <PageHeader title="Analytics" subtitle="First-party · cookieless · no third parties" />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         {RANGES.map((r) => (
@@ -178,6 +183,11 @@ function Analytics({ summary }: { summary: AnalyticsSummary }) {
         <CardHeader>
           <CardTitle className="text-sm font-semibold text-text-secondary">
             Core Web Vitals · p75 (field)
+            {summary.vitalsWindowDays ? (
+              <span className="ml-2 font-normal text-text-muted">
+                · last {summary.vitalsWindowDays}d (independent of the range above)
+              </span>
+            ) : null}
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm">
@@ -186,15 +196,25 @@ function Analytics({ summary }: { summary: AnalyticsSummary }) {
               {summary.webVitals.map((v) => (
                 <div key={v.metric} className="min-w-24">
                   <div className="text-xs text-text-secondary">{v.metric}</div>
-                  <div className={`text-xl font-bold tabular-nums ${vitalColor(v.metric, v.p75)}`}>
+                  <div
+                    className={`text-xl font-bold tabular-nums ${
+                      v.lowConfidence ? 'text-text-muted' : vitalColor(v.metric, v.p75)
+                    }`}
+                    title={v.lowConfidence ? 'Too few samples for a reliable p75' : undefined}
+                  >
                     {formatVital(v.metric, v.p75)}
+                    {v.lowConfidence ? <span className="ml-0.5 align-super text-xs">*</span> : null}
                   </div>
-                  <div className="text-[10px] text-text-muted">{v.samples} samples</div>
+                  <div className="text-[10px] text-text-muted">
+                    {v.samples} samples{v.lowConfidence ? ' · low confidence' : ''}
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-text-secondary">No web-vitals data yet (collecting on real visits).</p>
+            <p className="text-text-secondary">
+              No web-vitals data yet (collecting on real visits).
+            </p>
           )}
         </CardContent>
       </Card>
@@ -216,7 +236,8 @@ function formatBucket(t: number, bucketMs: number): string {
   // Sub-minute buckets (the 1min range) need seconds to be distinguishable.
   if (bucketMs < 60_000)
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  if (bucketMs < 86_400_000) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (bucketMs < 86_400_000)
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   if (bucketMs >= 28 * 86_400_000)
     return d.toLocaleDateString([], { month: 'short', year: '2-digit' });
   return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
