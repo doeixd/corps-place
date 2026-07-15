@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "id": "v9-final2",
+  "description": "Frozen contract for the V9 final2 production baseline used to qualify V9.5 and V10 candidates.",
+  "model_dir": "models/v9_subcaption_fixed/v9_prod_fingerprint_preseason_final2_1779976626982",
+  "generated_at": "2026-05-28T16:01:58.564Z",
+  "trainer": "trainModelV9Subcaption-fixed.ts",
+  "dimensions": {
+    "sequence_length": 15,
+    "sequence_features": 101,
+    "raw_static_features": 212,
+    "trend_features": 8,
+    "model_static_features": 220,
+    "captions": 8
+  },
+  "architecture": {
+    "bidirectional_lstm_units": [128, 64],
+    "dense_trunk_units": [512, 256],
+    "accuracy_trunk_units": 270
+  },
+  "data": {
+    "table": "ml_sequence_rows_v9_subcaption",
+    "rows": 7321,
+    "divisions": {
+      "World Class": 5086,
+      "Open Class": 2235
+    }
+  },
+  "split": {
+    "mode": "date-forward",
+    "train_rows": 6906,
+    "validation_rows": 363,
+    "test_rows": 52,
+    "train_shows": 816,
+    "validation_shows": 44,
+    "test_shows": 4,
+    "validation_date_min": "2025-07-15T00:00:00.000Z",
+    "validation_date_max": "2025-08-09T00:00:00.000Z"
+  },
+  "artifact_files": {
+    "eval_report.json": {
+      "bytes": 218764,
+      "sha256": "5f9dbb24273abe9fafe8604554d0861f6f59333cd1f90c74a16e59981d67e3cc"
+    },
+    "model-card.json": {
+      "bytes": 219208,
+      "sha256": "565f1553e1085187747b6300f658cdb44dca8bea8921cd45b3989950d24f9210"
+    },
+    "model.json": {
+      "bytes": 32214,
+      "sha256": "41dbeb985a0428163ee7260da2c30847f7afda7004427b8bdbe2ed91ecaf0742"
+    },
+    "test-results.json": {
+      "bytes": 3379,
+      "sha256": "d467aaf3e40ea807f4fd3ab416e5cef74902850c18791549ed3991fa5a63ddd9"
+    },
+    "training-args.json": {
+      "bytes": 1803,
+      "sha256": "24fe63fd005497066d6f355319c46b255d9d6d6a597b8ed0d1d8584ab51c6e0a"
+    },
+    "training.log": {
+      "bytes": 233102,
+      "sha256": "992dff1bf22d21bc42d0f934c82b9af47d2446d54edf1e87c38cbd276202a39e"
+    },
+    "weights.bin": {
+      "bytes": 4194556,
+      "sha256": "ab1f1ae583b52ca668a1654554266801347b4dcb6b87b1872a47d6e64c102015"
+    }
+  },
+  "source_artifact_hashes": {
+    "reference_curves": "1a2af7ef432951d37afbffcc5d9809cee11b794785d03ad9d32d1f7b611489ba",
+    "judge_index_map": "1c95f7000798a858dd7b9e96864a2c2926d3bfc2fbccf24b44745d49a1c6596f",
+    "corps_index_map": "99de63cc614f6965c64d229450bd1ebd663efdb02b4213281973f5f193ea3f3c",
+    "normalization": "a1775567abe100abbf8c821b92de0ddeda6d325c156ea85adddadb44bca69b8e"
+  },
+  "training_config": {
+    "epochs": 160,
+    "batchSize": 128,
+    "seed": 42,
+    "lstm1Units": 128,
+    "lstm2Units": 64,
+    "accuracyTrunkUnits": 270,
+    "learningRate": 0.00075,
+    "valMode": "date-forward",
+    "openSampleFraction": 0.35,
+    "historyHideRate": 0.15,
+    "judgeHideRate": 0.25,
+    "forecastContextHideRate": 0.12,
+    "finalWeights": "composite",
+    "curriculumPhaseAEnd": 10,
+    "curriculumPhaseBEnd": 40,
+    "autoCurriculum": true,
+    "autoCurriculumPatience": 6,
+    "autoCurriculumMinCoverage": 0.9,
+    "autoCurriculumMinDeltaGain": 0.002
+  },
+  "metrics": {
+    "validation": {
+      "rows": 363,
+      "recap_mae_pts": 0.34631660957595906,
+      "total_mae_pts": 0.9642644062667749,
+      "coverage": 0.9665977961432507,
+      "width": 1.9822721109679342
+    },
+    "calibrated_validation": {
+      "scale": 0.6,
+      "coverage": 0.8298898071625345,
+      "width": 1.189362034504879
+    },
+    "preseason_forecast": {
+      "rows": 52,
+      "total_mae_pts": 1.0792384926983536,
+      "coverage": 0.9759615384615384,
+      "width": 2.378622677439422
+    },
+    "history_total_mae": {
+      "established_history": 0.8450953607188482,
+      "short_history": 1.1713759751169421,
+      "sparse_history": 1.8382384104738057,
+      "zero_history": 3.2182062618928517,
+      "season_debut": 3.6356883063159535
+    },
+    "baselines": {
+      "final_validation_recap_mae": 0.34631660957595906,
+      "final_validation_vs_inertia_pts": 0.81011254221409,
+      "final_validation_vs_quadratic_pts": 0.29985135622367126
+    }
+  },
+  "curriculum_transitions": [
+    {
+      "epoch": 10,
+      "from": "A",
+      "to": "B",
+      "reason": "max_epoch"
+    },
+    {
+      "epoch": 40,
+      "from": "B",
+      "to": "C",
+      "reason": "max_epoch"
+    }
+  ]
+}

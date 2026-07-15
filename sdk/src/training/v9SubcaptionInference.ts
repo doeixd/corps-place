@@ -51,7 +51,7 @@ export type V9PredictionInput = {
 };
 
 export type V9Prediction = {
-  captions: Record<Caption, { p10: number; p50: number; p90: number }>;
+  captions: Record<Caption, { p10: number; p50: number; p90: number; residualP50?: number }>;
   categories: { ge: number; visual: number; music: number };
   total: number;
 };
@@ -324,7 +324,11 @@ export class V9SubcaptionModel {
           )
         : fallbackBaseline;
     const baselineNorm = baselineRaw.map((value, idx) =>
-      norm(value || fallbackBaseline[idx]!, this.stats.recapMean[idx]!, this.stats.recapStd[idx]!)
+      norm(
+        Number.isFinite(value) ? value : fallbackBaseline[idx]!,
+        this.stats.recapMean[idx]!,
+        this.stats.recapStd[idx]!
+      )
     );
 
     if (lastValidIdx >= 0) {
@@ -385,7 +389,7 @@ export class V9SubcaptionModel {
     output.dispose();
 
     const values = row[0]!;
-    const captions = {} as Record<Caption, { p10: number; p50: number; p90: number }>;
+    const captions = {} as V9Prediction["captions"];
     for (let idx = 0; idx < CAPTION_COUNT; idx++) {
       captions[CAPTIONS[idx]!] = {
         p10:
@@ -404,6 +408,7 @@ export class V9SubcaptionModel {
             this.stats.deltaStd[idx]!
           ) + baselineRaw[idx]!,
       };
+      captions[CAPTIONS[idx]!]!.residualP50 = captions[CAPTIONS[idx]!]!.p50;
     }
 
     const recapStart = DELTA_DIM;
@@ -457,6 +462,7 @@ export type V9SubcaptionCheckpoint =
 export type LoadV9SubcaptionModelOptions = {
   checkpoint?: V9SubcaptionCheckpoint;
   statsPath?: string;
+  stats?: TargetStats;
 };
 
 const resolveModelDir = (modelDir: string, checkpoint: V9SubcaptionCheckpoint = 'auto') => {
@@ -543,8 +549,9 @@ export async function loadV9SubcaptionModel(
   options: LoadV9SubcaptionModelOptions = {}
 ) {
   const resolvedModelDir = resolveModelDir(modelDir, options.checkpoint ?? 'auto');
-  const statsPath = resolveStatsPath(resolvedModelDir, options.statsPath);
-  const stats = JSON.parse(fs.readFileSync(statsPath, 'utf-8')) as TargetStats;
+  const stats = options.stats ?? JSON.parse(
+    fs.readFileSync(resolveStatsPath(resolvedModelDir, options.statsPath), 'utf-8')
+  ) as TargetStats;
   (globalThis as any).V9_SUBCAPTION_INFERENCE_STATS = stats;
   await tf.setBackend('cpu');
   const model = await loadLocalLayersModel(path.resolve(resolvedModelDir, 'model.json'));
