@@ -21,6 +21,7 @@
     "test:v95-metrics": "tsx scripts/testV95Metrics.ts",
     "train:v95": "tsx src/training/trainModelV95.ts",
     "validate:v10-baseline": "tsx scripts/validateFinal2Baseline.ts",
+    "validate:v95-architecture": "tsx scripts/validateV95Architecture.ts",
     "push:data": "tsx scripts/pushData.ts",
     "pull:data": "tsx scripts/pullData.ts",
     "pull:read-model": "tsx scripts/pullData.ts read-model"

@@ -31,7 +31,7 @@ baseline trainer so V9 serving and historical evidence remain untouched.
 - [x] Port 212 raw + 8 trend = 220 static wiring from the committed reference.
 - [x] Import shared dimensions from `v9FeatureModes.ts`.
 - [x] Confirm 15 × 101 sequence input and 220 static input statically.
-- [ ] Confirm topology: BiLSTM 128/64, dense 512/256, accuracy trunk 270,
+- [x] Confirm topology statically: BiLSTM 128/64, dense 512/256, accuracy trunk 270,
   and eight-caption heads.
 
 Progress note (2026-07-15): the versioned scaffold is
@@ -148,9 +148,13 @@ Replay chronologically:
 5. `04879_2026-05-26T13-39-31.687Z.patch`
 6. `09583_2026-05-28T13-53-48.172Z.patch`
 
-- [ ] Restore parsing/construction and verify `accuracy_trunk` has 270 units.
-- [ ] Match the startup `Model Capacity:` line.
-- [ ] Remove or explain intermediate 128/192-unit defaults.
+- [x] Restore parsing/construction and verify `accuracy_trunk` has 270 units.
+- [x] Match the startup `Model Capacity:` line.
+- [x] Remove or explain intermediate 128/192-unit defaults.
+
+`npm run validate:v95-architecture` pins the source graph contract and frozen
+manifest dimensions without initializing the unavailable native TFJS backend.
+The runtime dry-graph gate below remains separate.
 
 ### 7. Composite selection and checkpoints
 

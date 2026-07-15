@@ -2354,7 +2354,7 @@ async function main() {
 
   // FIXED: Dedicated accuracy trunk with separate gradients from width/uncertainty
   const accuracyTrunk = tf.layers.dense({
-    units: 128,
+    units: args.accuracyTrunkUnits,
     activation: "relu",
     name: "accuracy_trunk",
     kernelRegularizer: tf.regularizers.l2({ l2: args.l2Reg })
@@ -2523,7 +2523,14 @@ async function main() {
     `width_floor_schedule=${args.widthFloorStart}->${args.widthFloorEnd}, baseline_dropout=${args.baselineDropout}, ` +
     `baseline_noise_std=${args.baselineNoiseStd}`
   );
-  console.log(`Model Capacity: ${args.lstm1Units * 2}→${args.lstm2Units * 2} BiLSTM, Dense 256→128, Judge Emb 24, Corps Emb 20, Show Emb 12`);
+  console.log(
+    `Model Capacity: ${args.lstm1Units * 2}→${args.lstm2Units * 2} BiLSTM, Dense 512→256, ` +
+    `AccuracyTrunk ${args.accuracyTrunkUnits}, Judge Emb 24, Corps Emb 20, Show Emb 12`,
+  );
+  console.log(
+    `Feature Contract: sequence_dim=${FEAT_DIM}, raw_static_dim=${RAW_STATIC_DIM}, ` +
+    `trend_dim=${TREND_DIM}, context_dim=${CONTEXT_DIM}, total_static_dim=${TOTAL_STATIC_DIM}`,
+  );
 
 
   const setLearningRate = (lr: number) => {

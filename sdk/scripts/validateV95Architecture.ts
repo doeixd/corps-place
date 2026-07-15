@@ -1,0 +1,39 @@
+import assert from "node:assert/strict";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
+import { V9_RAW_STATIC_DIM } from "../src/training/v9FeatureModes.js";
+
+const sdkRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
+const source = fs.readFileSync(path.join(sdkRoot, "src/training/trainModelV95.ts"), "utf8");
+const baseline = JSON.parse(fs.readFileSync(
+  path.join(sdkRoot, "src/training/baselines/final2-baseline.json"),
+  "utf8",
+)) as {
+  dimensions: Record<string, number>;
+  architecture: Record<string, number | number[]>;
+};
+
+const checks: Array<[string, boolean]> = [
+  ["raw static dimension", V9_RAW_STATIC_DIM === baseline.dimensions.raw_static_features],
+  ["trend dimension", baseline.dimensions.trend_features === 8],
+  ["model static dimension", V9_RAW_STATIC_DIM + 8 === baseline.dimensions.model_static_features],
+  ["sequence shape", /tf\.input\(\{ shape: \[SEQ_LEN, FEAT_DIM\], name: "sequence" \}\)/.test(source)],
+  ["static shape", /tf\.input\(\{ shape: \[TOTAL_STATIC_DIM\], name: "static" \}\)/.test(source)],
+  ["first BiLSTM configurable", /units: args\.lstm1Units/.test(source)],
+  ["second BiLSTM configurable", /units: args\.lstm2Units/.test(source)],
+  ["dense 512", /units: 512,/.test(source)],
+  ["dense 256", /units: 256,/.test(source)],
+  ["accuracy trunk is configured", /units: args\.accuracyTrunkUnits,\s*activation: "relu",\s*name: "accuracy_trunk"/m.test(source)],
+  ["final2 accuracy default", /const ACCURACY_TRUNK_UNITS = 270;/.test(source)],
+  ["six output groups", /apply\(\[q10Delta, deltaQ50, q90Delta, recapHead, categoryHead, totalHead\]\)/.test(source)],
+  ["ten model inputs", /inputs: \[seqInput, staticInput, maskInput, judgeIdsInput, corpsIdInput, baselineInput, historyLenInput, judgeBiasScaleInput, corpsScaleInput, agnosticShowInput\]/.test(source)],
+];
+
+const failures = checks.filter(([, passed]) => !passed).map(([label]) => label);
+assert.deepEqual(failures, [], `V9.5 architecture checks failed: ${failures.join(", ")}`);
+assert.deepEqual(baseline.architecture.bidirectional_lstm_units, [128, 64]);
+assert.deepEqual(baseline.architecture.dense_trunk_units, [512, 256]);
+assert.equal(baseline.architecture.accuracy_trunk_units, 270);
+
+process.stdout.write(`V9.5 architecture verified: ${checks.length + 3} checks passed\n`);

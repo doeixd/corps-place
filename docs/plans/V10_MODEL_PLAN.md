@@ -499,6 +499,13 @@ pipeline state.
   supposedly hidden history. `npm run test:v95-masking` pins slot behavior,
   input immutability, zero-rate RNG consumption, the seeded 0.12 decision stream,
   and forecast-baseline construction.
+- Architecture parity had the same parsed-but-inert failure mode as curriculum:
+  the scaffold parsed/defaulted `accuracyTrunkUnits=270`, but graph construction
+  still hard-coded 128 units and its capacity log still claimed Dense 256→128.
+  The graph now consumes the argument and the log matches final2 (`256→128`
+  BiLSTM, Dense `512→256`, AccuracyTrunk `270`). Run
+  `npm run validate:v95-architecture` for the 16-check static graph/manifest
+  gate; a native-backend runtime dry graph is still a separate pending gate.
 
 ## Immediate next task
 
