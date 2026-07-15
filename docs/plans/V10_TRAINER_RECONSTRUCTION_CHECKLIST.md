@@ -186,10 +186,14 @@ state.
 The drift audit shows connected failures around patches 2418–2629. Audit these
 as a region rather than trusting fuzzy replay.
 
-- [ ] Restore final `V9LossScheduler` and phase boundaries.
-- [ ] Match loss weights and judge/corps scale ramps at representative epochs.
-- [ ] Verify LR warmup/plateau behavior across curriculum transitions.
-- [ ] Unit-test phase boundaries and ramp endpoints.
+- [x] Restore final `V9LossScheduler` and phase boundaries.
+- [x] Match loss weights and judge/corps scale ramps at representative epochs.
+- [x] Verify LR warmup/plateau behavior across curriculum transitions.
+- [x] Unit-test phase boundaries and ramp endpoints.
+
+The curriculum test pins preserved-log values at epochs 0, 39, 40, 71, and
+100, including the 39→40 width-floor boundary, judge/corps scales, phase-C
+identity dropout, warmup endpoints, plateau multiplication, and minimum LR.
 
 ## Gates
 

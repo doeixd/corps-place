@@ -1,5 +1,103 @@
 export type CurriculumPhase = "A" | "B" | "C";
 
+export type LossScheduleConfig = {
+  phaseAEnd: number;
+  phaseBEnd: number;
+  phaseCRamp: number;
+  corpsScaleStart: number;
+  corpsScaleRamp: number;
+  judgeScaleRamp: number;
+  identityDropoutFloor: number;
+};
+
+export const lossWeightsAtEpoch = (epoch: number, config: LossScheduleConfig) => {
+  const phaseAEnd = Math.max(1, config.phaseAEnd);
+  const phaseBEnd = Math.max(phaseAEnd + 1, config.phaseBEnd);
+  if (epoch < phaseAEnd) {
+    return {
+      totalWeight: 0.05, recapWeight: 1, deltaWeight: 0.2,
+      categoryWeight: 0.05, quantileWeight: 0.02, consistencyWeight: 0,
+      identityDropoutRate: 0.95,
+    };
+  }
+  if (epoch < phaseBEnd) {
+    const progress = (epoch - phaseAEnd) / Math.max(1, phaseBEnd - phaseAEnd);
+    return {
+      totalWeight: 0,
+      recapWeight: 1 - 0.7 * progress,
+      deltaWeight: 0.2 + 0.8 * progress,
+      categoryWeight: 0.05,
+      quantileWeight: 0.02 + 0.08 * progress,
+      consistencyWeight: 0,
+      identityDropoutRate: 0.95,
+    };
+  }
+  const progress = Math.min(1, (epoch - phaseBEnd) / Math.max(1, config.phaseCRamp));
+  const identityDropStart = phaseBEnd + Math.floor(config.phaseCRamp * 0.5);
+  const identityDropoutRate = epoch < identityDropStart
+    ? 1
+    : Math.max(
+        config.identityDropoutFloor,
+        1 - (1 - config.identityDropoutFloor) *
+          ((epoch - identityDropStart) / Math.max(1, config.phaseCRamp)),
+      );
+  return {
+    totalWeight: 0.02 + 0.08 * progress,
+    recapWeight: 0.3 - 0.25 * progress,
+    deltaWeight: 1 + 8.75 * progress,
+    categoryWeight: 0.05,
+    quantileWeight: 0.1 + progress,
+    consistencyWeight: 0,
+    identityDropoutRate,
+  };
+};
+
+export const identityScalesAtEpoch = (epoch: number, config: LossScheduleConfig) => ({
+  judgeBias: Math.min(1, epoch / Math.max(1, config.judgeScaleRamp)),
+  corps: epoch < config.corpsScaleStart
+    ? 0
+    : Math.min(1, (epoch - config.corpsScaleStart) / Math.max(1, config.corpsScaleRamp)),
+});
+
+export const widthFloorWeightAtEpoch = (
+  epoch: number,
+  startWeight: number,
+  endWeight: number,
+  config: LossScheduleConfig,
+): number => {
+  const phaseAEnd = Math.max(1, config.phaseAEnd);
+  const phaseBEnd = Math.max(phaseAEnd + 1, config.phaseBEnd);
+  if (epoch < phaseAEnd) return startWeight;
+  if (epoch < phaseBEnd) {
+    const progress = (epoch - phaseAEnd) / Math.max(1, phaseBEnd - phaseAEnd);
+    const smooth = progress * progress * (3 - 2 * progress);
+    return startWeight + (endWeight - startWeight) * smooth;
+  }
+  return endWeight;
+};
+
+export const cosineBaseLearningRate = (
+  epoch: number,
+  epochs: number,
+  warmupEpochs: number,
+  learningRate: number,
+  minLearningRate: number,
+): number => {
+  const warmup = Math.max(0, Math.min(warmupEpochs, epochs));
+  if (epoch < warmup) return learningRate * (epoch + 1) / Math.max(1, warmup);
+  const progress = warmup >= epochs
+    ? 1
+    : (epoch - warmup) / Math.max(1, epochs - warmup);
+  return minLearningRate +
+    0.5 * (learningRate - minLearningRate) * (1 + Math.cos(Math.PI * progress));
+};
+
+export const effectiveLearningRate = (
+  baseLearningRate: number,
+  plateauMultiplier: number,
+  minLearningRate: number,
+): number => Math.max(baseLearningRate * plateauMultiplier, minLearningRate);
+
 export type CurriculumConfig = {
   phaseAEnd: number;
   phaseBEnd: number;

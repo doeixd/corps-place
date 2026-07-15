@@ -38,7 +38,12 @@ import {
 } from "./v95Metrics.js";
 import {
   initialCurriculumState,
+  cosineBaseLearningRate,
+  effectiveLearningRate,
+  identityScalesAtEpoch,
+  lossWeightsAtEpoch,
   stepCurriculum,
+  widthFloorWeightAtEpoch,
   type CurriculumConfig as AutoCurriculumConfig,
   type CurriculumTransition,
 } from "./v95Curriculum.js";
@@ -1006,75 +1011,15 @@ class V9LossScheduler {
   }
 
   getWeights(epoch: number) {
-    const phaseAEnd = this.getPhaseAEnd();
-    const phaseBEnd = this.getPhaseBEnd();
-    if (epoch < phaseAEnd) {
-      return {
-        totalWeight: 0.05,
-        recapWeight: 1.0,
-        deltaWeight: 0.2,
-        categoryWeight: 0.05,
-        quantileWeight: 0.02,
-        consistencyWeight: 0.0,
-        identityDropoutRate: 0.95
-      };
-    }
-
-    if (epoch < phaseBEnd) {
-      const t = (epoch - phaseAEnd) / Math.max(1, phaseBEnd - phaseAEnd);
-      return {
-        totalWeight: 0.00,
-        recapWeight: 1.0 - 0.7 * t, // 1.0 -> 0.3
-        deltaWeight: 0.2 + 0.8 * t, // 0.2 -> 1.0
-        categoryWeight: 0.05,
-        quantileWeight: 0.02 + 0.08 * t,    // 0.02 -> 0.10
-        consistencyWeight: 0.0,
-        identityDropoutRate: 0.95
-      };
-    }
-
-
-    const t = Math.min(1, (epoch - phaseBEnd) / Math.max(1, this.config.phaseCRamp));
-    const identityDropStart = phaseBEnd + Math.floor(this.config.phaseCRamp * 0.5);
-    const identityDrop = epoch < identityDropStart
-      ? 1
-      : Math.max(
-          this.config.identityDropoutFloor,
-          1 - (1 - this.config.identityDropoutFloor) *
-            ((epoch - identityDropStart) / Math.max(1, this.config.phaseCRamp)),
-        );
-
-    return {
-      totalWeight: 0.02 + 0.08 * t,
-      recapWeight: 0.3 - 0.25 * t,
-      deltaWeight: 1 + 8.75 * t,
-      categoryWeight: 0.05,
-      quantileWeight: 0.1 + t,
-      consistencyWeight: 0.0,
-      identityDropoutRate: identityDrop,
-    };
+    return lossWeightsAtEpoch(epoch, this.config);
   }
 
   getScales(epoch: number) {
-    const judgeBias = Math.min(1, epoch / Math.max(1, this.config.judgeScaleRamp));
-    const corps = epoch < this.config.corpsScaleStart
-      ? 0
-      : Math.min(1, (epoch - this.config.corpsScaleStart) / Math.max(1, this.config.corpsScaleRamp));
-    return { judgeBias, corps };
+    return identityScalesAtEpoch(epoch, this.config);
   }
 
   getWidthFloorWeight(epoch: number, startWeight: number, endWeight: number): number {
-    const phaseAEnd = this.getPhaseAEnd();
-    const phaseBEnd = this.getPhaseBEnd();
-    if (epoch < phaseAEnd) {
-      return startWeight;
-    }
-    if (epoch < phaseBEnd) {
-      const t = (epoch - phaseAEnd) / Math.max(1, phaseBEnd - phaseAEnd);
-      const smooth = t * t * (3 - 2 * t);
-      return startWeight + (endWeight - startWeight) * smooth;
-    }
-    return endWeight;
+    return widthFloorWeightAtEpoch(epoch, startWeight, endWeight, this.config);
   }
 }
 
@@ -2612,7 +2557,9 @@ async function main() {
   let bestCompositeScore = Number.POSITIVE_INFINITY;
   const bestPhaseDeltaMae = { A: Number.POSITIVE_INFINITY, B: Number.POSITIVE_INFINITY, C: Number.POSITIVE_INFINITY };
   let patience = 0;
+  let currentBaseLR = args.learningRate;
   let currentLR = args.learningRate;
+  let plateauLrMultiplier = 1;
   let epochsSinceImprovement = 0;
 
   const scheduler = new V9LossScheduler({
@@ -2709,15 +2656,15 @@ async function main() {
       `WFW ${currentWidthFloorWeight.toFixed(3)} `,
     );
 
-    const warmup = Math.max(0, Math.min(args.warmupEpochs, args.epochs));
-    let lr: number;
-    if (epoch < warmup) {
-      lr = args.learningRate * (epoch + 1) / Math.max(1, warmup);
-    } else {
-      const progress = warmup >= args.epochs ? 1 : (epoch - warmup) / Math.max(1, args.epochs - warmup);
-      lr = args.minLr + 0.5 * (args.learningRate - args.minLr) * (1 + Math.cos(Math.PI * progress));
-    }
-    setLearningRate(lr);
+    currentBaseLR = cosineBaseLearningRate(
+      epoch,
+      args.epochs,
+      args.warmupEpochs,
+      args.learningRate,
+      args.minLr,
+    );
+    currentLR = effectiveLearningRate(currentBaseLR, plateauLrMultiplier, args.minLr);
+    setLearningRate(currentLR);
 
     let trainLossSum = 0;
     let trainCount = 0;
@@ -3325,6 +3272,7 @@ async function main() {
       bestScore = Number.POSITIVE_INFINITY;
       patience = 0;
       epochsSinceImprovement = 0;
+      plateauLrMultiplier = 1;
       console.log(
         `[curriculum] ${curriculumStep.transition.from}->${curriculumStep.transition.to} ` +
         `at epoch ${curriculumStep.transition.epoch} reason=${curriculumStep.transition.reason} ` +
@@ -3335,11 +3283,15 @@ async function main() {
 
     if (!curriculumAdvanced && !monitorImproved) {
       if (epochsSinceImprovement >= args.reduceLrPatience && currentLR > args.minLr) {
-        currentLR *= 0.5;
-        const nextLR = Math.max(currentLR, args.minLr);
-        setLearningRate(nextLR);
-        currentLR = nextLR;
-        console.log(`\n--- NO IMPROVEMENT FOR ${args.reduceLrPatience} EPOCHS: Reducing LR to ${currentLR.toFixed(6)} ---`);
+        const previousMultiplier = plateauLrMultiplier;
+        plateauLrMultiplier *= args.plateauLrFactor;
+        currentLR = effectiveLearningRate(currentBaseLR, plateauLrMultiplier, args.minLr);
+        setLearningRate(currentLR);
+        console.log(
+          `\n--- NO MONITOR IMPROVEMENT FOR ${args.reduceLrPatience} EPOCHS: ` +
+          `plateau multiplier ${previousMultiplier.toFixed(4)} -> ${plateauLrMultiplier.toFixed(4)}, ` +
+          `effective LR ${currentLR.toFixed(6)} ---`,
+        );
         epochsSinceImprovement = 0;
       }
 

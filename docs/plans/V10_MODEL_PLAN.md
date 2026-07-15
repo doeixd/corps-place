@@ -514,6 +514,13 @@ pipeline state.
   production composite formula, removes the obsolete reset, and promotes the
   requested final mode with `composite` as final2's default. The synthetic gate
   exactly reproduces final2's saved composite score `0.5025684126513721`.
+- The anchor's plateau LR reduction was ephemeral: it directly changed the
+  optimizer LR, but the next epoch's cosine schedule overwrote it, and
+  `currentLR` did not consistently track the scheduled base. V9.5 now keeps a
+  persistent `plateauLrMultiplier`, applies it to every epoch's warmup/cosine
+  base, clamps at `minLr`, and resets it only on a curriculum transition. The
+  pure scheduler tests match preserved loss weights/scales at epochs 0, 39, 40,
+  71, and 100 and pin width-floor and LR boundary behavior.
 
 ## Immediate next task
 
