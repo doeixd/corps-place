@@ -465,6 +465,19 @@ pipeline state.
   projection, which were ported as a narrowly verified wiring repair. Expect more
   partially applied cross-hunk changes; a green diff provenance alone is not a
   substitute for focused compilation and behavioral tests.
+- The initial metrics reconstruction checklist was itself incomplete: the four
+  obvious sliced-report patches depend on row/sample metadata, show-grouped
+  batching, interval scaling, calibration, and history metadata introduced by
+  nine earlier patches. The corrected 13-patch order is now recorded in the
+  checklist. When recovering behavior, search backward for every newly referenced
+  symbol; patch filenames identified by the final function alone are insufficient.
+- Metric accumulation/classification now lives in the testable
+  `sdk/src/training/v95Metrics.ts` instead of being buried entirely inside the
+  trainer. `npm run test:v95-metrics` pins serialized field names, denominators,
+  season boundaries, history buckets, forecast-mode precedence, and correlation
+  edge cases. The trainer's reconstructed evaluator retains show-grouped batching,
+  residual-centered interval scaling, raw/calibrated summaries, and caption
+  fingerprint diagnostics.
 
 ## Immediate next task
 

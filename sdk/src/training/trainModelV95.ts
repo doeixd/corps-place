@@ -22,8 +22,20 @@ import {
   applyV9PredictionContextMode,
   maskV9JudgeContext,
   V9_COLD_START_STATIC_OFFSET,
+  V9_FEATURE_INDICES,
   V9_RAW_STATIC_DIM,
 } from "./v9FeatureModes.js";
+import {
+  addMetricValue,
+  createMetricBucket,
+  forecastMode,
+  historyBucket,
+  mapBuckets,
+  pearsonCorrelation,
+  seasonPhase,
+  summarizeBucket,
+  type MetricBucket,
+} from "./v95Metrics.js";
 
 const DB_PATH = "./dci-relational.db";
 const MODEL_DIR = "./models/v95_final2_reconstruction";
@@ -247,6 +259,251 @@ class MaskedSoftmax extends tf.layers.Layer {
   getClassName() {
     return "MaskedSoftmax";
   }
+}
+
+function evaluateSamples(
+  model: tf.LayersModel,
+  samples: Sample[],
+  stats: TargetStats,
+  args: ReturnType<typeof parseArgs>,
+  label: string,
+  seed: number,
+  intervalScale = 1,
+) {
+  const global = createMetricBucket();
+  const byCaption = Object.fromEntries(CAPTIONS.map((caption) => [caption, createMetricBucket()]));
+  const byDivision: Record<string, MetricBucket> = {};
+  const byPhase: Record<string, MetricBucket> = {};
+  const byJudgeMode: Record<string, MetricBucket> = {};
+  const byHistory: Record<string, MetricBucket> = {};
+  const byForecastMode: Record<string, MetricBucket> = {};
+  const fingerprintDiagnostics = Object.fromEntries(CAPTIONS.map((caption) => [caption, {
+    fingerprint: [] as number[],
+    actualResidual: [] as number[],
+    predictedResidual: [] as number[],
+  }]));
+
+  const deltaStd = stats.deltaStd.map((value) => value > 1e-6 ? value : 1);
+  const recapStd = stats.recapStd.map((value) => value > 1e-6 ? value : 1);
+  const categoryStd = stats.categoryStd.map((value) => value > 1e-6 ? value : 1);
+  const totalStd = stats.totalStd > 1e-6 ? stats.totalStd : 1;
+  const scales = {
+    judgeBias: args.noJudgeBias ? 0 : 1,
+    corps: args.noCorpsResidual ? 0 : 1,
+  };
+
+  for (const batch of batchGeneratorFromGroups(
+    groupSamplesByShow(samples),
+    args.batchSize,
+    false,
+    seed,
+    scales,
+  )) {
+    const { xs, ys } = batch;
+    const batchSize = ys.shape[0] ?? 0;
+    const predictions = model.predict([
+      xs.sequence,
+      xs.static,
+      xs.mask,
+      xs.judge_ids,
+      xs.corps_id,
+      xs.baseline_recap,
+      xs.history_len,
+      xs.judge_bias_scale,
+      xs.corps_scale,
+      xs.agnostic_show_id,
+    ]) as tf.Tensor;
+    const predictedValues = Array.from(predictions.dataSync());
+    const trueValues = Array.from(ys.dataSync());
+
+    for (let rowIndex = 0; rowIndex < batchSize; rowIndex++) {
+      const sample = batch.samples[rowIndex]!;
+      const division = sample.meta.division || "unknown";
+      const phase = seasonPhase(sample.meta.date);
+      const judgeMode = sample.meta.judgeKnown ? "panel_known" : "panel_unknown";
+      const history = historyBucket(sample.meta.historyLen);
+      const forecast = forecastMode(sample.meta);
+      const rowCategoryErrors: number[] = [];
+
+      global.rows += 1;
+      const rowBuckets: Array<[Record<string, MetricBucket>, string]> = [
+        [byDivision, division],
+        [byPhase, phase],
+        [byJudgeMode, judgeMode],
+        [byHistory, history],
+        [byForecastMode, forecast],
+      ];
+      rowBuckets.forEach(([buckets, key]) => {
+        addMetricValue(buckets, key, (bucket) => { bucket.rows += 1; });
+      });
+
+      for (let captionIndex = 0; captionIndex < CAPTION_COUNT; captionIndex++) {
+        const predictedOffset = rowIndex * OUTPUT_DIM;
+        const trueOffset = rowIndex * TARGET_DIM;
+        const q10 = predictedValues[predictedOffset + captionIndex]!;
+        const q50 = predictedValues[predictedOffset + CAPTION_COUNT + captionIndex]!;
+        const q90 = predictedValues[predictedOffset + CAPTION_COUNT * 2 + captionIndex]!;
+        const trueDeltaNorm = trueValues[trueOffset + captionIndex]!;
+        const predictedDelta = denormalize(q50, stats.deltaMean[captionIndex]!, deltaStd[captionIndex]!);
+        const trueDelta = denormalize(trueDeltaNorm, stats.deltaMean[captionIndex]!, deltaStd[captionIndex]!);
+        const rawLower = Math.min(
+          denormalize(q10, stats.deltaMean[captionIndex]!, deltaStd[captionIndex]!),
+          denormalize(q90, stats.deltaMean[captionIndex]!, deltaStd[captionIndex]!),
+        );
+        const rawUpper = Math.max(
+          denormalize(q10, stats.deltaMean[captionIndex]!, deltaStd[captionIndex]!),
+          denormalize(q90, stats.deltaMean[captionIndex]!, deltaStd[captionIndex]!),
+        );
+        const lower = predictedDelta - Math.max(0, predictedDelta - rawLower) * intervalScale;
+        const upper = predictedDelta + Math.max(0, rawUpper - predictedDelta) * intervalScale;
+        const width = upper - lower;
+        const within = trueDelta >= lower && trueDelta <= upper ? 1 : 0;
+
+        const predictedRecapNorm = predictedValues[predictedOffset + DELTA_DIM + captionIndex]!;
+        const trueRecapNorm = trueValues[trueOffset + CAPTION_COUNT + captionIndex]!;
+        const predictedRecap = denormalize(
+          predictedRecapNorm,
+          stats.recapMean[captionIndex]!,
+          recapStd[captionIndex]!,
+        );
+        const trueRecap = denormalize(trueRecapNorm, stats.recapMean[captionIndex]!, recapStd[captionIndex]!);
+        const baselineNorm = Number(sample.xs[5][captionIndex] ?? 0);
+        const baselineRecap = denormalize(baselineNorm, stats.recapMean[captionIndex]!, recapStd[captionIndex]!);
+        const fingerprintPrior = Number(
+          sample.xs[1][V9_FEATURE_INDICES.captionFingerprintStart + captionIndex * 4] ?? 0,
+        ) * 2;
+        const fingerprintMulti = Number(
+          sample.xs[1][V9_FEATURE_INDICES.captionFingerprintStart + captionIndex * 4 + 1] ?? 0,
+        ) * 2;
+        const caption = CAPTIONS[captionIndex]!;
+        const diagnostic = fingerprintDiagnostics[caption]!;
+        diagnostic.fingerprint.push(Number.isFinite(fingerprintMulti) ? fingerprintMulti : fingerprintPrior);
+        diagnostic.actualResidual.push(trueRecap - baselineRecap);
+        diagnostic.predictedResidual.push(predictedRecap - baselineRecap);
+
+        const applyCaptionMetrics = (bucket: MetricBucket) => {
+          bucket.captionCount += 1;
+          bucket.deltaAbs += Math.abs(predictedDelta - trueDelta);
+          bucket.recapAbs += Math.abs(predictedRecap - trueRecap);
+          bucket.coverageWithin += within;
+          bucket.width += width;
+          bucket.widthFloor += width < args.widthFloorPts ? 1 : 0;
+        };
+        applyCaptionMetrics(global);
+        applyCaptionMetrics(byCaption[caption]!);
+        rowBuckets.forEach(([buckets, key]) => addMetricValue(buckets, key, applyCaptionMetrics));
+      }
+
+      for (let categoryIndex = 0; categoryIndex < CATEGORY_DIM; categoryIndex++) {
+        const predictedNorm = predictedValues[
+          rowIndex * OUTPUT_DIM + DELTA_DIM + RECAP_DIM + categoryIndex
+        ]!;
+        const trueNorm = trueValues[
+          rowIndex * TARGET_DIM + CAPTION_COUNT + RECAP_DIM + categoryIndex
+        ]!;
+        rowCategoryErrors.push(Math.abs(
+          denormalize(predictedNorm, stats.categoryMean[categoryIndex]!, categoryStd[categoryIndex]!) -
+          denormalize(trueNorm, stats.categoryMean[categoryIndex]!, categoryStd[categoryIndex]!),
+        ));
+      }
+      const predictedTotalNorm = predictedValues[
+        rowIndex * OUTPUT_DIM + DELTA_DIM + RECAP_DIM + CATEGORY_DIM
+      ]!;
+      const trueTotalNorm = trueValues[
+        rowIndex * TARGET_DIM + CAPTION_COUNT + RECAP_DIM + CATEGORY_DIM
+      ]!;
+      const categoryAbs = mean(rowCategoryErrors);
+      const totalAbs = Math.abs(
+        denormalize(predictedTotalNorm, stats.totalMean, totalStd) -
+        denormalize(trueTotalNorm, stats.totalMean, totalStd),
+      );
+      const applyRowMetrics = (bucket: MetricBucket) => {
+        bucket.categoryAbs += categoryAbs;
+        bucket.totalAbs += totalAbs;
+      };
+      applyRowMetrics(global);
+      rowBuckets.forEach(([buckets, key]) => addMetricValue(buckets, key, applyRowMetrics));
+    }
+
+    predictions.dispose();
+    Object.values(xs).forEach((tensor) => tensor.dispose());
+    ys.dispose();
+  }
+
+  return {
+    label,
+    interval_scale: intervalScale,
+    metrics: summarizeBucket(global),
+    by_caption: mapBuckets(byCaption),
+    by_division: mapBuckets(byDivision),
+    by_season_phase: mapBuckets(byPhase),
+    by_judge_mode: mapBuckets(byJudgeMode),
+    by_history: mapBuckets(byHistory),
+    by_forecast_mode: mapBuckets(byForecastMode),
+    caption_fingerprint_diagnostics: Object.fromEntries(
+      Object.entries(fingerprintDiagnostics).map(([caption, values]) => [caption, {
+        samples: values.fingerprint.length,
+        fingerprint_vs_actual_residual_corr: pearsonCorrelation(
+          values.fingerprint,
+          values.actualResidual,
+        ),
+        fingerprint_vs_predicted_residual_corr: pearsonCorrelation(
+          values.fingerprint,
+          values.predictedResidual,
+        ),
+      }]),
+    ),
+  };
+}
+
+function calibrateIntervalScale(
+  model: tf.LayersModel,
+  validationSamples: Sample[],
+  stats: TargetStats,
+  args: ReturnType<typeof parseArgs>,
+) {
+  const targetMidpoint = (args.coverageTarget + args.coverageUpperTarget) / 2;
+  const candidates: Array<{
+    scale: number;
+    coverage: number;
+    width: number;
+    delta_mae_pts: number;
+    score: number;
+  }> = [];
+
+  for (let scale = 0.2; scale <= 1.201; scale += 0.025) {
+    const roundedScale = Math.round(scale * 1000) / 1000;
+    const report = evaluateSamples(
+      model,
+      validationSamples,
+      stats,
+      args,
+      "validation_calibration",
+      args.seed + 777,
+      roundedScale,
+    );
+    const { coverage, width, delta_mae_pts } = report.metrics;
+    const underPenalty = Math.max(0, args.coverageTarget - coverage) * 5;
+    const overPenalty = Math.max(0, coverage - args.coverageUpperTarget) * 2;
+    const targetPenalty = Math.abs(coverage - targetMidpoint);
+    const widthPenalty = width * 0.01;
+    candidates.push({
+      scale: roundedScale,
+      coverage,
+      width,
+      delta_mae_pts,
+      score: underPenalty + overPenalty + targetPenalty + widthPenalty,
+    });
+  }
+
+  candidates.sort((left, right) => left.score - right.score || left.width - right.width);
+  return {
+    method: "validation_grid_search_symmetric_width_scale",
+    target_coverage: args.coverageTarget,
+    upper_target_coverage: args.coverageUpperTarget,
+    selected: candidates[0] ?? null,
+    candidates: candidates.slice(0, 12),
+  };
 }
 
 tf.serialization.registerClass(MaskedSoftmax);
@@ -1038,6 +1295,24 @@ function normalizeValue(value: number, meanValue: number, stdValue: number) {
 type Sample = {
   xs: [number[][], number[], number[], number[], number, number[], number, number, number];
   ys: number[];
+  meta: {
+    season: string;
+    date: string;
+    showKey: string;
+    competitionSlug: string;
+    corpsKey: string;
+    corpsId: number;
+    division: string;
+    split: string;
+    total: number;
+    historyLen: number;
+    judgeKnown: boolean;
+    historyHidden: boolean;
+    forecastContextHidden: boolean;
+    lineupContextHidden: boolean;
+    seasonDebut: boolean;
+    firstSeasonEvent: boolean;
+  };
 };
 
 
@@ -1296,6 +1571,24 @@ function buildSamples(
         agnosticShowId
       ],
       ys: [...deltaTargets, ...recapValues, ...categoryTargets, normalizedTotal],
+      meta: {
+        season: row.season,
+        date: row.date,
+        showKey: row.showKey,
+        competitionSlug: row.competitionSlug,
+        corpsKey: row.corpsKey,
+        corpsId: row.corpsId,
+        division: row.division,
+        split: row.split,
+        total: row.total,
+        historyLen,
+        judgeKnown: row.judgeIndices.every((idx) => idx > 0),
+        historyHidden: false,
+        forecastContextHidden: false,
+        lineupContextHidden: false,
+        seasonDebut: (row.stat[COLD_START_STATIC_OFFSET] ?? 0) >= 0.5,
+        firstSeasonEvent: (row.stat[COLD_START_STATIC_OFFSET + 6] ?? 0) >= 0.5,
+      },
     });
 
 
@@ -1338,6 +1631,7 @@ let corpsIdBuffer: Int32Array | null = null;
 let baselineBuffer: Float32Array | null = null;
 let historyLenBuffer: Float32Array | null = null;
 let showIdBuffer: Int32Array | null = null;
+let agnosticShowIdBuffer: Int32Array | null = null;
 let ysBuffer: Float32Array | null = null;
 let currentBufferSize = 0;
 
@@ -1354,6 +1648,7 @@ function buildBatchTensors(batchSamples: Sample[], scales: { judgeBias: number, 
     baselineBuffer = new Float32Array(batchSize * CAPTION_COUNT);
     historyLenBuffer = new Float32Array(batchSize * 1);
     showIdBuffer = new Int32Array(batchSize);
+    agnosticShowIdBuffer = new Int32Array(batchSize);
     ysBuffer = new Float32Array(batchSize * TARGET_DIM);
     currentBufferSize = batchSize;
   }
@@ -1366,7 +1661,7 @@ function buildBatchTensors(batchSamples: Sample[], scales: { judgeBias: number, 
   const baselineData = baselineBuffer!.subarray(0, batchSize * CAPTION_COUNT);
   const historyLenData = historyLenBuffer!.subarray(0, batchSize * 1);
   const showIdData = showIdBuffer!.subarray(0, batchSize);
-  const agnosticShowIdData = new Int32Array(batchSize); // Use a new buffer for simplicity or add to pre-allocation
+  const agnosticShowIdData = agnosticShowIdBuffer!.subarray(0, batchSize);
   const ysData = ysBuffer!.subarray(0, batchSize * TARGET_DIM);
 
 
@@ -1428,8 +1723,9 @@ function buildBatchTensors(batchSamples: Sample[], scales: { judgeBias: number, 
   };
 }
 
-function* batchGenerator(samples: Sample[], batchSize: number, shuffle: boolean, seed: number, scales: { judgeBias: number, corps: number }): Generator<{ xs: BatchedInputs; ys: tf.Tensor; samples: Sample[] }> {
-  const rng = seededRandom(seed);
+type SampleGroup = Sample[];
+
+function groupSamplesByShow(samples: Sample[]): SampleGroup[] {
   const showMap = new Map<number, Sample[]>();
   for (const sample of samples) {
     const showId = sample.xs[7];
@@ -1438,7 +1734,11 @@ function* batchGenerator(samples: Sample[], batchSize: number, shuffle: boolean,
     showMap.set(showId, bucket);
   }
 
-  const showGroups = Array.from(showMap.values());
+  return Array.from(showMap.values());
+}
+
+function* batchGeneratorFromGroups(showGroups: SampleGroup[], batchSize: number, shuffle: boolean, seed: number, scales: { judgeBias: number, corps: number }): Generator<{ xs: BatchedInputs; ys: tf.Tensor; samples: Sample[] }> {
+  const rng = seededRandom(seed);
   const orderedShows = shuffle ? shuffleArray(showGroups, rng) : showGroups;
   let batch: Sample[] = [];
 
@@ -1459,6 +1759,10 @@ function* batchGenerator(samples: Sample[], batchSize: number, shuffle: boolean,
   if (batch.length) {
     yield { ...buildBatchTensors(batch, scales), samples: batch };
   }
+}
+
+function* batchGenerator(samples: Sample[], batchSize: number, shuffle: boolean, seed: number, scales: { judgeBias: number, corps: number }): Generator<{ xs: BatchedInputs; ys: tf.Tensor; samples: Sample[] }> {
+  yield* batchGeneratorFromGroups(groupSamplesByShow(samples), batchSize, shuffle, seed, scales);
 }
 
 

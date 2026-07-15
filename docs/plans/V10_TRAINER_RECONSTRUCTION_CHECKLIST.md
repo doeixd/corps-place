@@ -48,15 +48,27 @@ them against the committed table schema. The focused TypeScript check now passes
 
 Replay chronologically:
 
-1. `01365_2026-05-21T18-47-29.243Z.patch`
-2. `03488_2026-05-23T12-37-06.264Z.patch`
-3. `09397_2026-05-28T13-43-46.354Z.patch`
-4. `09401_2026-05-28T13-44-00.731Z.patch`
+1. `01352_2026-05-21T18-46-29.166Z.patch`
+2. `01360_2026-05-21T18-46-40.559Z.patch`
+3. `01365_2026-05-21T18-47-29.243Z.patch`
+4. `01608_2026-05-21T19-03-06.840Z.patch`
+5. `01617_2026-05-21T19-03-16.912Z.patch`
+6. `02975_2026-05-23T12-02-41.043Z.patch`
+7. `02979_2026-05-23T12-02-55.379Z.patch`
+8. `02983_2026-05-23T12-03-08.674Z.patch`
+9. `03480_2026-05-23T12-36-47.883Z.patch`
+10. `03484_2026-05-23T12-36-53.169Z.patch`
+11. `03488_2026-05-23T12-37-06.264Z.patch`
+12. `09397_2026-05-28T13-43-46.354Z.patch`
+13. `09401_2026-05-28T13-44-00.731Z.patch`
 
-- [ ] Restore final `MetricBucket`, `mapBuckets`, and summary shapes.
+The original four-entry list omitted required precursor and calibration patches;
+the expanded order above was recovered by tracing symbols through the patch set.
+
+- [x] Restore final `MetricBucket`, `mapBuckets`, and summary shapes.
 - [ ] Verify history and forecast-mode buckets match the model card.
-- [ ] Preserve raw and calibrated interval metrics.
-- [ ] Add a focused bucket accumulation/serialization test.
+- [x] Preserve raw and calibrated interval metrics in the evaluator.
+- [x] Add a focused bucket accumulation/serialization test.
 
 ### 3. Auto-curriculum constants and configuration
 
