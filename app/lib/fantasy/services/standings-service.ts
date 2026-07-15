@@ -141,6 +141,16 @@ const makeStandingsService = Effect.gen(function* () {
     const isFinal = Boolean(finals && finals.recapPresent && now >= finals.date);
     const through = finals?.recapPresent ? finals.slug : null;
 
+    // Season-progress history point (see fantasy_standings_history): key the
+    // going-forward snapshot by the recompute's Eastern-time date so the several
+    // recomputes that fire for one show collapse to one point, and it sits on the
+    // same x-axis as backfilled competition-date points. Only written once at
+    // least one show has scored — no flat run of preseason zeroes.
+    const asOfDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(
+      new Date(now)
+    );
+    const hasScores = bestLookup.size > 0;
+
     // Test leagues ARE included so their standings compute like any other league
     // (so testers see a populated standings tab); we only suppress their member
     // notifications below.
@@ -238,6 +248,30 @@ const makeStandingsService = Effect.gen(function* () {
           )
         )
         .pipe(Effect.orDie);
+
+      // Append/refresh today's season-progress history point for each member.
+      if (hasScores) {
+        yield* sql
+          .withTransaction(
+            Effect.forEach(
+              rows,
+              (row) => sql`
+                INSERT INTO fantasy_standings_history
+                  (league_id, user_id, as_of_date, through_competition_slug, total_score,
+                   ge_score, visual_score, music_score, rank, computed_at)
+                VALUES (${leagueId}, ${row.userId}, ${asOfDate}, ${through}, ${row.total},
+                        ${row.ge}, ${row.visual}, ${row.music}, ${row.rank}, ${now})
+                ON CONFLICT(league_id, user_id, as_of_date) DO UPDATE SET
+                  through_competition_slug = excluded.through_competition_slug,
+                  total_score = excluded.total_score, ge_score = excluded.ge_score,
+                  visual_score = excluded.visual_score, music_score = excluded.music_score,
+                  rank = excluded.rank, computed_at = excluded.computed_at
+              `,
+              { discard: true }
+            )
+          )
+          .pipe(Effect.orDie);
+      }
 
       // Notify only members whose total moved, or when the season just finalized.
       const changed = rows

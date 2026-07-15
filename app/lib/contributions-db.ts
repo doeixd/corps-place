@@ -327,6 +327,28 @@ const SCHEMA = [
      PRIMARY KEY (league_id, user_id)
    )`,
 
+  // Per-date snapshot of standings for the season-progress graph. One point per
+  // (league, member, date): recompute upserts the current point (keyed by the
+  // recompute date) going forward; a one-off backfill fills earlier competition
+  // dates from the dated underlying scores. Keying on `as_of_date` (not a slug)
+  // collapses the several recomputes that fire for one show into one point and
+  // keeps backfilled + live points on one consistent x-axis.
+  `CREATE TABLE IF NOT EXISTS fantasy_standings_history (
+     league_id                TEXT NOT NULL,
+     user_id                  TEXT NOT NULL,
+     as_of_date               TEXT NOT NULL,
+     through_competition_slug TEXT,
+     total_score              REAL NOT NULL DEFAULT 0,
+     ge_score                 REAL NOT NULL DEFAULT 0,
+     visual_score             REAL NOT NULL DEFAULT 0,
+     music_score              REAL NOT NULL DEFAULT 0,
+     rank                     INTEGER,
+     computed_at              TEXT NOT NULL,
+     PRIMARY KEY (league_id, user_id, as_of_date)
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_fantasy_standings_history_league_date
+     ON fantasy_standings_history (league_id, as_of_date)`,
+
   `CREATE TABLE IF NOT EXISTS fantasy_notifications (
      notif_id      TEXT PRIMARY KEY,
      user_id       TEXT NOT NULL,
