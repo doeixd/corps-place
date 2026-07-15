@@ -579,6 +579,12 @@ pipeline state.
   `/mnt/c/Users/Patrick/AppData/Local/Programs/Syncthing/corps-place/sdk/dci-relational-scrape.db`;
   copy it to WSL's native filesystem before long replicas for better I/O, then
   rely on the reproduction-contract hash to prove the copy is exact.
+- Full replicas use `cd /root/corps-place-v10/sdk && npm run
+  train:v95:replica -- <seed>`. The wrapper is versioned at
+  `sdk/scripts/runV95Replica.sh`; it makes the final2 data contract, seed-specific
+  trial ID, normalization path, and V9.5-only output root explicit. Override
+  `V95_DB_PATH`, `V95_MODEL_DIR`, or `V95_NORM_PATH` only when the alternative is
+  intentional and documented in the resulting run notes.
 - The corrected WSL zero-epoch smoke graph contains exactly 1,048,639 trainable
   parameters, equal to the sum of final2's preserved weight shapes. It completed
   saving, calibration, and every non-empty final2 evaluation population. The
