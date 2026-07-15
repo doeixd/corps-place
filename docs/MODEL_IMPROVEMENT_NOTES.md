@@ -119,6 +119,41 @@ Cautions:
 If this works, the manual bias correction can be **retired** (or kept only as a
 thin safety cap).
 
+#### Why the model doesn't already learn hot/cold season (it has *some* of the data)
+
+A fair objection: the model already gets, at each sequence step, an **opponent
+summary** (`opponent last-3 totals + per-caption stats`, rank-weighted top-3;
+`OPPONENT_TIMESTEP_FEATURES` in the builder) plus `fieldSize`, `showsRemaining`,
+`divisionStrength`, and the season features — so why can't it infer "the field is
+running hot this year" on its own? Four reasons, none of which is "missing data":
+
+1. **The signal is opponent-*relative* and *local*, not field-global-vs-curve.**
+   The model sees "the corps I happened to face scored X," not "the entire field
+   is +2 vs the historical reference curve this season." Detecting a season-pace
+   regime means aggregating the *whole field's* deviation-from-curve across corps
+   and time — but a per-corps LSTM processes one corps's sequence per forward
+   pass and never sees the field trajectory as a measurable object. The
+   ingredients are present but scattered across per-show opponent snapshots.
+2. **It's a weak second-order effect competing with a dominant one.** Per-corps
+   recency explains most of the score and most of the loss; the season-pace tilt
+   is ~1.2 pts. The optimizer spends capacity where it buys the most MAE (per-corps
+   dynamics) and under-fits a noisy field-wide signal that's expensive to extract
+   for little loss reduction.
+3. **The reference curve assumes a normal-pace season.** The curveΔ growth leg
+   projects improvement off historical-average curves and is added *post-hoc*
+   (not residual-absorbed), so a faster season under-shoots there by construction.
+4. **Possible out-of-distribution.** If 2026's compression exceeds the pace
+   variance in 2013–2025, the model never saw enough "hot season → corps up X"
+   contrast to learn a strong response.
+
+This is precisely the case for an **explicit, pre-computed** field-slope feature:
+it hands the model the *finished aggregate* (field level + slope vs. curve) so it
+doesn't have to synthesize it from opponent snapshots — the applied-ML move you
+make when "the data is all there" but the architecture still can't use it. The
+catch: it only pays off if you **retrain** with it (a frozen model won't respond),
+and only if the training seasons vary in pace enough to learn the mapping — pair
+it with P2's augmentation so the relationship is well-represented.
+
 ### P2 — Train on more thin-history examples *(addresses B)*
 
 The debut/thin-history regime (3.2–3.6 MAE) is under-represented: most training
@@ -291,3 +326,79 @@ takeaways for a field-pace feature:
    already used the calendar fallback. A field-pace feature is more central, but
    validate its *live* effect (frozen-cutoff walk-forward), not just a synthetic
    sensitivity sweep.
+
+---
+
+## 7. Retraining logistics — READ THIS BEFORE ANY V10 RETRAIN
+
+**The training pipeline that produced the live model was never committed to this
+repo and was partially lost.** Anyone retraining starts from a partial
+reconstruction, not a clean checkout. This section is the map. (Established
+2026-07-08 while fixing the 169-vs-212 feature drift; verify current state before
+relying on it.)
+
+### 7a. What was lost, and why
+
+The **212-wide sequence builder** and the **trainer** were never version-controlled
+in `corps-place`. The bulk `689fa05 "Restore full project tree"` commits
+*clobbered* the working-tree copies with an older **169-wide** builder (the same
+commit that swept in the stale/corrupt VA reference-curve column). Git history is
+intact — the real files were simply never committed, so there's nothing to
+`git revert` to. What survived untouched: the **inference** path
+(`v9PredictionFeatures.ts`, `predictEventRecap.ts`) — inference was never lost.
+
+### 7b. Where the recovered code lives
+
+Recovered to a separate GitHub repo: **`doeixd/recovered-ml-212`**.
+- **Builder — recovered and DB-validated.** Ran it → temp table, diffed vs the
+  stored `ml_sequence_rows_v9_subcaption`: with the recovered **v4.1 reference
+  curves** (`1a2af7ef`, 1575 keys) the **rankBaseline (121–128) and fingerprint
+  (179–211) blocks are byte-exact**, cold-start ~99% exact → the builder logic is
+  proven correct. It's since been ported into this repo as
+  `sdk/src/buildMlSequencesV9Subcaption.ts` (the 212 version; see the drift memory
+  / commits around `46ed382`).
+- **Trainer — best-effort only.** Recovered with **~73 drifted hunks in the
+  harness logic**. It has NOT been validated end-to-end. **Treat the trainer as
+  the weakest link: reconstruct and verify it before trusting a retrain.**
+
+### 7c. The Effect version gotcha
+
+The recovered builder/trainer are **Effect v3** (`@effect/sql`); this repo is
+**Effect v4** (`effect/unstable/sql`). Porting is mechanical but pervasive:
+`function* (_)` → `function* ()`, `yield* _(` → `yield* (`, and the SQL import
+paths. Do the port before running anything from the recovered repo.
+
+### 7d. The index maps — why the recovered builder doesn't byte-match *everything*
+
+The remaining ~3–9% drift (in the rank / elo / subcaption columns only) traces to
+the **lost index maps** plus evolved elo/score data. The live `final2` model was
+trained against specific maps:
+- `judgeIndexMap` hash **`1c95f700`**
+- `corpsIndexMap` hash **`99de63cc`**
+
+The working-tree maps differ. **For V10 this is not a blocker** — a from-scratch
+retrain generates its *own* fresh index maps and trains the embeddings against
+them, so you don't need `final2`'s maps. But it's why you can't perfectly
+reproduce `final2`'s exact training inputs from the current tree, and it's why the
+recovered-builder validation shows small drift outside the two byte-exact blocks.
+**Never regenerate these maps for *inference* against the current model** (see
+§6d) — that rule is only lifted when you retrain and ship a matched new model.
+
+### 7e. Checklist to actually retrain (V10)
+
+1. **Port** the recovered builder + trainer from `doeixd/recovered-ml-212` to
+   Effect v4 (§7c). Reconstruct/verify the trainer (§7b).
+2. **Clean the training source.** Point the subcaption builder at the clean domain
+   view / a de-contaminated `caption_scores` (§6c) — V9 trained on the raw
+   contaminated table; this is the biggest free hardening.
+3. **Add the new features** (P1 field-slope, schedule-anchored per §6e) and the
+   **thin-history augmentation** (P2) — the two changes with the most leverage.
+4. **Generate fresh index maps** for the new model (§7d); do not reuse `final2`'s.
+5. **Rebuild** `ml_sequence_rows_v9_subcaption` (2013–present) with the corrected
+   builder; confirm all rows are **212-wide** and the parity guards
+   (`v9FeatureParity`, `v9InferenceParity`, `referenceCurveIntegrity`) pass.
+6. **Validate** with the frozen-cutoff backtest AND a 2026 walk-forward, checking
+   no regression on the data-rich majority (§4). Watch the P2 *ensemble* MAE, not
+   `target` mode alone (§6a).
+7. **Ship** a matched (model + index maps + curves) set together; then start
+   deleting from the calibration-layer retire tracker (§5).
