@@ -183,3 +183,111 @@ Even with P1, a frozen artifact drifts. Options, cheapest first:
 
 The goal is a V10 where the calibration layer is **empty or a thin safety cap** —
 the model has learned what we're currently hand-coding.
+
+---
+
+## 6. Hard-won context for whoever builds V10 (not obvious from the code)
+
+*These are lessons and gotchas discovered debugging V9 in production over
+2026-07. They will save you days and stop you re-running experiments that already
+failed. Dates are when each was established; verify against current code before
+relying on a specific line number.*
+
+### 6a. Experiments already run — DO NOT redo these (negative results)
+
+- **Learned "debut prior" — reverted (2026-07-06).** A learned opening-night
+  anchor for 0-show debut corps looked great (LOO MAE 3.1) but only vs a
+  *strawman* (raw prior-season-best, MAE 17.3). Tested fairly against the logic
+  production actually uses (`getPriorSeasonComparableTotal` = last-year score at
+  closest percent-through), the existing anchor was already 3.41 vs the prior's
+  3.14 — a meaningless gain — and end-to-end it *regressed* corps the comparable
+  already nailed (Blue Stars 77.6→72.8 vs actual 77.4). **Lesson: validate every
+  prediction change end-to-end against the real deployed path, never an isolated
+  strawman.**
+- **Full v4.1 reference-curve swap — definitively rejected (2026-07-08).** v4.1
+  improves `target` mode but *regresses the shipped P2 ensemble* (+0.155 MAE
+  worse), because the ensemble is `persistW·persist + (1−persistW)·(target+curveΔ)/2`
+  and curveΔ regresses more than target improves. **Judge any curve change on the
+  ENSEMBLE, never on `target` mode alone.** (The one exception that shipped was a
+  *surgical VA-only* column patch — see 6c.)
+- **Recomputing the stale rank features (rankEma/rankVsHistorical, idx 9/13) —
+  noise, don't ship (2026-07-08).** They're frozen at template-show time, but
+  recomputing them from as-of-target standings desyncs them from the still-
+  template-time residual block; backtest was a wash. Only the self-contained
+  cold-start block (169–178) is worth recomputing for the target.
+
+### 6b. Traps when *measuring* model accuracy (you will hit these)
+
+- **`backtestPredictionModes.ts` can slander the model.** Its curve/target modes
+  feed the model a *reference-curve* `baselineRecap`, but the model is trained to
+  predict a delta from the corps's *recent-form* baseline (last valid step's
+  captions, with dropout/noise augmentation). Feeding curve baselines is
+  out-of-distribution and makes the model look 5–15 pts worse than persist — an
+  artifact, not a finding. Any mode comparison must feed the real recent baseline.
+- **Re-running `predictEventRecap` on an already-scored event LEAKS the actuals**
+  into the prediction. To judge accuracy, use the frozen-cutoff backtest harness
+  or `--as-of <date>` (freezes knowledge before the show) — never a live re-run
+  on a scored event.
+- **The canonical "is the model better than persist?" answer is
+  `final_validation_vs_inertia_pts` in the model card: yes, by 0.81.** Do not
+  de-weight the model vs persist based on a bad backtest mode.
+- **Model looks wrong? Check data FIRST, then regime, before the model.**
+  Order: (1) data completeness — partial multi-division ingestion silently drops a
+  class (the 2026-dci-west fiasco; there's a completeness gate in
+  `auto-ingest-scores.sh` now); (2) regime — debut / early-season is the model's
+  *only* weak zone (preseason MAE ~1.7, debut ~3.6); (3) only then suspect logic.
+
+### 6c. Data-quality landmines a retrain MUST heed *(directly relevant to V10)*
+
+- **`caption_scores` (the training/feature source) is contaminated.** ~1250 poison
+  rows: full totals (80–99) stored in Music/Visual *subcaption* cells
+  (2017–2019), 0.0 DNP sentinels treated as real, and 3 rows with a judge name in
+  `caption_name`. **The V9 subcaption builder still reads raw `caption_scores`, so
+  V9's training features may include this contamination — a clean rebuild is the
+  natural next hardening.** For V10, read the clean domain **VIEW
+  `clean_reference_curve_metric_scores`** instead of the raw table — it
+  name-normalizes (kills the VA drift below), drops I&E/individual/showcase, drops
+  zeros/DNP, and keeps only sum-reconciled rows (`ABS(caption_total −
+  total_score) ≤ 0.05`). Full writeup: `docs/DATA_QUALITY_NOTES.md` §11.
+- **Caption-name gotcha:** the DB stores `"Visual - Analysis"` (hyphenated, like
+  `"Music - Analysis"`) — there are **ZERO** `"Visual Analysis"` rows. Any code
+  with the no-hyphen key silently drops the entire VA caption (this corrupted the
+  reference curve once). The subcaption builder maps both forms; make sure any new
+  feature code does too. (DB caption for the model is `"Visual - Analysis"`.)
+
+### 6d. Feature/inference invariants that must not drift
+
+- **The static vector is 212-wide:** 169 base + 10 cold-start [169–178, incl.
+  `percentThrough` at 178] + 33 caption-fingerprint [179–211]
+  (`V9_RAW_STATIC_DIM`). A builder that emits only the 169 base silently zero-fills
+  cold-start on every in-season prediction — a real bug we hit (2026-07-08). Guard
+  tests: `sdk/test/v9FeatureParity.test.ts` and `v9InferenceParity.test.ts`
+  (byte-exact builder↔inference parity) — run them before/after any feature change.
+- **The cold-start block (169–178) must be recomputed for the TARGET** on all
+  templates (same-season templates are the corps' *last* show, so leaving them
+  stale feeds the wrong percentThrough/shows-count → conservative early-season
+  bias). Fixed byte-exact in `46ed382`.
+- **NEVER regenerate the frozen index maps** (`{corps,judge,show}IndexMap.json`)
+  for inference — indices are positional and baked into the trained embeddings;
+  new corps correctly fall back to index 0. `final2` expects specific map hashes.
+- **`V9_FEATURE_INDICES.pastShowsCount` is 136**, not 168 (168 holds a subcaption
+  EMA). A wrong index here makes `maskV9PreseasonForecastContext` zero the wrong
+  slot (was a real bug, fixed).
+
+### 6e. On the P1 field-pace feature specifically — a warning from the `percent_through` saga
+
+`competitions.percent_through` was itself a data-definition bug (2026-07-07):
+it read as *rank-among-scored-events* (k/N) rather than calendar progress, so in
+an in-progress season every event pinned toward 100% ("finals-level") and the
+model over-read early-season events. It's since anchored to the **scheduled
+finals** (`MAX(events.start_date)`, 2026 schedule runs through 2026-08-08). Two
+takeaways for a field-pace feature:
+1. **Any season-progress or field-pace input must be calendar/schedule-anchored,
+   computed identically for complete and in-progress seasons** — or the model
+   sees a different distribution in production than it trained on.
+2. **Right-size the expected impact.** The percent_through fix looked huge in a
+   forced-`pct=100` backtest (+8–19 pts) but moved live predictions only ~+0.22
+   mean, because it's one lightly-weighted feature of 101/step and the live path
+   already used the calendar fallback. A field-pace feature is more central, but
+   validate its *live* effect (frozen-cutoff walk-forward), not just a synthetic
+   sensitivity sweep.
