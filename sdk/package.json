@@ -17,6 +17,7 @@
     "check": "tsc --noEmit -p tsconfig.json",
     "replay:v10-baseline": "tsx scripts/replayFinal2Baseline.ts",
     "test:v95-curriculum": "tsx scripts/testV95Curriculum.ts",
+    "test:v95-checkpoints": "tsx scripts/testV95Checkpoints.ts",
     "test:v95-masking": "tsx scripts/testV95FeatureMasking.ts",
     "test:v95-metrics": "tsx scripts/testV95Metrics.ts",
     "train:v95": "tsx src/training/trainModelV95.ts",

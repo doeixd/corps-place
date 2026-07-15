@@ -506,6 +506,14 @@ pipeline state.
   BiLSTM, Dense `512→256`, AccuracyTrunk `270`). Run
   `npm run validate:v95-architecture` for the 16-check static graph/manifest
   gate; a native-backend runtime dry graph is still a separate pending gate.
+- Checkpoint reconstruction exposed two more anchor defects: validation loss was
+  accumulated but omitted from `monitoringStats`, making a best-loss checkpoint
+  impossible, and an obsolete `epoch === 40 || epoch === 120` reset survived
+  alongside the configurable 10/40 curriculum. V9.5 now tracks independent
+  delta/loss/total/composite and per-phase weights/directories, uses the final
+  production composite formula, removes the obsolete reset, and promotes the
+  requested final mode with `composite` as final2's default. The synthetic gate
+  exactly reproduces final2's saved composite score `0.5025684126513721`.
 
 ## Immediate next task
 

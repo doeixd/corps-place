@@ -169,11 +169,17 @@ Multi-checkpoint chain:
 2. `04087_2026-05-26T11-05-11.295Z.patch`
 3. `08990_2026-05-28T11-51-28.962Z.patch`
 
-- [ ] Restore final production-composite formula.
-- [ ] Restore best delta/loss/total/composite and per-phase checkpoints.
-- [ ] Prevent one epoch from overwriting the wrong checkpoint.
-- [ ] Restore `finalWeights=composite` promotion.
-- [ ] Test checkpoint gates with synthetic metrics and match preserved log values.
+- [x] Restore final production-composite formula.
+- [x] Restore best delta/loss/total/composite and per-phase checkpoints.
+- [x] Prevent one epoch from overwriting the wrong checkpoint.
+- [x] Restore `finalWeights=composite` promotion.
+- [x] Test checkpoint gates with synthetic metrics and match preserved log values.
+
+`npm run test:v95-checkpoints` reproduces the final2 epoch-71 composite score
+`0.5025684126513721`, verifies independent metric gates, and pins requested-mode
+fallback behavior. Checkpoint directories are written through unique temporary
+directories and atomically promoted; each metric owns separate weights and epoch
+state.
 
 ### 8. Loss scheduler and phase ramps
 

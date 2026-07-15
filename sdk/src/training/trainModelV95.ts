@@ -43,6 +43,10 @@ import {
   type CurriculumTransition,
 } from "./v95Curriculum.js";
 import { buildForecastBaseline, selectV95Masking } from "./v95Masking.js";
+import {
+  checkpointDecisions,
+  selectFinalWeightsMode,
+} from "./v95Checkpoints.js";
 
 const DB_PATH = "./dci-relational.db";
 const MODEL_DIR = "./models/v95_final2_reconstruction";
@@ -2161,9 +2165,19 @@ async function main() {
   const runId = `${args.trialId ?? "run"}_${Date.now()}`;
   const runDir = path.join(args.modelDir, runId);
   const bestDir = path.join(runDir, "best");
+  const bestLossDir = path.join(runDir, "best_loss");
+  const bestTotalDir = path.join(runDir, "best_total");
+  const bestCompositeDir = path.join(runDir, "best_composite");
+  const bestPhaseDirs = {
+    A: path.join(runDir, "best_phase_a"),
+    B: path.join(runDir, "best_phase_b"),
+    C: path.join(runDir, "best_phase_c"),
+  } as const;
   let bestSavedEpoch = -1;
-  let lastBestSaveMs = 0;
-  const MIN_BEST_SAVE_INTERVAL_MS = 30_000;
+  let bestLossSavedEpoch = -1;
+  let bestTotalSavedEpoch = -1;
+  let bestCompositeSavedEpoch = -1;
+  const bestPhaseSavedEpoch = { A: -1, B: -1, C: -1 };
 
   fs.mkdirSync(runDir, { recursive: true });
 
@@ -2205,6 +2219,22 @@ async function main() {
     };
 
     await modelToSave.save(saveHandler);
+  };
+
+  const saveCheckpoint = async (
+    modelToSave: tf.LayersModel,
+    destination: string,
+    metadata: Record<string, unknown>,
+  ) => {
+    const temporary = `${destination}_tmp`;
+    if (fs.existsSync(temporary)) fs.rmSync(temporary, { recursive: true, force: true });
+    await saveModel(modelToSave, temporary);
+    fs.writeFileSync(
+      path.join(temporary, "best-meta.json"),
+      JSON.stringify({ ...metadata, savedAt: new Date().toISOString() }, null, 2),
+    );
+    if (fs.existsSync(destination)) fs.rmSync(destination, { recursive: true, force: true });
+    fs.renameSync(temporary, destination);
   };
 
   class LambdaScale extends tf.layers.Layer {
@@ -2568,6 +2598,19 @@ async function main() {
 
   let bestScore = Number.POSITIVE_INFINITY;
   let bestWeights: tf.Tensor[] | null = null;
+  let bestLossWeights: tf.Tensor[] | null = null;
+  let bestTotalWeights: tf.Tensor[] | null = null;
+  let bestCompositeWeights: tf.Tensor[] | null = null;
+  const bestPhaseWeights: Record<"A" | "B" | "C", tf.Tensor[] | null> = {
+    A: null,
+    B: null,
+    C: null,
+  };
+  let bestDeltaMae = Number.POSITIVE_INFINITY;
+  let bestValLoss = Number.POSITIVE_INFINITY;
+  let bestTotalMae = Number.POSITIVE_INFINITY;
+  let bestCompositeScore = Number.POSITIVE_INFINITY;
+  const bestPhaseDeltaMae = { A: Number.POSITIVE_INFINITY, B: Number.POSITIVE_INFINITY, C: Number.POSITIVE_INFINITY };
   let patience = 0;
   let currentLR = args.learningRate;
   let epochsSinceImprovement = 0;
@@ -2734,6 +2777,7 @@ async function main() {
     }
 
     let monitoringStats = {
+      valLoss: 0,
       valScore: 0,
       valDeltaMae: 0,
       valRecapMae: 0,
@@ -3005,6 +3049,7 @@ async function main() {
       }
 
 
+      const valLoss = valCountTotal ? valLossSum / valCountTotal : 0;
       const valDeltaMae = valCountTotal ? valDeltaMaeSum / valCountTotal : 0;
       const valRecapMae = valCountTotal ? valRecapMaeSum / valCountTotal : 0;
       const valCategoryMae = valCountTotal ? valCategoryMaeSum / valCountTotal : 0;
@@ -3040,11 +3085,11 @@ async function main() {
       const underCoverage = Math.max(0, SCORE_COVERAGE_TARGET - coverage);
       const covPenalty = underCoverage * underCoverage;
 
-      const widthExcess = Math.max(0, widthNorm - WIDTH_TARGET_PTS);
-      const widthPenaltyScore = widthExcess * 0.5;
+      const widthExcess = Math.max(0, widthNorm - args.widthTargetPts);
+      const widthPenaltyScore = widthExcess * args.widthPenaltyWeight;
 
       let valScore: number;
-      if (epoch < 40) {
+      if (scheduler.getPhase(epoch) !== "C") {
         valScore = valDeltaMae + valTotalMae;
       } else {
         valScore = weights.deltaWeight * valDeltaMae +
@@ -3057,6 +3102,7 @@ async function main() {
 
 
       monitoringStats = {
+        valLoss,
         valScore,
         valDeltaMae,
         valRecapMae,
@@ -3071,12 +3117,6 @@ async function main() {
         widthFloorPct
       };
 
-      if (epoch === 40 || epoch === 120) {
-        console.log(`\n--- PHASE TRANSITION (Epoch ${epoch}): Resetting Best Score & Patience ---`);
-        bestScore = Number.POSITIVE_INFINITY;
-        patience = 0;
-        epochsSinceImprovement = 0;
-      }
     }
 
     if (args.swa && epoch >= swaStartEpoch && (epoch - swaStartEpoch) % swaInterval === 0) {
@@ -3132,7 +3172,115 @@ async function main() {
       console.log("----------------------------------\n");
     }
 
-    const improved = monitoringStats.valScore < bestScore - 1e-4;
+    const phaseForCheckpoint = phaseAtEpochStart;
+    const decisions = checkpointDecisions(
+      monitoringStats,
+      {
+        delta: bestDeltaMae,
+        loss: bestValLoss,
+        total: bestTotalMae,
+        composite: bestCompositeScore,
+        phaseDelta: bestPhaseDeltaMae[phaseForCheckpoint],
+      },
+      args.coverageTarget,
+      args.coverageUpperTarget,
+      initialValSamples.length > 0,
+    );
+    const replaceWeights = (existing: tf.Tensor[] | null) => {
+      existing?.forEach((tensor) => tensor.dispose());
+      return model.getWeights().map((tensor) => tensor.clone());
+    };
+
+    if (decisions.delta) {
+      bestDeltaMae = monitoringStats.valDeltaMae;
+      bestWeights = replaceWeights(bestWeights);
+      if (epoch !== bestSavedEpoch) {
+        await saveCheckpoint(model, bestDir, {
+          epoch,
+          checkpointMetric: "valDeltaMae",
+          bestDeltaMae,
+          monitoring: monitoringStats,
+        });
+        bestSavedEpoch = epoch;
+        console.log(`Saved BEST checkpoint @epoch ${epoch} delta_mae_pts = ${bestDeltaMae.toFixed(4)} -> ${bestDir}`);
+      }
+    }
+    if (decisions.loss) {
+      bestValLoss = monitoringStats.valLoss;
+      bestLossWeights = replaceWeights(bestLossWeights);
+      if (epoch !== bestLossSavedEpoch) {
+        await saveCheckpoint(model, bestLossDir, {
+          epoch,
+          checkpointMetric: "valLoss",
+          bestValLoss,
+          monitoring: monitoringStats,
+        });
+        bestLossSavedEpoch = epoch;
+        console.log(`Saved BEST-LOSS checkpoint @epoch ${epoch} val_loss = ${bestValLoss.toFixed(6)} -> ${bestLossDir}`);
+      }
+    }
+    if (decisions.total) {
+      bestTotalMae = monitoringStats.valTotalMae;
+      bestTotalWeights = replaceWeights(bestTotalWeights);
+      if (epoch !== bestTotalSavedEpoch) {
+        await saveCheckpoint(model, bestTotalDir, {
+          epoch,
+          checkpointMetric: "valTotalMae",
+          bestTotalMae,
+          monitoring: monitoringStats,
+        });
+        bestTotalSavedEpoch = epoch;
+        console.log(`Saved BEST-TOTAL checkpoint @epoch ${epoch} total_mae_pts = ${bestTotalMae.toFixed(4)} -> ${bestTotalDir}`);
+      }
+    }
+    if (decisions.compositeImproved) {
+      bestCompositeScore = decisions.composite;
+      bestCompositeWeights = replaceWeights(bestCompositeWeights);
+      if (epoch !== bestCompositeSavedEpoch) {
+        await saveCheckpoint(model, bestCompositeDir, {
+          epoch,
+          checkpointMetric: "productionComposite",
+          bestCompositeScore,
+          monitoring: monitoringStats,
+        });
+        bestCompositeSavedEpoch = epoch;
+        console.log(
+          `Saved BEST-COMPOSITE checkpoint @epoch ${epoch} score = ${bestCompositeScore.toFixed(4)} ` +
+          `delta_mae_pts = ${monitoringStats.valDeltaMae.toFixed(4)} ` +
+          `total_mae_pts = ${monitoringStats.valTotalMae.toFixed(4)} -> ${bestCompositeDir}`,
+        );
+      }
+    }
+    if (decisions.phase) {
+      bestPhaseDeltaMae[phaseForCheckpoint] = monitoringStats.valDeltaMae;
+      bestPhaseWeights[phaseForCheckpoint] = replaceWeights(bestPhaseWeights[phaseForCheckpoint]);
+      if (epoch !== bestPhaseSavedEpoch[phaseForCheckpoint]) {
+        await saveCheckpoint(model, bestPhaseDirs[phaseForCheckpoint], {
+          epoch,
+          phase: phaseForCheckpoint,
+          checkpointMetric: "valDeltaMae",
+          bestPhaseDeltaMae: bestPhaseDeltaMae[phaseForCheckpoint],
+          monitoring: monitoringStats,
+        });
+        bestPhaseSavedEpoch[phaseForCheckpoint] = epoch;
+        console.log(
+          `Saved BEST-PHASE-${phaseForCheckpoint} checkpoint @epoch ${epoch} ` +
+          `delta_mae_pts = ${bestPhaseDeltaMae[phaseForCheckpoint].toFixed(4)} -> ` +
+          `${bestPhaseDirs[phaseForCheckpoint]}`,
+        );
+      }
+    }
+
+    const monitorImproved = monitoringStats.valScore < bestScore - 1e-4;
+    if (monitorImproved || !initialValSamples.length) {
+      bestScore = monitoringStats.valScore;
+      patience = 0;
+      epochsSinceImprovement = 0;
+    } else {
+      patience += 1;
+      epochsSinceImprovement += 1;
+    }
+
     const curriculumStep = stepCurriculum(
       curriculumState,
       autoCurriculumConfig,
@@ -3185,42 +3333,7 @@ async function main() {
       );
     }
 
-    if (improved || !initialValSamples.length) {
-      bestScore = monitoringStats.valScore;
-      patience = 0;
-      epochsSinceImprovement = 0;
-      if (bestWeights) {
-        bestWeights.forEach((tensor) => tensor.dispose());
-      }
-      bestWeights = model.getWeights().map((tensor) => tensor.clone());
-
-      const now = Date.now();
-      const shouldSave = epoch !== bestSavedEpoch && now - lastBestSaveMs > MIN_BEST_SAVE_INTERVAL_MS;
-      if (shouldSave) {
-        const tmpBestDir = path.join(runDir, "best_tmp");
-        if (fs.existsSync(tmpBestDir)) {
-          fs.rmSync(tmpBestDir, { recursive: true, force: true });
-        }
-        await saveModel(model, tmpBestDir);
-        const meta = {
-          epoch,
-          bestScore,
-          monitoring: monitoringStats,
-          savedAt: new Date().toISOString(),
-        };
-        fs.writeFileSync(path.join(tmpBestDir, "best-meta.json"), JSON.stringify(meta, null, 2));
-        if (fs.existsSync(bestDir)) {
-          fs.rmSync(bestDir, { recursive: true, force: true });
-        }
-        fs.renameSync(tmpBestDir, bestDir);
-        bestSavedEpoch = epoch;
-        lastBestSaveMs = now;
-        console.log(`Saved BEST checkpoint @epoch ${epoch} score = ${bestScore.toFixed(4)} -> ${bestDir} `);
-      }
-    } else if (!curriculumAdvanced) {
-      patience += 1;
-      epochsSinceImprovement += 1;
-
+    if (!curriculumAdvanced && !monitorImproved) {
       if (epochsSinceImprovement >= args.reduceLrPatience && currentLR > args.minLr) {
         currentLR *= 0.5;
         const nextLR = Math.max(currentLR, args.minLr);
@@ -3237,12 +3350,43 @@ async function main() {
     }
   }
 
-  if (args.swa && swaWeights) {
-    model.setWeights(swaWeights);
-    swaWeights.forEach((tensor) => tensor.dispose());
-  } else if (bestWeights) {
-    model.setWeights(bestWeights);
-    bestWeights.forEach((tensor) => tensor.dispose());
+  const finalWeightsMode = selectFinalWeightsMode(args.finalWeights, {
+    swa: Boolean(args.swa && swaWeights),
+    composite: Boolean(bestCompositeWeights),
+    total: Boolean(bestTotalWeights),
+    loss: Boolean(bestLossWeights),
+    delta: Boolean(bestWeights),
+  });
+  const selectedWeights = finalWeightsMode === "swa"
+    ? swaWeights
+    : finalWeightsMode === "composite"
+      ? bestCompositeWeights
+      : finalWeightsMode === "total"
+        ? bestTotalWeights
+        : finalWeightsMode === "loss"
+          ? bestLossWeights
+          : finalWeightsMode === "delta"
+            ? bestWeights
+            : null;
+  if (selectedWeights) model.setWeights(selectedWeights);
+  console.log(`Selecting final weights: ${finalWeightsMode}`);
+
+  const allCheckpointWeights = [
+    swaWeights,
+    bestWeights,
+    bestLossWeights,
+    bestTotalWeights,
+    bestCompositeWeights,
+    ...Object.values(bestPhaseWeights),
+  ];
+  const disposed = new Set<tf.Tensor>();
+  for (const weights of allCheckpointWeights) {
+    for (const tensor of weights ?? []) {
+      if (!disposed.has(tensor)) {
+        tensor.dispose();
+        disposed.add(tensor);
+      }
+    }
   }
 
   disposeLoss();
