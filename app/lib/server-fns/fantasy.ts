@@ -757,6 +757,13 @@ export const getStandings = createServerFn({ method: 'GET' })
     return { ...result, pickedCorps };
   });
 
+/** Public read: a league's standings time-series for the season-progress chart. */
+export const getStandingsHistory = createServerFn({ method: 'GET' })
+  .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
+  .handler(async ({ data }) =>
+    runFantasy(Effect.flatMap(StandingsService, (svc) => svc.getStandingsHistory(data.slug)))
+  );
+
 // ===========================================================================
 // PUSH — web-push subscriptions (M5). VAPID public key + save/delete a sub.
 // ===========================================================================

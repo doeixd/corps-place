@@ -17,6 +17,7 @@ import {
   StandingsBreakdown,
   type StandingsBreakdownData,
 } from '@/components/fantasy/standings-breakdown';
+import { StandingsChart } from '@/components/fantasy/standings-chart';
 import type { PickedCorps } from '@/lib/server-fns/fantasy';
 import {
   cycleSort,
@@ -154,6 +155,8 @@ function StandingsContent({
         </Card>
       ) : (
         <SectionErrorBoundary label="the standings table">
+          {/* Season-progress chart (client-fetched, lazy, hidden until ≥2 dates). */}
+          <StandingsChart slug={league.slug} />
           <p className="text-sm text-muted-foreground">
             Each player&apos;s total is built from their drafted corps&apos; season-best caption
             scores from real drum corps <Explain term="recap">recaps</Explain>, DCI-style: GE plus

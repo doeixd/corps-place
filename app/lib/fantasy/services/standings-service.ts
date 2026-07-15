@@ -315,7 +315,79 @@ const makeStandingsService = Effect.gen(function* () {
     return { leagues: leagues.length, members: memberTotal, finalized } as RecomputeSummary;
   });
 
-  return { getStandings, recompute };
+  /**
+   * Season-progress time-series for the standings chart: one line per active
+   * member, each a list of {date, rank, score} points from fantasy_standings_history
+   * (populated by recompute going forward + the one-off backfill). Sorted best→worst
+   * by the member's LATEST rank so the chart's top-N cap keeps the leaders.
+   */
+  const getStandingsHistory = Effect.fn('StandingsService.getStandingsHistory')(function* (
+    slug: string
+  ) {
+    const leagues = yield* sql<{ league_id: string }>`
+      SELECT league_id FROM fantasy_leagues WHERE slug = ${slug}
+    `.pipe(Effect.orDie);
+    const league = leagues[0];
+    if (!league) return yield* Effect.fail(new NotFound({ message: 'league' }));
+
+    const rows = yield* sql<{
+      user_id: string;
+      as_of_date: string;
+      rank: number | null;
+      total_score: number;
+      corps_name: string | null;
+      corps_color: string | null;
+      user_name: string | null;
+    }>`
+      SELECT h.user_id, h.as_of_date, h.rank, h.total_score,
+             m.corps_name, m.corps_color, u.name AS user_name
+      FROM fantasy_standings_history h
+      JOIN fantasy_members m ON m.league_id = h.league_id AND m.user_id = h.user_id
+      LEFT JOIN user u ON u.id = h.user_id
+      WHERE h.league_id = ${league.league_id} AND m.status = 'active'
+      ORDER BY h.as_of_date
+    `.pipe(Effect.orDie);
+
+    const dateSet = new Set<string>();
+    const byUser = new Map<
+      string,
+      {
+        userId: string;
+        name: string;
+        color: string | null;
+        points: Array<{ date: string; rank: number; score: number }>;
+      }
+    >();
+    for (const r of rows) {
+      dateSet.add(r.as_of_date);
+      let series = byUser.get(r.user_id);
+      if (!series) {
+        series = {
+          userId: r.user_id,
+          name: strOrNull(r.corps_name) ?? strOrNull(r.user_name) ?? 'Player',
+          color: strOrNull(r.corps_color),
+          points: [],
+        };
+        byUser.set(r.user_id, series);
+      }
+      series.points.push({
+        date: r.as_of_date,
+        rank: r.rank == null ? 0 : Number(r.rank),
+        score: Number(r.total_score),
+      });
+    }
+
+    // Latest-rank sort so the chart's top-N cap keeps the current leaders.
+    const series = [...byUser.values()].sort((a, b) => {
+      const ar = a.points[a.points.length - 1]?.rank ?? Infinity;
+      const br = b.points[b.points.length - 1]?.rank ?? Infinity;
+      return ar - br;
+    });
+
+    return { dates: [...dateSet].sort(), series };
+  });
+
+  return { getStandings, recompute, getStandingsHistory };
 });
 
 export class StandingsService extends Context.Service<
