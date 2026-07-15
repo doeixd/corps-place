@@ -85,6 +85,17 @@ const missingReadModelData = (error: HomeShowsDataError) => {
   return details.includes('no such table') || details.includes('no such column');
 };
 
+// 'YYYY-MM-DD' for `d` in US Eastern (DCI is US-based). The server runs UTC, so
+// after ~8pm ET a show dated today in local time is already "tomorrow" in UTC —
+// anchoring the "today" filter to Eastern keeps today's shows in the section.
+const easternDay = (d: Date): string =>
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(d);
+
 const makeHomeShowsService = Effect.gen(function* () {
   const weekendShows = Effect.fn('HomeShowsService.weekendShows')(function* (
     season: string,
@@ -95,7 +106,15 @@ const makeHomeShowsService = Effect.gen(function* () {
         readModelEnabled() && missingReadModelData(error) ? Effect.succeed([]) : Effect.fail(error)
       )
     );
-    const chosen = chooseWeekend(buckets, now);
+    // "Shows coming up" = today → the upcoming weekend. Drop already-past shows
+    // (incl. earlier days of the current week) so the window starts at today, and
+    // drop weekends left with nothing. Anchored to Eastern (see easternDay).
+    const anchorDay = easternDay(now);
+    const anchorNow = new Date(`${anchorDay}T12:00:00.000Z`);
+    const upcoming = buckets
+      .map((b) => ({ ...b, shows: b.shows.filter((s) => s.startDate.slice(0, 10) >= anchorDay) }))
+      .filter((b) => b.shows.length > 0);
+    const chosen = chooseWeekend(upcoming, anchorNow);
     if (!chosen) return null as FeaturedWeekend;
     return {
       weekendStart: chosen.bucket.weekendStart,

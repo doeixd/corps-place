@@ -285,6 +285,24 @@ const weekendEndFor = (weekendStart: string): string =>
   toYmd(new Date(new Date(`${weekendStart}T00:00:00.000Z`).getTime() + 2 * DAY_MS));
 
 /**
+ * The Fri–Sun weekend a date belongs to for the "shows coming up" feature —
+ * like {@link weekendStartFor}, but Mon–Thu map FORWARD to that same week's
+ * upcoming Friday. This groups midweek shows with the weekend they lead into, so
+ * the section spans today → the upcoming weekend instead of only Fri–Sun. The
+ * request-time `today` filter (in home-shows.ts) then trims already-past shows.
+ */
+export const featureWeekendStartFor = (dateISO: string): string | null => {
+  const ymd = dateISO.slice(0, 10);
+  const d = new Date(`${ymd}T00:00:00.000Z`);
+  if (Number.isNaN(d.getTime())) return null;
+  const dow = d.getUTCDay(); // Sun=0 … Fri=5, Sat=6
+  // Days to SUBTRACT to land on that week's Friday. Fri 0, Sat 1, Sun 2; Mon–Thu
+  // are negative (Friday is ahead of them): Mon −4 … Thu −1.
+  const offset = dow === 5 ? 0 : dow === 6 ? 1 : dow === 0 ? 2 : dow - 5;
+  return toYmd(new Date(d.getTime() - offset * DAY_MS));
+};
+
+/**
  * Pick the weekend to feature for `now`: the current weekend if it has shows,
  * otherwise the next upcoming weekend that has shows (rolls past empty/pre-season
  * gaps). Returns null when the season is over (no weekend ends on/after today).
@@ -335,8 +353,11 @@ const lineupForShow = async (db: Client, slug: string): Promise<WeekendShowLineu
 };
 
 /**
- * All Fri–Sun weekend buckets of a season, each with its shows + lineups.
- * Weekday-only events are intentionally excluded (they're not "this weekend").
+ * Weekend buckets of a season, each with its shows + lineups. Midweek (Mon–Thu)
+ * events are grouped with their week's UPCOMING weekend (via
+ * featureWeekendStartFor), so the home "shows coming up" section can span today →
+ * the weekend rather than only Fri–Sun. Buckets stay non-time-relative (every
+ * weekend is emitted); the request-time `today` filter picks the window.
  */
 export const buildHomeWeekendShows = async (
   db: Client,
@@ -376,10 +397,10 @@ export const buildHomeWeekendShows = async (
   });
   const rows = result.rows as unknown as EventVenueRow[];
 
-  // Group into weekend buckets; skip weekday-only events.
+  // Group into weekend buckets — midweek shows join their week's upcoming weekend.
   const byWeekend = new Map<string, EventVenueRow[]>();
   for (const row of rows) {
-    const ws = weekendStartFor(row.start_date);
+    const ws = featureWeekendStartFor(row.start_date);
     if (!ws) continue;
     const list = byWeekend.get(ws) ?? [];
     list.push(row);

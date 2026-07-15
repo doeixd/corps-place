@@ -210,7 +210,16 @@ export function WeekendShowsCarousel({ weekend }: { weekend: FeaturedWeekend }) 
   if (!weekend || weekend.shows.length === 0) return null;
 
   const heading = weekend.isCurrentWeekend ? 'Shows this weekend' : 'Shows coming up';
-  const dateRange = `${formatEventDate(weekend.weekendStart)} – ${formatEventDate(weekend.weekendEnd)}`;
+  // Range spans the ACTUAL shows in the window (today → weekend), not the fixed
+  // Fri–Sun bucket — so midweek shows are reflected. Collapses to one date when
+  // all shows fall on the same day.
+  const showDays = weekend.shows.map((s) => s.startDate.slice(0, 10)).sort();
+  const firstDay = showDays[0]!;
+  const lastDay = showDays[showDays.length - 1]!;
+  const dateRange =
+    firstDay === lastDay
+      ? formatEventDate(firstDay)
+      : `${formatEventDate(firstDay)} – ${formatEventDate(lastDay)}`;
 
   // Derived during render (no effect): order + distances follow the geo state.
   const ordered =
