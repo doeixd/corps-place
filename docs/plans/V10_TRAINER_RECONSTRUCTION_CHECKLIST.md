@@ -82,9 +82,14 @@ Replay chronologically:
 6. `04214_2026-05-26T11-35-26.864Z.patch`
 
 - [ ] Parse every preserved `final2` argument without relying on a default.
-- [ ] Pin phase ends 10/40, patience 6, coverage 0.9, delta gain 0.002,
+- [x] Pin phase ends 10/40, patience 6, coverage 0.9, delta gain 0.002,
   phase-A minimum 6, and phase-B minimum 18.
 - [ ] Match the preserved startup `Curriculum:` values.
+
+Progress note (2026-07-15): `v95Curriculum.ts` now contains the frozen final2
+configuration and a pure transition state machine. `npm run test:v95-curriculum`
+pins max-epoch A→B at 10, B→C at 40, plateau patience/min-age behavior, and the
+coverage gate. Trainer integration remains part of section 4.
 
 ### 4. Auto-curriculum transition behavior
 
@@ -97,7 +102,7 @@ Replay chronologically:
 5. `02795_2026-05-22T19-22-02.692Z.patch`
 
 - [ ] Restore `maybeAdvanceCurriculum` and monitor reset behavior.
-- [ ] Unit-test age, coverage, improvement, stall, and max-epoch gates.
+- [x] Unit-test age, coverage, improvement, stall, and max-epoch gates.
 - [ ] Reproduce A→B at epoch 10 and B→C at epoch 40 (`max_epoch`).
 - [ ] Reproduce the fields and decisions in preserved `[curriculum]` lines.
 

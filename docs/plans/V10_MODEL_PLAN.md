@@ -478,6 +478,12 @@ pipeline state.
   edge cases. The trainer's reconstructed evaluator retains show-grouped batching,
   residual-centered interval scaling, raw/calibrated summaries, and caption
   fingerprint diagnostics.
+- The exact anchor parses the recovered curriculum arguments but its
+  `V9LossScheduler` still hard-codes the older 40/120 phase boundaries; parsed
+  10/40 settings are therefore inert until scheduler integration is restored.
+  Do not mistake argument presence for behavioral parity. The frozen transition
+  policy now lives in `v95Curriculum.ts`, with max-epoch, min-age, plateau,
+  improvement, and coverage gates pinned by `npm run test:v95-curriculum`.
 
 ## Immediate next task
 

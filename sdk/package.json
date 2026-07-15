@@ -16,6 +16,7 @@
     "build": "tsc -p tsconfig.json",
     "check": "tsc --noEmit -p tsconfig.json",
     "replay:v10-baseline": "tsx scripts/replayFinal2Baseline.ts",
+    "test:v95-curriculum": "tsx scripts/testV95Curriculum.ts",
     "test:v95-metrics": "tsx scripts/testV95Metrics.ts",
     "train:v95": "tsx src/training/trainModelV95.ts",
     "validate:v10-baseline": "tsx scripts/validateFinal2Baseline.ts",

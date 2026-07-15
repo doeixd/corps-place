@@ -54,7 +54,7 @@ const TOTAL_STATIC_DIM = RAW_STATIC_DIM + TREND_DIM + CONTEXT_DIM;
 
 const BATCH_SIZE = 128;
 const EPOCHS = 160;
-const EARLY_STOPPING_PATIENCE = 45;
+const EARLY_STOPPING_PATIENCE = 60;
 const REDUCE_LR_PATIENCE = 12;
 const PADDING_INDEX = 3;
 // V9: WIDTH_FLOOR_PTS maintained, but logic inside loss function tightened
