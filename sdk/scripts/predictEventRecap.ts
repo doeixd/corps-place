@@ -1268,6 +1268,15 @@ const preseasonComparableWeight = (
   return Math.max(0.2, Math.min(0.55, progressWeight - distancePenalty));
 };
 
+// While in-season history is THIN, the prior-season comparable (a stable "where
+// this corps usually is at this point") still carries signal: one observed score
+// is noisy, and established corps ramp steeply early — anchoring purely to it
+// under-predicts them (Carolina Crown: 1 show at 82.1, actually 87.2). Revert
+// toward the comparable, decaying out as real shows accumulate. Walk-forward
+// validated on 2026 (thin-history MAE 1.50 → 1.32; best at .50/.30/.15).
+const comparableRevertWeight = (sameSeasonShows: number): number =>
+  sameSeasonShows === 1 ? 0.5 : sameSeasonShows === 2 ? 0.3 : sameSeasonShows === 3 ? 0.15 : 0;
+
 const blendCaps = (
   modelCaps: Record<Caption, number>,
   baselineCaps: Record<Caption, number>,
@@ -1771,6 +1780,18 @@ async function main() {
         inSeasonTargetTotal =
           persistWeight * sameSeason.lastTotal + (1 - persistWeight) * modelBlend;
       }
+      // Thin-history revert-to-comparable: pull a corps with only 1–3 in-season
+      // shows back toward its established prior-season level (see
+      // comparableRevertWeight). Applied before the season-bias nudge below.
+      const comparableRevert =
+        inSeasonTargetTotal != null && priorSeasonComparable
+          ? comparableRevertWeight(corpsSameSeasonShows)
+          : 0;
+      if (comparableRevert > 0 && inSeasonTargetTotal != null && priorSeasonComparable) {
+        inSeasonTargetTotal =
+          inSeasonTargetTotal * (1 - comparableRevert) +
+          priorSeasonComparable.total * comparableRevert;
+      }
       const pointCapsTotal = totalFromV9Captions(pointCaps);
       let caps =
         preseasonTargetTotal != null
@@ -1866,6 +1887,9 @@ async function main() {
         prior_season_comparable_percent_through: priorSeasonComparable?.percentThrough,
         prior_season_comparable_competition: priorSeasonComparable?.competitionSlug,
         prior_season_comparable_weight: Number(comparableWeight.toFixed(3)),
+        // Thin-history revert-to-comparable weight applied to the in-season
+        // target (0 for preseason/0-show corps, which use comparableWeight above).
+        comparable_revert_weight: Number(comparableRevert.toFixed(3)),
         preseason_target_total:
           preseasonTargetTotal == null ? undefined : Number(preseasonTargetTotal.toFixed(3)),
         caption_shape_total: Number(pointCapsTotal.toFixed(3)),
