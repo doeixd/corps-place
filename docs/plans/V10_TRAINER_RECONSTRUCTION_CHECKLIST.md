@@ -223,13 +223,13 @@ identity dropout, warmup endpoints, plateau multiplication, and minimum LR.
 - [x] Focused TypeScript check passes with no dangling symbols.
 - [x] No V9 output path is overwritten by default.
 - [x] `npm run validate:v10-baseline` remains green.
-- [ ] Dry-run graph matches manifest dimensions/layers.
+- [x] Dry-run graph matches manifest dimensions/layers.
 
 ### Behavioral dry run
 
 - [x] Startup arguments, capacity, and curriculum match preserved evidence.
-- [ ] A fixture run exercises all phases without NaNs.
-- [ ] Curriculum/checkpoint tests pass and report contains all final2 slices.
+- [x] A fixture run exercises all phases without NaNs.
+- [x] Curriculum/checkpoint tests pass and report contains all final2 slices.
 
 ### Full V9.5
 
@@ -244,6 +244,14 @@ The `final2` reproduction contract verifies its SHA-256 before TensorFlow starts
 then asserts exact row/division and train/validation/test show populations. The
 numeric two-seed acceptance bands are predeclared in `V10_MODEL_PLAN.md` under
 Milestone 1; they were written before running any V9.5 replica.
+
+Native gates were run in WSL Ubuntu with Node 20.20.0 and tfjs-node's TensorFlow
+backend. The zero-epoch smoke graph had 1,048,639 parameters, exactly matching
+the sum of final2's weight shapes, and completed model saving, calibration, and
+all populated evaluation modes. A three-epoch fixture used phase ends 1/2,
+16 rows/samples, and batch size 8; it ran A→B→C, produced finite losses/metrics,
+saved every checkpoint family, promoted composite weights, and completed the
+model card/report path. These are runtime smoke gates, not quality results.
 
 ## Traps
 

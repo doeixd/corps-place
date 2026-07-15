@@ -572,6 +572,21 @@ pipeline state.
   loaded IDs before construction, and records both frozen contract hashes and
   local-file hashes in its card. V10 must generate matched, versioned maps and use
   `max(index)+1`; never infer embedding size from object key count or a sample.
+- Native verification uses the separate WSL checkout
+  `/root/corps-place-v10` on branch `codex/v10-model-reconstruction`, with Node
+  20.20.0 installed at `/opt/node-v20.20.0-linux-x64`. This avoids the Windows
+  checkout's platform-mixed native `node_modules`. The frozen DB can be read from
+  `/mnt/c/Users/Patrick/AppData/Local/Programs/Syncthing/corps-place/sdk/dci-relational-scrape.db`;
+  copy it to WSL's native filesystem before long replicas for better I/O, then
+  rely on the reproduction-contract hash to prove the copy is exact.
+- The corrected WSL zero-epoch smoke graph contains exactly 1,048,639 trainable
+  parameters, equal to the sum of final2's preserved weight shapes. It completed
+  saving, calibration, and every non-empty final2 evaluation population. The
+  compressed three-epoch fixture (phase ends 1/2, 16 samples, batch 8) exercised
+  phases A, B, and C with finite values; saved delta, loss, total, composite, and
+  A/B/C phase checkpoints; selected composite final weights; and emitted the full
+  report/model-card path. Do not interpret its deliberately tiny-data metrics as
+  model quality.
 
 ## V10 improvement hypothesis log
 
@@ -616,8 +631,7 @@ decision.
 
 ## Immediate next task
 
-Finish Milestone 1's connected evaluation contract: restore the show-grouped
-date-forward split, lineup-context masking, complete sliced raw/calibrated report,
-artifact/checkpoint provenance, and model-card serialization. Pin those outputs
-against final2 before running the frozen 7,321-row V9.5 experiment. Do not start
-field-pace or thin-history experiments until the V9.5 baseline gate passes.
+Run the two full frozen-data V9.5 replicas (seeds 42 and 43) in the native WSL
+environment, summarize their mean/range against the predeclared tolerances, and
+resolve every failure before closing Milestone 1. Do not start field-pace or
+thin-history experiments until that V9.5 baseline gate passes.
