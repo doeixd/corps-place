@@ -183,6 +183,25 @@ validation, forecast, coverage, and history-slice metrics must land inside
 predeclared tolerances. If they do not, stop here; do not attribute the difference
 to a V10 feature.
 
+Predeclared V9.5 replica tolerances (set before any reconstructed-trainer result):
+
+- Run seeds 42 and 43. Both must complete without NaNs and select a real composite
+  checkpoint; report each result plus the two-seed mean and range.
+- Validation recap MAE: each seed no worse than final2 `0.34632 + 0.030`; two-seed
+  mean no worse than `0.34632 + 0.020`.
+- Validation total MAE: each seed no worse than final2 `0.96426 + 0.120`; two-seed
+  mean no worse than `0.96426 + 0.080`.
+- Calibrated validation coverage must be in `[0.78, 0.87]`; raw coverage must not
+  fall below `0.93`. Compare interval width to final2, but do not accept narrower
+  intervals as an improvement when coverage misses the band.
+- Established-history total MAE must be no worse than final2 `0.84510 + 0.100`.
+  Sparse-history and zero-history total MAE must each be no worse than their
+  final2 values (`1.83824` and `3.21821`) by more than `0.300`; treat these small
+  slices as guardrails rather than optimization targets.
+- The best production-composite score must be at most final2
+  `0.50257 + 0.050`. Any failed bound blocks V10 feature work until explained and
+  either fixed or explicitly re-baselined with evidence.
+
 ## Milestone 2 — Version and clean the V10 training data
 
 Create a new builder/table (for example `ml_sequence_rows_v10_subcaption`) and a
@@ -535,6 +554,13 @@ pipeline state.
   historical capacity/curriculum summaries used by the trainer. When adding a V10
   option, extend this explicit contract instead of adding an untested parser
   default.
+- The canonical frozen source DB is now byte-pinned in the baseline manifest:
+  `sdk/dci-relational-scrape.db`, 3,621,408,768 bytes, SHA-256
+  `59fc975037145a0450276bdd479a48d6d8c82e259ec8b3b9e2cff88f0f8303df`.
+  Run `npm run train:v95:final2`; its `--reproduction-contract final2` gate hashes
+  the DB before TensorFlow starts and then requires the exact 7,321-row division,
+  split, and show counts. This deliberately fails rather than silently training
+  against the mutable 7,470-row DB.
 
 ## V10 improvement hypothesis log
 

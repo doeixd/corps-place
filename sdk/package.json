@@ -23,6 +23,7 @@
     "test:v95-masking": "tsx scripts/testV95FeatureMasking.ts",
     "test:v95-metrics": "tsx scripts/testV95Metrics.ts",
     "train:v95": "tsx src/training/trainModelV95.ts",
+    "train:v95:final2": "tsx src/training/trainModelV95.ts --db ./dci-relational-scrape.db --reproduction-contract final2 --trial-id v95_final2_reproduction",
     "validate:v10-baseline": "tsx scripts/validateFinal2Baseline.ts",
     "validate:v95-architecture": "tsx scripts/validateV95Architecture.ts",
     "push:data": "tsx scripts/pushData.ts",

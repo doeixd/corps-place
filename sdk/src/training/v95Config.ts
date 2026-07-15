@@ -12,6 +12,7 @@ export const parseV95Args = (
     dbPath: get("--db", "./dci-relational.db") || "./dci-relational.db",
     modelDir: get("--model-dir", "./models/v95_final2_reconstruction") || "./models/v95_final2_reconstruction",
     normPath: get("--norm-path", "./results/v95-final2-reconstruction-target-norm.json") || "./results/v95-final2-reconstruction-target-norm.json",
+    reproductionContract: get("--reproduction-contract"),
     epochs: Number(get("--epochs", "160")),
     batchSize: Number(get("--batch", "128")),
     maxRows: Number(get("--maxRows", "")) || undefined,

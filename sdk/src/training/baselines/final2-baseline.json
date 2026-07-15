@@ -21,6 +21,11 @@
   "data": {
     "table": "ml_sequence_rows_v9_subcaption",
     "rows": 7321,
+    "source_database": {
+      "canonical_path": "dci-relational-scrape.db",
+      "bytes": 3621408768,
+      "sha256": "59fc975037145a0450276bdd479a48d6d8c82e259ec8b3b9e2cff88f0f8303df"
+    },
     "divisions": {
       "World Class": 5086,
       "Open Class": 2235

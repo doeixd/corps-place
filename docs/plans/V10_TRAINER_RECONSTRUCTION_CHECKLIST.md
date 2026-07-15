@@ -227,11 +227,17 @@ identity dropout, warmup endpoints, plateau multiplication, and minimum LR.
 
 ### Full V9.5
 
-- [ ] Select the frozen 7,321-row cutoff explicitly; do not silently use the
+- [x] Select the frozen 7,321-row cutoff explicitly; do not silently use the
   current 7,470 rows.
-- [ ] Define tolerances before seeing results.
+- [x] Define tolerances before seeing results.
 - [ ] Run at least two seeds and compare mean/spread with the manifest.
 - [ ] Resolve any out-of-tolerance result before adding V10 features.
+
+`npm run train:v95:final2` selects the 3,621,408,768-byte frozen DB explicitly.
+The `final2` reproduction contract verifies its SHA-256 before TensorFlow starts,
+then asserts exact row/division and train/validation/test show populations. The
+numeric two-seed acceptance bands are predeclared in `V10_MODEL_PLAN.md` under
+Milestone 1; they were written before running any V9.5 replica.
 
 ## Traps
 

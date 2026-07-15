@@ -217,6 +217,76 @@ function safeReferenceCurveVersion() {
   }
 }
 
+async function verifyFinal2SourceDatabase(dbPath: string) {
+  const baselinePath = path.join("src", "training", "baselines", "final2-baseline.json");
+  const baseline = JSON.parse(fs.readFileSync(baselinePath, "utf8")) as {
+    data: { source_database: { bytes: number; sha256: string } };
+  };
+  const expected = baseline.data.source_database;
+  const actualBytes = fs.statSync(dbPath).size;
+  if (actualBytes !== expected.bytes) {
+    throw new Error(
+      `final2 source DB size mismatch: expected ${expected.bytes}, received ${actualBytes} (${dbPath})`,
+    );
+  }
+  const hash = crypto.createHash("sha256");
+  await new Promise<void>((resolve, reject) => {
+    const stream = fs.createReadStream(dbPath);
+    stream.on("data", (chunk) => hash.update(chunk));
+    stream.on("error", reject);
+    stream.on("end", resolve);
+  });
+  const actualHash = hash.digest("hex");
+  if (actualHash !== expected.sha256) {
+    throw new Error(
+      `final2 source DB hash mismatch: expected ${expected.sha256}, received ${actualHash}`,
+    );
+  }
+  console.log(`final2 source DB verified: ${actualBytes} bytes, sha256=${actualHash}`);
+}
+
+function verifyFinal2Population(
+  loadedRows: DataRow[],
+  trainRows: DataRow[],
+  valRows: DataRow[],
+  testRows: DataRow[],
+) {
+  const divisionCounts = Object.fromEntries(
+    [...new Set(loadedRows.map((row) => row.division))].map((division) => [
+      division,
+      loadedRows.filter((row) => row.division === division).length,
+    ]),
+  );
+  const actual = {
+    loaded: loadedRows.length,
+    train: trainRows.length,
+    validation: valRows.length,
+    test: testRows.length,
+    trainShows: new Set(trainRows.map((row) => row.showKey)).size,
+    validationShows: new Set(valRows.map((row) => row.showKey)).size,
+    testShows: new Set(testRows.map((row) => row.showKey)).size,
+    world: divisionCounts["World Class"] ?? 0,
+    open: divisionCounts["Open Class"] ?? 0,
+  };
+  const expected = {
+    loaded: 7321,
+    train: 6906,
+    validation: 363,
+    test: 52,
+    trainShows: 816,
+    validationShows: 44,
+    testShows: 4,
+    world: 5086,
+    open: 2235,
+  };
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error(
+      `final2 population mismatch: expected ${JSON.stringify(expected)}, received ${JSON.stringify(actual)}`,
+    );
+  }
+  console.log(`final2 population verified: ${JSON.stringify(actual)}`);
+}
+
 function evaluateSamples(
   model: tf.LayersModel,
   samples: Sample[],
@@ -1851,6 +1921,18 @@ function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: nu
 
 async function main() {
   const args = parseArgs();
+  if (args.reproductionContract && args.reproductionContract !== "final2") {
+    throw new Error(`Unknown reproduction contract '${args.reproductionContract}'.`);
+  }
+  if (args.reproductionContract === "final2") {
+    if (args.maxRows !== undefined || args.divisionFilter.toLowerCase() !== "all") {
+      throw new Error("final2 reproduction forbids --maxRows and division filtering");
+    }
+    if (args.valMode !== "date-forward" || args.valSplit !== 0.05 || args.valDateCutoff) {
+      throw new Error("final2 reproduction requires date-forward validation at valSplit=0.05");
+    }
+    await verifyFinal2SourceDatabase(args.dbPath);
+  }
   await tf.setBackend("tensorflow");
   const seedrandom = (tf.util as unknown as { seedrandom?: (seed: string) => void }).seedrandom;
   if (seedrandom) {
@@ -1911,6 +1993,9 @@ async function main() {
     `Validation split (${resolvedMode}) grouped by show/date: ` +
     `${trainRows.length} train rows, ${valRows.length} validation rows.`,
   );
+  if (args.reproductionContract === "final2") {
+    verifyFinal2Population(loadedDataRows, trainRows, valRows, testRows);
+  }
 
   const baselineScope = args.baselineScope.toLowerCase();
   const baselineHistoryRows = baselineScope === "global" ? allDataRows : trainRows;
