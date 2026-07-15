@@ -484,6 +484,12 @@ pipeline state.
   Do not mistake argument presence for behavioral parity. The frozen transition
   policy now lives in `v95Curriculum.ts`, with max-epoch, min-age, plateau,
   improvement, and coverage gates pinned by `npm run test:v95-curriculum`.
+- The curriculum transition checklist also omitted the scheduler/config and
+  epoch-log patches that make `maybeAdvanceCurriculum` operative. The corrected
+  chain now includes ten patches. V9.5's scheduler consumes the configured
+  boundaries and scale ramps, the sequence provider switches from 5 to 15 steps
+  at the actual A→B boundary, Open Class sampling uses the configured 0.35 share,
+  and transitions reset monitor patience before LR reduction/early stopping.
 
 ## Immediate next task
 

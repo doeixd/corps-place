@@ -36,6 +36,12 @@ import {
   summarizeBucket,
   type MetricBucket,
 } from "./v95Metrics.js";
+import {
+  initialCurriculumState,
+  stepCurriculum,
+  type CurriculumConfig as AutoCurriculumConfig,
+  type CurriculumTransition,
+} from "./v95Curriculum.js";
 
 const DB_PATH = "./dci-relational.db";
 const MODEL_DIR = "./models/v95_final2_reconstruction";
@@ -958,10 +964,46 @@ type TargetStats = {
   recapWeights: number[];
 };
 
+type LossSchedulerConfig = {
+  phaseAEnd: number;
+  phaseBEnd: number;
+  phaseCRamp: number;
+  corpsScaleStart: number;
+  corpsScaleRamp: number;
+  judgeScaleRamp: number;
+  identityDropoutFloor: number;
+};
+
 class V9LossScheduler {
+  constructor(private config: LossSchedulerConfig) {}
+
+  getPhase(epoch: number) {
+    if (epoch < this.getPhaseAEnd()) return "A" as const;
+    if (epoch < this.getPhaseBEnd()) return "B" as const;
+    return "C" as const;
+  }
+
+  getPhaseAEnd() {
+    return Math.max(1, this.config.phaseAEnd);
+  }
+
+  getPhaseBEnd() {
+    return Math.max(this.getPhaseAEnd() + 1, this.config.phaseBEnd);
+  }
+
+  setPhaseAEnd(epoch: number) {
+    this.config.phaseAEnd = Math.max(1, Math.floor(epoch));
+    this.config.phaseBEnd = Math.max(this.config.phaseBEnd, this.config.phaseAEnd + 1);
+  }
+
+  setPhaseBEnd(epoch: number) {
+    this.config.phaseBEnd = Math.max(this.getPhaseAEnd() + 1, Math.floor(epoch));
+  }
+
   getWeights(epoch: number) {
-    // Phase A: Baseline Correction (Epochs 0-40)
-    if (epoch < 40) {
+    const phaseAEnd = this.getPhaseAEnd();
+    const phaseBEnd = this.getPhaseBEnd();
+    if (epoch < phaseAEnd) {
       return {
         totalWeight: 0.05,
         recapWeight: 1.0,
@@ -973,9 +1015,8 @@ class V9LossScheduler {
       };
     }
 
-    // Phase B: Structure + Median Deltas (Epochs 40-120)
-    if (epoch < 120) {
-      const t = (epoch - 40) / 80;
+    if (epoch < phaseBEnd) {
+      const t = (epoch - phaseAEnd) / Math.max(1, phaseBEnd - phaseAEnd);
       return {
         totalWeight: 0.00,
         recapWeight: 1.0 - 0.7 * t, // 1.0 -> 0.3
@@ -988,34 +1029,43 @@ class V9LossScheduler {
     }
 
 
-    // Phase C: The Squeeze (Epochs 120+)
-    // FIXED: Prioritize accuracy (deltaWeight) AND force interval tightening (quantileWeight)
-    const t = Math.min(1.0, (epoch - 120) / 680);
-    const idDrop = (epoch < 100) ? 1.0 : Math.max(0.05, 1.0 - 0.95 * ((epoch - 100) / 200));
+    const t = Math.min(1, (epoch - phaseBEnd) / Math.max(1, this.config.phaseCRamp));
+    const identityDropStart = phaseBEnd + Math.floor(this.config.phaseCRamp * 0.5);
+    const identityDrop = epoch < identityDropStart
+      ? 1
+      : Math.max(
+          this.config.identityDropoutFloor,
+          1 - (1 - this.config.identityDropoutFloor) *
+            ((epoch - identityDropStart) / Math.max(1, this.config.phaseCRamp)),
+        );
 
     return {
-      totalWeight: 0.10,
-      recapWeight: 0.05,
-      deltaWeight: 10.0,
+      totalWeight: 0.02 + 0.08 * t,
+      recapWeight: 0.3 - 0.25 * t,
+      deltaWeight: 1 + 8.75 * t,
       categoryWeight: 0.05,
-      quantileWeight: 0.10 + 0.90 * t, // SQUEEZE: Ramp from 0.1 to 1.0 (prev was ~0.07)
+      quantileWeight: 0.1 + t,
       consistencyWeight: 0.0,
-      identityDropoutRate: idDrop
+      identityDropoutRate: identityDrop,
     };
   }
 
   getScales(epoch: number) {
-    const judgeBias = Math.min(1.0, epoch / 120);
-    const corps = epoch < 80 ? 0 : Math.min(1.0, (epoch - 80) / 100);
+    const judgeBias = Math.min(1, epoch / Math.max(1, this.config.judgeScaleRamp));
+    const corps = epoch < this.config.corpsScaleStart
+      ? 0
+      : Math.min(1, (epoch - this.config.corpsScaleStart) / Math.max(1, this.config.corpsScaleRamp));
     return { judgeBias, corps };
   }
 
   getWidthFloorWeight(epoch: number, startWeight: number, endWeight: number): number {
-    if (epoch < 40) {
+    const phaseAEnd = this.getPhaseAEnd();
+    const phaseBEnd = this.getPhaseBEnd();
+    if (epoch < phaseAEnd) {
       return startWeight;
     }
-    if (epoch < 120) {
-      const t = (epoch - 40) / 80;
+    if (epoch < phaseBEnd) {
+      const t = (epoch - phaseAEnd) / Math.max(1, phaseBEnd - phaseAEnd);
       const smooth = t * t * (3 - 2 * t);
       return startWeight + (endWeight - startWeight) * smooth;
     }
@@ -1033,7 +1083,9 @@ class SequenceDataProviderV9 {
   constructor(
     private rows: DataRow[],
     private epoch: number,
-    private batchSize: number = BATCH_SIZE
+    private batchSize: number = BATCH_SIZE,
+    private longSequenceStartEpoch: number = CURRICULUM_PHASE_A_END,
+    private openSampleFraction: number = OPEN_CLASS_SAMPLE_FRACTION,
   ) {
     this.worldRows = this.rows.filter(r => r.division === "World Class");
     this.openRows = this.rows.filter(r => r.division === "Open Class");
@@ -1046,8 +1098,12 @@ class SequenceDataProviderV9 {
     this.epoch = epoch;
   }
 
+  setLongSequenceStartEpoch(epoch: number) {
+    this.longSequenceStartEpoch = epoch;
+  }
+
   getSequenceLength(): number {
-    if (this.epoch < 40) return 5;
+    if (this.epoch < this.longSequenceStartEpoch) return 5;
     return 15;
   }
 
@@ -1056,7 +1112,7 @@ class SequenceDataProviderV9 {
       return this.flattenShows(this.sampleShows(this.allShows, count, seed));
     }
 
-    const openCount = Math.floor(count * 0.25);
+    const openCount = Math.floor(count * Math.max(0, Math.min(0.5, this.openSampleFraction)));
     const worldCount = count - openCount;
 
     const worldSample = this.sampleShows(this.worldShows, worldCount, seed);
@@ -2468,8 +2524,43 @@ async function main() {
   let currentLR = args.learningRate;
   let epochsSinceImprovement = 0;
 
-  const scheduler = new V9LossScheduler();
-  const provider = new SequenceDataProviderV9(trainSubset, 0, args.batchSize);
+  const scheduler = new V9LossScheduler({
+    phaseAEnd: args.curriculumPhaseAEnd,
+    phaseBEnd: args.curriculumPhaseBEnd,
+    phaseCRamp: args.curriculumPhaseCRamp,
+    corpsScaleStart: args.corpsScaleStart,
+    corpsScaleRamp: args.corpsScaleRamp,
+    judgeScaleRamp: args.judgeScaleRamp,
+    identityDropoutFloor: args.identityDropoutFloor,
+  });
+  const provider = new SequenceDataProviderV9(
+    trainSubset,
+    args.startEpoch,
+    args.batchSize,
+    scheduler.getPhaseAEnd(),
+    args.openSampleFraction,
+  );
+  const autoCurriculumConfig: AutoCurriculumConfig = {
+    phaseAEnd: scheduler.getPhaseAEnd(),
+    phaseBEnd: scheduler.getPhaseBEnd(),
+    auto: args.autoCurriculum,
+    patience: args.autoCurriculumPatience,
+    minCoverage: args.autoCurriculumMinCoverage,
+    minDeltaGain: args.autoCurriculumMinDeltaGain,
+    phaseAMin: args.autoCurriculumPhaseAMin,
+    phaseBMin: args.autoCurriculumPhaseBMin,
+  };
+  let curriculumState = initialCurriculumState(autoCurriculumConfig, args.startEpoch);
+  const curriculumTransitions: CurriculumTransition[] = [];
+
+  console.log(
+    `Curriculum: phaseAEnd=${scheduler.getPhaseAEnd()}, phaseBEnd=${scheduler.getPhaseBEnd()}, ` +
+    `phaseCRamp=${args.curriculumPhaseCRamp}, judgeScaleRamp=${args.judgeScaleRamp}, ` +
+    `corpsScaleStart=${args.corpsScaleStart}, corpsScaleRamp=${args.corpsScaleRamp}, ` +
+    `auto=${args.autoCurriculum}, autoPatience=${args.autoCurriculumPatience}, ` +
+    `autoMinCoverage=${args.autoCurriculumMinCoverage}, ` +
+    `autoMinDeltaGain=${args.autoCurriculumMinDeltaGain}`,
+  );
 
 
   const cachedValSamples = buildSamples(valSubset, stats, 15, 0.0, args.seed + 999, 0, 0, 0);
@@ -2494,6 +2585,7 @@ async function main() {
 
   for (let epoch = args.startEpoch; epoch < args.startEpoch + args.epochs; epoch++) {
     provider.setEpoch(epoch);
+    const phaseAtEpochStart = scheduler.getPhase(epoch);
     const weights = scheduler.getWeights(epoch);
     const scales = scheduler.getScales(epoch);
     if (args.noJudgeBias) scales.judgeBias = 0;
@@ -2515,7 +2607,13 @@ async function main() {
     const dropRate = guardrailCheck(epochSamples, weights.identityDropoutRate);
 
     const currentWidthFloorWeight = scheduler.getWidthFloorWeight(epoch, args.widthFloorStart, args.widthFloorEnd);
-    console.log(`\nEpoch ${epoch}: Weights ${JSON.stringify(weights)}, Scales ${JSON.stringify(scales)}, SeqLen ${seqLen}, ID_Drop ${dropRate.toFixed(3)}, WFW ${currentWidthFloorWeight.toFixed(3)} `);
+    console.log(
+      `\nEpoch ${epoch}: Phase ${phaseAtEpochStart} ` +
+      `(A_end=${scheduler.getPhaseAEnd()}, B_end=${scheduler.getPhaseBEnd()}, ` +
+      `C_ramp=${args.curriculumPhaseCRamp}) Weights ${JSON.stringify(weights)}, ` +
+      `Scales ${JSON.stringify(scales)}, SeqLen ${seqLen}, ID_Drop ${dropRate.toFixed(3)}, ` +
+      `WFW ${currentWidthFloorWeight.toFixed(3)} `,
+    );
 
     const warmup = Math.max(0, Math.min(args.warmupEpochs, args.epochs));
     let lr: number;
@@ -2984,6 +3082,57 @@ async function main() {
     }
 
     const improved = monitoringStats.valScore < bestScore - 1e-4;
+    const curriculumStep = stepCurriculum(
+      curriculumState,
+      autoCurriculumConfig,
+      epoch,
+      { valDeltaMae: monitoringStats.valDeltaMae, coverage: monitoringStats.coverage },
+    );
+    curriculumState = curriculumStep.state;
+    const curriculumAdvanced = curriculumStep.transition !== null;
+    const status = curriculumStep.status;
+    if (status.phase === "C") {
+      console.log(
+        `[curriculum] phase=C age=${status.age} ramp=${args.curriculumPhaseCRamp} ` +
+        `delta=${monitoringStats.valDeltaMae.toFixed(4)} ` +
+        `cov=${monitoringStats.coverage.toFixed(3)} ` +
+        `best_global_delta=n/a`,
+      );
+    } else {
+      const phaseSpan = status.phase === "A"
+        ? scheduler.getPhaseAEnd()
+        : scheduler.getPhaseBEnd() - scheduler.getPhaseAEnd();
+      const next = curriculumStep.transition
+        ? curriculumStep.transition.reason === "max_epoch" ? "advance:max" : "advance:plateau"
+        : "hold";
+      console.log(
+        `[curriculum] phase=${status.phase} age=${status.age}/${phaseSpan} ` +
+        `delta=${monitoringStats.valDeltaMae.toFixed(4)} ` +
+        `phase_best=${Number.isFinite(status.bestDelta) ? status.bestDelta.toFixed(4) : "n/a"} ` +
+        `stall=${status.stalledEpochs}/${autoCurriculumConfig.patience} ` +
+        `cov=${monitoringStats.coverage.toFixed(3)}/${autoCurriculumConfig.minCoverage.toFixed(3)} ` +
+        `min=${status.minReached ? "ok" : "wait"} ` +
+        `cov_gate=${status.coverageOk ? "ok" : "wait"} next=${next}`,
+      );
+    }
+    if (curriculumStep.transition) {
+      curriculumTransitions.push(curriculumStep.transition);
+      if (curriculumStep.transition.from === "A") {
+        scheduler.setPhaseAEnd(curriculumStep.transition.epoch);
+        provider.setLongSequenceStartEpoch(curriculumStep.transition.epoch);
+      } else {
+        scheduler.setPhaseBEnd(curriculumStep.transition.epoch);
+      }
+      bestScore = Number.POSITIVE_INFINITY;
+      patience = 0;
+      epochsSinceImprovement = 0;
+      console.log(
+        `[curriculum] ${curriculumStep.transition.from}->${curriculumStep.transition.to} ` +
+        `at epoch ${curriculumStep.transition.epoch} reason=${curriculumStep.transition.reason} ` +
+        `delta=${curriculumStep.transition.deltaMae.toFixed(4)} ` +
+        `coverage=${curriculumStep.transition.coverage.toFixed(3)}`,
+      );
+    }
 
     if (improved || !initialValSamples.length) {
       bestScore = monitoringStats.valScore;
@@ -3017,7 +3166,7 @@ async function main() {
         lastBestSaveMs = now;
         console.log(`Saved BEST checkpoint @epoch ${epoch} score = ${bestScore.toFixed(4)} -> ${bestDir} `);
       }
-    } else {
+    } else if (!curriculumAdvanced) {
       patience += 1;
       epochsSinceImprovement += 1;
 

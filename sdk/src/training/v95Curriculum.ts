@@ -46,6 +46,8 @@ export type CurriculumStep = {
   status: {
     phase: CurriculumPhase;
     age: number;
+    bestDelta: number;
+    stalledEpochs: number;
     deltaImproved: boolean;
     patienceReady: boolean;
     coverageOk: boolean;
@@ -79,6 +81,8 @@ export const stepCurriculum = (
       status: {
         phase: "C",
         age: epoch + 1 - state.phaseStartedAt,
+        bestDelta: state.bestDelta,
+        stalledEpochs: state.epochsSinceDeltaImprovement,
         deltaImproved: false,
         patienceReady: false,
         coverageOk: metrics.coverage >= config.minCoverage,
@@ -108,6 +112,8 @@ export const stepCurriculum = (
   const status = {
     phase: state.phase,
     age,
+    bestDelta,
+    stalledEpochs,
     deltaImproved,
     patienceReady,
     coverageOk,

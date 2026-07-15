@@ -95,16 +95,25 @@ coverage gate. Trainer integration remains part of section 4.
 
 Replay chronologically:
 
-1. `02518_2026-05-22T18-35-00.950Z.patch`
-2. `02527_2026-05-22T18-35-10.812Z.patch`
-3. `02542_2026-05-22T18-35-27.133Z.patch`
-4. `02629_2026-05-22T18-38-10.109Z.patch`
-5. `02795_2026-05-22T19-22-02.692Z.patch`
+1. `02418_2026-05-22T18-31-13.900Z.patch`
+2. `02501_2026-05-22T18-34-20.636Z.patch`
+3. `02518_2026-05-22T18-35-00.950Z.patch`
+4. `02527_2026-05-22T18-35-10.812Z.patch`
+5. `02542_2026-05-22T18-35-27.133Z.patch`
+6. `02629_2026-05-22T18-38-10.109Z.patch`
+7. `02694_2026-05-22T18-40-42.878Z.patch`
+8. `02795_2026-05-22T19-22-02.692Z.patch`
+9. `02800_2026-05-22T19-22-10.596Z.patch`
+10. `02804_2026-05-22T19-22-14.386Z.patch`
 
-- [ ] Restore `maybeAdvanceCurriculum` and monitor reset behavior.
+The scheduler/config and logging prerequisites above were missing from the
+original five-entry list and are required for the transition function to have
+any effect.
+
+- [x] Restore `maybeAdvanceCurriculum` and monitor reset behavior.
 - [x] Unit-test age, coverage, improvement, stall, and max-epoch gates.
-- [ ] Reproduce A→B at epoch 10 and B→C at epoch 40 (`max_epoch`).
-- [ ] Reproduce the fields and decisions in preserved `[curriculum]` lines.
+- [x] Reproduce A→B at epoch 10 and B→C at epoch 40 (`max_epoch`).
+- [x] Reproduce the fields and decisions in preserved `[curriculum]` lines.
 
 ### 5. Forecast-context masking
 
