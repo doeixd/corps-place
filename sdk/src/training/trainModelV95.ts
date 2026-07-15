@@ -53,6 +53,11 @@ import {
   selectFinalWeightsMode,
 } from "./v95Checkpoints.js";
 import {
+  formatV95Curriculum,
+  formatV95ModelCapacity,
+  parseV95Args,
+} from "./v95Config.js";
+import {
   buildFinal2EvaluationRows,
   evaluationMaskRates,
   splitValidationRows,
@@ -706,94 +711,12 @@ function loadCompatibleModelWeights(model: tf.LayersModel, modelJsonPath: string
 
 function parseArgs() {
   const argv = process.argv.slice(2);
-  const get = (k: string, def?: string) => {
-    const idx = argv.indexOf(k);
-    return idx >= 0 ? argv[idx + 1] : def;
-  };
-  const has = (k: string) => argv.includes(k);
-  const loadModel = get("--load-model");
-  const inferredAccuracyTrunkUnits = has("--accuracy-trunk-units")
+  const loadModelIndex = argv.indexOf("--load-model");
+  const loadModel = loadModelIndex >= 0 ? argv[loadModelIndex + 1] : undefined;
+  const inferredAccuracyTrunkUnits = argv.includes("--accuracy-trunk-units")
     ? undefined
     : inferAccuracyTrunkUnitsFromModelDir(loadModel);
-
-  return {
-    dbPath: get("--db", DB_PATH) || DB_PATH,
-    modelDir: get("--model-dir", MODEL_DIR) || MODEL_DIR,
-    normPath: get("--norm-path", NORM_PATH) || NORM_PATH,
-    epochs: Number(get("--epochs", `${EPOCHS}`)),
-    batchSize: Number(get("--batch", `${BATCH_SIZE}`)),
-    maxRows: Number(get("--maxRows", "")) || undefined,
-    patience: Number(get("--patience", `${EARLY_STOPPING_PATIENCE}`)),
-    reduceLrPatience: Number(get("--reduce-lr-patience", `${REDUCE_LR_PATIENCE}`)),
-    lstm1Units: Number(get("--lstm1-units", "128")),
-    lstm2Units: Number(get("--lstm2-units", "64")),
-    dropoutLstm: Number(get("--dropout-lstm", "0.2")),
-    recurrentDropout: Number(get("--recurrent-dropout", "0.1")),
-    dropoutDense1: Number(get("--dropout-dense1", "0.3")),
-    dropoutDense2: Number(get("--dropout-dense2", "0.2")),
-    l2Reg: Number(get("--l2-reg", "0.000025")),
-    learningRate: Number(get("--lr", "0.00075")),
-    minLr: Number(get("--min-lr", "0.00003")),
-    plateauLrFactor: Number(get("--plateau-lr-factor", "0.5")),
-    warmupEpochs: Number(get("--warmup-epochs") || 10),
-    startEpoch: Number(get("--start-epoch") || 0),
-    clipNorm: Number(get("--clip-norm") || 1.0),
-    seed: Number(get("--seed", "42")),
-    swa: get("--swa", "false") === "true",
-    swaStart: Number(get("--swa-start", "0.75")),
-    swaInterval: Number(get("--swa-interval", "1")),
-    snapshotEpochs: get("--snapshot-epochs", ""),
-    useMha: get("--use-mha", "false") === "true",
-    widthFloorPts: Number(get("--width-floor-pts", `${WIDTH_FLOOR_PTS}`)),
-    widthFloorWeight: Number(get("--width-floor-weight", `${WIDTH_FLOOR_WEIGHT}`)),
-    widthFloorStart: Number(get("--width-floor-start", "0.1")),
-    widthFloorEnd: Number(get("--width-floor-end", `${WIDTH_FLOOR_WEIGHT}`)),
-    widthTargetPts: Number(get("--width-target-pts", `${WIDTH_TARGET_PTS}`)),
-    widthPenaltyWeight: Number(get("--width-penalty-weight", `${WIDTH_PENALTY_WEIGHT}`)),
-    coverageTarget: Number(get("--coverage-target", `${SCORE_COVERAGE_TARGET}`)),
-    coverageUpperTarget: Number(get("--coverage-upper-target", `${SCORE_COVERAGE_UPPER_TARGET}`)),
-    overCoverageWeight: Number(get("--over-coverage-weight", `${OVER_COVERAGE_WEIGHT}`)),
-    rankingWeight: Number(get("--ranking-weight", "0.1")),
-    valSplit: Number(get("--val-split", "0.05")),
-    valMode: get("--val-mode", "date-forward") || "date-forward",
-    valDateCutoff: get("--val-date-cutoff"),
-    divisionFilter: get("--division-filter", "all") || "all",
-    samplesPerEpoch: Number(get("--samples-per-epoch", `${SAMPLES_PER_EPOCH}`)),
-    loadModel,
-    baselineDropout: Number(get("--baseline-dropout", `${BASELINE_DROPOUT_RATE}`)),
-    baselineNoiseStd: Number(get("--baseline-noise-std", `${BASELINE_NOISE_STD_PTS}`)),
-    historyHideRate: Number(get("--history-hide-rate", `${HISTORY_HIDE_RATE}`)),
-    judgeHideRate: Number(get("--judge-hide-rate", `${JUDGE_HIDE_RATE}`)),
-    forecastContextHideRate: Number(get("--forecast-context-hide-rate", `${FORECAST_CONTEXT_HIDE_RATE}`)),
-    openSampleFraction: Number(get("--open-sample-frac", `${OPEN_CLASS_SAMPLE_FRACTION}`)),
-    logCsv: get("--log-csv", "./results/lstm-v95-reconstruction-training-log.csv"),
-    trialId: get("--trial-id"),
-    noJudgeBias: get("--no-judge-bias", "false") === "true",
-    noCorpsResidual: get("--no-corps-residual", "false") === "true",
-    outputReport: get("--output-report", "eval_report.json") || "eval_report.json",
-    logFile: get("--log-file"),
-    noLogFile: get("--no-log-file", "false") === "true",
-    baselineScope: get("--baseline-scope", "train") || "train",
-    baseWidthMultiplier: Number(get("--base-width-multiplier", `${BASE_WIDTH_MULTIPLIER}`)),
-    coverageSharpness: Number(get("--coverage-sharpness", `${COVERAGE_SHARPNESS}`)),
-    identityDropoutFloor: Number(get("--identity-dropout-floor", `${IDENTITY_DROPOUT_FLOOR}`)),
-    accuracyTrunkUnits: Number(get("--accuracy-trunk-units", `${inferredAccuracyTrunkUnits ?? ACCURACY_TRUNK_UNITS}`)),
-    inferredAccuracyTrunkUnits,
-    mbMpLossBoost: Number(get("--mbmp-loss-boost", "1.0")),
-    finalWeights: get("--final-weights", "composite") || "composite",
-    curriculumPhaseAEnd: Number(get("--curriculum-phase-a-end", `${CURRICULUM_PHASE_A_END}`)),
-    curriculumPhaseBEnd: Number(get("--curriculum-phase-b-end", `${CURRICULUM_PHASE_B_END}`)),
-    curriculumPhaseCRamp: Number(get("--curriculum-phase-c-ramp", `${CURRICULUM_PHASE_C_RAMP}`)),
-    corpsScaleStart: Number(get("--corps-scale-start", `${CORPS_SCALE_START_EPOCH}`)),
-    corpsScaleRamp: Number(get("--corps-scale-ramp", `${CORPS_SCALE_RAMP_EPOCHS}`)),
-    judgeScaleRamp: Number(get("--judge-scale-ramp", `${JUDGE_SCALE_RAMP_EPOCHS}`)),
-    autoCurriculum: get("--auto-curriculum", `${AUTO_CURRICULUM}`) !== "false",
-    autoCurriculumPatience: Number(get("--auto-curriculum-patience", `${AUTO_CURRICULUM_PATIENCE}`)),
-    autoCurriculumMinCoverage: Number(get("--auto-curriculum-min-coverage", `${AUTO_CURRICULUM_MIN_COVERAGE}`)),
-    autoCurriculumMinDeltaGain: Number(get("--auto-curriculum-min-delta-gain", `${AUTO_CURRICULUM_MIN_DELTA_GAIN}`)),
-    autoCurriculumPhaseAMin: Number(get("--auto-curriculum-phase-a-min", `${AUTO_CURRICULUM_PHASE_A_MIN}`)),
-    autoCurriculumPhaseBMin: Number(get("--auto-curriculum-phase-b-min", `${AUTO_CURRICULUM_PHASE_B_MIN}`)),
-  };
+  return parseV95Args(argv, inferredAccuracyTrunkUnits);
 }
 
 
@@ -2451,10 +2374,7 @@ async function main() {
     `width_floor_schedule=${args.widthFloorStart}->${args.widthFloorEnd}, baseline_dropout=${args.baselineDropout}, ` +
     `baseline_noise_std=${args.baselineNoiseStd}`
   );
-  console.log(
-    `Model Capacity: ${args.lstm1Units * 2}→${args.lstm2Units * 2} BiLSTM, Dense 512→256, ` +
-    `AccuracyTrunk ${args.accuracyTrunkUnits}, Judge Emb 24, Corps Emb 20, Show Emb 12`,
-  );
+  console.log(formatV95ModelCapacity(args));
   console.log(
     `Feature Contract: sequence_dim=${FEAT_DIM}, raw_static_dim=${RAW_STATIC_DIM}, ` +
     `trend_dim=${TREND_DIM}, context_dim=${CONTEXT_DIM}, total_static_dim=${TOTAL_STATIC_DIM}`,
@@ -2544,14 +2464,7 @@ async function main() {
   let curriculumState = initialCurriculumState(autoCurriculumConfig, args.startEpoch);
   const curriculumTransitions: CurriculumTransition[] = [];
 
-  console.log(
-    `Curriculum: phaseAEnd=${scheduler.getPhaseAEnd()}, phaseBEnd=${scheduler.getPhaseBEnd()}, ` +
-    `phaseCRamp=${args.curriculumPhaseCRamp}, judgeScaleRamp=${args.judgeScaleRamp}, ` +
-    `corpsScaleStart=${args.corpsScaleStart}, corpsScaleRamp=${args.corpsScaleRamp}, ` +
-    `auto=${args.autoCurriculum}, autoPatience=${args.autoCurriculumPatience}, ` +
-    `autoMinCoverage=${args.autoCurriculumMinCoverage}, ` +
-    `autoMinDeltaGain=${args.autoCurriculumMinDeltaGain}`,
-  );
+  console.log(formatV95Curriculum(args));
 
 
   const cachedValSamples = buildSamples(valSubset, stats, 15, 0.0, args.seed + 999, 0, 0, 0);

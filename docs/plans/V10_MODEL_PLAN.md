@@ -529,6 +529,12 @@ pipeline state.
   lineup-unknown evaluation, raw plus calibrated sliced reports, artifact hashes,
   curriculum/checkpoint provenance, and a model card. Treat these as one connected
   evaluation-contract repair rather than copying only the final serializer.
+- V9.5 configuration is now isolated in `v95Config.ts`, so it can be verified
+  without loading TensorFlow or opening a DB. `npm run test:v95-config` explicitly
+  passes and round-trips all 68 preserved final2 arguments and pins the exact
+  historical capacity/curriculum summaries used by the trainer. When adding a V10
+  option, extend this explicit contract instead of adding an untested parser
+  default.
 
 ## V10 improvement hypothesis log
 

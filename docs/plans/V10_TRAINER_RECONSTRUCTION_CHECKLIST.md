@@ -90,15 +90,21 @@ Replay chronologically:
 5. `04066_2026-05-26T11-04-26.504Z.patch`
 6. `04214_2026-05-26T11-35-26.864Z.patch`
 
-- [ ] Parse every preserved `final2` argument without relying on a default.
+- [x] Parse every preserved `final2` argument without relying on a default.
 - [x] Pin phase ends 10/40, patience 6, coverage 0.9, delta gain 0.002,
   phase-A minimum 6, and phase-B minimum 18.
-- [ ] Match the preserved startup `Curriculum:` values.
+- [x] Match the preserved startup `Curriculum:` values.
 
 Progress note (2026-07-15): `v95Curriculum.ts` now contains the frozen final2
 configuration and a pure transition state machine. `npm run test:v95-curriculum`
 pins max-epoch A→B at 10, B→C at 40, plateau patience/min-age behavior, and the
 coverage gate. Trainer integration remains part of section 4.
+
+Configuration parsing now lives in the TensorFlow-free `v95Config.ts`.
+`npm run test:v95-config` constructs a CLI containing all 68 fields from the
+preserved `training-args.json`, round-trips each value without using defaults,
+and pins the exact historical `Curriculum:` and `Model Capacity:` lines. The
+trainer uses those same parser/formatter functions at runtime.
 
 ### 4. Auto-curriculum transition behavior
 
@@ -215,7 +221,7 @@ identity dropout, warmup endpoints, plateau multiplication, and minimum LR.
 
 ### Behavioral dry run
 
-- [ ] Startup arguments, capacity, and curriculum match preserved evidence.
+- [x] Startup arguments, capacity, and curriculum match preserved evidence.
 - [ ] A fixture run exercises all phases without NaNs.
 - [ ] Curriculum/checkpoint tests pass and report contains all final2 slices.
 

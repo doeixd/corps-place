@@ -18,6 +18,7 @@
     "replay:v10-baseline": "tsx scripts/replayFinal2Baseline.ts",
     "test:v95-curriculum": "tsx scripts/testV95Curriculum.ts",
     "test:v95-checkpoints": "tsx scripts/testV95Checkpoints.ts",
+    "test:v95-config": "tsx scripts/testV95Config.ts",
     "test:v95-evaluation": "tsx scripts/testV95Evaluation.ts",
     "test:v95-masking": "tsx scripts/testV95FeatureMasking.ts",
     "test:v95-metrics": "tsx scripts/testV95Metrics.ts",
