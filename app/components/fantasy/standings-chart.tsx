@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { getStandingsHistory } from '@/lib/server-fns/fantasy';
@@ -14,8 +14,32 @@ const RankBumpChart = lazy(() =>
 type History = Awaited<ReturnType<typeof getStandingsHistory>>;
 type Series = History['series'][number];
 
+// Categorical fallback palette. Members choose their own corps color, so unlike
+// /rankings (distinct brand hues) we can get nulls and duplicates — which would
+// collapse into indistinguishable lines. Each series keeps its own color only if
+// it's set and not already taken; otherwise it gets the next distinct hue here.
+const FALLBACK_COLORS = [
+  '#2563eb', '#dc2626', '#16a34a', '#9333ea', '#ea580c', '#0891b2',
+  '#ca8a04', '#db2777', '#4f46e5', '#65a30d', '#0d9488', '#e11d48',
+  '#7c3aed', '#0284c7', '#d97706', '#059669', '#c026d3', '#475569',
+];
+
+function withDistinctColors(series: Series[]): Array<{ s: Series; color: string }> {
+  const used = new Set<string>();
+  let fi = 0;
+  return series.map((s) => {
+    let color = s.color ? s.color.toLowerCase() : null;
+    if (!color || used.has(color)) {
+      while (fi < FALLBACK_COLORS.length && used.has(FALLBACK_COLORS[fi]!)) fi++;
+      color = fi < FALLBACK_COLORS.length ? FALLBACK_COLORS[fi++]! : (color ?? '#888888');
+    }
+    used.add(color);
+    return { s, color };
+  });
+}
+
 /** Adapt a member's history series to the RankRow shape the bump chart reads. */
-const toRankRow = (s: Series): RankRow => {
+const toRankRow = ({ s, color }: { s: Series; color: string }): RankRow => {
   const last = s.points[s.points.length - 1];
   return {
     corpsSlug: s.userId,
@@ -28,23 +52,36 @@ const toRankRow = (s: Series): RankRow => {
     scoreDelta: null,
     partial: false,
     history: s.points,
-    colorPrimary: s.color,
+    colorPrimary: color,
     colorSecondary: null,
   };
 };
 
 /**
  * The season-progress chart at the top of the standings page: each active member
- * is a line, tracking their league rank (default) or fantasy score across the
- * season. Renders nothing until at least two dated points exist (a one-point
- * chart is meaningless early season).
+ * is a line, tracking their league rank or fantasy score across the season.
+ * Renders nothing until there's a real race to show (≥2 members and ≥2 dates).
+ * `refreshKey` (the live standings' last-updated stamp) re-pulls the series after
+ * a recompute so the chart doesn't drift from the live table below it.
  */
-export function StandingsChart({ slug }: { slug: string }) {
+export function StandingsChart({
+  slug,
+  refreshKey,
+  enabled = true,
+}: {
+  slug: string;
+  refreshKey?: string | null;
+  /** Skip the history fetch when the caller already knows there's no race to
+      show (e.g. a one-member league) — avoids a wasted query per visit. */
+  enabled?: boolean;
+}) {
   const [history, setHistory] = useState<History | null>(null);
-  const [mode, setMode] = useState<RankChartMode>('rank');
+  const [mode, setMode] = useState<RankChartMode | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const modeDecided = useRef(false);
 
   useEffect(() => {
+    if (!enabled) return;
     let alive = true;
     getStandingsHistory({ data: { slug } })
       .then((h) => {
@@ -56,12 +93,26 @@ export function StandingsChart({ slug }: { slug: string }) {
     return () => {
       alive = false;
     };
-  }, [slug]);
+  }, [slug, refreshKey, enabled]);
 
-  const rows = useMemo(() => (history ? history.series.map(toRankRow) : []), [history]);
+  // Rank is a weak story for a tiny league (just #1↔#2), so default to score
+  // there; larger leagues get the classic bump chart. Decided once; the user's
+  // toggle then wins.
+  useEffect(() => {
+    if (history && !modeDecided.current) {
+      modeDecided.current = true;
+      setMode(history.series.length <= 2 ? 'score' : 'rank');
+    }
+  }, [history]);
 
-  // Hide until there's a real trend to show (≥2 dates and ≥1 member).
-  if (!history || history.dates.length < 2 || rows.length === 0) return null;
+  const colored = useMemo(
+    () => (history ? withDistinctColors(history.series) : []),
+    [history]
+  );
+  const rows = useMemo(() => colored.map(toRankRow), [colored]);
+
+  // A standings race needs ≥2 members and ≥2 dated points to be worth showing.
+  if (!history || history.dates.length < 2 || rows.length < 2) return null;
 
   return (
     <Card>
@@ -72,7 +123,7 @@ export function StandingsChart({ slug }: { slug: string }) {
           size="sm"
           spacing={0}
           aria-label="Chart view"
-          value={[mode]}
+          value={[mode ?? 'rank']}
           onValueChange={(v) => {
             const next = v[0] as RankChartMode | undefined;
             if (next) setMode(next);
@@ -87,7 +138,7 @@ export function StandingsChart({ slug }: { slug: string }) {
           <RankBumpChart
             rows={rows}
             dates={history.dates}
-            mode={mode}
+            mode={mode ?? 'rank'}
             hoveredSlug={hovered}
             onHover={setHovered}
           />

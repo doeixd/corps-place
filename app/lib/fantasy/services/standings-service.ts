@@ -377,12 +377,14 @@ const makeStandingsService = Effect.gen(function* () {
       });
     }
 
-    // Latest-rank sort so the chart's top-N cap keeps the current leaders.
-    const series = [...byUser.values()].sort((a, b) => {
-      const ar = a.points[a.points.length - 1]?.rank ?? Infinity;
-      const br = b.points[b.points.length - 1]?.rank ?? Infinity;
-      return ar - br;
-    });
+    // Latest-rank sort so the chart's top-N cap keeps the current leaders. A
+    // missing/0 rank (shouldn't happen — both write paths assign i+1) sorts LAST,
+    // never promoted to leader by a falsy value.
+    const latestRank = (s: { points: Array<{ rank: number }> }) => {
+      const r = s.points[s.points.length - 1]?.rank;
+      return r && r > 0 ? r : Infinity;
+    };
+    const series = [...byUser.values()].sort((a, b) => latestRank(a) - latestRank(b));
 
     return { dates: [...dateSet].sort(), series };
   });

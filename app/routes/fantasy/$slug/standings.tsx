@@ -155,8 +155,15 @@ function StandingsContent({
         </Card>
       ) : (
         <SectionErrorBoundary label="the standings table">
-          {/* Season-progress chart (client-fetched, lazy, hidden until ≥2 dates). */}
-          <StandingsChart slug={league.slug} />
+          {/* Season-progress chart (client-fetched, lazy, hidden until there's a
+              race to show). `refreshKey` = the live standings' last-updated stamp,
+              so a recompute re-pulls the series and the chart stays in sync with
+              the live table below. */}
+          <StandingsChart
+            slug={league.slug}
+            refreshKey={lastUpdated}
+            enabled={rows.length >= 2}
+          />
           <p className="text-sm text-muted-foreground">
             Each player&apos;s total is built from their drafted corps&apos; season-best caption
             scores from real drum corps <Explain term="recap">recaps</Explain>, DCI-style: GE plus
