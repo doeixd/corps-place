@@ -68,16 +68,24 @@ export function StandingsChart({
   slug,
   refreshKey,
   enabled = true,
+  hovered: hoveredProp,
+  onHover,
 }: {
   slug: string;
   refreshKey?: string | null;
   /** Skip the history fetch when the caller already knows there's no race to
       show (e.g. a one-member league) — avoids a wasted query per visit. */
   enabled?: boolean;
+  /** Controlled hover (member userId), shared with the standings table so hovering
+      a row highlights its line and vice versa. Falls back to internal state. */
+  hovered?: string | null;
+  onHover?: (userId: string | null) => void;
 }) {
   const [history, setHistory] = useState<History | null>(null);
   const [mode, setMode] = useState<RankChartMode | null>(null);
-  const [hovered, setHovered] = useState<string | null>(null);
+  const [internalHovered, setInternalHovered] = useState<string | null>(null);
+  const hovered = hoveredProp !== undefined ? hoveredProp : internalHovered;
+  const setHovered = onHover ?? setInternalHovered;
   const modeDecided = useRef(false);
 
   useEffect(() => {

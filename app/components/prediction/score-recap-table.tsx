@@ -77,6 +77,11 @@ export interface ScoreRecapTableProps {
   // prediction-page caller, so those tables are unaffected. Rows are keyed by
   // `row.id ?? row.corps` for expansion state.
   renderRowDetail?: (row: RecapRow) => React.ReactNode;
+  // Opt-in cross-highlight (paired with an external chart/list): the row whose key
+  // === hoveredKey is emphasized and the rest dim, and each row reports hover via
+  // onHoverRow. Keyed like expansion (`row.id ?? row.corps`).
+  hoveredKey?: string | null;
+  onHoverRow?: (key: string | null) => void;
 }
 
 export function ScoreRecapTable({
@@ -104,6 +109,8 @@ export function ScoreRecapTable({
   onSetFullSorts,
   yearSlug,
   renderRowDetail,
+  hoveredKey,
+  onHoverRow,
 }: ScoreRecapTableProps) {
   const classFilterActive = classFilters.length > 0;
 
@@ -585,7 +592,11 @@ export function ScoreRecapTable({
                             // id (standings, where corps names aren't unique) don't
                             // collide; prediction rows fall back to corps, unchanged.
                             layoutId={`recap-row-${key}`}
-                            layout={animateLayout ? 'position' : false}
+                            // Position-spring on reorder — but NOT when expandable:
+                            // inserting the detail row would spring every row below
+                            // it on expand while collapse is instant (asymmetric
+                            // jank). Expandable tables get instant, symmetric toggles.
+                            layout={!expandable && animateLayout ? 'position' : false}
                             transition={{
                               type: 'spring',
                               stiffness: 500,
@@ -607,9 +618,16 @@ export function ScoreRecapTable({
                                   },
                                 }
                               : {})}
+                            {...(onHoverRow
+                              ? {
+                                  onMouseEnter: () => onHoverRow(key),
+                                  onMouseLeave: () => onHoverRow(null),
+                                }
+                              : {})}
                             className={
-                              'border-b transition-colors hover:bg-muted/60 active:bg-muted/60 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted' +
-                              (expandable ? ' cursor-pointer' : '')
+                              'border-b transition-[background-color,opacity] hover:bg-muted/60 active:bg-muted/60 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted' +
+                              (expandable ? ' cursor-pointer' : '') +
+                              (hoveredKey && hoveredKey !== key ? ' opacity-40' : '')
                             }
                           >
                             <TableCell className="sticky-col sticky left-0 z-10 w-[48px] min-w-[48px] max-w-[48px] px-1 sm:w-[64px] sm:min-w-[64px] sm:max-w-[64px] sm:px-2 text-center text-muted-foreground">

@@ -114,6 +114,9 @@ function StandingsContent({
   // off; stack vs exclusive), managed locally — no URL sync needed here.
   const [sorts, setSorts] = useState<SortEntry[]>([]);
   const [sortMode, setSortMode] = useState<SortMode>('exclusive');
+  // Shared hover (member userId) so hovering a table row highlights its chart line
+  // and vice versa. Both key rows/series by userId.
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   // The live collection doesn't guarantee row order — sort by rank explicitly so
   // the default (unsorted-columns) view is always the standings order.
@@ -163,6 +166,8 @@ function StandingsContent({
             slug={league.slug}
             refreshKey={lastUpdated}
             enabled={rows.length >= 2}
+            hovered={hoveredKey}
+            onHover={setHoveredKey}
           />
           <p className="text-sm text-muted-foreground">
             Each player&apos;s total is built from their drafted corps&apos; season-best caption
@@ -189,6 +194,9 @@ function StandingsContent({
               onSetShowRanges={() => {}}
               groupByClass={false}
               onSetGroupByClass={() => {}}
+              // Cross-highlight with the season-progress chart above.
+              hoveredKey={hoveredKey}
+              onHoverRow={setHoveredKey}
               // Expandable rows: reveal each player's drafted corps, weights, and how
               // they add up. Detail data is stashed on the row by toRecapRow.
               renderRowDetail={(r) => {
