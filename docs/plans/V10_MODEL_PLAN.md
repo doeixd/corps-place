@@ -593,6 +593,16 @@ pipeline state.
   A/B/C phase checkpoints; selected composite final weights; and emitted the full
   report/model-card path. Do not interpret its deliberately tiny-data metrics as
   model quality.
+- Seed-42 replica execution started 2026-07-15 as WSL systemd unit
+  `v95-seed42.service`, using branch commit `1b89aa9` and run directory
+  `sdk/models/v95_final2_reconstruction/v95_final2_seed42_1784145026981`.
+  The source DB hash/population gates passed. Epoch 0 completed in 108.6 seconds
+  with finite loss `0.850424`, validation recap/delta MAE `0.6348`, total MAE
+  `1.7967`, coverage `0.317`, and a saved composite checkpoint. These are startup
+  health values, not final acceptance results. Monitor with
+  `systemctl status v95-seed42.service` and
+  `journalctl -u v95-seed42.service -f`; do not start seed 43 concurrently on the
+  same WSL instance because both runs are memory/CPU intensive.
 
 ## V10 improvement hypothesis log
 
