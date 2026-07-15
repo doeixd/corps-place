@@ -711,13 +711,50 @@ export const setDraftQueue = createServerFn({ method: 'POST' })
 
 /** Public read: a league's standings (one recap-style row per member). */
 // Strangler shim (P1): delegates to StandingsService over the Effect path.
+export type PickedCorps = {
+  corps_key: string;
+  name: string;
+  slug: string | null;
+  corps_logo: string | null;
+  corps_logo_dark: number | null;
+  corps_logo_dark_url: string | null;
+};
+
 export const getStandings = createServerFn({ method: 'GET' })
   .validator((d: { slug: string }) => v.parse(v.object({ slug: v.string() }), d))
   .handler(async ({ data }) => {
     const actor = await getActor(getWebRequest());
-    return runFantasy(
+    const result = await runFantasy(
       Effect.flatMap(StandingsService, (svc) => svc.getStandings(data.slug, actor?.userId ?? null))
     );
+
+    // Enrich with the identity (name/slug/logo) of every corps any member drafted,
+    // so the standings page's expandable pick-breakdown can render real corps logos
+    // via CorpsRegistryProvider. Resolved fresh from the ~60s-cached draft pool (not
+    // stored in breakdown_json), keyed only for the corps this league actually
+    // picked — a small, bounded set shared across all members.
+    const pickedKeys = new Set<string>();
+    for (const row of result.rows)
+      for (const list of Object.values(row.contributions))
+        for (const c of list) pickedKeys.add(c.corpsKey);
+
+    const pickedCorps: Record<string, PickedCorps> = {};
+    if (pickedKeys.size > 0) {
+      const pool = await getDraftPool(String(result.league.season)).catch(() => []);
+      for (const c of pool) {
+        if (!pickedKeys.has(c.corpsKey)) continue;
+        pickedCorps[c.corpsKey] = {
+          corps_key: c.corpsKey,
+          name: c.name,
+          slug: c.slug,
+          corps_logo: c.corpsLogo,
+          corps_logo_dark: c.corpsLogoDark,
+          corps_logo_dark_url: c.corpsLogoDarkUrl,
+        };
+      }
+    }
+
+    return { ...result, pickedCorps };
   });
 
 // ===========================================================================

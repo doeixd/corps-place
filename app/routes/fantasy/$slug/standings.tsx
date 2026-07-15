@@ -12,6 +12,12 @@ import { HybridCollection } from '@/components/hybrid-collection';
 import { Explain } from '@/components/fantasy/explain';
 import { SectionErrorBoundary } from '@/components/error-boundary';
 import { ScoreRecapTable } from '@/components/prediction/score-recap-table';
+import { CorpsRegistryProvider } from '@/components/corps-registry';
+import {
+  StandingsBreakdown,
+  type StandingsBreakdownData,
+} from '@/components/fantasy/standings-breakdown';
+import type { PickedCorps } from '@/lib/server-fns/fantasy';
 import {
   cycleSort,
   type RecapRow,
@@ -43,19 +49,24 @@ export const Route = createFileRoute('/fantasy/$slug/standings')({
 });
 
 function StandingsPage() {
-  const { league, rows } = Route.useLoaderData();
+  const { league, rows, pickedCorps } = Route.useLoaderData();
   const { slug } = Route.useParams();
   // Loader SSRs first paint; the live collection takes over after hydration so a
-  // recompute (or another tab) reflects without a manual reload.
+  // recompute (or another tab) reflects without a manual reload. `pickedCorps` (the
+  // identity of every drafted corps) comes from the loader — it doesn't change live.
   return (
     <HybridCollection collection={standingsCollection(slug)} loader={rows}>
-      {(liveRows) => <StandingsContent league={league} rows={liveRows} />}
+      {(liveRows) => (
+        <StandingsContent league={league} rows={liveRows} pickedCorps={pickedCorps} />
+      )}
     </HybridCollection>
   );
 }
 
 /** A standings row reshaped into the recap table's RecapRow (same caption keys). */
 const toRecapRow = (row: Row): RecapRow => ({
+  // Stable per-row id for expansion state (team names aren't guaranteed unique).
+  id: row.userId,
   corps: row.corpsName || row.userName || 'Player',
   rank: row.rank ?? undefined,
   total: row.total,
@@ -72,9 +83,26 @@ const toRecapRow = (row: Row): RecapRow => ({
   MP: row.perCaption.MP ?? 0,
   // Fantasy corps identity logo (rendered by the table's CorpsNameCell override).
   logo: row.corpsLogoMediaId ? `/api/fantasy-media/${row.corpsLogoMediaId}` : undefined,
+  // Carried for the expandable pick-breakdown panel (see renderRowDetail below).
+  _detail: {
+    contributions: row.contributions,
+    perCaption: row.perCaption,
+    ge: row.ge,
+    visual: row.visual,
+    music: row.music,
+    total: row.total,
+  } satisfies StandingsBreakdownData,
 });
 
-function StandingsContent({ league, rows }: { league: Standings['league']; rows: Row[] }) {
+function StandingsContent({
+  league,
+  rows,
+  pickedCorps,
+}: {
+  league: Standings['league'];
+  rows: Row[];
+  pickedCorps: Record<string, PickedCorps>;
+}) {
   const final = rows.some((r) => r.isFinal);
   const lastUpdated = rows.reduce<string | null>(
     (max, r) => (r.computedAt && (!max || r.computedAt > max) ? r.computedAt : max),
@@ -132,23 +160,35 @@ function StandingsContent({ league, rows }: { league: Standings['league']; rows:
             half of Visual and Music. Captions where no drafted corps has scored yet show an em
             dash and fill in as the season goes. Tap a column to sort.
           </p>
-          <ScoreRecapTable
-            rows={recapRows}
-            corpsLookup={() => undefined}
-            title="Standings"
-            classFilters={[]}
-            onSetClassFilters={() => {}}
-            sorts={sorts}
-            onCycleSort={(key: RangeKey) => setSorts((prev) => cycleSort(prev, key, sortMode))}
-            onSetSorts={setSorts}
-            sortMode={sortMode}
-            onSetSortMode={setSortMode}
-            // Standings are point scores — no prediction intervals, no Ranges toggle.
-            showRanges={false}
-            onSetShowRanges={() => {}}
-            groupByClass={false}
-            onSetGroupByClass={() => {}}
-          />
+          {/* The registry lets each expanded row's CorpsNameCell resolve a drafted
+              corps' real logo from just its corpsKey (contributions carry only keys). */}
+          <CorpsRegistryProvider corps={Object.values(pickedCorps)}>
+            <ScoreRecapTable
+              rows={recapRows}
+              corpsLookup={() => undefined}
+              title="Standings"
+              classFilters={[]}
+              onSetClassFilters={() => {}}
+              sorts={sorts}
+              onCycleSort={(key: RangeKey) => setSorts((prev) => cycleSort(prev, key, sortMode))}
+              onSetSorts={setSorts}
+              sortMode={sortMode}
+              onSetSortMode={setSortMode}
+              // Standings are point scores — no prediction intervals, no Ranges toggle.
+              showRanges={false}
+              onSetShowRanges={() => {}}
+              groupByClass={false}
+              onSetGroupByClass={() => {}}
+              // Expandable rows: reveal each player's drafted corps, weights, and how
+              // they add up. Detail data is stashed on the row by toRecapRow.
+              renderRowDetail={(r) => {
+                const detail = r._detail as StandingsBreakdownData | undefined;
+                return detail ? (
+                  <StandingsBreakdown data={detail} corpsByKey={pickedCorps} />
+                ) : null;
+              }}
+            />
+          </CorpsRegistryProvider>
         </SectionErrorBoundary>
       )}
     </PageShell>

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useStickyScroll, useSuppressLayoutOnce } from '@/lib/table-interactions';
 import { Show } from 'jotai-solid-api';
 import { motion, AnimatePresence } from 'motion/react';
@@ -39,6 +39,8 @@ import {
   KeyframesDoubleAddIcon as HugeiconsKeyframesDoubleAdd,
   ArrowExpandIcon,
   ArrowShrinkIcon,
+  ArrowDown01Icon,
+  ArrowRight01Icon,
   Sorting01Icon as HugeiconsSorting01,
 } from '@/components/icons/generated';
 import { RecapSectionRow } from '@/components/prediction/recap-section-row';
@@ -70,6 +72,11 @@ export interface ScoreRecapTableProps {
   onCycleFullSort?: (key: string) => void;
   onSetFullSorts?: (sorts: FullSortEntry[]) => void;
   yearSlug?: string;
+  // Opt-in expandable rows: when provided, each row gets a disclosure toggle and,
+  // when opened, a full-width detail panel rendering this. Omitted by every
+  // prediction-page caller, so those tables are unaffected. Rows are keyed by
+  // `row.id ?? row.corps` for expansion state.
+  renderRowDetail?: (row: RecapRow) => React.ReactNode;
 }
 
 export function ScoreRecapTable({
@@ -96,8 +103,22 @@ export function ScoreRecapTable({
   onCycleFullSort,
   onSetFullSorts,
   yearSlug,
+  renderRowDetail,
 }: ScoreRecapTableProps) {
   const classFilterActive = classFilters.length > 0;
+
+  // Opt-in expandable rows (see `renderRowDetail`). State is owned here so callers
+  // pass only the render fn; keyed by a stable per-row id (or corps name).
+  const expandable = Boolean(renderRowDetail);
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
+  const rowKey = (row: RecapRow) => String(row.id ?? row.corps);
+  const toggleExpanded = (key: string) =>
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
 
   // Mirror exactly what the "Clear Filters" button resets (class filters + both
   // sort sets) so it only shows when there's something to clear. Grouping is
@@ -550,7 +571,10 @@ export function ScoreRecapTable({
                               />,
                             ]
                           : []),
-                        ...section.rows.map((row) => (
+                        ...section.rows.flatMap((row) => {
+                          const key = rowKey(row);
+                          const isOpen = expandable && expanded.has(key);
+                          return [
                           <motion.tr
                             key={String(row.corps)}
                             // Shared with the full-recap row of the same corps so a
@@ -566,7 +590,24 @@ export function ScoreRecapTable({
                               mass: 1,
                             }}
                             data-slot="table-row"
-                            className="border-b transition-colors hover:bg-muted/60 active:bg-muted/60 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted"
+                            {...(expandable
+                              ? {
+                                  role: 'button',
+                                  tabIndex: 0,
+                                  'aria-expanded': isOpen,
+                                  onClick: () => toggleExpanded(key),
+                                  onKeyDown: (e: React.KeyboardEvent) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                      e.preventDefault();
+                                      toggleExpanded(key);
+                                    }
+                                  },
+                                }
+                              : {})}
+                            className={
+                              'border-b transition-colors hover:bg-muted/60 active:bg-muted/60 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted' +
+                              (expandable ? ' cursor-pointer' : '')
+                            }
                           >
                             <TableCell className="sticky-col sticky left-0 z-10 w-[48px] min-w-[48px] max-w-[48px] px-1 sm:w-[64px] sm:min-w-[64px] sm:max-w-[64px] sm:px-2 text-center text-muted-foreground">
                               {rankWithinGroup?.get(String(row.corps)) ??
@@ -578,21 +619,30 @@ export function ScoreRecapTable({
                                   : overallPointRanks.get(String(row.corps)))}
                             </TableCell>
                             <TableCell className="sticky-col sticky-col-edge sticky left-[48px] sm:left-[64px] z-10 font-medium">
-                              {(() => {
-                                const info = corpsLookup(row);
-                                return (
-                                  <CorpsNameCell
-                                    name={String(row.corps ?? '')}
-                                    slug={info?.slug}
-                                    corpsKey={
-                                      typeof row.corps_key === 'string' ? row.corps_key : null
-                                    }
-                                    // Per-row logo override (fantasy corps identities live
-                                    // outside the corps registry).
-                                    logo={typeof row.logo === 'string' ? row.logo : undefined}
+                              <div className="flex min-w-0 items-center gap-1.5">
+                                {expandable ? (
+                                  <Icon
+                                    icon={isOpen ? ArrowDown01Icon : ArrowRight01Icon}
+                                    size="sm"
+                                    className="shrink-0 text-muted-foreground"
                                   />
-                                );
-                              })()}
+                                ) : null}
+                                {(() => {
+                                  const info = corpsLookup(row);
+                                  return (
+                                    <CorpsNameCell
+                                      name={String(row.corps ?? '')}
+                                      slug={info?.slug}
+                                      corpsKey={
+                                        typeof row.corps_key === 'string' ? row.corps_key : null
+                                      }
+                                      // Per-row logo override (fantasy corps identities live
+                                      // outside the corps registry).
+                                      logo={typeof row.logo === 'string' ? row.logo : undefined}
+                                    />
+                                  );
+                                })()}
+                              </div>
                             </TableCell>
                             {/* Mirror RecapHeadCells: no divisions in the data → no class column. */}
                             {divisions.length === 0 ? null : (
@@ -633,8 +683,25 @@ export function ScoreRecapTable({
                                 </TableCell>
                               );
                             })}
-                          </motion.tr>
-                        )),
+                          </motion.tr>,
+                          isOpen && renderRowDetail ? (
+                            <tr
+                              key={`${String(row.corps)}-detail`}
+                              data-slot="table-row"
+                              className="border-b bg-muted/20"
+                            >
+                              <td
+                                colSpan={
+                                  2 + (divisions.length === 0 ? 0 : 1) + SCORE_COLUMNS.length
+                                }
+                                className="p-0"
+                              >
+                                {renderRowDetail(row)}
+                              </td>
+                            </tr>
+                          ) : null,
+                          ];
+                        }),
                       ])}
                     </TableBody>
                   </Table>

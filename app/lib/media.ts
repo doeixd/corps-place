@@ -69,6 +69,14 @@ export function proxiedImage(
   options?: { assumeCached?: boolean; width?: number; dark?: boolean }
 ): string | null {
   if (!url) return null;
+  // Same-origin absolute paths (e.g. `/api/fantasy-media/{id}`) are already served
+  // by our own routes, which stream the final (pre-resized) bytes with an immutable
+  // cache header. Never wrap them through `/api/media` — that proxy does `new URL()`
+  // on the value, which throws on a relative path and 404s (this broke the fantasy
+  // standings group logos, which flow through the `assumeCached` corps-logo stack).
+  // Guard `//` (protocol-relative remote URLs like `//cdn.shopify.com/...`), which
+  // also start with `/` but are real hosts we still want to proxy.
+  if (url.startsWith('/') && !url.startsWith('//')) return url;
   const w = options?.width ? `&w=${Math.round(options.width)}` : '';
   // `merch-product:` keys are stable local cache references written during ingest.
   // They're not real URLs, so route them through the proxy directly.
