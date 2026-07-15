@@ -171,6 +171,12 @@ Replay chronologically:
 manifest dimensions without initializing the unavailable native TFJS backend.
 The runtime dry-graph gate below remains separate.
 
+The native WSL smoke test also pinned final2's embedding input dimensions from
+`model.json`: 245 judges, 709 corps, and 349 shows. Current map key counts are not
+valid substitutes. The trainer now validates loaded IDs against the frozen
+dimensions and initializes show cardinality from the full population, preventing
+small `--maxRows` fixtures from undersizing the graph.
+
 ### 7. Composite selection and checkpoints
 
 Final-weights chain:

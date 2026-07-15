@@ -26,6 +26,9 @@ const checks: Array<[string, boolean]> = [
   ["dense 256", /units: 256,/.test(source)],
   ["accuracy trunk is configured", /units: args\.accuracyTrunkUnits,\s*activation: "relu",\s*name: "accuracy_trunk"/m.test(source)],
   ["final2 accuracy default", /const ACCURACY_TRUNK_UNITS = 270;/.test(source)],
+  ["final2 judge cardinality", /const JUDGE_COUNT = 245;/.test(source)],
+  ["final2 corps cardinality", /const CORPS_COUNT = 709;/.test(source)],
+  ["final2 show cardinality", /const SHOW_COUNT = 349;/.test(source)],
   ["six output groups", /apply\(\[q10Delta, deltaQ50, q90Delta, recapHead, categoryHead, totalHead\]\)/.test(source)],
   ["ten model inputs", /inputs: \[seqInput, staticInput, maskInput, judgeIdsInput, corpsIdInput, baselineInput, historyLenInput, judgeBiasScaleInput, corpsScaleInput, agnosticShowInput\]/.test(source)],
 ];
@@ -35,5 +38,8 @@ assert.deepEqual(failures, [], `V9.5 architecture checks failed: ${failures.join
 assert.deepEqual(baseline.architecture.bidirectional_lstm_units, [128, 64]);
 assert.deepEqual(baseline.architecture.dense_trunk_units, [512, 256]);
 assert.equal(baseline.architecture.accuracy_trunk_units, 270);
+assert.equal(baseline.architecture.judge_embedding_input_dim, 245);
+assert.equal(baseline.architecture.corps_embedding_input_dim, 709);
+assert.equal(baseline.architecture.show_embedding_input_dim, 349);
 
-process.stdout.write(`V9.5 architecture verified: ${checks.length + 3} checks passed\n`);
+process.stdout.write(`V9.5 architecture verified: ${checks.length + 6} checks passed\n`);

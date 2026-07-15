@@ -561,6 +561,17 @@ pipeline state.
   the DB before TensorFlow starts and then requires the exact 7,321-row division,
   split, and show counts. This deliberately fails rather than silently training
   against the mutable 7,470-row DB.
+- The first native WSL graph smoke exposed two connected cardinality traps. A
+  `--maxRows` run sized the show embedding from only its small sample, then failed
+  on test show ID 158; sample construction must only increase, never shrink, the
+  known show cardinality. More importantly, the current index-map files are not
+  final2's maps: current counts are 356 judges/454 corps, while the frozen graph
+  was built with input dimensions 245 judges, 709 corps, and 349 shows. Counting
+  current map keys would both change graph parameters and fail on frozen corps ID
+  548. V9.5 now pins the three dimensions from final2's model graph, validates all
+  loaded IDs before construction, and records both frozen contract hashes and
+  local-file hashes in its card. V10 must generate matched, versioned maps and use
+  `max(index)+1`; never infer embedding size from object key count or a sample.
 
 ## V10 improvement hypothesis log
 

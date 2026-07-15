@@ -16,7 +16,10 @@
   "architecture": {
     "bidirectional_lstm_units": [128, 64],
     "dense_trunk_units": [512, 256],
-    "accuracy_trunk_units": 270
+    "accuracy_trunk_units": 270,
+    "judge_embedding_input_dim": 245,
+    "corps_embedding_input_dim": 709,
+    "show_embedding_input_dim": 349
   },
   "data": {
     "table": "ml_sequence_rows_v9_subcaption",

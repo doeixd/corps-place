@@ -68,6 +68,11 @@ const MODEL_DIR = "./models/v95_final2_reconstruction";
 const NORM_PATH = "./results/v95-final2-reconstruction-target-norm.json";
 const JUDGE_INDEX_PATH = "./src/training/judgeIndexMap.json";
 const CORPS_INDEX_PATH = "./src/training/corpsIndexMap.json";
+const JUDGE_COUNT = 245;
+const CORPS_COUNT = 709;
+const SHOW_COUNT = 349;
+const FINAL2_JUDGE_MAP_SHA256 = "1c95f7000798a858dd7b9e96864a2c2926d3bfc2fbccf24b44745d49a1c6596f";
+const FINAL2_CORPS_MAP_SHA256 = "99de63cc614f6965c64d229450bd1ebd663efdb02b4213281973f5f193ea3f3c";
 const CAPTIONS = ["GE1", "GE2", "VP", "VA", "CG", "MB", "MA", "MP"] as const;
 const CAPTION_COUNT = CAPTIONS.length;
 const SEQ_LEN = 15;
@@ -790,14 +795,6 @@ function parseArgs() {
 }
 
 
-const JUDGE_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync(JUDGE_INDEX_PATH, "utf-8"));
-const JUDGE_COUNT = Object.keys(JUDGE_INDEX_MAP).length;
-const CORPS_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync(CORPS_INDEX_PATH, "utf-8"));
-if (CORPS_INDEX_MAP["unknown"] !== UNK_CORPS_ID) {
-  throw new Error(`Expected corps unknown to be index ${UNK_CORPS_ID}, got ${CORPS_INDEX_MAP["unknown"]}`);
-}
-const CORPS_COUNT = Object.keys(CORPS_INDEX_MAP).length;
-
 const mean = (values: number[]) => (values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0);
 
 const std = (values: number[]) => {
@@ -1372,8 +1369,11 @@ function buildSamples(
 
   const agnosticShowSet = new Set<number>();
   for (const row of rows) agnosticShowSet.add(row.agnosticShowId);
-  const UNIQUE_SHOW_COUNT = Math.max(1, Math.max(...Array.from(agnosticShowSet)) + 1);
-  (globalThis as any).UNIQUE_SHOW_COUNT = UNIQUE_SHOW_COUNT;
+  const uniqueShowCount = Math.max(1, Math.max(...Array.from(agnosticShowSet)) + 1);
+  (globalThis as any).UNIQUE_SHOW_COUNT = Math.max(
+    (globalThis as any).UNIQUE_SHOW_COUNT ?? 0,
+    uniqueShowCount,
+  );
 
   const showIdMap = new Map<string, number>();
   let showIdCounter = 0;
@@ -1972,6 +1972,16 @@ async function main() {
   client.close();
 
   const loadedDataRows = buildDataRows(rawRows);
+  const maxJudgeId = Math.max(0, ...loadedDataRows.flatMap((row) => row.judgeIndices));
+  const maxCorpsId = Math.max(0, ...loadedDataRows.map((row) => row.corpsId));
+  const maxShowId = Math.max(0, ...loadedDataRows.map((row) => row.agnosticShowId));
+  if (maxJudgeId >= JUDGE_COUNT || maxCorpsId >= CORPS_COUNT || maxShowId >= SHOW_COUNT) {
+    throw new Error(
+      `final2 embedding contract exceeded: judge=${maxJudgeId}/${JUDGE_COUNT - 1}, ` +
+      `corps=${maxCorpsId}/${CORPS_COUNT - 1}, show=${maxShowId}/${SHOW_COUNT - 1}`,
+    );
+  }
+  (globalThis as any).UNIQUE_SHOW_COUNT = SHOW_COUNT;
   const divisionFilter = args.divisionFilter.toLowerCase();
   const allDataRows = divisionFilter === "all"
     ? loadedDataRows
@@ -3434,8 +3444,15 @@ async function main() {
     artifacts: {
       reference_curve_version: safeReferenceCurveVersion(),
       reference_curves_sha256: hashFileIfExists(path.join("src", "training", "referenceCurvesV4.json")),
-      judge_index_map_sha256: hashFileIfExists(JUDGE_INDEX_PATH),
-      corps_index_map_sha256: hashFileIfExists(CORPS_INDEX_PATH),
+      judge_index_map_sha256: FINAL2_JUDGE_MAP_SHA256,
+      corps_index_map_sha256: FINAL2_CORPS_MAP_SHA256,
+      local_judge_index_map_sha256: hashFileIfExists(JUDGE_INDEX_PATH),
+      local_corps_index_map_sha256: hashFileIfExists(CORPS_INDEX_PATH),
+      embedding_input_dims: {
+        judges: JUDGE_COUNT,
+        corps: CORPS_COUNT,
+        shows: SHOW_COUNT,
+      },
       normalization_sha256: hashFileIfExists(args.normPath),
     },
     split: splitDefinition,
