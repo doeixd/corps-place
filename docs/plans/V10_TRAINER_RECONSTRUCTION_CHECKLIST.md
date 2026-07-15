@@ -66,9 +66,18 @@ The original four-entry list omitted required precursor and calibration patches;
 the expanded order above was recovered by tracing symbols through the patch set.
 
 - [x] Restore final `MetricBucket`, `mapBuckets`, and summary shapes.
-- [ ] Verify history and forecast-mode buckets match the model card.
+- [x] Verify history and forecast-mode buckets match the model card.
 - [x] Preserve raw and calibrated interval metrics in the evaluator.
 - [x] Add a focused bucket accumulation/serialization test.
+
+Progress note (2026-07-15): the connected evaluation contract is now restored.
+`v95Evaluation.ts` owns show-grouped date-forward/show-random splitting, the 16
+preserved evaluation populations, and their panel/lineup/preseason mask modes.
+The trainer emits raw and calibrated slice trees, split and artifact provenance,
+curriculum/checkpoint metadata, `eval_report.json`, `test-results.json`, and a
+model card. `npm run test:v95-evaluation` pins the split isolation, label set,
+row selection, and mask modes; the masking test additionally pins final2's
+reduced forecast/history masking rates for established-history rows.
 
 ### 3. Auto-curriculum constants and configuration
 

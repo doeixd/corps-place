@@ -52,6 +52,11 @@ import {
   checkpointDecisions,
   selectFinalWeightsMode,
 } from "./v95Checkpoints.js";
+import {
+  buildFinal2EvaluationRows,
+  evaluationMaskRates,
+  splitValidationRows,
+} from "./v95Evaluation.js";
 
 const DB_PATH = "./dci-relational.db";
 const MODEL_DIR = "./models/v95_final2_reconstruction";
@@ -142,94 +147,6 @@ function shuffleArray<T>(array: T[], rng: () => number): T[] {
   return result;
 }
 
-function splitValidationByShow(rows: DataRow[], valSplit: number, seed: number) {
-  const groupsByShow = new Map<string, DataRow[]>();
-  for (const row of rows) {
-    const group = groupsByShow.get(row.showKey) ?? [];
-    group.push(row);
-    groupsByShow.set(row.showKey, group);
-  }
-
-  const shuffledGroups = shuffleArray([...groupsByShow.values()], seededRandom(seed));
-  const targetValRows = Math.max(1, Math.floor(rows.length * valSplit));
-  const valRows: DataRow[] = [];
-  const trainRows: DataRow[] = [];
-
-  for (const group of shuffledGroups) {
-    if (valRows.length < targetValRows) {
-      valRows.push(...group);
-    } else {
-      trainRows.push(...group);
-    }
-  }
-
-  if (trainRows.length === 0 && valRows.length > 1) {
-    const lastGroup = shuffledGroups[shuffledGroups.length - 1] ?? [];
-    for (const row of lastGroup) {
-      const idx = valRows.indexOf(row);
-      if (idx >= 0) valRows.splice(idx, 1);
-    }
-    trainRows.push(...lastGroup);
-  }
-
-  return { trainRows, valRows };
-}
-
-function splitValidationDateForward(rows: DataRow[], valSplit: number, cutoffDate?: string) {
-  const groupsByShow = new Map<string, DataRow[]>();
-  for (const row of rows) {
-    const group = groupsByShow.get(row.showKey) ?? [];
-    group.push(row);
-    groupsByShow.set(row.showKey, group);
-  }
-
-  const groups = [...groupsByShow.values()].sort((a, b) => {
-    const dateA = a[0]?.date ?? "";
-    const dateB = b[0]?.date ?? "";
-    if (dateA !== dateB) return dateA.localeCompare(dateB);
-    return (a[0]?.showKey ?? "").localeCompare(b[0]?.showKey ?? "");
-  });
-
-  const valRows: DataRow[] = [];
-  const trainRows: DataRow[] = [];
-
-  if (cutoffDate) {
-    for (const group of groups) {
-      const groupDate = group[0]?.date ?? "";
-      if (groupDate >= cutoffDate) valRows.push(...group);
-      else trainRows.push(...group);
-    }
-  } else {
-    const targetValRows = Math.max(1, Math.floor(rows.length * valSplit));
-    for (let idx = groups.length - 1; idx >= 0; idx--) {
-      const group = groups[idx]!;
-      if (valRows.length < targetValRows) valRows.unshift(...group);
-      else trainRows.unshift(...group);
-    }
-  }
-
-  if (trainRows.length === 0 && valRows.length > 1) {
-    const firstValShow = valRows[0]?.showKey;
-    const moved = valRows.filter((row) => row.showKey === firstValShow);
-    for (const row of moved) {
-      const idx = valRows.indexOf(row);
-      if (idx >= 0) valRows.splice(idx, 1);
-    }
-    trainRows.push(...moved);
-  }
-
-  return { trainRows, valRows };
-}
-
-function splitValidationRows(rows: DataRow[], args: ReturnType<typeof parseArgs>) {
-  if (args.valMode === "date-forward") {
-    return splitValidationDateForward(rows, args.valSplit, args.valDateCutoff);
-  }
-  if (args.valMode !== "show-random") {
-    console.warn(`Unknown validation mode '${args.valMode}', falling back to show-random.`);
-  }
-  return splitValidationByShow(rows, args.valSplit, args.seed);
-}
 const RECAP_DIM = CAPTION_COUNT;
 const CATEGORY_DIM = 3;
 const TOTAL_DIM = 1;
@@ -274,6 +191,24 @@ class MaskedSoftmax extends tf.layers.Layer {
 
   getClassName() {
     return "MaskedSoftmax";
+  }
+}
+
+function hashFileIfExists(filePath: string) {
+  if (!fs.existsSync(filePath)) return null;
+  return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
+}
+
+function safeReferenceCurveVersion() {
+  const refPath = path.join("src", "training", "referenceCurvesV4.json");
+  if (!fs.existsSync(refPath)) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(refPath, "utf-8")) as {
+      metadata?: { version?: string };
+    };
+    return parsed.metadata?.version ?? null;
+  } catch {
+    return null;
   }
 }
 
@@ -1437,6 +1372,7 @@ function buildSamples(
   historyHideRate: number = 0,
   judgeHideRate: number = 0,
   forecastContextHideRate: number = 0,
+  lineupHideRate: number = 0,
 ): Sample[] {
   const samples: Sample[] = [];
   const rng = seededRandom(seed);
@@ -1451,13 +1387,15 @@ function buildSamples(
 
   for (const row of rows) {
 
-    const { hideForecastContext, hideJudges, hideHistory } = selectV95Masking(
+    const observedPriorShowCount = row.seqMask.filter(Boolean).length;
+    const { hideForecastContext, hideLineupContext, hideJudges, hideHistory } = selectV95Masking(
       rng,
-      row.seqMask.some(Boolean),
+      observedPriorShowCount,
       {
         history: historyHideRate,
         judges: judgeHideRate,
         forecastContext: forecastContextHideRate,
+        lineup: lineupHideRate,
       },
     );
     const slicedSeq = hideHistory ? [] : row.seq.slice(-seqLen);
@@ -1570,6 +1508,10 @@ function buildSamples(
           : undefined,
         recapMean: forecastBaselineRaw,
       });
+    } else if (hideLineupContext) {
+      staticFeatures = applyV9PredictionContextMode(staticFeatures, {
+        mode: "lineup_unknown",
+      });
     }
     if (hideJudges) {
       maskV9JudgeContext(staticFeatures);
@@ -1631,7 +1573,7 @@ function buildSamples(
         judgeKnown: !hideJudges && row.judgeIndices.every((idx) => idx > 0),
         historyHidden: hideHistory,
         forecastContextHidden: hideForecastContext,
-        lineupContextHidden: false,
+        lineupContextHidden: hideLineupContext,
         seasonDebut: (staticFeatures[COLD_START_STATIC_OFFSET] ?? 0) >= 0.5,
         firstSeasonEvent: (staticFeatures[COLD_START_STATIC_OFFSET + 6] ?? 0) >= 0.5,
       },
@@ -2024,17 +1966,28 @@ async function main() {
   }>;
   client.close();
 
-  const allDataRows = buildDataRows(rawRows);
+  const loadedDataRows = buildDataRows(rawRows);
+  const divisionFilter = args.divisionFilter.toLowerCase();
+  const allDataRows = divisionFilter === "all"
+    ? loadedDataRows
+    : loadedDataRows.filter((row) => row.division.toLowerCase() === divisionFilter);
+  if (!allDataRows.length) {
+    throw new Error(`No rows remain after --division-filter ${args.divisionFilter}`);
+  }
+  if (divisionFilter !== "all") {
+    console.log(
+      `Division filter '${args.divisionFilter}': ${allDataRows.length}/${loadedDataRows.length} rows retained.`,
+    );
+  }
   const nonTestRows = allDataRows.filter((row) => row.split !== "test");
 
   const testRows = allDataRows.filter((row) => row.split === "test");
 
-  const valRng = seededRandom(args.seed);
-  const shuffled = shuffleArray([...nonTestRows], valRng);
-  const valCount = Math.max(1, Math.floor(shuffled.length * args.valSplit));
-
-  const valRows = shuffled.slice(0, valCount);
-  const trainRows = shuffled.slice(valCount);
+  const { trainRows, valRows, resolvedMode } = splitValidationRows(nonTestRows, args);
+  console.log(
+    `Validation split (${resolvedMode}) grouped by show/date: ` +
+    `${trainRows.length} train rows, ${valRows.length} validation rows.`,
+  );
 
   const baselineScope = args.baselineScope.toLowerCase();
   const baselineHistoryRows = baselineScope === "global" ? allDataRows : trainRows;
@@ -3355,153 +3308,151 @@ async function main() {
   await saveModel(model, runDir);
   fs.writeFileSync(path.join(runDir, "training-args.json"), JSON.stringify(args, null, 2));
 
-  if (testRows.length > 0) {
-    console.log("\n--- FINAL TEST EVALUATION ---");
-    const testSamples = buildSamples(testRows, stats, SEQ_LEN, 0.0, 42, 0, 0, 0);
+  const namedEvalRows = buildFinal2EvaluationRows(valSubset, testRows, COLD_START_STATIC_OFFSET);
 
-    let testDeltaMaeSum = 0;
-    let testRecapMaeSum = 0;
-    let testCategoryMaeSum = 0;
-    let testTotalMaeSum = 0;
-    let testCoverageWithin = 0;
-    let testWidthSum = 0;
-    let testWidthFloorCount = 0;
-    let testCount = 0;
+  console.log("\n--- INTERVAL CALIBRATION: validation grid search ---");
+  const validationSamplesForCalibration = buildSamples(
+    valSubset, stats, SEQ_LEN, 0, 41, 0, 0, 0,
+  );
+  const intervalCalibration = calibrateIntervalScale(
+    model, validationSamplesForCalibration, stats, args,
+  );
+  const calibratedIntervalScale = intervalCalibration.selected?.scale ?? 1;
+  console.log(
+    `Selected interval scale=${calibratedIntervalScale.toFixed(3)} ` +
+    `coverage=${(intervalCalibration.selected?.coverage ?? 0).toFixed(3)} ` +
+    `width=${(intervalCalibration.selected?.width ?? 0).toFixed(4)}`,
+  );
 
-    const testDeltaMeanTensor = tf.tensor1d(stats.deltaMean, "float32");
-    const testDeltaStdTensor = tf.tensor1d(stats.deltaStd.map((v) => (v > 1e-6 ? v : 1)), "float32");
-    const testRecapStdTensor = tf.tensor1d(stats.recapStd.map((v) => (v > 1e-6 ? v : 1)), "float32");
-    const testCategoryStdTensor = tf.tensor1d(stats.categoryStd.map((v) => (v > 1e-6 ? v : 1)), "float32");
-    const testTotalStdTensor = tf.scalar(stats.totalStd > 1e-6 ? stats.totalStd : 1);
+  const evalReports = Object.entries(namedEvalRows)
+    .filter(([, rows]) => rows.length > 0)
+    .map(([label, rows], index) => {
+      console.log(`\n--- EVALUATION: ${label} (${rows.length} rows) ---`);
+      const rates = evaluationMaskRates(label);
+      const samples = buildSamples(
+        rows, stats, SEQ_LEN, 0, 42 + index, 0, 0, 0,
+        rates.history, rates.judges, rates.forecastContext, rates.lineup,
+      );
+      const raw = evaluateSamples(model, samples, stats, args, label, 42 + index);
+      const calibrated = evaluateSamples(
+        model, samples, stats, args, `${label}_calibrated`, 142 + index,
+        calibratedIntervalScale,
+      );
+      console.log(
+        `${label}: delta_mae_pts=${raw.metrics.delta_mae_pts.toFixed(4)}, ` +
+        `recap_mae_pts=${raw.metrics.recap_mae_pts.toFixed(4)}, ` +
+        `total_mae_pts=${raw.metrics.total_mae_pts.toFixed(4)}, ` +
+        `coverage=${raw.metrics.coverage.toFixed(3)}, width=${raw.metrics.width.toFixed(4)}, ` +
+        `cal_coverage=${calibrated.metrics.coverage.toFixed(3)}, ` +
+        `cal_width=${calibrated.metrics.width.toFixed(4)}`,
+      );
+      return { ...raw, calibrated };
+    });
 
-    const testScales = {
-      judgeBias: args.noJudgeBias ? 0 : 1.0,
-      corps: args.noCorpsResidual ? 0 : 1.0
-    };
-    for (const batch of batchGenerator(testSamples, args.batchSize, false, 42, testScales)) {
-      const xs = batch.xs;
-      const ys = batch.ys;
-      const batchSize = ys.shape[0] ?? 0;
-      const preds = model.predict([
-        xs.sequence,
-        xs.static,
-        xs.mask,
-        xs.judge_ids,
-        xs.corps_id,
-        xs.baseline_recap,
-        xs.history_len,
-        xs.judge_bias_scale,
-        xs.corps_scale,
-        xs.agnostic_show_id
-      ]) as tf.Tensor;
-
-      const predQ10 = preds.slice([0, 0], [-1, CAPTION_COUNT]);
-      const predQ50 = preds.slice([0, CAPTION_COUNT], [-1, CAPTION_COUNT]);
-      const predQ90 = preds.slice([0, CAPTION_COUNT * 2], [-1, CAPTION_COUNT]);
-      const deltaTrueTensor = ys.slice([0, 0], [-1, CAPTION_COUNT]);
-      const predDenorm = tf.add(tf.mul(predQ50, testDeltaStdTensor), testDeltaMeanTensor);
-      const trueDenorm = tf.add(tf.mul(deltaTrueTensor, testDeltaStdTensor), testDeltaMeanTensor);
-
-      const predRecap = preds.slice([0, DELTA_DIM], [-1, RECAP_DIM]);
-      const trueRecap = ys.slice([0, CAPTION_COUNT], [-1, RECAP_DIM]);
-      const predCategory = preds.slice([0, DELTA_DIM + RECAP_DIM], [-1, CATEGORY_DIM]);
-      const trueCategory = ys.slice([0, CAPTION_COUNT + RECAP_DIM], [-1, CATEGORY_DIM]);
-      const predTotal = preds.slice([0, DELTA_DIM + RECAP_DIM + CATEGORY_DIM], [-1, TOTAL_DIM]);
-      const trueTotal = ys.slice([0, CAPTION_COUNT + RECAP_DIM + CATEGORY_DIM], [-1, TOTAL_DIM]);
-
-      const predQ10Denorm = tf.add(tf.mul(predQ10, testDeltaStdTensor), testDeltaMeanTensor);
-      const predQ90Denorm = tf.add(tf.mul(predQ90, testDeltaStdTensor), testDeltaMeanTensor);
-      const lower = tf.minimum(predQ10Denorm, predQ90Denorm);
-      const upper = tf.maximum(predQ10Denorm, predQ90Denorm);
-      const within = tf.logicalAnd(trueDenorm.greaterEqual(lower), trueDenorm.lessEqual(upper));
-      const widthFloorMask = tf.less(tf.sub(predQ90Denorm, predQ10Denorm), tf.scalar(args.widthFloorPts));
-
-      const metrics = tf.tidy(() => {
-        const metricsStack = tf.stack([
-          tf.mean(tf.abs(tf.sub(predDenorm, trueDenorm))).reshape([1]),
-          tf.mean(tf.mul(testRecapStdTensor, tf.abs(tf.sub(predRecap, trueRecap)))).reshape([1]),
-          tf.mean(tf.mul(testCategoryStdTensor, tf.abs(tf.sub(predCategory, trueCategory)))).reshape([1]),
-          tf.mean(tf.mul(testTotalStdTensor, tf.abs(tf.sub(predTotal, trueTotal)))).reshape([1]),
-          tf.cast(within, "float32").sum().reshape([1]),
-          tf.mean(tf.sub(upper, lower)).reshape([1]),
-          tf.sum(tf.cast(widthFloorMask, "float32")).reshape([1])
-        ]);
-        return metricsStack.dataSync();
-      });
-
-      const maePoints = metrics[0]!;
-      const recapMae = metrics[1]!;
-      const categoryMae = metrics[2]!;
-      const totalMae = metrics[3]!;
-      const withinCount = metrics[4]!;
-      const intervalWidth = metrics[5]!;
-      const widthFloorCountBatch = metrics[6]!;
-
-      testDeltaMaeSum += maePoints * batchSize;
-      testRecapMaeSum += recapMae * batchSize;
-      testCategoryMaeSum += categoryMae * batchSize;
-      testTotalMaeSum += totalMae * batchSize;
-      testCoverageWithin += withinCount;
-      testWidthSum += intervalWidth * (batchSize * CAPTION_COUNT);
-      testWidthFloorCount += widthFloorCountBatch;
-      testCount += batchSize;
-
-      preds.dispose();
-      predQ10.dispose();
-      predQ50.dispose();
-      predQ90.dispose();
-      deltaTrueTensor.dispose();
-      predRecap.dispose();
-      trueRecap.dispose();
-      predCategory.dispose();
-      trueCategory.dispose();
-      predTotal.dispose();
-      trueTotal.dispose();
-      predDenorm.dispose();
-      trueDenorm.dispose();
-      predQ10Denorm.dispose();
-      predQ90Denorm.dispose();
-      lower.dispose();
-      upper.dispose();
-      within.dispose();
-      widthFloorMask.dispose();
-      Object.values(xs).forEach(t => t.dispose());
-      ys.dispose();
-    }
-    testDeltaMeanTensor.dispose();
-    testDeltaStdTensor.dispose();
-    testRecapStdTensor.dispose();
-    testCategoryStdTensor.dispose();
-    testTotalStdTensor.dispose();
-
-    const finalTestDeltaPts = testCount ? testDeltaMaeSum / testCount : 0;
-    const finalTestRecapPts = testCount ? testRecapMaeSum / testCount : 0;
-    const finalTestCategory = testCount ? testCategoryMaeSum / testCount : 0;
-    const finalTestTotal = testCount ? testTotalMaeSum / testCount : 0;
-    const finalTestCov = (testCount * CAPTION_COUNT) ? testCoverageWithin / (testCount * CAPTION_COUNT) : 0;
-    const finalTestWidth = (testCount * CAPTION_COUNT) ? testWidthSum / (testCount * CAPTION_COUNT) : 0;
-    const finalTestWidthFloorPct = (testCount * CAPTION_COUNT) ? testWidthFloorCount / (testCount * CAPTION_COUNT) : 0;
-
-    console.log(`TEST RESULTS: delta_mae_pts = ${finalTestDeltaPts.toFixed(4)}, recap_mae_pts = ${finalTestRecapPts.toFixed(4)}, cat_mae_pts = ${finalTestCategory.toFixed(4)}, total_mae_pts = ${finalTestTotal.toFixed(4)}, coverage = ${finalTestCov.toFixed(3)}, width = ${finalTestWidth.toFixed(4)}, width_floor_pct = ${finalTestWidthFloorPct.toFixed(3)} `);
-
-    const report = {
-      metrics: {
-        delta_mae_pts: finalTestDeltaPts,
-        recap_mae_pts: finalTestRecapPts,
-        category_mae_pts: finalTestCategory,
-        total_mae_pts: finalTestTotal,
-        coverage: finalTestCov,
-        width: finalTestWidth,
-        width_floor_pct: finalTestWidthFloorPct
-      },
-      config: args,
-      timestamp: new Date().toISOString()
-    };
-    fs.writeFileSync(path.join(runDir, args.outputReport), JSON.stringify(report, null, 2));
-    if (args.outputReport !== "test-results.json") {
-      fs.writeFileSync(path.join(runDir, "test-results.json"), JSON.stringify(report.metrics, null, 2));
-    }
+  const splitDefinition = {
+    val_mode: resolvedMode,
+    val_split: args.valSplit,
+    val_date_cutoff: args.valDateCutoff ?? null,
+    division_filter: args.divisionFilter,
+    loaded_rows: loadedDataRows.length,
+    retained_rows: allDataRows.length,
+    train_rows: trainRows.length,
+    validation_rows: valRows.length,
+    test_rows: testRows.length,
+    train_shows: new Set(trainRows.map((row) => row.showKey)).size,
+    validation_shows: new Set(valRows.map((row) => row.showKey)).size,
+    test_shows: new Set(testRows.map((row) => row.showKey)).size,
+    validation_date_min: valRows.map((row) => row.date).sort()[0] ?? null,
+    validation_date_max: valRows.map((row) => row.date).sort().at(-1) ?? null,
+  };
+  const evaluations = Object.fromEntries(evalReports.map((entry) => [entry.label, entry]));
+  const validationRecapMae = evaluations.validation?.metrics?.recap_mae_pts ?? null;
+  const baselineSummary = {
+    validation_monitoring_forecast_mae: {
+      zero: baselines.baselineZero,
+      mean: baselines.baselineMean,
+      ema: baselines.baselineEma,
+      quadratic: baselines.baselineQuad,
+    },
+    final_validation_recap_mae: validationRecapMae,
+    final_validation_vs_inertia_pts: validationRecapMae == null
+      ? null
+      : baselines.baselineEma - validationRecapMae,
+    final_validation_vs_quadratic_pts: validationRecapMae == null
+      ? null
+      : baselines.baselineQuad - validationRecapMae,
+  };
+  const checkpoints = {
+    final_selection: { mode: finalWeightsMode },
+    best_delta: { metric: "valDeltaMae", value: bestDeltaMae, dir: bestDir },
+    best_loss: { metric: "valLoss", value: bestValLoss, dir: bestLossDir },
+    best_total: { metric: "valTotalMae", value: bestTotalMae, dir: bestTotalDir },
+    best_composite: {
+      metric: "productionComposite", value: bestCompositeScore, dir: bestCompositeDir,
+    },
+    best_phase_delta: {
+      A: { value: bestPhaseDeltaMae.A, dir: bestPhaseDirs.A },
+      B: { value: bestPhaseDeltaMae.B, dir: bestPhaseDirs.B },
+      C: { value: bestPhaseDeltaMae.C, dir: bestPhaseDirs.C },
+    },
+  };
+  const report = {
+    metrics: evaluations.test_all?.metrics ?? evalReports[0]?.metrics ?? {},
+    calibrated_metrics: evaluations.test_all?.calibrated?.metrics ??
+      evalReports[0]?.calibrated?.metrics ?? {},
+    evaluations,
+    split: splitDefinition,
+    curriculum_transitions: curriculumTransitions,
+    interval_calibration: intervalCalibration,
+    checkpoints,
+    baselines: baselineSummary,
+    config: args,
+    timestamp: new Date().toISOString(),
+  };
+  fs.writeFileSync(path.join(runDir, args.outputReport), JSON.stringify(report, null, 2));
+  if (args.outputReport !== "test-results.json") {
+    fs.writeFileSync(path.join(runDir, "test-results.json"), JSON.stringify({
+      ...report.metrics,
+      calibrated_metrics: report.calibrated_metrics,
+      interval_calibration: intervalCalibration,
+    }, null, 2));
   }
+
+  const modelCard = {
+    generated_at: new Date().toISOString(),
+    trainer: "trainModelV95.ts",
+    db_path: args.dbPath,
+    data: {
+      ml_table: "ml_sequence_rows_v9_subcaption",
+      row_count: loadedDataRows.length,
+      retained_row_count: allDataRows.length,
+      divisions: Object.fromEntries(
+        [...new Set(allDataRows.map((row) => row.division))].map((division) => [
+          division,
+          allDataRows.filter((row) => row.division === division).length,
+        ]),
+      ),
+    },
+    artifacts: {
+      reference_curve_version: safeReferenceCurveVersion(),
+      reference_curves_sha256: hashFileIfExists(path.join("src", "training", "referenceCurvesV4.json")),
+      judge_index_map_sha256: hashFileIfExists(JUDGE_INDEX_PATH),
+      corps_index_map_sha256: hashFileIfExists(CORPS_INDEX_PATH),
+      normalization_sha256: hashFileIfExists(args.normPath),
+    },
+    split: splitDefinition,
+    curriculum_transitions: curriculumTransitions,
+    checkpoints,
+    baselines: baselineSummary,
+    config: args,
+    evaluations,
+    caveats: [
+      "Date-forward validation is show-grouped.",
+      "Division ablations are available with --division-filter World Class or Open Class.",
+      "Generated Elo features must use pre-show *_elo_history.elo_before values.",
+    ],
+  };
+  fs.writeFileSync(path.join(runDir, "model-card.json"), JSON.stringify(modelCard, null, 2));
 
   console.log("Production training complete.");
 }

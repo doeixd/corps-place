@@ -63,7 +63,12 @@ assert.deepEqual(
     judges: 0,
     forecastContext: 0,
   }),
-  { hideHistory: false, hideJudges: false, hideForecastContext: false },
+  {
+    hideHistory: false,
+    hideJudges: false,
+    hideForecastContext: false,
+    hideLineupContext: false,
+  },
 );
 assert.equal(zeroRateDraws, 0, "disabled masks must not consume RNG draws");
 
@@ -85,6 +90,35 @@ for (let index = 0; index < 1000; index++) {
   if (decision.hideForecastContext) forecastHidden += 1;
 }
 assert.equal(forecastHidden, 113, "seeded 0.12 forecast masking contract drifted");
+
+assert.deepEqual(
+  selectV95Masking(() => 0, 3, {
+    history: 0,
+    judges: 0,
+    forecastContext: 0,
+    lineup: 1,
+  }),
+  {
+    hideHistory: false,
+    hideJudges: false,
+    hideForecastContext: false,
+    hideLineupContext: true,
+  },
+  "lineup-only evaluation must mask lineup context without hiding history",
+);
+
+let establishedDraws = 0;
+const established = selectV95Masking(() => {
+  establishedDraws += 1;
+  return 0.08;
+}, 5, {
+  history: 0.15,
+  judges: 0,
+  forecastContext: 0.12,
+});
+assert.equal(established.hideForecastContext, false, "established forecast rate must be halved");
+assert.equal(established.hideHistory, false, "established history rate must be reduced to 35%");
+assert.equal(establishedDraws, 2);
 
 const fingerprintStat = new Array(V9_RAW_STATIC_DIM).fill(0);
 fingerprintStat[V9_FEATURE_INDICES.captionFingerprintConfidence] = 1;

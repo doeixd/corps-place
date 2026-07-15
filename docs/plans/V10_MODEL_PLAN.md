@@ -521,10 +521,60 @@ pipeline state.
   base, clamps at `minLr`, and resets it only on a curriculum transition. The
   pure scheduler tests match preserved loss weights/scales at epochs 0, 39, 40,
   71, and 100 and pin width-floor and LR boundary behavior.
+- Final-report reconstruction exposed another partially applied chain. The V9.5
+  scaffold still used the anchor's random row split even when
+  `valMode=date-forward`, its `lineupContextHidden` metadata was permanently
+  false, and its terminal test block emitted only seven aggregate metrics. The
+  preserved final2 card requires a show-grouped date-forward split, explicit
+  lineup-unknown evaluation, raw plus calibrated sliced reports, artifact hashes,
+  curriculum/checkpoint provenance, and a model card. Treat these as one connected
+  evaluation-contract repair rather than copying only the final serializer.
+
+## V10 improvement hypothesis log
+
+Keep proposed V10 changes here as hypotheses until an ablation clears the frozen
+V9.5 gates. Do not mix them into reconstruction commits. For every tested idea,
+record the dataset version, seeds, relevant slices, result, and keep/reject
+decision.
+
+### 2026-07-15 — hypotheses suggested by final2 reconstruction
+
+- **Condition interval calibration on evidence strength.** Final2 chooses one
+  global interval scale (`0.6`), while its model card already shows materially
+  different behavior for zero-history, established-history, World Class, and Open
+  Class rows. Compare global calibration with history-bucket calibration and then
+  a small learned or conformal calibrator. Require adequate sample counts and
+  report coverage/width per slice so a small aggregate gain cannot hide a weak
+  subgroup.
+- **Make thin-history robustness an explicit selection objective.** The final2
+  composite checkpoint is dominated by aggregate validation delta/total error and
+  coverage. Test a constrained selector that minimizes zero/sparse-history error
+  subject to no regression beyond the predeclared established-history margin.
+  This may be safer than changing the training loss first.
+- **Test identity reliance directly.** Final2 schedules corps-identity scale and
+  dropout globally, but the useful amount of corps prior should depend on current
+  season evidence. Ablate history-conditioned identity gating/dropout against the
+  fixed schedule, especially for Open Class, season debuts, and returning corps.
+- **Separate field pace from corps trajectory.** Add the same-date, pre-show field
+  distribution/rank context described in Milestone 3 and ablate it before adding
+  more recurrent capacity. It should explain season-wide scoring drift without
+  forcing the corps embedding or short sequence to absorb field movement.
+- **Prefer a versioned clean training view over trainer-side filtering.** The
+  current builder mixes raw caption rows with clean reference-curve features. A
+  materialized, audited model-training view would make score exclusions, timing,
+  and row identity reproducible and would prevent mutable SQL joins from silently
+  changing the experiment population.
+- **Revisit the plateau policy only after faithful replay.** Persistent plateau
+  reduction fixes an obvious implementation defect, but its interaction with
+  cosine decay and curriculum transitions was never measured by final2. Compare
+  persistent multiplicative reduction, cosine restarts at phase boundaries, and
+  no plateau scheduler using identical seeds; do not assume the repaired behavior
+  is automatically the best V10 regimen.
 
 ## Immediate next task
 
-Begin Milestone 1 by scaffolding the clean V9.5 trainer from the trusted exact
-anchor and the committed 220-dimensional wiring reference. Restore and test the
-recovered regimen in the checklist's chronological order. Do not start field-pace
-or thin-history experiments until the V9.5 baseline gate passes.
+Finish Milestone 1's connected evaluation contract: restore the show-grouped
+date-forward split, lineup-context masking, complete sliced raw/calibrated report,
+artifact/checkpoint provenance, and model-card serialization. Pin those outputs
+against final2 before running the frozen 7,321-row V9.5 experiment. Do not start
+field-pace or thin-history experiments until the V9.5 baseline gate passes.

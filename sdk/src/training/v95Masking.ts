@@ -4,25 +4,33 @@ export type MaskingRates = {
   history: number;
   judges: number;
   forecastContext: number;
+  lineup?: number;
 };
 
 export type MaskingDecision = {
   hideHistory: boolean;
   hideJudges: boolean;
   hideForecastContext: boolean;
+  hideLineupContext: boolean;
 };
 
 export const selectV95Masking = (
   rng: () => number,
-  hasHistory: boolean,
+  historyCount: number | boolean,
   rates: MaskingRates,
 ): MaskingDecision => {
-  // Call order and short-circuiting are part of the final2 stochastic contract.
-  const hideForecastContext = rates.forecastContext > 0 && rng() < rates.forecastContext;
+  // Call order, short-circuiting, and history attenuation are part of final2's
+  // stochastic contract.
+  const observedHistory = typeof historyCount === "number" ? historyCount : historyCount ? 1 : 0;
+  const established = observedHistory >= 5;
+  const hideForecastContext = rates.forecastContext > 0 &&
+    rng() < (established ? rates.forecastContext * 0.5 : rates.forecastContext);
+  const hideLineupContext = !hideForecastContext && (rates.lineup ?? 0) > 0 && rng() < rates.lineup!;
   const hideJudges = rates.judges > 0 && rng() < rates.judges;
+  const effectiveHistoryRate = established ? rates.history * 0.35 : rates.history;
   const hideHistory = hideForecastContext ||
-    (rates.history > 0 && hasHistory && rng() < rates.history);
-  return { hideHistory, hideJudges, hideForecastContext };
+    (effectiveHistoryRate > 0 && observedHistory > 0 && rng() < effectiveHistoryRate);
+  return { hideHistory, hideJudges, hideForecastContext, hideLineupContext };
 };
 
 export const captionFingerprintBaselineAdjustments = (
