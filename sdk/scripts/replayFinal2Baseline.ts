@@ -424,6 +424,8 @@ const evaluate = (
 
 const main = async () => {
   const dbPath = path.resolve(sdkRoot, getArg("--db", "dci-relational-scrape.db"));
+  const replaySeed = Number(getArg("--seed", "42"));
+  if (!Number.isInteger(replaySeed)) throw new Error(`Invalid --seed: ${replaySeed}`);
   const modelDir = path.resolve(
     sdkRoot,
     getArg("--model-dir", "models/v9_subcaption_fixed/v9_prod_fingerprint_preseason_final2_1779976626982"),
@@ -460,9 +462,9 @@ const main = async () => {
     const expectedValidationCalibrated = card.evaluations.validation.calibrated;
     const expectedTest = card.evaluations.test_all;
     const calibratedIntervalScale = Number(expectedValidationCalibrated.interval_scale ?? 0.6);
-    const validationReplay = evaluate(validation, model, 42, 1, hasArg("--row-details"));
-    const validationCalibrated = evaluate(validation, model, 42, calibratedIntervalScale);
-    const testReplay = evaluate(test, model, 44, 1);
+    const validationReplay = evaluate(validation, model, replaySeed, 1, hasArg("--row-details"));
+    const validationCalibrated = evaluate(validation, model, replaySeed, calibratedIntervalScale);
+    const testReplay = evaluate(test, model, replaySeed + 2, 1);
     const failures: string[] = [];
     let checks = 0;
 

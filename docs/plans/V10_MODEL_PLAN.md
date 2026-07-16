@@ -626,6 +626,22 @@ pipeline state.
   same identities for seed 43 and across alternate checkpoint families before
   deciding whether the cause is seed variance or selection/training behavior.
 
+- A seed-aware replay of seed 43's current epoch-46 composite checkpoint was run
+  during training on 2026-07-16. The diagnostic now accepts `--seed`; this matters
+  because deterministic validation-time agnostic-show masking otherwise uses seed
+  42 and moves the metrics. With seed 43, aggregate validation recap MAE is
+  `0.349293` and total MAE `0.938149`. Established-history total MAE is
+  `0.844217`, short-history is `1.050941`, and zero-history is `2.314033`,
+  all competitive with or better than the corresponding final2 values.
+- The same checkpoint's nine-row sparse-history total MAE is `2.246757`: better
+  than seed 42's `2.433649`, but worse than final2's `1.838239` and `0.108517`
+  above the predeclared `2.13824` ceiling. It beats final2 on only three of nine
+  rows and beats seed 42 on four. Three rows account for the largest regressions
+  versus final2 (`+1.653807`, `+1.387505`, and `+0.958930` total-error
+  points), so compare their histories, identities, divisions, and fallback values
+  before changing a global loss. This replay is provisional: the final restored
+  checkpoint and terminal report remain authoritative.
+
 ## V10 improvement hypothesis log
 
 Keep proposed V10 changes here as hypotheses until an ablation clears the frozen
