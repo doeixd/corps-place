@@ -1291,3 +1291,15 @@ to choose among checkpoints.
   `0.00065` / `0.00075` under the same fixed `10/40` boundaries, paired seed and
   sample contract. Do not transfer this conclusion to the exact-size graph until
   its running fixed/phase-aware treatments finish.
+
+#### Live exact-size status at 2026-07-16 12:24 EDT
+
+- Fixed curriculum recovered after the phase-C shock and improved its composite to
+  `0.5044` at epoch 54 (`0.3494` recap / `0.9438` total), nearly matching final2
+  `0.5026` but not surpassing the completed standard seed-43 `0.5002` result yet.
+- Phase-aware LR reached epoch 26 with best composite `0.5814` at epoch 25
+  (`0.3868` recap / `1.2057` total). Smooth sequence reached epoch 16 with best
+  composite `0.5830` at epoch 15 (`0.3946` / `1.1760`). Their quality is similar,
+  but the smooth transition reached it in ten fewer epochs, an early sample-
+  efficiency signal rather than a terminal win.
+- All three jobs remain healthy with about 8.7 GiB available and no swap use.
