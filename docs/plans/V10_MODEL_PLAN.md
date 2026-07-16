@@ -1054,11 +1054,12 @@ decision.
 
 ## Immediate next task
 
-Finish the running seed-43 full frozen-data V9.5 replica, then summarize both
-seeds' mean/range against every predeclared tolerance. Diagnose seed 42's
-sparse-history failure at row and checkpoint level and resolve it before closing
-Milestone 1. Do not start field-pace or thin-history experiments until that V9.5
-baseline gate passes.
+Let the two running 1.885x seed-43 capacity/LR treatments finish, preserving the
+epoch-43 baseline-LR snapshot, then run the already queued fixed-curriculum
+standard-capacity seed-43 control. Compare terminal checkpoints on the frozen
+validation contract; a capacity recipe must clear sparse history and then repeat
+across seeds before it can close V9.5. Do not use the inspected early-2026 cohort
+to choose among checkpoints.
 
 ### 2026-07-16 — V9.5 qualification reports and early-2026 reference
 
@@ -1084,3 +1085,26 @@ baseline gate passes.
   inspected, this cohort is development validation; later 2026 shows are the next
   untouched rolling test. Before final claims, audit all stored 2026 features for
   strict as-of correctness and add show/date-grouped uncertainty intervals.
+
+### 2026-07-16 — first scale checkpoint to cross final2 composite
+
+- The 1.885x-capacity, original-learning-rate (`0.00075`) seed-43 run produced a
+  frozen-validation composite checkpoint at epoch 43 with composite `0.498524`,
+  recap MAE `0.349484`, and total MAE `0.899568`. This is the first current V9.5
+  candidate below final2's historical composite `0.502568`; it is provisional
+  until the run terminates and all history slices are replayed. The checkpoint was
+  copied to `snapshot_epoch_43_composite` so later improvements cannot overwrite
+  the evidence.
+- The paired 1.885x low-LR (`0.00055`) best-composite checkpoint and the preserved
+  original-LR epoch-43 checkpoint were evaluated on the frozen early-2026 cohort.
+  Both improve final2's identity-agnostic aggregate (`0.4930` recap / `1.5141`
+  total): low LR reaches `0.4588` / `1.4974`, and original LR reaches `0.4572` /
+  `1.4788`. The original-LR snapshot also improves zero-history and established-
+  history totals versus final2, while sparse total is slightly better and short-
+  history total is worse. See `docs/V95_2026_COMPARISON.md` for all slices.
+- This supports the user's learning-rate hypothesis: added capacity did not need
+  the lowered peak LR to become competitive, and the original LR currently has
+  the stronger frozen composite and 2026 aggregate. It does not yet isolate
+  capacity from optimization or establish a winner: wait for terminal results,
+  compare the queued standard-capacity fixed-curriculum control, and repeat the
+  selected recipe across seeds.

@@ -15,6 +15,8 @@ const specs = valuesFor("--report").length ? valuesFor("--report") : [
   "final2=results/v95-2026-final2.json",
   "seed42=results/v95-2026-seed42.json",
   "seed43=results/v95-2026-seed43.json",
+  "scale_lr550=results/v95-2026-scale-lr550.json",
+  "scale_lr750_e43=results/v95-2026-scale-lr750-epoch43.json",
 ];
 
 const reports = specs.map((spec) => {
