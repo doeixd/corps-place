@@ -27,6 +27,7 @@
     "train:v95:fixed-curriculum": "bash scripts/runV95FixedCurriculum.sh",
     "train:v95:replica": "bash scripts/runV95Replica.sh",
     "train:v95:scale2x": "bash scripts/runV95Scale2xAblation.sh",
+    "train:v95:scale2x-baseline-lr": "bash scripts/runV95Scale2xBaselineLrAblation.sh",
     "validate:v10-baseline": "tsx scripts/validateFinal2Baseline.ts",
     "validate:v95-architecture": "tsx scripts/validateV95Architecture.ts",
     "push:data": "tsx scripts/pushData.ts",

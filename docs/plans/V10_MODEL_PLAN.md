@@ -897,6 +897,12 @@ decision.
   inverse-square-root heuristic transfers to this recurrent curriculum. Scaling
   only parameters is not the Bitter Lesson: useful tests should eventually scale
   clean data and optimization steps alongside capacity.
+- **Paired learning-rate isolation queued:** repeat the exact 1.885× seed-43
+  treatment with final2's original `0.00075` learning rate. Keep architecture,
+  data, seed, masks, curriculum, sample budget, and checkpoint rules identical to
+  the `0.00055` run. This is the clean comparison that can attribute delayed
+  phase-B adaptation to learning rate. Run it after the fixed-curriculum job so
+  none of the three experiments contend for CPU.
 - Epoch-to-epoch validation movement is large enough that single-epoch headlines
   are unreliable. Retain composite and total checkpoint tracks, report a Pareto
   set, and require multi-seed terminal slice evaluation before promoting a V10
