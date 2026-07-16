@@ -12,11 +12,11 @@ import { HybridCollection } from '@/components/hybrid-collection';
 import { Explain } from '@/components/fantasy/explain';
 import { SectionErrorBoundary } from '@/components/error-boundary';
 import { ScoreRecapTable } from '@/components/prediction/score-recap-table';
-import { CorpsRegistryProvider } from '@/components/corps-registry';
 import {
-  StandingsBreakdown,
+  StandingsPickCell,
   type StandingsBreakdownData,
 } from '@/components/fantasy/standings-breakdown';
+import { isCaptionKey } from '@/lib/fantasy/captions';
 import { StandingsChart } from '@/components/fantasy/standings-chart';
 import type { PickedCorps } from '@/lib/server-fns/fantasy';
 import {
@@ -175,38 +175,38 @@ function StandingsContent({
             half of Visual and Music. Captions where no drafted corps has scored yet show an em
             dash and fill in as the season goes. Tap a column to sort.
           </p>
-          {/* The registry lets each expanded row's CorpsNameCell resolve a drafted
-              corps' real logo from just its corpsKey (contributions carry only keys). */}
-          <CorpsRegistryProvider corps={Object.values(pickedCorps)}>
-            <ScoreRecapTable
-              rows={recapRows}
-              corpsLookup={() => undefined}
-              title="Standings"
-              classFilters={[]}
-              onSetClassFilters={() => {}}
-              sorts={sorts}
-              onCycleSort={(key: RangeKey) => setSorts((prev) => cycleSort(prev, key, sortMode))}
-              onSetSorts={setSorts}
-              sortMode={sortMode}
-              onSetSortMode={setSortMode}
-              // Standings are point scores — no prediction intervals, no Ranges toggle.
-              showRanges={false}
-              onSetShowRanges={() => {}}
-              groupByClass={false}
-              onSetGroupByClass={() => {}}
-              // Cross-highlight with the season-progress chart above.
-              hoveredKey={hoveredKey}
-              onHoverRow={setHoveredKey}
-              // Expandable rows: reveal each player's drafted corps, weights, and how
-              // they add up. Detail data is stashed on the row by toRecapRow.
-              renderRowDetail={(r) => {
-                const detail = r._detail as StandingsBreakdownData | undefined;
-                return detail ? (
-                  <StandingsBreakdown data={detail} corpsByKey={pickedCorps} />
-                ) : null;
-              }}
-            />
-          </CorpsRegistryProvider>
+          <ScoreRecapTable
+            rows={recapRows}
+            corpsLookup={() => undefined}
+            title="Standings"
+            classFilters={[]}
+            onSetClassFilters={() => {}}
+            sorts={sorts}
+            onCycleSort={(key: RangeKey) => setSorts((prev) => cycleSort(prev, key, sortMode))}
+            onSetSorts={setSorts}
+            sortMode={sortMode}
+            onSetSortMode={setSortMode}
+            // Standings are point scores — no prediction intervals, no Ranges toggle.
+            showRanges={false}
+            onSetShowRanges={() => {}}
+            groupByClass={false}
+            onSetGroupByClass={() => {}}
+            // Cross-highlight with the season-progress chart above.
+            hoveredKey={hoveredKey}
+            onHoverRow={setHoveredKey}
+            // Expandable rows: each caption column of the detail row shows the corps
+            // the player drafted for it — logo, name, season-best value, weight —
+            // aligned directly under the caption cell it produces. Detail data is
+            // stashed on the row by toRecapRow.
+            rowDetailLabel="Drafted corps"
+            renderRowDetailCell={(r, colKey) => {
+              const detail = r._detail as StandingsBreakdownData | undefined;
+              if (!detail || !isCaptionKey(colKey)) return null;
+              return (
+                <StandingsPickCell picks={detail.contributions[colKey]} corpsByKey={pickedCorps} />
+              );
+            }}
+          />
         </SectionErrorBoundary>
       )}
     </PageShell>

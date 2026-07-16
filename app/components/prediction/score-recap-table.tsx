@@ -73,10 +73,14 @@ export interface ScoreRecapTableProps {
   onSetFullSorts?: (sorts: FullSortEntry[]) => void;
   yearSlug?: string;
   // Opt-in expandable rows: when provided, each row gets a disclosure toggle and,
-  // when opened, a full-width detail panel rendering this. Omitted by every
+  // when opened, a detail row that mirrors the table's own column skeleton — this
+  // is called once per score column so detail content (e.g. a member's drafted
+  // corps) lines up directly under the column it feeds. Omitted by every
   // prediction-page caller, so those tables are unaffected. Rows are keyed by
   // `row.id ?? row.corps` for expansion state.
-  renderRowDetail?: (row: RecapRow) => React.ReactNode;
+  renderRowDetailCell?: (row: RecapRow, col: RangeKey) => React.ReactNode;
+  // Label shown in the detail row's sticky name cell (defaults to "Picks").
+  rowDetailLabel?: React.ReactNode;
   // Opt-in cross-highlight (paired with an external chart/list): the row whose key
   // === hoveredKey is emphasized and the rest dim, and each row reports hover via
   // onHoverRow. Keyed like expansion (`row.id ?? row.corps`).
@@ -108,15 +112,16 @@ export function ScoreRecapTable({
   onCycleFullSort,
   onSetFullSorts,
   yearSlug,
-  renderRowDetail,
+  renderRowDetailCell,
+  rowDetailLabel,
   hoveredKey,
   onHoverRow,
 }: ScoreRecapTableProps) {
   const classFilterActive = classFilters.length > 0;
 
-  // Opt-in expandable rows (see `renderRowDetail`). State is owned here so callers
-  // pass only the render fn; keyed by a stable per-row id (or corps name).
-  const expandable = Boolean(renderRowDetail);
+  // Opt-in expandable rows (see `renderRowDetailCell`). State is owned here so
+  // callers pass only the render fn; keyed by a stable per-row id (or corps name).
+  const expandable = Boolean(renderRowDetailCell);
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const rowKey = (row: RecapRow) => String(row.id ?? row.corps);
   const toggleExpanded = (key: string) =>
@@ -705,20 +710,34 @@ export function ScoreRecapTable({
                               );
                             })}
                           </motion.tr>,
-                          isOpen && renderRowDetail ? (
+                          isOpen && renderRowDetailCell ? (
+                            // Detail row mirrors the main row's column skeleton
+                            // (sticky rank + name, optional class, one cell per
+                            // score column) so detail content sits directly under
+                            // the column it belongs to and scrolls with it.
                             <tr
                               key={`${key}-detail`}
                               data-slot="table-row"
                               className="border-b bg-muted/20"
                             >
-                              <td
-                                colSpan={
-                                  2 + (divisions.length === 0 ? 0 : 1) + SCORE_COLUMNS.length
-                                }
-                                className="p-0"
-                              >
-                                {renderRowDetail(row)}
-                              </td>
+                              <TableCell className="sticky-col sticky left-0 z-10 w-[48px] min-w-[48px] max-w-[48px] px-1 sm:w-[64px] sm:min-w-[64px] sm:max-w-[64px] sm:px-2" />
+                              <TableCell className="sticky-col sticky-col-edge sticky left-[48px] sm:left-[64px] z-10 align-top pt-3">
+                                <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                                  {rowDetailLabel ?? 'Picks'}
+                                </span>
+                              </TableCell>
+                              {divisions.length === 0 ? null : <TableCell />}
+                              {SCORE_COLUMNS.map((col) => (
+                                <TableCell
+                                  key={col.key}
+                                  className={
+                                    'px-1 py-2 text-center align-top' +
+                                    (col.separator ? ' border-r border-border' : '')
+                                  }
+                                >
+                                  {renderRowDetailCell(row, col.key)}
+                                </TableCell>
+                              ))}
                             </tr>
                           ) : null,
                           ];
