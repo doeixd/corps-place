@@ -1108,3 +1108,28 @@ to choose among checkpoints.
   capacity from optimization or establish a winner: wait for terminal results,
   compare the queued standard-capacity fixed-curriculum control, and repeat the
   selected recipe across seeds.
+
+### 2026-07-16 — same-parameter V9.5 improvement lane
+
+- Keep a distinct optimization lane at final2's exact `1,048,639` trainable
+  parameters. Standard seed 43 already reached frozen-validation composite
+  `0.500202`, nominally better than final2's `0.502568`, but it did not qualify as
+  parity because sparse-history total MAE remained above the predeclared ceiling.
+  The objective is therefore not merely a lower aggregate; it is a repeatable
+  composite improvement that also clears sparse history without sacrificing the
+  durable zero/short/established-history behavior.
+- The first treatment is already queued as `v95-fixed-seed43.service`: identical
+  graph, frozen rows/maps, seed, `0.00075` peak LR, losses, masking, dropout ramps,
+  checkpoint rules, and sample budget, with only auto curriculum replaced by
+  fixed A/B boundaries at epochs `10/40`. This tests whether seed-dependent early
+  transitions caused the sparse regression. If it wins, repeat the same treatment
+  with seed 42 before changing another knob.
+- If fixed boundaries do not qualify, retain the same graph and test one change at
+  a time: first a phase-aware LR schedule that holds the peak through the A→B
+  sequence-length transition and decays after phase-B stabilization; second,
+  checkpoint/SWA weight averaging using the same inference graph. Do not combine
+  these treatments initially. Preserve composite selection as the primary rule,
+  report every history slice, and require multi-seed plus later-2026 confirmation.
+- Cleaned/merged/alias-corrected data can improve a model with the same parameter
+  count, but that is the V10 clean-data control, not frozen-data V9.5 parity. Keep
+  it separate so optimization gains are not incorrectly attributed to cleanup.
