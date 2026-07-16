@@ -1374,3 +1374,22 @@ to choose among checkpoints.
   qualify independently (and repeat across seeds) before combining them. The
   clean-data control must use the exact V9.5/final2-sized graph and regimen with
   newly matched maps; it must not use the scaled combined defaults.
+
+#### V9.5 fixed-boundary terminal result and V10 profile correction
+
+- The exact-size fixed-boundary seed-43 run completed and selected composite
+  `0.500568`. Its terminal validation is `0.348322` recap / `0.950032` total;
+  history totals are `2.121598` zero / `1.688805` sparse / `1.171453` short /
+  `0.861644` established; calibrated coverage is `0.815771`; test-all is
+  `0.277327` recap / `0.628097` total. It clears every predeclared single-run
+  V9.5 gate, including the sparse-history ceiling that blocked the two automatic
+  replicas. Seed 42 fixed-boundary confirmation started as
+  `v95-fixed-curriculum-seed42.service`; Milestone 1 remains open until that
+  paired result completes and qualifies.
+- `v10Config.ts` now exposes seven isolated, named experiment profiles:
+  clean-data control, field pace, thin history, scaled control, phase-aware LR,
+  smooth sequence, and combined candidate. There is no implicit V10 default.
+  Every profile is intentionally non-runnable until the stable data snapshot,
+  audited view, matched maps/curves, and row manifest qualify; the combined
+  candidate has the stronger additional requirement that its components qualify
+  independently. `npm run test:v10-config` pins these boundaries.

@@ -1,30 +1,50 @@
 import assert from "node:assert/strict";
 import { formatV95ModelCapacity, parseV95Args } from "../src/training/v95Config.js";
-import { mergeV10Args, V10_PROFILE, v10DefaultArgs } from "../src/training/v10Config.js";
+import { getV10Profile, mergeV10Args, V10_PROFILES, v10DefaultArgs, V10_PROFILE_NAMES } from "../src/training/v10Config.js";
 
-const args = parseV95Args(v10DefaultArgs());
-assert.equal(args.modelVersion, "v10-dev1");
-assert.equal(args.parentModel, "v9.5-reconstructed-final2");
-assert.equal(args.dataContract, "canonical-clean-v10-dev1");
-assert.equal(args.mlTable, "ml_sequence_rows_v10_final");
-assert.equal(args.learningRate, 0.00065);
-assert.equal(args.lrSchedule, "phase-aware");
-assert.equal(args.autoCurriculum, false);
-assert.equal(args.curriculumPhaseAEnd, 10);
-assert.equal(args.curriculumPhaseBEnd, 40);
-assert.equal(args.sequenceTransitionEpochs, 4);
-assert.equal(args.lstm1Units, 192);
-assert.equal(args.lstm2Units, 96);
-assert.equal(args.dense1Units, 768);
-assert.equal(args.dense2Units, 384);
-assert.equal(args.accuracyTrunkUnits, 405);
-assert.equal(V10_PROFILE.expectedTrainableParameters, 1_976_938);
+assert.equal(V10_PROFILE_NAMES.length, 7);
+for (const name of V10_PROFILE_NAMES) {
+  const profile = getV10Profile(name);
+  const args = parseV95Args(v10DefaultArgs(name));
+  assert.equal(args.modelVersion, profile.modelVersion, name);
+  assert.equal(args.parentModel, profile.parentModel, name);
+  assert.equal(args.dataContract, profile.dataContract, name);
+  assert.equal(args.featureProfile, profile.featureProfile, name);
+  assert.equal(args.mlTable, profile.mlTable, name);
+  assert.equal(profile.runnable, false, `${name} must remain blocked before data qualification`);
+}
+
+const control = parseV95Args(v10DefaultArgs("clean-data-control"));
+assert.equal(control.lstm1Units, 128);
+assert.equal(control.lstm2Units, 64);
+assert.equal(control.dense1Units, 512);
+assert.equal(control.dense2Units, 256);
+assert.equal(control.accuracyTrunkUnits, 270);
+assert.equal(control.learningRate, 0.00075);
+assert.equal(control.lrSchedule, "cosine");
+assert.equal(control.autoCurriculum, true);
+assert.equal(control.sequenceTransitionEpochs, 0);
+assert.equal(V10_PROFILES["clean-data-control"].expectedTrainableParametersUnderFinal2Cardinalities, 1_048_639);
 assert.equal(
-  formatV95ModelCapacity(args),
-  "Model Capacity: 384→192 BiLSTM, Dense 768→384, AccuracyTrunk 405, " +
-    "Judge Emb 24, Corps Emb 20, Show Emb 12",
+  formatV95ModelCapacity(control),
+  "Model Capacity: 256→128 BiLSTM, Dense 512→256, AccuracyTrunk 270, Judge Emb 24, Corps Emb 20, Show Emb 12",
 );
-const overridden = parseV95Args(mergeV10Args(["--lr", "0.0006", "--seed", "42"], 42));
+
+const phaseAware = parseV95Args(v10DefaultArgs("phase-aware-lr"));
+assert.equal(phaseAware.lrSchedule, "phase-aware");
+assert.equal(phaseAware.sequenceTransitionEpochs, 0);
+const smooth = parseV95Args(v10DefaultArgs("smooth-sequence"));
+assert.equal(smooth.lrSchedule, "cosine");
+assert.equal(smooth.sequenceTransitionEpochs, 4);
+const combined = parseV95Args(v10DefaultArgs("combined-candidate"));
+assert.equal(combined.lstm1Units, 192);
+assert.equal(combined.learningRate, 0.00065);
+assert.equal(combined.lrSchedule, "phase-aware");
+assert.equal(combined.sequenceTransitionEpochs, 4);
+assert.equal(V10_PROFILES["combined-candidate"].expectedTrainableParametersUnderFinal2Cardinalities, null);
+
+const overridden = parseV95Args(mergeV10Args("scaled-control", ["--lr", "0.0006", "--seed", "42"], 42));
 assert.equal(overridden.learningRate, 0.0006);
 assert.equal(overridden.seed, 42);
-process.stdout.write("V10 dev1 profile verified\n");
+assert.throws(() => getV10Profile("not-a-profile"), /Unknown V10 profile/);
+process.stdout.write("V10 isolated experiment profiles verified\n");
