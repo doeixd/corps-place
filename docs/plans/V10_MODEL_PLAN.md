@@ -897,12 +897,14 @@ decision.
   inverse-square-root heuristic transfers to this recurrent curriculum. Scaling
   only parameters is not the Bitter Lesson: useful tests should eventually scale
   clean data and optimization steps alongside capacity.
-- **Paired learning-rate isolation queued:** repeat the exact 1.885× seed-43
+- **Paired learning-rate isolation started:** repeat the exact 1.885× seed-43
   treatment with final2's original `0.00075` learning rate. Keep architecture,
   data, seed, masks, curriculum, sample budget, and checkpoint rules identical to
   the `0.00055` run. This is the clean comparison that can attribute delayed
-  phase-B adaptation to learning rate. Run it after the fixed-curriculum job so
-  none of the three experiments contend for CPU.
+  phase-B adaptation to learning rate. It started concurrently with the original
+  scale run at the user's direction on 2026-07-16; therefore compare metrics and
+  seeded trajectories, but not wall-clock time. The fixed-curriculum job now
+  waits for both large runs to exit so it will not become a third training job.
 - Epoch-to-epoch validation movement is large enough that single-epoch headlines
   are unreliable. Retain composite and total checkpoint tracks, report a Pareto
   set, and require multi-seed terminal slice evaluation before promoting a V10
@@ -939,10 +941,9 @@ decision.
   mask-order hashes or deterministic fixtures.
 - **Next run queued:** standard-capacity seed 43 with auto curriculum disabled,
   forcing the recovered final2 boundaries A→B at epoch 10 and B→C at epoch 40.
-  All other frozen-contract arguments stay unchanged. Run it only after the 1.9×
-  capacity ablation exits, avoiding CPU contention as another reproducibility
-  variable. Compare it directly with standard automatic seed 43; do not compare
-  its wall time with a concurrently trained job.
+  All other frozen-contract arguments stay unchanged. Its systemd queue waits
+  until both 1.9× learning-rate treatments exit, avoiding a third concurrent
+  training job. Compare it directly with standard automatic seed 43.
 
 ### 2026-07-16 — clean-data rebuild and early-2026 out-of-time gate
 
