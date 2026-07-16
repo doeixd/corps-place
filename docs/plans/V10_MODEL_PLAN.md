@@ -870,6 +870,36 @@ decision.
   by changing dropout, curriculum, identity scales, or training duration inside
   this paired comparison.
 
+### 2026-07-16 — completed seed-43 replica diagnosis
+
+- The paired standard-capacity seed-43 replica stopped at epoch 92 and selected
+  the epoch-46 composite checkpoint (best-total was epoch 48). Its held-out test
+  result was `0.3117` recap MAE and `0.7183` total MAE versus final2's `0.2924`
+  and `0.7090`; this is a credible reconstruction-level result, not a new
+  champion. Calibrated coverage/width were `0.820`/`1.108`, inside the target
+  band and slightly narrower than final2.
+- The regression is localized. Seed 43 improved World Class total MAE to `0.55`
+  from final2's `0.62`, but Open Class worsened to `1.01` from `0.86`. Caption
+  error was particularly worse in MP and GE1, while GE2, MB, and MA improved.
+  Treat the 52-row test headline as noisy and retain division/caption slices in
+  every decision.
+- Seed 43 auto-transitioned B→C at epoch 32 on a delta plateau; final2 and the
+  seed-42 replica both remained in B until the epoch-40 maximum. Because this
+  changes loss weights, identity dropout, and the late learning trajectory, test
+  a fixed `A=10/B=40` schedule as the next targeted stability ablation rather
+  than changing several curriculum/dropout knobs together.
+- Seed-aware missing-history replay remained mixed: epoch-46 improved short- and
+  zero-history totals versus final2, approximately tied established history, but
+  sparse-history total was `2.247` versus final2's `1.838`. Epoch-48 reduced it
+  to `2.130` at an aggregate tradeoff. Preserve both checkpoints and do not infer
+  durable missing-history superiority from the aggregate test score.
+- Same-seed seed-42 reconstruction still differs from historical final2 despite
+  identical recorded seed and 7,321-row population. Recorded arguments are not a
+  complete determinism contract: recovered implementation/runtime details,
+  stochastic sample/mask order, and checkpoint path can still differ. Before
+  attributing a small gain to V10, estimate multi-seed variance and log sample/
+  mask-order hashes or deterministic fixtures.
+
 ### 2026-07-16 — clean-data rebuild and early-2026 out-of-time gate
 
 - **Make the cleaned domain layer the V10 source of truth.** Final2/V9 rows were
