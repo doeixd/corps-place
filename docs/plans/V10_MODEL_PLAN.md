@@ -1188,3 +1188,9 @@ to choose among checkpoints.
   fixed-boundary control. The phase-aware LR treatment changes only LR shape; the
   smooth-sequence treatment changes only sequence exposure. Do not combine them
   unless one independently qualifies and repeats across seed 42.
+- At the user's direction, the fixed-boundary control was released to run alongside
+  the two capacity jobs at 2026-07-16 11:04 EDT. It reached epoch 0 with the exact
+  graph and contract; initialization peaked near 4.4 GiB while WSL retained about
+  8.4 GiB available and used no swap. `v95-phase-aware-lr-seed43.service` and
+  `v95-smooth-sequence-seed43.service` remain sequential waiters. Do not release
+  both while the capacity jobs are active: their initialization peaks can overlap.
