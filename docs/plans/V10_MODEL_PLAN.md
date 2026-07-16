@@ -1311,3 +1311,11 @@ to choose among checkpoints.
   `0.5178` at epoch 25 (`0.3590` / `0.9688`). Smooth remains more sample-efficient,
   but phase-aware currently leads it in absolute composite. Terminal history slices
   and multi-seed repeatability remain decisive.
+
+- By 13:13 EDT, fixed curriculum remained best at `0.5006` through epoch 95.
+  Phase-aware LR improved sharply after phase-C decay began, reaching composite
+  `0.5034` at epoch 59 (`0.3533` recap / `0.9063` total), now nearly matching
+  final2. Smooth sequence retained composite `0.5081` but found a stronger
+  best-total checkpoint of `0.8943` at epoch 50. This suggests phase-aware decay
+  improves the balanced objective, while smoothing may favor total accuracy; wait
+  for terminal selected checkpoints and history slices before combining them.
