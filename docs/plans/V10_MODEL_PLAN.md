@@ -920,6 +920,18 @@ decision.
   epoch 32. Endogenous transition timing now confounds same-epoch comparisons and
   further justifies the queued fixed-boundary experiment. Compare within phase
   and at terminal checkpoints, not epoch number alone.
+- **Status at low-LR epoch 45 / baseline-LR epoch 13:** the `0.00055` run finally
+  entered phase C at epoch 39 and has not beaten its epoch-34 composite/total
+  checkpoint (`0.5046` / `0.8985`) since the transition. Preserve that phase-B
+  checkpoint. The `0.00075` run is learning materially faster: at matched epoch
+  10 it reached `0.429` recap / `1.284` total versus low LR's `0.507` / `1.541`,
+  and its epoch-6 composite was `0.6189`. This supports the hypothesis that
+  `0.00055` under-optimized the larger graph early.
+- Higher LR is also more volatile: after the strong epoch 6, epochs 7–9 regressed
+  sharply before recovering in phase B. For V10, prefer adequate peak LR plus
+  warmup/plateau control and robust checkpointing over simply lowering the whole
+  schedule. Do not declare `0.00075` the winner until it reaches comparable phase
+  B/C checkpoints and terminal missing-history slices.
 - Epoch-to-epoch validation movement is large enough that single-epoch headlines
   are unreliable. Retain composite and total checkpoint tracks, report a Pareto
   set, and require multi-seed terminal slice evaluation before promoting a V10
