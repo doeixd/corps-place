@@ -675,6 +675,23 @@ decision.
   coverage. Test a constrained selector that minimizes zero/sparse-history error
   subject to no regression beyond the predeclared established-history margin.
   This may be safer than changing the training loss first.
+- **Retain a bounded checkpoint frontier, not only one winner per metric.** The
+  reconstructed trainer already maintains rolling `best`, `best_loss`,
+  `best_total`, `best_composite`, and phase-best directories, which is why the
+  useful epoch-48 snapshot survived. Each directory is still overwritten when its
+  metric improves, and the terminal card fully evaluates only the selected final
+  weights. V10 should preserve immutable snapshots whenever a checkpoint is
+  non-dominated across recap, total, established, sparse, zero-history, coverage,
+  and width; attach epoch, curriculum state, seed, hashes, and validation metrics.
+  Cap the frontier and remove dominated snapshots rather than saving every epoch.
+- **Evaluate and package frontier candidates uniformly.** At training end, replay
+  every retained frontier checkpoint through the same calibrated slice suite and
+  write a compact comparison table. Choose production weights with a selector
+  declared before viewing the results, and package the selected model plus any
+  named fallback checkpoint needed for audit. Do not use the early-2026 holdout to
+  cherry-pick among snapshots after the fact; checkpoint selection remains on the
+  frozen development validation contract, with 2026 used as an out-of-time gate.
+
 - **Treat sparse-slice variance as a first-class diagnostic.** Seed 42's aggregate
   reconstruction metrics passed while its nine-row sparse-history total MAE
   missed the guardrail. After seed 43, compare row-level errors and checkpoint
