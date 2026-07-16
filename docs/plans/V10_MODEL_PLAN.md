@@ -877,6 +877,30 @@ decision.
   epoch-15 current recap/total were `0.465`/`1.682` versus standard
   `0.430`/`1.437`. Continue to the predeclared stopping rule: this may be slower
   optimization from the larger graph and lower learning rate, not a final result.
+- **Interim epoch-23 lessons:** the large graph recovered sharply at epoch 16 to
+  `0.388` recap / `1.167` total, almost exactly the standard run's `0.386` /
+  `1.143` at that epoch. It then oscillated while standard seed 43 reached
+  `0.377` / `1.114` at epoch 23; best composite through that point was `0.575`
+  large versus `0.557` standard. Thus 1.885× parameters have not improved sample
+  efficiency under the same 7,321 rows and epoch/sample budget. Treat data
+  quality/coverage, optimization, and curriculum transitions as earlier V10
+  levers than width.
+- The phase-A lead followed by phase-B disruption shows that the abrupt 5→15
+  sequence-length change is itself a major optimization event, especially for a
+  wider recurrent stack. A future experiment may ramp or mix sequence lengths,
+  but do not introduce that change into this capacity comparison. Always save a
+  checkpoint immediately before and for several epochs after a curriculum
+  boundary.
+- This treatment also lowered learning rate to `0.00055`, so a final loss cannot
+  be attributed to parameter count alone. If scale remains promising enough to
+  revisit, run a small paired learning-rate/warmup sweep rather than assuming the
+  inverse-square-root heuristic transfers to this recurrent curriculum. Scaling
+  only parameters is not the Bitter Lesson: useful tests should eventually scale
+  clean data and optimization steps alongside capacity.
+- Epoch-to-epoch validation movement is large enough that single-epoch headlines
+  are unreliable. Retain composite and total checkpoint tracks, report a Pareto
+  set, and require multi-seed terminal slice evaluation before promoting a V10
+  recipe.
 
 ### 2026-07-16 — completed seed-43 replica diagnosis
 
