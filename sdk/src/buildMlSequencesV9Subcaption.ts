@@ -824,6 +824,7 @@ type BuildV9SubcaptionOptions = {
   captionSource?: "raw-v9" | "clean-v10";
   targetTable?: typeof V9_TARGET_TABLE | typeof V10_TARGET_TABLE;
   builderVersion?: string;
+  outputDbPath?: string;
 };
 
 export const buildSequencesV9 = (
@@ -832,8 +833,13 @@ export const buildSequencesV9 = (
 ) => Effect.gen(function* () {
   const sql = yield* (SqlClient.SqlClient);
   const captionSource = options.captionSource ?? "raw-v9";
-  const targetTable = options.targetTable ?? V9_TARGET_TABLE;
+  const targetTable = options.outputDbPath ? `v10out.${options.targetTable ?? V10_TARGET_TABLE}` : options.targetTable ?? V9_TARGET_TABLE;
   const builderVersion = options.builderVersion ?? V9_BUILDER_VERSION;
+
+  if (options.outputDbPath) {
+    yield* (sql.unsafe("ATTACH DATABASE ? AS v10out", [options.outputDbPath]));
+    yield* (sql.unsafe("CREATE TEMP VIEW v10_training_performances AS SELECT * FROM v10out.v10_training_performances"));
+  }
 
   yield* (sql.unsafe(`
     CREATE TABLE IF NOT EXISTS ${targetTable} (
@@ -1957,7 +1963,7 @@ export const buildSequencesV9 = (
 
 const insertBatch = (
   sql: SqlClient.SqlClient,
-  targetTable: typeof V9_TARGET_TABLE | typeof V10_TARGET_TABLE,
+  targetTable: string,
   rows: any[],
 ) =>
   Effect.forEach(
@@ -2017,6 +2023,7 @@ if (dataContract !== "raw-v9" && dataContract !== "clean-v10") {
   throw new Error(`Unsupported --data-contract ${dataContract}`);
 }
 const dbPath = valueAfter("--db") ?? "./dci-relational.db";
+const outputDbPath = valueAfter("--output-db");
 const SqlLayer = LibsqlClient.layer({ url: `file:${dbPath}` });
 
 // `--seasons 2026` (comma-separated) restricts the build; INSERT OR REPLACE is an
@@ -2037,10 +2044,11 @@ const buildOptions: BuildV9SubcaptionOptions = v10Clean
       captionSource: "clean-v10",
       targetTable: V10_TARGET_TABLE,
       builderVersion: V10_BUILDER_VERSION,
+      outputDbPath,
     }
   : {};
 console.log(
-  `Data contract: ${dataContract}; target: ${buildOptions.targetTable ?? V9_TARGET_TABLE}; DB: ${dbPath}`,
+  `Data contract: ${dataContract}; target: ${buildOptions.targetTable ?? V9_TARGET_TABLE}; source DB: ${dbPath}; output DB: ${outputDbPath ?? dbPath}`,
 );
 
 Effect.runPromise(buildSequencesV9(seasonsArg ?? SEASONS, buildOptions).pipe(Effect.provide(SqlLayer)))

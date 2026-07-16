@@ -657,7 +657,7 @@ export const querySeasonCaptionsV6 = (season: string, division: string) =>
 /**
  * V10 clean-data contract.
  *
- * `clean_reference_curve_entries` is the canonical, domain-filtered wide view:
+ * `v10_training_performances` is the versioned, materialized training contract:
  * aliases are resolved, only model divisions/events remain, all eight captions
  * must be present and in range, caption totals must reconcile to the official
  * total, and placement is recomputed from the cleaned field. Keep V6 unchanged
@@ -669,27 +669,27 @@ export const querySeasonCaptionsV10Clean = (season: string, division: string) =>
     return yield* (
       sql<SeasonCaptionRow>`
         WITH clean_long AS (
-          SELECT *, 'General Effect 1' AS caption_name, GE1 AS score FROM clean_reference_curve_entries
+          SELECT *, 'General Effect 1' AS caption_name, GE1 AS score FROM v10_training_performances
           UNION ALL
-          SELECT *, 'General Effect 2' AS caption_name, GE2 AS score FROM clean_reference_curve_entries
+          SELECT *, 'General Effect 2' AS caption_name, GE2 AS score FROM v10_training_performances
           UNION ALL
-          SELECT *, 'Visual Proficiency' AS caption_name, VP AS score FROM clean_reference_curve_entries
+          SELECT *, 'Visual Proficiency' AS caption_name, VP AS score FROM v10_training_performances
           UNION ALL
-          SELECT *, 'Visual Analysis' AS caption_name, VA AS score FROM clean_reference_curve_entries
+          SELECT *, 'Visual Analysis' AS caption_name, VA AS score FROM v10_training_performances
           UNION ALL
-          SELECT *, 'Color Guard' AS caption_name, CG AS score FROM clean_reference_curve_entries
+          SELECT *, 'Color Guard' AS caption_name, CG AS score FROM v10_training_performances
           UNION ALL
-          SELECT *, 'Music - Brass' AS caption_name, MB AS score FROM clean_reference_curve_entries
+          SELECT *, 'Music - Brass' AS caption_name, MB AS score FROM v10_training_performances
           UNION ALL
-          SELECT *, 'Music - Analysis' AS caption_name, MA AS score FROM clean_reference_curve_entries
+          SELECT *, 'Music - Analysis' AS caption_name, MA AS score FROM v10_training_performances
           UNION ALL
-          SELECT *, 'Music - Percussion' AS caption_name, MP AS score FROM clean_reference_curve_entries
+          SELECT *, 'Music - Percussion' AS caption_name, MP AS score FROM v10_training_performances
         ), ranked AS (
           SELECT
             clean_long.*,
             ROW_NUMBER() OVER (
               PARTITION BY season, competition_slug, caption_name
-              ORDER BY score DESC, corps_key
+              ORDER BY score DESC, source_corps_key
             ) AS caption_rank
           FROM clean_long
           WHERE season = ${season}
@@ -698,10 +698,10 @@ export const querySeasonCaptionsV10Clean = (season: string, division: string) =>
         SELECT
           ranked.season,
           ranked.competition_slug AS slug,
-          c.date,
+          ranked.competition_date AS date,
           ranked.percent_through,
-          c.event_name,
-          ranked.corps_key,
+          ranked.event_name,
+          ranked.source_corps_key AS corps_key,
           ranked.division_name,
           ranked.computed_rank AS rank,
           ranked.total_score,
@@ -709,8 +709,7 @@ export const querySeasonCaptionsV10Clean = (season: string, division: string) =>
           ranked.score,
           ranked.caption_rank
         FROM ranked
-        JOIN competitions c ON c.slug = ranked.competition_slug
-        ORDER BY c.date, ranked.competition_slug, ranked.corps_key, ranked.caption_name
+        ORDER BY ranked.competition_date, ranked.competition_slug, ranked.source_corps_key, ranked.caption_name
       `
     );
   });

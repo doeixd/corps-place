@@ -14,7 +14,9 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "build:v10-data-control": "tsx src/buildMlSequencesV9Subcaption.ts --data-contract clean-v10",
+    "build:v10-data-control": "tsx src/buildMlSequencesV9Subcaption.ts --data-contract clean-v10 --db ./data/v10-source-2026-07-16.db --output-db ./data/v10-training-dev1.db",
+    "freeze:v10-source": "tsx scripts/freezeV10Source.ts",
+    "prepare:v10-data": "tsx scripts/prepareV10TrainingData.ts",
     "check": "tsc --noEmit -p tsconfig.json",
     "replay:v10-baseline": "tsx scripts/replayFinal2Baseline.ts",
     "report:v95-parity": "tsx scripts/reportV95Parity.ts",

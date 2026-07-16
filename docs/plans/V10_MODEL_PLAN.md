@@ -1368,6 +1368,18 @@ to choose among checkpoints.
   the newly created table was no longer present. Copy/snapshot the source DB to a
   stable experiment path first, record its SHA-256 and cutoff, build there, and
   hash/export the resulting row manifest before training.
+- Follow-up against the completed immutable snapshot corrected the initial
+  attrition diagnosis: the canonical clean view contains `7,317` legitimate
+  2013–2025 rows with normal coverage in every modeled season. The earlier
+  `1,485` result came from the mutable DB changing underneath the build, not from
+  the view's domain rules. Final2's extra four rows are duplicate 2019 Encorps
+  performances stored under both GUID `0010a00001itge1aah` and canonical key
+  `encorps`; the current source retains the four canonical copies. The source
+  snapshot is 5,221,109,760 bytes, SHA-256
+  `5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb`,
+  passes `quick_check`, and is pinned by
+  `baselines/v10-source-2026-07-16.json`. Build derived V10 tables in a separate
+  DB so this source hash remains immutable.
 - Correction to the initial scaffold interpretation: the scaled `0.00065`
   phase-aware + smooth-sequence profile is only a future combined candidate.
   The plan explicitly requires phase-aware LR and smooth sequence exposure to
@@ -1393,3 +1405,23 @@ to choose among checkpoints.
   audited view, matched maps/curves, and row manifest qualify; the combined
   candidate has the stronger additional requirement that its components qualify
   independently. `npm run test:v10-config` pins these boundaries.
+- The phase-aware-LR seed-43 treatment completed with composite `0.497535`,
+  validation `0.344611` recap / `0.938384` total, history totals `2.462580`
+  zero / `2.137414` sparse / `1.122280` short / `0.832605` established,
+  calibrated coverage `0.819559`, and test-all `0.306316` recap / `0.612724`
+  total. It clears every single-run gate, although sparse history clears by only
+  `0.000826`; seed-42 confirmation is mandatory and has been started.
+- The source-freezing path is now reproducible via `npm run freeze:v10-source`.
+  `npm run prepare:v10-data` verifies that source hash, creates a compact derived
+  database rather than duplicating the 5.2 GB source, materializes the versioned
+  `v10_training_performances` table, and emits row/hash/invariant provenance. Its
+  7,317 rows have identity hash
+  `96b4d40541f7c927bbe6a68740ee766916f027ff75916bcb8417c6531bbba37d`,
+  zero incomplete panels/total mismatches/invalid ranks, 55 corps identities, and
+  864 shows. The contract is pinned by
+  `baselines/v10-training-performances-dev1.json`.
+- Operational lesson: creating a second full 5.2 GB DB exhausted the host C:
+  drive and stopped WSL. This interrupted fixed seed 42 and smooth seed 43 before
+  terminal cards; both were restarted as new runs, and phase-aware seed 42 was
+  started. Keep the immutable source once, materialize compact derived tables,
+  and monitor host-disk—not only Linux `df`—before large artifacts.

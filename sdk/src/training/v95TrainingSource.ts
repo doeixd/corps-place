@@ -14,6 +14,8 @@ const coreFiles = [
   "src/training/trainModelV95.ts",
   "src/training/trainModelV10Final.ts",
   "src/training/v10Config.ts",
+  "src/training/baselines/v10-source-2026-07-16.json",
+  "src/training/baselines/v10-training-performances-dev1.json",
   "src/training/v95TrainingSource.ts",
   "src/training/v95Config.ts",
   "src/training/v95Curriculum.ts",
@@ -26,6 +28,8 @@ const coreFiles = [
   "src/training/referenceCurvesV4.json",
   "src/training/judgeIndexMap.json",
   "src/training/corpsIndexMap.json",
+  "scripts/freezeV10Source.ts",
+  "scripts/prepareV10TrainingData.ts",
 ] as const;
 
 const runScripts = () => fs.readdirSync(path.join(sdkRoot, "scripts"))
@@ -91,7 +95,7 @@ export const snapshotV95TrainingSource = (
   fs.writeFileSync(
     path.join(sourceDir, "README.md"),
     "# Training source snapshot\n\n" +
-      "This directory contains the exact V9.5 trainer inputs captured for this run. " +
+    "This directory contains the exact V9.5/V10 trainer inputs captured for this run. " +
       "`provenance.json` records the commit, command arguments, and SHA-256 of every copied file.\n",
   );
   return provenance;

@@ -1,0 +1,37 @@
+{
+  "manifest_version": "v10-source-snapshot-v1",
+  "snapshot_logical_path": "sdk/data/v10-source-2026-07-16.db",
+  "snapshot_bytes": 5221109760,
+  "snapshot_sha256": "5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb",
+  "sqlite_quick_check": "ok",
+  "schema_sha256": "99e7f0b2a04a3a37fdff5abaabd2a665fe6a79cdaf6ae0f73dd0f0351e989d6e",
+  "domain_policy_sha256": "ca537263197fdbe2a8f48a7a4c24706ae51f5eb4758b1cc452dc8f9d096c5f26",
+  "source_cutoff": "2026-07-14T00:00:00.000Z",
+  "training_season_max": 2025,
+  "source_counts": {
+    "competitions": 1089,
+    "corps_scores": 9501,
+    "caption_scores": 66211,
+    "judge_assignments": 8225,
+    "subcaption_scores": 145441
+  },
+  "clean_training_rows": 7317,
+  "clean_training_rows_by_season": {
+    "2013": 638,
+    "2014": 645,
+    "2015": 669,
+    "2016": 730,
+    "2017": 736,
+    "2018": 780,
+    "2019": 816,
+    "2022": 594,
+    "2023": 635,
+    "2024": 551,
+    "2025": 523
+  },
+  "difference_from_frozen_final2": {
+    "frozen_rows": 7321,
+    "current_rows": 7317,
+    "reason": "Four 2019 Encorps performances duplicated in final2 under both GUID 0010a00001itge1aah and canonical key encorps; the current source retains the canonical copies only."
+  }
+}

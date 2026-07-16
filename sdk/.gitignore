@@ -16,5 +16,6 @@ media-cache.db-shm
 *.db-journal
 *.db.backup*
 *.backup-pre-dedupe
+/data/*.manifest.json
 sdk-colab.zip
 *.zip

@@ -1,0 +1,25 @@
+{
+  "manifest_version": "v10-training-data-manifest-v1",
+  "contract_version": "v10-training-performances-dev1",
+  "source_snapshot_sha256": "5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb",
+  "materialized_table": "v10_training_performances",
+  "rows": 7317,
+  "distinct_row_keys": 7317,
+  "row_identity_sha256": "96b4d40541f7c927bbe6a68740ee766916f027ff75916bcb8417c6531bbba37d",
+  "total_mismatches": 0,
+  "incomplete_panels": 0,
+  "invalid_ranks": 0,
+  "min_date": "2013-06-21T04:00:00.000Z",
+  "max_date": "2025-08-09T00:00:00.000Z",
+  "corps_identity_count": 55,
+  "show_count": 864,
+  "retrospective_panel_complete_rows": 6828,
+  "retrospective_panel_incomplete_rows": 489,
+  "v9_key_comparison": {
+    "only_v10": 0,
+    "only_v9": 0
+  },
+  "identity_policy_version": "canonical-current-source-keys-dev1",
+  "target_time_policy": "strictly-before-target-date",
+  "training_seasons": [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024, 2025]
+}

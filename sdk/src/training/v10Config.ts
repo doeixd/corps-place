@@ -166,7 +166,7 @@ export const v10DefaultArgs = (profileName: V10ProfileName, seed = 43): string[]
   const profile = V10_PROFILES[profileName];
   const slug = profileName.replaceAll("-", "_");
   return [
-    "--db", "./data/v10-source.db",
+    "--db", "./data/v10-training-dev1.db",
     "--ml-table", profile.mlTable,
     "--model-dir", `./models/v10_${slug}`,
     "--norm-path", `./results/v10-${profileName}-seed-${seed}-target-norm.json`,
