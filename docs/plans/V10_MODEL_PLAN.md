@@ -1210,3 +1210,24 @@ to choose among checkpoints.
   (`02b9415`), scale LR `0.00075` (`50f6aed`), and the active fixed-curriculum run
   (`aabeb52`). These model directories remain ignored artifacts and are not added
   to Git; the snapshot travels with the model wherever the run directory is copied.
+
+#### Live ablation status at 2026-07-16 11:15 EDT
+
+- The 1.885x low-LR run reached epoch 99. Its best composite improved again at
+  epoch 61 to `0.4999` (`0.3490` recap / `0.9115` total), and its best recap
+  reached `0.3466` at epoch 97. The latter is not automatically the production
+  winner because its total/composite tradeoff must be replayed.
+- The 1.885x original-LR run reached epoch 68. Its preserved epoch-43 composite
+  remains best at `0.498524` (`0.3495` recap / `0.8996` total); twelve epochs
+  without monitor improvement reduced its plateau multiplier again. It still has
+  the strongest composite, but the low-LR run has nearly closed the gap and now
+  has the better single recap checkpoint.
+- The exact-size fixed-boundary run reached epoch 6 in phase A with `0.4462` recap,
+  `1.3720` total, and composite `0.6587`. The original same-size seed-43 run at
+  epoch 6 reported `0.5145` recap and `1.8287` total, so the fixed treatment has a
+  strong early lead consistent with avoiding a premature auto transition. This is
+  not yet a selection result; compare after the fixed epoch-10 A→B boundary and
+  through phases B/C.
+- All three trainers remain healthy. WSL had roughly 8.2 GiB available and no swap
+  use; the phase-aware-LR and smooth-sequence services remain idle sequential
+  waiters.
