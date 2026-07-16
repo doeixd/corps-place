@@ -1353,3 +1353,24 @@ to choose among checkpoints.
   clean-data-only exact-feature control; then add evidence/pace/identity/panel
   features; then run the combined scaled optimizer candidate. Do not interpret a
   combined V10 gain as a scaling result unless these controls are retained.
+- **Do not train the first clean-table attempt.** The 2026-07-16 materialization
+  completed successfully but produced only `1,485` rows across 2013–2025 versus
+  final2's `7,321`: 2017 disappeared entirely and early seasons fell from roughly
+  600–800 rows each to single/double digits. The reference-curve view is therefore
+  too restrictive or incomplete as a drop-in model-training population even
+  though its individual rows pass the clean-panel contract. Audit every exclusion
+  by season/source and build a purpose-built V10 training view that preserves
+  legitimate historical coverage; do not mistake drastic population attrition for
+  cleanup.
+- The same attempt also demonstrated why the mutable Windows
+  `dci-relational.db` cannot itself be the versioned experiment artifact. Shortly
+  after the successful build and inspection, the DB file was replaced/updated and
+  the newly created table was no longer present. Copy/snapshot the source DB to a
+  stable experiment path first, record its SHA-256 and cutoff, build there, and
+  hash/export the resulting row manifest before training.
+- Correction to the initial scaffold interpretation: the scaled `0.00065`
+  phase-aware + smooth-sequence profile is only a future combined candidate.
+  The plan explicitly requires phase-aware LR and smooth sequence exposure to
+  qualify independently (and repeat across seeds) before combining them. The
+  clean-data control must use the exact V9.5/final2-sized graph and regimen with
+  newly matched maps; it must not use the scaled combined defaults.
