@@ -8,6 +8,8 @@ import {
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
+import { maskV9JudgeContext } from "../src/training/v9FeatureModes.js";
+import type { V9SubcaptionCheckpoint } from "../src/training/v9SubcaptionInference.js";
 
 const sdkRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const argv = process.argv.slice(2);
@@ -299,6 +301,7 @@ const evaluate = (
   seed: number,
   intervalScale: number,
   includeRowDetails = false,
+  identityAgnostic = false,
 ) => {
   const global = emptyBucket();
   const history = new Map<string, MetricBucket>();
@@ -338,17 +341,19 @@ const evaluate = (
     rng(); // identity-dropout draw; rate is zero during evaluation
     const agnosticShowId = rng() < 0.2 ? 0 : row.agnosticShowId;
     const historyLen = Math.max(0, mask.filter(Boolean).length - 1);
+    const staticFeatures = [...row.staticFeatures, ...row.trendSlopes];
+    if (identityAgnostic) maskV9JudgeContext(staticFeatures);
     const prediction = model.predictOne({
       sequence: row.sequence,
       sequenceMask: mask,
-      staticFeatures: [...row.staticFeatures, ...row.trendSlopes],
-      judgeIndices: row.judgeIndices,
-      corpsId: row.corpsId,
-      agnosticShowId,
+      staticFeatures,
+      judgeIndices: identityAgnostic ? new Array(CAPTION_COUNT).fill(0) : row.judgeIndices,
+      corpsId: identityAgnostic ? 0 : row.corpsId,
+      agnosticShowId: identityAgnostic ? 0 : agnosticShowId,
       baselineRecap: baseline,
       historyLen,
-      judgeBiasScale: 1,
-      corpsScale: 1,
+      judgeBiasScale: identityAgnostic ? 0 : 1,
+      corpsScale: identityAgnostic ? 0 : 1,
     });
 
     const historyKey = historyLen === 0
@@ -424,13 +429,22 @@ const evaluate = (
 
 const main = async () => {
   const dbPath = path.resolve(sdkRoot, getArg("--db", "dci-relational-scrape.db"));
+  const evaluationDbPath = path.resolve(sdkRoot, getArg("--evaluation-db", dbPath));
+  const season = getArg("--season", "");
+  const candidateMode = hasArg("--candidate") || Boolean(season);
+  const identityAgnostic = hasArg("--identity-agnostic");
   const replaySeed = Number(getArg("--seed", "42"));
   if (!Number.isInteger(replaySeed)) throw new Error(`Invalid --seed: ${replaySeed}`);
   const modelDir = path.resolve(
     sdkRoot,
     getArg("--model-dir", "models/v9_subcaption_fixed/v9_prod_fingerprint_preseason_final2_1779976626982"),
   );
-  const card = JSON.parse(fs.readFileSync(path.join(modelDir, "model-card.json"), "utf8")) as any;
+  const referenceModelDir = path.resolve(
+    sdkRoot,
+    getArg("--reference-model-dir", "models/v9_subcaption_fixed/v9_prod_fingerprint_preseason_final2_1779976626982"),
+  );
+  const cardDir = candidateMode ? referenceModelDir : modelDir;
+  const card = JSON.parse(fs.readFileSync(path.join(cardDir, "model-card.json"), "utf8")) as any;
   const query = `
     SELECT season, competition_slug, competition_date, corps_key, corps_id,
       x_sequence_json, x_static_json, judge_indices_json, y_recap_json,
@@ -456,12 +470,60 @@ const main = async () => {
   }, null, 2);
   const normalizationSha256 = createHash("sha256").update(normalizationJson).digest("hex");
 
-  const model = await loadV9SubcaptionModel(modelDir, { stats });
+  const checkpoint = getArg("--checkpoint", "auto") as V9SubcaptionCheckpoint;
+  const model = await loadV9SubcaptionModel(modelDir, { stats, checkpoint });
   try {
     const expectedValidation = card.evaluations.validation;
     const expectedValidationCalibrated = card.evaluations.validation.calibrated;
     const expectedTest = card.evaluations.test_all;
     const calibratedIntervalScale = Number(expectedValidationCalibrated.interval_scale ?? 0.6);
+    if (season) {
+      const evaluationRawRows = JSON.parse(execFileSync("sqlite3", ["-json", evaluationDbPath, query], {
+        encoding: "utf8",
+        maxBuffer: 512 * 1024 * 1024,
+      })) as RawRow[];
+      const evaluationRows = parseRows(evaluationRawRows);
+      applyBaselines(evaluationRows, evaluationRows);
+      const selectedRows = evaluationRows.filter((row) => row.season === season);
+      if (!selectedRows.length) throw new Error(`No evaluation rows for season ${season}`);
+      const raw = evaluate(
+        selectedRows, model, replaySeed, 1, hasArg("--row-details"), identityAgnostic,
+      );
+      const calibrated = evaluate(
+        selectedRows, model, replaySeed, calibratedIntervalScale, false, identityAgnostic,
+      );
+      const cohortIdentities = selectedRows.map((row) => ({
+        date: row.date,
+        competition_slug: row.competitionSlug,
+        corps_key: row.corpsKey,
+      }));
+      const cohortSha256 = createHash("sha256")
+        .update(JSON.stringify(cohortIdentities))
+        .digest("hex");
+      const report = {
+        schema_version: 1,
+        generated_at: new Date().toISOString(),
+        season,
+        checkpoint,
+        identity_mode: identityAgnostic ? "agnostic" : "stored_indices",
+        training_db: path.relative(sdkRoot, dbPath),
+        evaluation_db: path.relative(sdkRoot, evaluationDbPath),
+        model_dir: path.relative(sdkRoot, modelDir),
+        cohort: {
+          rows: selectedRows.length,
+          shows: new Set(selectedRows.map((row) => row.showKey)).size,
+          date_min: selectedRows.map((row) => row.date).sort()[0],
+          date_max: selectedRows.map((row) => row.date).sort().at(-1),
+          identities_sha256: cohortSha256,
+        },
+        raw,
+        calibrated: { interval_scale: calibratedIntervalScale, ...calibrated },
+      };
+      const outputJson = getArg("--output-json", "");
+      if (outputJson) fs.writeFileSync(path.resolve(sdkRoot, outputJson), JSON.stringify(report, null, 2));
+      process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+      return;
+    }
     const validationReplay = evaluate(validation, model, replaySeed, 1, hasArg("--row-details"));
     const validationCalibrated = evaluate(validation, model, replaySeed, calibratedIntervalScale);
     const testReplay = evaluate(test, model, replaySeed + 2, 1);

@@ -16,6 +16,8 @@
     "build": "tsc -p tsconfig.json",
     "check": "tsc --noEmit -p tsconfig.json",
     "replay:v10-baseline": "tsx scripts/replayFinal2Baseline.ts",
+    "report:v95-parity": "tsx scripts/reportV95Parity.ts",
+    "report:v95-2026": "tsx scripts/reportV952026.ts",
     "test:v95-curriculum": "tsx scripts/testV95Curriculum.ts",
     "test:v95-checkpoints": "tsx scripts/testV95Checkpoints.ts",
     "test:v95-config": "tsx scripts/testV95Config.ts",

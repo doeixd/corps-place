@@ -1059,3 +1059,28 @@ seeds' mean/range against every predeclared tolerance. Diagnose seed 42's
 sparse-history failure at row and checkpoint level and resolve it before closing
 Milestone 1. Do not start field-pace or thin-history experiments until that V9.5
 baseline gate passes.
+
+### 2026-07-16 — V9.5 qualification reports and early-2026 reference
+
+- `npm run report:v95-parity` now applies the predeclared Milestone 1 gates to
+  any set of completed model cards. The committed seed-42/43 report currently
+  **fails only the sparse-history guardrail for both seeds**: aggregate recap,
+  total, coverage, established/zero history, composite, and two-seed mean gates
+  pass. This is the concrete remaining reconstruction blocker; do not describe
+  Milestone 1 as complete until it is resolved or explicitly rebaselined.
+- `replayFinal2Baseline.ts` now supports arbitrary checkpoints plus a separate
+  season/evaluation database and identity-agnostic inference. Its original final2
+  mode still passes all 167 exact replay checks. For current 2026 maps, agnostic
+  mode disables corps/judge/show residual paths rather than feeding semantically
+  incompatible integer IDs.
+- The early-2026 cohort is now frozen by row identity hash
+  `76f068d17180be594608d1fffabe778f35c3cc8119ed4422c1600c0c6c41dd1e`:
+  153 rows, 25 shows, 2026-06-27 through 2026-07-14. Final2 establishes the
+  agnostic reference at `0.4930` recap and `1.5141` total MAE. Replica seed 42
+  improves both (`0.4692`/`1.4378`), while seed 43 is mixed/worse
+  (`0.5034`/`1.8061`), confirming material seed variance. The full tables live in
+  `docs/V95_2026_COMPARISON.md`.
+- These 2026 results are never checkpoint selectors. Now that they have been
+  inspected, this cohort is development validation; later 2026 shows are the next
+  untouched rolling test. Before final claims, audit all stored 2026 features for
+  strict as-of correctness and add show/date-grouped uncertainty intervals.
