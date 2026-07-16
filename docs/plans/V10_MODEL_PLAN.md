@@ -736,7 +736,65 @@ decision.
   evidence mode; a narrow interval is not a durable improvement when it hides
   epistemic uncertainty.
 
-+### 2026-07-16 — clean-data rebuild and early-2026 out-of-time gate
+### 2026-07-16 — recovered V9 ablation archive and usable lessons
+
+- **An ablation archive exists and should not be rediscovered from scratch.**
+  `sdk/results/ablation/` contains 16 session directories and 57 recorded runs:
+  28 completed executions and 29 explicit dry-run placeholders. The useful
+  sessions preserve manifests, arguments, logs, `runs.json`, and generated
+  `learnings.md`; dry runs contain no evidence and must never enter rankings.
+- **The closest pre-final2 matrix is
+  `v9-subcaption-ablation-20260522-145424`.** It ran nine 120-epoch variants on
+  the same 6,906/363/52 date-forward populations with auto curriculum, final2-like
+  coverage targets, and 15% history hiding. It still predates the fully
+  reconstructed trainer/model-card contract and reports one run per treatment, so
+  use its results to choose experiments, not to choose a production model.
+- **Do not remove late identity dropout based on the older headline result.** In
+  the May 22 history-hiding matrix, `identity-dropout-floor=0` regressed test
+  recap MAE from control `0.3110` to `0.3681` and total MAE from `0.6359` to
+  `0.9996`, with coverage falling from `0.974` to `0.935`. An immediately
+  earlier May 21 matrix without the logged 15% history-hide augmentation ranked
+  the same flag first (`0.2869` recap, `0.6498` total). This reversal is
+  evidence of either a strong history-hide × identity-dropout interaction or
+  uncontrolled run variance. Keep final2's nonzero floor as the control and test
+  the two factors as a crossed, paired-seed ablation.
+- **More capacity did not help in the saved comparison.** Reducing the accuracy
+  trunk from final2's 270 units to 256 produced `0.3242` recap and `0.8549`
+  total MAE versus the May 22 control's `0.3110` and `0.6359`. This does not
+  prove 270 is globally optimal, but it argues against capacity tuning as V10's
+  first lever.
+- **SWA was not supported by these runs.** Training with SWA but exporting best
+  weights produced `0.3189` recap and `0.8358` total MAE; the comparable
+  best-only variant produced `0.3090` and `0.6767`. Preserve ordinary best/
+  composite checkpointing as the control unless a paired multi-seed experiment
+  shows SWA helps the difficult history slices.
+- **MB/MP emphasis is a narrow tradeoff worth retesting, not adopting.** A
+  `1.4` MB/MP loss boost changed test recap from `0.3110` to `0.3130` while
+  improving total MAE from `0.6359` to `0.6247`. The archive summary lacks the
+  full modern per-caption/history reports, so require MB/MP-specific gains,
+  no sparse-history harm, and replication across seeds before keeping it.
+- **Interval-training flags mixed accuracy and calibration effects.** The saved
+  width/coverage variants retrained the network rather than calibrating a fixed
+  checkpoint. The best recap variant (`base-width-multiplier=1.0` plus
+  `coverage-sharpness=4.0`) reached `0.2932` recap but had `0.6685` total
+  versus control `0.6359`; all raw coverages remained far above the target.
+  Prefer post-hoc calibration of the same frozen mean checkpoint when the question
+  is interval scale, and evaluate width only at matched coverage.
+- **The February matrix is historical evidence only.** Five long completed runs
+  used the older non-date-forward contract and produced raw coverage near
+  `0.97–1.00` with widths around `3.2–4.2`. They demonstrate stable training
+  and that sharper coverage penalties widened already-overcovered intervals, but
+  they are not comparable to final2 or V10 quality gates.
+- **Re-run only the informative matrix under the modern experiment contract.**
+  Every V10 ablation must pin commit, DB/view hash, map hashes, row/split
+  populations, seed, sample order, masks, and selected checkpoint; run the
+  control and treatment with paired seeds and modern history/forecast/2026 slices.
+  First priorities suggested by the archive are the history-hide × identity-floor
+  interaction, MB/MP emphasis, and best/composite versus SWA. Do not spend initial
+  budget repeating the unsupported 256-unit trunk change.
+
+
+### 2026-07-16 — clean-data rebuild and early-2026 out-of-time gate
 
 - **Make the cleaned domain layer the V10 source of truth.** Final2/V9 rows were
   built from raw `caption_scores`, which includes roughly 1,250 known poison rows:
