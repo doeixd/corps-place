@@ -593,16 +593,26 @@ pipeline state.
   A/B/C phase checkpoints; selected composite final weights; and emitted the full
   report/model-card path. Do not interpret its deliberately tiny-data metrics as
   model quality.
-- Seed-42 replica execution started 2026-07-15 as WSL systemd unit
+- Seed-42 replica execution completed 2026-07-15 as WSL systemd unit
   `v95-seed42.service`, using branch commit `1b89aa9` and run directory
   `sdk/models/v95_final2_reconstruction/v95_final2_seed42_1784145026981`.
-  The source DB hash/population gates passed. Epoch 0 completed in 108.6 seconds
-  with finite loss `0.850424`, validation recap/delta MAE `0.6348`, total MAE
-  `1.7967`, coverage `0.317`, and a saved composite checkpoint. These are startup
-  health values, not final acceptance results. Monitor with
-  `systemctl status v95-seed42.service` and
-  `journalctl -u v95-seed42.service -f`; do not start seed 43 concurrently on the
-  same WSL instance because both runs are memory/CPU intensive.
+  It early-stopped at epoch 100, selected a real composite checkpoint, and
+  completed without NaNs. Validation recap MAE was `0.356027`, total MAE
+  `0.889182`, raw coverage `0.984504`, calibrated coverage `0.826102`,
+  established-history total MAE `0.793075`, zero-history total MAE `1.841322`,
+  and best production-composite score `0.492927`; all of those clear their
+  predeclared bounds. Sparse-history total MAE was `2.433649` on only nine rows,
+  which fails the frozen `2.13824` ceiling by `0.295409`. This is a Milestone 1
+  failure even though the aggregate result is healthy; do not rebaseline it from
+  one run or begin V10 feature work. Preserve the small-slice row count when
+  diagnosing whether this is seed variance, checkpoint selection, or a remaining
+  reconstruction difference.
+- Seed 43 started 2026-07-16 as sequential WSL systemd unit
+  `v95-seed43.service` against the same commit and frozen-data contract. Startup
+  reached phase A with the exact 1,048,639-parameter graph and finite derivation
+  and scale checks. Monitor with `systemctl status v95-seed43.service` and
+  `journalctl -u v95-seed43.service -f`. Do not run another full replica
+  concurrently on this WSL instance.
 
 ## V10 improvement hypothesis log
 
@@ -625,6 +635,13 @@ decision.
   coverage. Test a constrained selector that minimizes zero/sparse-history error
   subject to no regression beyond the predeclared established-history margin.
   This may be safer than changing the training loss first.
+- **Treat sparse-slice variance as a first-class diagnostic.** Seed 42's aggregate
+  reconstruction metrics passed while its nine-row sparse-history total MAE
+  missed the guardrail. After seed 43, compare row-level errors and checkpoint
+  predictions for this exact slice before changing loss weights. Report bootstrap
+  uncertainty or per-row errors alongside the point estimate; a nine-row slice
+  can identify a real failure, but cannot reliably distinguish a systemic defect
+  from a few unstable examples by its mean alone.
 - **Test identity reliance directly.** Final2 schedules corps-identity scale and
   dropout globally, but the useful amount of corps prior should depend on current
   season evidence. Ablate history-conditioned identity gating/dropout against the
@@ -647,7 +664,8 @@ decision.
 
 ## Immediate next task
 
-Run the two full frozen-data V9.5 replicas (seeds 42 and 43) in the native WSL
-environment, summarize their mean/range against the predeclared tolerances, and
-resolve every failure before closing Milestone 1. Do not start field-pace or
-thin-history experiments until that V9.5 baseline gate passes.
+Finish the running seed-43 full frozen-data V9.5 replica, then summarize both
+seeds' mean/range against every predeclared tolerance. Diagnose seed 42's
+sparse-history failure at row and checkpoint level and resolve it before closing
+Milestone 1. Do not start field-pace or thin-history experiments until that V9.5
+baseline gate passes.
