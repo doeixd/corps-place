@@ -42,6 +42,8 @@ import {
   effectiveLearningRate,
   identityScalesAtEpoch,
   lossWeightsAtEpoch,
+  phaseAwareBaseLearningRate,
+  sequenceLengthAtEpoch,
   stepCurriculum,
   widthFloorWeightAtEpoch,
   type CurriculumConfig as AutoCurriculumConfig,
@@ -960,6 +962,7 @@ class SequenceDataProviderV9 {
     private epoch: number,
     private batchSize: number = BATCH_SIZE,
     private longSequenceStartEpoch: number = CURRICULUM_PHASE_A_END,
+    private sequenceTransitionEpochs: number = 0,
     private openSampleFraction: number = OPEN_CLASS_SAMPLE_FRACTION,
   ) {
     this.worldRows = this.rows.filter(r => r.division === "World Class");
@@ -978,8 +981,11 @@ class SequenceDataProviderV9 {
   }
 
   getSequenceLength(): number {
-    if (this.epoch < this.longSequenceStartEpoch) return 5;
-    return 15;
+    return sequenceLengthAtEpoch(
+      this.epoch,
+      this.longSequenceStartEpoch,
+      this.sequenceTransitionEpochs,
+    );
   }
 
   sampleRows(count: number, seed: number): DataRow[] {
@@ -1921,6 +1927,12 @@ function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: nu
 
 async function main() {
   const args = parseArgs();
+  if (args.lrSchedule !== "cosine" && args.lrSchedule !== "phase-aware") {
+    throw new Error(`Unknown learning-rate schedule '${args.lrSchedule}'.`);
+  }
+  if (!Number.isInteger(args.sequenceTransitionEpochs) || args.sequenceTransitionEpochs < 0) {
+    throw new Error("--sequence-transition-epochs must be a non-negative integer");
+  }
   if (args.reproductionContract && args.reproductionContract !== "final2") {
     throw new Error(`Unknown reproduction contract '${args.reproductionContract}'.`);
   }
@@ -2544,6 +2556,7 @@ async function main() {
     args.startEpoch,
     args.batchSize,
     scheduler.getPhaseAEnd(),
+    args.sequenceTransitionEpochs,
     args.openSampleFraction,
   );
   const autoCurriculumConfig: AutoCurriculumConfig = {
@@ -2617,13 +2630,22 @@ async function main() {
       `WFW ${currentWidthFloorWeight.toFixed(3)} `,
     );
 
-    currentBaseLR = cosineBaseLearningRate(
-      epoch,
-      args.epochs,
-      args.warmupEpochs,
-      args.learningRate,
-      args.minLr,
-    );
+    currentBaseLR = args.lrSchedule === "phase-aware"
+      ? phaseAwareBaseLearningRate(
+          epoch,
+          args.epochs,
+          args.warmupEpochs,
+          scheduler.getPhaseBEnd(),
+          args.learningRate,
+          args.minLr,
+        )
+      : cosineBaseLearningRate(
+          epoch,
+          args.epochs,
+          args.warmupEpochs,
+          args.learningRate,
+          args.minLr,
+        );
     currentLR = effectiveLearningRate(currentBaseLR, plateauLrMultiplier, args.minLr);
     setLearningRate(currentLR);
 

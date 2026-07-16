@@ -92,6 +92,34 @@ export const cosineBaseLearningRate = (
     0.5 * (learningRate - minLearningRate) * (1 + Math.cos(Math.PI * progress));
 };
 
+export const phaseAwareBaseLearningRate = (
+  epoch: number,
+  epochs: number,
+  warmupEpochs: number,
+  phaseBEnd: number,
+  learningRate: number,
+  minLearningRate: number,
+): number => {
+  const warmup = Math.max(0, Math.min(warmupEpochs, epochs));
+  if (epoch < warmup) return learningRate * (epoch + 1) / Math.max(1, warmup);
+  const decayStart = Math.max(warmup, Math.min(phaseBEnd, epochs));
+  if (epoch < decayStart) return learningRate;
+  const progress = Math.min(1, (epoch - decayStart) / Math.max(1, epochs - decayStart));
+  return minLearningRate +
+    0.5 * (learningRate - minLearningRate) * (1 + Math.cos(Math.PI * progress));
+};
+
+export const sequenceLengthAtEpoch = (
+  epoch: number,
+  longSequenceStartEpoch: number,
+  transitionEpochs: number,
+): 5 | 10 | 15 => {
+  if (epoch < longSequenceStartEpoch) return 5;
+  const middleEpochs = Math.max(0, Math.floor(transitionEpochs));
+  if (epoch < longSequenceStartEpoch + middleEpochs) return 10;
+  return 15;
+};
+
 export const effectiveLearningRate = (
   baseLearningRate: number,
   plateauMultiplier: number,

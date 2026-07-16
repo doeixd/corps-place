@@ -6,6 +6,8 @@ import {
   identityScalesAtEpoch,
   initialCurriculumState,
   lossWeightsAtEpoch,
+  phaseAwareBaseLearningRate,
+  sequenceLengthAtEpoch,
   stepCurriculum,
   widthFloorWeightAtEpoch,
 } from "../src/training/v95Curriculum.js";
@@ -51,6 +53,15 @@ assert.deepEqual(lossWeightsAtEpoch(71, lossConfig), {
 assert.equal(lossWeightsAtEpoch(100, lossConfig).identityDropoutRate, 0.7625);
 assert.ok(Math.abs(cosineBaseLearningRate(0, 160, 10, 0.00075, 0.00003) - 0.000075) < 1e-15);
 assert.equal(cosineBaseLearningRate(9, 160, 10, 0.00075, 0.00003), 0.00075);
+assert.equal(phaseAwareBaseLearningRate(9, 160, 10, 40, 0.00075, 0.00003), 0.00075);
+assert.equal(phaseAwareBaseLearningRate(39, 160, 10, 40, 0.00075, 0.00003), 0.00075);
+assert.equal(phaseAwareBaseLearningRate(40, 160, 10, 40, 0.00075, 0.00003), 0.00075);
+assert.ok(phaseAwareBaseLearningRate(100, 160, 10, 40, 0.00075, 0.00003) < 0.00075);
+assert.equal(sequenceLengthAtEpoch(9, 10, 4), 5);
+assert.equal(sequenceLengthAtEpoch(10, 10, 4), 10);
+assert.equal(sequenceLengthAtEpoch(13, 10, 4), 10);
+assert.equal(sequenceLengthAtEpoch(14, 10, 4), 15);
+assert.equal(sequenceLengthAtEpoch(10, 10, 0), 15);
 assert.equal(effectiveLearningRate(0.0005, 0.5, 0.00003), 0.00025);
 assert.equal(effectiveLearningRate(0.00004, 0.5, 0.00003), 0.00003);
 

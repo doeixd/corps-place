@@ -122,6 +122,14 @@ const scaled = parseV95Args([
 ]);
 assert.equal(scaled.dense1Units, 768);
 assert.equal(scaled.dense2Units, 384);
+assert.equal(scaled.lrSchedule, "cosine");
+assert.equal(scaled.sequenceTransitionEpochs, 0);
+const scheduleTreatment = parseV95Args([
+  "--lr-schedule", "phase-aware",
+  "--sequence-transition-epochs", "4",
+]);
+assert.equal(scheduleTreatment.lrSchedule, "phase-aware");
+assert.equal(scheduleTreatment.sequenceTransitionEpochs, 4);
 assert.equal(
   formatV95ModelCapacity(scaled),
   "Model Capacity: 384→192 BiLSTM, Dense 768→384, AccuracyTrunk 405, " +

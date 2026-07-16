@@ -31,6 +31,7 @@ export const parseV95Args = (
     minLr: Number(get("--min-lr", "0.00003")),
     plateauLrFactor: Number(get("--plateau-lr-factor", "0.5")),
     warmupEpochs: Number(get("--warmup-epochs", "10")),
+    lrSchedule: get("--lr-schedule", "cosine") || "cosine",
     startEpoch: Number(get("--start-epoch", "0")),
     clipNorm: Number(get("--clip-norm", "1")),
     seed: Number(get("--seed", "42")),
@@ -88,6 +89,7 @@ export const parseV95Args = (
     autoCurriculumMinDeltaGain: Number(get("--auto-curriculum-min-delta-gain", "0.002")),
     autoCurriculumPhaseAMin: Number(get("--auto-curriculum-phase-a-min", "6")),
     autoCurriculumPhaseBMin: Number(get("--auto-curriculum-phase-b-min", "18")),
+    sequenceTransitionEpochs: Number(get("--sequence-transition-epochs", "0")),
   };
 };
 

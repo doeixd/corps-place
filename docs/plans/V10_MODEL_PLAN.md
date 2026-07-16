@@ -1173,3 +1173,18 @@ to choose among checkpoints.
    conformal interval calibration adds no neural parameters and may improve honest
    coverage/width, but it cannot count as a recap/total MAE gain. Freeze the mean
    checkpoint first and report calibration separately.
+
+#### Same-size experiment queue started 2026-07-16
+
+- The fixed-boundary control remains first and is already waiting for the two
+  capacity jobs. Two independent seed-43 treatments are implemented behind it:
+  `npm run train:v95:phase-aware-lr -- 43` holds the `0.00075` peak through fixed
+  phase B and begins cosine decay at epoch 40; `npm run
+  train:v95:smooth-sequence -- 43` keeps the control cosine LR but inserts four
+  epochs of 10-step history between the 5-step and 15-step regimes. Both preserve
+  the exact `1,048,639`-parameter graph, frozen final2 rows/maps, fixed `10/40`
+  phase boundaries, losses, masking, sample budget, and checkpoint policy.
+- Run these sequentially, not concurrently, and compare each directly with the
+  fixed-boundary control. The phase-aware LR treatment changes only LR shape; the
+  smooth-sequence treatment changes only sequence exposure. Do not combine them
+  unless one independently qualifies and repeats across seed 42.
