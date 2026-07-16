@@ -3453,7 +3453,15 @@ async function main() {
 
   const modelCard = {
     generated_at: new Date().toISOString(),
-    trainer: "trainModelV95.ts",
+    trainer: args.modelVersion.startsWith("v10")
+      ? "trainModelV10Final.ts via trainModelV95.ts engine"
+      : "trainModelV95.ts",
+    lineage: {
+      model_version: args.modelVersion,
+      parent_model: args.parentModel,
+      data_contract: args.dataContract,
+      feature_profile: args.featureProfile,
+    },
     db_path: args.dbPath,
     data: {
       ml_table: "ml_sequence_rows_v9_subcaption",

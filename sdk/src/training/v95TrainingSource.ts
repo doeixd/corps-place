@@ -12,6 +12,8 @@ const coreFiles = [
   "package-lock.json",
   "tsconfig.json",
   "src/training/trainModelV95.ts",
+  "src/training/trainModelV10Final.ts",
+  "src/training/v10Config.ts",
   "src/training/v95TrainingSource.ts",
   "src/training/v95Config.ts",
   "src/training/v95Curriculum.ts",
@@ -27,7 +29,7 @@ const coreFiles = [
 ] as const;
 
 const runScripts = () => fs.readdirSync(path.join(sdkRoot, "scripts"))
-  .filter((name) => /^runV95.*\.sh$/.test(name))
+  .filter((name) => /^runV(?:95|10).*\.sh$/.test(name))
   .sort()
   .map((name) => `scripts/${name}`);
 

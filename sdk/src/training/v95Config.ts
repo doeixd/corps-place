@@ -10,6 +10,10 @@ export const parseV95Args = (
 
   return {
     dbPath: get("--db", "./dci-relational.db") || "./dci-relational.db",
+    modelVersion: get("--model-version", "v9.5") || "v9.5",
+    parentModel: get("--parent-model", "final2") || "final2",
+    dataContract: get("--data-contract", "final2-frozen") || "final2-frozen",
+    featureProfile: get("--feature-profile", "v9.5-reconstructed") || "v9.5-reconstructed",
     modelDir: get("--model-dir", "./models/v95_final2_reconstruction") || "./models/v95_final2_reconstruction",
     normPath: get("--norm-path", "./results/v95-final2-reconstruction-target-norm.json") || "./results/v95-final2-reconstruction-target-norm.json",
     reproductionContract: get("--reproduction-contract"),
