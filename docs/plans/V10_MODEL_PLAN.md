@@ -869,6 +869,14 @@ decision.
   epoch ceiling) from data-limited overfit. Do not compensate after seeing results
   by changing dropout, curriculum, identity scales, or training duration inside
   this paired comparison.
+- **Interim epoch-15 observation (do not select on this):** the large run's best
+  recap MAE was `0.465` versus `0.423` for standard seed 43 at the same point,
+  while best total MAE was marginally better (`1.310` versus `1.333`). Its best
+  composite was worse (`0.680` versus `0.633`). It led during five-step phase A,
+  then became unstable/slow to adapt after phase B switched to 15-step history;
+  epoch-15 current recap/total were `0.465`/`1.682` versus standard
+  `0.430`/`1.437`. Continue to the predeclared stopping rule: this may be slower
+  optimization from the larger graph and lower learning rate, not a final result.
 
 ### 2026-07-16 — completed seed-43 replica diagnosis
 
