@@ -1335,7 +1335,8 @@ to choose among checkpoints.
   inherits the model-local source snapshot/provenance behavior. The original V9.5
   defaults and the archaeological pre-V9 V10 file remain untouched.
 - V10 has a dedicated clean-data query and target table
-  (`ml_sequence_rows_v10_final`). Its source is the canonical
+  (`ml_sequence_rows_v10_clean_control`); reserve
+  `ml_sequence_rows_v10_final` for the later feature-bearing build. Its source is the canonical
   `clean_reference_curve_entries` view, which resolves domain aliases, filters
   excluded events and non-model divisions, enforces caption bounds and complete
   eight-caption recaps, reconciles caption and official totals within `0.05`, and
@@ -1346,7 +1347,7 @@ to choose among checkpoints.
   rows, with all eight canonical captions and valid overall/caption ranks on every
   performance. The underlying clean view contains `523` eligible 2025
   performances across both model divisions (`4,184` long caption rows). Use
-  `npm run test:v10-data` before materializing and `npm run build:v10-data` to
+  `npm run test:v10-data` before materializing and `npm run build:v10-data-control` to
   populate the isolated table.
 - Important attribution order: materialize and hash the clean table; train a
   clean-data-only exact-feature control; then add evidence/pace/identity/panel

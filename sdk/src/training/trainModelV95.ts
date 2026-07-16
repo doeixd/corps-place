@@ -1957,7 +1957,7 @@ async function main() {
   }
 
   const client = createClient({ url: `file:${args.dbPath}` });
-  if (!/^ml_sequence_rows_v(?:9_subcaption|10_final)$/.test(args.mlTable)) {
+  if (!/^ml_sequence_rows_v(?:9_subcaption|10_(?:clean_control|final))$/.test(args.mlTable)) {
     throw new Error(`Unsupported ML table '${args.mlTable}'.`);
   }
   console.log("Loading V9 sequence data...");

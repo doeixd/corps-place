@@ -21,7 +21,7 @@ const JUDGE_INDEX_MAP_PATH = "./src/training/judgeIndexMap.json";
 const V9_BUILDER_VERSION = "v9-subcaption-clean-2026-05-21";
 const V10_BUILDER_VERSION = "v10-clean-canonical-dev1-2026-07-16";
 const V9_TARGET_TABLE = "ml_sequence_rows_v9_subcaption";
-const V10_TARGET_TABLE = "ml_sequence_rows_v10_final";
+const V10_TARGET_TABLE = "ml_sequence_rows_v10_clean_control";
 const MAP_VERSION = "current-json-files";
 
 // Subcaption normalization helpers
