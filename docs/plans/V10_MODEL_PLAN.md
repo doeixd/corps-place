@@ -736,6 +736,66 @@ decision.
   evidence mode; a narrow interval is not a durable improvement when it hides
   epistemic uncertainty.
 
++### 2026-07-16 — clean-data rebuild and early-2026 out-of-time gate
+
+- **Make the cleaned domain layer the V10 source of truth.** Final2/V9 rows were
+  built from raw `caption_scores`, which includes roughly 1,250 known poison rows:
+  off-domain I&E/individual totals stored as captions, zero/DNP panels, caption-name
+  drift, and judge names in the caption field. Build a new versioned V10 training
+  view from `clean_reference_curve_metric_scores` or a purpose-built view with the
+  same domain guarantees; never mutate or silently reinterpret the V9 table.
+- **Carry the cleanup through the entire row, not only the reference curve.** The
+  clean layer normalizes caption aliases, restricts model divisions/events, applies
+  domain score bounds, excludes missing zero panels, requires the eight-caption
+  total to reconcile within `0.05`, and derives a bounded rank. Targets, baselines,
+  historical sequences, fingerprints, and reference curves must all come from one
+  consistent snapshot. A clean curve paired with dirty targets is not a clean
+  training set.
+- **Use canonical event/corps semantics deliberately.** Incorporate repaired
+  event-to-competition mappings, duplicate-event handling, score-source merging,
+  caption aliases, and reviewed related-corps aliases when building V10 rows.
+  Version the alias/mapping policy and retain original source keys for audit. Do
+  not blindly merge two competitive units merely because the website groups them;
+  every identity union needs an explicit modeling rule and effective history.
+- **Measure the data improvement before adding architecture features.** First train
+  the reconstructed V9.5 architecture and regimen on the clean V10 row set with
+  newly matched identity maps. Compare it with frozen V9.5 on identical temporal
+  evaluations. This data-only control tells us whether a gain comes from cleanup,
+  a new feature, or changed optimization and prevents several changes from being
+  credited to the model at once.
+- **Freeze the current early-2026 cohort as an out-of-time artifact.** As observed
+  2026-07-16, mutable `sdk/dci-relational.db` contains 153 complete model rows from
+  25 shows dated 2026-06-27 through 2026-07-14: 63 zero-history, 26 sparse-history,
+  57 short-history, and 7 established-history rows. Materialize/export the exact
+  row identities and feature-source snapshot, record hashes and builder/map
+  versions, and never add this cohort to training. Future database rebuilds must
+  reproduce the frozen cohort or explain every difference.
+- **Use 2026 as an out-of-time gate, not the ordinary checkpoint selector.** Keep
+  the 2025 date-forward validation set for curriculum/checkpoint selection. Report
+  final2, both V9.5 replicas, the clean-data control, and every V10 candidate on the
+  locked early-2026 cohort. Once results guide decisions, the cohort is development
+  validation; reserve later 2026 shows as the next untouched rolling test set.
+- **Repair identity semantics before comparing models.** The current 2026 rows use
+  `map_version=current-json-files`, not final2's frozen maps. Although their corps
+  and show integers fit final2's graph, positional meaning is not proven; 264 of
+  1,224 stored judge indices exceed final2's 245-entry judge embedding. Never feed
+  these integers directly to final2. Provide an identity-agnostic mode that maps
+  corps/judges/show to explicit unknown IDs, plus a known-identity mode reconstructed
+  from frozen training keys where possible; genuinely new identities remain
+  unknown. V10 uses its own dataset-matched, hashed maps.
+- **Audit every 2026 feature as-of the prediction timestamp.** Rebuild chronologically
+  with explicit `--as-of-date` semantics and verify that target-show scores,
+  later-show results, final ranks, future panels, and later alias corrections do
+  not enter features. Store feature provenance with the cohort. Evaluate the real
+  serving modes separately: panel unknown by default, lineup unknown when needed,
+  preseason/zero history, and identity agnostic.
+- **Respect the cohort's dependence structure and small slices.** Rows from the
+  same show and repeated corps are correlated. Report show-grouped or date-grouped
+  bootstrap intervals, per-show/per-corps errors, division slices, history-depth
+  slices, and coverage/width—not only a 153-row aggregate. The seven established-
+  history rows are descriptive, not a stable optimization target.
+
+
 ## Immediate next task
 
 Finish the running seed-43 full frozen-data V9.5 replica, then summarize both
