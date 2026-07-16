@@ -932,6 +932,18 @@ decision.
   warmup/plateau control and robust checkpointing over simply lowering the whole
   schedule. Do not declare `0.00075` the winner until it reaches comparable phase
   B/C checkpoints and terminal missing-history slices.
+- **Status at low-LR epoch 52+ / baseline-LR epoch 21:** at the clean matched
+  epoch-16 comparison, `0.00075` wins recap, total, and composite
+  (`0.367`/`1.097`/`0.5446`) over `0.00055`
+  (`0.388`/`1.167`/`0.5752`) and also beats standard-size seed 43 at epoch 16
+  (`0.386`/`1.143`/`0.5695`). This is the strongest evidence so far that the
+  inverse-square-root learning-rate reduction was harmful to sample efficiency.
+  The high-LR run has not improved since epoch 16 by epoch 21, so terminal and
+  later-phase evidence remains required.
+- Low LR's best phase-C recap improved to `0.3578` at epoch 52, but with total
+  `1.005`; its epoch-34 phase-B composite/total checkpoint remains the better
+  balanced Pareto point. Phase C has not yet demonstrated that its changing loss
+  emphasis produces a superior production checkpoint for the wider model.
 - Epoch-to-epoch validation movement is large enough that single-epoch headlines
   are unreliable. Retain composite and total checkpoint tracks, report a Pareto
   set, and require multi-seed terminal slice evaluation before promoting a V10
