@@ -298,10 +298,26 @@ const evaluate = (
   model: Awaited<ReturnType<typeof loadV9SubcaptionModel>>,
   seed: number,
   intervalScale: number,
+  includeRowDetails = false,
 ) => {
   const global = emptyBucket();
   const history = new Map<string, MetricBucket>();
   const forecast = new Map<string, MetricBucket>();
+  const historyDetails: Array<{
+    show_key: string;
+    date: string;
+    competition_slug: string;
+    corps_key: string;
+    corps_id: number;
+    history_bucket: string;
+    history_len: number;
+    actual_total: number;
+    predicted_total: number;
+    total_abs_error: number;
+    recap_mae: number;
+    actual_recap: number[];
+    predicted_recap: number[];
+  }> = [];
   const rng = seededRandom(seed);
 
   for (const row of rows) {
@@ -352,9 +368,11 @@ const evaluate = (
 
     const buckets = [global, historyBucket, forecastBucket];
     buckets.forEach((bucket) => { bucket.rows += 1; });
+    const predictedRecap: number[] = [];
     CAPTIONS.forEach((caption, index) => {
       const actual = row.recap[index]!;
       const predicted = prediction.captions[caption];
+      predictedRecap.push(predicted.p50);
       const intervalCenter = predicted.residualP50 ?? predicted.p50;
       const lower = intervalCenter - Math.max(0, intervalCenter - predicted.p10) * intervalScale;
       const upper = intervalCenter + Math.max(0, predicted.p90 - intervalCenter) * intervalScale;
@@ -372,16 +390,35 @@ const evaluate = (
     ];
     const predictedCategories = [prediction.categories.ge, prediction.categories.visual, prediction.categories.music];
     const categoryError = mean(actualCategories.map((actual, index) => Math.abs(predictedCategories[index]! - actual)));
+    const totalAbsError = Math.abs(prediction.total - row.total);
     buckets.forEach((bucket) => {
       bucket.categoryAbs += categoryError;
-      bucket.totalAbs += Math.abs(prediction.total - row.total);
+      bucket.totalAbs += totalAbsError;
     });
+    if (includeRowDetails && (historyKey === "zero_history" || historyKey === "sparse_history")) {
+      historyDetails.push({
+        show_key: row.showKey,
+        date: row.date,
+        competition_slug: row.competitionSlug,
+        corps_key: row.corpsKey,
+        corps_id: row.corpsId,
+        history_bucket: historyKey,
+        history_len: historyLen,
+        actual_total: row.total,
+        predicted_total: prediction.total,
+        total_abs_error: totalAbsError,
+        recap_mae: mean(row.recap.map((actual, index) => Math.abs(predictedRecap[index]! - actual))),
+        actual_recap: [...row.recap],
+        predicted_recap: predictedRecap,
+      });
+    }
   }
 
   return {
     metrics: summarize(global),
     by_history: Object.fromEntries([...history].map(([key, bucket]) => [key, summarize(bucket)])),
     by_forecast_mode: Object.fromEntries([...forecast].map(([key, bucket]) => [key, summarize(bucket)])),
+    ...(includeRowDetails ? { history_details: historyDetails } : {}),
   };
 };
 
@@ -419,12 +456,13 @@ const main = async () => {
 
   const model = await loadV9SubcaptionModel(modelDir, { stats });
   try {
-    const validationReplay = evaluate(validation, model, 42, 1);
-    const validationCalibrated = evaluate(validation, model, 42, 0.6);
-    const testReplay = evaluate(test, model, 44, 1);
     const expectedValidation = card.evaluations.validation;
     const expectedValidationCalibrated = card.evaluations.validation.calibrated;
     const expectedTest = card.evaluations.test_all;
+    const calibratedIntervalScale = Number(expectedValidationCalibrated.interval_scale ?? 0.6);
+    const validationReplay = evaluate(validation, model, 42, 1, hasArg("--row-details"));
+    const validationCalibrated = evaluate(validation, model, 42, calibratedIntervalScale);
+    const testReplay = evaluate(test, model, 44, 1);
     const failures: string[] = [];
     let checks = 0;
 

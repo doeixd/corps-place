@@ -613,6 +613,18 @@ pipeline state.
   and scale checks. Monitor with `systemctl status v95-seed43.service` and
   `journalctl -u v95-seed43.service -f`. Do not run another full replica
   concurrently on this WSL instance.
+- `replayFinal2Baseline.ts --row-details --json` now emits identity, actual and
+  predicted totals, total error, and caption predictions for zero/sparse-history
+  validation rows. It remains an opt-in diagnostic and does not alter training or
+  the default baseline report. The replay reads each model card's own calibrated
+  interval scale, so it verified both preserved final2 and seed 42 with all 167
+  numeric checks passing.
+- Row-level replay shows seed 42's sparse-history miss is not one anomalous row:
+  it is worse than final2 on seven of nine rows. Its sparse total-MAE increase is
+  `+0.595410`; the four largest per-row error increases are `+1.260318`,
+  `+1.216170`, `+1.096108`, and `+1.067191` points. Two rows improve. Compare the
+  same identities for seed 43 and across alternate checkpoint families before
+  deciding whether the cause is seed variance or selection/training behavior.
 
 ## V10 improvement hypothesis log
 
