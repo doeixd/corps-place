@@ -53,63 +53,66 @@ const fixedRegimenArgs = [
   "--curriculum-phase-b-end", "40",
 ] as const;
 
-const blockedReason =
-  "V10 source snapshot, audited training view, matched maps, curves, and row manifest are not qualified yet";
+const cleanControlBlockedReason =
+  "Clean V10 data, temporal features, maps, curves, and graph smoke are qualified; full training awaits the terminal V9.5 seed-42 qualification gate";
+
+const treatmentBlockedReason =
+  "Treatment is blocked until the clean-data control qualifies and this treatment is evaluated independently";
 
 export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
   "clean-data-control": {
     modelVersion: "v10-clean-control-dev1",
     parentModel: "v9.5-final2-compatible",
-    dataContract: "v10-clean-snapshot-pending",
+    dataContract: "v10-sequence-contract-dev1",
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_034_259,
     runnable: false,
-    blockedReason,
+    blockedReason: cleanControlBlockedReason,
     args: [...exactSizeArgs, ...final2RegimenArgs],
   },
   "field-pace": {
     modelVersion: "v10-field-pace-dev1",
     parentModel: "v10-clean-control-dev1",
-    dataContract: "v10-clean-snapshot-pending",
+    dataContract: "v10-sequence-contract-dev1",
     featureProfile: "v10-field-pace-p1-pending",
     mlTable: "ml_sequence_rows_v10_field_pace",
     expectedTrainableParameters: null,
     runnable: false,
-    blockedReason,
+    blockedReason: treatmentBlockedReason,
     args: [...exactSizeArgs, ...final2RegimenArgs],
   },
   "thin-history": {
     modelVersion: "v10-thin-history-dev1",
     parentModel: "v10-clean-control-dev1",
-    dataContract: "v10-clean-snapshot-pending",
+    dataContract: "v10-sequence-contract-dev1",
     featureProfile: "v10-thin-history-p2-p3-pending",
     mlTable: "ml_sequence_rows_v10_thin_history",
     expectedTrainableParameters: null,
     runnable: false,
-    blockedReason,
+    blockedReason: treatmentBlockedReason,
     args: [...exactSizeArgs, ...final2RegimenArgs],
   },
   "scaled-control": {
     modelVersion: "v10-scaled-control-dev1",
     parentModel: "v10-clean-control-dev1",
-    dataContract: "v10-clean-snapshot-pending",
+    dataContract: "v10-sequence-contract-dev1",
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_962_558,
     runnable: false,
-    blockedReason,
+    blockedReason: treatmentBlockedReason,
     args: [...scaledArgs, ...final2RegimenArgs],
   },
   "phase-aware-lr": {
     modelVersion: "v10-phase-aware-lr-dev1",
     parentModel: "v10-clean-control-dev1",
-    dataContract: "v10-clean-snapshot-pending",
+    dataContract: "v10-sequence-contract-dev1",
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_034_259,
     runnable: false,
-    blockedReason,
+    blockedReason: treatmentBlockedReason,
     args: [
       ...exactSizeArgs,
       ...fixedRegimenArgs,
@@ -121,12 +124,12 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
   "smooth-sequence": {
     modelVersion: "v10-smooth-sequence-dev1",
     parentModel: "v10-clean-control-dev1",
-    dataContract: "v10-clean-snapshot-pending",
+    dataContract: "v10-sequence-contract-dev1",
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_034_259,
     runnable: false,
-    blockedReason,
+    blockedReason: treatmentBlockedReason,
     args: [
       ...exactSizeArgs,
       ...fixedRegimenArgs,
@@ -138,7 +141,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
   "combined-candidate": {
     modelVersion: "v10-combined-candidate-dev1",
     parentModel: "v10-ablation-winners-pending",
-    dataContract: "v10-clean-snapshot-pending",
+    dataContract: "v10-sequence-contract-dev1",
     featureProfile: "v10-combined-pending",
     mlTable: "ml_sequence_rows_v10_final",
     expectedTrainableParameters: null,

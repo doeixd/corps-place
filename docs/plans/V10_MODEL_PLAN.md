@@ -1475,3 +1475,21 @@ to choose among checkpoints.
   corps-alias resolution. Use this evidence for deterministic low-support
   identity-residual gating and support-aware dropout; a known but one-show
   identity must not receive the same trust as a deeply observed identity.
+- **Data-native embedding contract (V10 invariant).** Fresh map cardinalities are
+  only the first step. Canonicalize reviewed aliases before assigning IDs, train
+  every corps/judge/show embedding from scratch only on temporally valid rows in
+  the clean V10 contract, and never import final2 embedding weights. Use the
+  cleaned support metadata to set identity dropout/unknown substitution and to
+  gate low-support residuals, so rare identities cannot be memorized as if they
+  were well established. Evaluate known, unknown, low-support, and hidden-
+  identity slices separately. Package the exact maps, alias policy, support
+  metadata, and augmentation settings with the model so inference reconstructs
+  the same identity semantics. A candidate does not qualify as full V10 merely
+  because it has newly sized embedding tables; it must actually use the repaired
+  identities and evidence regimes during training.
+- The foreground `v10_clean_smoke_tiny` run completed the entire trainer and
+  packaging path against the 7,317-row clean contract. It built the intended
+  `1,034,259`-parameter graph with V10's `214/56/301` identity inputs and wrote
+  the selected map, curve, schema, support, sequence-manifest, and source hashes
+  into its model-local snapshot. Its 64-row/one-epoch metrics are deliberately
+  non-qualifying; this proves wiring and provenance, not model quality.
