@@ -907,6 +907,12 @@ decision.
   stochastic sample/mask order, and checkpoint path can still differ. Before
   attributing a small gain to V10, estimate multi-seed variance and log sample/
   mask-order hashes or deterministic fixtures.
+- **Next run queued:** standard-capacity seed 43 with auto curriculum disabled,
+  forcing the recovered final2 boundaries A→B at epoch 10 and B→C at epoch 40.
+  All other frozen-contract arguments stay unchanged. Run it only after the 1.9×
+  capacity ablation exits, avoiding CPU contention as another reproducibility
+  variable. Compare it directly with standard automatic seed 43; do not compare
+  its wall time with a concurrently trained job.
 
 ### 2026-07-16 — clean-data rebuild and early-2026 out-of-time gate
 
