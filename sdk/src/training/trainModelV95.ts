@@ -71,9 +71,9 @@ const MODEL_DIR = "./models/v95_final2_reconstruction";
 const NORM_PATH = "./results/v95-final2-reconstruction-target-norm.json";
 const JUDGE_INDEX_PATH = "./src/training/judgeIndexMap.json";
 const CORPS_INDEX_PATH = "./src/training/corpsIndexMap.json";
-const JUDGE_COUNT = 245;
-const CORPS_COUNT = 709;
-const SHOW_COUNT = 349;
+let JUDGE_COUNT = 245;
+let CORPS_COUNT = 709;
+let SHOW_COUNT = 349;
 const FINAL2_JUDGE_MAP_SHA256 = "1c95f7000798a858dd7b9e96864a2c2926d3bfc2fbccf24b44745d49a1c6596f";
 const FINAL2_CORPS_MAP_SHA256 = "99de63cc614f6965c64d229450bd1ebd663efdb02b4213281973f5f193ea3f3c";
 const CAPTIONS = ["GE1", "GE2", "VP", "VA", "CG", "MB", "MA", "MP"] as const;
@@ -212,14 +212,14 @@ function hashFileIfExists(filePath: string) {
   return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
 }
 
-function safeReferenceCurveVersion() {
-  const refPath = path.join("src", "training", "referenceCurvesV4.json");
+function safeReferenceCurveVersion(refPath: string) {
   if (!fs.existsSync(refPath)) return null;
   try {
     const parsed = JSON.parse(fs.readFileSync(refPath, "utf-8")) as {
+      version?: string;
       metadata?: { version?: string };
     };
-    return parsed.metadata?.version ?? null;
+    return parsed.version ?? parsed.metadata?.version ?? null;
   } catch {
     return null;
   }
@@ -1928,6 +1928,12 @@ function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: nu
 
 async function main() {
   const args = parseArgs();
+  for (const [flag, value] of [["--judge-count", args.judgeCount], ["--corps-count", args.corpsCount], ["--show-count", args.showCount]] as const) {
+    if (!Number.isInteger(value) || value < 1) throw new Error(`${flag} must be a positive integer`);
+  }
+  JUDGE_COUNT = args.judgeCount;
+  CORPS_COUNT = args.corpsCount;
+  SHOW_COUNT = args.showCount;
   if (args.lrSchedule !== "cosine" && args.lrSchedule !== "phase-aware") {
     throw new Error(`Unknown learning-rate schedule '${args.lrSchedule}'.`);
   }
@@ -1938,6 +1944,9 @@ async function main() {
     throw new Error(`Unknown reproduction contract '${args.reproductionContract}'.`);
   }
   if (args.reproductionContract === "final2") {
+    if (JUDGE_COUNT !== 245 || CORPS_COUNT !== 709 || SHOW_COUNT !== 349) {
+      throw new Error("final2 reproduction requires embedding input dimensions 245/709/349");
+    }
     if (args.maxRows !== undefined || args.divisionFilter.toLowerCase() !== "all") {
       throw new Error("final2 reproduction forbids --maxRows and division filtering");
     }
@@ -3478,12 +3487,13 @@ async function main() {
       ),
     },
     artifacts: {
-      reference_curve_version: safeReferenceCurveVersion(),
-      reference_curves_sha256: hashFileIfExists(path.join("src", "training", "referenceCurvesV4.json")),
-      judge_index_map_sha256: FINAL2_JUDGE_MAP_SHA256,
-      corps_index_map_sha256: FINAL2_CORPS_MAP_SHA256,
-      local_judge_index_map_sha256: hashFileIfExists(JUDGE_INDEX_PATH),
-      local_corps_index_map_sha256: hashFileIfExists(CORPS_INDEX_PATH),
+      reference_curve_version: safeReferenceCurveVersion(args.referenceCurvesPath),
+      reference_curves_sha256: hashFileIfExists(args.referenceCurvesPath),
+      judge_index_map_sha256: hashFileIfExists(args.judgeMapPath),
+      corps_index_map_sha256: hashFileIfExists(args.corpsMapPath),
+      show_index_map_sha256: hashFileIfExists(args.showMapPath),
+      final2_judge_index_map_sha256: args.reproductionContract === "final2" ? FINAL2_JUDGE_MAP_SHA256 : null,
+      final2_corps_index_map_sha256: args.reproductionContract === "final2" ? FINAL2_CORPS_MAP_SHA256 : null,
       embedding_input_dims: {
         judges: JUDGE_COUNT,
         corps: CORPS_COUNT,

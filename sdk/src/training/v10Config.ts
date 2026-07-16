@@ -16,7 +16,7 @@ type V10Profile = {
   dataContract: string;
   featureProfile: string;
   mlTable: string;
-  expectedTrainableParametersUnderFinal2Cardinalities: number | null;
+  expectedTrainableParameters: number | null;
   runnable: boolean;
   blockedReason: string;
   args: readonly string[];
@@ -63,7 +63,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     dataContract: "v10-clean-snapshot-pending",
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
-    expectedTrainableParametersUnderFinal2Cardinalities: 1_048_639,
+    expectedTrainableParameters: 1_034_259,
     runnable: false,
     blockedReason,
     args: [...exactSizeArgs, ...final2RegimenArgs],
@@ -74,7 +74,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     dataContract: "v10-clean-snapshot-pending",
     featureProfile: "v10-field-pace-p1-pending",
     mlTable: "ml_sequence_rows_v10_field_pace",
-    expectedTrainableParametersUnderFinal2Cardinalities: null,
+    expectedTrainableParameters: null,
     runnable: false,
     blockedReason,
     args: [...exactSizeArgs, ...final2RegimenArgs],
@@ -85,7 +85,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     dataContract: "v10-clean-snapshot-pending",
     featureProfile: "v10-thin-history-p2-p3-pending",
     mlTable: "ml_sequence_rows_v10_thin_history",
-    expectedTrainableParametersUnderFinal2Cardinalities: null,
+    expectedTrainableParameters: null,
     runnable: false,
     blockedReason,
     args: [...exactSizeArgs, ...final2RegimenArgs],
@@ -96,7 +96,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     dataContract: "v10-clean-snapshot-pending",
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
-    expectedTrainableParametersUnderFinal2Cardinalities: 1_976_938,
+    expectedTrainableParameters: 1_962_558,
     runnable: false,
     blockedReason,
     args: [...scaledArgs, ...final2RegimenArgs],
@@ -107,7 +107,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     dataContract: "v10-clean-snapshot-pending",
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
-    expectedTrainableParametersUnderFinal2Cardinalities: 1_048_639,
+    expectedTrainableParameters: 1_034_259,
     runnable: false,
     blockedReason,
     args: [
@@ -124,7 +124,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     dataContract: "v10-clean-snapshot-pending",
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
-    expectedTrainableParametersUnderFinal2Cardinalities: 1_048_639,
+    expectedTrainableParameters: 1_034_259,
     runnable: false,
     blockedReason,
     args: [
@@ -141,7 +141,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     dataContract: "v10-clean-snapshot-pending",
     featureProfile: "v10-combined-pending",
     mlTable: "ml_sequence_rows_v10_final",
-    expectedTrainableParametersUnderFinal2Cardinalities: null,
+    expectedTrainableParameters: null,
     runnable: false,
     blockedReason:
       "Combined V10 is blocked until clean-data, feature, phase-aware LR, smooth-sequence, and scale treatments qualify independently",
@@ -175,6 +175,13 @@ export const v10DefaultArgs = (profileName: V10ProfileName, seed = 43): string[]
     "--parent-model", profile.parentModel,
     "--data-contract", profile.dataContract,
     "--feature-profile", profile.featureProfile,
+    "--judge-count", "214",
+    "--corps-count", "56",
+    "--show-count", "301",
+    "--judge-map", "./src/training/v10/dev1/judgeIndexMap.json",
+    "--corps-map", "./src/training/v10/dev1/corpsIndexMap.json",
+    "--show-map", "./src/training/v10/dev1/showIndexMap.json",
+    "--reference-curves", "./src/training/v10/dev1/referenceCurves.json",
     "--seed", String(seed),
     "--trial-id", `v10_${slug}_seed${seed}`,
     ...profile.args,

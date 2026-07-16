@@ -1,0 +1,20 @@
+{
+  "manifest_version": "v10-sequence-contract-dev1",
+  "source_snapshot_sha256": "5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb",
+  "training_performance_identity_sha256": "96b4d40541f7c927bbe6a68740ee766916f027ff75916bcb8417c6531bbba37d",
+  "temporal_caption_identity_sha256": "138d0d2fe9c5728991f45953f54f3c83050a6e21cf08f59a6ea312a83c8c292c",
+  "sequence_payload_sha256": "b2a4d2c4505c1780497371d9a28e14c05b7b3e290709e079a3532e34f79d008d",
+  "table": "ml_sequence_rows_v10_clean_control",
+  "rows": 7317,
+  "splits": { "train": 6630, "val": 635, "test": 52 },
+  "rows_with_explicit_unknown_panel_slots": 489,
+  "dimensions": { "sequence_length": 15, "sequence": 101, "raw_static": 212, "trend": 8, "total_static": 220, "judge_slots": 8 },
+  "maximum_emitted_identity_indices": { "judge": 213, "corps": 55, "show": 300 },
+  "clean_control_embedding_input_dimensions": { "judge": 214, "corps": 56, "show": 301 },
+  "builder_version": "v10-clean-canonical-dev1-2026-07-16",
+  "feature_schema_version": "v10-feature-schema-clean-control-dev1",
+  "artifact_version": "v10-clean-artifacts-dev1",
+  "temporal_contract": "strict-date-before-target-dev1",
+  "unknown_identity_policy": "index 0 is explicit unknown; historical source unknown judge identities are not learned as ordinary identities",
+  "clean_control_embedding_policy": "compact dataset-matched maps only: unknown=0 and embedding input dimension=max(index)+1; final2's unrelated global-map capacity is not retained"
+}

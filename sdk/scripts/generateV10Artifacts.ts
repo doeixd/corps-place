@@ -96,6 +96,37 @@ for (const row of rows<{ alias_key: string; corps_key: string }>(`
 }
 for (const key of corpsKeys) corpsAliases[key] = key;
 
+const identitySupport = {
+  version: "v10-identity-support-dev1",
+  source_snapshot_sha256: SOURCE_HASH,
+  training_contract: CONTRACT_VERSION,
+  corps: rows(`
+    SELECT model_corps_key AS identity, COUNT(*) AS performances,
+      COUNT(DISTINCT competition_slug) AS shows, COUNT(DISTINCT season) AS seasons,
+      MIN(competition_date) AS first_date, MAX(competition_date) AS last_date,
+      SUM(retrospective_panel_complete) AS known_panel_performances
+    FROM v10_training_performances GROUP BY model_corps_key ORDER BY model_corps_key
+  `),
+  judges: rows(`
+    SELECT ja.judge_id AS identity, COUNT(DISTINCT ja.competition_slug) AS shows,
+      COUNT(DISTINCT p.season) AS seasons, MIN(p.competition_date) AS first_date,
+      MAX(p.competition_date) AS last_date, COUNT(DISTINCT p.row_key) AS covered_performances
+    FROM source.judge_assignments ja
+    JOIN v10_training_performances p ON p.competition_slug=ja.competition_slug
+    WHERE ja.normalized_caption_name IN ('GE1','GE2','VP','VA','CG','MB','MA','MP')
+      AND ja.judge_id IS NOT NULL AND ja.judge_id<>'' AND ja.judge_id NOT LIKE '%unknown%'
+    GROUP BY ja.judge_id ORDER BY ja.judge_id
+  `, true),
+  shows: rows(`
+    SELECT CASE WHEN competition_slug GLOB '[0-9][0-9][0-9][0-9]-*' THEN substr(competition_slug,6) ELSE competition_slug END AS identity,
+      COUNT(*) AS performances, COUNT(DISTINCT competition_slug) AS editions,
+      COUNT(DISTINCT season) AS seasons, MIN(competition_date) AS first_date, MAX(competition_date) AS last_date
+    FROM v10_training_performances GROUP BY identity ORDER BY identity
+  `),
+  corps_aliases: corpsAliases,
+  intended_use: "support-aware identity residual gating, dropout, and known-versus-low-support evidence features; not a target or evaluation label",
+};
+
 type CurveCell = { rank: number; bucket: number; caption: string; score: number };
 const curveRows = rows<CurveCell>(`
   SELECT rank_bucket AS rank, percent_bucket AS bucket, 'GE1' AS caption, GE1 AS score FROM v10_training_performances WHERE division_name='World Class'
@@ -162,6 +193,7 @@ const artifacts = [
   writeArtifact("judgeIndexMap.json", judgeIndexMap),
   writeArtifact("showIndexMap.json", showIndexMap),
   writeArtifact("corpsAliasMap.json", corpsAliases),
+  writeArtifact("identitySupport.json", identitySupport),
   writeArtifact("referenceCurves.json", referenceCurves),
 ];
 const manifest = {

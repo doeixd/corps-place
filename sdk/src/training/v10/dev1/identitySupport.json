@@ -1,0 +1,4694 @@
+{
+  "version": "v10-identity-support-dev1",
+  "source_snapshot_sha256": "5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb",
+  "training_contract": "v10-training-performances-dev1",
+  "corps": [
+    {
+      "identity": "001j000000f17bwaaa",
+      "performances": 43,
+      "shows": 43,
+      "seasons": 6,
+      "first_date": "2014-06-27T13:00:00.000Z",
+      "last_date": "2019-07-24T04:00:00.000Z",
+      "known_panel_performances": 43
+    },
+    {
+      "identity": "001j000000h3xrnaav",
+      "performances": 259,
+      "shows": 259,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 240
+    },
+    {
+      "identity": "001j000000h3xwcaav",
+      "performances": 235,
+      "shows": 235,
+      "seasons": 10,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 221
+    },
+    {
+      "identity": "001j000000i6i9saav",
+      "performances": 249,
+      "shows": 249,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 242
+    },
+    {
+      "identity": "001j000000i6jmbaaf",
+      "performances": 140,
+      "shows": 140,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-07-13T00:00:00.000Z",
+      "known_panel_performances": 134
+    },
+    {
+      "identity": "001j000000i6kalaa3",
+      "performances": 70,
+      "shows": 70,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-07-13T00:00:00.000Z",
+      "known_panel_performances": 70
+    },
+    {
+      "identity": "001j000000i6kfgaan",
+      "performances": 222,
+      "shows": 222,
+      "seasons": 9,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2023-08-12T04:00:00.000Z",
+      "known_panel_performances": 198
+    },
+    {
+      "identity": "001j000000i6lenaa3",
+      "performances": 246,
+      "shows": 246,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 229
+    },
+    {
+      "identity": "001j000000iwwslaal",
+      "performances": 106,
+      "shows": 106,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "known_panel_performances": 105
+    },
+    {
+      "identity": "001j000000iwwsoaal",
+      "performances": 261,
+      "shows": 261,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 252
+    },
+    {
+      "identity": "001j000000iwwspaal",
+      "performances": 25,
+      "shows": 25,
+      "seasons": 3,
+      "first_date": "2013-07-29T04:00:00.000Z",
+      "last_date": "2015-08-06T13:00:00.000Z",
+      "known_panel_performances": 25
+    },
+    {
+      "identity": "001j000000iwwsqaal",
+      "performances": 255,
+      "shows": 255,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 236
+    },
+    {
+      "identity": "001j000000iwwsraal",
+      "performances": 256,
+      "shows": 256,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 233
+    },
+    {
+      "identity": "001j000000iwwssaal",
+      "performances": 238,
+      "shows": 238,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 220
+    },
+    {
+      "identity": "001j000000iwx91aad",
+      "performances": 256,
+      "shows": 256,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 239
+    },
+    {
+      "identity": "001j000000iwx93aad",
+      "performances": 169,
+      "shows": 169,
+      "seasons": 10,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 167
+    },
+    {
+      "identity": "001j000000iwx95aad",
+      "performances": 30,
+      "shows": 30,
+      "seasons": 4,
+      "first_date": "2018-06-29T04:00:00.000Z",
+      "last_date": "2024-07-14T04:00:00.000Z",
+      "known_panel_performances": 30
+    },
+    {
+      "identity": "001j000000iwx96aad",
+      "performances": 6,
+      "shows": 6,
+      "seasons": 1,
+      "first_date": "2014-07-26T13:00:00.000Z",
+      "last_date": "2014-08-07T13:00:00.000Z",
+      "known_panel_performances": 6
+    },
+    {
+      "identity": "001j000000iwx97aad",
+      "performances": 153,
+      "shows": 153,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "known_panel_performances": 130
+    },
+    {
+      "identity": "001j000000iwx98aad",
+      "performances": 244,
+      "shows": 244,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 223
+    },
+    {
+      "identity": "001j000000iwx99aad",
+      "performances": 52,
+      "shows": 52,
+      "seasons": 8,
+      "first_date": "2016-07-01T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 52
+    },
+    {
+      "identity": "001j000000iwx9aaat",
+      "performances": 227,
+      "shows": 227,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 207
+    },
+    {
+      "identity": "001j000000iwx9oaad",
+      "performances": 181,
+      "shows": 181,
+      "seasons": 11,
+      "first_date": "2013-07-16T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 170
+    },
+    {
+      "identity": "001j000000iwx9paad",
+      "performances": 162,
+      "shows": 162,
+      "seasons": 11,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 154
+    },
+    {
+      "identity": "001j000000iwx9qaad",
+      "performances": 93,
+      "shows": 93,
+      "seasons": 10,
+      "first_date": "2014-06-20T23:00:00.000Z",
+      "last_date": "2025-07-13T00:00:00.000Z",
+      "known_panel_performances": 91
+    },
+    {
+      "identity": "001j000000iwx9saad",
+      "performances": 77,
+      "shows": 77,
+      "seasons": 9,
+      "first_date": "2014-07-19T13:00:00.000Z",
+      "last_date": "2024-07-22T04:00:00.000Z",
+      "known_panel_performances": 66
+    },
+    {
+      "identity": "001j000000iwx9taad",
+      "performances": 49,
+      "shows": 49,
+      "seasons": 8,
+      "first_date": "2015-07-24T13:00:00.000Z",
+      "last_date": "2025-07-26T00:00:00.000Z",
+      "known_panel_performances": 35
+    },
+    {
+      "identity": "001j000000iwx9uaad",
+      "performances": 86,
+      "shows": 86,
+      "seasons": 11,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2025-07-13T00:00:00.000Z",
+      "known_panel_performances": 85
+    },
+    {
+      "identity": "001j000000iwx9vaad",
+      "performances": 41,
+      "shows": 41,
+      "seasons": 6,
+      "first_date": "2014-06-27T13:00:00.000Z",
+      "last_date": "2019-07-20T04:00:00.000Z",
+      "known_panel_performances": 41
+    },
+    {
+      "identity": "001j000000iwx9waad",
+      "performances": 165,
+      "shows": 165,
+      "seasons": 10,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2024-08-09T04:00:00.000Z",
+      "known_panel_performances": 151
+    },
+    {
+      "identity": "001j000000iwxa0aal",
+      "performances": 114,
+      "shows": 114,
+      "seasons": 8,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2022-08-11T04:00:00.000Z",
+      "known_panel_performances": 101
+    },
+    {
+      "identity": "001j000000iwxa1aal",
+      "performances": 92,
+      "shows": 92,
+      "seasons": 10,
+      "first_date": "2013-07-29T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "known_panel_performances": 89
+    },
+    {
+      "identity": "001j000000iwxa2aal",
+      "performances": 66,
+      "shows": 66,
+      "seasons": 7,
+      "first_date": "2014-07-13T13:00:00.000Z",
+      "last_date": "2022-08-11T04:00:00.000Z",
+      "known_panel_performances": 50
+    },
+    {
+      "identity": "001j000000iwxa3aal",
+      "performances": 243,
+      "shows": 243,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 235
+    },
+    {
+      "identity": "001j000000iwxa5aal",
+      "performances": 179,
+      "shows": 179,
+      "seasons": 11,
+      "first_date": "2013-07-12T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 162
+    },
+    {
+      "identity": "001j000000iwxa6aal",
+      "performances": 88,
+      "shows": 88,
+      "seasons": 6,
+      "first_date": "2013-07-20T04:00:00.000Z",
+      "last_date": "2018-08-10T04:00:00.000Z",
+      "known_panel_performances": 84
+    },
+    {
+      "identity": "001j000000iwxa7aal",
+      "performances": 226,
+      "shows": 226,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 219
+    },
+    {
+      "identity": "001j000000iwxa8aal",
+      "performances": 101,
+      "shows": 101,
+      "seasons": 6,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2018-08-09T04:00:00.000Z",
+      "known_panel_performances": 96
+    },
+    {
+      "identity": "001j000000iwxaaaa1",
+      "performances": 100,
+      "shows": 100,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "known_panel_performances": 98
+    },
+    {
+      "identity": "001j000000iwxabaa1",
+      "performances": 77,
+      "shows": 77,
+      "seasons": 7,
+      "first_date": "2015-07-21T13:00:00.000Z",
+      "last_date": "2023-08-11T04:00:00.000Z",
+      "known_panel_performances": 63
+    },
+    {
+      "identity": "001j000000iwxacaa1",
+      "performances": 145,
+      "shows": 145,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 137
+    },
+    {
+      "identity": "001j000000iwxadaa1",
+      "performances": 194,
+      "shows": 194,
+      "seasons": 10,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 178
+    },
+    {
+      "identity": "001j000000iwxaeaa1",
+      "performances": 236,
+      "shows": 236,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 221
+    },
+    {
+      "identity": "001j000000iwxafaa1",
+      "performances": 256,
+      "shows": 256,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 236
+    },
+    {
+      "identity": "001j000000iwxaiaa1",
+      "performances": 8,
+      "shows": 8,
+      "seasons": 3,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2016-07-09T23:00:00.000Z",
+      "known_panel_performances": 8
+    },
+    {
+      "identity": "001j000000iwxajaa1",
+      "performances": 227,
+      "shows": 227,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "known_panel_performances": 216
+    },
+    {
+      "identity": "001j000000iwxakaa1",
+      "performances": 115,
+      "shows": 115,
+      "seasons": 8,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2022-08-12T04:00:00.000Z",
+      "known_panel_performances": 109
+    },
+    {
+      "identity": "001j000000qzs1qaaf",
+      "performances": 100,
+      "shows": 100,
+      "seasons": 9,
+      "first_date": "2015-07-11T13:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 86
+    },
+    {
+      "identity": "001j0000012tpxmaa2",
+      "performances": 35,
+      "shows": 35,
+      "seasons": 4,
+      "first_date": "2016-07-10T04:00:00.000Z",
+      "last_date": "2019-08-08T04:00:00.000Z",
+      "known_panel_performances": 28
+    },
+    {
+      "identity": "001j0000012y6bqaac",
+      "performances": 68,
+      "shows": 68,
+      "seasons": 8,
+      "first_date": "2016-07-01T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "known_panel_performances": 67
+    },
+    {
+      "identity": "calgary-round-up-band",
+      "performances": 3,
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2025-08-04T00:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "known_panel_performances": 3
+    },
+    {
+      "identity": "city-sound",
+      "performances": 12,
+      "shows": 12,
+      "seasons": 2,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2014-07-13T13:00:00.000Z",
+      "known_panel_performances": 12
+    },
+    {
+      "identity": "encorps",
+      "performances": 4,
+      "shows": 4,
+      "seasons": 1,
+      "first_date": "2019-06-28T04:00:00.000Z",
+      "last_date": "2019-08-02T04:00:00.000Z",
+      "known_panel_performances": 4
+    },
+    {
+      "identity": "high-school-affiliated-to-bit",
+      "performances": 3,
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2025-08-04T00:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "known_panel_performances": 3
+    },
+    {
+      "identity": "racine-scouts",
+      "performances": 29,
+      "shows": 29,
+      "seasons": 3,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2015-08-06T13:00:00.000Z",
+      "known_panel_performances": 28
+    }
+  ],
+  "judges": [
+    {
+      "identity": "a-brown-1",
+      "shows": 12,
+      "seasons": 4,
+      "first_date": "2022-07-25T04:00:00.000Z",
+      "last_date": "2025-07-29T00:00:00.000Z",
+      "covered_performances": 82
+    },
+    {
+      "identity": "a-combites-1",
+      "shows": 27,
+      "seasons": 8,
+      "first_date": "2016-07-15T04:00:00.000Z",
+      "last_date": "2025-07-25T00:00:00.000Z",
+      "covered_performances": 171
+    },
+    {
+      "identity": "a-cook-1",
+      "shows": 69,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-07-29T00:00:00.000Z",
+      "covered_performances": 558
+    },
+    {
+      "identity": "a-dalton-1",
+      "shows": 7,
+      "seasons": 2,
+      "first_date": "2024-07-15T04:00:00.000Z",
+      "last_date": "2025-07-29T00:00:00.000Z",
+      "covered_performances": 42
+    },
+    {
+      "identity": "a-dunn-1",
+      "shows": 41,
+      "seasons": 7,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2019-07-19T04:00:00.000Z",
+      "covered_performances": 420
+    },
+    {
+      "identity": "a-greene-1",
+      "shows": 8,
+      "seasons": 1,
+      "first_date": "2018-07-07T04:00:00.000Z",
+      "last_date": "2018-07-27T04:00:00.000Z",
+      "covered_performances": 59
+    },
+    {
+      "identity": "a-kristensen-1",
+      "shows": 65,
+      "seasons": 10,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2024-07-20T04:00:00.000Z",
+      "covered_performances": 604
+    },
+    {
+      "identity": "a-lo-1",
+      "shows": 46,
+      "seasons": 6,
+      "first_date": "2013-07-14T23:30:00.000Z",
+      "last_date": "2022-07-10T04:00:00.000Z",
+      "covered_performances": 464
+    },
+    {
+      "identity": "a-snipes-1",
+      "shows": 10,
+      "seasons": 2,
+      "first_date": "2024-07-11T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 74
+    },
+    {
+      "identity": "b-brahan-1",
+      "shows": 22,
+      "seasons": 4,
+      "first_date": "2022-07-14T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 208
+    },
+    {
+      "identity": "b-cappelluti-1",
+      "shows": 4,
+      "seasons": 1,
+      "first_date": "2013-07-11T04:00:00.000Z",
+      "last_date": "2013-08-01T04:00:00.000Z",
+      "covered_performances": 29
+    },
+    {
+      "identity": "b-crisp-1",
+      "shows": 34,
+      "seasons": 6,
+      "first_date": "2018-07-11T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 298
+    },
+    {
+      "identity": "b-dacy-1",
+      "shows": 8,
+      "seasons": 2,
+      "first_date": "2024-06-29T04:00:00.000Z",
+      "last_date": "2025-07-21T00:00:00.000Z",
+      "covered_performances": 52
+    },
+    {
+      "identity": "b-fabrizio-1",
+      "shows": 65,
+      "seasons": 10,
+      "first_date": "2013-07-13T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 489
+    },
+    {
+      "identity": "b-huneycutt-1",
+      "shows": 19,
+      "seasons": 5,
+      "first_date": "2019-07-09T04:00:00.000Z",
+      "last_date": "2025-07-03T00:00:00.000Z",
+      "covered_performances": 135
+    },
+    {
+      "identity": "b-johnson-1",
+      "shows": 6,
+      "seasons": 2,
+      "first_date": "2015-07-27T13:00:00.000Z",
+      "last_date": "2016-07-26T04:00:00.000Z",
+      "covered_performances": 43
+    },
+    {
+      "identity": "b-jones-1",
+      "shows": 53,
+      "seasons": 11,
+      "first_date": "2013-07-13T04:00:00.000Z",
+      "last_date": "2025-07-29T00:00:00.000Z",
+      "covered_performances": 420
+    },
+    {
+      "identity": "b-kenny-1",
+      "shows": 6,
+      "seasons": 1,
+      "first_date": "2025-07-08T00:00:00.000Z",
+      "last_date": "2025-08-03T00:00:00.000Z",
+      "covered_performances": 30
+    },
+    {
+      "identity": "b-kuhn-1",
+      "shows": 53,
+      "seasons": 8,
+      "first_date": "2016-07-11T04:00:00.000Z",
+      "last_date": "2025-08-02T00:00:00.000Z",
+      "covered_performances": 435
+    },
+    {
+      "identity": "b-mascaro-1",
+      "shows": 59,
+      "seasons": 9,
+      "first_date": "2013-07-21T04:00:00.000Z",
+      "last_date": "2023-08-06T04:00:00.000Z",
+      "covered_performances": 521
+    },
+    {
+      "identity": "b-spidel-1",
+      "shows": 31,
+      "seasons": 6,
+      "first_date": "2018-06-25T04:00:00.000Z",
+      "last_date": "2025-07-30T00:00:00.000Z",
+      "covered_performances": 185
+    },
+    {
+      "identity": "b-taylor-1",
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2013-07-22T04:00:00.000Z",
+      "last_date": "2013-07-25T04:00:00.000Z",
+      "covered_performances": 22
+    },
+    {
+      "identity": "b-thomas-1",
+      "shows": 15,
+      "seasons": 4,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2022-07-29T04:00:00.000Z",
+      "covered_performances": 92
+    },
+    {
+      "identity": "b-williams-1",
+      "shows": 20,
+      "seasons": 6,
+      "first_date": "2018-07-02T04:00:00.000Z",
+      "last_date": "2025-07-19T00:00:00.000Z",
+      "covered_performances": 117
+    },
+    {
+      "identity": "c-adderley-1",
+      "shows": 3,
+      "seasons": 2,
+      "first_date": "2015-07-27T13:00:00.000Z",
+      "last_date": "2016-07-03T04:00:00.000Z",
+      "covered_performances": 21
+    },
+    {
+      "identity": "c-armbruster-1",
+      "shows": 42,
+      "seasons": 8,
+      "first_date": "2016-07-10T04:00:00.000Z",
+      "last_date": "2025-07-19T00:00:00.000Z",
+      "covered_performances": 297
+    },
+    {
+      "identity": "c-church-1",
+      "shows": 35,
+      "seasons": 10,
+      "first_date": "2014-07-08T13:00:00.000Z",
+      "last_date": "2025-07-27T00:00:00.000Z",
+      "covered_performances": 225
+    },
+    {
+      "identity": "c-clayton-fisher-1",
+      "shows": 30,
+      "seasons": 5,
+      "first_date": "2014-07-26T13:00:00.000Z",
+      "last_date": "2024-07-15T04:00:00.000Z",
+      "covered_performances": 201
+    },
+    {
+      "identity": "c-costanza-1",
+      "shows": 59,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z",
+      "covered_performances": 436
+    },
+    {
+      "identity": "c-crotts-1",
+      "shows": 4,
+      "seasons": 1,
+      "first_date": "2013-07-21T04:00:00.000Z",
+      "last_date": "2013-07-31T04:00:00.000Z",
+      "covered_performances": 38
+    },
+    {
+      "identity": "c-diefenbach-1",
+      "shows": 4,
+      "seasons": 2,
+      "first_date": "2015-07-27T13:00:00.000Z",
+      "last_date": "2016-08-08T04:00:00.000Z",
+      "covered_performances": 31
+    },
+    {
+      "identity": "c-dillon-1",
+      "shows": 72,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-07-31T00:00:00.000Z",
+      "covered_performances": 533
+    },
+    {
+      "identity": "c-dunn-1",
+      "shows": 1,
+      "seasons": 1,
+      "first_date": "2013-07-30T04:00:00.000Z",
+      "last_date": "2013-07-30T04:00:00.000Z",
+      "covered_performances": 8
+    },
+    {
+      "identity": "c-hestin-1",
+      "shows": 19,
+      "seasons": 4,
+      "first_date": "2017-07-14T04:00:00.000Z",
+      "last_date": "2022-08-11T04:00:00.000Z",
+      "covered_performances": 230
+    },
+    {
+      "identity": "c-marra-1",
+      "shows": 29,
+      "seasons": 7,
+      "first_date": "2016-06-30T23:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 145
+    },
+    {
+      "identity": "c-moss-1",
+      "shows": 87,
+      "seasons": 11,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2025-07-27T00:00:00.000Z",
+      "covered_performances": 732
+    },
+    {
+      "identity": "c-nelson-1",
+      "shows": 105,
+      "seasons": 11,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2025-07-16T00:00:00.000Z",
+      "covered_performances": 962
+    },
+    {
+      "identity": "c-phillips-1",
+      "shows": 66,
+      "seasons": 11,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 612
+    },
+    {
+      "identity": "c-poole-1",
+      "shows": 20,
+      "seasons": 5,
+      "first_date": "2019-06-29T04:00:00.000Z",
+      "last_date": "2025-08-02T00:00:00.000Z",
+      "covered_performances": 99
+    },
+    {
+      "identity": "c-quamme-1",
+      "shows": 18,
+      "seasons": 3,
+      "first_date": "2018-07-05T04:00:00.000Z",
+      "last_date": "2022-08-09T04:00:00.000Z",
+      "covered_performances": 120
+    },
+    {
+      "identity": "c-raichle-1",
+      "shows": 48,
+      "seasons": 9,
+      "first_date": "2015-07-05T13:00:00.000Z",
+      "last_date": "2025-07-30T00:00:00.000Z",
+      "covered_performances": 371
+    },
+    {
+      "identity": "c-rapacki-1",
+      "shows": 31,
+      "seasons": 6,
+      "first_date": "2018-07-05T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 301
+    },
+    {
+      "identity": "c-romanowski-1",
+      "shows": 69,
+      "seasons": 11,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 705
+    },
+    {
+      "identity": "c-rothe-1",
+      "shows": 67,
+      "seasons": 11,
+      "first_date": "2013-07-13T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 727
+    },
+    {
+      "identity": "c-williams-1",
+      "shows": 6,
+      "seasons": 1,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2013-08-06T04:00:00.000Z",
+      "covered_performances": 50
+    },
+    {
+      "identity": "d-argul-1",
+      "shows": 39,
+      "seasons": 7,
+      "first_date": "2014-07-05T13:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 350
+    },
+    {
+      "identity": "d-aydelott-1",
+      "shows": 18,
+      "seasons": 6,
+      "first_date": "2015-07-11T13:00:00.000Z",
+      "last_date": "2022-08-02T04:00:00.000Z",
+      "covered_performances": 146
+    },
+    {
+      "identity": "d-bryan-1",
+      "shows": 31,
+      "seasons": 6,
+      "first_date": "2013-07-14T23:30:00.000Z",
+      "last_date": "2018-08-07T04:00:00.000Z",
+      "covered_performances": 241
+    },
+    {
+      "identity": "d-burke-1",
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2013-07-23T04:00:00.000Z",
+      "covered_performances": 23
+    },
+    {
+      "identity": "d-carbone-1",
+      "shows": 79,
+      "seasons": 11,
+      "first_date": "2013-07-11T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 785
+    },
+    {
+      "identity": "d-davis-1",
+      "shows": 71,
+      "seasons": 11,
+      "first_date": "2013-07-16T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 784
+    },
+    {
+      "identity": "d-deems-1",
+      "shows": 80,
+      "seasons": 11,
+      "first_date": "2013-07-23T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 582
+    },
+    {
+      "identity": "d-henderson-1",
+      "shows": 7,
+      "seasons": 2,
+      "first_date": "2024-07-18T04:00:00.000Z",
+      "last_date": "2025-07-18T00:00:00.000Z",
+      "covered_performances": 53
+    },
+    {
+      "identity": "d-mactaggart-1",
+      "shows": 2,
+      "seasons": 1,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2013-08-01T04:00:00.000Z",
+      "covered_performances": 11
+    },
+    {
+      "identity": "d-mcgrath-1",
+      "shows": 6,
+      "seasons": 1,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2013-08-10T04:00:00.000Z",
+      "covered_performances": 63
+    },
+    {
+      "identity": "d-niebauer-1",
+      "shows": 30,
+      "seasons": 5,
+      "first_date": "2013-07-13T04:00:00.000Z",
+      "last_date": "2017-08-07T04:00:00.000Z",
+      "covered_performances": 277
+    },
+    {
+      "identity": "d-orser-1",
+      "shows": 25,
+      "seasons": 7,
+      "first_date": "2017-08-03T04:00:00.000Z",
+      "last_date": "2025-07-22T00:00:00.000Z",
+      "covered_performances": 161
+    },
+    {
+      "identity": "d-padilla-1",
+      "shows": 38,
+      "seasons": 5,
+      "first_date": "2019-07-09T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 353
+    },
+    {
+      "identity": "d-shaffer-1",
+      "shows": 1,
+      "seasons": 1,
+      "first_date": "2014-07-31T13:00:00.000Z",
+      "last_date": "2014-07-31T13:00:00.000Z",
+      "covered_performances": 5
+    },
+    {
+      "identity": "d-solomonson-1",
+      "shows": 12,
+      "seasons": 3,
+      "first_date": "2023-07-13T04:00:00.000Z",
+      "last_date": "2025-07-29T00:00:00.000Z",
+      "covered_performances": 71
+    },
+    {
+      "identity": "d-starnes-1",
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2019-07-22T04:00:00.000Z",
+      "last_date": "2019-07-27T04:00:00.000Z",
+      "covered_performances": 22
+    },
+    {
+      "identity": "d-thomas-1",
+      "shows": 21,
+      "seasons": 5,
+      "first_date": "2019-06-28T04:00:00.000Z",
+      "last_date": "2025-07-30T00:00:00.000Z",
+      "covered_performances": 124
+    },
+    {
+      "identity": "d-torchia-1",
+      "shows": 84,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 755
+    },
+    {
+      "identity": "e-argenziano-1",
+      "shows": 18,
+      "seasons": 4,
+      "first_date": "2015-07-15T13:00:00.000Z",
+      "last_date": "2018-07-27T04:00:00.000Z",
+      "covered_performances": 148
+    },
+    {
+      "identity": "e-beens-1",
+      "shows": 6,
+      "seasons": 2,
+      "first_date": "2024-07-10T04:00:00.000Z",
+      "last_date": "2025-07-16T00:00:00.000Z",
+      "covered_performances": 40
+    },
+    {
+      "identity": "e-martinez-1",
+      "shows": 33,
+      "seasons": 5,
+      "first_date": "2018-07-11T04:00:00.000Z",
+      "last_date": "2024-07-20T04:00:00.000Z",
+      "covered_performances": 222
+    },
+    {
+      "identity": "e-warren-1",
+      "shows": 11,
+      "seasons": 2,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2014-07-29T13:00:00.000Z",
+      "covered_performances": 80
+    },
+    {
+      "identity": "f-miller-1",
+      "shows": 37,
+      "seasons": 5,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2017-08-07T04:00:00.000Z",
+      "covered_performances": 330
+    },
+    {
+      "identity": "f-morris-1",
+      "shows": 28,
+      "seasons": 4,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2016-07-29T04:00:00.000Z",
+      "covered_performances": 253
+    },
+    {
+      "identity": "g-boulden-1",
+      "shows": 38,
+      "seasons": 6,
+      "first_date": "2013-07-21T04:00:00.000Z",
+      "last_date": "2018-07-30T04:00:00.000Z",
+      "covered_performances": 323
+    },
+    {
+      "identity": "g-fugett-1",
+      "shows": 83,
+      "seasons": 11,
+      "first_date": "2013-07-23T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 937
+    },
+    {
+      "identity": "g-howarth-1",
+      "shows": 56,
+      "seasons": 11,
+      "first_date": "2013-07-31T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 434
+    },
+    {
+      "identity": "g-llacer-1",
+      "shows": 23,
+      "seasons": 4,
+      "first_date": "2022-07-18T04:00:00.000Z",
+      "last_date": "2025-07-22T00:00:00.000Z",
+      "covered_performances": 228
+    },
+    {
+      "identity": "g-markham-1",
+      "shows": 31,
+      "seasons": 7,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2019-08-09T04:00:00.000Z",
+      "covered_performances": 340
+    },
+    {
+      "identity": "g-miller-1",
+      "shows": 36,
+      "seasons": 6,
+      "first_date": "2018-07-02T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 334
+    },
+    {
+      "identity": "g-oliviero-1",
+      "shows": 77,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-07-30T00:00:00.000Z",
+      "covered_performances": 740
+    },
+    {
+      "identity": "g-schallert-1",
+      "shows": 5,
+      "seasons": 2,
+      "first_date": "2014-07-22T13:00:00.000Z",
+      "last_date": "2015-07-15T13:00:00.000Z",
+      "covered_performances": 40
+    },
+    {
+      "identity": "g-williams-1",
+      "shows": 3,
+      "seasons": 2,
+      "first_date": "2013-07-27T04:00:00.000Z",
+      "last_date": "2014-07-23T13:00:00.000Z",
+      "covered_performances": 22
+    },
+    {
+      "identity": "h-bassett-1",
+      "shows": 16,
+      "seasons": 4,
+      "first_date": "2015-08-02T13:00:00.000Z",
+      "last_date": "2018-08-06T04:00:00.000Z",
+      "covered_performances": 129
+    },
+    {
+      "identity": "h-nguyen-1",
+      "shows": 73,
+      "seasons": 10,
+      "first_date": "2014-07-05T13:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 647
+    },
+    {
+      "identity": "i-delgado-1",
+      "shows": 2,
+      "seasons": 1,
+      "first_date": "2025-07-19T00:00:00.000Z",
+      "last_date": "2025-07-30T00:00:00.000Z",
+      "covered_performances": 8
+    },
+    {
+      "identity": "i-jenkins-1",
+      "shows": 7,
+      "seasons": 2,
+      "first_date": "2024-07-03T04:00:00.000Z",
+      "last_date": "2025-08-02T00:00:00.000Z",
+      "covered_performances": 46
+    },
+    {
+      "identity": "j-allison-dma-1",
+      "shows": 5,
+      "seasons": 1,
+      "first_date": "2013-06-30T04:00:00.000Z",
+      "last_date": "2013-08-08T14:00:00.000Z",
+      "covered_performances": 77
+    },
+    {
+      "identity": "j-ausdemore-1",
+      "shows": 46,
+      "seasons": 7,
+      "first_date": "2014-06-21T13:00:00.000Z",
+      "last_date": "2022-08-13T04:00:00.000Z",
+      "covered_performances": 471
+    },
+    {
+      "identity": "j-barton-1",
+      "shows": 9,
+      "seasons": 2,
+      "first_date": "2024-07-08T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 93
+    },
+    {
+      "identity": "j-bell-1",
+      "shows": 61,
+      "seasons": 9,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2024-07-13T04:00:00.000Z",
+      "covered_performances": 608
+    },
+    {
+      "identity": "j-bierschenk-1",
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2025-07-19T00:00:00.000Z",
+      "last_date": "2025-08-02T00:00:00.000Z",
+      "covered_performances": 14
+    },
+    {
+      "identity": "j-brooks-1",
+      "shows": 39,
+      "seasons": 6,
+      "first_date": "2018-06-25T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 390
+    },
+    {
+      "identity": "j-campbell-1",
+      "shows": 17,
+      "seasons": 3,
+      "first_date": "2023-07-02T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 151
+    },
+    {
+      "identity": "j-carlisle-1",
+      "shows": 25,
+      "seasons": 4,
+      "first_date": "2013-07-15T04:00:00.000Z",
+      "last_date": "2017-08-07T04:00:00.000Z",
+      "covered_performances": 205
+    },
+    {
+      "identity": "j-corradino-1",
+      "shows": 6,
+      "seasons": 2,
+      "first_date": "2013-07-15T04:00:00.000Z",
+      "last_date": "2014-07-31T13:00:00.000Z",
+      "covered_performances": 41
+    },
+    {
+      "identity": "j-davila-1",
+      "shows": 54,
+      "seasons": 8,
+      "first_date": "2016-07-02T04:00:00.000Z",
+      "last_date": "2025-07-03T00:00:00.000Z",
+      "covered_performances": 525
+    },
+    {
+      "identity": "j-denton-1",
+      "shows": 49,
+      "seasons": 10,
+      "first_date": "2013-07-23T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z",
+      "covered_performances": 358
+    },
+    {
+      "identity": "j-gilley-1",
+      "shows": 79,
+      "seasons": 11,
+      "first_date": "2013-07-08T04:00:00.000Z",
+      "last_date": "2025-07-16T00:00:00.000Z",
+      "covered_performances": 599
+    },
+    {
+      "identity": "j-harper-1",
+      "shows": 69,
+      "seasons": 11,
+      "first_date": "2013-07-08T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 703
+    },
+    {
+      "identity": "j-howell-1",
+      "shows": 92,
+      "seasons": 11,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 885
+    },
+    {
+      "identity": "j-kennedy-1",
+      "shows": 83,
+      "seasons": 11,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 924
+    },
+    {
+      "identity": "j-loyde-1",
+      "shows": 15,
+      "seasons": 4,
+      "first_date": "2022-07-08T04:00:00.000Z",
+      "last_date": "2025-07-13T00:00:00.000Z",
+      "covered_performances": 99
+    },
+    {
+      "identity": "j-mills-1",
+      "shows": 30,
+      "seasons": 7,
+      "first_date": "2017-07-07T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 194
+    },
+    {
+      "identity": "j-missing-1",
+      "shows": 50,
+      "seasons": 11,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2025-07-19T00:00:00.000Z",
+      "covered_performances": 329
+    },
+    {
+      "identity": "j-mitchell-1",
+      "shows": 10,
+      "seasons": 3,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2019-08-01T04:00:00.000Z",
+      "covered_performances": 67
+    },
+    {
+      "identity": "j-myers-1",
+      "shows": 5,
+      "seasons": 1,
+      "first_date": "2025-07-08T00:00:00.000Z",
+      "last_date": "2025-07-22T00:00:00.000Z",
+      "covered_performances": 32
+    },
+    {
+      "identity": "j-orefice-1",
+      "shows": 88,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 786
+    },
+    {
+      "identity": "j-oswald-1",
+      "shows": 6,
+      "seasons": 1,
+      "first_date": "2025-06-30T00:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 87
+    },
+    {
+      "identity": "j-pipitone-1",
+      "shows": 16,
+      "seasons": 3,
+      "first_date": "2013-07-15T04:00:00.000Z",
+      "last_date": "2015-07-22T13:00:00.000Z",
+      "covered_performances": 127
+    },
+    {
+      "identity": "j-prosperie-1",
+      "shows": 47,
+      "seasons": 9,
+      "first_date": "2013-07-22T04:00:00.000Z",
+      "last_date": "2025-08-02T00:00:00.000Z",
+      "covered_performances": 486
+    },
+    {
+      "identity": "j-pursifull-1",
+      "shows": 24,
+      "seasons": 4,
+      "first_date": "2022-07-12T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 180
+    },
+    {
+      "identity": "j-queen-1",
+      "shows": 12,
+      "seasons": 5,
+      "first_date": "2014-07-08T13:00:00.000Z",
+      "last_date": "2018-06-29T04:00:00.000Z",
+      "covered_performances": 89
+    },
+    {
+      "identity": "j-rhodes-1",
+      "shows": 31,
+      "seasons": 5,
+      "first_date": "2019-07-15T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 320
+    },
+    {
+      "identity": "j-rinehart-1",
+      "shows": 6,
+      "seasons": 2,
+      "first_date": "2014-07-13T13:00:00.000Z",
+      "last_date": "2016-07-12T04:00:00.000Z",
+      "covered_performances": 45
+    },
+    {
+      "identity": "j-sterrett-1",
+      "shows": 7,
+      "seasons": 1,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2013-08-05T04:00:00.000Z",
+      "covered_performances": 59
+    },
+    {
+      "identity": "j-sturgeon-1",
+      "shows": 86,
+      "seasons": 11,
+      "first_date": "2013-07-29T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z",
+      "covered_performances": 826
+    },
+    {
+      "identity": "j-tate-1",
+      "shows": 19,
+      "seasons": 4,
+      "first_date": "2022-07-08T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 111
+    },
+    {
+      "identity": "j-webb-1",
+      "shows": 57,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 525
+    },
+    {
+      "identity": "j-wilson-1",
+      "shows": 53,
+      "seasons": 10,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-07-25T00:00:00.000Z",
+      "covered_performances": 407
+    },
+    {
+      "identity": "k-baker-1",
+      "shows": 92,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-03T00:00:00.000Z",
+      "covered_performances": 721
+    },
+    {
+      "identity": "k-burja-1",
+      "shows": 5,
+      "seasons": 2,
+      "first_date": "2024-07-13T04:00:00.000Z",
+      "last_date": "2025-08-03T00:00:00.000Z",
+      "covered_performances": 26
+    },
+    {
+      "identity": "k-giese-1",
+      "shows": 59,
+      "seasons": 8,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2022-07-13T04:00:00.000Z",
+      "covered_performances": 666
+    },
+    {
+      "identity": "k-kuhn-1",
+      "shows": 30,
+      "seasons": 6,
+      "first_date": "2016-07-14T04:00:00.000Z",
+      "last_date": "2023-08-04T04:00:00.000Z",
+      "covered_performances": 187
+    },
+    {
+      "identity": "k-lejeune-1",
+      "shows": 10,
+      "seasons": 2,
+      "first_date": "2024-07-16T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z",
+      "covered_performances": 74
+    },
+    {
+      "identity": "k-miller-1",
+      "shows": 88,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 896
+    },
+    {
+      "identity": "k-shuttlesworth-1",
+      "shows": 17,
+      "seasons": 5,
+      "first_date": "2019-07-12T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 114
+    },
+    {
+      "identity": "k-turner-1",
+      "shows": 62,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 573
+    },
+    {
+      "identity": "k-weirich-1",
+      "shows": 39,
+      "seasons": 10,
+      "first_date": "2014-07-05T13:00:00.000Z",
+      "last_date": "2025-07-25T00:00:00.000Z",
+      "covered_performances": 255
+    },
+    {
+      "identity": "k-young-1",
+      "shows": 25,
+      "seasons": 5,
+      "first_date": "2019-06-22T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 292
+    },
+    {
+      "identity": "l-appel-1",
+      "shows": 9,
+      "seasons": 5,
+      "first_date": "2013-07-29T04:00:00.000Z",
+      "last_date": "2017-08-02T04:00:00.000Z",
+      "covered_performances": 53
+    },
+    {
+      "identity": "l-carlson-1",
+      "shows": 37,
+      "seasons": 4,
+      "first_date": "2013-06-29T04:00:00.000Z",
+      "last_date": "2016-08-13T13:00:00.000Z",
+      "covered_performances": 427
+    },
+    {
+      "identity": "l-eubanks-1",
+      "shows": 10,
+      "seasons": 3,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2015-07-23T13:00:00.000Z",
+      "covered_performances": 83
+    },
+    {
+      "identity": "m-anderson-1",
+      "shows": 35,
+      "seasons": 5,
+      "first_date": "2014-07-05T13:00:00.000Z",
+      "last_date": "2022-07-11T04:00:00.000Z",
+      "covered_performances": 397
+    },
+    {
+      "identity": "m-bowers-1",
+      "shows": 38,
+      "seasons": 10,
+      "first_date": "2014-07-28T13:00:00.000Z",
+      "last_date": "2025-07-23T00:00:00.000Z",
+      "covered_performances": 246
+    },
+    {
+      "identity": "m-brown-1",
+      "shows": 10,
+      "seasons": 3,
+      "first_date": "2023-07-14T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 63
+    },
+    {
+      "identity": "m-calima-1",
+      "shows": 10,
+      "seasons": 3,
+      "first_date": "2016-07-20T04:00:00.000Z",
+      "last_date": "2018-07-27T04:00:00.000Z",
+      "covered_performances": 72
+    },
+    {
+      "identity": "m-carlberg-1",
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2016-07-01T04:00:00.000Z",
+      "last_date": "2016-07-31T04:00:00.000Z",
+      "covered_performances": 18
+    },
+    {
+      "identity": "m-czapinksi-1",
+      "shows": 33,
+      "seasons": 4,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2022-08-09T04:00:00.000Z",
+      "covered_performances": 323
+    },
+    {
+      "identity": "m-davis-1",
+      "shows": 79,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z",
+      "covered_performances": 544
+    },
+    {
+      "identity": "m-gray-1",
+      "shows": 41,
+      "seasons": 7,
+      "first_date": "2015-07-11T13:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 454
+    },
+    {
+      "identity": "m-griffin-1",
+      "shows": 74,
+      "seasons": 11,
+      "first_date": "2013-06-29T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 800
+    },
+    {
+      "identity": "m-hart-1",
+      "shows": 5,
+      "seasons": 2,
+      "first_date": "2015-07-07T13:00:00.000Z",
+      "last_date": "2016-07-31T04:00:00.000Z",
+      "covered_performances": 39
+    },
+    {
+      "identity": "m-heather-1",
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2016-07-27T04:00:00.000Z",
+      "last_date": "2016-07-31T04:00:00.000Z",
+      "covered_performances": 23
+    },
+    {
+      "identity": "m-hoskins-1",
+      "shows": 66,
+      "seasons": 10,
+      "first_date": "2013-07-30T04:00:00.000Z",
+      "last_date": "2025-07-22T00:00:00.000Z",
+      "covered_performances": 578
+    },
+    {
+      "identity": "m-howard-1",
+      "shows": 15,
+      "seasons": 3,
+      "first_date": "2023-07-15T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 156
+    },
+    {
+      "identity": "m-kelly-1",
+      "shows": 48,
+      "seasons": 7,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2019-08-03T04:00:00.000Z",
+      "covered_performances": 506
+    },
+    {
+      "identity": "m-leitzke-1",
+      "shows": 79,
+      "seasons": 9,
+      "first_date": "2015-07-22T13:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 774
+    },
+    {
+      "identity": "m-lentz-1",
+      "shows": 23,
+      "seasons": 3,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2017-07-22T04:00:00.000Z",
+      "covered_performances": 245
+    },
+    {
+      "identity": "m-mast-1",
+      "shows": 24,
+      "seasons": 5,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2017-08-07T04:00:00.000Z",
+      "covered_performances": 207
+    },
+    {
+      "identity": "m-mccourt-1",
+      "shows": 20,
+      "seasons": 4,
+      "first_date": "2019-06-26T04:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z",
+      "covered_performances": 191
+    },
+    {
+      "identity": "m-mcgahey-1",
+      "shows": 52,
+      "seasons": 11,
+      "first_date": "2013-07-11T04:00:00.000Z",
+      "last_date": "2025-07-06T00:00:00.000Z",
+      "covered_performances": 581
+    },
+    {
+      "identity": "m-mullinix-1",
+      "shows": 26,
+      "seasons": 4,
+      "first_date": "2013-07-15T04:00:00.000Z",
+      "last_date": "2017-08-05T04:00:00.000Z",
+      "covered_performances": 233
+    },
+    {
+      "identity": "m-o-neill-1",
+      "shows": 6,
+      "seasons": 2,
+      "first_date": "2018-07-07T04:00:00.000Z",
+      "last_date": "2019-07-06T04:00:00.000Z",
+      "covered_performances": 54
+    },
+    {
+      "identity": "m-rubino-1",
+      "shows": 30,
+      "seasons": 10,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-07-08T00:00:00.000Z",
+      "covered_performances": 230
+    },
+    {
+      "identity": "m-stone-1",
+      "shows": 82,
+      "seasons": 8,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2022-07-21T04:00:00.000Z",
+      "covered_performances": 868
+    },
+    {
+      "identity": "m-tarr-1",
+      "shows": 27,
+      "seasons": 4,
+      "first_date": "2022-08-01T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 206
+    },
+    {
+      "identity": "m-teal-1",
+      "shows": 29,
+      "seasons": 8,
+      "first_date": "2016-07-11T04:00:00.000Z",
+      "last_date": "2025-07-20T00:00:00.000Z",
+      "covered_performances": 226
+    },
+    {
+      "identity": "m-thompson-1",
+      "shows": 68,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 561
+    },
+    {
+      "identity": "m-turner-1",
+      "shows": 95,
+      "seasons": 10,
+      "first_date": "2013-07-10T04:00:00.000Z",
+      "last_date": "2025-07-17T00:00:00.000Z",
+      "covered_performances": 941
+    },
+    {
+      "identity": "m-waymire-1",
+      "shows": 40,
+      "seasons": 7,
+      "first_date": "2015-07-05T13:00:00.000Z",
+      "last_date": "2023-08-01T04:00:00.000Z",
+      "covered_performances": 332
+    },
+    {
+      "identity": "n-jones-1",
+      "shows": 95,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 986
+    },
+    {
+      "identity": "n-konouchi-1",
+      "shows": 4,
+      "seasons": 1,
+      "first_date": "2025-07-15T00:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 22
+    },
+    {
+      "identity": "n-waters-1",
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2016-07-09T04:00:00.000Z",
+      "last_date": "2016-07-11T04:00:00.000Z",
+      "covered_performances": 24
+    },
+    {
+      "identity": "p-furnari-1",
+      "shows": 46,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-07-28T00:00:00.000Z",
+      "covered_performances": 374
+    },
+    {
+      "identity": "p-haines-1",
+      "shows": 49,
+      "seasons": 11,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z",
+      "covered_performances": 338
+    },
+    {
+      "identity": "p-hinman-1",
+      "shows": 17,
+      "seasons": 5,
+      "first_date": "2013-07-10T04:00:00.000Z",
+      "last_date": "2017-08-01T04:00:00.000Z",
+      "covered_performances": 129
+    },
+    {
+      "identity": "p-madden-1",
+      "shows": 52,
+      "seasons": 9,
+      "first_date": "2015-07-12T13:00:00.000Z",
+      "last_date": "2025-07-08T00:00:00.000Z",
+      "covered_performances": 388
+    },
+    {
+      "identity": "p-mcgarr-1",
+      "shows": 71,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 710
+    },
+    {
+      "identity": "p-smith-1",
+      "shows": 8,
+      "seasons": 3,
+      "first_date": "2023-07-26T00:00:00.000Z",
+      "last_date": "2025-08-03T00:00:00.000Z",
+      "covered_performances": 43
+    },
+    {
+      "identity": "r-badua-1",
+      "shows": 4,
+      "seasons": 1,
+      "first_date": "2025-07-08T00:00:00.000Z",
+      "last_date": "2025-07-15T00:00:00.000Z",
+      "covered_performances": 24
+    },
+    {
+      "identity": "r-bailey-1",
+      "shows": 5,
+      "seasons": 2,
+      "first_date": "2024-07-11T04:00:00.000Z",
+      "last_date": "2025-07-05T00:00:00.000Z",
+      "covered_performances": 25
+    },
+    {
+      "identity": "r-comfort-1",
+      "shows": 26,
+      "seasons": 6,
+      "first_date": "2016-07-01T04:00:00.000Z",
+      "last_date": "2023-07-25T04:00:00.000Z",
+      "covered_performances": 180
+    },
+    {
+      "identity": "r-ellis-1",
+      "shows": 6,
+      "seasons": 3,
+      "first_date": "2017-07-31T04:00:00.000Z",
+      "last_date": "2019-07-26T04:00:00.000Z",
+      "covered_performances": 43
+    },
+    {
+      "identity": "r-greenwell-1",
+      "shows": 58,
+      "seasons": 8,
+      "first_date": "2013-07-27T04:00:00.000Z",
+      "last_date": "2022-08-11T04:00:00.000Z",
+      "covered_performances": 612
+    },
+    {
+      "identity": "r-isoda-1",
+      "shows": 31,
+      "seasons": 6,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2018-08-06T04:00:00.000Z",
+      "covered_performances": 240
+    },
+    {
+      "identity": "r-jett-1",
+      "shows": 10,
+      "seasons": 2,
+      "first_date": "2022-07-02T04:00:00.000Z",
+      "last_date": "2023-07-16T04:00:00.000Z",
+      "covered_performances": 60
+    },
+    {
+      "identity": "r-kemp-1",
+      "shows": 61,
+      "seasons": 7,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2019-07-29T04:00:00.000Z",
+      "covered_performances": 578
+    },
+    {
+      "identity": "r-overvliet-1",
+      "shows": 18,
+      "seasons": 3,
+      "first_date": "2014-07-27T13:00:00.000Z",
+      "last_date": "2019-07-15T04:00:00.000Z",
+      "covered_performances": 145
+    },
+    {
+      "identity": "r-rios-1",
+      "shows": 46,
+      "seasons": 11,
+      "first_date": "2013-07-24T04:00:00.000Z",
+      "last_date": "2025-07-17T00:00:00.000Z",
+      "covered_performances": 439
+    },
+    {
+      "identity": "r-rodriguez-1",
+      "shows": 10,
+      "seasons": 1,
+      "first_date": "2014-06-27T13:00:00.000Z",
+      "last_date": "2014-08-08T13:00:00.000Z",
+      "covered_performances": 125
+    },
+    {
+      "identity": "r-rumpf-1",
+      "shows": 3,
+      "seasons": 2,
+      "first_date": "2014-07-29T13:00:00.000Z",
+      "last_date": "2015-07-30T13:00:00.000Z",
+      "covered_performances": 19
+    },
+    {
+      "identity": "r-ryles-1",
+      "shows": 5,
+      "seasons": 2,
+      "first_date": "2013-07-23T04:00:00.000Z",
+      "last_date": "2017-08-01T04:00:00.000Z",
+      "covered_performances": 37
+    },
+    {
+      "identity": "r-saucedo-1",
+      "shows": 25,
+      "seasons": 3,
+      "first_date": "2017-06-24T04:00:00.000Z",
+      "last_date": "2019-08-09T04:00:00.000Z",
+      "covered_performances": 239
+    },
+    {
+      "identity": "r-solomon-1",
+      "shows": 103,
+      "seasons": 11,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 1114
+    },
+    {
+      "identity": "s-adamo-1",
+      "shows": 74,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-03T00:00:00.000Z",
+      "covered_performances": 545
+    },
+    {
+      "identity": "s-alia-1",
+      "shows": 11,
+      "seasons": 2,
+      "first_date": "2017-07-07T04:00:00.000Z",
+      "last_date": "2018-07-14T04:00:00.000Z",
+      "covered_performances": 70
+    },
+    {
+      "identity": "s-bertelle-1",
+      "shows": 13,
+      "seasons": 4,
+      "first_date": "2014-06-28T13:00:00.000Z",
+      "last_date": "2017-08-02T04:00:00.000Z",
+      "covered_performances": 81
+    },
+    {
+      "identity": "s-calhoun-1",
+      "shows": 28,
+      "seasons": 6,
+      "first_date": "2013-07-30T04:00:00.000Z",
+      "last_date": "2018-07-31T04:00:00.000Z",
+      "covered_performances": 197
+    },
+    {
+      "identity": "s-chumley-1",
+      "shows": 25,
+      "seasons": 6,
+      "first_date": "2018-06-29T04:00:00.000Z",
+      "last_date": "2025-07-31T00:00:00.000Z",
+      "covered_performances": 182
+    },
+    {
+      "identity": "s-clark-1",
+      "shows": 10,
+      "seasons": 2,
+      "first_date": "2024-07-02T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 48
+    },
+    {
+      "identity": "s-halquist-1",
+      "shows": 28,
+      "seasons": 7,
+      "first_date": "2017-08-06T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 156
+    },
+    {
+      "identity": "s-page-1",
+      "shows": 73,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 734
+    },
+    {
+      "identity": "s-pizani-1",
+      "shows": 3,
+      "seasons": 1,
+      "first_date": "2013-07-22T04:00:00.000Z",
+      "last_date": "2013-07-24T04:00:00.000Z",
+      "covered_performances": 24
+    },
+    {
+      "identity": "s-smith-1",
+      "shows": 2,
+      "seasons": 1,
+      "first_date": "2022-07-01T04:00:00.000Z",
+      "last_date": "2022-07-27T04:00:00.000Z",
+      "covered_performances": 11
+    },
+    {
+      "identity": "s-sybilski-1",
+      "shows": 11,
+      "seasons": 2,
+      "first_date": "2014-07-13T13:00:00.000Z",
+      "last_date": "2015-07-27T13:00:00.000Z",
+      "covered_performances": 143
+    },
+    {
+      "identity": "t-cole-1",
+      "shows": 8,
+      "seasons": 2,
+      "first_date": "2014-07-14T13:00:00.000Z",
+      "last_date": "2015-07-27T13:00:00.000Z",
+      "covered_performances": 55
+    },
+    {
+      "identity": "t-dempsey-1",
+      "shows": 13,
+      "seasons": 4,
+      "first_date": "2018-06-30T04:00:00.000Z",
+      "last_date": "2023-07-21T04:00:00.000Z",
+      "covered_performances": 88
+    },
+    {
+      "identity": "t-fox-1",
+      "shows": 62,
+      "seasons": 11,
+      "first_date": "2013-07-23T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z",
+      "covered_performances": 478
+    },
+    {
+      "identity": "t-hall-1",
+      "shows": 36,
+      "seasons": 7,
+      "first_date": "2015-07-28T13:00:00.000Z",
+      "last_date": "2023-08-07T04:00:00.000Z",
+      "covered_performances": 256
+    },
+    {
+      "identity": "t-hudnall-1",
+      "shows": 15,
+      "seasons": 4,
+      "first_date": "2022-07-03T04:00:00.000Z",
+      "last_date": "2025-07-12T00:00:00.000Z",
+      "covered_performances": 79
+    },
+    {
+      "identity": "t-johnston-1",
+      "shows": 10,
+      "seasons": 4,
+      "first_date": "2016-07-02T04:00:00.000Z",
+      "last_date": "2019-07-31T04:00:00.000Z",
+      "covered_performances": 69
+    },
+    {
+      "identity": "t-landess-1",
+      "shows": 25,
+      "seasons": 4,
+      "first_date": "2019-06-22T04:00:00.000Z",
+      "last_date": "2024-08-06T04:00:00.000Z",
+      "covered_performances": 184
+    },
+    {
+      "identity": "t-mengel-1",
+      "shows": 24,
+      "seasons": 6,
+      "first_date": "2017-08-01T04:00:00.000Z",
+      "last_date": "2024-08-04T04:00:00.000Z",
+      "covered_performances": 150
+    },
+    {
+      "identity": "t-moddison-1",
+      "shows": 14,
+      "seasons": 3,
+      "first_date": "2016-07-01T04:00:00.000Z",
+      "last_date": "2018-08-09T04:00:00.000Z",
+      "covered_performances": 140
+    },
+    {
+      "identity": "t-ochran-1",
+      "shows": 79,
+      "seasons": 11,
+      "first_date": "2013-07-08T04:00:00.000Z",
+      "last_date": "2025-07-25T00:00:00.000Z",
+      "covered_performances": 763
+    },
+    {
+      "identity": "t-pierce-1",
+      "shows": 27,
+      "seasons": 5,
+      "first_date": "2019-07-11T04:00:00.000Z",
+      "last_date": "2025-08-02T00:00:00.000Z",
+      "covered_performances": 223
+    },
+    {
+      "identity": "t-sanders-1",
+      "shows": 4,
+      "seasons": 2,
+      "first_date": "2024-07-26T04:00:00.000Z",
+      "last_date": "2025-07-25T00:00:00.000Z",
+      "covered_performances": 26
+    },
+    {
+      "identity": "t-slaughter-1",
+      "shows": 36,
+      "seasons": 5,
+      "first_date": "2019-07-05T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z",
+      "covered_performances": 323
+    },
+    {
+      "identity": "t-wemhoff-1",
+      "shows": 63,
+      "seasons": 9,
+      "first_date": "2015-07-11T13:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z",
+      "covered_performances": 691
+    },
+    {
+      "identity": "t-west-1",
+      "shows": 17,
+      "seasons": 4,
+      "first_date": "2016-06-30T23:00:00.000Z",
+      "last_date": "2019-07-30T04:00:00.000Z",
+      "covered_performances": 118
+    },
+    {
+      "identity": "t-wingate-1",
+      "shows": 43,
+      "seasons": 5,
+      "first_date": "2019-07-08T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z",
+      "covered_performances": 362
+    },
+    {
+      "identity": "t-zimbelman-1",
+      "shows": 4,
+      "seasons": 1,
+      "first_date": "2023-07-11T04:00:00.000Z",
+      "last_date": "2023-08-02T04:00:00.000Z",
+      "covered_performances": 25
+    },
+    {
+      "identity": "w-chumley-1",
+      "shows": 86,
+      "seasons": 11,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 874
+    },
+    {
+      "identity": "w-dillon-1",
+      "shows": 94,
+      "seasons": 11,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z",
+      "covered_performances": 956
+    },
+    {
+      "identity": "w-rickart-1",
+      "shows": 36,
+      "seasons": 5,
+      "first_date": "2019-07-13T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z",
+      "covered_performances": 381
+    },
+    {
+      "identity": "w-whaley-1",
+      "shows": 26,
+      "seasons": 6,
+      "first_date": "2013-07-13T04:00:00.000Z",
+      "last_date": "2019-07-24T04:00:00.000Z",
+      "covered_performances": 207
+    },
+    {
+      "identity": "w-woodworth-1",
+      "shows": 1,
+      "seasons": 1,
+      "first_date": "2017-07-17T04:00:00.000Z",
+      "last_date": "2017-07-17T04:00:00.000Z",
+      "covered_performances": 6
+    }
+  ],
+  "shows": [
+    {
+      "identity": "a-blast-in-the-burg",
+      "performances": 18,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2013-08-02T04:00:00.000Z",
+      "last_date": "2016-08-05T04:00:00.000Z"
+    },
+    {
+      "identity": "a-knight-of-music-and-motion",
+      "performances": 14,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2014-07-30T13:00:00.000Z",
+      "last_date": "2015-07-31T13:00:00.000Z"
+    },
+    {
+      "identity": "alabama-sounds-of-summer",
+      "performances": 23,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2013-07-25T04:00:00.000Z",
+      "last_date": "2016-07-29T04:00:00.000Z"
+    },
+    {
+      "identity": "atlanta-brass-classic",
+      "performances": 13,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2017-07-15T04:00:00.000Z",
+      "last_date": "2019-07-14T04:00:00.000Z"
+    },
+    {
+      "identity": "barnum-festival-champions-on-parade",
+      "performances": 3,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-06-29T04:00:00.000Z",
+      "last_date": "2025-06-28T00:00:00.000Z"
+    },
+    {
+      "identity": "beats-in-the-brook",
+      "performances": 11,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2023-07-29T04:00:00.000Z",
+      "last_date": "2025-07-22T00:00:00.000Z"
+    },
+    {
+      "identity": "big-sounds-in-motion",
+      "performances": 7,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-08-04T04:00:00.000Z",
+      "last_date": "2025-08-03T00:00:00.000Z"
+    },
+    {
+      "identity": "brass-at-the-beach",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-07-29T00:00:00.000Z",
+      "last_date": "2025-07-29T00:00:00.000Z"
+    },
+    {
+      "identity": "brass-impact",
+      "performances": 58,
+      "editions": 9,
+      "seasons": 9,
+      "first_date": "2013-07-15T04:00:00.000Z",
+      "last_date": "2025-07-15T00:00:00.000Z"
+    },
+    {
+      "identity": "brigadier-s-pageant-of-drums",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2023-07-26T00:00:00.000Z",
+      "last_date": "2023-07-26T00:00:00.000Z"
+    },
+    {
+      "identity": "brigadiers-pageant-of-drums",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2023-07-26T04:00:00.000Z",
+      "last_date": "2023-07-26T04:00:00.000Z"
+    },
+    {
+      "identity": "cavalcade-of-brass",
+      "performances": 54,
+      "editions": 8,
+      "seasons": 8,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2025-07-12T00:00:00.000Z"
+    },
+    {
+      "identity": "celebration-in-brass",
+      "performances": 52,
+      "editions": 8,
+      "seasons": 8,
+      "first_date": "2013-07-10T04:00:00.000Z",
+      "last_date": "2025-07-09T00:00:00.000Z"
+    },
+    {
+      "identity": "corps-at-the-crest",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2024-06-29T04:00:00.000Z",
+      "last_date": "2024-06-29T04:00:00.000Z"
+    },
+    {
+      "identity": "corps-at-the-crest-los-angeles",
+      "performances": 13,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-06-28T13:00:00.000Z",
+      "last_date": "2014-06-28T13:00:00.000Z"
+    },
+    {
+      "identity": "corps-at-the-crest-los-angeles-presented-by-pacific-crest-youth-arts-organization",
+      "performances": 23,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2015-06-27T13:00:00.000Z",
+      "last_date": "2016-07-02T04:00:00.000Z"
+    },
+    {
+      "identity": "corps-at-the-crest-san-diego",
+      "performances": 90,
+      "editions": 9,
+      "seasons": 9,
+      "first_date": "2013-06-28T04:00:00.000Z",
+      "last_date": "2023-07-01T04:00:00.000Z"
+    },
+    {
+      "identity": "corps-at-the-crest-student-edition",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2024-06-28T04:00:00.000Z",
+      "last_date": "2024-06-28T04:00:00.000Z"
+    },
+    {
+      "identity": "corps-at-the-crest-walnut",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-06-29T04:00:00.000Z",
+      "last_date": "2013-06-29T04:00:00.000Z"
+    },
+    {
+      "identity": "corps-encore",
+      "performances": 46,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2018-07-11T04:00:00.000Z",
+      "last_date": "2025-06-30T00:00:00.000Z"
+    },
+    {
+      "identity": "crownbeat",
+      "performances": 44,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2016-07-08T04:00:00.000Z",
+      "last_date": "2025-07-05T00:00:00.000Z"
+    },
+    {
+      "identity": "cyo-nationals",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-08-01T04:00:00.000Z",
+      "last_date": "2019-08-01T04:00:00.000Z"
+    },
+    {
+      "identity": "cyo-nationals-tribute",
+      "performances": 10,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2014-07-31T13:00:00.000Z",
+      "last_date": "2015-07-30T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-abilene",
+      "performances": 15,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2023-07-18T04:00:00.000Z",
+      "last_date": "2024-07-16T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-annapolis",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-08-02T04:00:00.000Z",
+      "last_date": "2022-08-02T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-arkansas",
+      "performances": 62,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2013-07-24T04:00:00.000Z",
+      "last_date": "2019-07-24T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-atlanta-southeastern-championship",
+      "performances": 66,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2013-07-28T04:00:00.000Z",
+      "last_date": "2015-07-25T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-austin",
+      "performances": 16,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2022-07-21T04:00:00.000Z",
+      "last_date": "2023-07-20T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-birmingham",
+      "performances": 46,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2016-07-28T04:00:00.000Z",
+      "last_date": "2025-07-25T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-birmingham-joe-lee-griffin-field-at-samford-university",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-27T04:00:00.000Z",
+      "last_date": "2017-07-27T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-boise",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-07-12T04:00:00.000Z",
+      "last_date": "2022-07-12T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-broken-arrow",
+      "performances": 37,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2019-07-16T04:00:00.000Z",
+      "last_date": "2025-07-15T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-capital-classic",
+      "performances": 35,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2022-07-08T04:00:00.000Z",
+      "last_date": "2025-07-05T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-capital-classic-corps-show",
+      "performances": 19,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2016-07-09T23:00:00.000Z",
+      "last_date": "2019-07-05T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-capitol-classic-corps-show",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2013-07-06T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-central-florida",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-09T04:00:00.000Z",
+      "last_date": "2016-07-09T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-central-illinois",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-07-30T04:00:00.000Z",
+      "last_date": "2022-07-30T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-central-indiana",
+      "performances": 41,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2016-07-01T04:00:00.000Z",
+      "last_date": "2024-06-28T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-central-ohio",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-07-31T00:00:00.000Z",
+      "last_date": "2025-07-31T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-central-texas",
+      "performances": 18,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2017-07-20T04:00:00.000Z",
+      "last_date": "2019-07-18T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-central-texas-presented-by-band-shoppe",
+      "performances": 24,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2015-07-16T13:00:00.000Z",
+      "last_date": "2016-07-21T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-championships-open-class-championship-finals",
+      "performances": 12,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-08-06T04:00:00.000Z",
+      "last_date": "2013-08-06T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-championships-prelims",
+      "performances": 36,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-08-07T13:00:00.000Z",
+      "last_date": "2014-08-07T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-cincinnati",
+      "performances": 12,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2022-08-08T04:00:00.000Z",
+      "last_date": "2023-08-07T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-connecticut",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2023-07-23T04:00:00.000Z",
+      "last_date": "2023-07-23T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-corpus-christi",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-07-25T04:00:00.000Z",
+      "last_date": "2022-07-25T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-crossroads",
+      "performances": 11,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2018-07-11T04:00:00.000Z",
+      "last_date": "2019-06-23T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-dallas",
+      "performances": 11,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-07-20T00:00:00.000Z",
+      "last_date": "2025-07-20T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-dallas-presented-by-north-texas-festival-of-drums-and-bugles",
+      "performances": 45,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2013-07-23T04:00:00.000Z",
+      "last_date": "2017-07-24T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-daytona-beach",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-12T04:00:00.000Z",
+      "last_date": "2016-07-12T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-delaware",
+      "performances": 13,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-07-30T04:00:00.000Z",
+      "last_date": "2025-07-29T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-denton",
+      "performances": 34,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2022-07-21T04:00:00.000Z",
+      "last_date": "2025-07-17T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-denton-presented-by-coserv-electric-for-red-river-thunder",
+      "performances": 11,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-07-17T13:00:00.000Z",
+      "last_date": "2014-07-17T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-denton-presented-by-the-cavaliers-for-red-river-thunder",
+      "performances": 21,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2015-07-16T13:00:00.000Z",
+      "last_date": "2016-07-21T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-dover",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-07-06T04:00:00.000Z",
+      "last_date": "2022-07-06T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-east-coast-showcase",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2024-08-01T04:00:00.000Z",
+      "last_date": "2024-08-01T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-east-coast-showcase-lawrence",
+      "performances": 4,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2023-08-03T04:00:00.000Z",
+      "last_date": "2023-08-03T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-east-coast-showcase-quincy",
+      "performances": 4,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2023-07-02T04:00:00.000Z",
+      "last_date": "2023-07-02T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-eastern-classic",
+      "performances": 135,
+      "editions": 11,
+      "seasons": 11,
+      "first_date": "2013-08-03T04:00:00.000Z",
+      "last_date": "2025-08-01T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-eastern-classic-2",
+      "performances": 118,
+      "editions": 11,
+      "seasons": 11,
+      "first_date": "2013-08-02T04:00:00.000Z",
+      "last_date": "2025-08-02T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-eastern-illinois",
+      "performances": 18,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2022-08-06T04:00:00.000Z",
+      "last_date": "2024-08-03T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-eden-prairie",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-07-11T13:00:00.000Z",
+      "last_date": "2014-07-11T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-ft-wayne",
+      "performances": 21,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2014-07-08T13:00:00.000Z",
+      "last_date": "2016-08-02T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-glassboro",
+      "performances": 22,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2022-08-03T04:00:00.000Z",
+      "last_date": "2025-07-30T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-hoosier-heartland",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-07-29T04:00:00.000Z",
+      "last_date": "2019-07-29T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-houston",
+      "performances": 31,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2022-07-22T04:00:00.000Z",
+      "last_date": "2025-07-18T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-houston-presented-by-the-exsightment-of-sound",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-19T04:00:00.000Z",
+      "last_date": "2013-07-19T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-huntington",
+      "performances": 31,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2022-08-01T04:00:00.000Z",
+      "last_date": "2025-07-30T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-in-motion",
+      "performances": 3,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-07-27T00:00:00.000Z",
+      "last_date": "2025-07-27T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-in-the-heartland",
+      "performances": 45,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2013-07-23T04:00:00.000Z",
+      "last_date": "2018-07-24T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-jupiter",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-11T04:00:00.000Z",
+      "last_date": "2016-07-11T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-katy",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-07-19T04:00:00.000Z",
+      "last_date": "2019-07-19T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-kentucky-presented-by-demoulin-bros-and-co",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-16T04:00:00.000Z",
+      "last_date": "2016-07-16T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-la-crosse",
+      "performances": 14,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-07-12T13:00:00.000Z",
+      "last_date": "2014-07-12T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-lake-erie",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-08-04T00:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-little-rock",
+      "performances": 24,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2022-07-27T04:00:00.000Z",
+      "last_date": "2025-07-12T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-macon",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2023-07-09T04:00:00.000Z",
+      "last_date": "2023-07-09T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-martin",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-14T04:00:00.000Z",
+      "last_date": "2017-07-14T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-mckinney",
+      "performances": 28,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2022-07-26T04:00:00.000Z",
+      "last_date": "2025-07-21T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-memphis",
+      "performances": 12,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2019-07-13T04:00:00.000Z",
+      "last_date": "2022-07-16T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-menomonie",
+      "performances": 11,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-07-07T04:00:00.000Z",
+      "last_date": "2019-07-07T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-mesquite",
+      "performances": 51,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2018-07-23T04:00:00.000Z",
+      "last_date": "2024-07-22T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-michigan",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-08-02T00:00:00.000Z",
+      "last_date": "2025-08-02T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-midwestern-championship",
+      "performances": 20,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-07-15T04:00:00.000Z",
+      "last_date": "2018-07-15T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-minnesota",
+      "performances": 66,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2013-07-13T04:00:00.000Z",
+      "last_date": "2018-07-07T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-minnesota-presented-by-u-s-marine-drum-and-bugle-corps",
+      "performances": 14,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-08T00:00:00.000Z",
+      "last_date": "2017-07-08T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-minnesota-presented-by-us-marine-drum-and-bugle-corps",
+      "performances": 14,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-08T04:00:00.000Z",
+      "last_date": "2017-07-08T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-monroe",
+      "performances": 14,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2023-07-26T04:00:00.000Z",
+      "last_date": "2024-07-24T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-nashville",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-07-25T00:00:00.000Z",
+      "last_date": "2025-07-25T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-new-hampshire",
+      "performances": 16,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2019-07-20T04:00:00.000Z",
+      "last_date": "2023-07-25T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-new-mexico",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-07-15T00:00:00.000Z",
+      "last_date": "2025-07-15T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-north-alabama",
+      "performances": 37,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2013-07-27T04:00:00.000Z",
+      "last_date": "2015-07-23T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-north-alabama-presented-by-u-s-army-bands",
+      "performances": 10,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-15T00:00:00.000Z",
+      "last_date": "2016-07-15T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-north-alabama-presented-by-us-army-bands",
+      "performances": 10,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-15T04:00:00.000Z",
+      "last_date": "2016-07-15T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-north-dallas-presented-by-coserv-electric-for-red-river-thunder",
+      "performances": 11,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-18T04:00:00.000Z",
+      "last_date": "2013-07-18T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-north-texas",
+      "performances": 24,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2017-07-20T04:00:00.000Z",
+      "last_date": "2019-07-18T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-northern-alabama",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2024-07-11T04:00:00.000Z",
+      "last_date": "2024-07-11T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-northern-kentucky",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-07-14T04:00:00.000Z",
+      "last_date": "2018-07-14T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-northern-kentucky-presented-by-lone-star-percussion",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-15T04:00:00.000Z",
+      "last_date": "2017-07-15T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-northern-ohio",
+      "performances": 6,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-07-20T04:00:00.000Z",
+      "last_date": "2025-07-23T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-open-class-world-championship-finals",
+      "performances": 55,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2018-08-07T04:00:00.000Z",
+      "last_date": "2025-08-05T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-open-class-world-championship-prelims",
+      "performances": 75,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2018-08-06T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-open-class-world-championships-finals",
+      "performances": 24,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2016-08-09T13:00:00.000Z",
+      "last_date": "2017-08-08T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-open-class-world-championships-prelims",
+      "performances": 32,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2016-08-08T13:00:00.000Z",
+      "last_date": "2017-08-07T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-orlando",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-07-08T04:00:00.000Z",
+      "last_date": "2018-07-08T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-orlando-presented-by-lone-star-percussion",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-08T04:00:00.000Z",
+      "last_date": "2017-07-08T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-pittsburgh",
+      "performances": 35,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2018-08-05T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-pittsburgh-presented-by-three-rivers-summer-music-games",
+      "performances": 22,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2014-08-03T13:00:00.000Z",
+      "last_date": "2016-08-03T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-rochester",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2024-08-03T04:00:00.000Z",
+      "last_date": "2024-08-03T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-shoreline-classic",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-07-29T04:00:00.000Z",
+      "last_date": "2019-07-29T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-south-florida",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-10T04:00:00.000Z",
+      "last_date": "2017-07-10T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-southeastern-championship",
+      "performances": 99,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2018-07-28T04:00:00.000Z",
+      "last_date": "2025-07-26T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-southeastern-championship-presented-by-lone-star-percussion",
+      "performances": 17,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-29T04:00:00.000Z",
+      "last_date": "2017-07-29T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-southern-alabama",
+      "performances": 24,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2017-07-28T04:00:00.000Z",
+      "last_date": "2019-07-25T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-southern-mississippi",
+      "performances": 71,
+      "editions": 9,
+      "seasons": 9,
+      "first_date": "2013-07-24T04:00:00.000Z",
+      "last_date": "2023-07-26T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-southwestern-championship",
+      "performances": 111,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2018-07-21T04:00:00.000Z",
+      "last_date": "2024-07-20T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-southwestern-championship-2",
+      "performances": 21,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-07-19T00:00:00.000Z",
+      "last_date": "2025-07-19T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-southwestern-championship-presented-by-fred-j-miller-inc",
+      "performances": 72,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2015-07-18T13:00:00.000Z",
+      "last_date": "2017-07-22T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-southwestern-championship-the-alamodome",
+      "performances": 24,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-07-19T13:00:00.000Z",
+      "last_date": "2014-07-19T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-southwestern-championships-the-alamodome",
+      "performances": 22,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-20T04:00:00.000Z",
+      "last_date": "2013-07-20T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-st-louis",
+      "performances": 45,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2013-07-15T04:00:00.000Z",
+      "last_date": "2025-07-22T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-sun-prairie",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-08-01T04:00:00.000Z",
+      "last_date": "2022-08-01T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-tour-of-champions-presented-by-the-pro-football-hall-of-fame",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-08-04T13:00:00.000Z",
+      "last_date": "2014-08-04T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-tour-of-champions-presented-by-the-pro-football-hall-of-fame-enshrinement-festival",
+      "performances": 22,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2015-08-03T13:00:00.000Z",
+      "last_date": "2017-08-07T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-tour-premiere",
+      "performances": 24,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2015-06-18T00:30:00.000Z",
+      "last_date": "2022-06-28T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-tour-premiere-presented-by-demoulin-bros-and-co",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-06-22T04:00:00.000Z",
+      "last_date": "2017-06-22T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-tour-premiere-presented-by-french-lick-resort",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-06-24T00:30:00.000Z",
+      "last_date": "2016-06-24T00:30:00.000Z"
+    },
+    {
+      "identity": "dci-tupelo",
+      "performances": 12,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2022-07-14T04:00:00.000Z",
+      "last_date": "2023-07-13T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-waco",
+      "performances": 14,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-07-18T04:00:00.000Z",
+      "last_date": "2025-07-17T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-west",
+      "performances": 90,
+      "editions": 9,
+      "seasons": 9,
+      "first_date": "2014-06-21T13:00:00.000Z",
+      "last_date": "2025-07-06T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-west-presented-by-lone-star-percussion",
+      "performances": 11,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-06-25T04:00:00.000Z",
+      "last_date": "2017-06-25T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-west-texas",
+      "performances": 4,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-07-16T00:00:00.000Z",
+      "last_date": "2025-07-16T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-williamsport",
+      "performances": 4,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2025-08-02T00:00:00.000Z",
+      "last_date": "2025-08-02T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championship-finals",
+      "performances": 96,
+      "editions": 8,
+      "seasons": 8,
+      "first_date": "2013-08-10T04:00:00.000Z",
+      "last_date": "2025-08-09T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championship-prelims",
+      "performances": 273,
+      "editions": 8,
+      "seasons": 8,
+      "first_date": "2015-08-06T13:00:00.000Z",
+      "last_date": "2025-08-07T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championship-prelims-presented-by-earasers-musicians-earplugs",
+      "performances": 38,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-08-11T13:00:00.000Z",
+      "last_date": "2016-08-11T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championship-semifinals",
+      "performances": 222,
+      "editions": 9,
+      "seasons": 9,
+      "first_date": "2014-08-08T13:00:00.000Z",
+      "last_date": "2025-08-08T00:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championship-semifinals-presented-by-earasers",
+      "performances": 25,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-08-11T04:00:00.000Z",
+      "last_date": "2017-08-11T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championship-world-class-finals",
+      "performances": 12,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2015-08-08T13:00:00.000Z",
+      "last_date": "2015-08-08T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championships-finals",
+      "performances": 12,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-08-13T13:00:00.000Z",
+      "last_date": "2016-08-13T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championships-open-class-championship-finals",
+      "performances": 24,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2014-08-05T13:00:00.000Z",
+      "last_date": "2015-08-04T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championships-open-class-championship-prelims",
+      "performances": 41,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2013-08-05T04:00:00.000Z",
+      "last_date": "2015-08-03T13:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championships-prelims",
+      "performances": 33,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-08-08T14:00:00.000Z",
+      "last_date": "2013-08-08T14:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championships-semifinals",
+      "performances": 24,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-08-09T04:00:00.000Z",
+      "last_date": "2013-08-09T04:00:00.000Z"
+    },
+    {
+      "identity": "dci-world-championships-world-class-finals",
+      "performances": 12,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-08-09T13:00:00.000Z",
+      "last_date": "2014-08-09T13:00:00.000Z"
+    },
+    {
+      "identity": "diablo-valley-classic",
+      "performances": 13,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2017-07-09T04:00:00.000Z",
+      "last_date": "2019-07-13T04:00:00.000Z"
+    },
+    {
+      "identity": "diablo-valley-classic-pacific-open-class-championship",
+      "performances": 10,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-07-21T04:00:00.000Z",
+      "last_date": "2018-07-21T04:00:00.000Z"
+    },
+    {
+      "identity": "diablo-valley-classic-pacific-open-class-championship-finals",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-07-24T04:00:00.000Z",
+      "last_date": "2022-07-24T04:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-an-american-tradition",
+      "performances": 50,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2013-07-31T04:00:00.000Z",
+      "last_date": "2023-08-01T04:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-an-american-tradition-2",
+      "performances": 20,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2016-07-01T04:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-an-american-tradition-3",
+      "performances": 13,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2016-06-30T23:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-an-american-tradition-allentown",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-06-28T04:00:00.000Z",
+      "last_date": "2019-06-28T04:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-an-american-tradition-annapolis",
+      "performances": 14,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2018-07-31T04:00:00.000Z",
+      "last_date": "2019-07-30T04:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-an-american-tradition-clifton",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-08-02T04:00:00.000Z",
+      "last_date": "2017-08-02T04:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-an-american-tradition-metlife-stadium",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-07-02T04:00:00.000Z",
+      "last_date": "2019-07-02T04:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-at-the-glen",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-15T04:00:00.000Z",
+      "last_date": "2017-07-15T04:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-at-the-rose-bowl",
+      "performances": 69,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2017-07-01T04:00:00.000Z",
+      "last_date": "2025-07-12T00:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-grand-prix",
+      "performances": 3,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-07-13T04:00:00.000Z",
+      "last_date": "2025-07-12T00:00:00.000Z"
+    },
+    {
+      "identity": "drum-corps-mid-america",
+      "performances": 21,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2017-07-29T04:00:00.000Z",
+      "last_date": "2019-07-27T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-america",
+      "performances": 31,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2017-07-12T04:00:00.000Z",
+      "last_date": "2025-07-08T00:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-america-atlanta",
+      "performances": 12,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2019-07-09T04:00:00.000Z",
+      "last_date": "2022-07-12T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-america-valdosta",
+      "performances": 17,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2018-07-10T04:00:00.000Z",
+      "last_date": "2019-07-08T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-cajun-field",
+      "performances": 51,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2013-07-22T04:00:00.000Z",
+      "last_date": "2019-07-22T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-kansas",
+      "performances": 34,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2013-07-16T04:00:00.000Z",
+      "last_date": "2019-07-15T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-kansas-presented-by-the-city-of-el-dorado-and-conventions-visitors",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-18T04:00:00.000Z",
+      "last_date": "2016-07-18T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-nebraska",
+      "performances": 28,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2013-07-08T04:00:00.000Z",
+      "last_date": "2016-07-11T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-the-desert",
+      "performances": 19,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2018-07-02T04:00:00.000Z",
+      "last_date": "2025-07-13T00:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-the-river-region",
+      "performances": 16,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2017-07-14T04:00:00.000Z",
+      "last_date": "2023-07-15T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-the-smokies",
+      "performances": 46,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2017-07-19T04:00:00.000Z",
+      "last_date": "2025-07-07T00:00:00.000Z"
+    },
+    {
+      "identity": "drums-across-the-tri-state",
+      "performances": 43,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2013-07-30T04:00:00.000Z",
+      "last_date": "2019-07-29T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-along-the-columbia",
+      "performances": 16,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2019-07-08T04:00:00.000Z",
+      "last_date": "2024-07-08T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-along-the-mississippi",
+      "performances": 10,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2018-07-27T04:00:00.000Z",
+      "last_date": "2019-07-26T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-along-the-mississippi-river",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-26T04:00:00.000Z",
+      "last_date": "2017-07-26T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-along-the-mohawk",
+      "performances": 43,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2013-08-01T04:00:00.000Z",
+      "last_date": "2019-08-01T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-along-the-rockies",
+      "performances": 88,
+      "editions": 10,
+      "seasons": 10,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2025-06-28T00:00:00.000Z"
+    },
+    {
+      "identity": "drums-along-the-rockies-boise-edition",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-07-09T04:00:00.000Z",
+      "last_date": "2019-07-09T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-along-the-rockies-cheyenne-edition",
+      "performances": 11,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2023-07-14T04:00:00.000Z",
+      "last_date": "2024-07-12T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-along-the-wasatch",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-07-22T04:00:00.000Z",
+      "last_date": "2019-07-22T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-along-the-waterfront",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-08-04T04:00:00.000Z",
+      "last_date": "2019-08-04T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-in-northern-virginia",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-31T04:00:00.000Z",
+      "last_date": "2013-07-31T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-in-the-heartland",
+      "performances": 9,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2023-08-04T04:00:00.000Z",
+      "last_date": "2024-07-28T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-of-fire",
+      "performances": 33,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2016-07-02T04:00:00.000Z",
+      "last_date": "2022-07-08T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-of-summer",
+      "performances": 38,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2013-07-17T04:00:00.000Z",
+      "last_date": "2016-07-20T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-on-parade",
+      "performances": 58,
+      "editions": 9,
+      "seasons": 9,
+      "first_date": "2014-06-28T13:00:00.000Z",
+      "last_date": "2025-07-25T00:00:00.000Z"
+    },
+    {
+      "identity": "drums-on-the-chippewa",
+      "performances": 11,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2022-07-13T04:00:00.000Z",
+      "last_date": "2023-07-12T04:00:00.000Z"
+    },
+    {
+      "identity": "drums-on-the-ohio",
+      "performances": 21,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2019-06-24T04:00:00.000Z",
+      "last_date": "2025-07-23T00:00:00.000Z"
+    },
+    {
+      "identity": "east-coast-classic",
+      "performances": 43,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2013-08-01T04:00:00.000Z",
+      "last_date": "2022-07-02T04:00:00.000Z"
+    },
+    {
+      "identity": "east-troy-showcase",
+      "performances": 13,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2018-08-01T04:00:00.000Z",
+      "last_date": "2019-08-03T04:00:00.000Z"
+    },
+    {
+      "identity": "emerald-city-music-games",
+      "performances": 30,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2013-07-30T04:00:00.000Z",
+      "last_date": "2017-07-31T04:00:00.000Z"
+    },
+    {
+      "identity": "four-flags-spectacular",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-08-01T04:00:00.000Z",
+      "last_date": "2013-08-01T04:00:00.000Z"
+    },
+    {
+      "identity": "gold-showcase",
+      "performances": 47,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2018-07-14T04:00:00.000Z",
+      "last_date": "2025-07-09T00:00:00.000Z"
+    },
+    {
+      "identity": "gold-showcase-at-the-ranch",
+      "performances": 26,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2014-07-12T13:00:00.000Z",
+      "last_date": "2016-07-16T04:00:00.000Z"
+    },
+    {
+      "identity": "golden-state-showdown",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-07-23T04:00:00.000Z",
+      "last_date": "2022-07-23T04:00:00.000Z"
+    },
+    {
+      "identity": "greendale-drum-corps-show",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-07-27T13:00:00.000Z",
+      "last_date": "2014-07-27T13:00:00.000Z"
+    },
+    {
+      "identity": "hamilton-drum-corps-classic",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2015-07-25T13:00:00.000Z",
+      "last_date": "2015-07-25T13:00:00.000Z"
+    },
+    {
+      "identity": "innovations-in-brass",
+      "performances": 25,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2018-06-23T04:00:00.000Z",
+      "last_date": "2025-08-04T00:00:00.000Z"
+    },
+    {
+      "identity": "innovations-in-brass-akron",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2015-06-20T13:00:00.000Z",
+      "last_date": "2015-06-20T13:00:00.000Z"
+    },
+    {
+      "identity": "innovations-in-brass-akron-the-2014-dci-tour-premiere",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-06-21T13:00:00.000Z",
+      "last_date": "2014-06-21T13:00:00.000Z"
+    },
+    {
+      "identity": "innovations-in-brass-massillon",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-06-24T04:00:00.000Z",
+      "last_date": "2017-06-24T04:00:00.000Z"
+    },
+    {
+      "identity": "innovations-in-brass-north-canton",
+      "performances": 4,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-06-22T04:00:00.000Z",
+      "last_date": "2019-06-22T04:00:00.000Z"
+    },
+    {
+      "identity": "innovations-in-brass-northeast-ohio",
+      "performances": 3,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-07-02T04:00:00.000Z",
+      "last_date": "2022-07-02T04:00:00.000Z"
+    },
+    {
+      "identity": "innovations-in-brass-pittsburgh",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-06-26T04:00:00.000Z",
+      "last_date": "2019-06-26T04:00:00.000Z"
+    },
+    {
+      "identity": "laguna-hills",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-13T04:00:00.000Z",
+      "last_date": "2013-07-13T04:00:00.000Z"
+    },
+    {
+      "identity": "lake-erie-fanfare",
+      "performances": 56,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2013-07-31T04:00:00.000Z",
+      "last_date": "2019-08-05T04:00:00.000Z"
+    },
+    {
+      "identity": "legends-drum-corps-invitational",
+      "performances": 37,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2014-07-29T13:00:00.000Z",
+      "last_date": "2022-07-30T04:00:00.000Z"
+    },
+    {
+      "identity": "legends-drum-corps-open",
+      "performances": 47,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2013-07-27T04:00:00.000Z",
+      "last_date": "2022-08-05T04:00:00.000Z"
+    },
+    {
+      "identity": "loudest-show-on-earth",
+      "performances": 13,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2013-07-07T04:00:00.000Z",
+      "last_date": "2016-07-08T04:00:00.000Z"
+    },
+    {
+      "identity": "march-of-champions-presented-by-drums-across-kansas",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2015-07-14T13:00:00.000Z",
+      "last_date": "2015-07-14T13:00:00.000Z"
+    },
+    {
+      "identity": "march-on",
+      "performances": 37,
+      "editions": 8,
+      "seasons": 8,
+      "first_date": "2016-07-30T04:00:00.000Z",
+      "last_date": "2025-07-19T00:00:00.000Z"
+    },
+    {
+      "identity": "metamora-music-in-motion",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-08-04T04:00:00.000Z",
+      "last_date": "2018-08-04T04:00:00.000Z"
+    },
+    {
+      "identity": "midcal-champions-showcase",
+      "performances": 91,
+      "editions": 10,
+      "seasons": 10,
+      "first_date": "2013-06-21T04:00:00.000Z",
+      "last_date": "2024-07-05T04:00:00.000Z"
+    },
+    {
+      "identity": "midwest-classic",
+      "performances": 26,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2023-07-07T04:00:00.000Z",
+      "last_date": "2025-07-26T00:00:00.000Z"
+    },
+    {
+      "identity": "midwest-premiere",
+      "performances": 9,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2023-06-28T04:00:00.000Z",
+      "last_date": "2024-06-26T04:00:00.000Z"
+    },
+    {
+      "identity": "mile-high-showcase",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-07-24T04:00:00.000Z",
+      "last_date": "2019-07-24T04:00:00.000Z"
+    },
+    {
+      "identity": "mississippi-sound-spectacular",
+      "performances": 31,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2013-07-23T04:00:00.000Z",
+      "last_date": "2016-07-26T04:00:00.000Z"
+    },
+    {
+      "identity": "moonlight-classic",
+      "performances": 54,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2014-06-22T22:30:00.000Z",
+      "last_date": "2019-06-23T04:00:00.000Z"
+    },
+    {
+      "identity": "music-on-the-border",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-07-10T13:00:00.000Z",
+      "last_date": "2014-07-10T13:00:00.000Z"
+    },
+    {
+      "identity": "music-on-the-march",
+      "performances": 65,
+      "editions": 9,
+      "seasons": 9,
+      "first_date": "2013-07-12T04:00:00.000Z",
+      "last_date": "2024-07-11T04:00:00.000Z"
+    },
+    {
+      "identity": "music-on-the-mountain",
+      "performances": 21,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2018-07-27T04:00:00.000Z",
+      "last_date": "2024-07-27T04:00:00.000Z"
+    },
+    {
+      "identity": "music-on-the-move",
+      "performances": 55,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2013-07-16T04:00:00.000Z",
+      "last_date": "2019-07-15T04:00:00.000Z"
+    },
+    {
+      "identity": "music-to-the-core",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-31T04:00:00.000Z",
+      "last_date": "2013-07-31T04:00:00.000Z"
+    },
+    {
+      "identity": "nightbeat",
+      "performances": 65,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2013-07-27T04:00:00.000Z",
+      "last_date": "2025-07-27T00:00:00.000Z"
+    },
+    {
+      "identity": "nightbeat-tour-of-champions",
+      "performances": 41,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2014-07-27T13:00:00.000Z",
+      "last_date": "2018-07-29T04:00:00.000Z"
+    },
+    {
+      "identity": "north-iowa-festival-of-brass",
+      "performances": 19,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2014-08-01T13:00:00.000Z",
+      "last_date": "2016-08-05T04:00:00.000Z"
+    },
+    {
+      "identity": "northwest-youth-music-games-boise",
+      "performances": 4,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2024-07-09T04:00:00.000Z",
+      "last_date": "2024-07-09T04:00:00.000Z"
+    },
+    {
+      "identity": "northwest-youth-music-games-portland",
+      "performances": 9,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-07-05T04:00:00.000Z",
+      "last_date": "2025-07-03T00:00:00.000Z"
+    },
+    {
+      "identity": "northwest-youth-music-games-seattle",
+      "performances": 10,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-07-06T04:00:00.000Z",
+      "last_date": "2025-07-02T00:00:00.000Z"
+    },
+    {
+      "identity": "open-class-world-championship-finals",
+      "performances": 12,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-08-09T04:00:00.000Z",
+      "last_date": "2022-08-09T04:00:00.000Z"
+    },
+    {
+      "identity": "pageant-of-drums",
+      "performances": 22,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2013-07-06T04:00:00.000Z",
+      "last_date": "2018-06-24T04:00:00.000Z"
+    },
+    {
+      "identity": "percussion-on-the-pearl",
+      "performances": 23,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2013-07-11T04:00:00.000Z",
+      "last_date": "2015-07-12T13:00:00.000Z"
+    },
+    {
+      "identity": "petunia-city-brass",
+      "performances": 18,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2015-07-24T13:00:00.000Z",
+      "last_date": "2018-08-01T04:00:00.000Z"
+    },
+    {
+      "identity": "prelude-to-drums-along-the-waterfront",
+      "performances": 6,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-07-23T04:00:00.000Z",
+      "last_date": "2019-07-23T04:00:00.000Z"
+    },
+    {
+      "identity": "pro-football-hall-of-fame-enshrinement-festival-drum-corps-competition",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-08-06T04:00:00.000Z",
+      "last_date": "2013-08-06T04:00:00.000Z"
+    },
+    {
+      "identity": "resound",
+      "performances": 54,
+      "editions": 8,
+      "seasons": 8,
+      "first_date": "2015-07-10T13:00:00.000Z",
+      "last_date": "2025-07-08T00:00:00.000Z"
+    },
+    {
+      "identity": "rhythm-across-rice-lake",
+      "performances": 12,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2013-07-29T04:00:00.000Z",
+      "last_date": "2014-07-28T13:00:00.000Z"
+    },
+    {
+      "identity": "river-city-rhapsody",
+      "performances": 13,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-07-07T04:00:00.000Z",
+      "last_date": "2025-07-06T00:00:00.000Z"
+    },
+    {
+      "identity": "river-city-rhapsody-la-crosse",
+      "performances": 29,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2015-07-09T13:00:00.000Z",
+      "last_date": "2023-07-09T04:00:00.000Z"
+    },
+    {
+      "identity": "river-city-rhapsody-la-crosse-wi",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-12T04:00:00.000Z",
+      "last_date": "2013-07-12T04:00:00.000Z"
+    },
+    {
+      "identity": "river-city-rhapsody-rochester",
+      "performances": 26,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2016-07-15T04:00:00.000Z",
+      "last_date": "2019-06-30T04:00:00.000Z"
+    },
+    {
+      "identity": "riverside-open",
+      "performances": 26,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2019-07-18T04:00:00.000Z",
+      "last_date": "2024-07-12T04:00:00.000Z"
+    },
+    {
+      "identity": "rotary-music-festival",
+      "performances": 29,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2019-07-03T04:00:00.000Z",
+      "last_date": "2025-07-02T00:00:00.000Z"
+    },
+    {
+      "identity": "seattle-summer-music-games",
+      "performances": 33,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2016-07-01T04:00:00.000Z",
+      "last_date": "2022-07-09T04:00:00.000Z"
+    },
+    {
+      "identity": "shadow-showcase",
+      "performances": 20,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2015-07-25T13:00:00.000Z",
+      "last_date": "2017-08-04T04:00:00.000Z"
+    },
+    {
+      "identity": "shoreman-brass-classic",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2015-07-31T13:00:00.000Z",
+      "last_date": "2015-07-31T13:00:00.000Z"
+    },
+    {
+      "identity": "shoremen-brass-classic",
+      "performances": 59,
+      "editions": 8,
+      "seasons": 8,
+      "first_date": "2013-08-03T04:00:00.000Z",
+      "last_date": "2023-08-05T04:00:00.000Z"
+    },
+    {
+      "identity": "show-of-shows",
+      "performances": 67,
+      "editions": 9,
+      "seasons": 9,
+      "first_date": "2014-07-09T13:00:00.000Z",
+      "last_date": "2025-07-03T00:00:00.000Z"
+    },
+    {
+      "identity": "show-of-shows-metamora",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-28T04:00:00.000Z",
+      "last_date": "2017-07-28T04:00:00.000Z"
+    },
+    {
+      "identity": "show-of-shows-waukesha",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-31T04:00:00.000Z",
+      "last_date": "2016-07-31T04:00:00.000Z"
+    },
+    {
+      "identity": "so-cal-classic",
+      "performances": 32,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2018-07-15T04:00:00.000Z",
+      "last_date": "2023-07-16T04:00:00.000Z"
+    },
+    {
+      "identity": "so-cal-classic-open-class-championship",
+      "performances": 34,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2014-07-13T13:00:00.000Z",
+      "last_date": "2017-07-16T04:00:00.000Z"
+    },
+    {
+      "identity": "so-cal-classic-open-class-championships",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-14T21:30:00.000Z",
+      "last_date": "2013-07-14T21:30:00.000Z"
+    },
+    {
+      "identity": "so-cal-classic-open-class-pacific-championship-finals",
+      "performances": 10,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-07-14T04:00:00.000Z",
+      "last_date": "2025-07-13T00:00:00.000Z"
+    },
+    {
+      "identity": "soaring-sounds",
+      "performances": 39,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2018-07-30T04:00:00.000Z",
+      "last_date": "2025-07-29T00:00:00.000Z"
+    },
+    {
+      "identity": "soaring-sounds-34",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-08-05T04:00:00.000Z",
+      "last_date": "2013-08-05T04:00:00.000Z"
+    },
+    {
+      "identity": "soaring-sounds-35",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-08-04T13:00:00.000Z",
+      "last_date": "2014-08-04T13:00:00.000Z"
+    },
+    {
+      "identity": "soaring-sounds-36",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2015-08-03T13:00:00.000Z",
+      "last_date": "2015-08-03T13:00:00.000Z"
+    },
+    {
+      "identity": "soaring-sounds-37",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-08-02T04:00:00.000Z",
+      "last_date": "2016-08-02T04:00:00.000Z"
+    },
+    {
+      "identity": "soaring-sounds-38",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-08-01T04:00:00.000Z",
+      "last_date": "2017-08-01T04:00:00.000Z"
+    },
+    {
+      "identity": "spartan-syracuse-showdown",
+      "performances": 4,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2024-07-23T04:00:00.000Z",
+      "last_date": "2024-07-23T04:00:00.000Z"
+    },
+    {
+      "identity": "spartan-thunder",
+      "performances": 5,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2022-08-02T04:00:00.000Z",
+      "last_date": "2022-08-02T04:00:00.000Z"
+    },
+    {
+      "identity": "spring-city-showcase",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-08-02T04:00:00.000Z",
+      "last_date": "2017-08-02T04:00:00.000Z"
+    },
+    {
+      "identity": "summer-music-games-in-cincinnati",
+      "performances": 30,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2018-06-25T04:00:00.000Z",
+      "last_date": "2025-07-28T00:00:00.000Z"
+    },
+    {
+      "identity": "summer-music-games-of-southwest-virginia",
+      "performances": 21,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2019-07-30T04:00:00.000Z",
+      "last_date": "2024-07-30T04:00:00.000Z"
+    },
+    {
+      "identity": "summer-thunder",
+      "performances": 11,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2022-07-23T04:00:00.000Z",
+      "last_date": "2023-07-22T04:00:00.000Z"
+    },
+    {
+      "identity": "the-beanpot",
+      "performances": 21,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2018-07-02T04:00:00.000Z",
+      "last_date": "2023-07-01T04:00:00.000Z"
+    },
+    {
+      "identity": "the-beanpot-invitational",
+      "performances": 21,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2016-07-03T04:00:00.000Z"
+    },
+    {
+      "identity": "the-buccaneer-classic",
+      "performances": 3,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2024-07-20T04:00:00.000Z",
+      "last_date": "2025-07-19T00:00:00.000Z"
+    },
+    {
+      "identity": "the-dci-atlanta-southeastern-championship-presented-by-lone-star-percussion",
+      "performances": 24,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-30T04:00:00.000Z",
+      "last_date": "2016-07-30T04:00:00.000Z"
+    },
+    {
+      "identity": "the-kiwanis-thunder-of-drums",
+      "performances": 17,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2023-07-11T04:00:00.000Z",
+      "last_date": "2025-07-08T00:00:00.000Z"
+    },
+    {
+      "identity": "the-masters-of-the-summer-music-games",
+      "performances": 67,
+      "editions": 8,
+      "seasons": 8,
+      "first_date": "2013-07-26T04:00:00.000Z",
+      "last_date": "2024-07-26T04:00:00.000Z"
+    },
+    {
+      "identity": "the-masters-of-the-summer-music-games-presented-by-jupiter-mapex-and-majestic",
+      "performances": 18,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2016-07-29T04:00:00.000Z",
+      "last_date": "2017-07-28T04:00:00.000Z"
+    },
+    {
+      "identity": "the-music-man-s-festival-of-brass",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-30T00:00:00.000Z",
+      "last_date": "2013-07-30T00:00:00.000Z"
+    },
+    {
+      "identity": "the-music-mans-festival-of-brass",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-30T04:00:00.000Z",
+      "last_date": "2013-07-30T04:00:00.000Z"
+    },
+    {
+      "identity": "the-northwoods-encore",
+      "performances": 13,
+      "editions": 2,
+      "seasons": 2,
+      "first_date": "2018-07-05T04:00:00.000Z",
+      "last_date": "2019-07-02T04:00:00.000Z"
+    },
+    {
+      "identity": "the-thunder-of-drums",
+      "performances": 16,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2018-07-02T04:00:00.000Z",
+      "last_date": "2022-07-12T04:00:00.000Z"
+    },
+    {
+      "identity": "the-whitewater-classic",
+      "performances": 47,
+      "editions": 6,
+      "seasons": 6,
+      "first_date": "2013-07-05T04:00:00.000Z",
+      "last_date": "2024-07-06T04:00:00.000Z"
+    },
+    {
+      "identity": "three-rivers-summer-music-games",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-08-04T04:00:00.000Z",
+      "last_date": "2013-08-04T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-08-04T04:00:00.000Z",
+      "last_date": "2013-08-04T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-akron",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2019-08-05T04:00:00.000Z",
+      "last_date": "2019-08-05T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-buffalo",
+      "performances": 37,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2013-08-05T04:00:00.000Z",
+      "last_date": "2017-08-06T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-central-missouri",
+      "performances": 29,
+      "editions": 4,
+      "seasons": 4,
+      "first_date": "2013-07-11T04:00:00.000Z",
+      "last_date": "2016-07-18T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-chester",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-08-01T04:00:00.000Z",
+      "last_date": "2018-08-01T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-drums-along-the-waterfront",
+      "performances": 10,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-08-05T04:00:00.000Z",
+      "last_date": "2018-08-05T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-massillon",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-08-06T04:00:00.000Z",
+      "last_date": "2018-08-06T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-north-illinois",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2016-07-17T04:00:00.000Z",
+      "last_date": "2016-07-17T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-northern-illinois",
+      "performances": 51,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2013-07-14T23:30:00.000Z",
+      "last_date": "2022-07-09T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-oklahoma",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-07-17T04:00:00.000Z",
+      "last_date": "2018-07-17T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-oklahoma-presented-by-drums-of-summer",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-18T04:00:00.000Z",
+      "last_date": "2017-07-18T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-ppl-park",
+      "performances": 21,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2015-07-30T13:00:00.000Z",
+      "last_date": "2017-08-03T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-rutgers",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2014-07-31T13:00:00.000Z",
+      "last_date": "2014-07-31T13:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-texas",
+      "performances": 9,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2018-07-20T04:00:00.000Z",
+      "last_date": "2018-07-20T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-texas-presented-by-band-shoppe-and-the-exsightment-of-sound",
+      "performances": 8,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2017-07-21T04:00:00.000Z",
+      "last_date": "2017-07-21T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-champions-texas-presented-by-the-exsightment-of-sound",
+      "performances": 23,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2014-07-18T13:00:00.000Z",
+      "last_date": "2016-07-22T04:00:00.000Z"
+    },
+    {
+      "identity": "tour-of-championships-texas",
+      "performances": 7,
+      "editions": 1,
+      "seasons": 1,
+      "first_date": "2013-07-21T04:00:00.000Z",
+      "last_date": "2013-07-21T04:00:00.000Z"
+    },
+    {
+      "identity": "tournament-of-drums",
+      "performances": 44,
+      "editions": 7,
+      "seasons": 7,
+      "first_date": "2015-07-27T13:00:00.000Z",
+      "last_date": "2024-08-02T04:00:00.000Z"
+    },
+    {
+      "identity": "wdbj-7-summer-music-games-of-southwest-virginia",
+      "performances": 34,
+      "editions": 5,
+      "seasons": 5,
+      "first_date": "2013-07-30T04:00:00.000Z",
+      "last_date": "2017-07-31T04:00:00.000Z"
+    },
+    {
+      "identity": "west-texas-drums",
+      "performances": 20,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2022-07-18T04:00:00.000Z",
+      "last_date": "2024-07-15T04:00:00.000Z"
+    },
+    {
+      "identity": "western-corps-connection",
+      "performances": 123,
+      "editions": 11,
+      "seasons": 11,
+      "first_date": "2013-06-30T04:00:00.000Z",
+      "last_date": "2025-07-11T00:00:00.000Z"
+    },
+    {
+      "identity": "white-rose-classic",
+      "performances": 16,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2023-07-21T04:00:00.000Z",
+      "last_date": "2025-07-25T00:00:00.000Z"
+    },
+    {
+      "identity": "whitewater-classic",
+      "performances": 26,
+      "editions": 3,
+      "seasons": 3,
+      "first_date": "2019-07-06T04:00:00.000Z",
+      "last_date": "2023-07-08T04:00:00.000Z"
+    }
+  ],
+  "corps_aliases": {
+    "unknown": "unknown",
+    "bluecoats-rhythm-in-blue": "001j000000iwwsraal",
+    "citysound": "city-sound",
+    "citysoundand": "city-sound",
+    "encorps": "encorps",
+    "encorpsmarchingmusic": "encorps",
+    "incognito": "001j000000iwx9vaad",
+    "incognitodbc": "001j000000iwx9vaad",
+    "oregancrusaders": "001j000000iwxa6aal",
+    "oregoncrusaders": "001j000000iwxa6aal",
+    "oregoncrusadersand": "001j000000iwxa6aal",
+    "pioneer": "001j000000iwxa8aal",
+    "pioneer-drum-corps-display": "001j000000iwxa8aal",
+    "pioneerand": "001j000000iwxa8aal",
+    "pioneerdbc": "001j000000iwxa8aal",
+    "racinescouts": "racine-scouts",
+    "racinescoutsand": "racine-scouts",
+    "santaclaravanguardcadets": "001j000000iwxakaa1",
+    "scvcadets": "001j000000iwxakaa1",
+    "shadow": "001j0000012tpxmaa2",
+    "shadowdbc": "001j0000012tpxmaa2",
+    "spokanethunder": "001j000000iwxaiaa1",
+    "thunder": "001j000000iwxaiaa1",
+    "thunderand": "001j000000iwxaiaa1",
+    "vanguard-cadets-display": "001j000000iwxakaa1",
+    "vanguardcadets": "001j000000iwxakaa1",
+    "vanguardcadetsand": "001j000000iwxakaa1",
+    "001j000000f17bwaaa": "001j000000f17bwaaa",
+    "001j000000h3xrnaav": "001j000000h3xrnaav",
+    "001j000000h3xwcaav": "001j000000h3xwcaav",
+    "001j000000i6i9saav": "001j000000i6i9saav",
+    "001j000000i6jmbaaf": "001j000000i6jmbaaf",
+    "001j000000i6kalaa3": "001j000000i6kalaa3",
+    "001j000000i6kfgaan": "001j000000i6kfgaan",
+    "001j000000i6lenaa3": "001j000000i6lenaa3",
+    "001j000000iwwslaal": "001j000000iwwslaal",
+    "001j000000iwwsoaal": "001j000000iwwsoaal",
+    "001j000000iwwspaal": "001j000000iwwspaal",
+    "001j000000iwwsqaal": "001j000000iwwsqaal",
+    "001j000000iwwsraal": "001j000000iwwsraal",
+    "001j000000iwwssaal": "001j000000iwwssaal",
+    "001j000000iwx91aad": "001j000000iwx91aad",
+    "001j000000iwx93aad": "001j000000iwx93aad",
+    "001j000000iwx95aad": "001j000000iwx95aad",
+    "001j000000iwx96aad": "001j000000iwx96aad",
+    "001j000000iwx97aad": "001j000000iwx97aad",
+    "001j000000iwx98aad": "001j000000iwx98aad",
+    "001j000000iwx99aad": "001j000000iwx99aad",
+    "001j000000iwx9aaat": "001j000000iwx9aaat",
+    "001j000000iwx9oaad": "001j000000iwx9oaad",
+    "001j000000iwx9paad": "001j000000iwx9paad",
+    "001j000000iwx9qaad": "001j000000iwx9qaad",
+    "001j000000iwx9saad": "001j000000iwx9saad",
+    "001j000000iwx9taad": "001j000000iwx9taad",
+    "001j000000iwx9uaad": "001j000000iwx9uaad",
+    "001j000000iwx9vaad": "001j000000iwx9vaad",
+    "001j000000iwx9waad": "001j000000iwx9waad",
+    "001j000000iwxa0aal": "001j000000iwxa0aal",
+    "001j000000iwxa1aal": "001j000000iwxa1aal",
+    "001j000000iwxa2aal": "001j000000iwxa2aal",
+    "001j000000iwxa3aal": "001j000000iwxa3aal",
+    "001j000000iwxa5aal": "001j000000iwxa5aal",
+    "001j000000iwxa6aal": "001j000000iwxa6aal",
+    "001j000000iwxa7aal": "001j000000iwxa7aal",
+    "001j000000iwxa8aal": "001j000000iwxa8aal",
+    "001j000000iwxaaaa1": "001j000000iwxaaaa1",
+    "001j000000iwxabaa1": "001j000000iwxabaa1",
+    "001j000000iwxacaa1": "001j000000iwxacaa1",
+    "001j000000iwxadaa1": "001j000000iwxadaa1",
+    "001j000000iwxaeaa1": "001j000000iwxaeaa1",
+    "001j000000iwxafaa1": "001j000000iwxafaa1",
+    "001j000000iwxaiaa1": "001j000000iwxaiaa1",
+    "001j000000iwxajaa1": "001j000000iwxajaa1",
+    "001j000000iwxakaa1": "001j000000iwxakaa1",
+    "001j000000qzs1qaaf": "001j000000qzs1qaaf",
+    "001j0000012tpxmaa2": "001j0000012tpxmaa2",
+    "001j0000012y6bqaac": "001j0000012y6bqaac",
+    "calgary-round-up-band": "calgary-round-up-band",
+    "city-sound": "city-sound",
+    "high-school-affiliated-to-bit": "high-school-affiliated-to-bit",
+    "racine-scouts": "racine-scouts"
+  },
+  "intended_use": "support-aware identity residual gating, dropout, and known-versus-low-support evidence features; not a target or evaluation label"
+}

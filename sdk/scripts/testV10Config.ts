@@ -24,7 +24,12 @@ assert.equal(control.learningRate, 0.00075);
 assert.equal(control.lrSchedule, "cosine");
 assert.equal(control.autoCurriculum, true);
 assert.equal(control.sequenceTransitionEpochs, 0);
-assert.equal(V10_PROFILES["clean-data-control"].expectedTrainableParametersUnderFinal2Cardinalities, 1_048_639);
+assert.equal(control.judgeCount, 214);
+assert.equal(control.corpsCount, 56);
+assert.equal(control.showCount, 301);
+assert.match(control.judgeMapPath, /v10\/dev1\/judgeIndexMap\.json$/);
+assert.match(control.referenceCurvesPath, /v10\/dev1\/referenceCurves\.json$/);
+assert.equal(V10_PROFILES["clean-data-control"].expectedTrainableParameters, 1_034_259);
 assert.equal(
   formatV95ModelCapacity(control),
   "Model Capacity: 256→128 BiLSTM, Dense 512→256, AccuracyTrunk 270, Judge Emb 24, Corps Emb 20, Show Emb 12",
@@ -41,7 +46,7 @@ assert.equal(combined.lstm1Units, 192);
 assert.equal(combined.learningRate, 0.00065);
 assert.equal(combined.lrSchedule, "phase-aware");
 assert.equal(combined.sequenceTransitionEpochs, 4);
-assert.equal(V10_PROFILES["combined-candidate"].expectedTrainableParametersUnderFinal2Cardinalities, null);
+assert.equal(V10_PROFILES["combined-candidate"].expectedTrainableParameters, null);
 
 const overridden = parseV95Args(mergeV10Args("scaled-control", ["--lr", "0.0006", "--seed", "42"], 42));
 assert.equal(overridden.learningRate, 0.0006);

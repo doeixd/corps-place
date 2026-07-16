@@ -1384,8 +1384,10 @@ to choose among checkpoints.
   phase-aware + smooth-sequence profile is only a future combined candidate.
   The plan explicitly requires phase-aware LR and smooth sequence exposure to
   qualify independently (and repeat across seeds) before combining them. The
-  clean-data control must use the exact V9.5/final2-sized graph and regimen with
-  newly matched maps; it must not use the scaled combined defaults.
+  clean-data control must use the V9.5/final2 core graph and regimen with newly
+  matched maps; it must not use the scaled combined defaults. Per the 2026-07-16
+  identity decision below, V10 does not retain final2's unrelated global-map
+  embedding cardinalities, so total parameter count is not exactly identical.
 
 #### V9.5 fixed-boundary terminal result and V10 profile correction
 
@@ -1445,3 +1447,31 @@ to choose among checkpoints.
   unqualified. Rebuild these from the V10 row contract, fail instead of falling
   back, and make reference-curve/range lookups target-date-as-of before training
   the clean-data control.
+- The temporal rebuild now resolves that blocker. `prepare:v10-temporal`
+  materializes 58,536 row/caption cells, 7,317 row-specific corps histories, and
+  10,600 judge/show/caption states using a strict date-before-target boundary;
+  all shows on one date are snapshotted before any same-date update. The full
+  builder then produced all 7,317 clean rows at `15×101` sequence, `212` raw
+  static, and eight judge slots. `test:v10-temporal` and
+  `test:v10-sequences` verify dimensions, target/residual/reference parity,
+  corps-Elo parity, identity maps, first-observation neutrality, and prior-season
+  dates. The sequence payload hash is
+  `b2a4d2c4505c1780497371d9a28e14c05b7b3e290709e079a3532e34f79d008d`.
+- Do not drop a clean score row merely because its historical panel contains an
+  unknown judge. Final2 assigned source placeholders ordinary learned IDs; V10
+  instead retains all 7,317 performances and encodes the 489 affected rows with
+  explicit judge ID `0`. Later evidence features/gating must distinguish this
+  observed-unknown state from augmentation-hidden identity.
+- **User decision, 2026-07-16 — let cleaned data define V10 embeddings.** Do not
+  preserve final2's 245/709/349 global-map cardinalities and do not invent
+  reserved identities. V10 uses compact maps derived from the clean snapshot:
+  214 judge inputs, 56 corps inputs, and 301 agnostic-show inputs, each including
+  `unknown=0` and sized exactly as `max(index)+1`. The clean control keeps the
+  same recurrent/dense core and training regimen, but its expected total is
+  `1,034,259` parameters rather than `1,048,639`; this deliberate identity/data
+  improvement must be called out when attributing the control result.
+- `identitySupport.json` records clean-snapshot appearance/show/season/date and
+  panel support for every mapped corps, judge, and agnostic show, plus reviewed
+  corps-alias resolution. Use this evidence for deterministic low-support
+  identity-residual gating and support-aware dropout; a known but one-show
+  identity must not receive the same trust as a deeply observed identity.

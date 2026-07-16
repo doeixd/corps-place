@@ -11,6 +11,13 @@ export const parseV95Args = (
   return {
     dbPath: get("--db", "./dci-relational.db") || "./dci-relational.db",
     mlTable: get("--ml-table", "ml_sequence_rows_v9_subcaption") || "ml_sequence_rows_v9_subcaption",
+    judgeCount: Number(get("--judge-count", "245")),
+    corpsCount: Number(get("--corps-count", "709")),
+    showCount: Number(get("--show-count", "349")),
+    judgeMapPath: get("--judge-map", "./src/training/judgeIndexMap.json") || "./src/training/judgeIndexMap.json",
+    corpsMapPath: get("--corps-map", "./src/training/corpsIndexMap.json") || "./src/training/corpsIndexMap.json",
+    showMapPath: get("--show-map", "./src/training/showIndexMap.json") || "./src/training/showIndexMap.json",
+    referenceCurvesPath: get("--reference-curves", "./src/training/referenceCurvesV4.json") || "./src/training/referenceCurvesV4.json",
     modelVersion: get("--model-version", "v9.5") || "v9.5",
     parentModel: get("--parent-model", "final2") || "final2",
     dataContract: get("--data-contract", "final2-frozen") || "final2-frozen",

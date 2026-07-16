@@ -824,6 +824,26 @@ type CorpsHistorical = {
   first_season: number;
 };
 
+type V10TemporalHistory = CorpsHistorical & {
+  row_key: string;
+  previous_season_rank: number;
+  last_season_final_score: number;
+  last_season_final_date: string;
+};
+
+type V10TemporalCaption = {
+  row_key: string;
+  caption: Caption;
+  reference_baseline: number;
+  prior_range_min: number;
+  prior_range_max: number;
+  corps_elo_before: number;
+  as_of_date: string;
+};
+
+const v10RowKey = (season: string, slug: string, division: string, corpsKey: string) =>
+  `${season}|${slug}|${division}|${corpsKey}`;
+
 type CompetitionContext = {
   field_size: number;
   leader_score: number;
@@ -852,6 +872,9 @@ export const buildSequencesV9 = (
   if (options.outputDbPath) {
     yield* (sql.unsafe("ATTACH DATABASE ? AS v10out", [options.outputDbPath]));
     yield* (sql.unsafe("CREATE TEMP VIEW v10_training_performances AS SELECT * FROM v10out.v10_training_performances"));
+    yield* (sql.unsafe("CREATE TEMP VIEW v10_temporal_caption_features AS SELECT * FROM v10out.v10_temporal_caption_features"));
+    yield* (sql.unsafe("CREATE TEMP VIEW v10_temporal_corps_history AS SELECT * FROM v10out.v10_temporal_corps_history"));
+    yield* (sql.unsafe("CREATE TEMP VIEW v10_temporal_judge_elo AS SELECT * FROM v10out.v10_temporal_judge_elo"));
   }
 
   yield* (sql.unsafe(`
@@ -879,7 +902,14 @@ export const buildSequencesV9 = (
     )
   `));
 
-  const historicalRows = yield* (
+  const historicalRows = captionSource === "clean-v10"
+    ? yield* (sql<V10TemporalHistory>`
+      SELECT row_key, years_in_world_class, historical_mean_rank, historical_std_rank,
+        historical_best_rank, best_rank_recency, made_finals_rate, first_season,
+        previous_season_rank, last_season_final_score, last_season_final_date
+      FROM v10_temporal_corps_history
+    `)
+    : yield* (
     sql<{
       corps_key: string;
       years_in_world_class: number;
@@ -904,7 +934,7 @@ export const buildSequencesV9 = (
   );
 
   const historicalMap = new Map<string, CorpsHistorical>();
-  for (const row of historicalRows) {
+  for (const row of captionSource === "clean-v10" ? [] : historicalRows as Array<CorpsHistorical & { corps_key: string }>) {
     historicalMap.set(row.corps_key, {
       years_in_world_class: row.years_in_world_class,
       historical_mean_rank: row.historical_mean_rank,
@@ -915,12 +945,30 @@ export const buildSequencesV9 = (
       first_season: row.first_season,
     });
   }
+  const temporalHistoryMap = new Map<string, V10TemporalHistory>();
+  if (captionSource === "clean-v10") {
+    for (const row of historicalRows as V10TemporalHistory[]) temporalHistoryMap.set(row.row_key, row);
+  }
+
+  const temporalCaptionRows = captionSource === "clean-v10"
+    ? yield* (sql<V10TemporalCaption>`SELECT row_key, caption, reference_baseline, prior_range_min, prior_range_max, corps_elo_before, as_of_date FROM v10_temporal_caption_features`)
+    : [];
+  const temporalCaptionMap = new Map<string, V10TemporalCaption>();
+  for (const row of temporalCaptionRows) temporalCaptionMap.set(`${row.row_key}|${row.caption}`, row);
+  const temporalCaptionFor = (rowKey: string, caption: Caption) => {
+    const row = temporalCaptionMap.get(`${rowKey}|${caption}`);
+    if (captionSource === "clean-v10" && !row) throw new Error(`Missing V10 temporal caption feature ${rowKey}|${caption}`);
+    return row;
+  };
+  const baselineFor = (rowKey: string, rank: number, pct: number, caption: Caption, division: string) =>
+    temporalCaptionFor(rowKey, caption)?.reference_baseline ?? getBaseline(rank, pct, caption, division);
 
   const seasonRowsMap = new Map<string, ReadonlyArray<any>>();
   const captionRangeMap = new Map<string, { min: number; max: number }>();
   const seasonDivisionKey = (season: string, division: string) => `${season}__${division}`;
 
-  for (const season of seasons) {
+  const contextSeasons = captionSource === "clean-v10" ? SEASONS : seasons;
+  for (const season of contextSeasons) {
     for (const division of DIVISIONS) {
       const queriedRows = yield* (
         captionSource === "clean-v10"
@@ -932,7 +980,7 @@ export const buildSequencesV9 = (
         : queriedRows;
       seasonRowsMap.set(seasonDivisionKey(season, division), seasonRows);
 
-      for (const row of seasonRows) {
+      for (const row of captionSource === "clean-v10" ? [] : seasonRows) {
         const capKey = CAPTION_MAP[row.caption_name];
         if (!capKey) continue;
 
@@ -952,7 +1000,9 @@ export const buildSequencesV9 = (
     }
   }
 
-  const getCaptionRange = (percentThrough: number, caption: string, division: string) => {
+  const getCaptionRange = (rowKey: string, percentThrough: number, caption: Caption, division: string) => {
+    const temporal = temporalCaptionFor(rowKey, caption);
+    if (temporal) return { min: temporal.prior_range_min, max: temporal.prior_range_max };
     const bucket = bucketPercent(percentThrough);
     const range = captionRangeMap.get(`${division}_${bucket}_${caption}`);
     return {
@@ -963,7 +1013,7 @@ export const buildSequencesV9 = (
 
   const prevSeasonRanks: Record<string, Record<string, Record<string, number>>> = {};
   const prevSeasonFinalState: Record<string, Record<string, Record<string, { total: number; rank: number; date: string }>>> = {};
-  for (const season of seasons) {
+  for (const season of contextSeasons) {
     let prevYear = parseInt(season, 10) - 1;
     if (season === "2022") prevYear = 2019;
 
@@ -987,11 +1037,12 @@ export const buildSequencesV9 = (
   }
 
   const captionFingerprintHistory = new Map<string, CaptionFingerprintEntry[]>();
-  for (const season of seasons) {
+  for (const season of contextSeasons) {
     for (const division of DIVISIONS) {
       const rows = seasonRowsMap.get(seasonDivisionKey(season, division)) ?? [];
       const byShowCorps = new Map<string, {
         corpsKey: string;
+        slug: string;
         date: string;
         percentThrough: number;
         rank: number;
@@ -1005,6 +1056,7 @@ export const buildSequencesV9 = (
         const key = `${row.slug}:${row.corps_key}`;
         const existing = byShowCorps.get(key) ?? {
           corpsKey: row.corps_key,
+          slug: row.slug,
           date: row.date,
           percentThrough: Number(row.percent_through ?? 50),
           rank: Number(row.rank ?? 12),
@@ -1019,7 +1071,7 @@ export const buildSequencesV9 = (
         const residuals = emptyCaptionResidualRecord();
         for (const caption of CAPTIONS) {
           residuals[caption] =
-            Number(show.captions[caption]) - getBaseline(show.rank, show.percentThrough, caption, division);
+            Number(show.captions[caption]) - baselineFor(v10RowKey(season, show.slug, division, show.corpsKey), show.rank, show.percentThrough, caption, division);
         }
         const key = `${division}:${show.corpsKey}`;
         const list = captionFingerprintHistory.get(key) ?? [];
@@ -1036,7 +1088,7 @@ export const buildSequencesV9 = (
   console.log(`Prepared caption fingerprint history for ${captionFingerprintHistory.size} corps/division pairs.`);
 
   console.log("Loading show aggregates...");
-  const showAggregatesRows = yield* (sql<{
+  const showAggregatesRows = captionSource === "clean-v10" ? [] : yield* (sql<{
     competition_slug: string;
     avg_total: number;
     std_total: number;
@@ -1058,7 +1110,7 @@ export const buildSequencesV9 = (
   console.log(`Loaded ${showAggregatesMap.size} show aggregates`);
 
   console.log("Pre-caching pre-show corps Elo history...");
-  const allCorpsElos = yield* (sql<{
+  const allCorpsElos = captionSource === "clean-v10" ? [] : yield* (sql<{
     corps_key: string;
     season: string;
     division_name: string;
@@ -1084,7 +1136,13 @@ export const buildSequencesV9 = (
   console.log(`Cached ${corpsPreShowEloCache.size} pre-show corps Elo entries.`);
 
   console.log("Pre-caching pre-show judge Elo history...");
-  const allJudgeElos = yield* (sql<{
+  const allJudgeElos = captionSource === "clean-v10"
+    ? yield* (sql<{
+      judge_id: string; season: string; division_name: string; competition_slug: string; caption_name: string; elo_before: number;
+    }>`SELECT DISTINCT j.judge_id, p.season, j.division_name, j.competition_slug, j.caption AS caption_name, j.elo_before
+      FROM v10_temporal_judge_elo j JOIN v10_training_performances p
+        ON p.competition_slug=j.competition_slug AND p.division_name=j.division_name`)
+    : yield* (sql<{
     judge_id: string;
     season: string;
     division_name: string;
@@ -1264,6 +1322,12 @@ export const buildSequencesV9 = (
       for (const shows of corpsMap.values()) {
         shows.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
       }
+      const historyFor = (corpsKey: string, slug: string): V10TemporalHistory | CorpsHistorical | undefined =>
+        temporalHistoryMap.get(v10RowKey(season, slug, division, corpsKey)) ?? historicalMap.get(corpsKey);
+      const previousRankFor = (corpsKey: string, slug: string) => {
+        const temporal = temporalHistoryMap.get(v10RowKey(season, slug, division, corpsKey));
+        return temporal?.previous_season_rank ?? prevSeasonRanks[season]?.[division]?.[corpsKey] ?? defaultRank;
+      };
 
       const overallRankCache = new Map<string, Map<string, number>>();
       const dateSet = new Set<string>();
@@ -1280,7 +1344,7 @@ export const buildSequencesV9 = (
           shows,
           idx: 0,
           latest: null,
-          prevRank: prevSeasonRanks[season]?.[division]?.[corpsKey] ?? defaultRank,
+          prevRank: previousRankFor(corpsKey, shows[0]?.slug ?? ""),
         });
       }
 
@@ -1326,7 +1390,7 @@ export const buildSequencesV9 = (
       const firstScoredDateOfSeason = scoredSeasonDates[0];
 
       for (const [corpsKey, shows] of corpsMap.entries()) {
-        const prevRank = prevSeasonRanks[season]?.[division]?.[corpsKey] ?? defaultRank;
+        const prevRank = previousRankFor(corpsKey, shows[0]?.slug ?? "");
         shows.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         const history: OpponentHistoryEntry[] = [];
@@ -1336,7 +1400,7 @@ export const buildSequencesV9 = (
           let residualSum = 0;
           const captionScores = CAPTIONS.map((caption) => {
             const score = show.captions[caption]?.score ?? 0;
-            const baseline = getBaseline(rankEntering, show.percent_through, caption, division);
+            const baseline = baselineFor(v10RowKey(season, show.slug, division, corpsKey), rankEntering, show.percent_through, caption, division);
             residualSum += score - baseline;
             return score;
           });
@@ -1357,7 +1421,7 @@ export const buildSequencesV9 = (
       for (const [corpsKey, shows] of corpsMap.entries()) {
         if (shows.length === 0) continue;
 
-        const prevRank = prevSeasonRanks[season]?.[division]?.[corpsKey] ?? defaultRank;
+        const prevRank = previousRankFor(corpsKey, shows[0]?.slug ?? "");
 
         for (let i = 0; i < shows.length; i++) {
           const targetShow = shows[i];
@@ -1432,7 +1496,7 @@ export const buildSequencesV9 = (
               const captionRank = show.captions[caption]?.rank;
               const prevCaptionScore = prevShow?.captions[caption]?.score ?? captionScore;
               if (captionScore !== undefined) {
-                const baseline = getBaseline(rankEntering, show.percent_through, caption, division);
+                const baseline = baselineFor(v10RowKey(season, show.slug, division, corpsKey), rankEntering, show.percent_through, caption, division);
                 feats.push(captionScore - baseline);
                 feats.push(captionRank ? captionRank / fieldSize : 0);
                 feats.push(normalizeCaptionScore(captionScore));
@@ -1526,7 +1590,7 @@ export const buildSequencesV9 = (
             const actual = targetShow.captions[caption]?.score;
             if (actual !== undefined) {
               y_recap[caption] = actual;
-              const baseline = getBaseline(rankEntering, targetShow.percent_through, caption, division);
+              const baseline = baselineFor(v10RowKey(season, targetShow.slug, division, corpsKey), rankEntering, targetShow.percent_through, caption, division);
               y_residuals[caption] = Number((actual - baseline).toFixed(4));
             } else {
               y_recap[caption] = 0;
@@ -1534,7 +1598,7 @@ export const buildSequencesV9 = (
             }
           }
 
-          const historical = historicalMap.get(corpsKey);
+          const historical = historyFor(corpsKey, targetShow.slug);
           const yearsInWorldClass = historical?.years_in_world_class ?? 0;
           const meanRank = historical?.historical_mean_rank ?? 15;
           const stdRank = historical?.historical_std_rank ?? 0;
@@ -1576,7 +1640,7 @@ export const buildSequencesV9 = (
             let residualSum = 0;
             for (const caption of CAPTIONS) {
               const score = show.captions[caption]?.score ?? 0;
-              const baseline = getBaseline(rankEnter, show.percent_through, caption, division);
+              const baseline = baselineFor(v10RowKey(season, show.slug, division, corpsKey), rankEnter, show.percent_through, caption, division);
               const residual = score - baseline;
               residualSum += residual;
               captionResidualSeries[caption]!.push(residual);
@@ -1679,7 +1743,10 @@ export const buildSequencesV9 = (
           const daysSinceLastSameSeasonShowNorm = lastHistoryDate
             ? normalizeRecentGap(MlQueries.daysBetween(lastHistoryDate, targetShow.date))
             : 1;
-          const lastPriorSeasonShow = prevSeasonFinalState[season]?.[division]?.[corpsKey];
+          const temporalHistorical = temporalHistoryMap.get(v10RowKey(season, targetShow.slug, division, corpsKey));
+          const lastPriorSeasonShow = temporalHistorical
+            ? { total: temporalHistorical.last_season_final_score, rank: temporalHistorical.previous_season_rank, date: temporalHistorical.last_season_final_date }
+            : prevSeasonFinalState[season]?.[division]?.[corpsKey];
           const daysSinceLastScoredAnySeasonNorm = lastHistoryDate
             ? normalizeOffseasonGap(MlQueries.daysBetween(lastHistoryDate, targetShow.date))
             : lastPriorSeasonShow
@@ -1698,23 +1765,23 @@ export const buildSequencesV9 = (
           const competition = competitionMap.get(targetShow.slug);
           const fieldSize = competition?.field_size ?? 25;
           const topCorpsPresent = competition?.corps_present.filter((corps) => {
-            const h = historicalMap.get(corps);
+            const h = historyFor(corps, targetShow.slug);
             return h ? h.historical_best_rank <= 5 : false;
           }).length ?? 0;
           const divisionStrength = competition?.corps_present.length
             ? competition.corps_present
-              .map((corps) => historicalMap.get(corps)?.historical_mean_rank ?? 15)
+              .map((corps) => historyFor(corps, targetShow.slug)?.historical_mean_rank ?? 15)
               .reduce((sum, value) => sum + value, 0) / competition.corps_present.length
             : 15;
           const isMajorShow = targetShow.slug.toLowerCase().includes("finals") ||
             targetShow.slug.toLowerCase().includes("regional") ? 1 : 0;
           const captionRangeFeatures = CAPTIONS.flatMap((caption) => {
-            const range = getCaptionRange(targetShow.percent_through, caption, division);
+            const range = getCaptionRange(v10RowKey(season, targetShow.slug, division, corpsKey), targetShow.percent_through, caption, division);
             return [normalizeCaptionScore(range.min), normalizeCaptionScore(range.max)];
           });
 
           const rankBaselineFeatures = CAPTIONS.map((caption) =>
-            normalizeCaptionScore(getBaseline(rankEntering, targetShow.percent_through, caption, division))
+            normalizeCaptionScore(baselineFor(v10RowKey(season, targetShow.slug, division, corpsKey), rankEntering, targetShow.percent_through, caption, division))
           );
 
           const opponentSnapshots: OpponentSnapshot[] = [];
@@ -1756,7 +1823,13 @@ export const buildSequencesV9 = (
           const judgeElos: number[] = [];
           const perCaptionJudgeElo: number[] = [];
 
-          const judgeAssignments = yield* (sql<{
+          const judgeAssignments = captionSource === "clean-v10" ? yield* (sql<{
+            judge_id: string;
+            caption_name: string;
+          }>`SELECT judge_id, normalized_caption_name AS caption_name FROM judge_assignments
+              WHERE competition_slug = ${targetShow.slug}
+                AND normalized_caption_name IN ('GE1','GE2','VP','VA','CG','MB','MA','MP')
+                AND judge_id NOT LIKE '%unknown%'`) : yield* (sql<{
             judge_id: string;
             caption_name: string;
           }>`SELECT judge_id, caption_name FROM judge_assignments WHERE competition_slug = ${targetShow.slug}`);
@@ -1775,7 +1848,9 @@ export const buildSequencesV9 = (
             }
             captionJudgeEloMap.get(captionName)!.push(elo);
 
-            const capKey = CAPTION_MAP[captionName] as Caption | undefined;
+            const capKey = (captionSource === "clean-v10" && (CAPTIONS as readonly string[]).includes(captionName)
+              ? captionName
+              : CAPTION_MAP[captionName]) as Caption | undefined;
             if (capKey) {
               const slotIdx = (CAPTIONS as readonly string[]).indexOf(capKey);
               if (slotIdx !== -1) {
@@ -1785,7 +1860,7 @@ export const buildSequencesV9 = (
           }
 
           for (const caption of CAPTIONS) {
-            const fullCaptionName = fullCaptionNameFor(caption);
+            const fullCaptionName = captionSource === "clean-v10" ? caption : fullCaptionNameFor(caption);
             const elos = captionJudgeEloMap.get(fullCaptionName) ?? [];
             const avgElo = elos.length > 0 ? elos.reduce((a, b) => a + b, 0) / elos.length : 1500;
             perCaptionJudgeElo.push((avgElo - 1500) / 200);
@@ -1806,7 +1881,9 @@ export const buildSequencesV9 = (
           const perCaptionCorpsElo: number[] = [];
           for (const caption of CAPTIONS) {
             const fullCaptionName = fullCaptionNameFor(caption);
-            const corpsElo = corpsPreShowEloCache.get(`${corpsKey}:${season}:${division}:${targetShow.slug}:${fullCaptionName}`) ?? 1500;
+            const corpsElo = temporalCaptionFor(v10RowKey(season, targetShow.slug, division, corpsKey), caption)?.corps_elo_before
+              ?? corpsPreShowEloCache.get(`${corpsKey}:${season}:${division}:${targetShow.slug}:${fullCaptionName}`)
+              ?? 1500;
             perCaptionCorpsElo.push((corpsElo - 1500) / 200);
           }
 
@@ -1815,7 +1892,7 @@ export const buildSequencesV9 = (
           // pre-panel, so keep them even when the panel is unknown — inference
           // recomputes judge context anyway. Dropping them would strand in-season
           // corps on a synthetic/preseason fallback (the very regression we're fixing).
-          if (SEASONS.includes(season) && judgeIndices.some((idx) => idx <= 0)) {
+          if (captionSource !== "clean-v10" && SEASONS.includes(season) && judgeIndices.some((idx) => idx <= 0)) {
             continue;
           }
 

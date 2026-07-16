@@ -35,6 +35,11 @@
       "sha256": "9813cbf20ed34c1ec7acea525c74d7059de48949e81914c4ba2baebafbc07684"
     },
     {
+      "file": "identitySupport.json",
+      "bytes": 130268,
+      "sha256": "26c1c65e3fba5cbe9dc2d05418f84b8031d0bc118700803fe7bedfeaeda0c682"
+    },
+    {
       "file": "referenceCurves.json",
       "bytes": 92745,
       "sha256": "e2afb3d1caed85f82a2aca1d9275586ed8aeadcc2eee922cc23be383d0313336"
