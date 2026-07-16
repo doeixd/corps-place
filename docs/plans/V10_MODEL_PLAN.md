@@ -1250,3 +1250,10 @@ to choose among checkpoints.
 - With the low-LR run exited, WSL has roughly 9.9 GiB available and no swap use.
   The phase-aware-LR and smooth-sequence treatments remain correctly queued behind
   the fixed control.
+
+- After the low-LR capacity run exited, the freed slot was assigned to
+  `v95-phase-aware-lr-seed43.service` at 11:48 EDT. It reached epoch 0 with the
+  exact `1,048,639`-parameter graph, fixed `10/40` curriculum, phase-aware LR, and
+  a verified model-local training-source snapshot. WSL retained about 8.5 GiB
+  available with no swap use. The smooth-sequence treatment remains the sole
+  queued waiter and should take the next freed slot.
