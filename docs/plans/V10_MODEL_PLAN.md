@@ -905,6 +905,21 @@ decision.
   scale run at the user's direction on 2026-07-16; therefore compare metrics and
   seeded trajectories, but not wall-clock time. The fixed-curriculum job now
   waits for both large runs to exit so it will not become a third training job.
+- **Status at low-LR epoch 34 / baseline-LR epoch 3:** the `0.00055` large run
+  recovered to a best composite of `0.5046`, essentially tied with historical
+  final2 (`0.5026`) and completed standard seed 43 (`0.5002`). Its epoch-34
+  best-total checkpoint reached `0.8985` total MAE with `0.3575` recap, a better
+  total/worse recap Pareto point than standard seed 43's final best-total value
+  (`0.9156`). Do not promote it before terminal history/division evaluation.
+  The `0.00075` run is only at epoch 3: versus low LR at epoch 3 it has worse
+  recap/composite (`0.517`/`0.731` vs `0.482`/`0.716`) but better total
+  (`1.377` vs `1.561`). This is an early tradeoff, not yet evidence for either
+  learning rate.
+- The large low-LR run was still in phase B at epoch 34 because continuing gains
+  reset its auto-curriculum plateau counter; standard seed 43 entered phase C at
+  epoch 32. Endogenous transition timing now confounds same-epoch comparisons and
+  further justifies the queued fixed-boundary experiment. Compare within phase
+  and at terminal checkpoints, not epoch number alone.
 - Epoch-to-epoch validation movement is large enough that single-epoch headlines
   are unreliable. Retain composite and total checkpoint tracks, report a Pareto
   set, and require multi-seed terminal slice evaluation before promoting a V10
