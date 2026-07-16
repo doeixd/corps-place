@@ -1194,3 +1194,19 @@ to choose among checkpoints.
   8.4 GiB available and used no swap. `v95-phase-aware-lr-seed43.service` and
   `v95-smooth-sequence-seed43.service` remain sequential waiters. Do not release
   both while the capacity jobs are active: their initialization peaks can overlap.
+
+#### Model-local training source snapshots
+
+- Every new V9.5 run now creates `training-source/` inside its run/model directory
+  immediately after the directory is created, before the first epoch. It contains
+  the exact trainer and helper sources, V9.5 launch scripts, package/TypeScript
+  manifests, reference curves, and frozen identity maps. `provenance.json` records
+  the Git commit, dirty-worktree state, launch arguments, runtime, and a SHA-256 for
+  every copied file. `training-args.json` is also written at run start rather than
+  only after successful completion, so interrupted runs retain their contract.
+- `npm run snapshot:v95-training-source -- <run-dir> --git-ref <commit>` backfills
+  an older artifact from its historical commit without substituting current code.
+  Snapshots were added to replica seeds 42/43 (`1b89aa9`), scale LR `0.00055`
+  (`02b9415`), scale LR `0.00075` (`50f6aed`), and the active fixed-curriculum run
+  (`aabeb52`). These model directories remain ignored artifacts and are not added
+  to Git; the snapshot travels with the model wherever the run directory is copied.
