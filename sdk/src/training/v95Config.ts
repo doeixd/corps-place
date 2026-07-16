@@ -20,6 +20,8 @@ export const parseV95Args = (
     reduceLrPatience: Number(get("--reduce-lr-patience", "12")),
     lstm1Units: Number(get("--lstm1-units", "128")),
     lstm2Units: Number(get("--lstm2-units", "64")),
+    dense1Units: Number(get("--dense1-units", "512")),
+    dense2Units: Number(get("--dense2-units", "256")),
     dropoutLstm: Number(get("--dropout-lstm", "0.2")),
     recurrentDropout: Number(get("--recurrent-dropout", "0.1")),
     dropoutDense1: Number(get("--dropout-dense1", "0.3")),
@@ -93,7 +95,7 @@ export type V95Args = ReturnType<typeof parseV95Args>;
 
 export const formatV95ModelCapacity = (args: V95Args) =>
   `Model Capacity: ${args.lstm1Units * 2}→${args.lstm2Units * 2} BiLSTM, ` +
-  `Dense 512→256, AccuracyTrunk ${args.accuracyTrunkUnits}, ` +
+  `Dense ${args.dense1Units}→${args.dense2Units}, AccuracyTrunk ${args.accuracyTrunkUnits}, ` +
   "Judge Emb 24, Corps Emb 20, Show Emb 12";
 
 export const formatV95Curriculum = (args: V95Args) =>

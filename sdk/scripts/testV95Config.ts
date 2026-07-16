@@ -113,4 +113,19 @@ assert.equal(
     "Judge Emb 24, Corps Emb 20, Show Emb 12",
 );
 
+const scaled = parseV95Args([
+  "--lstm1-units", "192",
+  "--lstm2-units", "96",
+  "--dense1-units", "768",
+  "--dense2-units", "384",
+  "--accuracy-trunk-units", "405",
+]);
+assert.equal(scaled.dense1Units, 768);
+assert.equal(scaled.dense2Units, 384);
+assert.equal(
+  formatV95ModelCapacity(scaled),
+  "Model Capacity: 384→192 BiLSTM, Dense 768→384, AccuracyTrunk 405, " +
+    "Judge Emb 24, Corps Emb 20, Show Emb 12",
+);
+
 process.stdout.write(`V9.5 final2 config verified: ${Object.keys(preserved).length} explicit arguments\n`);

@@ -839,6 +839,37 @@ decision.
   budget repeating the unsupported 256-unit trunk change.
 
 
+### 2026-07-16 — 1.9× capacity ablation (paired seed 43)
+
+- **Question:** does substantially more general sequence/trunk capacity improve the
+  reconstructed final2 recipe, especially its sparse-history behavior? This is a
+  scale-recipe ablation, not proof for or against the Bitter Lesson: only one
+  point on a scaling curve is being tested, with the same finite data and compute
+  schedule.
+- **Predeclared treatment:** increase BiLSTMs from `128/64` to `192/96`, dense
+  layers from `512/256` to `768/384`, and the accuracy trunk from `270` to `405`.
+  Keep judge/corps/show embedding dimensions unchanged so the treatment tests
+  general capacity rather than adding identity memorization capacity. The graph
+  has **1,976,938 trainable parameters**, versus **1,048,639** for the replica
+  (**1.885×**).
+- **Hold the experiment contract fixed:** paired seed `43`, frozen final2 DB and
+  7,321-row population/splits/maps, curriculum, history/judge/context hiding,
+  dropout, regularization, samples per epoch, epoch ceiling, checkpoint policy,
+  and terminal evaluation suite. Lower only the initial learning rate from
+  `0.00075` to `0.00055` (approximately inverse-square-root scaling) because that
+  is a capacity-following stability adjustment, and record it as part of the
+  treatment.
+- **Decision evidence:** compare composite checkpoint score, recap and total MAE,
+  established/short/zero/sparse history slices, caption metrics, calibration,
+  wall time, and resource use against the seed-43 replica. The early 2026 gate is
+  still a later untouched evaluation and must not select this checkpoint.
+- **Interpretation guardrail:** a win earns a multi-seed confirmation and a small
+  clean-data scaling curve. A loss does not alone establish that capacity is
+  useless; first distinguish optimization/undertraining (still improving at the
+  epoch ceiling) from data-limited overfit. Do not compensate after seeing results
+  by changing dropout, curriculum, identity scales, or training duration inside
+  this paired comparison.
+
 ### 2026-07-16 — clean-data rebuild and early-2026 out-of-time gate
 
 - **Make the cleaned domain layer the V10 source of truth.** Final2/V9 rows were

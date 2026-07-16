@@ -2276,7 +2276,7 @@ async function main() {
 
   const d1 = tf.layers
     .dense({
-      units: 512, // FIXED: 256→512 for more capacity
+      units: args.dense1Units,
       activation: "relu",
       kernelRegularizer: tf.regularizers.l2({ l2: args.l2Reg }),
     })
@@ -2286,7 +2286,7 @@ async function main() {
 
   const d2 = tf.layers
     .dense({
-      units: 256, // FIXED: 128→256 for more capacity
+      units: args.dense2Units,
       activation: "relu",
       kernelRegularizer: tf.regularizers.l2({ l2: args.l2Reg }),
     })

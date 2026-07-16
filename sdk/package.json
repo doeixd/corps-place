@@ -25,6 +25,7 @@
     "train:v95": "tsx src/training/trainModelV95.ts",
     "train:v95:final2": "tsx src/training/trainModelV95.ts --db ./dci-relational-scrape.db --reproduction-contract final2 --trial-id v95_final2_reproduction",
     "train:v95:replica": "bash scripts/runV95Replica.sh",
+    "train:v95:scale2x": "bash scripts/runV95Scale2xAblation.sh",
     "validate:v10-baseline": "tsx scripts/validateFinal2Baseline.ts",
     "validate:v95-architecture": "tsx scripts/validateV95Architecture.ts",
     "push:data": "tsx scripts/pushData.ts",
