@@ -64,6 +64,7 @@ import {
   evaluationMaskRates,
   splitValidationRows,
 } from "./v95Evaluation.js";
+import { snapshotV95TrainingSource } from "./v95TrainingSource.js";
 
 const DB_PATH = "./dci-relational.db";
 const MODEL_DIR = "./models/v95_final2_reconstruction";
@@ -2108,6 +2109,8 @@ async function main() {
   const bestPhaseSavedEpoch = { A: -1, B: -1, C: -1 };
 
   fs.mkdirSync(runDir, { recursive: true });
+  fs.writeFileSync(path.join(runDir, "training-args.json"), JSON.stringify(args, null, 2));
+  snapshotV95TrainingSource(runDir, { argv: process.argv.slice(2) });
 
   const saveModel = async (modelToSave: tf.LayersModel, dir: string) => {
     if (!fs.existsSync(dir)) {
