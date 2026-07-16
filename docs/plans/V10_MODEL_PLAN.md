@@ -1303,3 +1303,11 @@ to choose among checkpoints.
   but the smooth transition reached it in ten fewer epochs, an early sample-
   efficiency signal rather than a terminal win.
 - All three jobs remain healthy with about 8.7 GiB available and no swap use.
+
+- By 12:41 EDT, fixed curriculum improved at epoch 59 to composite `0.5006`
+  (`0.3462` recap / `0.9359` total), crossing final2's historical `0.5026` and
+  nearly tying standard seed 43 `0.5002`. Phase-aware LR reached best composite
+  `0.5125` at epoch 32 (`0.3531` / `0.9706`), while smooth sequence reached
+  `0.5178` at epoch 25 (`0.3590` / `0.9688`). Smooth remains more sample-efficient,
+  but phase-aware currently leads it in absolute composite. Terminal history slices
+  and multi-seed repeatability remain decisive.
