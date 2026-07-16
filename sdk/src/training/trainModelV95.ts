@@ -1957,12 +1957,15 @@ async function main() {
   }
 
   const client = createClient({ url: `file:${args.dbPath}` });
+  if (!/^ml_sequence_rows_v(?:9_subcaption|10_final)$/.test(args.mlTable)) {
+    throw new Error(`Unsupported ML table '${args.mlTable}'.`);
+  }
   console.log("Loading V9 sequence data...");
 
 
   const result = await client.execute(`
     SELECT season, competition_slug, competition_date, corps_key, corps_id, x_sequence_json, x_static_json, judge_indices_json, y_residuals_json, y_recap_json, y_total, agnostic_show_id, division_name, split
-    FROM ml_sequence_rows_v9_subcaption
+    FROM ${args.mlTable}
 
   `);
 
@@ -3464,7 +3467,7 @@ async function main() {
     },
     db_path: args.dbPath,
     data: {
-      ml_table: "ml_sequence_rows_v9_subcaption",
+      ml_table: args.mlTable,
       row_count: loadedDataRows.length,
       retained_row_count: allDataRows.length,
       divisions: Object.fromEntries(

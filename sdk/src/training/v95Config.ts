@@ -10,6 +10,7 @@ export const parseV95Args = (
 
   return {
     dbPath: get("--db", "./dci-relational.db") || "./dci-relational.db",
+    mlTable: get("--ml-table", "ml_sequence_rows_v9_subcaption") || "ml_sequence_rows_v9_subcaption",
     modelVersion: get("--model-version", "v9.5") || "v9.5",
     parentModel: get("--parent-model", "final2") || "final2",
     dataContract: get("--data-contract", "final2-frozen") || "final2-frozen",

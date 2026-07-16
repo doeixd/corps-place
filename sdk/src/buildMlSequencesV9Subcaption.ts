@@ -18,7 +18,10 @@ const JUDGE_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./sr
 const CORPS_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/corpsIndexMap.json", "utf-8"));
 const SHOW_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/showIndexMap.json", "utf-8"));
 const JUDGE_INDEX_MAP_PATH = "./src/training/judgeIndexMap.json";
-const BUILDER_VERSION = "v9-subcaption-clean-2026-05-21";
+const V9_BUILDER_VERSION = "v9-subcaption-clean-2026-05-21";
+const V10_BUILDER_VERSION = "v10-clean-canonical-dev1-2026-07-16";
+const V9_TARGET_TABLE = "ml_sequence_rows_v9_subcaption";
+const V10_TARGET_TABLE = "ml_sequence_rows_v10_final";
 const MAP_VERSION = "current-json-files";
 
 // Subcaption normalization helpers
@@ -818,6 +821,9 @@ type CompetitionContext = {
 type BuildV9SubcaptionOptions = {
   rebuildLoadedData?: boolean;
   asOfDate?: string;
+  captionSource?: "raw-v9" | "clean-v10";
+  targetTable?: typeof V9_TARGET_TABLE | typeof V10_TARGET_TABLE;
+  builderVersion?: string;
 };
 
 export const buildSequencesV9 = (
@@ -825,9 +831,12 @@ export const buildSequencesV9 = (
   options: BuildV9SubcaptionOptions = {},
 ) => Effect.gen(function* () {
   const sql = yield* (SqlClient.SqlClient);
+  const captionSource = options.captionSource ?? "raw-v9";
+  const targetTable = options.targetTable ?? V9_TARGET_TABLE;
+  const builderVersion = options.builderVersion ?? V9_BUILDER_VERSION;
 
-  yield* (sql`
-    CREATE TABLE IF NOT EXISTS ml_sequence_rows_v9_subcaption (
+  yield* (sql.unsafe(`
+    CREATE TABLE IF NOT EXISTS ${targetTable} (
       row_id INTEGER PRIMARY KEY AUTOINCREMENT,
       season TEXT NOT NULL,
       competition_slug TEXT NOT NULL,
@@ -849,7 +858,7 @@ export const buildSequencesV9 = (
       created_at TEXT NOT NULL,
       UNIQUE(season, competition_slug, division_name, corps_key)
     )
-  `);
+  `));
 
   const historicalRows = yield* (
     sql<{
@@ -894,7 +903,11 @@ export const buildSequencesV9 = (
 
   for (const season of seasons) {
     for (const division of DIVISIONS) {
-      const queriedRows = yield* (MlQueries.querySeasonCaptionsV6(season, division));
+      const queriedRows = yield* (
+        captionSource === "clean-v10"
+          ? MlQueries.querySeasonCaptionsV10Clean(season, division)
+          : MlQueries.querySeasonCaptionsV6(season, division)
+      );
       const seasonRows = options.asOfDate
         ? queriedRows.filter((row) => row.date <= options.asOfDate!)
         : queriedRows;
@@ -1923,7 +1936,7 @@ export const buildSequencesV9 = (
             y_recap_json: JSON.stringify(y_recap),
             y_total: targetShow.total_score,
             agnostic_show_id: getAgnosticShowId(targetShow.slug),
-            builder_version: BUILDER_VERSION,
+            builder_version: builderVersion,
             reference_curves_version: REFERENCE_CURVES.version ?? "unknown",
             map_version: MAP_VERSION,
             split,
@@ -1936,18 +1949,22 @@ export const buildSequencesV9 = (
       const CHUNK_SIZE = 100;
       for (let i = 0; i < allInserts.length; i += CHUNK_SIZE) {
         const chunk = allInserts.slice(i, i + CHUNK_SIZE);
-        yield* (insertBatch(sql, chunk));
+        yield* (insertBatch(sql, targetTable, chunk));
       }
     }
   }
 });
 
-const insertBatch = (sql: SqlClient.SqlClient, rows: any[]) =>
+const insertBatch = (
+  sql: SqlClient.SqlClient,
+  targetTable: typeof V9_TARGET_TABLE | typeof V10_TARGET_TABLE,
+  rows: any[],
+) =>
   Effect.forEach(
     rows,
     (row) =>
-      sql`
-        INSERT OR REPLACE INTO ml_sequence_rows_v9_subcaption (
+      sql.unsafe(`
+        INSERT OR REPLACE INTO ${targetTable} (
           season,
           competition_slug,
           competition_date,
@@ -1966,31 +1983,41 @@ const insertBatch = (sql: SqlClient.SqlClient, rows: any[]) =>
           map_version,
           split,
           created_at
-        ) VALUES (
-          ${row.season},
-          ${row.competition_slug},
-          ${row.competition_date},
-          ${row.division_name},
-          ${row.corps_key},
-          ${row.corps_id},
-          ${row.x_sequence_json},
-          ${row.x_static_json},
-          ${row.judge_indices_json},
-          ${row.y_residuals_json},
-          ${row.y_recap_json},
-          ${row.y_total},
-          ${row.agnostic_show_id},
-          ${row.builder_version},
-          ${row.reference_curves_version},
-          ${row.map_version},
-          ${row.split},
-          ${row.created_at}
-        )
-      `.pipe(Effect.asVoid),
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        row.season,
+        row.competition_slug,
+        row.competition_date,
+        row.division_name,
+        row.corps_key,
+        row.corps_id,
+        row.x_sequence_json,
+        row.x_static_json,
+        row.judge_indices_json,
+        row.y_residuals_json,
+        row.y_recap_json,
+        row.y_total,
+        row.agnostic_show_id,
+        row.builder_version,
+        row.reference_curves_version,
+        row.map_version,
+        row.split,
+        row.created_at,
+      ]).pipe(Effect.asVoid),
     { concurrency: 50, discard: true }
   );
 
-const SqlLayer = LibsqlClient.layer({ url: "file:./dci-relational.db" });
+const valueAfter = (flag: string) => {
+  const idx = process.argv.indexOf(flag);
+  return idx >= 0 ? process.argv[idx + 1] : undefined;
+};
+
+const dataContract = valueAfter("--data-contract") ?? "raw-v9";
+if (dataContract !== "raw-v9" && dataContract !== "clean-v10") {
+  throw new Error(`Unsupported --data-contract ${dataContract}`);
+}
+const dbPath = valueAfter("--db") ?? "./dci-relational.db";
+const SqlLayer = LibsqlClient.layer({ url: `file:${dbPath}` });
 
 // `--seasons 2026` (comma-separated) restricts the build; INSERT OR REPLACE is an
 // upsert keyed by (season, competition_slug, division, corps_key), so a single-season
@@ -2004,7 +2031,19 @@ const seasonsArg =
     : undefined;
 if (seasonsArg) console.log(`Building V9 subcaption sequences for seasons: ${seasonsArg.join(", ")}`);
 
-Effect.runPromise(buildSequencesV9(seasonsArg ?? SEASONS).pipe(Effect.provide(SqlLayer)))
+const v10Clean = dataContract === "clean-v10";
+const buildOptions: BuildV9SubcaptionOptions = v10Clean
+  ? {
+      captionSource: "clean-v10",
+      targetTable: V10_TARGET_TABLE,
+      builderVersion: V10_BUILDER_VERSION,
+    }
+  : {};
+console.log(
+  `Data contract: ${dataContract}; target: ${buildOptions.targetTable ?? V9_TARGET_TABLE}; DB: ${dbPath}`,
+);
+
+Effect.runPromise(buildSequencesV9(seasonsArg ?? SEASONS, buildOptions).pipe(Effect.provide(SqlLayer)))
   .then(() => console.log("Done building V9 sequences."))
   .catch((error) => {
     console.error(error);

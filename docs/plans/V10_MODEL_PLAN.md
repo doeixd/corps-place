@@ -1319,3 +1319,36 @@ to choose among checkpoints.
   best-total checkpoint of `0.8943` at epoch 50. This suggests phase-aware decay
   improves the balanced objective, while smoothing may favor total accuracy; wait
   for terminal selected checkpoints and history slices before combining them.
+
+#### V10 implementation start (2026-07-16)
+
+- V10 is now a separate, canonical training line rather than a rename of the old
+  pre-V9 `trainModelV10.ts`. `trainModelV10Final.ts` reuses the verified V9.5
+  engine while pinning the first evidence-backed candidate: the 1.885x graph
+  (`192/96` BiLSTM, `768/384` dense, `405` accuracy trunk; expected `1,976,938`
+  trainable parameters), midpoint peak LR `0.00065`, fixed `10/40` curriculum,
+  four-epoch sequence-length transition, and phase-aware LR. This combination is
+  a candidate assembled from the ablations, not yet a proven winner; preserve
+  component controls so attribution is not lost.
+- The trainer now records explicit model-version, parent, data-contract,
+  feature-profile, and ML-table lineage in its model card. Every V10 run also
+  inherits the model-local source snapshot/provenance behavior. The original V9.5
+  defaults and the archaeological pre-V9 V10 file remain untouched.
+- V10 has a dedicated clean-data query and target table
+  (`ml_sequence_rows_v10_final`). Its source is the canonical
+  `clean_reference_curve_entries` view, which resolves domain aliases, filters
+  excluded events and non-model divisions, enforces caption bounds and complete
+  eight-caption recaps, reconciles caption and official totals within `0.05`, and
+  recomputes field ranks. This is deliberately separate from V9's raw
+  `caption_scores` query so a data-only control remains possible.
+- The first executable contract check passed against the current relational DB for
+  2025 World Class: `375` clean performances expanded to exactly `3,000` caption
+  rows, with all eight canonical captions and valid overall/caption ranks on every
+  performance. The underlying clean view contains `523` eligible 2025
+  performances across both model divisions (`4,184` long caption rows). Use
+  `npm run test:v10-data` before materializing and `npm run build:v10-data` to
+  populate the isolated table.
+- Important attribution order: materialize and hash the clean table; train a
+  clean-data-only exact-feature control; then add evidence/pace/identity/panel
+  features; then run the combined scaled optimizer candidate. Do not interpret a
+  combined V10 gain as a scaling result unless these controls are retained.

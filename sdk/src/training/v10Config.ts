@@ -1,8 +1,9 @@
 export const V10_PROFILE = {
   modelVersion: "v10-dev1",
   parentModel: "v9.5-reconstructed-final2",
-  dataContract: "final2-frozen-optimizer-control",
+  dataContract: "canonical-clean-v10-dev1",
   featureProfile: "v9.5-220-control",
+  mlTable: "ml_sequence_rows_v10_final",
   expectedTrainableParameters: 1_976_938,
   peakLearningRate: 0.00065,
   phaseAEnd: 10,
@@ -11,7 +12,8 @@ export const V10_PROFILE = {
 } as const;
 
 export const v10DefaultArgs = (seed = 43): string[] => [
-  "--db", "./dci-relational-scrape.db",
+  "--db", "./dci-relational.db",
+  "--ml-table", V10_PROFILE.mlTable,
   "--model-dir", "./models/v10_candidate",
   "--norm-path", `./results/v10-dev1-seed-${seed}-target-norm.json`,
   "--log-csv", `./results/v10-dev1-seed-${seed}-training-log.csv`,
@@ -19,7 +21,6 @@ export const v10DefaultArgs = (seed = 43): string[] => [
   "--parent-model", V10_PROFILE.parentModel,
   "--data-contract", V10_PROFILE.dataContract,
   "--feature-profile", V10_PROFILE.featureProfile,
-  "--reproduction-contract", "final2",
   "--seed", String(seed),
   "--trial-id", `v10_dev1_seed${seed}`,
   "--lstm1-units", "192",

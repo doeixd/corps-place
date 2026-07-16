@@ -5,6 +5,8 @@ import { mergeV10Args, V10_PROFILE, v10DefaultArgs } from "../src/training/v10Co
 const args = parseV95Args(v10DefaultArgs());
 assert.equal(args.modelVersion, "v10-dev1");
 assert.equal(args.parentModel, "v9.5-reconstructed-final2");
+assert.equal(args.dataContract, "canonical-clean-v10-dev1");
+assert.equal(args.mlTable, "ml_sequence_rows_v10_final");
 assert.equal(args.learningRate, 0.00065);
 assert.equal(args.lrSchedule, "phase-aware");
 assert.equal(args.autoCurriculum, false);
