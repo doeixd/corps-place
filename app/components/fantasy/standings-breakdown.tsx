@@ -67,7 +67,11 @@ function CorpsContribution({ pick, corps }: { pick: Contribution; corps?: Picked
         />
       </span>
       {pick.weight !== 1 ? (
-        <span className="shrink-0 font-mono text-xs text-muted-foreground">×{String(pick.weight)}</span>
+        // Reverse-weights are fractions like 1.5384615384615383 — show a compact
+        // "×1.54" (trailing zeros trimmed: ×2, ×1.5), never the raw float.
+        <span className="shrink-0 font-mono text-xs text-muted-foreground">
+          ×{Number(pick.weight.toFixed(2))}
+        </span>
       ) : null}
       <span className="w-14 shrink-0 text-right font-mono tabular-nums">
         {scored ? (

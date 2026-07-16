@@ -215,7 +215,11 @@ export function RankBumpChart({
             tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
             tickLine={false}
             axisLine={false}
-            width={mode === 'score' ? 46 : 40}
+            // The chart's `margin.left: -16` crops 16px off the axis gutter, so the
+            // visible label area is width−16. Score ticks are 6–7 chars ("84.055",
+            // "100.000" ≈ 42px at 11px font) — 46 left them clipped to ".055";
+            // 62 gives ~46px visible. Rank ticks are 1–2 digits, 40 is plenty.
+            width={mode === 'score' ? 62 : 40}
           />
           <Tooltip content={<BumpTooltip names={names} mode={mode} />} />
           {plotted.map((r) => {
