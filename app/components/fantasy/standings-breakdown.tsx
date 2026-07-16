@@ -60,6 +60,60 @@ function PickChip({ pick, corps }: { pick: Contribution; corps?: PickedCorps }) 
   );
 }
 
+// Raw category rollups derived from the SAME per-caption values shown in the row,
+// so the detail cells always reconcile with their own formula (identical to the
+// row's GE/Visual/Music columns at the default 40/30/30 category weights).
+const SUBTOTALS: Record<string, { formula: string; value: (pc: Record<string, number>) => number }> = {
+  GE: { formula: 'GE1 + GE2', value: (pc) => (pc.GE1 ?? 0) + (pc.GE2 ?? 0) },
+  Visual: {
+    formula: '(VP + VA + CG) ÷ 2',
+    value: (pc) => ((pc.VP ?? 0) + (pc.VA ?? 0) + (pc.CG ?? 0)) / 2,
+  },
+  Music: {
+    formula: '(MB + MA + MP) ÷ 2',
+    value: (pc) => ((pc.MB ?? 0) + (pc.MA ?? 0) + (pc.MP ?? 0)) / 2,
+  },
+  total: {
+    formula: 'GE + Vis + Mus',
+    value: (pc) =>
+      (pc.GE1 ?? 0) +
+      (pc.GE2 ?? 0) +
+      ((pc.VP ?? 0) + (pc.VA ?? 0) + (pc.CG ?? 0)) / 2 +
+      ((pc.MB ?? 0) + (pc.MA ?? 0) + (pc.MP ?? 0)) / 2,
+  },
+};
+
+/**
+ * A subtotal cell in the expanded detail row (total / GE / Visual / Music
+ * columns): the category rollup with the formula that produces it, sitting under
+ * the column it explains. Returns null for other columns.
+ */
+export function StandingsSubtotalCell({
+  data,
+  colKey,
+}: {
+  data: StandingsBreakdownData;
+  colKey: string;
+}) {
+  const sub = SUBTOTALS[colKey];
+  if (!sub) return null;
+  const value = sub.value(data.perCaption);
+  return (
+    <span className="flex flex-col items-center gap-0.5">
+      <span
+        className={
+          'font-mono text-sm tabular-nums' + (colKey === 'total' ? ' font-bold' : '')
+        }
+      >
+        {value > 0 ? formatScore(value) : '—'}
+      </span>
+      <span className="whitespace-nowrap text-[9px] leading-tight text-muted-foreground">
+        = {sub.formula}
+      </span>
+    </span>
+  );
+}
+
 /**
  * The content of ONE caption cell in an expanded standings detail row: the corps
  * the member drafted for that caption, aligned directly under the caption column

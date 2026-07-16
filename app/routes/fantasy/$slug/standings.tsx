@@ -14,6 +14,7 @@ import { SectionErrorBoundary } from '@/components/error-boundary';
 import { ScoreRecapTable } from '@/components/prediction/score-recap-table';
 import {
   StandingsPickCell,
+  StandingsSubtotalCell,
   type StandingsBreakdownData,
 } from '@/components/fantasy/standings-breakdown';
 import { isCaptionKey } from '@/lib/fantasy/captions';
@@ -201,10 +202,16 @@ function StandingsContent({
             rowDetailLabel="Drafted corps"
             renderRowDetailCell={(r, colKey) => {
               const detail = r._detail as StandingsBreakdownData | undefined;
-              if (!detail || !isCaptionKey(colKey)) return null;
-              return (
-                <StandingsPickCell picks={detail.contributions[colKey]} corpsByKey={pickedCorps} />
-              );
+              if (!detail) return null;
+              if (isCaptionKey(colKey))
+                return (
+                  <StandingsPickCell
+                    picks={detail.contributions[colKey]}
+                    corpsByKey={pickedCorps}
+                  />
+                );
+              // total / GE / Visual / Music: the rollup + its formula.
+              return <StandingsSubtotalCell data={detail} colKey={colKey} />;
             }}
           />
         </SectionErrorBoundary>
