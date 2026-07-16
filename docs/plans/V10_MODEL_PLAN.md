@@ -642,6 +642,18 @@ pipeline state.
   before changing a global loss. This replay is provisional: the final restored
   checkpoint and terminal report remain authoritative.
 
+- The epoch-48 `best_total` checkpoint is a materially different and useful
+  tradeoff. Seed-aware replay gives aggregate recap MAE `0.360088` and total MAE
+  `0.912450`; established/short/zero/sparse total MAEs are `0.798448`,
+  `1.089502`, `2.763687`, and `2.129719`. Sparse history therefore clears
+  the predeclared `2.13824` guardrail by `0.008521`, although it still trails
+  final2's `1.838239`. Relative to epoch 46 composite, it improves sparse total
+  by `0.117037`, aggregate total by `0.025699`, and established total by
+  `0.045770`, while worsening aggregate recap by `0.010794` and zero-history
+  total by `0.449653`. This supports testing a constrained multi-slice checkpoint
+  selector; do not promote it from this single provisional replay before terminal
+  calibration, seed-mean reporting, and the declared composite-checkpoint gate.
+
 ## V10 improvement hypothesis log
 
 Keep proposed V10 changes here as hypotheses until an ablation clears the frozen
