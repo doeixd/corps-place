@@ -1277,3 +1277,17 @@ to choose among checkpoints.
   released at 12:01 EDT. Fixed-boundary, phase-aware LR, and smooth-sequence are now
   the three active exact-size jobs. WSL retained about 9.5 GiB available and no
   swap use at startup.
+
+#### Large-model learning-rate follow-up
+
+- The endpoint results justify testing a midpoint peak LR around `0.00065`, not
+  declaring that value optimal. `0.00075` has the better composite/test total,
+  while `0.00055` has better validation/test recap and a much stronger sparse-
+  history margin. A midpoint is therefore a plausible Pareto improvement.
+- LR changed the learned curriculum trajectory as well as optimizer step size:
+  the low-LR run entered phase C at epoch 39, versus epoch 32 for original LR.
+  Consequently, an auto-curriculum midpoint run is a useful pragmatic candidate
+  but does not isolate LR. The clean scientific comparison is `0.00055` /
+  `0.00065` / `0.00075` under the same fixed `10/40` boundaries, paired seed and
+  sample contract. Do not transfer this conclusion to the exact-size graph until
+  its running fixed/phase-aware treatments finish.
