@@ -1231,3 +1231,22 @@ to choose among checkpoints.
 - All three trainers remain healthy. WSL had roughly 8.2 GiB available and no swap
   use; the phase-aware-LR and smooth-sequence services remain idle sequential
   waiters.
+
+#### Live ablation status at 2026-07-16 11:45 EDT
+
+- The 1.885x low-LR run completed normally after early stopping at epoch 101 and
+  selected its epoch-61 composite checkpoint. Terminal validation is `0.3505`
+  recap, `0.9257` total, calibrated coverage `0.8237`, composite `0.499940`, and
+  history totals `1.7425` zero / `1.5765` sparse / `1.2189` short / `0.8381`
+  established. It **passes every predeclared single-run V9.5 parity gate**, and
+  test-all is `0.3049` recap / `0.6916` total. Milestone 1 still fails globally
+  until a second seed confirms the treatment; this is a qualifying candidate,
+  not a completed multi-seed result.
+- The 1.885x original-LR run is at epoch 88 without improving its preserved
+  epoch-43 composite `0.498524`. The fixed-boundary same-size treatment is at
+  epoch 28 in phase B; its current best composite is `0.5173` at epoch 26
+  (`0.3516` recap / `1.0153` total). It remains promising but has not yet reached
+  the fixed epoch-40 phase-C transition.
+- With the low-LR run exited, WSL has roughly 9.9 GiB available and no swap use.
+  The phase-aware-LR and smooth-sequence treatments remain correctly queued behind
+  the fixed control.
