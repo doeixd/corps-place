@@ -1257,3 +1257,23 @@ to choose among checkpoints.
   a verified model-local training-source snapshot. WSL retained about 8.5 GiB
   available with no swap use. The smooth-sequence treatment remains the sole
   queued waiter and should take the next freed slot.
+
+#### Live ablation status at 2026-07-16 12:02 EDT
+
+- The 1.885x original-LR run completed and selected its preserved epoch-43
+  composite checkpoint: composite `0.498524`, terminal validation `0.3580` recap /
+  `0.9213` total, calibrated coverage `0.8220`, and history totals `2.0453` zero /
+  `2.1227` sparse / `1.0632` short / `0.8327` established. It passes every
+  single-run gate, but sparse history clears the `2.1382` ceiling by only `0.0155`;
+  the completed low-LR treatment is much more robust on sparse history (`1.5765`).
+  Original LR has the better composite and test total (`0.6294`), while low LR has
+  better terminal validation/test recap (`0.3505`/`0.3049` versus
+  `0.3580`/`0.3315`). Neither treatment is confirmed until repeated across seeds.
+- The fixed-boundary same-size run crossed into phase C at epoch 40 and initially
+  regressed (`0.3982` recap / `1.1798` total); its best production composite remains
+  epoch 26 at `0.5173`. The phase-aware-LR run reached epoch 9, with an early best
+  composite `0.6778` at epoch 8; phase-A volatility makes this non-comparable yet.
+- The second capacity run freed another slot, so the smooth-sequence treatment was
+  released at 12:01 EDT. Fixed-boundary, phase-aware LR, and smooth-sequence are now
+  the three active exact-size jobs. WSL retained about 9.5 GiB available and no
+  swap use at startup.
