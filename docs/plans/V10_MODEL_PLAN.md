@@ -932,6 +932,14 @@ decision.
   warmup/plateau control and robust checkpointing over simply lowering the whole
   schedule. Do not declare `0.00075` the winner until it reaches comparable phase
   B/C checkpoints and terminal missing-history slices.
+- **V10 learning-rate design note:** treat `0.00075` as the peak after warmup, not
+  a constant rate or a value that must be stepped down exactly at each curriculum
+  boundary. Preserve adequate learning rate through the disruptive A→B 5→15-step
+  sequence transition, then strengthen decay after phase B has stabilized and use
+  a low rate for phase-C refinement. Test a brief transition re-warm or hold before
+  a phase-specific drop; an immediate drop at the same moment the input/objective
+  changes may prevent adaptation. Keep the existing continuous cosine schedule as
+  the control and compare any phase-aware schedule with paired seeds.
 - **Status at low-LR epoch 52+ / baseline-LR epoch 21:** at the clean matched
   epoch-16 comparison, `0.00075` wins recap, total, and composite
   (`0.367`/`1.097`/`0.5446`) over `0.00055`
