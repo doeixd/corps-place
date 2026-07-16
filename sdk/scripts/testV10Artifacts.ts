@@ -1,0 +1,26 @@
+
+import { readFileSync } from "node:fs";
+import { V10_FEATURE_SCHEMA } from "../src/training/v10FeatureSchema.js";
+
+const artifactDirIndex = process.argv.indexOf("--artifact-dir");
+const directory = artifactDirIndex >= 0 ? process.argv[artifactDirIndex + 1]! : "./src/training/v10/dev1";
+const read = <T>(name: string) => JSON.parse(readFileSync(`${directory}/${name}`, "utf8")) as T;
+const maps = ["corpsIndexMap.json", "judgeIndexMap.json", "showIndexMap.json"];
+for (const name of maps) {
+  const map = read<Record<string, number>>(name);
+  if (map.unknown !== 0) throw new Error(`${name} does not reserve unknown=0`);
+  const values = Object.values(map);
+  const max = Math.max(...values);
+  if (new Set(values).size !== values.length || max + 1 !== values.length) {
+    throw new Error(`${name} indices are not unique and contiguous through max(index)+1`);
+  }
+}
+const curves = read<{ curves: Record<string, Record<string, number>> }>("referenceCurves.json").curves;
+if (Object.keys(curves).length !== 525) throw new Error(`Expected 525 curve cells, got ${Object.keys(curves).length}`);
+for (let rank = 1; rank <= 25; rank++) for (let bucket = 0; bucket <= 100; bucket += 5) {
+  const cell = curves[`${rank}-${bucket}`];
+  if (!cell || V10_FEATURE_SCHEMA.captions.some((caption) => !Number.isFinite(cell[caption]))) {
+    throw new Error(`Incomplete curve cell ${rank}-${bucket}`);
+  }
+}
+process.stdout.write(`V10 artifacts verified: sequence=${V10_FEATURE_SCHEMA.sequenceDim}, raw_static=${V10_FEATURE_SCHEMA.rawStaticDim}, total_static=${V10_FEATURE_SCHEMA.totalStaticDim}\n`);

@@ -1,0 +1,43 @@
+{
+  "manifest_version": "v10-clean-artifacts-dev1",
+  "source_snapshot_sha256": "5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb",
+  "training_contract": "v10-training-performances-dev1",
+  "row_identity_sha256": "96b4d40541f7c927bbe6a68740ee766916f027ff75916bcb8417c6531bbba37d",
+  "training_rows": 7317,
+  "counts": {
+    "corps_known": 55,
+    "judges_known": 213,
+    "shows_known": 300,
+    "reviewed_corps_aliases": 25,
+    "curve_cells": 525
+  },
+  "index_policy": "unknown=0; known identities sorted lexicographically and assigned 1..N; embedding input dimension=max(index)+1",
+  "show_identity_policy": "strip a leading YYYY- from competition_slug; unknown=0",
+  "artifacts": [
+    {
+      "file": "corpsIndexMap.json",
+      "bytes": 1540,
+      "sha256": "8d5f991d968bf4c61cb826799c00472ad36f2ac485c67865bc90bc53f7d5b0dd"
+    },
+    {
+      "file": "judgeIndexMap.json",
+      "bytes": 4494,
+      "sha256": "775ec646e5fdd70ef977ff02ebf91242c4ec681a56adedae0da3ac5ccff1b942"
+    },
+    {
+      "file": "showIndexMap.json",
+      "bytes": 11385,
+      "sha256": "2292d521ca556ac1cf172075795e72abe1be3542118d981c83bb4f254a16aeea"
+    },
+    {
+      "file": "corpsAliasMap.json",
+      "bytes": 3547,
+      "sha256": "9813cbf20ed34c1ec7acea525c74d7059de48949e81914c4ba2baebafbc07684"
+    },
+    {
+      "file": "referenceCurves.json",
+      "bytes": 92745,
+      "sha256": "e2afb3d1caed85f82a2aca1d9275586ed8aeadcc2eee922cc23be383d0313336"
+    }
+  ]
+}

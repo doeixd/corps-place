@@ -12,17 +12,28 @@ import {
   V9_CAPTION_FINGERPRINT_START,
   V9_RAW_STATIC_DIM,
 } from "./training/v9FeatureModes.js";
+import { V10_FEATURE_SCHEMA } from "./training/v10FeatureSchema.js";
 
-const REFERENCE_CURVES = JSON.parse(fs.readFileSync("./src/training/referenceCurvesV4.json", "utf-8"));
-const JUDGE_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/judgeIndexMap.json", "utf-8"));
-const CORPS_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/corpsIndexMap.json", "utf-8"));
-const SHOW_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/showIndexMap.json", "utf-8"));
-const JUDGE_INDEX_MAP_PATH = "./src/training/judgeIndexMap.json";
+const valueAfter = (flag: string) => {
+  const idx = process.argv.indexOf(flag);
+  return idx >= 0 ? process.argv[idx + 1] : undefined;
+};
+const cliDataContract = valueAfter("--data-contract") ?? "raw-v9";
+const v10ArtifactDir = valueAfter("--artifact-dir") ?? "./src/training/v10/dev1";
+const artifactPath = (v9Name: string, v10Name = v9Name) =>
+  cliDataContract === "clean-v10" ? `${v10ArtifactDir}/${v10Name}` : `./src/training/${v9Name}`;
+const readJson = <T>(path: string) => JSON.parse(fs.readFileSync(path, "utf-8")) as T;
+const REFERENCE_CURVES = readJson<{ version?: string; curves: Record<string, Record<string, number>> }>(
+  artifactPath("referenceCurvesV4.json", "referenceCurves.json"),
+);
+const JUDGE_INDEX_MAP = readJson<Record<string, number>>(artifactPath("judgeIndexMap.json"));
+const CORPS_INDEX_MAP = readJson<Record<string, number>>(artifactPath("corpsIndexMap.json"));
+const SHOW_INDEX_MAP = readJson<Record<string, number>>(artifactPath("showIndexMap.json"));
 const V9_BUILDER_VERSION = "v9-subcaption-clean-2026-05-21";
 const V10_BUILDER_VERSION = "v10-clean-canonical-dev1-2026-07-16";
 const V9_TARGET_TABLE = "ml_sequence_rows_v9_subcaption";
 const V10_TARGET_TABLE = "ml_sequence_rows_v10_clean_control";
-const MAP_VERSION = "current-json-files";
+const MAP_VERSION = cliDataContract === "clean-v10" ? "v10-clean-artifacts-dev1" : "current-json-files";
 
 // Subcaption normalization helpers
 const SUBCAPTION_CONTENT_VARIANTS = [
@@ -93,9 +104,11 @@ const CAPTION_COUNT = CAPTIONS.length;
 const CAPTION_FEATURES = 4;
 const OPPONENT_TIMESTEP_FEATURES = 7 + 27; // 7 (existing) + 27 (opponent last-3 totals + per-caption stats)
 const COMPARATIVE_FEATURES = 10; // relative_total + relative_caption×8 + show_competitiveness
-const TIMESTEP_FEATURES = 7 + 11 + CAPTION_COUNT * CAPTION_FEATURES + OPPONENT_TIMESTEP_FEATURES + 4 + COMPARATIVE_FEATURES + 3; // 98 + 3 = 101
+const TIMESTEP_FEATURES = cliDataContract === "clean-v10"
+  ? V10_FEATURE_SCHEMA.sequenceDim
+  : 7 + 11 + CAPTION_COUNT * CAPTION_FEATURES + OPPONENT_TIMESTEP_FEATURES + 4 + COMPARATIVE_FEATURES + 3; // 98 + 3 = 101
 const COLD_START_FEATURES = 10;
-const STATIC_FEATURES = V9_RAW_STATIC_DIM;
+const STATIC_FEATURES = cliDataContract === "clean-v10" ? V10_FEATURE_SCHEMA.rawStaticDim : V9_RAW_STATIC_DIM;
 const BASE_STATIC_FEATURES = STATIC_FEATURES - V9_CAPTION_FINGERPRINT_DIM;
 
 const EMA_ALPHA = 0.3;
@@ -2013,12 +2026,7 @@ const insertBatch = (
     { concurrency: 50, discard: true }
   );
 
-const valueAfter = (flag: string) => {
-  const idx = process.argv.indexOf(flag);
-  return idx >= 0 ? process.argv[idx + 1] : undefined;
-};
-
-const dataContract = valueAfter("--data-contract") ?? "raw-v9";
+const dataContract = cliDataContract;
 if (dataContract !== "raw-v9" && dataContract !== "clean-v10") {
   throw new Error(`Unsupported --data-contract ${dataContract}`);
 }

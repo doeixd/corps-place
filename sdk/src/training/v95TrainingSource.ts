@@ -14,6 +14,13 @@ const coreFiles = [
   "src/training/trainModelV95.ts",
   "src/training/trainModelV10Final.ts",
   "src/training/v10Config.ts",
+  "src/training/v10FeatureSchema.ts",
+  "src/training/v10/dev1/manifest.json",
+  "src/training/v10/dev1/referenceCurves.json",
+  "src/training/v10/dev1/judgeIndexMap.json",
+  "src/training/v10/dev1/corpsIndexMap.json",
+  "src/training/v10/dev1/corpsAliasMap.json",
+  "src/training/v10/dev1/showIndexMap.json",
   "src/training/baselines/v10-source-2026-07-16.json",
   "src/training/baselines/v10-training-performances-dev1.json",
   "src/training/v95TrainingSource.ts",
@@ -30,6 +37,7 @@ const coreFiles = [
   "src/training/corpsIndexMap.json",
   "scripts/freezeV10Source.ts",
   "scripts/prepareV10TrainingData.ts",
+  "scripts/generateV10Artifacts.ts",
 ] as const;
 
 const runScripts = () => fs.readdirSync(path.join(sdkRoot, "scripts"))

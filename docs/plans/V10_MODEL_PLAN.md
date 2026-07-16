@@ -1425,3 +1425,23 @@ to choose among checkpoints.
   terminal cards; both were restarted as new runs, and phase-aware seed 42 was
   started. Keep the immutable source once, materialize compact derived tables,
   and monitor host-disk—not only Linux `df`—before large artifacts.
+- Dataset-matched V10 artifact generation now lives in
+  `scripts/generateV10Artifacts.ts`. The `dev1` set is pinned to the source and
+  7,317-row contract and contains 55 known corps, 213 known judges, 300 agnostic
+  show identities, 25 reviewed corps aliases, and a complete 525-cell clean
+  reference curve. Every identity map reserves `unknown=0`, assigns sorted known
+  identities to contiguous `1..N`, and therefore sizes embeddings as
+  `max(index)+1`. The builder selects these files only under `clean-v10`; V9 keeps
+  its global files unchanged.
+- The shared `v10FeatureSchema.ts` now declares the clean-control feature names,
+  blocks, normalization rules, availability regimes, and dimensions (`101`
+  sequence, `212` raw static, `8` derived trend, `220` total static). This is the
+  clean-control schema, not yet the field-pace/thin-history final schema.
+- Integration testing with the matched maps/curves exposed the next qualification
+  blocker clearly: the recovered builder still loads legacy
+  `corps_historical_features_v6`, `show_aggregates_v7`, and precomputed V9 Elo
+  histories from the source snapshot. Its clean local show aggregates cover the
+  tested rows, but the legacy historical/Elo fallbacks make the resulting table
+  unqualified. Rebuild these from the V10 row contract, fail instead of falling
+  back, and make reference-curve/range lookups target-date-as-of before training
+  the clean-data control.
