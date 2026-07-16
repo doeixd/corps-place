@@ -674,6 +674,68 @@ decision.
   no plateau scheduler using identical seeds; do not assume the repaired behavior
   is automatically the best V10 regimen.
 
+### 2026-07-16 — durability, missing evidence, and identity considerations
+
+- **Treat the curriculum as a coordinated system, not independent knobs.** The
+  reconstructed trainer restores A/B/C loss ramps, short-to-full sequence growth,
+  judge and corps scale ramps, history hiding, baseline noise/dropout, identity
+  dropout, width-floor scheduling, and checkpoint families. Their ordering is a
+  plausible source of final2's durability: learn general score movement before
+  allowing identity corrections. Preserve that ordering as the control and
+  ablate one schedule dimension at a time; changing dropout, identity scale, and
+  loss weights together would make any gain uninterpretable.
+- **Separate missing history from unknown identity.** A corps with no current-
+  season shows but a known multi-year identity is different from a truly unseen
+  corps, and both differ from a known corps whose history was intentionally
+  masked. Add a crossed evaluation matrix for history present/hidden/absent,
+  corps known/unknown, judges known/unknown, and lineup context known/unknown.
+  Aggregate "cold start" metrics can otherwise conceal which prior the model is
+  using.
+- **Make identity trust conditional on evidence.** Test a learned or deterministic
+  gate that shrinks corps and judge residuals toward zero when history is thin,
+  identity is unknown, the panel is unavailable, or the identity's training
+  support is weak. Compare it with final2's global epoch-based scale. The goal is
+  to retain useful known-corps priors without allowing an embedding to dominate a
+  one-show trajectory or invent confidence for a new corps.
+- **Match augmentation to real serving-time missingness.** Random history hiding
+  is useful but is not automatically representative of season debuts, incomplete
+  recaps, changed lineups, unknown panels, or a new corps key. Measure those
+  production frequencies, then test targeted masks and mixtures that reproduce
+  them. Keep mask provenance in evaluation so synthetic robustness is not
+  mistaken for real walk-forward performance.
+- **Preserve a conservative fallback path.** For zero and sparse history, compare
+  the neural prediction with global/division/reference-curve and last-known-corps
+  baselines. Test history-conditioned shrinkage or blending, with the blend
+  chosen without target-date information. A small model should have to earn its
+  deviation from the robust fallback instead of always replacing it.
+- **Do not assume the future judge panel is known.** Retrospective rows contain
+  judge identities that may be unavailable when a forecast is actually served.
+  Judge embeddings may improve recap reconstruction while harming true forecasts.
+  Select production candidates on both panel-known and panel-unknown paths, and
+  treat the unknown-panel path as the default unless scheduling data proves the
+  panel was available at prediction time.
+- **Version identity maps with the dataset and model.** Final2's graph dimensions
+  are recovered, but today's map files do not describe final2's frozen integer
+  IDs. V10 must generate corps, judge, and show maps from its versioned training
+  view, reserve explicit unknown IDs, size embeddings with `max(index) + 1`, hash
+  the maps into the model card, and test unseen and remapped keys. Cardinality
+  parity alone does not prove semantic identity parity.
+- **Select for durability across seeds and slices.** Report mean, range, and
+  row-level changes across multiple seeds; constrain established-history quality
+  while optimizing sparse/zero-history behavior. Do not tune directly to the nine
+  frozen sparse rows. Use them as a regression guardrail, then confirm decisions
+  on walk-forward years or resampled groups with uncertainty intervals.
+- **Audit stochastic training when replicas diverge.** If seed 43 differs
+  materially from seed 42, record sampled history/identity masks, curriculum
+  transition epochs, learning rates, and which checkpoint wins. A deterministic
+  one-epoch trace using a fixed sample order can distinguish an RNG/order mismatch
+  from legitimate optimizer variance before V10 experiments begin.
+- **Calibrate uncertainty separately from the mean.** Missing history, identity,
+  judges, or lineup should normally widen uncertainty even when a fallback keeps
+  MAE acceptable. Require coverage and width reports for every crossed missing-
+  evidence mode; a narrow interval is not a durable improvement when it hides
+  epistemic uncertainty.
+
 ## Immediate next task
 
 Finish the running seed-43 full frozen-data V9.5 replica, then summarize both
