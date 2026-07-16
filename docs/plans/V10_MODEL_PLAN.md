@@ -1133,3 +1133,43 @@ to choose among checkpoints.
 - Cleaned/merged/alias-corrected data can improve a model with the same parameter
   count, but that is the V10 clean-data control, not frozen-data V9.5 parity. Keep
   it separate so optimization gains are not incorrectly attributed to cleanup.
+
+#### Prioritized extensions if the fixed-boundary control is insufficient
+
+1. **Smooth the A→B optimization shock.** Keep the exact graph and losses, but
+   compare the current abrupt 5→15-step switch with a short deterministic mix/ramp
+   of 5/10/15-step batches. Pair this with the separately tested phase-aware LR
+   hold or brief re-warm, never both in the first run. The recovered logs identify
+   this boundary as the largest repeatable instability.
+2. **Average nearby good solutions without enlarging inference.** After each run,
+   evaluate a small predeclared soup/EMA of the best adjacent composite
+   checkpoints. Weight averaging still exports one graph with `1,048,639`
+   parameters. It is distinct from deploying an ensemble. Historical SWA was weak,
+   so ordinary composite selection remains the control and averaging must win
+   paired seeds and history slices.
+3. **Match augmentation to evidence regimes.** Cross final2's history hiding with
+   its nonzero identity-dropout floor using paired seeds, then stratify masks to
+   resemble zero/sparse/short-history and missing-panel serving cases. Do not tune
+   against the nine frozen sparse validation rows themselves. The treatment must
+   improve held-out history buckets and early-2026 behavior, not just the selector.
+4. **Gate identity residuals by evidence, with no new learned weights.** Use current-
+   season history depth, known/unknown panel state, and frozen-map support to scale
+   existing corps/judge residual paths deterministically. Train under the same
+   gating distribution. This retains the graph's parameter count while reducing
+   brittle identity memorization for season debuts and sparse histories.
+5. **Use robust group-aware training, not lucky seed selection.** Test bounded
+   reweighting or sampling across history depth, division, and caption groups, with
+   the global composite still primary. Prefer fixed predeclared weights or a
+   training-only worst-group objective; require that aggregate recap/total and
+   established history do not regress. Retest the archived MB/MP `1.4` emphasis
+   only inside this modern slice report.
+6. **Distill capacity back into the same-size student.** If the 1.885x model proves
+   a repeatable teacher, generate out-of-fold/cross-fitted soft targets and train
+   the exact final2-sized graph on a blend of actual labels and teacher outputs.
+   The deployed student remains `1,048,639` parameters. Never use in-sample teacher
+   predictions without cross-fitting, and compare against a same-seed student on
+   identical real labels to measure the distillation contribution.
+7. **Calibrate uncertainty after mean-model selection.** History-conditioned or
+   conformal interval calibration adds no neural parameters and may improve honest
+   coverage/width, but it cannot count as a recap/total MAE gain. Freeze the mean
+   checkpoint first and report calibration separately.
