@@ -134,57 +134,62 @@ const identitySupport = {
 };
 
 type CurveCell = { rank: number; bucket: number; caption: string; score: number };
-const curveRows = rows<CurveCell>(`
-  SELECT rank_bucket AS rank, percent_bucket AS bucket, 'GE1' AS caption, GE1 AS score FROM v10_training_performances WHERE division_name='World Class'
-  UNION ALL SELECT rank_bucket, percent_bucket, 'GE2', GE2 FROM v10_training_performances WHERE division_name='World Class'
-  UNION ALL SELECT rank_bucket, percent_bucket, 'VP', VP FROM v10_training_performances WHERE division_name='World Class'
-  UNION ALL SELECT rank_bucket, percent_bucket, 'VA', VA FROM v10_training_performances WHERE division_name='World Class'
-  UNION ALL SELECT rank_bucket, percent_bucket, 'CG', CG FROM v10_training_performances WHERE division_name='World Class'
-  UNION ALL SELECT rank_bucket, percent_bucket, 'MB', MB FROM v10_training_performances WHERE division_name='World Class'
-  UNION ALL SELECT rank_bucket, percent_bucket, 'MA', MA FROM v10_training_performances WHERE division_name='World Class'
-  UNION ALL SELECT rank_bucket, percent_bucket, 'MP', MP FROM v10_training_performances WHERE division_name='World Class'
-`);
-const sums = new Map<string, { sum: number; count: number }>();
-for (const row of curveRows) {
-  const key = `${row.rank}-${row.bucket}-${row.caption}`;
-  const cell = sums.get(key) ?? { sum: 0, count: 0 };
-  cell.sum += row.score;
-  cell.count++;
-  sums.set(key, cell);
-}
+// dev3: curves are division-keyed (`<division>|<rank>-<bucket>`). The legacy
+// unprefixed keys are retained as the World Class values so existing consumers
+// keep working; Open Class rows must resolve their own division's curve.
+const CURVE_DIVISIONS = ["World Class", "Open Class"] as const;
 const curves: Record<string, Record<string, number>> = {};
 const buckets = Array.from({ length: 21 }, (_, index) => index * 5);
-for (let rank = 1; rank <= 25; rank++) {
-  for (const caption of CAPTIONS) {
-    const points = buckets.flatMap((bucket) => {
-      const cell = sums.get(`${rank}-${bucket}-${caption}`);
-      return cell ? [[bucket, cell.sum / cell.count] as const] : [];
-    });
-    if (!points.length) continue;
-    for (const bucket of buckets) {
-      let value = points.find(([point]) => point === bucket)?.[1];
-      if (value === undefined) {
-        const lower = [...points].reverse().find(([point]) => point < bucket);
-        const upper = points.find(([point]) => point > bucket);
-        if (lower && upper) value = lower[1] + (upper[1] - lower[1]) * ((bucket - lower[0]) / (upper[0] - lower[0]));
-        else value = lower?.[1] ?? upper?.[1];
+for (const division of CURVE_DIVISIONS) {
+  const divisionSql = division.replaceAll("'", "''");
+  const curveRows = rows<CurveCell>(CAPTIONS.map((caption) =>
+    `SELECT rank_bucket AS rank, percent_bucket AS bucket, '${caption}' AS caption, ${caption} AS score FROM v10_training_performances WHERE division_name='${divisionSql}'`,
+  ).join("\n  UNION ALL "));
+  const sums = new Map<string, { sum: number; count: number }>();
+  for (const row of curveRows) {
+    const key = `${row.rank}-${row.bucket}-${row.caption}`;
+    const cell = sums.get(key) ?? { sum: 0, count: 0 };
+    cell.sum += row.score;
+    cell.count++;
+    sums.set(key, cell);
+  }
+  const divisionCurves: Record<string, Record<string, number>> = {};
+  for (let rank = 1; rank <= 25; rank++) {
+    for (const caption of CAPTIONS) {
+      const points = buckets.flatMap((bucket) => {
+        const cell = sums.get(`${rank}-${bucket}-${caption}`);
+        return cell ? [[bucket, cell.sum / cell.count] as const] : [];
+      });
+      if (!points.length) continue;
+      for (const bucket of buckets) {
+        let value = points.find(([point]) => point === bucket)?.[1];
+        if (value === undefined) {
+          const lower = [...points].reverse().find(([point]) => point < bucket);
+          const upper = points.find(([point]) => point > bucket);
+          if (lower && upper) value = lower[1] + (upper[1] - lower[1]) * ((bucket - lower[0]) / (upper[0] - lower[0]));
+          else value = lower?.[1] ?? upper?.[1];
+        }
+        if (value !== undefined) (divisionCurves[`${rank}-${bucket}`] ??= {})[caption] = Number(value.toFixed(3));
       }
-      if (value !== undefined) (curves[`${rank}-${bucket}`] ??= {})[caption] = Number(value.toFixed(3));
     }
   }
-}
-const rankHasData = (rank: number) => buckets.some((bucket) => curves[`${rank}-${bucket}`]);
-for (let rank = 1; rank <= 25; rank++) {
-  if (rankHasData(rank)) continue;
-  const sourceRank = Array.from({ length: 25 }, (_, index) => index + 1)
-    .filter(rankHasData).sort((a, b) => Math.abs(a - rank) - Math.abs(b - rank) || a - b)[0];
-  if (!sourceRank) throw new Error(`No reference-curve source for rank ${rank}`);
-  for (const bucket of buckets) curves[`${rank}-${bucket}`] = { ...curves[`${sourceRank}-${bucket}`] };
-}
-for (let rank = 1; rank <= 25; rank++) for (const bucket of buckets) {
-  const cell = curves[`${rank}-${bucket}`];
-  const missing = CAPTIONS.filter((caption) => !Number.isFinite(cell?.[caption]));
-  if (missing.length) throw new Error(`Incomplete curve ${rank}-${bucket}: ${missing.join(",")}`);
+  const rankHasData = (rank: number) => buckets.some((bucket) => divisionCurves[`${rank}-${bucket}`]);
+  for (let rank = 1; rank <= 25; rank++) {
+    if (rankHasData(rank)) continue;
+    const sourceRank = Array.from({ length: 25 }, (_, index) => index + 1)
+      .filter(rankHasData).sort((a, b) => Math.abs(a - rank) - Math.abs(b - rank) || a - b)[0];
+    if (!sourceRank) throw new Error(`No ${division} reference-curve source for rank ${rank}`);
+    for (const bucket of buckets) divisionCurves[`${rank}-${bucket}`] = { ...divisionCurves[`${sourceRank}-${bucket}`] };
+  }
+  for (let rank = 1; rank <= 25; rank++) for (const bucket of buckets) {
+    const cell = divisionCurves[`${rank}-${bucket}`];
+    const missing = CAPTIONS.filter((caption) => !Number.isFinite(cell?.[caption]));
+    if (missing.length) throw new Error(`Incomplete ${division} curve ${rank}-${bucket}: ${missing.join(",")}`);
+  }
+  for (const [key, cell] of Object.entries(divisionCurves)) {
+    curves[`${division}|${key}`] = cell;
+    if (division === "World Class") curves[key] = cell;
+  }
 }
 const referenceCurves = {
   version: ARTIFACT_VERSION,

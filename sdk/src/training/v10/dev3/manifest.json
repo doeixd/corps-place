@@ -1,0 +1,50 @@
+{
+  "manifest_version": "v10-clean-artifacts-dev3",
+  "source_snapshot_sha256": "5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb",
+  "training_contract": "v10-training-performances-dev1",
+  "row_identity_sha256": "96b4d40541f7c927bbe6a68740ee766916f027ff75916bcb8417c6531bbba37d",
+  "vocab_cutoff_date": "2025-07-15",
+  "vocab_policy": "identity vocabulary restricted to rows strictly before vocab_cutoff_date (the trainer's date-forward validation boundary); identities first appearing on or after the cutoff map to unknown=0 so no embedding row is ever evaluation-only and untrained",
+  "training_rows": 7317,
+  "counts": {
+    "corps_known": 53,
+    "judges_known": 210,
+    "shows_known": 289,
+    "reviewed_corps_aliases": 25,
+    "curve_cells": 1575
+  },
+  "index_policy": "unknown=0; known identities sorted lexicographically and assigned 1..N; embedding input dimension=max(index)+1",
+  "show_identity_policy": "strip a leading YYYY- from competition_slug; unknown=0",
+  "artifacts": [
+    {
+      "file": "corpsIndexMap.json",
+      "bytes": 1470,
+      "sha256": "42b972f3d11f24214abdfdc879c779a09e5f6b35dd182e104c069d21f8ab2ce5"
+    },
+    {
+      "file": "judgeIndexMap.json",
+      "bytes": 4424,
+      "sha256": "6c070478f13bf087a0a70732b5eeb646ba434479cfdc0bdda031ec33f83ea7db"
+    },
+    {
+      "file": "showIndexMap.json",
+      "bytes": 11094,
+      "sha256": "7d72af15c5b886dac234ba3443d79fce7979b15adb8414d5e2dc18540956bd58"
+    },
+    {
+      "file": "corpsAliasMap.json",
+      "bytes": 3427,
+      "sha256": "2140b6712144decc743ea216485498063d2a003659ae9d37f3bfeb05f76905c5"
+    },
+    {
+      "file": "identitySupport.json",
+      "bytes": 130144,
+      "sha256": "445bc90120197239b379a66218becdf0d5b1c49a90632b619d224117f1d03538"
+    },
+    {
+      "file": "referenceCurves.json",
+      "bytes": 288216,
+      "sha256": "9662985193bb528e7b7be65618aeb1abdfd3aaa21c50b6d253cca99d46cedfda"
+    }
+  ]
+}

@@ -16,11 +16,21 @@ for (const name of maps) {
   }
 }
 const curves = read<{ curves: Record<string, Record<string, number>> }>("referenceCurves.json").curves;
-if (Object.keys(curves).length !== 525) throw new Error(`Expected 525 curve cells, got ${Object.keys(curves).length}`);
+// dev3: 525 cells per division (World/Open) plus 525 legacy unprefixed keys
+// aliasing World Class.
+if (Object.keys(curves).length !== 1575) throw new Error(`Expected 1575 curve cells, got ${Object.keys(curves).length}`);
+for (const prefix of ["", "World Class|", "Open Class|"]) {
+  for (let rank = 1; rank <= 25; rank++) for (let bucket = 0; bucket <= 100; bucket += 5) {
+    const cell = curves[`${prefix}${rank}-${bucket}`];
+    if (!cell || V10_FEATURE_SCHEMA.captions.some((caption) => !Number.isFinite(cell[caption]))) {
+      throw new Error(`Incomplete curve cell ${prefix}${rank}-${bucket}`);
+    }
+  }
+}
 for (let rank = 1; rank <= 25; rank++) for (let bucket = 0; bucket <= 100; bucket += 5) {
-  const cell = curves[`${rank}-${bucket}`];
-  if (!cell || V10_FEATURE_SCHEMA.captions.some((caption) => !Number.isFinite(cell[caption]))) {
-    throw new Error(`Incomplete curve cell ${rank}-${bucket}`);
+  if (curves[`${rank}-${bucket}`] !== curves[`World Class|${rank}-${bucket}`]
+    && JSON.stringify(curves[`${rank}-${bucket}`]) !== JSON.stringify(curves[`World Class|${rank}-${bucket}`])) {
+    throw new Error(`Legacy curve key ${rank}-${bucket} does not alias World Class`);
   }
 }
 if (V10_FIELD_PACE_FEATURE_SCHEMA.rawStaticDim !== 216 || V10_FIELD_PACE_FEATURE_SCHEMA.totalStaticDim !== 224) {

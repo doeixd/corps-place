@@ -21,9 +21,9 @@ assert.equal(supportAugmentationEnabled(true, 0), false);
 assert.equal(supportAugmentationEnabled(false, 0.05), false);
 
 const loaded = loadV10IdentitySupport(
-  "./src/training/v10/dev2/identitySupport.json",
-  "./src/training/v10/dev2/judgeIndexMap.json",
-  "./src/training/v10/dev2/showIndexMap.json",
+  "./src/training/v10/dev3/identitySupport.json",
+  "./src/training/v10/dev3/judgeIndexMap.json",
+  "./src/training/v10/dev3/showIndexMap.json",
 );
 assert.equal(loaded.version, "v10-identity-support-dev1");
 assert.equal(loaded.corpsTrustByKey.size, 55);

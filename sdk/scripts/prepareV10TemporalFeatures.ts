@@ -91,7 +91,7 @@ const slope = (rows: FieldObservation[]) => {
 };
 const referenceTotal = (row: Performance) => {
   const baselines = Object.fromEntries(CAPTIONS.map((caption) =>
-    [caption, curveBaseline(row.rank_bucket, row.percent_bucket, caption)]
+    [caption, curveBaseline(row.rank_bucket, row.percent_bucket, caption, row.division_name)]
   )) as Record<Caption, number>;
   return baselines.GE1 + baselines.GE2 +
     (baselines.VP + baselines.VA + baselines.CG + baselines.MB + baselines.MA + baselines.MP) / 2;
@@ -138,15 +138,19 @@ const fieldSnapshot = (row: Performance) => {
     maxSourceDate: sourceDates.at(-1),
   };
 };
-const curveBaseline = (rank: number, bucket: number, caption: Caption) => {
-  const exact = curve.get(`${rank}|${bucket}|${caption}`);
+const curveBaseline = (rank: number, bucket: number, caption: Caption, division: string) => {
+  const exact = curve.get(`${division}|${rank}|${bucket}|${caption}`);
   if (exact) return exact.sum / exact.count;
+  // Nearest same-division cell first; cross-division cells only when the
+  // division has no data at all yet (early chronological rows), at a large
+  // distance penalty so they can never beat a same-division candidate.
   const candidates: Array<{ distance: number; value: number }> = [];
   for (const [key, cell] of curve) {
-    const [candidateRank, candidateBucket, candidateCaption] = key.split("|");
+    const [candidateDivision, candidateRank, candidateBucket, candidateCaption] = key.split("|");
     if (candidateCaption !== caption) continue;
+    const divisionPenalty = candidateDivision === division ? 0 : 100_000;
     candidates.push({
-      distance: Math.abs(Number(candidateRank) - rank) * 25 + Math.abs(Number(candidateBucket) - bucket),
+      distance: divisionPenalty + Math.abs(Number(candidateRank) - rank) * 25 + Math.abs(Number(candidateBucket) - bucket),
       value: cell.sum / cell.count,
     });
   }
@@ -177,7 +181,7 @@ for (const [date, dateRows] of groupedByDate) {
     historyRows.push(`(${quote(row.row_key)},${ranks.length},${num(mean(ranks) || 15)},${num(std(ranks))},${num(bestRank)},${num(bestSeason ? Number(row.season) - bestSeason : 20)},${num(ranks.length ? ranks.filter((rank) => rank <= 12).length / ranks.length : 0)},${pastFinals.length ? Math.min(...pastFinals.map((past) => Number(past.season))) : Number(row.season)},${num(previousFinal?.computed_rank ?? 15)},${num(previousFinal?.total_score ?? 70)},${quote(previousFinal?.competition_date ?? `${previousSeason}-08-15`)})`);
 
     for (const caption of CAPTIONS) {
-      const baseline = curveBaseline(row.rank_bucket, row.percent_bucket, caption);
+      const baseline = curveBaseline(row.rank_bucket, row.percent_bucket, caption, row.division_name);
       const range = ranges.get(`${row.division_name}|${row.percent_bucket}|${caption}`) ?? { min: 0, max: 20 };
       const corpsBefore = getElo(corpsElo, eloKey(row.season, row.division_name, row.model_corps_key, caption)).elo;
       temporalRows.push(`(${quote(row.row_key)},${quote(caption)},${num(baseline)},${num(range.min)},${num(range.max)},${num(corpsBefore)},${quote(date)})`);
@@ -196,8 +200,12 @@ for (const [date, dateRows] of groupedByDate) {
     latestBySeason.set(`${row.model_corps_key}|${row.division_name}|${row.season}`, row);
     for (const caption of CAPTIONS) {
       const score = Number(row[caption]);
-      if (row.division_name === "World Class") {
-        const key = `${row.rank_bucket}|${row.percent_bucket}|${caption}`;
+      // dev3: the as-of reference curve is division-keyed. Anchoring Open Class
+      // rows to the World Class curve at their own division rank produced
+      // structurally wrong baselines (championship-week WC values sit far above
+      // OC scores).
+      {
+        const key = `${row.division_name}|${row.rank_bucket}|${row.percent_bucket}|${caption}`;
         const cell = curve.get(key) ?? { sum: 0, count: 0 };
         cell.sum += score; cell.count++; curve.set(key, cell);
       }

@@ -5,7 +5,7 @@ import { spawnSync } from "node:child_process";
 import { V10_FEATURE_SCHEMA } from "../src/training/v10FeatureSchema.js";
 
 const dbIndex = process.argv.indexOf("--db");
-const db = resolve(dbIndex >= 0 ? process.argv[dbIndex + 1]! : "./data/v10-training-dev1.db");
+const db = resolve(dbIndex >= 0 ? process.argv[dbIndex + 1]! : "./data/v10-training-dev3.db");
 const sqlite = <T>(sql: string) => {
   const result = spawnSync("sqlite3", ["-json", db, sql], { encoding: "utf8", maxBuffer: 128 * 1024 * 1024 });
   if (result.status !== 0) throw new Error(result.stderr || `sqlite3 exited ${result.status}`);
@@ -18,8 +18,8 @@ const summary = sqlite<Record<string, number>>(`SELECT
   SUM(CASE WHEN json_array_length(x_static_json)<>${V10_FEATURE_SCHEMA.rawStaticDim} THEN 1 ELSE 0 END) AS bad_static_dim,
   SUM(CASE WHEN json_array_length(judge_indices_json)<>${V10_FEATURE_SCHEMA.judgeSlots} THEN 1 ELSE 0 END) AS bad_judge_slots,
   SUM(CASE WHEN builder_version<>'v10-clean-canonical-dev1-2026-07-16' THEN 1 ELSE 0 END) AS bad_builder,
-  SUM(CASE WHEN reference_curves_version<>'v10-clean-artifacts-dev2' THEN 1 ELSE 0 END) AS bad_curves,
-  SUM(CASE WHEN map_version<>'v10-clean-artifacts-dev2' THEN 1 ELSE 0 END) AS bad_maps
+  SUM(CASE WHEN reference_curves_version<>'v10-clean-artifacts-dev3' THEN 1 ELSE 0 END) AS bad_curves,
+  SUM(CASE WHEN map_version<>'v10-clean-artifacts-dev3' THEN 1 ELSE 0 END) AS bad_maps
 FROM ml_sequence_rows_v10_clean_control`)[0]!;
 if (summary.rows !== 7317 || Object.entries(summary).some(([key, value]) => key !== "rows" && value !== 0)) {
   throw new Error(`V10 sequence dimensions/provenance failed: ${JSON.stringify(summary)}`);
@@ -50,7 +50,7 @@ for (let index = 0; index < captions.length; index++) {
   if (mismatch !== 0) throw new Error(`${caption} temporal builder parity mismatches: ${mismatch}`);
 }
 
-const artifactDir = "./src/training/v10/dev2";
+const artifactDir = "./src/training/v10/dev3";
 const corpsMap = JSON.parse(readFileSync(`${artifactDir}/corpsIndexMap.json`, "utf8")) as Record<string, number>;
 const showMap = JSON.parse(readFileSync(`${artifactDir}/showIndexMap.json`, "utf8")) as Record<string, number>;
 const idRows = sqlite<{ corps_key: string; corps_id: number; competition_slug: string; agnostic_show_id: number; judge_indices_json: string }>(

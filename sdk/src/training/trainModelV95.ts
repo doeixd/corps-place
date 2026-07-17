@@ -1685,17 +1685,25 @@ function buildSamples(
     const baselineRawVector = row.globalBaseline;
     const baselineNormVector: number[] = [];
 
+    // A corps with no usable history at all (first-ever appearance) has an
+    // all-zero stored global baseline; anchoring the model to zeros is far out
+    // of distribution and produced +15pt zero-history errors. Fall back to the
+    // rank-curve forecast baseline (division-aware via the temporal statics)
+    // exactly as the masked-forecast path does.
+    const storedBaselineUsable = baselineRawVector.some((value) => Math.abs(value) > 1e-9);
     const baselineInputRaw = hideForecastContext
       ? [...forecastBaselineRaw]
       : hideHistory
         ? stats.recapMean.map((value) => value ?? 0)
         : lastScoreBaseline
           ? [...lastScoreBaseline]
-          : [...baselineRawVector];
+          : storedBaselineUsable
+            ? [...baselineRawVector]
+            : [...forecastBaselineRaw];
     if (lastScoreBaseline) {
       for (let idx = 0; idx < CAPTION_COUNT; idx++) {
         if (baselineInputRaw[idx] === 0) {
-          baselineInputRaw[idx] = baselineRawVector[idx] ?? stats.recapMean[idx] ?? 0;
+          baselineInputRaw[idx] = baselineRawVector[idx] || forecastBaselineRaw[idx] || stats.recapMean[idx] || 0;
         }
       }
     }

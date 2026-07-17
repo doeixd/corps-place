@@ -29,8 +29,8 @@ assert.equal(control.corpsCount, 54);
 assert.equal(control.showCount, 290);
 assert.equal(control.paretoCheckpointLimit, 8);
 assert.equal(control.rawStaticDim, 212);
-assert.match(control.judgeMapPath, /v10\/dev2\/judgeIndexMap\.json$/);
-assert.match(control.referenceCurvesPath, /v10\/dev2\/referenceCurves\.json$/);
+assert.match(control.judgeMapPath, /v10\/dev3\/judgeIndexMap\.json$/);
+assert.match(control.referenceCurvesPath, /v10\/dev3\/referenceCurves\.json$/);
 assert.equal(V10_PROFILES["clean-data-control"].expectedTrainableParameters, 1_034_015);
 assert.equal(
   formatV95ModelCapacity(control),
@@ -61,7 +61,7 @@ assert.equal(V10_PROFILES["thin-history"].expectedTrainableParameters, 1_034_015
 const supportAware = parseV95Args(v10DefaultArgs("support-aware-identity"));
 assert.equal(supportAware.supportAwareIdentity, true);
 assert.equal(supportAware.supportDropoutStrength, 0.6);
-assert.match(supportAware.identitySupportPath, /v10\/dev2\/identitySupport\.json$/);
+assert.match(supportAware.identitySupportPath, /v10\/dev3\/identitySupport\.json$/);
 
 const overridden = parseV95Args(mergeV10Args("scaled-control", ["--lr", "0.0006", "--seed", "42"], 42));
 assert.equal(overridden.learningRate, 0.0006);
