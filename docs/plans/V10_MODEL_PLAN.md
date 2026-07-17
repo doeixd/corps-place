@@ -2169,3 +2169,43 @@ anchor repair is doing the real work.
   experiments are LR-schedule (phase-aware, cosine-period) on the control itself
   and more ensemble seeds; capacity re-test is lower priority since the tail is
   already fixed by data.
+
+### 2026-07-17 overnight — SERVING AUDIT (production go/no-go input)
+
+Strong green light: the production inference path already has both dev3 fixes
+structurally. No serving-code surgery needed for correctness; the remaining work
+is wiring the V10 artifacts.
+
+Findings (v9PredictionFeatures.ts, v9Baselines.ts, predictEventRecap.ts,
+app/lib/event-prediction-api.ts):
+1. ZERO-HISTORY SAFE. `baselineRecap = lastHistoryRecap ?? curve captions`
+   (v9PredictionFeatures.ts ~475). A first-ever corps with no last recap falls
+   back to the curve baseline, NOT zeros. The 12.4-pt zero-history blowup was a
+   REPLAY-HARNESS-only artifact (the harness recomputed a zero recent-form
+   anchor); production was always curve-anchored. Good.
+2. DIVISION-AWARE CODE. `getV9CaptionBaseline` (v9Baselines.ts ~105) looks up
+   `${division}|${rank}-${bucket}` first, then legacy unprefixed keys, and takes
+   a configurable `referenceCurvesPath`. The code supports division curves.
+3. THE GAP IS DATA, NOT CODE. predictEventRecap.ts:869 hard-codes
+   `src/training/referenceCurvesV4.json`, which lacks `Open Class|` keys — so
+   TODAY (final2) Open Class corps silently get the World Class anchor (the exact
+   bug dev3 fixes). Maps are also frozen final2.
+
+V10 INTEGRATION (bounded; touches the live prediction API — prepare + document,
+leave the deploy switch for user review):
+  a) Package the V10 model dir with its dev3 division-aware curves + dev3
+     identity maps (Milestone 7 artifact set, hashed).
+  b) Make the serving path load curves/maps from the model dir (or per-model
+     config) instead of the hard-coded referenceCurvesV4.json + frozen maps.
+     getV9CaptionBaseline already accepts referenceCurvesPath; thread it through
+     predictEventRecap + event-prediction-api model resolution.
+  c) SERVE IDENTITY-AGNOSTIC (or evidence-gated) for forecasting: the 2026
+     result showed stored embeddings hurt out-of-sample (agnostic 0.416 vs
+     stored 0.424 recap). Set corps/judge/show scale to 0 (or gate) at serve
+     time for future-season predictions.
+  d) Shadow: run V10 side-by-side with final2 on recent 2026 shows, store both,
+     compare, then switch the selector only after review.
+Net: correctness is already in the serving code; V10 needs artifact packaging +
+model-local curve/map loading + agnostic serving + shadow. No emergency
+rewrite. The one live-behavior change (model-local curves) should be reviewed
+before deploy since it also affects how any model resolves its baseline.
