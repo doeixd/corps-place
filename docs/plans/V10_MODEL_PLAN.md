@@ -1763,3 +1763,18 @@ to choose among checkpoints.
   for its OC rows); only the sequence payload hash changed, cohort identity
   hashes untouched. dev3 confirmation runs (seeds 43 and 42) and the dev2
   seed-42 terminal are in flight concurrently.
+
+### 2026-07-17 — post-hoc checkpoint-soup result (dev2 seed 43)
+
+- A predeclared 50/50 weight average of the epoch-36 best_total (phase B) and
+  epoch-45 best_composite (phase C) checkpoints was evaluated post hoc on the
+  frozen dev2 validation. It beat the selected checkpoint on validation recap
+  (0.3711 -> 0.3627), total (1.0224 -> 0.9734), established history
+  (0.8656 -> 0.8391), zero history (5.787 -> 3.958), and test total
+  (0.7873 -> 0.7664), while worsening only the unstable nine-row sparse slice
+  (1.567 -> 1.986). Zero training cost; even a cross-phase pair averaged well.
+- Consequence: add a small predeclared soup (best_total + best_composite, and
+  optionally adjacent Pareto checkpoints) to the post-training uniform
+  evaluation for every dev3 run. Selection still requires both-seed
+  confirmation and the standard gates; classic tail-averaged SWA remains
+  rejected. The soup lives beside, not instead of, the selected checkpoint.
