@@ -86,6 +86,7 @@ export const parseV95Args = (
     baseWidthMultiplier: Number(get("--base-width-multiplier", "1")),
     coverageSharpness: Number(get("--coverage-sharpness", "4")),
     identityDropoutFloor: Number(get("--identity-dropout-floor", "0.05")),
+    phaseBTotalWeight: Number(get("--phase-b-total-weight", "0")),
     accuracyTrunkUnits: Number(get("--accuracy-trunk-units", String(inferredAccuracyTrunkUnits ?? 270))),
     inferredAccuracyTrunkUnits,
     mbMpLossBoost: Number(get("--mbmp-loss-boost", "1")),

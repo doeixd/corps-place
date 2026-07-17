@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { formatV95ModelCapacity, parseV95Args } from "../src/training/v95Config.js";
 import { getV10Profile, mergeV10Args, V10_PROFILES, v10DefaultArgs, V10_PROFILE_NAMES } from "../src/training/v10Config.js";
 
-assert.equal(V10_PROFILE_NAMES.length, 8);
+assert.equal(V10_PROFILE_NAMES.length, 9);
 for (const name of V10_PROFILE_NAMES) {
   const profile = getV10Profile(name);
   const args = parseV95Args(v10DefaultArgs(name));
@@ -68,3 +68,7 @@ assert.equal(overridden.learningRate, 0.0006);
 assert.equal(overridden.seed, 42);
 assert.throws(() => getV10Profile("not-a-profile"), /Unknown V10 profile/);
 process.stdout.write("V10 isolated experiment profiles verified\n");
+
+const phaseBTotal = parseV95Args(v10DefaultArgs("phase-b-total-weight"));
+if (phaseBTotal.phaseBTotalWeight !== 0.05) throw new Error("phase-b-total-weight profile must set 0.05");
+if (control.phaseBTotalWeight !== 0) throw new Error("clean control must keep phase-B total weight at the frozen 0");

@@ -8,6 +8,13 @@ export type LossScheduleConfig = {
   corpsScaleRamp: number;
   judgeScaleRamp: number;
   identityDropoutFloor: number;
+  /**
+   * Optional phase-B total-score loss weight. The frozen final2 regimen trains
+   * phase B with the total loss off (0) even though the production composite
+   * selector weights total MAE heavily; this knob exists to test aligning the
+   * training objective with the selector. Default 0 preserves final2 behavior.
+   */
+  phaseBTotalWeight?: number;
 };
 
 export const lossWeightsAtEpoch = (epoch: number, config: LossScheduleConfig) => {
@@ -23,7 +30,7 @@ export const lossWeightsAtEpoch = (epoch: number, config: LossScheduleConfig) =>
   if (epoch < phaseBEnd) {
     const progress = (epoch - phaseAEnd) / Math.max(1, phaseBEnd - phaseAEnd);
     return {
-      totalWeight: 0,
+      totalWeight: config.phaseBTotalWeight ?? 0,
       recapWeight: 1 - 0.7 * progress,
       deltaWeight: 0.2 + 0.8 * progress,
       categoryWeight: 0.05,

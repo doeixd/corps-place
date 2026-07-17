@@ -506,6 +506,8 @@ function evaluateSamples(
           judge_known: sample.meta.judgeKnown,
           actual_total: denormalize(trueTotalNorm, stats.totalMean, totalStd),
           predicted_total: denormalize(predictedTotalNorm, stats.totalMean, totalStd),
+          baseline_total: CAPTIONS.reduce((sum, _, ci) =>
+            sum + denormalize(Number(sample.xs[5][ci] ?? 0), stats.recapMean[ci]!, recapStd[ci]!), 0),
           total_abs_error: totalAbs,
           recap_mae: mean(CAPTIONS.map((_, ci) => {
             const po = rowIndex * OUTPUT_DIM;
@@ -1104,6 +1106,7 @@ type LossSchedulerConfig = {
   corpsScaleRamp: number;
   judgeScaleRamp: number;
   identityDropoutFloor: number;
+  phaseBTotalWeight?: number;
 };
 
 class V9LossScheduler {
@@ -2962,6 +2965,7 @@ async function main() {
     corpsScaleRamp: args.corpsScaleRamp,
     judgeScaleRamp: args.judgeScaleRamp,
     identityDropoutFloor: args.identityDropoutFloor,
+    phaseBTotalWeight: args.phaseBTotalWeight,
   });
   const provider = new SequenceDataProviderV9(
     trainSubset,

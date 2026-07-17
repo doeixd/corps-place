@@ -6,6 +6,7 @@ export const V10_PROFILE_NAMES = [
   "scaled-control",
   "phase-aware-lr",
   "smooth-sequence",
+  "phase-b-total-weight",
   "combined-candidate",
 ] as const;
 
@@ -160,6 +161,24 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
       "--lr", "0.00075",
       "--lr-schedule", "cosine",
       "--sequence-transition-epochs", "4",
+    ],
+  },
+  "phase-b-total-weight": {
+    modelVersion: "v10-phase-b-total-weight-dev2",
+    parentModel: "v10-clean-control-dev2",
+    dataContract: "v10-sequence-contract-dev2",
+    featureProfile: "v9.5-220-control",
+    mlTable: "ml_sequence_rows_v10_clean_control",
+    expectedTrainableParameters: 1_034_015,
+    runnable: false,
+    blockedReason: treatmentBlockedReason,
+    // Aligns the training objective with the checkpoint selector: the frozen
+    // regimen trains phase B with the total-score loss off while the
+    // production composite weights total MAE heavily. One knob, paired seeds.
+    args: [
+      ...exactSizeArgs,
+      ...final2RegimenArgs,
+      "--phase-b-total-weight", "0.05",
     ],
   },
   "combined-candidate": {
