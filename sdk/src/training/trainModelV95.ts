@@ -492,6 +492,30 @@ function evaluateSamples(
       };
       applyRowMetrics(global);
       rowBuckets.forEach(([buckets, key]) => addMetricValue(buckets, key, applyRowMetrics));
+      if (process.env.V95_ROW_DETAILS_PATH) {
+        fs.appendFileSync(process.env.V95_ROW_DETAILS_PATH, JSON.stringify({
+          label,
+          season: sample.meta.season,
+          date: sample.meta.date,
+          show: sample.meta.competitionSlug,
+          corps: sample.meta.corpsKey,
+          division: sample.meta.division,
+          history_len: sample.meta.historyLen,
+          history_bucket: history,
+          history_hidden: sample.meta.historyHidden,
+          judge_known: sample.meta.judgeKnown,
+          actual_total: denormalize(trueTotalNorm, stats.totalMean, totalStd),
+          predicted_total: denormalize(predictedTotalNorm, stats.totalMean, totalStd),
+          total_abs_error: totalAbs,
+          recap_mae: mean(CAPTIONS.map((_, ci) => {
+            const po = rowIndex * OUTPUT_DIM;
+            const to = rowIndex * TARGET_DIM;
+            const p = denormalize(predictedValues[po + DELTA_DIM + ci]!, stats.recapMean[ci]!, recapStd[ci]!);
+            const t = denormalize(trueValues[to + CAPTION_COUNT + ci]!, stats.recapMean[ci]!, recapStd[ci]!);
+            return Math.abs(p - t);
+          })),
+        }) + "\n");
+      }
     }
 
     predictions.dispose();

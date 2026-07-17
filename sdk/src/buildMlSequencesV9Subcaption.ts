@@ -44,7 +44,12 @@ const V9_TARGET_TABLE = "ml_sequence_rows_v9_subcaption";
 const V10_TARGET_TABLE = cliV10FeatureProfile === "field-pace"
   ? "ml_sequence_rows_v10_field_pace"
   : "ml_sequence_rows_v10_clean_control";
-const MAP_VERSION = cliDataContract === "clean-v10" ? "v10-clean-artifacts-dev1" : "current-json-files";
+const v10ArtifactManifest = cliDataContract === "clean-v10"
+  ? readJson<{ manifest_version?: string }>(`${v10ArtifactDir}/manifest.json`)
+  : null;
+const MAP_VERSION = cliDataContract === "clean-v10"
+  ? (v10ArtifactManifest?.manifest_version ?? "v10-clean-artifacts-dev1")
+  : "current-json-files";
 
 // Subcaption normalization helpers
 const SUBCAPTION_CONTENT_VARIANTS = [

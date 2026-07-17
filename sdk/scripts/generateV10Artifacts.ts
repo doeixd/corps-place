@@ -7,7 +7,6 @@ import { spawnSync } from "node:child_process";
 const CAPTIONS = ["GE1", "GE2", "VP", "VA", "CG", "MB", "MA", "MP"] as const;
 const SOURCE_HASH = "5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb";
 const CONTRACT_VERSION = "v10-training-performances-dev1";
-const ARTIFACT_VERSION = "v10-clean-artifacts-dev1";
 
 const valueAfter = (flag: string, fallback: string) => {
   const index = process.argv.indexOf(flag);
@@ -16,6 +15,13 @@ const valueAfter = (flag: string, fallback: string) => {
 const sourcePath = resolve(valueAfter("--source", "./data/v10-source-2026-07-16.db"));
 const trainingPath = resolve(valueAfter("--training-db", "./data/v10-training-dev1.db"));
 const outputDir = resolve(valueAfter("--out-dir", "./src/training/v10/dev1"));
+const ARTIFACT_VERSION = valueAfter("--artifact-version", "v10-clean-artifacts-dev1");
+// Identity vocabulary must exclude identities that appear only in the trainer's
+// date-forward validation/test window: their embeddings would receive no
+// gradient and emit random residuals at evaluation time. Identities on or after
+// this date that never appear before it map to unknown=0.
+const vocabCutoff = valueAfter("--vocab-cutoff", "");
+const vocabFilter = vocabCutoff ? ` WHERE competition_date < '${vocabCutoff.replaceAll("'", "''")}'` : "";
 
 if (!existsSync(sourcePath)) throw new Error(`Missing source snapshot: ${sourcePath}`);
 if (!existsSync(trainingPath)) throw new Error(`Missing V10 training DB: ${trainingPath}`);
@@ -56,12 +62,12 @@ if (contract !== CONTRACT_VERSION) {
 }
 
 const corpsKeys = rows<{ key: string }>(`
-  SELECT DISTINCT model_corps_key AS key FROM v10_training_performances ORDER BY key
+  SELECT DISTINCT model_corps_key AS key FROM v10_training_performances${vocabFilter} ORDER BY key
 `).map((row) => row.key);
 const judgeIds = rows<{ id: string }>(`
   SELECT DISTINCT ja.judge_id AS id
   FROM source.judge_assignments ja
-  JOIN (SELECT DISTINCT competition_slug FROM v10_training_performances) shows
+  JOIN (SELECT DISTINCT competition_slug FROM v10_training_performances${vocabFilter}) shows
     ON shows.competition_slug=ja.competition_slug
   WHERE ja.normalized_caption_name IN ('GE1','GE2','VP','VA','CG','MB','MA','MP')
     AND ja.judge_id IS NOT NULL AND ja.judge_id <> '' AND ja.judge_id NOT LIKE '%unknown%'
@@ -71,7 +77,7 @@ const agnosticShows = rows<{ id: string }>(`
   SELECT DISTINCT CASE
     WHEN competition_slug GLOB '[0-9][0-9][0-9][0-9]-*' THEN substr(competition_slug, 6)
     ELSE competition_slug END AS id
-  FROM v10_training_performances ORDER BY id
+  FROM v10_training_performances${vocabFilter} ORDER BY id
 `).map((row) => row.id);
 
 const corpsIndexMap = indexedMap(corpsKeys);
@@ -83,7 +89,7 @@ for (const row of rows<{ alias_key: string; corps_key: string }>(`
   SELECT ca.alias_key, c.corps_key
   FROM source.corps_aliases ca
   JOIN source.corps c ON lower(trim(c.name))=lower(trim(ca.canonical_name))
-  JOIN (SELECT DISTINCT model_corps_key FROM v10_training_performances) used
+  JOIN (SELECT DISTINCT model_corps_key FROM v10_training_performances${vocabFilter}) used
     ON used.model_corps_key=c.corps_key
   WHERE ca.alias_key IS NOT NULL AND ca.alias_key <> ''
   ORDER BY ca.alias_key, c.corps_key
@@ -201,6 +207,10 @@ const manifest = {
   source_snapshot_sha256: SOURCE_HASH,
   training_contract: CONTRACT_VERSION,
   row_identity_sha256: "96b4d40541f7c927bbe6a68740ee766916f027ff75916bcb8417c6531bbba37d",
+  vocab_cutoff_date: vocabCutoff || null,
+  vocab_policy: vocabCutoff
+    ? "identity vocabulary restricted to rows strictly before vocab_cutoff_date (the trainer's date-forward validation boundary); identities first appearing on or after the cutoff map to unknown=0 so no embedding row is ever evaluation-only and untrained"
+    : "identity vocabulary derived from the full training contract",
   training_rows: Number(scalar("SELECT COUNT(*) FROM v10_training_performances")),
   counts: {
     corps_known: corpsKeys.length,

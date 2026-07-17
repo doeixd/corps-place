@@ -21,15 +21,15 @@ assert.equal(supportAugmentationEnabled(true, 0), false);
 assert.equal(supportAugmentationEnabled(false, 0.05), false);
 
 const loaded = loadV10IdentitySupport(
-  "./src/training/v10/dev1/identitySupport.json",
-  "./src/training/v10/dev1/judgeIndexMap.json",
-  "./src/training/v10/dev1/showIndexMap.json",
+  "./src/training/v10/dev2/identitySupport.json",
+  "./src/training/v10/dev2/judgeIndexMap.json",
+  "./src/training/v10/dev2/showIndexMap.json",
 );
 assert.equal(loaded.version, "v10-identity-support-dev1");
 assert.equal(loaded.corpsTrustByKey.size, 55);
-assert.equal(loaded.judgeTrustByIndex.size, 214);
+assert.equal(loaded.judgeTrustByIndex.size, 211);
 assert.equal(loaded.judgeTrustByIndex.get(0), 0);
-assert.equal(loaded.showTrustByIndex.size, 301);
+assert.equal(loaded.showTrustByIndex.size, 290);
 assert.equal(loaded.showTrustByIndex.get(0), 0);
 assert.ok([...loaded.corpsTrustByKey.values()].every((value) => value > 0 && value <= 1));
 

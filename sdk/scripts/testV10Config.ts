@@ -22,16 +22,16 @@ assert.equal(control.dense2Units, 256);
 assert.equal(control.accuracyTrunkUnits, 270);
 assert.equal(control.learningRate, 0.00075);
 assert.equal(control.lrSchedule, "cosine");
-assert.equal(control.autoCurriculum, true);
+assert.equal(control.autoCurriculum, false);
 assert.equal(control.sequenceTransitionEpochs, 0);
-assert.equal(control.judgeCount, 214);
-assert.equal(control.corpsCount, 56);
-assert.equal(control.showCount, 301);
+assert.equal(control.judgeCount, 211);
+assert.equal(control.corpsCount, 54);
+assert.equal(control.showCount, 290);
 assert.equal(control.paretoCheckpointLimit, 8);
 assert.equal(control.rawStaticDim, 212);
-assert.match(control.judgeMapPath, /v10\/dev1\/judgeIndexMap\.json$/);
-assert.match(control.referenceCurvesPath, /v10\/dev1\/referenceCurves\.json$/);
-assert.equal(V10_PROFILES["clean-data-control"].expectedTrainableParameters, 1_034_259);
+assert.match(control.judgeMapPath, /v10\/dev2\/judgeIndexMap\.json$/);
+assert.match(control.referenceCurvesPath, /v10\/dev2\/referenceCurves\.json$/);
+assert.equal(V10_PROFILES["clean-data-control"].expectedTrainableParameters, 1_034_015);
 assert.equal(
   formatV95ModelCapacity(control),
   "Model Capacity: 256→128 BiLSTM, Dense 512→256, AccuracyTrunk 270, Judge Emb 24, Corps Emb 20, Show Emb 12",
@@ -51,17 +51,17 @@ assert.equal(combined.sequenceTransitionEpochs, 4);
 assert.equal(V10_PROFILES["combined-candidate"].expectedTrainableParameters, null);
 const fieldPace = parseV95Args(v10DefaultArgs("field-pace"));
 assert.equal(fieldPace.rawStaticDim, 216);
-assert.equal(V10_PROFILES["field-pace"].expectedTrainableParameters, 1_037_451);
+assert.equal(V10_PROFILES["field-pace"].expectedTrainableParameters, 1_037_207);
 const thinHistory = parseV95Args(v10DefaultArgs("thin-history"));
 assert.equal(thinHistory.mlTable, "ml_sequence_rows_v10_clean_control");
 assert.equal(thinHistory.thinHistorySampleFraction, 0.45);
 assert.equal(thinHistory.thinHistoryTruncationRate, 0.25);
 assert.equal(thinHistory.thinHistoryBaselineBlend, true);
-assert.equal(V10_PROFILES["thin-history"].expectedTrainableParameters, 1_034_259);
+assert.equal(V10_PROFILES["thin-history"].expectedTrainableParameters, 1_034_015);
 const supportAware = parseV95Args(v10DefaultArgs("support-aware-identity"));
 assert.equal(supportAware.supportAwareIdentity, true);
 assert.equal(supportAware.supportDropoutStrength, 0.6);
-assert.match(supportAware.identitySupportPath, /v10\/dev1\/identitySupport\.json$/);
+assert.match(supportAware.identitySupportPath, /v10\/dev2\/identitySupport\.json$/);
 
 const overridden = parseV95Args(mergeV10Args("scaled-control", ["--lr", "0.0006", "--seed", "42"], 42));
 assert.equal(overridden.learningRate, 0.0006);
