@@ -1716,3 +1716,50 @@ to choose among checkpoints.
 - The dev2 clean-control pair (seeds 42/43) continues training and remains the
   identity/curriculum control; dev3 requires its own confirmation run and
   attribution step once the pair completes.
+
+### 2026-07-17 — dev2 seed-43 terminal card and queued suggestions
+
+- **dev2 clean-control seed 43 completed** (fixed 10/40 boundaries fired
+  exactly; composite `0.521731` selected at epoch 45, inside phase C).
+  Terminal validation: `0.3711` recap / `1.0224` total; history totals
+  `5.7868` zero / `1.5674` sparse / `1.1047` short / `0.8656` established;
+  test-all `0.2973` / `0.7873`; calibrated scale `0.475` with test calibrated
+  coverage `0.8462` at width `1.1360`. Sparse history is the best of any
+  V9.5/V10 run so far; established is at parity with V9.5-fixed.
+- **Interpretation: parity with a known, already-fixed defect attached.** The
+  zero bucket is the dev2-era anchor bug (dev3 fixes it); those eight rows
+  alone inflate validation total by roughly `+0.08`, putting the corrected
+  equivalent near V9.5-fixed's `0.9500`. The division split makes the cause
+  visible: World Class validation is strong (`0.3210` recap / `0.8457` total,
+  265 rows) while Open Class is weak (`0.5067` / `1.5002`, 98 rows) —
+  consistent with every OC row being anchored/normalized against World Class
+  curve values in dev2. The dev3 division-aware contract is the direct test.
+- **Seed variance is large and must gate claims.** Mid-run, dev2 seed 42's
+  best composite (`0.5607` at epoch 49) trails seed 43's `0.5217`
+  substantially. When the pair completes, record the terminal spread
+  explicitly as the minimum detectable effect: any treatment gain smaller
+  than the paired-seed spread is not a shippable result.
+- **SWA decision (2026-07-17): do not adopt classic SWA.** It lost in the May
+  archive, and the curriculum changes the objective mid-run, so a tail
+  average mixes solutions to different problems. The variance-reduction idea
+  survives in a constrained form: a small predeclared **soup/EMA of adjacent
+  best-composite checkpoints within one phase**. Test it post hoc on already
+  finished checkpoint families first (zero training cost); adopt only if it
+  beats the selected checkpoint on frozen validation across both seeds.
+- **Queued one-knob treatment: `--phase-b-total-weight`** (implemented,
+  default `0` preserves the frozen regimen; blocked dev3 profile at `0.05`).
+  Rationale: phase B trains with the total-score loss off while the
+  production composite selector weights total MAE heavily; aligning the
+  training objective with the selector is a minimal, predeclared change.
+- **Phase C earned its keep under the fixed schedule with clean data**: the
+  seed-43 composite improved from `0.5308` (epoch 36, phase B) to `0.5217`
+  (epoch 45, phase C). The earlier suspicion that phase C only hurts was an
+  auto-curriculum-era observation; keep phase C in the control regimen.
+- **Post-run analysis worth doing once several dev3 runs exist**: compare the
+  retained checkpoint frontiers across runs (phase/epoch of each nondominated
+  checkpoint) to see whether specific regimes systematically win specific
+  slices; that shapes any later selector change without new training.
+- The 2026 evaluation contract was rebuilt on dev3 (division-aware baselines
+  for its OC rows); only the sequence payload hash changed, cohort identity
+  hashes untouched. dev3 confirmation runs (seeds 43 and 42) and the dev2
+  seed-42 terminal are in flight concurrently.
