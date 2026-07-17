@@ -1778,3 +1778,41 @@ to choose among checkpoints.
   evaluation for every dev3 run. Selection still requires both-seed
   confirmation and the standard gates; classic tail-averaged SWA remains
   rejected. The soup lives beside, not instead of, the selected checkpoint.
+
+### 2026-07-17 — dev2 clean-control pair complete: variance yardstick
+
+- Both dev2 seeds finished under fixed 10/40 curriculum. seed 43 composite
+  0.5217 (val recap 0.3711 / total 1.0224); seed 42 composite 0.5499 (0.3746 /
+  1.1069). Two-seed means: recap 0.3729, total 1.0647, established 0.887.
+- **Minimum detectable effect (paired-seed spread), to gate every future
+  treatment claim:** recap 0.004 (tight — a >0.01 recap move is real), total
+  0.085 (need >~0.09), established 0.041, World Class total 0.029. The tiny
+  slices are noise floors and cannot select from a single pair: sparse spread
+  0.90 (nine rows), zero spread 0.65 (eight rows, both carry the dev2 anchor
+  defect). Any V10 gain smaller than the relevant spread is not shippable.
+- Both seeds show the OC-vs-WC split the dev3 contract targets: World Class
+  validation total ~0.86 vs Open Class ~1.6 (nearly 2x), driven by anchoring
+  OC rows to World Class curve values. dev3s
+
+### 2026-07-17 — dev2 clean-control pair complete: variance yardstick
+
+- Both dev2 seeds finished under fixed 10/40 curriculum. seed 43 composite
+  0.5217 (val recap 0.3711 / total 1.0224); seed 42 composite 0.5499 (0.3746 /
+  1.1069). Two-seed means: recap 0.3729, total 1.0647, established 0.887.
+- **Minimum detectable effect (paired-seed spread), to gate every future
+  treatment claim:** recap 0.004 (tight — a >0.01 recap move is real), total
+  0.085 (need >~0.09), established 0.041, World Class total 0.029. The tiny
+  slices are noise floors and cannot select from a single pair: sparse spread
+  0.90 (nine rows), zero spread 0.65 (eight rows, both carry the dev2 anchor
+  defect). Any V10 gain smaller than the relevant spread is not shippable.
+- Both seeds show the OC-vs-WC split the dev3 contract targets: World Class
+  validation total ~0.86 vs Open Class ~1.6 (nearly 2x), driven by anchoring
+  OC rows to World Class curve values. dev3's division-aware curves + zero
+  anchor fallback are the direct fix; the dev3 pair is training now.
+- **Checkpoint-soup caveat (both-seed check):** the best_total+best_composite
+  soup only has diversity to average when those heads land at different epochs.
+  seed 43 (total@36, composite@45) diverged and the soup helped; seed 42 had
+  best_total==best_composite==epoch 68, so that specific soup is a no-op (safe
+  but uninformative). A defensible soup must average genuinely distinct
+  checkpoints (e.g. best_phase_b vs best_composite); adopt only the variant
+  that helps or is neutral across both seeds on frozen validation.
