@@ -215,6 +215,7 @@ function SharedBallotPage() {
                         : undefined
                     }
                     logoClassName="size-8 sm:size-8"
+                    logoWidth={32}
                     className="min-w-0 flex-1 font-medium"
                   />
                   {pick ? (

@@ -509,6 +509,7 @@ function JudgeProfilePage() {
                             logo={corpsLogoSource(g)}
                             className="font-semibold"
                             logoClassName="size-7 sm:size-8"
+                            logoWidth={32}
                           />
                           <span className="ml-auto shrink-0 text-sm text-text-secondary">
                             {g.entries.length} score{g.entries.length !== 1 ? 's' : ''}

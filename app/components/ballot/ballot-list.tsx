@@ -105,6 +105,9 @@ function BallotRow({
           corps_logo_dark_url: corps.corpsLogoDarkUrl ?? null,
         })}
         logoClassName="size-8 sm:size-8"
+        // Match the fetched variant to the 32px tile — the default 24 (+48 @2x)
+        // upscales on retina screens and renders fuzzy.
+        logoWidth={32}
         className="min-w-0 flex-1 font-medium"
       />
       {delta !== 0 ? (
