@@ -81,7 +81,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     featureProfile: "v10-field-pace-p1-pending",
     mlTable: "ml_sequence_rows_v10_field_pace",
     expectedTrainableParameters: 1_037_207,
-    runnable: false,
+    runnable: true,
     blockedReason: treatmentBlockedReason,
     args: [...exactSizeArgs, ...final2RegimenArgs],
   },
@@ -92,7 +92,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     featureProfile: "v10-thin-history-p2-p3-dev1",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_034_015,
-    runnable: false,
+    runnable: true,
     blockedReason: treatmentBlockedReason,
     args: [
       ...exactSizeArgs,
@@ -109,7 +109,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     featureProfile: "v10-support-aware-identity-dev3",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_034_015,
-    runnable: false,
+    runnable: true,
     blockedReason: treatmentBlockedReason,
     args: [
       ...exactSizeArgs,
@@ -125,7 +125,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_962_558,
-    runnable: false,
+    runnable: true,
     blockedReason: treatmentBlockedReason,
     args: [...scaledArgs, ...final2RegimenArgs],
   },
@@ -136,7 +136,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_034_015,
-    runnable: false,
+    runnable: true,
     blockedReason: treatmentBlockedReason,
     args: [
       ...exactSizeArgs,
@@ -153,7 +153,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_034_015,
-    runnable: false,
+    runnable: true,
     blockedReason: treatmentBlockedReason,
     args: [
       ...exactSizeArgs,
@@ -170,7 +170,7 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_034_015,
-    runnable: false,
+    runnable: true,
     blockedReason: treatmentBlockedReason,
     // Aligns the training objective with the checkpoint selector: the frozen
     // regimen trains phase B with the total-score loss off while the
