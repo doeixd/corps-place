@@ -23,6 +23,7 @@
     "test:v10-artifacts": "tsx scripts/testV10Artifacts.ts",
     "test:v10-temporal": "tsx scripts/testV10TemporalFeatures.ts",
     "test:v10-field-pace": "tsx scripts/testV10FieldPace.ts",
+    "test:v10-identity-support": "tsx scripts/testV10IdentitySupport.ts",
     "test:v10-sequences": "tsx scripts/testV10SequenceContract.ts",
     "check": "tsc --noEmit -p tsconfig.json",
     "replay:v10-baseline": "tsx scripts/replayFinal2Baseline.ts",

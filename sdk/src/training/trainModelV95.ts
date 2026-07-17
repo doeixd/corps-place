@@ -66,6 +66,13 @@ import {
   splitValidationRows,
 } from "./v95Evaluation.js";
 import { snapshotV95TrainingSource } from "./v95TrainingSource.js";
+import {
+  loadV10IdentitySupport,
+  supportAugmentationEnabled,
+  supportAdjustedDropout,
+  supportResidualGate,
+  temporalIdentityTrust,
+} from "./v10IdentitySupport.js";
 
 const DB_PATH = "./dci-relational.db";
 const MODEL_DIR = "./models/v95_final2_reconstruction";
@@ -75,6 +82,8 @@ const CORPS_INDEX_PATH = "./src/training/corpsIndexMap.json";
 let JUDGE_COUNT = 245;
 let CORPS_COUNT = 709;
 let SHOW_COUNT = 349;
+let SUPPORT_AWARE_IDENTITY = false;
+let SUPPORT_DROPOUT_STRENGTH = 0.6;
 const FINAL2_JUDGE_MAP_SHA256 = "1c95f7000798a858dd7b9e96864a2c2926d3bfc2fbccf24b44745d49a1c6596f";
 const FINAL2_CORPS_MAP_SHA256 = "99de63cc614f6965c64d229450bd1ebd663efdb02b4213281973f5f193ea3f3c";
 const CAPTIONS = ["GE1", "GE2", "VP", "VA", "CG", "MB", "MA", "MP"] as const;
@@ -893,6 +902,9 @@ type DataRow = {
   showKey: string;
   globalBaseline: number[];
   trendSlopes: number[];
+  corpsSupportTrust: number;
+  judgeSupportTrust: number[];
+  showSupportTrust: number;
 };
 
 
@@ -1134,10 +1146,25 @@ function buildDataRows(rows: Array<{ x_sequence_json: string; x_static_json: str
         showKey,
         globalBaseline: [],
         trendSlopes: [],
+        corpsSupportTrust: 0,
+        judgeSupportTrust: judgeIndices.map(() => 0),
+        showSupportTrust: 0,
       });
     }
   }
 
+  const temporalSupport = temporalIdentityTrust(dataRows.map((row) => ({
+    date: row.date,
+    season: row.season,
+    corpsKey: row.corpsKey,
+    judgeIndices: row.judgeIndices,
+    showIndex: row.agnosticShowId,
+  })));
+  temporalSupport.forEach((support, index) => {
+    dataRows[index]!.corpsSupportTrust = support.corpsTrust;
+    dataRows[index]!.judgeSupportTrust = support.judgeTrust;
+    dataRows[index]!.showSupportTrust = support.showTrust;
+  });
   return dataRows;
 }
 
@@ -1258,7 +1285,7 @@ function normalizeValue(value: number, meanValue: number, stdValue: number) {
 }
 
 type Sample = {
-  xs: [number[][], number[], number[], number[], number, number[], number, number, number];
+  xs: [number[][], number[], number[], number[], number, number[], number, number, number, number, number];
   ys: number[];
   meta: {
     season: string;
@@ -1276,6 +1303,9 @@ type Sample = {
     historyTruncated: boolean;
     sameSeasonHistoryCount: number;
     thinBaselineBlended: boolean;
+    corpsSupportTrust: number;
+    judgeSupportTrust: number;
+    showSupportTrust: number;
     forecastContextHidden: boolean;
     lineupContextHidden: boolean;
     seasonDebut: boolean;
@@ -1601,7 +1631,15 @@ function buildSamples(
     }
 
 
-    const corpsId = rng() < identityDropoutRate ? UNK_CORPS_ID : row.corpsId;
+    const corpsTrust = SUPPORT_AWARE_IDENTITY ? row.corpsSupportTrust : 1;
+    const applySupportAugmentation = supportAugmentationEnabled(
+      SUPPORT_AWARE_IDENTITY,
+      identityDropoutRate,
+    );
+    const effectiveIdentityDropout = applySupportAugmentation
+      ? supportAdjustedDropout(identityDropoutRate, corpsTrust, SUPPORT_DROPOUT_STRENGTH)
+      : identityDropoutRate;
+    const corpsId = rng() < effectiveIdentityDropout ? UNK_CORPS_ID : row.corpsId;
     const showId = (() => {
       const existing = showIdMap.get(row.showKey);
       if (existing !== undefined) return existing;
@@ -1610,8 +1648,33 @@ function buildSamples(
       return next;
     })();
 
-    const agnosticShowId = hideForecastContext || rng() < 0.2 ? 0 : row.agnosticShowId;
-    const judgeIndices = hideJudges ? new Array(CAPTION_COUNT).fill(0) : row.judgeIndices;
+    const showTrust = SUPPORT_AWARE_IDENTITY ? row.showSupportTrust : 1;
+    const showDropout = applySupportAugmentation
+      ? supportAdjustedDropout(0.2, showTrust, SUPPORT_DROPOUT_STRENGTH)
+      : 0.2;
+    const agnosticShowId = hideForecastContext || rng() < showDropout ? 0 : row.agnosticShowId;
+    const judgeIndices = hideJudges
+      ? new Array(CAPTION_COUNT).fill(0)
+      : row.judgeIndices.map((index, slot) => {
+          if (!applySupportAugmentation || index === 0) return index;
+          const trust = row.judgeSupportTrust[slot] ?? 0;
+          const dropout = SUPPORT_DROPOUT_STRENGTH * (1 - trust) * 0.5;
+          return rng() < dropout ? 0 : index;
+        });
+    const retainedJudgeTrust = judgeIndices.flatMap((index, slot) =>
+      index > 0 ? [row.judgeSupportTrust[slot] ?? 0] : []
+    );
+    const judgeTrust = SUPPORT_AWARE_IDENTITY
+      ? retainedJudgeTrust.length
+        ? retainedJudgeTrust.reduce((sum, value) => sum + value, 0) / retainedJudgeTrust.length
+        : 0
+      : 1;
+    const corpsResidualGate = SUPPORT_AWARE_IDENTITY
+      ? supportResidualGate(corpsTrust, corpsId > 0)
+      : 1;
+    const judgeResidualGate = SUPPORT_AWARE_IDENTITY
+      ? supportResidualGate(judgeTrust, retainedJudgeTrust.length > 0)
+      : 1;
 
     samples.push({
       xs: [
@@ -1623,7 +1686,9 @@ function buildSamples(
         baselineNormVector,
         historyLen,
         showId,
-        agnosticShowId
+        agnosticShowId,
+        corpsResidualGate,
+        judgeResidualGate,
       ],
       ys: [...deltaTargets, ...recapValues, ...categoryTargets, normalizedTotal],
       meta: {
@@ -1642,6 +1707,9 @@ function buildSamples(
         historyTruncated: truncationCount !== null,
         sameSeasonHistoryCount: effectiveSameSeasonHistoryCount,
         thinBaselineBlended: thinBaselineApplied,
+        corpsSupportTrust: corpsTrust,
+        judgeSupportTrust: judgeTrust,
+        showSupportTrust: showTrust,
         forecastContextHidden: hideForecastContext,
         lineupContextHidden: hideLineupContext,
         seasonDebut: (staticFeatures[COLD_START_STATIC_OFFSET] ?? 0) >= 0.5,
@@ -1669,6 +1737,8 @@ function createDataset(samples: Sample[], batchSize: number, shuffle: boolean, s
       history_len: tf.tensor([sample.xs[6]], [1], "float32"),
       show_id: tf.tensor([sample.xs[7]], [1], "int32"),
       agnostic_show_id: tf.tensor([sample.xs[8]], [1], "int32"),
+      judge_bias_scale: tf.tensor([sample.xs[10]], [1], "float32"),
+      corps_scale: tf.tensor([sample.xs[9]], [1], "float32"),
     },
 
     ys: tf.tensor(sample.ys, undefined, "float32"),
@@ -1773,8 +1843,16 @@ function buildBatchTensors(batchSamples: Sample[], scales: { judgeBias: number, 
       history_len: tf.tensor2d(historyLenData, [batchSize, 1], "float32"),
       show_id: tf.tensor2d(showIdData, [batchSize, 1], "int32"),
       agnostic_show_id: tf.tensor2d(agnosticShowIdData, [batchSize, 1], "int32"),
-      judge_bias_scale: tf.fill([batchSize, 1], scales.judgeBias),
-      corps_scale: tf.fill([batchSize, 1], scales.corps),
+      judge_bias_scale: tf.tensor2d(
+        batchSamples.map((sample) => [scales.judgeBias * sample.xs[10]]),
+        [batchSize, 1],
+        "float32",
+      ),
+      corps_scale: tf.tensor2d(
+        batchSamples.map((sample) => [scales.corps * sample.xs[9]]),
+        [batchSize, 1],
+        "float32",
+      ),
     },
 
     ys: tf.tensor2d(ysData, [batchSize, TARGET_DIM], "float32"),
@@ -2004,6 +2082,15 @@ async function main() {
   JUDGE_COUNT = args.judgeCount;
   CORPS_COUNT = args.corpsCount;
   SHOW_COUNT = args.showCount;
+  SUPPORT_AWARE_IDENTITY = args.supportAwareIdentity;
+  SUPPORT_DROPOUT_STRENGTH = args.supportDropoutStrength;
+  if (!Number.isFinite(SUPPORT_DROPOUT_STRENGTH) || SUPPORT_DROPOUT_STRENGTH < 0 || SUPPORT_DROPOUT_STRENGTH > 1) {
+    throw new Error("--support-dropout-strength must be in [0,1]");
+  }
+  if (SUPPORT_AWARE_IDENTITY) {
+    if (!args.identitySupportPath) throw new Error("--support-aware-identity requires --identity-support");
+    loadV10IdentitySupport(args.identitySupportPath, args.judgeMapPath, args.showMapPath);
+  }
   if (args.lrSchedule !== "cosine" && args.lrSchedule !== "phase-aware") {
     throw new Error(`Unknown learning-rate schedule '${args.lrSchedule}'.`);
   }
@@ -2032,6 +2119,7 @@ async function main() {
     if (args.thinHistorySampleFraction !== 0 || args.thinHistoryTruncationRate !== 0 || args.thinHistoryBaselineBlend) {
       throw new Error("final2 reproduction forbids thin-history treatments");
     }
+    if (args.supportAwareIdentity) throw new Error("final2 reproduction forbids support-aware identity treatment");
     await verifyFinal2SourceDatabase(args.dbPath);
   }
   await tf.setBackend("tensorflow");
@@ -2726,6 +2814,13 @@ async function main() {
       truncated: epochSamples.filter((sample) => sample.meta.historyTruncated).length,
       blended: epochSamples.filter((sample) => sample.meta.thinBaselineBlended).length,
     };
+    const supportDiagnostics = {
+      corps_trust_mean: epochSamples.reduce((sum, sample) => sum + sample.meta.corpsSupportTrust, 0) / Math.max(1, epochSamples.length),
+      judge_trust_mean: epochSamples.reduce((sum, sample) => sum + sample.meta.judgeSupportTrust, 0) / Math.max(1, epochSamples.length),
+      show_trust_mean: epochSamples.reduce((sum, sample) => sum + sample.meta.showSupportTrust, 0) / Math.max(1, epochSamples.length),
+      corps_gate_mean: epochSamples.reduce((sum, sample) => sum + sample.xs[9], 0) / Math.max(1, epochSamples.length),
+      judge_gate_mean: epochSamples.reduce((sum, sample) => sum + sample.xs[10], 0) / Math.max(1, epochSamples.length),
+    };
 
     const currentWidthFloorWeight = scheduler.getWidthFloorWeight(epoch, args.widthFloorStart, args.widthFloorEnd);
     console.log(
@@ -2733,7 +2828,8 @@ async function main() {
       `(A_end=${scheduler.getPhaseAEnd()}, B_end=${scheduler.getPhaseBEnd()}, ` +
       `C_ramp=${args.curriculumPhaseCRamp}) Weights ${JSON.stringify(weights)}, ` +
       `Scales ${JSON.stringify(scales)}, SeqLen ${seqLen}, ID_Drop ${dropRate.toFixed(3)}, ` +
-      `WFW ${currentWidthFloorWeight.toFixed(3)}, Thin ${JSON.stringify(thinDiagnostics)} `,
+      `WFW ${currentWidthFloorWeight.toFixed(3)}, Thin ${JSON.stringify(thinDiagnostics)}, ` +
+      `Support ${JSON.stringify(supportDiagnostics)} `,
     );
 
     currentBaseLR = args.lrSchedule === "phase-aware"
@@ -3585,6 +3681,7 @@ async function main() {
       judge_index_map_sha256: hashFileIfExists(args.judgeMapPath),
       corps_index_map_sha256: hashFileIfExists(args.corpsMapPath),
       show_index_map_sha256: hashFileIfExists(args.showMapPath),
+      identity_support_sha256: hashFileIfExists(args.identitySupportPath),
       final2_judge_index_map_sha256: args.reproductionContract === "final2" ? FINAL2_JUDGE_MAP_SHA256 : null,
       final2_corps_index_map_sha256: args.reproductionContract === "final2" ? FINAL2_CORPS_MAP_SHA256 : null,
       embedding_input_dims: {
@@ -3602,6 +3699,11 @@ async function main() {
         truncation_rate: args.thinHistoryTruncationRate,
         prior_baseline_blend: args.thinHistoryBaselineBlend,
         prior_weights_for_show_1_2_3: [0.5, 0.3, 0.15],
+      },
+      support_aware_identity: {
+        enabled: args.supportAwareIdentity,
+        dropout_strength: args.supportDropoutStrength,
+        support_artifact: args.identitySupportPath || null,
       },
     },
     checkpoints,

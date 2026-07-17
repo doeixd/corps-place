@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { formatV95ModelCapacity, parseV95Args } from "../src/training/v95Config.js";
 import { getV10Profile, mergeV10Args, V10_PROFILES, v10DefaultArgs, V10_PROFILE_NAMES } from "../src/training/v10Config.js";
 
-assert.equal(V10_PROFILE_NAMES.length, 7);
+assert.equal(V10_PROFILE_NAMES.length, 8);
 for (const name of V10_PROFILE_NAMES) {
   const profile = getV10Profile(name);
   const args = parseV95Args(v10DefaultArgs(name));
@@ -57,6 +57,10 @@ assert.equal(thinHistory.thinHistorySampleFraction, 0.45);
 assert.equal(thinHistory.thinHistoryTruncationRate, 0.25);
 assert.equal(thinHistory.thinHistoryBaselineBlend, true);
 assert.equal(V10_PROFILES["thin-history"].expectedTrainableParameters, 1_034_259);
+const supportAware = parseV95Args(v10DefaultArgs("support-aware-identity"));
+assert.equal(supportAware.supportAwareIdentity, true);
+assert.equal(supportAware.supportDropoutStrength, 0.6);
+assert.match(supportAware.identitySupportPath, /v10\/dev1\/identitySupport\.json$/);
 
 const overridden = parseV95Args(mergeV10Args("scaled-control", ["--lr", "0.0006", "--seed", "42"], 42));
 assert.equal(overridden.learningRate, 0.0006);

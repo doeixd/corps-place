@@ -1472,9 +1472,11 @@ to choose among checkpoints.
   improvement must be called out when attributing the control result.
 - `identitySupport.json` records clean-snapshot appearance/show/season/date and
   panel support for every mapped corps, judge, and agnostic show, plus reviewed
-  corps-alias resolution. Use this evidence for deterministic low-support
-  identity-residual gating and support-aware dropout; a known but one-show
-  identity must not receive the same trust as a deeply observed identity.
+  corps-alias resolution. It is the vocabulary audit and packaged provenance,
+  not permission to expose lifetime counts to historical rows. Training must
+  reconstruct support strictly before each target date for deterministic
+  low-support identity-residual gating and support-aware dropout; a known but
+  one-show identity must not receive the same trust as a deeply observed one.
 - **Data-native embedding contract (V10 invariant).** Fresh map cardinalities are
   only the first step. Canonicalize reviewed aliases before assigning IDs, train
   every corps/judge/show embedding from scratch only on temporally valid rows in
@@ -1532,3 +1534,19 @@ to choose among checkpoints.
   V10 profile remains a `1,034,259`-parameter ablation, and a complete one-epoch
   graph/package smoke passed. Full training remains blocked until the clean-data
   control supplies the comparison baseline.
+- **Support-aware data-native identities, 2026-07-17.** The independent identity
+  treatment keeps the clean control's `1,034,259`-parameter graph, fresh
+  `214/56/301` embedding tables, and sole `unknown=0` fallback. For every target
+  row it now reconstructs corps, judge, and agnostic-show observations and season
+  support strictly before the target date, freezing every performance on one
+  date before updating state. Low-support identities receive stronger unknown
+  substitution; corps and judge residual branches are also deterministically
+  gated by their as-of evidence. The lifetime `identitySupport.json` is loaded
+  to validate/package the clean vocabulary but is not used as a historical
+  feature, preventing future appearances from leaking into validation. Tests pin
+  same-date freezing, unseen identity behavior, and invariance of earlier trust
+  when a future season is appended. A 64-row/one-epoch graph/package smoke passed
+  at exactly `1,034,259` parameters and emitted corps/judge/show trust
+  diagnostics (the early chronological smoke rows correctly had zero prior show
+  support). Its metrics are wiring evidence only; full comparison remains
+  blocked until the clean-data control completes and qualifies.

@@ -106,6 +106,9 @@ export const parseV95Args = (
     thinHistorySampleFraction: Number(get("--thin-history-sample-fraction", "0")),
     thinHistoryTruncationRate: Number(get("--thin-history-truncation-rate", "0")),
     thinHistoryBaselineBlend: get("--thin-history-baseline-blend", "false") === "true",
+    identitySupportPath: get("--identity-support", "") || "",
+    supportAwareIdentity: get("--support-aware-identity", "false") === "true",
+    supportDropoutStrength: Number(get("--support-dropout-strength", "0.6")),
   };
 };
 
