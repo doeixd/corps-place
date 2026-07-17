@@ -2090,3 +2090,18 @@ extra threads add contention once 5–6 jobs run) and any GPU path (none).
 
 Overnight policy: default to 5–6 concurrent, `--patience 35` on new runs, RAM
 and disk checked before each launch batch.
+
+### 2026-07-17 — identity-isolation result: agnostic beats stored on 2026
+
+Terminal dev3 seed-43 on the frozen 2026 cohort (161 rows), with the zero-anchor
+fallback: identity-AGNOSTIC outperforms stored-identity — recap 0.4334 vs
+0.4723, total 1.3140 vs 1.5441. On the matched-63 vs final2 production (2.041)
+both win (agnostic 1.4937 / stored 1.5331). Conclusion for suggestion #2: the
+win over final2 is the generalizable data/curve/anchor repair, NOT identity
+resolution — the corps/judge/show embeddings (fit on 2013-2025) are a net
+negative out-of-sample, adding noise on unknown/thin-history 2026 corps. This
+(a) strengthens the robustness claim, (b) directly motivates the support-aware
+identity treatment (gate identity by as-of evidence), and (c) suggests the
+production forecasting path should run identity-agnostic or evidence-gated, not
+raw stored embeddings, for future-season predictions. Full-cohort recap 0.4334
+agnostic already beats final2 agnostic 0.4930.
