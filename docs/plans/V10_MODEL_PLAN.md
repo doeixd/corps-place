@@ -1506,3 +1506,16 @@ to choose among checkpoints.
   `V95_FIXED_CURRICULUM_QUALIFICATION_REPORT.md` records the executable policy.
   This closes the reconstruction prerequisite and unblocks the clean-data V10
   control; it does not claim that fixed curriculum itself beats final2.
+- **Field-pace P1 implementation, 2026-07-17.** The independent field-pace
+  contract now adds four division-aware static features to the clean rows: field
+  level versus the clean reference total, a confidence-shrunk residual slope,
+  residual EMA, and evidence confidence. Every snapshot is computed from shows
+  strictly before the target date, freezes all corps in a division/date to one
+  value, uses a top-25 core, and shrinks early slopes toward earlier-season
+  division behavior. The temporal table retains prior observation/corps/date
+  counts and `max_source_date` for leakage audits. On the isolated
+  `v10-field-dev1.db`, all 7,317 rows pass same-date, first-date, dimensional,
+  provenance, builder-parity, and strict-date tests. The profile is `216` raw /
+  `224` total static features and its graph smoke produced exactly `1,037,451`
+  trainable parameters. This proves the ablation is runnable after the clean
+  control qualifies; its one-epoch smoke metrics are not quality evidence.

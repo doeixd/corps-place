@@ -12,13 +12,20 @@ import {
   V9_CAPTION_FINGERPRINT_START,
   V9_RAW_STATIC_DIM,
 } from "./training/v9FeatureModes.js";
-import { V10_FEATURE_SCHEMA } from "./training/v10FeatureSchema.js";
+import { V10_FEATURE_SCHEMA, V10_FIELD_PACE_FEATURE_SCHEMA } from "./training/v10FeatureSchema.js";
 
 const valueAfter = (flag: string) => {
   const idx = process.argv.indexOf(flag);
   return idx >= 0 ? process.argv[idx + 1] : undefined;
 };
 const cliDataContract = valueAfter("--data-contract") ?? "raw-v9";
+const cliV10FeatureProfile = valueAfter("--feature-profile") ?? "clean-control";
+if (cliDataContract === "clean-v10" && !["clean-control", "field-pace"].includes(cliV10FeatureProfile)) {
+  throw new Error(`Unsupported --feature-profile ${cliV10FeatureProfile}`);
+}
+const ACTIVE_V10_SCHEMA = cliV10FeatureProfile === "field-pace"
+  ? V10_FIELD_PACE_FEATURE_SCHEMA
+  : V10_FEATURE_SCHEMA;
 const v10ArtifactDir = valueAfter("--artifact-dir") ?? "./src/training/v10/dev1";
 const artifactPath = (v9Name: string, v10Name = v9Name) =>
   cliDataContract === "clean-v10" ? `${v10ArtifactDir}/${v10Name}` : `./src/training/${v9Name}`;
@@ -30,9 +37,13 @@ const JUDGE_INDEX_MAP = readJson<Record<string, number>>(artifactPath("judgeInde
 const CORPS_INDEX_MAP = readJson<Record<string, number>>(artifactPath("corpsIndexMap.json"));
 const SHOW_INDEX_MAP = readJson<Record<string, number>>(artifactPath("showIndexMap.json"));
 const V9_BUILDER_VERSION = "v9-subcaption-clean-2026-05-21";
-const V10_BUILDER_VERSION = "v10-clean-canonical-dev1-2026-07-16";
+const V10_BUILDER_VERSION = cliV10FeatureProfile === "field-pace"
+  ? "v10-field-pace-dev1-2026-07-17"
+  : "v10-clean-canonical-dev1-2026-07-16";
 const V9_TARGET_TABLE = "ml_sequence_rows_v9_subcaption";
-const V10_TARGET_TABLE = "ml_sequence_rows_v10_clean_control";
+const V10_TARGET_TABLE = cliV10FeatureProfile === "field-pace"
+  ? "ml_sequence_rows_v10_field_pace"
+  : "ml_sequence_rows_v10_clean_control";
 const MAP_VERSION = cliDataContract === "clean-v10" ? "v10-clean-artifacts-dev1" : "current-json-files";
 
 // Subcaption normalization helpers
@@ -105,10 +116,10 @@ const CAPTION_FEATURES = 4;
 const OPPONENT_TIMESTEP_FEATURES = 7 + 27; // 7 (existing) + 27 (opponent last-3 totals + per-caption stats)
 const COMPARATIVE_FEATURES = 10; // relative_total + relative_caption×8 + show_competitiveness
 const TIMESTEP_FEATURES = cliDataContract === "clean-v10"
-  ? V10_FEATURE_SCHEMA.sequenceDim
+  ? ACTIVE_V10_SCHEMA.sequenceDim
   : 7 + 11 + CAPTION_COUNT * CAPTION_FEATURES + OPPONENT_TIMESTEP_FEATURES + 4 + COMPARATIVE_FEATURES + 3; // 98 + 3 = 101
 const COLD_START_FEATURES = 10;
-const STATIC_FEATURES = cliDataContract === "clean-v10" ? V10_FEATURE_SCHEMA.rawStaticDim : V9_RAW_STATIC_DIM;
+const STATIC_FEATURES = cliDataContract === "clean-v10" ? ACTIVE_V10_SCHEMA.rawStaticDim : V9_RAW_STATIC_DIM;
 const BASE_STATIC_FEATURES = STATIC_FEATURES - V9_CAPTION_FINGERPRINT_DIM;
 
 const EMA_ALPHA = 0.3;
@@ -841,6 +852,15 @@ type V10TemporalCaption = {
   as_of_date: string;
 };
 
+type V10TemporalFieldPace = {
+  row_key: string;
+  field_level_vs_reference: number;
+  shrunk_residual_slope: number;
+  residual_ema: number;
+  confidence: number;
+  as_of_date: string;
+};
+
 const v10RowKey = (season: string, slug: string, division: string, corpsKey: string) =>
   `${season}|${slug}|${division}|${corpsKey}`;
 
@@ -855,7 +875,7 @@ type BuildV9SubcaptionOptions = {
   rebuildLoadedData?: boolean;
   asOfDate?: string;
   captionSource?: "raw-v9" | "clean-v10";
-  targetTable?: typeof V9_TARGET_TABLE | typeof V10_TARGET_TABLE;
+  targetTable?: string;
   builderVersion?: string;
   outputDbPath?: string;
 };
@@ -875,6 +895,9 @@ export const buildSequencesV9 = (
     yield* (sql.unsafe("CREATE TEMP VIEW v10_temporal_caption_features AS SELECT * FROM v10out.v10_temporal_caption_features"));
     yield* (sql.unsafe("CREATE TEMP VIEW v10_temporal_corps_history AS SELECT * FROM v10out.v10_temporal_corps_history"));
     yield* (sql.unsafe("CREATE TEMP VIEW v10_temporal_judge_elo AS SELECT * FROM v10out.v10_temporal_judge_elo"));
+    if (cliV10FeatureProfile === "field-pace") {
+      yield* (sql.unsafe("CREATE TEMP VIEW v10_temporal_field_pace AS SELECT * FROM v10out.v10_temporal_field_pace"));
+    }
   }
 
   yield* (sql.unsafe(`
@@ -955,6 +978,11 @@ export const buildSequencesV9 = (
     : [];
   const temporalCaptionMap = new Map<string, V10TemporalCaption>();
   for (const row of temporalCaptionRows) temporalCaptionMap.set(`${row.row_key}|${row.caption}`, row);
+  const temporalFieldPaceRows = captionSource === "clean-v10" && cliV10FeatureProfile === "field-pace"
+    ? yield* (sql<V10TemporalFieldPace>`SELECT row_key, field_level_vs_reference, shrunk_residual_slope, residual_ema, confidence, as_of_date FROM v10_temporal_field_pace`)
+    : [];
+  const temporalFieldPaceMap = new Map<string, V10TemporalFieldPace>();
+  for (const row of temporalFieldPaceRows) temporalFieldPaceMap.set(row.row_key, row);
   const temporalCaptionFor = (rowKey: string, caption: Caption) => {
     const row = temporalCaptionMap.get(`${rowKey}|${caption}`);
     if (captionSource === "clean-v10" && !row) throw new Error(`Missing V10 temporal caption feature ${rowKey}|${caption}`);
@@ -1906,6 +1934,19 @@ export const buildSequencesV9 = (
             division,
             season
           );
+          const targetRowKey = v10RowKey(season, targetShow.slug, division, corpsKey);
+          const fieldPace = temporalFieldPaceMap.get(targetRowKey);
+          if (captionSource === "clean-v10" && cliV10FeatureProfile === "field-pace" && !fieldPace) {
+            throw new Error(`Missing V10 temporal field-pace feature ${targetRowKey}`);
+          }
+          const fieldPaceFeatures = fieldPace
+            ? [
+                fieldPace.field_level_vs_reference / 10,
+                fieldPace.shrunk_residual_slope / 10,
+                fieldPace.residual_ema / 10,
+                fieldPace.confidence,
+              ]
+            : [];
 
           const x_static: number[] = [
             normalizeRank(prevRank),
@@ -1990,6 +2031,8 @@ export const buildSequencesV9 = (
             // Caption fingerprint features (33):
             // per caption: prior-season residual, 3-year residual, growth, volatility; then confidence.
             ...captionFingerprintFeatures,
+            // Strictly date-prior, division-aware field pace (field-pace profile only).
+            ...fieldPaceFeatures,
           ];
 
           if (x_static.length - captionFingerprintFeatures.length !== BASE_STATIC_FEATURES) {

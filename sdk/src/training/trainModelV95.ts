@@ -80,7 +80,13 @@ const CAPTIONS = ["GE1", "GE2", "VP", "VA", "CG", "MB", "MA", "MP"] as const;
 const CAPTION_COUNT = CAPTIONS.length;
 const SEQ_LEN = 15;
 const FEAT_DIM = 101;
-const RAW_STATIC_DIM = V9_RAW_STATIC_DIM;
+const rawStaticDimArgIndex = process.argv.indexOf("--raw-static-dim");
+const RAW_STATIC_DIM = rawStaticDimArgIndex >= 0
+  ? Number(process.argv[rawStaticDimArgIndex + 1])
+  : V9_RAW_STATIC_DIM;
+if (!Number.isInteger(RAW_STATIC_DIM) || RAW_STATIC_DIM < V9_RAW_STATIC_DIM) {
+  throw new Error(`Invalid --raw-static-dim ${process.argv[rawStaticDimArgIndex + 1] ?? RAW_STATIC_DIM}`);
+}
 
 const TREND_DIM = CAPTION_COUNT;
 const CONTEXT_DIM = 0;

@@ -1,0 +1,12 @@
+{
+  "id": "v10-field-pace-dev1",
+  "source_snapshot_sha256": "5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb",
+  "base_sequence_contract": "v10-sequence-contract-dev1",
+  "rows": 7317,
+  "temporal_contract_sha256": "b8bbdc09760040ff9ffb26290c90c2806291c4695a2649f839fad615d0f05437",
+  "field_provenance_sha256": "ea8376c6861bd53abe8ee9bc9664fd755a1f12e02c3a33eb9cb9d9063fab4803",
+  "field_sequence_sha256": "1e740d6672e08e610bbec109896e21977be02c6cddf7b9d1159a77cf9cc14cad",
+  "raw_static_dim": 216,
+  "total_static_dim": 224,
+  "trainable_parameters": 1037451
+}

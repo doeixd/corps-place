@@ -1,6 +1,6 @@
 
 import { readFileSync } from "node:fs";
-import { V10_FEATURE_SCHEMA } from "../src/training/v10FeatureSchema.js";
+import { V10_FEATURE_SCHEMA, V10_FIELD_PACE_FEATURE_SCHEMA } from "../src/training/v10FeatureSchema.js";
 
 const artifactDirIndex = process.argv.indexOf("--artifact-dir");
 const directory = artifactDirIndex >= 0 ? process.argv[artifactDirIndex + 1]! : "./src/training/v10/dev1";
@@ -22,5 +22,8 @@ for (let rank = 1; rank <= 25; rank++) for (let bucket = 0; bucket <= 100; bucke
   if (!cell || V10_FEATURE_SCHEMA.captions.some((caption) => !Number.isFinite(cell[caption]))) {
     throw new Error(`Incomplete curve cell ${rank}-${bucket}`);
   }
+}
+if (V10_FIELD_PACE_FEATURE_SCHEMA.rawStaticDim !== 216 || V10_FIELD_PACE_FEATURE_SCHEMA.totalStaticDim !== 224) {
+  throw new Error(`Unexpected field-pace schema dimensions: ${JSON.stringify(V10_FIELD_PACE_FEATURE_SCHEMA)}`);
 }
 process.stdout.write(`V10 artifacts verified: sequence=${V10_FEATURE_SCHEMA.sequenceDim}, raw_static=${V10_FEATURE_SCHEMA.rawStaticDim}, total_static=${V10_FEATURE_SCHEMA.totalStaticDim}\n`);

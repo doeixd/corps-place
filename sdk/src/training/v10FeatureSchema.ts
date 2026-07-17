@@ -48,6 +48,18 @@ export const V10_STATIC_BLOCKS: readonly V10FeatureBlock[] = [
   { name: "caption_fingerprint", features: [...perCaptionStats("fingerprint", ["prior_season_residual", "three_year_residual", "growth", "volatility"]), "fingerprint_confidence"], normalization: "residual points with bounded confidence", availability: "identity-known" },
 ] as const;
 
+export const V10_FIELD_PACE_BLOCK: V10FeatureBlock = {
+  name: "field_pace",
+  features: [
+    "field_level_vs_reference",
+    "field_shrunk_residual_slope",
+    "field_residual_ema",
+    "field_pace_confidence",
+  ],
+  normalization: "level/slope/EMA divided by 10 total points; confidence in [0,1]",
+  availability: "strictly-prior-history",
+};
+
 export const V10_TREND_FEATURES = perCaption("sequence_trend");
 export const V10_FEATURE_SCHEMA = {
   version: "v10-feature-schema-clean-control-dev1",
@@ -65,7 +77,17 @@ export const V10_FEATURE_SCHEMA = {
   targetRule: "Every history-derived feature must use observations with competition_date strictly before the target show.",
 } as const;
 
+export const V10_FIELD_PACE_FEATURE_SCHEMA = {
+  ...V10_FEATURE_SCHEMA,
+  version: "v10-feature-schema-field-pace-dev1",
+  rawStaticBlocks: [...V10_STATIC_BLOCKS, V10_FIELD_PACE_BLOCK],
+  rawStaticDim: V10_FEATURE_SCHEMA.rawStaticDim + V10_FIELD_PACE_BLOCK.features.length,
+  totalStaticDim: V10_FEATURE_SCHEMA.totalStaticDim + V10_FIELD_PACE_BLOCK.features.length,
+} as const;
+
 if (V10_FEATURE_SCHEMA.sequenceDim !== 101 || V10_FEATURE_SCHEMA.rawStaticDim !== 212 || V10_FEATURE_SCHEMA.totalStaticDim !== 220) {
   throw new Error(`Invalid V10 clean-control feature dimensions: ${JSON.stringify({ sequence: V10_FEATURE_SCHEMA.sequenceDim, rawStatic: V10_FEATURE_SCHEMA.rawStaticDim, totalStatic: V10_FEATURE_SCHEMA.totalStaticDim })}`);
 }
-
+if (V10_FIELD_PACE_FEATURE_SCHEMA.rawStaticDim !== 216 || V10_FIELD_PACE_FEATURE_SCHEMA.totalStaticDim !== 224) {
+  throw new Error(`Invalid V10 field-pace dimensions: ${JSON.stringify({ rawStatic: V10_FIELD_PACE_FEATURE_SCHEMA.rawStaticDim, totalStatic: V10_FIELD_PACE_FEATURE_SCHEMA.totalStaticDim })}`);
+}

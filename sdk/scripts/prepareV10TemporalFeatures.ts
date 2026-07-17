@@ -9,7 +9,7 @@ type Caption = (typeof CAPTIONS)[number];
 type Performance = {
   row_key: string; season: string; competition_slug: string; competition_date: string;
   model_corps_key: string; division_name: string; computed_rank: number; rank_bucket: number;
-  percent_bucket: number; total_score: number;
+  percent_through: number; percent_bucket: number; total_score: number;
 } & Record<Caption, number>;
 type Assignment = { competition_slug: string; caption: Caption; judge_id: string };
 type EloState = { elo: number; count: number };
@@ -29,7 +29,7 @@ const sqlite = <T>(db: string, sql: string) => {
 };
 const performances = sqlite<Performance>(dbPath, `
   SELECT row_key, season, competition_slug, competition_date, model_corps_key, division_name,
-    computed_rank, rank_bucket, percent_bucket, total_score, GE1, GE2, VP, VA, CG, MB, MA, MP
+    computed_rank, rank_bucket, percent_through, percent_bucket, total_score, GE1, GE2, VP, VA, CG, MB, MA, MP
   FROM v10_training_performances ORDER BY competition_date, competition_slug, division_name, computed_rank, model_corps_key
 `);
 const assignments = sqlite<Assignment>(dbPath, `
@@ -64,6 +64,12 @@ const judgeElo = new Map<string, EloState>();
 const temporalRows: string[] = [];
 const historyRows: string[] = [];
 const judgeRows = new Map<string, string>();
+type FieldObservation = {
+  season: string; division: string; date: string; corps: string;
+  rank: number; percentThrough: number; residual: number;
+};
+const fieldObservations: FieldObservation[] = [];
+const fieldPaceRows: string[] = [];
 const quote = (value: string) => `'${value.replaceAll("'", "''")}'`;
 const num = (value: number) => Number.isFinite(value) ? value.toFixed(8) : "0";
 const mean = (values: number[]) => values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
@@ -71,6 +77,66 @@ const std = (values: number[]) => {
   if (values.length < 2) return 0;
   const avg = mean(values);
   return Math.sqrt(values.reduce((sum, value) => sum + (value - avg) ** 2, 0) / (values.length - 1));
+};
+const slope = (rows: FieldObservation[]) => {
+  if (rows.length < 2) return 0;
+  const xs = rows.map((row) => row.percentThrough / 100);
+  const ys = rows.map((row) => row.residual);
+  const xMean = mean(xs);
+  const yMean = mean(ys);
+  const denominator = xs.reduce((sum, value) => sum + (value - xMean) ** 2, 0);
+  return denominator > 1e-9
+    ? rows.reduce((sum, _row, index) => sum + (xs[index]! - xMean) * (ys[index]! - yMean), 0) / denominator
+    : 0;
+};
+const referenceTotal = (row: Performance) => {
+  const baselines = Object.fromEntries(CAPTIONS.map((caption) =>
+    [caption, curveBaseline(row.rank_bucket, row.percent_bucket, caption)]
+  )) as Record<Caption, number>;
+  return baselines.GE1 + baselines.GE2 +
+    (baselines.VP + baselines.VA + baselines.CG + baselines.MB + baselines.MA + baselines.MP) / 2;
+};
+const fieldSnapshot = (row: Performance) => {
+  const current = fieldObservations.filter((observation) =>
+    observation.season === row.season && observation.division === row.division_name && observation.rank <= 25
+  );
+  const latestByCorps = new Map<string, FieldObservation>();
+  for (const observation of current) latestByCorps.set(observation.corps, observation);
+  const latest = [...latestByCorps.values()];
+  const dates = new Set(current.map((observation) => observation.date));
+  const level = mean(latest.map((observation) => observation.residual));
+  const rawSlope = slope(current);
+  const historicalBySeason = new Map<string, FieldObservation[]>();
+  for (const observation of fieldObservations) {
+    if (observation.division !== row.division_name || Number(observation.season) >= Number(row.season)) continue;
+    const group = historicalBySeason.get(observation.season) ?? [];
+    group.push(observation);
+    historicalBySeason.set(observation.season, group);
+  }
+  const historicalSlopes = [...historicalBySeason.values()]
+    .filter((group) => group.length >= 4 && new Set(group.map((observation) => observation.date)).size >= 2)
+    .map(slope);
+  const historicalSlope = mean(historicalSlopes);
+  const confidence = Math.min(1, latest.length / 12) * Math.min(1, dates.size / 6);
+  const shrunkSlope = confidence * rawSlope + (1 - confidence) * historicalSlope;
+  let ema = 0;
+  for (const [index, observation] of current.entries()) {
+    ema = index === 0 ? observation.residual : 0.2 * observation.residual + 0.8 * ema;
+  }
+  const sourceDates = fieldObservations
+    .filter((observation) => observation.division === row.division_name && Number(observation.season) <= Number(row.season))
+    .map((observation) => observation.date)
+    .sort();
+  return {
+    level,
+    shrunkSlope,
+    ema: current.length ? ema : 0,
+    confidence,
+    priorObservationCount: current.length,
+    priorCorpsCount: latest.length,
+    priorShowDateCount: dates.size,
+    maxSourceDate: sourceDates.at(-1),
+  };
 };
 const curveBaseline = (rank: number, bucket: number, caption: Caption) => {
   const exact = curve.get(`${rank}|${bucket}|${caption}`);
@@ -92,7 +158,11 @@ const eloKey = (season: string, division: string, identity: string, caption: Cap
 const getElo = (map: Map<string, EloState>, key: string) => map.get(key) ?? { elo: 1500, count: 0 };
 
 for (const [date, dateRows] of groupedByDate) {
+  const dateReferenceTotals = new Map<string, number>();
   for (const row of dateRows) {
+    dateReferenceTotals.set(row.row_key, referenceTotal(row));
+    const field = fieldSnapshot(row);
+    fieldPaceRows.push(`(${quote(row.row_key)},${num(field.level)},${num(field.shrunkSlope)},${num(field.ema)},${num(field.confidence)},${field.priorObservationCount},${field.priorCorpsCount},${field.priorShowDateCount},${field.maxSourceDate ? quote(field.maxSourceDate) : "NULL"},${quote(date)})`);
     const pastFinals = [...latestBySeason.values()].filter((past) =>
       past.model_corps_key === row.model_corps_key &&
       past.division_name === row.division_name &&
@@ -149,6 +219,15 @@ for (const [date, dateRows] of groupedByDate) {
         corpsElo.set(cKey, corps); judgeElo.set(jKey, judge);
       }
     }
+    fieldObservations.push({
+      season: row.season,
+      division: row.division_name,
+      date,
+      corps: row.model_corps_key,
+      rank: row.computed_rank,
+      percentThrough: row.percent_through,
+      residual: row.total_score - (dateReferenceTotals.get(row.row_key) ?? row.total_score),
+    });
   }
 }
 
@@ -158,13 +237,16 @@ const statements: string[] = [
   "DROP TABLE IF EXISTS v10_temporal_caption_features;",
   "DROP TABLE IF EXISTS v10_temporal_corps_history;",
   "DROP TABLE IF EXISTS v10_temporal_judge_elo;",
+  "DROP TABLE IF EXISTS v10_temporal_field_pace;",
   "CREATE TABLE v10_temporal_caption_features(row_key TEXT NOT NULL, caption TEXT NOT NULL, reference_baseline REAL NOT NULL, prior_range_min REAL NOT NULL, prior_range_max REAL NOT NULL, corps_elo_before REAL NOT NULL, as_of_date TEXT NOT NULL, PRIMARY KEY(row_key,caption));",
   "CREATE TABLE v10_temporal_corps_history(row_key TEXT PRIMARY KEY, years_in_world_class INTEGER NOT NULL, historical_mean_rank REAL NOT NULL, historical_std_rank REAL NOT NULL, historical_best_rank REAL NOT NULL, best_rank_recency REAL NOT NULL, made_finals_rate REAL NOT NULL, first_season INTEGER NOT NULL, previous_season_rank REAL NOT NULL, last_season_final_score REAL NOT NULL, last_season_final_date TEXT NOT NULL);",
   "CREATE TABLE v10_temporal_judge_elo(competition_slug TEXT NOT NULL, division_name TEXT NOT NULL, caption TEXT NOT NULL, judge_id TEXT NOT NULL, elo_before REAL NOT NULL, as_of_date TEXT NOT NULL, PRIMARY KEY(competition_slug,division_name,caption,judge_id));",
+  "CREATE TABLE v10_temporal_field_pace(row_key TEXT PRIMARY KEY, field_level_vs_reference REAL NOT NULL, shrunk_residual_slope REAL NOT NULL, residual_ema REAL NOT NULL, confidence REAL NOT NULL, prior_observation_count INTEGER NOT NULL, prior_corps_count INTEGER NOT NULL, prior_show_date_count INTEGER NOT NULL, max_source_date TEXT, as_of_date TEXT NOT NULL);",
 ];
 for (const chunk of chunks(temporalRows)) statements.push(`INSERT INTO v10_temporal_caption_features VALUES ${chunk.join(",")};`);
 for (const chunk of chunks(historyRows)) statements.push(`INSERT INTO v10_temporal_corps_history VALUES ${chunk.join(",")};`);
 for (const chunk of chunks([...judgeRows.values()])) statements.push(`INSERT INTO v10_temporal_judge_elo VALUES ${chunk.join(",")};`);
+for (const chunk of chunks(fieldPaceRows)) statements.push(`INSERT INTO v10_temporal_field_pace VALUES ${chunk.join(",")};`);
 statements.push(
   "CREATE INDEX v10_temporal_judge_show ON v10_temporal_judge_elo(competition_slug,division_name);",
   `INSERT OR REPLACE INTO v10_data_contract_metadata VALUES ('temporal_feature_contract','strict-date-before-target-dev1');`,
@@ -175,10 +257,13 @@ if (write.status !== 0) throw new Error(write.stderr || `sqlite3 write exited ${
 const counts = sqlite<Record<string, number>>(dbPath, `SELECT
   (SELECT COUNT(*) FROM v10_temporal_caption_features) AS caption_features,
   (SELECT COUNT(*) FROM v10_temporal_corps_history) AS corps_history,
-  (SELECT COUNT(*) FROM v10_temporal_judge_elo) AS judge_elo`)[0]!;
-if (counts.caption_features !== performances.length * CAPTIONS.length || counts.corps_history !== performances.length) {
+  (SELECT COUNT(*) FROM v10_temporal_judge_elo) AS judge_elo,
+  (SELECT COUNT(*) FROM v10_temporal_field_pace) AS field_pace`)[0]!;
+if (counts.caption_features !== performances.length * CAPTIONS.length || counts.corps_history !== performances.length || counts.field_pace !== performances.length) {
   throw new Error(`Temporal feature count mismatch: ${JSON.stringify(counts)}`);
 }
 const identity = sqlite<{ line: string }>(dbPath, `SELECT row_key || '|' || caption || '|' || printf('%.8f',reference_baseline) || '|' || printf('%.8f',corps_elo_before) AS line FROM v10_temporal_caption_features ORDER BY row_key,caption`)
   .map((row) => row.line).join("\n");
-process.stdout.write(`${JSON.stringify({ contract: "strict-date-before-target-dev1", rows: performances.length, counts, sha256: createHash("sha256").update(identity).digest("hex") }, null, 2)}\n`);
+const fieldIdentity = sqlite<{ line: string }>(dbPath, `SELECT row_key || '|' || printf('%.8f',field_level_vs_reference) || '|' || printf('%.8f',shrunk_residual_slope) || '|' || printf('%.8f',residual_ema) || '|' || printf('%.8f',confidence) AS line FROM v10_temporal_field_pace ORDER BY row_key`)
+  .map((row) => row.line).join("\n");
+process.stdout.write(`${JSON.stringify({ contract: "strict-date-before-target-dev1", rows: performances.length, counts, sha256: createHash("sha256").update(`${identity}\n--field-pace--\n${fieldIdentity}`).digest("hex") }, null, 2)}\n`);

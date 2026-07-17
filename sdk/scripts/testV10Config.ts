@@ -27,6 +27,7 @@ assert.equal(control.sequenceTransitionEpochs, 0);
 assert.equal(control.judgeCount, 214);
 assert.equal(control.corpsCount, 56);
 assert.equal(control.showCount, 301);
+assert.equal(control.rawStaticDim, 212);
 assert.match(control.judgeMapPath, /v10\/dev1\/judgeIndexMap\.json$/);
 assert.match(control.referenceCurvesPath, /v10\/dev1\/referenceCurves\.json$/);
 assert.equal(V10_PROFILES["clean-data-control"].expectedTrainableParameters, 1_034_259);
@@ -47,6 +48,9 @@ assert.equal(combined.learningRate, 0.00065);
 assert.equal(combined.lrSchedule, "phase-aware");
 assert.equal(combined.sequenceTransitionEpochs, 4);
 assert.equal(V10_PROFILES["combined-candidate"].expectedTrainableParameters, null);
+const fieldPace = parseV95Args(v10DefaultArgs("field-pace"));
+assert.equal(fieldPace.rawStaticDim, 216);
+assert.equal(V10_PROFILES["field-pace"].expectedTrainableParameters, 1_037_451);
 
 const overridden = parseV95Args(mergeV10Args("scaled-control", ["--lr", "0.0006", "--seed", "42"], 42));
 assert.equal(overridden.learningRate, 0.0006);

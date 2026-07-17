@@ -11,6 +11,7 @@ const coreFiles = [
   "package.json",
   "package-lock.json",
   "tsconfig.json",
+  "src/buildMlSequencesV9Subcaption.ts",
   "src/training/trainModelV95.ts",
   "src/training/trainModelV10Final.ts",
   "src/training/v10Config.ts",
@@ -25,6 +26,7 @@ const coreFiles = [
   "src/training/baselines/v10-source-2026-07-16.json",
   "src/training/baselines/v10-training-performances-dev1.json",
   "src/training/baselines/v10-sequences-dev1.json",
+  "src/training/baselines/v10-field-pace-dev1.json",
   "src/training/v95TrainingSource.ts",
   "src/training/v95Config.ts",
   "src/training/v95Curriculum.ts",
@@ -43,6 +45,7 @@ const coreFiles = [
   "scripts/generateV10Artifacts.ts",
   "scripts/testV10TemporalFeatures.ts",
   "scripts/testV10SequenceContract.ts",
+  "scripts/testV10FieldPace.ts",
 ] as const;
 
 const runScripts = () => fs.readdirSync(path.join(sdkRoot, "scripts"))

@@ -14,6 +14,7 @@ export const parseV95Args = (
     judgeCount: Number(get("--judge-count", "245")),
     corpsCount: Number(get("--corps-count", "709")),
     showCount: Number(get("--show-count", "349")),
+    rawStaticDim: Number(get("--raw-static-dim", "212")),
     judgeMapPath: get("--judge-map", "./src/training/judgeIndexMap.json") || "./src/training/judgeIndexMap.json",
     corpsMapPath: get("--corps-map", "./src/training/corpsIndexMap.json") || "./src/training/corpsIndexMap.json",
     showMapPath: get("--show-map", "./src/training/showIndexMap.json") || "./src/training/showIndexMap.json",
