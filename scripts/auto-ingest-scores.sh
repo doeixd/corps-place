@@ -207,6 +207,20 @@ PY
 if [ "$pending" = "__GATE_ERR__" ]; then
   echo "[auto-ingest $(ts)] gate error — scraping anyway (fail-open)."
 elif [ -z "$pending" ]; then
+  # Stranded-publish safety net: scores ingested by a run that died before
+  # publishing must still go live even after the show's window closes. Publish
+  # only (no scrape/notify — the window's gone); nightly full emit covers the rest.
+  _pub_state="/data/corps-place/.last-published-score-count"
+  _cur="$(count_scores)"
+  _last="$(cat "$_pub_state" 2>/dev/null || echo 0)"
+  case "$_last" in ''|*[!0-9]*) _last=0 ;; esac
+  if [ "$_cur" -gt "$_last" ]; then
+    echo "[auto-ingest $(ts)] idle window but $((_cur - _last)) unpublished score(s) — fast-publishing."
+    if SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2048" \
+         bash "$repo_root/scripts/refresh-prod-read-model.sh" --only events,recaps,home,rankings --seed-active 2>&1 | sed 's/^/    /'; then
+      printf '%s' "$_cur" > "$_pub_state"
+    fi
+  fi
   echo "[auto-ingest $(ts)] no show in its post-show scoring window — skipping."
   write_report idle
   exit 0
@@ -274,8 +288,18 @@ printf '%s\n' "$out" | tail -6
 after="$(count_scores)"
 echo "[auto-ingest $(ts)] scores after=$after (delta=$((after - before)))"
 
-if [ "$after" -gt "$before" ]; then
-  echo "[auto-ingest $(ts)] new scores landed (delta=$((after - before))) — fast-publishing, then backfill/forecast + full publish…"
+# Publish is judged against the LAST PUBLISHED count, not this run's delta —
+# self-healing: if a prior run ingested scores but died before publishing
+# (2026-07-17: lingering-process kill stranded Central Texas in the DB with no
+# publish/notify), the NEXT tick sees published < after and finishes the job.
+# The state file is written only after a successful fast publish, so a failed
+# publish also retries. Durable path — survives reboots, unlike /tmp.
+PUB_STATE="/data/corps-place/.last-published-score-count"
+last_published="$(cat "$PUB_STATE" 2>/dev/null || echo 0)"
+case "$last_published" in ''|*[!0-9]*) last_published=0 ;; esac
+
+if [ "$after" -gt "$last_published" ]; then
+  echo "[auto-ingest $(ts)] unpublished scores present (delta this run=$((after - before)), unpublished=$((after - last_published))) — fast-publishing, then backfill/forecast + full publish…"
 
   # (1) FAST PUBLISH — get the raw scores live ASAP. A seeded incremental emit
   # rebuilds only the light sections (events/recaps/home/rankings, ~30s) from the
@@ -287,6 +311,7 @@ if [ "$after" -gt "$before" ]; then
   if SKIP_MEDIA_SYNC=1 NODE_OPTIONS="--max-old-space-size=2048" \
        bash "$repo_root/scripts/refresh-prod-read-model.sh" --only events,recaps,home,rankings --seed-active 2>&1 | sed 's/^/    /'; then
     echo "[auto-ingest $(ts)] scores live in ~5s — corps/predictions to follow."
+    printf '%s' "$after" > "$PUB_STATE"
   else
     echo "[auto-ingest $(ts)] fast publish FAILED (non-fatal; full emit still runs)"
     errors="$errors fast-publish-failed"
