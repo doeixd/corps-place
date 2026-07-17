@@ -76,6 +76,9 @@ const getArg = (name: string, fallback: string): string => {
 
 const hasArg = (name: string): boolean => argv.includes(name);
 
+const CURVE_ANCHOR_FALLBACK = hasArg("--curve-anchor-fallback");
+const ALL_ROW_DETAILS = hasArg("--all-row-details");
+
 const mean = (values: readonly number[]): number =>
   values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
 
@@ -336,6 +339,16 @@ const evaluate = (
         if (value === 0) baseline[index] = row.globalBaseline[index] ?? 0;
       });
     }
+    // dev3 zero-anchor fallback: a first-ever-appearance corps has no recent form
+    // and an all-zero recent-form baseline is out of distribution. The trainer
+    // substitutes the stored division-aware rank-curve baseline (static block
+    // 121-128, stored as points/20). Off by default so final2 replay is
+    // unchanged; enable with --curve-anchor-fallback for dev3-lineage models.
+    if (CURVE_ANCHOR_FALLBACK && baseline.every((value) => value === 0)) {
+      for (let index = 0; index < CAPTION_COUNT; index++) {
+        baseline[index] = (row.staticFeatures[121 + index] ?? 0) * CAPTION_SCALE;
+      }
+    }
 
     rng(); // epoch-0 leakage-audit sampling draw in the recovered trainer
     rng(); // identity-dropout draw; rate is zero during evaluation
@@ -400,7 +413,7 @@ const evaluate = (
       bucket.categoryAbs += categoryError;
       bucket.totalAbs += totalAbsError;
     });
-    if (includeRowDetails && (historyKey === "zero_history" || historyKey === "sparse_history")) {
+    if (includeRowDetails && (ALL_ROW_DETAILS || historyKey === "zero_history" || historyKey === "sparse_history")) {
       historyDetails.push({
         show_key: row.showKey,
         date: row.date,

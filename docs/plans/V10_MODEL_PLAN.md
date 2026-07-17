@@ -1833,3 +1833,41 @@ to choose among checkpoints.
   nicked established on seed 42, the established-history non-inferiority margin
   must be checked per-seed before a soup can be the shipped checkpoint. Classic
   tail-averaged SWA remains rejected.
+
+### 2026-07-17 — dev3 vs final2 on real 2026 walk-forward (preliminary)
+
+**Headline:** on the 63 rows final2 actually forecast pre-show in production
+(12 shows, leakage-guarded to predictions dated before each show), dev3's raw
+model beats final2 as-deployed by 25%:
+
+| model | total MAE | rows |
+|---|---:|---:|
+| final2 (production, with bias-correction + comparable-revert) | 2.041 | 63 |
+| dev3 (preliminary epoch-64 checkpoint, raw, no corrections) | 1.533 | 63 |
+
+dev3 wins 39/63 rows and wins every history bucket present:
+zero-history 2.215 -> 1.662 (48 rows), sparse 1.417 -> 1.022 (9),
+short 1.582 -> 1.268 (6). The matched set is zero-history-heavy because final2
+forecast many debut corps at these shows — precisely where dev3's zero-anchor
++ division-aware-curve fixes apply.
+
+On the full frozen 161-row 2026 cohort dev3 also edges final2 on recap
+(0.472 vs 0.493) at near-parity total (1.544 vs 1.514).
+
+**Load-bearing caveats — this is directional, not the shipping verdict:**
+- dev3 is a non-terminal mid-training checkpoint (epoch-64 best_composite), one
+  seed. Needs the terminal pair before any claim.
+- 63 rows / 12 shows is a modest walk-forward sample.
+- It is raw-dev3 vs corrected-final2; that framing favors "dev3 is strong" but
+  a fully fair fight would also test dev3 + the correction layers.
+
+**Harness note (important):** the replay's own baseline recompute does NOT
+include dev3's zero-anchor curve fallback, so it initially scored zero-history
+2026 rows at 12.4 total MAE (predicting ~48 for a corps that scored ~72 by
+anchoring to a zero recent-form baseline). The correct division-aware curve
+anchor is stored in the static block (indices 121-128, points/20). Added
+`--curve-anchor-fallback` (off by default so final2's 167-check replay is
+byte-identical) to use it for all-zero-baseline rows, matching the trainer.
+Also added `--ml-table` (read V10 clean-contract table) and `--all-row-details`
+(per-row dump for every bucket). Without the fallback the replay understates
+any dev3-lineage model on thin-history cohorts.
