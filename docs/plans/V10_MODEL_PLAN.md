@@ -1621,3 +1621,54 @@ to choose among checkpoints.
   and field source dates, population hashes, and both cohort hashes are pinned
   by `test:v10-evaluation`. Do not train on these 2026 rows or regenerate the
   identity maps from them.
+
+### 2026-07-17 — dev1 clean-control failure, dev2 identity-vocabulary repair
+
+- **The first clean-data control run (seed 43, auto curriculum, dev1 maps) is
+  invalid as a control.** Aggregate results looked plausible (validation recap
+  `0.3749`, total `1.0164`, test total `0.5716`), but zero-history total MAE was
+  `5.562`. Row-level replay (new `V95_ROW_DETAILS_PATH` dump in the trainer,
+  driven through an `--epochs 0 --load-model` eval-only pass) showed the entire
+  failure came from four rows: `calgary-round-up-band` and
+  `high-school-affiliated-to-bit` at the 2025 OC championships, over-predicted
+  by `+7` to `+15` points. The other four zero-history rows erred `<= 1.3`.
+- **Root cause: evaluation-only identities received trained embedding IDs.**
+  dev1 built identity maps from the full clean snapshot, so corps whose only
+  appearances fall inside the date-forward validation window got real IDs whose
+  embeddings never receive a gradient; inference reads random-init vectors on
+  exactly the rows with no other evidence. Final2 predicted these same rows far
+  better precisely because its frozen maps lacked these keys (they fell back to
+  index 0). This is the literal instance of the recorded warning that a known
+  but unsupported identity must not receive trust.
+- **dev2 rule: the identity vocabulary is built only from rows strictly before
+  the trainer's validation boundary** (`--vocab-cutoff 2025-07-15` on
+  `generateV10Artifacts.ts`). Post-cutoff-only identities map to `unknown=0`.
+  dev2 has 53 corps / 210 judges / 289 shows known (embedding inputs
+  54/211/290, graph-verified `1,034,015` parameters). The clean-control table
+  was rebuilt on dev2 maps (payload sha `f4c74350…`, six unknown-corps rows),
+  the builder now reads `map_version` from the artifact manifest, and pinned
+  config/sequence/identity tests were updated. Any future map regeneration must
+  preserve this rule; V10 serving maps may include newer identities only when a
+  matching retrain actually trains them.
+- **The V10 family now trains under fixed `10/40` curriculum boundaries** — the
+  regimen that closed the V9.5 qualification gate — instead of final2's auto
+  curriculum. The dev1 control's auto run transitioned B→C at 39 via
+  `delta_plateau`, so it also did not match the qualified baseline regimen.
+  This is a deliberate config decision recorded in `v10Config.ts`; the auto
+  regimen remains available for reference runs only.
+- **The frozen 2026 evaluation DB was rebuilt on dev2 maps** from the
+  hash-verified evaluation source snapshot. Only `unknown_show_rows` (6→11)
+  and `max_show_id` changed; the sequence payload hash is unchanged because all
+  161 rows already carried fully-unknown judge panels and map-dependent ID
+  columns are outside the payload. Cohort identity hashes are untouched.
+- **Operational: the immutable source snapshots are stored gzip-compressed**
+  (`sdk/data/*.db.gz` in the WSL checkout) to reclaim disk; decompress and
+  verify the pinned SHA-256 before any rebuild, and delete the decompressed
+  copy afterward. tfjs-node has no Windows prebuilt binaries (all versions
+  404), so WSL remains the only native training environment on this machine.
+- dev2 clean-control replicas: seed 43 started 11:20 EDT and passed its fixed
+  A→B boundary at epoch 10; seed 42 started concurrently at the user's
+  direction (~10 GiB RAM headroom). Compare both against the V9.5
+  fixed-curriculum pair on every history slice, and replay the eight
+  zero-history validation rows row-by-row before declaring the repair
+  successful.
