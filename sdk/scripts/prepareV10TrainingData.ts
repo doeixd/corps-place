@@ -3,13 +3,24 @@ import { createReadStream, existsSync, mkdirSync, readFileSync, statSync, writeF
 import { dirname, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
-const CONTRACT_VERSION = "v10-training-performances-dev1";
-const TRAINING_SEASONS = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024, 2025] as const;
+const DEFAULT_CONTRACT_VERSION = "v10-training-performances-dev1";
+const DEFAULT_TRAINING_SEASONS = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024, 2025] as const;
 
 const valueAfter = (flag: string, fallback?: string) => {
   const index = process.argv.indexOf(flag);
   return index >= 0 ? process.argv[index + 1] : fallback;
 };
+const includedSeasons = (valueAfter("--seasons")
+  ? valueAfter("--seasons")!.split(",").map((value) => Number(value.trim()))
+  : [...DEFAULT_TRAINING_SEASONS]).filter((value) => Number.isInteger(value));
+if (!includedSeasons.length) throw new Error("--seasons must contain at least one integer season");
+const contractVersion = valueAfter("--contract-version", DEFAULT_CONTRACT_VERSION)!;
+const purpose = valueAfter("--purpose", "training")!;
+if (purpose !== "training" && purpose !== "evaluation") throw new Error("--purpose must be training or evaluation");
+const expectedRows = Number(valueAfter("--expected-rows", "7317"));
+if (!Number.isInteger(expectedRows) || expectedRows < 1) throw new Error("--expected-rows must be a positive integer");
+const trainingCutoffSeason = Number(valueAfter("--training-cutoff-season", "2025"));
+const developmentCutoff = valueAfter("--development-cutoff", "2026-07-14T23:59:59.999Z")!;
 const source = resolve(valueAfter("--source", "./data/v10-source-2026-07-16.db")!);
 const output = resolve(valueAfter("--out", "./data/v10-training-dev1.db")!);
 const sourceManifestPath = resolve(
@@ -50,7 +61,7 @@ if (actualSourceHash !== sourceManifest.snapshot_sha256) {
   throw new Error(`Source hash mismatch: expected ${sourceManifest.snapshot_sha256}, got ${actualSourceHash}`);
 }
 
-const seasonsSql = TRAINING_SEASONS.join(",");
+const seasonsSql = includedSeasons.join(",");
 sqliteRaw(output, `
   ATTACH DATABASE '${source.replaceAll("'", "''")}' AS source;
   BEGIN IMMEDIATE;
@@ -61,9 +72,12 @@ sqliteRaw(output, `
     value TEXT NOT NULL
   );
   INSERT INTO v10_data_contract_metadata VALUES
-    ('contract_version', '${CONTRACT_VERSION}'),
+    ('contract_version', '${contractVersion}'),
     ('source_snapshot_sha256', '${sourceManifest.snapshot_sha256}'),
-    ('training_seasons', '${TRAINING_SEASONS.join(",")}'),
+    ('included_seasons', '${includedSeasons.join(",")}'),
+    ('purpose', '${purpose}'),
+    ('training_cutoff_season', '${trainingCutoffSeason}'),
+    ('development_cutoff', '${developmentCutoff}'),
     ('identity_policy', 'canonical-current-source-keys-dev1'),
     ('target_time_policy', 'strictly-before-target-date');
 
@@ -89,7 +103,7 @@ sqliteRaw(output, `
     COALESCE(panel.judge_count, 0) AS retrospective_judge_count,
     COALESCE(panel.caption_count, 0) AS retrospective_panel_caption_count,
     CASE WHEN COALESCE(panel.caption_count, 0) = 8 THEN 1 ELSE 0 END AS retrospective_panel_complete,
-    '${CONTRACT_VERSION}' AS data_contract_version,
+    '${contractVersion}' AS data_contract_version,
     'canonical-current-source-keys-dev1' AS identity_policy_version
   FROM source.clean_reference_curve_entries e
   JOIN source.competitions c ON c.slug = e.competition_slug
@@ -130,8 +144,8 @@ const invariants = sqlite(output, `
   FROM v10_training_performances
 `)[0]!;
 if (
-  invariants.rows !== 7317 ||
-  invariants.distinct_row_keys !== 7317 ||
+  invariants.rows !== expectedRows ||
+  invariants.distinct_row_keys !== expectedRows ||
   invariants.total_mismatches !== 0 ||
   invariants.incomplete_panels !== 0 ||
   invariants.invalid_ranks !== 0
@@ -152,9 +166,13 @@ const quickCheck = sqlite(output, "PRAGMA quick_check;")[0]?.quick_check;
 if (quickCheck !== "ok") throw new Error(`Derived DB quick_check failed: ${String(quickCheck)}`);
 
 const manifest = {
-  manifest_version: "v10-training-data-manifest-v1",
+  manifest_version: purpose === "training" ? "v10-training-data-manifest-v1" : "v10-evaluation-data-manifest-v1",
   generated_at: new Date().toISOString(),
-  contract_version: CONTRACT_VERSION,
+  purpose,
+  contract_version: contractVersion,
+  included_seasons: includedSeasons,
+  training_cutoff_season: trainingCutoffSeason,
+  development_cutoff: developmentCutoff,
   source_snapshot_sha256: sourceManifest.snapshot_sha256,
   derived_db_path: output,
   derived_db_bytes: statSync(output).size,
@@ -172,6 +190,22 @@ const manifest = {
       SUM(CASE WHEN retrospective_panel_complete=0 THEN 1 ELSE 0 END) AS panel_incomplete_rows
     FROM v10_training_performances
   `)[0],
+  evaluation_cohorts: purpose === "evaluation" ? {
+    development: sqlite(output, `
+      SELECT COUNT(*) AS rows, COUNT(DISTINCT competition_slug) AS shows,
+        MIN(competition_date) AS min_date, MAX(competition_date) AS max_date
+      FROM v10_training_performances
+      WHERE CAST(season AS INTEGER) > ${trainingCutoffSeason}
+        AND competition_date <= '${developmentCutoff.replaceAll("'", "''")}'
+    `)[0],
+    untouched: sqlite(output, `
+      SELECT COUNT(*) AS rows, COUNT(DISTINCT competition_slug) AS shows,
+        MIN(competition_date) AS min_date, MAX(competition_date) AS max_date
+      FROM v10_training_performances
+      WHERE CAST(season AS INTEGER) > ${trainingCutoffSeason}
+        AND competition_date > '${developmentCutoff.replaceAll("'", "''")}'
+    `)[0],
+  } : null,
   v9_key_comparison: sqlite(output, `
     ATTACH DATABASE '${source.replaceAll("'", "''")}' AS source;
     SELECT

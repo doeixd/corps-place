@@ -1,0 +1,111 @@
+{
+  "manifest_version": "v10-source-snapshot-v1",
+  "generated_at": "2026-07-17T13:00:14.330Z",
+  "source_path": "/mnt/c/Users/Patrick/AppData/Local/Programs/Syncthing/corps-place/sdk/dci-relational.db",
+  "snapshot_path": "/root/corps-place-v10/sdk/data/v10-evaluation-source-2026-07-17.db",
+  "snapshot_bytes": 5227692032,
+  "snapshot_sha256": "13ed3628cc309a145ee46827c27608298f5359d522336263330edb33ca58768a",
+  "sqlite_quick_check": "ok",
+  "schema_sha256": "99e7f0b2a04a3a37fdff5abaabd2a665fe6a79cdaf6ae0f73dd0f0351e989d6e",
+  "domain_policy_sha256": "ca537263197fdbe2a8f48a7a4c24706ae51f5eb4758b1cc452dc8f9d096c5f26",
+  "source_counts": {
+    "competitions": 1090,
+    "corps_scores": 9509,
+    "caption_scores": 66275,
+    "judge_assignments": 8233,
+    "subcaption_scores": 145569,
+    "max_competition_date": "2026-07-16T00:00:00.000Z"
+  },
+  "clean_training_population_through_2025": [
+    {
+      "season": "2013",
+      "rows": 638
+    },
+    {
+      "season": "2014",
+      "rows": 645
+    },
+    {
+      "season": "2015",
+      "rows": 669
+    },
+    {
+      "season": "2016",
+      "rows": 730
+    },
+    {
+      "season": "2017",
+      "rows": 736
+    },
+    {
+      "season": "2018",
+      "rows": 780
+    },
+    {
+      "season": "2019",
+      "rows": 816
+    },
+    {
+      "season": "2022",
+      "rows": 594
+    },
+    {
+      "season": "2023",
+      "rows": 635
+    },
+    {
+      "season": "2024",
+      "rows": 551
+    },
+    {
+      "season": "2025",
+      "rows": 523
+    }
+  ],
+  "frozen_v9_population": [
+    {
+      "season": "2013",
+      "rows": 638
+    },
+    {
+      "season": "2014",
+      "rows": 645
+    },
+    {
+      "season": "2015",
+      "rows": 669
+    },
+    {
+      "season": "2016",
+      "rows": 730
+    },
+    {
+      "season": "2017",
+      "rows": 736
+    },
+    {
+      "season": "2018",
+      "rows": 780
+    },
+    {
+      "season": "2019",
+      "rows": 816
+    },
+    {
+      "season": "2022",
+      "rows": 594
+    },
+    {
+      "season": "2023",
+      "rows": 635
+    },
+    {
+      "season": "2024",
+      "rows": 551
+    },
+    {
+      "season": "2025",
+      "rows": 523
+    }
+  ]
+}

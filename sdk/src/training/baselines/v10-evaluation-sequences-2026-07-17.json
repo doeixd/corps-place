@@ -1,0 +1,50 @@
+{
+  "contract": {
+    "rows": 7478,
+    "training_rows": 7317,
+    "development_rows": 153,
+    "untouched_rows": 8
+  },
+  "sequences": {
+    "rows": 161,
+    "shows": 26,
+    "min_date": "2026-06-27T00:00:00.000Z",
+    "max_date": "2026-07-16T00:00:00.000Z",
+    "wrong_season": 0,
+    "bad_sequence_length": 0,
+    "bad_sequence_dim": 0,
+    "bad_static_dim": 0,
+    "bad_judge_slots": 0,
+    "unknown_corps_rows": 2,
+    "unknown_show_rows": 6,
+    "unknown_judge_rows": 161,
+    "max_corps_id": 50,
+    "max_show_id": 298
+  },
+  "temporal": {
+    "caption_rows": 1288,
+    "history_rows": 161,
+    "field_rows": 161,
+    "caption_as_of_mismatches": 0,
+    "history_leaks": 0,
+    "field_leaks": 0,
+    "target_mismatches": 0
+  },
+  "metadata": {
+    "contract_version": "v10-evaluation-performances-2026-07-17",
+    "development_cutoff": "2026-07-14T23:59:59.999Z",
+    "identity_policy": "canonical-current-source-keys-dev1",
+    "included_seasons": "2013,2014,2015,2016,2017,2018,2019,2022,2023,2024,2025,2026",
+    "purpose": "evaluation",
+    "source_snapshot_sha256": "13ed3628cc309a145ee46827c27608298f5359d522336263330edb33ca58768a",
+    "target_time_policy": "strictly-before-target-date",
+    "temporal_feature_contract": "strict-date-before-target-dev1",
+    "training_cutoff_season": "2025"
+  },
+  "training_db_2026_rows": 0,
+  "training_population_sha256": "96b4d40541f7c927bbe6a68740ee766916f027ff75916bcb8417c6531bbba37d",
+  "canonical_training_population_sha256": "96b4d40541f7c927bbe6a68740ee766916f027ff75916bcb8417c6531bbba37d",
+  "sequence_payload_sha256": "fad59e94c15defcac802e1ff584d3b455ccb89740298668474e7a6dfad4cd250",
+  "development_cohort_sha256": "5246e38a077e884e26010e240bdb833aa0010a0f03005e7b05d3c5ed21d739d8",
+  "untouched_cohort_sha256": "e102c715d2cdf81ee22fbac84c3ceee4b04b958d9ed181acc1e4c6463b28b68e"
+}

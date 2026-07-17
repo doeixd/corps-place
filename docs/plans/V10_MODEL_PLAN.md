@@ -1597,3 +1597,27 @@ to choose among checkpoints.
   which is correct diagnostic behavior and not quality evidence. Select the
   uncertainty policy only after trained candidates are compared on both
   coverage and width across zero/sparse/established history and division slices.
+- **Clean data is the embedding/training intervention, not merely an input-table
+  replacement (user reaffirmed 2026-07-17).** V10 must derive canonical identity
+  vocabulary, aliases, support counts, temporal examples, dropout/unknown
+  substitution, residual trust, and every embedding weight from the repaired
+  database contract. It must not copy final2's embedding weights, positional
+  meanings, map capacity, or placeholder identities. Index `0` is the sole
+  operational fallback for a genuinely absent/hidden/unseen identity at
+  inference or augmentation time; it is not a legacy final2 identity and does
+  not consume model capacity for hypothetical future entities. The purpose of
+  the clean-data control is to measure this whole data/identity repair while
+  holding the recurrent/dense core and regimen steady.
+- **Frozen 2026 evaluation data, 2026-07-17.** A second immutable relational
+  snapshot through July 16 is pinned at 5,227,692,032 bytes and SHA-256
+  `13ed3628cc309a145ee46827c27608298f5359d522336263330edb33ca58768a`.
+  Its evaluation contract contains the unchanged, hash-identical 7,317-row
+  2013–2025 training population plus 161 clean 2026 rows across 26 shows. The
+  July-14 development cohort has 153 rows/25 shows; the later July-16 show is an
+  untouched eight-row gate. Clean sequences use the frozen V10 training maps,
+  not newly refit 2026 maps: two rows have unseen corps, six have unseen show
+  identities, and all 161 have unavailable judge panels and therefore explicit
+  unknown judge slots. Dimensions, targets, temporal as-of boundaries, history
+  and field source dates, population hashes, and both cohort hashes are pinned
+  by `test:v10-evaluation`. Do not train on these 2026 rows or regenerate the
+  identity maps from them.

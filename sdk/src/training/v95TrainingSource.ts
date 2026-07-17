@@ -28,6 +28,9 @@ const coreFiles = [
   "src/training/baselines/v10-training-performances-dev1.json",
   "src/training/baselines/v10-sequences-dev1.json",
   "src/training/baselines/v10-field-pace-dev1.json",
+  "src/training/baselines/v10-evaluation-source-2026-07-17.json",
+  "src/training/baselines/v10-evaluation-performances-2026-07-17.json",
+  "src/training/baselines/v10-evaluation-sequences-2026-07-17.json",
   "src/training/v95TrainingSource.ts",
   "src/training/v95Config.ts",
   "src/training/v95Curriculum.ts",
@@ -48,6 +51,7 @@ const coreFiles = [
   "scripts/testV10SequenceContract.ts",
   "scripts/testV10FieldPace.ts",
   "scripts/testV10IdentitySupport.ts",
+  "scripts/testV10EvaluationContract.ts",
 ] as const;
 
 const runScripts = () => fs.readdirSync(path.join(sdkRoot, "scripts"))

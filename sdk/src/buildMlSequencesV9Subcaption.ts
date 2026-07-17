@@ -995,7 +995,9 @@ export const buildSequencesV9 = (
   const captionRangeMap = new Map<string, { min: number; max: number }>();
   const seasonDivisionKey = (season: string, division: string) => `${season}__${division}`;
 
-  const contextSeasons = captionSource === "clean-v10" ? SEASONS : seasons;
+  const contextSeasons = captionSource === "clean-v10"
+    ? [...new Set([...SEASONS, ...seasons])].sort()
+    : seasons;
   for (const season of contextSeasons) {
     for (const division of DIVISIONS) {
       const queriedRows = yield* (
