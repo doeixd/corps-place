@@ -1871,3 +1871,60 @@ byte-identical) to use it for all-zero-baseline rows, matching the trainer.
 Also added `--ml-table` (read V10 clean-contract table) and `--all-row-details`
 (per-row dump for every bucket). Without the fallback the replay understates
 any dev3-lineage model on thin-history cohorts.
+
+### 2026-07-17 — next-step suggestions (post 2026 preliminary)
+
+Ordered by leverage. The first two are about *trusting* the 2026 result before
+building on it; both are cheap and do not need the terminal models.
+
+1. **Audit the serving/inference path for the zero-anchor fix before trusting
+   any 2026 result as shippable.** The zero-anchor curve fallback was added to
+   the trainer (`buildSamples`) and the replay harness (`--curve-anchor-fallback`),
+   but production inference runs through `v9PredictionFeatures` /
+   `predictEventRecap`, a separate path. If that path still anchors a
+   first-ever-appearance corps to a zero baseline, V10 will reproduce the exact
+   12.4-point zero-history blowup in production that the harness exposed — the
+   same class of failure that made final2 need the comparable-revert correction.
+   Confirm the serving path applies the division-aware rank-curve baseline when
+   recent-form is absent, and package that behavior with the V10 artifact.
+
+2. **Isolate why dev3 beats final2 on 2026 — repeat the 63-row comparison
+   identity-agnostic.** dev3 uses cleaner, different identity maps than final2,
+   so part of the 1.53-vs-2.04 win could be identity resolution on 2026 debut
+   corps rather than the generalizable data/curve/anchor fixes. If dev3 still
+   wins with corps/judge/show residual paths disabled, the win is the durable
+   stuff; if the margin collapses, the win is partly identity bookkeeping and
+   must be scrutinized before it counts. Run both the stored-identity and
+   agnostic 63-row comparisons and report the split.
+
+3. **Reconsider the checkpoint-selection metric now that total is a derived
+   rollup.** Only the 8 caption deltas are learned; recap/category/total are
+   fixed derivation layers, so the fundamental quantity is recap MAE and the
+   composite selector's heavy total weight is partly redundant. Check post hoc
+   (on checkpoints already saved) whether a recap-weighted selector picks a
+   different, better checkpoint than the current total-heavy composite. Free —
+   no new training.
+
+4. **Expand the 2026 evaluation beyond the 63-row eval-cohort overlap.** final2
+   has ~15k saved production predictions across the full season; only the 12
+   overlapping shows were used. Building dev3 sequences for every 2026 scored
+   show turns a directional 63-row read into a few-hundred-row verdict with
+   show-clustered bootstrap intervals — the difference between encouraging and
+   conclusive. Keep the strict as-of build and the leakage guard
+   (predictions dated before each show).
+
+5. **History-aware interval width (P4) is now the natural next feature.** The
+   zero-history mean is fixed (12.4 -> 1.6), but a first-ever-appearance
+   forecast is still inherently uncertain while the interval scale is global,
+   so thin-history forecasts advertise the same tightness as data-rich ones.
+   Calibrate interval scale by history-depth bucket (and division), now that we
+   have clean thin-history predictions to calibrate against. Pairs naturally
+   with the thin-history treatment and must be selected on coverage/width at
+   matched coverage, not on MAE.
+
+6. **Consequential-metric hygiene going forward.** Report recap (caption) MAE as
+   the headline and treat total MAE as the derived summary it is. For any
+   treatment claim, require the gain to clear the measured paired-seed MDE
+   (recap 0.004, total 0.085, established 0.041) and to hold across both seeds
+   and show-clustered intervals — a single-seed single-cohort number is
+   directional only.
