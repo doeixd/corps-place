@@ -27,6 +27,7 @@ assert.equal(control.sequenceTransitionEpochs, 0);
 assert.equal(control.judgeCount, 214);
 assert.equal(control.corpsCount, 56);
 assert.equal(control.showCount, 301);
+assert.equal(control.paretoCheckpointLimit, 8);
 assert.equal(control.rawStaticDim, 212);
 assert.match(control.judgeMapPath, /v10\/dev1\/judgeIndexMap\.json$/);
 assert.match(control.referenceCurvesPath, /v10\/dev1\/referenceCurves\.json$/);

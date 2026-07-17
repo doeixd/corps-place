@@ -206,6 +206,7 @@ export const v10DefaultArgs = (profileName: V10ProfileName, seed = 43): string[]
     "--corps-map", "./src/training/v10/dev1/corpsIndexMap.json",
     "--show-map", "./src/training/v10/dev1/showIndexMap.json",
     "--identity-support", "./src/training/v10/dev1/identitySupport.json",
+    "--pareto-checkpoints", "8",
     "--reference-curves", "./src/training/v10/dev1/referenceCurves.json",
     "--seed", String(seed),
     "--trial-id", `v10_${slug}_seed${seed}`,

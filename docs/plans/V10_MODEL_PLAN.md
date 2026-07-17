@@ -1562,3 +1562,16 @@ to choose among checkpoints.
   six model-card views and the explicit panel-hidden mode. Apply this evaluator
   uniformly to retained clean-control and treatment checkpoints; old cards that
   predate these views are not sufficient evidence by themselves.
+- **Bounded checkpoint frontier, 2026-07-17.** V10 profiles now preserve at most
+  eight nondominated checkpoints across recap MAE, total MAE, zero-history MAE,
+  sparse-history MAE, established-history MAE, distance from the declared
+  coverage band, and interval width. When more candidates survive, the
+  predeclared selector
+  `recap+.15total+.10zero+.10sparse+.05established+.20coverage_gap+.02width`
+  deterministically retains objective winners and fills the remaining slots.
+  Dominated/pruned directories are removed, while every retained checkpoint
+  carries its full metric vector and selector score. A graph/package smoke wrote
+  `pareto/epoch_0` and the matching model-card manifest. This completes bounded
+  preservation, not qualification: `uniformly_evaluated` remains false until the
+  post-training evaluator runs the complete frozen matrix against every retained
+  checkpoint and applies the final predeclared selector.

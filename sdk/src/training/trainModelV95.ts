@@ -56,6 +56,9 @@ import { blendThinHistoryBaseline, buildForecastBaseline, selectV95Masking } fro
 import {
   checkpointDecisions,
   selectFinalWeightsMode,
+  updateParetoCheckpointFrontier,
+  type ParetoCheckpoint,
+  type ParetoCheckpointMetrics,
 } from "./v95Checkpoints.js";
 import {
   formatV95Curriculum,
@@ -2140,6 +2143,9 @@ async function main() {
   if (!Number.isInteger(args.sequenceTransitionEpochs) || args.sequenceTransitionEpochs < 0) {
     throw new Error("--sequence-transition-epochs must be a non-negative integer");
   }
+  if (!Number.isInteger(args.paretoCheckpointLimit) || args.paretoCheckpointLimit < 0) {
+    throw new Error("--pareto-checkpoints must be a non-negative integer");
+  }
   for (const [flag, value] of [
     ["--thin-history-sample-fraction", args.thinHistorySampleFraction],
     ["--thin-history-truncation-rate", args.thinHistoryTruncationRate],
@@ -2319,6 +2325,7 @@ async function main() {
   const bestLossDir = path.join(runDir, "best_loss");
   const bestTotalDir = path.join(runDir, "best_total");
   const bestCompositeDir = path.join(runDir, "best_composite");
+  const paretoDir = path.join(runDir, "pareto");
   const bestPhaseDirs = {
     A: path.join(runDir, "best_phase_a"),
     B: path.join(runDir, "best_phase_b"),
@@ -2329,6 +2336,7 @@ async function main() {
   let bestTotalSavedEpoch = -1;
   let bestCompositeSavedEpoch = -1;
   const bestPhaseSavedEpoch = { A: -1, B: -1, C: -1 };
+  let paretoFrontier: ParetoCheckpoint[] = [];
 
   fs.mkdirSync(runDir, { recursive: true });
   fs.writeFileSync(path.join(runDir, "training-args.json"), JSON.stringify(args, null, 2));
@@ -2964,7 +2972,10 @@ async function main() {
       vsQuadratic: 0,
       coverage: 0,
       widthNorm: 0,
-      widthFloorPct: 0
+      widthFloorPct: 0,
+      zeroHistoryMae: null as number | null,
+      sparseHistoryMae: null as number | null,
+      establishedHistoryMae: null as number | null,
     };
 
 
@@ -3236,6 +3247,9 @@ async function main() {
       const coverage = coverageCount ? coverageWithin / coverageCount : 0;
       const widthNorm = valCountTotal ? widthNormSum / valCountTotal : 0;
       const widthFloorPct = (valCountTotal * CAPTION_COUNT) ? widthFloorCount / (valCountTotal * CAPTION_COUNT) : 0;
+      const historyMae = (bucket: number) => historyBuckets.counts[bucket]
+        ? historyBuckets.maeSum[bucket]! / historyBuckets.counts[bucket]!
+        : null;
 
 
       console.log("\nHistory Bucket Diagnostics (Avg Abs Error per sample, normalized units):");
@@ -3289,7 +3303,10 @@ async function main() {
         vsQuadratic,
         coverage,
         widthNorm,
-        widthFloorPct
+        widthFloorPct,
+        zeroHistoryMae: historyMae(0),
+        sparseHistoryMae: historyMae(1),
+        establishedHistoryMae: historyMae(4),
       };
 
     }
@@ -3442,6 +3459,44 @@ async function main() {
           `Saved BEST-PHASE-${phaseForCheckpoint} checkpoint @epoch ${epoch} ` +
           `delta_mae_pts = ${bestPhaseDeltaMae[phaseForCheckpoint].toFixed(4)} -> ` +
           `${bestPhaseDirs[phaseForCheckpoint]}`,
+        );
+      }
+    }
+
+    if (args.paretoCheckpointLimit > 0) {
+      const paretoMetrics: ParetoCheckpointMetrics = {
+        recapMae: monitoringStats.valRecapMae,
+        totalMae: monitoringStats.valTotalMae,
+        zeroHistoryMae: monitoringStats.zeroHistoryMae,
+        sparseHistoryMae: monitoringStats.sparseHistoryMae,
+        establishedHistoryMae: monitoringStats.establishedHistoryMae,
+        coverage: monitoringStats.coverage,
+        width: monitoringStats.widthNorm,
+      };
+      const update = updateParetoCheckpointFrontier(
+        paretoFrontier,
+        epoch,
+        paretoMetrics,
+        args.paretoCheckpointLimit,
+        args.coverageTarget,
+        args.coverageUpperTarget,
+      );
+      for (const removedEpoch of update.removedEpochs) {
+        fs.rmSync(path.join(paretoDir, `epoch_${removedEpoch}`), { recursive: true, force: true });
+      }
+      paretoFrontier = update.frontier;
+      if (update.retained) {
+        const retained = paretoFrontier.find((entry) => entry.epoch === epoch)!;
+        const destination = path.join(paretoDir, `epoch_${epoch}`);
+        await saveCheckpoint(model, destination, {
+          epoch,
+          checkpointMetric: "boundedParetoFrontier",
+          selectorScore: retained.selectorScore,
+          paretoMetrics,
+        });
+        console.log(
+          `Saved PARETO checkpoint @epoch ${epoch} selector=${retained.selectorScore.toFixed(4)} ` +
+          `frontier=${paretoFrontier.length}/${args.paretoCheckpointLimit} -> ${destination}`,
         );
       }
     }
@@ -3671,6 +3726,15 @@ async function main() {
       A: { value: bestPhaseDeltaMae.A, dir: bestPhaseDirs.A },
       B: { value: bestPhaseDeltaMae.B, dir: bestPhaseDirs.B },
       C: { value: bestPhaseDeltaMae.C, dir: bestPhaseDirs.C },
+    },
+    pareto_frontier: {
+      limit: args.paretoCheckpointLimit,
+      selector: "recap+.15total+.10zero+.10sparse+.05established+.20coverage_gap+.02width",
+      entries: paretoFrontier.map((entry) => ({
+        ...entry,
+        dir: path.join(paretoDir, `epoch_${entry.epoch}`),
+      })),
+      uniformly_evaluated: false,
     },
   };
   const report = {

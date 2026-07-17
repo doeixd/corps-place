@@ -109,6 +109,7 @@ export const parseV95Args = (
     identitySupportPath: get("--identity-support", "") || "",
     supportAwareIdentity: get("--support-aware-identity", "false") === "true",
     supportDropoutStrength: Number(get("--support-dropout-strength", "0.6")),
+    paretoCheckpointLimit: Number(get("--pareto-checkpoints", "0")),
   };
 };
 
