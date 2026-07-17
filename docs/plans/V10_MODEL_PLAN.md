@@ -2005,3 +2005,52 @@ same-size student per the existing hypothesis-log entry becomes worthwhile).
   this clean multi-seed test for any V10 decision; keep it only as motivation.
 - If capacity wins the tail, still prefer distilling it into the deployed
   1.03M-param student before shipping a larger inference graph.
+
+### 2026-07-17 — cost-free / near-free performance wins (apply to the shipped model)
+
+These require no new architecture and little or no training. They stack on top
+of the qualified clean-data control and are the fastest path to the best
+shippable model. Applied and evaluated autonomously overnight.
+
+1. **Multi-seed prediction ensemble (biggest free win).** Average the per-caption
+   predictions of the trained seeds (42, 43, and any further seeds trained
+   overnight). Ensembling independent seeds almost always beats the best single
+   seed and directly attacks the run-to-run variance that is our largest source
+   of noise (paired-seed spread: recap 0.004, total 0.085, sparse 0.90). Cost is
+   Nx inference (cheap, N small) and zero extra training beyond seeds we already
+   run. Report the ensemble vs best-single-seed on frozen validation + 2026,
+   recap MAE headline. This is the default production candidate's mean model.
+
+2. **Checkpoint soup (validated both seeds).** Average best_total + best_composite
+   (and adjacent Pareto checkpoints) within a run before ensembling. Helped
+   recap/total/zero on both dev2 seeds; established guardrail must hold per seed.
+   Exports one graph — no inference cost. Compose with the multi-seed ensemble
+   (soup each seed, then average seeds).
+
+3. **Post-hoc checkpoint re-selection on recap.** Total is a fixed derivation of
+   the captions, so the composite selector's heavy total weight is partly
+   redundant. Re-rank the already-saved checkpoints by a recap-weighted score
+   and by the declared Pareto selector; pick the best on frozen validation. Free
+   (no training).
+
+4. **History-aware + conformal interval calibration (P4, post-hoc).** The mean is
+   now good on thin history (zero 12.4 -> 1.6) but the interval scale is global,
+   so debut forecasts advertise data-rich tightness. Calibrate scale by
+   history-depth bucket and division on the frozen validation, and compute a
+   split-conformal scale; select on coverage/width at matched coverage. No
+   training, no MAE change — pure honesty/coverage win. The trainer already emits
+   the evidence-regime uncertainty comparison; use it.
+
+5. **Already-banked data-level free wins (in dev3).** Division-aware reference
+   curves and the zero-anchor curve fallback cost nothing at inference and were
+   the difference between a 12.4 and 1.6 zero-history 2026 MAE. Ensure the serving
+   path carries them (see the serving-audit suggestion) so the win transfers to
+   production.
+
+**Selection discipline:** every free win must be applied and then evaluated on
+the frozen validation and the 2026 walk-forward; keep any that helps or is
+neutral and does not regress established history past its margin. The final
+shipped model is: {clean-data + division curves + zero-anchor} control, best
+checkpoint (soup + recap/Pareto re-selection), multi-seed ensembled, with
+history/division/conformal interval calibration — plus any treatment that
+independently cleared the paired-seed MDE overnight.
