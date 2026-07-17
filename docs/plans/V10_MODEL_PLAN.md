@@ -2159,3 +2159,13 @@ single. Lesson: the tail-targeting treatments trade in-sample accuracy for the
 tail — but the control already fixed the tail via data (2026 zero 1.66), so the
 treatments have little left to add and cost in-sample. The clean-data + curve +
 anchor repair is doing the real work.
+
+- thin-history: REJECTED. 2026 stored 0.428/1.457 (worse than control stored
+  0.424/1.304 and agnostic 0.416/1.165); its zero-history 1.631 only matches
+  what the control curve anchor already gives. The augmentation adds nothing atop
+  the data fix and costs in-sample. CONCLUSION: both training-side tail
+  treatments fail because the clean-data/curve/anchor repair already captured the
+  tail. Production model = control, agnostic, ensembled. Remaining useful
+  experiments are LR-schedule (phase-aware, cosine-period) on the control itself
+  and more ensemble seeds; capacity re-test is lower priority since the tail is
+  already fixed by data.
