@@ -53,9 +53,6 @@ const fixedRegimenArgs = [
   "--curriculum-phase-b-end", "40",
 ] as const;
 
-const cleanControlBlockedReason =
-  "Clean V10 data, temporal features, maps, curves, and graph smoke are qualified; full training awaits the terminal V9.5 seed-42 qualification gate";
-
 const treatmentBlockedReason =
   "Treatment is blocked until the clean-data control qualifies and this treatment is evaluated independently";
 
@@ -67,8 +64,8 @@ export const V10_PROFILES: Readonly<Record<V10ProfileName, V10Profile>> = {
     featureProfile: "v9.5-220-control",
     mlTable: "ml_sequence_rows_v10_clean_control",
     expectedTrainableParameters: 1_034_259,
-    runnable: false,
-    blockedReason: cleanControlBlockedReason,
+    runnable: true,
+    blockedReason: "",
     args: [...exactSizeArgs, ...final2RegimenArgs],
   },
   "field-pace": {

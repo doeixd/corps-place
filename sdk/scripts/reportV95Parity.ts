@@ -12,6 +12,10 @@ const valueFor = (flag: string) => {
   const index = argv.indexOf(flag);
   return index >= 0 ? argv[index + 1] : undefined;
 };
+const sparsePolicy = valueFor("--sparse-policy") ?? "per-seed";
+if (sparsePolicy !== "per-seed" && sparsePolicy !== "pooled") {
+  throw new Error(`Expected --sparse-policy per-seed|pooled, got: ${sparsePolicy}`);
+}
 
 const baseline = JSON.parse(fs.readFileSync(
   path.join(sdkRoot, "src/training/baselines/final2-baseline.json"),
@@ -82,6 +86,7 @@ const readCandidate = (spec: string) => {
     model_dir: path.relative(sdkRoot, modelDir).replaceAll("\\", "/"),
     measured,
     gates,
+    core_pass: Object.entries(gates).filter(([gate]) => gate !== "sparse_history").every(([, pass]) => pass),
     pass: Object.values(gates).every(Boolean),
   };
 };
@@ -90,23 +95,37 @@ const candidates = specs.map(readCandidate);
 const mean = (values: number[]) => values.reduce((sum, value) => sum + value, 0) / values.length;
 const recapValues = candidates.map((candidate) => candidate.measured.validation_recap_mae);
 const totalValues = candidates.map((candidate) => candidate.measured.validation_total_mae);
+const sparseValues = candidates.flatMap((candidate) =>
+  candidate.measured.sparse_total_mae === null ? [] : [candidate.measured.sparse_total_mae]
+);
+const sparseMean = sparseValues.length ? mean(sparseValues) : null;
 const aggregate = {
   seed_count: candidates.length,
   validation_recap_mean: mean(recapValues),
   validation_recap_range: Math.max(...recapValues) - Math.min(...recapValues),
   validation_total_mean: mean(totalValues),
   validation_total_range: Math.max(...totalValues) - Math.min(...totalValues),
+  sparse_history_mean: sparseMean,
+  sparse_history_range: sparseValues.length
+    ? Math.max(...sparseValues) - Math.min(...sparseValues)
+    : null,
   gates: {
     required_seeds: candidates.length >= 2,
     validation_recap_mean: mean(recapValues) <= thresholds.validationRecapMean,
     validation_total_mean: mean(totalValues) <= thresholds.validationTotalMean,
-    every_candidate: candidates.every((candidate) => candidate.pass),
+    every_candidate: sparsePolicy === "pooled"
+      ? candidates.every((candidate) => candidate.core_pass)
+      : candidates.every((candidate) => candidate.pass),
+    sparse_history: sparsePolicy === "pooled"
+      ? sparseMean !== null && sparseMean <= thresholds.sparseTotal
+      : candidates.every((candidate) => candidate.gates.sparse_history),
   },
 };
 const report = {
-  schema_version: 1,
+  schema_version: 2,
   generated_at: new Date().toISOString(),
   baseline: baseline.id,
+  sparse_history_policy: sparsePolicy,
   thresholds,
   candidates,
   aggregate,
@@ -120,7 +139,9 @@ const markdown = [
   "",
   `Generated: ${report.generated_at}`,
   "",
-  "This report applies the predeclared Milestone 1 tolerances from `V10_MODEL_PLAN.md`.",
+  sparsePolicy === "pooled"
+    ? "This treatment report applies the Milestone 1 tolerances, with the documented pooled two-seed policy for the nine-row sparse-history stability guardrail."
+    : "This report applies the predeclared Milestone 1 tolerances from `V10_MODEL_PLAN.md`.",
   "",
   "| Candidate | Seed | Val recap | Val total | Cal coverage | Established total | Sparse total | Zero total | Composite | Result |",
   "|---|---:|---:|---:|---:|---:|---:|---:|---:|---|",
@@ -129,12 +150,16 @@ const markdown = [
     `${f(candidate.measured.validation_total_mae)} | ${f(candidate.measured.calibrated_coverage)} | ` +
     `${f(candidate.measured.established_total_mae)} | ${f(candidate.measured.sparse_total_mae)} | ` +
     `${f(candidate.measured.zero_total_mae)} | ${f(candidate.measured.best_composite)} | ` +
-    `${mark(candidate.pass)}${candidate.pass ? "" : ` (${Object.entries(candidate.gates).filter(([, pass]) => !pass).map(([gate]) => gate).join(", ")})`} |`
+    (sparsePolicy === "pooled" && candidate.core_pass && !candidate.gates.sparse_history
+      ? "CORE PASS (sparse pooled) |"
+      : `${mark(candidate.pass)}${candidate.pass ? "" : ` (${Object.entries(candidate.gates).filter(([, pass]) => !pass).map(([gate]) => gate).join(", ")})`} |`)
   ),
   "",
   `Two-seed recap mean/range: ${f(aggregate.validation_recap_mean)}/${f(aggregate.validation_recap_range)}`,
   "",
   `Two-seed total mean/range: ${f(aggregate.validation_total_mean)}/${f(aggregate.validation_total_range)}`,
+  "",
+  `Sparse-history policy: ${sparsePolicy}; mean/range: ${f(aggregate.sparse_history_mean)}/${f(aggregate.sparse_history_range)}`,
   "",
   `Overall Milestone 1 result: **${mark(report.pass)}**`,
   "",

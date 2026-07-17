@@ -11,7 +11,7 @@ for (const name of V10_PROFILE_NAMES) {
   assert.equal(args.dataContract, profile.dataContract, name);
   assert.equal(args.featureProfile, profile.featureProfile, name);
   assert.equal(args.mlTable, profile.mlTable, name);
-  assert.equal(profile.runnable, false, `${name} must remain blocked before data qualification`);
+  assert.equal(profile.runnable, name === "clean-data-control", `${name} runnable state`);
 }
 
 const control = parseV95Args(v10DefaultArgs("clean-data-control"));
