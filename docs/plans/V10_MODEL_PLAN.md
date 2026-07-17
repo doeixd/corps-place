@@ -1584,3 +1584,16 @@ to choose among checkpoints.
   automatic promotion: the final V10 candidate still must pass the frozen-2025,
   walk-forward-2026, cross-seed, sparse-history, and uncertainty gates before
   the recommended frontier checkpoint becomes the packaged production model.
+- **Evidence-regime uncertainty comparison, 2026-07-17.** The selected mean
+  model now reports the legacy validation-grid interval scale beside a
+  finite-sample split-conformal symmetric scale. Nonconformity is the observed
+  error divided by the appropriate lower/upper predicted half-width, and the
+  quantile uses the finite-sample `ceil((n+1)×coverage)` rank. The report also
+  fits and evaluates separate history-depth and division scales; buckets with
+  fewer than 64 caption observations explicitly fall back to the pooled scale.
+  Every method records scale, rows/caption values, achieved coverage, and width
+  in test results and the model card. The one-epoch smoke reached the requested
+  marginal coverage only by expanding an untrained model to an enormous width,
+  which is correct diagnostic behavior and not quality evidence. Select the
+  uncertainty policy only after trained candidates are compared on both
+  coverage and width across zero/sparse/established history and division slices.

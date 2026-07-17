@@ -29,6 +29,7 @@ import {
 import {
   addMetricValue,
   createMetricBucket,
+  finiteSampleConformalQuantile,
   forecastMode,
   historyBucket,
   identityAvailabilityMode,
@@ -577,6 +578,132 @@ function calibrateIntervalScale(
     upper_target_coverage: args.coverageUpperTarget,
     selected: candidates[0] ?? null,
     candidates: candidates.slice(0, 12),
+  };
+}
+
+function collectIntervalNonconformity(
+  model: tf.LayersModel,
+  samples: Sample[],
+  args: ReturnType<typeof parseArgs>,
+) {
+  const scores: Array<{
+    score: number;
+    division: string;
+    history: string;
+  }> = [];
+  const scales = {
+    judgeBias: args.noJudgeBias ? 0 : 1,
+    corps: args.noCorpsResidual ? 0 : 1,
+  };
+  for (const batch of batchGeneratorFromGroups(
+    groupSamplesByShow(samples),
+    args.batchSize,
+    false,
+    args.seed + 991,
+    scales,
+  )) {
+    const predictions = model.predict([
+      batch.xs.sequence,
+      batch.xs.static,
+      batch.xs.mask,
+      batch.xs.judge_ids,
+      batch.xs.corps_id,
+      batch.xs.baseline_recap,
+      batch.xs.history_len,
+      batch.xs.judge_bias_scale,
+      batch.xs.corps_scale,
+      batch.xs.agnostic_show_id,
+    ]) as tf.Tensor;
+    const predicted = predictions.dataSync();
+    const truth = batch.ys.dataSync();
+    for (let rowIndex = 0; rowIndex < batch.samples.length; rowIndex++) {
+      const sample = batch.samples[rowIndex]!;
+      for (let captionIndex = 0; captionIndex < CAPTION_COUNT; captionIndex++) {
+        const predictionOffset = rowIndex * OUTPUT_DIM;
+        const truthOffset = rowIndex * TARGET_DIM;
+        const q10 = predicted[predictionOffset + captionIndex]!;
+        const q50 = predicted[predictionOffset + CAPTION_COUNT + captionIndex]!;
+        const q90 = predicted[predictionOffset + CAPTION_COUNT * 2 + captionIndex]!;
+        const actual = truth[truthOffset + captionIndex]!;
+        const width = actual <= q50 ? Math.max(1e-8, q50 - q10) : Math.max(1e-8, q90 - q50);
+        scores.push({
+          score: Math.abs(actual - q50) / width,
+          division: sample.meta.division || "unknown",
+          history: historyBucket(sample.meta.historyLen),
+        });
+      }
+    }
+    predictions.dispose();
+    Object.values(batch.xs).forEach((tensor) => tensor.dispose());
+    batch.ys.dispose();
+  }
+  return scores;
+}
+
+function compareConformalCalibrations(
+  model: tf.LayersModel,
+  validationSamples: Sample[],
+  stats: TargetStats,
+  args: ReturnType<typeof parseArgs>,
+  gridCalibration: ReturnType<typeof calibrateIntervalScale>,
+) {
+  const minimumBucketCaptionValues = 64;
+  const allScores = collectIntervalNonconformity(model, validationSamples, args);
+  const pooledScale = finiteSampleConformalQuantile(
+    allScores.map((entry) => entry.score),
+    args.coverageTarget,
+  ) ?? 1;
+  const pooledReport = evaluateSamples(
+    model,
+    validationSamples,
+    stats,
+    args,
+    "validation_pooled_conformal",
+    args.seed + 992,
+    pooledScale,
+  );
+  const calibrateGroups = (
+    field: "division" | "history",
+  ) => Object.fromEntries([...new Set(allScores.map((entry) => entry[field]))].sort().map((key, index) => {
+    const groupScores = allScores.filter((entry) => entry[field] === key).map((entry) => entry.score);
+    const groupSamples = validationSamples.filter((sample) =>
+      field === "division"
+        ? (sample.meta.division || "unknown") === key
+        : historyBucket(sample.meta.historyLen) === key
+    );
+    const usesPooledFallback = groupScores.length < minimumBucketCaptionValues;
+    const scale = usesPooledFallback
+      ? pooledScale
+      : finiteSampleConformalQuantile(groupScores, args.coverageTarget) ?? pooledScale;
+    const report = evaluateSamples(
+      model,
+      groupSamples,
+      stats,
+      args,
+      `validation_${field}_${key}_conformal`,
+      args.seed + 1000 + index,
+      scale,
+    );
+    return [key, {
+      rows: groupSamples.length,
+      caption_values: groupScores.length,
+      scale,
+      uses_pooled_fallback: usesPooledFallback,
+      metrics: report.metrics,
+    }];
+  }));
+  return {
+    target_coverage: args.coverageTarget,
+    minimum_bucket_caption_values: minimumBucketCaptionValues,
+    grid_search: gridCalibration,
+    pooled_conformal: {
+      method: "finite_sample_split_conformal_symmetric_scale",
+      scale: pooledScale,
+      caption_values: allScores.length,
+      metrics: pooledReport.metrics,
+    },
+    by_history: calibrateGroups("history"),
+    by_division: calibrateGroups("division"),
   };
 }
 
@@ -3708,6 +3835,13 @@ async function main() {
       );
       return { ...raw, calibrated };
     });
+  const uncertaintyCalibration = compareConformalCalibrations(
+    model,
+    validationSamplesForCalibration,
+    stats,
+    args,
+    intervalCalibration,
+  );
 
   const splitDefinition = {
     val_mode: resolvedMode,
@@ -3873,6 +4007,7 @@ async function main() {
     split: splitDefinition,
     curriculum_transitions: curriculumTransitions,
     interval_calibration: intervalCalibration,
+    uncertainty_calibration: uncertaintyCalibration,
     checkpoints,
     baselines: baselineSummary,
     config: args,
@@ -3884,6 +4019,7 @@ async function main() {
       ...report.metrics,
       calibrated_metrics: report.calibrated_metrics,
       interval_calibration: intervalCalibration,
+      uncertainty_calibration: uncertaintyCalibration,
     }, null, 2));
   }
 
@@ -3943,6 +4079,7 @@ async function main() {
     },
     checkpoints,
     baselines: baselineSummary,
+    uncertainty_calibration: uncertaintyCalibration,
     config: args,
     evaluations,
     caveats: [

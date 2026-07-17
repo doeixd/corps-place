@@ -137,3 +137,14 @@ export const pearsonCorrelation = (xs: number[], ys: number[]): number | null =>
   if (xVariance <= 1e-12 || yVariance <= 1e-12) return null;
   return covariance / Math.sqrt(xVariance * yVariance);
 };
+
+export const finiteSampleConformalQuantile = (
+  scores: readonly number[],
+  coverage: number,
+): number | null => {
+  const finite = scores.filter((value) => Number.isFinite(value) && value >= 0).sort((a, b) => a - b);
+  if (!finite.length) return null;
+  const boundedCoverage = Math.max(0, Math.min(1, coverage));
+  const rank = Math.min(finite.length, Math.max(1, Math.ceil((finite.length + 1) * boundedCoverage)));
+  return finite[rank - 1] ?? null;
+};

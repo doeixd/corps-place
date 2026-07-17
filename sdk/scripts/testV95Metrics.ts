@@ -3,6 +3,7 @@ import {
   addMetricValue,
   createMetricBucket,
   forecastMode,
+  finiteSampleConformalQuantile,
   historyBucket,
   identityAvailabilityMode,
   identitySupportBucket,
@@ -81,5 +82,8 @@ assert.equal(
 );
 assert.equal(pearsonCorrelation([1, 2, 3], [2, 4, 6]), 1);
 assert.equal(pearsonCorrelation([1, 1, 1], [2, 3, 4]), null);
+assert.equal(finiteSampleConformalQuantile([9, 1, 5, 2, 8, 3, 7, 4, 6], 0.8), 8);
+assert.equal(finiteSampleConformalQuantile([0.5, Number.NaN, -1, 1], 0.5), 1);
+assert.equal(finiteSampleConformalQuantile([], 0.8), null);
 
 process.stdout.write("V9.5 metric helpers verified\n");
