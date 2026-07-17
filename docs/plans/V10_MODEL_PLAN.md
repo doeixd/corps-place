@@ -1816,3 +1816,20 @@ to choose among checkpoints.
   but uninformative). A defensible soup must average genuinely distinct
   checkpoints (e.g. best_phase_b vs best_composite); adopt only the variant
   that helps or is neutral across both seeds on frozen validation.
+
+### 2026-07-17 — checkpoint-soup both-seed confirmation
+
+- seed 42 cross-phase soup (best_phase_b@34 + best_composite@68) vs its
+  selected epoch-68 checkpoint: recap 0.3725 vs 0.3746, total 1.088 vs 1.107,
+  zero 4.73 vs 6.44, sparse 2.21 vs 2.47 — all better — but established 0.945
+  vs 0.907, worse by 0.038 (right at the 0.041 established MDE).
+- Combined with seed 43 (soup helped recap/total/established/zero, hurt sparse):
+  across both seeds the soup consistently improves recap, total, and
+  zero-history; established and sparse are mixed within the noise floor. seed
+  42 averaged checkpoints 34 epochs apart across the B->C boundary and still
+  won the aggregate — weight averaging is robust in this regimen.
+- Decision: adopt the soup as a post-training candidate evaluated alongside
+  the selected checkpoint (never silently replacing it). Guardrail: because it
+  nicked established on seed 42, the established-history non-inferiority margin
+  must be checked per-seed before a soup can be the shipped checkpoint. Classic
+  tail-averaged SWA remains rejected.
