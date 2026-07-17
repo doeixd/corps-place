@@ -1928,3 +1928,42 @@ building on it; both are cheap and do not need the terminal models.
    (recap 0.004, total 0.085, established 0.041) and to hold across both seeds
    and show-clustered intervals — a single-seed single-cohort number is
    directional only.
+
+### 2026-07-17 — queued LR-schedule ablation: match cosine period to run length
+
+**Observation.** Under the fixed 10/40 regimen the validation metrics settle by
+epoch ~45–64 and then oscillate in a band (recap ~0.37–0.39, total ~1.0–1.13)
+to early stop. This is not "LR never lowers": the persistent plateau multiplier
+drives the effective LR to the `minLr` floor (0.00075 → 0.00031 → 0.00014 →
+0.000057 → 0.00003) and the band persists at the floor, so the oscillation is
+dominated by the stochastic regime (4,096 resampled, re-augmented rows/epoch on
+a 363-row validation set), not step size.
+
+**The real defect is decay *shape*, not floor.** `cosineBaseLearningRate` is
+computed with `epochs = args.epochs = 160` (the max), while runs early-stop
+near epoch ~120. The cosine therefore never finishes: at the epoch that
+produces the best composite (~64) the base LR is still ~0.00054 (72% of peak),
+and real late decay comes only reactively from the plateau multiplier, whose
+first reduction (~epoch 76) lands *after* the best checkpoint. During the
+productive window (epochs ~40–70) the LR is too high to settle, so the model
+bounces across equally-good solutions instead of tightening into one.
+
+**Queued ablation (one knob, paired seeds 42/43, fixed 10/40, dev3 contract):**
+set the cosine period to the expected run length rather than the epoch ceiling
+— e.g. compute `cosineBaseLearningRate` with `epochs ≈ 110` (or add an explicit
+`--cosine-period` arg) so LR is ~0.0003 at epoch 64 instead of ~0.00054. Keep
+the peak (0.00075) and warmup unchanged; this steepens the mid-run decay only.
+
+**Guardrails / do-not-confuse.**
+- This is *not* a lower peak. The archive's 0.00055 scale run under-optimized
+  early and lost; lowering the whole schedule is rejected. Preserve peak +
+  warmup and change only the decay period.
+- Distinct from the queued phase-aware-LR treatment, which *holds* the peak
+  through phase B and decays after — the opposite direction. Test both against
+  the fixed-cosine control; do not combine them in the first run.
+- Selection stays on the composite metric; report recap MAE headline, every
+  history slice, and the checkpoint-soup candidate. A win must clear the
+  paired-seed MDE (recap 0.004, total 0.085) across both seeds before it counts.
+- Expected upside is a tighter, higher single checkpoint (less reliance on the
+  soup), not necessarily a large aggregate MAE move; judge it on whether the
+  selected checkpoint improves and whether the band narrows.
