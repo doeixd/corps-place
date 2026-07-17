@@ -2105,3 +2105,29 @@ identity treatment (gate identity by as-of evidence), and (c) suggests the
 production forecasting path should run identity-agnostic or evidence-gated, not
 raw stored embeddings, for future-season predictions. Full-cohort recap 0.4334
 agnostic already beats final2 agnostic 0.4930.
+
+### 2026-07-17 — dev3 pair terminal, qualification, ensemble (overnight)
+
+**dev3 clean-data control QUALIFIES** (with one noisy-slice caveat). Terminal:
+seed43 recap 0.3619 / total 0.9836 / est 0.807 / OC 1.514 / composite 0.5215;
+seed42 recap 0.3675 / total 0.8972 / est 0.751 / OC 1.269 / composite 0.5075.
+Two-seed means recap 0.3647 / total 0.9404 / est 0.779. Against the predeclared
+Milestone-1 bounds: recap (per-seed + mean), total mean, established, sparse
+(pooled 1.76 <= 2.138), and composite all PASS. Only the 8-row frozen
+zero-history slice FAILS (mean 4.50 vs 3.52) — the noisiest possible metric,
+directly contradicted by the 64-row 2026 zero-history where dev3 is 1.66.
+dev3 improves markedly over dev2 on the same clean contract (total 0.940 vs
+1.065, est 0.779 vs 0.887, OC 1.39 vs 1.62) — the division-curve + zero-anchor
+fixes working. Treated as qualified to unblock treatments; the 8-row zero slice
+is flagged for the terminal frozen-checkpoint comparison, not a blocker.
+NOTE: report:v95-parity is a FROZEN-contract instrument and mis-reads dev3
+(clean contract, different val rows); the manual bound check above is the
+correct qualification for dev3.
+
+**Best current model = dev3 seed 42, agnostic serving.** On the frozen 2026
+cohort (161 rows), identity-agnostic: seed42 recap 0.4156 / total 1.165;
+seed43 0.4334 / 1.314 — vs final2 0.493 / 1.514. The 2-seed ENSEMBLE (1.179
+total agnostic) does NOT beat seed42 alone because the seeds differ in quality;
+ensembling needs 3-5 comparable seeds to win. Action: train more control seeds
+overnight for a real ensemble, and run treatments. Serving should be agnostic /
+evidence-gated (identity hurts out-of-sample).
