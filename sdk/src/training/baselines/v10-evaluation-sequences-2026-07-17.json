@@ -16,10 +16,10 @@
     "bad_static_dim": 0,
     "bad_judge_slots": 0,
     "unknown_corps_rows": 2,
-    "unknown_show_rows": 6,
+    "unknown_show_rows": 11,
     "unknown_judge_rows": 161,
     "max_corps_id": 50,
-    "max_show_id": 298
+    "max_show_id": 287
   },
   "temporal": {
     "caption_rows": 1288,
