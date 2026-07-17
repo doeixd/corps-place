@@ -445,11 +445,16 @@ const main = async () => {
   );
   const cardDir = candidateMode ? referenceModelDir : modelDir;
   const card = JSON.parse(fs.readFileSync(path.join(cardDir, "model-card.json"), "utf8")) as any;
+  // V10 clean-contract models live in ml_sequence_rows_v10_clean_control; final2
+  // and V9.5 use the default. The training --db and --evaluation-db must both use
+  // the named table (row_id ordering and the same 212-wide static contract).
+  const mlTable = getArg("--ml-table", "ml_sequence_rows_v9_subcaption");
+  if (!/^[a-z0-9_]+$/i.test(mlTable)) throw new Error(`Invalid --ml-table: ${mlTable}`);
   const query = `
     SELECT season, competition_slug, competition_date, corps_key, corps_id,
       x_sequence_json, x_static_json, judge_indices_json, y_recap_json,
       agnostic_show_id, division_name, split
-    FROM ml_sequence_rows_v9_subcaption
+    FROM ${mlTable}
     ORDER BY row_id;
   `;
   const rawRows = JSON.parse(execFileSync("sqlite3", ["-json", dbPath, query], {
