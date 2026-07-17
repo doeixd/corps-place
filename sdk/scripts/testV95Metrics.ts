@@ -4,6 +4,8 @@ import {
   createMetricBucket,
   forecastMode,
   historyBucket,
+  identityAvailabilityMode,
+  identitySupportBucket,
   mapBuckets,
   pearsonCorrelation,
   seasonPhase,
@@ -50,6 +52,19 @@ assert.deepEqual([0, 1, 2, 4, 5].map(historyBucket), [
   "short_history",
   "established_history",
 ]);
+assert.deepEqual([0, 0.1, 0.2, 0.49, 0.5, 1].map(identitySupportBucket), [
+  "no_prior_support",
+  "low_support",
+  "medium_support",
+  "medium_support",
+  "established_support",
+  "established_support",
+]);
+assert.equal(identityAvailabilityMode({ sourceKnown: true, inputKnown: true, explicitlyHidden: false }), "known");
+assert.equal(identityAvailabilityMode({ sourceKnown: false, inputKnown: false, explicitlyHidden: false }), "source_unknown");
+assert.equal(identityAvailabilityMode({ sourceKnown: true, inputKnown: false, explicitlyHidden: false }), "augmentation_hidden");
+assert.equal(identityAvailabilityMode({ sourceKnown: true, inputKnown: false, explicitlyHidden: true }), "explicitly_hidden");
+assert.equal(identityAvailabilityMode({ sourceKnown: false, inputKnown: false, explicitlyHidden: true }), "explicitly_hidden_source_unknown");
 
 const clearFlags = {
   forecastContextHidden: false,

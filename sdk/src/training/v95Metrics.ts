@@ -79,6 +79,30 @@ export const historyBucket = (
   return "established_history";
 };
 
+export const identitySupportBucket = (
+  trust: number,
+): "no_prior_support" | "low_support" | "medium_support" | "established_support" => {
+  if (trust <= 0) return "no_prior_support";
+  if (trust < 0.2) return "low_support";
+  if (trust < 0.5) return "medium_support";
+  return "established_support";
+};
+
+export type IdentityAvailabilityFlags = {
+  sourceKnown: boolean;
+  inputKnown: boolean;
+  explicitlyHidden: boolean;
+};
+
+export const identityAvailabilityMode = (flags: IdentityAvailabilityFlags): string => {
+  if (flags.explicitlyHidden) {
+    return flags.sourceKnown ? "explicitly_hidden" : "explicitly_hidden_source_unknown";
+  }
+  if (!flags.sourceKnown) return "source_unknown";
+  if (!flags.inputKnown) return "augmentation_hidden";
+  return "known";
+};
+
 export type ForecastModeFlags = {
   forecastContextHidden: boolean;
   lineupContextHidden: boolean;

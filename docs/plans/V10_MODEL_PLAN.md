@@ -1550,3 +1550,15 @@ to choose among checkpoints.
   diagnostics (the early chronological smoke rows correctly had zero prior show
   support). Its metrics are wiring evidence only; full comparison remains
   blocked until the clean-data control completes and qualifies.
+- **Identity evidence evaluation contract, 2026-07-17.** Uniform sliced
+  evaluation now reports corps, judge-panel, and agnostic-show availability as
+  `known`, `source_unknown`, `augmentation_hidden`, `explicitly_hidden`, or
+  `explicitly_hidden_source_unknown`; absence in the clean source is therefore
+  no longer conflated with a training mask. The same reports bucket each
+  identity type by target-date-as-of support (`no_prior_support`, `low_support`,
+  `medium_support`, and `established_support`) whether or not the model uses
+  support gating, preserving a fair
+  control-versus-treatment comparison. A full graph/package smoke verified all
+  six model-card views and the explicit panel-hidden mode. Apply this evaluator
+  uniformly to retained clean-control and treatment checkpoints; old cards that
+  predate these views are not sufficient evidence by themselves.

@@ -31,6 +31,8 @@ import {
   createMetricBucket,
   forecastMode,
   historyBucket,
+  identityAvailabilityMode,
+  identitySupportBucket,
   mapBuckets,
   pearsonCorrelation,
   seasonPhase,
@@ -327,6 +329,12 @@ function evaluateSamples(
   const byJudgeMode: Record<string, MetricBucket> = {};
   const byHistory: Record<string, MetricBucket> = {};
   const byForecastMode: Record<string, MetricBucket> = {};
+  const byCorpsIdentityMode: Record<string, MetricBucket> = {};
+  const byJudgeIdentityMode: Record<string, MetricBucket> = {};
+  const byShowIdentityMode: Record<string, MetricBucket> = {};
+  const byCorpsSupport: Record<string, MetricBucket> = {};
+  const byJudgeSupport: Record<string, MetricBucket> = {};
+  const byShowSupport: Record<string, MetricBucket> = {};
   const fingerprintDiagnostics = Object.fromEntries(CAPTIONS.map((caption) => [caption, {
     fingerprint: [] as number[],
     actualResidual: [] as number[],
@@ -382,6 +390,12 @@ function evaluateSamples(
         [byJudgeMode, judgeMode],
         [byHistory, history],
         [byForecastMode, forecast],
+        [byCorpsIdentityMode, sample.meta.corpsIdentityMode],
+        [byJudgeIdentityMode, sample.meta.judgeIdentityMode],
+        [byShowIdentityMode, sample.meta.showIdentityMode],
+        [byCorpsSupport, identitySupportBucket(sample.meta.corpsSupportTrust)],
+        [byJudgeSupport, identitySupportBucket(sample.meta.judgeSupportTrust)],
+        [byShowSupport, identitySupportBucket(sample.meta.showSupportTrust)],
       ];
       rowBuckets.forEach(([buckets, key]) => {
         addMetricValue(buckets, key, (bucket) => { bucket.rows += 1; });
@@ -490,6 +504,12 @@ function evaluateSamples(
     by_judge_mode: mapBuckets(byJudgeMode),
     by_history: mapBuckets(byHistory),
     by_forecast_mode: mapBuckets(byForecastMode),
+    by_corps_identity_mode: mapBuckets(byCorpsIdentityMode),
+    by_judge_identity_mode: mapBuckets(byJudgeIdentityMode),
+    by_show_identity_mode: mapBuckets(byShowIdentityMode),
+    by_corps_support: mapBuckets(byCorpsSupport),
+    by_judge_support: mapBuckets(byJudgeSupport),
+    by_show_support: mapBuckets(byShowSupport),
     caption_fingerprint_diagnostics: Object.fromEntries(
       Object.entries(fingerprintDiagnostics).map(([caption, values]) => [caption, {
         samples: values.fingerprint.length,
@@ -1306,6 +1326,9 @@ type Sample = {
     corpsSupportTrust: number;
     judgeSupportTrust: number;
     showSupportTrust: number;
+    corpsIdentityMode: string;
+    judgeIdentityMode: string;
+    showIdentityMode: string;
     forecastContextHidden: boolean;
     lineupContextHidden: boolean;
     seasonDebut: boolean;
@@ -1664,6 +1687,9 @@ function buildSamples(
     const retainedJudgeTrust = judgeIndices.flatMap((index, slot) =>
       index > 0 ? [row.judgeSupportTrust[slot] ?? 0] : []
     );
+    const sourceJudgeTrust = row.judgeIndices.flatMap((index, slot) =>
+      index > 0 ? [row.judgeSupportTrust[slot] ?? 0] : []
+    );
     const judgeTrust = SUPPORT_AWARE_IDENTITY
       ? retainedJudgeTrust.length
         ? retainedJudgeTrust.reduce((sum, value) => sum + value, 0) / retainedJudgeTrust.length
@@ -1707,9 +1733,26 @@ function buildSamples(
         historyTruncated: truncationCount !== null,
         sameSeasonHistoryCount: effectiveSameSeasonHistoryCount,
         thinBaselineBlended: thinBaselineApplied,
-        corpsSupportTrust: corpsTrust,
-        judgeSupportTrust: judgeTrust,
-        showSupportTrust: showTrust,
+        corpsSupportTrust: row.corpsSupportTrust,
+        judgeSupportTrust: sourceJudgeTrust.length
+          ? sourceJudgeTrust.reduce((sum, value) => sum + value, 0) / sourceJudgeTrust.length
+          : 0,
+        showSupportTrust: row.showSupportTrust,
+        corpsIdentityMode: identityAvailabilityMode({
+          sourceKnown: row.corpsId > 0,
+          inputKnown: corpsId > 0,
+          explicitlyHidden: false,
+        }),
+        judgeIdentityMode: identityAvailabilityMode({
+          sourceKnown: row.judgeIndices.every((index) => index > 0),
+          inputKnown: judgeIndices.every((index) => index > 0),
+          explicitlyHidden: hideJudges,
+        }),
+        showIdentityMode: identityAvailabilityMode({
+          sourceKnown: row.agnosticShowId > 0,
+          inputKnown: agnosticShowId > 0,
+          explicitlyHidden: hideForecastContext,
+        }),
         forecastContextHidden: hideForecastContext,
         lineupContextHidden: hideLineupContext,
         seasonDebut: (staticFeatures[COLD_START_STATIC_OFFSET] ?? 0) >= 0.5,
