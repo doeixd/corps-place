@@ -239,13 +239,27 @@ echo "[auto-ingest $(ts)] recent show(s) present; scraping $SEASON recaps${slugs
 # and silently targets nothing when they differ (2026-dci-central-texas sat
 # unscraped all night, 2026-07-17); --slugs still covers the partial-ingest
 # (completeness) re-scrape, where the show already has some scores.
-if ! out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 --new-only ${slugs_arg} 2>&1)"; then
-  rc=$?
+# NOTE: capture rc OUTSIDE an `if !` — inside that branch `$?` is the NEGATED
+# status (always 0), which mislabeled every run "scrape FAILED (rc=0)". And the
+# scrape process reliably LINGERS after printing its summary (camofox session
+# handle keeps the event loop alive), so timeout kills it with rc=124 AFTER a
+# fully successful scrape — 2026-07-17 this stranded ingested scores with no
+# publish/notify. Success = the summary marker in the output, not the exit code.
+set +e
+out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 --new-only ${slugs_arg} 2>&1)"
+rc=$?
+set -e
+case "$out" in *"recaps found: 0 (unique: 0)"*)
+  touch "$WAF_BACKOFF"
+  echo "[auto-ingest $(ts)] score list came back EMPTY — WAF block suspected; backing off 45 min." ;;
+esac
+scrape_ok=false
+case "$out" in *"Corps scores ingested:"*) scrape_ok=true ;; esac
+if [ "$rc" -ne 0 ] && [ "$scrape_ok" = true ]; then
+  echo "[auto-ingest $(ts)] scrape completed but the process lingered (rc=$rc, killed by timeout) — treating as success."
+fi
+if [ "$scrape_ok" != true ]; then
   printf '%s\n' "$out" | tail -20
-  case "$out" in *"recaps found: 0 (unique: 0)"*)
-    touch "$WAF_BACKOFF"
-    echo "[auto-ingest $(ts)] score list came back EMPTY — WAF block suspected; backing off 45 min." ;;
-  esac
   if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
     echo "[auto-ingest $(ts)] scrape TIMED OUT after 5m (hung fetch) — killed; next run retries"
   else
@@ -256,10 +270,6 @@ if ! out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --seaso
   exit 1
 fi
 printf '%s\n' "$out" | tail -6
-case "$out" in *"recaps found: 0 (unique: 0)"*)
-  touch "$WAF_BACKOFF"
-  echo "[auto-ingest $(ts)] score list came back EMPTY — WAF block suspected; backing off 45 min." ;;
-esac
 
 after="$(count_scores)"
 echo "[auto-ingest $(ts)] scores after=$after (delta=$((after - before)))"
