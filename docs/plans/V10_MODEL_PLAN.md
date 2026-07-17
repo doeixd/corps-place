@@ -2054,3 +2054,39 @@ shipped model is: {clean-data + division curves + zero-anchor} control, best
 checkpoint (soup + recap/Pareto re-selection), multi-seed ensembled, with
 history/division/conformal interval calibration — plus any treatment that
 independently cleared the paired-seed MDE overnight.
+
+### 2026-07-17 — free training-speed wins (WSL, 16 cores, no GPU)
+
+Measured: each `trainModelV10Final` job uses ~1.2 cores and ~1.3 GB RSS; with
+two jobs the 16-core box sits at load ~2.2 (≈85% idle). Training is RAM-limited,
+not CPU-limited, and each job is effectively single-threaded (JS data pipeline /
+per-epoch eval dominates, not TF matmuls). No NVIDIA GPU present, so the GPU
+path is closed.
+
+1. **Run 5–6 jobs concurrently, not 2–3 (biggest lever).** ~1.3 GB/job into
+   ~10.5 GB free = ~6 with headroom; 16 cores means no CPU contention at that
+   count. Roughly triples overnight throughput — the whole experiment matrix
+   (control seeds, treatments ×2 seeds, LR ablations, capacity) can run largely
+   in parallel instead of serially. Watch RAM (keep >~2 GB free) and host C:
+   disk; do not exceed ~6 without re-checking `free -m`.
+
+2. **Tighten early-stop patience 60 → ~35 for experiment runs.** The plateau LR
+   multiplier reaches the `minLr` floor and the monitor flatlines by ~epoch 76;
+   patience 60 then burns ~25 confirmed-flat epochs (~33 min/run) after the best
+   checkpoint is already saved. The composite selector + checkpoint soup capture
+   the best point, so this is safe wall-clock savings. Pass `--patience 35` (do
+   not retro-apply to the in-flight control pair; use for all new runs).
+
+3. **(near-free, small code change) Cut per-epoch eval cost.** Each epoch scores
+   the full 16-population sliced suite; that is likely a large share of the
+   ~80 s/epoch. Run the full slice suite only every N epochs (keep the single
+   monitor metric per-epoch for early-stop/LR), and the full suite at terminal.
+   Real speedup but touches the training loop — validate the monitor still
+   drives early-stop/LR before trusting it; do not do this mid-matrix without a
+   focused check.
+
+Not worth it: forcing more TF intra-op threads (jobs are data-pipeline-bound;
+extra threads add contention once 5–6 jobs run) and any GPU path (none).
+
+Overnight policy: default to 5–6 concurrent, `--patience 35` on new runs, RAM
+and disk checked before each launch batch.
