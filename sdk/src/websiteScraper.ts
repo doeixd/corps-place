@@ -759,15 +759,39 @@ export const scrapeWebsiteRecapsForSeason = (
     // New-only targeting: any listed entry with zero ingested scores under ITS OWN
     // id is a recap we don't have — target it no matter what it's called. The id
     // comes straight from the site's recap URL, so slug guessing can't miss.
+    //
+    // Attempt cooldown: some listed entries are score-announcement-only pages that
+    // NEVER parse as recaps (e.g. 2026-brass-impact) — they'd stay at zero scores
+    // forever and get re-fetched (slow, hang-prone camofox pages) on every poll.
+    // Track attempts and only retry an entry after a cooldown, so a dead page
+    // costs one fetch burst per window while a freshly-listed recap (no attempt
+    // row) is still fetched immediately.
+    const NEW_ONLY_RETRY_COOLDOWN_MIN = 30;
     const newIds = new Set<string>();
     if (options.newOnly) {
+      yield* (
+        sql`
+          CREATE TABLE IF NOT EXISTS website_recap_attempts (
+            slug TEXT PRIMARY KEY,
+            season TEXT NOT NULL,
+            attempts INTEGER NOT NULL DEFAULT 0,
+            last_attempt_at TEXT NOT NULL
+          )
+        `.pipe(Effect.orDie)
+      );
+      const cutoff = new Date(Date.now() - NEW_ONLY_RETRY_COOLDOWN_MIN * 60_000).toISOString();
       for (const entry of unique.values()) {
         const rows = yield* (
-          sql<{ n: number }>`
-            SELECT COUNT(*) AS n FROM corps_scores WHERE competition_slug = ${entry.id}
+          sql<{ n: number; recent: number }>`
+            SELECT
+              (SELECT COUNT(*) FROM corps_scores WHERE competition_slug = ${entry.id}) AS n,
+              EXISTS(
+                SELECT 1 FROM website_recap_attempts
+                WHERE slug = ${entry.id} AND last_attempt_at > ${cutoff}
+              ) AS recent
           `.pipe(Effect.orDie)
         );
-        if (Number(rows[0]?.n ?? 0) === 0) newIds.add(entry.id);
+        if (Number(rows[0]?.n ?? 0) === 0 && !Number(rows[0]?.recent ?? 0)) newIds.add(entry.id);
       }
     }
     const targetEntries =
@@ -776,6 +800,24 @@ export const scrapeWebsiteRecapsForSeason = (
             (entry) => newIds.has(entry.id) || (only ? only.has(entry.id) : false)
           )
         : [...unique.values()];
+    // Record attempts BEFORE fetching: a hung fetch gets SIGKILLed by the caller's
+    // timeout, so post-run bookkeeping would never run and the hanging page would
+    // be retried every poll forever. On success the entry gains scores and the
+    // zero-scores check excludes it regardless.
+    if (options.newOnly) {
+      const nowIso = new Date().toISOString();
+      for (const entry of targetEntries) {
+        if (!newIds.has(entry.id)) continue;
+        yield* (
+          sql`
+            INSERT INTO website_recap_attempts (slug, season, attempts, last_attempt_at)
+            VALUES (${entry.id}, ${season}, 1, ${nowIso})
+            ON CONFLICT(slug) DO UPDATE SET
+              attempts = attempts + 1, last_attempt_at = ${nowIso}
+          `.pipe(Effect.orDie)
+        );
+      }
+    }
     yield* (
       Effect.logInfo(
         `[website] ${season} score list recaps found: ${entriesResult.entries.length} (unique: ${unique.size})` +
