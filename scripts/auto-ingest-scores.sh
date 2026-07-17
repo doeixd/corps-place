@@ -37,6 +37,17 @@ exec 9>"$LOCK"
 flock -n 9 || { echo "[auto-ingest $(date -u +%FT%TZ)] another run holds the lock; exiting"; exit 0; }
 
 ts() { date -u +%FT%TZ; }
+
+# WAF backoff: dci.org's WordPress firewall IP-blocks us after a burst of page
+# fetches (seen 2026-07-17: score list suddenly returns 0 entries, recap pages
+# serve "WP Remote Firewall — Blocked"). An EMPTY score list mid-season is never
+# legitimate, so a scrape that sees one writes this marker and we stop hammering
+# for 45 min — continued polling only extends the block.
+WAF_BACKOFF="/tmp/dci-waf-backoff"
+if [ -f "$WAF_BACKOFF" ] && [ -n "$(find "$WAF_BACKOFF" -mmin -45 2>/dev/null)" ]; then
+  echo "[auto-ingest $(ts)] in WAF backoff (score list came back empty $(date -u -r "$WAF_BACKOFF" +%FT%TZ)) — skipping to let the block expire."
+  exit 0
+fi
 count_scores() { sqlite3 "$DB" "SELECT COUNT(*) FROM corps_scores;" 2>/dev/null || echo 0; }
 # Does this event have ingested scores? Resolve the competition slug the way the
 # read-model does — bare slug, season-prefixed slug, OR the event_to_competition
@@ -231,6 +242,10 @@ echo "[auto-ingest $(ts)] recent show(s) present; scraping $SEASON recaps${slugs
 if ! out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 --new-only ${slugs_arg} 2>&1)"; then
   rc=$?
   printf '%s\n' "$out" | tail -20
+  case "$out" in *"recaps found: 0 (unique: 0)"*)
+    touch "$WAF_BACKOFF"
+    echo "[auto-ingest $(ts)] score list came back EMPTY — WAF block suspected; backing off 45 min." ;;
+  esac
   if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
     echo "[auto-ingest $(ts)] scrape TIMED OUT after 5m (hung fetch) — killed; next run retries"
   else
@@ -241,6 +256,10 @@ if ! out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --seaso
   exit 1
 fi
 printf '%s\n' "$out" | tail -6
+case "$out" in *"recaps found: 0 (unique: 0)"*)
+  touch "$WAF_BACKOFF"
+  echo "[auto-ingest $(ts)] score list came back EMPTY — WAF block suspected; backing off 45 min." ;;
+esac
 
 after="$(count_scores)"
 echo "[auto-ingest $(ts)] scores after=$after (delta=$((after - before)))"
