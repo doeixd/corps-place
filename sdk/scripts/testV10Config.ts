@@ -51,6 +51,12 @@ assert.equal(V10_PROFILES["combined-candidate"].expectedTrainableParameters, nul
 const fieldPace = parseV95Args(v10DefaultArgs("field-pace"));
 assert.equal(fieldPace.rawStaticDim, 216);
 assert.equal(V10_PROFILES["field-pace"].expectedTrainableParameters, 1_037_451);
+const thinHistory = parseV95Args(v10DefaultArgs("thin-history"));
+assert.equal(thinHistory.mlTable, "ml_sequence_rows_v10_clean_control");
+assert.equal(thinHistory.thinHistorySampleFraction, 0.45);
+assert.equal(thinHistory.thinHistoryTruncationRate, 0.25);
+assert.equal(thinHistory.thinHistoryBaselineBlend, true);
+assert.equal(V10_PROFILES["thin-history"].expectedTrainableParameters, 1_034_259);
 
 const overridden = parseV95Args(mergeV10Args("scaled-control", ["--lr", "0.0006", "--seed", "42"], 42));
 assert.equal(overridden.learningRate, 0.0006);

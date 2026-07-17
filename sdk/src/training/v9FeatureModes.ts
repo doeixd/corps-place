@@ -43,6 +43,8 @@ const STATIC_RANK_BASELINE_END = 128;
 // made maskV9PreseasonForecastContext zero a subcaption feature instead of the
 // past-shows count. Verified against stored rows (idx 136 = k/40, idx 168 = a score).
 const STATIC_PAST_SHOWS_COUNT_IDX = 136;
+const STATIC_SUBCAPTION_HISTORY_START = 137;
+const STATIC_SUBCAPTION_HISTORY_END = 168;
 
 export const V9_FEATURE_INDICES = {
   previousRank: STATIC_PREV_RANK_IDX,
@@ -98,6 +100,28 @@ export function maskV9JudgeContext(staticFeatures: number[]) {
   for (let idx = STATIC_JUDGE_ELO_START; idx <= STATIC_JUDGE_ELO_END; idx++) {
     staticFeatures[idx] = 0;
   }
+}
+
+export function maskV9ThinHistoryContext(
+  staticFeatures: number[],
+  retainedCount: number,
+  options: { lastRankNorm?: number; residualMean?: number } = {},
+) {
+  const count = Math.max(0, Math.min(3, Math.floor(retainedCount)));
+  const previousRank = staticFeatures[STATIC_PREV_RANK_IDX] ?? neutralRankNorm;
+  const meanRank = staticFeatures[STATIC_MEAN_RANK_IDX] ?? neutralRankNorm;
+  const rank = Number.isFinite(options.lastRankNorm) ? options.lastRankNorm! : previousRank;
+  staticFeatures[STATIC_SEQUENCE_LENGTH_IDX] = count / 15;
+  staticFeatures[STATIC_RANK_EMA_IDX] = rank;
+  staticFeatures[STATIC_RESIDUAL_EMA_IDX] = options.residualMean ?? 0;
+  staticFeatures[STATIC_RESIDUAL_SLOPE_IDX] = 0;
+  staticFeatures[STATIC_RESIDUAL_VOLATILITY_IDX] = 0;
+  staticFeatures[STATIC_RANK_VS_HISTORICAL_IDX] = rank - meanRank;
+  staticFeatures[STATIC_PAST_SHOWS_COUNT_IDX] = count / 40;
+  staticFeatures[V9_COLD_START_STATIC_OFFSET] = count === 0 ? 1 : 0;
+  staticFeatures[V9_COLD_START_STATIC_OFFSET + 1] = count / 40;
+  for (let idx = STATIC_LAST_RESIDUAL_START; idx <= STATIC_LAST_RESIDUAL_END; idx++) staticFeatures[idx] = 0;
+  for (let idx = STATIC_SUBCAPTION_HISTORY_START; idx <= STATIC_SUBCAPTION_HISTORY_END; idx++) staticFeatures[idx] = 0;
 }
 
 export function maskV9LineupContext(staticFeatures: number[], fieldSize?: number) {

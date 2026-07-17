@@ -103,6 +103,9 @@ export const parseV95Args = (
     autoCurriculumPhaseAMin: Number(get("--auto-curriculum-phase-a-min", "6")),
     autoCurriculumPhaseBMin: Number(get("--auto-curriculum-phase-b-min", "18")),
     sequenceTransitionEpochs: Number(get("--sequence-transition-epochs", "0")),
+    thinHistorySampleFraction: Number(get("--thin-history-sample-fraction", "0")),
+    thinHistoryTruncationRate: Number(get("--thin-history-truncation-rate", "0")),
+    thinHistoryBaselineBlend: get("--thin-history-baseline-blend", "false") === "true",
   };
 };
 

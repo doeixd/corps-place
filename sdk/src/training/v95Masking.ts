@@ -66,3 +66,17 @@ export const buildForecastBaseline = (
     return Math.max(0, Math.min(scoreScale, curve + adjustments[index]!));
   });
 };
+
+export const blendThinHistoryBaseline = (
+  lastRecap: readonly number[],
+  priorSeasonBaseline: readonly number[],
+  sameSeasonHistoryCount: number,
+  priorWeights: readonly number[] = [0.5, 0.3, 0.15],
+): number[] => {
+  const count = Math.max(0, Math.floor(sameSeasonHistoryCount));
+  if (count === 0) return [...priorSeasonBaseline];
+  const priorWeight = priorWeights[count - 1] ?? 0;
+  return lastRecap.map((value, index) =>
+    (1 - priorWeight) * value + priorWeight * (priorSeasonBaseline[index] ?? value)
+  );
+};

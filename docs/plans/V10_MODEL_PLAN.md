@@ -1519,3 +1519,16 @@ to choose among checkpoints.
   `224` total static features and its graph smoke produced exactly `1,037,451`
   trainable parameters. This proves the ablation is runnable after the clean
   control qualifies; its one-epoch smoke metrics are not quality evidence.
+- **Thin-history P2/P3 implementation, 2026-07-17.** The independent treatment
+  now uses the same clean 220-input graph and changes only the training/evidence
+  regimen: show-grouped sampling targets a 45% thin-history share, 25% of rows
+  with four-plus observations are truncated to one-to-three recent observations,
+  and the trainer masks/recomputes recency-derived static state while retaining
+  prior-season rank/fingerprint evidence. For actual or augmented show 1/2/3,
+  the baseline blends the prior-season curve/fingerprint anchor at
+  `.50/.30/.15`; the same deterministic blend is used in validation/evaluation.
+  Epoch logs record sampled, truncated, and blended counts, and model cards store
+  the treatment settings. Unit tests pin the blend and masking behavior, the
+  V10 profile remains a `1,034,259`-parameter ablation, and a complete one-epoch
+  graph/package smoke passed. Full training remains blocked until the clean-data
+  control supplies the comparison baseline.

@@ -24,6 +24,7 @@ import {
   V9_COLD_START_STATIC_OFFSET,
   V9_FEATURE_INDICES,
   V9_RAW_STATIC_DIM,
+  maskV9ThinHistoryContext,
 } from "./v9FeatureModes.js";
 import {
   addMetricValue,
@@ -49,7 +50,7 @@ import {
   type CurriculumConfig as AutoCurriculumConfig,
   type CurriculumTransition,
 } from "./v95Curriculum.js";
-import { buildForecastBaseline, selectV95Masking } from "./v95Masking.js";
+import { blendThinHistoryBaseline, buildForecastBaseline, selectV95Masking } from "./v95Masking.js";
 import {
   checkpointDecisions,
   selectFinalWeightsMode,
@@ -963,6 +964,8 @@ class SequenceDataProviderV9 {
   private worldShows: DataRow[][];
   private openShows: DataRow[][];
   private allShows: DataRow[][];
+  private worldThinShows: DataRow[][];
+  private openThinShows: DataRow[][];
 
   constructor(
     private rows: DataRow[],
@@ -971,12 +974,15 @@ class SequenceDataProviderV9 {
     private longSequenceStartEpoch: number = CURRICULUM_PHASE_A_END,
     private sequenceTransitionEpochs: number = 0,
     private openSampleFraction: number = OPEN_CLASS_SAMPLE_FRACTION,
+    private thinHistorySampleFraction: number = 0,
   ) {
     this.worldRows = this.rows.filter(r => r.division === "World Class");
     this.openRows = this.rows.filter(r => r.division === "Open Class");
     this.worldShows = this.groupByShow(this.worldRows);
     this.openShows = this.groupByShow(this.openRows);
     this.allShows = this.groupByShow(this.rows);
+    this.worldThinShows = this.worldShows.filter((show) => this.isThinShow(show));
+    this.openThinShows = this.openShows.filter((show) => this.isThinShow(show));
   }
 
   setEpoch(epoch: number) {
@@ -1003,8 +1009,8 @@ class SequenceDataProviderV9 {
     const openCount = Math.floor(count * Math.max(0, Math.min(0.5, this.openSampleFraction)));
     const worldCount = count - openCount;
 
-    const worldSample = this.sampleShows(this.worldShows, worldCount, seed);
-    const openSample = this.sampleShows(this.openShows, openCount, seed + 1);
+    const worldSample = this.sampleDivision(this.worldShows, this.worldThinShows, worldCount, seed);
+    const openSample = this.sampleDivision(this.openShows, this.openThinShows, openCount, seed + 1);
     const merged = this.shuffle([...worldSample, ...openSample], seed + 2);
 
     return this.flattenShows(merged);
@@ -1018,6 +1024,21 @@ class SequenceDataProviderV9 {
       showMap.set(row.showKey, bucket);
     }
     return Array.from(showMap.values());
+  }
+
+  private isThinShow(show: DataRow[]) {
+    return show.some((row) => Math.round((row.stat[COLD_START_STATIC_OFFSET + 1] ?? 0) * 40) <= 3);
+  }
+
+  private sampleDivision(shows: DataRow[][], thinShows: DataRow[][], targetCount: number, seed: number) {
+    const fraction = Math.max(0, Math.min(0.8, this.thinHistorySampleFraction));
+    if (fraction <= 0 || thinShows.length === 0) return this.sampleShows(shows, targetCount, seed);
+    const thinTarget = Math.floor(targetCount * fraction);
+    const selectedThin = this.sampleShows(thinShows, thinTarget, seed);
+    const selectedKeys = new Set(selectedThin.map((show) => show[0]?.showKey));
+    const remainder = shows.filter((show) => !selectedKeys.has(show[0]?.showKey));
+    const selectedRegular = this.sampleShows(remainder, Math.max(0, targetCount - selectedThin.flat().length), seed + 17);
+    return this.shuffle([...selectedThin, ...selectedRegular], seed + 29);
   }
 
   private sampleShows(shows: DataRow[][], targetCount: number, seed: number): DataRow[][] {
@@ -1252,6 +1273,9 @@ type Sample = {
     historyLen: number;
     judgeKnown: boolean;
     historyHidden: boolean;
+    historyTruncated: boolean;
+    sameSeasonHistoryCount: number;
+    thinBaselineBlended: boolean;
     forecastContextHidden: boolean;
     lineupContextHidden: boolean;
     seasonDebut: boolean;
@@ -1376,6 +1400,8 @@ function buildSamples(
   judgeHideRate: number = 0,
   forecastContextHideRate: number = 0,
   lineupHideRate: number = 0,
+  thinHistoryTruncationRate: number = 0,
+  thinHistoryBaselineBlend: boolean = false,
 ): Sample[] {
   const samples: Sample[] = [];
   const rng = seededRandom(seed);
@@ -1404,8 +1430,20 @@ function buildSamples(
         lineup: lineupHideRate,
       },
     );
-    const slicedSeq = hideHistory ? [] : row.seq.slice(-seqLen);
-    const slicedMask = hideHistory ? [] : row.seqMask.slice(-seqLen).map((v) => (v ? 1 : 0));
+    const truncationCount = thinHistoryTruncationRate > 0 && observedPriorShowCount > 3 &&
+      rng() < thinHistoryTruncationRate
+      ? 1 + Math.floor(rng() * 3)
+      : null;
+    let sourceSeq = row.seq;
+    let sourceMask = row.seqMask;
+    if (truncationCount !== null) {
+      const validIndices = row.seqMask.flatMap((valid, index) => valid ? [index] : []);
+      const retained = new Set(validIndices.slice(-truncationCount));
+      sourceSeq = row.seq.map((step, index) => retained.has(index) ? step : new Array(FEAT_DIM).fill(0));
+      sourceMask = row.seqMask.map((_valid, index) => retained.has(index));
+    }
+    const slicedSeq = hideHistory ? [] : sourceSeq.slice(-seqLen);
+    const slicedMask = hideHistory ? [] : sourceMask.slice(-seqLen).map((v) => (v ? 1 : 0));
 
     while (slicedSeq.length < SEQ_LEN) {
       slicedSeq.unshift(new Array(FEAT_DIM).fill(0));
@@ -1449,6 +1487,18 @@ function buildSamples(
           baselineInputRaw[idx] = baselineRawVector[idx] ?? stats.recapMean[idx] ?? 0;
         }
       }
+    }
+    const effectiveSameSeasonHistoryCount = truncationCount ??
+      Math.max(0, Math.round((row.stat[COLD_START_STATIC_OFFSET + 1] ?? 0) * 40));
+    const thinBaselineApplied = thinHistoryBaselineBlend && !hideForecastContext && !hideHistory &&
+      lastScoreBaseline !== null && effectiveSameSeasonHistoryCount >= 1 && effectiveSameSeasonHistoryCount <= 3;
+    if (thinBaselineApplied && lastScoreBaseline) {
+      const blended = blendThinHistoryBaseline(
+        lastScoreBaseline,
+        forecastBaselineRaw,
+        effectiveSameSeasonHistoryCount,
+      );
+      for (let idx = 0; idx < CAPTION_COUNT; idx++) baselineInputRaw[idx] = blended[idx] ?? baselineInputRaw[idx]!;
     }
 
     if (baselineDropoutRate > 0 && rng() < baselineDropoutRate) {
@@ -1499,6 +1549,17 @@ function buildSamples(
 
     const trendFeatures = hideHistory ? new Array(CAPTION_COUNT).fill(0) : row.trendSlopes;
     let staticFeatures = [...row.stat];
+    if (truncationCount !== null && !hideHistory) {
+      const retainedSteps = slicedSeq.filter((_, index) => slicedMask[index] === 1);
+      const lastStep = retainedSteps.at(-1);
+      const residuals = retainedSteps.flatMap((step) => CAPTIONS.map((_, captionIndex) =>
+        step[RECAP_OFFSET_IN_FEATS + captionIndex * CAPTION_STRIDE] ?? 0
+      ));
+      maskV9ThinHistoryContext(staticFeatures, truncationCount, {
+        lastRankNorm: lastStep?.[11],
+        residualMean: residuals.length ? residuals.reduce((sum, value) => sum + value, 0) / residuals.length : 0,
+      });
+    }
     if (hideHistory) {
       staticFeatures[COLD_START_STATIC_OFFSET] = 0;
       staticFeatures[COLD_START_STATIC_OFFSET + 1] = 0;
@@ -1578,6 +1639,9 @@ function buildSamples(
         historyLen,
         judgeKnown: !hideJudges && row.judgeIndices.every((idx) => idx > 0),
         historyHidden: hideHistory,
+        historyTruncated: truncationCount !== null,
+        sameSeasonHistoryCount: effectiveSameSeasonHistoryCount,
+        thinBaselineBlended: thinBaselineApplied,
         forecastContextHidden: hideForecastContext,
         lineupContextHidden: hideLineupContext,
         seasonDebut: (staticFeatures[COLD_START_STATIC_OFFSET] ?? 0) >= 0.5,
@@ -1946,6 +2010,12 @@ async function main() {
   if (!Number.isInteger(args.sequenceTransitionEpochs) || args.sequenceTransitionEpochs < 0) {
     throw new Error("--sequence-transition-epochs must be a non-negative integer");
   }
+  for (const [flag, value] of [
+    ["--thin-history-sample-fraction", args.thinHistorySampleFraction],
+    ["--thin-history-truncation-rate", args.thinHistoryTruncationRate],
+  ] as const) {
+    if (!Number.isFinite(value) || value < 0 || value > 1) throw new Error(`${flag} must be in [0,1]`);
+  }
   if (args.reproductionContract && args.reproductionContract !== "final2") {
     throw new Error(`Unknown reproduction contract '${args.reproductionContract}'.`);
   }
@@ -1958,6 +2028,9 @@ async function main() {
     }
     if (args.valMode !== "date-forward" || args.valSplit !== 0.05 || args.valDateCutoff) {
       throw new Error("final2 reproduction requires date-forward validation at valSplit=0.05");
+    }
+    if (args.thinHistorySampleFraction !== 0 || args.thinHistoryTruncationRate !== 0 || args.thinHistoryBaselineBlend) {
+      throw new Error("final2 reproduction forbids thin-history treatments");
     }
     await verifyFinal2SourceDatabase(args.dbPath);
   }
@@ -2579,6 +2652,7 @@ async function main() {
     scheduler.getPhaseAEnd(),
     args.sequenceTransitionEpochs,
     args.openSampleFraction,
+    args.thinHistorySampleFraction,
   );
   const autoCurriculumConfig: AutoCurriculumConfig = {
     phaseAEnd: scheduler.getPhaseAEnd(),
@@ -2596,7 +2670,10 @@ async function main() {
   console.log(formatV95Curriculum(args));
 
 
-  const cachedValSamples = buildSamples(valSubset, stats, 15, 0.0, args.seed + 999, 0, 0, 0);
+  const cachedValSamples = buildSamples(
+    valSubset, stats, 15, 0.0, args.seed + 999,
+    0, 0, 0, 0, 0, 0, 0, 0, args.thinHistoryBaselineBlend,
+  );
 
   console.log(`Cached ${cachedValSamples.length} validation samples(seqLen = 15, identityDropout = 0.0)`);
 
@@ -2638,9 +2715,17 @@ async function main() {
       args.historyHideRate,
       args.judgeHideRate,
       args.forecastContextHideRate,
+      0,
+      args.thinHistoryTruncationRate,
+      args.thinHistoryBaselineBlend,
     );
 
     const dropRate = guardrailCheck(epochSamples, weights.identityDropoutRate);
+    const thinDiagnostics = {
+      sampled: epochSamples.filter((sample) => sample.meta.sameSeasonHistoryCount <= 3).length,
+      truncated: epochSamples.filter((sample) => sample.meta.historyTruncated).length,
+      blended: epochSamples.filter((sample) => sample.meta.thinBaselineBlended).length,
+    };
 
     const currentWidthFloorWeight = scheduler.getWidthFloorWeight(epoch, args.widthFloorStart, args.widthFloorEnd);
     console.log(
@@ -2648,7 +2733,7 @@ async function main() {
       `(A_end=${scheduler.getPhaseAEnd()}, B_end=${scheduler.getPhaseBEnd()}, ` +
       `C_ramp=${args.curriculumPhaseCRamp}) Weights ${JSON.stringify(weights)}, ` +
       `Scales ${JSON.stringify(scales)}, SeqLen ${seqLen}, ID_Drop ${dropRate.toFixed(3)}, ` +
-      `WFW ${currentWidthFloorWeight.toFixed(3)} `,
+      `WFW ${currentWidthFloorWeight.toFixed(3)}, Thin ${JSON.stringify(thinDiagnostics)} `,
     );
 
     currentBaseLR = args.lrSchedule === "phase-aware"
@@ -3363,7 +3448,8 @@ async function main() {
 
   console.log("\n--- INTERVAL CALIBRATION: validation grid search ---");
   const validationSamplesForCalibration = buildSamples(
-    valSubset, stats, SEQ_LEN, 0, 41, 0, 0, 0,
+    valSubset, stats, SEQ_LEN, 0, 41,
+    0, 0, 0, 0, 0, 0, 0, 0, args.thinHistoryBaselineBlend,
   );
   const intervalCalibration = calibrateIntervalScale(
     model, validationSamplesForCalibration, stats, args,
@@ -3383,6 +3469,7 @@ async function main() {
       const samples = buildSamples(
         rows, stats, SEQ_LEN, 0, 42 + index, 0, 0, 0,
         rates.history, rates.judges, rates.forecastContext, rates.lineup,
+        0, args.thinHistoryBaselineBlend,
       );
       const raw = evaluateSamples(model, samples, stats, args, label, 42 + index);
       const calibrated = evaluateSamples(
@@ -3509,6 +3596,14 @@ async function main() {
     },
     split: splitDefinition,
     curriculum_transitions: curriculumTransitions,
+    treatments: {
+      thin_history: {
+        sample_fraction: args.thinHistorySampleFraction,
+        truncation_rate: args.thinHistoryTruncationRate,
+        prior_baseline_blend: args.thinHistoryBaselineBlend,
+        prior_weights_for_show_1_2_3: [0.5, 0.3, 0.15],
+      },
+    },
     checkpoints,
     baselines: baselineSummary,
     config: args,

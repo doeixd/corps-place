@@ -1,12 +1,14 @@
 import assert from "node:assert/strict";
 import {
   applyV9PredictionContextMode,
+  maskV9ThinHistoryContext,
   V9_COLD_START_STATIC_OFFSET,
   V9_FEATURE_INDICES,
   V9_RAW_STATIC_DIM,
 } from "../src/training/v9FeatureModes.js";
 import {
   buildForecastBaseline,
+  blendThinHistoryBaseline,
   captionFingerprintBaselineAdjustments,
   selectV95Masking,
 } from "../src/training/v95Masking.js";
@@ -136,6 +138,36 @@ assert.deepEqual(
   forecastBaseline,
   adjustments.map((adjustment) => 15 + adjustment),
   "forecast baseline must combine rank curve and centered fingerprint residual",
+);
+
+assert.deepEqual(
+  blendThinHistoryBaseline([10, 12], [14, 16], 1),
+  [12, 14],
+  "show-1 baseline must blend 50% prior-season evidence",
+);
+assert.deepEqual(blendThinHistoryBaseline([10, 12], [14, 16], 2), [11.2, 13.2]);
+assert.deepEqual(blendThinHistoryBaseline([10, 12], [14, 16], 3), [10.6, 12.6]);
+assert.deepEqual(blendThinHistoryBaseline([10, 12], [14, 16], 4), [10, 12]);
+
+const thin = [...fingerprintStat];
+thin[V9_FEATURE_INDICES.meanRank] = 0.5;
+thin.fill(0.5, 137, 169);
+const fingerprintBeforeThin = thin.slice(
+  V9_FEATURE_INDICES.captionFingerprintStart,
+  V9_FEATURE_INDICES.captionFingerprintEnd + 1,
+);
+maskV9ThinHistoryContext(thin, 2, { lastRankNorm: 0.3, residualMean: 0.2 });
+assert.equal(thin[V9_FEATURE_INDICES.sequenceLength], 2 / 15);
+assert.equal(thin[V9_FEATURE_INDICES.pastShowsCount], 2 / 40);
+assert.equal(thin[V9_COLD_START_STATIC_OFFSET], 0);
+assert.equal(thin[V9_COLD_START_STATIC_OFFSET + 1], 2 / 40);
+assert.equal(thin[V9_FEATURE_INDICES.rankEma], 0.3);
+assert.equal(thin[V9_FEATURE_INDICES.residualEma], 0.2);
+assert.ok(thin.slice(137, 169).every((value) => value === 0));
+assert.deepEqual(
+  thin.slice(V9_FEATURE_INDICES.captionFingerprintStart, V9_FEATURE_INDICES.captionFingerprintEnd + 1),
+  fingerprintBeforeThin,
+  "targeted truncation must retain prior-season fingerprint evidence",
 );
 
 process.stdout.write("V9.5 forecast-context masking verified\n");
