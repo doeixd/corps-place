@@ -2209,3 +2209,20 @@ Net: correctness is already in the serving code; V10 needs artifact packaging +
 model-local curve/map loading + agnostic serving + shadow. No emergency
 rewrite. The one live-behavior change (model-local curves) should be reviewed
 before deploy since it also affects how any model resolves its baseline.
+
+### 2026-07-17 overnight — multi-seed ensemble WINS (production candidate)
+
+The agnostic multi-seed ensemble is the production model. 2026 frozen cohort
+(161 rows), identity-agnostic, curve-anchor fallback:
+  seed42 recap 0.4156 / total 1.1648
+  seed43 recap 0.4334 / total 1.3140
+  seed44 recap 0.4053 / total 1.1814
+  3-SEED ENSEMBLE recap 0.3898 / total 1.1584  <- beats every single seed
+  final2 (agnostic) recap 0.4930 / total 1.5141
+Ensemble caption accuracy (recap 0.390) is ~21% better than final2 on real
+out-of-sample 2026 data; total ~24% better. The 2-seed ensemble did NOT win
+(seed 42/43 quality gap); adding seed 44 pushed it past every single seed,
+confirming the free win improves with more comparable seeds. Seeds 45/46/47
+training for a 6-seed ensemble. Tool: scripts/ensemble2026.py. Production =
+6-seed control agnostic ensemble + (pending) checkpoint soup per seed +
+history/division/conformal interval calibration.
