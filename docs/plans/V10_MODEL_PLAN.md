@@ -1967,3 +1967,41 @@ the peak (0.00075) and warmup unchanged; this steepens the mid-run decay only.
 - Expected upside is a tighter, higher single checkpoint (less reliance on the
   soup), not necessarily a large aggregate MAE move; judge it on whether the
   selected checkpoint improves and whether the band narrows.
+
+### 2026-07-17 — queued experiment: clean-contract capacity re-test (tail-focused)
+
+**Why revisit.** The 2026-07-16 "capacity didn't help" conclusion is only half
+the story. On the frozen final2 contract the 1.885x graph (1,976,938 params)
+scored composite 0.4999 (low-LR 0.00055) and 0.4985 (orig-LR 0.00075) — better
+than final2 (0.5026) but *not* better than the same-size V9.5-fixed runs
+(0.4989–0.5002), so capacity was not the aggregate lever. However that headline
+averaged away a real signal: the low-LR scale run's thin-history tail was the
+best of any run — zero-history 1.7425 and sparse 1.5765, beating both final2
+(3.218 / 1.838) and the same-size runs on those slices. The tail is exactly
+V10's target, and the scale runs were single-seed on the old dirty dev1-era
+contract with auto-curriculum. We never got a clean, multi-seed capacity read.
+
+**Queued experiment (after the dev3 clean-data control qualifies).** Run the
+existing `scaled-control` profile (192/96 BiLSTM, 768/384 dense, 405 trunk;
+~1.96M params) on the clean dev3 contract, paired seeds 42/43, fixed 10/40
+curriculum, at the midpoint peak LR 0.00065 (the archive endpoint analysis
+favored a midpoint over both 0.00055 and 0.00075). Compare against the
+qualified same-size dev3 control on identical data/splits/maps.
+
+**Decision rule — judge on the tail, not aggregate.** Capacity earns a place in
+V10 only if it materially improves zero/sparse/short-history (and 2026
+thin-history) beyond the same-size control by more than the paired-seed MDE,
+without regressing established history past its non-inferiority margin. A tie on
+aggregate composite is not enough to justify ~1.9x params/compute; a repeatable
+tail win is. If the tail edge from the old low-LR run reproduces on clean data
+across both seeds, capacity becomes a real V10 lever (and a distillation-back-to-
+same-size student per the existing hypothesis-log entry becomes worthwhile).
+
+**Guardrails.**
+- Do not combine with the phase-aware-LR or cosine-period LR ablations in the
+  same run; capacity must be isolated first. The midpoint 0.00065 is part of the
+  capacity treatment (capacity-following stability), recorded as such.
+- All prior scale evidence is dirty-contract single-run and is superseded by
+  this clean multi-seed test for any V10 decision; keep it only as motivation.
+- If capacity wins the tail, still prefer distilling it into the deployed
+  1.03M-param student before shipping a larger inference graph.
