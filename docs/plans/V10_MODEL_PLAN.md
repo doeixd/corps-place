@@ -2131,3 +2131,31 @@ total agnostic) does NOT beat seed42 alone because the seeds differ in quality;
 ensembling needs 3-5 comparable seeds to win. Action: train more control seeds
 overnight for a real ensemble, and run treatments. Serving should be agnostic /
 evidence-gated (identity hurts out-of-sample).
+
+### 2026-07-17 overnight — treatment results (running tally)
+
+Reliable winner so far: the dev3 CONTROL (clean data + division curves +
+zero-anchor), served IDENTITY-AGNOSTIC, ensembled across seeds. Best single =
+seed42 agnostic (2026 recap 0.416 / total 1.165 vs final2 0.493 / 1.514).
+
+Treatments (each vs control; frozen-val recap/total, then 2026):
+- support-aware-identity: REJECTED. Frozen s42 0.380/1.081 (control 0.368/0.897);
+  2026 stored 0.441/1.522 — worse than control stored (0.424/1.304) AND control
+  agnostic (0.416/1.165). Gating over-shrinks identity; hurts in- and
+  out-of-sample. Do not pursue as implemented.
+- thin-history: regresses frozen val (s42 0.392/1.090 vs control 0.368/0.897).
+  2026 target check in progress. Even if it helps the tail, the in-sample cost
+  is large; treat as conditional, tail-only.
+- field-pace: DEFERRED. Its table ml_sequence_rows_v10_field_pace lives in
+  v10-field-dev1.db (dev2 maps), not the dev3 training DB; needs a dev3
+  division-aware rebuild before it can run. Not blocking the winner.
+- phase-aware-lr: running (LR-schedule on the control itself — could improve the
+  reliable winner rather than a separate model).
+
+Control ensemble seeds: 42 (comp 0.5075), 43 (0.5215), 44 (0.5199, best recap
+0.355) done; 45/46/47 training. A 4-5 seed agnostic ensemble is the intended
+production mean model; more comparable seeds should beat the current best
+single. Lesson: the tail-targeting treatments trade in-sample accuracy for the
+tail — but the control already fixed the tail via data (2026 zero 1.66), so the
+treatments have little left to add and cost in-sample. The clean-data + curve +
+anchor repair is doing the real work.
