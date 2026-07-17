@@ -222,7 +222,13 @@ echo "[auto-ingest $(ts)] recent show(s) present; scraping $SEASON recaps${slugs
 # are seconds; a couple of new-page Browserbase fetches take 1-3 min) and SIGKILL
 # 30s after SIGTERM. On timeout we treat it as a scrape failure and exit; the next
 # cron run retries with a fresh session.
-if ! out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 ${slugs_arg} 2>&1)"; then
+#
+# --new-only: ALSO target any listed recap with no ingested scores yet, keyed by
+# the site's own recap slug. --slugs alone guesses DCI's slug from our event slug
+# and silently targets nothing when they differ (2026-dci-central-texas sat
+# unscraped all night, 2026-07-17); --slugs still covers the partial-ingest
+# (completeness) re-scrape, where the show already has some scores.
+if ! out="$(timeout -k 30 300 vp exec tsx scripts/scrapeWebsiteRecaps.ts --season="$SEASON" --concurrency=2 --new-only ${slugs_arg} 2>&1)"; then
   rc=$?
   printf '%s\n' "$out" | tail -20
   if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then

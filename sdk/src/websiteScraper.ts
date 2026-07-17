@@ -29,6 +29,13 @@ export interface WebsiteScrapeOptions {
    *  RECAPS (the expensive per-event Browserbase fetches) are pulled. Lets the
    *  auto-ingest scrape just the pending show instead of the whole season. */
   readonly onlySlugs?: ReadonlyArray<string>;
+  /** Also target any listed recap with NO ingested scores yet, regardless of its
+   *  id. This is the mismatch-proof mode: `onlySlugs` guesses DCI's recap slug
+   *  from OUR event slug and silently targets nothing when they differ (bit us
+   *  for 2026-dci-central-texas) — new-only trusts the site's own /scores list
+   *  instead. Unions with `onlySlugs` so an already-partially-ingested show (the
+   *  completeness re-scrape) is still targeted by its slug. */
+  readonly newOnly?: boolean;
 }
 
 export interface WebsiteScrapeResult {
@@ -732,7 +739,9 @@ export const scrapeWebsiteRecapsForSeason = (
     const ingest = options.ingest !== false;
 
     const entriesResult = yield* (
-      collectScoreListEntries(sql, season, maxPages, options.onlySlugs)
+      // new-only must see the FULL list (a mismatched new recap can be on any
+      // page), so skip the "all targeted slugs found → stop paginating" shortcut.
+      collectScoreListEntries(sql, season, maxPages, options.newOnly ? undefined : options.onlySlugs)
     );
     yield* (
       Effect.logInfo(
@@ -747,13 +756,33 @@ export const scrapeWebsiteRecapsForSeason = (
     // freshly-posted pages that could hang.
     const only =
       options.onlySlugs && options.onlySlugs.length ? new Set(options.onlySlugs) : null;
-    const targetEntries = only
-      ? [...unique.values()].filter((entry) => only.has(entry.id))
-      : [...unique.values()];
+    // New-only targeting: any listed entry with zero ingested scores under ITS OWN
+    // id is a recap we don't have — target it no matter what it's called. The id
+    // comes straight from the site's recap URL, so slug guessing can't miss.
+    const newIds = new Set<string>();
+    if (options.newOnly) {
+      for (const entry of unique.values()) {
+        const rows = yield* (
+          sql<{ n: number }>`
+            SELECT COUNT(*) AS n FROM corps_scores WHERE competition_slug = ${entry.id}
+          `.pipe(Effect.orDie)
+        );
+        if (Number(rows[0]?.n ?? 0) === 0) newIds.add(entry.id);
+      }
+    }
+    const targetEntries =
+      only || options.newOnly
+        ? [...unique.values()].filter(
+            (entry) => newIds.has(entry.id) || (only ? only.has(entry.id) : false)
+          )
+        : [...unique.values()];
     yield* (
       Effect.logInfo(
         `[website] ${season} score list recaps found: ${entriesResult.entries.length} (unique: ${unique.size})` +
-          (only ? `; targeting ${targetEntries.length} of ${unique.size} (--slugs)` : "")
+          (only || options.newOnly
+            ? `; targeting ${targetEntries.length} of ${unique.size}` +
+              ` (${[only && "--slugs", options.newOnly && "--new-only"].filter(Boolean).join("+")})`
+            : "")
       )
     );
 

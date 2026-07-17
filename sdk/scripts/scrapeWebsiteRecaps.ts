@@ -52,7 +52,10 @@ const main = Effect.gen(function* () {
       maxPages,
       concurrency,
       ingest: true,
-      ...(onlySlugs.length ? { onlySlugs } : {})
+      ...(onlySlugs.length ? { onlySlugs } : {}),
+      // Mismatch-proof targeting: also pull any listed recap with no ingested
+      // scores yet, keyed by the site's own id rather than our guessed slug.
+      ...(args.includes("--new-only") ? { newOnly: true } : {})
     })
   );
 
