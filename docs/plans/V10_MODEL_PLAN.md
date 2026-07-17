@@ -1672,3 +1672,47 @@ to choose among checkpoints.
   fixed-curriculum pair on every history slice, and replay the eight
   zero-history validation rows row-by-row before declaring the repair
   successful.
+
+### 2026-07-17 — second zero-history cause, dev3 division-aware curves
+
+- **The identity-vocabulary repair (dev2) was necessary but not sufficient.**
+  The early dev2 seed-43 replay (epoch-45 composite snapshot) still produced
+  `+15` to `+18`-point errors on the same two first-ever-appearance corps at
+  the 2025 OC championships. Baseline capture in the row dump identified the
+  second, dominant cause: those rows carried an **all-zero baseline anchor**.
+  A corps with no last recap, no prior season, and no fingerprint bottomed out
+  the fallback chain at zeros, which the model has essentially never seen.
+- **dev3 trainer fallback:** when the stored global baseline is all-zero, the
+  sample anchors to the rank-curve forecast baseline (`buildForecastBaseline`,
+  the same path masked-forecast augmentation uses). The other zero-history rows
+  were already fine because the prior-season-comparable fallback works for any
+  corps with earlier-season history.
+- **dev3 data contract: the reference curve is division-keyed**
+  (`division × rank(1-25) × percent-bucket(0-100 step 5) × caption`), built
+  from both model divisions of the clean contract. The temporal as-of curve in
+  `prepareV10TemporalFeatures.ts` uses nearest-same-division fallback with a
+  large cross-division penalty; the artifact curve in `generateV10Artifacts.ts`
+  emits 525 cells per division plus legacy unprefixed keys aliasing World
+  Class (1,575 total). The builder's `getBaseline` already accepted
+  division-prefixed keys and passes the row division. Rationale: OC rows were
+  anchored to the WC curve at their own division rank, which at championship
+  week sits 15–20 points above OC reality (calgary prelims caption-sum anchor
+  dropped from `130.0` to `110.1` under dev3).
+- **dev3 artifacts/DB:** `src/training/v10/dev3` (identity vocabulary and
+  dimensions unchanged from dev2: 53/210/289 known, cutoff 2025-07-15) and the
+  isolated `data/v10-training-dev3.db` (payload sha `eefd49d4…`, temporal
+  identity sha `2b784a17…`), leaving the dev2 table intact for the in-flight
+  training pair. Reference baselines, residual targets, and rank-baseline
+  statics change for Open Class rows only.
+- **Percent-bucket granularity decision (2026-07-17):** keep 5% buckets. At 1%
+  each cell would average ~1.4 World Class rows and under one Open Class row —
+  noise, not signal — while 5% ≈ 3.5 days matches show cadence and caps
+  rounding error near 0.3 points. If that last margin matters, the planned
+  improvement is **lookup-time linear interpolation between neighboring 5%
+  buckets at exact percent-through** (statistical stability of coarse cells,
+  precision of a fine grid), scheduled after the dev3 confirmation run so only
+  one contract change lands at a time. A 2.5% World-Class-only grid is a
+  possible middle option if clean OC coverage grows.
+- The dev2 clean-control pair (seeds 42/43) continues training and remains the
+  identity/curriculum control; dev3 requires its own confirmation run and
+  attribution step once the pair completes.
