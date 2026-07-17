@@ -55,6 +55,7 @@ import {
 import { blendThinHistoryBaseline, buildForecastBaseline, selectV95Masking } from "./v95Masking.js";
 import {
   checkpointDecisions,
+  paretoCheckpointSelectorScore,
   selectFinalWeightsMode,
   updateParetoCheckpointFrontier,
   type ParetoCheckpoint,
@@ -2398,6 +2399,33 @@ async function main() {
     fs.renameSync(temporary, destination);
   };
 
+  const loadSavedWeights = (source: string): tf.Tensor[] => {
+    const modelJsonPath = path.join(source, "model.json");
+    const weightsPath = path.join(source, "weights.bin");
+    if (!fs.existsSync(modelJsonPath) || !fs.existsSync(weightsPath)) {
+      throw new Error(`Checkpoint is missing model.json or weights.bin: ${source}`);
+    }
+    const modelJson = JSON.parse(fs.readFileSync(modelJsonPath, "utf8")) as {
+      weightsManifest: Array<{ weights: Array<{ shape: number[]; dtype?: string }> }>;
+    };
+    const specs = modelJson.weightsManifest[0]?.weights ?? [];
+    const buffer = fs.readFileSync(weightsPath);
+    let offset = 0;
+    return specs.map((spec) => {
+      if (spec.dtype && spec.dtype !== "float32") {
+        throw new Error(`Unsupported checkpoint dtype '${spec.dtype}' in ${source}`);
+      }
+      const values = spec.shape.reduce((product, value) => product * value, 1);
+      const tensor = tf.tensor(
+        new Float32Array(buffer.buffer, buffer.byteOffset + offset, values),
+        spec.shape,
+        "float32",
+      );
+      offset += values * 4;
+      return tensor;
+    });
+  };
+
   class LambdaScale extends tf.layers.Layer {
     static className = "LambdaScale";
     constructor(config?: any) {
@@ -3698,6 +3726,97 @@ async function main() {
     validation_date_max: valRows.map((row) => row.date).sort().at(-1) ?? null,
   };
   const evaluations = Object.fromEntries(evalReports.map((entry) => [entry.label, entry]));
+  const paretoEvaluations: Array<{
+    epoch: number;
+    selectorScore: number;
+    intervalCalibration: ReturnType<typeof calibrateIntervalScale>;
+    evaluations: Record<string, ReturnType<typeof evaluateSamples> & {
+      calibrated: ReturnType<typeof evaluateSamples>;
+    }>;
+    reportPath: string;
+  }> = [];
+  if (paretoFrontier.length > 0) {
+    const productionWeights = model.getWeights().map((tensor) => tensor.clone());
+    try {
+      for (const entry of paretoFrontier) {
+        const checkpointDir = path.join(paretoDir, `epoch_${entry.epoch}`);
+        const checkpointWeights = loadSavedWeights(checkpointDir);
+        model.setWeights(checkpointWeights);
+        checkpointWeights.forEach((tensor) => tensor.dispose());
+        const checkpointCalibration = calibrateIntervalScale(
+          model,
+          validationSamplesForCalibration,
+          stats,
+          args,
+        );
+        const checkpointScale = checkpointCalibration.selected?.scale ?? 1;
+        const checkpointReports = Object.entries(namedEvalRows)
+          .filter(([, rows]) => rows.length > 0)
+          .map(([label, rows], index) => {
+            const rates = evaluationMaskRates(label);
+            const samples = buildSamples(
+              rows, stats, SEQ_LEN, 0, 42 + index, 0, 0, 0,
+              rates.history, rates.judges, rates.forecastContext, rates.lineup,
+              0, args.thinHistoryBaselineBlend,
+            );
+            const raw = evaluateSamples(model, samples, stats, args, label, 42 + index);
+            const calibrated = evaluateSamples(
+              model,
+              samples,
+              stats,
+              args,
+              `${label}_calibrated`,
+              142 + index,
+              checkpointScale,
+            );
+            return { ...raw, calibrated };
+          });
+        const checkpointEvaluations = Object.fromEntries(
+          checkpointReports.map((report) => [report.label, report]),
+        );
+        const validation = checkpointEvaluations.validation;
+        if (!validation) throw new Error(`Pareto checkpoint epoch ${entry.epoch} has no validation report`);
+        const selectorMetrics: ParetoCheckpointMetrics = {
+          recapMae: validation.metrics.recap_mae_pts,
+          totalMae: validation.metrics.total_mae_pts,
+          zeroHistoryMae: validation.by_history.zero_history?.recap_mae_pts ?? null,
+          sparseHistoryMae: validation.by_history.sparse_history?.recap_mae_pts ?? null,
+          establishedHistoryMae: validation.by_history.established_history?.recap_mae_pts ?? null,
+          coverage: validation.metrics.coverage,
+          width: validation.metrics.width,
+        };
+        const selectorScore = paretoCheckpointSelectorScore(
+          selectorMetrics,
+          args.coverageTarget,
+          args.coverageUpperTarget,
+        );
+        const reportPath = path.join(checkpointDir, "uniform-evaluation.json");
+        fs.writeFileSync(reportPath, JSON.stringify({
+          epoch: entry.epoch,
+          selector: "recap+.15total+.10zero+.10sparse+.05established+.20coverage_gap+.02width",
+          selectorScore,
+          selectorMetrics,
+          intervalCalibration: checkpointCalibration,
+          evaluations: checkpointEvaluations,
+        }, null, 2));
+        paretoEvaluations.push({
+          epoch: entry.epoch,
+          selectorScore,
+          intervalCalibration: checkpointCalibration,
+          evaluations: checkpointEvaluations,
+          reportPath,
+        });
+        console.log(
+          `Uniformly evaluated PARETO epoch ${entry.epoch}: selector=${selectorScore.toFixed(4)}`,
+        );
+      }
+    } finally {
+      model.setWeights(productionWeights);
+      productionWeights.forEach((tensor) => tensor.dispose());
+    }
+  }
+  const recommendedPareto = [...paretoEvaluations]
+    .sort((left, right) => left.selectorScore - right.selectorScore || left.epoch - right.epoch)[0] ?? null;
   const validationRecapMae = evaluations.validation?.metrics?.recap_mae_pts ?? null;
   const baselineSummary = {
     validation_monitoring_forecast_mae: {
@@ -3733,8 +3852,17 @@ async function main() {
       entries: paretoFrontier.map((entry) => ({
         ...entry,
         dir: path.join(paretoDir, `epoch_${entry.epoch}`),
+        uniform_evaluation: paretoEvaluations.find((evaluation) => evaluation.epoch === entry.epoch)
+          ? {
+              selector_score: paretoEvaluations.find((evaluation) => evaluation.epoch === entry.epoch)!.selectorScore,
+              report_path: paretoEvaluations.find((evaluation) => evaluation.epoch === entry.epoch)!.reportPath,
+            }
+          : null,
       })),
-      uniformly_evaluated: false,
+      uniformly_evaluated: paretoFrontier.length > 0 && paretoEvaluations.length === paretoFrontier.length,
+      recommended_epoch: recommendedPareto?.epoch ?? null,
+      recommended_selector_score: recommendedPareto?.selectorScore ?? null,
+      recommendation_is_final_selection: false,
     },
   };
   const report = {

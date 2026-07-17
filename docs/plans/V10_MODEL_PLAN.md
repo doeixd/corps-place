@@ -1571,7 +1571,16 @@ to choose among checkpoints.
   deterministically retains objective winners and fills the remaining slots.
   Dominated/pruned directories are removed, while every retained checkpoint
   carries its full metric vector and selector score. A graph/package smoke wrote
-  `pareto/epoch_0` and the matching model-card manifest. This completes bounded
-  preservation, not qualification: `uniformly_evaluated` remains false until the
-  post-training evaluator runs the complete frozen matrix against every retained
-  checkpoint and applies the final predeclared selector.
+  `pareto/epoch_0` and the matching model-card manifest.
+- **Uniform frontier evaluation, 2026-07-17.** After training, the trainer now
+  reloads every retained Pareto checkpoint, independently calibrates its
+  intervals on the same validation cohort, and runs the identical named matrix
+  including identity/support slices. Each checkpoint receives a local
+  `uniform-evaluation.json`; the model card records completion, selector score,
+  and the deterministic recommended epoch. Production weights are cloned and
+  restored in a `finally` path so auditing cannot silently replace the selected
+  model. A one-checkpoint graph/package smoke completed with
+  `uniformly_evaluated=true` and a valid recommendation. Recommendation is not
+  automatic promotion: the final V10 candidate still must pass the frozen-2025,
+  walk-forward-2026, cross-seed, sparse-history, and uncertainty gates before
+  the recommended frontier checkpoint becomes the packaged production model.
