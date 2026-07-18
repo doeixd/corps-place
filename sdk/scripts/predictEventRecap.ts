@@ -56,6 +56,14 @@ type Cli = {
   biasStrength: number;
   biasCap: number;
   biasMinSamples: number;
+  // V10 serving knobs (all default to the final2 behaviour when unset):
+  //   --reference-curves <path>  division-aware curve file (dev3) for the caption
+  //                              baseline + in-season anchor; default V4.
+  //   --agnostic                 identity-agnostic inference (scales = 0).
+  //   --ensemble-dirs a,b,c      average N member models' caption p10/p50/p90.
+  referenceCurves?: string;
+  agnostic: boolean;
+  ensembleDirs?: string[];
 };
 
 type EventRow = {
@@ -232,6 +240,12 @@ const parseCli = (argv: string[]): Cli => {
     biasStrength: Number(getArg(argv, '--bias-strength', '0.67')),
     biasCap: Number(getArg(argv, '--bias-cap', '1.25')),
     biasMinSamples: Number(getArg(argv, '--bias-min-samples', '10')),
+    referenceCurves: getArg(argv, '--reference-curves'),
+    agnostic: hasFlag(argv, '--agnostic'),
+    ensembleDirs: (() => {
+      const raw = getArg(argv, '--ensemble-dirs');
+      return raw ? raw.split(',').map((s) => s.trim()).filter(Boolean) : undefined;
+    })(),
   };
 };
 
@@ -865,12 +879,21 @@ async function currentSeasonRank(
 // the prediction forward along the historical reference curves (rank × percent-
 // through × caption): growth = curve(target pct) − curve(last observed pct).
 // cwd-relative like the sequence builder (the script runs from sdk/).
-const REFERENCE_CURVES: { curves: Record<string, Record<string, number>> } = JSON.parse(
+// Mutable so the V10 serving path can swap in the division-aware dev3 curves via
+// `--reference-curves`. Defaults to referenceCurvesV4 (World-Class-only) for the
+// final2 behaviour — identical to before when the flag is unset.
+let REFERENCE_CURVES: { curves: Record<string, Record<string, number>> } = JSON.parse(
   fs.readFileSync(path.resolve(process.cwd(), 'src/training/referenceCurvesV4.json'), 'utf-8')
 );
+/** Point the in-script curve helpers at an alternate curve file (cwd-relative). */
+function setReferenceCurves(curvesPath?: string) {
+  if (!curvesPath) return;
+  const resolved = path.resolve(process.cwd(), curvesPath);
+  REFERENCE_CURVES = JSON.parse(fs.readFileSync(resolved, 'utf-8'));
+}
 
 /** Expected caption score for a rank at a percent-through (mirrors the trainer's getBaseline). */
-function curveBaseline(rank: number, pct: number, caption: string): number {
+function curveBaseline(rank: number, pct: number, caption: string, division?: string): number {
   // Clamp to [1,25] EXACTLY like the trainer's getBaseline (buildMlSequencesV9-
   // Subcaption.ts) — train/serve parity. Without the upper clamp a rank>25 corps
   // (large Open-Class field) missed the grid and fell to an arbitrary `12-bucket`
@@ -878,7 +901,13 @@ function curveBaseline(rank: number, pct: number, caption: string): number {
   const r = Math.max(1, Math.min(25, Math.round(Number.isFinite(rank) ? rank : 12)));
   const bucket = Math.round(Math.max(0, Math.min(100, pct)) / 5) * 5;
   const curves = REFERENCE_CURVES.curves;
+  // Division-aware first (dev3 `${division}|${rank}-${bucket}` keys) so Open Class
+  // gets its own anchor; falls back to the legacy World-Class-only key present in
+  // both V4 and dev3, keeping final2 unchanged when division is absent/unmatched.
+  const div = division || undefined;
   return (
+    (div ? curves[`${div}|${r}-${bucket}`]?.[caption] : undefined) ??
+    (div ? curves[`${div}|${r}-50`]?.[caption] : undefined) ??
     curves[`${r}-${bucket}`]?.[caption] ??
     curves[`${r}-50`]?.[caption] ??
     15.0
@@ -886,18 +915,27 @@ function curveBaseline(rank: number, pct: number, caption: string): number {
 }
 
 /** Per-caption additive growth between two percent-through points (never negative). */
-function curveGrowth(rank: number, fromPct: number, toPct: number): Record<Caption, number> {
+function curveGrowth(
+  rank: number,
+  fromPct: number,
+  toPct: number,
+  division?: string
+): Record<Caption, number> {
   return Object.fromEntries(
     CAPTIONS.map((caption) => [
       caption,
-      Math.max(0, curveBaseline(rank, toPct, caption) - curveBaseline(rank, fromPct, caption)),
+      Math.max(
+        0,
+        curveBaseline(rank, toPct, caption, division) -
+          curveBaseline(rank, fromPct, caption, division)
+      ),
     ])
   ) as Record<Caption, number>;
 }
 
 /** The reference-curve caption vector for a rank at a percent-through. */
-const curveCapsVector = (rank: number, pct: number): number[] =>
-  CAPTIONS.map((caption) => curveBaseline(rank, pct, caption));
+const curveCapsVector = (rank: number, pct: number, division?: string): number[] =>
+  CAPTIONS.map((caption) => curveBaseline(rank, pct, caption, division));
 
 async function getPriorSeasonFinalRank(
   db: Client,
@@ -1508,21 +1546,79 @@ async function main() {
         'Cannot predict without lineup rows. Run with --refresh or provide schedule/lineup data first.'
       );
 
-    const modelDir =
+    // V10 serving: swap in division-aware curves for the in-script anchor helpers
+    // (curveBaseline/curveCapsVector/curveGrowth). No-op when the flag is unset.
+    setReferenceCurves(cli.referenceCurves);
+
+    const primaryModelDir =
       cli.modelDir === 'latest' || !cli.modelDir ? findLatestV9SubcaptionModelDir() : cli.modelDir;
-    if (!modelDir) throw new Error('No V9 model found. Pass --model-dir <path>.');
-    const model = await (async () => {
-      const { loadV9SubcaptionModel } = await import('../src/training/v9SubcaptionInference.js');
-      return loadV9SubcaptionModel(modelDir);
-    })();
+    const memberDirs =
+      cli.ensembleDirs && cli.ensembleDirs.length
+        ? cli.ensembleDirs
+        : primaryModelDir
+          ? [primaryModelDir]
+          : [];
+    if (!memberDirs.length)
+      throw new Error('No V9 model found. Pass --model-dir <path> or --ensemble-dirs a,b,c.');
+    const { loadV9SubcaptionModel } = await import('../src/training/v9SubcaptionInference.js');
+    const members = [];
+    for (const dir of memberDirs) members.push(await loadV9SubcaptionModel(dir));
+    const staticDims = new Set(members.map((m) => m.staticFeatureDim));
+    if (staticDims.size > 1)
+      throw new Error(`Ensemble members disagree on static dim: ${[...staticDims].join(',')}`);
+    // Ensemble wrapper: average each member's 8 caption p10/p50/p90, then rederive
+    // categories/total by the fixed formula (matches ensembleCombined.py). A single
+    // member is the average of one, so the final2 path stays byte-identical.
+    const isEnsemble = members.length > 1;
+    const model = !isEnsemble
+      ? members[0]!
+      : {
+          staticFeatureDim: members[0]!.staticFeatureDim,
+          dispose: () => members.forEach((m) => m.dispose()),
+          predictOne: (predInput: Parameters<(typeof members)[number]['predictOne']>[0]) => {
+            const preds = members.map((m) => m.predictOne(predInput));
+            const captions = Object.fromEntries(
+              CAPTIONS.map((caption) => {
+                const avg = (sel: (p: (typeof preds)[number]) => number) =>
+                  preds.reduce((sum, p) => sum + sel(p), 0) / preds.length;
+                return [
+                  caption,
+                  {
+                    p10: avg((p) => p.captions[caption].p10),
+                    p50: avg((p) => p.captions[caption].p50),
+                    p90: avg((p) => p.captions[caption].p90),
+                  },
+                ];
+              })
+            ) as Record<Caption, { p10: number; p50: number; p90: number }>;
+            const ge = captions.GE1.p50 + captions.GE2.p50;
+            const visual = (captions.VP.p50 + captions.VA.p50 + captions.CG.p50) / 2;
+            const music = (captions.MB.p50 + captions.MA.p50 + captions.MP.p50) / 2;
+            return { captions, categories: { ge, visual, music }, total: ge + visual + music };
+          },
+        };
+    // Stable cache identity: single -> its dir + file fingerprint; ensemble -> a
+    // synthetic label + a fingerprint hashed over every member, so cached
+    // predictions invalidate when the member set (or any member's weights) changes.
+    const modelDir = isEnsemble
+      ? `ensemble:${members.length}:${memberDirs.map((d) => path.basename(d)).join('+')}`
+      : memberDirs[0]!;
     const breakdownSplitCurves = loadBreakdownSplitCurves(cli.breakdownSplitCurves);
     if (breakdownSplitCurves) {
       console.log(`Breakdown split curves: ${cli.breakdownSplitCurves}`);
     }
     const modelStaticDim = model.staticFeatureDim;
     const supportsCaptionFingerprints = modelStaticDim >= V9_RAW_STATIC_DIM;
-    const modelFingerprint = modelFileFingerprint(modelDir);
-    const intervalScale = loadIntervalScale(modelDir);
+    const modelFingerprint = isEnsemble
+      ? createHash('sha256')
+          .update(memberDirs.map((d) => modelFileFingerprint(d)).join('|'))
+          .digest('hex')
+          .slice(0, 16)
+      : modelFileFingerprint(memberDirs[0]!);
+    // Interval widths from the first member for now; the ensemble's residuals
+    // differ, so 4f (ensemble interval recalibration) refines widths later. Means
+    // are already correct — only interval widths are approximate.
+    const intervalScale = loadIntervalScale(members[0]!.modelDir);
     const builderVersion = 'v10-event-prediction-all-age-baselines';
     const lineupAudit = await loadLineupAudit(db, event.slug);
     const inputSignature = predictionInputSignature({
@@ -1615,6 +1711,8 @@ async function main() {
         priorSeasonRank,
         judgeIndices: judgeInfo.known === CAPTIONS.length ? judgeInfo.indices : undefined,
         keepKnownLineupContext: mode !== 'lineup_unknown',
+        referenceCurvesPath: cli.referenceCurves,
+        agnostic: cli.agnostic,
       });
       const sameSeason = await countCorpsSameSeasonShows(db, corpsKey, cli.season, knowledgeDate);
       const corpsSameSeasonShows = sameSeason.count;
@@ -1636,7 +1734,7 @@ async function main() {
           seedRank ??
           12)
         : (priorSeasonRank ?? seedRank ?? 12);
-      const targetCurveCaps = curveCapsVector(curveRank, percentThrough);
+      const targetCurveCaps = curveCapsVector(curveRank, percentThrough, division);
       let inferenceStatic = features.staticFeatures;
       let inferenceBaselineRecap = features.baselineRecap;
       if (inSeasonWithHistory) {
@@ -1762,7 +1860,7 @@ async function main() {
           corpsScale: features.corpsScale,
           agnosticShowId: features.agnosticShowId,
         });
-        const growth = curveGrowth(curveRank, lastPct, percentThrough);
+        const growth = curveGrowth(curveRank, lastPct, percentThrough, division);
         const curveDeltaTotal = totalFromV9Captions(
           Object.fromEntries(
             CAPTIONS.map((caption) => [

@@ -47,6 +47,15 @@ export type V9PredictionFeatureInput = {
   judgeIndices?: number[];
   keepKnownLineupContext?: boolean;
   templateSeason?: string;
+  // V10 serving: point the caption baseline at a division-aware curve file
+  // (src/training/v10/dev3/referenceCurves.json). Defaults to referenceCurvesV4
+  // (World-Class-only) inside getV9CaptionBaseline when unset.
+  referenceCurvesPath?: string;
+  // V10 serving: force identity-agnostic inference (corps/judge/show embeddings
+  // off). Out-of-sample the stored embeddings hurt, so future-season forecasts
+  // zero all three identity scales; this also makes the corps/judge map-integer
+  // vocabulary irrelevant to correctness.
+  agnostic?: boolean;
 };
 
 export type V9PredictionFeatures = {
@@ -420,6 +429,7 @@ export async function buildV9PredictionFeatures(
     seedRank: input.seedRank,
     priorSeasonRank,
     historicalMeanRank,
+    referenceCurvesPath: input.referenceCurvesPath,
   });
 
   const rawStatic = new Array(V9_RAW_STATIC_DIM).fill(0);
@@ -513,10 +523,15 @@ export async function buildV9PredictionFeatures(
     baselineRecap,
     observedHistoryLen,
     corpsId: template ? Number(template.corps_id) : 0,
-    judgeBiasScale: judgesUnknown ? 0 : 1,
-    corpsScale: template ? 1 : 0,
-    agnosticShowId:
-      input.mode === 'preseason_forecast' || !template ? 0 : Number(template.agnostic_show_id ?? 0),
+    // V10 agnostic serving hard-zeros all three identity scales; otherwise the
+    // usual template/known-judge gating applies (final2 behaviour).
+    judgeBiasScale: input.agnostic ? 0 : judgesUnknown ? 0 : 1,
+    corpsScale: input.agnostic ? 0 : template ? 1 : 0,
+    agnosticShowId: input.agnostic
+      ? 0
+      : input.mode === 'preseason_forecast' || !template
+        ? 0
+        : Number(template.agnostic_show_id ?? 0),
     baseline: { ...baseline, captions: captionAwareBaselineCaptions },
     provenance: {
       mode: input.mode,
