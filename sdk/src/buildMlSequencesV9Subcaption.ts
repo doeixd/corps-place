@@ -2265,7 +2265,14 @@ const inferenceEventsArg = valueAfter("--inference-events");
 const inferenceEvents = inferenceEventsArg
   ? inferenceEventsArg.split(",").map((s) => s.trim()).filter(Boolean)
   : undefined;
-const asOfArg = valueAfter("--as-of");
+// Normalize a bare YYYY-MM-DD to end-of-day: stored dates carry a T00:00:00.000Z
+// suffix, so string `date <= "2026-07-10"` would WRONGLY exclude same-day shows
+// (they sort AFTER the bare date). End-of-day makes all `date <= asOfDate`
+// comparisons (this filter + the SQL elo/aggregate rebuilds) include that day.
+const rawAsOf = valueAfter("--as-of");
+const asOfArg = rawAsOf && /^\d{4}-\d{2}-\d{2}$/.test(rawAsOf)
+  ? `${rawAsOf}T23:59:59.999Z`
+  : rawAsOf;
 const v10Clean = dataContract === "clean-v10";
 const buildOptions: BuildV9SubcaptionOptions = v10Clean
   ? {
