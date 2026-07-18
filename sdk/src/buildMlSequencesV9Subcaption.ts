@@ -883,6 +883,12 @@ type BuildV9SubcaptionOptions = {
   targetTable?: string;
   builderVersion?: string;
   outputDbPath?: string;
+  // Serving (Phase A2): build INFERENCE rows for these upcoming/unscored event
+  // slugs. Each is injected into corpsMap as a target for its lineup corps, using
+  // the same leakage-safe feature computation as scored shows (history strictly
+  // before the event) but with y left 0. Pair with asOfDate = the event's eve so
+  // the event itself is not double-built from any scored rows.
+  inferenceEvents?: string[];
 };
 
 export const buildSequencesV9 = (
@@ -891,6 +897,45 @@ export const buildSequencesV9 = (
 ) => Effect.gen(function* () {
   const sql = yield* (SqlClient.SqlClient);
   const captionSource = options.captionSource ?? "raw-v9";
+
+  // Serving (Phase A2): resolve the lineup + target context for each --inference-events
+  // slug, keyed by `${season}__${division}` → [{slug,date,percentThrough,corpsKeys}].
+  // Lineup comes from corps_competition_results (announced/scored field); scores are
+  // NOT read (an inference target carries no y).
+  const inferenceBySeasonDivision = new Map<
+    string,
+    Array<{ slug: string; date: string; percentThrough: number; corpsKeys: string[] }>
+  >();
+  if (options.inferenceEvents?.length) {
+    for (const slug of options.inferenceEvents) {
+      const res = yield* (sql<{
+        season: string;
+        division_name: string;
+        competition_date: string;
+        percent_through: number | null;
+        corps_key: string;
+      }>`SELECT season, division_name, competition_date, percent_through, corps_key
+         FROM corps_competition_results WHERE competition_slug = ${slug}`);
+      const byDiv = new Map<string, { season: string; date: string; pct: number; corps: string[] }>();
+      for (const r of res) {
+        const key = `${r.season}__${r.division_name}`;
+        const e = byDiv.get(key) ?? {
+          season: String(r.season),
+          date: String(r.competition_date),
+          pct: Number(r.percent_through ?? 50),
+          corps: [],
+        };
+        if (!e.corps.includes(r.corps_key)) e.corps.push(r.corps_key);
+        byDiv.set(key, e);
+      }
+      for (const [key, e] of byDiv) {
+        const list = inferenceBySeasonDivision.get(key) ?? [];
+        list.push({ slug, date: e.date, percentThrough: e.pct, corpsKeys: e.corps });
+        inferenceBySeasonDivision.set(key, list);
+      }
+    }
+    console.log(`Inference targets: ${options.inferenceEvents.join(", ")}`);
+  }
   const targetTable = options.outputDbPath ? `v10out.${options.targetTable ?? V10_TARGET_TABLE}` : options.targetTable ?? V9_TARGET_TABLE;
   const builderVersion = options.builderVersion ?? V9_BUILDER_VERSION;
 
@@ -988,9 +1033,18 @@ export const buildSequencesV9 = (
     : [];
   const temporalFieldPaceMap = new Map<string, V10TemporalFieldPace>();
   for (const row of temporalFieldPaceRows) temporalFieldPaceMap.set(row.row_key, row);
+  // Serving (Phase A2): inference targets have no temporal caption feature row —
+  // tolerate the miss so baselineFor falls back to getBaseline (the dev3 curve,
+  // which IS the reference_baseline). Training rows still hard-fail on a real gap.
+  const inferenceSlugSet = new Set(options.inferenceEvents ?? []);
+  const isInferenceRowKey = (rowKey: string) => {
+    for (const slug of inferenceSlugSet) if (rowKey.includes(slug)) return true;
+    return false;
+  };
   const temporalCaptionFor = (rowKey: string, caption: Caption) => {
     const row = temporalCaptionMap.get(`${rowKey}|${caption}`);
-    if (captionSource === "clean-v10" && !row) throw new Error(`Missing V10 temporal caption feature ${rowKey}|${caption}`);
+    if (captionSource === "clean-v10" && !row && !isInferenceRowKey(rowKey))
+      throw new Error(`Missing V10 temporal caption feature ${rowKey}|${caption}`);
     return row;
   };
   const baselineFor = (rowKey: string, rank: number, pct: number, caption: Caption, division: string) =>
@@ -1293,6 +1347,39 @@ export const buildSequencesV9 = (
         competitionMap.set(row.slug, context);
       }
 
+      // Serving (Phase A2): inject inference targets for this season+division. Each
+      // becomes the latest show for its lineup corps, so the row loop builds it from
+      // all prior (scored) shows with the event's target context and y left empty.
+      for (const inf of inferenceBySeasonDivision.get(seasonDivisionKey(season, division)) ?? []) {
+        const infContext: CompetitionContext = {
+          field_size: 0,
+          leader_score: 0,
+          score_by_rank: new Map<number, number>(),
+          corps_present: [],
+        };
+        for (const corpsKey of inf.corpsKeys) {
+          if (!corpsMap.has(corpsKey)) corpsMap.set(corpsKey, []);
+          const shows = corpsMap.get(corpsKey)!;
+          if (shows.some((s) => s.slug === inf.slug)) continue; // already present
+          shows.push({
+            slug: inf.slug,
+            date: inf.date,
+            event_name: inf.slug,
+            percent_through: inf.percentThrough,
+            rank: undefined,
+            total_score: 0,
+            division_name: division,
+            captions: {},
+            is_inference: true,
+          });
+          if (!infContext.corps_present.includes(corpsKey)) {
+            infContext.corps_present.push(corpsKey);
+            infContext.field_size += 1;
+          }
+        }
+        competitionMap.set(inf.slug, infContext);
+      }
+
       const showLookup = new Map<string, Map<string, any>>();
       for (const [corpsKey, shows] of corpsMap.entries()) {
         for (const show of shows) {
@@ -1431,6 +1518,7 @@ export const buildSequencesV9 = (
         const history: OpponentHistoryEntry[] = [];
         for (let i = 0; i < shows.length; i++) {
           const show = shows[i];
+          if (show.is_inference) continue; // unscored target: no real residual to contribute
           const rankEntering = getOverallRank(show.date, corpsKey, prevRank);
           let residualSum = 0;
           const captionScores = CAPTIONS.map((caption) => {
@@ -2173,6 +2261,11 @@ const seasonsArg =
     : undefined;
 if (seasonsArg) console.log(`Building V9 subcaption sequences for seasons: ${seasonsArg.join(", ")}`);
 
+const inferenceEventsArg = valueAfter("--inference-events");
+const inferenceEvents = inferenceEventsArg
+  ? inferenceEventsArg.split(",").map((s) => s.trim()).filter(Boolean)
+  : undefined;
+const asOfArg = valueAfter("--as-of");
 const v10Clean = dataContract === "clean-v10";
 const buildOptions: BuildV9SubcaptionOptions = v10Clean
   ? {
@@ -2180,8 +2273,10 @@ const buildOptions: BuildV9SubcaptionOptions = v10Clean
       targetTable: V10_TARGET_TABLE,
       builderVersion: V10_BUILDER_VERSION,
       outputDbPath,
+      inferenceEvents,
+      asOfDate: asOfArg,
     }
-  : {};
+  : { inferenceEvents, asOfDate: asOfArg };
 console.log(
   `Data contract: ${dataContract}; target: ${buildOptions.targetTable ?? V9_TARGET_TABLE}; source DB: ${dbPath}; output DB: ${outputDbPath ?? dbPath}`,
 );
