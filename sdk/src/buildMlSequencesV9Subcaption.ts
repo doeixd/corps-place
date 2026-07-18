@@ -1561,7 +1561,11 @@ export const buildSequencesV9 = (
 
         for (let i = 0; i < shows.length; i++) {
           const targetShow = shows[i];
-          const pastShows = shows.slice(0, i);
+          // Exclude OTHER inference targets from history: when several --inference-events
+          // are built together and a corps competes at more than one, the earlier
+          // (unscored) targets would otherwise pollute the later ones' sequence/residual
+          // history, zeroing it out. Only real (scored) shows count as history.
+          const pastShows = shows.slice(0, i).filter((s: any) => !s.is_inference);
           const seasonStartDate = pastShows[0]?.date ?? targetShow.date;
           const pastCount = pastShows.length || 1;
 
