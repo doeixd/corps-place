@@ -33,6 +33,10 @@ const templateTable = arg('--template-table', 'ml_sequence_rows_v10_serving_clea
 if (!/^[A-Za-z0-9_]+$/.test(templateTable)) throw new Error(`bad --template-table ${templateTable}`);
 const ensembleDirs = (arg('--ensemble-dirs') ?? '').split(',').map((s) => s.trim()).filter(Boolean);
 const outPath = arg('--output');
+// --as-of <date>: forecast the event from each corps' latest clean row BEFORE this
+// date (the realistic future-event path — no row built for the target event). When
+// unset, use the row whose target IS the event (the leakage-safe proof path).
+const asOf = arg('--as-of');
 
 async function main() {
   const db = createClient({ url: dbUrl });
@@ -41,12 +45,33 @@ async function main() {
   for (const d of ensembleDirs) members.push(await loadV9SubcaptionModel(d));
   if (!members.length) throw new Error('pass --ensemble-dirs a,b,c');
 
-  // The clean row whose target IS this event (leakage-safe forecast features).
-  const rowsRes = await db.execute({
-    sql: `SELECT corps_key, division_name, x_sequence_json, x_static_json, y_recap_json, y_total
-          FROM ${templateTable} WHERE competition_slug = ?`,
-    args: [eventSlug],
-  });
+  // Two modes: proof (row whose target IS the event) or --as-of (each lineup
+  // corps' latest clean row strictly before the event date — the realistic
+  // future-event path).
+  let rowsRes;
+  if (asOf) {
+    const lineup = await db.execute({
+      sql: `SELECT DISTINCT corps_key FROM corps_scores WHERE competition_slug = ?`,
+      args: [eventSlug],
+    });
+    const picked: any[] = [];
+    for (const l of lineup.rows as any[]) {
+      const r = await db.execute({
+        sql: `SELECT corps_key, division_name, x_sequence_json, x_static_json, y_recap_json, y_total
+              FROM ${templateTable} WHERE corps_key = ? AND competition_date < ?
+              ORDER BY competition_date DESC LIMIT 1`,
+        args: [l.corps_key, asOf],
+      });
+      if (r.rows[0]) picked.push(r.rows[0]);
+    }
+    rowsRes = { rows: picked };
+  } else {
+    rowsRes = await db.execute({
+      sql: `SELECT corps_key, division_name, x_sequence_json, x_static_json, y_recap_json, y_total
+            FROM ${templateTable} WHERE competition_slug = ?`,
+      args: [eventSlug],
+    });
+  }
 
   const predictions: any[] = [];
   for (const r of rowsRes.rows as any[]) {
