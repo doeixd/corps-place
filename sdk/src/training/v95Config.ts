@@ -66,6 +66,7 @@ export const parseV95Args = (
     valSplit: Number(get("--val-split", "0.05")),
     valMode: get("--val-mode", "date-forward") || "date-forward",
     valDateCutoff: get("--val-date-cutoff"),
+    trainAfterDate: get("--train-after-date"),
     divisionFilter: get("--division-filter", "all") || "all",
     samplesPerEpoch: Number(get("--samples-per-epoch", "4096")),
     loadModel,

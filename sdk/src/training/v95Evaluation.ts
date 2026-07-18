@@ -11,6 +11,10 @@ export type ValidationSplitConfig = {
   valMode: string;
   valSplit: number;
   valDateCutoff?: string;
+  // Shows strictly after this date are forced into TRAIN and removed from the
+  // validation candidate pool. Used by v10.1 so newly-added development-season
+  // (2026) rows train but validation stays the pre-cutoff date-forward tail.
+  trainAfterDate?: string;
   seed: number;
 };
 
@@ -57,12 +61,19 @@ export const splitValidationRows = <T extends Pick<EvaluationRow, "showKey" | "d
   rows: readonly T[],
   config: ValidationSplitConfig,
 ): { trainRows: T[]; valRows: T[]; resolvedMode: "date-forward" | "show-random" } => {
-  const targetValRows = Math.max(1, Math.floor(rows.length * config.valSplit));
+  // Rows after trainAfterDate never enter the validation candidate pool; they
+  // are appended to TRAIN after the split so validation is chosen from the
+  // pre-cutoff population only.
+  const cutoff = config.trainAfterDate;
+  const forcedTrain: T[] = cutoff ? rows.filter((row) => (row.date ?? "") > cutoff) : [];
+  const pool: readonly T[] = cutoff ? rows.filter((row) => (row.date ?? "") <= cutoff) : rows;
+
+  const targetValRows = Math.max(1, Math.floor(pool.length * config.valSplit));
   const trainRows: T[] = [];
   const valRows: T[] = [];
 
   if (config.valMode === "date-forward") {
-    const groups = groupByShow(rows).sort((left, right) => {
+    const groups = groupByShow(pool).sort((left, right) => {
       const dateOrder = (left[0]?.date ?? "").localeCompare(right[0]?.date ?? "");
       return dateOrder || (left[0]?.showKey ?? "").localeCompare(right[0]?.showKey ?? "");
     });
@@ -79,15 +90,17 @@ export const splitValidationRows = <T extends Pick<EvaluationRow, "showKey" | "d
       }
     }
     preserveTrainPopulation(trainRows, valRows);
+    trainRows.push(...forcedTrain);
     return { trainRows, valRows, resolvedMode: "date-forward" };
   }
 
-  const groups = shuffle(groupByShow(rows), seededRandom(config.seed));
+  const groups = shuffle(groupByShow(pool), seededRandom(config.seed));
   for (const group of groups) {
     if (valRows.length < targetValRows) valRows.push(...group);
     else trainRows.push(...group);
   }
   preserveTrainPopulation(trainRows, valRows);
+  trainRows.push(...forcedTrain);
   return { trainRows, valRows, resolvedMode: "show-random" };
 };
 

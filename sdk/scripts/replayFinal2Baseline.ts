@@ -502,8 +502,23 @@ const main = async () => {
       })) as RawRow[];
       const evaluationRows = parseRows(evaluationRawRows);
       applyBaselines(evaluationRows, evaluationRows);
-      const selectedRows = evaluationRows.filter((row) => row.season === season);
-      if (!selectedRows.length) throw new Error(`No evaluation rows for season ${season}`);
+      // Baselines are computed over the FULL evaluation set (leakage-safe,
+      // strictly-before-target per corps) BEFORE date filtering, so restricting
+      // scored rows to a held-out window keeps their in-season baseline context.
+      const evalFromDate = getArg("--eval-from-date", "");
+      const evalToDate = getArg("--eval-to-date", "");
+      const selectedRows = evaluationRows.filter(
+        (row) =>
+          row.season === season &&
+          (!evalFromDate || row.date >= evalFromDate) &&
+          (!evalToDate || row.date <= evalToDate),
+      );
+      if (!selectedRows.length) {
+        throw new Error(
+          `No evaluation rows for season ${season}` +
+          `${evalFromDate ? ` from ${evalFromDate}` : ""}${evalToDate ? ` to ${evalToDate}` : ""}`,
+        );
+      }
       const raw = evaluate(
         selectedRows, model, replaySeed, 1, hasArg("--row-details"), identityAgnostic,
       );

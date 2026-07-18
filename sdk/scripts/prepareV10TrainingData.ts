@@ -21,6 +21,11 @@ const expectedRows = Number(valueAfter("--expected-rows", "7317"));
 if (!Number.isInteger(expectedRows) || expectedRows < 1) throw new Error("--expected-rows must be a positive integer");
 const trainingCutoffSeason = Number(valueAfter("--training-cutoff-season", "2025"));
 const developmentCutoff = valueAfter("--development-cutoff", "2026-07-14T23:59:59.999Z")!;
+// For seasons beyond the training cutoff (the development season, e.g. 2026),
+// include ONLY rows on/before this competition date. Seasons <= the training
+// cutoff are always included in full. Enables an honest train/holdout split
+// within the development season without leaking later-season rows into training.
+const devTrainThrough = valueAfter("--dev-train-through");
 const source = resolve(valueAfter("--source", "./data/v10-source-2026-07-16.db")!);
 const output = resolve(valueAfter("--out", "./data/v10-training-dev1.db")!);
 const sourceManifestPath = resolve(
@@ -78,6 +83,7 @@ sqliteRaw(output, `
     ('purpose', '${purpose}'),
     ('training_cutoff_season', '${trainingCutoffSeason}'),
     ('development_cutoff', '${developmentCutoff}'),
+    ('dev_train_through', '${(devTrainThrough ?? "").replaceAll("'", "''")}'),
     ('identity_policy', 'canonical-current-source-keys-dev1'),
     ('target_time_policy', 'strictly-before-target-date');
 
@@ -120,7 +126,11 @@ sqliteRaw(output, `
       AND judge_id NOT LIKE '%unknown%'
     GROUP BY competition_slug
   ) panel ON panel.competition_slug = e.competition_slug
-  WHERE CAST(e.season AS INTEGER) IN (${seasonsSql});
+  WHERE CAST(e.season AS INTEGER) IN (${seasonsSql})${
+    devTrainThrough
+      ? ` AND (CAST(e.season AS INTEGER) <= ${trainingCutoffSeason} OR c.date <= '${devTrainThrough.replaceAll("'", "''")}')`
+      : ""
+  };
 
   CREATE UNIQUE INDEX v10_training_performances_row_key
     ON v10_training_performances(row_key);
@@ -173,6 +183,7 @@ const manifest = {
   included_seasons: includedSeasons,
   training_cutoff_season: trainingCutoffSeason,
   development_cutoff: developmentCutoff,
+  dev_train_through: devTrainThrough ?? null,
   source_snapshot_sha256: sourceManifest.snapshot_sha256,
   derived_db_path: output,
   derived_db_bytes: statSync(output).size,
