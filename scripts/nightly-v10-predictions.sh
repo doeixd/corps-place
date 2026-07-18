@@ -17,25 +17,28 @@
 set -euo pipefail
 
 PROD_DB="/root/corps-place/sdk/dci-relational.db"
-BRANCH_SDK="/home/patrick/cp-branch/sdk"                 # builder (branch-only deps)
+BRANCH_SDK="/home/patrick/cp-branch/sdk"                 # builder + prepare scripts (branch-only deps)
 SERVE_SDK="/home/patrick/cp-v10-serving/sdk"             # cleanV10Serve (master)
-TEMPORAL_BASE="/home/patrick/cp-v10-serving/sdk/data/v10-eval-clean2.db"  # has v10_temporal_* + schema
+SEASONS="2013,2014,2015,2016,2017,2018,2019,2022,2023,2024,2025,2026"
 ENS=$(ls -d "$SERVE_SDK"/models/v10_clean_data_control/*/ "$SERVE_SDK"/models/v10_phase_aware_lr/*/ | sed 's:/$::' | paste -sd,)
 
 if [ "$#" -lt 1 ]; then echo "usage: $0 <event-slug> [<event-slug> ...]"; exit 1; fi
 EVENTS="$*"
+INF_ARG=$(echo "$EVENTS" | tr ' ' ',')
+TODAY=$(date -u +%Y-%m-%dT23:59:59.999Z)
 
-# ── A1 (TODO: serving-temporal refresh) ───────────────────────────────────────
-# The prod temporal contract (v10_temporal_*) must cover each corps' history up to
-# the target event. Currently frozen at 07-17. A serving variant of
-# prepareV10TrainingData/prepareV10TemporalFeatures (relax the source hash + fixed
-# 7317-row invariants; compute current-season temporal incrementally) must run here
-# nightly and land fresh v10_temporal_* into $PROD_DB. Skipped for now.
+# ── A1: refresh the clean-v10 temporal contract from LIVE prod data ───────────
+# Keeps v10_temporal_* fresh through the latest scored show so the inference build
+# has feature coverage for the target events' corps histories.
+SERVING_DB="/tmp/v10-serving-$$.db"
+rm -f "$SERVING_DB" "$SERVING_DB.manifest.json"
+( cd "$BRANCH_SDK" && vp exec tsx scripts/prepareV10TrainingData.ts --serving \
+    --source "$PROD_DB" --seasons "$SEASONS" --development-cutoff "$TODAY" --out "$SERVING_DB" >/dev/null )
+( cd "$BRANCH_SDK" && vp exec tsx scripts/prepareV10TemporalFeatures.ts \
+    --db "$SERVING_DB" --source "$PROD_DB" >/dev/null )
 
 # ── A2: build clean-v10 inference rows for the target events ──────────────────
-SERVING_DB="/tmp/v10-serving-$$.db"
-cp "$TEMPORAL_BASE" "$SERVING_DB"    # carries v10_temporal_* + clean_control schema
-INF_ARG=$(echo "$EVENTS" | tr ' ' ',')
+# The builder reads the temporal contract from --output-db (the fresh SERVING_DB).
 ( cd "$BRANCH_SDK" && NODE_OPTIONS="--max-old-space-size=3072" vp exec tsx src/buildMlSequencesV9Subcaption.ts \
     --data-contract clean-v10 --db "$PROD_DB" --output-db "$SERVING_DB" \
     --seasons 2026 --inference-events "$INF_ARG" )
