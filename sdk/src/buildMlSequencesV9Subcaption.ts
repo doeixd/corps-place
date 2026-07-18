@@ -900,8 +900,10 @@ export const buildSequencesV9 = (
 
   // Serving (Phase A2): resolve the lineup + target context for each --inference-events
   // slug, keyed by `${season}__${division}` → [{slug,date,percentThrough,corpsKeys}].
-  // Lineup comes from corps_competition_results (announced/scored field); scores are
-  // NOT read (an inference target carries no y).
+  // Lineup comes from classified_event_lineup (the ANNOUNCED schedule — present for
+  // UNSCORED future events, unlike corps_competition_results which is scored-only) and
+  // covers scored events too. percent_through is computed from the event date vs the
+  // season's full range (events table includes future finals). No scores are read.
   const inferenceBySeasonDivision = new Map<
     string,
     Array<{ slug: string; date: string; percentThrough: number; corpsKeys: string[] }>
@@ -914,15 +916,26 @@ export const buildSequencesV9 = (
         competition_date: string;
         percent_through: number | null;
         corps_key: string;
-      }>`SELECT season, division_name, competition_date, percent_through, corps_key
-         FROM corps_competition_results WHERE competition_slug = ${slug}`);
+      }>`SELECT
+           substr(e.start_date,1,4) AS season,
+           cel.division_name,
+           e.start_date AS competition_date,
+           100.0 * (julianday(e.start_date) - (SELECT MIN(julianday(start_date)) FROM events WHERE substr(start_date,1,4)=substr(e.start_date,1,4)))
+                 / MAX(1.0, (SELECT MAX(julianday(start_date)) - MIN(julianday(start_date)) FROM events WHERE substr(start_date,1,4)=substr(e.start_date,1,4))) AS percent_through,
+           cel.corps_key
+         FROM classified_event_lineup cel
+         JOIN events e ON e.slug = cel.event_slug
+         WHERE cel.event_slug = ${slug}
+           AND cel.corps_key IS NOT NULL AND cel.corps_key != ''
+           AND cel.effective_is_non_performance = 0
+           AND cel.division_name IN ('World Class','Open Class')`);
       const byDiv = new Map<string, { season: string; date: string; pct: number; corps: string[] }>();
       for (const r of res) {
         const key = `${r.season}__${r.division_name}`;
         const e = byDiv.get(key) ?? {
           season: String(r.season),
           date: String(r.competition_date),
-          pct: Number(r.percent_through ?? 50),
+          pct: Math.max(0, Math.min(100, Number(r.percent_through ?? 50))),
           corps: [],
         };
         if (!e.corps.includes(r.corps_key)) e.corps.push(r.corps_key);
