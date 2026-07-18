@@ -53,6 +53,9 @@ type Cli = {
   // full-strength 0.80, but we deliberately under-correct so a late-season
   // plateau can't flip us into over-prediction. Defaults are conservative.
   biasCorrect: boolean;
+  // Thin-history revert-to-comparable correction layer (§5, retire after V10).
+  // `--no-comparable-revert` disables it.
+  comparableRevert: boolean;
   biasStrength: number;
   biasCap: number;
   biasMinSamples: number;
@@ -241,6 +244,7 @@ const parseCli = (argv: string[]): Cli => {
     // On by default, but gentle: two-thirds strength, capped at ±1.25 pts, and
     // dormant until 10 scored same-season pairs exist. `--no-bias-correct` off.
     biasCorrect: !hasFlag(argv, '--no-bias-correct'),
+    comparableRevert: !hasFlag(argv, '--no-comparable-revert'),
     biasStrength: Number(getArg(argv, '--bias-strength', '0.67')),
     biasCap: Number(getArg(argv, '--bias-cap', '1.25')),
     biasMinSamples: Number(getArg(argv, '--bias-min-samples', '10')),
@@ -1900,7 +1904,7 @@ async function main() {
       // shows back toward its established prior-season level (see
       // comparableRevertWeight). Applied before the season-bias nudge below.
       const comparableRevert =
-        inSeasonTargetTotal != null && priorSeasonComparable
+        cli.comparableRevert && inSeasonTargetTotal != null && priorSeasonComparable
           ? comparableRevertWeight(corpsSameSeasonShows)
           : 0;
       if (comparableRevert > 0 && inSeasonTargetTotal != null && priorSeasonComparable) {
