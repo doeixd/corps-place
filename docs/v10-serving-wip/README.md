@@ -80,3 +80,32 @@ Matches the proof path (0.303). The V10 forecasting pipeline works end-to-end.
 Inert prod tables (drop anytime): ml_sequence_rows_v10_serving, _serving_clean,
 _inference; v10_temporal_* + v10_training_performances (feed the builder — keep if
 pursuing productionization).
+
+---
+
+## UPDATE 2026-07-18 (2) — serving is production-shaped
+
+cleanV10Serve now emits the full model_event_prediction_runs/rows payload (rank,
+corps name, GE/Visual/Music, captions) + `--save-db` via the existing
+saveEventPredictionRun. Read-model consumes it unchanged (newest-run-per-event). Bias
+calibration (scripts/cleanV10BiasCalibration.json) applied to the total.
+
+### Nightly sequence (the remaining wiring)
+Per upcoming event, in the BRANCH env (cp-branch, builder compiles there):
+1. (A1, nightly) refresh temporal contract on fresh data:
+   `tsx scripts/prepareV10TrainingData.ts` then `tsx scripts/prepareV10TemporalFeatures.ts`
+   writing v10_temporal_* into a serving DB (currently the prod copy is frozen 07-17).
+2. Build inference rows for the upcoming event(s):
+   `tsx src/buildMlSequencesV9Subcaption.ts --data-contract clean-v10 --db <prod> \
+      --output-db <serving.db has temporal> --seasons 2026 --inference-events <slug>`
+   (no --as-of for a genuinely future event — it's not in scored data).
+3. Serve + save (master env, v10-serving worktree):
+   `tsx scripts/cleanV10Serve.ts --event <slug> --db file:<prod> \
+      --template-table <inference table copied into prod> --ensemble-dirs <12> --save-db`
+4. Publish read-model per DATA_QUALITY_NOTES §8; flip nightly-predictions.sh to this
+   for V10 events (final2 stays the rollback). Recalibrate bias on 2025/rolling.
+
+CROSS-ENV NOTE: builder is branch-only (cp-branch); serving is master (v10-serving).
+The inference rows table must land in the prod DB for cleanV10Serve to read it
+(build to a serving.db, then copy the table into prod — or run the builder with
+--output-db pointing at a prod-attached serving db).
