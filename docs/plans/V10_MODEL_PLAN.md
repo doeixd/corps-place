@@ -2226,3 +2226,18 @@ confirming the free win improves with more comparable seeds. Seeds 45/46/47
 training for a 6-seed ensemble. Tool: scripts/ensemble2026.py. Production =
 6-seed control agnostic ensemble + (pending) checkpoint soup per seed +
 history/division/conformal interval calibration.
+
+### 2026-07-17 overnight — phase-aware-LR is a WINNER (new best direction)
+
+The phase-aware LR schedule (hold 0.00075 peak through fixed phase B, cosine
+decay after) materially beats the plain-cosine control. phase-aware s43 vs
+control s43: frozen total 0.9338 vs 0.9836, composite 0.5117 vs 0.5215; 2026
+agnostic recap 0.3927 vs 0.4334, total 1.1145 vs 1.3140. A SINGLE phase-aware
+seed (2026 recap 0.393 / total 1.114) nearly matches the 5-seed control
+ensemble on recap and beats it on total. This validates the LR-schedule
+hypothesis: the plain cosine (calibrated to 160 epochs, runs stop ~110) decays
+too slowly in the productive window; holding the peak through phase B then
+decaying settles better. NEW PRODUCTION DIRECTION: phase-aware-LR, agnostic,
+ensembled. Launching phase-aware seeds 44/45 to pair with 42/43 for a
+phase-aware ensemble. The cosine-period ablation (steepen the plain cosine)
+is the complementary test and may stack or substitute.
