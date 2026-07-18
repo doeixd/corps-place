@@ -109,3 +109,22 @@ CROSS-ENV NOTE: builder is branch-only (cp-branch); serving is master (v10-servi
 The inference rows table must land in the prod DB for cleanV10Serve to read it
 (build to a serving.db, then copy the table into prod — or run the builder with
 --output-db pointing at a prod-attached serving db).
+
+---
+
+## UPDATE 2026-07-18 (3) — A1 serving-refresh DONE; pipeline complete
+
+`prepareV10TrainingData --serving` (branch 5728d68) rebuilds the temporal contract
+from LIVE prod (skips the frozen-source hash + fixed-row guards, keeps data-quality
+invariants). Verified: fresh contract (2026: 178 rows through 07-18) produces features
+IDENTICAL to the frozen reference (hist/opp/rank/fp Δ=0). nightly-v10-predictions.sh
+now runs the full chain: A1 refresh → A2 inference build → land in prod → serve
+--save-db → publish. Self-sufficient.
+
+### FINAL audited numbers (raw, no corrections, out-of-sample-clean)
+V10 forecasting vs final2: **+30.7% recap, +15.4% total**. Bias term dropped (season-
+specific, doesn't generalize). Intervals added. No leakage. Robust on 161 rows.
+
+### Only gate left: the business decision to FLIP
+Point nightly-predictions.sh at nightly-v10-predictions.sh for V10 events (or run it
+alongside as a shadow first). final2 stays as rollback. Everything reversible.
