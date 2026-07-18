@@ -187,11 +187,15 @@ async function main() {
   const names = new Map<string, string>();
   if (predictions.length) {
     const keys = predictions.map((p) => String(p.corps_key));
-    const res = await db.execute({
-      sql: `SELECT corps_key, name FROM corps WHERE corps_key IN (${keys.map(() => '?').join(',')})`,
-      args: keys,
-    });
-    for (const row of res.rows as any[]) names.set(String(row.corps_key), String(row.name));
+    try {
+      const res = await db.execute({
+        sql: `SELECT corps_key, name FROM corps WHERE corps_key IN (${keys.map(() => '?').join(',')})`,
+        args: keys,
+      });
+      for (const row of res.rows as any[]) names.set(String(row.corps_key), String(row.name));
+    } catch {
+      /* no corps table in this DB — fall back to corps_key as the display name */
+    }
   }
   predictions.sort((a, b) => (b.total as number) - (a.total as number));
   predictions.forEach((p, i) => {
