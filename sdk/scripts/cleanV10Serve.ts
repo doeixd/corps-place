@@ -37,6 +37,18 @@ const outPath = arg('--output');
 // date (the realistic future-event path — no row built for the target event). When
 // unset, use the row whose target IS the event (the leakage-safe proof path).
 const asOf = arg('--as-of');
+// Light residual-bias calibration (the ONLY correction V10 needs — its clean-v10
+// contract bakes in the seasonal projection final2 patched with the full stack).
+// Keyed by `${division}|${debut|sparse|established}`; offset ADDED to the total.
+const biasCalPath = arg('--bias-calibration', 'scripts/cleanV10BiasCalibration.json');
+let biasCal: Record<string, number> = {};
+try {
+  biasCal = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), biasCalPath!), 'utf-8'));
+} catch {
+  /* no calibration → raw totals */
+}
+const historyBucket = (nonPadSteps: number) =>
+  nonPadSteps === 0 ? 'debut' : nonPadSteps <= 2 ? 'sparse' : 'established';
 
 async function main() {
   const db = createClient({ url: dbUrl });
@@ -130,7 +142,10 @@ async function main() {
     const caps = CAPTIONS.map((cap) =>
       perMember.reduce((s, p) => s + p.captions[cap].p50, 0) / perMember.length
     );
-    const total = caps[0]! + caps[1]! + (caps[2]! + caps[3]! + caps[4]!) / 2 + (caps[5]! + caps[6]! + caps[7]!) / 2;
+    const rawTotal =
+      caps[0]! + caps[1]! + (caps[2]! + caps[3]! + caps[4]!) / 2 + (caps[5]! + caps[6]! + caps[7]!) / 2;
+    const bucket = historyBucket(mask.filter(Boolean).length);
+    const total = rawTotal + (biasCal[`${r.division_name}|${bucket}`] ?? 0);
     predictions.push({
       corps_key: r.corps_key,
       division: r.division_name,
