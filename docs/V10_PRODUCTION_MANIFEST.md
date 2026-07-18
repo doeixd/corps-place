@@ -31,6 +31,16 @@ On the 63 rows final2 actually forecast in production (with its correction
 layers), a single dev3 checkpoint already beat it 1.53 vs 2.04 total MAE.
 Recap (caption) MAE is the fundamental metric — total is a fixed derivation.
 
+
+
+## Robustness (show-clustered bootstrap)
+
+The 161 rows span 26 correlated shows. Bootstrapping over shows (2000 resamples):
+ensemble recap MAE 0.3790, 95% CI [0.3325, 0.4412]. The CI UPPER bound (0.441)
+is well below final2 agnostic (0.493), and the ensemble beats final2 on 21/26
+shows. The ~23% win is statistically robust and broad-based, not a few-show
+artifact.
+
 ## Ensemble members (dev3 contract, trained 2026-07-17)
 
 Average the 8 caption p50 predictions across these models (agnostic mode), then
