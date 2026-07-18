@@ -1,5 +1,5 @@
 diff --git a/sdk/src/buildMlSequencesV9Subcaption.ts b/sdk/src/buildMlSequencesV9Subcaption.ts
-index 1c1ffc8..1f3133d 100644
+index 1c1ffc8..4616e8e 100644
 --- a/sdk/src/buildMlSequencesV9Subcaption.ts
 +++ b/sdk/src/buildMlSequencesV9Subcaption.ts
 @@ -883,6 +883,12 @@ type BuildV9SubcaptionOptions = {
@@ -61,7 +61,27 @@ index 1c1ffc8..1f3133d 100644
    const targetTable = options.outputDbPath ? `v10out.${options.targetTable ?? V10_TARGET_TABLE}` : options.targetTable ?? V9_TARGET_TABLE;
    const builderVersion = options.builderVersion ?? V9_BUILDER_VERSION;
  
-@@ -1293,6 +1338,28 @@ export const buildSequencesV9 = (
+@@ -988,9 +1033,18 @@ export const buildSequencesV9 = (
+     : [];
+   const temporalFieldPaceMap = new Map<string, V10TemporalFieldPace>();
+   for (const row of temporalFieldPaceRows) temporalFieldPaceMap.set(row.row_key, row);
++  // Serving (Phase A2): inference targets have no temporal caption feature row —
++  // tolerate the miss so baselineFor falls back to getBaseline (the dev3 curve,
++  // which IS the reference_baseline). Training rows still hard-fail on a real gap.
++  const inferenceSlugSet = new Set(options.inferenceEvents ?? []);
++  const isInferenceRowKey = (rowKey: string) => {
++    for (const slug of inferenceSlugSet) if (rowKey.includes(slug)) return true;
++    return false;
++  };
+   const temporalCaptionFor = (rowKey: string, caption: Caption) => {
+     const row = temporalCaptionMap.get(`${rowKey}|${caption}`);
+-    if (captionSource === "clean-v10" && !row) throw new Error(`Missing V10 temporal caption feature ${rowKey}|${caption}`);
++    if (captionSource === "clean-v10" && !row && !isInferenceRowKey(rowKey))
++      throw new Error(`Missing V10 temporal caption feature ${rowKey}|${caption}`);
+     return row;
+   };
+   const baselineFor = (rowKey: string, rank: number, pct: number, caption: Caption, division: string) =>
+@@ -1293,6 +1347,39 @@ export const buildSequencesV9 = (
          competitionMap.set(row.slug, context);
        }
  
@@ -69,6 +89,12 @@ index 1c1ffc8..1f3133d 100644
 +      // becomes the latest show for its lineup corps, so the row loop builds it from
 +      // all prior (scored) shows with the event's target context and y left empty.
 +      for (const inf of inferenceBySeasonDivision.get(seasonDivisionKey(season, division)) ?? []) {
++        const infContext: CompetitionContext = {
++          field_size: 0,
++          leader_score: 0,
++          score_by_rank: new Map<number, number>(),
++          corps_present: [],
++        };
 +        for (const corpsKey of inf.corpsKeys) {
 +          if (!corpsMap.has(corpsKey)) corpsMap.set(corpsKey, []);
 +          const shows = corpsMap.get(corpsKey)!;
@@ -84,13 +110,26 @@ index 1c1ffc8..1f3133d 100644
 +            captions: {},
 +            is_inference: true,
 +          });
++          if (!infContext.corps_present.includes(corpsKey)) {
++            infContext.corps_present.push(corpsKey);
++            infContext.field_size += 1;
++          }
 +        }
++        competitionMap.set(inf.slug, infContext);
 +      }
 +
        const showLookup = new Map<string, Map<string, any>>();
        for (const [corpsKey, shows] of corpsMap.entries()) {
          for (const show of shows) {
-@@ -2173,6 +2240,11 @@ const seasonsArg =
+@@ -1431,6 +1518,7 @@ export const buildSequencesV9 = (
+         const history: OpponentHistoryEntry[] = [];
+         for (let i = 0; i < shows.length; i++) {
+           const show = shows[i];
++          if (show.is_inference) continue; // unscored target: no real residual to contribute
+           const rankEntering = getOverallRank(show.date, corpsKey, prevRank);
+           let residualSum = 0;
+           const captionScores = CAPTIONS.map((caption) => {
+@@ -2173,6 +2261,11 @@ const seasonsArg =
      : undefined;
  if (seasonsArg) console.log(`Building V9 subcaption sequences for seasons: ${seasonsArg.join(", ")}`);
  
@@ -102,7 +141,7 @@ index 1c1ffc8..1f3133d 100644
  const v10Clean = dataContract === "clean-v10";
  const buildOptions: BuildV9SubcaptionOptions = v10Clean
    ? {
-@@ -2180,8 +2252,10 @@ const buildOptions: BuildV9SubcaptionOptions = v10Clean
+@@ -2180,8 +2273,10 @@ const buildOptions: BuildV9SubcaptionOptions = v10Clean
        targetTable: V10_TARGET_TABLE,
        builderVersion: V10_BUILDER_VERSION,
        outputDbPath,

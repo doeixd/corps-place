@@ -53,3 +53,30 @@ layers (bias-correct / P2 blend — KEEP them) for the served total, and flip vi
 ## Inert prod-DB tables (drop anytime)
 `ml_sequence_rows_v10_serving`, `ml_sequence_rows_v10_serving_clean` — only read when
 `--template-table` points at them.
+
+---
+
+## UPDATE 2026-07-18 — Phase A2 DONE & VALIDATED end-to-end
+
+`--inference-events` now builds faithful clean-v10 rows for unscored target events
+(branch commit eb37653). Three fixes: temporal-lookup tolerance (→ getBaseline
+fallback), skip is_inference in opponent history, **populate competitionMap for the
+inference event** (the key fix). Central-texas inference row matches its real
+clean_control row on every major block (0.000) and serves identically.
+
+Full 8-show re-shadow, V10 served via A2 inference rows (TRUE forecasting, no target
+scores): **recap 0.326 vs final2 0.438 (~26% better)**; total 1.017 vs 1.046 raw.
+Matches the proof path (0.303). The V10 forecasting pipeline works end-to-end.
+
+### Remaining (productionization only)
+1. **Wire correction layers onto the A2 captions** — feed cleanV10Serve's clean
+   captions into the existing forward-projection + P2 blend + bias-correct (KEEP them)
+   for the served total (recap already +26%; total will follow).
+2. **A1 nightly refresh** — prepareV10TrainingData/prepareV10TemporalFeatures must
+   rebuild v10_temporal_* in prod nightly on fresh data (current copy frozen 07-17).
+3. **Nightly wiring + flip** — build inference rows for upcoming events each night,
+   serve, publish; flip per V10_FLIP_RUNBOOK.md.
+
+Inert prod tables (drop anytime): ml_sequence_rows_v10_serving, _serving_clean,
+_inference; v10_temporal_* + v10_training_performances (feed the builder — keep if
+pursuing productionization).
