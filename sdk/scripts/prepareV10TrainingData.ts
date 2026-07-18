@@ -56,7 +56,7 @@ if (existsSync(manifestPath)) throw new Error(`Refusing to overwrite training ma
 mkdirSync(dirname(output), { recursive: true });
 
 const sourceManifest = servingMode
-  ? { snapshot_sha256: `live:${await sha256File(source)}`, snapshot_bytes: statSync(source).size }
+  ? { snapshot_sha256: `live-${new Date().toISOString()}`, snapshot_bytes: statSync(source).size } // don't hash the 5GB live DB nightly
   : (JSON.parse(readFileSync(sourceManifestPath, "utf8")) as { snapshot_sha256: string; snapshot_bytes: number });
 if (!servingMode) {
   const actualSourceBytes = statSync(source).size;
