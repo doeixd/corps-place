@@ -2278,3 +2278,19 @@ total 1.169 vs final2 0.493/1.514. If inference cost forces a smaller set, use a
 FIXED subset (not frozen-ranked) since frozen carries no reliable selection
 signal. Per-member checkpoint soup is skipped: the multi-seed ensemble already
 delivers the variance reduction souping would add.
+
+### 2026-07-18 — capacity re-test verdict (clean dev3 contract, paired seeds)
+
+The 1.885x graph (1,962,314 params) was re-tested on the clean dev3 contract at
+midpoint LR 0.00065, paired seeds 42/43, judged on the tail per the pre-declared
+rule. VERDICT: capacity does NOT help. Frozen: scaled recap 0.371/0.366 vs
+control 0.368/0.362 (comparable/worse), total worse. 2026 agnostic: scaled recap
+0.4195/0.4243 (mean 0.422) vs control seeds 0.402-0.436 and the ensemble 0.379 —
+slightly worse than the good control seeds. TAIL (the hypothesis): zero-history
+1.85/1.92 comparable to control (no edge); sparse 0.97/0.73 better only on the
+tiny noisy 9-row slice. Conclusion: on the clean contract, doubling parameters
+buys nothing on aggregate OR the tail, for 2x compute/inference. This confirms
+the prior frozen-contract finding cleanly and closes the capacity question. GOOD
+for production: the deployed ~1.03M-param ensemble leaves no capacity-scaling on
+the table; distillation is unnecessary. The data/curve/anchor repair was the
+lever, not model size.
