@@ -13,7 +13,25 @@ import {
   V9_RAW_STATIC_DIM,
 } from "./training/v9FeatureModes.js";
 
-const REFERENCE_CURVES = JSON.parse(fs.readFileSync("./src/training/referenceCurvesV4.json", "utf-8"));
+// V10 4a: build the serving template table on the dev3 contract WITHOUT touching
+// the live final2 table. All three flags default to the exact final2 build:
+//   --reference-curves <path>  division-aware curves for the static rank-baseline
+//                              block (dev3). Default V4 (World-Class-only).
+//   --table <name>             target table (default ml_sequence_rows_v9_subcaption;
+//                              pass ml_sequence_rows_v10_serving for a new table).
+//   --db <url>                 libsql url (default file:./dci-relational.db).
+// Only curves are swapped for V10; the corps/judge index maps are left as-is
+// because agnostic serving ignores the baked identity ids (guide §4c).
+const argVal = (flag: string, dflt: string): string => {
+  const i = process.argv.indexOf(flag);
+  return i >= 0 && process.argv[i + 1] ? process.argv[i + 1]! : dflt;
+};
+const REFERENCE_CURVES_PATH = argVal("--reference-curves", "./src/training/referenceCurvesV4.json");
+const TARGET_TABLE = argVal("--table", "ml_sequence_rows_v9_subcaption");
+if (!/^[A-Za-z0-9_]+$/.test(TARGET_TABLE)) throw new Error(`Invalid --table identifier: ${TARGET_TABLE}`);
+const DB_URL = argVal("--db", "file:./dci-relational.db");
+
+const REFERENCE_CURVES = JSON.parse(fs.readFileSync(REFERENCE_CURVES_PATH, "utf-8"));
 const JUDGE_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/judgeIndexMap.json", "utf-8"));
 const CORPS_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/corpsIndexMap.json", "utf-8"));
 const SHOW_INDEX_MAP: Record<string, number> = JSON.parse(fs.readFileSync("./src/training/showIndexMap.json", "utf-8"));
@@ -826,8 +844,8 @@ export const buildSequencesV9 = (
 ) => Effect.gen(function* () {
   const sql = yield* (SqlClient.SqlClient);
 
-  yield* (sql`
-    CREATE TABLE IF NOT EXISTS ml_sequence_rows_v9_subcaption (
+  yield* (sql.unsafe(`
+    CREATE TABLE IF NOT EXISTS ${TARGET_TABLE} (
       row_id INTEGER PRIMARY KEY AUTOINCREMENT,
       season TEXT NOT NULL,
       competition_slug TEXT NOT NULL,
@@ -849,7 +867,7 @@ export const buildSequencesV9 = (
       created_at TEXT NOT NULL,
       UNIQUE(season, competition_slug, division_name, corps_key)
     )
-  `);
+  `));
 
   const historicalRows = yield* (
     sql<{
@@ -1946,8 +1964,9 @@ const insertBatch = (sql: SqlClient.SqlClient, rows: any[]) =>
   Effect.forEach(
     rows,
     (row) =>
-      sql`
-        INSERT OR REPLACE INTO ml_sequence_rows_v9_subcaption (
+      sql.unsafe(
+        `
+        INSERT OR REPLACE INTO ${TARGET_TABLE} (
           season,
           competition_slug,
           competition_date,
@@ -1966,31 +1985,33 @@ const insertBatch = (sql: SqlClient.SqlClient, rows: any[]) =>
           map_version,
           split,
           created_at
-        ) VALUES (
-          ${row.season},
-          ${row.competition_slug},
-          ${row.competition_date},
-          ${row.division_name},
-          ${row.corps_key},
-          ${row.corps_id},
-          ${row.x_sequence_json},
-          ${row.x_static_json},
-          ${row.judge_indices_json},
-          ${row.y_residuals_json},
-          ${row.y_recap_json},
-          ${row.y_total},
-          ${row.agnostic_show_id},
-          ${row.builder_version},
-          ${row.reference_curves_version},
-          ${row.map_version},
-          ${row.split},
-          ${row.created_at}
-        )
-      `.pipe(Effect.asVoid),
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+        [
+          row.season,
+          row.competition_slug,
+          row.competition_date,
+          row.division_name,
+          row.corps_key,
+          row.corps_id,
+          row.x_sequence_json,
+          row.x_static_json,
+          row.judge_indices_json,
+          row.y_residuals_json,
+          row.y_recap_json,
+          row.y_total,
+          row.agnostic_show_id,
+          row.builder_version,
+          row.reference_curves_version,
+          row.map_version,
+          row.split,
+          row.created_at,
+        ]
+      ).pipe(Effect.asVoid),
     { concurrency: 50, discard: true }
   );
 
-const SqlLayer = LibsqlClient.layer({ url: "file:./dci-relational.db" });
+const SqlLayer = LibsqlClient.layer({ url: DB_URL });
 
 // `--seasons 2026` (comma-separated) restricts the build; INSERT OR REPLACE is an
 // upsert keyed by (season, competition_slug, division, corps_key), so a single-season
@@ -2003,6 +2024,7 @@ const seasonsArg =
     ? process.argv[seasonsArgIdx + 1]!.split(",").map((s) => s.trim()).filter(Boolean)
     : undefined;
 if (seasonsArg) console.log(`Building V9 subcaption sequences for seasons: ${seasonsArg.join(", ")}`);
+console.log(`  → table=${TARGET_TABLE} curves=${REFERENCE_CURVES_PATH} db=${DB_URL}`);
 
 Effect.runPromise(buildSequencesV9(seasonsArg ?? SEASONS).pipe(Effect.provide(SqlLayer)))
   .then(() => console.log("Done building V9 sequences."))

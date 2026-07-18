@@ -56,6 +56,10 @@ export type V9PredictionFeatureInput = {
   // zero all three identity scales; this also makes the corps/judge map-integer
   // vocabulary irrelevant to correctness.
   agnostic?: boolean;
+  // V10 serving: read templates from an alternate serving table (the dev3-built
+  // ml_sequence_rows_v10_serving). Defaults to ml_sequence_rows_v9_subcaption.
+  // Validated as a bare identifier by the caller before it reaches the SQL.
+  templateTable?: string;
 };
 
 export type V9PredictionFeatures = {
@@ -97,7 +101,7 @@ export async function loadV9TemplateRow(
   db: Client,
   input: Pick<
     V9PredictionFeatureInput,
-    'corpsKey' | 'division' | 'templateSeason' | 'targetDate' | 'knowledgeDate'
+    'corpsKey' | 'division' | 'templateSeason' | 'targetDate' | 'knowledgeDate' | 'templateTable'
   >
 ) {
   const templateSeasonClause = input.templateSeason ? 'AND season = ?' : '';
@@ -106,12 +110,17 @@ export async function loadV9TemplateRow(
     ? [input.corpsKey, input.division, input.templateSeason]
     : [input.corpsKey, input.division, input.knowledgeDate ?? input.targetDate];
 
+  // Caller validates templateTable as a bare identifier (predictEventRecap CLI).
+  const table =
+    input.templateTable && /^[A-Za-z0-9_]+$/.test(input.templateTable)
+      ? input.templateTable
+      : 'ml_sequence_rows_v9_subcaption';
   const result = await db.execute({
     sql: `
       SELECT season, division_name, corps_key, corps_id, competition_slug, competition_date,
              x_sequence_json, x_static_json, judge_indices_json, y_recap_json, y_total
              , agnostic_show_id
-      FROM ml_sequence_rows_v9_subcaption
+      FROM ${table}
       WHERE corps_key = ?
         AND division_name = ?
         ${templateSeasonClause}

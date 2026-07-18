@@ -64,6 +64,10 @@ type Cli = {
   referenceCurves?: string;
   agnostic: boolean;
   ensembleDirs?: string[];
+  //   --template-table <name>    serving template table to read (default
+  //                              ml_sequence_rows_v9_subcaption; the dev3-built
+  //                              ml_sequence_rows_v10_serving for V10).
+  templateTable: string;
 };
 
 type EventRow = {
@@ -245,6 +249,11 @@ const parseCli = (argv: string[]): Cli => {
     ensembleDirs: (() => {
       const raw = getArg(argv, '--ensemble-dirs');
       return raw ? raw.split(',').map((s) => s.trim()).filter(Boolean) : undefined;
+    })(),
+    templateTable: (() => {
+      const t = getArg(argv, '--template-table', 'ml_sequence_rows_v9_subcaption')!;
+      if (!/^[A-Za-z0-9_]+$/.test(t)) throw new Error(`Invalid --template-table identifier: ${t}`);
+      return t;
     })(),
   };
 };
@@ -802,9 +811,15 @@ async function loadJudgeIndices(db: Client, competitionSlug: string | undefined)
   return { indices, known: indices.filter((idx) => idx > 0).length };
 }
 
+// Serving template table the same-season history/rank queries read. Mutable so
+// the V10 path can point them (and loadV9TemplateRow) at ml_sequence_rows_v10_serving
+// via --template-table. Validated as a bare identifier at CLI parse, so it is safe
+// to interpolate. Defaults to the final2 table (unchanged behaviour).
+let SERVING_TEMPLATE_TABLE = 'ml_sequence_rows_v9_subcaption';
+
 async function countSameSeasonHistory(db: Client, season: string, targetDate: string) {
   const result = await db.execute({
-    sql: 'SELECT COUNT(*) AS count FROM ml_sequence_rows_v9_subcaption WHERE season = ? AND competition_date < ?',
+    sql: `SELECT COUNT(*) AS count FROM ${SERVING_TEMPLATE_TABLE} WHERE season = ? AND competition_date < ?`,
     args: [season, targetDate],
   });
   return Number((result.rows[0] as any)?.count ?? 0);
@@ -825,7 +840,7 @@ async function countCorpsSameSeasonShows(
 ): Promise<{ count: number; lastDate: string | null; lastTotal: number | null }> {
   const result = await db.execute({
     sql: `SELECT COUNT(*) AS count, MAX(competition_date) AS last_date
-          FROM ml_sequence_rows_v9_subcaption
+          FROM ${SERVING_TEMPLATE_TABLE}
           WHERE season = ? AND corps_key = ? AND competition_date < ?`,
     args: [season, corpsKey, targetDate],
   });
@@ -834,7 +849,7 @@ async function countCorpsSameSeasonShows(
   let lastTotal: number | null = null;
   if (lastDate) {
     const t = await db.execute({
-      sql: `SELECT y_total FROM ml_sequence_rows_v9_subcaption
+      sql: `SELECT y_total FROM ${SERVING_TEMPLATE_TABLE}
             WHERE season = ? AND corps_key = ? AND competition_date = ? LIMIT 1`,
       args: [season, corpsKey, lastDate],
     });
@@ -856,10 +871,10 @@ async function currentSeasonRank(
   targetDate: string
 ): Promise<number | undefined> {
   const res = await db.execute({
-    sql: `SELECT corps_key, y_total FROM ml_sequence_rows_v9_subcaption m
+    sql: `SELECT corps_key, y_total FROM ${SERVING_TEMPLATE_TABLE} m
           WHERE m.season = ? AND m.division_name = ? AND m.competition_date < ?
             AND m.competition_date = (
-              SELECT MAX(m2.competition_date) FROM ml_sequence_rows_v9_subcaption m2
+              SELECT MAX(m2.competition_date) FROM ${SERVING_TEMPLATE_TABLE} m2
               WHERE m2.season = m.season AND m2.corps_key = m.corps_key
                 AND m2.division_name = m.division_name AND m2.competition_date < ?
             )`,
@@ -1549,6 +1564,8 @@ async function main() {
     // V10 serving: swap in division-aware curves for the in-script anchor helpers
     // (curveBaseline/curveCapsVector/curveGrowth). No-op when the flag is unset.
     setReferenceCurves(cli.referenceCurves);
+    // Point the same-season history/rank queries at the chosen template table.
+    SERVING_TEMPLATE_TABLE = cli.templateTable;
 
     const primaryModelDir =
       cli.modelDir === 'latest' || !cli.modelDir ? findLatestV9SubcaptionModelDir() : cli.modelDir;
@@ -1713,6 +1730,7 @@ async function main() {
         keepKnownLineupContext: mode !== 'lineup_unknown',
         referenceCurvesPath: cli.referenceCurves,
         agnostic: cli.agnostic,
+        templateTable: cli.templateTable,
       });
       const sameSeason = await countCorpsSameSeasonShows(db, corpsKey, cli.season, knowledgeDate);
       const corpsSameSeasonShows = sameSeason.count;
