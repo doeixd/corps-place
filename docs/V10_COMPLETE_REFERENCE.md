@@ -99,8 +99,10 @@ final2 model on disk; off-box nightly DB backup.
   `--inference-events`, `--as-of`, `--table`, `--db`, `--output-db`.
 - `sdk/scripts/prepareV10TrainingData.ts` — `--serving` mode (A1).
 - `sdk/scripts/prepareV10TemporalFeatures.ts` — temporal contract (unmodified; self-consistent).
-- **Pushed to branch **`v10-serving-builder`** (kept off the shared codex branch to not disrupt the running v10.1 instance; merge into `codex/v10-model-reconstruction` when v10.1 settles).
-  mini-PC / others get the A2 + serving-mode fixes.
+- My builder commits (A2 inference rows, `--as-of` fix, `--serving` mode, lineup + cross-event fixes)
+  are pushed to branch **`v10-serving-builder`** — kept off the shared `codex/v10-model-reconstruction`
+  so they don't disrupt the running v10.1 instance. **Merge them into `codex/v10-model-reconstruction`
+  when v10.1 settles** so the mini-PC / future work get the fixes.
 
 ### Prod master `/root/corps-place`
 - `sdk/src/readModel/builders/predictions.ts`, `app/lib/event-prediction-api.ts` — the flag (`8707a6b`, pushed + deployed).
