@@ -402,21 +402,30 @@ const ensureTablesOnce = (db: Client) => {
   return tablesEnsured;
 };
 
+// Which model to serve (mirrors the read-model builder flag). Default 'final2';
+// PREDICTION_MODEL=v10 flips to the clean-v10 ensemble; 'any' = newest-run-wins.
+const PREDICTION_MODEL = (process.env.PREDICTION_MODEL ?? 'final2').toLowerCase();
+const PREDICTION_MODEL_FILTER =
+  PREDICTION_MODEL === 'v10'
+    ? "AND (model_dir LIKE '%clean-v10%' OR model_dir LIKE '%ensemble%')"
+    : PREDICTION_MODEL === 'final2'
+      ? "AND model_dir LIKE '%final2%'"
+      : '';
+
 const latestSavedPrediction = (db: Client, eventSlug: string, hydrate = true) =>
   Effect.tryPromise({
     try: async (): Promise<{ run: ModelEventPredictionRun; payload: any } | undefined> => {
       await ensureTablesOnce(db);
-      const result = await db.execute({
-        sql: `
-          SELECT *
-          FROM model_event_prediction_runs
-          WHERE season = '2026'
-            AND event_slug = ?
-          ORDER BY predicted_at DESC
-          LIMIT 1
-        `,
-        args: [eventSlug],
-      });
+      const pick = async (filter: string) =>
+        db.execute({
+          sql: `SELECT * FROM model_event_prediction_runs
+                WHERE season = '2026' AND event_slug = ? ${filter}
+                ORDER BY predicted_at DESC LIMIT 1`,
+          args: [eventSlug],
+        });
+      // Prefer the flagged model; fall back to newest-any so nothing goes blank.
+      let result = PREDICTION_MODEL_FILTER ? await pick(PREDICTION_MODEL_FILTER) : await pick('');
+      if (!result.rows[0] && PREDICTION_MODEL_FILTER) result = await pick('');
       const run = result.rows[0] as unknown as ModelEventPredictionRun | undefined;
       if (!run) return undefined;
       const parsed = JSON.parse(String((result.rows[0] as any).payload_json));

@@ -90,23 +90,38 @@ const canonicalizePredictions = (payload: any, canon: Map<string, { name: string
 
 // The latest saved prediction summary for one event (unhydrated). Returns null
 // when no saved run exists.
+// Feature flag: which model's predictions the site serves. Default 'final2' (the
+// current production model). Set PREDICTION_MODEL=v10 to flip to the clean-v10
+// ensemble; 'any' restores the legacy newest-run-wins behaviour. Selection is by
+// model_dir, so both models can write runs freely (shadow/A-B) and only the flagged
+// one is served — flip/rollback is just this env var + a read-model republish, fully
+// reversible with no data change. Falls back to newest-any if the flagged model has
+// no run for an event (never blank).
+const PREDICTION_MODEL = (process.env.PREDICTION_MODEL ?? 'final2').toLowerCase();
+const modelDirFilter =
+  PREDICTION_MODEL === 'v10'
+    ? "AND (model_dir LIKE '%clean-v10%' OR model_dir LIKE '%ensemble%')"
+    : PREDICTION_MODEL === 'final2'
+      ? "AND model_dir LIKE '%final2%'"
+      : ''; // 'any' → legacy newest-wins
+
 export const buildLatestPredictionSummary = async (
   db: Client,
   eventSlug: string,
   season = '2026'
 ): Promise<LatestPredictionRow | null> => {
-  const result = await db.execute({
-    sql: `
-      SELECT *
-      FROM model_event_prediction_runs
-      WHERE season = ?
-        AND event_slug = ?
-      ORDER BY predicted_at DESC
-      LIMIT 1
-    `,
-    args: [season, eventSlug],
-  });
-  const run = result.rows[0] as any;
+  const pick = async (filter: string) =>
+    (
+      await db.execute({
+        sql: `SELECT * FROM model_event_prediction_runs
+              WHERE season = ? AND event_slug = ? ${filter}
+              ORDER BY predicted_at DESC LIMIT 1`,
+        args: [season, eventSlug],
+      })
+    ).rows[0] as any;
+  // Prefer the flagged model; fall back to newest-any so an event the flagged model
+  // hasn't forecast yet still shows a prediction rather than nothing.
+  const run = (modelDirFilter && (await pick(modelDirFilter))) || (await pick(''));
   if (!run) return null;
   const payload = JSON.parse(String(run.payload_json));
   // Remap aliased corps identities to canonical so the diff view merges the
