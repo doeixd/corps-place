@@ -90,8 +90,17 @@ const requestHeaders = {
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+// Hard per-request network timeout. Without this a stalled TCP read (Cloudflare/
+// dci.org holding the connection open) blocks forever in ep_poll — the bug that
+// hung a whole scrape for 4.7 days while holding the refresh-lineups flock.
+// The signal aborts the body stream too, so `response.text()` can't hang either.
+const FETCH_TIMEOUT_MS = 25000;
+
 const fetchWithRetry = async (requestUrl: string, attempt = 0): Promise<EventPageResponse> => {
-  const response = await fetch(requestUrl, { headers: requestHeaders });
+  const response = await fetch(requestUrl, {
+    headers: requestHeaders,
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   const html = await response.text();
   if (response.status === 429 && attempt < maxRetries) {
     const delay = retryBaseDelayMs * 2 ** attempt;
@@ -109,7 +118,10 @@ const fetchJsonWithRetry = async <T>(requestUrl: string, attempt = 0): Promise<{
   status: number;
   data: T | null;
 }> => {
-  const response = await fetch(requestUrl, { headers: requestHeaders });
+  const response = await fetch(requestUrl, {
+    headers: requestHeaders,
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   if (response.status === 429 && attempt < maxRetries) {
     const delay = retryBaseDelayMs * 2 ** attempt;
     console.warn(
@@ -139,16 +151,28 @@ const looksBlocked = (status: number, html: string): boolean =>
     html
   );
 
+// A page is only "good" once it carries the lineup/schedule table. Used both to
+// decide whether a plain fetch is enough and — passed into the renderer — to make
+// a hydration-starved SPA shell (e.g. local Chromium returning a ~338-char body
+// with no lineup) ESCALATE to Browserbase instead of being accepted and persisted
+// with stale performance times. A genuinely-empty event (no lineup posted yet)
+// simply never passes, so we fall back to best-effort and the caller's empty-page
+// handling (overwrite guard) leaves existing data untouched.
+const hasLineup = (html: string): boolean =>
+  cheerio.load(html)(selectors.lineupRow).length > 0;
+
 const getEventPage = (slug: string) =>
   Effect.gen(function* () {
     const requestUrl = `${baseUrl}/${slug}`;
     const direct = yield* Effect.tryPromise(() => fetchWithRetry(requestUrl));
-    if (!looksBlocked(direct.status, direct.html)) return direct;
+    // Render when Cloudflare-blocked OR when a 200 came back without a lineup (an
+    // un-hydrated shell) — either way the plain fetch isn't the real page.
+    if (!looksBlocked(direct.status, direct.html) && hasLineup(direct.html)) return direct;
 
     const renderer = yield* Effect.serviceOption(BrowserbaseService);
     if (Option.isSome(renderer)) {
       const rendered = yield* renderer.value
-        .fetchHtml(requestUrl)
+        .fetchHtml(requestUrl, hasLineup)
         .pipe(Effect.catch(() => Effect.succeed("")));
       if (rendered.trim().length > 0) {
         return {

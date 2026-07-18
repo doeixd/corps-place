@@ -151,10 +151,25 @@ const retryDelayMs = 250;
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 const backoffDelay = (attempt: number) => retryDelayMs * 2 ** attempt;
 
+// Per-request network timeout so a stalled read can't hang callers (season-update
+// workflow, compositeApi). This module is plain-fetch-only (no render escalation).
+const FETCH_TIMEOUT_MS = 25000;
+
+// A 200 Cloudflare challenge/interstitial is not the page. Detect it so we never
+// return it — otherwise fetchEventsViaHtml caches it as `website_events_html_raw`
+// and it silently parses to zero events (cache poisoning + silent under-count).
+const looksBlocked = (html: string): boolean =>
+  /Just a moment\.\.\.|Attention Required! \| Cloudflare|challenge-platform|__cf_chl|Enable JavaScript and cookies/i.test(
+    html,
+  );
+
 const fetchHtmlWithRetry = async (url: string, attempt = 0): Promise<string> => {
   let response: Response;
   try {
-    response = await fetch(url, { headers: requestHeaders });
+    response = await fetch(url, {
+      headers: requestHeaders,
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
   } catch (error) {
     if (attempt < maxRetries) {
       await sleep(backoffDelay(attempt));
@@ -178,7 +193,21 @@ const fetchHtmlWithRetry = async (url: string, attempt = 0): Promise<string> => 
     });
   }
 
-  return response.text();
+  const html = await response.text();
+  if (looksBlocked(html)) {
+    if (attempt < maxRetries) {
+      await sleep(backoffDelay(attempt));
+      return fetchHtmlWithRetry(url, attempt + 1);
+    }
+    // Surface as an error rather than returning a poison shell; callers that
+    // `catch(() => '')` then skip caching and yield nothing this run (self-heals
+    // when the wall lifts) instead of persisting a bad page.
+    throw new WebsiteRecapParseError(`Cloudflare-blocked ${url}`, {
+      status: response.status,
+      attempts: attempt + 1,
+    });
+  }
+  return html;
 };
 
 const fetchHtmlEffect = (url: string): Effect.Effect<string, DciNetworkError, never> =>

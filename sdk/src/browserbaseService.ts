@@ -15,7 +15,15 @@ import { DciNetworkError } from './errors.js';
  * Kept the name `BrowserbaseService` so callers/layers are unchanged.
  */
 export interface BrowserbaseService {
-  readonly fetchHtml: (url: string) => Effect.Effect<string, DciNetworkError, never>;
+  readonly fetchHtml: (
+    url: string,
+    /** Optional content-quality gate. A rung's render is only ACCEPTED when this
+     *  returns true; otherwise the chain escalates to the next backend (ultimately
+     *  Browserbase). Default: any non-empty render. Lets callers demand e.g. a
+     *  lineup table so a hydration-starved local shell falls through to the cloud
+     *  browser instead of being persisted as "the page". */
+    accept?: (html: string) => boolean
+  ) => Effect.Effect<string, DciNetworkError, never>;
   readonly fetchJson: (url: string) => Effect.Effect<string, DciNetworkError, never>;
 }
 
@@ -293,20 +301,39 @@ export const BrowserbaseServiceLive = Layer.effect(
           ? Effect.logInfo('[render] no local Chromium; using Browserbase cloud')
           : Effect.logWarning('[render] no local Chromium and no Browserbase key — rendering disabled');
 
-    const fetchHtml = (url: string): Effect.Effect<string, DciNetworkError, never> =>
+    const fetchHtml = (
+      url: string,
+      accept?: (html: string) => boolean
+    ): Effect.Effect<string, DciNetworkError, never> =>
       Effect.gen(function* () {
+        // A render is only ACCEPTED when it clears the caller's content gate
+        // (default: any non-empty page). A non-empty render that FAILS the gate —
+        // e.g. an SPA shell with no lineup table because a cheaper backend didn't
+        // hydrate — is remembered as a best-effort fallback but does NOT stop the
+        // chain, so we escalate to the next backend (ultimately Browserbase). This
+        // is the fix for stale lineup times: local Chromium returning a ~338-char
+        // shell used to count as success and Browserbase was never reached.
+        const ok = (h: string) => (accept ? accept(h) : h.trim().length > 0);
+        let best = '';
+        const remember = (h: string) => {
+          if (h && h.trim().length > best.trim().length) best = h;
+        };
         // 0) Remote Chrome over the tunnel (keeps Chromium off this box). Skipped
         //    fast once the tunnel is known dead this run. A render ERROR (home
         //    machine offline / tunnel down) disables remote for the rest of the
-        //    process; a successful-but-empty render does NOT (that's a page issue,
-        //    not a transport one) so we just fall through for this one URL.
+        //    process; a successful-but-unaccepted render does NOT (that's a page
+        //    issue, not a transport one) so we just escalate for this one URL.
         if (remoteCdpUrl && !remoteDead) {
           const remote = yield* Effect.tryPromise(() => renderRemote(url)).pipe(
             Effect.result,
           );
           if (remote._tag === 'Success' && remote.success.trim().length > 0) {
-            yield* Effect.logInfo(`[render] remote ${url} — ${remote.success.length} chars`);
-            return remote.success;
+            remember(remote.success);
+            if (ok(remote.success)) {
+              yield* Effect.logInfo(`[render] remote ${url} — ${remote.success.length} chars`);
+              return remote.success;
+            }
+            yield* Effect.logInfo(`[render] remote ${url} rendered but failed content gate — escalating`);
           }
           if (remote._tag === 'Failure') {
             remoteDead = true;
@@ -315,7 +342,7 @@ export const BrowserbaseServiceLive = Layer.effect(
             );
           }
         }
-        // 1) Local Chromium (free). On failure, fall through to the cloud.
+        // 1) Local Chromium (free). On failure or a gate-failing shell, escalate.
         if (chromePath) {
           const local = yield* Effect.tryPromise({
             try: () => renderLocal(url),
@@ -327,8 +354,14 @@ export const BrowserbaseServiceLive = Layer.effect(
               }),
           }).pipe(Effect.catch(() => Effect.succeed('')));
           if (local.trim().length > 0) {
-            yield* Effect.logInfo(`[render] local ${url} — ${local.length} chars`);
-            return local;
+            remember(local);
+            if (ok(local)) {
+              yield* Effect.logInfo(`[render] local ${url} — ${local.length} chars`);
+              return local;
+            }
+            yield* Effect.logInfo(
+              `[render] local ${url} rendered ${local.length} chars but failed content gate — escalating to Browserbase`,
+            );
           }
         }
         // 2) Camofox stealth Firefox — engine-level anti-detect; the rung that
@@ -340,15 +373,23 @@ export const BrowserbaseServiceLive = Layer.effect(
             Effect.catch(() => Effect.succeed(''))
           );
           if (camo.trim().length > 0) {
-            yield* Effect.logInfo(`[render] camofox ${url} — ${camo.length} chars`);
-            return camo;
+            remember(camo);
+            if (ok(camo)) {
+              yield* Effect.logInfo(`[render] camofox ${url} — ${camo.length} chars`);
+              return camo;
+            }
+            yield* Effect.logInfo(`[render] camofox ${url} failed content gate — escalating`);
+          } else {
+            yield* Effect.logInfo(`[render] camofox failed for ${url}; falling through`);
           }
-          yield* Effect.logInfo(`[render] camofox failed for ${url}; falling through`);
         }
-        // 3) Browserbase cloud session fallback.
+        // 3) Browserbase cloud session fallback — a real cloud browser that reliably
+        //    hydrates the SPA. Accept it if it clears the gate; otherwise fall back
+        //    to the best non-empty render we saw (the caller's empty-page handling
+        //    then decides), and only hard-fail if nothing rendered at all.
         if (bb) {
           yield* Effect.logInfo(`[render] Browserbase ${url}`);
-          return yield* Effect.tryPromise({
+          const bbHtml = yield* Effect.tryPromise({
             try: () => renderViaSession(url),
             catch: (cause) =>
               new DciNetworkError({
@@ -356,13 +397,29 @@ export const BrowserbaseServiceLive = Layer.effect(
                 statusCode: 0,
                 cause,
               }),
-          });
+          }).pipe(Effect.catch(() => Effect.succeed('')));
+          if (bbHtml.trim().length > 0) {
+            remember(bbHtml);
+            if (ok(bbHtml)) {
+              yield* Effect.logInfo(`[render] Browserbase ${url} — ${bbHtml.length} chars`);
+              return bbHtml;
+            }
+            yield* Effect.logInfo(
+              `[render] Browserbase ${url} rendered ${bbHtml.length} chars but still failed content gate`,
+            );
+          }
+        }
+        if (best.trim().length > 0) {
+          yield* Effect.logInfo(
+            `[render] no backend cleared the content gate for ${url}; returning best-effort ${best.length}-char render`,
+          );
+          return best;
         }
         return yield* Effect.fail(
           new DciNetworkError({ message: `no renderer available for ${url}`, statusCode: 0 }),
         );
       });
 
-    return { fetchHtml, fetchJson: fetchHtml };
+    return { fetchHtml, fetchJson: (url: string) => fetchHtml(url) };
   }),
 );

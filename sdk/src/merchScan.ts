@@ -185,8 +185,11 @@ const fallbackHtml = (url: string): Effect.Effect<string, never, never> =>
   Effect.gen(function* () {
     const bb = yield* Effect.serviceOption(BrowserbaseService);
     if (Option.isNone(bb)) return "";
+    // Gate the render on "not a Cloudflare interstitial" so a cheap backend's
+    // challenge page escalates to the real cloud browser instead of being handed
+    // back and persisted as the store page.
     return yield* bb.value
-      .fetchHtml(url)
+      .fetchHtml(url, (h) => h.trim().length > 0 && !isCfChallenge(h))
       .pipe(Effect.catch(() => Effect.succeed("")));
   });
 
@@ -226,7 +229,7 @@ const fetchPage = (
           ? Effect.succeed(curl)
           : fallbackHtml(url).pipe(
               Effect.flatMap((html) =>
-                html.trim().length > 0
+                html.trim().length > 0 && !isCfChallenge(html)
                   ? Effect.succeed(browserbasePage(url, html))
                   : fallbackTo,
               ),

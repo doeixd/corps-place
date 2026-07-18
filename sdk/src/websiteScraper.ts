@@ -70,8 +70,15 @@ const retryDb = <A, E, R>(label: string, effect: Effect.Effect<A, E, R>) =>
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+// Hard per-request network timeout so a stalled read can't hang the score ingest
+// (runs every minute under a flock — a hang would stale-lock all future runs).
+const FETCH_TIMEOUT_MS = 25000;
+
 const fetchHtmlWithRetry = async (url: string, attempt = 0): Promise<string> => {
-  const response = await fetch(url, { headers: requestHeaders });
+  const response = await fetch(url, {
+    headers: requestHeaders,
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   const html = await response.text();
   if (response.status === 429 && attempt < maxRetries) {
     const delay = retryDelayMs * 2 ** attempt;
@@ -152,7 +159,8 @@ const fetchScoreEventsPage = async (
       ...requestHeaders,
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
     },
-    body: params.toString()
+    body: params.toString(),
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
 
   if (!response.ok) {
