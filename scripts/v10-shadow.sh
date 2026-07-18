@@ -40,18 +40,22 @@ SERVING_DB="/tmp/v10-shadow-$$.db"; rm -f "$SERVING_DB"*
 ( cd "$BRANCH_SDK" && NODE_OPTIONS="--max-old-space-size=2048" vp exec tsx src/buildMlSequencesV9Subcaption.ts \
     --data-contract clean-v10 --db "$PROD_DB" --output-db "$SERVING_DB" --seasons 2026 --inference-events "$INF_ARG" >>"$LOG" 2>&1 )
 
-# copy the inference rows into a standalone shadow serving DB (NOT prod)
-SHADOW_TPL="/tmp/v10-shadow-tpl-$$.db"; rm -f "$SHADOW_TPL"
-sqlite3 "$SERVING_DB" ".dump ml_sequence_rows_v10_clean_control" | grep -vE '^(PRAGMA|BEGIN|COMMIT)' | sqlite3 "$SHADOW_TPL"
-# corps names for the serving lookup
-sqlite3 "$PROD_DB" ".dump corps" | grep -vE '^(PRAGMA|BEGIN|COMMIT)' 2>/dev/null | sqlite3 "$SHADOW_TPL" 2>/dev/null
+# Land the inference rows into PROD as ml_sequence_rows_v10_inference — an ADDITIVE
+# table that final2 never reads. Serving needs to read templates from the same DB it
+# --save-db's to, so we serve against prod. This is A/B, NOT a flip: V10 runs are
+# tagged clean-v10 and the PREDICTION_MODEL=final2 default keeps them UNSERVED.
+sqlite3 "$SERVING_DB" ".dump ml_sequence_rows_v10_clean_control" \
+  | sed 's/ml_sequence_rows_v10_clean_control/ml_sequence_rows_v10_inference/g' \
+  | grep -vE '^(PRAGMA|BEGIN|COMMIT)' \
+  | ( sqlite3 "$PROD_DB" "DROP TABLE IF EXISTS ml_sequence_rows_v10_inference;"; sqlite3 "$PROD_DB" )
 
-# A3: serve each event -> JSON forecast in the dated run dir (no --save-db)
+# A3: serve each event — write the V10 run to prod (--save-db, model_dir=clean-v10-ensemble;
+# NOT served while the flag defaults to final2) AND a JSON forecast for offline eval.
 for slug in $EVENTS; do
-  ( cd "$SERVE_SDK" && NODE_OPTIONS="--max-old-space-size=2048" vp exec tsx scripts/cleanV10Serve.ts \
-      --event "$slug" --db "file:$SHADOW_TPL" --template-table ml_sequence_rows_v10_clean_control \
-      --ensemble-dirs "$ENS" --output "$RUN_DIR/$slug.json" >/dev/null 2>>"$LOG" ) \
-    && echo "[v10-shadow] forecast $slug" >> "$LOG"
+  ( cd "$SERVE_SDK" && NODE_OPTIONS="--max-old-space-size=2048" PREDICTION_MODEL=final2 vp exec tsx scripts/cleanV10Serve.ts \
+      --event "$slug" --db "file:$PROD_DB" --template-table ml_sequence_rows_v10_inference \
+      --ensemble-dirs "$ENS" --save-db --output "$RUN_DIR/$slug.json" >/dev/null 2>>"$LOG" ) \
+    && echo "[v10-shadow] forecast+saved $slug" >> "$LOG"
 done
-rm -f "$SERVING_DB"* "$SHADOW_TPL"
+rm -f "$SERVING_DB"*
 echo "[v10-shadow] $(date -u) done ($(ls "$RUN_DIR"/*.json 2>/dev/null | wc -l) forecasts in $RUN_DIR)" >> "$LOG"
