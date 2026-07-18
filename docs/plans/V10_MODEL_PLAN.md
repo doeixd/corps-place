@@ -2262,3 +2262,19 @@ scripts/ensembleCombined.py (globs all agnostic 2026 evals). More seeds
 recap-vs-total tension: the ensemble minimizes caption error (recap, the
 fundamental metric) but the derived total can be slightly higher when caption
 errors correlate; recap 0.383 is the headline, total 1.19 still 21% < final2.
+
+### 2026-07-17 overnight — frozen composite ~uncorrelated with 2026 (ensemble broadly)
+
+All-seed table (frozen composite / 2026 agnostic recap): ctrl42 0.5075/0.416,
+ctrl43 0.5215/0.433, ctrl44 0.5199/0.405, ctrl45 0.5178/0.424, ctrl46
+0.5270/0.412, ctrl47 0.5314/0.402, ctrl48 0.5241/0.404, ctrl49 0.5139/0.422,
+pa42 0.5092/0.436, pa43 0.5117/0.393, pa44 0.5133/0.406. Frozen composite rank
+does NOT track 2026 recap: pa42 has the best phase-aware frozen but worst 2026;
+ctrl47 has the worst frozen but good 2026; pa43 (best 2026) is mid frozen. So
+seed SELECTION by frozen validation is unreliable, and selection by 2026 would
+overfit the test. DISCIPLINED PRODUCTION CHOICE: ensemble ALL frozen-qualified
+seeds (no sub-selection). Full ~11-model agnostic ensemble: 2026 recap 0.3784 /
+total 1.169 vs final2 0.493/1.514. If inference cost forces a smaller set, use a
+FIXED subset (not frozen-ranked) since frozen carries no reliable selection
+signal. Per-member checkpoint soup is skipped: the multi-seed ensemble already
+delivers the variance reduction souping would add.
