@@ -1,0 +1,171 @@
+{
+  "manifest_version": "v10-training-data-manifest-v1",
+  "generated_at": "2026-07-18T23:25:03.724Z",
+  "purpose": "training",
+  "contract_version": "v10-training-performances-dev5",
+  "included_seasons": [
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "training_cutoff_season": 2025,
+  "development_cutoff": "2026-07-11T23:59:59.999Z",
+  "dev_train_through": "2026-07-11T23:59:59.999Z",
+  "source_snapshot_sha256": "5c7cd0807e1c05896f42ef7aedd8a2c8edd3bcd988739a21f45e2b1be5df3bcb",
+  "derived_db_path": "/root/corps-place-v10/sdk/data/v10-training-dev5.db",
+  "derived_db_bytes": 4489216,
+  "derived_db_sha256": "7fad353e276c3cf7057fb2425d95c1f5f4195e1f31724dde2b7a3ae517f74311",
+  "row_identity_sha256": "4fe2de2074fb9f40c869f913bdd85e11759bddd1b77c072b4f6f89d76f203e11",
+  "sqlite_quick_check": "ok",
+  "invariants": {
+    "rows": 7439,
+    "distinct_row_keys": 7439,
+    "total_mismatches": 0,
+    "incomplete_panels": 0,
+    "invalid_ranks": 0,
+    "min_date": "2013-06-21T04:00:00.000Z",
+    "max_date": "2026-07-11T00:00:00.000Z"
+  },
+  "by_season_division": [
+    {
+      "season": "2013",
+      "division_name": "Open Class",
+      "rows": 175
+    },
+    {
+      "season": "2013",
+      "division_name": "World Class",
+      "rows": 463
+    },
+    {
+      "season": "2014",
+      "division_name": "Open Class",
+      "rows": 176
+    },
+    {
+      "season": "2014",
+      "division_name": "World Class",
+      "rows": 469
+    },
+    {
+      "season": "2015",
+      "division_name": "Open Class",
+      "rows": 211
+    },
+    {
+      "season": "2015",
+      "division_name": "World Class",
+      "rows": 458
+    },
+    {
+      "season": "2016",
+      "division_name": "Open Class",
+      "rows": 232
+    },
+    {
+      "season": "2016",
+      "division_name": "World Class",
+      "rows": 498
+    },
+    {
+      "season": "2017",
+      "division_name": "Open Class",
+      "rows": 224
+    },
+    {
+      "season": "2017",
+      "division_name": "World Class",
+      "rows": 512
+    },
+    {
+      "season": "2018",
+      "division_name": "Open Class",
+      "rows": 238
+    },
+    {
+      "season": "2018",
+      "division_name": "World Class",
+      "rows": 542
+    },
+    {
+      "season": "2019",
+      "division_name": "Open Class",
+      "rows": 275
+    },
+    {
+      "season": "2019",
+      "division_name": "World Class",
+      "rows": 541
+    },
+    {
+      "season": "2022",
+      "division_name": "Open Class",
+      "rows": 206
+    },
+    {
+      "season": "2022",
+      "division_name": "World Class",
+      "rows": 388
+    },
+    {
+      "season": "2023",
+      "division_name": "Open Class",
+      "rows": 193
+    },
+    {
+      "season": "2023",
+      "division_name": "World Class",
+      "rows": 442
+    },
+    {
+      "season": "2024",
+      "division_name": "Open Class",
+      "rows": 153
+    },
+    {
+      "season": "2024",
+      "division_name": "World Class",
+      "rows": 398
+    },
+    {
+      "season": "2025",
+      "division_name": "Open Class",
+      "rows": 148
+    },
+    {
+      "season": "2025",
+      "division_name": "World Class",
+      "rows": 375
+    },
+    {
+      "season": "2026",
+      "division_name": "Open Class",
+      "rows": 40
+    },
+    {
+      "season": "2026",
+      "division_name": "World Class",
+      "rows": 82
+    }
+  ],
+  "identity_counts": {
+    "corps": 55,
+    "shows": 884,
+    "panel_complete_rows": 6828,
+    "panel_incomplete_rows": 611
+  },
+  "evaluation_cohorts": null,
+  "v9_key_comparison": {
+    "only_v10": 0,
+    "only_v9": 0
+  }
+}
