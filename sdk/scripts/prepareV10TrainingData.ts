@@ -42,23 +42,31 @@ const sha256File = async (path: string) => {
   return hash.digest("hex");
 };
 
+// SERVING mode: build the contract from LIVE data (prod) instead of the frozen,
+// hash-pinned training snapshot. Skips the source hash/manifest guard (the point
+// is fresh data) and the fixed-row-count invariant (live data grows) — the
+// data-QUALITY invariants (total match / complete panels / valid ranks) still
+// enforce. Use for the nightly temporal refresh, NOT for reproducing training.
+const servingMode = process.argv.includes("--serving");
+
 if (!existsSync(source)) throw new Error(`Source snapshot is missing: ${source}`);
-if (!existsSync(sourceManifestPath)) throw new Error(`Source manifest is missing: ${sourceManifestPath}`);
+if (!servingMode && !existsSync(sourceManifestPath)) throw new Error(`Source manifest is missing: ${sourceManifestPath}`);
 if (existsSync(output)) throw new Error(`Refusing to overwrite derived training DB: ${output}`);
 if (existsSync(manifestPath)) throw new Error(`Refusing to overwrite training manifest: ${manifestPath}`);
 mkdirSync(dirname(output), { recursive: true });
 
-const sourceManifest = JSON.parse(readFileSync(sourceManifestPath, "utf8")) as {
-  snapshot_sha256: string;
-  snapshot_bytes: number;
-};
-const actualSourceBytes = statSync(source).size;
-if (actualSourceBytes !== sourceManifest.snapshot_bytes) {
-  throw new Error(`Source size mismatch: expected ${sourceManifest.snapshot_bytes}, got ${actualSourceBytes}`);
-}
-const actualSourceHash = await sha256File(source);
-if (actualSourceHash !== sourceManifest.snapshot_sha256) {
-  throw new Error(`Source hash mismatch: expected ${sourceManifest.snapshot_sha256}, got ${actualSourceHash}`);
+const sourceManifest = servingMode
+  ? { snapshot_sha256: `live:${await sha256File(source)}`, snapshot_bytes: statSync(source).size }
+  : (JSON.parse(readFileSync(sourceManifestPath, "utf8")) as { snapshot_sha256: string; snapshot_bytes: number });
+if (!servingMode) {
+  const actualSourceBytes = statSync(source).size;
+  if (actualSourceBytes !== sourceManifest.snapshot_bytes) {
+    throw new Error(`Source size mismatch: expected ${sourceManifest.snapshot_bytes}, got ${actualSourceBytes}`);
+  }
+  const actualSourceHash = await sha256File(source);
+  if (actualSourceHash !== sourceManifest.snapshot_sha256) {
+    throw new Error(`Source hash mismatch: expected ${sourceManifest.snapshot_sha256}, got ${actualSourceHash}`);
+  }
 }
 
 const seasonsSql = includedSeasons.join(",");
@@ -143,9 +151,11 @@ const invariants = sqlite(output, `
     MAX(competition_date) AS max_date
   FROM v10_training_performances
 `)[0]!;
+// Data-quality invariants always enforce; the fixed row-count only in reproducible
+// (non-serving) mode. `--expected-rows 0` also skips the count check.
+const enforceCount = !servingMode && expectedRows > 0;
 if (
-  invariants.rows !== expectedRows ||
-  invariants.distinct_row_keys !== expectedRows ||
+  (enforceCount && (invariants.rows !== expectedRows || invariants.distinct_row_keys !== expectedRows)) ||
   invariants.total_mismatches !== 0 ||
   invariants.incomplete_panels !== 0 ||
   invariants.invalid_ranks !== 0
