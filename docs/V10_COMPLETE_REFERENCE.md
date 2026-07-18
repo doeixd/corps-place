@@ -99,7 +99,7 @@ final2 model on disk; off-box nightly DB backup.
   `--inference-events`, `--as-of`, `--table`, `--db`, `--output-db`.
 - `sdk/scripts/prepareV10TrainingData.ts` — `--serving` mode (A1).
 - `sdk/scripts/prepareV10TemporalFeatures.ts` — temporal contract (unmodified; self-consistent).
-- **⚠ These branch changes may not be pushed** — push `codex/v10-model-reconstruction` so the
+- **Pushed to branch **`v10-serving-builder`** (kept off the shared codex branch to not disrupt the running v10.1 instance; merge into `codex/v10-model-reconstruction` when v10.1 settles).
   mini-PC / others get the A2 + serving-mode fixes.
 
 ### Prod master `/root/corps-place`
