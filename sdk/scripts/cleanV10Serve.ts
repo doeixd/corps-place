@@ -14,6 +14,10 @@ import { createClient } from '@libsql/client';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { maskV9JudgeContext } from '../src/training/v9FeatureModes.js';
+import {
+  saveEventPredictionRun,
+  ensureEventPredictionTables,
+} from '../src/training/v9EventPredictionDb.js';
 
 const CAPTIONS = ['GE1', 'GE2', 'VP', 'VA', 'CG', 'MB', 'MA', 'MP'] as const;
 const SEQ_LEN = 15;
@@ -33,6 +37,10 @@ const templateTable = arg('--template-table', 'ml_sequence_rows_v10_serving_clea
 if (!/^[A-Za-z0-9_]+$/.test(templateTable)) throw new Error(`bad --template-table ${templateTable}`);
 const ensembleDirs = (arg('--ensemble-dirs') ?? '').split(',').map((s) => s.trim()).filter(Boolean);
 const outPath = arg('--output');
+const saveDb = process.argv.includes('--save-db');
+const season = arg('--season', '2026')!;
+// Stamp the run at --as-of noon (matches predictEventRecap's scrubber convention).
+const asOfStamp = () => (asOf ? `${asOf}T12:00:00.000Z` : new Date().toISOString());
 // --as-of <date>: forecast the event from each corps' latest clean row BEFORE this
 // date (the realistic future-event path — no row built for the target event). When
 // unset, use the row whose target IS the event (the leakage-safe proof path).
@@ -146,16 +154,60 @@ async function main() {
       caps[0]! + caps[1]! + (caps[2]! + caps[3]! + caps[4]!) / 2 + (caps[5]! + caps[6]! + caps[7]!) / 2;
     const bucket = historyBucket(mask.filter(Boolean).length);
     const total = rawTotal + (biasCal[`${r.division_name}|${bucket}`] ?? 0);
+    const ge = caps[0]! + caps[1]!;
+    const visual = (caps[2]! + caps[3]! + caps[4]!) / 2;
+    const music = (caps[5]! + caps[6]! + caps[7]!) / 2;
     predictions.push({
       corps_key: r.corps_key,
       division: r.division_name,
-      total,
+      total: Number(total.toFixed(3)),
+      GE: Number(ge.toFixed(3)),
+      Visual: Number(visual.toFixed(3)),
+      Music: Number(music.toFixed(3)),
+      template_source: 'clean_v10_inference',
       ...Object.fromEntries(CAPTIONS.map((c, i) => [c, Number(caps[i]!.toFixed(3))])),
     });
   }
   members.forEach((m) => m.dispose());
-  const out = { event: eventSlug, model_dir: `clean-v10-ensemble:${members.length}`, predictions };
+
+  // corps display names, then rank by total desc.
+  const names = new Map<string, string>();
+  if (predictions.length) {
+    const keys = predictions.map((p) => String(p.corps_key));
+    const res = await db.execute({
+      sql: `SELECT corps_key, name FROM corps WHERE corps_key IN (${keys.map(() => '?').join(',')})`,
+      args: keys,
+    });
+    for (const row of res.rows as any[]) names.set(String(row.corps_key), String(row.name));
+  }
+  predictions.sort((a, b) => (b.total as number) - (a.total as number));
+  predictions.forEach((p, i) => {
+    (p as any).rank = i + 1;
+    (p as any).corps = names.get(String(p.corps_key)) ?? String(p.corps_key);
+  });
+
+  const modelDir = `clean-v10-ensemble:${members.length}`;
+  const out = {
+    generated_at: asOfStamp(),
+    model_dir: modelDir,
+    event: { slug: eventSlug, season, start_date: asOf ?? null },
+    competition: { slug: eventSlug },
+    readiness: {
+      mode: 'clean_v10_inference',
+      percent_through: 0,
+      lineup_rows: predictions.length,
+      matched_corps_keys: predictions.length,
+      judge_assignments: 0,
+    },
+    builder_version: 'clean-v10-serve',
+    predictions,
+  };
   if (outPath) fs.writeFileSync(path.resolve(process.cwd(), outPath), JSON.stringify(out, null, 2));
+  if (saveDb) {
+    await ensureEventPredictionTables(db);
+    const id = await saveEventPredictionRun(db, out as any);
+    console.log(`clean-v10 serve: saved prediction run ${id}`);
+  }
   console.log(`clean-v10 serve: ${predictions.length} corps for ${eventSlug}`);
 }
 main();
