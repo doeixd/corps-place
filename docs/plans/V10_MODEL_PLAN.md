@@ -2241,3 +2241,24 @@ decaying settles better. NEW PRODUCTION DIRECTION: phase-aware-LR, agnostic,
 ensembled. Launching phase-aware seeds 44/45 to pair with 42/43 for a
 phase-aware ensemble. The cosine-period ablation (steepen the plain cosine)
 is the complementary test and may stack or substitute.
+
+### 2026-07-17 overnight — combined ensemble is the production candidate
+
+CRITICAL discipline finding: frozen (2025) validation does NOT predict 2026
+out-of-sample seed variance. phase-aware s42 vs s43 are near-identical on frozen
+(composite 0.5092 vs 0.5117) but diverge sharply on 2026 (recap 0.436 vs 0.393).
+So we CANNOT reliably pick the best seed a priori, and MUST NOT pick by 2026
+(that overfits the test). Ensembling is therefore the principled production
+choice — it averages out the variance we cannot predict.
+
+PRODUCTION CANDIDATE = combined agnostic ensemble of all frozen-qualified seeds
+(control + phase-aware). 7-model ensemble (control 42-46 + phase-aware 42,43):
+2026 recap 0.3832 / total 1.1924 vs final2 0.4930 / 1.5141 — ~22% better recap.
+Best recap of any configuration (control-only 5-seed was 0.3875). Adding
+phase-aware seeds helped recap even though phase-aware s42 alone is weak,
+confirming ensembling is robust to individual-seed variance. Tool:
+scripts/ensembleCombined.py (globs all agnostic 2026 evals). More seeds
+(control 47-49, phase-aware 44,45) fold in as they finish. Note the persistent
+recap-vs-total tension: the ensemble minimizes caption error (recap, the
+fundamental metric) but the derived total can be slightly higher when caption
+errors correlate; recap 0.383 is the headline, total 1.19 still 21% < final2.
