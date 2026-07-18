@@ -147,8 +147,20 @@ async function main() {
         corpsScale: 0,
       })
     );
-    const caps = CAPTIONS.map((cap) =>
-      perMember.reduce((s, p) => s + p.captions[cap].p50, 0) / perMember.length
+    const avgAt = (cap: (typeof CAPTIONS)[number], q: 'p10' | 'p50' | 'p90') =>
+      perMember.reduce((s, p) => s + p.captions[cap][q], 0) / perMember.length;
+    const caps = CAPTIONS.map((cap) => avgAt(cap, 'p50'));
+    // Caption uncertainty bands from the ensemble's p10/p90 spread (offset from p50).
+    // Raw ensemble spread understates true predictive intervals — a history/division
+    // interval-scale calibration (4f) should widen these; scale=1 for now.
+    const intervals = Object.fromEntries(
+      CAPTIONS.map((cap) => [
+        cap,
+        {
+          low_offset: Number((avgAt(cap, 'p10') - avgAt(cap, 'p50')).toFixed(3)),
+          high_offset: Number((avgAt(cap, 'p90') - avgAt(cap, 'p50')).toFixed(3)),
+        },
+      ])
     );
     const rawTotal =
       caps[0]! + caps[1]! + (caps[2]! + caps[3]! + caps[4]!) / 2 + (caps[5]! + caps[6]! + caps[7]!) / 2;
@@ -165,6 +177,7 @@ async function main() {
       Visual: Number(visual.toFixed(3)),
       Music: Number(music.toFixed(3)),
       template_source: 'clean_v10_inference',
+      intervals,
       ...Object.fromEntries(CAPTIONS.map((c, i) => [c, Number(caps[i]!.toFixed(3))])),
     });
   }
