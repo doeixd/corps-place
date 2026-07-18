@@ -480,13 +480,28 @@ const main = async () => {
   const nonTest = rows.filter((row) => row.split !== "test");
   const { train, validation } = splitDateForward(nonTest, 0.05);
   applyBaselines(rows, train);
-  const stats = computeStats(train);
+  let stats = computeStats(train);
   const normalizationJson = JSON.stringify({
     ...stats,
     deltaWeights: stats.deltaStd.map((value) => 1 / Math.max(value, 0.25)),
     recapWeights: stats.recapStd.map((value) => 1 / Math.max(value, 0.25)),
   }, null, 2);
   const normalizationSha256 = createHash("sha256").update(normalizationJson).digest("hex");
+
+  // When a model's saved target-norm JSON is supplied, use its EXACT training
+  // normalization instead of recomputing from --db's date-forward split. Needed
+  // for v10.1, whose training split (2026 forced into train via --train-after-date)
+  // differs from the replay split, so recomputed stats would not match the model.
+  const normPathArg = getArg("--norm-path", "");
+  if (normPathArg) {
+    const loaded = JSON.parse(fs.readFileSync(path.resolve(sdkRoot, normPathArg), "utf8")) as TargetStats;
+    stats = {
+      deltaMean: loaded.deltaMean, deltaStd: loaded.deltaStd,
+      recapMean: loaded.recapMean, recapStd: loaded.recapStd,
+      categoryMean: loaded.categoryMean, categoryStd: loaded.categoryStd,
+      totalMean: loaded.totalMean, totalStd: loaded.totalStd,
+    };
+  }
 
   const checkpoint = getArg("--checkpoint", "auto") as V9SubcaptionCheckpoint;
   const model = await loadV9SubcaptionModel(modelDir, { stats, checkpoint });
