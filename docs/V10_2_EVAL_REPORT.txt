@@ -1,0 +1,80 @@
+Held-out 2026 slice: 39 rows / 6 shows (2026-07-12 .. 07-16). Control lane, identity-agnostic. Each model uses its own saved target-norm.
+
+=== V10 (2013-2025, no 2026) (8 seeds) ===
+  V10-ctrl-s42                       recap 0.3402  total 1.0202  bias -0.5895
+  V10-ctrl-s43                       recap 0.4105  total 1.4008  bias -1.2527
+  V10-ctrl-s44                       recap 0.3685  total 1.1715  bias -0.8956
+  V10-ctrl-s45                       recap 0.3544  total 1.2345  bias -0.9024
+  V10-ctrl-s46                       recap 0.3603  total 1.2510  bias -1.0047
+  V10-ctrl-s47                       recap 0.3683  total 1.2271  bias -0.8558
+  V10-ctrl-s48                       recap 0.3515  total 1.0303  bias -0.4632
+  V10-ctrl-s49                       recap 0.3792  total 1.3052  bias -1.1018
+  ENSEMBLE (8 seeds)                 recap 0.3383  total 1.1699  bias -0.8832  (rows 39)
+  by history bucket:
+    zero_history         n=  3 recap 0.6246 total 1.9793 bias -1.8648
+    sparse_history       n=  3 recap 0.4023 total 1.2908 bias -0.4875
+    short_history        n= 22 recap 0.2966 total 1.0337 bias -0.6944
+    established_history  n= 11 recap 0.3262 total 1.1885 bias -1.1011
+  by division:
+    World Class          n= 28 recap 0.3245 total 1.2611 bias -1.0564
+    Open Class           n= 11 recap 0.3735 total 0.9378 bias -0.4425
+
+=== v10.1 (+2026 thru 07-06) (3 seeds) ===
+  v10_1-ctrl-s42                     recap 0.3728  total 1.2476  bias -0.9510
+  v10_1-ctrl-s43                     recap 0.3627  total 1.1402  bias -0.7433
+  v10_1-ctrl-s44                     recap 0.3638  total 1.2442  bias -0.8064
+  ENSEMBLE (3 seeds)                 recap 0.3503  total 1.1901  bias -0.8336  (rows 39)
+  by history bucket:
+    zero_history         n=  3 recap 0.5986 total 2.0909 bias -2.0909
+    sparse_history       n=  3 recap 0.4777 total 1.4429 bias -0.1504
+    short_history        n= 22 recap 0.3091 total 1.0238 bias -0.6426
+    established_history  n= 11 recap 0.3302 total 1.2082 bias -1.0590
+  by division:
+    World Class          n= 28 recap 0.3380 total 1.2822 bias -1.0464
+    Open Class           n= 11 recap 0.3815 total 0.9556 bias -0.2919
+
+=== v10.2 (+2026 thru 07-11) (8 seeds) ===
+  v10_2-ctrl-s42                     recap 0.3333  total 1.0969  bias -0.5774
+  v10_2-ctrl-s43                     recap 0.3451  total 1.2046  bias -1.0738
+  v10_2-ctrl-s44                     recap 0.3469  total 1.1094  bias -0.9171
+  v10_2-ctrl-s45                     recap 0.3310  total 1.0184  bias -0.5161
+  v10_2-ctrl-s46                     recap 0.3782  total 1.4671  bias -1.3475
+  v10_2-ctrl-s47                     recap 0.3436  total 1.1514  bias -0.5701
+  v10_2-ctrl-s48                     recap 0.3460  total 1.1806  bias -0.9621
+  v10_2-ctrl-s49                     recap 0.3448  total 1.1210  bias -0.8898
+  ENSEMBLE (8 seeds)                 recap 0.3211  total 1.0995  bias -0.8567  (rows 39)
+  by history bucket:
+    zero_history         n=  3 recap 0.5579 total 1.7842 bias -1.7031
+    sparse_history       n=  3 recap 0.3897 total 1.4137 bias -0.7068
+    short_history        n= 22 recap 0.2832 total 0.9661 bias -0.6811
+    established_history  n= 11 recap 0.3135 total 1.0939 bias -1.0180
+  by division:
+    World Class          n= 28 recap 0.3180 total 1.2064 bias -1.0240
+    Open Class           n= 11 recap 0.3288 total 0.8274 bias -0.4311
+
+=== 3-WAY PAIRED (identical rows) ===
+  ensemble on 39 common rows:
+    V10    recap 0.3383  total 1.1699  bias -0.8832
+    v10.1  recap 0.3503  total 1.1901  bias -0.8336
+    v10.2  recap 0.3211  total 1.0995  bias -0.8567
+    V10    recap 95% CI [0.2927, 0.3791]
+    v10.1  recap 95% CI [0.3134, 0.3843]
+    v10.2  recap 95% CI [0.2775, 0.3552]
+
+--- v10.2 vs V10 (identical 39 rows) ---
+  recap: 0.3383 -> 0.3211  delta -0.0172 (-5.1%)
+  total: 1.1699 -> 1.0995  delta -0.0704 (-6.0%)
+  recap DELTA mean -0.0174 95% CI [-0.0296, -0.0021]  P(B better)=0.99
+  total DELTA mean -0.0694 95% CI [-0.1712, +0.0314]  P(B better)=0.90
+
+--- v10.2 vs v10.1 (identical 39 rows) ---
+  recap: 0.3503 -> 0.3211  delta -0.0292 (-8.3%)
+  total: 1.1901 -> 1.0995  delta -0.0906 (-7.6%)
+  recap DELTA mean -0.0295 95% CI [-0.0390, -0.0167]  P(B better)=1.00
+  total DELTA mean -0.0912 95% CI [-0.1737, +0.0044]  P(B better)=0.97
+
+--- v10.1 vs V10 (identical 39 rows) ---
+  recap: 0.3383 -> 0.3503  delta +0.0120 (+3.5%)
+  total: 1.1699 -> 1.1901  delta +0.0202 (+1.7%)
+  recap DELTA mean +0.0121 95% CI [-0.0031, +0.0286]  P(B better)=0.07
+  total DELTA mean +0.0218 95% CI [-0.0183, +0.0709]  P(B better)=0.17
