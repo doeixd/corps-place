@@ -16,7 +16,13 @@ const argv = process.argv.slice(2);
 const CAPTION_COUNT = CAPTIONS.length;
 const SEQ_LEN = 15;
 const FEAT_DIM = 101;
-const STATIC_DIM = 212;
+// Raw static width of the ml-table being replayed. Defaults to the 212-wide clean-control
+// contract; field-pace models use a 216-wide table (212 + 4 appended field-pace features),
+// so the drop-guard in parseRows must match the table or it silently drops every row.
+const STATIC_DIM = (() => {
+  const idx = process.argv.indexOf("--raw-static-dim");
+  return idx >= 0 && process.argv[idx + 1] ? Number(process.argv[idx + 1]) : 212;
+})();
 const PADDING_INDEX = 3;
 const RECAP_OFFSET = 21;
 const CAPTION_STRIDE = 4;
