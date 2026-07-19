@@ -112,6 +112,12 @@ export const parseV95Args = (
     supportAwareIdentity: get("--support-aware-identity", "false") === "true",
     supportDropoutStrength: Number(get("--support-dropout-strength", "0.6")),
     paretoCheckpointLimit: Number(get("--pareto-checkpoints", "0")),
+    // --- v10.4 C1: spread-preserving / high-end-aware loss (A/B-able WITHOUT code edits) ---
+    // All default 0 => byte-identical to the pre-v10.4 (MSE) loss.
+    highEndWeight: Number(get("--high-end-weight", "0")),  // per-row loss weight rising with championship proximity (relu of normalized total)
+    asymTau: Number(get("--asym-tau", "0")),               // asymmetric pinball on the total; tau>0.5 penalizes UNDER-prediction more (attacks signed bias)
+    spreadReg: Number(get("--spread-reg", "0")),           // penalize per-show predicted-std < actual-std (decompression)
+    predictAbsolute: get("--predict-absolute", "false") === "true", // diagnostic: drop last-recap anchor (DEFERRED-unimplemented; guarded)
   };
 };
 

@@ -2111,7 +2111,7 @@ function* batchGenerator(samples: Sample[], batchSize: number, shuffle: boolean,
 }
 
 
-function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: number) {
+function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: number, c1: { highEndWeight: number; asymTau: number; spreadReg: number } = { highEndWeight: 0, asymTau: 0, spreadReg: 0 }) {
 
   const recapMeanTensor = tf.tensor1d(stats.recapMean, "float32");
   const recapStdTensor = tf.tensor1d(stats.recapStd.map((value) => (value > 1e-6 ? value : 1)), "float32");
@@ -2138,6 +2138,17 @@ function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: nu
       const categoryPred = yPred.slice([0, DELTA_DIM + RECAP_DIM], [-1, CATEGORY_DIM]);
       const totalPred = yPred.slice([0, DELTA_DIM + RECAP_DIM + CATEGORY_DIM], [-1, TOTAL_DIM]);
 
+      // --- v10.4 C1: per-row high-end weight (championship proximity = relu of normalized total).
+      // Normalized to batch-mean 1 so the overall loss scale (and its balance with the width/
+      // coverage terms below) is preserved; only the WITHIN-batch distribution shifts toward the
+      // top of the field. rowW=null when --high-end-weight 0 => applyRowW is identity (no-op).
+      const rowW: tf.Tensor2D | null = c1.highEndWeight > 0
+        ? (() => {
+            const raw = tf.add(tf.scalar(1), tf.mul(tf.scalar(c1.highEndWeight), tf.relu(totalTrue))) as tf.Tensor2D; // [b,1]
+            return tf.div(raw, tf.maximum(tf.mean(raw), tf.scalar(1e-6))) as tf.Tensor2D;
+          })()
+        : null;
+      const applyRowW = (t: tf.Tensor2D): tf.Tensor2D => (rowW ? tf.mul(t, rowW) as tf.Tensor2D : t);
 
       const deltaPredQ10 = deltaPred.slice([0, 0], [-1, CAPTION_COUNT]);
       const deltaPredQ50 = deltaPred.slice([0, CAPTION_COUNT], [-1, CAPTION_COUNT]);
@@ -2148,7 +2159,14 @@ function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: nu
       const err90 = tf.sub(deltaTrue, deltaPredQ90);
 
       const q10Loss = tf.maximum(tf.mul(0.1, err10), tf.mul(-0.9, err10));
-      const q50Loss = tf.maximum(tf.mul(0.5, err50), tf.mul(-0.5, err50));
+      // --- v10.4 C1: asym-tau raises the MEDIAN quantile of the served delta head. err50 =
+      // deltaTrue - deltaPredQ50; err50>0 == the model UNDER-predicted the delta. tau>0.5
+      // penalizes that side more, so the learned median delta shifts UP -> higher recap/total ->
+      // directly attacks the systematic under-prediction bias. Rides deltaWeight (the dominant
+      // phase-C weight) and is row-weighted (top of field drives it most). tau=0.5 (asym-tau 0
+      // default => tau50=0.5) is the original symmetric pinball -> byte-identical.
+      const tau50 = c1.asymTau > 0 ? c1.asymTau : 0.5;
+      const q50Loss = tf.maximum(tf.mul(tau50, err50), tf.mul(tau50 - 1, err50));
       const q90Loss = tf.maximum(tf.mul(0.9, err90), tf.mul(-0.1, err90));
 
       const weightedCaptionMean = (lossByCap: tf.Tensor2D, weights: tf.Tensor1D) => {
@@ -2157,9 +2175,9 @@ function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: nu
         return tf.div(tf.sum(tf.mul(perCap, weights)), denom);
       };
 
-      const weightedQ10 = weightedCaptionMean(q10Loss as tf.Tensor2D, deltaWeightTensor as tf.Tensor1D);
-      const weightedQ50 = weightedCaptionMean(q50Loss as tf.Tensor2D, deltaWeightTensor as tf.Tensor1D);
-      const weightedQ90 = weightedCaptionMean(q90Loss as tf.Tensor2D, deltaWeightTensor as tf.Tensor1D);
+      const weightedQ10 = weightedCaptionMean(applyRowW(q10Loss as tf.Tensor2D), deltaWeightTensor as tf.Tensor1D);
+      const weightedQ50 = weightedCaptionMean(applyRowW(q50Loss as tf.Tensor2D), deltaWeightTensor as tf.Tensor1D);
+      const weightedQ90 = weightedCaptionMean(applyRowW(q90Loss as tf.Tensor2D), deltaWeightTensor as tf.Tensor1D);
 
       const deltaLoss = tf.add(
         tf.mul(tf.scalar(weights.deltaWeight), weightedQ50),
@@ -2168,13 +2186,29 @@ function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: nu
 
       const recapError = tf.sub(recapTrue, recapPred);
       const recapSq = tf.square(recapError) as tf.Tensor2D;
-      const recapLoss = tf.mul(tf.scalar(weights.recapWeight), weightedCaptionMean(recapSq, recapWeightTensor));
+      const recapLoss = tf.mul(tf.scalar(weights.recapWeight), weightedCaptionMean(applyRowW(recapSq), recapWeightTensor));
 
       const categoryError = tf.sub(categoryTrue, categoryPred);
       const categoryLoss = tf.mul(tf.scalar(weights.categoryWeight), tf.mean(tf.square(categoryError)));
 
       const totalError = tf.sub(totalTrue, totalPred);
-      const totalLoss = tf.mul(tf.scalar(weights.totalWeight), tf.mean(tf.square(totalError)));
+      const totalLoss = tf.mul(tf.scalar(weights.totalWeight), tf.mean(applyRowW(tf.square(totalError) as tf.Tensor2D)));
+
+      // --- v10.4 C1: spread regularizer. Per-show (via the same-show mask) penalize predicted
+      // field std BELOW actual field std (compression only, via relu). Decompresses the spread.
+      const spreadLoss = c1.spreadReg > 0
+        ? (() => {
+            const tt = totalTrue.reshape([-1, 1]);
+            const tp = totalPred.reshape([-1, 1]);
+            const m = tf.cast(tf.equal(showIds.reshape([-1, 1]), showIds.reshape([1, -1])), "float32"); // [N,N]
+            const cnt = tf.maximum(tf.sum(m, 1, true), tf.scalar(1)); // [N,1] show size per row
+            const meanT = tf.div(tf.matMul(m, tt), cnt);
+            const meanP = tf.div(tf.matMul(m, tp), cnt);
+            const stdT = tf.sqrt(tf.add(tf.div(tf.matMul(m, tf.square(tf.sub(tt, meanT))), cnt), tf.scalar(1e-6)));
+            const stdP = tf.sqrt(tf.add(tf.div(tf.matMul(m, tf.square(tf.sub(tp, meanP))), cnt), tf.scalar(1e-6)));
+            return tf.mul(tf.scalar(c1.spreadReg), tf.mean(tf.square(tf.relu(tf.sub(stdT, stdP)))));
+          })()
+        : tf.scalar(0);
 
       const rankingLoss = (() => {
         const totalTrueFlat = totalTrue.reshape([-1]);
@@ -2241,6 +2275,7 @@ function createLoss(stats: TargetStats, widthFloorPts: number, rankingWeight: nu
         recapLoss,
         categoryLoss,
         totalLoss,
+        spreadLoss,
         tf.mul(tf.scalar(rankingWeight), rankingLoss),
         tf.mul(tf.scalar(scheduledWidthFloorWeight * (weights.quantileWeight > 0 ? 1 : 0)), widthPenalty),
         tf.mul(tf.scalar(weights.quantileWeight), widthPriorLoss),
@@ -2475,7 +2510,12 @@ async function main() {
     );
   }
 
-  const { lossFn, dispose: disposeLoss } = createLoss(stats, args.widthFloorPts, args.rankingWeight);
+  if (args.predictAbsolute) {
+    console.warn("[v10.4][C1] --predict-absolute is DEFERRED/unimplemented (anchor surgery is out of scope for an unattended run); ignoring it and keeping the last-recap anchor.");
+  }
+  const c1Config = { highEndWeight: args.highEndWeight, asymTau: args.asymTau, spreadReg: args.spreadReg };
+  console.log(`[v10.4][C1] loss config: high-end-weight=${c1Config.highEndWeight} asym-tau=${c1Config.asymTau} spread-reg=${c1Config.spreadReg}`);
+  const { lossFn, dispose: disposeLoss } = createLoss(stats, args.widthFloorPts, args.rankingWeight, c1Config);
 
 
   const snapshotEpochs = args.snapshotEpochs
