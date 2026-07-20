@@ -357,6 +357,14 @@ if [ "$after" -gt "$last_published" ]; then
     errors="$errors forecast-regen-failed"
   fi
 
+  # (4b) Refresh v10.5 (the SERVED model) so new results flow into its forecasts too.
+  # Nightly-predictions above only regenerates final2 (the shadow). Run DETACHED so it
+  # never blocks ingestion; flock -n prevents pile-up; it self-publishes when done. The
+  # nightly 03:00 v10.5-serve cron is the baseline; this keeps it fresh on score days.
+  setsid bash -c 'flock -n /tmp/v10.5-serve.lock -c "SAVE=1 timeout 1800 bash /home/patrick/cp-v10-serving/scripts/v10.5-serve.sh"' \
+    >> /home/patrick/v10.5-serve/ingest-trigger.log 2>&1 < /dev/null &
+  echo "[auto-ingest $(ts)] v10.5 forecast refresh triggered (detached)"
+
   # (5) FULL PUBLISH — corps/rankings/predictions + everything, live. Guarded so an
   # emit failure is recorded + alerted (was an unguarded `set -e` abort that skipped
   # the run report entirely). If this fails, the fast-published scores are still up.
