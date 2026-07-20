@@ -425,9 +425,18 @@ const latestSavedPrediction = (db: Client, eventSlug: string, hydrate = true) =>
                 ORDER BY predicted_at DESC LIMIT 1`,
           args: [eventSlug],
         });
-      // Prefer the flagged model; fall back to newest-any so nothing goes blank.
+      // Prefer the flagged model; fall back to newest-any so nothing goes blank. A
+      // flagged run with EMPTY predictions (e.g. an all-age/SoundSport event V10 can't
+      // score) is treated as no-run so we fall through to final2 rather than blanking.
+      const nonEmpty = (r: any) => {
+        try {
+          return (JSON.parse(String(r?.payload_json))?.predictions?.length ?? 0) > 0;
+        } catch {
+          return false;
+        }
+      };
       let result = PREDICTION_MODEL_FILTER ? await pick(PREDICTION_MODEL_FILTER) : await pick('');
-      if (!result.rows[0] && PREDICTION_MODEL_FILTER) result = await pick('');
+      if (PREDICTION_MODEL_FILTER && !nonEmpty(result.rows[0])) result = await pick('');
       const run = result.rows[0] as unknown as ModelEventPredictionRun | undefined;
       if (!run) return undefined;
       const parsed = JSON.parse(String((result.rows[0] as any).payload_json));

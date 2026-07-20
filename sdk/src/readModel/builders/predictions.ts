@@ -122,8 +122,18 @@ export const buildLatestPredictionSummary = async (
       })
     ).rows[0] as any;
   // Prefer the flagged model; fall back to newest-any so an event the flagged model
-  // hasn't forecast yet still shows a prediction rather than nothing.
-  const run = (modelDirFilter && (await pick(modelDirFilter))) || (await pick(''));
+  // hasn't forecast yet still shows a prediction rather than nothing. A flagged run
+  // with EMPTY predictions (e.g. an all-age/SoundSport event V10 can't score) is
+  // treated as no-run so we fall through to final2 instead of blanking the prediction.
+  const hasPredictions = (r: any) => {
+    try {
+      return (JSON.parse(String(r?.payload_json))?.predictions?.length ?? 0) > 0;
+    } catch {
+      return false;
+    }
+  };
+  const flagged = modelDirFilter ? await pick(modelDirFilter) : null;
+  const run = flagged && hasPredictions(flagged) ? flagged : await pick('');
   if (!run) return null;
   const payload = JSON.parse(String(run.payload_json));
   // Remap aliased corps identities to canonical so the diff view merges the
