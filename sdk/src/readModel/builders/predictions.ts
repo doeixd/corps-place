@@ -99,11 +99,13 @@ const canonicalizePredictions = (payload: any, canon: Map<string, { name: string
 // no run for an event (never blank).
 const PREDICTION_MODEL = (process.env.PREDICTION_MODEL ?? 'final2').toLowerCase();
 const modelDirFilter =
-  PREDICTION_MODEL === 'v10'
-    ? "AND (model_dir LIKE '%clean-v10%' OR model_dir LIKE '%ensemble%')"
-    : PREDICTION_MODEL === 'final2'
-      ? "AND model_dir LIKE '%final2%'"
-      : ''; // 'any' → legacy newest-wins
+  PREDICTION_MODEL === 'v10.5'
+    ? "AND model_dir LIKE '%fieldpace-recal%'" // v10.5 = field-pace ensemble + division recal
+    : PREDICTION_MODEL === 'v10'
+      ? "AND (model_dir LIKE '%clean-v10%' OR model_dir LIKE '%ensemble%')"
+      : PREDICTION_MODEL === 'final2'
+        ? "AND model_dir LIKE '%final2%'"
+        : ''; // 'any' → legacy newest-wins
 
 export const buildLatestPredictionSummary = async (
   db: Client,

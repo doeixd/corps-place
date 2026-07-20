@@ -406,11 +406,13 @@ const ensureTablesOnce = (db: Client) => {
 // PREDICTION_MODEL=v10 flips to the clean-v10 ensemble; 'any' = newest-run-wins.
 const PREDICTION_MODEL = (process.env.PREDICTION_MODEL ?? 'final2').toLowerCase();
 const PREDICTION_MODEL_FILTER =
-  PREDICTION_MODEL === 'v10'
-    ? "AND (model_dir LIKE '%clean-v10%' OR model_dir LIKE '%ensemble%')"
-    : PREDICTION_MODEL === 'final2'
-      ? "AND model_dir LIKE '%final2%'"
-      : '';
+  PREDICTION_MODEL === 'v10.5'
+    ? "AND model_dir LIKE '%fieldpace-recal%'" // v10.5 = field-pace ensemble + division recal
+    : PREDICTION_MODEL === 'v10'
+      ? "AND (model_dir LIKE '%clean-v10%' OR model_dir LIKE '%ensemble%')"
+      : PREDICTION_MODEL === 'final2'
+        ? "AND model_dir LIKE '%final2%'"
+        : '';
 
 const latestSavedPrediction = (db: Client, eventSlug: string, hydrate = true) =>
   Effect.tryPromise({
