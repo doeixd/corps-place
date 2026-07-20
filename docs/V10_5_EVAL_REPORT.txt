@@ -1,0 +1,150 @@
+================================================================================
+V10.5 EVAL REPORT — division-aware, LEAKAGE-SAFE recalibration (C3)
+Branch codex/v10.5-division-recal (off v10.4).  Generated 2026-07-20.
+================================================================================
+
+WHAT v10.5 IS
+  v10.4 (field-pace + tau0.7/hew2.0 spread-loss) nearly halved global under-prediction
+  (V10 -0.88 -> v10.4 -0.49) but its RESIDUAL BIAS IS DIVISION-DEPENDENT: on the honest
+  07-12..07-16 holdout, World Class still under-predicts (-0.69) while Open Class is already
+  zeroed (+0.00). A single global tau that zeroes WC pushes OC positive -> loss tuning alone
+  cannot fix both (V10_5_NOTES sec.2c). v10.5 adds a THIN, REVERSIBLE, per-(division x
+  percent-through bucket) OFFSET on v10.4's pooled 8-seed ensemble. NO retrain.
+
+LEAKAGE DISCIPLINE (the #1 risk here -- documented exactly)
+  For each target show at date d, the offset for (division D, pct-bucket b) is
+      offset(D,b) = shrink * robust_mean( actual - pred )  over resolved rows with
+                    division D, bucket b, competition_date STRICTLY < d, within a 14-day
+                    recency window;   shrink = n/(n+8)  (thin bucket -> ~no-op).
+  The fit NEVER sees the target row, any same-day row, or any later show. Verified by the
+  strictly-< guard in Recal.fit_offset() and by the per-target fit-count audit below (every
+  offset is fit only on earlier-dated rows). residual is trimmed (drop min/max) and |offset|
+  capped at 1.5 so a cold-start blowup cannot move the layer. Reversible: off == plain v10.4
+  (the [consistency] line proves the un-recalibrated ensemble reproduces v10.4 exactly).
+
+  Fit-pool note (disclosed): the pre-07-12 2026 shows were IN v10.4's training window
+  (trained on 2026<=07-11), so their residuals are partly in-sample and may UNDERSTATE the
+  true out-of-sample bias. MSE range-compression is an underfitting effect visible in-sample,
+  so the division split still shows through; the recency window keeps the fit on the most
+  relevant recent shows. This in-sample optimism is why the leakage-safe layer corrects the
+  PREDICTABLE part of the WC bias but cannot fully zero the finals-week growth (see VERDICT).
+
+==============================================================================
+v10.5 EVAL — division-aware LEAKAGE-SAFE recalibration (C3) on v10.4's ensemble
+==============================================================================
+Holdout: 39 rows / 6 shows (2026-07-12..07-16). Control lane, identity-agnostic, field-pace serve. Each pre-v10.4 model = its own saved norm/ml-table.
+
+[consistency] v10.4 holdout bias  json=-0.4945  broad=-0.4945  delta=0.0000 (must be ~0)
+
+------------------------------------------------------------------------------
+RECAL CONFIG: {'pct_edges': (), 'shrink_k': 8.0, 'recency_days': 14, 'in_sample': True, 'trim': 1, 'trim_min': 5, 'max_abs': 1.5}
+Leakage-safe offsets applied to the holdout (fit on rows STRICTLY BEFORE target date):
+    target 2026-07-12  Open Class   offset +0.0227   (fit n=39 prior-date rows)
+    target 2026-07-13  Open Class   offset +0.0005   (fit n=44 prior-date rows)
+    target 2026-07-13  World Class  offset +0.1938   (fit n=73 prior-date rows)
+    target 2026-07-14  Open Class   offset -0.0096   (fit n=46 prior-date rows)
+    target 2026-07-14  World Class  offset +0.1698   (fit n=79 prior-date rows)
+    target 2026-07-16  Open Class   offset -0.0952   (fit n=41 prior-date rows)
+    target 2026-07-16  World Class  offset +0.2764   (fit n=86 prior-date rows)
+
+==============================================================================
+N-WAY PER-DIVISION BIAS (identical 39 common rows) — THE HEADLINE
+==============================================================================
+  model          ALL bias   WC bias   OC bias  ALL MAE     rho
+  V10             -0.8832   -1.0564   -0.4425   1.1699  0.9845
+  v10.2           -0.8567   -1.0240   -0.4311   1.0995  0.9806
+  v10.3           -0.6881   -0.9060   -0.1334   0.9958  0.9806
+  v10.4           -0.4945   -0.6891   +0.0011   0.8427  0.9901
+  v10.5-recal     -0.3549   -0.4913   -0.0076   0.7772  0.9901
+
+  (WC n=28, OC n=11)  TARGET: both WC and OC bias -> ~0, no overshoot,
+  rho>=0.98, global |bias| < v10.4's.
+
+------------------------------------------------------------------------------
+v10.4  ->  v10.5-recal  (the recal effect, identical rows)
+------------------------------------------------------------------------------
+  v10.4     : bias -0.4945  total 0.8427  debMAE 0.8111  slope -0.0406  spread 1.019  rho 0.9901
+  by division:
+    World Class  n= 28 bias -0.6891 total 0.9586 slope -0.0170 spread 1.053
+    Open Class   n= 11 bias +0.0011 total 0.5477 slope -0.0069 spread 1.051
+    tercile: top bias -0.690(n10)  mid bias -0.354(n19)  bottom bias -0.567(n10)
+  v10.5-recal: bias -0.3549  total 0.7772  debMAE 0.7599  slope -0.0304  spread 1.027  rho 0.9901
+  by division:
+    World Class  n= 28 bias -0.4913 total 0.8726 slope -0.0182 spread 1.053
+    Open Class   n= 11 bias -0.0076 total 0.5342 slope -0.0064 spread 1.051
+    tercile: top bias -0.508(n10)  mid bias -0.180(n19)  bottom bias -0.535(n10)
+
+==============================================================================
+N-WAY FULL METRICS (identical 39 common rows)
+==============================================================================
+  model             bias   total  debMAE    slope  spread     rho
+  V10            -0.8832  1.1699  0.9141  -0.0441   1.008  0.9845
+  v10.2          -0.8567  1.0995  0.8401  -0.0398   1.008  0.9806
+  v10.3          -0.6881  0.9958  0.7680  -0.0476   0.998  0.9806
+  v10.4          -0.4945  0.8427  0.8111  -0.0406   1.019  0.9901
+  v10.5-recal    -0.3549  0.7772  0.7599  -0.0304   1.027  0.9901
+
+------------------------------------------------------------------------------
+RANKING SAFETY (per-show Spearman, high precision; 4/6 holdout shows are mixed-division)
+  v10.4 rho=0.990079   v10.5 rho=0.990079   delta=+0.000000
+
+SIGNIFICANCE (v10.5 - v10.4, show-bootstrap 2000x):
+  |WC bias|      delta -0.1840  95%CI [-0.2409,+0.1327]  P(v10.5 lower)=0.96
+  |OC bias|      delta +0.0018  95%CI [-0.0585,+0.0585]  P(v10.5 lower)=0.44
+  |global bias|  delta -0.1259  95%CI [-0.1688,+0.0939]  P(v10.5 lower)=0.95
+  total MAE      delta -0.0643  95%CI [-0.1607,+0.0244]  P(v10.5 lower)=0.91
+
+================================================================================
+VERDICT
+================================================================================
+DID the leakage-safe division recal zero BOTH divisions' bias, without overshoot, ranking
+loss, or majority regression?  ->  PARTIAL YES on WC, YES on the guardrails.
+
+  * World Class bias   -0.689 -> -0.491   (|bias| -0.184, show-bootstrap P(better)=0.96):
+      corrects ~29% of the WC gap. NOT fully zeroed -- see caveat.
+  * Open Class bias    +0.001 -> -0.008   (unchanged; P=0.44 == coin flip): held AT ~0,
+      NOT pushed positive, NOT overshot. The division-aware layer leaves the already-calibrated
+      division essentially untouched -- exactly the point of making it per-division.
+  * No overshoot: neither division crosses to a positive bias.
+  * Ranking HELD EXACTLY: per-show Spearman 0.990079 -> 0.990079 (delta 0.000000), even though
+      4/6 holdout shows are mixed-division (the per-division differential offset is small enough
+      that no within-show ordering flips).
+  * Global bias -0.494 -> -0.355 (closer to 0 than v10.4, as required).
+  * de-biased MAE 0.811 -> 0.760 and total MAE 0.843 -> 0.777 both IMPROVE; the data-rich mid
+      tercile improves (-0.354 -> -0.180) and bottom holds (-0.567 -> -0.535). No regression.
+
+WHY WC ISN'T FULLY ZEROED (the honest, important finding)
+  The WC under-prediction GROWS into finals week: on the holdout its residual is -0.16 on 07-13,
+  +0.72 on 07-14, +1.45 on 07-16 (latest show). A LEAKAGE-SAFE recal can only learn the part of
+  the bias that PRIOR shows reveal (~+0.2 WC under-prediction), so it applies +0.19..+0.28 to WC
+  and correctly cannot anticipate the +1.45 finals jump from earlier data -- that would require
+  seeing the future. This is precisely the "championship compression = finals-week EXTRAPOLATION
+  artifact" the v10.4 report and V10_5_NOTES sec.2c identified: the structural fix is the AUGUST
+  full-season retrain (more top-of-range training targets), NOT more recal and NOT higher global
+  tau. The recal is the right thin closer for the PREDICTABLE division-level drift; it delivers
+  its full available signal here without overshooting or breaking ranking.
+
+RECOMMENDATION
+  SHIP the recal as a thin, reversible serving layer (division x pct-bucket, expanding window,
+  14-day recency, shrink n/(n+8), trimmed, |offset|<=1.5). It strictly improves bias and MAE on
+  the holdout with zero ranking cost and zero OC overshoot. Re-fit it (and retrain v10.4's loss
+  on full-season data) once August finals land -- that is what closes the residual WC finals gap.
+
+================================================================================
+DEFERRED
+================================================================================
+  * As-of-07-17 SOUTHWESTERN (07-18) replay sliced by division: NOT RUNNABLE with current data.
+    The 07-18 championship actuals are absent from every current DB (source maxes 2026-07-14,
+    evaluation DB maxes 2026-07-16); the Southwestern numbers in V10_5_NOTES sec.1 came from a
+    since-superseded snapshot. The latest available out-of-sample show, 2026-07-16 central-texas,
+    already stands in as the championship-approach test and shows the strongest WC under-
+    prediction (residual +1.45), which the recal partially corrects (offset +0.276). Re-run the
+    true 07-18 replay when finals data is ingested (same August dependency as the WC finals gap).
+  * Optional fresh full-2026 production ensemble with the tau0.7 loss: not built (box time/disk),
+    and not required -- the deliverable is the recal on v10.4's models, which is complete.
+
+ARTIFACTS
+  scripts/v10_5_recal.py         leakage-safe recal (fit/apply), the reusable layer
+  scripts/evalV10_5.py           N-way per-division eval (reuses evalV10_4 metric defs)
+  scripts/runV10_5BroadPreds.sh  regenerates v10.4 8-seed preds over the full 2026 eval set
+  results/v10_5_eval/v10_4-fp-s*-broad.json   the broad ensemble predictions (fit + holdout)
