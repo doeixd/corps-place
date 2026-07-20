@@ -1,0 +1,132 @@
+Held-out 2026 slice: 39 rows / 6 shows (2026-07-12 .. 07-16). Control lane, identity-agnostic. Each model uses its own saved target-norm + ml-table.
+v10.4 = v10.3 data/features (field-pace + 2026<=07-11) + C1 spread-preserving/high-end-aware LOSS.
+Metrics: bias->0, decompression slope->0, spread ratio->1, per-show rho>=0.98, no majority MAE regression.
+
+
+=== V10 (2013-2025, no 2026) (8 seeds) ===
+  V10-ctrl-s42                       recap 0.3402  total 1.0202  bias -0.5895
+  V10-ctrl-s43                       recap 0.4105  total 1.4008  bias -1.2527
+  V10-ctrl-s44                       recap 0.3685  total 1.1715  bias -0.8956
+  V10-ctrl-s45                       recap 0.3544  total 1.2345  bias -0.9024
+  V10-ctrl-s46                       recap 0.3603  total 1.2510  bias -1.0047
+  V10-ctrl-s47                       recap 0.3683  total 1.2271  bias -0.8558
+  V10-ctrl-s48                       recap 0.3515  total 1.0303  bias -0.4632
+  V10-ctrl-s49                       recap 0.3792  total 1.3052  bias -1.1018
+  ENSEMBLE(8)  recap 0.3383  total 1.1699  bias -0.8832  debMAE 0.9141  slope -0.0441  spread 1.008  rho 0.9845  (rows 39)
+  field position (tercile by actual within show):
+    top     n= 10 total 1.3774 bias -1.3022
+    mid     n= 19 total 0.9608 bias -0.5568
+    bottom  n= 10 total 1.3598 bias -1.0844
+  by division:
+    World Class  n= 28 total 1.2611 bias -1.0564 slope -0.0671 spread 0.995
+    Open Class   n= 11 total 0.9378 bias -0.4425 slope +0.0958 spread 1.031
+
+=== v10.1 (+2026 <=07-06) (3 seeds) ===
+  v10_1-ctrl-s42                     recap 0.3728  total 1.2476  bias -0.9510
+  v10_1-ctrl-s43                     recap 0.3627  total 1.1402  bias -0.7433
+  v10_1-ctrl-s44                     recap 0.3638  total 1.2442  bias -0.8064
+  ENSEMBLE(3)  recap 0.3503  total 1.1901  bias -0.8336  debMAE 0.9456  slope -0.0458  spread 1.006  rho 0.9845  (rows 39)
+  field position (tercile by actual within show):
+    top     n= 10 total 1.2783 bias -1.2057
+    mid     n= 19 total 1.0516 bias -0.5620
+    bottom  n= 10 total 1.3651 bias -0.9774
+  by division:
+    World Class  n= 28 total 1.2822 bias -1.0464 slope -0.0597 spread 1.011
+    Open Class   n= 11 total 0.9556 bias -0.2919 slope +0.1412 spread 1.024
+
+=== v10.2 (+2026 <=07-11) (8 seeds) ===
+  v10_2-ctrl-s42                     recap 0.3333  total 1.0969  bias -0.5774
+  v10_2-ctrl-s43                     recap 0.3451  total 1.2046  bias -1.0738
+  v10_2-ctrl-s44                     recap 0.3469  total 1.1094  bias -0.9171
+  v10_2-ctrl-s45                     recap 0.3310  total 1.0184  bias -0.5161
+  v10_2-ctrl-s46                     recap 0.3782  total 1.4671  bias -1.3475
+  v10_2-ctrl-s47                     recap 0.3436  total 1.1514  bias -0.5701
+  v10_2-ctrl-s48                     recap 0.3460  total 1.1806  bias -0.9621
+  v10_2-ctrl-s49                     recap 0.3448  total 1.1210  bias -0.8898
+  ENSEMBLE(8)  recap 0.3211  total 1.0995  bias -0.8567  debMAE 0.8401  slope -0.0398  spread 1.008  rho 0.9806  (rows 39)
+  field position (tercile by actual within show):
+    top     n= 10 total 1.2435 bias -1.2216
+    mid     n= 19 total 0.9781 bias -0.6157
+    bottom  n= 10 total 1.1862 bias -0.9498
+  by division:
+    World Class  n= 28 total 1.2064 bias -1.0240 slope -0.0537 spread 1.009
+    Open Class   n= 11 total 0.8274 bias -0.4311 slope +0.0855 spread 1.033
+
+=== v10.3 (field-pace + P2, MSE loss) (3 seeds) ===
+  v10_3-fp-s42                       recap 0.3590  total 1.2052  bias -0.8126
+  v10_3-fp-s43                       recap 0.3383  total 0.9598  bias -0.7575
+  v10_3-fp-s44                       recap 0.3127  total 0.8822  bias -0.4943
+  ENSEMBLE(3)  recap 0.3181  total 0.9958  bias -0.6881  debMAE 0.7680  slope -0.0476  spread 0.998  rho 0.9806  (rows 39)
+  field position (tercile by actual within show):
+    top     n= 10 total 1.1839 bias -1.0755
+    mid     n= 19 total 0.8850 bias -0.5180
+    bottom  n= 10 total 1.0181 bias -0.6239
+  by division:
+    World Class  n= 28 total 1.0773 bias -0.9060 slope -0.0526 spread 1.008
+    Open Class   n= 11 total 0.7882 bias -0.1334 slope +0.1001 spread 1.045
+
+=== v10.4 SHIP (C1: high-end 2.0 + asym 0.70) (8 seeds) ===
+  v10_4-fp-s42                       recap 0.3079  total 0.7791  bias +0.0187
+  v10_4-fp-s43                       recap 0.3462  total 1.0631  bias -0.7521
+  v10_4-fp-s44                       recap 0.3258  total 1.0536  bias -0.4547
+  v10_4-fp-s45                       recap 0.3576  total 1.1438  bias -1.0147
+  v10_4-fp-s46                       recap 0.3069  total 0.8141  bias -0.4100
+  v10_4-fp-s47                       recap 0.3578  total 1.1115  bias -0.8099
+  v10_4-fp-s48                       recap 0.3382  total 0.9248  bias -0.5947
+  v10_4-fp-s49                       recap 0.3139  total 0.8567  bias +0.0616
+  ENSEMBLE(8)  recap 0.3013  total 0.8427  bias -0.4945  debMAE 0.8111  slope -0.0406  spread 1.019  rho 0.9901  (rows 39)
+  field position (tercile by actual within show):
+    top     n= 10 total 0.8992 bias -0.6895
+    mid     n= 19 total 0.7995 bias -0.3537
+    bottom  n= 10 total 0.8683 bias -0.5669
+  by division:
+    World Class  n= 28 total 0.9586 bias -0.6891 slope -0.0170 spread 1.053
+    Open Class   n= 11 total 0.5477 bias +0.0011 slope -0.0069 spread 1.051
+
+=== v10.4b (high-end 2.0 + asym 0.60, gentler) (3 seeds) ===
+  v10_4b-fp-s42                      recap 0.3432  total 0.9471  bias -0.2479
+  v10_4b-fp-s43                      recap 0.3181  total 0.8643  bias -0.5644
+  v10_4b-fp-s44                      recap 0.3052  total 0.8626  bias -0.3123
+  ENSEMBLE(3)  recap 0.3067  total 0.8528  bias -0.3749  debMAE 0.8181  slope -0.0491  spread 1.002  rho 0.9806  (rows 39)
+  field position (tercile by actual within show):
+    top     n= 10 total 0.9211 bias -0.7596
+    mid     n= 19 total 0.7976 bias -0.1715
+    bottom  n= 10 total 0.8893 bias -0.3766
+  by division:
+    World Class  n= 28 total 0.9164 bias -0.5201 slope -0.0565 spread 1.011
+    Open Class   n= 11 total 0.6908 bias -0.0052 slope -0.0856 spread 1.038
+
+=== v10.4c (high-end 2.0 only, tau=0.5) (2 seeds) ===
+  v10_4c-fp-s42                      recap 0.2967  total 0.8217  bias -0.5356
+  v10_4c-fp-s43                      recap 0.3453  total 1.2472  bias -0.9735
+  ENSEMBLE(2)  recap 0.3128  total 1.0039  bias -0.7545  debMAE 0.7624  slope -0.0389  spread 1.008  rho 0.9806  (rows 39)
+  field position (tercile by actual within show):
+    top     n= 10 total 1.1114 bias -0.9554
+    mid     n= 19 total 0.9408 bias -0.6747
+    bottom  n= 10 total 1.0166 bias -0.7055
+  by division:
+    World Class  n= 28 total 1.1206 bias -0.9920 slope -0.0170 spread 1.040
+    Open Class   n= 11 total 0.7070 bias -0.1502 slope +0.1223 spread 1.050
+
+=== v10.4 [seeds 42-44] (isolation vs v10.3) (3 seeds) ===
+  v10_4-fp-s42                       recap 0.3079  total 0.7791  bias +0.0187
+  v10_4-fp-s43                       recap 0.3462  total 1.0631  bias -0.7521
+  v10_4-fp-s44                       recap 0.3258  total 1.0536  bias -0.4547
+  ENSEMBLE(3)  recap 0.3046  total 0.8583  bias -0.3960  debMAE 0.8497  slope -0.0461  spread 1.019  rho 0.9901  (rows 39)
+  field position (tercile by actual within show):
+    top     n= 10 total 0.8702 bias -0.5740
+    mid     n= 19 total 0.8288 bias -0.2936
+    bottom  n= 10 total 0.9024 bias -0.4126
+  by division:
+    World Class  n= 28 total 0.9550 bias -0.6125 slope -0.0118 spread 1.063
+    Open Class   n= 11 total 0.6122 bias +0.1550 slope -0.0494 spread 1.068
+
+=== N-WAY PAIRED ENSEMBLE (identical 39 common rows) ===
+  model     total     bias  debMAE    slope  spread     rho
+  V10      1.1699  -0.8832  0.9141  -0.0441   1.008  0.9845
+  v10.1    1.1901  -0.8336  0.9456  -0.0458   1.006  0.9845
+  v10.2    1.0995  -0.8567  0.8401  -0.0398   1.008  0.9806
+  v10.3    0.9958  -0.6881  0.7680  -0.0476   0.998  0.9806
+  v10.4    0.8427  -0.4945  0.8111  -0.0406   1.019  0.9901
+
+--- ISOLATION A: v10.3 (MSE) -> v10.4[42-44] (C1 loss) [same data/features/seeds] (identical 39 rows) ---
