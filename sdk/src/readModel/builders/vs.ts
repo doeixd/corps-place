@@ -518,13 +518,22 @@ const baselineCaptions = (c: Record<V9Caption, number>): VsCaptionValues => ({
  * both the file and the formula from the request path. `getV9CaptionBaseline`
  * fills any missing caption (e.g. VA) with its own fallback.
  */
+/** The 8 V9 caption slugs, in the artifact's canonical order. */
+const V9_CAPTIONS: readonly V9Caption[] = ['GE1', 'GE2', 'VP', 'VA', 'CG', 'MB', 'MA', 'MP'];
+
 export const buildVsBaselineCurve = (referenceCurvesPath?: string): VsBaselinePoint[] => {
   const out: VsBaselinePoint[] = [];
   // Raw entries (legacy `rank-bucket` keys) — used only to detect a genuinely-
-  // missing VA so we can impute it from VP below.
+  // missing VA so we can impute it from VP below. Since the curve generator was
+  // repointed to `clean_reference_curve_metric_scores` (its completeness guard
+  // requires every caption on every key), VA is now present in ALL 525 entries;
+  // the impute is dead-but-defensive and stays as a belt-and-suspenders fallback.
   const curvesByKey = (referenceCurvesV4 as { curves?: Record<string, unknown> }).curves ?? {};
-  for (const rank of VS_BASELINE_RANKS) {
-    for (const bucket of VS_BASELINE_BUCKETS) {
+  // Collect the raw 8-caption baseline per rank, bucket-by-bucket, so we can apply
+  // a CROSS-RANK monotone clamp before folding to the wide/weighted values.
+  for (const bucket of VS_BASELINE_BUCKETS) {
+    const perRank: Record<V9Caption, number>[] = [];
+    for (const rank of VS_BASELINE_RANKS) {
       const r = getV9CaptionBaseline({
         mode: 'preseason_forecast',
         division: 'World Class',
@@ -533,13 +542,33 @@ export const buildVsBaselineCurve = (referenceCurvesPath?: string): VsBaselinePo
         referenceCurvesPath,
       });
       const captions = { ...(r.captions as Record<V9Caption, number>) };
-      // VA is absent in ~170/551 curve entries; impute from VP (tracks closely).
       const raw = (curvesByKey as Record<string, Partial<Record<V9Caption, number>>>)[
         `${rank}-${bucket}`
       ];
       if (raw && typeof raw.VA !== 'number') captions.VA = captions.VP;
-      out.push({ rank, bucket, ...baselineCaptions(captions) });
+      perRank.push(captions);
+    }
+    // Cross-rank monotone clamp (per caption, per bucket): a better rank must never
+    // score BELOW a worse rank. The honest artifact carries real deep-field
+    // non-monotonicity (sparse rank 9–12/25 cells) which renders as crossed
+    // baseline lines on /vs. We keep the ARTIFACT honest (model serving sees real
+    // data) and clamp ONLY here: enforce non-increasing values as the rank number
+    // grows via a running-min from rank 1 downward. Clamp each caption, then
+    // recompute categories/total from the clamped captions so caption, category
+    // and total lines stay mutually self-consistent (and the total is non-
+    // increasing too, since it's a positive-weighted sum of non-increasing parts).
+    for (const cap of V9_CAPTIONS) {
+      let running = Infinity;
+      for (let i = 0; i < perRank.length; i++) {
+        running = Math.min(running, perRank[i]![cap]);
+        perRank[i]![cap] = running;
+      }
+    }
+    for (let i = 0; i < VS_BASELINE_RANKS.length; i++) {
+      out.push({ rank: VS_BASELINE_RANKS[i]!, bucket, ...baselineCaptions(perRank[i]!) });
     }
   }
+  // Restore rank-major ordering (outer rank, inner bucket) for a stable emit.
+  out.sort((a, b) => a.rank - b.rank || a.bucket - b.bucket);
   return out;
 };
