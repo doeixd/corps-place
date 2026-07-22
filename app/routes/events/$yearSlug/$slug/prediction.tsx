@@ -2073,7 +2073,16 @@ function PredictionDetails({ prediction }: { prediction: EventPrediction }) {
   const readiness = audit.readiness ?? {};
   const modelMeta = prediction.model_metadata ?? {};
   const modelDir: string = prediction.model_dir ?? '';
-  const modelName = modelDir.split(/[/\\]/).filter(Boolean).pop() ?? modelDir;
+  const rawModelName = modelDir.split(/[/\\]/).filter(Boolean).pop() ?? modelDir;
+  // Friendly display names for the serving model tags (raw tag kept for title/debug).
+  // 'shadow' in the v11 tag is a persistence artifact — v11 is the primary model.
+  const modelName = /v11-fp/.test(rawModelName)
+    ? 'v11 field-pace ensemble'
+    : /fieldpace-recal/.test(rawModelName)
+      ? 'v10.5 field-pace + recal'
+      : /final2/.test(rawModelName)
+        ? 'final2'
+        : rawModelName;
   const featureContract = modelMeta.supports_caption_fingerprints
     ? `fingerprints on (${modelMeta.model_static_dim}/${modelMeta.feature_static_dim})`
     : modelMeta.model_static_dim
@@ -2093,10 +2102,10 @@ function PredictionDetails({ prediction }: { prediction: EventPrediction }) {
 
   const chips: { label: string; value: unknown }[] = [
     { label: 'Source', value: prediction.source },
-    { label: 'Mode', value: prediction.readiness?.mode },
+    { label: 'Mode', value: prediction.readiness?.mode === 'clean_v10_inference' ? 'direct ensemble serve' : prediction.readiness?.mode },
     { label: 'Model', value: modelName },
     { label: 'Features', value: featureContract },
-    { label: 'Builder', value: prediction.builder_version },
+    { label: 'Builder', value: prediction.builder_version === 'clean-v10-serve' ? 'ensemble serve pipeline' : prediction.builder_version },
   ];
 
   return (
