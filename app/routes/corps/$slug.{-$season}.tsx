@@ -151,6 +151,14 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
     const c = d.corps;
     if (!c) return {};
     const slug = c.slug ?? params.slug;
+    // Season is a URL-addressable, materially-distinct view (its own appearances,
+    // scores, tour map), so it must SELF-canonicalize — the loader has already
+    // redirected the default season and any unknown/invalid season to the bare
+    // `/corps/$slug`, so any season that reaches head() is a real non-default view
+    // (a specific year or the multi-season `all`). Emitting the bare canonical for
+    // these was collapsing every season into one indexable URL.
+    const season = params.season;
+    const canonicalPath = season ? `/corps/${slug}/${season}` : `/corps/${slug}`;
     const where = c.display_city ? ` from ${c.display_city}` : '';
     const div = c.division_name ? ` (${c.division_name})` : '';
     const image = c.corps_photo ?? c.corps_logo ?? undefined;
@@ -187,7 +195,7 @@ export const Route = createFileRoute('/corps/$slug/{-$season}')({
         c.about ?? c.description,
         `${c.name}${where}: scores, schedules, show programs, staff history and official merch on DrumCorps.app.`
       ),
-      path: `/corps/${slug}`,
+      path: canonicalPath,
       image,
       jsonLd: [
         musicGroup,

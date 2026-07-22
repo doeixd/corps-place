@@ -31,7 +31,7 @@ const seriesFor = (s: string | undefined): VsSeries[] => {
   return decoded.length > 0 ? decoded : DEFAULT_SERIES;
 };
 
-export const Route = createFileRoute('/vs')({
+export const Route = createFileRoute('/vs/')({
   validateSearch: (search: Record<string, unknown>): { s?: string; cap?: VsCaption } => ({
     s: typeof search.s === 'string' && search.s ? search.s : undefined,
     cap: parseCaption(search.cap),
