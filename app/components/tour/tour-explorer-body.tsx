@@ -512,6 +512,8 @@ export default function TourExplorerBody({
                 <span className="block h-4 w-[2px] rounded-full bg-foreground/50 transition-colors group-hover:bg-foreground" />
               </button>
             ) : null}
+            {/* Taller track + bigger thumb/hit-area than the base Slider — primary
+                touch control on mobile (~44px effective target). */}
             <Slider
               min={0}
               max={dates.length - 1}
@@ -521,6 +523,7 @@ export default function TourExplorerBody({
                 setRevealIdx(Array.isArray(v) ? (v[0] ?? 0) : (v as number))
               }
               aria-label="Reveal tours through date"
+              className="py-1.5 **:data-[slot=slider-track]:h-1.5 **:data-[slot=slider-thumb]:size-5 **:data-[slot=slider-thumb]:after:-inset-3"
             />
             {todayMark ? (
               <span

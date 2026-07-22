@@ -204,6 +204,8 @@ export default function TourMapBody({ stops, colors, season, corpsSlug }: TourMa
               <span className="block h-4 w-[2px] rounded-full bg-foreground/50 transition-colors group-hover:bg-foreground" />
             </button>
           ) : null}
+          {/* Taller track + bigger thumb/hit-area than the base Slider — this is a
+              primary touch control on mobile (~44px effective target). */}
           <Slider
             min={0}
             max={Math.max(projected.length - 1, 0)}
@@ -213,6 +215,7 @@ export default function TourMapBody({ stops, colors, season, corpsSlug }: TourMa
               setReveal(Array.isArray(v) ? (v[0] ?? 0) : (v as number))
             }
             aria-label="Reveal tour through date"
+            className="py-1.5 **:data-[slot=slider-track]:h-1.5 **:data-[slot=slider-thumb]:size-5 **:data-[slot=slider-thumb]:after:-inset-3"
           />
           {today ? (
             <span
