@@ -161,6 +161,8 @@ export function useChartZoom({
   };
 }
 
-/** The overlay "Reset zoom" pill's shared classes (kept identical across charts). */
+/** The overlay "Reset zoom" pill's shared classes (kept identical across charts).
+ *  Position (left/right corner) is supplied by each chart — the corner that's
+ *  cheap real estate differs per layout. */
 export const RESET_ZOOM_CLASS =
-  'absolute right-2 top-1 z-10 rounded-full border border-border bg-background/90 px-2.5 py-1 text-xs font-medium text-text-secondary shadow-sm transition-colors hover:border-primary/60 hover:text-foreground';
+  'absolute top-1 z-10 rounded-full border border-border bg-background/90 px-2.5 py-1 text-xs font-medium text-text-secondary shadow-sm transition-colors hover:border-primary/60 hover:text-foreground';

@@ -125,7 +125,7 @@ export default function VsChartBody({
       onDoubleClick={reset}
     >
       {zoomed ? (
-        <button type="button" onClick={reset} className={RESET_ZOOM_CLASS}>
+        <button type="button" onClick={reset} className={`${RESET_ZOOM_CLASS} right-2`}>
           Reset zoom
         </button>
       ) : null}

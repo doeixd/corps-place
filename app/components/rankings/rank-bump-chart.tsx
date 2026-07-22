@@ -192,7 +192,7 @@ export function RankBumpChart({
       onMouseLeave={() => onHover?.(null)}
     >
       {zoomed ? (
-        <button type="button" onClick={reset} className={RESET_ZOOM_CLASS}>
+        <button type="button" onClick={reset} className={`${RESET_ZOOM_CLASS} left-2`}>
           Reset zoom
         </button>
       ) : null}
