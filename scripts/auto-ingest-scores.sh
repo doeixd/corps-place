@@ -357,13 +357,21 @@ if [ "$after" -gt "$last_published" ]; then
     errors="$errors forecast-regen-failed"
   fi
 
-  # (4b) Refresh v10.5 (the SERVED model) so new results flow into its forecasts too.
-  # Nightly-predictions above only regenerates final2 (the shadow). Run DETACHED so it
-  # never blocks ingestion; flock -n prevents pile-up; it self-publishes when done. The
-  # nightly 03:00 v10.5-serve cron is the baseline; this keeps it fresh on score days.
-  setsid bash -c 'flock -n /tmp/v10.5-serve.lock -c "SAVE=1 timeout 1800 bash /home/patrick/cp-v10-serving/scripts/v10.5-serve.sh"' \
+  # (4b) Refresh v10.5 (now the SHADOW model, 2026-07-22 v11 flip) so the rolling
+  # v11-vs-v10.5 held-out comparison stays fresh. Run DETACHED so it never blocks
+  # ingestion; flock -n prevents pile-up. PUBLISH=0 — the shadow must NOT re-emit the
+  # read-model (the served v11 pipeline owns publishing now).
+  setsid bash -c 'flock -n /tmp/v10.5-serve.lock -c "SAVE=1 PUBLISH=0 timeout 1800 bash /home/patrick/cp-v10-serving/scripts/v10.5-serve.sh"' \
     >> /home/patrick/v10.5-serve/ingest-trigger.log 2>&1 < /dev/null &
-  echo "[auto-ingest $(ts)] v10.5 forecast refresh triggered (detached)"
+  echo "[auto-ingest $(ts)] v10.5 shadow forecast refresh triggered (detached, no publish)"
+
+  # (4c) v11 refresh — now the SERVED/PRIMARY model (2026-07-22 flip; model_dir
+  # clean-v11-fp-shadow, matched by PREDICTION_MODEL=v11 LIKE '%v11-fp-shadow%').
+  # Same detached/flock pattern; v11-shadow.sh itself has no publish step, so we
+  # CHAIN a read-model re-emit after it so the fresh served v11 forecasts go live.
+  setsid bash -c 'flock -n /tmp/v11-shadow.lock -c "SAVE=1 timeout 1800 bash /home/patrick/cp-v10-serving/scripts/v11-shadow.sh && bash /root/corps-place/scripts/refresh-prod-read-model.sh"' \
+    >> /home/patrick/v11-shadow/ingest-trigger.log 2>&1 < /dev/null &
+  echo "[auto-ingest $(ts)] v11 (served) forecast refresh triggered (detached, publishes when done)"
 
   # (5) FULL PUBLISH — corps/rankings/predictions + everything, live. Guarded so an
   # emit failure is recorded + alerted (was an unguarded `set -e` abort that skipped

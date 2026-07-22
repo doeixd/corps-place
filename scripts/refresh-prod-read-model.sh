@@ -40,10 +40,11 @@ cd "$repo_root/sdk"
 # one-time `vp install` in sdk (installs tsx + native deps).
 export PATH="$HOME/.vite-plus/bin:$PATH"
 
-# PRODUCTION MODEL FLAG (2026-07-20): serve v10.5 (field-pace ensemble + division recal).
-# The read-model builder (predictions.ts) selects model_dir LIKE '%fieldpace-recal%'.
-# final2 keeps writing its own runs as a shadow; rollback = set this to final2 + re-emit.
-export PREDICTION_MODEL="v10.5"
+# PRODUCTION MODEL FLAG (2026-07-22): serve v11 (identity-dropout-0.5 field-pace
+# ensemble + division recal). The read-model builder (predictions.ts) selects
+# model_dir LIKE '%v11-fp-shadow%' (tag clean-v11-fp-shadow). v10.5 keeps writing
+# its own runs as a shadow; rollback = set this to v10.5 + re-emit.
+export PREDICTION_MODEL="v11"
 
 # Belt-and-suspenders: the recap scrape already normalizes all-age division labels
 # at the source (src/normalizeDivisions.ts — DCA corps like Connecticut Hurricanes
