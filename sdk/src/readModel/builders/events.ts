@@ -300,6 +300,10 @@ export const buildEventsForSeason = async (
         FROM judge_assignments
         GROUP BY competition_slug
       ),
+      -- Model-agnostic on purpose: this is the directory's "has predictions /
+      -- last computed" readiness badge (run count + freshness timestamp across
+      -- ANY model), not a served prediction number. The actual forecast a page
+      -- renders comes from the flag-filtered buildLatestPredictionSummary.
       prediction_counts AS (
         SELECT
           event_slug,
@@ -480,6 +484,8 @@ export const buildAllEvents = async (
       SELECT competition_slug, COUNT(DISTINCT normalized_caption_name) AS count
       FROM judge_assignments GROUP BY competition_slug
     ),
+    -- Model-agnostic on purpose: readiness badge (run count + freshness across
+    -- ANY model), not a served prediction — see buildEventsDirectory's note.
     prediction_counts AS (
       SELECT event_slug, COUNT(*) AS count, MAX(predicted_at) AS latest_prediction_at
       FROM model_event_prediction_runs GROUP BY event_slug
@@ -604,6 +610,8 @@ export const buildEventBasic = async (
         )
         GROUP BY competition_slug
       ),
+      -- Model-agnostic on purpose: existence check ("has any saved run") for the
+      -- prediction page's readiness flag, not a served prediction number.
       prediction_counts AS (
         SELECT event_slug, COUNT(*) AS count
         FROM model_event_prediction_runs

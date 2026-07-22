@@ -97,17 +97,41 @@ const canonicalizePredictions = (payload: any, canon: Map<string, { name: string
 // one is served — flip/rollback is just this env var + a read-model republish, fully
 // reversible with no data change. Falls back to newest-any if the flagged model has
 // no run for an event (never blank).
-const PREDICTION_MODEL = (process.env.PREDICTION_MODEL ?? 'final2').toLowerCase();
-const modelDirFilter =
+export const PREDICTION_MODEL = (process.env.PREDICTION_MODEL ?? 'final2').toLowerCase();
+
+// The bare SQL predicate (referencing an unqualified `model_dir` column) that
+// matches the flagged model's runs, or '' for 'any' (legacy newest-wins). This is
+// the single source of truth every prediction-consuming builder derives its
+// model filter from — see modelDirFilter / flaggedModelScore below.
+const MODEL_DIR_PREDICATE =
   PREDICTION_MODEL === 'v11'
-    ? "AND model_dir LIKE '%v11-fp-shadow%'" // v11 = identity-dropout-0.5 field-pace ensemble + division recal (tag clean-v11-fp-shadow)
+    ? "model_dir LIKE '%v11-fp-shadow%'" // v11 = identity-dropout-0.5 field-pace ensemble + division recal (tag clean-v11-fp-shadow)
     : PREDICTION_MODEL === 'v10.5'
-    ? "AND model_dir LIKE '%fieldpace-recal%'" // v10.5 = field-pace ensemble + division recal
+    ? "model_dir LIKE '%fieldpace-recal%'" // v10.5 = field-pace ensemble + division recal
     : PREDICTION_MODEL === 'v10'
-      ? "AND (model_dir LIKE '%clean-v10%' OR model_dir LIKE '%ensemble%')"
+      ? "(model_dir LIKE '%clean-v10%' OR model_dir LIKE '%ensemble%')"
       : PREDICTION_MODEL === 'final2'
-        ? "AND model_dir LIKE '%final2%'"
+        ? "model_dir LIKE '%final2%'"
         : ''; // 'any' → legacy newest-wins
+
+/** `AND <flagged-model predicate>` (or '' for 'any'), appended to a WHERE clause
+ *  that already filters season/event. Used where a single flagged-or-nothing row
+ *  is picked with an explicit newest-any fallback (buildLatestPredictionSummary). */
+export const modelDirFilter = MODEL_DIR_PREDICATE ? `AND ${MODEL_DIR_PREDICATE}` : '';
+
+/**
+ * A 0/1 SQL scoring expression for prefer-flagged ORDER BY: 1 when the row is the
+ * flagged model, else 0 (always 0 for 'any'). Feeds
+ * `ORDER BY <score> DESC, predicted_at DESC` so a per-event pick prefers the
+ * flagged model's newest run but falls back to newest-any when the flagged model
+ * has no run for that event — the never-blank semantics of buildLatestPredictionSummary
+ * expressed inside a single latest-CTE. `col` names the model_dir column (aliased
+ * as `run.model_dir` in the /vs and corps builders).
+ */
+export const flaggedModelScore = (col = 'model_dir'): string =>
+  MODEL_DIR_PREDICATE
+    ? `(CASE WHEN ${MODEL_DIR_PREDICATE.replaceAll('model_dir', col)} THEN 1 ELSE 0 END)`
+    : '0';
 
 export const buildLatestPredictionSummary = async (
   db: Client,
@@ -232,7 +256,8 @@ export const buildEventPredictionSnapshotDates = async (
  * and the /vs chart can't disagree. The recap is canonicalized (alias → corps_key)
  * exactly like `buildLatestPredictionSummary`, so the diff view's outer-join still
  * merges predicted + scored rows for older snapshots. Returns null when no run is
- * that old.
+ * that old. Deliberately model-agnostic (no PREDICTION_MODEL filter): an as-of
+ * snapshot replays whichever model's run was actually newest on that day.
  */
 export const buildEventPredictionAsOf = async (
   db: Client,

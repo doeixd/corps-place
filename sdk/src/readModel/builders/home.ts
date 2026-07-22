@@ -210,6 +210,9 @@ export const buildFeaturedPrediction = async (
   now: Date = new Date(),
   limit = 6
 ): Promise<FeaturedPrediction | null> => {
+  // Model-agnostic on purpose: this only picks WHICH event to feature (any saved
+  // run qualifies); the rendered numbers come from buildLatestPredictionSummary
+  // below, which is flag-filtered (PREDICTION_MODEL) with newest-any fallback.
   const result = await db.execute({
     sql: `
       SELECT r.event_slug AS slug,

@@ -6,6 +6,7 @@
 import type { Client } from '@libsql/client';
 import { ACTIVE_CORPS_CTE, LATEST_LINEUP_SEASON_CTE } from './activeCorps.js';
 import { RELATED_CORPS_CTES } from './corpsAliases.js';
+import { flaggedModelScore } from './predictions.js';
 
 // A card-sized summary for the corps directory grid.
 export type CorpsSummary = {
@@ -252,15 +253,24 @@ export const buildCorpsSeasonScores = async (
   season = '2026'
 ): Promise<CorpsSeasonPoint[]> => {
   const result = await db.execute({
-    // One row per event: the latest prediction run for that event, joined to
-    // this corps's predicted/actual totals.
+    // One row per event: the CURRENT-forecast prediction run for that event,
+    // joined to this corps's predicted/actual totals. "latest" is flag-filtered
+    // (PREDICTION_MODEL): prefer the flagged model's newest run, else fall back
+    // to newest-any so an event the flagged model hasn't forecast yet still shows
+    // a point (never blank). buildCorpsSeasonSnapshots' latest snap uses the same
+    // prefer-flagged ordering to preserve the byte-parity invariant.
     sql: `
       WITH ${RELATED_CORPS_CTES},
       latest AS (
-        SELECT event_slug, MAX(predicted_at) AS pa
-        FROM model_event_prediction_runs
-        WHERE season = ?
-        GROUP BY event_slug
+        SELECT prediction_id FROM (
+          SELECT prediction_id,
+                 ROW_NUMBER() OVER (
+                   PARTITION BY event_slug
+                   ORDER BY ${flaggedModelScore('model_dir')} DESC, predicted_at DESC
+                 ) AS rn
+          FROM model_event_prediction_runs
+          WHERE season = ?
+        ) WHERE rn = 1
       )
       SELECT
         e.start_date AS date,
@@ -271,7 +281,7 @@ export const buildCorpsSeasonScores = async (
         run.percent_through AS percent_through
       FROM model_event_prediction_rows r
       JOIN model_event_prediction_runs run ON run.prediction_id = r.prediction_id
-      JOIN latest l ON l.event_slug = run.event_slug AND l.pa = run.predicted_at
+      JOIN latest l ON l.prediction_id = run.prediction_id
       LEFT JOIN events e ON e.slug = run.event_slug
       -- Union prediction rows across every corps record aliased to this org
       -- (see corpsAliases.ts), not just the slug's own corps_key.
@@ -352,12 +362,22 @@ export const buildCorpsSeasonSnapshots = async (
         WHERE run.season = ? AND r.corps_key IN (SELECT corps_key FROM related_corps)
           AND run.predicted_at IS NOT NULL
       ),
+      -- Per (snap, event) pick the CURRENT forecast as-of that day using the same
+      -- prefer-flagged ordering as buildCorpsSeasonScores (flagged model's newest
+      -- run on/before the day, else newest-any). This keeps the LATEST snapshot
+      -- byte-equal to buildCorpsSeasonScores (the verifyReadModel parity invariant)
+      -- while letting pre-flagged-model days honestly fall back to the older model.
       asof AS (
-        SELECT s.snap AS snap, run.event_slug AS event_slug, MAX(run.predicted_at) AS pa
-        FROM snaps s
-        JOIN model_event_prediction_runs run
-          ON run.season = ? AND run.predicted_at <= s.snap || 'T23:59:59.999Z'
-        GROUP BY s.snap, run.event_slug
+        SELECT snap, prediction_id FROM (
+          SELECT s.snap AS snap, run.prediction_id AS prediction_id,
+                 ROW_NUMBER() OVER (
+                   PARTITION BY s.snap, run.event_slug
+                   ORDER BY ${flaggedModelScore('run.model_dir')} DESC, run.predicted_at DESC
+                 ) AS rn
+          FROM snaps s
+          JOIN model_event_prediction_runs run
+            ON run.season = ? AND run.predicted_at <= s.snap || 'T23:59:59.999Z'
+        ) WHERE rn = 1
       )
       SELECT
         a.snap AS snapshot_at,
@@ -369,7 +389,7 @@ export const buildCorpsSeasonSnapshots = async (
         run.percent_through AS percent_through
       FROM asof a
       JOIN model_event_prediction_runs run
-        ON run.event_slug = a.event_slug AND run.predicted_at = a.pa AND run.season = ?
+        ON run.prediction_id = a.prediction_id AND run.season = ?
       JOIN model_event_prediction_rows r ON r.prediction_id = run.prediction_id
       LEFT JOIN events e ON e.slug = run.event_slug
       WHERE r.corps_key IN (SELECT corps_key FROM related_corps)

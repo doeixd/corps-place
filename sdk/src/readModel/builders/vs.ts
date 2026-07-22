@@ -14,6 +14,7 @@
 // Shared by the live VS service (fallback) and emitReadModel, like every builder.
 import type { Client } from '@libsql/client';
 import { RELATED_CORPS_CTES } from './corpsAliases.js';
+import { flaggedModelScore } from './predictions.js';
 import {
   foldRecapRows,
   type RecapRowOut,
@@ -262,6 +263,10 @@ export const buildVsSeasonAvailability = async (
 /** The 2026 field (roster) — corps the model predicts for 2026 = competing this
  *  season. Dev/relational counterpart of `readVsActiveCorps`. */
 export const buildVsActiveCorps = async (db: Client): Promise<string[]> => {
+  // Model-agnostic on purpose: this is the /vs roster (which corps the model
+  // forecasts at all this season = existence), not a served prediction number.
+  // Any model's run qualifies a corps into the field; the actual numbers come
+  // from the flag-filtered latest-forecast selection below.
   const r = await db.execute({
     sql: `SELECT DISTINCT co.slug AS slug
       FROM model_event_prediction_rows pr
@@ -295,6 +300,8 @@ export const buildVsCorpsSeasons = async (db: Client, slug: string): Promise<str
 /** 2026 prediction snapshot dates (distinct `predicted_at` days) for a corps —
  *  the valid as-of values the builder's date picker should offer. */
 export const buildVs2026SnapshotDates = async (db: Client, slug: string): Promise<string[]> => {
+  // Model-agnostic on purpose: these are the as-of scrubber dates (every day the
+  // forecast was recomputed, by any model), not a current-forecast selection.
   const r = await db.execute({
     sql: `WITH ${RELATED_CORPS_CTES}
       SELECT DISTINCT substr(run.predicted_at, 1, 10) AS d
@@ -334,17 +341,26 @@ export const buildVsCorps2026Predicted = async (
   slug: string
 ): Promise<VsPredictedPoint[]> => {
   const result = await db.execute({
+    // "latest" = the current forecast per event → flag-filtered (PREDICTION_MODEL):
+    // prefer the flagged model's newest run, else fall back to newest-any so an
+    // event the flagged model hasn't forecast yet still plots (never blank).
     sql: `WITH ${RELATED_CORPS_CTES},
       latest AS (
-        SELECT event_slug, MAX(predicted_at) AS pa
-        FROM model_event_prediction_runs WHERE season = '2026' GROUP BY event_slug
+        SELECT prediction_id FROM (
+          SELECT prediction_id,
+                 ROW_NUMBER() OVER (
+                   PARTITION BY event_slug
+                   ORDER BY ${flaggedModelScore('model_dir')} DESC, predicted_at DESC
+                 ) AS rn
+          FROM model_event_prediction_runs WHERE season = '2026'
+        ) WHERE rn = 1
       )
       SELECT run.percent_through AS pct, r.predicted_total AS predicted,
              r.predicted_ge AS ge, r.predicted_visual AS visual, r.predicted_music AS music,
              r.predicted_captions_json AS caps
       FROM model_event_prediction_rows r
       JOIN model_event_prediction_runs run ON run.prediction_id = r.prediction_id
-      JOIN latest l ON l.event_slug = run.event_slug AND l.pa = run.predicted_at
+      JOIN latest l ON l.prediction_id = run.prediction_id
       WHERE run.season = '2026'
         AND r.corps_key IN (SELECT corps_key FROM related_corps)
         AND run.percent_through IS NOT NULL
@@ -407,6 +423,8 @@ export interface VsSnapshotPoint {
  * `predicted_at <= asOf`, plotting predicted_total by % through season. Dynamic
  * in `asOf`, so this is a live (relational) read — never a frozen shard. 2026
  * only (no historical prediction snapshots exist).
+ * Deliberately model-agnostic (no PREDICTION_MODEL filter): an as-of snapshot
+ * replays whichever model's run was actually newest on that day.
  */
 export const buildVsPredictionSnapshot = async (
   db: Client,
