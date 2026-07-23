@@ -18,9 +18,10 @@ export type VsSeries =
   // the read-model-backed forecast (works on prod). Dashed line + uncertainty
   // band; the corps's actual-so-far is a separate `kind:'corps'` series.
   | { kind: 'predicted'; corpsSlug: string }
-  // The generic reference curve for an Nth-place corps (rank 1..25), averaged
-  // across seasons. Division-agnostic.
-  | { kind: 'baseline'; rank: number };
+  // The reference curve for an Nth-place corps, averaged across seasons, within a
+  // competitive division. `division` defaults to World Class when absent (URL
+  // back-compat). Open Class scores sit distinctly lower.
+  | { kind: 'baseline'; rank: number; division?: 'World Class' | 'Open Class' };
 
 /** One plotted polyline within a resolved series. A 2026 corps series yields two
  *  (actual solid + predicted dashed); historical corps + baselines yield one. */

@@ -18,8 +18,14 @@ export function vsSeriesToken(s: VsSeries): string | null {
       return SLUG_RE.test(s.corpsSlug) && SEASON_RE.test(s.season)
         ? `corps~${s.corpsSlug}~${s.season}`
         : null;
-    case 'baseline':
-      return Number.isInteger(s.rank) && s.rank >= 1 && s.rank <= 25 ? `baseline~${s.rank}` : null;
+    case 'baseline': {
+      // Open Class → `baseline~N~oc`; World Class (default) stays `baseline~N` for
+      // URL back-compat. Rank caps are per-division (WC 1–20, OC 1–10).
+      const oc = s.division === 'Open Class';
+      const max = oc ? 10 : 20;
+      if (!Number.isInteger(s.rank) || s.rank < 1 || s.rank > max) return null;
+      return oc ? `baseline~${s.rank}~oc` : `baseline~${s.rank}`;
+    }
     case 'prediction':
       return SLUG_RE.test(s.corpsSlug) && DATE_RE.test(s.asOf)
         ? `pred~${s.corpsSlug}~${s.asOf}`
@@ -49,7 +55,11 @@ function decodeToken(token: string): VsSeries | null {
   }
   if (kind === 'baseline') {
     const rank = Number(a);
-    return Number.isInteger(rank) && rank >= 1 && rank <= 25 ? { kind: 'baseline', rank } : null;
+    const division = b === 'oc' ? 'Open Class' : 'World Class';
+    const max = division === 'Open Class' ? 10 : 20;
+    return Number.isInteger(rank) && rank >= 1 && rank <= max
+      ? { kind: 'baseline', rank, division }
+      : null;
   }
   if (kind === 'pred') {
     return a && SLUG_RE.test(a) && b && DATE_RE.test(b)

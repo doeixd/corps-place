@@ -622,9 +622,12 @@ export const readVsCorps2026Predicted = async (
 
 export const readVsBaselines = async (db: Client): Promise<VsBaselinePoint[]> => {
   const r = await db.execute({
-    sql: `SELECT rank, bucket, ${VS_CAPTION_COLS} FROM rm_vs_baselines ORDER BY rank, bucket`,
+    // Back-compat: a pre-division shard has no `division` column, so COALESCE a
+    // literal so the read still works mid-rollout (defaults to World Class).
+    sql: `SELECT division, rank, bucket, ${VS_CAPTION_COLS} FROM rm_vs_baselines ORDER BY division, rank, bucket`,
   });
   return (r.rows as any[]).map((row) => ({
+    division: row.division == null ? 'World Class' : String(row.division),
     rank: Number(row.rank),
     bucket: Number(row.bucket),
     ...vsCaptionsFromRow(row),

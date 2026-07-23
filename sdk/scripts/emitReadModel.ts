@@ -364,11 +364,11 @@ CREATE TABLE rm_vs_corps_scores (
 CREATE INDEX rm_vs_corps_scores_k ON rm_vs_corps_scores(corps_slug, season, pct);
 
 CREATE TABLE rm_vs_baselines (
-  rank INTEGER, bucket INTEGER,
+  division TEXT, rank INTEGER, bucket INTEGER,
   total REAL, ge REAL, visual REAL, music REAL,
   ge1 REAL, ge2 REAL, vp REAL, va REAL, cg REAL, mb REAL, ma REAL, mp REAL
 );
-CREATE INDEX rm_vs_baselines_k ON rm_vs_baselines(rank, bucket);
+CREATE INDEX rm_vs_baselines_k ON rm_vs_baselines(division, rank, bucket);
 
 CREATE TABLE rm_vs_corps_predicted (
   corps_slug TEXT, pct REAL,
@@ -1044,7 +1044,7 @@ export const runEmit = async (args: Args) => {
     rowCounts.rm_vs_corps_scores = vsScoreRows.length;
     rowCounts.rm_vs_corps_predicted = vsPredictedRows.length;
     // Generic Nth-place baseline curve — built once (sources the V9 curves file).
-    const vsBaselineRows = buildVsBaselineCurve().map((b) => [b.rank, b.bucket, ...vsCapTuple(b)]);
+    const vsBaselineRows = buildVsBaselineCurve().map((b) => [b.division, b.rank, b.bucket, ...vsCapTuple(b)]);
     rowCounts.rm_vs_baselines = vsBaselineRows.length;
     if (dst) {
       await insertRows(
@@ -1098,7 +1098,7 @@ export const runEmit = async (args: Args) => {
       await insertRows(
         dst,
         "rm_vs_baselines",
-        ["rank", "bucket", ...vsCapCols],
+        ["division", "rank", "bucket", ...vsCapCols],
         vsBaselineRows,
       );
       await insertRows(

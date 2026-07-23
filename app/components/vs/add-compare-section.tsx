@@ -13,6 +13,7 @@ import { CorpsLogo, corpsLogoSource } from '@/components/corps-logo';
 import { FilterChips } from '@/components/filter-chips';
 import { cn } from '@/lib/utils';
 import { VS_SERIES_CAP, type VsSeries } from '@/lib/vs/types';
+import { vsSeriesToken } from '@/lib/vs/codec';
 import { VS_CAPTIONS, VS_CAPTION_LABELS, type VsCaption } from '@/lib/vs/captions';
 import { Slider } from '@/components/ui/slider';
 import { getVs2026SnapshotDates } from '@/lib/server-fns/vs';
@@ -39,8 +40,22 @@ const TABS: { value: Kind; label: string }[] = [
 // Seasons offered in the Corps-season dropdown (newest first), spanning the
 // range the score data covers.
 const SEASONS = Array.from({ length: 14 }, (_, i) => String(2026 - i));
-// Common reference places offered as quick chips (any 1–24 via the input).
-const BASELINE_QUICK = [1, 3, 5, 8, 12];
+// Common reference places offered as quick chips, per division (custom input
+// covers the rest of each division's real-data range: WC 1–20, OC 1–10).
+type BaselineDivision = 'World Class' | 'Open Class';
+const BASELINE_QUICK: Record<BaselineDivision, number[]> = {
+  'World Class': [1, 3, 5, 8, 12],
+  'Open Class': [1, 3, 5, 8, 10],
+};
+const BASELINE_MAX: Record<BaselineDivision, number> = { 'World Class': 20, 'Open Class': 10 };
+const BASELINE_DIVISIONS: { value: BaselineDivision; label: string }[] = [
+  { value: 'World Class', label: 'World' },
+  { value: 'Open Class', label: 'Open' },
+];
+/** The URL token for a baseline series (WC default → `baseline~N`; OC →
+ *  `baseline~N~oc`), matching the parent's addedTokens set. */
+const baselineToken = (rank: number, division: BaselineDivision) =>
+  vsSeriesToken({ kind: 'baseline', rank, division }) ?? '';
 
 const fieldCls =
   'w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm outline-none focus:border-primary/60';
@@ -194,7 +209,12 @@ function CorpsResultList({
                     : 'hover:bg-accent hover:text-foreground'
               )}
             >
-              <CorpsLogo name={c.name} logo={corpsLogoSource(c)} width={24} className="size-6 shrink-0" />
+              <CorpsLogo
+                name={c.name}
+                logo={corpsLogoSource(c)}
+                width={24}
+                className="size-6 shrink-0"
+              />
               <span className="truncate">{c.name}</span>
               {added ? (
                 <span className="ml-auto shrink-0 text-xs text-muted-foreground">✓ added</span>
@@ -357,7 +377,10 @@ function PredictionColumn({
 
   return (
     <div className="space-y-2">
-      <ColumnHeader title="2026 prediction" hint="The model’s projected finish for the 2026 season." />
+      <ColumnHeader
+        title="2026 prediction"
+        hint="The model’s projected finish for the 2026 season."
+      />
       {!picked ? (
         <>
           <p className="text-xs text-muted-foreground">
@@ -450,45 +473,76 @@ function BaselineColumn({
   onAdd: (s: VsSeries) => void;
   onPreview: (s: VsSeries | null) => void;
 }) {
+  // Which division's Nth-place line to add. Defaults to World Class (most usage);
+  // Open Class scores sit distinctly lower, so it gets its own baselines.
+  const [division, setDivision] = useState<BaselineDivision>('World Class');
   // String state so the field can be emptied to type a new number (the old
   // number-input clamped to 1 on every keystroke, so you couldn't clear it).
   const [rank, setRank] = useState('13');
+  const maxRank = BASELINE_MAX[division];
+  const defaultRank = String(Math.min(13, maxRank));
 
   const parsed = (() => {
     const n = Number(rank);
-    return Number.isInteger(n) && n >= 1 && n <= 24 ? n : null;
+    return Number.isInteger(n) && n >= 1 && n <= maxRank ? n : null;
   })();
 
-  const add = (n: number) => onAdd({ kind: 'baseline', rank: n });
-  const customAdded = parsed !== null && addedTokens.has(`baseline~${parsed}`);
+  const add = (n: number) => onAdd({ kind: 'baseline', rank: n, division });
+  const customAdded = parsed !== null && addedTokens.has(baselineToken(parsed, division));
 
   return (
     <div className="space-y-2">
-      <ColumnHeader title="Reference baseline" hint="A generic Nth-place corps, averaged across seasons." />
+      <ColumnHeader
+        title="Reference baseline"
+        hint="A generic Nth-place corps in a division, averaged across seasons."
+      />
+      <ToggleGroup
+        variant="outline"
+        size="sm"
+        spacing={0}
+        aria-label="Baseline division"
+        value={[division]}
+        onValueChange={(v) => {
+          const d = v[0] as BaselineDivision | undefined;
+          if (!d) return;
+          setDivision(d);
+          // Keep the custom rank within the new division's range.
+          if (Number(rank) > BASELINE_MAX[d]) setRank(String(BASELINE_MAX[d]));
+        }}
+        className="w-full"
+      >
+        {BASELINE_DIVISIONS.map((d) => (
+          <ToggleGroupItem key={d.value} value={d.value} className="flex-1 text-xs">
+            {d.label} Class
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
       <div className="flex flex-wrap gap-1.5">
-        {BASELINE_QUICK.map((n) => (
+        {BASELINE_QUICK[division].map((n) => (
           <OptionChip
             key={n}
             label={`${n}${n === 1 ? 'st' : n === 3 ? 'rd' : 'th'}`}
             disabled={disabled}
-            added={addedTokens.has(`baseline~${n}`)}
+            added={addedTokens.has(baselineToken(n, division))}
             onAdd={() => add(n)}
-            onHover={(on) => onPreview(on ? { kind: 'baseline', rank: n } : null)}
+            onHover={(on) => onPreview(on ? { kind: 'baseline', rank: n, division } : null)}
           />
         ))}
       </div>
       <label className="block space-y-1">
-        <span className="text-xs text-text-secondary">Custom place (1–24)</span>
+        <span className="text-xs text-text-secondary">
+          Custom place ({BASELINE_DIVISIONS.find((d) => d.value === division)!.label} 1–{maxRank})
+        </span>
         <div className="flex items-center gap-2">
           <input
             type="number"
             min={1}
-            max={24}
+            max={maxRank}
             value={rank}
             onChange={(e) => setRank(e.target.value)}
             onBlur={() => {
               // Snap an out-of-range / empty value back to a valid one on blur.
-              if (parsed === null) setRank('13');
+              if (parsed === null) setRank(defaultRank);
             }}
             className={fieldCls}
           />
@@ -497,9 +551,17 @@ function BaselineColumn({
             disabled={(disabled && !customAdded) || parsed === null}
             title={customAdded ? 'In the comparison — click to remove' : undefined}
             onClick={() => parsed !== null && add(parsed)}
-            onMouseEnter={() => parsed !== null && !customAdded && onPreview({ kind: 'baseline', rank: parsed })}
+            onMouseEnter={() =>
+              parsed !== null &&
+              !customAdded &&
+              onPreview({ kind: 'baseline', rank: parsed, division })
+            }
             onMouseLeave={() => onPreview(null)}
-            onFocus={() => parsed !== null && !customAdded && onPreview({ kind: 'baseline', rank: parsed })}
+            onFocus={() =>
+              parsed !== null &&
+              !customAdded &&
+              onPreview({ kind: 'baseline', rank: parsed, division })
+            }
             onBlur={() => onPreview(null)}
             className={cn(
               'inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50',
@@ -565,8 +627,8 @@ export function AddCompareSection({
           Layer more lines onto the chart: a corps’ season, a 2026 prediction, or a reference
           baseline (a generic Nth-place corps). Everything aligns by{' '}
           <span className="font-medium text-text-secondary">% through the season</span>. Hover an
-          option to preview it; click to add, click an active one to remove. Up to{' '}
-          {VS_SERIES_CAP} at once.
+          option to preview it; click to add, click an active one to remove. Up to {VS_SERIES_CAP}{' '}
+          at once.
         </p>
       </div>
 
@@ -613,7 +675,13 @@ export function AddCompareSection({
 
       {/* Desktop: three columns; mobile: only the active tab's column. */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className={cn('rounded-lg border border-border p-3', tab === 'corps' ? 'block' : 'hidden', 'sm:block')}>
+        <div
+          className={cn(
+            'rounded-lg border border-border p-3',
+            tab === 'corps' ? 'block' : 'hidden',
+            'sm:block'
+          )}
+        >
           <CorpsSeasonColumn
             corpsOptions={corpsOptions}
             availabilityBySeason={availabilityBySeason}
@@ -624,7 +692,13 @@ export function AddCompareSection({
             onPreview={onPreview}
           />
         </div>
-        <div className={cn('rounded-lg border border-border p-3', tab === 'prediction' ? 'block' : 'hidden', 'sm:block')}>
+        <div
+          className={cn(
+            'rounded-lg border border-border p-3',
+            tab === 'prediction' ? 'block' : 'hidden',
+            'sm:block'
+          )}
+        >
           <PredictionColumn
             corpsOptions={corpsOptions}
             roster2026={roster2026}
@@ -634,8 +708,19 @@ export function AddCompareSection({
             onPreview={onPreview}
           />
         </div>
-        <div className={cn('rounded-lg border border-border p-3', tab === 'baseline' ? 'block' : 'hidden', 'sm:block')}>
-          <BaselineColumn addedTokens={addedTokens} disabled={atCap} onAdd={add} onPreview={onPreview} />
+        <div
+          className={cn(
+            'rounded-lg border border-border p-3',
+            tab === 'baseline' ? 'block' : 'hidden',
+            'sm:block'
+          )}
+        >
+          <BaselineColumn
+            addedTokens={addedTokens}
+            disabled={atCap}
+            onAdd={add}
+            onPreview={onPreview}
+          />
         </div>
       </div>
     </section>

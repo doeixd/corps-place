@@ -132,18 +132,24 @@ async function resolveOne(s: VsSeries, caption: VsCaption): Promise<VsResolvedSe
   }
 
   if (s.kind === 'baseline') {
+    const division = s.division ?? 'World Class';
     const all = readModelEnabled()
       ? await readVsBaselines(getReadModelClient())
       : buildVsBaselineCurve();
-    const rows = all.filter((b) => b.rank === s.rank).sort((a, b) => a.bucket - b.bucket);
+    const rows = all
+      .filter((b) => b.rank === s.rank && b.division === division)
+      .sort((a, b) => a.bucket - b.bucket);
     const points = rows.flatMap((b) => {
       const value = capVal(b, caption);
       return value == null ? [] : [{ pct: b.bucket, value }];
     });
     if (!points.length) return null;
+    // Short division tag in the label so "World 5th place" / "Open 5th place" are
+    // distinguishable in the legend.
+    const divTag = division === 'Open Class' ? 'Open' : 'World';
     return {
-      id: `baseline~${s.rank}`,
-      label: `${ordinal(s.rank)} place`,
+      id: division === 'Open Class' ? `baseline~${s.rank}~oc` : `baseline~${s.rank}`,
+      label: `${divTag} ${ordinal(s.rank)} place`,
       kind: 'baseline',
       brand: null,
       color: '',
@@ -258,7 +264,11 @@ export interface VsCorpsComparison {
   corps: {
     slug: string;
     name: string;
-    logo: { corps_logo?: string | null; corps_logo_dark?: number | null; corps_logo_dark_url?: string | null };
+    logo: {
+      corps_logo?: string | null;
+      corps_logo_dark?: number | null;
+      corps_logo_dark_url?: string | null;
+    };
     colorPrimary: string | null;
   };
   series: VsResolvedSeries[];
@@ -288,12 +298,14 @@ export const getVsCorpsComparison = createServerFn({ method: 'GET' })
   .handler(async ({ data }): Promise<VsCorpsComparison | null> => {
     const slug = data.slug.trim().toLowerCase();
     const [roster, corps] = await Promise.all([
-      readOrBuild((db) => readVsActiveCorps(db), (db) => buildVsActiveCorps(db)).catch(
-        () => [] as string[]
-      ),
-      readOrBuild((db) => readCorpsBySlug(db, slug), (db) => buildCorpsBySlug(db, slug)).catch(
-        () => null
-      ),
+      readOrBuild(
+        (db) => readVsActiveCorps(db),
+        (db) => buildVsActiveCorps(db)
+      ).catch(() => [] as string[]),
+      readOrBuild(
+        (db) => readCorpsBySlug(db, slug),
+        (db) => buildCorpsBySlug(db, slug)
+      ).catch(() => null),
     ]);
     if (!corps || !roster.includes(slug)) return null;
 
@@ -302,9 +314,9 @@ export const getVsCorpsComparison = createServerFn({ method: 'GET' })
       { kind: 'corps', corpsSlug: slug, season: '2026' },
       { kind: 'predicted', corpsSlug: slug },
     ];
-    const series = (await Promise.all(seed.map((s) => resolveOne(s, 'total').catch(() => null)))).filter(
-      (r): r is VsResolvedSeries => r != null
-    );
+    const series = (
+      await Promise.all(seed.map((s) => resolveOne(s, 'total').catch(() => null)))
+    ).filter((r): r is VsResolvedSeries => r != null);
     // Requires a real 2025 line — otherwise it's not a 2026-vs-2025 page.
     if (!series.some((s) => s.id === `corps~${slug}~2025`)) return null;
 

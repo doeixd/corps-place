@@ -22,8 +22,10 @@ import {
   type CategoryScoreRow,
   type CorpsScoreRow,
 } from './recap.js';
-import { getV9CaptionBaseline, type V9Caption } from '../../training/v9Baselines.js';
-import referenceCurvesV4 from '../../training/referenceCurvesV4.json';
+import { type V9Caption } from '../../training/v9Baselines.js';
+// DISPLAY-ONLY division-aware baseline curves (NOT the model-serving
+// referenceCurvesV4.json). Emitted by scripts/computeVsBaselineCurves.ts.
+import vsBaselineCurves from '../vsBaselineCurves.json';
 
 /** The full caption tree carried on every VS point (Total + 3 categories + 8
  *  sub-captions). `total` is always present; the rest are null when that caption
@@ -480,14 +482,25 @@ export const buildVsPredictionSnapshot = async (
 const totalOf = (c: Record<V9Caption, number>) =>
   c.GE1 + c.GE2 + (c.VP + c.VA + c.CG) / 2 + (c.MB + c.MA + c.MP) / 2;
 
-/** Effective baseline ranks (curves are division-agnostic; see plan). Capped at
- *  24: rank 25's reference curve is degenerate (flat ~73 all season) in the
- *  source data, so it would render a misleading horizontal line. */
-export const VS_BASELINE_RANKS = Array.from({ length: 24 }, (_, i) => i + 1);
+/** Per-division baseline rank caps — where each division's clean-view data is
+ *  actually real (see DATA_QUALITY_NOTES.md §11e / computeVsBaselineCurves.ts):
+ *  World Class 1–20, Open Class 1–10 (OC thins hard past 6). Matches the artifact
+ *  `maxRank`. Deeper ranks are sparse/finals-only and would render misleading
+ *  flat lines. */
+export const VS_BASELINE_DIVISIONS = ['World Class', 'Open Class'] as const;
+export type VsBaselineDivision = (typeof VS_BASELINE_DIVISIONS)[number];
+export const VS_BASELINE_MAX_RANK: Record<VsBaselineDivision, number> = {
+  'World Class': 20,
+  'Open Class': 10,
+};
 /** Percent buckets the reference curves are keyed on. */
 export const VS_BASELINE_BUCKETS = Array.from({ length: 21 }, (_, i) => i * 5); // 0,5,…,100
 
 export interface VsBaselinePoint extends VsCaptionValues {
+  /** Competitive division the baseline is drawn from ('World Class' | 'Open
+   *  Class'). Open Class scores sit distinctly lower, so the /vs picker offers
+   *  each division's own Nth-place line. */
+  division: string;
   rank: number;
   bucket: number;
 }
@@ -512,63 +525,71 @@ const baselineCaptions = (c: Record<V9Caption, number>): VsCaptionValues => ({
   mp: r3(c.MP),
 });
 
-/**
- * Precompute the generic Nth-place curve (all captions) for every (rank, bucket).
- * Pure — sources only the V9 reference curves file, so the emitted shard removes
- * both the file and the formula from the request path. `getV9CaptionBaseline`
- * fills any missing caption (e.g. VA) with its own fallback.
- */
-/** The 8 V9 caption slugs, in the artifact's canonical order. */
+/** The 8 caption slugs, in the artifact's canonical order. */
 const V9_CAPTIONS: readonly V9Caption[] = ['GE1', 'GE2', 'VP', 'VA', 'CG', 'MB', 'MA', 'MP'];
 
-export const buildVsBaselineCurve = (referenceCurvesPath?: string): VsBaselinePoint[] => {
+/** The DISPLAY-ONLY division-aware baseline artifact (NOT the model-serving
+ *  referenceCurvesV4.json). Emitted by scripts/computeVsBaselineCurves.ts from the
+ *  clean view, keyed `Division → "rank-bucket" → { 8 captions }`. */
+interface VsBaselineArtifact {
+  curves: Record<string, Record<string, Partial<Record<V9Caption, number>>>>;
+  maxRank?: Record<string, number>;
+}
+
+/**
+ * Precompute the per-division Nth-place baseline curve (all captions) for every
+ * (division, rank, bucket). Pure — sources ONLY the display artifact
+ * vsBaselineCurves.json (division-keyed), so the emitted shard removes both the
+ * file and the formula from the request path, and touches NO model-serving path.
+ *
+ * A per-division CROSS-RANK monotone clamp is the residual guard: within a
+ * division and bucket, a better rank must never score below a worse rank. The
+ * artifact stays honest (deep-field sparsity carries real non-monotonicity); we
+ * enforce non-increasing values as the rank number grows via a running-min from
+ * rank 1 downward, per caption, then recompute categories/total so caption,
+ * category and total lines stay mutually self-consistent.
+ */
+export const buildVsBaselineCurve = (): VsBaselinePoint[] => {
+  const artifact = vsBaselineCurves as unknown as VsBaselineArtifact;
   const out: VsBaselinePoint[] = [];
-  // Raw entries (legacy `rank-bucket` keys) — used only to detect a genuinely-
-  // missing VA so we can impute it from VP below. Since the curve generator was
-  // repointed to `clean_reference_curve_metric_scores` (its completeness guard
-  // requires every caption on every key), VA is now present in ALL 525 entries;
-  // the impute is dead-but-defensive and stays as a belt-and-suspenders fallback.
-  const curvesByKey = (referenceCurvesV4 as { curves?: Record<string, unknown> }).curves ?? {};
-  // Collect the raw 8-caption baseline per rank, bucket-by-bucket, so we can apply
-  // a CROSS-RANK monotone clamp before folding to the wide/weighted values.
-  for (const bucket of VS_BASELINE_BUCKETS) {
-    const perRank: Record<V9Caption, number>[] = [];
-    for (const rank of VS_BASELINE_RANKS) {
-      const r = getV9CaptionBaseline({
-        mode: 'preseason_forecast',
-        division: 'World Class',
-        percentThrough: bucket,
-        seedRank: rank,
-        referenceCurvesPath,
-      });
-      const captions = { ...(r.captions as Record<V9Caption, number>) };
-      const raw = (curvesByKey as Record<string, Partial<Record<V9Caption, number>>>)[
-        `${rank}-${bucket}`
-      ];
-      if (raw && typeof raw.VA !== 'number') captions.VA = captions.VP;
-      perRank.push(captions);
-    }
-    // Cross-rank monotone clamp (per caption, per bucket): a better rank must never
-    // score BELOW a worse rank. The honest artifact carries real deep-field
-    // non-monotonicity (sparse rank 9–12/25 cells) which renders as crossed
-    // baseline lines on /vs. We keep the ARTIFACT honest (model serving sees real
-    // data) and clamp ONLY here: enforce non-increasing values as the rank number
-    // grows via a running-min from rank 1 downward. Clamp each caption, then
-    // recompute categories/total from the clamped captions so caption, category
-    // and total lines stay mutually self-consistent (and the total is non-
-    // increasing too, since it's a positive-weighted sum of non-increasing parts).
-    for (const cap of V9_CAPTIONS) {
-      let running = Infinity;
-      for (let i = 0; i < perRank.length; i++) {
-        running = Math.min(running, perRank[i]![cap]);
-        perRank[i]![cap] = running;
+
+  for (const division of VS_BASELINE_DIVISIONS) {
+    const divCurves = artifact.curves?.[division] ?? {};
+    const maxRank = VS_BASELINE_MAX_RANK[division];
+    const ranks = Array.from({ length: maxRank }, (_, i) => i + 1);
+
+    for (const bucket of VS_BASELINE_BUCKETS) {
+      const perRank: Record<V9Caption, number>[] = [];
+      for (const rank of ranks) {
+        const raw = (divCurves[`${rank}-${bucket}`] ?? {}) as Partial<Record<V9Caption, number>>;
+        const captions = {} as Record<V9Caption, number>;
+        for (const cap of V9_CAPTIONS) {
+          const v = raw[cap];
+          // Defensive: an absent caption falls back to VP (VA≈VP) or 0.
+          captions[cap] = typeof v === 'number' ? v : (typeof raw.VP === 'number' ? raw.VP! : 0);
+        }
+        perRank.push(captions);
+      }
+      // Per-division cross-rank monotone clamp (running-min from rank 1 down).
+      for (const cap of V9_CAPTIONS) {
+        let running = Infinity;
+        for (let i = 0; i < perRank.length; i++) {
+          running = Math.min(running, perRank[i]![cap]);
+          perRank[i]![cap] = running;
+        }
+      }
+      for (let i = 0; i < ranks.length; i++) {
+        out.push({ division, rank: ranks[i]!, bucket, ...baselineCaptions(perRank[i]!) });
       }
     }
-    for (let i = 0; i < VS_BASELINE_RANKS.length; i++) {
-      out.push({ rank: VS_BASELINE_RANKS[i]!, bucket, ...baselineCaptions(perRank[i]!) });
-    }
   }
-  // Restore rank-major ordering (outer rank, inner bucket) for a stable emit.
-  out.sort((a, b) => a.rank - b.rank || a.bucket - b.bucket);
+  // Stable emit: division-major, then rank, then bucket.
+  out.sort(
+    (a, b) =>
+      VS_BASELINE_DIVISIONS.indexOf(a.division as VsBaselineDivision) -
+        VS_BASELINE_DIVISIONS.indexOf(b.division as VsBaselineDivision) ||
+      a.rank - b.rank ||
+      a.bucket - b.bucket
+  );
   return out;
 };

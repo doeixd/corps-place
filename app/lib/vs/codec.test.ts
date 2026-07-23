@@ -6,7 +6,8 @@ describe('vs codec', () => {
   const sample: VsSeries[] = [
     { kind: 'corps', corpsSlug: 'blue-devils', season: '2026' },
     { kind: 'corps', corpsSlug: 'blue-devils', season: '2025' },
-    { kind: 'baseline', rank: 13 },
+    { kind: 'baseline', rank: 13, division: 'World Class' },
+    { kind: 'baseline', rank: 5, division: 'Open Class' },
     { kind: 'prediction', corpsSlug: 'bluecoats', asOf: '2026-06-01' },
     { kind: 'predicted', corpsSlug: 'cavaliers' },
   ];
@@ -17,7 +18,7 @@ describe('vs codec', () => {
 
   it('encodes the documented shape', () => {
     expect(encodeVsSeries(sample)).toBe(
-      'corps~blue-devils~2026,corps~blue-devils~2025,baseline~13,pred~bluecoats~2026-06-01,forecast~cavaliers'
+      'corps~blue-devils~2026,corps~blue-devils~2025,baseline~13,baseline~5~oc,pred~bluecoats~2026-06-01,forecast~cavaliers'
     );
   });
 
@@ -29,9 +30,15 @@ describe('vs codec', () => {
 
   it('dedupes repeated tokens', () => {
     expect(decodeVsSeries('baseline~1,baseline~1,corps~bd~2025,corps~bd~2025')).toEqual([
-      { kind: 'baseline', rank: 1 },
+      { kind: 'baseline', rank: 1, division: 'World Class' },
       { kind: 'corps', corpsSlug: 'bd', season: '2025' },
     ]);
+  });
+
+  it('decodes Open Class baselines and rejects out-of-range OC ranks', () => {
+    expect(decodeVsSeries('baseline~5~oc,baseline~11~oc')).toEqual([
+      { kind: 'baseline', rank: 5, division: 'Open Class' },
+    ]); // OC max rank is 10, so ~11~oc drops
   });
 
   it('caps at VS_SERIES_CAP (12)', () => {

@@ -460,6 +460,23 @@ change on the **ensemble / target mode**, never `curve` mode alone (a full v4.1
 division-aware swap was rejected for regressing the P2 ensemble +0.155; see the V9
 memory). After a curve change, regenerate the site-wide predictions (§8).
 
+**DISPLAY-ONLY division-aware /vs baselines** (separate artifact — does NOT touch
+model serving): the /vs reference-baseline picker draws per-division Nth-place
+lines (World Class 1–20, Open Class 1–10; OC sits distinctly lower). These come
+from `sdk/scripts/computeVsBaselineCurves.ts` → `sdk/src/readModel/vsBaselineCurves.json`
+(same clean view, keyed by division), read at DISPLAY time by
+`buildVsBaselineCurve` (a per-division cross-rank monotone clamp is the residual
+guard; the artifact stays honest). Regenerate independently — it has NO effect on
+predictions and needs no backtest:
+```bash
+cd sdk
+node --import tsx scripts/computeVsBaselineCurves.ts   # writes src/readModel/vsBaselineCurves.json
+```
+Verified pre-clamp (2026-07): cross-division mixing was NOT the /vs inversion
+source (the model-serving curve was already WC-only) — inversions are deep-field
+sparsity within each division (WC 33, OC 19 adjacent-rank total inversions across
+all buckets), fully resolved by the per-division clamp (0 post-clamp).
+
 ### 11f. Diagnostic queries
 
 ```sql
