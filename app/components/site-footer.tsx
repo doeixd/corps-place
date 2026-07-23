@@ -18,6 +18,10 @@ export function SiteFooter() {
           Terms of Service
         </Link>
         <span className="mx-2 text-border">·</span>
+        <Link to="/accuracy" className="transition-colors hover:text-text-secondary">
+          Accuracy
+        </Link>
+        <span className="mx-2 text-border">·</span>
         <Link to="/faq" className="transition-colors hover:text-text-secondary">
           FAQ
         </Link>

@@ -8,12 +8,15 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createServerRootRoute } from '@tanstack/react-start/server'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AccuracyRouteImport } from './routes/accuracy'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VsIndexRouteImport } from './routes/vs.index'
 import { Route as StaffIndexRouteImport } from './routes/staff/index'
@@ -94,6 +97,55 @@ import { Route as AdminFantasyTestLabRouteImport } from './routes/admin/fantasy/
 import { Route as AdminFantasyQuizRouteImport } from './routes/admin/fantasy/quiz'
 import { Route as AdminFantasyLeaguesRouteImport } from './routes/admin/fantasy/leagues'
 import { Route as EventsYearSlugSlugPredictionRouteImport } from './routes/events/$yearSlug/$slug/prediction'
+import { ServerRoute as SitemapDotxmlServerRouteImport } from './routes/sitemap[.]xml'
+import { ServerRoute as SitemapStaffDotxmlServerRouteImport } from './routes/sitemap-staff[.]xml'
+import { ServerRoute as SitemapShopDotxmlServerRouteImport } from './routes/sitemap-shop[.]xml'
+import { ServerRoute as SitemapCoreDotxmlServerRouteImport } from './routes/sitemap-core[.]xml'
+import { ServerRoute as RobotsDottxtServerRouteImport } from './routes/robots[.]txt'
+import { ServerRoute as ManifestDotwebmanifestServerRouteImport } from './routes/manifest[.]webmanifest'
+import { ServerRoute as FaviconDoticoServerRouteImport } from './routes/favicon[.]ico'
+import { ServerRoute as AppIconDotsvgServerRouteImport } from './routes/app-icon[.]svg'
+import { ServerRoute as ReadModelStaffServerRouteImport } from './routes/read-model/staff'
+import { ServerRoute as ReadModelManifestDotjsonServerRouteImport } from './routes/read-model/manifest[.]json'
+import { ServerRoute as ReadModelJudgesServerRouteImport } from './routes/read-model/judges'
+import { ServerRoute as ReadModelEventsServerRouteImport } from './routes/read-model/events'
+import { ServerRoute as ReadModelCorpsServerRouteImport } from './routes/read-model/corps'
+import { ServerRoute as ApiVersionServerRouteImport } from './routes/api/version'
+import { ServerRoute as ApiTourMapServerRouteImport } from './routes/api/tour-map'
+import { ServerRoute as ApiMediaServerRouteImport } from './routes/api/media'
+import { ServerRoute as ApiInboundEmailServerRouteImport } from './routes/api/inbound-email'
+import { ServerRoute as ApiCollectServerRouteImport } from './routes/api/collect'
+import { ServerRoute as ReadModelStaffPersonIdServerRouteImport } from './routes/read-model/staff/$personId'
+import { ServerRoute as ReadModelRecapsSlugServerRouteImport } from './routes/read-model/recaps/$slug'
+import { ServerRoute as ReadModelMerchStoresDotjsonServerRouteImport } from './routes/read-model/merch/stores[.]json'
+import { ServerRoute as ReadModelMerchFacetsDotjsonServerRouteImport } from './routes/read-model/merch/facets[.]json'
+import { ServerRoute as ReadModelJudgesJudgeIdServerRouteImport } from './routes/read-model/judges/$judgeId'
+import { ServerRoute as ReadModelCorpsSlugServerRouteImport } from './routes/read-model/corps/$slug'
+import { ServerRoute as ReadModelCorpsScoresSlugServerRouteImport } from './routes/read-model/corps-scores/$slug'
+import { ServerRoute as ReadModelCorpsMerchSlugServerRouteImport } from './routes/read-model/corps-merch/$slug'
+import { ServerRoute as ReadModelCorpsAppearancesSlugServerRouteImport } from './routes/read-model/corps-appearances/$slug'
+import { ServerRoute as ReadModelCorpsAppearanceResultsSlugServerRouteImport } from './routes/read-model/corps-appearance-results/$slug'
+import { ServerRoute as ApiShowMediaIdServerRouteImport } from './routes/api/show-media/$id'
+import { ServerRoute as ApiOgJobsHomeServerRouteImport } from './routes/api/og/jobs-home'
+import { ServerRoute as ApiOgHomeServerRouteImport } from './routes/api/og/home'
+import { ServerRoute as ApiOgFinalsServerRouteImport } from './routes/api/og/finals'
+import { ServerRoute as ApiJobsStripeWebhookServerRouteImport } from './routes/api/jobs/stripe-webhook'
+import { ServerRoute as ApiFantasyStripeWebhookServerRouteImport } from './routes/api/fantasy/stripe-webhook'
+import { ServerRoute as ApiFantasyMediaIdServerRouteImport } from './routes/api/fantasy-media/$id'
+import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
+import { ServerRoute as ApiAdminUploadServerRouteImport } from './routes/api/admin/upload'
+import { ServerRoute as ReadModelPredictionPageYearSlugSlugServerRouteImport } from './routes/read-model/prediction-page/$yearSlug/$slug'
+import { ServerRoute as ReadModelMerchProductsProductIdServerRouteImport } from './routes/read-model/merch/products/$productId'
+import { ServerRoute as ReadModelMerchCatalogAllDotjsonServerRouteImport } from './routes/read-model/merch/catalog/all[.]json'
+import { ServerRoute as ApiOgTourSeasonServerRouteImport } from './routes/api/og/tour.$season'
+import { ServerRoute as ApiOgScoreSlugServerRouteImport } from './routes/api/og/score/$slug'
+import { ServerRoute as ApiOgBallotIdServerRouteImport } from './routes/api/og/ballot/$id'
+import { ServerRoute as ApiFantasyJobsRecomputeServerRouteImport } from './routes/api/fantasy/jobs/recompute'
+import { ServerRoute as ApiFantasyJobsDispatchServerRouteImport } from './routes/api/fantasy/jobs/dispatch'
+import { ServerRoute as ApiOgShowSlugSeasonServerRouteImport } from './routes/api/og/show/$slug.$season'
+import { ServerRoute as ApiFantasyDraftLeagueIdStreamServerRouteImport } from './routes/api/fantasy/draft/$leagueId/stream'
+
+const rootServerRouteImport = createServerRootRoute()
 
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
@@ -118,6 +170,11 @@ const FaqRoute = FaqRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccuracyRoute = AccuracyRouteImport.update({
+  id: '/accuracy',
+  path: '/accuracy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -522,9 +579,267 @@ const EventsYearSlugSlugPredictionRoute =
     path: '/events/$yearSlug/$slug/prediction',
     getParentRoute: () => rootRouteImport,
   } as any)
+const SitemapDotxmlServerRoute = SitemapDotxmlServerRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const SitemapStaffDotxmlServerRoute =
+  SitemapStaffDotxmlServerRouteImport.update({
+    id: '/sitemap-staff.xml',
+    path: '/sitemap-staff.xml',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const SitemapShopDotxmlServerRoute = SitemapShopDotxmlServerRouteImport.update({
+  id: '/sitemap-shop.xml',
+  path: '/sitemap-shop.xml',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const SitemapCoreDotxmlServerRoute = SitemapCoreDotxmlServerRouteImport.update({
+  id: '/sitemap-core.xml',
+  path: '/sitemap-core.xml',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const RobotsDottxtServerRoute = RobotsDottxtServerRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ManifestDotwebmanifestServerRoute =
+  ManifestDotwebmanifestServerRouteImport.update({
+    id: '/manifest.webmanifest',
+    path: '/manifest.webmanifest',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const FaviconDoticoServerRoute = FaviconDoticoServerRouteImport.update({
+  id: '/favicon.ico',
+  path: '/favicon.ico',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const AppIconDotsvgServerRoute = AppIconDotsvgServerRouteImport.update({
+  id: '/app-icon.svg',
+  path: '/app-icon.svg',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelStaffServerRoute = ReadModelStaffServerRouteImport.update({
+  id: '/read-model/staff',
+  path: '/read-model/staff',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelManifestDotjsonServerRoute =
+  ReadModelManifestDotjsonServerRouteImport.update({
+    id: '/read-model/manifest.json',
+    path: '/read-model/manifest.json',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelJudgesServerRoute = ReadModelJudgesServerRouteImport.update({
+  id: '/read-model/judges',
+  path: '/read-model/judges',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelEventsServerRoute = ReadModelEventsServerRouteImport.update({
+  id: '/read-model/events',
+  path: '/read-model/events',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelCorpsServerRoute = ReadModelCorpsServerRouteImport.update({
+  id: '/read-model/corps',
+  path: '/read-model/corps',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiVersionServerRoute = ApiVersionServerRouteImport.update({
+  id: '/api/version',
+  path: '/api/version',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiTourMapServerRoute = ApiTourMapServerRouteImport.update({
+  id: '/api/tour-map',
+  path: '/api/tour-map',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiMediaServerRoute = ApiMediaServerRouteImport.update({
+  id: '/api/media',
+  path: '/api/media',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiInboundEmailServerRoute = ApiInboundEmailServerRouteImport.update({
+  id: '/api/inbound-email',
+  path: '/api/inbound-email',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiCollectServerRoute = ApiCollectServerRouteImport.update({
+  id: '/api/collect',
+  path: '/api/collect',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelStaffPersonIdServerRoute =
+  ReadModelStaffPersonIdServerRouteImport.update({
+    id: '/$personId',
+    path: '/$personId',
+    getParentRoute: () => ReadModelStaffServerRoute,
+  } as any)
+const ReadModelRecapsSlugServerRoute =
+  ReadModelRecapsSlugServerRouteImport.update({
+    id: '/read-model/recaps/$slug',
+    path: '/read-model/recaps/$slug',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelMerchStoresDotjsonServerRoute =
+  ReadModelMerchStoresDotjsonServerRouteImport.update({
+    id: '/read-model/merch/stores.json',
+    path: '/read-model/merch/stores.json',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelMerchFacetsDotjsonServerRoute =
+  ReadModelMerchFacetsDotjsonServerRouteImport.update({
+    id: '/read-model/merch/facets.json',
+    path: '/read-model/merch/facets.json',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelJudgesJudgeIdServerRoute =
+  ReadModelJudgesJudgeIdServerRouteImport.update({
+    id: '/$judgeId',
+    path: '/$judgeId',
+    getParentRoute: () => ReadModelJudgesServerRoute,
+  } as any)
+const ReadModelCorpsSlugServerRoute =
+  ReadModelCorpsSlugServerRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => ReadModelCorpsServerRoute,
+  } as any)
+const ReadModelCorpsScoresSlugServerRoute =
+  ReadModelCorpsScoresSlugServerRouteImport.update({
+    id: '/read-model/corps-scores/$slug',
+    path: '/read-model/corps-scores/$slug',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelCorpsMerchSlugServerRoute =
+  ReadModelCorpsMerchSlugServerRouteImport.update({
+    id: '/read-model/corps-merch/$slug',
+    path: '/read-model/corps-merch/$slug',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelCorpsAppearancesSlugServerRoute =
+  ReadModelCorpsAppearancesSlugServerRouteImport.update({
+    id: '/read-model/corps-appearances/$slug',
+    path: '/read-model/corps-appearances/$slug',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelCorpsAppearanceResultsSlugServerRoute =
+  ReadModelCorpsAppearanceResultsSlugServerRouteImport.update({
+    id: '/read-model/corps-appearance-results/$slug',
+    path: '/read-model/corps-appearance-results/$slug',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiShowMediaIdServerRoute = ApiShowMediaIdServerRouteImport.update({
+  id: '/api/show-media/$id',
+  path: '/api/show-media/$id',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiOgJobsHomeServerRoute = ApiOgJobsHomeServerRouteImport.update({
+  id: '/api/og/jobs-home',
+  path: '/api/og/jobs-home',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiOgHomeServerRoute = ApiOgHomeServerRouteImport.update({
+  id: '/api/og/home',
+  path: '/api/og/home',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiOgFinalsServerRoute = ApiOgFinalsServerRouteImport.update({
+  id: '/api/og/finals',
+  path: '/api/og/finals',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiJobsStripeWebhookServerRoute =
+  ApiJobsStripeWebhookServerRouteImport.update({
+    id: '/api/jobs/stripe-webhook',
+    path: '/api/jobs/stripe-webhook',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiFantasyStripeWebhookServerRoute =
+  ApiFantasyStripeWebhookServerRouteImport.update({
+    id: '/api/fantasy/stripe-webhook',
+    path: '/api/fantasy/stripe-webhook',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiFantasyMediaIdServerRoute = ApiFantasyMediaIdServerRouteImport.update({
+  id: '/api/fantasy-media/$id',
+  path: '/api/fantasy-media/$id',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiAdminUploadServerRoute = ApiAdminUploadServerRouteImport.update({
+  id: '/api/admin/upload',
+  path: '/api/admin/upload',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ReadModelPredictionPageYearSlugSlugServerRoute =
+  ReadModelPredictionPageYearSlugSlugServerRouteImport.update({
+    id: '/read-model/prediction-page/$yearSlug/$slug',
+    path: '/read-model/prediction-page/$yearSlug/$slug',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelMerchProductsProductIdServerRoute =
+  ReadModelMerchProductsProductIdServerRouteImport.update({
+    id: '/read-model/merch/products/$productId',
+    path: '/read-model/merch/products/$productId',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ReadModelMerchCatalogAllDotjsonServerRoute =
+  ReadModelMerchCatalogAllDotjsonServerRouteImport.update({
+    id: '/read-model/merch/catalog/all.json',
+    path: '/read-model/merch/catalog/all.json',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiOgTourSeasonServerRoute = ApiOgTourSeasonServerRouteImport.update({
+  id: '/api/og/tour/$season',
+  path: '/api/og/tour/$season',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiOgScoreSlugServerRoute = ApiOgScoreSlugServerRouteImport.update({
+  id: '/api/og/score/$slug',
+  path: '/api/og/score/$slug',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiOgBallotIdServerRoute = ApiOgBallotIdServerRouteImport.update({
+  id: '/api/og/ballot/$id',
+  path: '/api/og/ballot/$id',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const ApiFantasyJobsRecomputeServerRoute =
+  ApiFantasyJobsRecomputeServerRouteImport.update({
+    id: '/api/fantasy/jobs/recompute',
+    path: '/api/fantasy/jobs/recompute',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiFantasyJobsDispatchServerRoute =
+  ApiFantasyJobsDispatchServerRouteImport.update({
+    id: '/api/fantasy/jobs/dispatch',
+    path: '/api/fantasy/jobs/dispatch',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiOgShowSlugSeasonServerRoute =
+  ApiOgShowSlugSeasonServerRouteImport.update({
+    id: '/api/og/show/$slug/$season',
+    path: '/api/og/show/$slug/$season',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
+const ApiFantasyDraftLeagueIdStreamServerRoute =
+  ApiFantasyDraftLeagueIdStreamServerRouteImport.update({
+    id: '/api/fantasy/draft/$leagueId/stream',
+    path: '/api/fantasy/draft/$leagueId/stream',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/accuracy': typeof AccuracyRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -612,6 +927,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/accuracy': typeof AccuracyRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -700,6 +1016,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/accuracy': typeof AccuracyRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -789,6 +1106,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/accuracy'
     | '/contact'
     | '/faq'
     | '/privacy-policy'
@@ -876,6 +1194,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/accuracy'
     | '/contact'
     | '/faq'
     | '/privacy-policy'
@@ -963,6 +1282,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/accuracy'
     | '/contact'
     | '/faq'
     | '/privacy-policy'
@@ -1051,6 +1371,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccuracyRoute: typeof AccuracyRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
@@ -1135,6 +1456,350 @@ export interface RootRouteChildren {
   PredictFinalsIndexRoute: typeof PredictFinalsIndexRoute
   EventsYearSlugSlugPredictionRoute: typeof EventsYearSlugSlugPredictionRoute
 }
+export interface FileServerRoutesByFullPath {
+  '/app-icon.svg': typeof AppIconDotsvgServerRoute
+  '/favicon.ico': typeof FaviconDoticoServerRoute
+  '/manifest.webmanifest': typeof ManifestDotwebmanifestServerRoute
+  '/robots.txt': typeof RobotsDottxtServerRoute
+  '/sitemap-core.xml': typeof SitemapCoreDotxmlServerRoute
+  '/sitemap-shop.xml': typeof SitemapShopDotxmlServerRoute
+  '/sitemap-staff.xml': typeof SitemapStaffDotxmlServerRoute
+  '/sitemap.xml': typeof SitemapDotxmlServerRoute
+  '/api/collect': typeof ApiCollectServerRoute
+  '/api/inbound-email': typeof ApiInboundEmailServerRoute
+  '/api/media': typeof ApiMediaServerRoute
+  '/api/tour-map': typeof ApiTourMapServerRoute
+  '/api/version': typeof ApiVersionServerRoute
+  '/read-model/corps': typeof ReadModelCorpsServerRouteWithChildren
+  '/read-model/events': typeof ReadModelEventsServerRoute
+  '/read-model/judges': typeof ReadModelJudgesServerRouteWithChildren
+  '/read-model/manifest.json': typeof ReadModelManifestDotjsonServerRoute
+  '/read-model/staff': typeof ReadModelStaffServerRouteWithChildren
+  '/api/admin/upload': typeof ApiAdminUploadServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
+  '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
+  '/api/jobs/stripe-webhook': typeof ApiJobsStripeWebhookServerRoute
+  '/api/og/finals': typeof ApiOgFinalsServerRoute
+  '/api/og/home': typeof ApiOgHomeServerRoute
+  '/api/og/jobs-home': typeof ApiOgJobsHomeServerRoute
+  '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
+  '/read-model/corps-appearance-results/$slug': typeof ReadModelCorpsAppearanceResultsSlugServerRoute
+  '/read-model/corps-appearances/$slug': typeof ReadModelCorpsAppearancesSlugServerRoute
+  '/read-model/corps-merch/$slug': typeof ReadModelCorpsMerchSlugServerRoute
+  '/read-model/corps-scores/$slug': typeof ReadModelCorpsScoresSlugServerRoute
+  '/read-model/corps/$slug': typeof ReadModelCorpsSlugServerRoute
+  '/read-model/judges/$judgeId': typeof ReadModelJudgesJudgeIdServerRoute
+  '/read-model/merch/facets.json': typeof ReadModelMerchFacetsDotjsonServerRoute
+  '/read-model/merch/stores.json': typeof ReadModelMerchStoresDotjsonServerRoute
+  '/read-model/recaps/$slug': typeof ReadModelRecapsSlugServerRoute
+  '/read-model/staff/$personId': typeof ReadModelStaffPersonIdServerRoute
+  '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
+  '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/og/ballot/$id': typeof ApiOgBallotIdServerRoute
+  '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
+  '/api/og/tour/$season': typeof ApiOgTourSeasonServerRoute
+  '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
+  '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
+  '/read-model/prediction-page/$yearSlug/$slug': typeof ReadModelPredictionPageYearSlugSlugServerRoute
+  '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
+  '/api/og/show/$slug/$season': typeof ApiOgShowSlugSeasonServerRoute
+}
+export interface FileServerRoutesByTo {
+  '/app-icon.svg': typeof AppIconDotsvgServerRoute
+  '/favicon.ico': typeof FaviconDoticoServerRoute
+  '/manifest.webmanifest': typeof ManifestDotwebmanifestServerRoute
+  '/robots.txt': typeof RobotsDottxtServerRoute
+  '/sitemap-core.xml': typeof SitemapCoreDotxmlServerRoute
+  '/sitemap-shop.xml': typeof SitemapShopDotxmlServerRoute
+  '/sitemap-staff.xml': typeof SitemapStaffDotxmlServerRoute
+  '/sitemap.xml': typeof SitemapDotxmlServerRoute
+  '/api/collect': typeof ApiCollectServerRoute
+  '/api/inbound-email': typeof ApiInboundEmailServerRoute
+  '/api/media': typeof ApiMediaServerRoute
+  '/api/tour-map': typeof ApiTourMapServerRoute
+  '/api/version': typeof ApiVersionServerRoute
+  '/read-model/corps': typeof ReadModelCorpsServerRouteWithChildren
+  '/read-model/events': typeof ReadModelEventsServerRoute
+  '/read-model/judges': typeof ReadModelJudgesServerRouteWithChildren
+  '/read-model/manifest.json': typeof ReadModelManifestDotjsonServerRoute
+  '/read-model/staff': typeof ReadModelStaffServerRouteWithChildren
+  '/api/admin/upload': typeof ApiAdminUploadServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
+  '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
+  '/api/jobs/stripe-webhook': typeof ApiJobsStripeWebhookServerRoute
+  '/api/og/finals': typeof ApiOgFinalsServerRoute
+  '/api/og/home': typeof ApiOgHomeServerRoute
+  '/api/og/jobs-home': typeof ApiOgJobsHomeServerRoute
+  '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
+  '/read-model/corps-appearance-results/$slug': typeof ReadModelCorpsAppearanceResultsSlugServerRoute
+  '/read-model/corps-appearances/$slug': typeof ReadModelCorpsAppearancesSlugServerRoute
+  '/read-model/corps-merch/$slug': typeof ReadModelCorpsMerchSlugServerRoute
+  '/read-model/corps-scores/$slug': typeof ReadModelCorpsScoresSlugServerRoute
+  '/read-model/corps/$slug': typeof ReadModelCorpsSlugServerRoute
+  '/read-model/judges/$judgeId': typeof ReadModelJudgesJudgeIdServerRoute
+  '/read-model/merch/facets.json': typeof ReadModelMerchFacetsDotjsonServerRoute
+  '/read-model/merch/stores.json': typeof ReadModelMerchStoresDotjsonServerRoute
+  '/read-model/recaps/$slug': typeof ReadModelRecapsSlugServerRoute
+  '/read-model/staff/$personId': typeof ReadModelStaffPersonIdServerRoute
+  '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
+  '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/og/ballot/$id': typeof ApiOgBallotIdServerRoute
+  '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
+  '/api/og/tour/$season': typeof ApiOgTourSeasonServerRoute
+  '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
+  '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
+  '/read-model/prediction-page/$yearSlug/$slug': typeof ReadModelPredictionPageYearSlugSlugServerRoute
+  '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
+  '/api/og/show/$slug/$season': typeof ApiOgShowSlugSeasonServerRoute
+}
+export interface FileServerRoutesById {
+  __root__: typeof rootServerRouteImport
+  '/app-icon.svg': typeof AppIconDotsvgServerRoute
+  '/favicon.ico': typeof FaviconDoticoServerRoute
+  '/manifest.webmanifest': typeof ManifestDotwebmanifestServerRoute
+  '/robots.txt': typeof RobotsDottxtServerRoute
+  '/sitemap-core.xml': typeof SitemapCoreDotxmlServerRoute
+  '/sitemap-shop.xml': typeof SitemapShopDotxmlServerRoute
+  '/sitemap-staff.xml': typeof SitemapStaffDotxmlServerRoute
+  '/sitemap.xml': typeof SitemapDotxmlServerRoute
+  '/api/collect': typeof ApiCollectServerRoute
+  '/api/inbound-email': typeof ApiInboundEmailServerRoute
+  '/api/media': typeof ApiMediaServerRoute
+  '/api/tour-map': typeof ApiTourMapServerRoute
+  '/api/version': typeof ApiVersionServerRoute
+  '/read-model/corps': typeof ReadModelCorpsServerRouteWithChildren
+  '/read-model/events': typeof ReadModelEventsServerRoute
+  '/read-model/judges': typeof ReadModelJudgesServerRouteWithChildren
+  '/read-model/manifest.json': typeof ReadModelManifestDotjsonServerRoute
+  '/read-model/staff': typeof ReadModelStaffServerRouteWithChildren
+  '/api/admin/upload': typeof ApiAdminUploadServerRoute
+  '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/fantasy-media/$id': typeof ApiFantasyMediaIdServerRoute
+  '/api/fantasy/stripe-webhook': typeof ApiFantasyStripeWebhookServerRoute
+  '/api/jobs/stripe-webhook': typeof ApiJobsStripeWebhookServerRoute
+  '/api/og/finals': typeof ApiOgFinalsServerRoute
+  '/api/og/home': typeof ApiOgHomeServerRoute
+  '/api/og/jobs-home': typeof ApiOgJobsHomeServerRoute
+  '/api/show-media/$id': typeof ApiShowMediaIdServerRoute
+  '/read-model/corps-appearance-results/$slug': typeof ReadModelCorpsAppearanceResultsSlugServerRoute
+  '/read-model/corps-appearances/$slug': typeof ReadModelCorpsAppearancesSlugServerRoute
+  '/read-model/corps-merch/$slug': typeof ReadModelCorpsMerchSlugServerRoute
+  '/read-model/corps-scores/$slug': typeof ReadModelCorpsScoresSlugServerRoute
+  '/read-model/corps/$slug': typeof ReadModelCorpsSlugServerRoute
+  '/read-model/judges/$judgeId': typeof ReadModelJudgesJudgeIdServerRoute
+  '/read-model/merch/facets.json': typeof ReadModelMerchFacetsDotjsonServerRoute
+  '/read-model/merch/stores.json': typeof ReadModelMerchStoresDotjsonServerRoute
+  '/read-model/recaps/$slug': typeof ReadModelRecapsSlugServerRoute
+  '/read-model/staff/$personId': typeof ReadModelStaffPersonIdServerRoute
+  '/api/fantasy/jobs/dispatch': typeof ApiFantasyJobsDispatchServerRoute
+  '/api/fantasy/jobs/recompute': typeof ApiFantasyJobsRecomputeServerRoute
+  '/api/og/ballot/$id': typeof ApiOgBallotIdServerRoute
+  '/api/og/score/$slug': typeof ApiOgScoreSlugServerRoute
+  '/api/og/tour/$season': typeof ApiOgTourSeasonServerRoute
+  '/read-model/merch/catalog/all.json': typeof ReadModelMerchCatalogAllDotjsonServerRoute
+  '/read-model/merch/products/$productId': typeof ReadModelMerchProductsProductIdServerRoute
+  '/read-model/prediction-page/$yearSlug/$slug': typeof ReadModelPredictionPageYearSlugSlugServerRoute
+  '/api/fantasy/draft/$leagueId/stream': typeof ApiFantasyDraftLeagueIdStreamServerRoute
+  '/api/og/show/$slug/$season': typeof ApiOgShowSlugSeasonServerRoute
+}
+export interface FileServerRouteTypes {
+  fileServerRoutesByFullPath: FileServerRoutesByFullPath
+  fullPaths:
+    | '/app-icon.svg'
+    | '/favicon.ico'
+    | '/manifest.webmanifest'
+    | '/robots.txt'
+    | '/sitemap-core.xml'
+    | '/sitemap-shop.xml'
+    | '/sitemap-staff.xml'
+    | '/sitemap.xml'
+    | '/api/collect'
+    | '/api/inbound-email'
+    | '/api/media'
+    | '/api/tour-map'
+    | '/api/version'
+    | '/read-model/corps'
+    | '/read-model/events'
+    | '/read-model/judges'
+    | '/read-model/manifest.json'
+    | '/read-model/staff'
+    | '/api/admin/upload'
+    | '/api/auth/$'
+    | '/api/fantasy-media/$id'
+    | '/api/fantasy/stripe-webhook'
+    | '/api/jobs/stripe-webhook'
+    | '/api/og/finals'
+    | '/api/og/home'
+    | '/api/og/jobs-home'
+    | '/api/show-media/$id'
+    | '/read-model/corps-appearance-results/$slug'
+    | '/read-model/corps-appearances/$slug'
+    | '/read-model/corps-merch/$slug'
+    | '/read-model/corps-scores/$slug'
+    | '/read-model/corps/$slug'
+    | '/read-model/judges/$judgeId'
+    | '/read-model/merch/facets.json'
+    | '/read-model/merch/stores.json'
+    | '/read-model/recaps/$slug'
+    | '/read-model/staff/$personId'
+    | '/api/fantasy/jobs/dispatch'
+    | '/api/fantasy/jobs/recompute'
+    | '/api/og/ballot/$id'
+    | '/api/og/score/$slug'
+    | '/api/og/tour/$season'
+    | '/read-model/merch/catalog/all.json'
+    | '/read-model/merch/products/$productId'
+    | '/read-model/prediction-page/$yearSlug/$slug'
+    | '/api/fantasy/draft/$leagueId/stream'
+    | '/api/og/show/$slug/$season'
+  fileServerRoutesByTo: FileServerRoutesByTo
+  to:
+    | '/app-icon.svg'
+    | '/favicon.ico'
+    | '/manifest.webmanifest'
+    | '/robots.txt'
+    | '/sitemap-core.xml'
+    | '/sitemap-shop.xml'
+    | '/sitemap-staff.xml'
+    | '/sitemap.xml'
+    | '/api/collect'
+    | '/api/inbound-email'
+    | '/api/media'
+    | '/api/tour-map'
+    | '/api/version'
+    | '/read-model/corps'
+    | '/read-model/events'
+    | '/read-model/judges'
+    | '/read-model/manifest.json'
+    | '/read-model/staff'
+    | '/api/admin/upload'
+    | '/api/auth/$'
+    | '/api/fantasy-media/$id'
+    | '/api/fantasy/stripe-webhook'
+    | '/api/jobs/stripe-webhook'
+    | '/api/og/finals'
+    | '/api/og/home'
+    | '/api/og/jobs-home'
+    | '/api/show-media/$id'
+    | '/read-model/corps-appearance-results/$slug'
+    | '/read-model/corps-appearances/$slug'
+    | '/read-model/corps-merch/$slug'
+    | '/read-model/corps-scores/$slug'
+    | '/read-model/corps/$slug'
+    | '/read-model/judges/$judgeId'
+    | '/read-model/merch/facets.json'
+    | '/read-model/merch/stores.json'
+    | '/read-model/recaps/$slug'
+    | '/read-model/staff/$personId'
+    | '/api/fantasy/jobs/dispatch'
+    | '/api/fantasy/jobs/recompute'
+    | '/api/og/ballot/$id'
+    | '/api/og/score/$slug'
+    | '/api/og/tour/$season'
+    | '/read-model/merch/catalog/all.json'
+    | '/read-model/merch/products/$productId'
+    | '/read-model/prediction-page/$yearSlug/$slug'
+    | '/api/fantasy/draft/$leagueId/stream'
+    | '/api/og/show/$slug/$season'
+  id:
+    | '__root__'
+    | '/app-icon.svg'
+    | '/favicon.ico'
+    | '/manifest.webmanifest'
+    | '/robots.txt'
+    | '/sitemap-core.xml'
+    | '/sitemap-shop.xml'
+    | '/sitemap-staff.xml'
+    | '/sitemap.xml'
+    | '/api/collect'
+    | '/api/inbound-email'
+    | '/api/media'
+    | '/api/tour-map'
+    | '/api/version'
+    | '/read-model/corps'
+    | '/read-model/events'
+    | '/read-model/judges'
+    | '/read-model/manifest.json'
+    | '/read-model/staff'
+    | '/api/admin/upload'
+    | '/api/auth/$'
+    | '/api/fantasy-media/$id'
+    | '/api/fantasy/stripe-webhook'
+    | '/api/jobs/stripe-webhook'
+    | '/api/og/finals'
+    | '/api/og/home'
+    | '/api/og/jobs-home'
+    | '/api/show-media/$id'
+    | '/read-model/corps-appearance-results/$slug'
+    | '/read-model/corps-appearances/$slug'
+    | '/read-model/corps-merch/$slug'
+    | '/read-model/corps-scores/$slug'
+    | '/read-model/corps/$slug'
+    | '/read-model/judges/$judgeId'
+    | '/read-model/merch/facets.json'
+    | '/read-model/merch/stores.json'
+    | '/read-model/recaps/$slug'
+    | '/read-model/staff/$personId'
+    | '/api/fantasy/jobs/dispatch'
+    | '/api/fantasy/jobs/recompute'
+    | '/api/og/ballot/$id'
+    | '/api/og/score/$slug'
+    | '/api/og/tour/$season'
+    | '/read-model/merch/catalog/all.json'
+    | '/read-model/merch/products/$productId'
+    | '/read-model/prediction-page/$yearSlug/$slug'
+    | '/api/fantasy/draft/$leagueId/stream'
+    | '/api/og/show/$slug/$season'
+  fileServerRoutesById: FileServerRoutesById
+}
+export interface RootServerRouteChildren {
+  AppIconDotsvgServerRoute: typeof AppIconDotsvgServerRoute
+  FaviconDoticoServerRoute: typeof FaviconDoticoServerRoute
+  ManifestDotwebmanifestServerRoute: typeof ManifestDotwebmanifestServerRoute
+  RobotsDottxtServerRoute: typeof RobotsDottxtServerRoute
+  SitemapCoreDotxmlServerRoute: typeof SitemapCoreDotxmlServerRoute
+  SitemapShopDotxmlServerRoute: typeof SitemapShopDotxmlServerRoute
+  SitemapStaffDotxmlServerRoute: typeof SitemapStaffDotxmlServerRoute
+  SitemapDotxmlServerRoute: typeof SitemapDotxmlServerRoute
+  ApiCollectServerRoute: typeof ApiCollectServerRoute
+  ApiInboundEmailServerRoute: typeof ApiInboundEmailServerRoute
+  ApiMediaServerRoute: typeof ApiMediaServerRoute
+  ApiTourMapServerRoute: typeof ApiTourMapServerRoute
+  ApiVersionServerRoute: typeof ApiVersionServerRoute
+  ReadModelCorpsServerRoute: typeof ReadModelCorpsServerRouteWithChildren
+  ReadModelEventsServerRoute: typeof ReadModelEventsServerRoute
+  ReadModelJudgesServerRoute: typeof ReadModelJudgesServerRouteWithChildren
+  ReadModelManifestDotjsonServerRoute: typeof ReadModelManifestDotjsonServerRoute
+  ReadModelStaffServerRoute: typeof ReadModelStaffServerRouteWithChildren
+  ApiAdminUploadServerRoute: typeof ApiAdminUploadServerRoute
+  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
+  ApiFantasyMediaIdServerRoute: typeof ApiFantasyMediaIdServerRoute
+  ApiFantasyStripeWebhookServerRoute: typeof ApiFantasyStripeWebhookServerRoute
+  ApiJobsStripeWebhookServerRoute: typeof ApiJobsStripeWebhookServerRoute
+  ApiOgFinalsServerRoute: typeof ApiOgFinalsServerRoute
+  ApiOgHomeServerRoute: typeof ApiOgHomeServerRoute
+  ApiOgJobsHomeServerRoute: typeof ApiOgJobsHomeServerRoute
+  ApiShowMediaIdServerRoute: typeof ApiShowMediaIdServerRoute
+  ReadModelCorpsAppearanceResultsSlugServerRoute: typeof ReadModelCorpsAppearanceResultsSlugServerRoute
+  ReadModelCorpsAppearancesSlugServerRoute: typeof ReadModelCorpsAppearancesSlugServerRoute
+  ReadModelCorpsMerchSlugServerRoute: typeof ReadModelCorpsMerchSlugServerRoute
+  ReadModelCorpsScoresSlugServerRoute: typeof ReadModelCorpsScoresSlugServerRoute
+  ReadModelMerchFacetsDotjsonServerRoute: typeof ReadModelMerchFacetsDotjsonServerRoute
+  ReadModelMerchStoresDotjsonServerRoute: typeof ReadModelMerchStoresDotjsonServerRoute
+  ReadModelRecapsSlugServerRoute: typeof ReadModelRecapsSlugServerRoute
+  ApiFantasyJobsDispatchServerRoute: typeof ApiFantasyJobsDispatchServerRoute
+  ApiFantasyJobsRecomputeServerRoute: typeof ApiFantasyJobsRecomputeServerRoute
+  ApiOgBallotIdServerRoute: typeof ApiOgBallotIdServerRoute
+  ApiOgScoreSlugServerRoute: typeof ApiOgScoreSlugServerRoute
+  ApiOgTourSeasonServerRoute: typeof ApiOgTourSeasonServerRoute
+  ReadModelMerchCatalogAllDotjsonServerRoute: typeof ReadModelMerchCatalogAllDotjsonServerRoute
+  ReadModelMerchProductsProductIdServerRoute: typeof ReadModelMerchProductsProductIdServerRoute
+  ReadModelPredictionPageYearSlugSlugServerRoute: typeof ReadModelPredictionPageYearSlugSlugServerRoute
+  ApiFantasyDraftLeagueIdStreamServerRoute: typeof ApiFantasyDraftLeagueIdStreamServerRoute
+  ApiOgShowSlugSeasonServerRoute: typeof ApiOgShowSlugSeasonServerRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
@@ -1171,6 +1836,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accuracy': {
+      id: '/accuracy'
+      path: '/accuracy'
+      fullPath: '/accuracy'
+      preLoaderRoute: typeof AccuracyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -1735,6 +2407,339 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+declare module '@tanstack/react-start/server' {
+  interface ServerFileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/sitemap-staff.xml': {
+      id: '/sitemap-staff.xml'
+      path: '/sitemap-staff.xml'
+      fullPath: '/sitemap-staff.xml'
+      preLoaderRoute: typeof SitemapStaffDotxmlServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/sitemap-shop.xml': {
+      id: '/sitemap-shop.xml'
+      path: '/sitemap-shop.xml'
+      fullPath: '/sitemap-shop.xml'
+      preLoaderRoute: typeof SitemapShopDotxmlServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/sitemap-core.xml': {
+      id: '/sitemap-core.xml'
+      path: '/sitemap-core.xml'
+      fullPath: '/sitemap-core.xml'
+      preLoaderRoute: typeof SitemapCoreDotxmlServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/manifest.webmanifest': {
+      id: '/manifest.webmanifest'
+      path: '/manifest.webmanifest'
+      fullPath: '/manifest.webmanifest'
+      preLoaderRoute: typeof ManifestDotwebmanifestServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/favicon.ico': {
+      id: '/favicon.ico'
+      path: '/favicon.ico'
+      fullPath: '/favicon.ico'
+      preLoaderRoute: typeof FaviconDoticoServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/app-icon.svg': {
+      id: '/app-icon.svg'
+      path: '/app-icon.svg'
+      fullPath: '/app-icon.svg'
+      preLoaderRoute: typeof AppIconDotsvgServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/staff': {
+      id: '/read-model/staff'
+      path: '/read-model/staff'
+      fullPath: '/read-model/staff'
+      preLoaderRoute: typeof ReadModelStaffServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/manifest.json': {
+      id: '/read-model/manifest.json'
+      path: '/read-model/manifest.json'
+      fullPath: '/read-model/manifest.json'
+      preLoaderRoute: typeof ReadModelManifestDotjsonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/judges': {
+      id: '/read-model/judges'
+      path: '/read-model/judges'
+      fullPath: '/read-model/judges'
+      preLoaderRoute: typeof ReadModelJudgesServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/events': {
+      id: '/read-model/events'
+      path: '/read-model/events'
+      fullPath: '/read-model/events'
+      preLoaderRoute: typeof ReadModelEventsServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/corps': {
+      id: '/read-model/corps'
+      path: '/read-model/corps'
+      fullPath: '/read-model/corps'
+      preLoaderRoute: typeof ReadModelCorpsServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/version': {
+      id: '/api/version'
+      path: '/api/version'
+      fullPath: '/api/version'
+      preLoaderRoute: typeof ApiVersionServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/tour-map': {
+      id: '/api/tour-map'
+      path: '/api/tour-map'
+      fullPath: '/api/tour-map'
+      preLoaderRoute: typeof ApiTourMapServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/media': {
+      id: '/api/media'
+      path: '/api/media'
+      fullPath: '/api/media'
+      preLoaderRoute: typeof ApiMediaServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/inbound-email': {
+      id: '/api/inbound-email'
+      path: '/api/inbound-email'
+      fullPath: '/api/inbound-email'
+      preLoaderRoute: typeof ApiInboundEmailServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/collect': {
+      id: '/api/collect'
+      path: '/api/collect'
+      fullPath: '/api/collect'
+      preLoaderRoute: typeof ApiCollectServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/staff/$personId': {
+      id: '/read-model/staff/$personId'
+      path: '/$personId'
+      fullPath: '/read-model/staff/$personId'
+      preLoaderRoute: typeof ReadModelStaffPersonIdServerRouteImport
+      parentRoute: typeof ReadModelStaffServerRoute
+    }
+    '/read-model/recaps/$slug': {
+      id: '/read-model/recaps/$slug'
+      path: '/read-model/recaps/$slug'
+      fullPath: '/read-model/recaps/$slug'
+      preLoaderRoute: typeof ReadModelRecapsSlugServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/merch/stores.json': {
+      id: '/read-model/merch/stores.json'
+      path: '/read-model/merch/stores.json'
+      fullPath: '/read-model/merch/stores.json'
+      preLoaderRoute: typeof ReadModelMerchStoresDotjsonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/merch/facets.json': {
+      id: '/read-model/merch/facets.json'
+      path: '/read-model/merch/facets.json'
+      fullPath: '/read-model/merch/facets.json'
+      preLoaderRoute: typeof ReadModelMerchFacetsDotjsonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/judges/$judgeId': {
+      id: '/read-model/judges/$judgeId'
+      path: '/$judgeId'
+      fullPath: '/read-model/judges/$judgeId'
+      preLoaderRoute: typeof ReadModelJudgesJudgeIdServerRouteImport
+      parentRoute: typeof ReadModelJudgesServerRoute
+    }
+    '/read-model/corps/$slug': {
+      id: '/read-model/corps/$slug'
+      path: '/$slug'
+      fullPath: '/read-model/corps/$slug'
+      preLoaderRoute: typeof ReadModelCorpsSlugServerRouteImport
+      parentRoute: typeof ReadModelCorpsServerRoute
+    }
+    '/read-model/corps-scores/$slug': {
+      id: '/read-model/corps-scores/$slug'
+      path: '/read-model/corps-scores/$slug'
+      fullPath: '/read-model/corps-scores/$slug'
+      preLoaderRoute: typeof ReadModelCorpsScoresSlugServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/corps-merch/$slug': {
+      id: '/read-model/corps-merch/$slug'
+      path: '/read-model/corps-merch/$slug'
+      fullPath: '/read-model/corps-merch/$slug'
+      preLoaderRoute: typeof ReadModelCorpsMerchSlugServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/corps-appearances/$slug': {
+      id: '/read-model/corps-appearances/$slug'
+      path: '/read-model/corps-appearances/$slug'
+      fullPath: '/read-model/corps-appearances/$slug'
+      preLoaderRoute: typeof ReadModelCorpsAppearancesSlugServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/corps-appearance-results/$slug': {
+      id: '/read-model/corps-appearance-results/$slug'
+      path: '/read-model/corps-appearance-results/$slug'
+      fullPath: '/read-model/corps-appearance-results/$slug'
+      preLoaderRoute: typeof ReadModelCorpsAppearanceResultsSlugServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/show-media/$id': {
+      id: '/api/show-media/$id'
+      path: '/api/show-media/$id'
+      fullPath: '/api/show-media/$id'
+      preLoaderRoute: typeof ApiShowMediaIdServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/og/jobs-home': {
+      id: '/api/og/jobs-home'
+      path: '/api/og/jobs-home'
+      fullPath: '/api/og/jobs-home'
+      preLoaderRoute: typeof ApiOgJobsHomeServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/og/home': {
+      id: '/api/og/home'
+      path: '/api/og/home'
+      fullPath: '/api/og/home'
+      preLoaderRoute: typeof ApiOgHomeServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/og/finals': {
+      id: '/api/og/finals'
+      path: '/api/og/finals'
+      fullPath: '/api/og/finals'
+      preLoaderRoute: typeof ApiOgFinalsServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/jobs/stripe-webhook': {
+      id: '/api/jobs/stripe-webhook'
+      path: '/api/jobs/stripe-webhook'
+      fullPath: '/api/jobs/stripe-webhook'
+      preLoaderRoute: typeof ApiJobsStripeWebhookServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/fantasy/stripe-webhook': {
+      id: '/api/fantasy/stripe-webhook'
+      path: '/api/fantasy/stripe-webhook'
+      fullPath: '/api/fantasy/stripe-webhook'
+      preLoaderRoute: typeof ApiFantasyStripeWebhookServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/fantasy-media/$id': {
+      id: '/api/fantasy-media/$id'
+      path: '/api/fantasy-media/$id'
+      fullPath: '/api/fantasy-media/$id'
+      preLoaderRoute: typeof ApiFantasyMediaIdServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/admin/upload': {
+      id: '/api/admin/upload'
+      path: '/api/admin/upload'
+      fullPath: '/api/admin/upload'
+      preLoaderRoute: typeof ApiAdminUploadServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/prediction-page/$yearSlug/$slug': {
+      id: '/read-model/prediction-page/$yearSlug/$slug'
+      path: '/read-model/prediction-page/$yearSlug/$slug'
+      fullPath: '/read-model/prediction-page/$yearSlug/$slug'
+      preLoaderRoute: typeof ReadModelPredictionPageYearSlugSlugServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/merch/products/$productId': {
+      id: '/read-model/merch/products/$productId'
+      path: '/read-model/merch/products/$productId'
+      fullPath: '/read-model/merch/products/$productId'
+      preLoaderRoute: typeof ReadModelMerchProductsProductIdServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/read-model/merch/catalog/all.json': {
+      id: '/read-model/merch/catalog/all.json'
+      path: '/read-model/merch/catalog/all.json'
+      fullPath: '/read-model/merch/catalog/all.json'
+      preLoaderRoute: typeof ReadModelMerchCatalogAllDotjsonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/og/tour/$season': {
+      id: '/api/og/tour/$season'
+      path: '/api/og/tour/$season'
+      fullPath: '/api/og/tour/$season'
+      preLoaderRoute: typeof ApiOgTourSeasonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/og/score/$slug': {
+      id: '/api/og/score/$slug'
+      path: '/api/og/score/$slug'
+      fullPath: '/api/og/score/$slug'
+      preLoaderRoute: typeof ApiOgScoreSlugServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/og/ballot/$id': {
+      id: '/api/og/ballot/$id'
+      path: '/api/og/ballot/$id'
+      fullPath: '/api/og/ballot/$id'
+      preLoaderRoute: typeof ApiOgBallotIdServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/fantasy/jobs/recompute': {
+      id: '/api/fantasy/jobs/recompute'
+      path: '/api/fantasy/jobs/recompute'
+      fullPath: '/api/fantasy/jobs/recompute'
+      preLoaderRoute: typeof ApiFantasyJobsRecomputeServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/fantasy/jobs/dispatch': {
+      id: '/api/fantasy/jobs/dispatch'
+      path: '/api/fantasy/jobs/dispatch'
+      fullPath: '/api/fantasy/jobs/dispatch'
+      preLoaderRoute: typeof ApiFantasyJobsDispatchServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/og/show/$slug/$season': {
+      id: '/api/og/show/$slug/$season'
+      path: '/api/og/show/$slug/$season'
+      fullPath: '/api/og/show/$slug/$season'
+      preLoaderRoute: typeof ApiOgShowSlugSeasonServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/fantasy/draft/$leagueId/stream': {
+      id: '/api/fantasy/draft/$leagueId/stream'
+      path: '/api/fantasy/draft/$leagueId/stream'
+      fullPath: '/api/fantasy/draft/$leagueId/stream'
+      preLoaderRoute: typeof ApiFantasyDraftLeagueIdStreamServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+  }
+}
 
 interface AdminUsersRouteChildren {
   AdminUsersIdRoute: typeof AdminUsersIdRoute
@@ -1748,8 +2753,44 @@ const AdminUsersRouteWithChildren = AdminUsersRoute._addFileChildren(
   AdminUsersRouteChildren,
 )
 
+interface ReadModelCorpsServerRouteChildren {
+  ReadModelCorpsSlugServerRoute: typeof ReadModelCorpsSlugServerRoute
+}
+
+const ReadModelCorpsServerRouteChildren: ReadModelCorpsServerRouteChildren = {
+  ReadModelCorpsSlugServerRoute: ReadModelCorpsSlugServerRoute,
+}
+
+const ReadModelCorpsServerRouteWithChildren =
+  ReadModelCorpsServerRoute._addFileChildren(ReadModelCorpsServerRouteChildren)
+
+interface ReadModelJudgesServerRouteChildren {
+  ReadModelJudgesJudgeIdServerRoute: typeof ReadModelJudgesJudgeIdServerRoute
+}
+
+const ReadModelJudgesServerRouteChildren: ReadModelJudgesServerRouteChildren = {
+  ReadModelJudgesJudgeIdServerRoute: ReadModelJudgesJudgeIdServerRoute,
+}
+
+const ReadModelJudgesServerRouteWithChildren =
+  ReadModelJudgesServerRoute._addFileChildren(
+    ReadModelJudgesServerRouteChildren,
+  )
+
+interface ReadModelStaffServerRouteChildren {
+  ReadModelStaffPersonIdServerRoute: typeof ReadModelStaffPersonIdServerRoute
+}
+
+const ReadModelStaffServerRouteChildren: ReadModelStaffServerRouteChildren = {
+  ReadModelStaffPersonIdServerRoute: ReadModelStaffPersonIdServerRoute,
+}
+
+const ReadModelStaffServerRouteWithChildren =
+  ReadModelStaffServerRoute._addFileChildren(ReadModelStaffServerRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccuracyRoute: AccuracyRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
@@ -1837,3 +2878,60 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+const rootServerRouteChildren: RootServerRouteChildren = {
+  AppIconDotsvgServerRoute: AppIconDotsvgServerRoute,
+  FaviconDoticoServerRoute: FaviconDoticoServerRoute,
+  ManifestDotwebmanifestServerRoute: ManifestDotwebmanifestServerRoute,
+  RobotsDottxtServerRoute: RobotsDottxtServerRoute,
+  SitemapCoreDotxmlServerRoute: SitemapCoreDotxmlServerRoute,
+  SitemapShopDotxmlServerRoute: SitemapShopDotxmlServerRoute,
+  SitemapStaffDotxmlServerRoute: SitemapStaffDotxmlServerRoute,
+  SitemapDotxmlServerRoute: SitemapDotxmlServerRoute,
+  ApiCollectServerRoute: ApiCollectServerRoute,
+  ApiInboundEmailServerRoute: ApiInboundEmailServerRoute,
+  ApiMediaServerRoute: ApiMediaServerRoute,
+  ApiTourMapServerRoute: ApiTourMapServerRoute,
+  ApiVersionServerRoute: ApiVersionServerRoute,
+  ReadModelCorpsServerRoute: ReadModelCorpsServerRouteWithChildren,
+  ReadModelEventsServerRoute: ReadModelEventsServerRoute,
+  ReadModelJudgesServerRoute: ReadModelJudgesServerRouteWithChildren,
+  ReadModelManifestDotjsonServerRoute: ReadModelManifestDotjsonServerRoute,
+  ReadModelStaffServerRoute: ReadModelStaffServerRouteWithChildren,
+  ApiAdminUploadServerRoute: ApiAdminUploadServerRoute,
+  ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
+  ApiFantasyMediaIdServerRoute: ApiFantasyMediaIdServerRoute,
+  ApiFantasyStripeWebhookServerRoute: ApiFantasyStripeWebhookServerRoute,
+  ApiJobsStripeWebhookServerRoute: ApiJobsStripeWebhookServerRoute,
+  ApiOgFinalsServerRoute: ApiOgFinalsServerRoute,
+  ApiOgHomeServerRoute: ApiOgHomeServerRoute,
+  ApiOgJobsHomeServerRoute: ApiOgJobsHomeServerRoute,
+  ApiShowMediaIdServerRoute: ApiShowMediaIdServerRoute,
+  ReadModelCorpsAppearanceResultsSlugServerRoute:
+    ReadModelCorpsAppearanceResultsSlugServerRoute,
+  ReadModelCorpsAppearancesSlugServerRoute:
+    ReadModelCorpsAppearancesSlugServerRoute,
+  ReadModelCorpsMerchSlugServerRoute: ReadModelCorpsMerchSlugServerRoute,
+  ReadModelCorpsScoresSlugServerRoute: ReadModelCorpsScoresSlugServerRoute,
+  ReadModelMerchFacetsDotjsonServerRoute:
+    ReadModelMerchFacetsDotjsonServerRoute,
+  ReadModelMerchStoresDotjsonServerRoute:
+    ReadModelMerchStoresDotjsonServerRoute,
+  ReadModelRecapsSlugServerRoute: ReadModelRecapsSlugServerRoute,
+  ApiFantasyJobsDispatchServerRoute: ApiFantasyJobsDispatchServerRoute,
+  ApiFantasyJobsRecomputeServerRoute: ApiFantasyJobsRecomputeServerRoute,
+  ApiOgBallotIdServerRoute: ApiOgBallotIdServerRoute,
+  ApiOgScoreSlugServerRoute: ApiOgScoreSlugServerRoute,
+  ApiOgTourSeasonServerRoute: ApiOgTourSeasonServerRoute,
+  ReadModelMerchCatalogAllDotjsonServerRoute:
+    ReadModelMerchCatalogAllDotjsonServerRoute,
+  ReadModelMerchProductsProductIdServerRoute:
+    ReadModelMerchProductsProductIdServerRoute,
+  ReadModelPredictionPageYearSlugSlugServerRoute:
+    ReadModelPredictionPageYearSlugSlugServerRoute,
+  ApiFantasyDraftLeagueIdStreamServerRoute:
+    ApiFantasyDraftLeagueIdStreamServerRoute,
+  ApiOgShowSlugSeasonServerRoute: ApiOgShowSlugSeasonServerRoute,
+}
+export const serverRouteTree = rootServerRouteImport
+  ._addFileChildren(rootServerRouteChildren)
+  ._addFileTypes<FileServerRouteTypes>()

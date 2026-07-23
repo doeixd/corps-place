@@ -38,6 +38,10 @@ export const ServerRoute = createServerFileRoute('/sitemap-core.xml').methods({
     const paths = new Set<string>(STATIC_PATHS);
     const dated: DatedUrl[] = [];
 
+    // Prediction-accuracy report. Dated (not in STATIC_PATHS) so it carries an
+    // honest past lastmod — the season's shows have all been scored.
+    dated.push({ loc: '/accuracy', lastmod: honestLastmod('2026-07-22') });
+
     const [corps, judges] = await Promise.all([
       getCorpsDirectory().catch(() => []),
       getJudgeDirectory().catch(() => []),

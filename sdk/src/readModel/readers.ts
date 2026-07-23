@@ -29,6 +29,7 @@ import type { LatestPredictionRow, EventPredictionAsOf } from "./builders/predic
 import type { ShowInfoSummary, ShowDetail } from "./builders/shows.js";
 import type { VsCorpsScorePoint, VsBaselinePoint, VsPredictedPoint } from "./builders/vs.js";
 import type { RankingScoreRow, RankMetric } from "./builders/rankings.js";
+import type { AccuracyPayload } from "./builders/predictionAccuracy.js";
 import type {
   WeekendBucket,
   WeekendShow,
@@ -662,6 +663,25 @@ export const readRankings = async (db: Client, season: string): Promise<RankingS
 
 export const readRankingSeasons = async (db: Client): Promise<string[]> => {
   const r = await db.execute({ sql: `SELECT DISTINCT season FROM rm_rankings ORDER BY season DESC` });
+  return (r.rows as any[]).map((x) => String(x.season)).filter(Boolean);
+};
+
+// ── Prediction accuracy (/accuracy page) ───────────────────────────────────
+export const readAccuracy = async (
+  db: Client,
+  season: string
+): Promise<AccuracyPayload | null> => {
+  const r = await db.execute({
+    sql: `SELECT payload_json FROM rm_accuracy WHERE season = ? LIMIT 1`,
+    args: [season],
+  });
+  const row = (r.rows as any[])[0];
+  if (!row) return null;
+  return JSON.parse(String(row.payload_json)) as AccuracyPayload;
+};
+
+export const readAccuracySeasons = async (db: Client): Promise<string[]> => {
+  const r = await db.execute({ sql: `SELECT DISTINCT season FROM rm_accuracy ORDER BY season DESC` });
   return (r.rows as any[]).map((x) => String(x.season)).filter(Boolean);
 };
 

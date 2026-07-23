@@ -65,6 +65,7 @@ import {
   buildPredictedEventSlugs,
   buildEventPredictionSnapshotDates,
   buildEventPredictionAsOf,
+  buildPredictionAccuracy,
   buildHomeWeekendShows,
   buildLatestResults,
   buildSeasonStandings,
@@ -143,7 +144,8 @@ type Section =
   | "home"
   | "merch"
   | "fantasy"
-  | "rankings";
+  | "rankings"
+  | "accuracy";
 const ALL_SECTIONS: Section[] = [
   "events",
   "corps",
@@ -156,6 +158,7 @@ const ALL_SECTIONS: Section[] = [
   "merch",
   "fantasy",
   "rankings",
+  "accuracy",
 ];
 
 // The rm_* tables each section (re)builds. Derived from the section blocks below;
@@ -199,6 +202,8 @@ const SECTION_TABLES: Record<Section, string[]> = {
   // auto-ingest fast publish can include it and /rankings updates with the
   // scores instead of waiting minutes for the full corps-detail build.
   rankings: ["rm_rankings"],
+  // Prediction accuracy report (/accuracy): one JSON payload row per season.
+  accuracy: ["rm_accuracy"],
 };
 
 interface Args {
@@ -383,6 +388,8 @@ CREATE TABLE rm_rankings (
   division TEXT, metric TEXT, score REAL
 );
 CREATE INDEX rm_rankings_k ON rm_rankings(season, metric, date);
+
+CREATE TABLE rm_accuracy (season TEXT PRIMARY KEY, payload_json TEXT);
 
 CREATE TABLE rm_corps_appearances (corps_slug TEXT, event_id TEXT, sort_index INTEGER);
 CREATE INDEX rm_corps_appearances_k ON rm_corps_appearances(corps_slug, sort_index);
@@ -1332,6 +1339,18 @@ export const runEmit = async (args: Args) => {
         ["event_slug", "season", "snapshot_at", "predicted_at", "percent_through", "recap_json"],
         predSnapshotRows,
       );
+    }
+  }
+
+  // ── Prediction accuracy (/accuracy report) ───────────────────────────────────
+  if (args.only.includes("accuracy")) {
+    log("building prediction accuracy…");
+    const payload = await buildPredictionAccuracy(src, "2026");
+    rowCounts.rm_accuracy = 1;
+    if (dst) {
+      await insertRows(dst, "rm_accuracy", ["season", "payload_json"], [
+        ["2026", JSON.stringify(payload)],
+      ]);
     }
   }
 

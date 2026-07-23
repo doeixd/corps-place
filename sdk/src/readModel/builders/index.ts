@@ -16,6 +16,7 @@ export * from './home.js';
 export * from './judges.js';
 export * from './staff.js';
 export * from './predictions.js';
+export * from './predictionAccuracy.js';
 export * from './shows.js';
 export * from './merch.js';
 export * from './fantasy.js';
