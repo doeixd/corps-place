@@ -41,6 +41,8 @@ export const ServerRoute = createServerFileRoute('/sitemap-core.xml').methods({
     // Prediction-accuracy report. Dated (not in STATIC_PATHS) so it carries an
     // honest past lastmod — the season's shows have all been scored.
     dated.push({ loc: '/accuracy', lastmod: honestLastmod('2026-07-22') });
+    // 2026 season retrospective. Published after Finals (Aug 8) were graded.
+    dated.push({ loc: '/accuracy-report', lastmod: honestLastmod('2026-08-12') });
 
     const [corps, judges] = await Promise.all([
       getCorpsDirectory().catch(() => []),

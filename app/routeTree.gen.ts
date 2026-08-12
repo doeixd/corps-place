@@ -16,6 +16,7 @@ import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AccuracyReportRouteImport } from './routes/accuracy-report'
 import { Route as AccuracyRouteImport } from './routes/accuracy'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VsIndexRouteImport } from './routes/vs.index'
@@ -170,6 +171,11 @@ const FaqRoute = FaqRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccuracyReportRoute = AccuracyReportRouteImport.update({
+  id: '/accuracy-report',
+  path: '/accuracy-report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccuracyRoute = AccuracyRouteImport.update({
@@ -840,6 +846,7 @@ const ApiFantasyDraftLeagueIdStreamServerRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accuracy': typeof AccuracyRoute
+  '/accuracy-report': typeof AccuracyReportRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -928,6 +935,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accuracy': typeof AccuracyRoute
+  '/accuracy-report': typeof AccuracyReportRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -1017,6 +1025,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/accuracy': typeof AccuracyRoute
+  '/accuracy-report': typeof AccuracyReportRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -1107,6 +1116,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/accuracy'
+    | '/accuracy-report'
     | '/contact'
     | '/faq'
     | '/privacy-policy'
@@ -1195,6 +1205,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/accuracy'
+    | '/accuracy-report'
     | '/contact'
     | '/faq'
     | '/privacy-policy'
@@ -1283,6 +1294,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/accuracy'
+    | '/accuracy-report'
     | '/contact'
     | '/faq'
     | '/privacy-policy'
@@ -1372,6 +1384,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccuracyRoute: typeof AccuracyRoute
+  AccuracyReportRoute: typeof AccuracyReportRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
@@ -1836,6 +1849,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accuracy-report': {
+      id: '/accuracy-report'
+      path: '/accuracy-report'
+      fullPath: '/accuracy-report'
+      preLoaderRoute: typeof AccuracyReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/accuracy': {
@@ -2791,6 +2811,7 @@ const ReadModelStaffServerRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccuracyRoute: AccuracyRoute,
+  AccuracyReportRoute: AccuracyReportRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,

@@ -124,6 +124,13 @@ function AccuracyPage() {
           Once the real scores post, we grade ourselves. This is the honest scorecard for the{' '}
           {payload.season} season — {payload.scope} only.
         </p>
+        <p className="max-w-prose text-sm leading-relaxed text-text-secondary">
+          Want the story behind the numbers? Read the{' '}
+          <Link to="/accuracy-report" className="text-primary hover:underline">
+            2026 season accuracy report
+          </Link>{' '}
+          — including the model we rolled back mid-season and how championships graded out.
+        </p>
       </header>
 
       {/* Hero stat tiles */}
