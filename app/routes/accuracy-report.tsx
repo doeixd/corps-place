@@ -9,11 +9,17 @@ import { getAccuracy } from '@/lib/server-fns/accuracy';
 // that page is the always-current scorecard, this one is the narrative — what
 // we shipped, where it broke, and what the championship stretch graded out at.
 //
+// AUDIENCE: a drum corps fan with zero stats background. Every number on this
+// page must be translated into plain English at the point it appears — no bare
+// "MAE" / "bias" / "rank displacement", and no internal model jargon
+// ("shadow", "wrapper", "recal", "regression"). The numbers themselves are
+// verbatim from the graded set; only the wording is editorial.
+//
 // LOADER PAYLOAD IS DESERIALIZED INTO THE SSR HTML, so we deliberately return
 // ONLY the handful of summary numbers we render (not the full rm_accuracy
 // payload, which carries per-corps/per-event/histogram arrays). The headline
 // stats are read live so this page never drifts from /accuracy; the era,
-// benchmark and model-comparison tables are editorial and hardcoded below.
+// benchmark and model-comparison figures are editorial and hardcoded below.
 
 interface ReportStats {
   n: number;
@@ -78,8 +84,9 @@ export const Route = createFileRoute('/accuracy-report')({
     seoHead({
       title: '2026 prediction accuracy report',
       description:
-        'Our 2026 DCI season in review: 436 graded forecasts across 61 shows at 1.67 pts average ' +
-        'error, the model regression we shipped and rolled back in July, and a 0.59-point Finals night.',
+        'How our 2026 DCI score predictions actually did, in plain English: 436 forecasts across ' +
+        '61 shows, off by 1.67 points on average, the right winner in 4 out of 5 shows — plus the ' +
+        'week we shipped a worse model, admitted it, and switched back before championships.',
       path: '/accuracy-report',
       type: 'article',
       jsonLd: [
@@ -90,8 +97,8 @@ export const Route = createFileRoute('/accuracy-report')({
           url: `${SITE_URL}/accuracy-report`,
           datePublished: '2026-08-12',
           description:
-            'A season retrospective on how our DCI score predictions performed in 2026, ' +
-            'including a model regression that was caught and rolled back.',
+            'A plain-English season retrospective on how our DCI score predictions performed in ' +
+            '2026, including a worse model that was caught and rolled back mid-season.',
         },
       ],
     }),
@@ -101,6 +108,10 @@ export const Route = createFileRoute('/accuracy-report')({
 
 const fmt = (x: number, d = 2) =>
   x.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+// "82%" reads as a statistic; "4 out of 5 shows" reads as a fact. Round to the
+// friendliest small denominator so the sentence stays true to the percentage.
+const outOfFive = (pct: number) => Math.round((pct / 100) * 5);
 
 function StatTile({ value, label, sub }: { value: string; label: string; sub?: string }) {
   return (
@@ -118,7 +129,37 @@ function SectionHeading({ title, hint }: { title: string; hint?: string }) {
   return (
     <div className="mb-3">
       <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
-      {hint ? <p className="mt-0.5 text-sm text-text-muted">{hint}</p> : null}
+      {hint ? <p className="mt-0.5 max-w-prose text-sm text-text-muted">{hint}</p> : null}
+    </div>
+  );
+}
+
+// Horizontal bar row — a table of numbers is hard to feel, a bar you can see.
+function BarRow({
+  label,
+  value,
+  max,
+  tone = 'primary',
+  note,
+}: {
+  label: string;
+  value: number;
+  max: number;
+  tone?: 'primary' | 'success' | 'warning';
+  note?: string;
+}) {
+  const pct = Math.max(4, Math.round((value / max) * 100));
+  const fill = tone === 'success' ? 'bg-success' : tone === 'warning' ? 'bg-warning' : 'bg-primary';
+  return (
+    <div className="space-y-1">
+      <div className="flex items-baseline justify-between gap-3">
+        <span className="text-sm font-medium text-text-primary">{label}</span>
+        <span className="text-sm tabular-nums text-text-secondary">off by {fmt(value)} pts</span>
+      </div>
+      <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+        <div className={`h-full rounded-full ${fill}`} style={{ width: `${pct}%` }} />
+      </div>
+      {note ? <p className="text-xs text-text-muted">{note}</p> : null}
     </div>
   );
 }
@@ -128,12 +169,14 @@ function Act({
   title,
   dates,
   tone,
+  takeaway,
   children,
 }: {
   n: number;
   title: string;
   dates: string;
   tone: 'primary' | 'warning' | 'success';
+  takeaway: string;
   children: React.ReactNode;
 }) {
   const badge =
@@ -156,6 +199,9 @@ function Act({
             {dates}
           </span>
         </div>
+        <p className="max-w-prose text-sm font-medium leading-relaxed text-text-primary">
+          {takeaway}
+        </p>
         <div className="max-w-prose space-y-2 text-sm leading-relaxed text-text-secondary">
           {children}
         </div>
@@ -164,8 +210,57 @@ function Act({
   );
 }
 
+// Side-by-side block for the rollback comparison — one model, one card, plain words.
+function ModelBlock({
+  name,
+  status,
+  served,
+  mae,
+  bias,
+}: {
+  name: string;
+  status: string;
+  served: boolean;
+  mae: number;
+  bias: number;
+}) {
+  return (
+    <Card className={served ? 'ring-success/40' : undefined}>
+      <CardContent className="space-y-2 py-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-semibold text-text-primary">{name}</span>
+          <span
+            className={`rounded-full px-2 py-0.5 text-xs ${
+              served ? 'bg-success/15 text-success' : 'bg-muted text-text-secondary'
+            }`}
+          >
+            {status}
+          </span>
+        </div>
+        <p className="text-2xl font-semibold tabular-nums text-text-primary">{fmt(mae)} pts</p>
+        <p className="text-sm text-text-secondary">off per prediction, on average</p>
+        <p className="text-xs text-text-muted">
+          {Math.abs(bias) < 0.1
+            ? 'Almost no lean — misses landed evenly above and below the real score.'
+            : `Guessed about ${fmt(Math.abs(bias))} pts ${bias < 0 ? 'too low' : 'too high'} on nearly every corps.`}
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function GlossaryItem({ term, children }: { term: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <dt className="text-sm font-medium text-text-secondary">{term}</dt>
+      <dd className="mt-0.5 text-sm leading-relaxed text-text-muted">{children}</dd>
+    </div>
+  );
+}
+
 function AccuracyReportPage() {
   const { stats: s } = Route.useLoaderData();
+  const maxLead = Math.max(...s.leadTime.map((l) => l.mae), 0.01);
 
   return (
     <PageShell>
@@ -179,106 +274,163 @@ function AccuracyReportPage() {
           How our 2026 predictions actually did
         </h1>
         <p className="max-w-prose text-sm leading-relaxed text-text-secondary">
-          Every night of the summer we published a forecast for every upcoming show, then graded
-          ourselves against the posted scores. This is the full-season write-up: the headline
-          numbers, the week we shipped a worse model and had to roll it back, and a Finals night
-          that came in under six tenths of a point. For the always-current version of these metrics,
-          see the{' '}
-          <Link to="/accuracy" className="text-primary hover:underline">
-            live accuracy dashboard
-          </Link>
-          .
+          Every night of the summer we published a guess at the score every corps would earn at
+          every upcoming show. Then the real scores posted, and we checked our homework. This is the
+          full-season report card — the good stretches, and the week we made things worse.
         </p>
       </header>
 
-      {/* Headline */}
+      {/* How to read this page */}
       <section className="mt-6">
+        <Card>
+          <CardContent className="max-w-prose space-y-2 py-4 text-sm leading-relaxed text-text-secondary">
+            <p className="font-semibold text-text-primary">How to read this page</p>
+            <p>
+              A &ldquo;prediction&rdquo; here means the very last forecast we published before a
+              show started — no peeking, no hindsight. Every number below is that forecast compared
+              against the official score the corps actually earned.
+            </p>
+            <p>
+              DCI scores run from 0 to 100, and at the top of the field corps are often separated by
+              a tenth or two of a point. So being off by a point or two is decent; being off by
+              three is a bad night. For the always-current version of these numbers, see the{' '}
+              <Link to="/accuracy" className="text-primary hover:underline">
+                live accuracy dashboard
+              </Link>
+              .
+            </p>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Headline */}
+      <section className="mt-10">
+        <SectionHeading
+          title="How close were we?"
+          hint={`Across ${s.n} predictions at ${s.nShows} shows, all season long.`}
+        />
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatTile
             value={`${fmt(s.mae)} pts`}
-            label="Average error (MAE)"
-            sub={`${s.n} graded predictions`}
+            label="Off by this much, on average"
+            sub={`Across ${s.n} graded predictions`}
           />
           <StatTile
             value={`${fmt(s.within2Pct, 0)}%`}
-            label="Within 2 points"
-            sub={`${fmt(s.within1Pct, 0)}% within 1 pt`}
+            label="Landed within 2 points"
+            sub={`${fmt(s.within1Pct, 0)}% landed within 1 point`}
           />
           <StatTile
-            value={`${fmt(s.winnerPct, 0)}%`}
-            label="Show winner called"
-            sub={`${s.nShows} shows`}
+            value={`${outOfFive(s.winnerPct)} in 5`}
+            label="Shows where we picked the winner"
+            sub={`${fmt(s.winnerPct, 0)}% of ${s.nShows} shows`}
           />
           <StatTile
             value={`${fmt(s.rankExactPct, 0)}%`}
-            label="Exact placement"
-            sub={`${fmt(s.meanRankDisp, 2)} places off on average`}
+            label="Corps put in exactly the right place"
+            sub={`When wrong, usually just ${fmt(s.meanRankDisp, 1)} spot off`}
           />
         </div>
-        <p className="mt-3 max-w-prose text-sm leading-relaxed text-text-muted">
-          Median absolute error was {fmt(s.medianAbs)} points and our season bias was{' '}
-          {s.bias < 0 ? '−' : '+'}
-          {fmt(Math.abs(s.bias))} — meaning we ran slightly{' '}
-          {s.bias < 0 ? 'cold, under-scoring corps' : 'hot, over-scoring corps'} on average. Scope
-          is World Class and Open Class; a &ldquo;prediction&rdquo; is the last forecast saved
-          before a show started, so nothing here is graded with hindsight.
-        </p>
+        <div className="mt-3 max-w-prose space-y-2 text-sm leading-relaxed text-text-muted">
+          <p>
+            In plain terms: our typical prediction was off by {fmt(s.mae)} points, and a typical
+            miss was even smaller than that — half of all our guesses landed within{' '}
+            {fmt(s.medianAbs)} points of the real score.
+          </p>
+          <p>
+            We also leaned very slightly{' '}
+            {s.bias < 0 ? (
+              <>
+                <strong className="text-text-secondary">low</strong> — by about{' '}
+                {fmt(Math.abs(s.bias))} of a point. Corps generally scored a bit better than we
+                guessed they would
+              </>
+            ) : (
+              <>
+                <strong className="text-text-secondary">high</strong> — by about{' '}
+                {fmt(Math.abs(s.bias))} of a point. Corps generally scored a bit worse than we
+                guessed they would
+              </>
+            )}
+            . And when we put a corps in the wrong spot in the lineup, we were usually only about
+            one placement off.
+          </p>
+          <p>
+            This covers World Class and Open Class corps only — the ones the model is built for.
+          </p>
+        </div>
       </section>
 
       {/* Three acts */}
       <section className="mt-10">
         <SectionHeading
-          title="A season in three acts"
-          hint="The season-long average hides three very different stretches."
+          title="The season in three acts"
+          hint="The season-long average hides three very different stretches: a steady start, a bad week, and our best two weeks of the year."
         />
         <div className="space-y-3">
-          <Act n={1} title="Finding the range" dates="Through Jul 19" tone="primary">
+          <Act
+            n={1}
+            title="Steady, except for opening nights"
+            dates="Through Jul 19"
+            tone="primary"
+            takeaway="For most of the summer we were off by about a point and a half — but a corps' very first show of the year was always a guess."
+          >
             <p>
-              The model serving most of the summer was <strong>final2</strong> — a v9 network
-              wrapped in an adaptive serving layer: a persistence anchor off each corps&apos; last
-              score, seasonal growth curves, comparable-corps effects, and a nightly bias
-              correction. It graded out around 1.5 points of average error across June and early
-              July.
+              The model that ran most of the season looks at where a corps has been scoring lately,
+              how quickly the field as a whole is climbing, and how similar corps are doing, then
+              nudges itself each night based on its own recent misses. Through June and early July
+              that graded out at roughly 1.5 points off per prediction.
             </p>
             <p>
-              The weak spot was cold starts. For a corps&apos; first show of the season there is no
-              2026 history to anchor to, so the forecast leans on last year and on comparables — and
-              those early-June debuts are where our largest misses of the year live.
+              The weak spot was season openers. Before a corps performs even once, there are no 2026
+              scores to lean on, so the forecast falls back on last year and on comparable corps —
+              and those early-June debuts are where our biggest misses of the entire year live.
             </p>
           </Act>
 
-          <Act n={2} title="The experiment week" dates="Jul 20 – Jul 26" tone="warning">
+          <Act
+            n={2}
+            title="The week we made it worse"
+            dates="Jul 20 – Jul 26"
+            tone="warning"
+            takeaway="We tested a new version, it underestimated how fast scores climb in August, and we switched back within a week."
+          >
             <p>
-              In late July we promoted two newer models in sequence — <strong>v10.5</strong>, then{' '}
-              <strong>v11</strong>. Both were better on our historical backtests. Both were worse in
-              the field.
+              In late July we swapped in two newer versions of the model. Both looked better when we
+              tested them against past seasons. Both were clearly worse on real, live shows.
             </p>
             <p>
-              Late July is when scores inflate hardest, and the new models systematically failed to
-              follow the climb — they under-predicted by roughly 3 points and served at{' '}
-              <strong>3.2–3.4 MAE</strong>, roughly double our season average. Our nightly grading
-              caught it on matched shows within days, and we rolled back to final2 on{' '}
-              <strong>Jul 26</strong>.
+              Late July is when scores rise fastest, and the new versions simply didn&apos;t keep up
+              with the climb — they guessed about 3 points too low, and were off by roughly{' '}
+              <strong>3.2 to 3.4 points</strong> per prediction, about double our season average.
+              Because we grade ourselves every night, we spotted it within days and put the older
+              model back on <strong>Jul 26</strong>.
             </p>
             <p className="text-text-primary">
-              We&apos;d rather say this plainly than bury it: we shipped a regression, our
-              monitoring caught it, and we reverted. The reason we can tell you exactly how much it
-              cost is the same reason we caught it — every version is graded against real posted
-              scores, every night.
+              We&apos;d rather say this plainly than bury it: we shipped something worse, we caught
+              it, and we undid it. The only reason we can tell you exactly what it cost is that
+              every version gets graded against real posted scores, every single night.
             </p>
           </Act>
 
-          <Act n={3} title="The championships stretch" dates="Jul 26 – Finals" tone="success">
+          <Act
+            n={3}
+            title="Championship week: our best stretch"
+            dates="Jul 26 – Finals"
+            tone="success"
+            takeaway="With the older model back in charge, Finals night came in under six tenths of a point."
+          >
             <p>
-              With final2 back in front, the last two weeks were the best of the season:{' '}
-              <strong>1.03 MAE</strong> with near-zero bias. Prelims on Aug 6 came in at{' '}
+              The last two weeks were the sharpest of the year: about <strong>1.03 points</strong>{' '}
+              off per prediction, with no real lean high or low. Prelims on Aug 6 came in at{' '}
               <strong>1.04</strong> across 30 corps, and Finals on Aug 8 at <strong>0.59</strong> —
-              our best full-show number of the year.
+              our best full show of the season.
             </p>
             <p>
-              We kept v10.5 and v11 running in shadow mode over the same shows. They stayed near 2.9
-              MAE the whole way, which puts a number on the rollback: about{' '}
-              <strong>1.8 points saved per prediction</strong> through championships.
+              We kept the two newer versions running quietly in the background, scored on exactly
+              the same shows. They stayed close to 2.9 points off the whole way. That puts a number
+              on switching back: roughly <strong>1.8 points saved on every prediction</strong>{' '}
+              through championships.
             </p>
           </Act>
         </div>
@@ -287,133 +439,94 @@ function AccuracyReportPage() {
       {/* Model comparison */}
       <section className="mt-10">
         <SectionHeading
-          title="What the rollback was worth"
-          hint="Matched shows, Jul 26 – Aug 8 · 120 matched predictions per model."
+          title="What switching back was worth"
+          hint="The same championship-stretch shows, Jul 26 – Aug 8, graded the same way for all three versions — 120 predictions each. Only one of them was actually shown on the site."
         />
-        <Card>
-          <CardContent className="px-0 py-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-text-muted">
-                    <th className="px-4 py-2 font-medium">Model</th>
-                    <th className="px-4 py-2 text-right font-medium">Avg error</th>
-                    <th className="px-4 py-2 text-right font-medium">Bias</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { name: 'final2', role: 'served', mae: 1.03, bias: -0.04, served: true },
-                    { name: 'v10.5', role: 'shadow', mae: 2.86, bias: -2.68, served: false },
-                    { name: 'v11', role: 'shadow', mae: 2.88, bias: -2.72, served: false },
-                  ].map((m) => (
-                    <tr key={m.name} className="border-b border-border/50 last:border-0">
-                      <td className="px-4 py-2">
-                        <span className="font-medium text-text-primary">{m.name}</span>{' '}
-                        <span
-                          className={`ml-1 rounded-full px-2 py-0.5 text-xs ${
-                            m.served ? 'bg-success/15 text-success' : 'bg-muted text-text-secondary'
-                          }`}
-                        >
-                          {m.role}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 text-right tabular-nums text-text-secondary">
-                        {fmt(m.mae)}
-                      </td>
-                      <td className="px-4 py-2 text-right tabular-nums text-text-secondary">
-                        {m.bias > 0 ? '+' : '−'}
-                        {fmt(Math.abs(m.bias))}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <ModelBlock name="final2" status="the one we used" served mae={1.03} bias={-0.04} />
+          <ModelBlock name="v10.5" status="tested quietly" served={false} mae={2.86} bias={-2.68} />
+          <ModelBlock name="v11" status="tested quietly" served={false} mae={2.88} bias={-2.72} />
+        </div>
         <p className="mt-3 max-w-prose text-sm leading-relaxed text-text-muted">
-          The bias column is the tell. The shadow models weren&apos;t noisy — they were pointed the
-          wrong way, sitting nearly 2.7 points below reality on every prediction because they never
-          learned how steeply championship-week scoring climbs.
+          The giveaway is the last line on each card. The two newer versions weren&apos;t just
+          scattered and unlucky — they were wrong in one direction, sitting nearly 2.7 points under
+          reality on almost every corps, because they never learned how steeply scores jump during
+          championship week.
         </p>
       </section>
 
       {/* Lead time */}
       <section className="mt-10">
         <SectionHeading
-          title="Forecasts sharpen near showtime"
-          hint="Average error by how far ahead the forecast was made, across every saved run."
+          title="Why the forecast the night before is the one to trust"
+          hint="How far off we were, grouped by how many days ahead of the show the forecast was made. Longer bar = worse."
         />
         <Card>
-          <CardContent className="px-0 py-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-text-muted">
-                    <th className="px-4 py-2 font-medium">Made</th>
-                    <th className="px-4 py-2 text-right font-medium">Avg error</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {s.leadTime.map((l) => (
-                    <tr key={l.bucket} className="border-b border-border/50 last:border-0">
-                      <td className="px-4 py-2 font-medium text-text-primary">{l.bucket}</td>
-                      <td className="px-4 py-2 text-right tabular-nums text-text-secondary">
-                        {fmt(l.mae)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <CardContent className="space-y-4 py-5">
+            {s.leadTime.map((l, i) => (
+              <BarRow
+                key={l.bucket}
+                label={l.bucket === 'Same day' ? 'Day of the show' : `${l.bucket} ahead`}
+                value={l.mae}
+                max={maxLead}
+                tone={i === 0 ? 'success' : i === s.leadTime.length - 1 ? 'warning' : 'primary'}
+              />
+            ))}
           </CardContent>
         </Card>
         <p className="mt-3 max-w-prose text-sm leading-relaxed text-text-muted">
-          A forecast two weeks out is worth about a point and a quarter less than the one we publish
-          the night before. That&apos;s the honest shelf life of a prediction on this site.
+          A forecast made two weeks out is worth about a point and a quarter less than the one we
+          publish the night before — every show that happens in between tells us something new.
+          That&apos;s the honest shelf life of a prediction on this site.
         </p>
       </section>
 
       {/* Details */}
       <section className="mt-10">
-        <SectionHeading title="Odds and ends" hint="Season superlatives from the graded set." />
+        <SectionHeading
+          title="Which corps were hardest to predict?"
+          hint="A few standouts from the graded set."
+        />
         <div className="grid gap-3 sm:grid-cols-2">
           <Card>
-            <CardContent className="space-y-2 py-4 text-sm text-text-secondary">
+            <CardContent className="space-y-2 py-4 text-sm leading-relaxed text-text-secondary">
               <p className="font-semibold text-text-primary">Easiest and hardest to read</p>
               <p>
-                <strong>Spartans</strong> were our most predictable corps all summer — 0.78 average
-                error over 13 shows. <strong>7th Regiment</strong> were the hardest at 4.10, and we
-                consistently ran about 3 points hot on them.
+                <strong>Spartans</strong> were our most predictable corps all summer — we were off
+                by only 0.78 points across their 13 shows. <strong>7th Regiment</strong> were the
+                toughest at 4.10 points off, and we kept guessing them about 3 points higher than
+                they actually scored.
               </p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="space-y-2 py-4 text-sm text-text-secondary">
-              <p className="font-semibold text-text-primary">Biggest championship misses</p>
+            <CardContent className="space-y-2 py-4 text-sm leading-relaxed text-text-secondary">
+              <p className="font-semibold text-text-primary">Our worst championship misses</p>
               <p>
-                On Finals night our largest single miss was <strong>Troopers</strong> at 2.15
-                points. At Prelims it was <strong>Raiders</strong> at 3.0.
+                Even on our best nights we missed somebody. On Finals night our biggest single miss
+                was <strong>Troopers</strong>, off by 2.15 points. At Prelims it was{' '}
+                <strong>Raiders</strong>, off by 3.0.
               </p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="space-y-2 py-4 text-sm text-text-secondary">
-              <p className="font-semibold text-text-primary">World vs Open Class</p>
+            <CardContent className="space-y-2 py-4 text-sm leading-relaxed text-text-secondary">
+              <p className="font-semibold text-text-primary">World Class vs Open Class</p>
               <p>
-                World Class graded at 1.58 average error, Open Class at 2.22. Open Class corps
-                compete less often, so there&apos;s less recent history to anchor a forecast to.
+                We were off by 1.58 points on World Class corps and 2.22 on Open Class. Open Class
+                corps compete less often, so there&apos;s simply less recent evidence to base a
+                forecast on.
               </p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="space-y-2 py-4 text-sm text-text-secondary">
-              <p className="font-semibold text-text-primary">Placement, not just points</p>
+            <CardContent className="space-y-2 py-4 text-sm leading-relaxed text-text-secondary">
+              <p className="font-semibold text-text-primary">Getting the order right</p>
               <p>
-                We put a corps in exactly the right slot {fmt(s.rankExactPct, 0)}% of the time and
-                were off by {fmt(s.meanRankDisp, 2)} places on average — and we called the show
-                winner in {fmt(s.winnerPct, 0)}% of {s.nShows} shows.
+                Points are one thing; the lineup is another. We placed a corps in exactly the right
+                spot {fmt(s.rankExactPct, 0)}% of the time, and when we got it wrong we were
+                normally only one spot off. We picked the eventual winner in{' '}
+                {outOfFive(s.winnerPct)} out of every 5 shows.
               </p>
             </CardContent>
           </Card>
@@ -426,17 +539,18 @@ function AccuracyReportPage() {
         <Card>
           <CardContent className="max-w-prose space-y-2 py-4 text-sm leading-relaxed text-text-secondary">
             <p>
-              The clearest lesson of 2026 is a structural one. The <em>level</em> of a score lives
-              in season dynamics — where a corps has been, how fast the field is climbing, and how
-              our own recent errors are trending. That&apos;s not something a network should be
-              guessing from scratch. Its job is the shape: who moves relative to whom, and
-              what&apos;s left over after the structure has had its say.
+              The clearest lesson of 2026 is about the split between two questions.{' '}
+              <em>Roughly what number will show up on the scoresheet?</em> is mostly a matter of
+              where a corps has already been and how fast the whole field is climbing — that&apos;s
+              bookkeeping, and the computer shouldn&apos;t be guessing it from scratch.{' '}
+              <em>Who passes whom?</em> is the interesting part, and that&apos;s what the learned
+              part of the system should be spending its effort on.
             </p>
             <p>
-              Every model that beat us this year did it by leaning on that structure, and every one
-              that lost did it by ignoring it. The next-generation model, <strong>V13</strong>, is
-              being built on exactly that split, and it will be trained on the complete 2026 season
-              — including the championship-week inflation the previous generation never saw.
+              Every version that beat us this year respected that split, and every version that lost
+              ignored it. Our next model, <strong>V13</strong>, is built around it — and it will be
+              trained on the complete 2026 season, championship-week score jumps included, which is
+              exactly what the versions we rolled back had never seen.
             </p>
             <p>
               We&apos;ll keep grading it in public. The{' '}
@@ -450,6 +564,44 @@ function AccuracyReportPage() {
         </Card>
       </section>
 
+      {/* Glossary */}
+      <section className="mt-10">
+        <Card>
+          <CardContent className="py-4">
+            <details className="group">
+              <summary className="cursor-pointer list-none text-sm font-semibold text-text-secondary marker:hidden">
+                <span className="group-open:hidden">Show the plain-English glossary</span>
+                <span className="hidden group-open:inline">Plain-English glossary</span>
+              </summary>
+              <dl className="mt-3 max-w-prose space-y-3">
+                <GlossaryItem term="Day-of prediction">
+                  The last forecast we published before a show began. It&apos;s the one we grade
+                  ourselves on, because it&apos;s the one fans actually read.
+                </GlossaryItem>
+                <GlossaryItem term="Points off (sometimes called MAE)">
+                  How far our predicted score was from the real score, ignoring whether we were high
+                  or low, averaged over every prediction. Lower is better. DCI scores run 0–100.
+                </GlossaryItem>
+                <GlossaryItem term="Running high or low (sometimes called bias)">
+                  Whether our misses tend to land on one side. Being off by 2 points high and 2
+                  points low averages out to zero lean; being 2 points low every time does not, and
+                  that&apos;s a fixable problem rather than bad luck.
+                </GlossaryItem>
+                <GlossaryItem term="World Class and Open Class">
+                  The two DCI competitive classes our model covers. World Class corps tour heavily;
+                  Open Class corps compete less often, which makes them harder to forecast.
+                </GlossaryItem>
+                <GlossaryItem term="Why predictions get better closer to the show">
+                  Corps change fast in July and August — new drill, cleaner performances, rising
+                  judges&apos; numbers. Each show that happens gives us fresher evidence, so a
+                  forecast made the night before beats one made two weeks out.
+                </GlossaryItem>
+              </dl>
+            </details>
+          </CardContent>
+        </Card>
+      </section>
+
       {/* Methodology */}
       <section className="mt-12 border-t border-border pt-6">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-text-primary">
@@ -458,15 +610,16 @@ function AccuracyReportPage() {
         <div className="mt-3 max-w-prose space-y-2 text-sm leading-relaxed text-text-muted">
           <p>
             A graded prediction is the last forecast saved <em>strictly before</em> a show&apos;s
-            start time, joined to that show&apos;s official posted score for the same corps. The
-            model never sees the show it&apos;s being graded on. Error is predicted total minus
-            actual total; MAE is the average of its absolute value, and bias is the signed average
-            (negative = we were low).
+            start time, matched to that show&apos;s official posted score for the same corps. The
+            model never sees the show it&apos;s being graded on. &ldquo;Points off&rdquo; is the gap
+            between predicted and actual total, averaged with the direction thrown away;
+            &ldquo;running high or low&rdquo; keeps the direction (negative means we guessed low).
           </p>
           <p>
-            Scope is World Class and Open Class only. Shadow models are scored on exactly the same
-            shows and corps as the served model, which is what makes the comparison table a fair
-            fight. These are AI-generated forecasts — an estimate for fun, not a guarantee.
+            Scope is World Class and Open Class only. The versions we tested quietly in the
+            background are scored on exactly the same shows and corps as the version that was
+            actually shown on the site, which is what makes that comparison a fair fight. These are
+            AI-generated forecasts — an estimate for fun, not a guarantee.
           </p>
           <p>
             Full per-corps and per-show breakdowns live on the{' '}
